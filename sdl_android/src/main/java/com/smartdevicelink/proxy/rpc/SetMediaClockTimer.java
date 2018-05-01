@@ -52,6 +52,14 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
+ * 			<td>enableSeek</td>
+ * 			<td>Boolean</td>
+ * 			<td>Defines if seek media clock timer functionality will be available.</td>
+ *          <td>N</td>
+ * 			<td>If omitted, the value is set to false. The value is retained until the next SetMediaClockTimer is sent.</td>
+ * 			<td>SmartDeviceLink 4.7</td>
+ * 		</tr>
+ * 		<tr>
  *
  *  </table>
  *  
@@ -74,6 +82,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	public static final String KEY_START_TIME = "startTime";
 	public static final String KEY_END_TIME = "endTime";
 	public static final String KEY_UPDATE_MODE = "updateMode";
+	public static final String KEY_ENABLE_SEEK = "enableSeek";
 	/**
 	 * Constructs a new SetMediaClockTimer object
 	 */
@@ -131,13 +140,13 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * Gets the media clock/timer update mode (COUNTUP/COUNTDOWN/PAUSE/RESUME)
 	 * 
 	 * @return UpdateMode -a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME)
-	 */    
-    public UpdateMode getUpdateMode() {
+	 */
+	public UpdateMode getUpdateMode() {
 		return (UpdateMode) getObject(UpdateMode.class, KEY_UPDATE_MODE);
-    }
+	}
 	/**
 	 * Sets the media clock/timer update mode (COUNTUP/COUNTDOWN/PAUSE/RESUME)
-	 * 
+	 *
 	 * @param updateMode
 	 *            a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME)
 	 *            <p></p>
@@ -148,8 +157,32 @@ public class SetMediaClockTimer extends RPCRequest {
 	 *            <li>When updateMode is RESUME, the timer resumes counting from
 	 *            the timer's value when it was paused</li>
 	 *            </ul>
-	 */    
-    public void setUpdateMode( UpdateMode updateMode ) {
+	 */
+	public void setUpdateMode( UpdateMode updateMode ) {
 		setParameters(KEY_UPDATE_MODE, updateMode);
-    }
+	}
+
+	/**
+	 * Gets enableSeek
+	 *
+	 * @return enableSeek -a Boolean representing whether seek media clock timer functionality will be available
+	 */
+	public Boolean getEnableSeek() {
+		return getBoolean(KEY_ENABLE_SEEK);
+	}
+	/**
+	 * Sets enableSeek
+	 *
+	 * @param enableSeek
+	 *            a Boolean representing whether seek media clock timer functionality will be available
+	 *            <p></p>
+	 *            <b>Notes: </b>
+	 *            <ul>
+	 *            <li>If omitted, the value is set to false. </li>
+	 *            <li>The value is retained until the next SetMediaClockTimer is sent.</li>
+	 *            </ul>
+	 */
+	public void setEnableSeek( Boolean enableSeek ) {
+		setParameters(KEY_ENABLE_SEEK, enableSeek);
+	}
 }

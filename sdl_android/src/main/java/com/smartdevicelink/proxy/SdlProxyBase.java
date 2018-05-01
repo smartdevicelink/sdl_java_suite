@@ -41,7 +41,6 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
 
-import com.smartdevicelink.BuildConfig;
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
@@ -1954,7 +1953,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		RPCMessage rpcMsg = new RPCMessage(hash);
 		String functionName = rpcMsg.getFunctionName();
 		String messageType = rpcMsg.getMessageType();
-		
+
 		if (messageType.equals(RPCMessage.KEY_RESPONSE)) {			
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCResponse(rpcMsg), SDL_LIB_TRACE_KEY);
 			
@@ -2744,7 +2743,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                      });
                     } else {
                         _proxyListener.onGetVehicleDataResponse(msg);
-                        onRPCResponseReceived(msg);   
+                        onRPCResponseReceived(msg);
                     }
             } else if (functionName.equals(FunctionID.SUBSCRIBE_WAY_POINTS.toString())) {
             	// SubscribeWayPoints
@@ -3139,7 +3138,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			} else if (functionName.equals(FunctionID.ON_PERMISSIONS_CHANGE.toString())) {
 				//OnPermissionsChange
-				
+
 				final OnPermissionsChange msg = new OnPermissionsChange(hash);
 				if (_callbackToUIThread) {
 					// Run in UI thread
@@ -3398,6 +3397,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					});
 				} else {
 					_proxyListener.onOnWayPointChange(msg);
+					onRPCNotificationReceived(msg);
+				}
+			}
+			else if (functionName.equals(FunctionID.ON_SEEK_MEDIA_CLOCK_TIMER.toString())) {
+				final OnSeekMediaClockTimer msg = new OnSeekMediaClockTimer(hash);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onSeekMediaClockTimer(msg);
+							onRPCNotificationReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onSeekMediaClockTimer(msg);
 					onRPCNotificationReceived(msg);
 				}
 			}
