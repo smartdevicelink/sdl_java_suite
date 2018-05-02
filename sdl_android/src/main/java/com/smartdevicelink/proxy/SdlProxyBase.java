@@ -5491,6 +5491,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
+	@Deprecated
 	public void pauseMediaClockTimer(Integer correlationID)
 			throws SdlException {
 
@@ -5524,6 +5525,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
+	@Deprecated
 	public void resumeMediaClockTimer(Integer correlationID)
 			throws SdlException {
 
