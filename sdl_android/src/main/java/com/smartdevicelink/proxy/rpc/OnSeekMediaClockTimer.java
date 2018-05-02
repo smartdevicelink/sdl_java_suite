@@ -9,28 +9,25 @@ import java.util.Hashtable;
  * Callback for the seek media clock timer notification. Notifies the application of
  * progress bar seek event on the media clock timer. System will automatically update
  * the media clock timer position based on the seek notification location.
- * <p>
- * </p>
- * <b>Parameter List:</b>
+ * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">
- * <tr>
- * <th>Name</th>
- * <th>Type</th>
- * <th>Description</th>
- * <th>Req</th>
- * <th>Notes</th>
- * <th>SmartDeviceLink Ver Available</th>
- * </tr>
- * <tr>
- * <td>seekTime</td>
- * <td>StartTime</td>
- * <td>Describes the hour, minute and second values used for the current media clock timer.</td>
- * <td>Y</td>
- * <td></td>
- * <td>SmartDeviceLink 4.7</td>
- * </tr>
+ * 		<tr>
+ * 			<th>Name</th>
+ * 			<th>Type</th>
+ * 			<th>Description</th>
+ * 			<th>Req</th>
+ * 			<th>Notes</th>
+ * 			<th>SmartDeviceLink Ver Available</th>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>seekTime</td>
+ * 			<td>StartTime</td>
+ * 			<td>Describes the hour, minute and second values used for the current media clock timer.</td>
+ * 			<td>Y</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 4.7</td>
+ * 		</tr>
  * </table>
- * </p>
  */
 
 public class OnSeekMediaClockTimer extends RPCNotification {

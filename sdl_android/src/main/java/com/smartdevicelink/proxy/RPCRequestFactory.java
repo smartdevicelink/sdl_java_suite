@@ -692,9 +692,8 @@ public class RPCRequestFactory {
 		return req;
 	}
 
-	public static SetMediaClockTimer buildSetMediaClockTimer(Integer hours,
-															 Integer minutes, Integer seconds, UpdateMode updateMode,
-															 Boolean enableSeek, Integer correlationID) {
+	public static SetMediaClockTimer buildSetMediaClockTimer(Integer hours, Integer minutes,
+			Integer seconds, UpdateMode updateMode, Boolean enableSeek, Integer correlationID) {
 
 		SetMediaClockTimer msg = new SetMediaClockTimer();
 		if (hours != null || minutes != null || seconds != null) {
