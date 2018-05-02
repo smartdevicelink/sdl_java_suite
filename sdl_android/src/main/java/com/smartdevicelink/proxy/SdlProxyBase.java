@@ -5554,6 +5554,23 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		return returnChoice;
 	}
+
+	/**
+	 * Creates a choice to be added to a choiceset. Choice has a visual menu component.
+	 *
+	 * @param choiceID -Unique ID used to identify this choice (returned in callback).
+	 * @param choiceMenuName -Text name displayed for this choice.
+	 * @return Choice created.
+	 */
+	@SuppressWarnings("unused")
+	public Choice createChoiceSetChoice(Integer choiceID, String choiceMenuName) {
+		Choice returnChoice = new Choice();
+
+		returnChoice.setChoiceID(choiceID);
+		returnChoice.setMenuName(choiceMenuName);
+
+		return returnChoice;
+	}
 	
 	/**
 	 * Starts audio pass thru session. Responses are captured through callback on IProxyListener.
