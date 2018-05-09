@@ -78,6 +78,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	private VideoStreamingParameters acceptedVideoParams = null;
 
     private boolean secondaryConnectionEnabled = false;
+    private boolean legacyPrimaryStreamingAllowed = true;
     private ArrayList<TransportType> secondaryTransportTypes;
     private SdlConnection secondarySdlConnection = null;
     private HashMap<SessionType, SecondaryService> secondaryServices = new HashMap<>();
@@ -773,8 +774,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 	public void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version,
 	        String correlationID, int hashID, boolean isEncrypted, TransportType transportType) {
 		if (transportType == transportConfig.getTransportType()) {
-			// service on primary transport
-			primaryConnectionServices.add(sessionType);
+			if ((secondarySdlConnection == null) && (sessionType != SessionType.RPC)) {
+				// service on primary transport
+				primaryConnectionServices.add(sessionType);
+			}
 		}
 		if ((this.sessionId != 0) && (sessionID == this.sessionId) && (sessionType == SessionType.RPC)) {
 			// This is just for SDLCore's notification about the secondary transport, no need to do
@@ -1052,6 +1055,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 			videoTransports = null;
 
 			if ((secondaryTransport != null) && (audio != null) && (video != null)) {
+				legacyPrimaryStreamingAllowed = false;
 				int tcpPos = secondaryTransport.indexOf(SECONDARY_TRANSPORT_TCP);
 				int usbPos = secondaryTransport.indexOf(SECONDARY_TRANSPORT_USB);
 				if ((tcpPos >= 0) || (usbPos >= 0)) {
@@ -1116,7 +1120,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
 	private boolean isServiceAllowed(SessionType type, TransportLevel level) {
 		// default to allowed for backward compatibility
-		boolean allowed = (level == TransportLevel.PRIMARY);
+		boolean allowed = legacyPrimaryStreamingAllowed && (level == TransportLevel.PRIMARY);
 
 		if ((type == SessionType.PCM) && (audioTransports != null)) {
 			allowed = audioTransports.contains(level);

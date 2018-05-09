@@ -16,6 +16,7 @@ import android.util.Log;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.transport.enums.TransportType;
 
 /**
@@ -68,6 +69,8 @@ public class TCPTransport extends SdlTransport {
      */
     private static final String KEY_MSG_PACKET = "packet";
     private static final int MSG_SEND_PACKET = 1;
+
+    private static final Object SEMAPHORE_STATE = new Object();
 
     /**
      * Instance of TCP transport configuration
@@ -123,14 +126,18 @@ public class TCPTransport extends SdlTransport {
     @Override
     protected boolean sendBytesOverTransport(SdlPacket packet) {
         TCPTransportState currentState = getCurrentState();
-        logInfo(String.format("TCPTransport: sendBytesOverTransport requested. Message ID: %d, Current state is: %s"
-                , packet.getMessageId(), currentState.name()));
+        if ((packet.getServiceType() == SessionType.RPC.getValue()) && (packet.getServiceType() == 0)) {
+            logInfo(String.format("TCPTransport: sendBytesOverTransport requested. Message ID: %d, Current state is: %s, Service Type is: %d"
+                    , packet.getMessageId(), currentState.name(), packet.getServiceType()));
+        }
 
         boolean bResult = false;
 
         if ((currentState == TCPTransportState.CONNECTED) && (mWriteHandler != null)) {
             bResult = true;
-            logInfo("TCPTransport: sendBytesOverTransport request accepted. Trying to send data");
+            if ((packet.getServiceType() == SessionType.RPC.getValue()) && (packet.getServiceType() == 0)) {
+                logInfo("TCPTransport: sendBytesOverTransport request accepted. Trying to send data");
+            }
             Bundle msgBundle = new Bundle();
             msgBundle.putParcelable(KEY_MSG_PACKET, packet);
             Message msg = Message.obtain();
@@ -317,17 +324,21 @@ public class TCPTransport extends SdlTransport {
      *
      * @return current state
      */
-    private synchronized TCPTransportState getCurrentState() {
-        return mCurrentState;
+    private TCPTransportState getCurrentState() {
+        synchronized (SEMAPHORE_STATE) {
+			return mCurrentState;
+		}
     }
 
     /**
      * Sets current TCP transport state
      * @param currentState New state
      */
-    private synchronized void setCurrentState(TCPTransportState currentState) {
+    private void setCurrentState(TCPTransportState currentState) {
         logInfo(String.format("Current state changed to: %s", currentState));
-        this.mCurrentState = currentState;
+        synchronized (SEMAPHORE_STATE) {
+			this.mCurrentState = currentState;
+		}
     }
 
     /**
@@ -558,6 +569,7 @@ public class TCPTransport extends SdlTransport {
 
     private class TCPWriteWorker implements Handler.Callback {
         private boolean mCancelled = false;
+        private boolean mVerbose = false;
 
         public void cancel() {
             mCancelled = true;
@@ -597,7 +609,9 @@ public class TCPTransport extends SdlTransport {
             if ((out != null) && (!mCancelled)) {
                 try {
                     out.write(msgBytes, offset, count);
-                    logInfo("TCPTransport.sendBytesOverTransport: successfully sent data");
+                    if (mVerbose) {
+                        logInfo("TCPTransport.sendBytesOverTransport: successfully sent data");
+                    }
                 } catch (IOException e) {
                     logError("TCPTransport.sendBytesOverTransport: error during sending data: " + e.getMessage());
                 }
@@ -620,8 +634,11 @@ public class TCPTransport extends SdlTransport {
 
                 TCPTransportState currentState = getCurrentState();
 
-                logInfo(String.format("TCPTransport: Sending bytes over transport. Message ID: %d, Size: %d, Offset: %d, Length: %d, Current state is: %s"
-                    , msgBytes.length, 0, msgBytes.length, packet.getMessageId(), currentState.name()));
+                mVerbose = (packet.getServiceType() == SessionType.RPC.getValue()) && (packet.getServiceType() == 0);
+                if (mVerbose) {
+                    logInfo(String.format("TCPTransport: Sending bytes over transport. Message ID: %d, Size: %d, Offset: %d, Length: %d, Current state is: %s"
+                            , msgBytes.length, 0, msgBytes.length, packet.getMessageId(), currentState.name()));
+                }
 
                 write(msgBytes, 0, msgBytes.length);
                 return true;
