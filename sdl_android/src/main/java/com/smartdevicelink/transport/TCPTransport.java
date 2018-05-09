@@ -70,6 +70,8 @@ public class TCPTransport extends SdlTransport {
     private static final String KEY_MSG_PACKET = "packet";
     private static final int MSG_SEND_PACKET = 1;
 
+    private static final Object SEMAPHORE_STATE = new Object();
+
     /**
      * Instance of TCP transport configuration
      */
@@ -322,17 +324,21 @@ public class TCPTransport extends SdlTransport {
      *
      * @return current state
      */
-    private synchronized TCPTransportState getCurrentState() {
-        return mCurrentState;
+    private TCPTransportState getCurrentState() {
+        synchronized (SEMAPHORE_STATE) {
+			return mCurrentState;
+		}
     }
 
     /**
      * Sets current TCP transport state
      * @param currentState New state
      */
-    private synchronized void setCurrentState(TCPTransportState currentState) {
+    private void setCurrentState(TCPTransportState currentState) {
         logInfo(String.format("Current state changed to: %s", currentState));
-        this.mCurrentState = currentState;
+        synchronized (SEMAPHORE_STATE) {
+			this.mCurrentState = currentState;
+		}
     }
 
     /**
