@@ -5,6 +5,10 @@ import com.smartdevicelink.transport.enums.TransportType;
 import android.content.ComponentName;
 import android.content.Context;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class MultiplexTransportConfig extends BaseTransportConfig{
 
     /**
@@ -35,19 +39,28 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 	ComponentName service;
 	int securityLevel;
 
-	
+	List<TransportType> primaryTransports, secondaryTransports;
+	boolean requiresHighBandwidth = false;
+
 
 	
 	public MultiplexTransportConfig(Context context, String appId) {
 		this.context = context;
 		this.appId = appId;
 		this.securityLevel = FLAG_MULTI_SECURITY_MED;
+		this.primaryTransports = Arrays.asList(new TransportType[]{TransportType.USB, TransportType.BLUETOOTH});
+		//this.secondaryTransports = Arrays.asList(new TransportType[]{TransportType.TCP, TransportType.USB, TransportType.BLUETOOTH});
+
 	}
 
 	public MultiplexTransportConfig(Context context, String appId, int securityLevel) {
 		this.context = context;
 		this.appId = appId;
 		this.securityLevel = securityLevel;
+		this.primaryTransports = Arrays.asList(new TransportType[]{TransportType.USB, TransportType.BLUETOOTH});
+		//this.secondaryTransports = Arrays.asList(new TransportType[]{TransportType.TCP, TransportType.USB, TransportType.BLUETOOTH});
+
+
 	}	
 
 	/**
@@ -82,6 +95,48 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 	public int getSecurityLevel(){
 		return securityLevel;
 	}
-	
+
+	public void setRequiresHighBandwidth(boolean requiresHighBandwidth){
+		this.requiresHighBandwidth = requiresHighBandwidth;
+	}
+
+	public boolean requiresHighBandwidth(){
+		return this.requiresHighBandwidth;
+	}
+
+	/**
+	 * This will set the order in which a primary transport is determined to be accepted or not.
+	 * In the case of previous protocol versions ( < 5.1)
+	 * @param transports
+	 */
+	public void setPrimaryTransports(List<TransportType> transports){
+		if(transports != null){
+			//Sanitize
+			transports.remove(TransportType.MULTIPLEX);
+			this.primaryTransports = transports;
+		}
+	}
+
+	public List<TransportType> getPrimaryTransports(){
+		return this.primaryTransports;
+	}
+
+	/**
+	 * This will set the order in which a primary transport is determined to be accepted or not.
+	 * In the case of previous protocol versions ( < 5.1)
+	 * @param transports
+	 *
+	public void setSecondaryTransports(List<TransportType> transports){
+		if(transports != null){
+			//Sanitize
+			transports.remove(TransportType.MULTIPLEX);
+			this.secondaryTransports = transports;
+		}
+	}
+
+	public List<TransportType> getSecondaryTransports(){
+		return this.secondaryTransports;
+	}
+	*/
 
 }

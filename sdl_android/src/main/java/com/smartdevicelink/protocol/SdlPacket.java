@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.livio.BSON.BsonEncoder;
 import com.smartdevicelink.protocol.enums.FrameType;
+import com.smartdevicelink.transport.enums.TransportType;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -68,6 +69,7 @@ public class SdlPacket implements Parcelable{
 	int priorityCoefficient;
 	byte[] payload = null;
 	HashMap<String, Object> bsonPayload;
+	TransportType transportType;
 
 	public SdlPacket(int version, boolean encryption, int frameType,
 			int serviceType, int frameInfo, int sessionId,
@@ -211,6 +213,15 @@ public class SdlPacket implements Parcelable{
 	public int getPrioirtyCoefficient(){
 		return this.priorityCoefficient;
 	}
+
+	public void setTransportType(TransportType transportType){
+		this.transportType = transportType;
+	}
+
+	public TransportType getTransportType() {
+		return this.transportType;
+	}
+
 	/**
 	 * This method takes in the various components to the SDL packet structure and creates a new byte array that can be sent via the transport
 	 * @param version
@@ -299,6 +310,13 @@ public class SdlPacket implements Parcelable{
 	 * ***********************************************************  Parceable Overrides  *****************************************************************
 	 *****************************************************************************************************************************************************/
 
+	/**
+	 * Version 2 additions
+	 * -----------------------------
+	 * <br>TransportType Included   | 1 if included, 0 if not
+	 * <br>TransportType Name   | String of transport type name
+	 */
+	private static final int PARCEL_VERSION = 2;
 
 	//I think this is FIFO...right?
 	public SdlPacket(Parcel p) {
@@ -315,6 +333,19 @@ public class SdlPacket implements Parcelable{
 			p.readByteArray(payload);
 		}
 		this.priorityCoefficient = p.readInt();
+
+		if(p.dataAvail() > 0) {
+			int parcelVersion = p.readInt();
+			if(parcelVersion >= 2) {
+				if (p.readInt() == 1) { //We should have a transport type attached
+					String transportName = p.readString();
+					if(transportName != null){
+						this.transportType = TransportType.valueOf(transportName);
+					}
+				}
+			}
+		}
+
 	}
 	
 	
@@ -339,6 +370,14 @@ public class SdlPacket implements Parcelable{
 			dest.writeByteArray(payload);
 		}
 		dest.writeInt(priorityCoefficient);
+
+		///Additions after initial creation
+		dest.writeInt(PARCEL_VERSION);
+
+		dest.writeInt(transportType!=null? 1 : 0);
+		if(transportType != null){
+			dest.writeString(transportType.name());
+		}
 
 	}
 	

@@ -76,6 +76,7 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 	protected TransportManager transportManager;
 	protected WiProProtocol wiProProtocol;
 
+
 	@Deprecated
 	public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
 		
@@ -90,6 +91,7 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 		transportConfig = config;
 		sessionListener = listener;
 		wiProProtocol = new WiProProtocol(this);
+		wiProProtocol.setPrimaryTransports(config.getPrimaryTransports());
 
 		transportManager = new TransportManager(config,this);
 
@@ -498,7 +500,7 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 	}
 	
 	public boolean getIsConnected() {
-		return transportManager != null && transportManager.isConnected();
+		return transportManager != null && transportManager.isConnected(null);
 	}
 	
 	public boolean isServiceProtected(SessionType sType) {
@@ -518,22 +520,36 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 	}
 
 	@Override
-	public void onTransportConnected(TransportType transportType) {
+	public void onTransportConnected(TransportType[] transportTypes) {
 		if(wiProProtocol != null){
-			wiProProtocol.StartProtocolSession(SessionType.RPC);
+			Log.d(TAG, "onTransportConnected");
+			//In the future we should move this logic into the Protocol Layer
+			TransportType type = wiProProtocol.getTransportForSession(SessionType.RPC);
+			if(type == null){ //There is currently no transport registered to the
+				transportManager.requestNewSession();
+			}
+			wiProProtocol.onTransportsConnectedUpdate(transportTypes);
 		}
 
 	}
 
 	@Override
 	public void onTransportDisconnected(String info, TransportType type) {
+		if(type != null && type.equals(wiProProtocol.getTransportForSession(SessionType.RPC))){
+			this.sessionListener.onTransportDisconnected(info);
+		}//TODO else { ensure no other services are connected over this transport }
+	}
+
+	public void shutdown(String info){
 		this.sessionListener.onTransportDisconnected(info);
+
 	}
 
 	//OLD
 
 	public void onTransportDisconnected(String info){ }
 	public void onTransportError(String info, Exception e){	}
+
 
 	/* ***********************************************************************************************************************************************************************
 	 * *****************************************************************  IProtocol Listener  ********************************************************************************

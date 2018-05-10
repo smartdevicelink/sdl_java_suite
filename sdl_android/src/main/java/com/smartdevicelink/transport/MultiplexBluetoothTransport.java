@@ -38,6 +38,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
+import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
 
 /**
@@ -768,7 +769,9 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 
                         if (psm.getState() == SdlPsm.FINISHED_STATE) {
                             //Log.d(TAG, "Packet formed, sending off");
-                            handler.obtainMessage(SdlRouterService.MESSAGE_READ, psm.getFormedPacket()).sendToTarget();
+                            SdlPacket packet = psm.getFormedPacket();
+                            packet.setTransportType(TransportType.BLUETOOTH);
+                            handler.obtainMessage(SdlRouterService.MESSAGE_READ, packet).sendToTarget();
                             psm.reset();
                         }
                     }

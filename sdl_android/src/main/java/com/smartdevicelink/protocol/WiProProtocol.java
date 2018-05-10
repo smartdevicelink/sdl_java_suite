@@ -1,5 +1,7 @@
 package com.smartdevicelink.protocol;
 
+import android.util.Log;
+
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
@@ -15,16 +17,21 @@ import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
+import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
 public class WiProProtocol extends AbstractProtocol {
+	private static final String TAG ="Protocol";
 	private final static String FailurePropagating_Msg = "Failure propagating ";
 	//If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
 	public static final Version MAX_PROTOCOL_VERSION = new Version("5.0.0");
@@ -40,8 +47,10 @@ public class WiProProtocol extends AbstractProtocol {
 
 	int hashID = 0;
 	int messageID = 0;
+
 	SdlConnection sdlconn = null;
-	
+	WeakReference<SdlSession> sessionWeakReference;
+
     @SuppressWarnings("unused")
     private int _heartbeatSendInterval_ms = 0;
     @SuppressWarnings("unused")
@@ -51,6 +60,11 @@ public class WiProProtocol extends AbstractProtocol {
 	Hashtable<Byte, Hashtable<Integer, MessageFrameAssembler>> _assemblerForSessionID = new Hashtable<Byte, Hashtable<Integer, MessageFrameAssembler>>();
 	Hashtable<Byte, Object> _messageLocks = new Hashtable<Byte, Object>();
 	private HashMap<SessionType, Long> mtus = new HashMap<SessionType,Long>();
+	private HashMap<SessionType, TransportType> activeTransports = new HashMap<SessionType,TransportType>();
+	private List<TransportType> availableTransports = new ArrayList<>();
+
+	List<TransportType> requestedPrimaryTransports, requestedSecondaryTransports;
+	boolean requiresHighBandwidth = false;
 
 	// Hide no-arg ctor
 	private WiProProtocol() {
@@ -59,11 +73,14 @@ public class WiProProtocol extends AbstractProtocol {
 
 	public WiProProtocol(IProtocolListener protocolListener) {
 		super(protocolListener);
-		
-		if (protocolListener instanceof SdlConnection)
-		{
+
+
+		if (protocolListener instanceof SdlSession){
+			sessionWeakReference = new WeakReference<>((SdlSession)protocolListener);
+		}else if (protocolListener instanceof SdlConnection){
 			sdlconn = (SdlConnection) protocolListener;
 		}
+
 		mtus.put(SessionType.RPC, new Long(V1_V2_MTU_SIZE  - HEADER_SIZE));
 	} // end-ctor
 	
@@ -83,6 +100,52 @@ public class WiProProtocol extends AbstractProtocol {
 		return mtu;
 	}
 
+	public TransportType getTransportForSession(SessionType type){
+		return activeTransports.get(type);
+	}
+
+	public boolean isPrimaryTransportHighBandwidth(){
+		TransportType transportType = activeTransports.get(SessionType.RPC);
+		return TransportType.USB.equals(transportType) || transportType.TCP.equals(transportType);
+	}
+
+	public void setRequiresHighBandwidth(boolean requiresHighBandwidth){
+		this.requiresHighBandwidth = requiresHighBandwidth;
+	}
+
+	public void setPrimaryTransports(List<TransportType> primaryTransports){
+		this.requestedPrimaryTransports = primaryTransports;
+	}
+
+	public void onTransportsConnectedUpdate(TransportType[] transportTypes){
+		//TODO error checking for no longer connected transports
+		Log.d(TAG, "onTransportsConnectedUpdate: ");
+		if(activeTransports.get(SessionType.RPC) == null){
+			//need to start a service
+			List<TransportType> transportList = Arrays.asList(transportTypes);
+			for(TransportType transportType: transportList) {
+				Log.d(TAG, "Connected transport: " + transportType);
+			}
+
+				for(TransportType transportType: requestedPrimaryTransports){
+				Log.d(TAG, "Requested transport: " + transportType);
+				if(transportList.contains(transportType)){
+					startService(SessionType.RPC,(byte)0x00,false,transportType);
+					return;
+				}
+			}
+			onTransportNotAccepted("No transports match requested primary transport");
+		}
+	}
+
+	private void onTransportNotAccepted(String info){
+		if(sessionWeakReference != null) {
+			SdlSession session = sessionWeakReference.get();
+			if (session != null) {
+				session.shutdown(info);
+			}
+		}
+	}
 
 	/**
 	 * Use getProtocolVersion() or getMajorVersionByte instead.<br>
@@ -136,6 +199,7 @@ public class WiProProtocol extends AbstractProtocol {
         }
     }
 
+    @Deprecated
 	public void StartProtocolSession(SessionType sessionType) {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, getMajorVersionByte(), (byte) 0x00, false);
 		if(sessionType.equals(SessionType.RPC)){ // check for RPC session
@@ -199,14 +263,18 @@ public class WiProProtocol extends AbstractProtocol {
 			data = protocolMsg.getData();
 		}
 		
-		if (sdlconn != null && protocolMsg.getPayloadProtected())
-		{			
+		if ((sessionWeakReference != null || sdlconn != null) && protocolMsg.getPayloadProtected()){
+			SdlSession session = null;
+			if(sessionWeakReference != null){
+				session = sessionWeakReference.get();
+			}else if (sdlconn != null){
+				 session = sdlconn.findSessionById(sessionID);
+			}
+
+			if(session == null){
+				return;
+			}
 			if (data != null && data.length > 0) {
-				SdlSession session = sdlconn.findSessionById(sessionID);
-				
-				if (session == null)
-					return;
-				
 				byte[] dataToRead = new byte[TLS_MAX_RECORD_SIZE];
 				SdlSecurityBase sdlSec = session.getSdlSecurity();
 				if (sdlSec == null) 
@@ -250,6 +318,7 @@ public class WiProProtocol extends AbstractProtocol {
 
 				SdlPacket firstHeader = SdlPacketFactory.createMultiSendDataFirst(sessionType, sessionID, messageID, getMajorVersionByte(),firstFrameData,protocolMsg.getPayloadProtected());
 				firstHeader.setPriorityCoefficient(1+protocolMsg.priorityCoefficient);
+				firstHeader.setTransportType(activeTransports.get(sessionType));
 				//Send the first frame
 				handlePacketToSend(firstHeader);
 				
@@ -398,24 +467,27 @@ public class WiProProtocol extends AbstractProtocol {
 	
 			if (packet.getPayload() != null && packet.getDataSize() > 0 && packet.isEncrypted()  )
 			{
-				if (sdlconn != null)
-				{
-					SdlSession session = sdlconn.findSessionById((byte)packet.getSessionId());
-		
-					if (session == null)
-						return;
-		
-					SdlSecurityBase sdlSec = session.getSdlSecurity();
-					byte[] dataToRead = new byte[4096];	
-
-					Integer iNumBytes = sdlSec.decryptData(packet.getPayload(), dataToRead);
-					 if ((iNumBytes == null) || (iNumBytes <= 0))
-						 return;
-										 
-					byte[] decryptedData = new byte[iNumBytes];
-					System.arraycopy(dataToRead, 0, decryptedData, 0, iNumBytes);
-					packet.payload = decryptedData;
+				SdlSession session = null;
+				if(sessionWeakReference != null){
+					session = sessionWeakReference.get();
+				}else if(sdlconn != null){
+					session = sdlconn.findSessionById((byte)packet.getSessionId());
 				}
+
+				if(session == null){
+					return;
+				}
+
+				SdlSecurityBase sdlSec = session.getSdlSecurity();
+				byte[] dataToRead = new byte[4096];
+
+				Integer iNumBytes = sdlSec.decryptData(packet.getPayload(), dataToRead);
+				if ((iNumBytes == null) || (iNumBytes <= 0))
+					return;
+										 
+				byte[] decryptedData = new byte[iNumBytes];
+				System.arraycopy(dataToRead, 0, decryptedData, 0, iNumBytes);
+				packet.payload = decryptedData;
 			}
 		
 			if (packet.getFrameType().equals(FrameType.Control)) {
@@ -476,12 +548,44 @@ public class WiProProtocol extends AbstractProtocol {
 					if(serviceType.equals(SessionType.RPC)){
 						hashID = (Integer) packet.getTag(ControlFrameTags.RPC.StartServiceACK.HASH_ID);
 						Object version = packet.getTag(ControlFrameTags.RPC.StartServiceACK.PROTOCOL_VERSION);
+
+						//Check to make sure this is a transport we are willing to accept
+						TransportType transportType = packet.getTransportType();
+						if(transportType == null || !requestedPrimaryTransports.contains(transportType)){
+							onTransportNotAccepted("Transport is not in requested primary transports");
+							return;
+						}
+
 						if(version!=null){
 							//At this point we have confirmed the negotiated version between the module and the proxy
 							protocolVersion = new Version((String)version);
+
+							//Check if we support multiple transports by protocol version
+							if(protocolVersion != null && protocolVersion.isNewerThan(new Version("5.1.0")) <=-1) {
+								//Version is too old to just move on
+								if(requiresHighBandwidth
+										&& TransportType.BLUETOOTH.equals(transportType)){
+									//transport can't support high bandwidth
+									onTransportNotAccepted(transportType + "can't support high bandwidth requirement, and secondary transport not supported in this protocol version: " + version.toString());
+									return;
+								}
+							} //else we are good to go
+							if(activeTransports.get(SessionType.RPC) == null) {	//Might be a better way to handle this
+								availableTransports.add(transportType);
+								activeTransports.put(SessionType.RPC, transportType);
+								activeTransports.put(SessionType.BULK_DATA, transportType);
+								activeTransports.put(SessionType.CONTROL, transportType);
+							} else{
+								Log.w(TAG, "Received a start service ack for RPC service while already active on a different transport.");
+							}
 						}
 					}else if(serviceType.equals(SessionType.NAV)){
-						SdlSession session = sdlconn.findSessionById((byte) packet.sessionId);
+						SdlSession session = null;
+						if(sessionWeakReference != null){
+							session = sessionWeakReference.get();
+						}else if(sdlconn != null){
+							session = sdlconn.findSessionById((byte)packet.getSessionId());
+						}
 						if(session != null) {
 							ImageResolution acceptedResolution = new ImageResolution();
 							VideoStreamingFormat acceptedFormat = new VideoStreamingFormat();
@@ -549,7 +653,7 @@ public class WiProProtocol extends AbstractProtocol {
 					int serviceDataAckSize = BitConverter.intFromByteArray(packet.getPayload(), 0);
 					handleProtocolServiceDataACK(serviceType, serviceDataAckSize,(byte)packet.getSessionId ());
 				}
-			}
+			} //TODO else if register transport frame
             _assemblerForMessageID.remove(packet.getMessageId());
 		} // end-method
 				
@@ -598,10 +702,52 @@ public class WiProProtocol extends AbstractProtocol {
 	} // end-class
 
 	@Override
+	@Deprecated
 	public void StartProtocolService(SessionType sessionType, byte sessionID, boolean isEncrypted) {
 		SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, getMajorVersionByte(), sessionID, isEncrypted);
 		if(sessionType.equals(SessionType.NAV)){
-			SdlSession videoSession = sdlconn.findSessionById(sessionID);
+			SdlSession videoSession =  null;
+			if(sessionWeakReference != null){
+				videoSession = sessionWeakReference.get();
+			}else if(sdlconn != null){
+				videoSession = sdlconn.findSessionById(sessionID);
+			}
+			if(videoSession != null){
+				ImageResolution desiredResolution = videoSession.getDesiredVideoParams().getResolution();
+				VideoStreamingFormat desiredFormat = videoSession.getDesiredVideoParams().getFormat();
+				if(desiredResolution != null){
+					header.putTag(ControlFrameTags.Video.StartService.WIDTH, desiredResolution.getResolutionWidth());
+					header.putTag(ControlFrameTags.Video.StartService.HEIGHT, desiredResolution.getResolutionHeight());
+				}
+				if(desiredFormat != null){
+					header.putTag(ControlFrameTags.Video.StartService.VIDEO_CODEC, desiredFormat.getCodec().toString());
+					header.putTag(ControlFrameTags.Video.StartService.VIDEO_PROTOCOL, desiredFormat.getProtocol().toString());
+				}
+			}
+		}
+		handlePacketToSend(header);
+	}
+
+	public void startService(SessionType serviceType, byte sessionID, boolean isEncrypted, TransportType transportType) {
+		Log.d(TAG, "startService");
+		SdlPacket header = SdlPacketFactory.createStartSession(serviceType, 0x00, getMajorVersionByte(), sessionID, isEncrypted);
+		header.transportType = transportType;
+		if(SessionType.RPC.equals(serviceType)){
+
+			if(!requestedPrimaryTransports.contains(transportType) || TransportType.TCP.equals(transportType)){
+				onTransportNotAccepted("Attempt to start primary transport that is not requested: " + transportType);
+				return;
+			}
+
+			//This is going to be our primary transport
+			header.putTag(ControlFrameTags.RPC.StartService.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
+		}else if(serviceType.equals(SessionType.NAV)){
+			SdlSession videoSession =  null;
+			if(sessionWeakReference != null){
+				videoSession = sessionWeakReference.get();
+			}else if(sdlconn != null){
+				videoSession = sdlconn.findSessionById(sessionID);
+			}
 			if(videoSession != null){
 				ImageResolution desiredResolution = videoSession.getDesiredVideoParams().getResolution();
 				VideoStreamingFormat desiredFormat = videoSession.getDesiredVideoParams().getFormat();

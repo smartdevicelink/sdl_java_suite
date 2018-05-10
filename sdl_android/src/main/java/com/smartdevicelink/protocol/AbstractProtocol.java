@@ -2,6 +2,7 @@ package com.smartdevicelink.protocol;
 
 import com.smartdevicelink.protocol.WiProProtocol.MessageFrameAssembler;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.transport.enums.TransportType;
 
 import java.util.List;
 
@@ -100,6 +101,19 @@ public abstract class AbstractProtocol {
 				_protocolListener.onProtocolMessageBytesToSend(header);
 			}//TODO else log out error
 			
+		}
+	}
+
+	protected void handlePacketToSend(SdlPacket header, TransportType type) {
+		resetOutgoingHeartbeat(SessionType.valueOf((byte)header.getServiceType()), (byte)header.getSessionId());
+
+		synchronized(_frameLock) {
+
+			//byte[] frameHeader = header.constructPacket();
+			if(header!=null){
+				_protocolListener.onProtocolMessageBytesToSend(header);
+			}//TODO else log out error
+
 		}
 	}
 

@@ -25,6 +25,7 @@ import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -179,6 +180,15 @@ public class TransportBroker {
             					}
             					broker.onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
             				}
+
+            				if(bundle.containsKey(TransportConstants.CURRENT_HARDWARE_CONNECTED)){
+            					ArrayList<String> transports = bundle.getStringArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED);
+            					TransportType[] transportTypes = new TransportType[transports.size()];
+            					for(int i = 0; i < transports.size(); i++){
+            						transportTypes[i] = TransportType.valueForString(transports.get(i));
+								}
+            					broker.onHardwareConnected(transportTypes);
+							}
             				if(bundle.containsKey(TransportConstants.ROUTER_SERVICE_VERSION)){
             					broker.routerServiceVersion = bundle.getInt(TransportConstants.ROUTER_SERVICE_VERSION);
             				}
@@ -269,11 +279,19 @@ public class TransportBroker {
         				break;
         			}
         			
-        			if(bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)){
+        			if(bundle.containsKey(TransportConstants.HARDWARE_CONNECTED) || bundle.containsKey(TransportConstants.CURRENT_HARDWARE_CONNECTED)){
             			if(bundle!=null && bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
         					//Keep track if we actually get this
         				}
             			broker.onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
+
+            			if(bundle.containsKey(TransportConstants.CURRENT_HARDWARE_CONNECTED)){
+							ArrayList<String> transports = bundle.getStringArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED);
+							TransportType[] transportTypes = new TransportType[transports.size()];
+							for(int i = 0; i < transports.size(); i++){
+								transportTypes[i] = TransportType.valueForString(transports.get(i));
+							}
+						}
         				break;
         			}
             		break;
@@ -387,7 +405,8 @@ public class TransportBroker {
 				queuedOnTransportConnect = null;
 			}
 		}
-		
+
+		@Deprecated
 		public boolean onHardwareConnected(TransportType type){
 			synchronized(INIT_LOCK){
 				if(routerServiceMessenger==null){
@@ -396,7 +415,16 @@ public class TransportBroker {
 				}
 				return true;
 			}
-			
+		}
+
+		public boolean onHardwareConnected(TransportType[] transportTypes){
+			synchronized(INIT_LOCK){
+				if(routerServiceMessenger==null){
+					queuedOnTransportConnect = transportTypes[0];
+					return false;
+				}
+				return true;
+			}
 		}
 		
 		public void onPacketReceived(Parcelable packet){

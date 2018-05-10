@@ -4,10 +4,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.Parcelable;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
-import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
 
@@ -21,7 +19,6 @@ public class TransportManager {
     TransportBrokerImpl transport;
     final HashMap<TransportType, Boolean> transportStatus;
     final TransportEventListener transportListener;
-    TransportType primaryTransport, secondaryTransport;
 
     /**
      * Managing transports
@@ -61,21 +58,39 @@ public class TransportManager {
         transport.stop();
     }
 
-    public TransportType getPrimaryTransport(){
-        return primaryTransport;
+    /**
+     * Check to see if a transport is connected.
+     * @param transportType the transport to have its connection status returned. If `null` is
+     *                      passed in, all transports will be checked and if any are connected a
+     *                      true value will be returned.
+     * @return
+     */
+    public boolean isConnected(TransportType transportType){
+        if(transportType != null){
+            return transportStatus.get(transportType);
+        }
+        return transportStatus.values().contains(true);
     }
 
-    public boolean isConnected(){
-        return primaryTransport != null;
+    public boolean isHighBandwidthAvailable(){
+        return transportStatus.get(TransportType.USB) ||  transportStatus.get(TransportType.TCP);
     }
+
     public void sendPacket(SdlPacket packet){
         if(transport !=null){
             transport.sendPacketToRouterService(packet);
         }
     }
 
-    public void registerSecondaryTransport(TransportType transportType){
-        //Request from router service
+    private void resetTransports(){
+        this.transportStatus.put(TransportType.BLUETOOTH, false);
+        this.transportStatus.put(TransportType.USB, false);
+        this.transportStatus.put(TransportType.TCP, false);
+
+    }
+
+    public void requestNewSession(){
+        transport.requestNewSession();
     }
 
     private class TransportBrokerImpl extends TransportBroker{
@@ -85,17 +100,17 @@ public class TransportManager {
         }
 
         @Override
-        public boolean onHardwareConnected(TransportType type) {
+        public boolean onHardwareConnected(TransportType[] types) {
             Log.d(TAG, "onHardwareConnected");
-            super.onHardwareConnected(type);
+            super.onHardwareConnected(types);
             synchronized (TRANSPORT_STATUS_LOCK){
-                TransportManager.this.transportStatus.put(type,true);
-                if(primaryTransport == null){
-                    primaryTransport = type;
-                    this.requestNewSession();
+                resetTransports();
+                for(int i = 0; i< types.length; i++){
+                    TransportManager.this.transportStatus.put(types[i],true);
+
                 }
             }
-            transportListener.onTransportConnected(type);
+            transportListener.onTransportConnected(types);
             return true;
         }
 
@@ -105,8 +120,9 @@ public class TransportManager {
             synchronized (TRANSPORT_STATUS_LOCK){
                 TransportManager.this.transportStatus.put(type,true);
             }
+            transportListener.onTransportDisconnected("",type);
 
-            if(type.equals(primaryTransport)){
+            /*if(type.equals(primaryTransport)){
                primaryTransport = null;
                 SdlConnection.enableLegacyMode(isLegacyModeEnabled(), TransportType.BLUETOOTH);
                 if(isLegacyModeEnabled()){
@@ -118,7 +134,7 @@ public class TransportManager {
                     transportListener.onTransportDisconnected("",type);
                     this.stop();
                 }
-            }
+            }*/
         }
 
         @Override
@@ -134,7 +150,7 @@ public class TransportManager {
         void onPacketReceived(SdlPacket packet);
 
         // Called to indicate that transport connection was established
-        void onTransportConnected(TransportType transportType);
+        void onTransportConnected(TransportType[] transportTypes);
         //void onTransportConnected(TransportType transportType, boolean primary);
 
         // Called to indicate that transport was disconnected (by either side)

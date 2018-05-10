@@ -44,7 +44,8 @@ public class TransportConstants {
 	
 	public static final String HARDWARE_DISCONNECTED						= "hardware.disconect";
 	public static final String HARDWARE_CONNECTED							= "hardware.connected";	
-	
+	public static final String CURRENT_HARDWARE_CONNECTED					= "current.hardware.connected";
+
 	public static final String SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME 		= "senderintent";
 	public static final String SEND_PACKET_TO_ROUTER_LOCATION_EXTRA_NAME 	= "routerintent";
 

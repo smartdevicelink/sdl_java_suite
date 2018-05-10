@@ -5,7 +5,7 @@ package com.smartdevicelink.transport.enums;
  */
 public enum TransportType {
 	/**
-	 * Experimental multiplexing (only supports bluetooth at the moment)
+	 * Transport type will be anything the multiplexing service connects to.
 	 */
 	MULTIPLEX,
 	/**
