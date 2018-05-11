@@ -130,6 +130,7 @@ public class WiProProtocol extends AbstractProtocol {
 				for(TransportType transportType: requestedPrimaryTransports){
 				Log.d(TAG, "Requested transport: " + transportType);
 				if(transportList.contains(transportType)){
+					Log.d(TAG, "Sending start service RPC on transport " + transportType);
 					startService(SessionType.RPC,(byte)0x00,false,transportType);
 					return;
 				}
@@ -343,6 +344,7 @@ public class WiProProtocol extends AbstractProtocol {
 						bytesToWrite = mtu.intValue();
 					}
 					SdlPacket consecHeader = SdlPacketFactory.createMultiSendDataRest(sessionType, sessionID, bytesToWrite, frameSequenceNumber , messageID, getMajorVersionByte(),data, currentOffset, bytesToWrite, protocolMsg.getPayloadProtected());
+					consecHeader.setTransportType(activeTransports.get(sessionType));
 					consecHeader.setPriorityCoefficient(i+2+protocolMsg.priorityCoefficient);
 					handlePacketToSend(consecHeader);
 					currentOffset += bytesToWrite;
@@ -351,6 +353,7 @@ public class WiProProtocol extends AbstractProtocol {
 				messageID++;
 				SdlPacket header = SdlPacketFactory.createSingleSendData(sessionType, sessionID, data.length, messageID, getMajorVersionByte(),data, protocolMsg.getPayloadProtected());
 				header.setPriorityCoefficient(protocolMsg.priorityCoefficient);
+				header.setTransportType(activeTransports.get(sessionType));
 				handlePacketToSend(header);
 			}
 		}
@@ -793,12 +796,14 @@ public class WiProProtocol extends AbstractProtocol {
 	@Override
 	public void SendHeartBeat(byte sessionID) {
         final SdlPacket heartbeat = SdlPacketFactory.createHeartbeat(SessionType.CONTROL, sessionID, getMajorVersionByte());
+		heartbeat.setTransportType(activeTransports.get(sessionID));
         handlePacketToSend(heartbeat);		
 	}
 
 	@Override
 	public void SendHeartBeatACK(byte sessionID) {
         final SdlPacket heartbeat = SdlPacketFactory.createHeartbeatACK(SessionType.CONTROL, sessionID, getMajorVersionByte());
+		heartbeat.setTransportType(activeTransports.get(sessionID));
         handlePacketToSend(heartbeat);		
 	}
 
@@ -808,7 +813,13 @@ public class WiProProtocol extends AbstractProtocol {
 			EndProtocolSession(serviceType,sessionID,hashID);
 		}else {
 			SdlPacket header = SdlPacketFactory.createEndSession(serviceType, sessionID, hashID, getMajorVersionByte(), new byte[0]);
-			handlePacketToSend(header);
+			TransportType transportType = activeTransports.get(sessionID);
+			if(transportType != null){
+				header.setTransportType(transportType);
+				handlePacketToSend(header);
+			}else{
+				Log.w(TAG, "Not sending end session packet because there is no session on that transport");
+			}
 		}
 	}
 

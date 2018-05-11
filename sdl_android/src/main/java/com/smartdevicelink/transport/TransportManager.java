@@ -116,9 +116,15 @@ public class TransportManager {
 
         @Override
         public void onHardwareDisconnected(TransportType type) {
+            if(type != null){
+                Log.d(TAG, "Transport disconnected - " + type.name());
+            }else{
+                Log.d(TAG, "Transport disconnected");
+
+            }
             super.onHardwareDisconnected(type);
             synchronized (TRANSPORT_STATUS_LOCK){
-                TransportManager.this.transportStatus.put(type,true);
+                TransportManager.this.transportStatus.put(type,false);
             }
             transportListener.onTransportDisconnected("",type);
 

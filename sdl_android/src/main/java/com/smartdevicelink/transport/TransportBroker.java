@@ -324,7 +324,8 @@ public class TransportBroker {
 						whereToReply = WHERE_TO_REPLY_PREFIX + appId +"."+ timeStamp; 
 					}
 				}
-				this.appId = appId.concat(timeStamp);
+				//this.appId = appId.concat(timeStamp);
+				this.appId = appId;
 				queuedOnTransportConnect = null;
 				currentContext = context;
 				//Log.d(TAG, "Registering our reply receiver: " + whereToReply);
@@ -465,7 +466,7 @@ public class TransportBroker {
 				Log.d(TAG,whereToReply + " tried to send packet, but no where to send");
 				return false;
 			}
-			if(packet == null 
+			if(packet == null
 					//|| offset<0 
 					//|| count<0 
 					){//|| count>(bytes.length-offset)){
@@ -486,6 +487,12 @@ public class TransportBroker {
 				bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytes.length);
 				bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
 				bundle.putInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT, packet.getPrioirtyCoefficient());
+				if(packet.getTransportType() != null){
+					Log.d(TAG, "Sending packet on transport " + packet.getTransportType().name());
+					bundle.putString(TransportConstants.TRANSPORT_FOR_PACKET, packet.getTransportType().name());
+				}else{
+					Log.d(TAG, "No transport to be found");
+				}
 				message.setData(bundle);
 				
 				sendMessageToRouterService(message);
@@ -494,6 +501,7 @@ public class TransportBroker {
 				//Log.w(TAG, "Message too big for single IPC transaction. Breaking apart. Size - " +  bytes.length);
 				ByteArrayMessageSpliter splitter = new ByteArrayMessageSpliter(appId,TransportConstants.ROUTER_SEND_PACKET,bytes,packet.getPrioirtyCoefficient() );	
 				splitter.setRouterServiceVersion(routerServiceVersion);
+				splitter.setTransportType(packet.getTransportType());
 				while(splitter.isActive()){
 					sendMessageToRouterService(splitter.nextMessage());
 				}

@@ -167,7 +167,8 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 			transportManager.close(sessionId);
 		}
 	}
-	
+
+
 	public void startStream(InputStream is, SessionType sType, byte rpcSessionID) throws IOException {
         if (sType.equals(SessionType.NAV))
         {
@@ -416,10 +417,8 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 			return;
 		}
 		
-		if (isEncrypted)
-		{
-			if (sdlSecurity != null)
-			{
+		if (isEncrypted){
+			if (sdlSecurity != null){
 				List<SessionType> serviceList = sdlSecurity.getServiceList(); 
 				if (!serviceList.contains(serviceType))
 					serviceList.add(serviceType);
@@ -535,12 +534,19 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 
 	@Override
 	public void onTransportDisconnected(String info, TransportType type) {
+		if(type == null){
+			Log.d(TAG, "onTransportDisconnected");
+		}else{
+			Log.d(TAG, "onTransportDisconnected - " + type.name());
+		}
+		Log.d(TAG, "rpc transport? - " + wiProProtocol.getTransportForSession(SessionType.RPC));
 		if(type != null && type.equals(wiProProtocol.getTransportForSession(SessionType.RPC))){
 			this.sessionListener.onTransportDisconnected(info);
 		}//TODO else { ensure no other services are connected over this transport }
 	}
 
 	public void shutdown(String info){
+		Log.d(TAG, "Shutdown - " + info);
 		this.sessionListener.onTransportDisconnected(info);
 
 	}
@@ -557,7 +563,7 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 
 	@Override
 	public void onProtocolMessageBytesToSend(SdlPacket packet) {
-		Log.d(TAG, "onProtocolMessageBytesToSend");
+		Log.d(TAG, "onProtocolMessageBytesToSend - " + packet.getTransportType());
 		if(transportManager != null){
 			transportManager.sendPacket(packet);
 		}

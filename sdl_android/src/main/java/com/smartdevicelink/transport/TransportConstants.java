@@ -195,7 +195,9 @@ public class TransportConstants {
 	public static final String BYTES_TO_SEND_FLAGS							= "flags";
 	
 	public static final String PACKET_PRIORITY_COEFFICIENT					= "priority_coefficient";
-	
+
+	public static final String TRANSPORT_FOR_PACKET							= "transport.for.packet";
+
 	public static final int BYTES_TO_SEND_FLAG_NONE								= 0x00;
 	public static final int BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED				= 0x01;
 	public static final int BYTES_TO_SEND_FLAG_LARGE_PACKET_START				= 0x02;

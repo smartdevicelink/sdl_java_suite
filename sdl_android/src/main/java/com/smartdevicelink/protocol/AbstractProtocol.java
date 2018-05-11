@@ -104,19 +104,6 @@ public abstract class AbstractProtocol {
 		}
 	}
 
-	protected void handlePacketToSend(SdlPacket header, TransportType type) {
-		resetOutgoingHeartbeat(SessionType.valueOf((byte)header.getServiceType()), (byte)header.getSessionId());
-
-		synchronized(_frameLock) {
-
-			//byte[] frameHeader = header.constructPacket();
-			if(header!=null){
-				_protocolListener.onProtocolMessageBytesToSend(header);
-			}//TODO else log out error
-
-		}
-	}
-
 	
 	// This method handles received protocol messages. 
 	protected void handleProtocolMessageReceived(ProtocolMessage message) {

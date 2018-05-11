@@ -190,7 +190,8 @@ public class SdlRouterService extends Service{
 	private boolean startSequenceComplete = false;	
 	
 	private ExecutorService packetExecutor = null;
-	PacketWriteTaskMaster packetWriteTaskMaster = null;
+	//PacketWriteTaskMaster packetWriteTaskMaster = null;
+	HashMap<TransportType, PacketWriteTaskMaster>  packetWriteTaskMasterMap = null;
 
 
 	/**
@@ -461,14 +462,28 @@ public class SdlRouterService extends Service{
 									if(buffAppId == null){
                                         buffAppId = "" + receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
                                     }
+                                    TransportType transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT_FOR_PACKET));
+									if(transportType == null){
+										if(service.usbTransport!= null && service.usbTransport.isConnected()){
+											transportType = TransportType.USB;
+										}else if(service.bluetoothTransport != null && service.bluetoothTransport.isConnected()){
+											transportType = TransportType.BLUETOOTH;
+										}
+										Log.d(TAG, "Transport type was null, so router set it to " + transportType.name());
+										receivedBundle.putString(TransportConstants.TRANSPORT_FOR_PACKET, transportType.name());
+									}else{
+										Log.d(TAG, "Transport type of packet to send: " + transportType.name());
+									}
 									RegisteredApp buffApp;
 									synchronized(service.REGISTERED_APPS_LOCK){
                                         buffApp = registeredApps.get(buffAppId);
                                     }
 
 									if(buffApp !=null){
+										Log.d(TAG, "handling incomming client message");
                                         buffApp.handleIncommingClientMessage(receivedBundle);
                                     }else{
+										Log.d(TAG, "Write bytes to transport");
                                         service.writeBytesToTransport(receivedBundle);
                                     }
 								}
@@ -1063,11 +1078,15 @@ public class SdlRouterService extends Service{
 		}
 		
 		exitForeground();
-		
-		if(packetWriteTaskMaster!=null){
-			packetWriteTaskMaster.close();
-			packetWriteTaskMaster = null;
+		Collection<PacketWriteTaskMaster>  tasks = packetWriteTaskMasterMap.values();
+		for(PacketWriteTaskMaster packetWriteTaskMaster: tasks){
+			if(packetWriteTaskMaster!=null){
+				packetWriteTaskMaster.close();
+			}
 		}
+		packetWriteTaskMasterMap.clear();
+		packetWriteTaskMasterMap = null;
+
 		
 		super.onDestroy();
 		System.gc(); //Lower end phones need this hint
@@ -1333,12 +1352,19 @@ public class SdlRouterService extends Service{
 		isTransportConnected = true;
 		cancelForegroundTimeOut();
 		enterForeground("Connected to " + this.getConnectedDeviceName(),0);
+
+		if(packetWriteTaskMasterMap == null){
+			packetWriteTaskMasterMap = new HashMap<>();
+		}
+
+		PacketWriteTaskMaster packetWriteTaskMaster = packetWriteTaskMasterMap.get(type);
 		if(packetWriteTaskMaster!=null){
 			packetWriteTaskMaster.close();
-			packetWriteTaskMaster = null;
 		}
 		packetWriteTaskMaster = new PacketWriteTaskMaster();
+		packetWriteTaskMaster.setTransportType(type);
 		packetWriteTaskMaster.start();
+		packetWriteTaskMasterMap.put(type,packetWriteTaskMaster);
 		
 		connectedTransportType = type;
 		
@@ -1394,17 +1420,20 @@ public class SdlRouterService extends Service{
                 break;
         }
 		Log.e(TAG, "Notifying client service of hardware disconnect.");
+
+		//TODO fix this part. We need to make sure there are no curerntly connected transports
+
 		connectedTransportType = null;
 		isTransportConnected = false;
 		stopClientPings();
 		
 		exitForeground();//Leave our foreground state as we don't have a connection anymore
-		
+
+		PacketWriteTaskMaster packetWriteTaskMaster = packetWriteTaskMasterMap.remove(type);
 		if(packetWriteTaskMaster!=null){
 			packetWriteTaskMaster.close();
-			packetWriteTaskMaster = null;
 		}
-		
+
 		cachedModuleVersion = -1; //Reset our cached version
 		if(registeredApps != null && !registeredApps.isEmpty()){
 			Message message = Message.obtain();
@@ -1528,21 +1557,26 @@ public class SdlRouterService extends Service{
 			}
 			int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
 			int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
-
-			if(bluetoothTransport !=null && bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED){
-				bluetoothTransport.write(packet,offset,count);
-				return true;
-			}else if(usbTransport != null && usbTransport.getState() ==  MultiplexBaseTransport.STATE_CONNECTED){
-				usbTransport.write(packet,offset,count);
-				return true;
-
-			}else if(sendThroughAltTransport(bundle)){
-				return true;
+			TransportType transportType = TransportType.valueForString(bundle.getString(TransportConstants.TRANSPORT_FOR_PACKET));
+			switch ((transportType)){
+				case BLUETOOTH:
+					if(bluetoothTransport !=null && bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
+						bluetoothTransport.write(packet, offset, count);
+						return true;
+					}
+				case USB:
+					if(usbTransport != null && usbTransport.getState() ==  MultiplexBaseTransport.STATE_CONNECTED) {
+						usbTransport.write(packet, offset, count);
+						return true;
+					}
+				case TCP:
+					default:
+						if(sendThroughAltTransport(bundle)){
+							return true;
+						}
 			}
-			else{
-				Log.e(TAG, "Can't send data, no transport connected");
-				return false;
-			}	
+			Log.e(TAG, "Can't send data, no transport  of specified type connected");
+			return false;
 		}
 		
 		private boolean manuallyWriteBytes(byte[] bytes, int offset, int count){
@@ -2188,24 +2222,24 @@ public class SdlRouterService extends Service{
      * Method for finding the next, highest priority write task from all connected apps.
      * @return the next task for writing out packets if one exists
      */
-	protected PacketWriteTask getNextTask(){
+	protected PacketWriteTask getNextTask(TransportType transportType){
 		final long currentTime = System.currentTimeMillis();
 		RegisteredApp priorityApp = null;
 		long currentPriority = -Long.MAX_VALUE, peekWeight;
 		synchronized(REGISTERED_APPS_LOCK){
 			PacketWriteTask peekTask;
 			for (RegisteredApp app : registeredApps.values()) {
-				peekTask = app.peekNextTask();
+				peekTask = app.peekNextTask(transportType);
 				if(peekTask!=null){
 					peekWeight = peekTask.getWeight(currentTime);
 					//Log.v(TAG, "App " + app.appId +" has a task with weight "+ peekWeight);
 					if(peekWeight>currentPriority){
 						if(app.queuePaused){
-							app.notIt();//Reset the timer
+							app.notIt(transportType);//Reset the timer
 							continue;
 						}
 						if(priorityApp!=null){
-							priorityApp.notIt();
+							priorityApp.notIt(transportType);
 						}
 						currentPriority = peekWeight;
 						priorityApp = app;
@@ -2213,7 +2247,7 @@ public class SdlRouterService extends Service{
 				}
 			}
 			if(priorityApp!=null){
-				return priorityApp.getNextTask();
+				return priorityApp.getNextTask(transportType);
 			}
 		}
 		return null;
@@ -2423,7 +2457,7 @@ public class SdlRouterService extends Service{
 		int priorityForBuffingMessage;
 		DeathRecipient deathNote = null;
 		//Packet queue vars
-		PacketWriteTaskBlockingQueue queue; 
+		HashMap<TransportType, PacketWriteTaskBlockingQueue> queues;
 		Handler queueWaitHandler= null;
 		Runnable queueWaitRunnable = null;
 		boolean queuePaused = false;
@@ -2440,7 +2474,7 @@ public class SdlRouterService extends Service{
 			this.appId = appId;
 			this.messenger = messenger;
 			this.sessionIds = new Vector<Long>();
-			this.queue = new PacketWriteTaskBlockingQueue();
+			this.queues = new HashMap<>();
 			queueWaitHandler = new Handler();
 			registeredTransports = new SparseArray<ArrayList<TransportType>>();
 			setDeathNote();
@@ -2453,10 +2487,14 @@ public class SdlRouterService extends Service{
 		public void close(){
 			clearDeathNote();
 			clearBuffer();
-			if(this.queue!=null){
-				this.queue.clear();
-				queue = null;
+			Collection<PacketWriteTaskBlockingQueue>  queueCollection = queues.values();
+			for(PacketWriteTaskBlockingQueue queue : queueCollection) {
+				if (queue != null) {
+					queue.clear();
+				}
 			}
+			queueCollection.clear();
+
 			if(queueWaitHandler!=null){
 				if(queueWaitRunnable!=null){
 					queueWaitHandler.removeCallbacks(queueWaitRunnable);
@@ -2513,6 +2551,7 @@ public class SdlRouterService extends Service{
 		 */
 		public void setSessionId(int position,long sessionId) throws ArrayIndexOutOfBoundsException {
 			this.sessionIds.set(position, sessionId);
+			this.registeredTransports.put((int)sessionId, new ArrayList<TransportType>());
 		}
 		
 		@SuppressWarnings("unused")
@@ -2525,6 +2564,9 @@ public class SdlRouterService extends Service{
 			synchronized (TRANSPORT_LOCK){
 				ArrayList<TransportType> transportTypes = this.registeredTransports.get(sessionId);
 				if(transportTypes!= null){
+					if(queues.get(transportType) == null){
+						queues.put(transportType, new PacketWriteTaskBlockingQueue());
+					}
 					transportTypes.add(transportType);
 					this.registeredTransports.put(sessionId,transportTypes);
 				}
@@ -2578,16 +2620,24 @@ public class SdlRouterService extends Service{
 		@SuppressWarnings("SameReturnValue")
 		public boolean handleIncommingClientMessage(final Bundle receivedBundle){
 			int flags = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
+			TransportType transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT_FOR_PACKET));
+
 			if(flags!=TransportConstants.BYTES_TO_SEND_FLAG_NONE){
 				byte[] packet = receivedBundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
 				if(flags == TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START){
 					this.priorityForBuffingMessage = receivedBundle.getInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT,0);
 				}
-				handleMessage(flags, packet);
+				handleMessage(flags, packet, transportType);
 			}else{
 				//Add the write task on the stack
+				PacketWriteTaskBlockingQueue queue = queues.get(transportType);
+				if(queue == null){	//TODO check to see if there is any better place to put this
+					queue = new PacketWriteTaskBlockingQueue();
+					queues.put(transportType,queue);
+				}
 				if(queue!=null){
 					queue.add(new PacketWriteTask(receivedBundle));
+					PacketWriteTaskMaster packetWriteTaskMaster = packetWriteTaskMasterMap.get(transportType);
 					if(packetWriteTaskMaster!=null){
 						packetWriteTaskMaster.alert();
 					}
@@ -2611,12 +2661,18 @@ public class SdlRouterService extends Service{
 				}
 			}
 		}
-		
-		public void handleMessage(int flags, byte[] packet){
+
+		@Deprecated
+		public void handleMessage(int flags, byte[] packet) {
+			handleMessage(flags,packet,null);
+		}
+
+		public void handleMessage(int flags, byte[] packet, TransportType transportType){
 			if(flags == TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START){
 				clearBuffer();
 				buffer = new ByteAraryMessageAssembler();
 				buffer.init();
+				buffer.setTransportType(transportType);
 			}
 			if(buffer != null){
 				if (!buffer.handleMessage(flags, packet)) { //If this returns false
@@ -2624,8 +2680,10 @@ public class SdlRouterService extends Service{
 				}
 				if (buffer.isFinished()) { //We are finished building the buffer so we should write the bytes out
 					byte[] bytes = buffer.getBytes();
+					PacketWriteTaskBlockingQueue queue = queues.get(transportType);
 					if (queue != null) {
 						queue.add(new PacketWriteTask(bytes, 0, bytes.length, this.priorityForBuffingMessage));
+						PacketWriteTaskMaster packetWriteTaskMaster = packetWriteTaskMasterMap.get(transportType);
 						if (packetWriteTaskMaster != null) {
 							packetWriteTaskMaster.alert();
 						}
@@ -2635,14 +2693,16 @@ public class SdlRouterService extends Service{
 			}
 		}
 		
-		protected PacketWriteTask peekNextTask(){
+		protected PacketWriteTask peekNextTask(TransportType transportType){
+			PacketWriteTaskBlockingQueue queue = queues.get(transportType);
 			if(queue !=null){
 				return queue.peek();
 			}
 			return null;
 		}
 		
-		protected PacketWriteTask getNextTask(){
+		protected PacketWriteTask getNextTask(TransportType transportType){
+			PacketWriteTaskBlockingQueue queue = queues.get(transportType);
 			if(queue !=null){
 				return queue.poll();
 			}
@@ -2653,7 +2713,8 @@ public class SdlRouterService extends Service{
 		 * This will inform the local app object that it was not picked to have the highest priority. This will allow the user to continue to perform interactions
 		 * with the module and not be bogged down by large packet requests. 
 		 */
-		protected void notIt(){
+		protected void notIt(TransportType transportType){
+			PacketWriteTaskBlockingQueue queue = queues.get(transportType);
 			if(queue!=null && queue.peek().priorityCoefficient>0){ //If this has any sort of priority coefficient we want to make it wait. 
 				//Flag to wait
 				if(queueWaitHandler == null){
@@ -2665,6 +2726,7 @@ public class SdlRouterService extends Service{
 						@Override
 						public void run() {
 							pauseQueue(false);
+							PacketWriteTaskMaster packetWriteTaskMaster = packetWriteTaskMasterMap.get(this);
 							if(packetWriteTaskMaster!=null){
 								packetWriteTaskMaster.alert();
 							}
@@ -2740,6 +2802,7 @@ public class SdlRouterService extends Service{
 		private final int offset, size, priorityCoefficient;
 		private final long timestamp;
 		final Bundle receivedBundle;
+		TransportType transportType;
 		
 		@SuppressWarnings("SameParameterValue")
 		public PacketWriteTask(byte[] bytes, int offset, int size, int priorityCoefficient){
@@ -2758,8 +2821,13 @@ public class SdlRouterService extends Service{
 			offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
 			size = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytesToWrite.length);  //In case there isn't anything just send the whole packet.
 			this.priorityCoefficient = bundle.getInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT,0); Log.d(TAG, "packet priority coef: "+ this.priorityCoefficient);
+			this.transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT_FOR_PACKET));
 		}
-		
+
+		public void setTransportType(TransportType transportType){
+			this.transportType = transportType;
+		}
+
 		@Override
 		public void run() {
 			if(receivedBundle!=null){
@@ -2783,18 +2851,22 @@ public class SdlRouterService extends Service{
 	private class PacketWriteTaskMaster extends Thread{
 		protected final  Object QUEUE_LOCK = new Object();
 		private boolean isHalted = false, isWaiting = false;
-		
+		private TransportType transportType;
+
 		public PacketWriteTaskMaster(){
 			this.setName("PacketWriteTaskMaster");
 		}
-		
+		protected void setTransportType(TransportType transportType){
+			this.transportType = transportType;
+		}
+
 		@Override
 		public void run() {
 			while(!isHalted){
 				try{
 					PacketWriteTask task;
 					synchronized(QUEUE_LOCK){
-						task = getNextTask();
+						task = getNextTask(transportType);
 						if(task != null){
 							task.run();
 						}else{
