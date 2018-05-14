@@ -208,7 +208,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                             synchronized (MultiplexUsbTransport.this) {
                                 //Log.d(TAG, "Packet formed, sending off");
                                 SdlPacket packet = psm.getFormedPacket();
-                                packet.setTransportType(TransportType.BLUETOOTH);
+                                packet.setTransportType(TransportType.USB);
                                 handler.obtainMessage(SdlRouterService.MESSAGE_READ, packet).sendToTarget();
                             }
                             //We put a trace statement in the message read so we can avoid all the extra bytes
