@@ -138,8 +138,9 @@ public class RequestTypeTests extends TestCase {
 		enumTestList.add(RequestType.SETTINGS);	
 		enumTestList.add(RequestType.VEHICLE_DIAGNOSTICS);	
 		enumTestList.add(RequestType.EMERGENCY);	
-		enumTestList.add(RequestType.MEDIA);	
-		enumTestList.add(RequestType.FOTA);	
+		enumTestList.add(RequestType.MEDIA);
+		enumTestList.add(RequestType.FOTA);
+		enumTestList.add(RequestType.OEM_SPECIFIC);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

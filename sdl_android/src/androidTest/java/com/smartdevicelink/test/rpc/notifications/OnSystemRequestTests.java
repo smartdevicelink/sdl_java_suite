@@ -15,7 +15,7 @@ import com.smartdevicelink.test.Validator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.OnSystemRequest}
+ * {@link com.smartdevicelink.proxy.rpc.OnSystemRequest}
  */
 public class OnSystemRequestTests extends BaseRpcTests{
     
@@ -27,6 +27,7 @@ public class OnSystemRequestTests extends BaseRpcTests{
         msg.setLength(Test.GENERAL_LONG);
         msg.setOffset(Test.GENERAL_LONG);
         msg.setRequestType(Test.GENERAL_REQUESTTYPE);
+        msg.setRequestSubType(Test.GENERAL_STRING);
         msg.setTimeout(Test.GENERAL_INT);
         msg.setUrl(Test.GENERAL_STRING);
 
@@ -54,6 +55,7 @@ public class OnSystemRequestTests extends BaseRpcTests{
             result.put(OnSystemRequest.KEY_OFFSET, Test.GENERAL_LONG);
             result.put(OnSystemRequest.KEY_URL, Test.GENERAL_STRING);
             result.put(OnSystemRequest.KEY_REQUEST_TYPE, Test.GENERAL_REQUESTTYPE);
+            result.put(OnSystemRequest.KEY_REQUEST_SUB_TYPE, Test.GENERAL_STRING);
         } catch(JSONException e) {
         	fail(Test.JSON_FAIL);
         }
@@ -72,6 +74,7 @@ public class OnSystemRequestTests extends BaseRpcTests{
         Long offset = ( (OnSystemRequest) msg ).getOffset();
         String url = ( (OnSystemRequest) msg ).getUrl();
         RequestType requestType = ( (OnSystemRequest) msg ).getRequestType();
+        String requestSubType = ( (OnSystemRequest) msg ).getRequestSubType();
         
         
         // Valid Tests
@@ -81,6 +84,7 @@ public class OnSystemRequestTests extends BaseRpcTests{
         assertEquals(Test.MATCH, Test.GENERAL_LONG, offset);
         assertEquals(Test.MATCH, Test.GENERAL_STRING, url);
         assertEquals(Test.MATCH, Test.GENERAL_REQUESTTYPE, requestType);
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, requestSubType);
         
         // Test Body
         OnSystemRequest osr = (OnSystemRequest) msg;
@@ -124,5 +128,6 @@ public class OnSystemRequestTests extends BaseRpcTests{
         assertNull(Test.NULL, msg.getTimeout());
         assertNull(Test.NULL, msg.getUrl());
         assertNull(Test.NULL, msg.getRequestType());
+        assertNull(Test.NULL, msg.getRequestSubType());
     }
 }
