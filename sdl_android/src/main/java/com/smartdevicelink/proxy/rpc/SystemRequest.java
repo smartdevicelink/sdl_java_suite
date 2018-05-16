@@ -52,8 +52,8 @@ import java.util.List;
 
 public class SystemRequest extends RPCRequest {
 	public static final String KEY_FILE_NAME = "fileName";
-    public static final String KEY_REQUEST_TYPE = "requestType";
-    public static final String KEY_REQUEST_SUB_TYPE = "requestSubType";
+	public static final String KEY_REQUEST_TYPE = "requestType";
+	public static final String KEY_REQUEST_SUB_TYPE = "requestSubType";
 	public static final String KEY_DATA = "data";
 	/**
 	 * Constructs a new SystemRequest object

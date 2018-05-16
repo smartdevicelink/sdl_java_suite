@@ -96,8 +96,8 @@ public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_HEADERS = "headers";
 	public static final String KEY_BODY = "body";
 	public static final String KEY_FILE_TYPE = "fileType";
-    public static final String KEY_REQUEST_TYPE = "requestType";
-    public static final String KEY_REQUEST_SUB_TYPE = "requestSubType";
+	public static final String KEY_REQUEST_TYPE = "requestType";
+	public static final String KEY_REQUEST_SUB_TYPE = "requestSubType";
 	public static final String KEY_DATA = "data";
 	public static final String KEY_OFFSET = "offset";
 	public static final String KEY_LENGTH = "length";

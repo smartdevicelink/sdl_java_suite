@@ -66,14 +66,14 @@ public class SystemRequestTests extends BaseRpcTests {
 	 */
     public void testRpcValues () {
     	// Test Values
-		RequestType  testRequestType = ( (SystemRequest) msg ).getRequestType();
-		String  testRequestSubType   = ( (SystemRequest) msg ).getRequestSubType();
+    	RequestType  testRequestType = ( (SystemRequest) msg ).getRequestType();
+    	String  testRequestSubType   = ( (SystemRequest) msg ).getRequestSubType();
     	String       testFileName    = ( (SystemRequest) msg ).getFileName();
     	List<String> testLegacyData  = ( (SystemRequest) msg ).getLegacyData();
     	
     	// Valid Tests
 	    assertEquals(Test.MATCH, Test.GENERAL_REQUESTTYPE, testRequestType);
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testRequestSubType);
+	    assertEquals(Test.MATCH, Test.GENERAL_STRING, testRequestSubType);
 	    assertEquals(Test.MATCH, Test.GENERAL_STRING, testFileName);
 	    assertTrue(Test.TRUE, Validator.validateStringList(Test.GENERAL_STRING_LIST, testLegacyData));
     	
