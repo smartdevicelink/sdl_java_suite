@@ -27,7 +27,14 @@ import java.util.List;
  *                 <td></td>
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
- * 		
+ * 		<tr>
+ * 			<td>requestSubType</td>
+ * 			<td>String</td>
+ * 			<td>This parameter is filled for supporting OEM proprietary data exchanges.</td>
+ *                 <td>N</td>
+ *                 <td>Max Length: 255</td>
+ * 			<td>SmartDeviceLink 4.7</td>
+ * 		</tr>
  * 		<tr>
  * 			<td>fileName</td>
  * 			<td>String</td>
@@ -45,7 +52,8 @@ import java.util.List;
 
 public class SystemRequest extends RPCRequest {
 	public static final String KEY_FILE_NAME = "fileName";
-	public static final String KEY_REQUEST_TYPE = "requestType";
+    public static final String KEY_REQUEST_TYPE = "requestType";
+    public static final String KEY_REQUEST_SUB_TYPE = "requestSubType";
 	public static final String KEY_DATA = "data";
 	/**
 	 * Constructs a new SystemRequest object
@@ -86,5 +94,13 @@ public class SystemRequest extends RPCRequest {
 
     public void setRequestType(RequestType requestType) {
         setParameters(KEY_REQUEST_TYPE, requestType);
+    }
+
+    public String getRequestSubType() {
+        return getString(KEY_REQUEST_SUB_TYPE);
+    }
+
+    public void setRequestSubType(String requestSubType) {
+        setParameters(KEY_REQUEST_SUB_TYPE, requestSubType);
     }
 }
