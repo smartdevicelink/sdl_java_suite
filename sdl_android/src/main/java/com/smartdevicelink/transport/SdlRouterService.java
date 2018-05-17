@@ -1295,8 +1295,11 @@ public class SdlRouterService extends Service{
 	 */
 	public boolean shouldServiceRemainOpen(Intent intent){
 		//Log.d(TAG, "Determining if this service should remain open");
-		
-		if(altTransportService!=null || altTransportTimerHandler !=null){
+
+		if(!getConnectedTransports().isEmpty()){ // stay open if we have any transports connected
+			Log.d(TAG, "1 or more transports connected, remaining open");
+			return true;
+		}else if(altTransportService!=null || altTransportTimerHandler !=null){
 			//We have been started by an alt transport, we must remain open. "My life for Auir...."
 			Log.d(TAG, "Alt Transport connected, remaining open");
 			return true;
@@ -1403,6 +1406,25 @@ public class SdlRouterService extends Service{
 	}
 	
 	public void onTransportDisconnected(TransportType type){
+		cachedModuleVersion = -1; //Reset our cached version
+		if(registeredApps != null && !registeredApps.isEmpty()){
+			Message message = Message.obtain();
+			message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
+			Bundle bundle = new Bundle();
+			bundle.putString(HARDWARE_DISCONNECTED, type.name());
+			bundle.putBoolean(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
+			bundle.putStringArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED,getConnectedTransports());
+			//TODO put other transports still connected
+			message.setData(bundle);
+			notifyClients(message);
+		}
+		if(!getConnectedTransports().isEmpty()){
+			ArrayList<String> transports = getConnectedTransports();
+			// Updates notification to one of still connected transport
+			enterForeground("Connected to " + transports.get(transports.size() - 1),0);
+			return;
+		}
+
 		if(altTransportService!=null){  //If we still have an alt transport open, then we don't need to tell the clients to close
 			return;
 		}
@@ -1426,7 +1448,7 @@ public class SdlRouterService extends Service{
 		connectedTransportType = null;
 		isTransportConnected = false;
 		stopClientPings();
-		
+
 		exitForeground();//Leave our foreground state as we don't have a connection anymore
 
 		PacketWriteTaskMaster packetWriteTaskMaster = packetWriteTaskMasterMap.remove(type);
@@ -1434,18 +1456,6 @@ public class SdlRouterService extends Service{
 			packetWriteTaskMaster.close();
 		}
 
-		cachedModuleVersion = -1; //Reset our cached version
-		if(registeredApps != null && !registeredApps.isEmpty()){
-			Message message = Message.obtain();
-			message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
-			Bundle bundle = new Bundle();
-			bundle.putString(HARDWARE_DISCONNECTED, type.name());
-			bundle.putBoolean(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
-			bundle.putStringArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED,getConnectedTransports());
-			//TODO put other transports still connected
-			message.setData(bundle);
-			notifyClients(message);
-		}
 		//TODO check to see if there are any transports still active
 		//We've notified our clients, less clean up the mess now.
 		synchronized(SESSION_LOCK){

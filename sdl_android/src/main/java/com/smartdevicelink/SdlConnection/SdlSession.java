@@ -542,7 +542,15 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 		Log.d(TAG, "rpc transport? - " + wiProProtocol.getTransportForSession(SessionType.RPC));
 		if(type != null && type.equals(wiProProtocol.getTransportForSession(SessionType.RPC))){
 			this.sessionListener.onTransportDisconnected(info);
-		}//TODO else { ensure no other services are connected over this transport }
+		}
+		if(type != null && type.equals(wiProProtocol.getTransportForSession(SessionType.NAV))){
+			stopVideoStream();
+			Log.d(TAG, "Stopping video stream.");
+		}
+		if(type != null && type.equals(wiProProtocol.getTransportForSession(SessionType.PCM))){
+			stopAudioStream();
+			Log.d(TAG, "Stopping audio stream.");
+		}
 	}
 
 	public void shutdown(String info){
