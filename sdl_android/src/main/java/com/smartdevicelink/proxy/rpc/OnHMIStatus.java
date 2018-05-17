@@ -5,6 +5,7 @@ import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingState;
 
 import java.util.Hashtable;
 
@@ -51,6 +52,12 @@ import java.util.Hashtable;
  * <td>SmartDeviceLink 1.0</td>
  * </tr>
  * <tr>
+ * <td>videoStreamingState</td>
+ * <td>{@linkplain VideoStreamingState}</td>
+ * <td>If it is NOT_STREAMABLE, the app must stop streaming video to SDL Core(stop service).</td>
+ * <td>SmartDeviceLink 4.7</td>
+ * </tr>
+ * <tr>
  * <td>systemContext</td>
  * <td>{@linkplain SystemContext}</td>
  * <td>Indicates that a user-initiated interaction is in-progress 
@@ -63,7 +70,8 @@ import java.util.Hashtable;
  * @see RegisterAppInterface 
  */
 public class OnHMIStatus extends RPCNotification {
-	public static final String KEY_AUDIO_STREAMING_STATE = "audioStreamingState";
+    public static final String KEY_AUDIO_STREAMING_STATE = "audioStreamingState";
+    public static final String KEY_VIDEO_STREAMING_STATE = "videoStreamingState";
 	public static final String KEY_SYSTEM_CONTEXT = "systemContext";
 	public static final String KEY_HMI_LEVEL = "hmiLevel";
 
@@ -99,16 +107,34 @@ public class OnHMIStatus extends RPCNotification {
     /**
      * <p>Get current state of audio streaming for the application</p>
      * @return {@linkplain AudioStreamingState} Returns current state of audio streaming for the application
-     */    
+     */
     public AudioStreamingState getAudioStreamingState() {
         return (AudioStreamingState) getObject(AudioStreamingState.class, KEY_AUDIO_STREAMING_STATE);
     }
     /**
      * <p>Set the audio streaming state</p>
      * @param audioStreamingState the state of audio streaming of the application
-     */    
+     */
     public void setAudioStreamingState( AudioStreamingState audioStreamingState ) {
         setParameters(KEY_AUDIO_STREAMING_STATE, audioStreamingState);
+    }
+    /**
+     * <p>Get current state of video streaming for the application</p>
+     * @return {@linkplain VideoStreamingState} Returns current state of video streaming for the application
+     */
+    public VideoStreamingState getVideoStreamingState() {
+        VideoStreamingState videoStreamingState =  (VideoStreamingState) getObject(VideoStreamingState.class, KEY_VIDEO_STREAMING_STATE);
+        if (videoStreamingState == null){
+            videoStreamingState = VideoStreamingState.STREAMABLE;
+        }
+        return videoStreamingState;
+    }
+    /**
+     * <p>Set the video streaming state</p>
+     * @param videoStreamingState the state of video streaming of the application
+     */
+    public void setVideoStreamingState( VideoStreamingState videoStreamingState ) {
+        setParameters(KEY_VIDEO_STREAMING_STATE, videoStreamingState);
     }
     /**
      * <p>Get the System Context</p>
