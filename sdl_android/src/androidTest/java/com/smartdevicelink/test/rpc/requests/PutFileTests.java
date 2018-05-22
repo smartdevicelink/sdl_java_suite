@@ -18,7 +18,7 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.PutFile}
+ * {@link com.smartdevicelink.proxy.rpc.PutFile}
  */
 public class PutFileTests extends BaseRpcTests {
 	
@@ -31,6 +31,7 @@ public class PutFileTests extends BaseRpcTests {
 		msg.setSystemFile(Test.GENERAL_BOOLEAN);
 		msg.setOffset(Test.GENERAL_LONG);
 		msg.setLength(Test.GENERAL_LONG);
+		msg.setCRC(Test.GENERAL_BYTE_ARRAY);
 		msg.setCRC(Test.GENERAL_LONG);
 
 		return msg;
