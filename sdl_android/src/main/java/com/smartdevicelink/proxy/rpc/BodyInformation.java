@@ -107,7 +107,12 @@ public class BodyInformation extends RPCStruct {
     public BodyInformation(Hashtable<String, Object> hash) {
         super(hash);
     }
-
+    public BodyInformation(Boolean parkBrakeActive, IgnitionStableStatus ignitionStableStatus, IgnitionStatus ignitionStatus) {
+        this();
+        setParkBrakeActive(parkBrakeActive);
+        setIgnitionStableStatus(ignitionStableStatus);
+        setIgnitionStatus(ignitionStatus);
+    }
     public void setParkBrakeActive(Boolean parkBrakeActive) {
         setValue(KEY_PARK_BRAKE_ACTIVE, parkBrakeActive);
     }

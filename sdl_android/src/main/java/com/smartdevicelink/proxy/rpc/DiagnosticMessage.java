@@ -79,7 +79,17 @@ public class DiagnosticMessage extends RPCRequest {
      * 
      * @param targetID
      */
-    
+
+
+	/**
+	 * Constructs a new DiagnosticMessage object
+	 */
+	public DiagnosticMessage(Integer targetID, Integer messageLength, List<Integer> messageData) {
+		this();
+		setTargetID(targetID);
+		setMessageLength(messageLength);
+		setMessageData(messageData);
+	}
 
     public void setTargetID(Integer targetID) {
 		setParameters(KEY_TARGET_ID, targetID);

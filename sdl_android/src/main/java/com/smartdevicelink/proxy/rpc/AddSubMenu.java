@@ -82,6 +82,18 @@ public class AddSubMenu extends RPCRequest {
         super(hash);
     }
 	/**
+	 * Constructs a new AddSubMenu object
+	 * @param menuID
+	 *            an integer object representing a Menu ID
+	 *
+	 *           <p><b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
+	 * @param menuName
+	 *            String which will be displayed representing this submenu item
+	 */
+	public AddSubMenu(Integer menuID, String menuName) {
+		this();
+	}
+	/**
 	 * Returns an <i>Integer</i> object representing the Menu ID that identifies
 	 * a sub menu
 	 * 

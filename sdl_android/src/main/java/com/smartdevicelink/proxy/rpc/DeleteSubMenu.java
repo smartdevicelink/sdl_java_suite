@@ -68,6 +68,16 @@ public class DeleteSubMenu extends RPCRequest {
         super(hash);
     }
     /**
+     * Constructs a new DeleteSubMenu object
+     * @param menuID an Integer value representing menuID that identifies the SubMenu to be delete
+     *
+     * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
+     */
+    public DeleteSubMenu(Integer menuID) {
+        this();
+        setMenuID(menuID);
+    }
+    /**
      * Gets the Menu ID that identifies the SubMenu to be delete
      * @return Integer -an Integer value representing menuID that identifies the SubMenu to be delete
      */    

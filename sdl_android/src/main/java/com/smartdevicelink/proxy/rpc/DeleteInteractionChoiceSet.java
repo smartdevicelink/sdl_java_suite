@@ -79,6 +79,15 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
         super(hash);
     }
 	/**
+	 * Constructs a new DeleteInteractionChoiceSet object
+	 * @param interactionChoiceSetID a unique ID that identifies the Choice Set
+	 * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000 </p>
+	 */
+	public DeleteInteractionChoiceSet(Integer interactionChoiceSetID) {
+		this();
+		setInteractionChoiceSetID(interactionChoiceSetID);
+	}
+    /**
 	 * Gets a unique ID that identifies the Choice Set
 	 * @return Integer -an Integer value representing the unique Choice Set ID
 	 */    

@@ -36,6 +36,22 @@ public class ButtonPress extends RPCRequest {
     }
 
     /**
+     * Constructs a new ButtonPress object
+     * @param moduleType
+     * Represents module where the button should be pressed
+     * @param buttonName
+     * Represents name of supported RC climate or radio button
+     * @param buttonPressMode
+     * Indicates whether this is a LONG or SHORT button press event.
+     */
+    public ButtonPress(ModuleType moduleType, ButtonName buttonName, ButtonPressMode buttonPressMode) {
+        this();
+        setModuleType(moduleType);
+        setButtonName(buttonName);
+        setButtonPressMode(buttonPressMode);
+    }
+
+    /**
      * Gets the ModuleType
      *
      * @return ModuleType - The module where the button should be pressed

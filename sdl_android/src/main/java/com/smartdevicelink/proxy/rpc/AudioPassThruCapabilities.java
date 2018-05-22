@@ -65,7 +65,19 @@ public class AudioPassThruCapabilities extends RPCStruct {
     public AudioPassThruCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
+    /**
+     * Constructs a newly allocated AudioPassThruCapabilities object
+     * @param samplingRate the sampling rate for AudioPassThru
+     * @param bitsPerSample the sample depth in bit for AudioPassThru
+     * @param audioType the audiotype for AudioPassThru
+     */
+    public AudioPassThruCapabilities(SamplingRate samplingRate, BitsPerSample bitsPerSample, AudioType audioType) {
+        this();
+        setSamplingRate(samplingRate);
+        setBitsPerSample(bitsPerSample);
+        setAudioType(audioType);
+    }
+
     /**
      * set the sampling rate for AudioPassThru
      * @param samplingRate the sampling rate for AudioPassThru

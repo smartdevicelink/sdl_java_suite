@@ -22,6 +22,10 @@ public class DialNumber extends RPCRequest {
 		super(hash);
 	}
 
+	public DialNumber(String number){
+		this();
+		setNumber(number);
+	}
 	/**
 	 * Sets a number to dial
 	 * 

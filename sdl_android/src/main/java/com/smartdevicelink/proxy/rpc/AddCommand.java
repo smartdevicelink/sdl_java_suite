@@ -111,6 +111,14 @@ public class AddCommand extends RPCRequest {
         super(hash);
     }
 	/**
+	 * Constructs a new AddCommand object
+	 * @param cmdID an integer object representing a Command ID <p><b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
+	 */
+	public AddCommand(Integer cmdID) {
+		this();
+		setCmdID(cmdID);
+	}
+	/**
 	 * <p>
 	 * Returns an <i>Integer</i> object representing the Command ID that you want to add
 	 * </p>

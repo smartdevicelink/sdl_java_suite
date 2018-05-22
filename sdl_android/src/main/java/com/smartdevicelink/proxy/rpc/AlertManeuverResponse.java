@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 /**
  * Alert Maneuver Response is sent, when AlertManeuver has been called
@@ -31,5 +32,14 @@ public class AlertManeuverResponse extends RPCResponse{
     public AlertManeuverResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
-
+    /**
+     * Constructs a new AlertManeuverResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public AlertManeuverResponse(Boolean success, Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
 }

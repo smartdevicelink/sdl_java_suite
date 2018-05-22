@@ -107,6 +107,19 @@ public class AirbagStatus extends RPCStruct {
         super(hash);
     }
 
+    public AirbagStatus(VehicleDataEventStatus driverAirbagDeployed, VehicleDataEventStatus driverSideAirbagDeployed, VehicleDataEventStatus driverCurtainAirbagDeployed, VehicleDataEventStatus driverKneeAirbagDeployed,
+    VehicleDataEventStatus passengerCurtainAirbagDeployed, VehicleDataEventStatus passengerAirbagDeployed, VehicleDataEventStatus passengerSideAirbagDeployed, VehicleDataEventStatus passengerKneeAirbagDeployed) {
+        this();
+        setDriverAirbagDeployed(driverAirbagDeployed);
+        setDriverSideAirbagDeployed(driverSideAirbagDeployed);
+        setDriverCurtainAirbagDeployed(driverCurtainAirbagDeployed);
+        setDriverKneeAirbagDeployed(driverKneeAirbagDeployed);
+        setPassengerAirbagDeployed(passengerAirbagDeployed);
+        setPassengerSideAirbagDeployed(passengerSideAirbagDeployed);
+        setPassengerCurtainAirbagDeployed(passengerCurtainAirbagDeployed);
+        setPassengerKneeAirbagDeployed(passengerKneeAirbagDeployed);
+    }
+
     public void setDriverAirbagDeployed(VehicleDataEventStatus driverAirbagDeployed) {
         setValue(KEY_DRIVER_AIRBAG_DEPLOYED, driverAirbagDeployed);
     }

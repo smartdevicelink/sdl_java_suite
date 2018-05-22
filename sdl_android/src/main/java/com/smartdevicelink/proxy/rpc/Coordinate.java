@@ -16,6 +16,12 @@ public class Coordinate extends RPCStruct{
         super(hash);
     }
 
+    public Coordinate(Float latitudeDegrees, Float longitudeDegrees) {
+        this();
+        setLatitudeDegrees(latitudeDegrees);
+        setLongitudeDegrees(longitudeDegrees);
+    }
+
     public Float getLatitudeDegrees() {
         Object value = getValue(KEY_LATITUDE_DEGREES);
         return SdlDataTypeConverter.objectToFloat(value);

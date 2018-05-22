@@ -94,6 +94,18 @@ public class CreateInteractionChoiceSet extends RPCRequest {
         super(hash);
     }
 	/**
+	 * Constructs a new CreateInteractionChoiceSet object
+	 * @param interactionChoiceSetID: an Integer value representing the Choice Set ID
+	 *            <b>Notes: </b>Min Value: 0; Max Value: 2000000000
+	 * @param choiceSet: a List<Choice> representing the array of one or more elements
+	 *            <b>Notes: </b>Min Value: 1; Max Value: 100
+	 */
+	public CreateInteractionChoiceSet(Integer interactionChoiceSetID, List<Choice> choiceSet) {
+		this();
+		setInteractionChoiceSetID(interactionChoiceSetID);
+		setChoiceSet(choiceSet);
+	}
+	/**
 	 * Gets the Choice Set unique ID
 	 * 
 	 * @return Integer -an Integer representing the Choice Set ID

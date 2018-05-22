@@ -76,6 +76,20 @@ public class ButtonCapabilities extends RPCStruct {
         super(hash);
     }
     /**
+     * Constructs a newly allocated ButtonCapabilities object
+     * @param name the name of button
+     * @param shortPressAvailable True if support otherwise False.
+     * @param longPressAvailable True if support otherwise False.
+     * @param upDownAvailable True if support otherwise False.
+     */
+    public ButtonCapabilities(ButtonName name, Boolean shortPressAvailable, Boolean longPressAvailable, Boolean upDownAvailable) {
+        this();
+        setName(name);
+        setShortPressAvailable(shortPressAvailable);
+        setLongPressAvailable(longPressAvailable);
+        setUpDownAvailable(upDownAvailable);
+    }
+    /**
      * Get the name of theSDL HMI button.
      * @return ButtonName the name of the Button
      */    

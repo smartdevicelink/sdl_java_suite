@@ -126,7 +126,37 @@ public class DeviceStatus extends RPCStruct {
     public DeviceStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
+
+    /**
+     * Constructs a newly allocated DeviceStatus object
+     * @param voiceRecOn
+     * @param btIconOn the bluetooth connection established
+     * @param callActive a call is being active
+     * @param phoneRoaming  the phone is in roaming mode
+     * @param textMsgAvailable a textmessage is available
+     * @param battLevelStatus battery level status
+     * @param stereoAudioOutputMuted the status of the stereo audio output channel
+     * @param monoAudioOutputMuted the status of the mono audio output channel
+     * @param signalLevelStatus signal level status
+     * @param primaryAudioSource the current primary audio source of SDL (if selected
+     * @param eCallEventActive
+     */
+    public DeviceStatus(Boolean voiceRecOn, Boolean btIconOn, Boolean callActive, Boolean phoneRoaming, Boolean textMsgAvailable, DeviceLevelStatus battLevelStatus,
+                        Boolean stereoAudioOutputMuted, Boolean monoAudioOutputMuted, DeviceLevelStatus signalLevelStatus, PrimaryAudioSource primaryAudioSource, Boolean eCallEventActive) {
+        this();
+        setVoiceRecOn(voiceRecOn);
+        setBtIconOn(btIconOn);
+        setCallActive(callActive);
+        setPhoneRoaming(phoneRoaming);
+        setTextMsgAvailable(textMsgAvailable);
+        setBattLevelStatus(battLevelStatus);
+        setStereoAudioOutputMuted(stereoAudioOutputMuted);
+        setMonoAudioOutputMuted(monoAudioOutputMuted);
+        setSignalLevelStatus(signalLevelStatus);
+        setPrimaryAudioSource(primaryAudioSource);
+        setECallEventActive(eCallEventActive);
+    }
+
     /**
      * set the voice recognition on or off
      * @param voiceRecOn

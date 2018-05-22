@@ -2,6 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -30,5 +31,17 @@ public class DiagnosticMessageResponse extends RPCResponse {
     
     public void setMessageDataResult(List<Integer> messageDataResult) {
         setParameters(KEY_MESSAGE_DATA_RESULT, messageDataResult);
+    }
+
+    /**
+     * Constructs a new DiagnosticMessageResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public DiagnosticMessageResponse(Boolean success, Result resultCode, List<Integer> messageDataResult) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+        setMessageDataResult(messageDataResult);
     }
 }

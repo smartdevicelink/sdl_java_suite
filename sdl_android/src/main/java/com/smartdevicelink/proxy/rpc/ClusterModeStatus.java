@@ -70,6 +70,13 @@ public class ClusterModeStatus extends RPCStruct {
 	    public ClusterModeStatus(Hashtable<String, Object> hash) {
 	        super(hash);
 	    }
+		public ClusterModeStatus(Boolean powerModeActive, PowerModeQualificationStatus powerModeQualificationStatus, CarModeStatus carModeStatus, PowerModeStatus powerModeStatus) {
+	    	this();
+	    	setPowerModeActive(powerModeActive);
+	    	setPowerModeQualificationStatus(powerModeQualificationStatus);
+	    	setCarModeStatus(carModeStatus);
+	    	setPowerModeStatus(powerModeStatus);
+	    }
 
 	    public void setPowerModeActive(Boolean powerModeActive) {
 	        setValue(KEY_POWER_MODE_ACTIVE, powerModeActive);

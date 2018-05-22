@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 /**
  * Change Registration Response is sent, when ChangeRegistration has been called
@@ -30,4 +31,15 @@ public class ChangeRegistrationResponse extends RPCResponse {
     public ChangeRegistrationResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new ChangeRegistrationResponse object
+	 * @param success whether the request is successfully processed
+	 * @param resultCode whether the request is successfully processed
+	 */
+	public ChangeRegistrationResponse(Boolean success, Result resultCode) {
+		this();
+		setSuccess(success);
+		setResultCode(resultCode);
+	}
 }

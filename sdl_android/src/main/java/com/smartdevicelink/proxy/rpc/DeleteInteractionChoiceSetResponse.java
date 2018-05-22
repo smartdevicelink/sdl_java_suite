@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 /**
  * Delete Interaction ChoiceSet Response is sent, when DeleteInteractionChoiceSet has been called
@@ -17,5 +18,15 @@ public class DeleteInteractionChoiceSetResponse extends RPCResponse {
     }
     public DeleteInteractionChoiceSetResponse(Hashtable<String, Object> hash) {
         super(hash);
+    }
+    /**
+     * Constructs a new DeleteInteractionChoiceSetResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public DeleteInteractionChoiceSetResponse(Boolean success, Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
     }
 }

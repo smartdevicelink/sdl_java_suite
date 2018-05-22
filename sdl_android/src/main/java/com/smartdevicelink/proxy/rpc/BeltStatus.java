@@ -128,6 +128,7 @@ public class BeltStatus extends RPCStruct {
     public static final String KEY_MIDDLE_ROW_2_BUCKLE_BELTED = "middleRow2BuckleBelted";
     public static final String KEY_MIDDLE_ROW_3_BUCKLE_BELTED = "middleRow3BuckleBelted";
     public static final String KEY_LEFT_ROW_3_BUCKLE_BELTED = "leftRow3BuckleBelted";
+
     public static final String KEY_RIGHT_ROW_3_BUCKLE_BELTED = "rightRow3BuckleBelted";
     public static final String KEY_REAR_INFLATABLE_BELTED = "rearInflatableBelted";
     public static final String KEY_RIGHT_REAR_INFLATABLE_BELTED = "rightRearInflatableBelted";
@@ -144,6 +145,28 @@ public class BeltStatus extends RPCStruct {
     public BeltStatus() { }
     public BeltStatus(Hashtable<String, Object> hash) {
         super(hash);
+    }
+
+    public BeltStatus(VehicleDataEventStatus driverBeltDeployed, VehicleDataEventStatus passengerBeltDeployed, VehicleDataEventStatus passengerBuckleBelted, VehicleDataEventStatus driverBuckleBelted, VehicleDataEventStatus leftRow2BuckleBelted,
+                      VehicleDataEventStatus passengerChildDetected, VehicleDataEventStatus rightRow2BuckleBelted, VehicleDataEventStatus middleRow2BuckleBelted, VehicleDataEventStatus middleRow3BuckleBelted, VehicleDataEventStatus leftRow3BuckleBelted,
+                      VehicleDataEventStatus rightRow3BuckleBelted, VehicleDataEventStatus leftRearInflatableBelted, VehicleDataEventStatus rightRearInflatableBelted, VehicleDataEventStatus middleRow1BeltDeployed, VehicleDataEventStatus middleRow1BuckleBelted
+    ) {
+        this();
+        setDriverBeltDeployed(driverBeltDeployed);
+        setPassengerBeltDeployed(passengerBeltDeployed);
+        setPassengerBuckleBelted(passengerBuckleBelted);
+        setDriverBeltDeployed(driverBuckleBelted);
+        setLeftRearInflatableBelted(leftRow2BuckleBelted);
+        setPassengerChildDetected(passengerChildDetected);
+        setRightRow2BuckleBelted(rightRow2BuckleBelted);
+        setMiddleRow2BuckleBelted(middleRow2BuckleBelted);
+        setMiddleRow3BuckleBelted(middleRow3BuckleBelted);
+        setLeftRow3BuckleBelted(leftRow3BuckleBelted);
+        setRightRow3BuckleBelted(rightRow3BuckleBelted);
+        setLeftRearInflatableBelted(leftRearInflatableBelted);
+        setRightRearInflatableBelted(rightRearInflatableBelted);
+        setMiddleRow1BeltDeployed(middleRow1BeltDeployed);
+        setMiddleRow1BuckleBelted(middleRow1BuckleBelted);
     }
 
     public void setDriverBeltDeployed(VehicleDataEventStatus driverBeltDeployed) {

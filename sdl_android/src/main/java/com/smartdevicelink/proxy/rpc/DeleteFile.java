@@ -65,6 +65,16 @@ public class DeleteFile extends RPCRequest {
     }
 
 	/**
+	 * Constructs a new DeleteFile object
+	 * @param sdlFileName
+	 *            a String value representing a file reference name
+	 */
+	public DeleteFile(String sdlFileName) {
+		this();
+		setSdlFileName(sdlFileName);
+	}
+
+	/**
 	 * Sets a file reference name
 	 * 
 	 * @param sdlFileName

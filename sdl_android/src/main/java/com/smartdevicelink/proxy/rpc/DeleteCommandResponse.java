@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 /**
  * Delete Command Response is sent, when DeleteCommand has been called.
@@ -20,5 +21,15 @@ public class DeleteCommandResponse extends RPCResponse {
     }
     public DeleteCommandResponse(Hashtable<String, Object> hash) {
         super(hash);
+    }
+    /**
+     * Constructs a new DeleteCommandResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public DeleteCommandResponse(Boolean success, Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
     }
 }

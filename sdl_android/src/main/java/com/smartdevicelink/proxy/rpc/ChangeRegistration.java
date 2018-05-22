@@ -124,6 +124,17 @@ public class ChangeRegistration extends RPCRequest {
         super(hash);
     }
 
+    /**
+     * Constructs a new ChangeRegistration object
+     * @param language a language value
+     * @param hmiDisplayLanguage a Language value
+     */
+    public ChangeRegistration(Language language, Language hmiDisplayLanguage) {
+        this();
+        setLanguage(language);
+        setHmiDisplayLanguage(hmiDisplayLanguage);
+    }
+
 	/**
 	 * Sets language
 	 * 

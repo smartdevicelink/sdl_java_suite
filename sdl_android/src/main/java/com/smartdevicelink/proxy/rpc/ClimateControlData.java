@@ -23,7 +23,7 @@ public class ClimateControlData extends RPCStruct{
     public ClimateControlData(Hashtable<String, Object> hash) {
         super(hash);
     }
-
+z
     public void setFanSpeed(Integer fanSpeed) {
         setValue(KEY_FAN_SPEED, fanSpeed);
     }

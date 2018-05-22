@@ -73,6 +73,14 @@ public class DeleteCommand extends RPCRequest {
         super(hash);
     }
 	/**
+	 * Constructs a new DeleteCommand object
+	 * @param cmdID: an Integer value representing Command ID
+	 */
+	public DeleteCommand(Integer cmdID) {
+		this();
+		setCmdID(cmdID);
+	}
+	/**
 	 * Gets the Command ID that identifies the Command to be deleted from
 	 * Command Menu
 	 * 

@@ -2,6 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Hashtable;
 
@@ -30,6 +31,16 @@ public class AlertResponse extends RPCResponse {
 	 */
     public AlertResponse(Hashtable<String, Object> hash) {
         super(hash);
+    }
+    /**
+     * Constructs a new AlertResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public AlertResponse(Boolean success, Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
     }
     public Integer getTryAgainTime() {
         return getInteger(KEY_TRY_AGAIN_TIME);
