@@ -294,6 +294,11 @@ public class PutFile extends RPCRequest {
         	return null;
     }
 
+	/**
+	 * This takes the file data as an array of bytes and calculates the
+	 * CRC32 for it.
+	 * @param fileData - the file as a byte array
+	 */
 	public void setCRC(byte[] fileData) {
 		if (fileData != null) {
 			CRC32 crc = new CRC32();
@@ -304,6 +309,12 @@ public class PutFile extends RPCRequest {
 		}
 	}
 
+	/**
+	 * This assumes you have created your own CRC32 and are setting it with the file
+	 * <STRONG>Please avoid using your own calculations for this, and use the method
+	 * included in java.util</STRONG>
+	 * @param crc - the CRC32 of the file being set
+	 */
 	public void setCRC(Long crc) {
 		if (crc != null) {
 			parameters.put(KEY_CRC, crc);
@@ -312,6 +323,10 @@ public class PutFile extends RPCRequest {
 		}
 	}
 
+	/**
+	 * This returns the CRC, if it has been set, for the file object
+	 * @return - a CRC32 Long
+	 */
 	public Long getCRC() {
 		final Object o = parameters.get(KEY_CRC);
 		if (o == null){
