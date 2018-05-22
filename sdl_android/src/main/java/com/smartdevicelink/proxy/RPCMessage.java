@@ -70,17 +70,60 @@ public class RPCMessage extends RPCStruct  {
 		}
 		return null;
 	}
+
+	// Generalized Getters and Setters
 	
-	public void setParameters(String functionName, Object value) {
+	public void setParameters(String key, Object value) {
 		if (value != null) {
-			parameters.put(functionName, value);
+			parameters.put(key, value);
 		} else {
-			parameters.remove(functionName);
+			parameters.remove(key);
 		}
 	}
-	
-	public Object getParameters(String functionName) {
-		return parameters.get(functionName);
+
+	public Object getParameters(String key) {
+		return parameters.get(key);
 	}
 
+	@Override
+	public Object getObject(Class tClass, String key) {
+		Object obj = parameters.get(key);
+		return formatObject(tClass, obj);
+	}
+
+	// Common Object Getters
+
+	@Override
+	public String getString(String key) {
+		return (String) parameters.get(key);
+	}
+
+	@Override
+	public Integer getInteger(String key) {
+		return (Integer) parameters.get(key);
+	}
+
+	@Override
+	public Float getFloat(String key) {
+		return (Float) parameters.get(key);
+	}
+
+	@Override
+	public Double getDouble(String key) {
+		return (Double) parameters.get(key);
+	}
+
+	@Override
+	public Boolean getBoolean(String key) { return (Boolean) parameters.get(key); }
+
+	@Override
+	public Long getLong(String key){
+		Object result = parameters.get(key);
+		if (result instanceof Integer) {
+			return ((Integer) result).longValue();
+		}else if(result instanceof Long){
+			return (Long) result;
+		}
+		return null;
+	}
 }

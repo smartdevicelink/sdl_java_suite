@@ -1,0 +1,13 @@
+{
+  "request":{
+    "name":"DialNumber",
+    "correlationID":194,
+    "parameters":{
+      "wayPointType":"DESTINATION"
+    }
+  },
+  "response":{
+    "name":"DialNumberResponse",
+    "correlationID":195
+  }
+}

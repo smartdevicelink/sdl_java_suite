@@ -1,4 +1,7 @@
+[![Build Status](https://travis-ci.org/smartdevicelink/sdl_android.svg?branch=master)](https://travis-ci.org/smartdevicelink/sdl_android)
+[![codecov](https://codecov.io/gh/smartdevicelink/sdl_android/branch/master/graph/badge.svg)](https://codecov.io/gh/smartdevicelink/sdl_android)
 [![Slack Status](http://sdlslack.herokuapp.com/badge.svg)](http://slack.smartdevicelink.com)
+[ ![Download](https://api.bintray.com/packages/smartdevicelink/sdl_android/sdl_android/images/download.svg) ](https://bintray.com/smartdevicelink/sdl_android/sdl_android/_latestVersion)
 # SmartDeviceLink (SDL)
 
 SmartDeviceLink (SDL) is a standard set of protocols and messages that connect applications on a smartphone to a vehicle head unit. This messaging enables a consumer to interact with their application using common in-vehicle interfaces such as a touch screen display, embedded voice recognition, steering wheel controls and various vehicle knobs and buttons. There are three main components that make up the SDL ecosystem.
@@ -19,6 +22,27 @@ The mobile library component of SDL is meant to run on the end user’s smart-de
 
 ## SmartDeviceLink Android
 
-We're still working on creating documentation for each of these individual repositories, but in the meantime, you can find more information about SmartDeviceLink [here](https://github.com/smartdevicelink/sdl_core/blob/master/README.md) and [here](http://projects.genivi.org/smartdevicelink/about).
+We're still working on creating documentation for each of these individual repositories, but in the meantime, you can find more information about SmartDeviceLink [here](https://smartdevicelink.com)
 
 You can also find some branches that have yet to be merged into this GitHub project on the GENIVI page [here](http://git.projects.genivi.org/?p=smartdevicelink_android.git;a=summary).
+
+### Installation
+
+#### Dependency Managers
+
+To compile with the a release of SDL Android, include the following in your app's `build.gradle` file,
+
+```
+repositories {
+    jcenter()
+}
+dependencies {
+    compile 'com.smartdevicelink:sdl_android:4.+'
+}
+```
+
+For Maven or Ivy snippets please look at [Bintray](https://bintray.com/smartdevicelink/sdl_android/sdl_android)
+
+#### Manually
+
+If you prefer not to use any of the aforementioned dependency managers, you can integrate SDL Android into your project manually.

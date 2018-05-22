@@ -1,11 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Updates the list of next maneuvers, which can be requested by the user pressing the softbutton "Turns" on the
@@ -52,12 +51,7 @@ public class UpdateTurnList extends RPCRequest{
      *            <b>Notes: </b>Minsize=1; Maxsize=100</p>
      */
     public void setTurnList(List<Turn> turnList){
-        if(turnList != null){
-            parameters.put(KEY_TURN_LIST, turnList);
-        }
-        else{
-            parameters.remove(KEY_TURN_LIST);
-        }
+        setParameters(KEY_TURN_LIST, turnList);
     }
     
     /**
@@ -67,23 +61,7 @@ public class UpdateTurnList extends RPCRequest{
      */
     @SuppressWarnings("unchecked")
     public List<Turn> getTurnList(){
-        if(parameters.get(KEY_TURN_LIST) instanceof List<?>){
-            List<?> list = (List<?>) parameters.get(KEY_TURN_LIST);
-            if(list != null && list.size() > 0){
-                Object obj = list.get(0);
-                if(obj instanceof Turn){
-                    return (List<Turn>) list;
-                }
-                else if(obj instanceof Hashtable){
-                    List<Turn> newList = new ArrayList<Turn>();
-                    for(Object hashObj : list){
-                        newList.add(new Turn((Hashtable<String, Object>) hashObj));
-                    }
-                    return newList;
-                }
-            }
-        }
-        return null;
+        return (List<Turn>) getObject(Turn.class, KEY_TURN_LIST);
     }
 
     /**
@@ -94,23 +72,7 @@ public class UpdateTurnList extends RPCRequest{
      */
     @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons(){
-        if(parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>){
-            List<?> list = (List<?>) parameters.get(KEY_SOFT_BUTTONS);
-            if(list != null && list.size() > 0){
-                Object obj = list.get(0);
-                if(obj instanceof SoftButton){
-                    return (List<SoftButton>) list;
-                }
-                else if(obj instanceof Hashtable){
-                    List<SoftButton> newList = new ArrayList<SoftButton>();
-                    for(Object hashObj : list){
-                        newList.add(new SoftButton((Hashtable<String, Object>) hashObj));
-                    }
-                    return newList;
-                }
-            }
-        }
-        return null;
+        return (List<SoftButton>) getObject(SoftButton.class, KEY_SOFT_BUTTONS);
     }
 
     /**
@@ -129,12 +91,7 @@ public class UpdateTurnList extends RPCRequest{
      */
 
     public void setSoftButtons(List<SoftButton> softButtons){
-        if(softButtons != null){
-            parameters.put(KEY_SOFT_BUTTONS, softButtons);
-        }
-        else{
-            parameters.remove(KEY_SOFT_BUTTONS);
-        }
+        setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
 
 }

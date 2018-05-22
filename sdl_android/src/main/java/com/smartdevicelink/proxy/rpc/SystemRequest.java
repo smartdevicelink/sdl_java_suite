@@ -1,11 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
+
+import java.util.Hashtable;
+import java.util.List;
+
 /** An asynchronous request from the device; binary data can be included in hybrid part of message for some requests (such as HTTP, Proprietary, or Authentication requests)
  * 
  * <p><b>Parameter List</b></p>
@@ -64,53 +65,26 @@ public class SystemRequest extends RPCRequest {
 
     @SuppressWarnings("unchecked")    
     public List<String> getLegacyData() {
-        if (parameters.get(KEY_DATA) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_DATA);
-        	if (list != null && list.size()>0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-        			return (List<String>) list;
-        		}
-        	}
-        }
-    	return null;
+        return (List<String>) getObject(String.class, KEY_DATA);
     }
  
     public void setLegacyData( List<String> data ) {
-    	if ( data!= null) {
-    		parameters.put(KEY_DATA, data );
-    	} else {
-            parameters.remove(KEY_DATA);
-        }
+        setParameters(KEY_DATA, data);
     }    
             
     public String getFileName() {
-        return (String) parameters.get(KEY_FILE_NAME);
+        return getString(KEY_FILE_NAME);
     }
     
     public void setFileName(String fileName) {
-        if (fileName != null) {
-            parameters.put(KEY_FILE_NAME, fileName);
-        } else {
-        	parameters.remove(KEY_FILE_NAME);
-        }
+        setParameters(KEY_FILE_NAME, fileName);
     }    
 
     public RequestType getRequestType() {
-        Object obj = parameters.get(KEY_REQUEST_TYPE);
-        if (obj instanceof RequestType) {
-            return (RequestType) obj;
-        } else if (obj instanceof String) {
-            return RequestType.valueForString((String) obj);
-        }
-        return null;
+        return (RequestType) getObject(RequestType.class, KEY_REQUEST_TYPE);
     }
 
     public void setRequestType(RequestType requestType) {
-        if (requestType != null) {
-            parameters.put(KEY_REQUEST_TYPE, requestType);
-        } else {
-            parameters.remove(KEY_REQUEST_TYPE);
-        }
+        setParameters(KEY_REQUEST_TYPE, requestType);
     }
 }

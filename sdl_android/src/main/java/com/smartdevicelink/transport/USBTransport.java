@@ -199,9 +199,7 @@ public class USBTransport extends SdlTransport {
     /**
      * Sends the array of bytes over USB.
      *
-     * @param msgBytes Array of bytes to send
-     * @param offset   Offset in the array to start from
-     * @param length   Number of bytes to send
+     * @param packet The packet that is to be written out on the USB transport
      * @return true if the bytes are sent successfully
      */
     @Override
@@ -227,13 +225,13 @@ public class USBTransport extends SdlTransport {
                         } catch (IOException e) {
                             final String msg = "Failed to send bytes over USB";
                             logW(msg, e);
-                            handleTransportError(msg, e);
+                            disconnect(msg, e);
                         }
                     } else {
                         final String msg =
                                 "Can't send bytes when output stream is null";
                         logW(msg);
-                        handleTransportError(msg, null);
+                        disconnect(msg, null);
                     }
                 break;
 
@@ -420,6 +418,12 @@ public class USBTransport extends SdlTransport {
                 String disconnectMsg = (msg == null ? "" : msg);
                 if (ex != null) {
                     disconnectMsg += ", " + ex.toString();
+
+                    if(ex instanceof SdlException
+                            && SdlExceptionCause.SDL_USB_PERMISSION_DENIED.equals(((SdlException)ex).getSdlExceptionCause())){
+                        //If the USB device disconnected we don't want to cycle the proxy ourselves
+                        ex = null;
+                    }
                 }
 
                 if (ex == null) {

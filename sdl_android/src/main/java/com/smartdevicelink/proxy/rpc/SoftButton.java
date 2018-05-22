@@ -95,86 +95,40 @@ public class SoftButton extends RPCStruct {
         super(hash);
     }
     public void setType(SoftButtonType type) {
-        if (type != null) {
-            store.put(KEY_TYPE, type);
-        } else {
-        	store.remove(KEY_TYPE);
-        }
+        setValue(KEY_TYPE, type);
     }
     public SoftButtonType getType() {
-    	Object obj = store.get(KEY_TYPE);
-        if (obj instanceof SoftButtonType) {
-            return (SoftButtonType) obj;
-        } else if (obj instanceof String) {
-        	return SoftButtonType.valueForString((String) obj);
-        }
-        return null;
+    	return (SoftButtonType) getObject(SoftButtonType.class, KEY_TYPE);
     }
     public void setText(String text) {
-        if (text != null) {
-            store.put(KEY_TEXT, text);
-        } else {
-        	store.remove(KEY_TEXT);
-        }
+        setValue(KEY_TEXT, text);
     }
     public String getText() {
-        return (String) store.get(KEY_TEXT);
+        return getString(KEY_TEXT);
     }
     public void setImage(Image image) {
-        if (image != null) {
-            store.put(KEY_IMAGE, image);
-        } else {
-        	store.remove(KEY_IMAGE);
-        }
+        setValue(KEY_IMAGE, image);
     }
     @SuppressWarnings("unchecked")
     public Image getImage() {
-    	Object obj = store.get(KEY_IMAGE);
-        if (obj instanceof Image) {
-            return (Image) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new Image((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_IMAGE, e);
-            }
-        }
-        return null;
+    	return (Image) getObject(Image.class, KEY_IMAGE);
     }
     public void setIsHighlighted(Boolean isHighlighted) {
-        if (isHighlighted != null) {
-            store.put(KEY_IS_HIGHLIGHTED, isHighlighted);
-        } else {
-        	store.remove(KEY_IS_HIGHLIGHTED);
-        }
+        setValue(KEY_IS_HIGHLIGHTED, isHighlighted);
     }
     public Boolean getIsHighlighted() {
-        return (Boolean) store.get(KEY_IS_HIGHLIGHTED);
+        return getBoolean(KEY_IS_HIGHLIGHTED);
     }
     public void setSoftButtonID(Integer softButtonID) {
-        if (softButtonID != null) {
-            store.put(KEY_SOFT_BUTTON_ID, softButtonID);
-        } else {
-        	store.remove(KEY_SOFT_BUTTON_ID);
-        }
+        setValue(KEY_SOFT_BUTTON_ID, softButtonID);
     }
     public Integer getSoftButtonID() {
-        return (Integer) store.get(KEY_SOFT_BUTTON_ID);
+        return getInteger(KEY_SOFT_BUTTON_ID);
     }
     public void setSystemAction(SystemAction systemAction) {
-        if (systemAction != null) {
-            store.put(KEY_SYSTEM_ACTION, systemAction);
-        } else {
-        	store.remove(KEY_SYSTEM_ACTION);
-        }
+        setValue(KEY_SYSTEM_ACTION, systemAction);
     }
     public SystemAction getSystemAction() {
-    	Object obj = store.get(KEY_SYSTEM_ACTION);
-        if (obj instanceof SystemAction) {
-            return (SystemAction) obj;
-        } else if (obj instanceof String) {
-        	return SystemAction.valueForString((String) obj);
-        }
-        return null;
+        return (SystemAction) getObject(SystemAction.class, KEY_SYSTEM_ACTION);
     }
 }

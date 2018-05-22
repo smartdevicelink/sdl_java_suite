@@ -10,6 +10,9 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlDataTypeConverter;
+
+import static com.smartdevicelink.proxy.constants.Names.timeout;
+
 /**
  *Individual requested DID result and data.
  *
@@ -277,58 +280,30 @@ public class OnVehicleData extends RPCNotification {
         super(hash);
     }
     public void setGps(GPSData gps) {
-    	if (gps != null) {
-    		parameters.put(KEY_GPS, gps);
-    	} else {
-    		parameters.remove(KEY_GPS);
-    	}
+        setParameters(KEY_GPS, gps);
     }
     @SuppressWarnings("unchecked")
     public GPSData getGps() {
-    	Object obj = parameters.get(KEY_GPS);
-        if (obj instanceof GPSData) {
-            return (GPSData) obj;
-        } else if (obj instanceof Hashtable) {
-        	GPSData theCode = null;
-            try {
-                theCode = new GPSData((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_GPS, e);
-            }
-            return theCode;
-        }
-        return null;
+        return (GPSData) getObject(GPSData.class, KEY_GPS);
     }
     public void setSpeed(Double speed) {
-    	if (speed != null) {
-    		parameters.put(KEY_SPEED, speed);
-    	} else {
-    		parameters.remove(KEY_SPEED);
-    	}
+        setParameters(KEY_SPEED, speed);
     }
     public Double getSpeed() {
-    	Object object = parameters.get(KEY_SPEED);
+    	Object object = getParameters(KEY_SPEED);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setRpm(Integer rpm) {
-    	if (rpm != null) {
-    		parameters.put(KEY_RPM, rpm);
-    	} else {
-    		parameters.remove(KEY_RPM);
-    	}
+        setParameters(KEY_RPM, rpm);
     }
     public Integer getRpm() {
-    	return (Integer) parameters.get(KEY_RPM);
+    	return getInteger(KEY_RPM);
     }
     public void setFuelLevel(Double fuelLevel) {
-    	if (fuelLevel != null) {
-    		parameters.put(KEY_FUEL_LEVEL, fuelLevel);
-    	} else {
-    		parameters.remove(KEY_FUEL_LEVEL);
-    	}
+        setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
     public Double getFuelLevel() {
-    	Object object = parameters.get(KEY_FUEL_LEVEL);
+    	Object object = getParameters(KEY_FUEL_LEVEL);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
     @Deprecated
@@ -340,358 +315,144 @@ public class OnVehicleData extends RPCNotification {
         return getFuelLevelState();
     }
     public void setFuelLevelState(ComponentVolumeStatus fuelLevelState) {
-        if (fuelLevelState != null) {
-            parameters.put(KEY_FUEL_LEVEL_STATE, fuelLevelState);
-        } else {
-            parameters.remove(KEY_FUEL_LEVEL_STATE);
-        }
+        setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
     public ComponentVolumeStatus getFuelLevelState() {
-        Object obj = parameters.get(KEY_FUEL_LEVEL_STATE);
-        if (obj instanceof ComponentVolumeStatus) {
-            return (ComponentVolumeStatus) obj;
-        } else if (obj instanceof String) {
-            ComponentVolumeStatus theCode = null;
-            try {
-                theCode = ComponentVolumeStatus.valueForString((String) obj);
-            } catch (Exception e) {
-                DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_FUEL_LEVEL_STATE, e);
-            }
-            return theCode;
-        }
-        return null;
+        return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_FUEL_LEVEL_STATE);
     }
     public void setInstantFuelConsumption(Double instantFuelConsumption) {
-    	if (instantFuelConsumption != null) {
-    		parameters.put(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
-    	} else {
-    		parameters.remove(KEY_INSTANT_FUEL_CONSUMPTION);
-    	}
+        setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
     }
     public Double getInstantFuelConsumption() {
-    	Object object = parameters.get(KEY_INSTANT_FUEL_CONSUMPTION);
+    	Object object = getParameters(KEY_INSTANT_FUEL_CONSUMPTION);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setExternalTemperature(Double externalTemperature) {
-    	if (externalTemperature != null) {
-    		parameters.put(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
-    	} else {
-    		parameters.remove(KEY_EXTERNAL_TEMPERATURE);
-    	}
+        setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
     public Double getExternalTemperature() {
-    	Object object = parameters.get(KEY_EXTERNAL_TEMPERATURE);
+    	Object object = getParameters(KEY_EXTERNAL_TEMPERATURE);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setVin(String vin) {
-    	if (vin != null) {
-    		parameters.put(KEY_VIN, vin);
-    	} else {
-    		parameters.remove(KEY_VIN);
-    	}
+        setParameters(KEY_VIN, vin);
     }
     public String getVin() {
-    	return (String) parameters.get(KEY_VIN);
+    	return getString(KEY_VIN);
     }
     public void setPrndl(PRNDL prndl) {
-    	if (prndl != null) {
-    		parameters.put(KEY_PRNDL, prndl);
-    	} else {
-    		parameters.remove(KEY_PRNDL);
-    	}
+        setParameters(KEY_PRNDL, prndl);
     }
     public PRNDL getPrndl() {
-        Object obj = parameters.get(KEY_PRNDL);
-        if (obj instanceof PRNDL) {
-            return (PRNDL) obj;
-        } else if (obj instanceof String) {
-        	return PRNDL.valueForString((String) obj);
-        }
-        return null;
+        return (PRNDL) getObject(PRNDL.class, KEY_PRNDL);
     }
     public void setTirePressure(TireStatus tirePressure) {
-    	if (tirePressure != null) {
-    		parameters.put(KEY_TIRE_PRESSURE, tirePressure);
-    	} else {
-    		parameters.remove(KEY_TIRE_PRESSURE);
-    	}
+        setParameters(KEY_TIRE_PRESSURE, tirePressure);
     }
     @SuppressWarnings("unchecked")
     public TireStatus getTirePressure() {
-    	Object obj = parameters.get(KEY_TIRE_PRESSURE);
-        if (obj instanceof TireStatus) {
-            return (TireStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new TireStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_TIRE_PRESSURE, e);
-            }
-        }
-        return null;
+        return (TireStatus) getObject(TireStatus.class, KEY_TIRE_PRESSURE);
     }
     public void setOdometer(Integer odometer) {
-    	if (odometer != null) {
-    		parameters.put(KEY_ODOMETER, odometer);
-    	} else {
-    		parameters.remove(KEY_ODOMETER);
-    	}
+        setParameters(KEY_ODOMETER, odometer);
     }
     public Integer getOdometer() {
-    	return (Integer) parameters.get(KEY_ODOMETER);
+    	return getInteger(KEY_ODOMETER);
     }
     public void setBeltStatus(BeltStatus beltStatus) {
-        if (beltStatus != null) {
-            parameters.put(KEY_BELT_STATUS, beltStatus);
-        } else {
-        	parameters.remove(KEY_BELT_STATUS);
-        }
+        setParameters(KEY_BELT_STATUS, beltStatus);
     }
     @SuppressWarnings("unchecked")
     public BeltStatus getBeltStatus() {
-    	Object obj = parameters.get(KEY_BELT_STATUS);
-        if (obj instanceof BeltStatus) {
-            return (BeltStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new BeltStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BELT_STATUS, e);
-            }
-        }
-        return null;
+        return (BeltStatus) getObject(BeltStatus.class, KEY_BELT_STATUS);
     }
     public void setBodyInformation(BodyInformation bodyInformation) {
-        if (bodyInformation != null) {
-            parameters.put(KEY_BODY_INFORMATION, bodyInformation);
-        } else {
-        	parameters.remove(KEY_BODY_INFORMATION);
-        }
+        setParameters(KEY_BODY_INFORMATION, bodyInformation);
     }
     @SuppressWarnings("unchecked")
     public BodyInformation getBodyInformation() {
-    	Object obj = parameters.get(KEY_BODY_INFORMATION);
-        if (obj instanceof BodyInformation) {
-            return (BodyInformation) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new BodyInformation((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_BODY_INFORMATION, e);
-            }
-        }
-        return null;
+        return (BodyInformation) getObject(BodyInformation.class, KEY_BODY_INFORMATION);
     }
     public void setDeviceStatus(DeviceStatus deviceStatus) {
-        if (deviceStatus != null) {
-            parameters.put(KEY_DEVICE_STATUS, deviceStatus);
-        } else {
-        	parameters.remove(KEY_DEVICE_STATUS);
-        }
+        setParameters(KEY_DEVICE_STATUS, deviceStatus);
     }
     @SuppressWarnings("unchecked")
     public DeviceStatus getDeviceStatus() {
-    	Object obj = parameters.get(KEY_DEVICE_STATUS);
-        if (obj instanceof DeviceStatus) {
-            return (DeviceStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new DeviceStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_DEVICE_STATUS, e);
-            }
-        }
-        return null;
+        return (DeviceStatus) getObject(DeviceStatus.class, KEY_DEVICE_STATUS);
     }
     public void setDriverBraking(VehicleDataEventStatus driverBraking) {
-        if (driverBraking != null) {
-            parameters.put(KEY_DRIVER_BRAKING, driverBraking);
-        } else {
-        	parameters.remove(KEY_DRIVER_BRAKING);
-        }
+        setParameters(KEY_DRIVER_BRAKING, driverBraking);
     }
     public VehicleDataEventStatus getDriverBraking() {
-        Object obj = parameters.get(KEY_DRIVER_BRAKING);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-        	return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_BRAKING);
     }
     public void setWiperStatus(WiperStatus wiperStatus) {
-        if (wiperStatus != null) {
-            parameters.put(KEY_WIPER_STATUS, wiperStatus);
-        } else {
-        	parameters.remove(KEY_WIPER_STATUS);
-        }
+        setParameters(KEY_WIPER_STATUS, wiperStatus);
     }
     public WiperStatus getWiperStatus() {
-        Object obj = parameters.get(KEY_WIPER_STATUS);
-        if (obj instanceof WiperStatus) {
-            return (WiperStatus) obj;
-        } else if (obj instanceof String) {
-        	return WiperStatus.valueForString((String) obj);
-        }
-        return null;
+        return (WiperStatus) getObject(WiperStatus.class, KEY_WIPER_STATUS);
     }
     public void setHeadLampStatus(HeadLampStatus headLampStatus) {
-        if (headLampStatus != null) {
-            parameters.put(KEY_HEAD_LAMP_STATUS, headLampStatus);
-        } else {
-        	parameters.remove(KEY_HEAD_LAMP_STATUS);
-        }
+        setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
     }
     @SuppressWarnings("unchecked")
     public HeadLampStatus getHeadLampStatus() {
-    	Object obj = parameters.get(KEY_HEAD_LAMP_STATUS);
-        if (obj instanceof HeadLampStatus) {
-            return (HeadLampStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new HeadLampStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HEAD_LAMP_STATUS, e);
-            }
-        }
-        return null;
+        return (HeadLampStatus) getObject(HeadLampStatus.class, KEY_HEAD_LAMP_STATUS);
     }
     public void setEngineTorque(Double engineTorque) {
-        if (engineTorque != null) {
-            parameters.put(KEY_ENGINE_TORQUE, engineTorque);
-        } else {
-        	parameters.remove(KEY_ENGINE_TORQUE);
-        }
+        setParameters(KEY_ENGINE_TORQUE, engineTorque);
     }
     public Double getEngineTorque() {
-    	Object object = parameters.get(KEY_ENGINE_TORQUE);
+    	Object object = getParameters(KEY_ENGINE_TORQUE);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setAccPedalPosition(Double accPedalPosition) {
-        if (accPedalPosition != null) {
-            parameters.put(KEY_ACC_PEDAL_POSITION, accPedalPosition);
-        } else {
-        	parameters.remove(KEY_ACC_PEDAL_POSITION);
-        }
+        setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
     }
     public Double getAccPedalPosition() {
-    	Object object = parameters.get(KEY_ACC_PEDAL_POSITION);
+    	Object object = getParameters(KEY_ACC_PEDAL_POSITION);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setSteeringWheelAngle(Double steeringWheelAngle) {
-        if (steeringWheelAngle != null) {
-            parameters.put(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
-        } else {
-        	parameters.remove(KEY_STEERING_WHEEL_ANGLE);
-        }
+        setParameters(KEY_STEERING_WHEEL_ANGLE, steeringWheelAngle);
     }
     public Double getSteeringWheelAngle() {
-    	Object object = parameters.get(KEY_STEERING_WHEEL_ANGLE);
+    	Object object = getParameters(KEY_STEERING_WHEEL_ANGLE);
     	return SdlDataTypeConverter.objectToDouble(object);
     }
     public void setECallInfo(ECallInfo eCallInfo) {
-        if (eCallInfo != null) {
-            parameters.put(KEY_E_CALL_INFO, eCallInfo);
-        } else {
-        	parameters.remove(KEY_E_CALL_INFO);
-        }
+        setParameters(KEY_E_CALL_INFO, eCallInfo);
     }
     @SuppressWarnings("unchecked")
     public ECallInfo getECallInfo() {
-    	Object obj = parameters.get(KEY_E_CALL_INFO);
-        if (obj instanceof ECallInfo) {
-            return (ECallInfo) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new ECallInfo((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_E_CALL_INFO, e);
-            }
-        }
-        return null;
+        return (ECallInfo) getObject(ECallInfo.class, KEY_E_CALL_INFO);
     }
     public void setAirbagStatus(AirbagStatus airbagStatus) {
-        if (airbagStatus != null) {
-            parameters.put(KEY_AIRBAG_STATUS, airbagStatus);
-        } else {
-        	parameters.remove(KEY_AIRBAG_STATUS);
-        }
+        setParameters(KEY_AIRBAG_STATUS, airbagStatus);
     }
     @SuppressWarnings("unchecked")
     public AirbagStatus getAirbagStatus() {
-    	Object obj = parameters.get(KEY_AIRBAG_STATUS);
-        if (obj instanceof AirbagStatus) {
-            return (AirbagStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new AirbagStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_AIRBAG_STATUS, e);
-            }
-        }
-        return null;
+        return (AirbagStatus) getObject(AirbagStatus.class, KEY_AIRBAG_STATUS);
     }
     public void setEmergencyEvent(EmergencyEvent emergencyEvent) {
-        if (emergencyEvent != null) {
-            parameters.put(KEY_EMERGENCY_EVENT, emergencyEvent);
-        } else {
-        	parameters.remove(KEY_EMERGENCY_EVENT);
-        }
+        setParameters(KEY_EMERGENCY_EVENT, emergencyEvent);
     }
     @SuppressWarnings("unchecked")
     public EmergencyEvent getEmergencyEvent() {
-    	Object obj = parameters.get(KEY_EMERGENCY_EVENT);
-        if (obj instanceof EmergencyEvent) {
-            return (EmergencyEvent) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new EmergencyEvent((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_EMERGENCY_EVENT, e);
-            }
-        }
-        return null;
+        return (EmergencyEvent) getObject(EmergencyEvent.class, KEY_EMERGENCY_EVENT);
     }
     public void setClusterModeStatus(ClusterModeStatus clusterModeStatus) {
-        if (clusterModeStatus != null) {
-            parameters.put(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
-        } else {
-        	parameters.remove(KEY_CLUSTER_MODE_STATUS);
-        }
+        setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
     }
     @SuppressWarnings("unchecked")
     public ClusterModeStatus getClusterModeStatus() {
-    	Object obj = parameters.get(KEY_CLUSTER_MODE_STATUS);
-        if (obj instanceof ClusterModeStatus) {
-            return (ClusterModeStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new ClusterModeStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_CLUSTER_MODE_STATUS, e);
-            }
-        }
-        return null;
+        return (ClusterModeStatus) getObject(ClusterModeStatus.class, KEY_CLUSTER_MODE_STATUS);
     }
     public void setMyKey(MyKey myKey) {
-        if (myKey != null) {
-            parameters.put(KEY_MY_KEY, myKey);
-        } else {
-        	parameters.remove(KEY_MY_KEY);
-        }
+        setParameters(KEY_MY_KEY, myKey);
     }
     @SuppressWarnings("unchecked")
     public MyKey getMyKey() {
-    	Object obj = parameters.get(KEY_MY_KEY);
-        if (obj instanceof MyKey) {
-            return (MyKey) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new MyKey((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_MY_KEY, e);
-            }
-        }
-        return null;
+        return (MyKey) getObject(MyKey.class, KEY_MY_KEY);
     }    
 }

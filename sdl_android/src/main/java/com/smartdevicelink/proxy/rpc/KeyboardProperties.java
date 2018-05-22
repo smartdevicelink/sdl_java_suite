@@ -1,12 +1,17 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
-
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+
+import java.util.Hashtable;
+import java.util.List;
+
+import static android.provider.Contacts.SettingsColumns.KEY;
+import static com.smartdevicelink.proxy.rpc.HeadLampStatus.KEY_AMBIENT_LIGHT_SENSOR_STATUS;
+
 /** This mode causes the interaction to immediately display a keyboard entry through the HMI.
  * 
  * <p><b>Parameter List</b></p>
@@ -78,106 +83,62 @@ public class KeyboardProperties extends RPCStruct {
     private static final KeypressMode KEYPRESS_MODE_DEFAULT = KeypressMode.RESEND_CURRENT_ENTRY;
 
     public KeyboardProperties() {
-        store.put(KEY_KEYPRESS_MODE, KEYPRESS_MODE_DEFAULT);
+        setValue(KEY_KEYPRESS_MODE, KEYPRESS_MODE_DEFAULT);
     }
 
     public KeyboardProperties(Hashtable<String, Object> hash) {
         super(hash);
         if (!store.containsKey(KEY_KEYPRESS_MODE)) {
-            store.put(KEY_KEYPRESS_MODE, KEYPRESS_MODE_DEFAULT);
+            setValue(KEY_KEYPRESS_MODE, KEYPRESS_MODE_DEFAULT);
         }
     }
 
     public Language getLanguage() {
-        Object obj = store.get(KEY_LANGUAGE);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-            return Language.valueForString((String) obj);
-        }
-        return null;
+        return (Language) getObject(Language.class, KEY_LANGUAGE);
     }
 
     public void setLanguage(Language language) {
-        if (language != null) {
-            store.put(KEY_LANGUAGE, language);
-        } else {
-            store.remove(KEY_LANGUAGE);
-        }
+        setValue(KEY_LANGUAGE, language);
     }
 
     public KeyboardLayout getKeyboardLayout() {
-        Object obj = store.get(KEY_KEYBOARD_LAYOUT);
-        if (obj instanceof KeyboardLayout) {
-            return (KeyboardLayout) obj;
-        } else if (obj instanceof String) {
-            return KeyboardLayout.valueForString((String) obj);
-        }
-        return null;
+        return (KeyboardLayout) getObject(KeyboardLayout.class, KEY_KEYBOARD_LAYOUT);
     }
 
     public void setKeyboardLayout(KeyboardLayout keyboardLayout) {
-        if (keyboardLayout != null) {
-            store.put(KEY_KEYBOARD_LAYOUT, keyboardLayout);
-        } else {
-            store.remove(KEY_KEYBOARD_LAYOUT);
-        }
+        setValue(KEY_KEYBOARD_LAYOUT, keyboardLayout);
     }
 
     public KeypressMode getKeypressMode() {
-        Object obj = store.get(KEY_KEYPRESS_MODE);
-        if (obj instanceof KeypressMode) {
-            return (KeypressMode) obj;
-        } else if (obj instanceof String) {
-            return KeypressMode.valueForString((String) obj);
+        KeypressMode kp = (KeypressMode) getObject(KeypressMode.class, KEY_KEYPRESS_MODE);
+        if(kp == null){
+            kp = KEYPRESS_MODE_DEFAULT;
         }
-        return KEYPRESS_MODE_DEFAULT;
+        return kp;
     }
 
     public void setKeypressMode(KeypressMode keypressMode) {
         if (keypressMode != null) {
-            store.put(KEY_KEYPRESS_MODE, keypressMode);
+            setValue(KEY_KEYPRESS_MODE, keypressMode);
         } else {
-            store.put(KEY_KEYPRESS_MODE, KEYPRESS_MODE_DEFAULT);
+            setValue(KEY_KEYPRESS_MODE, KEYPRESS_MODE_DEFAULT);
         }
     }
 
     @SuppressWarnings("unchecked")
     public List<String> getLimitedCharacterList() {
-        final Object listObj = store.get(KEY_LIMITED_CHARACTER_LIST);
-        if (listObj instanceof List<?>) {
-        	List<?> list = (List<?>) listObj;
-            if (list != null && list.size() > 0) {
-                Object obj = list.get(0);
-                if (obj instanceof String) {
-                    return (List<String>) list;
-                }
-            }
-        }
-        return null;
+        return (List<String>) getObject(String.class, KEY_LIMITED_CHARACTER_LIST);
     }
 
     public void setLimitedCharacterList(List<String> limitedCharacterList) {
-        if (limitedCharacterList != null) {
-            store.put(KEY_LIMITED_CHARACTER_LIST, limitedCharacterList);
-        } else {
-            store.remove(KEY_LIMITED_CHARACTER_LIST);
-        }
+        setValue(KEY_LIMITED_CHARACTER_LIST, limitedCharacterList);
     }
 
     public String getAutoCompleteText() {
-        final Object obj = store.get(KEY_AUTO_COMPLETE_TEXT);
-        if (obj instanceof String) {
-            return (String) obj;
-        }
-        return null;
+        return (String) getObject(String.class, KEY_AUTO_COMPLETE_TEXT);
     }
 
     public void setAutoCompleteText(String autoCompleteText) {
-        if (autoCompleteText != null) {
-            store.put(KEY_AUTO_COMPLETE_TEXT, autoCompleteText);
-        } else {
-            store.remove(KEY_AUTO_COMPLETE_TEXT);
-        }
+        setValue(KEY_AUTO_COMPLETE_TEXT, autoCompleteText);
     }
 }

@@ -1,10 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
+
+import java.util.Hashtable;
 
 /**
  * PerformInteraction Response is sent, when PerformInteraction has been called
@@ -39,31 +39,21 @@ public class PerformInteractionResponse extends RPCResponse {
      * @return choiceID Min: 0  Max: 65535
      */   
     public Integer getChoiceID() {
-        return (Integer) parameters.get( KEY_CHOICE_ID );
+        return getInteger( KEY_CHOICE_ID );
     }
     /**
      * Sets the application-scoped identifier that uniquely identifies this choice.
      * @param choiceID Min: 0  Max: 65535
      */ 
     public void setChoiceID( Integer choiceID ) {
-        if (choiceID != null) {
-            parameters.put(KEY_CHOICE_ID, choiceID );
-        } else {
-            parameters.remove(KEY_CHOICE_ID);
-        }
+        setParameters(KEY_CHOICE_ID, choiceID);
     }
     /**
      * <p>Returns a <I>TriggerSource</I> object which will be shown in the HMI</p>    
      * @return TriggerSource a TriggerSource object
      */    
     public TriggerSource getTriggerSource() {
-        Object obj = parameters.get(KEY_TRIGGER_SOURCE);
-        if (obj instanceof TriggerSource) {
-            return (TriggerSource) obj;
-        } else if (obj instanceof String) {
-            return TriggerSource.valueForString((String) obj);
-        }
-        return null;
+        return (TriggerSource) getObject(TriggerSource.class, KEY_TRIGGER_SOURCE);
     }
     /**
      * <p>Sets TriggerSource
@@ -71,21 +61,13 @@ public class PerformInteractionResponse extends RPCResponse {
      * @param triggerSource a TriggerSource object
      */    
     public void setTriggerSource( TriggerSource triggerSource ) {
-        if (triggerSource != null) {
-            parameters.put(KEY_TRIGGER_SOURCE, triggerSource );
-        } else {
-            parameters.remove(KEY_TRIGGER_SOURCE);
-        }
+        setParameters(KEY_TRIGGER_SOURCE, triggerSource);
     }
     
     public void setManualTextEntry(String manualTextEntry) {
-        if (manualTextEntry != null) {
-            parameters.put(KEY_MANUAL_TEXT_ENTRY, manualTextEntry);
-        } else {
-            parameters.remove(KEY_MANUAL_TEXT_ENTRY);
-        }
+        setParameters(KEY_MANUAL_TEXT_ENTRY, manualTextEntry);
     }
     public String getManualTextEntry() {
-        return (String) parameters.get(KEY_MANUAL_TEXT_ENTRY);
+        return getString(KEY_MANUAL_TEXT_ENTRY);
     }    
 }

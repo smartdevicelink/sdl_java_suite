@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.AppHmiType}
+ * {@link com.smartdevicelink.proxy.rpc.enums.AppHMIType}
  */
 public class AppHmiTypeTests extends TestCase {
 
@@ -34,10 +34,14 @@ public class AppHmiTypeTests extends TestCase {
 		AppHMIType enumSocial = AppHMIType.valueForString(example);
 		example = "BACKGROUND_PROCESS";
 		AppHMIType enumBackgroundProcess = AppHMIType.valueForString(example);
+		example = "PROJECTION";
+		AppHMIType enumProjection = AppHMIType.valueForString(example);
 		example = "TESTING";
 		AppHMIType enumTesting = AppHMIType.valueForString(example);
 		example = "SYSTEM";
 		AppHMIType enumSystem = AppHMIType.valueForString(example);
+		example = "REMOTE_CONTROL";
+		AppHMIType enumRemoteControl = AppHMIType.valueForString(example);
 		
 		assertNotNull("DEFAULT returned null", enumDefault);
 		assertNotNull("COMMUNICATION returned null", enumCommunication);
@@ -47,8 +51,10 @@ public class AppHmiTypeTests extends TestCase {
 		assertNotNull("INFORMATION returned null", enumInformation);
 		assertNotNull("SOCIAL returned null", enumSocial);
 		assertNotNull("BACKGROUND_PROCESS returned null", enumBackgroundProcess);
+		assertNotNull("PROJECTION returned null", enumProjection);
 		assertNotNull("TESTING returned null", enumTesting);
 		assertNotNull("SYSTEM returned null", enumSystem);
+		assertNotNull("REMOTE_CONTROL returned null", enumRemoteControl);
 	}
 	
 	/**
@@ -93,9 +99,11 @@ public class AppHmiTypeTests extends TestCase {
 		enumTestList.add(AppHMIType.NAVIGATION);
 		enumTestList.add(AppHMIType.INFORMATION);		
 		enumTestList.add(AppHMIType.SOCIAL);
-		enumTestList.add(AppHMIType.BACKGROUND_PROCESS);	
+		enumTestList.add(AppHMIType.BACKGROUND_PROCESS);
+		enumTestList.add(AppHMIType.PROJECTION);
 		enumTestList.add(AppHMIType.TESTING);
-		enumTestList.add(AppHMIType.SYSTEM);	
+		enumTestList.add(AppHMIType.SYSTEM);
+		enumTestList.add(AppHMIType.REMOTE_CONTROL);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

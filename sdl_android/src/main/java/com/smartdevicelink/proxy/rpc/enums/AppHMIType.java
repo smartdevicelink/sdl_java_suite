@@ -39,9 +39,18 @@ public enum AppHMIType {
      */
     TESTING,
     /**
+     * Custom App Interfaces
+     */
+    PROJECTION,
+    /**
      * System App
      */
-    SYSTEM;
+    SYSTEM,
+    /**
+     * Remote Control
+     */
+    REMOTE_CONTROL,
+    ;
 
     /**
      * Convert String to AppHMIType

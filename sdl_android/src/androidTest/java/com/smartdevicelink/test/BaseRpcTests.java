@@ -168,7 +168,7 @@ public abstract class BaseRpcTests extends AndroidTestCase {
     	Integer correlationId;
     	if (msg instanceof RPCRequest) {
             correlationId = ((RPCRequest) msg).getCorrelationID();  
-            assertNull("Correlation ID of the RPC message was not null.", correlationId);
+            assertNotNull("Correlation ID of the RPC message was null.", correlationId);
             //assertEquals("Correlation ID didn't match expected correlation ID.", CORR_ID, (int) correlationId);
     	}
     	else if (msg instanceof RPCResponse) {
