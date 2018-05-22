@@ -2,13 +2,18 @@ package com.smartdevicelink.SdlConnection;
 
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
 
 import java.util.List;
 
 
 public interface ISdlConnectionListener {
+	@Deprecated
 	public void onTransportDisconnected(String info);
-	
+
+	public void onTransportDisconnected(String info, boolean availablePrimary, MultiplexTransportConfig transportConfig);
+
+
 	public void onTransportError(String info, Exception e);
 	
 	public void onProtocolMessageReceived(ProtocolMessage msg);

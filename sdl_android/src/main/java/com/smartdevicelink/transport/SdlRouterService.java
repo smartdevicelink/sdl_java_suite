@@ -1078,10 +1078,12 @@ public class SdlRouterService extends Service{
 		}
 		
 		exitForeground();
-		Collection<PacketWriteTaskMaster>  tasks = packetWriteTaskMasterMap.values();
-		for(PacketWriteTaskMaster packetWriteTaskMaster: tasks){
-			if(packetWriteTaskMaster!=null){
-				packetWriteTaskMaster.close();
+		if(packetWriteTaskMasterMap != null && packetWriteTaskMasterMap.values() != null) {
+			Collection<PacketWriteTaskMaster> tasks = packetWriteTaskMasterMap.values();
+			for (PacketWriteTaskMaster packetWriteTaskMaster : tasks) {
+				if (packetWriteTaskMaster != null) {
+					packetWriteTaskMaster.close();
+				}
 			}
 		}
 		packetWriteTaskMasterMap.clear();

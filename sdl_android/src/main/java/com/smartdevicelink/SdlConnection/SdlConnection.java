@@ -375,6 +375,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		}
 
 		@Override
+		public void onTransportDisconnected(String info, boolean availablePrimary, MultiplexTransportConfig transportConfig) {
+			onTransportDisconnected(info);
+		}
+
+		@Override
 		public void onTransportError(String info, Exception e) {
 			//If there's an error with the transport we want to make sure we clear out any reference to it held by the static list in sessions
 			SdlSession.removeConnection(SdlConnection.this);

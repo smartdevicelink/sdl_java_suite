@@ -539,10 +539,6 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 		}else{
 			Log.d(TAG, "onTransportDisconnected - " + type.name());
 		}
-		Log.d(TAG, "rpc transport? - " + wiProProtocol.getTransportForSession(SessionType.RPC));
-		if(type != null && type.equals(wiProProtocol.getTransportForSession(SessionType.RPC))){
-			this.sessionListener.onTransportDisconnected(info);
-		}
 		if(type != null && type.equals(wiProProtocol.getTransportForSession(SessionType.NAV))){
 			stopVideoStream();
 			Log.d(TAG, "Stopping video stream.");
@@ -551,6 +547,31 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 			stopAudioStream();
 			Log.d(TAG, "Stopping audio stream.");
 		}
+
+		Log.d(TAG, "rpc transport? - " + wiProProtocol.getTransportForSession(SessionType.RPC));
+		if(type != null && type.equals(wiProProtocol.getTransportForSession(SessionType.RPC))){
+			final MultiplexTransportConfig config = (MultiplexTransportConfig)this.transportConfig;
+			List<TransportType> transportTypes = config.getPrimaryTransports();
+			//transportTypes.remove(type);
+			boolean primaryTransportAvailable = false;
+			if(transportTypes.size() > 1){ Log.d(TAG, "Size greater than 1");
+				for (TransportType transportType: transportTypes){ Log.d(TAG, "Checking " + transportType.name());
+					if( type != null && !type.equals(transportType)
+							&& transportManager.isConnected(transportType)){
+						//TODO A thing
+						Log.d(TAG, "Found a suitable transport");
+						primaryTransportAvailable = true;
+						((MultiplexTransportConfig) this.transportConfig).setService(transportManager.getRouterService());
+						break;
+					}
+				}
+			}
+			this.transportManager.close(this.sessionId);
+			this.transportManager = null;
+			this.sessionListener.onTransportDisconnected(info, primaryTransportAvailable, (MultiplexTransportConfig)this.transportConfig);
+
+		}
+
 	}
 
 	public void shutdown(String info){

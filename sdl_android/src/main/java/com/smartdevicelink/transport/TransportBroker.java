@@ -291,6 +291,7 @@ public class TransportBroker {
 							for(int i = 0; i < transports.size(); i++){
 								transportTypes[i] = TransportType.valueForString(transports.get(i));
 							}
+							broker.onHardwareConnected(transportTypes);
 						}
         				break;
         			}
@@ -590,7 +591,9 @@ public class TransportBroker {
 			routerServiceMessenger = null;
 		}
 		
-
+		protected ComponentName getRouterService(){
+			return this.routerService;
+		}
 		
 		/**
 		 * Since it doesn't always make sense to add another service, use this method to get

@@ -76,6 +76,10 @@ public class TransportManager {
         return transportStatus.get(TransportType.USB) ||  transportStatus.get(TransportType.TCP);
     }
 
+    public ComponentName getRouterService(){
+        return transport.getRouterService();
+    }
+
     public void sendPacket(SdlPacket packet){
         if(transport !=null){
             transport.sendPacketToRouterService(packet);
