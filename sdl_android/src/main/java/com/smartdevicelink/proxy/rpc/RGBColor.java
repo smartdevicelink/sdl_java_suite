@@ -10,8 +10,8 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<th>Name</th>
  * 			<th>Type</th>
- * 		    <th>Reg.</th>
- * 		    <th>Notes</th>
+ * 			<th>Reg.</th>
+ * 			<th>Notes</th>
  * 			<th>Version Available</th>
  * 		</tr>
  * 		<tr>
@@ -19,11 +19,11 @@ import java.util.Hashtable;
  * 			<td>Integer</td>
  * 			<td>Y</td>
  * 			<td>
- * 					<ul>
- * 					<li>minvalue="0"</li>
- * 				    <li>maxvalue="255"</li>
- *					</ul>
- *			</td>
+ *                 <ul>
+ *                 <li>minvalue="0"</li>
+ *                 <li>maxvalue="255"</li>
+ *                 </ul>
+ * 			</td>
  * 			<td>SmartDeviceLink 4.6</td>
  * 		</tr>
  * 		<tr>
@@ -31,11 +31,11 @@ import java.util.Hashtable;
  * 			<td>Integer</td>
  * 			<td>Y</td>
  * 			<td>
- * 					<ul>
- * 					<li>minvalue="0"</li>
- * 				    <li>maxvalue="255"</li>
- *					</ul>
- *			</td>
+ *                 <ul>
+ *                 <li>minvalue="0"</li>
+ *                 <li>maxvalue="255"</li>
+ *                 </ul>
+ * 			</td>
  * 			<td>SmartDeviceLink 4.6</td>
  * 		</tr>
  * 		<tr>
@@ -43,11 +43,11 @@ import java.util.Hashtable;
  * 			<td>Integer</td>
  * 			<td>Y</td>
  * 			<td>
- * 					<ul>
- * 					<li>minvalue="0"</li>
- * 				    <li>maxvalue="255"</li>
- *					</ul>
- *			</td>
+ *                 <ul>
+ *                 <li>minvalue="0"</li>
+ *                 <li>maxvalue="255"</li>
+ *                 </ul>
+ * 			</td>
  * 			<td>SmartDeviceLink 4.6</td>
  * 		</tr>
  * </table>
