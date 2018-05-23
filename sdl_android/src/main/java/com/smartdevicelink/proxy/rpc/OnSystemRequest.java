@@ -43,7 +43,7 @@ import java.util.List;
  * 			<td>This parameter is filled for supporting OEM proprietary data exchanges.</td>
  *                 <td>N</td>
  *                 <td>Max Length: 255</td>
- * 			<td>SmartDeviceLink 4.7</td>
+ * 			<td>SmartDeviceLink 4.6</td>
  * 		</tr>
  * 		<tr>
  * 			<td>url</td>
