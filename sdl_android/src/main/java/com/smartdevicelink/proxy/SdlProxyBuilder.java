@@ -180,7 +180,7 @@ public class SdlProxyBuilder {
 					sdlProxyBuilder.ttsChunks, sdlProxyBuilder.sShortAppName, sdlProxyBuilder.vrSynonyms,
 					sdlProxyBuilder.isMediaApp, sdlProxyBuilder.sdlMessageVersion, sdlProxyBuilder.lang,
 					sdlProxyBuilder.hmiLang, sdlProxyBuilder.vrAppHMITypes, sdlProxyBuilder.appId,
-					sdlProxyBuilder.autoActivateID, sdlProxyBuilder.dayColorScheme, sdlProxyBuilder.nightColorScheme
+					sdlProxyBuilder.autoActivateID, sdlProxyBuilder.dayColorScheme, sdlProxyBuilder.nightColorScheme,
 					sdlProxyBuilder.callbackToUIThread, sdlProxyBuilder.preRegister,
 					sdlProxyBuilder.sAppResumeHash, sdlProxyBuilder.mTransport);
 			proxy.setSdlSecurityClassList(sdlProxyBuilder.sdlSecList);
