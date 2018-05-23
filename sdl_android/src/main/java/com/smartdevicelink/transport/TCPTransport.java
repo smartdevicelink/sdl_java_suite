@@ -136,15 +136,15 @@ public class TCPTransport extends SdlTransport {
         if ((currentState == TCPTransportState.CONNECTED) && (mWriteHandler != null)) {
             bResult = true;
             if ((packet.getServiceType() == SessionType.RPC.getValue()) && (packet.getServiceType() == 0)) {
-                    logInfo("TCPTransport: sendBytesOverTransport request accepted. Trying to send data");
-                    }
+                logInfo("TCPTransport: sendBytesOverTransport request accepted. Trying to send data");
+            }
             Bundle msgBundle = new Bundle();
             msgBundle.putParcelable(KEY_MSG_PACKET, packet);
             Message msg = Message.obtain();
             msg.what = MSG_SEND_PACKET;
             msg.setData(msgBundle);
             mWriteHandler.sendMessage(msg);
-                } else {
+        } else {
             logInfo("TCPTransport: sendBytesOverTransport request rejected. Transport is not connected");
             bResult = false;
         }
@@ -624,7 +624,7 @@ public class TCPTransport extends SdlTransport {
             }
         }
 
-	@Override
+        @Override
         public boolean handleMessage(Message message) {
             if (!mCancelled && (message.what == MSG_SEND_PACKET)) {
                 Bundle msgBundle = message.getData();
