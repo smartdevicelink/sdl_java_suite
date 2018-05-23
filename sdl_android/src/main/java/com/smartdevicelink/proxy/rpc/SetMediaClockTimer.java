@@ -57,7 +57,7 @@ import java.util.Hashtable;
  * 			<td>Defines if seek media clock timer functionality will be available.</td>
  *          <td>N</td>
  * 			<td>If omitted, the value is set to false. The value is retained until the next SetMediaClockTimer is sent.</td>
- * 			<td>SmartDeviceLink 4.7</td>
+ * 			<td>SmartDeviceLink 4.6</td>
  * 		</tr>
  * 		<tr>
  *

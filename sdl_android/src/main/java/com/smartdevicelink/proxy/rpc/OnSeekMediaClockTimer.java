@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 
@@ -25,7 +27,7 @@ import java.util.Hashtable;
  * 			<td>Describes the hour, minute and second values used for the current media clock timer.</td>
  * 			<td>Y</td>
  * 			<td></td>
- * 			<td>SmartDeviceLink 4.7</td>
+ * 			<td>SmartDeviceLink 4.6</td>
  * 		</tr>
  * </table>
  */
@@ -47,6 +49,13 @@ public class OnSeekMediaClockTimer extends RPCNotification {
 		super(hash);
 	}
 	/**
+	 *Constructs a newly allocated OnSeekMediaClockTimer object
+	 */
+	public OnSeekMediaClockTimer(@NonNull StartTime seekTime) {
+		this();
+		setSeekTime(seekTime);
+	}
+	/**
 	 * Gets the StartTime object representing the current media clock timer
 	 *
 	 * @return seekTime -a StartTime object specifying hour, minute, second values
@@ -59,7 +68,7 @@ public class OnSeekMediaClockTimer extends RPCNotification {
 	 *
 	 * @param seekTime -a StartTime object with specifying hour, minute, second values
 	 */
-	public void setSeekTime( StartTime seekTime ) {
+	public void setSeekTime( @NonNull StartTime seekTime ) {
 		setParameters(KEY_SEEK_TIME, seekTime);
 	}
 
