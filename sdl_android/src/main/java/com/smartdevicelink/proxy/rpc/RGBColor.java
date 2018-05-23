@@ -57,15 +57,13 @@ public class RGBColor extends RPCStruct{
     public static final String KEY_RED = "red";
     public static final String KEY_GREEN = "green";
     public static final String KEY_BLUE = "blue";
-    private static Integer minValue = 0;
-    private static Integer maxValue = 255;
-
+    private static final Integer MIN_VALUE = 0, MAX_VALUE = 255;
 
     /**
      * Constructs a new RGBColor object
      */
     public RGBColor(){
-        this(minValue, minValue, minValue);
+        this(MIN_VALUE, MIN_VALUE, MIN_VALUE);
     }
 
     /**
@@ -84,20 +82,20 @@ public class RGBColor extends RPCStruct{
      */
     public RGBColor(Integer red, Integer green, Integer blue) {
         Hashtable<String, Object> hash = new Hashtable<>();
-        if (red != null && red >= minValue && red <= maxValue) {
+        if (red != null && red >= MIN_VALUE && red <= MAX_VALUE) {
             hash.put(KEY_RED, red);
         } else {
-            hash.put(KEY_RED, minValue);
+            hash.put(KEY_RED, MIN_VALUE);
         }
-        if (green != null && green >= minValue && green <= maxValue) {
+        if (green != null && green >= MIN_VALUE && green <= MAX_VALUE) {
             hash.put(KEY_GREEN, green);
         } else {
-            hash.put(KEY_GREEN, minValue);
+            hash.put(KEY_GREEN, MIN_VALUE);
         }
-        if (blue != null && blue >= minValue && blue <= maxValue) {
+        if (blue != null && blue >= MIN_VALUE && blue <= MAX_VALUE) {
             hash.put(KEY_BLUE, blue);
         } else {
-            hash.put(KEY_BLUE, minValue);
+            hash.put(KEY_BLUE, MIN_VALUE);
         }
         this.store = hash;
     }
@@ -107,7 +105,7 @@ public class RGBColor extends RPCStruct{
      * @param color red value - min: 0; max: 255
      */
     public void setRed(Integer color) {
-        if (color != null && color >= minValue && color <= maxValue) {
+        if (color != null && color >= MIN_VALUE && color <= MAX_VALUE) {
             setValue(KEY_RED, color);
         }
     }
@@ -125,7 +123,7 @@ public class RGBColor extends RPCStruct{
      * @param color green value - min: 0; max: 255
      */
     public void setGreen(Integer color) {
-        if (color != null && color >= minValue && color <= maxValue) {
+        if (color != null && color >= MIN_VALUE && color <= MAX_VALUE) {
             setValue(KEY_GREEN, color);
         }
     }
@@ -143,7 +141,7 @@ public class RGBColor extends RPCStruct{
      * @param color blue value - min: 0; max: 255
      */
     public void setBlue(Integer color) {
-        if (color != null && color >= minValue && color <= maxValue) {
+        if (color != null && color >= MIN_VALUE && color <= MAX_VALUE) {
             setValue(KEY_BLUE, color);
         }
     }
