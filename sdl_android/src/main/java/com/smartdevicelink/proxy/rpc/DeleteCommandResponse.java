@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -27,7 +29,7 @@ public class DeleteCommandResponse extends RPCResponse {
      * @param success whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
-    public DeleteCommandResponse(Boolean success, Result resultCode) {
+    public DeleteCommandResponse(@NonNull Boolean success, @NonNull Result resultCode) {
         this();
         setSuccess(success);
         setResultCode(resultCode);

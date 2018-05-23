@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 
@@ -16,7 +18,7 @@ public class Coordinate extends RPCStruct{
         super(hash);
     }
 
-    public Coordinate(Float latitudeDegrees, Float longitudeDegrees) {
+    public Coordinate(@NonNull Float latitudeDegrees, @NonNull Float longitudeDegrees) {
         this();
         setLatitudeDegrees(latitudeDegrees);
         setLongitudeDegrees(longitudeDegrees);
@@ -27,7 +29,7 @@ public class Coordinate extends RPCStruct{
         return SdlDataTypeConverter.objectToFloat(value);
     }
 
-    public void setLatitudeDegrees(Float latitudeDegrees) {
+    public void setLatitudeDegrees(@NonNull Float latitudeDegrees) {
         setValue(KEY_LATITUDE_DEGREES, latitudeDegrees);
     }
 
@@ -36,7 +38,7 @@ public class Coordinate extends RPCStruct{
         return SdlDataTypeConverter.objectToFloat(value);
     }
 
-    public void setLongitudeDegrees(Float longitudeDegrees) {
+    public void setLongitudeDegrees(@NonNull Float longitudeDegrees) {
         setValue(KEY_LONGITUDE_DEGREES, longitudeDegrees);
     }
 }

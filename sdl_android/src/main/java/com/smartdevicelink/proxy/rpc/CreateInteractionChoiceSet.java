@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -100,7 +102,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 * @param choiceSet: a List<Choice> representing the array of one or more elements
 	 *            <b>Notes: </b>Min Value: 1; Max Value: 100
 	 */
-	public CreateInteractionChoiceSet(Integer interactionChoiceSetID, List<Choice> choiceSet) {
+	public CreateInteractionChoiceSet(@NonNull Integer interactionChoiceSetID, @NonNull List<Choice> choiceSet) {
 		this();
 		setInteractionChoiceSetID(interactionChoiceSetID);
 		setChoiceSet(choiceSet);
@@ -121,7 +123,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 *            
 	 *            <b>Notes: </b>Min Value: 0; Max Value: 2000000000
 	 */    
-    public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
+    public void setInteractionChoiceSetID( @NonNull Integer interactionChoiceSetID ) {
 		setParameters(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
     }
 	/**
@@ -143,7 +145,7 @@ public class CreateInteractionChoiceSet extends RPCRequest {
 	 *            
 	 *            <b>Notes: </b>Min Value: 1; Max Value: 100
 	 */    
-    public void setChoiceSet( List<Choice> choiceSet ) {
+    public void setChoiceSet( @NonNull List<Choice> choiceSet ) {
 		setParameters(KEY_CHOICE_SET, choiceSet);
     }
 }

@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -76,7 +78,7 @@ public class DeleteCommand extends RPCRequest {
 	 * Constructs a new DeleteCommand object
 	 * @param cmdID: an Integer value representing Command ID
 	 */
-	public DeleteCommand(Integer cmdID) {
+	public DeleteCommand(@NonNull Integer cmdID) {
 		this();
 		setCmdID(cmdID);
 	}
@@ -98,7 +100,7 @@ public class DeleteCommand extends RPCRequest {
 	 *            
 	 *            <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
 	 */    
-    public void setCmdID( Integer cmdID ) {
+    public void setCmdID( @NonNull Integer cmdID ) {
 		setParameters(KEY_CMD_ID, cmdID);
     }
 }
