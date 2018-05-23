@@ -24,7 +24,7 @@ import java.util.Hashtable;
  * 				    <li>maxvalue="255"</li>
  *					</ul>
  *			</td>
- * 			<td>SmartDeviceLink 4.7</td>
+ * 			<td>SmartDeviceLink 4.6</td>
  * 		</tr>
  * 		<tr>
  * 			<td>green</td>
@@ -36,7 +36,7 @@ import java.util.Hashtable;
  * 				    <li>maxvalue="255"</li>
  *					</ul>
  *			</td>
- * 			<td>SmartDeviceLink 4.7</td>
+ * 			<td>SmartDeviceLink 4.6</td>
  * 		</tr>
  * 		<tr>
  * 			<td>blue</td>
@@ -48,10 +48,10 @@ import java.util.Hashtable;
  * 				    <li>maxvalue="255"</li>
  *					</ul>
  *			</td>
- * 			<td>SmartDeviceLink 4.7</td>
+ * 			<td>SmartDeviceLink 4.6</td>
  * 		</tr>
  * </table>
- * @since SmartDeviceLink 4.7
+ * @since SmartDeviceLink 4.6
  */
 public class RGBColor extends RPCStruct{
     public static final String KEY_RED = "red";
