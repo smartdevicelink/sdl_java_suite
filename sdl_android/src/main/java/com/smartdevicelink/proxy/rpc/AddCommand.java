@@ -59,7 +59,7 @@ import java.util.List;
  *                 <td>Y</td>
  * 			<td></td>
  * 			<td>SmartDeviceLink 1.0</td>
- * 		<tr/>
+ * 		</tr>
  * 		<tr>
  * 			<td>vrCommands</td>
  * 			<td>String</td>
