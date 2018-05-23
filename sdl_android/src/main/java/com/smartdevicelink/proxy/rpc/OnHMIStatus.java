@@ -55,7 +55,7 @@ import java.util.Hashtable;
  * <td>videoStreamingState</td>
  * <td>{@linkplain VideoStreamingState}</td>
  * <td>If it is NOT_STREAMABLE, the app must stop streaming video to SDL Core(stop service).</td>
- * <td>SmartDeviceLink 4.7</td>
+ * <td>SmartDeviceLink 4.6</td>
  * </tr>
  * <tr>
  * <td>systemContext</td>
