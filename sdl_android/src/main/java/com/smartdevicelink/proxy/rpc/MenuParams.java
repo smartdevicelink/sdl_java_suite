@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -71,6 +73,14 @@ public class MenuParams extends RPCStruct {
         super(hash);
     }
     /**
+     * Constructs a newly allocated MenuParams object
+     * @param menuName the menu name
+     */
+    public MenuParams(@NonNull String menuName) {
+        this();
+        setMenuName(menuName);
+    }
+    /**
      * Get the unique ID of an existing submenu to which a command will be added.
      *	If this element is not provided, the command will be added to the top level of the Command Menu.
      * @return parentID Min: 0 Max: 2000000000
@@ -135,7 +145,7 @@ public class MenuParams extends RPCStruct {
      * @param menuName the menu name
      */
     
-    public void setMenuName( String menuName ) {
+    public void setMenuName( @NonNull String menuName ) {
         setValue(KEY_MENU_NAME, menuName);
     }
 }
