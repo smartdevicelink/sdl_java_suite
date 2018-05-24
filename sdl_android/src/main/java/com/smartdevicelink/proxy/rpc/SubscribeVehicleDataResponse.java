@@ -1,7 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Hashtable;
 
@@ -48,12 +51,21 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	 * parameter</p>
 	 * 
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public SubscribeVehicleDataResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
+	/**
+	 * Constructs a new SubscribeVehicleDataResponse object
+	 * @param success whether the request is successfully processed
+	 * @param resultCode whether the request is successfully processed
+	 */
+	public SubscribeVehicleDataResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+		this();
+		setSuccess(success);
+		setResultCode(resultCode);
+	}
     /**
      * Sets gps
      * @param gps
