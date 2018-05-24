@@ -1,7 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Hashtable;
 
@@ -28,6 +31,19 @@ public class SetInteriorVehicleDataResponse extends RPCResponse {
     }
 
 	/**
+	 * Constructs a new SetInteriorVehicleDataResponse object
+	 * @param success whether the request is successfully processed
+	 * @param resultCode whether the request is successfully processed
+	 * @param moduleData
+	 */
+	public SetInteriorVehicleDataResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull ModuleData moduleData) {
+		this();
+		setSuccess(success);
+		setResultCode(resultCode);
+		setModuleData(moduleData);
+	}
+
+	/**
 	 * Gets the moduleData
 	 *
 	 * @return ModuleData
@@ -41,7 +57,7 @@ public class SetInteriorVehicleDataResponse extends RPCResponse {
 	 *
 	 * @param moduleData
 	 */
-	public void setModuleData(ModuleData moduleData) {
+	public void setModuleData(@NonNull ModuleData moduleData) {
 		setParameters(KEY_MODULE_DATA, moduleData);
 	}
 }
