@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -90,6 +92,28 @@ public class ReadDID extends RPCRequest {
     }
 
 	/**
+	 * Constructs a new ReadDID object
+	 * @param ecuName
+	 *            an Integer value representing the ID of the vehicle module
+	 *            <p></p>
+	 *            <b>Notes: </b>Minvalue:0; Maxvalue:65535
+	 * @param didLocation
+	 *            a List<Integer> value representing raw data from vehicle
+	 *            data DID location(s)
+	 *            <p></p>
+	 *            <b>Notes: </b>
+	 *            <ul>
+	 *            <li>Minvalue:0; Maxvalue:65535</li>
+	 *            <li>ArrayMin:0; ArrayMax:1000</li>
+	 *            </ul>
+	 */
+	public ReadDID(@NonNull Integer ecuName, @NonNull List<Integer> didLocation) {
+		this();
+		setEcuName(ecuName);
+		setDidLocation(didLocation);
+	}
+
+	/**
 	 * Sets an ID of the vehicle module
 	 * 
 	 * @param ecuName
@@ -97,7 +121,7 @@ public class ReadDID extends RPCRequest {
 	 *            <p></p>
 	 *            <b>Notes: </b>Minvalue:0; Maxvalue:65535
 	 */
-    public void setEcuName(Integer ecuName) {
+    public void setEcuName(@NonNull Integer ecuName) {
 		setParameters(KEY_ECU_NAME, ecuName);
     }
 
@@ -124,7 +148,7 @@ public class ReadDID extends RPCRequest {
 	 *            <li>ArrayMin:0; ArrayMax:1000</li>
 	 *            </ul>
 	 */
-    public void setDidLocation(List<Integer> didLocation) {
+    public void setDidLocation(@NonNull List<Integer> didLocation) {
 		setParameters(KEY_DID_LOCATION, didLocation);
     }
 

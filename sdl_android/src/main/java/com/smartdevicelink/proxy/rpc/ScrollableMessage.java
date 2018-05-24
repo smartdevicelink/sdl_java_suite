@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -93,6 +95,19 @@ public class ScrollableMessage extends RPCRequest {
     }
 
 	/**
+	 * Constructs a new ScrollableMessage object
+	 * @param scrollableMessageBody
+	 *            a String value representing the Body of text that can include
+	 *            newlines and tabs
+	 *            <p></p>
+	 *            <b>Notes: </b>Maxlength=500
+	 */
+	public ScrollableMessage(@NonNull String scrollableMessageBody) {
+		this();
+		setScrollableMessageBody(scrollableMessageBody);
+	}
+
+	/**
 	 * Sets a Body of text that can include newlines and tabs
 	 * 
 	 * @param scrollableMessageBody
@@ -101,7 +116,7 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500
 	 */
-    public void setScrollableMessageBody(String scrollableMessageBody) {
+    public void setScrollableMessageBody(@NonNull String scrollableMessageBody) {
 		setParameters(KEY_SCROLLABLE_MESSAGE_BODY, scrollableMessageBody);
     }
 

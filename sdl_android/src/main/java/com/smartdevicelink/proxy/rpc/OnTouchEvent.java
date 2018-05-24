@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
@@ -48,11 +50,11 @@ public class OnTouchEvent extends RPCNotification {
 	public static final String KEY_TYPE = "type";
 	/**
 	 * Constructs a new OnTouchEvent object
-	 */  
+	 */
 
-    public OnTouchEvent() {
-        super(FunctionID.ON_TOUCH_EVENT.toString());
-    }
+	public OnTouchEvent() {
+		super(FunctionID.ON_TOUCH_EVENT.toString());
+	}
 	/**
 	* <p>
 	* Constructs a new OnTouchEvent object indicated by the Hashtable
@@ -66,8 +68,17 @@ public class OnTouchEvent extends RPCNotification {
     public OnTouchEvent(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new OnTouchEvent object
+	 */
+	public OnTouchEvent(@NonNull TouchType type, @NonNull List<TouchEvent> event) {
+		this();
+		setType(type);
+		setEvent(event);
+	}
     
-    public void setType(TouchType type) {
+    public void setType(@NonNull TouchType type) {
 		setParameters(KEY_TYPE, type);
     }
     
@@ -75,7 +86,7 @@ public class OnTouchEvent extends RPCNotification {
 		return (TouchType) getObject(TouchType.class, KEY_TYPE);
     }
     
-    public void setEvent(List<TouchEvent> event) {
+    public void setEvent(@NonNull List<TouchEvent> event) {
 		setParameters(KEY_EVENT, event);
     }
     

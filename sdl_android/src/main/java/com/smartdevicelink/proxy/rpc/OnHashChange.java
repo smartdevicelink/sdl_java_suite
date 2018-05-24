@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 
@@ -53,12 +55,20 @@ public class OnHashChange extends RPCNotification {
     public OnHashChange(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+    /**
+     * Constructs a new OnHashChange object
+     */
+    public OnHashChange(@NonNull String hashID) {
+        this();
+        setHashID(hashID);
+    }
     
     public String getHashID() {
         return getString(KEY_HASH_ID);
     }
    
-    public void setHashID(String hashID) {
+    public void setHashID(@NonNull String hashID) {
         setParameters(KEY_HASH_ID, hashID);
     }   
     
