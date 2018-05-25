@@ -32,10 +32,11 @@ public class ListFilesResponse extends RPCResponse {
      * @param success whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
-    public ListFilesResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+    public ListFilesResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull Integer spaceAvailable) {
         this();
         setSuccess(success);
         setResultCode(resultCode);
+        setSpaceAvailable(spaceAvailable);
     }
     public void setFilenames(List<String> filenames) {
         setParameters(KEY_FILENAMES, filenames);
@@ -44,7 +45,7 @@ public class ListFilesResponse extends RPCResponse {
     public List<String> getFilenames() {
         return (List<String>) getObject(String.class, KEY_FILENAMES);
     }
-    public void setSpaceAvailable(Integer spaceAvailable) {
+    public void setSpaceAvailable(@NonNull Integer spaceAvailable) {
         setParameters(KEY_SPACE_AVAILABLE, spaceAvailable);
     }
     public Integer getSpaceAvailable() {
