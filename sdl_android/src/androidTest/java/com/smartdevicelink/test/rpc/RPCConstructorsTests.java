@@ -107,7 +107,7 @@ public class RPCConstructorsTests extends AndroidTestCase {
         // mandatory params for that RPC. All info are loaded from the RPC spec xml file
         Map<String, List<String>> rpcMandatoryParamsMapFromXml = getRPCMandatoryParamsMap(fileName);
 
-        // List of RPC names that doesn't have a constructor that has all mandatory params
+        // List of RPC names that don't have a constructor that has all mandatory params
         List<String> rpcsWithInvalidConstructor = new ArrayList<>();
 
         // List of the RPC names that couldn't be found in code
