@@ -1,11 +1,6 @@
 package com.smartdevicelink.test.rpc;
 
-import android.content.Context;
 import android.test.AndroidTestCase;
-
-import com.smartdevicelink.proxy.SdlProxyALM;
-import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
-import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -14,10 +9,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
