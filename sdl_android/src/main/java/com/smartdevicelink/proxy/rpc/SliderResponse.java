@@ -1,7 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Hashtable;
 
@@ -31,6 +34,18 @@ public class SliderResponse extends RPCResponse {
     public SliderResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new SliderResponse object
+	 * @param success whether the request is successfully processed
+	 * @param resultCode whether the request is successfully processed
+	 */
+	public SliderResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+		this();
+		setSuccess(success);
+		setResultCode(resultCode);
+	}
+
     /**
      * Sets an Initial position of slider control
      * @param sliderPosition

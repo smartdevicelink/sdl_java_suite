@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -66,12 +68,27 @@ public class SoftButtonCapabilities extends RPCStruct {
     public SoftButtonCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a newly allocated SoftButtonCapabilities object
+	 * @param shortPressAvailable The button supports a short press.
+	 * @param longPressAvailable The button supports a LONG press
+	 * @param upDownAvailable The button supports "button down" and "button up".
+	 * @param imageSupported The button supports referencing a static or dynamic image.
+	 */
+	public SoftButtonCapabilities(@NonNull Boolean shortPressAvailable, @NonNull Boolean longPressAvailable, @NonNull Boolean upDownAvailable, @NonNull Boolean imageSupported){
+		this();
+		setShortPressAvailable(shortPressAvailable);
+		setLongPressAvailable(longPressAvailable);
+		setUpDownAvailable(upDownAvailable);
+		setImageSupported(imageSupported);
+	}
     
     /**
      * set the button supports a short press.
      * @param shortPressAvailable whether the button supports a short press.
      */
-    public void setShortPressAvailable(Boolean shortPressAvailable) {
+    public void setShortPressAvailable(@NonNull Boolean shortPressAvailable) {
         setValue(KEY_SHORT_PRESS_AVAILABLE, shortPressAvailable);
     }
     
@@ -87,7 +104,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * set the button supports a LONG press.
      * @param longPressAvailable whether the button supports a long press
      */
-    public void setLongPressAvailable(Boolean longPressAvailable) {
+    public void setLongPressAvailable(@NonNull Boolean longPressAvailable) {
         setValue(KEY_LONG_PRESS_AVAILABLE, longPressAvailable);
     }
     
@@ -103,7 +120,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * set the button supports "button down" and "button up". 
      * @param upDownAvailable the button supports "button down" and "button up". 
      */
-    public void setUpDownAvailable(Boolean upDownAvailable) {
+    public void setUpDownAvailable(@NonNull Boolean upDownAvailable) {
         setValue(KEY_UP_DOWN_AVAILABLE, upDownAvailable);
     }
     
@@ -119,7 +136,7 @@ public class SoftButtonCapabilities extends RPCStruct {
      * set the button supports referencing a static or dynamic image.
      * @param imageSupported whether the button supports referencing a static or dynamic image.
      */
-    public void setImageSupported(Boolean imageSupported) {
+    public void setImageSupported(@NonNull Boolean imageSupported) {
         setValue(KEY_IMAGE_SUPPORTED, imageSupported);
     }
     

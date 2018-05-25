@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
@@ -61,7 +63,7 @@ import static com.smartdevicelink.proxy.rpc.TireStatus.KEY_INNER_RIGHT_REAR;
  * @see PerformInteraction
  * @see ScrollableMessage
  * @see PerformAudioPassThru
- * @see ShowConstantTBT
+ * @see ShowConstantTbt
  * 
  */
 public class TextField extends RPCStruct {
@@ -80,6 +82,20 @@ public class TextField extends RPCStruct {
     public TextField(Hashtable<String, Object> hash) {
         super(hash);
     }
+	/**
+	 * Constructs a newly allocated TextField object
+	 * @param name Enumeration identifying the field.
+	 * @param characterSet The character set that is supported in this field.
+	 * @param width The number of characters in one row of this field.
+	 * @param rows The number of rows for this text field.
+	 */
+	public TextField(@NonNull TextFieldName name, @NonNull CharacterSet characterSet, @NonNull Integer width, @NonNull Integer rows){
+		this();
+		setName(name);
+		setCharacterSet(characterSet);
+		setWidth(width);
+		setRows(rows);
+	}
     /**
      * Get the enumeration identifying the field.	
      * @return the name of TextField
@@ -91,7 +107,7 @@ public class TextField extends RPCStruct {
      * Set the enumeration identifying the field.	
      * @param name the name of TextField
      */    
-    public void setName( TextFieldName name ) {
+    public void setName(@NonNull TextFieldName name ) {
         setValue(KEY_NAME, name);
     }
     /**
@@ -105,7 +121,7 @@ public class TextField extends RPCStruct {
      * Set the character set that is supported in this field.
      * @param characterSet - the character set
      */    
-    public void setCharacterSet( CharacterSet characterSet ) {
+    public void setCharacterSet(@NonNull CharacterSet characterSet ) {
         setValue(KEY_CHARACTER_SET, characterSet);
     }
     /**
@@ -127,7 +143,7 @@ public class TextField extends RPCStruct {
      *					</ul>
      * @param width  the number of characters in one row of this field
      */    
-    public void setWidth( Integer width ) {
+    public void setWidth(@NonNull Integer width ) {
         setValue(KEY_WIDTH, width);
     }
     /**
@@ -141,7 +157,7 @@ public class TextField extends RPCStruct {
     public Integer getRows() {
         return getInteger( KEY_ROWS );
     }
-    public void setRows( Integer rows ) {
+    public void setRows(@NonNull Integer rows ) {
         setValue(KEY_ROWS, rows);
     }
 }
