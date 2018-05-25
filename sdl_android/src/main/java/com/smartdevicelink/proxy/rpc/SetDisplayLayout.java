@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -64,15 +66,25 @@ public class SetDisplayLayout extends RPCRequest {
     }
 
 	/**
+	 * Constructs a new SetDisplayLayout object
+	 * @param displayLayout
+	 *            a String value representing a display layout
+	 */
+	public SetDisplayLayout(@NonNull String displayLayout) {
+		this();
+		setDisplayLayout(displayLayout);
+	}
+
+	/**
 	 * Sets a display layout. Predefined or dynamically created screen layout.
 	 * Currently only predefined screen layouts are defined. Predefined layouts
 	 * include: "ONSCREEN_PRESETS" Custom screen containing app-defined onscreen
 	 * presets. Currently defined for GEN2
 	 * 
 	 * @param displayLayout
-	 *            a String value representing a diaply layout
+	 *            a String value representing a display layout
 	 */
-    public void setDisplayLayout(String displayLayout) {
+    public void setDisplayLayout(@NonNull String displayLayout) {
 		setParameters(KEY_DISPLAY_LAYOUT, displayLayout);
     }
 

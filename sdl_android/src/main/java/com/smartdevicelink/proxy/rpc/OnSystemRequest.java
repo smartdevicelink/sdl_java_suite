@@ -1,5 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -110,6 +111,15 @@ public class OnSystemRequest extends RPCNotification {
     public OnSystemRequest(Hashtable<String, Object> hash, byte[] bulkData){
         super(hash);
         setBulkData(bulkData);
+    }
+
+    /** Constructs a new OnSystemsRequest object
+     *
+     */
+
+    public OnSystemRequest(@NonNull RequestType requestType) {
+        this();
+        setRequestType(requestType);
     }
     
     private void handleBulkData(byte[] bulkData){
@@ -222,7 +232,7 @@ public class OnSystemRequest extends RPCNotification {
         return (RequestType) getObject(RequestType.class, KEY_REQUEST_TYPE);
     }
 
-    public void setRequestType(RequestType requestType) {
+    public void setRequestType(@NonNull RequestType requestType) {
         setParameters(KEY_REQUEST_TYPE, requestType);
     }
 

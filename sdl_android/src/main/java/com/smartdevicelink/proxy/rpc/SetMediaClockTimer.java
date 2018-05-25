@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
@@ -92,6 +94,23 @@ public class SetMediaClockTimer extends RPCRequest {
         super(hash);
     }
 	/**
+	 * Constructs a new SetMediaClockTimer object
+	 * @param updateMode
+	 *            a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME)
+	 *            <p></p>
+	 *            <b>Notes: </b>
+	 *            <ul>
+	 *            <li>When updateMode is PAUSE, RESUME or CLEAR, the start time value
+	 *            is ignored</li>
+	 *            <li>When updateMode is RESUME, the timer resumes counting from
+	 *            the timer's value when it was paused</li>
+	 *            </ul>
+	 */
+	public SetMediaClockTimer(@NonNull UpdateMode updateMode) {
+		this();
+		setUpdateMode(updateMode);
+	}
+	/**
 	 * Gets the Start Time which media clock timer is set
 	 * 
 	 * @return StartTime -a StartTime object specifying hour, minute, second
@@ -149,7 +168,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 *            the timer's value when it was paused</li>
 	 *            </ul>
 	 */    
-    public void setUpdateMode( UpdateMode updateMode ) {
+    public void setUpdateMode( @NonNull UpdateMode updateMode ) {
 		setParameters(KEY_UPDATE_MODE, updateMode);
     }
 }

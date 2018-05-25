@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -39,12 +41,21 @@ public class PresetBankCapabilities extends RPCStruct {
     public PresetBankCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
+
+    /**
+     * Constructs a newly allocated PresetBankCapabilities object
+     * @param onScreenPresetsAvailable if Onscreen custom presets are available.
+     */
+    public PresetBankCapabilities(@NonNull Boolean onScreenPresetsAvailable) {
+        this();
+        setOnScreenPresetsAvailable(onScreenPresetsAvailable);
+    }
+
     /**
      * set if Onscreen custom presets are available.
      * @param onScreenPresetsAvailable if Onscreen custom presets are available.
      */
-    public void setOnScreenPresetsAvailable(Boolean onScreenPresetsAvailable) {
+    public void setOnScreenPresetsAvailable(@NonNull Boolean onScreenPresetsAvailable) {
     	setValue(KEY_ON_SCREEN_PRESETS_AVAILABLE, onScreenPresetsAvailable);
     }
     

@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -82,6 +84,18 @@ public class AddSubMenu extends RPCRequest {
         super(hash);
     }
 	/**
+	 * Constructs a new AddSubMenu object
+	 * @param menuID
+	 *            an integer object representing a Menu ID
+	 *
+	 *           <p><b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
+	 * @param menuName
+	 *            String which will be displayed representing this submenu item
+	 */
+	public AddSubMenu(@NonNull Integer menuID, @NonNull String menuName) {
+		this();
+	}
+	/**
 	 * Returns an <i>Integer</i> object representing the Menu ID that identifies
 	 * a sub menu
 	 * 
@@ -103,7 +117,7 @@ public class AddSubMenu extends RPCRequest {
 	 *            
 	 *           <p><b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
 	 */    
-    public void setMenuID( Integer menuID ) {
+    public void setMenuID( @NonNull Integer menuID ) {
 		setParameters(KEY_MENU_ID, menuID);
     }
 	/**
@@ -152,7 +166,7 @@ public class AddSubMenu extends RPCRequest {
 	 * @param menuName
 	 *            String which will be displayed representing this submenu item
 	 */    
-    public void setMenuName( String menuName ) {
+    public void setMenuName( @NonNull String menuName ) {
 		setParameters(KEY_MENU_NAME, menuName);
     }
 }
