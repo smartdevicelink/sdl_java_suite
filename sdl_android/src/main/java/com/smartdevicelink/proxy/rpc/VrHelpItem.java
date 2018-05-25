@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
@@ -49,22 +51,33 @@ public class VrHelpItem extends RPCStruct {
 	public static final String KEY_POSITION = "position";
 	public static final String KEY_TEXT = "text";
 	public static final String KEY_IMAGE = "image";
+
+	public VrHelpItem() { }
 	  /**
 		* <p>
 		* Constructs a new VrHelpItem object indicated by the Hashtable
 		* parameter
 		* </p>
 		* 
-		* @param hash
-		* <p>
-		*            The Hashtable to use
+		* @param hash -The Hashtable to use
 		*/
-
-    public VrHelpItem() { }
     public VrHelpItem(Hashtable<String, Object> hash) {
         super(hash);
     }
-    public void setText(String text) {
+
+	/**
+	 * VR help items  i.e. the text strings to be displayed, and when pronounced
+	 * by the user the recognition of any of which must trigger the corresponding VR command.
+	 * @param text Text to display for VR Help item
+	 * @param position Position to display item in VR Help list
+	 */
+	public VrHelpItem(@NonNull String text, @NonNull Integer position){
+    	this();
+    	setText(text);
+    	setPosition(position);
+	}
+
+    public void setText(@NonNull String text) {
         setValue(KEY_TEXT, text);
     }
     public String getText() {
@@ -77,7 +90,7 @@ public class VrHelpItem extends RPCStruct {
     public Image getImage() {
         return (Image) getObject(Image.class, KEY_IMAGE);
     }
-    public void setPosition(Integer position) {
+    public void setPosition(@NonNull Integer position) {
         setValue(KEY_POSITION, position);
     }
     public Integer getPosition() {

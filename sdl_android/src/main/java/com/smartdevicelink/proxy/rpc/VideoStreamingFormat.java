@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
@@ -17,12 +19,18 @@ public class VideoStreamingFormat extends RPCStruct {
 	public VideoStreamingFormat(){}
 	public VideoStreamingFormat(Hashtable<String, Object> hash){super(hash);}
 
-	public VideoStreamingFormat(VideoStreamingCodec codec,VideoStreamingProtocol protocol){
+	/**
+	 * Create the VideoStreamingFormat object
+	 * @param codec The codec used
+	 * @param protocol The protocol used
+	 */
+	public VideoStreamingFormat(@NonNull VideoStreamingCodec codec, @NonNull VideoStreamingProtocol protocol){
+		this();
 		setCodec(codec);
 		setProtocol(protocol);
 	}
 
-	public void setProtocol(VideoStreamingProtocol protocol){
+	public void setProtocol(@NonNull VideoStreamingProtocol protocol){
 		setValue(KEY_PROTOCOL, protocol);
 	}
 
@@ -30,7 +38,7 @@ public class VideoStreamingFormat extends RPCStruct {
 		return (VideoStreamingProtocol) getObject(VideoStreamingProtocol.class, KEY_PROTOCOL);
 	}
 
-	public void setCodec(VideoStreamingCodec codec){
+	public void setCodec(@NonNull VideoStreamingCodec codec){
 		setValue(KEY_CODEC, codec);
 	}
 

@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
@@ -63,29 +65,35 @@ public class UnsubscribeButton extends RPCRequest {
 	 * parameter
 	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
-	 */	
+	 * @param hash The Hashtable to use
+	 */
     public UnsubscribeButton(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new UnsubscribeButton object
+	 * @param buttonName Name of the button to unsubscribe.
+	 */
+	public UnsubscribeButton(@NonNull ButtonName buttonName){
+		this();
+		setButtonName(buttonName);
+	}
+
 	/**
 	 * Gets a name of the button to unsubscribe from
 	 * 
-	 * @return ButtonName -an Enumeration value, see <i>
-	 *         {@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i>
-	 */    
+	 * @return ButtonName -an Enumeration value, see <i> {@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i>
+	 */
     public ButtonName getButtonName() {
 		return (ButtonName) getObject(ButtonName.class, KEY_BUTTON_NAME);
     }
 	/**
 	 * Sets the name of the button to unsubscribe from
 	 * 
-	 * @param buttonName
-	 *            an enum value, see <i>
-	 *            {@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i>
-	 */    
-    public void setButtonName( ButtonName buttonName ) {
+	 * @param buttonName an enum value, see <i> {@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i>
+	 */
+    public void setButtonName(@NonNull ButtonName buttonName ) {
 		setParameters(KEY_BUTTON_NAME, buttonName);
     }
 }
