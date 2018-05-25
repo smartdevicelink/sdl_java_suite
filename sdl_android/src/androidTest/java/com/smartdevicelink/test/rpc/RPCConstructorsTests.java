@@ -22,7 +22,6 @@ import java.util.Map;
 
 public class RPCConstructorsTests extends AndroidTestCase {
 
-
     // Parse the RPC spec xml file and return a map that has
     // keys correspond to the RPC names and values correspond to the mandatory params for that RPC
     private Map<String, List<String>> getRPCMandatoryParamsMap(String fileName) {
@@ -34,6 +33,7 @@ public class RPCConstructorsTests extends AndroidTestCase {
             myParser.setInput(stream, null);
             int event = myParser.getEventType();
             String rpcName = null;
+            boolean ignoreRPC = false;
             while (event != XmlPullParser.END_DOCUMENT)  {
                 String name = myParser.getName();
                 switch (event){
@@ -41,16 +41,50 @@ public class RPCConstructorsTests extends AndroidTestCase {
                         // Store the RPC name in the map
                         if(name.equals("function") || name.equals("struct")){
                             rpcName = myParser.getAttributeValue(null,"name");
+                            ignoreRPC = false;
                             if (name.equals("function") && myParser.getAttributeValue(null, "messagetype").equals("response") && !rpcName.contains("Response")){
                                 rpcName += "Response";
                             }
-                            rpcMandatoryParamsMap.put(rpcName, new ArrayList<String>());
+
+                            // -------------- Exceptional cases because of mismatch between the RPC spec and the Android code --------------
+                                if(rpcName.equals("SyncMsgVersion")){
+                                    rpcName = "SdlMsgVersion";
+                                } else if(rpcName.equals("ShowConstantTBTResponse")){
+                                    rpcName = "ShowConstantTbtResponse";
+                                } else if(rpcName.equals("OASISAddress")) {
+                                    rpcName = "OasisAddress";
+                                } else if(rpcName.equals("ShowConstantTBT")) {
+                                    rpcName = "ShowConstantTbt";
+                                } else if (rpcName.equals("EncodedSyncPData") || rpcName.equals("OnEncodedSyncPData") || rpcName.equals("EncodedSyncPDataResponse") || rpcName.equals("AppInfo")){
+                                    ignoreRPC = true;
+                                }
+                            // -------------------------------------------------------------------------------------------------------------
+
+                            if (!ignoreRPC) {
+                                rpcMandatoryParamsMap.put(rpcName, new ArrayList<String>());
+                            }
                         }
                         // Store the mandatory params for the current RPC in the map
-                        if(name.equals("param")){
+                        if(name.equals("param") && !ignoreRPC){
                             boolean mandatory = Boolean.valueOf(myParser.getAttributeValue(null,"mandatory"));
                             if (mandatory) {
                                 String paramType = myParser.getAttributeValue(null, "type");
+                                // If the type of the param is an array of objects, we will make the type look like "List<Object>"
+                                boolean paramIsArray = Boolean.valueOf(myParser.getAttributeValue(null, "array"));
+                                if (paramIsArray){
+                                    paramType = String.format("List<%s>", paramType);
+                                }
+
+                                // -------------- Exceptional cases because of mismatch between the RPC spec and the Android code --------------
+                                if (paramType.equals("SyncMsgVersion")){
+                                    paramType = "SdlMsgVersion";
+                                } else if (rpcName.equals("GPSData") && paramType.equals("Float")){
+                                    paramType = "Double";
+                                } else if (rpcName.equals("TouchEvent") && paramType.equals("List<Integer>")){
+                                    paramType = "List<Long>";
+                                }
+                                // -------------------------------------------------------------------------------------------------------------
+
                                 rpcMandatoryParamsMap.get(rpcName).add(paramType);
                             }
                         }
@@ -97,7 +131,14 @@ public class RPCConstructorsTests extends AndroidTestCase {
             for (Constructor constructor : aClass.getConstructors()){
                 mandatoryParamsListFromCode.clear();
                 for (Parameter param : constructor.getParameters()){
-                    mandatoryParamsListFromCode.add(param.getType().getSimpleName());
+                    // If the param is a List of objects the type should be like "List<Object>"
+                    if (param.getType().getSimpleName().equals("List")){
+                        String objectFullType = param.getParameterizedType().toString();
+                        String objectSimpleType = objectFullType.substring(objectFullType.lastIndexOf('.') + 1, objectFullType.length() - 1);
+                        mandatoryParamsListFromCode.add(String.format("List<%s>", objectSimpleType));
+                    } else {
+                        mandatoryParamsListFromCode.add(param.getType().getSimpleName());
+                    }
                 }
                 if (mandatoryParamsListFromCode.containsAll(mandatoryParamsListFromXML) && mandatoryParamsListFromXML.containsAll(mandatoryParamsListFromCode)){
                     rpcHasValidConstructor = true;
@@ -108,6 +149,7 @@ public class RPCConstructorsTests extends AndroidTestCase {
                 rpcsWithInvalidConstructor.add(rpcName);
             }
         }
+        assertTrue("The following RPCs were not found in the code " + rpcsFromXmlNotFoundInCode, rpcsFromXmlNotFoundInCode.isEmpty());
         assertTrue("The following RPCs don't have a constructor that has all the mandatory params " + rpcsWithInvalidConstructor, rpcsWithInvalidConstructor.isEmpty());
     }
 }
