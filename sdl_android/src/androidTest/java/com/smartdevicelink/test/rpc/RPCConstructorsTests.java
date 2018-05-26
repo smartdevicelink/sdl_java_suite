@@ -92,7 +92,7 @@ public class RPCConstructorsTests extends AndroidTestCase {
                 }
                 event = myParser.next();
             }
-
+            stream.close();
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
         }
