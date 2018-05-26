@@ -9,7 +9,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,10 +68,11 @@ public class RPCConstructorsTests extends AndroidTestCase {
                             boolean mandatory = Boolean.valueOf(myParser.getAttributeValue(null,"mandatory"));
                             if (mandatory) {
                                 String paramType = myParser.getAttributeValue(null, "type");
-                                // If the type of the param is an array of objects, we will make the type look like "List<Object>"
+
+                                // If the param is an array of objects, then the type of param should be "List"
                                 boolean paramIsArray = Boolean.valueOf(myParser.getAttributeValue(null, "array"));
                                 if (paramIsArray){
-                                    paramType = String.format("List<%s>", paramType);
+                                    paramType = "List";
                                 }
 
                                 // -------------- Exceptional cases because of mismatch between the RPC spec and the Android code --------------
@@ -130,15 +130,8 @@ public class RPCConstructorsTests extends AndroidTestCase {
             boolean rpcHasValidConstructor = false;
             for (Constructor constructor : aClass.getConstructors()){
                 mandatoryParamsListFromCode.clear();
-                for (Parameter param : constructor.getParameters()){
-                    // If the param is a List of objects the type should be like "List<Object>"
-                    if (param.getType().getSimpleName().equals("List")){
-                        String objectFullType = param.getParameterizedType().toString();
-                        String objectSimpleType = objectFullType.substring(objectFullType.lastIndexOf('.') + 1, objectFullType.length() - 1);
-                        mandatoryParamsListFromCode.add(String.format("List<%s>", objectSimpleType));
-                    } else {
-                        mandatoryParamsListFromCode.add(param.getType().getSimpleName());
-                    }
+                for (Class<?> param : constructor.getParameterTypes()){
+                    mandatoryParamsListFromCode.add(param.getSimpleName());
                 }
                 if (mandatoryParamsListFromCode.containsAll(mandatoryParamsListFromXML) && mandatoryParamsListFromXML.containsAll(mandatoryParamsListFromCode)){
                     rpcHasValidConstructor = true;
