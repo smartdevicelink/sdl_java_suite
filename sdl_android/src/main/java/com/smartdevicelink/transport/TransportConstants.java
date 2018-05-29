@@ -153,6 +153,9 @@ public class TransportConstants {
 	 * A replyTo must be provided or else there won't be a response
 	 */
 	public static final int ROUTER_REQUEST_NEW_SESSION 									= 0x12;
+	//Request arguments
+	public static final String ROUTER_REQUEST_NEW_SESSION_TRANSPORT_TYPE 				= "transportType";
+
 	public static final int ROUTER_REQUEST_NEW_SESSION_RESPONSE							= 0x13;
 	//Response arguments
 	public static final int ROUTER_REQUEST_NEW_SESSION_RESPONSE_SUCESS 					= 0x00;

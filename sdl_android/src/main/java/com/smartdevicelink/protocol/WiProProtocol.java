@@ -122,21 +122,29 @@ public class WiProProtocol extends AbstractProtocol {
 		Log.d(TAG, "onTransportsConnectedUpdate: ");
 		if(activeTransports.get(SessionType.RPC) == null){
 			//need to start a service
-			List<TransportType> transportList = Arrays.asList(transportTypes);
-			for(TransportType transportType: transportList) {
-				Log.d(TAG, "Connected transport: " + transportType);
+			TransportType transportType = getPreferredPrimaryTransport(transportTypes);
+			if(transportType != null){
+				Log.d(TAG, "Sending start service RPC on transport " + transportType);
+				startService(SessionType.RPC,(byte)0x00,false,transportType);
+				return;
+			}else{
+				onTransportNotAccepted("No transports match requested primary transport");
 			}
-
-				for(TransportType transportType: requestedPrimaryTransports){
-				Log.d(TAG, "Requested transport: " + transportType);
-				if(transportList.contains(transportType)){
-					Log.d(TAG, "Sending start service RPC on transport " + transportType);
-					startService(SessionType.RPC,(byte)0x00,false,transportType);
-					return;
-				}
-			}
-			onTransportNotAccepted("No transports match requested primary transport");
 		}
+	}
+
+	public TransportType getPreferredPrimaryTransport(TransportType[] transportTypes){
+		List<TransportType> transportList = Arrays.asList(transportTypes);
+		for(TransportType transportType: transportList) {
+			Log.d(TAG, "Connected transport: " + transportType);
+		}
+		for(TransportType transportType: requestedPrimaryTransports) {
+			Log.d(TAG, "Requested transport: " + transportType);
+			if (transportList.contains(transportType)) {
+				return transportType;
+			}
+		}
+		return null;
 	}
 
 	private void onTransportNotAccepted(String info){

@@ -93,8 +93,8 @@ public class TransportManager {
 
     }
 
-    public void requestNewSession(){
-        transport.requestNewSession();
+    public void requestNewSession(TransportType transportType){
+        transport.requestNewSession(transportType);
     }
 
     private class TransportBrokerImpl extends TransportBroker{

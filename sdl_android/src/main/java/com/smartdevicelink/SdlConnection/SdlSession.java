@@ -525,7 +525,7 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 			//In the future we should move this logic into the Protocol Layer
 			TransportType type = wiProProtocol.getTransportForSession(SessionType.RPC);
 			if(type == null){ //There is currently no transport registered to the
-				transportManager.requestNewSession();
+				transportManager.requestNewSession(wiProProtocol.getPreferredPrimaryTransport(transportTypes));
 			}
 			wiProProtocol.onTransportsConnectedUpdate(transportTypes);
 		}
@@ -554,11 +554,10 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 			List<TransportType> transportTypes = config.getPrimaryTransports();
 			//transportTypes.remove(type);
 			boolean primaryTransportAvailable = false;
-			if(transportTypes.size() > 1){ Log.d(TAG, "Size greater than 1");
+			if(transportTypes.size() > 1){
 				for (TransportType transportType: transportTypes){ Log.d(TAG, "Checking " + transportType.name());
 					if( type != null && !type.equals(transportType)
 							&& transportManager.isConnected(transportType)){
-						//TODO A thing
 						Log.d(TAG, "Found a suitable transport");
 						primaryTransportAvailable = true;
 						((MultiplexTransportConfig) this.transportConfig).setService(transportManager.getRouterService());

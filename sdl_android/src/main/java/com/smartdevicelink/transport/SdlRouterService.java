@@ -464,10 +464,14 @@ public class SdlRouterService extends Service{
                                     }
                                     TransportType transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT_FOR_PACKET));
 									if(transportType == null){
-										if(service.usbTransport!= null && service.usbTransport.isConnected()){
-											transportType = TransportType.USB;
-										}else if(service.bluetoothTransport != null && service.bluetoothTransport.isConnected()){
+										/* We check bluetooth first because we assume if this value
+										 * isn't included it is an older version of the proxy and
+										 * therefore will be expecting this to be bluetooth.
+										 */
+										if(service.bluetoothTransport != null && service.bluetoothTransport.isConnected()){
 											transportType = TransportType.BLUETOOTH;
+										} else if(service.usbTransport!= null && service.usbTransport.isConnected()){
+											transportType = TransportType.USB;
 										}
 										Log.d(TAG, "Transport type was null, so router set it to " + transportType.name());
 										receivedBundle.putString(TransportConstants.TRANSPORT_FOR_PACKET, transportType.name());
@@ -505,7 +509,32 @@ public class SdlRouterService extends Service{
 								if(registeredApps!=null){
 									RegisteredApp appRequesting = registeredApps.get(appIdRequesting);
 									if(appRequesting!=null){
+										//Retrieve the transport the app is requesting a new session
+										String transport = receivedBundle.getString(TransportConstants.ROUTER_REQUEST_NEW_SESSION_TRANSPORT_TYPE);
+										TransportType requestingTransport = null;
+										if(transport != null){
+											try{
+												Log.w(TAG, "Requesting transport: " + transport);
+
+												requestingTransport = TransportType.valueOf(transport);
+											}catch (IllegalArgumentException e){}
+										}
+										if(requestingTransport == null){
+											Log.w(TAG, "Requesting transport was null");
+
+											/* We check bluetooth first because we assume if this value
+											 * isn't included it is an older version of the proxy and
+											 * therefore will be expecting this to be bluetooth.
+											 */
+											if(service.bluetoothTransport != null && service.bluetoothTransport.isConnected()){
+												requestingTransport = TransportType.BLUETOOTH;
+											}else if(service.usbTransport!= null && service.usbTransport.isConnected()){
+												requestingTransport = TransportType.USB;
+											}
+										}
 										appRequesting.getSessionIds().add((long)-1); //Adding an extra session
+										Log.w(TAG, "Requesting transport adding to app: " + requestingTransport.name());
+										appRequesting.getAwaitingSession().add(requestingTransport);
 										extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_NEW_SESSION_RESPONSE_SUCESS;
 									}else{
 										extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_NEW_SESSION_RESPONSE_FAILED_APP_NOT_FOUND;
@@ -2081,13 +2110,16 @@ public class SdlRouterService extends Service{
 					int pos;
 					synchronized (REGISTERED_APPS_LOCK) {
 						for (RegisteredApp app : registeredApps.values()) {
-							pos = app.containsSessionId(-1);
-							if (pos != -1) {
-								app.setSessionId(pos, sessionId);
-								app.registerTransport(sessionId, transportType);
-								appId = app.getAppId();
-								sessionMap.put(sessionId, appId);
-								break;
+							if(app.getAwaitingSession().contains(transportType)) {
+								pos = app.containsSessionId(-1);
+								if (pos != -1) {
+									app.setSessionId(pos, sessionId);
+									app.registerTransport(sessionId, transportType);
+									app.getAwaitingSession().remove(transportType);
+									appId = app.getAppId();
+									sessionMap.put(sessionId, appId);
+									break;
+								}
 							}
 						}
 					}
@@ -2465,6 +2497,7 @@ public class SdlRouterService extends Service{
 		final String appId;
 		final Messenger messenger;
 		final Vector<Long> sessionIds;
+		final Vector<TransportType> awaitingSession;
 		ByteAraryMessageAssembler buffer;
 		int priorityForBuffingMessage;
 		DeathRecipient deathNote = null;
@@ -2489,6 +2522,7 @@ public class SdlRouterService extends Service{
 			this.queues = new HashMap<>();
 			queueWaitHandler = new Handler();
 			registeredTransports = new SparseArray<ArrayList<TransportType>>();
+			awaitingSession = new Vector<>();
 			setDeathNote();
 		}
 
@@ -2571,8 +2605,11 @@ public class SdlRouterService extends Service{
 			this.sessionIds.clear();
 		}
 
+		public Vector<TransportType> getAwaitingSession() {
+			return awaitingSession;
+		}
 
-		protected void registerTransport(int sessionId,TransportType transportType){
+		protected void registerTransport(int sessionId, TransportType transportType){
 			synchronized (TRANSPORT_LOCK){
 				ArrayList<TransportType> transportTypes = this.registeredTransports.get(sessionId);
 				if(transportTypes!= null){

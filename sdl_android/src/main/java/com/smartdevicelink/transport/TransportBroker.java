@@ -653,7 +653,12 @@ public class TransportBroker {
 		/**
 		 * Use this method to let the router service know that you are requesting a new session from the head unit. 
 		 */
-		public void requestNewSession(){
+		@Deprecated
+		public void requestNewSession() {
+			requestNewSession(null);
+		}
+
+		public void requestNewSession(TransportType transportType){
 			Message msg = Message.obtain();
 			msg.what = TransportConstants.ROUTER_REQUEST_NEW_SESSION;
 			msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
@@ -662,9 +667,13 @@ public class TransportBroker {
 				bundle.putLong(TransportConstants.APP_ID_EXTRA,convertAppId(appId));
 			}
 			bundle.putString(TransportConstants.APP_ID_EXTRA_STRING, appId);
+			if(transportType != null) {
+				bundle.putString(TransportConstants.ROUTER_REQUEST_NEW_SESSION_TRANSPORT_TYPE, transportType.name());
+			}
 			msg.setData(bundle);
 			this.sendMessageToRouterService(msg);
 		}
+
 		
 		public void removeSession(long sessionId){
 			Message msg = Message.obtain();
