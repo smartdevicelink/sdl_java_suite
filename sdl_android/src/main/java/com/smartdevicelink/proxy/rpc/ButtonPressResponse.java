@@ -30,12 +30,12 @@ public class ButtonPressResponse extends RPCResponse {
     }
     /**
      * Constructs a new ButtonPressResponse object
-     * @param success whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
+     * @param success whether the request is successfully processed
      */
-    public ButtonPressResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+    public ButtonPressResponse(@NonNull Result resultCode, @NonNull Boolean success) {
         this();
-        setSuccess(success);
         setResultCode(resultCode);
+        setSuccess(success);
     }
 }

@@ -33,15 +33,16 @@ public class GetInteriorVehicleDataResponse extends RPCResponse {
 
 	/**
 	 * Constructs a new GetInteriorVehicleDataResponse object
-	 * @param success whether the request is successfully processed
-	 * @param resultCode whether the request is successfully processed
 	 * @param moduleData
+	 * @param resultCode whether the request is successfully processed
+	 * @param success whether the request is successfully processed
+
 	 */
-	public GetInteriorVehicleDataResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull ModuleData moduleData) {
+	public GetInteriorVehicleDataResponse( @NonNull ModuleData moduleData, @NonNull Result resultCode, @NonNull Boolean success) {
 		this();
-		setSuccess(success);
-		setResultCode(resultCode);
 		setModuleData(moduleData);
+		setResultCode(resultCode);
+		setSuccess(success);
 	}
 
 	/**

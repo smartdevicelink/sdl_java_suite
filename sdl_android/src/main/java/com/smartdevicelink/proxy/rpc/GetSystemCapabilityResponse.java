@@ -35,15 +35,15 @@ public class GetSystemCapabilityResponse extends RPCResponse {
 
     /**
      * Constructs a new GetSystemCapabilityResponse object
-     * @param success whether the request is successfully processed
-     * @param resultCode whether the request is successfully processed
      * @param systemCapability SystemCapability object
+     * @param resultCode whether the request is successfully processed
+     * @param success whether the request is successfully processed
      */
-    public GetSystemCapabilityResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull SystemCapability systemCapability) {
+    public GetSystemCapabilityResponse(@NonNull SystemCapability systemCapability, @NonNull Result resultCode, @NonNull Boolean success) {
         this();
-        setSuccess(success);
-        setResultCode(resultCode);
         setSystemCapability(systemCapability);
+        setResultCode(resultCode);
+        setSuccess(success);
     }
 
     /**

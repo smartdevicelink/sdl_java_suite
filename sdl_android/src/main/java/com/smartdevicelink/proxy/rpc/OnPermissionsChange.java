@@ -70,6 +70,7 @@ public class OnPermissionsChange extends RPCNotification {
 	 */
 	public OnPermissionsChange(@NonNull List<PermissionItem> permissionItem) {
 		this();
+		setPermissionItem(permissionItem);
 	}
 	/**
      * <p>Returns List<PermissionItem> object describing change in permissions for a given set of RPCs</p>

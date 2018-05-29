@@ -21,13 +21,13 @@ public class VideoStreamingFormat extends RPCStruct {
 
 	/**
 	 * Create the VideoStreamingFormat object
-	 * @param codec The codec used
 	 * @param protocol The protocol used
+	 * @param codec The codec used
 	 */
-	public VideoStreamingFormat(@NonNull VideoStreamingCodec codec, @NonNull VideoStreamingProtocol protocol){
+	public VideoStreamingFormat(@NonNull VideoStreamingProtocol protocol, @NonNull VideoStreamingCodec codec){
 		this();
-		setCodec(codec);
 		setProtocol(protocol);
+		setCodec(codec);
 	}
 
 	public void setProtocol(@NonNull VideoStreamingProtocol protocol){
