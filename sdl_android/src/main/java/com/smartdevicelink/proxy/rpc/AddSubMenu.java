@@ -94,6 +94,8 @@ public class AddSubMenu extends RPCRequest {
 	 */
 	public AddSubMenu(@NonNull Integer menuID, @NonNull String menuName) {
 		this();
+		setMenuID(menuID);
+		setMenuName(menuName);
 	}
 	/**
 	 * Returns an <i>Integer</i> object representing the Menu ID that identifies
