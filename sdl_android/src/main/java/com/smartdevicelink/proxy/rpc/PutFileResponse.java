@@ -43,6 +43,7 @@ public class PutFileResponse extends RPCResponse {
         this();
         setSuccess(success);
         setResultCode(resultCode);
+        setSpaceAvailable(spaceAvailable);
     }
     public void setSpaceAvailable(@NonNull Integer spaceAvailable) {
         setParameters(KEY_SPACE_AVAILABLE, spaceAvailable);

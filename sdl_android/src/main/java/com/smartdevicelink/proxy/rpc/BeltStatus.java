@@ -149,16 +149,18 @@ public class BeltStatus extends RPCStruct {
         super(hash);
     }
 
-    public BeltStatus(@NonNull VehicleDataEventStatus driverBeltDeployed, @NonNull VehicleDataEventStatus passengerBeltDeployed, @NonNull VehicleDataEventStatus passengerBuckleBelted, @NonNull VehicleDataEventStatus driverBuckleBelted, @NonNull VehicleDataEventStatus leftRow2BuckleBelted,
-                      @NonNull VehicleDataEventStatus passengerChildDetected, @NonNull VehicleDataEventStatus rightRow2BuckleBelted, @NonNull VehicleDataEventStatus middleRow2BuckleBelted, @NonNull VehicleDataEventStatus middleRow3BuckleBelted, @NonNull VehicleDataEventStatus leftRow3BuckleBelted,
-                      @NonNull VehicleDataEventStatus rightRow3BuckleBelted, @NonNull VehicleDataEventStatus leftRearInflatableBelted, @NonNull VehicleDataEventStatus rightRearInflatableBelted, @NonNull VehicleDataEventStatus middleRow1BeltDeployed, @NonNull VehicleDataEventStatus middleRow1BuckleBelted
+    public BeltStatus(@NonNull VehicleDataEventStatus driverBeltDeployed, @NonNull VehicleDataEventStatus passengerBeltDeployed, @NonNull VehicleDataEventStatus passengerBuckleBelted,
+                      @NonNull VehicleDataEventStatus driverBuckleBelted, @NonNull VehicleDataEventStatus leftRow2BuckleBelted, @NonNull VehicleDataEventStatus passengerChildDetected,
+                      @NonNull VehicleDataEventStatus rightRow2BuckleBelted, @NonNull VehicleDataEventStatus middleRow2BuckleBelted, @NonNull VehicleDataEventStatus middleRow3BuckleBelted,
+                      @NonNull VehicleDataEventStatus leftRow3BuckleBelted, @NonNull VehicleDataEventStatus rightRow3BuckleBelted, @NonNull VehicleDataEventStatus leftRearInflatableBelted,
+                      @NonNull VehicleDataEventStatus rightRearInflatableBelted, @NonNull VehicleDataEventStatus middleRow1BeltDeployed, @NonNull VehicleDataEventStatus middleRow1BuckleBelted
     ) {
         this();
         setDriverBeltDeployed(driverBeltDeployed);
         setPassengerBeltDeployed(passengerBeltDeployed);
         setPassengerBuckleBelted(passengerBuckleBelted);
-        setDriverBeltDeployed(driverBuckleBelted);
-        setLeftRearInflatableBelted(leftRow2BuckleBelted);
+        setDriverBuckleBelted(driverBuckleBelted);
+        setLeftRow2BuckleBelted(leftRow2BuckleBelted);
         setPassengerChildDetected(passengerChildDetected);
         setRightRow2BuckleBelted(rightRow2BuckleBelted);
         setMiddleRow2BuckleBelted(middleRow2BuckleBelted);
