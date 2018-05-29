@@ -9,6 +9,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,24 @@ import java.util.Map;
 
 public class RPCConstructorsTests extends AndroidTestCase {
 
-    // Parse the RPC spec xml file and return a map that has
+    private final String XML_FILE_NAME = "xml/MOBILE_API_4.5.0.xml";
+    private final String RPC_PACKAGE_PREFIX = "com.smartdevicelink.proxy.rpc.";
+    private Map<String, List<String>> rpcMandatoryParamsMapFromXml;
+
+    @Override
+    public void setUp(){
+        try {
+            super.setUp();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // Map that has keys correspond to the RPC names and values correspond to the
+        // mandatory params for that RPC. All info are loaded from the RPC spec xml file
+        rpcMandatoryParamsMapFromXml = getRPCMandatoryParamsMap(XML_FILE_NAME);
+
+    }
+
+    // This method parses the RPC spec xml file and returns a map that has
     // keys correspond to the RPC names and values correspond to the mandatory params for that RPC
     private Map<String, List<String>> getRPCMandatoryParamsMap(String fileName) {
         Map<String, List<String>> rpcMandatoryParamsMap = new HashMap<>();
@@ -68,11 +86,10 @@ public class RPCConstructorsTests extends AndroidTestCase {
                             boolean mandatory = Boolean.valueOf(myParser.getAttributeValue(null,"mandatory"));
                             if (mandatory) {
                                 String paramType = myParser.getAttributeValue(null, "type");
-
-                                // If the param is an array of objects, then the type of param should be "List"
+                                // If the type of the param is an array of objects, we will make the type look like "List<Object>"
                                 boolean paramIsArray = Boolean.valueOf(myParser.getAttributeValue(null, "array"));
                                 if (paramIsArray){
-                                    paramType = "List";
+                                    paramType = String.format("List<%s>", paramType);
                                 }
 
                                 // -------------- Exceptional cases because of mismatch between the RPC spec and the Android code --------------
@@ -99,14 +116,9 @@ public class RPCConstructorsTests extends AndroidTestCase {
         return rpcMandatoryParamsMap;
     }
 
+    // This method makes sure that for every RPC, there is a constructor that has all the mandatory params
+    // It also checks if there are RPC in the XML file that don't exist in the code
     public void testRpcConstructorsMandatoryParams() {
-        String fileName = "xml/MOBILE_API_4.5.0.xml";
-        String packagePrefix = "com.smartdevicelink.proxy.rpc.";
-
-        // Map that has keys correspond to the RPC names and values correspond to the
-        // mandatory params for that RPC. All info are loaded from the RPC spec xml file
-        Map<String, List<String>> rpcMandatoryParamsMapFromXml = getRPCMandatoryParamsMap(fileName);
-
         // List of RPC names that don't have a constructor that has all mandatory params
         List<String> rpcsWithInvalidConstructor = new ArrayList<>();
 
@@ -114,12 +126,12 @@ public class RPCConstructorsTests extends AndroidTestCase {
         // potentially because of a mismatch between name in the RPC spec xml file and name in code
         List<String> rpcsFromXmlNotFoundInCode = new ArrayList<>();
 
-        // Loop through all RPCs that were loaded from RPC spec sml file
+        // Loop through all RPCs that were loaded from RPC spec XML file
         // and make sure that every RPC has a constructor that has all mandatory params
         for (String rpcName : rpcMandatoryParamsMapFromXml.keySet()) {
             Class aClass;
             try {
-                aClass = Class.forName(packagePrefix + rpcName);
+                aClass = Class.forName(RPC_PACKAGE_PREFIX + rpcName);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
                 rpcsFromXmlNotFoundInCode.add(rpcName);
@@ -130,8 +142,22 @@ public class RPCConstructorsTests extends AndroidTestCase {
             boolean rpcHasValidConstructor = false;
             for (Constructor constructor : aClass.getConstructors()){
                 mandatoryParamsListFromCode.clear();
-                for (Class<?> param : constructor.getParameterTypes()){
-                    mandatoryParamsListFromCode.add(param.getSimpleName());
+                for (Type paramType : constructor.getGenericParameterTypes()){
+                    String paramFullType = paramType.toString();
+                    String paramSimpleType;
+
+                    // If the param is a list of objects, the type should be like "List<Object>"
+                    if (paramFullType.matches("java.util.List<.+>")) {
+                        paramSimpleType = String.format("List<%s>", paramFullType.substring(paramFullType.lastIndexOf('.') + 1, paramFullType.length() - 1));
+                    }
+                    // If the param is a simple object for example "java.lang.String", the type should be the last part "String"
+                    else if (!paramFullType.contains(">")){
+                        paramSimpleType = paramFullType.substring(paramFullType.lastIndexOf('.') + 1, paramFullType.length());
+                    }
+                    else {
+                        paramSimpleType = paramFullType;
+                    }
+                    mandatoryParamsListFromCode.add(paramSimpleType);
                 }
                 if (mandatoryParamsListFromCode.containsAll(mandatoryParamsListFromXML) && mandatoryParamsListFromXML.containsAll(mandatoryParamsListFromCode)){
                     rpcHasValidConstructor = true;
@@ -142,7 +168,7 @@ public class RPCConstructorsTests extends AndroidTestCase {
                 rpcsWithInvalidConstructor.add(rpcName);
             }
         }
-        assertTrue("The following RPCs were not found in the code " + rpcsFromXmlNotFoundInCode, rpcsFromXmlNotFoundInCode.isEmpty());
-        assertTrue("The following RPCs don't have a constructor that has all the mandatory params " + rpcsWithInvalidConstructor, rpcsWithInvalidConstructor.isEmpty());
+        assertTrue("The following RPCs were not found in the code: " + rpcsFromXmlNotFoundInCode, rpcsFromXmlNotFoundInCode.isEmpty());
+        assertTrue("The following RPCs don't have a constructor that has all the mandatory params: " + rpcsWithInvalidConstructor, rpcsWithInvalidConstructor.isEmpty());
     }
 }
