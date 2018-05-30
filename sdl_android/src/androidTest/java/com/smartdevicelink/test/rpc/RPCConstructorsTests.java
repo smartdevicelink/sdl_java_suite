@@ -143,7 +143,7 @@ public class RPCConstructorsTests extends AndroidTestCase {
 
     // This method makes sure that for every RPC, there is a constructor that has all the mandatory params
     // It also checks if there are RPC in the XML file that don't exist in the code
-    public void testRpcConstructorsMandatoryParams() {
+    public void testMandatoryParamsMatch() {
         // List of RPC names that don't have a constructor that has all mandatory params
         List<String> rpcsWithInvalidConstructor = new ArrayList<>();
 
@@ -206,7 +206,7 @@ public class RPCConstructorsTests extends AndroidTestCase {
     }
 
     // This method makes sure that for every RPC, the constructor that has the mandatory params is setting the values correctly
-    public void testRpcConstructorsValues() {
+    public void testMandatoryParamsValues() {
         // List of RPC names that have a constructor which is not settings the values for the mandatory params correctly
         List<String> rpcsWithInvalidConstructor = new ArrayList<>();
 
