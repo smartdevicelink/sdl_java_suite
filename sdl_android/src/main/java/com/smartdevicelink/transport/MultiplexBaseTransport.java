@@ -61,6 +61,9 @@ public abstract class MultiplexBaseTransport {
     }
 
     protected synchronized void setState(int state) {
+        if(state == mState){
+            return; //State hasn't changed. Will not updated listeners.
+        }
         //Log.d(TAG, "Setting state from: " +mState + " to: " +state);
         int previousState = mState;
         mState = state;

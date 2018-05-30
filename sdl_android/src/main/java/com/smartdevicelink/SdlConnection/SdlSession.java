@@ -557,6 +557,7 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 			if(transportTypes.size() > 1){
 				for (TransportType transportType: transportTypes){ Log.d(TAG, "Checking " + transportType.name());
 					if( type != null && !type.equals(transportType)
+							&& transportManager != null
 							&& transportManager.isConnected(transportType)){
 						Log.d(TAG, "Found a suitable transport");
 						primaryTransportAvailable = true;
@@ -571,6 +572,27 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 
 		}
 
+	}
+
+	@Override
+	public boolean onLegacyModeEnabled(String info){
+		//Clear our wiproprotocol and await a connection from the legacy transport
+		Log.d(TAG, info);
+		MultiplexTransportConfig config = (MultiplexTransportConfig)transportConfig;
+		if(config.getPrimaryTransports().contains(TransportType.BLUETOOTH)
+				&& !config.requiresHighBandwidth()){
+			Log.d(TAG, "Entering legacy mode; creating new protocol instance");
+			wiProProtocol = new WiProProtocol(this);
+			wiProProtocol.setPrimaryTransports(((MultiplexTransportConfig)transportConfig).getPrimaryTransports());
+			return true;
+		}else{
+			Log.d(TAG, "Bluetooth is not an acceptable transport; not moving to legacy mode");
+			return false;
+		}
+	}
+
+	public void onError(String info){
+		shutdown(info);
 	}
 
 	public void shutdown(String info){

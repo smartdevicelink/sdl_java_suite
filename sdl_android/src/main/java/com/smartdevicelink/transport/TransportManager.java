@@ -2,13 +2,15 @@ package com.smartdevicelink.transport;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Parcelable;
 import android.util.Log;
 
-import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 public class TransportManager {
@@ -20,6 +22,11 @@ public class TransportManager {
     final HashMap<TransportType, Boolean> transportStatus;
     final TransportEventListener transportListener;
 
+    //Legacy Transport
+    MultiplexBluetoothTransport legacyBluetoothTransport;
+    LegacyBluetoothHandler legacyBluetoothHandler;
+
+
     /**
      * Managing transports
      * List for status of all transports
@@ -27,16 +34,7 @@ public class TransportManager {
      */
 
     public TransportManager(MultiplexTransportConfig config, TransportEventListener listener){
-        if(config.service == null) {
-            config.service = SdlBroadcastReceiver.consumeQueuedRouterService();
-        }
-        RouterServiceValidator validator = new RouterServiceValidator(config.context,config.service);
-        if(validator.validate()){
-            transport = new TransportBrokerImpl(config.context, config.appId,config.service);
-        }else{
-            //FIXME start up legacy
-            throw new SecurityException("Unable to trust router service");
-        }
+
         this.transportListener = listener;
         this.TRANSPORT_STATUS_LOCK = new Object();
         synchronized (TRANSPORT_STATUS_LOCK){
@@ -45,17 +43,36 @@ public class TransportManager {
             this.transportStatus.put(TransportType.USB, false);
             this.transportStatus.put(TransportType.TCP, false);
         }
+
+        if(config.service == null) {
+            config.service = SdlBroadcastReceiver.consumeQueuedRouterService();
+        }
+
+        RouterServiceValidator validator = new RouterServiceValidator(config.context,config.service);
+        if(validator.validate()){
+            transport = new TransportBrokerImpl(config.context, config.appId,config.service);
+        }else{
+            enterLegacyMode("Router service is not trusted. Entering legacy mode");
+            //throw new SecurityException("Unable to trust router service");
+        }
     }
 
     public void start(){
         if(transport != null){
             transport.start();
+        }else if(legacyBluetoothTransport != null){
+            legacyBluetoothTransport.start();
         }
     }
 
     public void close(long sessionId){
-        transport.removeSession(sessionId);
-        transport.stop();
+        if(transport != null) {
+            transport.removeSession(sessionId);
+            transport.stop();
+        }else if(legacyBluetoothTransport != null){
+            legacyBluetoothTransport.stop();
+            legacyBluetoothTransport = null;
+        }
     }
 
     /**
@@ -77,12 +94,18 @@ public class TransportManager {
     }
 
     public ComponentName getRouterService(){
-        return transport.getRouterService();
+        if(transport != null) {
+            return transport.getRouterService();
+        }
+        return null;
     }
 
     public void sendPacket(SdlPacket packet){
         if(transport !=null){
             transport.sendPacketToRouterService(packet);
+        }else if(legacyBluetoothTransport != null){
+            byte[] data = packet.constructPacket();
+            legacyBluetoothTransport.write(data, 0, data.length);
         }
     }
 
@@ -94,7 +117,11 @@ public class TransportManager {
     }
 
     public void requestNewSession(TransportType transportType){
-        transport.requestNewSession(transportType);
+        if(transport!=null){
+            transport.requestNewSession(transportType);
+        }else if(legacyBluetoothTransport != null && !TransportType.BLUETOOTH.equals(transportType)){
+            Log.w(TAG, "Session requested for non-bluetooth transport while in legacy mode");
+        }
     }
 
     private class TransportBrokerImpl extends TransportBroker{
@@ -111,7 +138,7 @@ public class TransportManager {
                 resetTransports();
                 for(int i = 0; i< types.length; i++){
                     TransportManager.this.transportStatus.put(types[i],true);
-
+                    Log.d(TAG, "Transport connected: " + types[i].name());
                 }
             }
             transportListener.onTransportConnected(types);
@@ -130,21 +157,14 @@ public class TransportManager {
             synchronized (TRANSPORT_STATUS_LOCK){
                 TransportManager.this.transportStatus.put(type,false);
             }
-            transportListener.onTransportDisconnected("",type);
-
-            /*if(type.equals(primaryTransport)){
-               primaryTransport = null;
-                SdlConnection.enableLegacyMode(isLegacyModeEnabled(), TransportType.BLUETOOTH);
-                if(isLegacyModeEnabled()){
-                    Log.d(TAG, "Handle transport disconnect, legacy mode enabled");
-                    this.stop();
-                    transportListener.onTransportDisconnected("",type);
-                    //TODO perform legacy mode. Don't just disconnect
-                }else{
-                    transportListener.onTransportDisconnected("",type);
-                    this.stop();
-                }
-            }*/
+            if(isLegacyModeEnabled()
+                    && TransportType.BLUETOOTH.equals(type) //Make sure it's bluetooth that has be d/c
+                    && legacyBluetoothTransport == null){ //Make sure we aren't already in legacy mode
+                //Legacy mode has been enabled so we need to cycle
+                enterLegacyMode("Router service has enabled legacy mode");
+            }else{
+                transportListener.onTransportDisconnected("",type);
+            }
         }
 
         @Override
@@ -155,16 +175,107 @@ public class TransportManager {
         }
     }
 
+    private synchronized void enterLegacyMode(final String info){
+        if(legacyBluetoothTransport != null && legacyBluetoothHandler != null){
+            return; //Already in legacy mode
+        }
+
+        if(transportListener.onLegacyModeEnabled(info)) {
+            legacyBluetoothHandler = new LegacyBluetoothHandler(this);
+            legacyBluetoothTransport = new MultiplexBluetoothTransport(legacyBluetoothHandler);
+        }else{
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    transportListener.onError(info + " - Legacy mode unacceptable; shutting down.");
+
+                }
+            },500);
+        }
+    }
+
+    private synchronized void exitLegacyMode(String info ){
+        if(legacyBluetoothTransport != null){
+            legacyBluetoothTransport.stop();
+            legacyBluetoothTransport = null;
+        }
+        legacyBluetoothHandler = null;
+        synchronized (TRANSPORT_STATUS_LOCK){
+            TransportManager.this.transportStatus.put(TransportType.BLUETOOTH,false);
+        }
+        transportListener.onTransportDisconnected(info, TransportType.BLUETOOTH);
+    }
+
     public interface TransportEventListener{
-        // Called to indicate and deliver a packet received from transport
+        /** Called to indicate and deliver a packet received from transport */
         void onPacketReceived(SdlPacket packet);
 
-        // Called to indicate that transport connection was established
+        /** Called to indicate that transport connection was established */
         void onTransportConnected(TransportType[] transportTypes);
-        //void onTransportConnected(TransportType transportType, boolean primary);
 
-        // Called to indicate that transport was disconnected (by either side)
+        /** Called to indicate that transport was disconnected (by either side) */
         void onTransportDisconnected(String info, TransportType type);
+
+        // Called when the transport manager experiences an unrecoverable failure
+        void onError(String info);
+        /**
+         * Called when the transport manager has determined it needs to move towards a legacy style
+         * transport connection. It will always be bluetooth.
+         * @param info
+         * @return if the listener is ok with entering legacy mode
+         */
+        boolean onLegacyModeEnabled(String info);
+    }
+
+
+
+    private static class LegacyBluetoothHandler extends Handler{
+
+        final WeakReference<TransportManager> provider;
+        static final TransportType[] FAUX_TRANSPORT_ARRAY = {TransportType.BLUETOOTH};
+
+        public LegacyBluetoothHandler(TransportManager provider){
+            this.provider = new WeakReference<TransportManager>(provider);
+        }
+        @Override
+        public void handleMessage(Message msg) {
+            if(this.provider.get() == null){
+                return;
+            }
+            TransportManager service = this.provider.get();
+            if(service.transportListener == null){
+                return;
+            }
+            switch (msg.what) {
+                case SdlRouterService.MESSAGE_STATE_CHANGE:
+                    switch (msg.arg1) {
+                        case MultiplexBaseTransport.STATE_CONNECTED:
+                            synchronized (service.TRANSPORT_STATUS_LOCK){
+                                service.transportStatus.put(TransportType.BLUETOOTH,true);
+                            }
+                            service.transportListener.onTransportConnected(FAUX_TRANSPORT_ARRAY);
+                            break;
+                        case MultiplexBaseTransport.STATE_CONNECTING:
+                            // Currently attempting to connect - update UI?
+                            break;
+                        case MultiplexBaseTransport.STATE_LISTEN:
+                            break;
+                        case MultiplexBaseTransport.STATE_NONE:
+                            // We've just lost the connection
+                            service.exitLegacyMode("Lost connection");
+                            break;
+                        case MultiplexBaseTransport.STATE_ERROR:
+                            Log.d(TAG, "Bluetooth serial server error received, setting state to none, and clearing local copy");
+                            service.exitLegacyMode("Transport error");
+                            break;
+                    }
+                    break;
+
+                case SdlRouterService.MESSAGE_READ:
+                    service.transportListener.onPacketReceived((SdlPacket) msg.obj);
+                    break;
+            }
+        }
     }
 
 }
