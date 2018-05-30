@@ -9,8 +9,11 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +27,19 @@ public class RPCConstructorsTests extends AndroidTestCase {
 
     private final String XML_FILE_NAME = "xml/MOBILE_API_4.5.0.xml";
     private final String RPC_PACKAGE_PREFIX = "com.smartdevicelink.proxy.rpc.";
-    private Map<String, List<String>> rpcMandatoryParamsMapFromXml;
+    private Map<String, List<Parameter>> rpcMandatoryParamsMapFromXml;
+
+    private class Parameter {
+        private String name;
+        private String type;
+        private boolean isArray;
+
+        public Parameter(String name, String type, boolean isArray) {
+            this.name = name;
+            this.type = type;
+            this.isArray = isArray;
+        }
+    }
 
     @Override
     public void setUp(){
@@ -41,8 +56,8 @@ public class RPCConstructorsTests extends AndroidTestCase {
 
     // This method parses the RPC spec xml file and returns a map that has
     // keys correspond to the RPC names and values correspond to the mandatory params for that RPC
-    private Map<String, List<String>> getRPCMandatoryParamsMap(String fileName) {
-        Map<String, List<String>> rpcMandatoryParamsMap = new HashMap<>();
+    private Map<String, List<Parameter>> getRPCMandatoryParamsMap(String fileName) {
+        Map<String, List<Parameter>> rpcMandatoryParamsMap = new HashMap<>();
         try {
             InputStream stream = this.mContext.getAssets().open(fileName);
             XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
@@ -78,31 +93,41 @@ public class RPCConstructorsTests extends AndroidTestCase {
                             // -------------------------------------------------------------------------------------------------------------
 
                             if (!ignoreRPC) {
-                                rpcMandatoryParamsMap.put(rpcName, new ArrayList<String>());
+                                rpcMandatoryParamsMap.put(rpcName, new ArrayList<Parameter>());
                             }
                         }
                         // Store the mandatory params for the current RPC in the map
                         if(name.equals("param") && !ignoreRPC){
                             boolean mandatory = Boolean.valueOf(myParser.getAttributeValue(null,"mandatory"));
                             if (mandatory) {
+                                String paramName = myParser.getAttributeValue(null, "name");
                                 String paramType = myParser.getAttributeValue(null, "type");
-                                // If the type of the param is an array of objects, we will make the type look like "List<Object>"
                                 boolean paramIsArray = Boolean.valueOf(myParser.getAttributeValue(null, "array"));
-                                if (paramIsArray){
-                                    paramType = String.format("List<%s>", paramType);
-                                }
 
                                 // -------------- Exceptional cases because of mismatch between the RPC spec and the Android code --------------
                                 if (paramType.equals("SyncMsgVersion")){
                                     paramType = "SdlMsgVersion";
                                 } else if (rpcName.equals("GPSData") && paramType.equals("Float")){
                                     paramType = "Double";
-                                } else if (rpcName.equals("TouchEvent") && paramType.equals("List<Integer>")){
-                                    paramType = "List<Long>";
+                                } else if (rpcName.equals("TouchEvent") && paramType.equals("Integer") && paramIsArray){
+                                    paramType = "Long";
+                                }
+
+                                if (paramName.equals("syncFileName")){
+                                    paramName = "sdlFileName";
+                                } else if (paramName.equals("syncMsgVersion")){
+                                    paramName = "sdlMsgVersion";
+                                } else if (paramName.equals("hmiPermissions")){
+                                    paramName = "hMIPermissions";
+                                } else if (paramName.equals("resolution")){
+                                    paramName = "imageResolution";
+                                } else if (paramName.equals("pressureTelltale")){
+                                    paramName = "pressureTellTale";
                                 }
                                 // -------------------------------------------------------------------------------------------------------------
 
-                                rpcMandatoryParamsMap.get(rpcName).add(paramType);
+                                Parameter param = new Parameter(paramName, paramType, paramIsArray);
+                                rpcMandatoryParamsMap.get(rpcName).add(param);
                             }
                         }
                         break;
@@ -137,7 +162,15 @@ public class RPCConstructorsTests extends AndroidTestCase {
                 rpcsFromXmlNotFoundInCode.add(rpcName);
                 continue;
             }
-            List<String> mandatoryParamsListFromXML = rpcMandatoryParamsMapFromXml.get(rpcName);
+            List<String> mandatoryParamsListFromXML = new ArrayList<>();
+            for (Parameter param : rpcMandatoryParamsMapFromXml.get(rpcName)) {
+                String type = param.type;
+                // If the param is a list of objects, the type should be like "List<Object>"
+                if (param.isArray){
+                    type = String.format("List<%s>", type);
+                }
+                mandatoryParamsListFromXML.add(type);
+            }
             List<String> mandatoryParamsListFromCode = new ArrayList<>();
             boolean rpcHasValidConstructor = false;
             for (Constructor constructor : aClass.getConstructors()){
@@ -170,5 +203,126 @@ public class RPCConstructorsTests extends AndroidTestCase {
         }
         assertTrue("The following RPCs were not found in the code: " + rpcsFromXmlNotFoundInCode, rpcsFromXmlNotFoundInCode.isEmpty());
         assertTrue("The following RPCs don't have a constructor that has all the mandatory params: " + rpcsWithInvalidConstructor, rpcsWithInvalidConstructor.isEmpty());
+    }
+
+    // This method makes sure that for every RPC, the constructor that has the mandatory params is setting the values correctly
+    public void testRpcConstructorsValues() {
+        // List of RPC names that have a constructor which is not settings the values for the mandatory params correctly
+        List<String> rpcsWithInvalidConstructor = new ArrayList<>();
+
+        // List of types that exist in java.lang.*
+        List<String> javaLangBuiltInTypes = Arrays.asList("String", "Integer", "Float", "Double", "Boolean");
+
+        // Loop through all RPCs that were loaded from RPC spec XML file
+        // and make sure that the constructor that has the mandatory params is setting the values correctly
+        for (String rpcName : rpcMandatoryParamsMapFromXml.keySet()) {
+            Class aClass;
+            try {
+                aClass = Class.forName(RPC_PACKAGE_PREFIX + rpcName);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                continue;
+            }
+
+            List<Parameter> parameters = rpcMandatoryParamsMapFromXml.get(rpcName);
+            List<Class<?>> mandatoryParamsTypes = new ArrayList<>();
+            List<Object> mandatoryParamsValues = new ArrayList<>();
+
+            // Loop through all mandatory params for the current RPC
+            // and try to find the full Java type for each param
+            // also assign a value for each param from com.smartdevicelink.test.Test class
+            for (Parameter param : parameters) {
+                String typeString = null;
+                Class<?> type = null;
+                String valueString = null;
+                Object value = null;
+
+                // Find the full Java type for the current param
+                try {
+                    if (param.isArray) {
+                        type = List.class;
+                    } else {
+                        if (javaLangBuiltInTypes.contains(param.type)){
+                            typeString = "java.lang." + param.type;
+                        } else {
+                            typeString = "com.smartdevicelink.proxy.rpc." + param.type;
+                        }
+                        type = Class.forName(typeString);
+                    }
+
+                } catch (ClassNotFoundException e) {
+                    // If the class was not found in the com.smartdevicelink.proxy.rpc package
+                    // try to see if it can be found in com.smartdevicelink.proxy.rpc.enums package
+                    typeString = "com.smartdevicelink.proxy.rpc.enums." + param.type;
+                    try {
+                        type = Class.forName(typeString);
+                    } catch (ClassNotFoundException e1) {
+                        e1.printStackTrace();
+                        assertTrue("Type: " + typeString + " cannot be found for RPC: " + rpcName , false);
+                    }
+                }
+
+
+                // Assign a value for the current param from com.smartdevicelink.test.Test based of the param type
+                try {
+                    // --------------------------------------------- Exceptional cases ---------------------------------------------
+                    // This case is exceptional because the setter changes the input if it is not all digits
+                    if (rpcName.equals("DialNumber") && param.type.equals("String")){
+                        value = "5558675309";
+                    }
+                    // -------------------------------------------------------------------------------------------------------------
+
+                    if (value == null) {
+                        valueString = "GENERAL_" + param.type.toUpperCase();
+                        if (param.isArray){
+                            valueString += "_LIST";
+                        }
+                        value = Class.forName("com.smartdevicelink.test.Test").getDeclaredField(valueString).get(null);
+                    }
+
+                } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
+                    e.printStackTrace();
+                    assertTrue("Value: " + valueString + " cannot be found for RPC: " + rpcName + ". Make sure that you declared that value in com.smartdevicelink.test.Test" , false);
+                }
+
+                mandatoryParamsTypes.add(type);
+                mandatoryParamsValues.add(value);
+            }
+
+
+            // Create an instance of the RPC object using the constructor that has all the mandatory params
+            Object instance = null;
+            try {
+                Constructor constructor = aClass.getConstructor(mandatoryParamsTypes.toArray(new Class<?>[mandatoryParamsTypes.size()]));
+                instance = constructor.newInstance(mandatoryParamsValues.toArray(new Object[mandatoryParamsValues.size()]));
+            } catch (NoSuchMethodException | IllegalAccessException |  InstantiationException | InvocationTargetException e) {
+                e.printStackTrace();
+                assertTrue("Constructor for RPC " + rpcName + " cannot be invoked. Make sure that the constructor parameters order and types are identical to the RPC specs", false);
+            }
+
+
+            // Loop through all getter methods for the instance and make sure that they are returning the expected values
+            if (instance != null) {
+                for (int i = 0; i < parameters.size(); i++) {
+                    // Find the getter method name by taking the param name, capitalize the first letter, then add thw word "get" to the beginning
+                    // for example if the param name is "buttonName" the method name will be "getButtonName"
+                    String getterMethodName = "get" + parameters.get(i).name.substring(0, 1).toUpperCase() + parameters.get(i).name.substring(1);
+                    try {
+                        Method getterMethod = aClass.getMethod(getterMethodName);
+                        Object val = getterMethod.invoke(instance);
+                        if (val == null || !val.equals(mandatoryParamsValues.get(i))) {
+                            rpcsWithInvalidConstructor.add(rpcName);
+                            break;
+                        }
+                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                        assertTrue("Method: " + getterMethodName + " cannot be found for RPC: " + rpcName + ". Make sure that the method exists and that the parameters order and types are identical to the RPC specs", false);
+
+                    }
+                }
+            }
+        }
+
+        assertTrue("The following RPCs have a constructor that is not setting the mandatory params correctly: " + rpcsWithInvalidConstructor, rpcsWithInvalidConstructor.isEmpty());
     }
 }
