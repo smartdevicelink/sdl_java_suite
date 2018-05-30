@@ -35,9 +35,8 @@ public class ClimateControlCapabilities extends RPCStruct{
 
     /**
      * Constructs a newly allocated ClimateControlCapabilities
-     * @param moduleName
-     * The short friendly name of the climate control module.
-     * It should not be used to identify a module by mobile application.
+	 *
+     * @param moduleName The short friendly name of the climate control module. It should not be used to identify a module by mobile application.
      */
     public ClimateControlCapabilities(@NonNull String moduleName) {
         this();
@@ -47,9 +46,7 @@ public class ClimateControlCapabilities extends RPCStruct{
     /**
      * Sets the moduleName portion of the ClimateControlCapabilities class
      *
-     * @param moduleName
-     * The short friendly name of the climate control module.
-     * It should not be used to identify a module by mobile application.
+     * @param moduleName The short friendly name of the climate control module. It should not be used to identify a module by mobile application.
      */
     public void setModuleName(@NonNull String moduleName) {
         setValue(KEY_MODULE_NAME, moduleName);

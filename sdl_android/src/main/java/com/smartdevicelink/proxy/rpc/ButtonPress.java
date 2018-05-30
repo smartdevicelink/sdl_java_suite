@@ -29,9 +29,7 @@ public class ButtonPress extends RPCRequest {
      * <p>Constructs a new ButtonPress object indicated by the
      * Hashtable parameter</p>
      *
-     *
-     * @param hash
-     * The Hashtable to use
+     * @param hash The Hashtable to use
      */
     public ButtonPress(Hashtable<String, Object> hash) {
         super(hash);
@@ -39,12 +37,9 @@ public class ButtonPress extends RPCRequest {
 
     /**
      * Constructs a new ButtonPress object
-     * @param moduleType
-     * Represents module where the button should be pressed
-     * @param buttonName
-     * Represents name of supported RC climate or radio button
-     * @param buttonPressMode
-     * Indicates whether this is a LONG or SHORT button press event.
+     * @param moduleType Represents module where the button should be pressed
+     * @param buttonName Represents name of supported RC climate or radio button
+     * @param buttonPressMode Indicates whether this is a LONG or SHORT button press event.
      */
     public ButtonPress(@NonNull ModuleType moduleType, @NonNull ButtonName buttonName, @NonNull ButtonPressMode buttonPressMode) {
         this();

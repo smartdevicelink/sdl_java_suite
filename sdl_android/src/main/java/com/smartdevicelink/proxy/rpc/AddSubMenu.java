@@ -77,20 +77,16 @@ public class AddSubMenu extends RPCRequest {
 	 * Constructs a new AddSubMenu object indicated by the Hashtable parameter
 	 * 
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public AddSubMenu(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
 	 * Constructs a new AddSubMenu object
-	 * @param menuID
-	 *            an integer object representing a Menu ID
-	 *
-	 *           <p><b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
-	 * @param menuName
-	 *            String which will be displayed representing this submenu item
+	 * @param menuID an integer object representing a Menu ID
+	 * <p><b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
+	 * @param menuName String which will be displayed representing this submenu item
 	 */
 	public AddSubMenu(@NonNull Integer menuID, @NonNull String menuName) {
 		this();
@@ -100,8 +96,7 @@ public class AddSubMenu extends RPCRequest {
 	/**
 	 * Returns an <i>Integer</i> object representing the Menu ID that identifies
 	 * a sub menu
-	 * 
-	 * 
+	 *
 	 * @return Integer -an integer representing the Menu ID that identifies a sub
 	 *         menu
 	 */
