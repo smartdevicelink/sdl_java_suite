@@ -57,10 +57,7 @@ public class DeleteFile extends RPCRequest {
 
 	/**
 	 * <p>Constructs a new DeleteFile object indicated by the Hashtable parameter</p>
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public DeleteFile(Hashtable<String, Object> hash) {
         super(hash);
@@ -68,8 +65,7 @@ public class DeleteFile extends RPCRequest {
 
 	/**
 	 * Constructs a new DeleteFile object
-	 * @param sdlFileName
-	 *            a String value representing a file reference name
+	 * @param sdlFileName a String value representing a file reference name
 	 */
 	public DeleteFile(@NonNull String sdlFileName) {
 		this();

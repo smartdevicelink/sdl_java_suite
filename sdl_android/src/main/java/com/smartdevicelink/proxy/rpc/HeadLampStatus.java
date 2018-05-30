@@ -47,20 +47,20 @@ public class HeadLampStatus extends RPCStruct {
 	public static final String KEY_HIGH_BEAMS_ON = "highBeamsOn";
     public static final String KEY_LOW_BEAMS_ON = "lowBeamsOn";
 
-    /**Constructs a new HeadLampStatus object
-     *
+    /**
+	 * Constructs a new HeadLampStatus object
      */
     public HeadLampStatus() {}
-    /**<p> Constructs a new HeadLampStatus object indicated by the Hashtable
+    /**
+	 * <p>Constructs a new HeadLampStatus object indicated by the Hashtable
      * parameter</p>
-     * @param hash
-     * The hash table to use
+     * @param hash The hash table to use
      */
     public HeadLampStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
-    /**Constructs a new HeadLampStatus object
-     *
+    /**
+	 * Constructs a new HeadLampStatus object
      */
     public HeadLampStatus(@NonNull Boolean lowBeamsOn, @NonNull Boolean highBeamsOn) {
         this();

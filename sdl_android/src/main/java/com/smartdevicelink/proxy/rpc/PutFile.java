@@ -130,10 +130,8 @@ public class PutFile extends RPCRequest {
 
 	/**
 	 * Constructs a new PutFile object indicated by the Hashtable parameter
-	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public PutFile(Hashtable<String, Object> hash) {
         super(hash);
@@ -141,12 +139,9 @@ public class PutFile extends RPCRequest {
 
 	/**
 	 * Constructs a new PutFile object
-	 * @param syncFileName
-	 *            a String value representing a file reference name
-	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
-	 * @param fileType
-	 *            a FileType value representing a selected file type
+	 * @param syncFileName a String value representing a file reference name
+	 * <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
+	 * @param fileType a FileType value representing a selected file type
 	 */
 	public PutFile(@NonNull String syncFileName, @NonNull FileType fileType) {
 		this();

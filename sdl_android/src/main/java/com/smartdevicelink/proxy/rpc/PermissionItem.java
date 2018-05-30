@@ -64,13 +64,10 @@ public class PermissionItem extends RPCStruct {
         setParameterPermissions(parameterPermissions);
     }
     /**
-     * <p>
      * Constructs a new PermissionItem object indicated by the Hashtable
      * parameter
-     * </p>
      *
-     * @param hash
-     *            The Hashtable to use
+     * @param hash The Hashtable to use
      */
     public PermissionItem(Hashtable<String, Object> hash) {
         super(hash);

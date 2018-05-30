@@ -67,7 +67,7 @@ import java.util.List;
  *	<p>REJECTED </p>
  *	<p>ABORTED</p>
  *
- *  @see  scrollableMessageBody 
+ *  @see scrollableMessageBody
  *  @see TextFieldName
  */
 public class ScrollableMessage extends RPCRequest {
@@ -87,8 +87,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * parameter
 	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public ScrollableMessage(Hashtable<String, Object> hash) {
         super(hash);
@@ -96,11 +95,8 @@ public class ScrollableMessage extends RPCRequest {
 
 	/**
 	 * Constructs a new ScrollableMessage object
-	 * @param scrollableMessageBody
-	 *            a String value representing the Body of text that can include
-	 *            newlines and tabs
-	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength=500
+	 * @param scrollableMessageBody a String value representing the Body of text that can include newlines and tabs <br>
+	 * <b>Notes: </b>Maxlength=500
 	 */
 	public ScrollableMessage(@NonNull String scrollableMessageBody) {
 		this();

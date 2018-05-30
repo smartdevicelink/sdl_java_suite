@@ -60,8 +60,7 @@ public class SetAppIcon extends RPCRequest {
 	 * Constructs a new SetAppIcon object indicated by the Hashtable parameter
 	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public SetAppIcon(Hashtable<String, Object> hash) {
         super(hash);
@@ -69,10 +68,8 @@ public class SetAppIcon extends RPCRequest {
 
 	/**
 	 * Constructs a new SetAppIcon object
-	 * @param sdlFileName
-	 *            a String value representing a file reference name
-	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
+	 * @param sdlFileName a String value representing a file reference name <br>
+	 * <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
 	 */
 	public SetAppIcon(@NonNull String sdlFileName) {
 		this();

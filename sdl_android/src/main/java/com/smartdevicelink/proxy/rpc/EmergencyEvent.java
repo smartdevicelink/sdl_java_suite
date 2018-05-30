@@ -88,15 +88,13 @@ public class EmergencyEvent extends RPCStruct {
     public EmergencyEvent() { }
     /** Constructs a new EmergencyEvent object indicated by the Hashtable
      * parameter
-     * @param hash
-     *
-     * <p>The hash table to use</p>
+     * @param hash <p>The hash table to use</p>
      */
     public EmergencyEvent(Hashtable<String, Object> hash) {
         super(hash);
     }
-    /** Constructs a new EmergencyEvent object
-     *
+    /**
+	 * Constructs a new EmergencyEvent object
      */
     public EmergencyEvent(@NonNull EmergencyEventType emergencyEventType, @NonNull FuelCutoffStatus fuelCutoffStatus, @NonNull VehicleDataEventStatus rolloverEvent, @NonNull Integer maximumChangeVelocity, @NonNull VehicleDataEventStatus multipleEvents) {
         this();

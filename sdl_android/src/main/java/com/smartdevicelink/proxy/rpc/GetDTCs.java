@@ -71,8 +71,7 @@ public class GetDTCs extends RPCRequest {
 	 * <p>Constructs a new GetDTCs object indicated by the Hashtable parameter
 	 * </p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public GetDTCs(Hashtable<String, Object> hash) {
         super(hash);
@@ -80,11 +79,8 @@ public class GetDTCs extends RPCRequest {
 
 	/**
 	 * Constructs a new GetDTCs object
-	 * @param ecuName
-	 *            an Integer value representing a name of the module to receive
-	 *            the DTC form
-	 *            <p>
-	 *            <b>Notes:</p> </b>Minvalue:0; Maxvalue:65535
+	 * @param ecuName an Integer value representing a name of the module to receive the DTC form <br>
+	 * <b>Notes: </b>Minvalue:0; Maxvalue:65535
 	 */
 	public GetDTCs(@NonNull Integer ecuName) {
 		this();

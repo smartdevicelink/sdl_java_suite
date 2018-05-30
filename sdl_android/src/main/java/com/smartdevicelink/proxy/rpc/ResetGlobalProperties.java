@@ -70,21 +70,17 @@ public class ResetGlobalProperties extends RPCRequest {
 	/**
 	 * Constructs a new ResetGlobalProperties object indicated by the Hashtable
 	 * parameter
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 *
+	 * @param hash The Hashtable to use
 	 */    
     public ResetGlobalProperties(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
 	 * Constructs a new ResetGlobalProperties object
-	 * @param properties
-	 *            a List<GlobalProperty> An array of one or more
+	 * @param properties a List<GlobalProperty> An array of one or more
 	 *            GlobalProperty enumeration elements indicating which global
-	 *            properties to reset to their default value
-	 *            <p></p>
+	 *            properties to reset to their default value <br>
 	 *            <b>Notes: </b>Array must have at least one element
 	 */
 	public ResetGlobalProperties(@NonNull List<GlobalProperty> properties) {

@@ -114,10 +114,8 @@ public class PerformAudioPassThru extends RPCRequest {
 	/**
 	 * <p>Constructs a new PerformAudioPassThru object indicated by the Hashtable
 	 * parameter</p>
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 *
+	 * @param hash The Hashtable to use
 	 */
     public PerformAudioPassThru(Hashtable<String, Object> hash) {
         super(hash);
@@ -125,18 +123,10 @@ public class PerformAudioPassThru extends RPCRequest {
 
 	/**
 	 * Constructs a new PerformAudioPassThru object
-	 * @param samplingRate
-	 *            a SamplingRate value representing a 8 or 16 or 22 or 24 khz
-	 * @param maxDuration
-	 *            an Integer value representing the maximum duration of audio
-	 *            recording in millisecond
-	 *            <p></p>
-	 *            <b>Notes: </b>Minvalue:1; Maxvalue:1000000
-	 * @param bitsPerSample
-	 *            a BitsPerSample value representing 8 bit or 16 bit
-	 * @param audioType
-	 *            an audioType
-	 *
+	 * @param samplingRate a SamplingRate value representing a 8 or 16 or 22 or 24 khz
+	 * @param maxDuration an Integer value representing the maximum duration of audio recording in millisecond <b>Notes: </b>Minvalue:1; Maxvalue:1000000
+	 * @param bitsPerSample a BitsPerSample value representing 8 bit or 16 bit
+	 * @param audioType an audioType
 	 */
 	public PerformAudioPassThru(@NonNull SamplingRate samplingRate, @NonNull Integer maxDuration, @NonNull BitsPerSample bitsPerSample, @NonNull AudioType audioType) {
 		this();

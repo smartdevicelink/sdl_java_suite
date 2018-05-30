@@ -129,27 +129,18 @@ public class PerformInteraction extends RPCRequest {
 	/**
 	 * Constructs a new PerformInteraction object indicated by the Hashtable
 	 * parameter
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 *
+	 * @param hash The Hashtable to use
 	 */    
     public PerformInteraction(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
 	 * Constructs a new PerformInteraction object
-	 * @param initialText
-	 *            a String value that Displayed when the interaction begins
-	 * @param interactionMode
-	 *            indicate how user selects interaction choice (VR_ONLY,
-	 *            MANUAL_ONLY or BOTH)
-	 * @param interactionChoiceSetIDList
-	 *            -a List<Integer> representing an Array of one or more Choice
-	 *            Set IDs. User can select any choice from any of the specified
-	 *            Choice Sets
-	 *            <p></p>
-	 *            <b>Notes: </b>Min Value: 0; Max Vlaue: 2000000000
+	 * @param initialText a String value that Displayed when the interaction begins
+	 * @param interactionMode indicate how user selects interaction choice (VR_ONLY, MANUAL_ONLY or BOTH)
+	 * @param interactionChoiceSetIDList a List<Integer> representing an Array of one or more Choice Set IDs. User can select any choice from any of the specified
+	 * Choice Sets <b>Notes: </b>Min Value: 0; Max Vlaue: 2000000000
 	 */
 	public PerformInteraction(@NonNull String initialText, @NonNull InteractionMode interactionMode, @NonNull List<Integer> interactionChoiceSetIDList) {
 		this();

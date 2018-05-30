@@ -65,15 +65,13 @@ public class ECallInfo extends RPCStruct {
     public ECallInfo() { }
     /** Constructs a new ECallInfo object indicated by the Hashtable
      * parameter
-     * @param hash
-     *
-     * 			<p>The hash table to use</p>
+     * @param hash <p>The hash table to use</p>
      */
     public ECallInfo(Hashtable<String, Object> hash) {
         super(hash);
     }
-    /** Constructs a new ECallInfo object
-     *
+    /**
+	 * Constructs a new ECallInfo object
      */
     public ECallInfo(@NonNull VehicleDataNotificationStatus eCallNotificationStatus, @NonNull VehicleDataNotificationStatus auxECallNotificationStatus, @NonNull ECallConfirmationStatus eCallConfirmationStatus) {
         this();

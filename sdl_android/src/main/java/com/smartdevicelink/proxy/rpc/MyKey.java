@@ -22,11 +22,11 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
  *			<td>Indicates whether e911 override is on.</td>
  * 		</tr>
  *  </table>
- *				
- *@since SmartDeviceLink 2.0	
- *				
- *@see GetVehicleData				
- *@see OnVehicleData 			
+ *
+ *@since SmartDeviceLink 2.0
+ *
+ *@see GetVehicleData
+ *@see OnVehicleData
  *@see VehicleDataStatus
  * 
  *
@@ -39,13 +39,9 @@ public class MyKey extends RPCStruct {
 	*/
     public MyKey() { }
     /**
-     * <p>
-     * Constructs a new MyKey object indicated by the Hashtable
-     * parameter
-     * </p>
-     *
-     * @param hash
-     *            The Hashtable to use
+     * <p>Constructs a new MyKey object indicated by the Hashtable
+     * parameter</p>
+     * @param hash The Hashtable to use
      */
     public MyKey(Hashtable<String, Object> hash) {
         super(hash);

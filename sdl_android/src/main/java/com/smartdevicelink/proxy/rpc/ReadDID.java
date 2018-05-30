@@ -82,10 +82,8 @@ public class ReadDID extends RPCRequest {
 
 	/**
 	 * Constructs a new ReadDID object indicated by the Hashtable parameter
-	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public ReadDID(Hashtable<String, Object> hash) {
         super(hash);
@@ -93,19 +91,14 @@ public class ReadDID extends RPCRequest {
 
 	/**
 	 * Constructs a new ReadDID object
-	 * @param ecuName
-	 *            an Integer value representing the ID of the vehicle module
-	 *            <p></p>
-	 *            <b>Notes: </b>Minvalue:0; Maxvalue:65535
-	 * @param didLocation
-	 *            a List<Integer> value representing raw data from vehicle
-	 *            data DID location(s)
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
-	 *            <li>Minvalue:0; Maxvalue:65535</li>
-	 *            <li>ArrayMin:0; ArrayMax:1000</li>
-	 *            </ul>
+	 * @param ecuName an Integer value representing the ID of the vehicle module
+	 * <b>Notes: </b>Minvalue:0; Maxvalue:65535
+	 * @param didLocation a List<Integer> value representing raw data from vehicle data DID location(s) <br>
+	 * <b>Notes: </b>
+	 * <ul>
+	 * 		<li>Minvalue:0; Maxvalue:65535</li>
+	 * 		<li>ArrayMin:0; ArrayMax:1000</li>
+	 * </ul>
 	 */
 	public ReadDID(@NonNull Integer ecuName, @NonNull List<Integer> didLocation) {
 		this();

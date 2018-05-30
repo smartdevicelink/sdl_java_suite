@@ -247,10 +247,7 @@ public class RegisterAppInterface extends RPCRequest {
     }
 	/**
 	 * Constructs a new RegisterAppInterface object
-	 * @param syncMsgVersion
-	 *            a SdlMsgVersion object representing version of the SDL&reg;
-	 *            SmartDeviceLink interface
-	 *            <p></p>
+	 * @param syncMsgVersion a SdlMsgVersion object representing version of the SDL&reg; SmartDeviceLink interface <br>
 	 *            <b>Notes: </b>To be compatible, app msg major version number
 	 *            must be less than or equal to SDL&reg; major version number.
 	 *            If msg versions are incompatible, app has 20 seconds to
@@ -262,9 +259,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            RegisterAppInterface response). However, the minor version
 	 *            number sent from the app to SDL&reg; (in RegisterAppInterface
 	 *            request) is ignored by SDL&reg;
-	 * @param appName
-	 *            a String value representing the Mobile Application's Name
-	 *            <p></p>
+	 * @param appName a String value representing the Mobile Application's Name <br>
 	 *            <b>Notes: </b>
 	 *            <ul>
 	 *            <li>Must be 1-100 characters in length</li>
@@ -272,15 +267,10 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            the name or any synonym of any currently-registered
 	 *            application</li>
 	 *            </ul>
-	 * @param isMediaApplication
-	 *            a Boolean value
-	 * @param languageDesired
-	 *            a Language Enumeration
+	 * @param isMediaApplication a Boolean value
+	 * @param languageDesired a Language Enumeration
 	 * @param hmiDisplayLanguageDesired
-	 * @param appID
-	 *            a String value representing a unique ID, which an app will be
-	 *            given when approved
-	 *            <p></p>
+	 * @param appID a String value representing a unique ID, which an app will be given when approved <br>
 	 *            <b>Notes: </b>Maxlength = 100
 	 */
 	public RegisterAppInterface(@NonNull SdlMsgVersion syncMsgVersion, @NonNull String appName, @NonNull Boolean isMediaApplication,

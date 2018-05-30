@@ -87,24 +87,21 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * parameter
 	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */    
     public SetMediaClockTimer(Hashtable<String, Object> hash) {
         super(hash);
     }
 	/**
 	 * Constructs a new SetMediaClockTimer object
-	 * @param updateMode
-	 *            a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME)
-	 *            <p></p>
-	 *            <b>Notes: </b>
-	 *            <ul>
+	 * @param updateMode a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME) <br>
+	 * <b>Notes: </b>
+	 *      <ul>
 	 *            <li>When updateMode is PAUSE, RESUME or CLEAR, the start time value
 	 *            is ignored</li>
 	 *            <li>When updateMode is RESUME, the timer resumes counting from
 	 *            the timer's value when it was paused</li>
-	 *            </ul>
+	 *      </ul>
 	 */
 	public SetMediaClockTimer(@NonNull UpdateMode updateMode) {
 		this();
