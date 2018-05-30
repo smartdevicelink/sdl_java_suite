@@ -245,7 +245,7 @@ public class RPCConstructorsTests extends AndroidTestCase {
                         if (javaLangBuiltInTypes.contains(param.type)){
                             typeString = "java.lang." + param.type;
                         } else {
-                            typeString = "com.smartdevicelink.proxy.rpc." + param.type;
+                            typeString = RPC_PACKAGE_PREFIX + param.type;
                         }
                         type = Class.forName(typeString);
                     }
@@ -253,7 +253,7 @@ public class RPCConstructorsTests extends AndroidTestCase {
                 } catch (ClassNotFoundException e) {
                     // If the class was not found in the com.smartdevicelink.proxy.rpc package
                     // try to see if it can be found in com.smartdevicelink.proxy.rpc.enums package
-                    typeString = "com.smartdevicelink.proxy.rpc.enums." + param.type;
+                    typeString = RPC_PACKAGE_PREFIX + "enums." + param.type;
                     try {
                         type = Class.forName(typeString);
                     } catch (ClassNotFoundException e1) {
