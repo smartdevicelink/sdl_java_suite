@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="sdl_router_service_version_name" translatable="false">sdl_router_version</string>
-    <integer name="sdl_router_service_version_value" translatable="false">5</integer>
-
+    <integer name="sdl_router_service_version_value">5</integer>
     <string name="sdl_router_service_is_custom_name" translatable="false">sdl_custom_router</string>
 </resources>
