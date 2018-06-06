@@ -34,7 +34,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation ('com.smartdevicelink:bson_java_port:1.1.1')
+    implementation ('com.smartdevicelink:bson_java_port:1.1.1@aar'){
+        transitive = true
+    }
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
