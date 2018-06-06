@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.ArrayList;
@@ -64,16 +66,26 @@ public class TouchEvent extends RPCStruct {
     /**
 	 * <p>Constructs a new TouchEvent object indicated by the Hashtable parameter</p>
 	 * 
-	 * 
-	 * @param hash
-	 * <p>
-	 *            The Hashtable to use</p>
+	 * @param hash The Hashtable to use
 	 */
     public TouchEvent(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new TouchEvent object
+	 * @param id A touch's unique identifier.
+	 * @param ts The time that the touch was recorded.
+	 * @param c The coordinates of the screen area where the touch event occurred.
+	 */
+	public TouchEvent(@NonNull Integer id, @NonNull List<Long> ts, @NonNull List<TouchCoord> c){
+		this();
+		setId(id);
+		setTimestamps(ts);
+		setTouchCoordinates(c);
+	}
     
-    public void setId(Integer id) {
+    public void setId(@NonNull Integer id) {
         setValue(KEY_ID, id);
     }
     
@@ -113,7 +125,7 @@ public class TouchEvent extends RPCStruct {
         return null;
     }
     
-    public void setTimestamps(List<Long> ts){
+    public void setTimestamps(@NonNull List<Long> ts){
         setValue(KEY_TS, ts);
     }
     
@@ -151,7 +163,7 @@ public class TouchEvent extends RPCStruct {
     	setTouchCoordinates(c);
     }
     
-    public void setTouchCoordinates( List<TouchCoord> c ) {
+    public void setTouchCoordinates(@NonNull List<TouchCoord> c ) {
         setValue(KEY_C, c);
     }          
 }

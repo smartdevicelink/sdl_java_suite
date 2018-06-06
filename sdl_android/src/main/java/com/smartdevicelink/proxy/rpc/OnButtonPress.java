@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
@@ -110,6 +112,16 @@ public class OnButtonPress extends RPCNotification {
         super(hash);
     }
     /**
+     *Constructs a newly allocated OnButtonPress object
+     * @param buttonName name of the button
+     * @param buttonPressMode indicates whether this is a short or long press
+     */
+    public OnButtonPress(@NonNull ButtonName buttonName, @NonNull ButtonPressMode buttonPressMode) {
+        this();
+        setButtonName(buttonName);
+        setButtonPressMode(buttonPressMode);
+    }
+    /**
      * <p>Returns an <i>{@linkplain ButtonName}</i> the button's name</p>
      * @return ButtonName Name of the button
      */    
@@ -120,7 +132,7 @@ public class OnButtonPress extends RPCNotification {
      * <p>Set the button's name</p>    
      * @param buttonName name of the button
      */    
-    public void setButtonName( ButtonName buttonName ) {
+    public void setButtonName( @NonNull ButtonName buttonName ) {
         setParameters(KEY_BUTTON_NAME, buttonName);
     }
     /**<p>Returns <i>{@linkplain ButtonPressMode}</i></p>
@@ -133,7 +145,7 @@ public class OnButtonPress extends RPCNotification {
      * <p>Set the button press mode of the event</p>
      * @param buttonPressMode indicates whether this is a short or long press
      */    
-    public void setButtonPressMode( ButtonPressMode buttonPressMode ) {
+    public void setButtonPressMode( @NonNull ButtonPressMode buttonPressMode ) {
         setParameters(KEY_BUTTON_PRESS_MODE, buttonPressMode);
     }
     public void setCustomButtonName(Integer customButtonID) {

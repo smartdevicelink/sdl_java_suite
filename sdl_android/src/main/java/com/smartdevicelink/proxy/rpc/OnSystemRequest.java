@@ -1,5 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -76,7 +77,7 @@ import java.util.List;
  *                 <td>minvalue: 0; maxvalue:100000000000</td>
  * 			<td>SmartDeviceLink 2.3.2 </td>
  * 		</tr>
- *  </table>	      	
+ *  </table>
  * @since SmartDeviceLink 2.3.2
  */
 public class OnSystemRequest extends RPCNotification {
@@ -93,12 +94,11 @@ public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_LENGTH = "length";
 	
 	private String body;
-	private Headers headers;	
+	private Headers headers;
 	
-	/** Constructs a new OnSystemsRequest object
-	 * 	
+	/**
+	 * Constructs a new OnSystemsRequest object
 	 */
-
     public OnSystemRequest() {
         super(FunctionID.ON_SYSTEM_REQUEST.toString());
     }
@@ -110,6 +110,14 @@ public class OnSystemRequest extends RPCNotification {
     public OnSystemRequest(Hashtable<String, Object> hash, byte[] bulkData){
         super(hash);
         setBulkData(bulkData);
+    }
+
+    /**
+	 * Constructs a new OnSystemsRequest object
+     */
+    public OnSystemRequest(@NonNull RequestType requestType) {
+        this();
+        setRequestType(requestType);
     }
     
     private void handleBulkData(byte[] bulkData){
@@ -222,7 +230,7 @@ public class OnSystemRequest extends RPCNotification {
         return (RequestType) getObject(RequestType.class, KEY_REQUEST_TYPE);
     }
 
-    public void setRequestType(RequestType requestType) {
+    public void setRequestType(@NonNull RequestType requestType) {
         setParameters(KEY_REQUEST_TYPE, requestType);
     }
 

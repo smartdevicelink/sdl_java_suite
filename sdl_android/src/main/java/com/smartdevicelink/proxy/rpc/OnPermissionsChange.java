@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 
@@ -63,6 +65,14 @@ public class OnPermissionsChange extends RPCNotification {
 		super(hash);
 	}
 	/**
+	 *Constructs a newly allocated OnCommand object
+	 * @param permissionItem an List of  PermissionItem describing change in permissions for a given set of RPCs
+	 */
+	public OnPermissionsChange(@NonNull List<PermissionItem> permissionItem) {
+		this();
+		setPermissionItem(permissionItem);
+	}
+	/**
      * <p>Returns List<PermissionItem> object describing change in permissions for a given set of RPCs</p>
      * @return List<{@linkplain PermissionItem}> an object describing describing change in permissions for a given set of RPCs
      */   
@@ -74,7 +84,7 @@ public class OnPermissionsChange extends RPCNotification {
      * <p>Sets PermissionItems describing change in permissions for a given set of RPCs</p>    
      * @param permissionItem an List of  PermissionItem describing change in permissions for a given set of RPCs
      */  
-	public void setPermissionItem(List<PermissionItem> permissionItem) {
+	public void setPermissionItem(@NonNull List<PermissionItem> permissionItem) {
 		setParameters(KEY_PERMISSION_ITEM, permissionItem);
 	}
 }

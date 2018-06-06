@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -128,14 +130,24 @@ public class PutFile extends RPCRequest {
 
 	/**
 	 * Constructs a new PutFile object indicated by the Hashtable parameter
-	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public PutFile(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new PutFile object
+	 * @param syncFileName a String value representing a file reference name
+	 * <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
+	 * @param fileType a FileType value representing a selected file type
+	 */
+	public PutFile(@NonNull String syncFileName, @NonNull FileType fileType) {
+		this();
+		setSdlFileName(syncFileName);
+		setFileType(fileType);
+	}
 
 	/**
 	 * Sets a file reference name
@@ -145,7 +157,7 @@ public class PutFile extends RPCRequest {
 	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
 	 */
-    public void setSdlFileName(String sdlFileName) {
+    public void setSdlFileName(@NonNull String sdlFileName) {
         setParameters(KEY_SDL_FILE_NAME, sdlFileName);
     }
 
@@ -164,7 +176,7 @@ public class PutFile extends RPCRequest {
 	 * @param fileType
 	 *            a FileType value representing a selected file type
 	 */
-    public void setFileType(FileType fileType) {
+    public void setFileType(@NonNull FileType fileType) {
         setParameters(KEY_FILE_TYPE, fileType);
     }
 

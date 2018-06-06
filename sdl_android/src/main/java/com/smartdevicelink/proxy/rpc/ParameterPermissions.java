@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -58,7 +60,18 @@ public class ParameterPermissions extends RPCStruct {
     public ParameterPermissions(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
+
+    /**
+     *  Constructs a newly allocated ParameterPermissions object
+     * @param allowed parameter that is permitted for this given RPC
+     * @param userDisallowed parameter that is prohibited for this given RPC
+     */
+    public ParameterPermissions(@NonNull List<String> allowed, @NonNull List<String> userDisallowed) {
+        this();
+        setAllowed(allowed);
+        setUserDisallowed(userDisallowed);
+    }
+
     /**
      * get a set of all parameters that are permitted for this given RPC.
      * @return a set of all parameters that are permitted for this given RPC.
@@ -72,7 +85,7 @@ public class ParameterPermissions extends RPCStruct {
      * set a set of all parameters that are permitted for this given RPC.
      * @param allowed parameter that is permitted for this given RPC
      */
-    public void setAllowed(List<String> allowed) {
+    public void setAllowed(@NonNull List<String> allowed) {
         setValue(KEY_ALLOWED, allowed);
     }
     
@@ -89,7 +102,7 @@ public class ParameterPermissions extends RPCStruct {
      * set a set of all parameters that are prohibited for this given RPC.
      * @param userDisallowed paramter that is prohibited for this given RPC
      */
-    public void setUserDisallowed(List<String> userDisallowed) {
+    public void setUserDisallowed(@NonNull List<String> userDisallowed) {
         setValue(KEY_USER_DISALLOWED, userDisallowed);
     }
 }
