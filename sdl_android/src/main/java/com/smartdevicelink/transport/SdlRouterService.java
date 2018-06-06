@@ -108,7 +108,7 @@ public class SdlRouterService extends Service{
 	
 	public static final String REGISTER_NEWER_SERVER_INSTANCE_ACTION		= "com.sdl.android.newservice";
 
-	public static final String SDL_NOTIFICATION_FAQS_PAGE = "https://smartdevicelink.com/en/guides/pull_request/c716225aba9c037d4fb62ad868f7c890a111445a/frequently-asked-questions/sdl-notifications/";
+	public static final String SDL_NOTIFICATION_FAQS_PAGE = "https://smartdevicelink.com/en/guides/android/frequently-asked-questions/sdl-notifications/";
 
 	/**
 	 * @deprecated use {@link TransportConstants#START_ROUTER_SERVICE_ACTION} instead
