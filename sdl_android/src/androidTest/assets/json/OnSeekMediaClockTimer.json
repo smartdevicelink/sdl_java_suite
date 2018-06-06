@@ -1,0 +1,13 @@
+{
+  "notification":{
+    "name":"OnSeekMediaClockTimer",
+    "correlationID":150,
+    "parameters":{
+      "seekTime":{
+        "minutes":55,
+        "seconds":19,
+        "hours":12
+      }
+    }
+  }
+}
