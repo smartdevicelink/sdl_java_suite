@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
@@ -55,6 +57,14 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
         super(hash);
     }
     /**
+     *Constructs a newly allocated OnAppInterfaceUnregistered object
+     * @param reason The reason application's interface registration was terminated
+     */
+    public OnAppInterfaceUnregistered(@NonNull AppInterfaceUnregisteredReason reason) {
+        this();
+        setReason(reason);
+    }
+    /**
      * <p>Get the reason the registration was terminated</p>
      * @return {@linkplain AppInterfaceUnregisteredReason} the reason the application's interface registration was terminated
      */    
@@ -65,7 +75,7 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
      * <p>Set the reason application's interface was terminated</p>
      * @param reason The reason application's interface registration was terminated
      */    
-    public void setReason( AppInterfaceUnregisteredReason reason ) {
+    public void setReason( @NonNull AppInterfaceUnregisteredReason reason ) {
         setParameters(KEY_REASON, reason);
     }
 }

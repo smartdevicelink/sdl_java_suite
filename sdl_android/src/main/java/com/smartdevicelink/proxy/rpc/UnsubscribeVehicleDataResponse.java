@@ -1,9 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.util.DebugTool;
 
 import static android.provider.Contacts.SettingsColumns.KEY;
@@ -42,9 +45,20 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	/**
 	 * Constructs a new UnsubscribeVehicleDataResponse object
 	 */
-    public UnsubscribeVehicleDataResponse() {
-        super(FunctionID.UNSUBSCRIBE_VEHICLE_DATA.toString());
-    }
+	public UnsubscribeVehicleDataResponse() {
+		super(FunctionID.UNSUBSCRIBE_VEHICLE_DATA.toString());
+	}
+
+	/**
+	 * Constructs a new UnsubscribeVehicleDataResponse object
+	 * @param success whether the request is successfully processed
+	 * @param resultCode whether the request is successfully processed
+	 */
+	public UnsubscribeVehicleDataResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+		this();
+		setSuccess(success);
+		setResultCode(resultCode);
+	}
 
 	/**
 	 * Constructs a new UnsubscribeVehicleDataResponse object indicated by the Hashtable
@@ -135,7 +149,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Fuel Level State
-     * @param fuelLevel_State
+     * @param fuelLevelState
      */
     public void setFuelLevelState(VehicleDataResult fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);

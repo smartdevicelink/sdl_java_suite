@@ -34,7 +34,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation ('com.smartdevicelink:bson_java_port:1.0.0@aar'){
+    implementation ('com.smartdevicelink:bson_java_port:1.1.1@aar'){
         transitive = true
     }
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -42,7 +42,8 @@ dependencies {
     })
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.9.0'
-    
+    implementation 'com.android.support:support-annotations:27.1.1'
+
 }
 
 buildscript {

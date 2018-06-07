@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
@@ -127,14 +129,25 @@ public class PerformInteraction extends RPCRequest {
 	/**
 	 * Constructs a new PerformInteraction object indicated by the Hashtable
 	 * parameter
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 *
+	 * @param hash The Hashtable to use
 	 */    
     public PerformInteraction(Hashtable<String, Object> hash) {
         super(hash);
     }
+	/**
+	 * Constructs a new PerformInteraction object
+	 * @param initialText a String value that Displayed when the interaction begins
+	 * @param interactionMode indicate how user selects interaction choice (VR_ONLY, MANUAL_ONLY or BOTH)
+	 * @param interactionChoiceSetIDList a List<Integer> representing an Array of one or more Choice Set IDs. User can select any choice from any of the specified
+	 * Choice Sets <b>Notes: </b>Min Value: 0; Max Vlaue: 2000000000
+	 */
+	public PerformInteraction(@NonNull String initialText, @NonNull InteractionMode interactionMode, @NonNull List<Integer> interactionChoiceSetIDList) {
+		this();
+		setInitialText(initialText);
+		setInteractionMode(interactionMode);
+		setInteractionChoiceSetIDList(interactionChoiceSetIDList);
+	}
 	/**
 	 * Gets the Text that Displayed when the interaction begins. This text may
 	 * be overlaid by the "Listening" prompt during the interaction. Text is
@@ -155,7 +168,7 @@ public class PerformInteraction extends RPCRequest {
 	 * @param initialText
 	 *            a String value that Displayed when the interaction begins
 	 */    
-    public void setInitialText(String initialText) {
+    public void setInitialText(@NonNull String initialText) {
 		setParameters(KEY_INITIAL_TEXT, initialText);
     }
 	/**
@@ -200,7 +213,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            indicate how user selects interaction choice (VR_ONLY,
 	 *            MANUAL_ONLY or BOTH)
 	 */    
-    public void setInteractionMode(InteractionMode interactionMode) {
+    public void setInteractionMode(@NonNull InteractionMode interactionMode) {
 		setParameters(KEY_INTERACTION_MODE, interactionMode);
     }
 	/**
@@ -226,7 +239,7 @@ public class PerformInteraction extends RPCRequest {
 	 *            <p></p>
 	 *            <b>Notes: </b>Min Value: 0; Max Vlaue: 2000000000
 	 */    
-    public void setInteractionChoiceSetIDList(List<Integer> interactionChoiceSetIDList) {
+    public void setInteractionChoiceSetIDList(@NonNull List<Integer> interactionChoiceSetIDList) {
 		setParameters(KEY_INTERACTION_CHOICE_SET_ID_LIST, interactionChoiceSetIDList);
     }
 	/**

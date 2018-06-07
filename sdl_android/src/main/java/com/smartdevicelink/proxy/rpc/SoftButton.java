@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
@@ -79,22 +81,32 @@ public class SoftButton extends RPCStruct {
 	public static final String KEY_TEXT = "text";
 	public static final String KEY_TYPE = "type";
 	public static final String KEY_IMAGE = "image";
+
+	public SoftButton() { }
+
 	/**
 	* 
 	* <p>Constructs a new SoftButton object indicated by the Hashtable
 	* parameter</p>
-	* 
-	* 
-	* @param hash
-	* 
-	*            The Hashtable to use
+	*
+	* @param hash The Hashtable to use
 	*/
-
-    public SoftButton() { }
-    public SoftButton(Hashtable<String, Object> hash) {
+	public SoftButton(Hashtable<String, Object> hash) {
         super(hash);
     }
-    public void setType(SoftButtonType type) {
+
+	/**
+	 * Constructs a new SoftButton object
+	 * @param type Describes, whether it is text, highlighted text, icon, or dynamic image.
+	 * @param softButtonID Value which is returned via OnButtonPress / OnButtonEvent
+	 */
+	public SoftButton(@NonNull SoftButtonType type, @NonNull Integer softButtonID){
+		this();
+		setType(type);
+		setSoftButtonID(softButtonID);
+	}
+
+    public void setType(@NonNull SoftButtonType type) {
         setValue(KEY_TYPE, type);
     }
     public SoftButtonType getType() {
@@ -119,7 +131,7 @@ public class SoftButton extends RPCStruct {
     public Boolean getIsHighlighted() {
         return getBoolean(KEY_IS_HIGHLIGHTED);
     }
-    public void setSoftButtonID(Integer softButtonID) {
+    public void setSoftButtonID(@NonNull Integer softButtonID) {
         setValue(KEY_SOFT_BUTTON_ID, softButtonID);
     }
     public Integer getSoftButtonID() {

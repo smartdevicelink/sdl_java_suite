@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -79,9 +81,19 @@ public class DiagnosticMessage extends RPCRequest {
      * 
      * @param targetID
      */
-    
 
-    public void setTargetID(Integer targetID) {
+
+	/**
+	 * Constructs a new DiagnosticMessage object
+	 */
+	public DiagnosticMessage(@NonNull Integer targetID, @NonNull Integer messageLength, @NonNull List<Integer> messageData) {
+		this();
+		setTargetID(targetID);
+		setMessageLength(messageLength);
+		setMessageData(messageData);
+	}
+
+    public void setTargetID(@NonNull Integer targetID) {
 		setParameters(KEY_TARGET_ID, targetID);
     }
     /**
@@ -96,7 +108,7 @@ public class DiagnosticMessage extends RPCRequest {
     	return getInteger(KEY_TARGET_ID);
     }    
 
-    public void setMessageLength(Integer messageLength) {
+    public void setMessageLength(@NonNull Integer messageLength) {
 		setParameters(KEY_MESSAGE_LENGTH, messageLength);
     }
     public Integer getMessageLength() {
@@ -108,7 +120,7 @@ public class DiagnosticMessage extends RPCRequest {
         return (List<Integer>) getObject(Integer.class, KEY_MESSAGE_DATA);
     }
     
-    public void setMessageData(List<Integer> messageData) {
+    public void setMessageData(@NonNull List<Integer> messageData) {
 		setParameters(KEY_MESSAGE_DATA, messageData);
     }    
 }

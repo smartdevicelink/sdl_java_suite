@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -73,10 +75,20 @@ public class OnLanguageChange extends RPCNotification {
         super(hash);
     }
     /**
+     *Constructs a newly allocated OnCommand object
+     * @param language language that current SDL voice engine(VR+TTS) use
+     * @param hmiDisplayLanguage language that current SDL voice engine(VR+TTS) use
+     */
+    public OnLanguageChange(@NonNull Language language, @NonNull Language hmiDisplayLanguage) {
+        this();
+        setLanguage(language);
+        setHmiDisplayLanguage(hmiDisplayLanguage);
+    }
+    /**
      * <p>Sets language that current SDL voice engine(VR+TTS) use</p>    
      * @param language language that current SDL voice engine(VR+TTS) use
      */  
-    public void setLanguage(Language language) {
+    public void setLanguage(@NonNull Language language) {
         setParameters(KEY_LANGUAGE, language);
     }
     /**
@@ -90,7 +102,7 @@ public class OnLanguageChange extends RPCNotification {
      * <p>Sets language that current display use</p>    
      * @param hmiDisplayLanguage language that current SDL voice engine(VR+TTS) use
      */  
-    public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
+    public void setHmiDisplayLanguage(@NonNull Language hmiDisplayLanguage) {
         setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
     }
     /**

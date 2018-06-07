@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
@@ -63,6 +65,15 @@ public class SystemRequest extends RPCRequest {
         super(hash);
     }
 
+	/**
+	 * Constructs a new SystemRequest object
+	 * @param requestType The type of system request.
+	 */
+	public SystemRequest(@NonNull RequestType requestType){
+		this();
+		setRequestType(requestType);
+	}
+
     @SuppressWarnings("unchecked")    
     public List<String> getLegacyData() {
         return (List<String>) getObject(String.class, KEY_DATA);
@@ -84,7 +95,7 @@ public class SystemRequest extends RPCRequest {
         return (RequestType) getObject(RequestType.class, KEY_REQUEST_TYPE);
     }
 
-    public void setRequestType(RequestType requestType) {
+    public void setRequestType(@NonNull RequestType requestType) {
         setParameters(KEY_REQUEST_TYPE, requestType);
     }
 }

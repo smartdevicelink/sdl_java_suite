@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 
@@ -41,12 +43,21 @@ public class SingleTireStatus extends RPCStruct {
     public SingleTireStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a newly allocated SingleTireStatus object
+	 * @param status Describes the volume status of a single tire
+	 */
+	public SingleTireStatus(@NonNull ComponentVolumeStatus status){
+		this();
+		setStatus(status);
+	}
     
     /**
      *  set the volume status of a single tire
      * @param status  the volume status of a single tire
      */
-    public void setStatus(ComponentVolumeStatus status) {
+    public void setStatus(@NonNull ComponentVolumeStatus status) {
     	setValue(KEY_STATUS, status);
     }
     

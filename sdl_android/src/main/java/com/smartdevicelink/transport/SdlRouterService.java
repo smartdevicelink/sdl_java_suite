@@ -31,6 +31,7 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -45,6 +46,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
@@ -105,6 +107,9 @@ public class SdlRouterService extends Service{
 	private static final long CLIENT_PING_DELAY = 1000;
 	
 	public static final String REGISTER_NEWER_SERVER_INSTANCE_ACTION		= "com.sdl.android.newservice";
+
+	public static final String SDL_NOTIFICATION_FAQS_PAGE = "https://smartdevicelink.com/en/guides/android/frequently-asked-questions/sdl-notifications/";
+
 	/**
 	 * @deprecated use {@link TransportConstants#START_ROUTER_SERVICE_ACTION} instead
 	 */
@@ -1062,6 +1067,11 @@ public class SdlRouterService extends Service{
 		}
         builder.setLargeIcon(icon);
         builder.setOngoing(true);
+
+		// Create an intent that will be fired when the user clicks the notification.
+		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SDL_NOTIFICATION_FAQS_PAGE));
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+		builder.setContentIntent(pendingIntent);
 
         if(chronometerLength > 0) {
         	builder.setWhen(chronometerLength + System.currentTimeMillis());
