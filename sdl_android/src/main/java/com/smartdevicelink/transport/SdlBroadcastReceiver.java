@@ -97,9 +97,19 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			if (localRouterClass != null) {
 				ResolveInfo info = context.getPackageManager().resolveService(new Intent(context, localRouterClass), PackageManager.GET_META_DATA);
 				if (info != null) {
-					if (info.filter == null || !info.filter.hasAction(TransportConstants.ROUTER_SERVICE_ACTION)) {
+					// Check if the service declaration in AndroidManifest has the intent-filter action specified correctly
+					boolean serviceFilterHasAction = false;
+					List<ResolveInfo> services = context.getPackageManager().queryIntentServices(new Intent(TransportConstants.ROUTER_SERVICE_ACTION), PackageManager.GET_RESOLVED_FILTER);
+					for (ResolveInfo service : services) {
+						if (service.serviceInfo.name.equals(localRouterClass.getName())){
+							serviceFilterHasAction = true;
+							break;
+						}
+					}
+					if (!serviceFilterHasAction){
 						Log.e(TAG, "WARNING: This application has not specified its intent-filter for the SdlRouterService. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
 					}
+					// Check if the service declaration in AndroidManifest has the router service version metadata specified correctly
 					if (info.serviceInfo.metaData == null || !info.serviceInfo.metaData.containsKey(context.getString(R.string.sdl_router_service_version_name))) {
 						Log.e(TAG, "WARNING: This application has not specified its metadata tags for the SdlRouterService. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
 					}
