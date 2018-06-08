@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -58,8 +59,9 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		//Log.i(TAG, "Sdl Receiver Activated");
-		String action = intent.getAction();
-		
+		final String action = intent.getAction();
+		BluetoothDevice device = null;
+
 		if(action.equalsIgnoreCase(Intent.ACTION_PACKAGE_ADDED)
 				|| action.equalsIgnoreCase(Intent.ACTION_PACKAGE_REPLACED)){
 			//The package manager has sent out a new broadcast. 
@@ -83,7 +85,11 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			onSdlEnabled(context, intent);
 			return;
         }
-        
+
+		if(intent.hasExtra(BluetoothDevice.EXTRA_DEVICE)){	//Grab the bluetooth device if available
+			device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+		}
+
 		boolean didStart = false;
 		if (localRouterClass == null){
 			localRouterClass = defineLocalSdlRouterClass();
@@ -133,13 +139,13 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			}else if(intent.getBooleanExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, false)){
 				//We were told to wake up our router services
 				boolean altServiceWake = intent.getBooleanExtra(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT, false);
-				didStart = wakeUpRouterService(context, false,altServiceWake );
+				didStart = wakeUpRouterService(context, false,altServiceWake,device );
 				
 			}
 
 		}
 		
-	    if (intent.getAction().contains("android.bluetooth.adapter.action.STATE_CHANGED")){
+	    if (action.contains("android.bluetooth.adapter.action.STATE_CHANGED")){
 	    	int state = intent.getIntExtra("android.bluetooth.adapter.extra.STATE",-1);
 	    		if (state == BluetoothAdapter.STATE_OFF || 
 	    			state == BluetoothAdapter.STATE_TURNING_OFF){
@@ -150,11 +156,12 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    			return;
 	    		}
 	    }
+
 	    Log.d(TAG, "Check for local router");
 	    if(localRouterClass!=null){ //If there is a supplied router service lets run some logic regarding starting one
 	    	
 	    	if(!didStart){Log.d(TAG, "attempting to wake up router service");
-	    		didStart = wakeUpRouterService(context, true,false);
+	    		didStart = wakeUpRouterService(context, true,false, device);
 	    	}
 
 	    	//So even though we started our own version, on some older phones we find that two services are started up so we want to make sure we send our version that we are working with
@@ -169,7 +176,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    }
 	}
 
-	private boolean wakeUpRouterService(final Context context, final boolean ping, final boolean altTransportWake){
+	private boolean wakeUpRouterService(final Context context, final boolean ping, final boolean altTransportWake, final BluetoothDevice device){
 			new ServiceFinder(context, context.getPackageName(), new ServiceFinder.ServiceFinderCallback() {
 				@Override
 				public void onComplete(Vector<ComponentName> routerServices) {
@@ -190,6 +197,9 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 						}
 						if (altTransportWake) {
 							serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
+						}
+						if(device != null){
+							serviceIntent.putExtra(BluetoothDevice.EXTRA_DEVICE, device);
 						}
 						try {
 							if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
