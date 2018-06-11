@@ -62,16 +62,12 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 			logInfo("TCPTransport: openConnection request rejected. Another connection is not finished");
 		}
 
-		setState(STATE_CONNECTING);
-
 		// Send the name of the connected device back to the UI Activity
 		Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
 		Bundle bundle = new Bundle();
 		bundle.putString(DEVICE_NAME, currentlyConnectedDevice);
 		msg.setData(bundle);
 		handler.sendMessage(msg);
-
-		setState(STATE_CONNECTED);
 	}
 
 

@@ -972,7 +972,7 @@ public class SdlRouterService extends Service{
 		}
 
 		//This is temporary to test MultiplexTcpTransport
-		tcpTransport = new MultiplexTcpTransport(5526, "m.sdl.tools", true, tcpHandler);
+		tcpTransport = new MultiplexTcpTransport(5813, "m.sdl.tools", true, tcpHandler);
 		Log.i(TAG, "Starting TCP transport");
 		tcpTransport.start();
 
@@ -1310,9 +1310,8 @@ public class SdlRouterService extends Service{
 	private boolean isTransportConnected(TransportType transportType){
 		if(bluetoothTransport != null && transportType.equals(TransportType.BLUETOOTH)){
 			return bluetoothTransport.isConnected();
-		}else if(transportType.equals(TransportType.TCP)){
-			return false;
-			// TODO: return whether TCP transport in RouterService is connected
+		}else if(tcpTransport != null && transportType.equals(TransportType.TCP)){
+			return tcpTransport.isConnected();
 		}else if(usbTransport != null && transportType.equals(TransportType.USB)){
 			return usbTransport.isConnected();
 		}
