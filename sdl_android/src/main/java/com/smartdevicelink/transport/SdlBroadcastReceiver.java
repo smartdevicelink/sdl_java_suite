@@ -99,9 +99,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 				if (info != null) {
 					// Check if the service declaration in AndroidManifest has the intent-filter action specified correctly
 					boolean serviceFilterHasAction = false;
+					String className = localRouterClass.getName();
 					List<SdlAppInfo> services = AndroidTools.querySdlAppInfo(context, null);
 					for (SdlAppInfo sdlAppInfo : services) {
-						if (sdlAppInfo.getRouterServiceComponentName().getClassName().equals(localRouterClass.getName())){
+						if(sdlAppInfo != null && sdlAppInfo.getRouterServiceComponentName() != null && className.equals((sdlAppInfo.getRouterServiceComponentName().getClassName()))){
 							serviceFilterHasAction = true;
 							break;
 						}
