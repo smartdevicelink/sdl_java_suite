@@ -95,11 +95,24 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			localRouterClass = defineLocalSdlRouterClass();
 			// we need to check this again because for USB apps, the returned class can still be null
 			if (localRouterClass != null) {
+
+				// Check if the service declaration in AndroidManifest has the intent-filter action specified correctly
+				boolean serviceFilterHasAction = false;
+				String className = localRouterClass.getName();
+				List<SdlAppInfo> services = AndroidTools.querySdlAppInfo(context, null);
+				for (SdlAppInfo sdlAppInfo : services) {
+					if(sdlAppInfo != null && sdlAppInfo.getRouterServiceComponentName() != null && className.equals((sdlAppInfo.getRouterServiceComponentName().getClassName()))){
+						serviceFilterHasAction = true;
+						break;
+					}
+				}
+				if (!serviceFilterHasAction){
+					Log.e(TAG, "WARNING: This application has not specified its intent-filter for the SdlRouterService. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
+				}
+
+				// Check if the service declaration in AndroidManifest has the router service version metadata specified correctly
 				ResolveInfo info = context.getPackageManager().resolveService(new Intent(context, localRouterClass), PackageManager.GET_META_DATA);
 				if (info != null) {
-					if (info.filter == null || !info.filter.hasAction(TransportConstants.ROUTER_SERVICE_ACTION)) {
-						Log.e(TAG, "WARNING: This application has not specified its intent-filter for the SdlRouterService. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
-					}
 					if (info.serviceInfo.metaData == null || !info.serviceInfo.metaData.containsKey(context.getString(R.string.sdl_router_service_version_name))) {
 						Log.e(TAG, "WARNING: This application has not specified its metadata tags for the SdlRouterService. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
 					}
