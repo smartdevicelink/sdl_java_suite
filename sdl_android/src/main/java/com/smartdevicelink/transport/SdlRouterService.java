@@ -166,6 +166,10 @@ public class SdlRouterService extends Service{
 	private MultiplexUsbTransport usbTransport;
 	private final Handler usbHandler = new TransportHandler(this);
 
+	/* TCP Transport */
+	private MultiplexTcpTransport tcpTransport;
+	private final Handler tcpHandler = new TransportHandler(this);
+
 	private static boolean connectAsClient = false;
 	private static boolean closing = false;
 	private boolean isTransportConnected = false;
@@ -179,7 +183,7 @@ public class SdlRouterService extends Service{
 	private boolean initPassed = false;
 
 	public static HashMap<String,RegisteredApp> registeredApps;
-	private SparseArray<String> bluetoothSessionMap, usbSessionMap;
+	private SparseArray<String> bluetoothSessionMap, usbSessionMap, tcpSessionMap;
 	private SparseIntArray sessionHashIdMap;
 	private SparseIntArray cleanedSessionMap;
 	private final Object SESSION_LOCK = new Object(), REGISTERED_APPS_LOCK = new Object(), PING_COUNT_LOCK = new Object();
@@ -472,6 +476,8 @@ public class SdlRouterService extends Service{
 											transportType = TransportType.BLUETOOTH;
 										} else if(service.usbTransport!= null && service.usbTransport.isConnected()){
 											transportType = TransportType.USB;
+										} else if(service.tcpTransport != null && service.tcpTransport.isConnected()){
+											transportType = TransportType.TCP;
 										}
 										Log.d(TAG, "Transport type was null, so router set it to " + transportType.name());
 										receivedBundle.putString(TransportConstants.TRANSPORT_FOR_PACKET, transportType.name());
@@ -530,6 +536,8 @@ public class SdlRouterService extends Service{
 												requestingTransport = TransportType.BLUETOOTH;
 											}else if(service.usbTransport!= null && service.usbTransport.isConnected()){
 												requestingTransport = TransportType.USB;
+											}else if(service.tcpTransport != null && service.tcpTransport.isConnected()){
+												requestingTransport = TransportType.TCP;
 											}
 										}
 										appRequesting.getSessionIds().add((long)-1); //Adding an extra session
@@ -787,6 +795,8 @@ public class SdlRouterService extends Service{
 	        			AndroidTools.sendExplicitBroadcast(service.getApplicationContext(),service.pingIntent, null);
 	        		}
 	        		break;
+			        case TransportConstants.ALT_TRANSPORT_CONNECTED:
+			        	break;
 	        	default:
 	        		Log.w(TAG, "Unsupported request: " + msg.what);
 	        		break;
@@ -960,6 +970,11 @@ public class SdlRouterService extends Service{
 			this.sessionHashIdMap = new SparseIntArray();
 			this.cleanedSessionMap = new SparseIntArray();
 		}
+
+		//This is temporary to test MultiplexTcpTransport
+		tcpTransport = new MultiplexTcpTransport(5526, "m.sdl.tools", true, tcpHandler);
+		Log.i(TAG, "Starting TCP transport");
+		tcpTransport.start();
 
 		packetExecutor =  Executors.newSingleThreadExecutor();
 
@@ -1611,6 +1626,10 @@ public class SdlRouterService extends Service{
 						return true;
 					}
 				case TCP:
+					if(tcpTransport != null && tcpTransport.getState() ==  MultiplexBaseTransport.STATE_CONNECTED) {
+						tcpTransport.write(packet, offset, count);
+						return true;
+					}
 					default:
 						if(sendThroughAltTransport(bundle)){
 							return true;
@@ -2098,6 +2117,12 @@ public class SdlRouterService extends Service{
 					sessionMap = usbSessionMap;
 					break;
 				case TCP:
+					if(tcpSessionMap == null){
+						Log.w(TAG, "TCP map was null during look up. Creating one on the fly");
+						tcpSessionMap = new SparseArray<String>();
+					}
+					sessionMap = tcpSessionMap;
+					break;
 				default:
 					return null;
 			}
