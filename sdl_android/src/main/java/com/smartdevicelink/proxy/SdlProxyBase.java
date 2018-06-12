@@ -37,6 +37,7 @@ import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.view.Display;
 import android.view.InputDevice;
 import android.view.MotionEvent;
@@ -6379,6 +6380,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		IVideoStreamListener streamListener;
 		float[] touchScalar = {1.0f,1.0f}; //x, y
 		private HapticInterfaceManager hapticManager;
+		SdlMotionEvent sdlMotionEvent = null;
 
 		public VideoStreamingManager(Context context,ISdl iSdl){
 			this.context = context;
@@ -6575,27 +6577,94 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 
 
-			int eventAction = MotionEvent.ACTION_DOWN;
-			long downTime = 0;
-
-			if (touchType == TouchType.BEGIN) {
-				downTime = SystemClock.uptimeMillis();
-				eventAction = MotionEvent.ACTION_DOWN;
+			if(sdlMotionEvent == null) {
+				if (touchType == TouchType.BEGIN) {
+					sdlMotionEvent = new SdlMotionEvent();
+				}else{
+					return  null;
+				}
 			}
 
-			long eventTime = SystemClock.uptimeMillis();
-			if (downTime == 0){ downTime = eventTime - 100;}
+			int eventAction = sdlMotionEvent.getMotionEvent(touchType, pointerProperties);
 
-			if (touchType == TouchType.MOVE) {
-				eventAction = MotionEvent.ACTION_MOVE;
+			return android.view.MotionEvent.obtain(sdlMotionEvent.startOfEvent, sdlMotionEvent.getEventTime(), eventAction, eventListSize, pointerProperties, pointerCoords, 0, 0,1,1,0,0, InputDevice.SOURCE_TOUCHSCREEN,0);
+
+		}
+
+
+
+	}
+
+	/**
+	 * Keeps track of the current motion event for VPM
+	 */
+	private static class SdlMotionEvent{
+		long startOfEvent;
+		SparseIntArray pointerStatuses = new SparseIntArray();
+
+		SdlMotionEvent(){
+			startOfEvent = SystemClock.uptimeMillis();
+		}
+
+		synchronized long getEventTime(){
+			return  SystemClock.uptimeMillis() - startOfEvent;
+		}
+
+
+		synchronized int  getMotionEvent(TouchType touchType, MotionEvent.PointerProperties[] pointerProperties){
+			int motionEvent = MotionEvent.ACTION_DOWN;
+			switch (touchType){
+				case BEGIN:
+					if(pointerStatuses.size() == 0){
+						//The motion event has just begun
+						motionEvent = MotionEvent.ACTION_DOWN;
+					}else{
+						motionEvent = MotionEvent.ACTION_POINTER_DOWN;
+					}
+					setPointerStatuses(motionEvent, pointerProperties);
+					break;
+				case MOVE:
+					motionEvent = MotionEvent.ACTION_MOVE;
+					setPointerStatuses(motionEvent, pointerProperties);
+
+					break;
+				case END:
+					//Clears out pointers that have ended
+					setPointerStatuses(MotionEvent.ACTION_UP, pointerProperties);
+
+					if(pointerStatuses.size() == 0){
+						//The motion event has just begun
+						motionEvent = MotionEvent.ACTION_UP;
+					}else{
+						motionEvent = MotionEvent.ACTION_POINTER_UP;
+					}
+					break;
+				case CANCEL:
+					//Assuming this cancels the entire event
+					motionEvent = MotionEvent.ACTION_CANCEL;
+					pointerStatuses.clear();
+					break;
+				default:
+					break;
 			}
+			return motionEvent;
+		}
 
-			if (touchType == TouchType.END) {
-				eventAction = MotionEvent.ACTION_UP;
+		private void setPointerStatuses(int motionEvent, MotionEvent.PointerProperties[] pointerProperties){
+
+					for(int i = 0; i < pointerProperties.length; i ++){
+						MotionEvent.PointerProperties properties = pointerProperties[i];
+						if(properties != null){
+							if(motionEvent == MotionEvent.ACTION_UP || motionEvent == MotionEvent.ACTION_POINTER_UP){
+								pointerStatuses.delete(properties.id);
+							}else if(motionEvent == MotionEvent.ACTION_DOWN && properties.id == 0){
+								pointerStatuses.put(properties.id, MotionEvent.ACTION_DOWN);
+							}else{
+								pointerStatuses.put(properties.id, motionEvent);
+							}
+
+					}
 			}
-
-			return MotionEvent.obtain(downTime, eventTime, eventAction, eventListSize, pointerProperties, pointerCoords, 0, 0,1,1,0,0, InputDevice.SOURCE_TOUCHSCREEN,0);
-
 		}
 	}
 } // end-class
