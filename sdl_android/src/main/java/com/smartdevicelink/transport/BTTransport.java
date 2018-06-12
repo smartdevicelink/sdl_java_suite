@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.os.Build;
 import android.os.Build.VERSION;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
@@ -57,8 +58,14 @@ public class BTTransport extends SdlTransport {
 		super(transportListener);
 		bKeepSocketActive = bKeepSocket;		
 	} // end-ctor	
-	
+
+	@Deprecated
 	public BluetoothSocket getBTSocket(BluetoothServerSocket bsSocket){
+
+		if(bsSocket == null || Build.VERSION.SDK_INT > Build.VERSION_CODES.O) { //Reflection is no longer allowed on SDK classes)
+			return null;
+		}
+
 	    Field[] f = bsSocket.getClass().getDeclaredFields();
 
 	    @SuppressWarnings("unused")
@@ -85,11 +92,14 @@ public class BTTransport extends SdlTransport {
 
 	    return null;
 	}
-	
+
+	@Deprecated
 	public int getChannel(BluetoothSocket bsSocket){
 
 		int channel = -1;
-		if (bsSocket == null) return channel;
+		if (bsSocket == null || Build.VERSION.SDK_INT > Build.VERSION_CODES.O){ //Reflection is no longer allowed on SDK classes
+			return channel;
+		}
 	    
 		Field[] f = bsSocket.getClass().getDeclaredFields();
 	    
@@ -174,7 +184,7 @@ public class BTTransport extends SdlTransport {
 
 			sComment = "Accepting Connections on SDP Server Port Number: " + iSocket + "\r\n";
 			sComment += "Keep Server Socket Open: " + bKeepSocketActive;
-			if (iSocket < 0)
+			if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O && iSocket < 0)
 			{
 				SdlConnection.enableLegacyMode(false, null);
 				throw new SdlException("Could not open connection to SDL.", SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE);

@@ -46,3 +46,12 @@ For Maven or Ivy snippets please look at [Bintray](https://bintray.com/smartdevi
 #### Manually
 
 If you prefer not to use any of the aforementioned dependency managers, you can integrate SDL Android into your project manually.
+
+### Proguard Rules
+
+Developers using Proguard to shrink and obfuscate their code should be sure to include the following lines in their proguard-rules.pro file:
+
+```
+-keep class com.smartdevicelink.** { *; }
+-keep class com.livio.** { *; }
+```
