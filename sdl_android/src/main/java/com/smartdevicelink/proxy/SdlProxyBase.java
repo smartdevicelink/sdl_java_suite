@@ -6587,8 +6587,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 			int eventAction = sdlMotionEvent.getMotionEvent(touchType, pointerProperties);
 
-			return android.view.MotionEvent.obtain(sdlMotionEvent.startOfEvent, sdlMotionEvent.getEventTime(), eventAction, eventListSize, pointerProperties, pointerCoords, 0, 0,1,1,0,0, InputDevice.SOURCE_TOUCHSCREEN,0);
+			MotionEvent motionEvent =  android.view.MotionEvent.obtain(sdlMotionEvent.startOfEvent, sdlMotionEvent.getEventTime(), eventAction, eventListSize, pointerProperties, pointerCoords, 0, 0,1,1,0,0, InputDevice.SOURCE_TOUCHSCREEN,0);
 
+			//If the motion event should be finished we should clear our reference
+			if(eventAction == MotionEvent.ACTION_UP || eventAction == MotionEvent.ACTION_CANCEL){
+				sdlMotionEvent = null;
+			}
+
+			return  motionEvent;
 		}
 
 
