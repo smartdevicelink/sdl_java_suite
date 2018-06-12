@@ -38,10 +38,10 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
+import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.Surface;
 
-import com.smartdevicelink.BuildConfig;
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
@@ -6534,20 +6534,46 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			TouchType touchType = touchEvent.getType();
 			if (touchType == null){ return null;}
 
-			float x;
-			float y;
+			int eventListSize = eventList.size();
 
-			TouchEvent event = eventList.get(eventList.size() - 1);
-			List<TouchCoord> coordList = event.getTouchCoordinates();
-			if (coordList == null || coordList.size() == 0){ return null;}
+			MotionEvent.PointerProperties[] pointerProperties = new MotionEvent.PointerProperties[eventListSize];
+			MotionEvent.PointerCoords[] pointerCoords = new MotionEvent.PointerCoords[eventListSize];
 
-			TouchCoord coord = coordList.get(coordList.size() - 1);
-			if (coord == null){ return null;}
+			TouchEvent event;
+			MotionEvent.PointerProperties properties;
+			MotionEvent.PointerCoords coords;
+			TouchCoord touchCoord;
 
-			x = (coord.getX() * touchScalar[0]);
-			y = (coord.getY() * touchScalar[1]);
+			for(int i = 0; i < eventListSize; i++){
+				event = eventList.get(i);
+				if(event == null || event.getId() == null || event.getTouchCoordinates() == null){
+					continue;
+				}
 
-			if (x == 0 && y == 0){ return null;}
+				properties = new MotionEvent.PointerProperties();
+				properties.id = event.getId();
+				properties.toolType = MotionEvent.TOOL_TYPE_FINGER;
+
+
+				List<TouchCoord> coordList = event.getTouchCoordinates();
+				if (coordList == null || coordList.size() == 0){ continue; }
+
+				touchCoord = coordList.get(coordList.size() -1);
+				if(touchCoord == null){ continue; }
+
+				coords = new MotionEvent.PointerCoords();
+				coords.x = touchCoord.getX() * touchScalar[0];
+				coords.y = touchCoord.getY() * touchScalar[1];
+				coords.orientation = 0;
+				coords.pressure = 1.0f;
+				coords.size = 1;
+
+				//Add the info to lists only after we are sure we have all available info
+				pointerProperties[i] = properties;
+				pointerCoords[i] = coords;
+
+			}
+
 
 			int eventAction = MotionEvent.ACTION_DOWN;
 			long downTime = 0;
@@ -6568,7 +6594,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				eventAction = MotionEvent.ACTION_UP;
 			}
 
-			return MotionEvent.obtain(downTime, eventTime, eventAction, x, y, 0);
+			return MotionEvent.obtain(downTime, eventTime, eventAction, eventListSize, pointerProperties, pointerCoords, 0, 0,1,1,0,0, InputDevice.SOURCE_TOUCHSCREEN,0);
+
 		}
 	}
 } // end-class
