@@ -123,8 +123,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private static final int PROX_PROT_VER_ONE = 1;
 	private static final int RESPONSE_WAIT_TIME = 2000;
 
-	private static final int SDL_MSG_MAJOR_VERSION = 1;
-	private static final int SDL_MSG_MINOR_VERSION = 0;
+	private static final com.smartdevicelink.util.Version MAX_SUPPORTED_RPC_VERSION = new com.smartdevicelink.util.Version("4.5.0");
 
 	private SdlSession sdlSession = null;
 	private proxyListenerType _proxyListener = null;
@@ -5414,8 +5413,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		if (sdlMsgVersion == null) {
 			sdlMsgVersion = new SdlMsgVersion();
-			sdlMsgVersion.setMajorVersion(Integer.valueOf(SDL_MSG_MAJOR_VERSION));
-			sdlMsgVersion.setMinorVersion(Integer.valueOf(SDL_MSG_MINOR_VERSION));
+			sdlMsgVersion.setMajorVersion(MAX_SUPPORTED_RPC_VERSION.getMajor());
+			sdlMsgVersion.setMinorVersion(MAX_SUPPORTED_RPC_VERSION.getMinor());
 		}
 		if (languageDesired == null) {
 			languageDesired = Language.EN_US;
