@@ -30,6 +30,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -41,7 +42,6 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
 
-import com.smartdevicelink.BuildConfig;
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
@@ -121,6 +121,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 	private static final int PROX_PROT_VER_ONE = 1;
 	private static final int RESPONSE_WAIT_TIME = 2000;
+
+	private static final int SDL_MSG_MAJOR_VERSION = 1;
+	private static final int SDL_MSG_MINOR_VERSION = 0;
 
 	private SdlSession sdlSession = null;
 	private proxyListenerType _proxyListener = null;
@@ -1147,12 +1150,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + sResponse);
 
 		    	// Send new SystemRequest to SDL
-		    	SystemRequest mySystemRequest;
+		    	SystemRequest mySystemRequest = null;
 
 		    	if (bLegacy){
-		    		mySystemRequest = RPCRequestFactory.buildSystemRequestLegacy(cloudDataReceived, getPoliciesReservedCorrelationID());
+					if(cloudDataReceived != null) {
+						mySystemRequest = new SystemRequest(true);
+						mySystemRequest.setCorrelationID(getPoliciesReservedCorrelationID());
+						mySystemRequest.setLegacyData(cloudDataReceived);
+					}
 		    	}else{
-		    		mySystemRequest = RPCRequestFactory.buildSystemRequest(response.toString(), getPoliciesReservedCorrelationID());
+					if (response != null) {
+						mySystemRequest = new SystemRequest();
+						mySystemRequest.setRequestType(RequestType.PROPRIETARY);
+						mySystemRequest.setCorrelationID(getPoliciesReservedCorrelationID());
+						mySystemRequest.setBulkData(response.toString().getBytes());
+					}
 		    	}
 
 		    	if (getIsConnected())
@@ -4550,9 +4562,31 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						   String menuText, Integer parentID, Integer position,
 						   Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID)
 			throws SdlException {
-		
-		AddCommand msg = RPCRequestFactory.buildAddCommand(commandID, menuText, parentID, position,
-			vrCommands, IconValue, IconType, correlationID);
+
+
+		AddCommand msg = new AddCommand(commandID);
+		msg.setCorrelationID(correlationID);
+
+		if (vrCommands != null) msg.setVrCommands(vrCommands);
+
+		Image cmdIcon = null;
+
+		if (IconValue != null && IconType != null)
+		{
+			cmdIcon = new Image();
+			cmdIcon.setValue(IconValue);
+			cmdIcon.setImageType(IconType);
+		}
+
+		if (cmdIcon != null) msg.setCmdIcon(cmdIcon);
+
+		if(menuText != null || parentID != null || position != null) {
+			MenuParams menuParams = new MenuParams();
+			menuParams.setMenuName(menuText);
+			menuParams.setPosition(position);
+			menuParams.setParentID(parentID);
+			msg.setMenuParams(menuParams);
+		}
 		
 		sendRPCRequest(msg);
 	}
@@ -4671,9 +4705,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						   String menuText, Integer parentID, Integer position,
 						   Vector<String> vrCommands, Integer correlationID)
 			throws SdlException {
-		
-		AddCommand msg = RPCRequestFactory.buildAddCommand(commandID, menuText, parentID, position,
-			vrCommands, correlationID);
+
+		AddCommand msg = new AddCommand(commandID);
+		msg.setCorrelationID(correlationID);
+		msg.setVrCommands(vrCommands);
+		if(menuText != null || parentID != null || position != null) {
+			MenuParams menuParams = new MenuParams();
+			menuParams.setMenuName(menuText);
+			menuParams.setPosition(position);
+			menuParams.setParentID(parentID);
+			msg.setMenuParams(menuParams);
+		}
 		
 		sendRPCRequest(msg);
 	}
@@ -4777,9 +4819,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void addSubMenu(Integer menuID, String menuName,
 						   Integer position, Integer correlationID)
 			throws SdlException {
-		
-		AddSubMenu msg = RPCRequestFactory.buildAddSubMenu(menuID, menuName,
-				position, correlationID);
+
+		AddSubMenu msg = new AddSubMenu(menuID, menuName);
+		msg.setCorrelationID(correlationID);
+		msg.setPosition(position);
 		
 		sendRPCRequest(msg);
 	}
@@ -4818,7 +4861,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					  String alertText2, String alertText3, Boolean playTone, Integer duration, Vector<SoftButton> softButtons,
 					  Integer correlationID) throws SdlException {
 
-		Alert msg = RPCRequestFactory.buildAlert(ttsText, alertText1, alertText2, alertText3, playTone, duration, softButtons, correlationID);
+		Vector<TTSChunk> chunks = TTSChunkFactory.createSimpleTTSChunks(ttsText);
+		Alert msg = new Alert();
+		msg.setCorrelationID(correlationID);
+		msg.setAlertText1(alertText1);
+		msg.setAlertText2(alertText2);
+		msg.setAlertText3(alertText3);
+		msg.setDuration(duration);
+		msg.setPlayTone(playTone);
+		msg.setTtsChunks(chunks);
+		msg.setSoftButtons(softButtons);
 
 		sendRPCRequest(msg);
 	}
@@ -4839,8 +4891,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void alert(Vector<TTSChunk> ttsChunks,
 			String alertText1, String alertText2, String alertText3, Boolean playTone,
 			Integer duration, Vector<SoftButton> softButtons, Integer correlationID) throws SdlException {
-		
-		Alert msg = RPCRequestFactory.buildAlert(ttsChunks, alertText1, alertText2, alertText3, playTone, duration, softButtons, correlationID);
+
+		Alert msg = new Alert();
+		msg.setCorrelationID(correlationID);
+		msg.setAlertText1(alertText1);
+		msg.setAlertText2(alertText2);
+		msg.setAlertText3(alertText3);
+		msg.setDuration(duration);
+		msg.setPlayTone(playTone);
+		msg.setTtsChunks(ttsChunks);
+		msg.setSoftButtons(softButtons);
 
 		sendRPCRequest(msg);
 	}
@@ -4915,8 +4975,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					  String alertText2, Boolean playTone, Integer duration,
 					  Integer correlationID) throws SdlException {
 
-		Alert msg = RPCRequestFactory.buildAlert(ttsText, alertText1, alertText2, 
-				playTone, duration, correlationID);
+		Vector<TTSChunk> chunks = TTSChunkFactory.createSimpleTTSChunks(ttsText);
+		Alert msg = new Alert();
+		msg.setCorrelationID(correlationID);
+		msg.setAlertText1(alertText1);
+		msg.setAlertText2(alertText2);
+		msg.setDuration(duration);
+		msg.setPlayTone(playTone);
+		msg.setTtsChunks(chunks);
 
 		sendRPCRequest(msg);
 	}
@@ -4935,9 +5001,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void alert(Vector<TTSChunk> ttsChunks,
 			String alertText1, String alertText2, Boolean playTone,
 			Integer duration, Integer correlationID) throws SdlException {
-		
-		Alert msg = RPCRequestFactory.buildAlert(ttsChunks, alertText1, alertText2, playTone,
-				duration, correlationID);
+
+		Alert msg = new Alert();
+		msg.setCorrelationID(correlationID);
+		msg.setAlertText1(alertText1);
+		msg.setAlertText2(alertText2);
+		msg.setDuration(duration);
+		msg.setPlayTone(playTone);
+		msg.setTtsChunks(ttsChunks);
 
 		sendRPCRequest(msg);
 	}
@@ -5002,9 +5073,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void createInteractionChoiceSet(
 			Vector<Choice> choiceSet, Integer interactionChoiceSetID,
 			Integer correlationID) throws SdlException {
-		
-		CreateInteractionChoiceSet msg = RPCRequestFactory.buildCreateInteractionChoiceSet(
-				choiceSet, interactionChoiceSetID, correlationID);
+
+		CreateInteractionChoiceSet msg = new CreateInteractionChoiceSet(interactionChoiceSetID, choiceSet);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5019,8 +5090,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void deleteCommand(Integer commandID,
 							  Integer correlationID) throws SdlException {
-		
-		DeleteCommand msg = RPCRequestFactory.buildDeleteCommand(commandID, correlationID);
+
+		DeleteCommand msg = new DeleteCommand(commandID);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5036,9 +5108,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void deleteInteractionChoiceSet(
 			Integer interactionChoiceSetID, Integer correlationID) 
 			throws SdlException {
-		
-		DeleteInteractionChoiceSet msg = RPCRequestFactory.buildDeleteInteractionChoiceSet(
-				interactionChoiceSetID, correlationID);
+
+		DeleteInteractionChoiceSet msg = new DeleteInteractionChoiceSet(interactionChoiceSetID);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5053,8 +5125,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void deleteSubMenu(Integer menuID,
 							  Integer correlationID) throws SdlException {
-		
-		DeleteSubMenu msg = RPCRequestFactory.buildDeleteSubMenu(menuID, correlationID);
+
+		DeleteSubMenu msg = new DeleteSubMenu(menuID);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5077,9 +5150,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void performInteraction(String initPrompt,
 								   String displayText, Integer interactionChoiceSetID, Vector<VrHelpItem> vrHelp,
 								   Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(initPrompt,
-				displayText, interactionChoiceSetID, vrHelp, correlationID);
+
+		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
+		interactionChoiceSetIDs.add(interactionChoiceSetID);
+		Vector<TTSChunk> initChunks = TTSChunkFactory.createSimpleTTSChunks(initPrompt);
+		PerformInteraction msg = new PerformInteraction(displayText, InteractionMode.BOTH, interactionChoiceSetIDs);
+		msg.setInitialPrompt(initChunks);
+		msg.setVrHelp(vrHelp);
+		msg.setCorrelationID(correlationID);
 		
 		sendRPCRequest(msg);
 	}
@@ -5104,11 +5182,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								   String helpPrompt, String timeoutPrompt,
 								   InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
 								   Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(
-				initPrompt, displayText, interactionChoiceSetID,
-				helpPrompt, timeoutPrompt, interactionMode, 
-				timeout, vrHelp, correlationID);
+
+		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
+		interactionChoiceSetIDs.add(interactionChoiceSetID);
+		Vector<TTSChunk> initChunks = TTSChunkFactory.createSimpleTTSChunks(initPrompt);
+		Vector<TTSChunk> helpChunks = TTSChunkFactory.createSimpleTTSChunks(helpPrompt);
+		Vector<TTSChunk> timeoutChunks = TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt);
+		PerformInteraction msg = new PerformInteraction(displayText, interactionMode, interactionChoiceSetIDs);
+		msg.setInitialPrompt(initChunks);
+		msg.setTimeout(timeout);
+		msg.setHelpPrompt(helpChunks);
+		msg.setTimeoutPrompt(timeoutChunks);
+		msg.setVrHelp(vrHelp);
+		msg.setCorrelationID(correlationID);
 		
 		sendRPCRequest(msg);
 	}
@@ -5133,11 +5219,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								   String helpPrompt, String timeoutPrompt,
 								   InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
 								   Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(initPrompt,
-				displayText, interactionChoiceSetIDList,
-				helpPrompt, timeoutPrompt, interactionMode, timeout, vrHelp,
-				correlationID);
+
+		Vector<TTSChunk> initChunks = TTSChunkFactory.createSimpleTTSChunks(initPrompt);
+		Vector<TTSChunk> helpChunks = TTSChunkFactory.createSimpleTTSChunks(helpPrompt);
+		Vector<TTSChunk> timeoutChunks = TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt);
+		PerformInteraction msg = new PerformInteraction(displayText, interactionMode, interactionChoiceSetIDList);
+		msg.setInitialPrompt(initChunks);
+		msg.setTimeout(timeout);
+		msg.setHelpPrompt(helpChunks);
+		msg.setTimeoutPrompt(timeoutChunks);
+		msg.setVrHelp(vrHelp);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5163,11 +5255,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
 			InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
 			Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(
-				initChunks, displayText, interactionChoiceSetIDList,
-				helpChunks, timeoutChunks, interactionMode, timeout,vrHelp,
-				correlationID);
+
+		PerformInteraction msg = new PerformInteraction(displayText, interactionMode, interactionChoiceSetIDList);
+		msg.setInitialPrompt(initChunks);
+		msg.setTimeout(timeout);
+		msg.setHelpPrompt(helpChunks);
+		msg.setTimeoutPrompt(timeoutChunks);
+		msg.setVrHelp(vrHelp);
+		msg.setCorrelationID(correlationID);
 		
 		sendRPCRequest(msg);
 	}
@@ -5187,9 +5282,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void performInteraction(String initPrompt,
 								   String displayText, Integer interactionChoiceSetID,
 								   Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(initPrompt,
-				displayText, interactionChoiceSetID, correlationID);
+
+		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
+		interactionChoiceSetIDs.add(interactionChoiceSetID);
+		Vector<TTSChunk> initChunks = TTSChunkFactory.createSimpleTTSChunks(initPrompt);
+		PerformInteraction msg = new PerformInteraction(displayText, InteractionMode.BOTH, interactionChoiceSetIDs);
+		msg.setInitialPrompt(initChunks);
+		msg.setCorrelationID(correlationID);
 		
 		sendRPCRequest(msg);
 	}
@@ -5213,12 +5312,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								   String helpPrompt, String timeoutPrompt,
 								   InteractionMode interactionMode, Integer timeout,
 								   Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(
-				initPrompt, displayText, interactionChoiceSetID,
-				helpPrompt, timeoutPrompt, interactionMode, 
-				timeout, correlationID);
-		
+
+		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
+		interactionChoiceSetIDs.add(interactionChoiceSetID);
+		Vector<TTSChunk> initChunks = TTSChunkFactory.createSimpleTTSChunks(initPrompt);
+		Vector<TTSChunk> helpChunks = TTSChunkFactory.createSimpleTTSChunks(helpPrompt);
+		Vector<TTSChunk> timeoutChunks = TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt);
+		PerformInteraction msg = new PerformInteraction(displayText, interactionMode, interactionChoiceSetIDs);
+		msg.setInitialPrompt(initChunks);
+		msg.setTimeout(timeout);
+		msg.setHelpPrompt(helpChunks);
+		msg.setTimeoutPrompt(timeoutChunks);
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 	
@@ -5241,11 +5347,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								   String helpPrompt, String timeoutPrompt,
 								   InteractionMode interactionMode, Integer timeout,
 								   Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(initPrompt,
-				displayText, interactionChoiceSetIDList,
-				helpPrompt, timeoutPrompt, interactionMode, timeout,
-				correlationID);
+
+		Vector<TTSChunk> initChunks = TTSChunkFactory.createSimpleTTSChunks(initPrompt);
+		Vector<TTSChunk> helpChunks = TTSChunkFactory.createSimpleTTSChunks(helpPrompt);
+		Vector<TTSChunk> timeoutChunks = TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt);
+		PerformInteraction msg = new PerformInteraction(displayText, interactionMode, interactionChoiceSetIDList);
+		msg.setInitialPrompt(initChunks);
+		msg.setTimeout(timeout);
+		msg.setHelpPrompt(helpChunks);
+		msg.setTimeoutPrompt(timeoutChunks);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5270,11 +5381,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
 			InteractionMode interactionMode, Integer timeout,
 			Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(
-				initChunks, displayText, interactionChoiceSetIDList,
-				helpChunks, timeoutChunks, interactionMode, timeout,
-				correlationID);
+
+		PerformInteraction msg = new PerformInteraction(displayText, interactionMode, interactionChoiceSetIDList);
+		msg.setInitialPrompt(initChunks);
+		msg.setTimeout(timeout);
+		msg.setHelpPrompt(helpChunks);
+		msg.setTimeoutPrompt(timeoutChunks);
+		msg.setCorrelationID(correlationID);
 		
 		sendRPCRequest(msg);
 	}
@@ -5291,11 +5404,50 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if(telephonyManager != null){
 			carrierName = telephonyManager.getNetworkOperatorName();
 		}
-		deviceInfo = RPCRequestFactory.BuildDeviceInfo(carrierName);
-		RegisterAppInterface msg = RPCRequestFactory.buildRegisterAppInterface(
-				sdlMsgVersion, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, 
-				languageDesired, hmiDisplayLanguageDesired, appType, appID, correlationID, deviceInfo);
-		
+
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setHardware(android.os.Build.MODEL);
+		deviceInfo.setOs(DeviceInfo.DEVICE_OS);
+		deviceInfo.setOsVersion(Build.VERSION.RELEASE);
+		deviceInfo.setCarrier(carrierName);
+
+		if (sdlMsgVersion == null) {
+			sdlMsgVersion = new SdlMsgVersion();
+			sdlMsgVersion.setMajorVersion(Integer.valueOf(SDL_MSG_MAJOR_VERSION));
+			sdlMsgVersion.setMinorVersion(Integer.valueOf(SDL_MSG_MINOR_VERSION));
+		}
+		if (languageDesired == null) {
+			languageDesired = Language.EN_US;
+		}
+		if (hmiDisplayLanguageDesired == null) {
+			hmiDisplayLanguageDesired = Language.EN_US;
+		}
+
+		RegisterAppInterface msg = new RegisterAppInterface(sdlMsgVersion, appName, isMediaApp, languageDesired, hmiDisplayLanguageDesired, appID);
+
+		if (correlationID == null) {
+			correlationID = 1;
+		}
+		msg.setCorrelationID(correlationID);
+
+		msg.setDeviceInfo(deviceInfo);
+
+		msg.setTtsName(ttsName);
+
+		if (ngnMediaScreenAppName == null) {
+			ngnMediaScreenAppName = appName;
+		}
+
+		msg.setNgnMediaScreenAppName(ngnMediaScreenAppName);
+
+		if (vrSynonyms == null) {
+			vrSynonyms = new Vector<String>();
+			vrSynonyms.add(appName);
+		}
+		msg.setVrSynonyms(vrSynonyms);
+
+		msg.setAppHMIType(appType);
+
 		if (_bAppResumeEnabled)
 		{
 			if (_lastHashID != null)
@@ -5328,9 +5480,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void setGlobalProperties(
 			String helpPrompt, String timeoutPrompt, String vrHelpTitle, Vector<VrHelpItem> vrHelp, Integer correlationID) 
 		throws SdlException {
-		
-		SetGlobalProperties req = RPCRequestFactory.buildSetGlobalProperties(helpPrompt, 
-				timeoutPrompt, vrHelpTitle, vrHelp, correlationID);
+
+		SetGlobalProperties req = new SetGlobalProperties();
+		req.setCorrelationID(correlationID);
+		req.setHelpPrompt(TTSChunkFactory.createSimpleTTSChunks(helpPrompt));
+		req.setTimeoutPrompt(TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt));
+		req.setVrHelpTitle(vrHelpTitle);
+		req.setVrHelp(vrHelp);
 		
 		sendRPCRequest(req);
 	}
@@ -5349,9 +5505,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void setGlobalProperties(
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks, String vrHelpTitle, Vector<VrHelpItem> vrHelp,
 			Integer correlationID) throws SdlException {
-		
-		SetGlobalProperties req = RPCRequestFactory.buildSetGlobalProperties(
-				helpChunks, timeoutChunks, vrHelpTitle, vrHelp, correlationID);
+
+		SetGlobalProperties req = new SetGlobalProperties();
+		req.setCorrelationID(correlationID);
+		req.setHelpPrompt(helpChunks);
+		req.setTimeoutPrompt(timeoutChunks);
+		req.setVrHelpTitle(vrHelpTitle);
+		req.setVrHelp(vrHelp);
 
 		sendRPCRequest(req);
 	}
@@ -5370,9 +5530,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void setGlobalProperties(
 			String helpPrompt, String timeoutPrompt, Integer correlationID) 
 		throws SdlException {
-		
-		SetGlobalProperties req = RPCRequestFactory.buildSetGlobalProperties(helpPrompt, 
-				timeoutPrompt, correlationID);
+
+		SetGlobalProperties req = new SetGlobalProperties();
+		req.setCorrelationID(correlationID);
+		req.setHelpPrompt(TTSChunkFactory.createSimpleTTSChunks(helpPrompt));
+		req.setTimeoutPrompt(TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt));
 		
 		sendRPCRequest(req);
 	}
@@ -5389,9 +5551,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void setGlobalProperties(
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
 			Integer correlationID) throws SdlException {
-		
-		SetGlobalProperties req = RPCRequestFactory.buildSetGlobalProperties(
-				helpChunks, timeoutChunks, correlationID);
+
+		SetGlobalProperties req = new SetGlobalProperties();
+		req.setCorrelationID(correlationID);
+		req.setHelpPrompt(helpChunks);
+		req.setTimeoutPrompt(timeoutChunks);
 
 		sendRPCRequest(req);
 	}
@@ -5424,8 +5588,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								   Integer minutes, Integer seconds, UpdateMode updateMode,
 								   Integer correlationID) throws SdlException {
 
-		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(hours,
-				minutes, seconds, updateMode, correlationID);
+		SetMediaClockTimer msg = new SetMediaClockTimer(updateMode);
+		if (hours != null || minutes != null || seconds != null) {
+			StartTime startTime = new StartTime(hours, minutes, seconds);
+			msg.setStartTime(startTime);
+		}
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5440,8 +5608,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void pauseMediaClockTimer(Integer correlationID)
 			throws SdlException {
 
-		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(0,
-				0, 0, UpdateMode.PAUSE, correlationID);
+		SetMediaClockTimer msg = new SetMediaClockTimer(UpdateMode.PAUSE);
+		StartTime startTime = new StartTime(0, 0, 0);
+		msg.setStartTime(startTime);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5456,8 +5626,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void resumeMediaClockTimer(Integer correlationID)
 			throws SdlException {
 
-		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(0,
-				0, 0, UpdateMode.RESUME, correlationID);
+		SetMediaClockTimer msg = new SetMediaClockTimer(UpdateMode.RESUME);
+		StartTime startTime = new StartTime(0, 0, 0);
+		msg.setStartTime(startTime);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5472,7 +5644,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void clearMediaClockTimer(Integer correlationID)
 			throws SdlException {
 
-		Show msg = RPCRequestFactory.buildShow(null, null, null, "     ", null, null, correlationID);
+		Show msg = new Show();
+		msg.setCorrelationID(correlationID);
+		msg.setMediaClock("     ");
 
 		sendRPCRequest(msg);
 	}
@@ -5501,10 +5675,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					 Image graphic, Vector<SoftButton> softButtons, Vector <String> customPresets,
 					 TextAlignment alignment, Integer correlationID)
 			throws SdlException {
-		
-		Show msg = RPCRequestFactory.buildShow(mainText1, mainText2, mainText3, mainText4,
-				statusBar, mediaClock, mediaTrack, graphic, softButtons, customPresets,
-				alignment, correlationID);
+
+		Show msg = new Show();
+		msg.setCorrelationID(correlationID);
+		msg.setMainField1(mainText1);
+		msg.setMainField2(mainText2);
+		msg.setStatusBar(statusBar);
+		msg.setMediaClock(mediaClock);
+		msg.setMediaTrack(mediaTrack);
+		msg.setAlignment(alignment);
+		msg.setMainField3(mainText3);
+		msg.setMainField4(mainText4);
+		msg.setGraphic(graphic);
+		msg.setSoftButtons(softButtons);
+		msg.setCustomPresets(customPresets);
 
 		sendRPCRequest(msg);
 	}
@@ -5550,10 +5734,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					 String statusBar, String mediaClock, String mediaTrack,
 					 TextAlignment alignment, Integer correlationID)
 			throws SdlException {
-		
-		Show msg = RPCRequestFactory.buildShow(mainText1, mainText2,
-				statusBar, mediaClock, mediaTrack,
-				alignment, correlationID);
+
+		Show msg = new Show();
+		msg.setCorrelationID(correlationID);
+		msg.setMainField1(mainText1);
+		msg.setMainField2(mainText2);
+		msg.setStatusBar(statusBar);
+		msg.setMediaClock(mediaClock);
+		msg.setMediaTrack(mediaTrack);
+		msg.setAlignment(alignment);
 
 		sendRPCRequest(msg);
 	}
@@ -5585,9 +5774,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void speak(String ttsText, Integer correlationID)
 			throws SdlException {
-		
-		Speak msg = RPCRequestFactory.buildSpeak(TTSChunkFactory.createSimpleTTSChunks(ttsText),
-				correlationID);
+
+		Speak msg = new Speak(TTSChunkFactory.createSimpleTTSChunks(ttsText));
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5603,7 +5792,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void speak(Vector<TTSChunk> ttsChunks,
 					  Integer correlationID) throws SdlException {
 
-		Speak msg = RPCRequestFactory.buildSpeak(ttsChunks, correlationID);
+		Speak msg = new Speak(ttsChunks);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5619,8 +5809,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void subscribeButton(ButtonName buttonName,
 								Integer correlationID) throws SdlException {
 
-		SubscribeButton msg = RPCRequestFactory.buildSubscribeButton(buttonName,
-				correlationID);
+		SubscribeButton msg = new SubscribeButton(buttonName);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5630,8 +5820,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected void unregisterAppInterfacePrivate(Integer correlationID) 
 		throws SdlException {
 
-		UnregisterAppInterface msg = 
-				RPCRequestFactory.buildUnregisterAppInterface(correlationID);
+		UnregisterAppInterface msg = new UnregisterAppInterface();
+		msg.setCorrelationID(correlationID);
+
 		Intent sendIntent = createBroadcastIntent();
 
 		updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.UNREGISTER_APP_INTERFACE.toString());
@@ -5654,8 +5845,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void unsubscribeButton(ButtonName buttonName,
 								  Integer correlationID) throws SdlException {
 
-		UnsubscribeButton msg = RPCRequestFactory.buildUnsubscribeButton(
-				buttonName, correlationID);
+		UnsubscribeButton msg = new UnsubscribeButton(buttonName);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5699,9 +5890,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void performaudiopassthru(String initialPrompt, String audioPassThruDisplayText1, String audioPassThruDisplayText2,
 									 SamplingRate samplingRate, Integer maxDuration, BitsPerSample bitsPerSample,
 									 AudioType audioType, Boolean muteAudio, Integer correlationID) throws SdlException {
+		Vector<TTSChunk> chunks = TTSChunkFactory.createSimpleTTSChunks(initialPrompt);
+		PerformAudioPassThru msg = new PerformAudioPassThru(samplingRate, maxDuration, bitsPerSample, audioType);
+		msg.setCorrelationID(correlationID);
+		msg.setInitialPrompt(chunks);
+		msg.setAudioPassThruDisplayText1(audioPassThruDisplayText1);
+		msg.setAudioPassThruDisplayText2(audioPassThruDisplayText2);
+		msg.setMuteAudio(muteAudio);
 
-		PerformAudioPassThru msg = RPCRequestFactory.BuildPerformAudioPassThru(initialPrompt, audioPassThruDisplayText1, audioPassThruDisplayText2, 
-																				samplingRate, maxDuration, bitsPerSample, audioType, muteAudio, correlationID);
 		sendRPCRequest(msg);
 	}
 
@@ -5714,7 +5910,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void endaudiopassthru(Integer correlationID) throws SdlException
 	{
-		EndAudioPassThru msg = RPCRequestFactory.BuildEndAudioPassThru(correlationID);		
+		EndAudioPassThru msg = new EndAudioPassThru();
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 	
@@ -5745,8 +5943,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 									 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 									 boolean driverBraking, Integer correlationID) throws SdlException
 	{
-		SubscribeVehicleData msg = RPCRequestFactory.BuildSubscribeVehicleData(gps, speed, rpm, fuelLevel, fuelLevel_State, instantFuelConsumption, externalTemperature, prndl, tirePressure, 
-																				odometer, beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
+		SubscribeVehicleData msg = new SubscribeVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
 		
 		sendRPCRequest(msg);
 	}
@@ -5779,8 +5991,23 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 									   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 									   boolean driverBraking, Integer correlationID) throws SdlException
 	{
-		UnsubscribeVehicleData msg = RPCRequestFactory.BuildUnsubscribeVehicleData(gps, speed, rpm, fuelLevel, fuelLevel_State, instantFuelConsumption, externalTemperature, prndl, tirePressure,
-																					odometer, beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
+		UnsubscribeVehicleData msg = new UnsubscribeVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 
@@ -5813,9 +6040,24 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 							   boolean driverBraking, Integer correlationID) throws SdlException
 	{
-	
-		GetVehicleData msg = RPCRequestFactory.BuildGetVehicleData(gps, speed, rpm, fuelLevel, fuelLevel_State, instantFuelConsumption, externalTemperature, vin, prndl, tirePressure, odometer,
-																   beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
+		GetVehicleData msg = new GetVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setVin(vin);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 
@@ -5833,7 +6075,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void scrollablemessage(String scrollableMessageBody, Integer timeout, Vector<SoftButton> softButtons, Integer correlationID) throws SdlException
 	{
-		ScrollableMessage msg = RPCRequestFactory.BuildScrollableMessage(scrollableMessageBody, timeout, softButtons, correlationID);		
+		ScrollableMessage msg = new ScrollableMessage(scrollableMessageBody);
+		msg.setCorrelationID(correlationID);
+		msg.setTimeout(timeout);
+		msg.setSoftButtons(softButtons);
+
 		sendRPCRequest(msg);
 	}
 
@@ -5853,7 +6099,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void slider(Integer numTicks, Integer position, String sliderHeader, Vector<String> sliderFooter, Integer timeout, Integer correlationID) throws SdlException
 	{
-		Slider msg = RPCRequestFactory.BuildSlider(numTicks, position, sliderHeader, sliderFooter, timeout, correlationID);		
+		Slider msg = new Slider(numTicks, position, sliderHeader);
+		msg.setCorrelationID(correlationID);
+		msg.setSliderFooter(sliderFooter);
+		msg.setTimeout(timeout);
+
 		sendRPCRequest(msg);		
 	}
 
@@ -5868,7 +6118,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void changeregistration(Language language, Language hmiDisplayLanguage, Integer correlationID) throws SdlException
 	{
-		ChangeRegistration msg = RPCRequestFactory.BuildChangeRegistration(language, hmiDisplayLanguage, correlationID);
+		ChangeRegistration msg = new ChangeRegistration(language, hmiDisplayLanguage);
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 	
@@ -5888,7 +6140,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@Deprecated
 	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
 	{
-		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);
+		PutFile msg = new PutFile(sdlFileName, FileType.BINARY);
+		msg.setCorrelationID(10000);
+		msg.setSystemFile(true);
+		msg.setOffset(iOffset);
+		msg.setLength(iLength);
+
 		startRPCStream(is, msg);
 	}
 	
@@ -5906,7 +6163,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length) throws SdlException {
-		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+		PutFile msg = new PutFile(fileName, FileType.BINARY);
+		msg.setCorrelationID(10000);
+		msg.setSystemFile(true);
+		msg.setOffset(offset);
+		msg.setLength(length);
+
 		startRPCStream(inputStream, msg);
 	}
 	
@@ -5927,7 +6189,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@Deprecated
 	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
 	{
-		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);
+		PutFile msg = new PutFile(sdlFileName, FileType.BINARY);
+		msg.setCorrelationID(10000);
+		msg.setSystemFile(true);
+		msg.setOffset(iOffset);
+		msg.setLength(iLength);
+
 		return startRPCStream(msg);
 	}	
 	
@@ -5944,7 +6211,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public OutputStream putFileStream(String fileName, Long offset, Long length) throws SdlException {
-		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+		PutFile msg = new PutFile(fileName, FileType.BINARY);
+		msg.setCorrelationID(10000);
+		msg.setSystemFile(true);
+		msg.setOffset(offset);
+		msg.setLength(length);
+
 		return startRPCStream(msg);
 	}
 
@@ -5967,7 +6239,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@Deprecated
 	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
-		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
+		PutFile msg = new PutFile(sdlFileName, fileType);
+		msg.setCorrelationID(10000);
+		msg.setPersistentFile(bPersistentFile);
+		msg.setSystemFile(bSystemFile);
+		msg.setOffset(iOffset);
+		msg.setLength(iLength);
+
 		startRPCStream(is, msg);
 	}
 	
@@ -5991,7 +6269,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
-		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+		PutFile msg = new PutFile(fileName, FileType.BINARY);
+		msg.setCorrelationID(10000);
+		msg.setSystemFile(true);
+		msg.setOffset(offset);
+		msg.setLength(length);
 		msg.setOnPutFileUpdateListener(cb);
 		startRPCStream(inputStream, msg);
 	}
@@ -6015,7 +6297,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@Deprecated
 	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
-		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
+		PutFile msg = new PutFile(sdlFileName, fileType);
+		msg.setCorrelationID(10000);
+		msg.setPersistentFile(bPersistentFile);
+		msg.setSystemFile(bSystemFile);
+		msg.setOffset(iOffset);
+		msg.setLength(iLength);
+
 		return startRPCStream(msg);
 	}
 	
@@ -6038,8 +6326,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public OutputStream putFileStream(String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
-		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+		PutFile msg = new PutFile(fileName, FileType.BINARY);
+		msg.setCorrelationID(10000);
+		msg.setSystemFile(true);
+		msg.setOffset(offset);
+		msg.setLength(length);
 		msg.setOnPutFileUpdateListener(cb);
+
 		return startRPCStream(msg);
 	}
 	
@@ -6063,7 +6356,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@Deprecated
 	public RPCStreamController putFileStream(String sPath, String sdlFileName, Integer iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
 	{
-		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, 0, fileType, bPersistentFile, bSystemFile, iCorrelationID);
+		PutFile msg = new PutFile(sdlFileName, fileType);
+		msg.setCorrelationID(iCorrelationID);
+		msg.setPersistentFile(bPersistentFile);
+		msg.setSystemFile(bSystemFile);
+		msg.setOffset(iOffset);
+		msg.setLength(0);
+
 		return startPutFileStream(sPath, msg);
 	}
 	
@@ -6091,8 +6390,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public RPCStreamController putFileStream(String path, String fileName, Long offset, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId, OnPutFileUpdateListener cb ) throws SdlException {
-		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, 0L, fileType, isPersistentFile, isSystemFile, isPayloadProtected, correlationId);
+		PutFile msg = new PutFile(fileName, fileType);
+		msg.setCorrelationID(correlationId);
+		msg.setPersistentFile(isPersistentFile);
+		msg.setSystemFile(isSystemFile);
+		msg.setOffset(offset);
+		msg.setLength(0L);
+		msg.setPayloadProtected(isPayloadProtected);
 		msg.setOnPutFileUpdateListener(cb);
+
 		return startPutFileStream(path,msg);
 	}
 
@@ -6116,7 +6422,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@Deprecated
 	public RPCStreamController putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
 	{
-		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile, iCorrelationID);
+		PutFile msg = new PutFile(sdlFileName, fileType);
+		msg.setCorrelationID(iCorrelationID);
+		msg.setPersistentFile(bPersistentFile);
+		msg.setSystemFile(bSystemFile);
+		msg.setOffset(iOffset);
+		msg.setLength(iLength);
+
 		return startPutFileStream(is, msg);
 	}
 	
@@ -6142,7 +6454,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public RPCStreamController putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId) throws SdlException {
-		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length, fileType, isPersistentFile, isSystemFile, isPayloadProtected, correlationId);
+		PutFile msg = new PutFile(fileName, fileType);
+		msg.setCorrelationID(correlationId);
+		msg.setPersistentFile(isPersistentFile);
+		msg.setSystemFile(isSystemFile);
+		msg.setOffset(offset);
+		msg.setLength(length);
+		msg.setPayloadProtected(isPayloadProtected);
+
 		return startPutFileStream(inputStream, msg);
 	}
 
@@ -6172,7 +6491,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void putfile(String sdlFileName, FileType fileType, Boolean persistentFile, byte[] fileData, Integer correlationID) throws SdlException
 	{
-		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, fileType, persistentFile, fileData, correlationID);
+		PutFile msg = new PutFile(sdlFileName, fileType);
+		msg.setCorrelationID(correlationID);
+		msg.setPersistentFile(persistentFile);
+		msg.setBulkData(fileData);
+
 		sendRPCRequest(msg);
 	}
 	
@@ -6187,7 +6510,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void deletefile(String sdlFileName, Integer correlationID) throws SdlException
 	{
-		DeleteFile msg = RPCRequestFactory.buildDeleteFile(sdlFileName, correlationID);
+		DeleteFile msg = new DeleteFile(sdlFileName);
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 	
@@ -6201,7 +6526,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void listfiles(Integer correlationID) throws SdlException
 	{
-		ListFiles msg = RPCRequestFactory.buildListFiles(correlationID);
+		ListFiles msg = new ListFiles();
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 
@@ -6216,7 +6543,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void setappicon(String sdlFileName, Integer correlationID) throws SdlException
 	{
-		SetAppIcon msg = RPCRequestFactory.buildSetAppIcon(sdlFileName, correlationID);
+		SetAppIcon msg = new SetAppIcon(sdlFileName);
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 	
@@ -6231,7 +6560,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void setdisplaylayout(String displayLayout, Integer correlationID) throws SdlException
 	{
-		SetDisplayLayout msg = RPCRequestFactory.BuildSetDisplayLayout(displayLayout, correlationID);
+		SetDisplayLayout msg = new SetDisplayLayout(displayLayout);
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 
