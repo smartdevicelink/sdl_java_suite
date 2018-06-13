@@ -3,8 +3,12 @@ package com.smartdevicelink.test.streaming;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
+import com.smartdevicelink.transport.enums.TransportType;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This is a mock class for testing the following :
@@ -16,6 +20,12 @@ public class MockInterfaceBroker implements ISdlConnectionListener {
 	public void onTransportDisconnected(String info) {
 
 	}
+
+	@Override
+	public void onTransportDisconnected(String info, boolean availablePrimary, MultiplexTransportConfig transportConfig) {
+
+	}
+
 	@Override
 	public void onTransportError(String info, Exception e) {
 
@@ -56,6 +66,26 @@ public class MockInterfaceBroker implements ISdlConnectionListener {
 	@Override
 	public void onProtocolServiceDataACK(SessionType sessionType, int dataSize,
 			byte sessionID) {
+
+	}
+
+	@Override
+	public void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransports, ArrayList<Integer> audioTransports, ArrayList<Integer> videoTransports, TransportType type) {
+
+	}
+
+	@Override
+	public void onTransportEventUpdate(byte sessionID, Map<String, Object> params) {
+
+	}
+
+	@Override
+	public void onRegisterSecondaryTransportACK(byte sessionID) {
+
+	}
+
+	@Override
+	public void onRegisterSecondaryTransportNACKed(byte sessionID, String reason) {
 
 	}
 }

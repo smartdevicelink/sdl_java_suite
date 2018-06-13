@@ -27,14 +27,17 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class WiProProtocol extends AbstractProtocol {
 	private static final String TAG ="Protocol";
 	private final static String FailurePropagating_Msg = "Failure propagating ";
 	//If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
-	public static final Version MAX_PROTOCOL_VERSION = new Version("5.0.0");
+	public static final Version MAX_PROTOCOL_VERSION = new Version("5.1.0");
 	private Version protocolVersion = new Version("1.0.0");
 	byte _version = 1;
 
@@ -44,6 +47,8 @@ public class WiProProtocol extends AbstractProtocol {
 	public static final int V2_HEADER_SIZE = 12;
 	private static int HEADER_SIZE = 8;
 	private static int TLS_MAX_RECORD_SIZE = 16384;
+	private static final int PRIMARY_TRANSPORT_ID    = 1;
+	private static final int SECONDARY_TRANSPORT_ID  = 2;
 
 	int hashID = 0;
 	int messageID = 0;
@@ -63,7 +68,10 @@ public class WiProProtocol extends AbstractProtocol {
 	private HashMap<SessionType, TransportType> activeTransports = new HashMap<SessionType,TransportType>();
 	private List<TransportType> availableTransports = new ArrayList<>();
 
-	List<TransportType> requestedPrimaryTransports, requestedSecondaryTransports;
+	List<TransportType> requestedPrimaryTransports;
+	List<TransportType> supportedSecondaryTransports;
+	boolean registeredHighBandwidth = false;
+	Map<SessionType, List<Integer>> supportedServicesMap;
 	boolean requiresHighBandwidth = false;
 
 	// Hide no-arg ctor
@@ -117,6 +125,36 @@ public class WiProProtocol extends AbstractProtocol {
 		this.requestedPrimaryTransports = primaryTransports;
 	}
 
+	public void setSupportedSecondaryTransports(List<TransportType> secondaryTransports){
+		this.supportedSecondaryTransports = secondaryTransports;
+	}
+
+	public void setSupportedServices(SessionType serviceType, List<Integer> order){
+		if(supportedServicesMap == null){
+			supportedServicesMap = new HashMap<>();
+		}
+		this.supportedServicesMap.put(serviceType, order);
+	}
+
+	public void setRegisteredHighBandwidth(boolean registeredHighBandwidth){
+		this.registeredHighBandwidth = registeredHighBandwidth;
+		if(requiresHighBandwidth){
+			List<TransportType> highBandwidthTransports = Arrays.asList(TransportType.USB, TransportType.TCP);
+			for(TransportType transportType : highBandwidthTransports){
+				if(supportedSecondaryTransports.contains(transportType)) {
+					if (supportedServicesMap.containsKey(SessionType.NAV)
+							&& supportedServicesMap.get(SessionType.NAV).contains(SECONDARY_TRANSPORT_ID)) {
+						activeTransports.put(SessionType.NAV, transportType);
+					}
+					if (supportedServicesMap.containsKey(SessionType.PCM)
+							&& supportedServicesMap.get(SessionType.PCM).contains(SECONDARY_TRANSPORT_ID)) {
+						activeTransports.put(SessionType.PCM, transportType);
+					}
+				}
+			}
+		}
+	}
+
 	public void onTransportsConnectedUpdate(TransportType[] transportTypes){
 		//TODO error checking for no longer connected transports
 		Log.d(TAG, "onTransportsConnectedUpdate: ");
@@ -129,6 +167,19 @@ public class WiProProtocol extends AbstractProtocol {
 				return;
 			}else{
 				onTransportNotAccepted("No transports match requested primary transport");
+			}
+		}else{
+			for(TransportType transportType : transportTypes){
+				if(supportedSecondaryTransports.contains(transportType)){
+					SdlSession session = null;
+					if(sessionWeakReference != null){
+						session = sessionWeakReference.get();
+					}
+					if(session != null) {
+						Log.d(TAG, "Registering secondary transport!");
+						RegisterSecondaryTransport(session.getSessionId());
+					}
+				}
 			}
 		}
 	}
@@ -567,6 +618,28 @@ public class WiProProtocol extends AbstractProtocol {
 							return;
 						}
 
+						Log.d(TAG, "Checking secondary transport details");
+						ArrayList<String> secondary = (ArrayList<String>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.SECONDARY_TRANSPORTS);
+						ArrayList<Integer> audio = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.AUDIO_SERVICE_TRANSPORTS);
+						ArrayList<Integer> video = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.VIDEO_SERVICE_TRANSPORTS);
+
+						if(secondary != null){
+							for(String s : secondary){
+								Log.d(TAG, "Supported secondary transports: " + s);
+							}
+						}
+						if(audio != null){
+							for(int a : audio){
+								Log.d(TAG, "Supported audio transports: " + a);
+							}
+						}
+						if(video != null){
+							for(int v : video){
+								Log.d(TAG, "Supported video transports: " + v);
+							}
+						}
+						handleEnableSecondaryTransport((byte) packet.getSessionId(), secondary, audio, video);
+
 						if(version!=null){
 							//At this point we have confirmed the negotiated version between the module and the proxy
 							protocolVersion = new Version((String)version);
@@ -574,12 +647,14 @@ public class WiProProtocol extends AbstractProtocol {
 							//Check if we support multiple transports by protocol version
 							if(protocolVersion != null && protocolVersion.isNewerThan(new Version("5.1.0")) <=-1) {
 								//Version is too old to just move on
+								/*TODO: Modify this logic below
 								if(requiresHighBandwidth
 										&& TransportType.BLUETOOTH.equals(transportType)){
 									//transport can't support high bandwidth
-									onTransportNotAccepted(transportType + "can't support high bandwidth requirement, and secondary transport not supported in this protocol version: " + version.toString());
+									onTransportNotAccepted(transportType + " can't support high bandwidth requirement, and secondary transport not supported in this protocol version: " + version.toString());
 									return;
 								}
+								*/
 							} //else we are good to go
 							if(activeTransports.get(SessionType.RPC) == null) {	//Might be a better way to handle this
 								availableTransports.add(transportType);
@@ -632,7 +707,7 @@ public class WiProProtocol extends AbstractProtocol {
 					}
 				}
 				handleProtocolSessionStarted(serviceType,(byte) packet.getSessionId(), getMajorVersionByte(), "", hashID, packet.isEncrypted());
-			} else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
+            } else if (frameInfo == FrameDataControlFrameType.StartSessionNACK.getValue()) {
 				List<String> rejectedParams = null;
 				if(packet.version >= 5){
 					String rejectedTag = null;
@@ -678,7 +753,23 @@ public class WiProProtocol extends AbstractProtocol {
 					int serviceDataAckSize = BitConverter.intFromByteArray(packet.getPayload(), 0);
 					handleProtocolServiceDataACK(serviceType, serviceDataAckSize,(byte)packet.getSessionId ());
 				}
-			} //TODO else if register transport frame
+			} else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportACK.getValue()) {
+				handleRegisterSecondaryTransportACK((byte) packet.sessionId);
+			} else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportNACK.getValue()) {
+				String reason = (String) packet.getTag(ControlFrameTags.RPC.RegisterSecondaryTransportNAK.REASON);
+				handleRegisterSecondaryTransportNAKed((byte) packet.sessionId, reason);
+			} else if (frameInfo == FrameDataControlFrameType.TransportEventUpdate.getValue()) {
+				// Get TCP params
+				String ipAddr = (String) packet.getTag(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS);
+				Integer port = (Integer) packet.getTag(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT);
+				HashMap<String, Object> params = new HashMap<>();
+				params.put(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS, ipAddr);
+				params.put(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT, port);
+
+				// TODO: Get USB params
+
+				handleTransportEventUpdate((byte) packet.getSessionId(), params);
+			}
             _assemblerForMessageID.remove(packet.getMessageId());
 		} // end-method
 				
@@ -753,13 +844,21 @@ public class WiProProtocol extends AbstractProtocol {
 		handlePacketToSend(header);
 	}
 
+	@Override
+	public void RegisterSecondaryTransport(byte sessionId) {
+		SdlPacket header = SdlPacketFactory.createRegisterSecondaryTransport(sessionId, getMajorVersionByte());
+		header.setTransportType(TransportType.TCP);
+		// TODO: Add support for USB (aka try one if the other fails)
+		handlePacketToSend(header);
+	}
+
 	public void startService(SessionType serviceType, byte sessionID, boolean isEncrypted, TransportType transportType) {
 		Log.d(TAG, "startService");
 		SdlPacket header = SdlPacketFactory.createStartSession(serviceType, 0x00, getMajorVersionByte(), sessionID, isEncrypted);
 		header.transportType = transportType;
 		if(SessionType.RPC.equals(serviceType)){
 
-			if(!requestedPrimaryTransports.contains(transportType) || TransportType.TCP.equals(transportType)){
+			if(!requestedPrimaryTransports.contains(transportType)){ // FIXME: Put back TCP condition after testing
 				onTransportNotAccepted("Attempt to start primary transport that is not requested: " + transportType);
 				return;
 			}

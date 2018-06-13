@@ -101,6 +101,7 @@ import com.smartdevicelink.protocol.BinaryFrameHeader;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlPacketFactory;
+import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
@@ -457,7 +458,7 @@ public class SdlRouterService extends Service{
 	                	
 	                    break;
 	                case TransportConstants.ROUTER_SEND_PACKET:
-	                	Log.d(TAG, "Received packet to send");
+	                	//Log.d(TAG, "Received packet to send");
 	                	if(receivedBundle!=null){
 	                		Runnable packetRun = new Runnable(){
 	                			@Override
@@ -482,7 +483,7 @@ public class SdlRouterService extends Service{
 										Log.d(TAG, "Transport type was null, so router set it to " + transportType.name());
 										receivedBundle.putString(TransportConstants.TRANSPORT_FOR_PACKET, transportType.name());
 									}else{
-										Log.d(TAG, "Transport type of packet to send: " + transportType.name());
+										//Log.d(TAG, "Transport type of packet to send: " + transportType.name());
 									}
 									RegisteredApp buffApp;
 									synchronized(service.REGISTERED_APPS_LOCK){
@@ -490,7 +491,7 @@ public class SdlRouterService extends Service{
                                     }
 
 									if(buffApp !=null){
-										Log.d(TAG, "handling incomming client message");
+										//Log.d(TAG, "handling incomming client message");
                                         buffApp.handleIncommingClientMessage(receivedBundle);
                                     }else{
 										Log.d(TAG, "Write bytes to transport");
@@ -600,6 +601,22 @@ public class SdlRouterService extends Service{
 	                	}catch(NullPointerException e2){
 	                		Log.e(TAG, "No reply address included, can't send a reply");
 	                	}
+	                	break;
+	                case TransportConstants.ROUTER_SEND_SECONDARY_TRANSPORT_DETAILS:
+	                	// Currently this only handles one TCP connection
+		                String ipAddr = receivedBundle.getString(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS);
+		                int port = receivedBundle.getInt(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT);
+		                if(ipAddr == null){ // double check if null or empty
+		                	// Handle TCP disconnection
+			                if(service.tcpTransport != null){
+			                	service.tcpTransport.stop(MultiplexBaseTransport.STATE_NONE);
+			                	service.tcpTransport = null;
+			                }
+		                }else{
+			                service.tcpTransport = new MultiplexTcpTransport(port, ipAddr, true, service.tcpHandler);
+			                Log.i(TAG, "Starting TCP transport");
+			                service.tcpTransport.start();
+		                }
 	                	break;
 	                default:
 	                    super.handleMessage(msg);
@@ -971,11 +988,6 @@ public class SdlRouterService extends Service{
 			this.cleanedSessionMap = new SparseIntArray();
 		}
 
-		//This is temporary to test MultiplexTcpTransport
-		tcpTransport = new MultiplexTcpTransport(5813, "m.sdl.tools", true, tcpHandler);
-		Log.i(TAG, "Starting TCP transport");
-		tcpTransport.start();
-
 		packetExecutor =  Executors.newSingleThreadExecutor();
 
 		startUpSequence();
@@ -1130,7 +1142,9 @@ public class SdlRouterService extends Service{
 				}
 			}
 		}
-		packetWriteTaskMasterMap.clear();
+		if(packetWriteTaskMasterMap != null){
+			packetWriteTaskMasterMap.clear();
+		}
 		packetWriteTaskMasterMap = null;
 
 		
@@ -1715,7 +1729,11 @@ public class SdlRouterService extends Service{
 				if(packet.getFrameType() == FrameType.Control){
 					isNewSessionRequest = (packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK || packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_NAK)
 							&& packet.getServiceType() == SdlPacket.SERVICE_TYPE_RPC;
-					isNewTransportRequest = false; //TODO (packet.getFrameInfo() == SdlPacket.FRAME_INFO_REGISTER_TRANSPORT_ACK || packet.getFrameInfo() == SdlPacket.FRAME_INFO_REGISTER_TRANSPORT_NAK) && packet.getServiceType() != SdlPacket.SERVICE_TYPE_RPC
+					isNewTransportRequest = (packet.getFrameInfo() == SdlPacket.FRAME_INFO_REGISTER_SECONDARY_TRANSPORT_ACK
+							|| packet.getFrameInfo() == SdlPacket.FRAME_INFO_REGISTER_SECONDARY_TRANSPORT_NAK); // && packet.getServiceType() != SdlPacket.SERVICE_TYPE_RPC;
+					if(isNewTransportRequest){
+						Log.d(TAG, "New transport request!");
+					}
 				}
 
 	    		String appid = getAppIDForSession(session, isNewSessionRequest, isNewTransportRequest, packet.getTransportType()); //Find where this packet should go
@@ -2035,8 +2053,12 @@ public class SdlRouterService extends Service{
 						usbSessionMap.remove(sessionId);
 						retVal = true;
 					}
+				} else if (transportTypes.contains(TransportType.TCP) && tcpSessionMap != null) {
+					if (tcpSessionMap.indexOfKey(sessionId) >= 0) {
+						tcpSessionMap.remove(sessionId);
+						retVal = true;
+					}
 				}
-				//TODO TCP
 			}
 			return retVal;
 		}
@@ -2172,6 +2194,10 @@ public class SdlRouterService extends Service{
 								break;
 							case TCP:
 								//TODO TCP as secondary
+								appId =  bluetoothSessionMap.get(sessionId);
+								if(appId == null){
+									//TODO try USB
+								}
 								break;
 							default:
 								return null;
@@ -2893,7 +2919,7 @@ public class SdlRouterService extends Service{
 			bytesToWrite = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
 			offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
 			size = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytesToWrite.length);  //In case there isn't anything just send the whole packet.
-			this.priorityCoefficient = bundle.getInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT,0); Log.d(TAG, "packet priority coef: "+ this.priorityCoefficient);
+			this.priorityCoefficient = bundle.getInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT,0); // Log.d(TAG, "packet priority coef: "+ this.priorityCoefficient);
 			this.transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT_FOR_PACKET));
 		}
 

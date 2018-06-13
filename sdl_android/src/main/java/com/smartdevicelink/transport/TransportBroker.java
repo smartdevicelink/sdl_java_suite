@@ -19,6 +19,7 @@ import android.os.TransactionTooLargeException;
 import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
@@ -28,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 
 public class TransportBroker {
@@ -489,7 +491,7 @@ public class TransportBroker {
 				bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
 				bundle.putInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT, packet.getPrioirtyCoefficient());
 				if(packet.getTransportType() != null){
-					Log.d(TAG, "Sending packet on transport " + packet.getTransportType().name());
+					//Log.d(TAG, "Sending packet on transport " + packet.getTransportType().name());
 					bundle.putString(TransportConstants.TRANSPORT_FOR_PACKET, packet.getTransportType().name());
 				}else{
 					Log.d(TAG, "No transport to be found");
@@ -663,13 +665,28 @@ public class TransportBroker {
 			msg.what = TransportConstants.ROUTER_REQUEST_NEW_SESSION;
 			msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
 			Bundle bundle = new Bundle();
-			if(routerServiceVersion< TransportConstants.RouterServiceVersions.APPID_STRING){
+			if(routerServiceVersion < TransportConstants.RouterServiceVersions.APPID_STRING){
 				bundle.putLong(TransportConstants.APP_ID_EXTRA,convertAppId(appId));
 			}
 			bundle.putString(TransportConstants.APP_ID_EXTRA_STRING, appId);
 			if(transportType != null) {
 				bundle.putString(TransportConstants.ROUTER_REQUEST_NEW_SESSION_TRANSPORT_TYPE, transportType.name());
 			}
+			msg.setData(bundle);
+			this.sendMessageToRouterService(msg);
+		}
+
+		public void sendSecondaryTransportDetails(byte sessionId, Map<String, Object> params){
+			// Communicate transport details to router service
+			Message msg = Message.obtain();
+			msg.what = TransportConstants.ROUTER_SEND_SECONDARY_TRANSPORT_DETAILS;
+			msg.replyTo = this.clientMessenger;
+			Bundle bundle = new Bundle();
+			bundle.putByte(TransportConstants.SESSION_ID_EXTRA, sessionId);
+			bundle.putString(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS,
+					(String) params.get(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS));
+			bundle.putInt(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT,
+					(int) params.get(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT));
 			msg.setData(bundle);
 			this.sendMessageToRouterService(msg);
 		}

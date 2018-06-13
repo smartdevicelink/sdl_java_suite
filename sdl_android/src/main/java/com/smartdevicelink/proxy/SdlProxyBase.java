@@ -12,8 +12,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -572,6 +574,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_proxyListener.onServiceDataACK(dataSize);						
 			}
 		}
+
+		@Override
+		public void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransports, ArrayList<Integer> audioTransports, ArrayList<Integer> videoTransports, TransportType type) {}
+
+		@Override
+		public void onTransportEventUpdate(byte sessionID, Map<String, Object> params) {}
+
+		@Override
+		public void onRegisterSecondaryTransportACK(byte sessionID) {}
+
+		@Override
+		public void onRegisterSecondaryTransportNACKed(byte sessionID, String reason) {}
 	}
 	
 	/**

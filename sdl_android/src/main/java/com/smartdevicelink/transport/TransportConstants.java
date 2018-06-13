@@ -178,9 +178,12 @@ public class TransportConstants {
      * Command to have router service to send a packet
      */
 	public static final int ROUTER_SEND_PACKET 											= 0x20;
-	
 
-	
+	/**
+	 * Command to tell router service details of secondary transport
+	 */
+	public static final int ROUTER_SEND_SECONDARY_TRANSPORT_DETAILS                     = 0x21;
+
 	//response
 	/**
 	 * Router has received a packet and sent it to the client

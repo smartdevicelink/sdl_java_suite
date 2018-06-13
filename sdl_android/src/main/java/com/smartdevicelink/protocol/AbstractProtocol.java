@@ -4,7 +4,9 @@ import com.smartdevicelink.protocol.WiProProtocol.MessageFrameAssembler;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.transport.enums.TransportType;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractProtocol {
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
@@ -44,6 +46,11 @@ public abstract class AbstractProtocol {
 	public abstract void StartProtocolSession(SessionType sessionType);
 	
 	public abstract void StartProtocolService(SessionType sessionType, byte sessionID, boolean isEncrypted);
+
+	// This method notifies SDLCore that secondary transport is connected.  SDLCore needs this to
+	// identify which app is registering to use the secondary transport to pair up with the
+	// app's session from the primary transport.
+	public abstract void RegisterSecondaryTransport(byte sessionId);
 
 	public abstract void EndProtocolService(SessionType serviceType, byte sessionID);
 	// This method ends a protocol session.  A corresponding call to the protocol
@@ -154,4 +161,18 @@ public abstract class AbstractProtocol {
     protected void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID) {
 		resetIncomingHeartbeat(sessionType, sessionID);
     }
+
+	protected void handleEnableSecondaryTransport(byte sessionId, ArrayList<String> secondaryTransports,
+	        ArrayList<Integer> audioTransports, ArrayList<Integer> videoTransports) {
+		_protocolListener.onEnableSecondaryTransport(sessionId, secondaryTransports, audioTransports,videoTransports);
+	}
+    protected void handleTransportEventUpdate(byte sessionID, Map<String, Object> params) {
+		_protocolListener.onTransportEventUpdate(sessionID, params);
+	}
+	protected void handleRegisterSecondaryTransportACK(byte sessionID) {
+		_protocolListener.onRegisterSecondaryTransportACK(sessionID);
+	}
+	protected void handleRegisterSecondaryTransportNAKed(byte sessionID, String reason) {
+		_protocolListener.onRegisterSecondaryTransportNACKed(sessionID, reason);
+	}
 } // end-class

@@ -5,9 +5,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.annotation.SuppressLint;
@@ -24,6 +26,7 @@ import com.smartdevicelink.protocol.IProtocolListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.WiProProtocol;
+import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
@@ -92,6 +95,7 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 		sessionListener = listener;
 		wiProProtocol = new WiProProtocol(this);
 		wiProProtocol.setPrimaryTransports(config.getPrimaryTransports());
+		wiProProtocol.setRequiresHighBandwidth(config.requiresHighBandwidth());
 
 		transportManager = new TransportManager(config,this);
 
@@ -613,7 +617,7 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 
 	@Override
 	public void onProtocolMessageBytesToSend(SdlPacket packet) {
-		Log.d(TAG, "onProtocolMessageBytesToSend - " + packet.getTransportType());
+		//Log.d(TAG, "onProtocolMessageBytesToSend - " + packet.getTransportType());
 		if(transportManager != null){
 			transportManager.sendPacket(packet);
 		}
@@ -667,8 +671,48 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 	public void onProtocolError(String info, Exception e) {
 		this.sessionListener.onProtocolError(info, e);
 	}
-    
-    @Override
+
+	@Override
+	public void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransports,
+	        ArrayList<Integer> audioTransports, ArrayList<Integer> videoTransports) {
+		List<TransportType> supportedTransports = new ArrayList<>();
+		if(secondaryTransports != null) {
+			for (String s : secondaryTransports) {
+				Log.d(TAG, "Secondary transports allowed by core: " + s);
+				// TODO as these strings below as constants somewhere
+				if(s.equals("TCP_WIFI")){
+					supportedTransports.add(TransportType.TCP);
+				}else if(s.equals("AOA_USB")){
+					supportedTransports.add(TransportType.USB);
+				}
+			}
+			wiProProtocol.setSupportedSecondaryTransports(supportedTransports);
+			wiProProtocol.setSupportedServices(SessionType.PCM, audioTransports);
+			wiProProtocol.setSupportedServices(SessionType.NAV, videoTransports);
+		}else{
+			Log.d(TAG, "No secondary transports allowed.");
+		}
+	}
+
+	@Override
+	public void onTransportEventUpdate(byte sessionId, Map<String, Object> params) {
+		Log.d(TAG, "Transport Event Update Received From Core");
+		transportManager.sendSecondaryTransportDetails(sessionId, params);
+	}
+
+	@Override
+	public void onRegisterSecondaryTransportACK(byte sessionID) {
+		Log.d(TAG, "RegisterSecondaryTransportACK");
+		wiProProtocol.setRegisteredHighBandwidth(true);
+	}
+
+	@Override
+	public void onRegisterSecondaryTransportNACKed(byte sessionID, String reason) {
+		Log.d(TAG, "RegisterSecondaryTransportNACK" + reason);
+		wiProProtocol.setRegisteredHighBandwidth(false);
+	}
+
+	@Override
     public void sendHeartbeat(IHeartbeatMonitor monitor) {
         Log.d(TAG, "Asked to send heartbeat");
         if (wiProProtocol != null)

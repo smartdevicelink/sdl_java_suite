@@ -2,7 +2,9 @@ package com.smartdevicelink.protocol;
 
 import com.smartdevicelink.protocol.enums.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface IProtocolListener {
 	// Called to indicate that these bytes are to be sent as part of a message.
@@ -39,4 +41,17 @@ public interface IProtocolListener {
 
 	// Called to indicate that a protocol error was detected in received data.
 	void onProtocolError(String info, Exception e);
+
+	// Called after ProtocolSessionStarted to handle secondary transport params if present
+	void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransports,
+	        ArrayList<Integer> audioTransports, ArrayList<Integer> videoTransports);
+
+	// Called when SDLCore has updated secondary transport info or secondary transport is unavailable
+	void onTransportEventUpdate(byte sessionID, Map<String, Object> params);
+
+	// Called to indicate that SDLCore accepted secondary transport connection
+	void onRegisterSecondaryTransportACK(byte sessionID);
+
+	// Called to indicate that SDLCore rejected secondary transport connection
+	void onRegisterSecondaryTransportNACKed(byte sessionID, String reason);
 } // end-interfCe

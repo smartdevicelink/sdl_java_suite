@@ -1,7 +1,9 @@
 package com.smartdevicelink.SdlConnection;
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.content.ComponentName;
@@ -280,7 +282,27 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	public void onProtocolError(String info, Exception e) {
 		_connectionListener.onProtocolError(info, e);
 	}
-	
+
+	@Override
+	public void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransports, ArrayList<Integer> audioTransports, ArrayList<Integer> videoTransports) {
+
+	}
+
+	@Override
+	public void onTransportEventUpdate(byte sessionID, Map<String, Object> params) {
+
+	}
+
+	@Override
+	public void onRegisterSecondaryTransportACK(byte sessionID) {
+
+	}
+
+	@Override
+	public void onRegisterSecondaryTransportNACKed(byte sessionID, String reason) {
+
+	}
+
 	/**
 	 * Gets type of transport currently used by this connection.
 	 * 
@@ -471,7 +493,19 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			if (session != null) {
 				session.onProtocolServiceDataACK(serviceType, dataSize, sessionID);
 			}
-		}			
+		}
+
+		@Override
+		public void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransports, ArrayList<Integer> audioTransports, ArrayList<Integer> videoTransports, TransportType type) {}
+
+		@Override
+		public void onTransportEventUpdate(byte sessionID, Map<String, Object> params) {}
+
+		@Override
+		public void onRegisterSecondaryTransportACK(byte sessionID) {}
+
+		@Override
+		public void onRegisterSecondaryTransportNACKed(byte sessionID, String reason) {}
 	}
 		
 	public int getRegisterCount() {

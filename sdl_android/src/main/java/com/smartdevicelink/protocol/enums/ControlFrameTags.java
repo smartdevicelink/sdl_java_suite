@@ -8,6 +8,11 @@ public class ControlFrameTags {
 	private static class StartServiceACKBase{
 		/** Max transport unit to be used for this service */
 		public static final String MTU = "mtu";
+		/** HU allowed transport for secondary connection */
+		public static final String SECONDARY_TRANSPORTS = "secondaryTransports";
+		/** HU allowed transports for audio and video services (1 == Primary, 2 == Secondary) */
+		public static final String AUDIO_SERVICE_TRANSPORTS = "audioServiceTransports";
+		public static final String VIDEO_SERVICE_TRANSPORTS = "videoServiceTransports";
 	}
 
 	private static class NAKBase{
@@ -38,6 +43,16 @@ public class ControlFrameTags {
 		}
 		public static class EndServiceACK {}
 		public static class EndServiceNAK extends NAKBase{}
+		public static class TransportEventUpdate {
+		    /** The HU reported IP address and port of TCP connection */
+			public static final String TCP_IP_ADDRESS = "tcpIpAddress";
+		    public static final String TCP_PORT = "tcpPort";
+		}
+		public static class RegisterSecondaryTransport {}
+		public static class RegisterSecondaryTransportACK {}
+		public static class RegisterSecondaryTransportNAK extends NAKBase {
+			public static final String REASON = "reason";
+		}
 	}
 
 	/**
