@@ -34,6 +34,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -4558,7 +4559,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public void addCommand(Integer commandID,
+	public void addCommand(@NonNull Integer commandID,
 						   String menuText, Integer parentID, Integer position,
 						   Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID)
 			throws SdlException {
@@ -4701,7 +4702,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public void addCommand(Integer commandID,
+	public void addCommand(@NonNull Integer commandID,
 						   String menuText, Integer parentID, Integer position,
 						   Vector<String> vrCommands, Integer correlationID)
 			throws SdlException {
@@ -4816,7 +4817,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public void addSubMenu(Integer menuID, String menuName,
+	public void addSubMenu(@NonNull Integer menuID, @NonNull String menuName,
 						   Integer position, Integer correlationID)
 			throws SdlException {
 
@@ -5071,7 +5072,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void createInteractionChoiceSet(
-			Vector<Choice> choiceSet, Integer interactionChoiceSetID,
+			@NonNull Vector<Choice> choiceSet, @NonNull Integer interactionChoiceSetID,
 			Integer correlationID) throws SdlException {
 
 		CreateInteractionChoiceSet msg = new CreateInteractionChoiceSet(interactionChoiceSetID, choiceSet);
@@ -5088,7 +5089,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void deleteCommand(Integer commandID,
+	public void deleteCommand(@NonNull Integer commandID,
 							  Integer correlationID) throws SdlException {
 
 		DeleteCommand msg = new DeleteCommand(commandID);
@@ -5106,7 +5107,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void deleteInteractionChoiceSet(
-			Integer interactionChoiceSetID, Integer correlationID) 
+			@NonNull Integer interactionChoiceSetID, Integer correlationID)
 			throws SdlException {
 
 		DeleteInteractionChoiceSet msg = new DeleteInteractionChoiceSet(interactionChoiceSetID);
@@ -5148,7 +5149,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-								   String displayText, Integer interactionChoiceSetID, Vector<VrHelpItem> vrHelp,
+								   @NonNull String displayText, @NonNull Integer interactionChoiceSetID, Vector<VrHelpItem> vrHelp,
 								   Integer correlationID) throws SdlException {
 
 		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
@@ -5178,9 +5179,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-								   String displayText, Integer interactionChoiceSetID,
+								   @NonNull String displayText, @NonNull Integer interactionChoiceSetID,
 								   String helpPrompt, String timeoutPrompt,
-								   InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
+								   @NonNull InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
 								   Integer correlationID) throws SdlException {
 
 		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
@@ -5215,9 +5216,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-								   String displayText, Vector<Integer> interactionChoiceSetIDList,
+								   @NonNull String displayText, @NonNull Vector<Integer> interactionChoiceSetIDList,
 								   String helpPrompt, String timeoutPrompt,
-								   InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
+								   @NonNull InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
 								   Integer correlationID) throws SdlException {
 
 		Vector<TTSChunk> initChunks = TTSChunkFactory.createSimpleTTSChunks(initPrompt);
@@ -5250,10 +5251,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(
-			Vector<TTSChunk> initChunks, String displayText,
-			Vector<Integer> interactionChoiceSetIDList,
+			Vector<TTSChunk> initChunks, @NonNull String displayText,
+			@NonNull Vector<Integer> interactionChoiceSetIDList,
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
-			InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
+			@NonNull InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
 			Integer correlationID) throws SdlException {
 
 		PerformInteraction msg = new PerformInteraction(displayText, interactionMode, interactionChoiceSetIDList);
@@ -5280,7 +5281,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-								   String displayText, Integer interactionChoiceSetID,
+								   @NonNull String displayText, @NonNull Integer interactionChoiceSetID,
 								   Integer correlationID) throws SdlException {
 
 		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
@@ -5308,9 +5309,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-								   String displayText, Integer interactionChoiceSetID,
+								   @NonNull String displayText, @NonNull Integer interactionChoiceSetID,
 								   String helpPrompt, String timeoutPrompt,
-								   InteractionMode interactionMode, Integer timeout,
+								   @NonNull InteractionMode interactionMode, Integer timeout,
 								   Integer correlationID) throws SdlException {
 
 		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
@@ -5343,9 +5344,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-								   String displayText, Vector<Integer> interactionChoiceSetIDList,
+								   @NonNull String displayText, @NonNull Vector<Integer> interactionChoiceSetIDList,
 								   String helpPrompt, String timeoutPrompt,
-								   InteractionMode interactionMode, Integer timeout,
+								   @NonNull InteractionMode interactionMode, Integer timeout,
 								   Integer correlationID) throws SdlException {
 
 		Vector<TTSChunk> initChunks = TTSChunkFactory.createSimpleTTSChunks(initPrompt);
@@ -5376,10 +5377,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(
-			Vector<TTSChunk> initChunks, String displayText,
-			Vector<Integer> interactionChoiceSetIDList,
+			Vector<TTSChunk> initChunks, @NonNull String displayText,
+			@NonNull Vector<Integer> interactionChoiceSetIDList,
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
-			InteractionMode interactionMode, Integer timeout,
+			@NonNull InteractionMode interactionMode, Integer timeout,
 			Integer correlationID) throws SdlException {
 
 		PerformInteraction msg = new PerformInteraction(displayText, interactionMode, interactionChoiceSetIDList);
@@ -5395,10 +5396,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	// Protected registerAppInterface used to ensure only non-ALM applications call
 	// reqisterAppInterface
 	protected void registerAppInterfacePrivate(
-			SdlMsgVersion sdlMsgVersion, String appName, Vector<TTSChunk> ttsName,
-			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
-			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
-			String appID, Integer correlationID)
+			@NonNull SdlMsgVersion sdlMsgVersion, @NonNull String appName, Vector<TTSChunk> ttsName,
+			String ngnMediaScreenAppName, Vector<String> vrSynonyms, @NonNull Boolean isMediaApp,
+			@NonNull Language languageDesired, @NonNull Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
+			@NonNull String appID, Integer correlationID)
 			throws SdlException {
 		String carrierName = null;
 		if(telephonyManager != null){
@@ -5425,10 +5426,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		RegisterAppInterface msg = new RegisterAppInterface(sdlMsgVersion, appName, isMediaApp, languageDesired, hmiDisplayLanguageDesired, appID);
 
-		if (correlationID == null) {
-			correlationID = 1;
+		if (correlationID != null) {
+			msg.setCorrelationID(correlationID);
 		}
-		msg.setCorrelationID(correlationID);
 
 		msg.setDeviceInfo(deviceInfo);
 
@@ -5585,7 +5585,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void setMediaClockTimer(Integer hours,
-								   Integer minutes, Integer seconds, UpdateMode updateMode,
+								   Integer minutes, Integer seconds, @NonNull UpdateMode updateMode,
 								   Integer correlationID) throws SdlException {
 
 		SetMediaClockTimer msg = new SetMediaClockTimer(updateMode);
@@ -5772,7 +5772,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void speak(String ttsText, Integer correlationID)
+	public void speak(@NonNull String ttsText, Integer correlationID)
 			throws SdlException {
 
 		Speak msg = new Speak(TTSChunkFactory.createSimpleTTSChunks(ttsText));
@@ -5789,7 +5789,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void speak(Vector<TTSChunk> ttsChunks,
+	public void speak(@NonNull Vector<TTSChunk> ttsChunks,
 					  Integer correlationID) throws SdlException {
 
 		Speak msg = new Speak(ttsChunks);
@@ -5806,7 +5806,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void subscribeButton(ButtonName buttonName,
+	public void subscribeButton(@NonNull ButtonName buttonName,
 								Integer correlationID) throws SdlException {
 
 		SubscribeButton msg = new SubscribeButton(buttonName);
@@ -5842,7 +5842,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void unsubscribeButton(ButtonName buttonName,
+	public void unsubscribeButton(@NonNull ButtonName buttonName,
 								  Integer correlationID) throws SdlException {
 
 		UnsubscribeButton msg = new UnsubscribeButton(buttonName);
@@ -5888,8 +5888,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performaudiopassthru(String initialPrompt, String audioPassThruDisplayText1, String audioPassThruDisplayText2,
-									 SamplingRate samplingRate, Integer maxDuration, BitsPerSample bitsPerSample,
-									 AudioType audioType, Boolean muteAudio, Integer correlationID) throws SdlException {
+									 @NonNull SamplingRate samplingRate, @NonNull Integer maxDuration, @NonNull BitsPerSample bitsPerSample,
+									 @NonNull AudioType audioType, Boolean muteAudio, Integer correlationID) throws SdlException {
 		Vector<TTSChunk> chunks = TTSChunkFactory.createSimpleTTSChunks(initialPrompt);
 		PerformAudioPassThru msg = new PerformAudioPassThru(samplingRate, maxDuration, bitsPerSample, audioType);
 		msg.setCorrelationID(correlationID);
@@ -6073,7 +6073,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/		
 	@SuppressWarnings("unused")
-	public void scrollablemessage(String scrollableMessageBody, Integer timeout, Vector<SoftButton> softButtons, Integer correlationID) throws SdlException
+	public void scrollablemessage(@NonNull String scrollableMessageBody, Integer timeout, Vector<SoftButton> softButtons, Integer correlationID) throws SdlException
 	{
 		ScrollableMessage msg = new ScrollableMessage(scrollableMessageBody);
 		msg.setCorrelationID(correlationID);
@@ -6097,7 +6097,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	@SuppressWarnings("unused")
-	public void slider(Integer numTicks, Integer position, String sliderHeader, Vector<String> sliderFooter, Integer timeout, Integer correlationID) throws SdlException
+	public void slider(@NonNull Integer numTicks, @NonNull Integer position, @NonNull String sliderHeader, Vector<String> sliderFooter, Integer timeout, Integer correlationID) throws SdlException
 	{
 		Slider msg = new Slider(numTicks, position, sliderHeader);
 		msg.setCorrelationID(correlationID);
@@ -6116,7 +6116,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	@SuppressWarnings("unused")
-	public void changeregistration(Language language, Language hmiDisplayLanguage, Integer correlationID) throws SdlException
+	public void changeregistration(@NonNull Language language, @NonNull Language hmiDisplayLanguage, Integer correlationID) throws SdlException
 	{
 		ChangeRegistration msg = new ChangeRegistration(language, hmiDisplayLanguage);
 		msg.setCorrelationID(correlationID);
@@ -6138,7 +6138,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	*/
 	@SuppressWarnings("unused")
 	@Deprecated
-	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
+	public void putFileStream(InputStream is, @NonNull String sdlFileName, Integer iOffset, Integer iLength) throws SdlException
 	{
 		PutFile msg = new PutFile(sdlFileName, FileType.BINARY);
 		msg.setCorrelationID(10000);
@@ -6162,7 +6162,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length) throws SdlException {
+	public void putFileStream(InputStream inputStream, @NonNull String fileName, Long offset, Long length) throws SdlException {
 		PutFile msg = new PutFile(fileName, FileType.BINARY);
 		msg.setCorrelationID(10000);
 		msg.setSystemFile(true);
@@ -6187,7 +6187,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	@Deprecated
-	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
+	public OutputStream putFileStream(@NonNull String sdlFileName, Integer iOffset, Integer iLength) throws SdlException
 	{
 		PutFile msg = new PutFile(sdlFileName, FileType.BINARY);
 		msg.setCorrelationID(10000);
@@ -6210,7 +6210,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public OutputStream putFileStream(String fileName, Long offset, Long length) throws SdlException {
+	public OutputStream putFileStream(@NonNull String fileName, Long offset, Long length) throws SdlException {
 		PutFile msg = new PutFile(fileName, FileType.BINARY);
 		msg.setCorrelationID(10000);
 		msg.setSystemFile(true);
@@ -6237,7 +6237,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	@Deprecated
-	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
+	public void putFileStream(InputStream is, @NonNull String sdlFileName, Integer iOffset, Integer iLength, @NonNull FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
 		PutFile msg = new PutFile(sdlFileName, fileType);
 		msg.setCorrelationID(10000);
@@ -6268,7 +6268,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
+	public void putFileStream(InputStream inputStream, @NonNull String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
 		PutFile msg = new PutFile(fileName, FileType.BINARY);
 		msg.setCorrelationID(10000);
 		msg.setSystemFile(true);
@@ -6295,7 +6295,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	@Deprecated
-	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
+	public OutputStream putFileStream(@NonNull String sdlFileName, Integer iOffset, Integer iLength, @NonNull FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
 		PutFile msg = new PutFile(sdlFileName, fileType);
 		msg.setCorrelationID(10000);
@@ -6325,7 +6325,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public OutputStream putFileStream(String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
+	public OutputStream putFileStream(@NonNull String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
 		PutFile msg = new PutFile(fileName, FileType.BINARY);
 		msg.setCorrelationID(10000);
 		msg.setSystemFile(true);
@@ -6354,7 +6354,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */	
 	@SuppressWarnings("unused")
 	@Deprecated
-	public RPCStreamController putFileStream(String sPath, String sdlFileName, Integer iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
+	public RPCStreamController putFileStream(String sPath, @NonNull String sdlFileName, Integer iOffset, @NonNull FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException
 	{
 		PutFile msg = new PutFile(sdlFileName, fileType);
 		msg.setCorrelationID(iCorrelationID);
@@ -6389,7 +6389,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public RPCStreamController putFileStream(String path, String fileName, Long offset, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId, OnPutFileUpdateListener cb ) throws SdlException {
+	public RPCStreamController putFileStream(String path, @NonNull String fileName, Long offset, @NonNull FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId, OnPutFileUpdateListener cb ) throws SdlException {
 		PutFile msg = new PutFile(fileName, fileType);
 		msg.setCorrelationID(correlationId);
 		msg.setPersistentFile(isPersistentFile);
@@ -6420,7 +6420,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */	
 	@SuppressWarnings("unused")
 	@Deprecated
-	public RPCStreamController putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
+	public RPCStreamController putFileStream(InputStream is, @NonNull String sdlFileName, Integer iOffset, Integer iLength, @NonNull FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException
 	{
 		PutFile msg = new PutFile(sdlFileName, fileType);
 		msg.setCorrelationID(iCorrelationID);
@@ -6453,7 +6453,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public RPCStreamController putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId) throws SdlException {
+	public RPCStreamController putFileStream(InputStream inputStream, @NonNull String fileName, Long offset, Long length, @NonNull FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId) throws SdlException {
 		PutFile msg = new PutFile(fileName, fileType);
 		msg.setCorrelationID(correlationId);
 		msg.setPersistentFile(isPersistentFile);
@@ -6489,7 +6489,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	@SuppressWarnings("unused")
-	public void putfile(String sdlFileName, FileType fileType, Boolean persistentFile, byte[] fileData, Integer correlationID) throws SdlException
+	public void putfile(@NonNull String sdlFileName, @NonNull FileType fileType, Boolean persistentFile, byte[] fileData, Integer correlationID) throws SdlException
 	{
 		PutFile msg = new PutFile(sdlFileName, fileType);
 		msg.setCorrelationID(correlationID);
@@ -6508,7 +6508,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	@SuppressWarnings("unused")
-	public void deletefile(String sdlFileName, Integer correlationID) throws SdlException
+	public void deletefile(@NonNull String sdlFileName, Integer correlationID) throws SdlException
 	{
 		DeleteFile msg = new DeleteFile(sdlFileName);
 		msg.setCorrelationID(correlationID);
@@ -6541,7 +6541,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	@SuppressWarnings("unused")
-	public void setappicon(String sdlFileName, Integer correlationID) throws SdlException
+	public void setappicon(@NonNull String sdlFileName, Integer correlationID) throws SdlException
 	{
 		SetAppIcon msg = new SetAppIcon(sdlFileName);
 		msg.setCorrelationID(correlationID);
@@ -6558,7 +6558,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	@SuppressWarnings("unused")
-	public void setdisplaylayout(String displayLayout, Integer correlationID) throws SdlException
+	public void setdisplaylayout(@NonNull String displayLayout, Integer correlationID) throws SdlException
 	{
 		SetDisplayLayout msg = new SetDisplayLayout(displayLayout);
 		msg.setCorrelationID(correlationID);
