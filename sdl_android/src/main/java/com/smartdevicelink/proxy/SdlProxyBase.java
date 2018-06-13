@@ -6586,15 +6586,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 
 			int eventAction = sdlMotionEvent.getMotionEvent(touchType, pointerProperties);
-
-			MotionEvent motionEvent =  android.view.MotionEvent.obtain(sdlMotionEvent.startOfEvent, sdlMotionEvent.getEventTime(), eventAction, eventListSize, pointerProperties, pointerCoords, 0, 0,1,1,0,0, InputDevice.SOURCE_TOUCHSCREEN,0);
+			long startTime = sdlMotionEvent.startOfEvent;
 
 			//If the motion event should be finished we should clear our reference
 			if(eventAction == MotionEvent.ACTION_UP || eventAction == MotionEvent.ACTION_CANCEL){
 				sdlMotionEvent = null;
 			}
 
-			return  motionEvent;
+			return MotionEvent.obtain(startTime, SystemClock.uptimeMillis(), eventAction, eventListSize, pointerProperties, pointerCoords, 0, 0,1,1,0,0, InputDevice.SOURCE_TOUCHSCREEN,0);
+
 		}
 
 
@@ -6612,11 +6612,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			startOfEvent = SystemClock.uptimeMillis();
 		}
 
-		synchronized long getEventTime(){
-			return  SystemClock.uptimeMillis() - startOfEvent;
-		}
-
-
+		/**
+		 * Handles the SDL Touch Event to keep track of pointer status and returns the appropirate
+		 * Android MotionEvent according to this events status
+		 * @param touchType The SDL TouchType that was received from the module
+		 * @param pointerProperties the parsed pointer properties built from the OnTouchEvent RPC
+		 * @return the correct native Andorid MotionEvent action to dispatch
+		 */
 		synchronized int  getMotionEvent(TouchType touchType, MotionEvent.PointerProperties[] pointerProperties){
 			int motionEvent = MotionEvent.ACTION_DOWN;
 			switch (touchType){
@@ -6639,7 +6641,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					setPointerStatuses(MotionEvent.ACTION_UP, pointerProperties);
 
 					if(pointerStatuses.size() == 0){
-						//The motion event has just begun
+						//The motion event has just ended
 						motionEvent = MotionEvent.ACTION_UP;
 					}else{
 						motionEvent = MotionEvent.ACTION_POINTER_UP;
