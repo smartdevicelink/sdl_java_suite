@@ -418,7 +418,6 @@ public class SdlRouterService extends Service{
 	                	
 	                    break;
 	                case TransportConstants.ROUTER_SEND_PACKET:
-	                	Log.d(TAG, "Received packet to send");
 	                	if(receivedBundle!=null){
 	                		Runnable packetRun = new Runnable(){
 	                			@Override
@@ -2514,7 +2513,7 @@ public class SdlRouterService extends Service{
 			bytesToWrite = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
 			offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
 			size = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytesToWrite.length);  //In case there isn't anything just send the whole packet.
-			this.priorityCoefficient = bundle.getInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT,0); Log.d(TAG, "packet priority coef: "+ this.priorityCoefficient);
+			this.priorityCoefficient = bundle.getInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT,0);
 		}
 		
 		@Override
