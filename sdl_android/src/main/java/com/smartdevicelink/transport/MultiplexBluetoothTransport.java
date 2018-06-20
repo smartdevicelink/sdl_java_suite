@@ -788,7 +788,7 @@ public class MultiplexBluetoothTransport {
             while (true) {
                 try {
                     bytesRead = mmInStream.read(buffer);
-                    Log.i(getClass().getName(), "Received " + bytesRead + " bytes from Bluetooth");
+                    //Log.i(getClass().getName(), "Received " + bytesRead + " bytes from Bluetooth");
                     for (int i = 0; i < bytesRead; i++) {
                         input = buffer[i];
 
