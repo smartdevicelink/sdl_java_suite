@@ -30,14 +30,14 @@ You can also find some branches that have yet to be merged into this GitHub proj
 
 #### Dependency Managers
 
-To compile with the a release of SDL Android, include the following in your app's `build.gradle` file,
+To compile with the latest release of SDL Android, include the following in your app's `build.gradle` file,
 
 ```
 repositories {
     jcenter()
 }
 dependencies {
-    compile 'com.smartdevicelink:sdl_android:4.+'
+    implementation 'com.smartdevicelink:sdl_android:4.+'
 }
 ```
 
@@ -46,3 +46,12 @@ For Maven or Ivy snippets please look at [Bintray](https://bintray.com/smartdevi
 #### Manually
 
 If you prefer not to use any of the aforementioned dependency managers, you can integrate SDL Android into your project manually.
+
+### Proguard Rules
+
+Developers using Proguard to shrink and obfuscate their code should be sure to include the following lines in their proguard-rules.pro file:
+
+```
+-keep class com.smartdevicelink.** { *; }
+-keep class com.livio.** { *; }
+```

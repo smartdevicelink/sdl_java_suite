@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -53,6 +55,19 @@ public class StartTime extends RPCStruct {
     public StartTime(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a newly allocated StartTime object
+	 * @param hours The hour
+	 * @param minutes The minute
+	 * @param seconds The second
+	 */
+	public StartTime(@NonNull Integer hours, @NonNull Integer minutes, @NonNull Integer seconds){
+		this();
+		setHours(hours);
+		setMinutes(minutes);
+		setSeconds(seconds);
+	}
     /**
      * Get the hour. Minvalue="0", maxvalue="59"
  *					<p><b>Note:</b></p>Some display types only support a max value of 19. If out of range, it will be rejected.
@@ -66,7 +81,7 @@ public class StartTime extends RPCStruct {
  *					<p><b>Note:</b></p>Some display types only support a max value of 19. If out of range, it will be rejected.
      * @param hours min: 0; max: 59
      */    
-    public void setHours( Integer hours ) {
+    public void setHours(@NonNull Integer hours ) {
         setValue(KEY_HOURS, hours);
     }
     /**
@@ -80,7 +95,7 @@ public class StartTime extends RPCStruct {
      * Set the minute. Minvalue="0", maxvalue="59".
      * @param minutes min: 0; max: 59
      */    
-    public void setMinutes( Integer minutes ) {
+    public void setMinutes( @NonNull Integer minutes ) {
         setValue(KEY_MINUTES, minutes);
     }
     /**
@@ -94,7 +109,7 @@ public class StartTime extends RPCStruct {
      * Set the second. Minvalue="0", maxvalue="59".
      * @param seconds min: 0 max: 59
      */    
-    public void setSeconds( Integer seconds ) {
+    public void setSeconds( @NonNull Integer seconds ) {
         setValue(KEY_SECONDS, seconds);
     }
 }

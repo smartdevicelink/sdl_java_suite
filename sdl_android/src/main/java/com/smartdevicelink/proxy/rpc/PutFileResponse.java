@@ -1,7 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Hashtable;
 
@@ -31,7 +34,18 @@ public class PutFileResponse extends RPCResponse {
     public PutFileResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
-    public void setSpaceAvailable(Integer spaceAvailable) {
+    /**
+     * Constructs a new PutFileResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public PutFileResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull Integer spaceAvailable) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+        setSpaceAvailable(spaceAvailable);
+    }
+    public void setSpaceAvailable(@NonNull Integer spaceAvailable) {
         setParameters(KEY_SPACE_AVAILABLE, spaceAvailable);
     }
     public Integer getSpaceAvailable() {

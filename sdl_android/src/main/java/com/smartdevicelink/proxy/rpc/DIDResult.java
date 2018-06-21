@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
@@ -58,13 +60,18 @@ public class DIDResult extends RPCStruct {
     public DIDResult(Hashtable<String, Object> hash) {
         super(hash);
     }
-    public void setResultCode(VehicleDataResultCode resultCode) {
+    public DIDResult(@NonNull VehicleDataResultCode resultCode, @NonNull Integer didLocation) {
+        this();
+        setResultCode(resultCode);
+        setDidLocation(didLocation);
+    }
+    public void setResultCode(@NonNull VehicleDataResultCode resultCode) {
     	setValue(KEY_RESULT_CODE, resultCode);
     }
     public VehicleDataResultCode getResultCode() {
 		return (VehicleDataResultCode) getObject(VehicleDataResultCode.class, KEY_RESULT_CODE);
     }
-    public void setDidLocation(Integer didLocation) {
+    public void setDidLocation(@NonNull Integer didLocation) {
     	setValue(KEY_DID_LOCATION, didLocation);
     }
     public Integer getDidLocation() {

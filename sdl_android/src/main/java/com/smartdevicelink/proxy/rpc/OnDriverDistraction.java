@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
@@ -54,6 +56,14 @@ public class OnDriverDistraction  extends RPCNotification {
         super(hash);
     }
     /**
+     *Constructs a newly allocated OnDriverDistraction object
+     * @param state the current driver distraction state
+     */
+    public OnDriverDistraction(@NonNull DriverDistractionState state) {
+        this();
+        setState(state);
+    }
+    /**
      * <p>Called to get the current driver distraction state(i.e. whether driver distraction rules are in effect, or not)</p>
      * @return {@linkplain DriverDistractionState} the Current driver distraction state.
      */    
@@ -64,7 +74,7 @@ public class OnDriverDistraction  extends RPCNotification {
      * <p>Called to set the driver distraction state(i.e. whether driver distraction rules are in effect, or not)</p>
      * @param state the current driver distraction state
      */    
-    public void setState( DriverDistractionState state ) {
+    public void setState( @NonNull DriverDistractionState state ) {
         setParameters(KEY_STATE, state);
     }  
 }

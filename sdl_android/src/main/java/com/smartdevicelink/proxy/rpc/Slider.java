@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -110,6 +112,19 @@ public class Slider extends RPCRequest {
     }
 
 	/**
+	 * Constructs a new Slider object \
+	 * @param numTicks Number of selectable items on a horizontal axis.
+	 * @param position Initial position of slider control (cannot exceed numTicks)
+	 * @param sliderHeader Text header to display
+	 */
+	public Slider(@NonNull Integer numTicks, @NonNull Integer position, @NonNull String sliderHeader){
+		this();
+		setNumTicks(numTicks);
+		setPosition(position);
+		setSliderHeader(sliderHeader);
+	}
+
+	/**
 	 * Sets a number of selectable items on a horizontal axis
 	 * 
 	 * @param numTicks
@@ -118,7 +133,7 @@ public class Slider extends RPCRequest {
 	 *            <p></p>
 	 *            <b>Notes: </b>Minvalue=2; Maxvalue=26
 	 */
-    public void setNumTicks(Integer numTicks) {
+    public void setNumTicks(@NonNull Integer numTicks) {
     	setParameters(KEY_NUM_TICKS, numTicks);
     }
 
@@ -141,7 +156,7 @@ public class Slider extends RPCRequest {
 	 *            <p></p>
 	 *            <b>Notes: </b>Minvalue=1; Maxvalue=26
 	 */
-    public void setPosition(Integer position) {
+    public void setPosition(@NonNull Integer position) {
     	setParameters(KEY_POSITION, position);
     }
 
@@ -163,7 +178,7 @@ public class Slider extends RPCRequest {
 	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500
 	 */
-    public void setSliderHeader(String sliderHeader) {
+    public void setSliderHeader(@NonNull String sliderHeader) {
     	setParameters(KEY_SLIDER_HEADER, sliderHeader);
     }
 

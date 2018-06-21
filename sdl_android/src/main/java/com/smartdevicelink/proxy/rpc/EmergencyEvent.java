@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
@@ -79,44 +81,55 @@ public class EmergencyEvent extends RPCStruct {
     public static final String KEY_ROLLOVER_EVENT = "rolloverEvent";
     public static final String KEY_MAXIMUM_CHANGE_VELOCITY = "maximumChangeVelocity";
     public static final String KEY_MULTIPLE_EVENTS = "multipleEvents";
-	
-	/** Constructs a new EmergencyEvent object indicated by the Hashtable
-	 * parameter
-	 * @param hash
-	 * 
-	 * <p>The hash table to use</p>
-	 */
 
+    /** Constructs a new EmergencyEvent object
+     *
+     */
     public EmergencyEvent() { }
+    /** Constructs a new EmergencyEvent object indicated by the Hashtable
+     * parameter
+     * @param hash <p>The hash table to use</p>
+     */
     public EmergencyEvent(Hashtable<String, Object> hash) {
         super(hash);
     }
+    /**
+	 * Constructs a new EmergencyEvent object
+     */
+    public EmergencyEvent(@NonNull EmergencyEventType emergencyEventType, @NonNull FuelCutoffStatus fuelCutoffStatus, @NonNull VehicleDataEventStatus rolloverEvent, @NonNull Integer maximumChangeVelocity, @NonNull VehicleDataEventStatus multipleEvents) {
+        this();
+        setEmergencyEventType(emergencyEventType);
+        setFuelCutoffStatus(fuelCutoffStatus);
+        setRolloverEvent(rolloverEvent);
+        setMaximumChangeVelocity(maximumChangeVelocity);
+        setMultipleEvents(multipleEvents);
+    }
 
-    public void setEmergencyEventType(EmergencyEventType emergencyEventType) {
+    public void setEmergencyEventType(@NonNull EmergencyEventType emergencyEventType) {
         setValue(KEY_EMERGENCY_EVENT_TYPE, emergencyEventType);
     }
     public EmergencyEventType getEmergencyEventType() {
         return (EmergencyEventType) getObject(EmergencyEventType.class, KEY_EMERGENCY_EVENT_TYPE);
     }
-    public void setFuelCutoffStatus(FuelCutoffStatus fuelCutoffStatus) {
+    public void setFuelCutoffStatus(@NonNull FuelCutoffStatus fuelCutoffStatus) {
         setValue(KEY_FUEL_CUTOFF_STATUS, fuelCutoffStatus);
     }
     public FuelCutoffStatus getFuelCutoffStatus() {
         return (FuelCutoffStatus) getObject(FuelCutoffStatus.class, KEY_FUEL_CUTOFF_STATUS);
     }
-    public void setRolloverEvent(VehicleDataEventStatus rolloverEvent) {
+    public void setRolloverEvent(@NonNull VehicleDataEventStatus rolloverEvent) {
         setValue(KEY_ROLLOVER_EVENT, rolloverEvent);
     }
     public VehicleDataEventStatus getRolloverEvent() {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_ROLLOVER_EVENT);
     }
-    public void setMaximumChangeVelocity(Integer maximumChangeVelocity) {
+    public void setMaximumChangeVelocity(@NonNull Integer maximumChangeVelocity) {
         setValue(KEY_MAXIMUM_CHANGE_VELOCITY, maximumChangeVelocity);
     }
     public Integer getMaximumChangeVelocity() {
     	return getInteger(KEY_MAXIMUM_CHANGE_VELOCITY);
     }
-    public void setMultipleEvents(VehicleDataEventStatus multipleEvents) {
+    public void setMultipleEvents(@NonNull VehicleDataEventStatus multipleEvents) {
         setValue(KEY_MULTIPLE_EVENTS, multipleEvents);
     }
     public VehicleDataEventStatus getMultipleEvents() {
