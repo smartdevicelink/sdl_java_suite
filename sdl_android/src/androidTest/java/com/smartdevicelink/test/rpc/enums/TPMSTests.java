@@ -74,7 +74,7 @@ public class TPMSTests extends TestCase {
 	}
 
 	/**
-	 * Verifies the possible enum values of RadioBand.
+	 * Verifies the possible enum values of TPMS.
 	 */
 	public void testListEnum() {
 		List<TPMS> enumValueList = Arrays.asList(TPMS.values());
