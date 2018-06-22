@@ -73,7 +73,6 @@ public class TurnSignalTests extends TestCase {
 		enumTestList.add(TurnSignal.RIGHT);
 		enumTestList.add(TurnSignal.BOTH);
 
-
 		assertTrue("Enum value list does not match enum class list",
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}

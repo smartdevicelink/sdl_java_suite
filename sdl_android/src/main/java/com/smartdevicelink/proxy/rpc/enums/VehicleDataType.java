@@ -108,7 +108,11 @@ public enum VehicleDataType {
     /**
      * Notifies MYKEYData may be subscribed
      */
-    VEHICLEDATA_MYKEY;
+    VEHICLEDATA_MYKEY,
+    /**
+     * Notifies TURNSIGNALData may be subscribed
+     */
+    VEHICLEDATA_TURNSIGNAL;
 	/**
      * Convert String to VehicleDataType
      * @param value String
