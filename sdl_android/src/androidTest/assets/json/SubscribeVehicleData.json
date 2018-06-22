@@ -26,7 +26,8 @@
       "airbagStatus":true,
       "emergencyEvent":false,
       "clusterModeStatus":true,
-      "myKey":true
+      "myKey":true,
+      "turnSignal":true
     }
   },
   "response":{
@@ -127,6 +128,10 @@
       },
       "myKey":{
         "dataType":"VEHICLEDATA_MYKEY",
+        "resultCode":"IGNORED"
+      },
+      "turnSignal":{
+        "dataType":"VEHICLEDATA_TURNSIGNAL",
         "resultCode":"IGNORED"
       }
     }

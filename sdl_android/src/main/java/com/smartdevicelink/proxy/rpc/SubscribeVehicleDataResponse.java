@@ -38,6 +38,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
+	public static final String KEY_TURN_SIGNAL = "turnSignal";
 
 	/**
 	 * Constructs a new SubscribeVehicleDataResponse object
@@ -396,5 +397,22 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public VehicleDataResult getMyKey() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_MY_KEY);
-    }       
+    }
+
+    /**
+     * Sets turnSignal
+     * @param turnSignal
+     */
+    public void setTurnSignal(VehicleDataResult turnSignal) {
+        setParameters(KEY_TURN_SIGNAL, turnSignal);
+    }
+
+    /**
+     * Gets turnSignal
+     * @return VehicleDataResult
+     */
+    @SuppressWarnings("unchecked")
+    public VehicleDataResult getTurnSignal() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_TURN_SIGNAL);
+    }
 }

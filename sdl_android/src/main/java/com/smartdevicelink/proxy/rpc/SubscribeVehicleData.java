@@ -218,6 +218,14 @@ import java.util.Hashtable;
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>turnSignal</td>
+ * 			<td>Boolean</td>
+ * 			<td>@see TurnSignal</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 4.6 </td>
+ * 		</tr>
  *  </table>
  *  
  * <p> <b>Response</b></p>
@@ -262,6 +270,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
 	public static final String KEY_SPEED = "speed";
+	public static final String KEY_TURN_SIGNAL = "turnSignal";
 
 	/**
 	 * Constructs a new SubscribeVehicleData object
@@ -716,6 +725,17 @@ public class SubscribeVehicleData extends RPCRequest {
     }
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);
-    }      
+    }
+
+	/**
+	 * Sets a boolean value. If true, subscribes turnSignal data
+	 * @param turnSignal a boolean value
+	 */
+	public void setTurnSignal(Boolean turnSignal) { setParameters(KEY_TURN_SIGNAL, turnSignal); }
+	/**
+	 * Gets a boolean value. If true, means the turnSignal data has been subscribed.
+	 * @return a Boolean value.
+	 */
+	public Boolean getTurnSignal() { return getBoolean(KEY_TURN_SIGNAL); }
     
 }
