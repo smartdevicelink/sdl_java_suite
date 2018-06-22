@@ -255,7 +255,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
-	
+	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
 
 	/**
 	 * Constructs a new UnsubscribeVehicleData object
@@ -708,8 +708,15 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
     public void setMyKey(Boolean myKey) {
 		setParameters(KEY_MY_KEY, myKey);
-    }
-    public Boolean getMyKey() {
-        return getBoolean(KEY_MY_KEY);
-    }    
+	}
+	public Boolean getMyKey() {
+		return getBoolean(KEY_MY_KEY);
+	}
+
+	public void setElectronicParkBrakeStatus(Boolean electronicParkBrakeStatus) {
+		setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+	}
+	public Boolean getElectronicParkBrakeStatus() {
+		return getBoolean(KEY_ELECTRONIC_PARK_BRAKE_STATUS);
+	}
 }

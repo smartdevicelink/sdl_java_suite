@@ -21,6 +21,7 @@ import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
+import com.smartdevicelink.proxy.rpc.enums.ElectronicParkBrakeStatus;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
@@ -62,6 +63,7 @@ public class VehicleDataHelper{
 	public static final EmergencyEvent EMERGENCY_EVENT = new EmergencyEvent();
 	public static final ClusterModeStatus CLUSTER_MODE_STATUS = new ClusterModeStatus();
 	public static final MyKey MY_KEY = new MyKey();
+	public static final ElectronicParkBrakeStatus ELECTRONIC_PARK_BRAKE_STATUS = ElectronicParkBrakeStatus.CLOSED;
 	
 	//other variables inside some of the above objects
     // tire status
@@ -318,6 +320,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA.setEmergencyEvent(EMERGENCY_EVENT);
 		VEHICLE_DATA.setClusterModeStatus(CLUSTER_MODE_STATUS);
 		VEHICLE_DATA.setMyKey(MY_KEY);
+		VEHICLE_DATA.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
 		
 		//set up the GetVehicleDataResponse object
 		VEHICLE_DATA_RESPONSE.setSpeed(SPEED);
@@ -345,6 +348,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA_RESPONSE.setEmergencyEvent(EMERGENCY_EVENT);
 		VEHICLE_DATA_RESPONSE.setClusterModeStatus(CLUSTER_MODE_STATUS);
 		VEHICLE_DATA_RESPONSE.setMyKey(MY_KEY);
+		VEHICLE_DATA_RESPONSE.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
 	}
 	
     private VehicleDataHelper(){}	

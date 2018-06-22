@@ -41,6 +41,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
+    public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
 
 	/**
 	 * Constructs a new UnsubscribeVehicleDataResponse object
@@ -401,5 +402,11 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public VehicleDataResult getMyKey() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_MY_KEY);
-    }     
+    }
+    public void setElectronicParkBrakeStatus(VehicleDataResult electronicParkBrakeStatus){
+        setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+    }
+    public VehicleDataResult getElectronicParkBrakeStatus(){
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ELECTRONIC_PARK_BRAKE_STATUS);
+    }
 }

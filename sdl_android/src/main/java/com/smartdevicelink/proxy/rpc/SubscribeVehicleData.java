@@ -262,6 +262,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
 	public static final String KEY_SPEED = "speed";
+	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
 
 	/**
 	 * Constructs a new SubscribeVehicleData object
@@ -717,5 +718,11 @@ public class SubscribeVehicleData extends RPCRequest {
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);
     }      
-    
+
+    public void setElectronicParkBrakeStatus(boolean electronicParkBrakeStatus){
+    	setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+    }
+    public Boolean getElectronicParkBrakeStatus(){
+    	return getBoolean(KEY_ELECTRONIC_PARK_BRAKE_STATUS);
+    }
 }

@@ -22,6 +22,7 @@ import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
+import com.smartdevicelink.proxy.rpc.enums.ElectronicParkBrakeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
@@ -82,6 +83,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
             result.put(OnVehicleData.KEY_EMERGENCY_EVENT, VehicleDataHelper.EMERGENCY_EVENT.serializeJSON());
             result.put(OnVehicleData.KEY_CLUSTER_MODE_STATUS, VehicleDataHelper.CLUSTER_MODE_STATUS.serializeJSON());
             result.put(OnVehicleData.KEY_MY_KEY, VehicleDataHelper.MY_KEY.serializeJSON());
+            result.put(OnVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS);
         } catch(JSONException e) {
         	fail(Test.JSON_FAIL);
         }
@@ -119,6 +121,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
     	EmergencyEvent event = ( (OnVehicleData) msg).getEmergencyEvent();
     	ClusterModeStatus cluster = ( (OnVehicleData) msg).getClusterModeStatus();
     	MyKey key = ( (OnVehicleData) msg).getMyKey();
+	    ElectronicParkBrakeStatus electronicParkBrakeStatus = ( (OnVehicleData) msg).getElectronicParkBrakeStatus();
     	
     	// Valid Tests
     	assertEquals(Test.MATCH, VehicleDataHelper.SPEED, speed);
@@ -146,6 +149,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 	    assertTrue(Test.TRUE, Validator.validateEmergencyEvent(VehicleDataHelper.EMERGENCY_EVENT, event));
 	    assertTrue(Test.TRUE, Validator.validateClusterModeStatus(VehicleDataHelper.CLUSTER_MODE_STATUS, cluster));
 	    assertTrue(Test.TRUE, Validator.validateMyKey(VehicleDataHelper.MY_KEY, key));
+	    assertEquals(Test.MATCH, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
     
 	    // Invalid/Null Tests
         OnVehicleData msg = new OnVehicleData();
@@ -176,7 +180,8 @@ public class OnVehicleDataTests extends BaseRpcTests{
         assertNull(Test.NULL, msg.getAirbagStatus());
         assertNull(Test.NULL, msg.getEmergencyEvent());
         assertNull(Test.NULL, msg.getClusterModeStatus());
-        assertNull(Test.NULL, msg.getMyKey());    	
+        assertNull(Test.NULL, msg.getMyKey());
+        assertNull(Test.NULL, msg.getElectronicParkBrakeStatus());
     }  
     
     public void testJson() {
@@ -339,6 +344,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 			reference.put(OnVehicleData.KEY_EMERGENCY_EVENT, emergencyEventObj);
 			reference.put(OnVehicleData.KEY_CLUSTER_MODE_STATUS, clusterModeStatusObj);
 			reference.put(OnVehicleData.KEY_MY_KEY, myKeyObj);
+			reference.put(OnVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS);
 			
 			JSONObject underTest = msg.serializeJSON();
 			//go inside underTest and only return the JSONObject inside the parameters key inside the notification key
