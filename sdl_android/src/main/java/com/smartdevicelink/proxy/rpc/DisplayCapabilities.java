@@ -95,9 +95,24 @@ public class DisplayCapabilities extends RPCStruct {
      * @param mediaClockFormats the List of MediaClockFormat
      * @param graphicSupported
      */
+    @Deprecated
     public DisplayCapabilities(@NonNull DisplayType displayType, @NonNull List<TextField> textFields, @NonNull List<MediaClockFormat> mediaClockFormats, @NonNull Boolean graphicSupported) {
         this();
         setDisplayType(displayType);
+        setTextFields(textFields);
+        setMediaClockFormats(mediaClockFormats);
+        setGraphicSupported(graphicSupported);
+    }
+    /**
+     * Constructs a newly allocated DisplayCapabilities object
+     * @param displayName the display name (String)
+     * @param textFields the List of textFields
+     * @param mediaClockFormats the List of MediaClockFormat
+     * @param graphicSupported
+     */
+    public DisplayCapabilities(String displayName, @NonNull List<TextField> textFields, @NonNull List<MediaClockFormat> mediaClockFormats, @NonNull Boolean graphicSupported) {
+        this();
+        setDisplayName(displayName);
         setTextFields(textFields);
         setMediaClockFormats(mediaClockFormats);
         setGraphicSupported(graphicSupported);
