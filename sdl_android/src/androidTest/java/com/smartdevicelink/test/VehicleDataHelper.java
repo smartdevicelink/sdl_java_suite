@@ -29,6 +29,7 @@ import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
+import com.smartdevicelink.proxy.rpc.enums.TurnSignal;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
@@ -62,6 +63,7 @@ public class VehicleDataHelper{
 	public static final EmergencyEvent EMERGENCY_EVENT = new EmergencyEvent();
 	public static final ClusterModeStatus CLUSTER_MODE_STATUS = new ClusterModeStatus();
 	public static final MyKey MY_KEY = new MyKey();
+	public static final TurnSignal TURN_SIGNAL = TurnSignal.OFF;
 	
 	//other variables inside some of the above objects
     // tire status
@@ -345,6 +347,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA_RESPONSE.setEmergencyEvent(EMERGENCY_EVENT);
 		VEHICLE_DATA_RESPONSE.setClusterModeStatus(CLUSTER_MODE_STATUS);
 		VEHICLE_DATA_RESPONSE.setMyKey(MY_KEY);
+		VEHICLE_DATA_RESPONSE.setTurnSignal(TURN_SIGNAL);
 	}
 	
     private VehicleDataHelper(){}	

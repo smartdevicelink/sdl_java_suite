@@ -27,7 +27,8 @@
       "airbagStatus":true,
       "emergencyEvent":false,
       "clusterModeStatus":true,
-      "myKey":true
+      "myKey":true,
+      "turnSignal":true
     }
   },
   "response":{
@@ -72,6 +73,7 @@
         "speed":30.5
       },
       "fuelLevel_State":"ALERT",
+      "turnSignal":"OFF",
       "instantFuelConsumption":2.76,
       "beltStatus":{
         "driverBeltDeployed":"NO",
