@@ -376,11 +376,11 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 		setParameters(KEY_SYSTEM_SOFTWARE_VERSION, systemSoftwareVersion);
     }
 
-    public String getSystemSoftwareVersion() {    
-    	 return (String) parameters.get(KEY_SYSTEM_SOFTWARE_VERSION);
+    public String getSystemSoftwareVersion() {
+		return getString(KEY_SYSTEM_SOFTWARE_VERSION);
     }
 
     public Boolean getIconResumed() {
-		return (Boolean) parameters.get(KEY_ICON_RESUMED);
+		return getBoolean(KEY_ICON_RESUMED);
 	}
 }
