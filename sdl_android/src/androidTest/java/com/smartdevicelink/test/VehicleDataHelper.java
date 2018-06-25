@@ -320,6 +320,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA.setEmergencyEvent(EMERGENCY_EVENT);
 		VEHICLE_DATA.setClusterModeStatus(CLUSTER_MODE_STATUS);
 		VEHICLE_DATA.setMyKey(MY_KEY);
+		VEHICLE_DATA.setTurnSignal(TURN_SIGNAL);
 		
 		//set up the GetVehicleDataResponse object
 		VEHICLE_DATA_RESPONSE.setSpeed(SPEED);
