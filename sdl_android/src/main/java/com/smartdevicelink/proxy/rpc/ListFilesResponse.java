@@ -1,10 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * List Files Response is sent, when ListFiles has been called
@@ -24,34 +27,28 @@ public class ListFilesResponse extends RPCResponse {
     public ListFilesResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
+    /**
+     * Constructs a new ListFilesResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public ListFilesResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull Integer spaceAvailable) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+        setSpaceAvailable(spaceAvailable);
+    }
     public void setFilenames(List<String> filenames) {
-        if (filenames != null) {
-            parameters.put(KEY_FILENAMES, filenames);
-        } else {
-        	parameters.remove(KEY_FILENAMES);
-        }
+        setParameters(KEY_FILENAMES, filenames);
     }
     @SuppressWarnings("unchecked")
     public List<String> getFilenames() {
-        if (parameters.get(KEY_FILENAMES) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_FILENAMES);
-        	if (list != null && list.size()>0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-        			return (List<String>) list;
-        		}
-        	}
-        }
-    	return null;
+        return (List<String>) getObject(String.class, KEY_FILENAMES);
     }
-    public void setSpaceAvailable(Integer spaceAvailable) {
-        if (spaceAvailable != null) {
-            parameters.put(KEY_SPACE_AVAILABLE, spaceAvailable);
-        } else {
-        	parameters.remove(KEY_SPACE_AVAILABLE);
-        }
+    public void setSpaceAvailable(@NonNull Integer spaceAvailable) {
+        setParameters(KEY_SPACE_AVAILABLE, spaceAvailable);
     }
     public Integer getSpaceAvailable() {
-        return (Integer) parameters.get(KEY_SPACE_AVAILABLE);
+        return getInteger(KEY_SPACE_AVAILABLE);
     }
 }

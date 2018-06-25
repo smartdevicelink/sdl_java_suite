@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+
+import java.util.Hashtable;
 
 /**
  * Provides information to what language the Sdl HMI language was changed
@@ -73,51 +75,41 @@ public class OnLanguageChange extends RPCNotification {
         super(hash);
     }
     /**
+     *Constructs a newly allocated OnCommand object
+     * @param language language that current SDL voice engine(VR+TTS) use
+     * @param hmiDisplayLanguage language that current SDL voice engine(VR+TTS) use
+     */
+    public OnLanguageChange(@NonNull Language language, @NonNull Language hmiDisplayLanguage) {
+        this();
+        setLanguage(language);
+        setHmiDisplayLanguage(hmiDisplayLanguage);
+    }
+    /**
      * <p>Sets language that current SDL voice engine(VR+TTS) use</p>    
      * @param language language that current SDL voice engine(VR+TTS) use
      */  
-    public void setLanguage(Language language) {
-        if (language != null) {
-            parameters.put(KEY_LANGUAGE, language);
-        } else {
-        	parameters.remove(KEY_LANGUAGE);
-        }
+    public void setLanguage(@NonNull Language language) {
+        setParameters(KEY_LANGUAGE, language);
     }
     /**
      * <p>Returns language that current SDL voice engine(VR+TTS) use</p>
      * @return {@linkplain Language} language that current SDL voice engine(VR+TTS) use
      */  
     public Language getLanguage() {
-    	Object obj = parameters.get(KEY_LANGUAGE);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-            return Language.valueForString((String) obj);
-        }
-        return null;
+    	return (Language) getObject(Language.class, KEY_LANGUAGE);
     }
     /**
      * <p>Sets language that current display use</p>    
      * @param hmiDisplayLanguage language that current SDL voice engine(VR+TTS) use
      */  
-    public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
-        if (hmiDisplayLanguage != null) {
-            parameters.put(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
-        } else {
-        	parameters.remove(KEY_HMI_DISPLAY_LANGUAGE);
-        }
+    public void setHmiDisplayLanguage(@NonNull Language hmiDisplayLanguage) {
+        setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
     }
     /**
      * <p>Returns language that current  display use</p>
      * @return {@linkplain Language} language that current display use
      */  
     public Language getHmiDisplayLanguage() {
-    	Object obj = parameters.get(KEY_HMI_DISPLAY_LANGUAGE);
-        if (obj instanceof Language) {
-            return (Language) obj;
-        } else if (obj instanceof String) {
-        	return Language.valueForString((String) obj);
-        }
-        return null;
+        return (Language) getObject(Language.class, KEY_HMI_DISPLAY_LANGUAGE);
     }
 }

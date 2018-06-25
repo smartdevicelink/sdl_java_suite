@@ -1,10 +1,14 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
+
+import static com.smartdevicelink.proxy.rpc.TireStatus.KEY_INNER_RIGHT_REAR;
 
 /**
  * Struct defining the characteristics of a displayed field on the HMI.
@@ -59,7 +63,7 @@ import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
  * @see PerformInteraction
  * @see ScrollableMessage
  * @see PerformAudioPassThru
- * @see ShowConstantTBT
+ * @see ShowConstantTbt
  * 
  */
 public class TextField extends RPCStruct {
@@ -78,53 +82,47 @@ public class TextField extends RPCStruct {
     public TextField(Hashtable<String, Object> hash) {
         super(hash);
     }
+	/**
+	 * Constructs a newly allocated TextField object
+	 * @param name Enumeration identifying the field.
+	 * @param characterSet The character set that is supported in this field.
+	 * @param width The number of characters in one row of this field.
+	 * @param rows The number of rows for this text field.
+	 */
+	public TextField(@NonNull TextFieldName name, @NonNull CharacterSet characterSet, @NonNull Integer width, @NonNull Integer rows){
+		this();
+		setName(name);
+		setCharacterSet(characterSet);
+		setWidth(width);
+		setRows(rows);
+	}
     /**
      * Get the enumeration identifying the field.	
      * @return the name of TextField
      */    
     public TextFieldName getName() {
-        Object obj = store.get(KEY_NAME);
-        if (obj instanceof TextFieldName) {
-            return (TextFieldName) obj;
-        } else if (obj instanceof String) {
-            return TextFieldName.valueForString((String) obj);
-        }
-        return null;
+        return (TextFieldName) getObject(TextFieldName.class, KEY_NAME);
     }
     /**
      * Set the enumeration identifying the field.	
      * @param name the name of TextField
      */    
-    public void setName( TextFieldName name ) {
-        if (name != null) {
-            store.put(KEY_NAME, name );
-        } else {
-        	store.remove(KEY_NAME);
-        }
+    public void setName(@NonNull TextFieldName name ) {
+        setValue(KEY_NAME, name);
     }
     /**
      * Get the character set that is supported in this field.
      * @return the character set
      */    
     public CharacterSet getCharacterSet() {
-        Object obj = store.get(KEY_CHARACTER_SET);
-        if (obj instanceof CharacterSet) {
-            return (CharacterSet) obj;
-        } else if (obj instanceof String) {
-            return CharacterSet.valueForString((String) obj);
-        }
-        return null;
+        return (CharacterSet) getObject(CharacterSet.class, KEY_CHARACTER_SET);
     }
     /**
      * Set the character set that is supported in this field.
      * @param characterSet - the character set
      */    
-    public void setCharacterSet( CharacterSet characterSet ) {
-        if (characterSet != null) {
-            store.put(KEY_CHARACTER_SET, characterSet );
-        } else {
-        	store.remove(KEY_CHARACTER_SET);
-        }
+    public void setCharacterSet(@NonNull CharacterSet characterSet ) {
+        setValue(KEY_CHARACTER_SET, characterSet);
     }
     /**
      * Get the number of characters in one row of this field.
@@ -135,7 +133,7 @@ public class TextField extends RPCStruct {
      * @return the number of characters in one row of this field
      */    
     public Integer getWidth() {
-        return (Integer) store.get( KEY_WIDTH );
+        return getInteger( KEY_WIDTH );
     }
     /**
      * Set the number of characters in one row of this field.
@@ -145,12 +143,8 @@ public class TextField extends RPCStruct {
      *					</ul>
      * @param width  the number of characters in one row of this field
      */    
-    public void setWidth( Integer width ) {
-        if (width != null) {
-            store.put(KEY_WIDTH, width );
-        } else {
-        	store.remove(KEY_WIDTH);
-        }
+    public void setWidth(@NonNull Integer width ) {
+        setValue(KEY_WIDTH, width);
     }
     /**
      *Get the number of rows for this text field.
@@ -161,13 +155,9 @@ public class TextField extends RPCStruct {
      * @return  the number of rows for this text field
      */    
     public Integer getRows() {
-        return (Integer) store.get( KEY_ROWS );
+        return getInteger( KEY_ROWS );
     }
-    public void setRows( Integer rows ) {
-        if (rows != null) {
-            store.put(KEY_ROWS, rows );
-        } else {
-        	store.remove(KEY_ROWS);
-        }
+    public void setRows(@NonNull Integer rows ) {
+        setValue(KEY_ROWS, rows);
     }
 }

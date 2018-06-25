@@ -1,11 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Provides update to app of which sets of functions are available
@@ -64,35 +65,26 @@ public class OnPermissionsChange extends RPCNotification {
 		super(hash);
 	}
 	/**
+	 *Constructs a newly allocated OnCommand object
+	 * @param permissionItem an List of  PermissionItem describing change in permissions for a given set of RPCs
+	 */
+	public OnPermissionsChange(@NonNull List<PermissionItem> permissionItem) {
+		this();
+		setPermissionItem(permissionItem);
+	}
+	/**
      * <p>Returns List<PermissionItem> object describing change in permissions for a given set of RPCs</p>
      * @return List<{@linkplain PermissionItem}> an object describing describing change in permissions for a given set of RPCs
      */   
     @SuppressWarnings("unchecked")
 	public List<PermissionItem> getPermissionItem() {
-		List<?> list = (List<?>)parameters.get(KEY_PERMISSION_ITEM);
-		if (list != null && list.size()>0) {
-			Object obj = list.get(0);
-			if(obj instanceof PermissionItem){
-				return (List<PermissionItem>) list;
-			} else if(obj instanceof Hashtable) {
-				List<PermissionItem> newList = new ArrayList<PermissionItem>();
-				for (Object hash:list) {
-					newList.add(new PermissionItem((Hashtable<String, Object>)hash));
-				}
-				return newList;
-			}
-		}
-		return null;
+		return (List<PermissionItem>) getObject(PermissionItem.class, KEY_PERMISSION_ITEM);
 	}
     /**
      * <p>Sets PermissionItems describing change in permissions for a given set of RPCs</p>    
      * @param permissionItem an List of  PermissionItem describing change in permissions for a given set of RPCs
      */  
-	public void setPermissionItem(List<PermissionItem> permissionItem) {
-		if (permissionItem != null) {
-			parameters.put(KEY_PERMISSION_ITEM, permissionItem);
-		} else {
-			parameters.remove(KEY_PERMISSION_ITEM);
-        }
+	public void setPermissionItem(@NonNull List<PermissionItem> permissionItem) {
+		setParameters(KEY_PERMISSION_ITEM, permissionItem);
 	}
 }

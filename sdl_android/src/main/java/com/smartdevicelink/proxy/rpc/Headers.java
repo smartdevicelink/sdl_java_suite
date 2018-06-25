@@ -1,8 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
+
+import java.util.Hashtable;
 /**
  * 
  * @since SmartDeviceLink 3.0
@@ -37,123 +37,83 @@ public class Headers extends RPCStruct {
     }	
 	
     public void setContentType(String contenttype) {
-        if (contenttype != null) {
-            store.put(KEY_CONTENT_TYPE, contenttype);
-        } else {
-        	store.remove(KEY_CONTENT_TYPE);
-        }
+        setValue(KEY_CONTENT_TYPE, contenttype);
     }
     
     public String getContentType() {
-        return (String) store.get(KEY_CONTENT_TYPE);
+        return getString(KEY_CONTENT_TYPE);
     }     
     
     public void setConnectTimeout(Integer connectiontimeout) {
-        if (connectiontimeout != null) {
-            store.put(KEY_CONNECT_TIMEOUT, connectiontimeout);
-        } else {
-        	store.remove(KEY_CONNECT_TIMEOUT);
-        }
+        setValue(KEY_CONNECT_TIMEOUT, connectiontimeout);
     }
     
     public Integer getConnectTimeout() {
-        return (Integer) store.get(KEY_CONNECT_TIMEOUT);
+        return getInteger(KEY_CONNECT_TIMEOUT);
     }
     
     public void setDoOutput(Boolean dooutput) {
-        if (dooutput != null) {
-            store.put(KEY_DO_OUTPUT, dooutput);
-        } else {
-        	store.remove(KEY_DO_OUTPUT);
-        }
+        setValue(KEY_DO_OUTPUT, dooutput);
     }
     
     public Boolean getDoOutput() {
-        return (Boolean) store.get(KEY_DO_OUTPUT);
+        return getBoolean(KEY_DO_OUTPUT);
     }    
     
-    public void setDoInput(Boolean dooutput) {
-        if (dooutput != null) {
-            store.put(KEY_DO_INPUT, dooutput);
-        } else {
-        	store.remove(KEY_DO_INPUT);
-        }
+    public void setDoInput(Boolean doinput) {
+        setValue(KEY_DO_INPUT, doinput);
     }
     
     public Boolean getDoInput() {
-        return (Boolean) store.get(KEY_DO_INPUT);
+        return getBoolean(KEY_DO_INPUT);
     }       
 
     public void setUseCaches(Boolean usescaches) {
-        if (usescaches != null) {
-            store.put(KEY_USE_CACHES, usescaches);
-        } else {
-        	store.remove(KEY_USE_CACHES);
-        }
+        setValue(KEY_USE_CACHES, usescaches);
     }
     
     public Boolean getUseCaches() {
-        return (Boolean) store.get(KEY_USE_CACHES);
+        return getBoolean(KEY_USE_CACHES);
     }      
     
     public void setRequestMethod(String requestmethod) {
-        if (requestmethod != null) {
-            store.put(KEY_REQUEST_METHOD, requestmethod);
-        } else {
-        	store.remove(KEY_REQUEST_METHOD);
-        }
+        setValue(KEY_REQUEST_METHOD, requestmethod);
     }
     
     public String getRequestMethod() {
-        return (String) store.get(KEY_REQUEST_METHOD);
+        return getString(KEY_REQUEST_METHOD);
     }   
     
     
     public void setReadTimeout(Integer readtimeout) {
-        if (readtimeout != null) {
-            store.put(KEY_READ_TIMEOUT, readtimeout);
-        } else {
-        	store.remove(KEY_READ_TIMEOUT);
-        }
+        setValue(KEY_READ_TIMEOUT, readtimeout);
     }
     
     public Integer getReadTimeout() {
-        return (Integer) store.get(KEY_READ_TIMEOUT);
+        return getInteger(KEY_READ_TIMEOUT);
     }
     
     public void setInstanceFollowRedirects(Boolean instancefollowredirects) {
-        if (instancefollowredirects != null) {
-            store.put(KEY_INSTANCE_FOLLOW_REDIRECTS, instancefollowredirects);
-        } else {
-        	store.remove(KEY_INSTANCE_FOLLOW_REDIRECTS);
-        }
+        setValue(KEY_INSTANCE_FOLLOW_REDIRECTS, instancefollowredirects);
     }
     
     public Boolean getInstanceFollowRedirects() {
-        return (Boolean) store.get(KEY_INSTANCE_FOLLOW_REDIRECTS);
+        return getBoolean(KEY_INSTANCE_FOLLOW_REDIRECTS);
     }
     
     public void setCharset(String charset) {
-        if (charset != null) {
-            store.put(KEY_CHARSET, charset);
-        } else {
-        	store.remove(KEY_CHARSET);
-        }
+        setValue(KEY_CHARSET, charset);
     }
     
     public String getCharset() {
-        return (String) store.get(KEY_CHARSET);
+        return getString(KEY_CHARSET);
     }
 
     public void setContentLength(Integer contentlength) {
-        if (contentlength != null) {
-            store.put(KEY_CONTENT_LENGTH, contentlength);
-        } else {
-        	store.remove(KEY_CONTENT_LENGTH);
-        }
+        setValue(KEY_CONTENT_LENGTH, contentlength);
     }
     
     public Integer getContentLength() {
-        return (Integer) store.get(KEY_CONTENT_LENGTH);
+        return getInteger(KEY_CONTENT_LENGTH);
     }    
 }

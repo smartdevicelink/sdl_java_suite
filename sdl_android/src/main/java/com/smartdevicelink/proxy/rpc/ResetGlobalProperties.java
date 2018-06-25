@@ -1,12 +1,14 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
+
+import java.util.Hashtable;
+import java.util.List;
+
 /**
  * Resets the passed global properties to their default values as defined by
  * SDL
@@ -68,14 +70,23 @@ public class ResetGlobalProperties extends RPCRequest {
 	/**
 	 * Constructs a new ResetGlobalProperties object indicated by the Hashtable
 	 * parameter
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 *
+	 * @param hash The Hashtable to use
 	 */    
     public ResetGlobalProperties(Hashtable<String, Object> hash) {
         super(hash);
     }
+	/**
+	 * Constructs a new ResetGlobalProperties object
+	 * @param properties a List<GlobalProperty> An array of one or more
+	 *            GlobalProperty enumeration elements indicating which global
+	 *            properties to reset to their default value <br>
+	 *            <b>Notes: </b>Array must have at least one element
+	 */
+	public ResetGlobalProperties(@NonNull List<GlobalProperty> properties) {
+		this();
+		setProperties(properties);
+	}
 	/**
 	 * Gets an array of one or more GlobalProperty enumeration elements
 	 * indicating which global properties to reset to their default value
@@ -85,26 +96,7 @@ public class ResetGlobalProperties extends RPCRequest {
 	 */    
     @SuppressWarnings("unchecked")
     public List<GlobalProperty> getProperties() {
-    	if (parameters.get(KEY_PROPERTIES) instanceof List<?>) {
-    		List<?> list = (List<?>)parameters.get(KEY_PROPERTIES);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof GlobalProperty) {
-	                return (List<GlobalProperty>) list;
-	            } else if (obj instanceof String) {
-	            	List<GlobalProperty> newList = new ArrayList<GlobalProperty>();
-	                for (Object hashObj : list) {
-	                    String strFormat = (String)hashObj;
-	                    GlobalProperty toAdd = GlobalProperty.valueForString(strFormat);
-	                    if (toAdd != null) {
-	                        newList.add(toAdd);
-	                    }
-	                }
-	                return newList;
-	            }
-	        }
-    	}
-        return null;
+		return (List<GlobalProperty>) getObject(GlobalProperty.class, KEY_PROPERTIES);
     }
 	/**
 	 * Sets an array of one or more GlobalProperty enumeration elements
@@ -117,11 +109,7 @@ public class ResetGlobalProperties extends RPCRequest {
 	 *            <p></p>
 	 *            <b>Notes: </b>Array must have at least one element
 	 */    
-    public void setProperties( List<GlobalProperty> properties ) {
-        if (properties != null) {
-            parameters.put(KEY_PROPERTIES, properties );
-        } else {
-        	parameters.remove(KEY_PROPERTIES);
-        }
+    public void setProperties(@NonNull List<GlobalProperty> properties ) {
+		setParameters(KEY_PROPERTIES, properties);
     }
 }

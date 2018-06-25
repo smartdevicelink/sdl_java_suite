@@ -1,10 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
+import java.util.List;
+
 /** Non periodic vehicle diagnostic request.
  * 
  * <p><b>Parameter List</b></p>
@@ -78,14 +81,20 @@ public class DiagnosticMessage extends RPCRequest {
      * 
      * @param targetID
      */
-    
 
-    public void setTargetID(Integer targetID) {
-    	if (targetID != null) {
-    		parameters.put(KEY_TARGET_ID, targetID);
-    	} else {
-    		parameters.remove(KEY_TARGET_ID);
-    	}
+
+	/**
+	 * Constructs a new DiagnosticMessage object
+	 */
+	public DiagnosticMessage(@NonNull Integer targetID, @NonNull Integer messageLength, @NonNull List<Integer> messageData) {
+		this();
+		setTargetID(targetID);
+		setMessageLength(messageLength);
+		setMessageData(messageData);
+	}
+
+    public void setTargetID(@NonNull Integer targetID) {
+		setParameters(KEY_TARGET_ID, targetID);
     }
     /**
 	 * <p>
@@ -96,39 +105,22 @@ public class DiagnosticMessage extends RPCRequest {
 	 */
 
     public Integer getTargetID() {
-    	return (Integer) parameters.get(KEY_TARGET_ID);
+    	return getInteger(KEY_TARGET_ID);
     }    
 
-    public void setMessageLength(Integer messageLength) {
-    	if (messageLength != null) {
-    		parameters.put(KEY_MESSAGE_LENGTH, messageLength);
-    	} else {
-    		parameters.remove(KEY_MESSAGE_LENGTH);
-    	}
+    public void setMessageLength(@NonNull Integer messageLength) {
+		setParameters(KEY_MESSAGE_LENGTH, messageLength);
     }
     public Integer getMessageLength() {
-    	return (Integer) parameters.get(KEY_MESSAGE_LENGTH);
+    	return getInteger(KEY_MESSAGE_LENGTH);
     }
 
     @SuppressWarnings("unchecked")
     public List<Integer> getMessageData() {
-    	if(parameters.get(KEY_MESSAGE_DATA) instanceof List<?>){
-    		List<?> list = (List<?>)parameters.get(KEY_MESSAGE_DATA);
-    		if(list != null && list.size()>0){
-        		Object obj = list.get(0);
-        		if(obj instanceof Integer){
-        			return (List<Integer>) list;
-        		}
-    		}
-    	}
-        return null;
+        return (List<Integer>) getObject(Integer.class, KEY_MESSAGE_DATA);
     }
     
-    public void setMessageData(List<Integer> messageData) {
-        if (messageData != null) {
-            parameters.put(KEY_MESSAGE_DATA, messageData);
-        } else {
-        	parameters.remove(KEY_MESSAGE_DATA);
-        }
+    public void setMessageData(@NonNull List<Integer> messageData) {
+		setParameters(KEY_MESSAGE_DATA, messageData);
     }    
 }

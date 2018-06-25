@@ -1,9 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
+
+import java.util.Hashtable;
 
 /**
  * <p>Specifies what is to be spoken. This can be simply a text phrase, which SDL will speak according to its own rules.
@@ -51,46 +53,43 @@ public class TTSChunk extends RPCStruct {
     public TTSChunk(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a newly allocated TTSChunk object
+	 * @param text Text to be spoken, or a phoneme specification, or the name of a pre-recorded sound. The contents of this field are indicated by the "type" field.
+	 * @param type Indicates the type of information in the "text" field (e.g. phrase to be spoken, phoneme specification, name of pre-recorded sound).
+	 */
+    public TTSChunk(@NonNull String text, @NonNull SpeechCapabilities type){
+    	this();
+    	setText(text);
+    	setType(type);
+	}
     /**
      * Get text to be spoken, or a phoneme specification, or the name of a pre-recorded sound. The contents of this field are indicated by the "type" field.
      * @return text to be spoken, or a phoneme specification, or the name of a pre-recorded sound
-     */    
+     */
     public String getText() {
-        return (String) store.get( KEY_TEXT );
+        return getString( KEY_TEXT );
     }
     /**
      * Set the text to be spoken, or a phoneme specification, or the name of a pre-recorded sound. The contents of this field are indicated by the "type" field.
      * @param text to be spoken, or a phoneme specification, or the name of a pre-recorded sound.
      */    
-    public void setText( String text ) {
-        if (text != null) {
-            store.put(KEY_TEXT, text );
-        } else {
-        	store.remove(KEY_TEXT);
-        }
+    public void setText(@NonNull String text ) {
+        setValue(KEY_TEXT, text);
     }
     /**
      * Get the type of information in the "text" field (e.g. phrase to be spoken, phoneme specification, name of pre-recorded sound).	
      * @return the type of information in the "text" field
      */    
     public SpeechCapabilities getType() {
-        Object obj = store.get(KEY_TYPE);
-        if (obj instanceof SpeechCapabilities) {
-            return (SpeechCapabilities) obj;
-        } else if (obj instanceof String) {
-            return SpeechCapabilities.valueForString((String) obj);
-        }
-        return null;
+        return (SpeechCapabilities) getObject(SpeechCapabilities.class, KEY_TYPE);
     }
     /**
      * Set the type of information in the "text" field (e.g. phrase to be spoken, phoneme specification, name of pre-recorded sound).	
      * @param type the type of information in the "text" field
      */    
-    public void setType( SpeechCapabilities type ) {
-        if (type != null) {
-            store.put(KEY_TYPE, type );
-        } else {
-        	store.remove(KEY_TYPE);
-        }
+    public void setType(@NonNull SpeechCapabilities type ) {
+        setValue(KEY_TYPE, type);
     }
 }

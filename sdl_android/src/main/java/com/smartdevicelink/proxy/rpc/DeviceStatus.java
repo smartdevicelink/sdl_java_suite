@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
+
+import java.util.Hashtable;
 
 /**
  * Describes the status related to a connected mobile device or SDL and if or how  it is represented in the vehicle.
@@ -126,17 +128,43 @@ public class DeviceStatus extends RPCStruct {
     public DeviceStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
+
+    /**
+     * Constructs a newly allocated DeviceStatus object
+     * @param voiceRecOn
+     * @param btIconOn the bluetooth connection established
+     * @param callActive a call is being active
+     * @param phoneRoaming  the phone is in roaming mode
+     * @param textMsgAvailable a textmessage is available
+     * @param battLevelStatus battery level status
+     * @param stereoAudioOutputMuted the status of the stereo audio output channel
+     * @param monoAudioOutputMuted the status of the mono audio output channel
+     * @param signalLevelStatus signal level status
+     * @param primaryAudioSource the current primary audio source of SDL (if selected
+     * @param eCallEventActive
+     */
+    public DeviceStatus(@NonNull Boolean voiceRecOn, @NonNull Boolean btIconOn, @NonNull Boolean callActive, @NonNull Boolean phoneRoaming, @NonNull Boolean textMsgAvailable, @NonNull DeviceLevelStatus battLevelStatus,
+                        @NonNull Boolean stereoAudioOutputMuted, @NonNull Boolean monoAudioOutputMuted, @NonNull DeviceLevelStatus signalLevelStatus, @NonNull PrimaryAudioSource primaryAudioSource, @NonNull Boolean eCallEventActive) {
+        this();
+        setVoiceRecOn(voiceRecOn);
+        setBtIconOn(btIconOn);
+        setCallActive(callActive);
+        setPhoneRoaming(phoneRoaming);
+        setTextMsgAvailable(textMsgAvailable);
+        setBattLevelStatus(battLevelStatus);
+        setStereoAudioOutputMuted(stereoAudioOutputMuted);
+        setMonoAudioOutputMuted(monoAudioOutputMuted);
+        setSignalLevelStatus(signalLevelStatus);
+        setPrimaryAudioSource(primaryAudioSource);
+        setECallEventActive(eCallEventActive);
+    }
+
     /**
      * set the voice recognition on or off
      * @param voiceRecOn
      */
-    public void setVoiceRecOn(Boolean voiceRecOn) {
-        if (voiceRecOn != null) {
-        	store.put(KEY_VOICE_REC_ON, voiceRecOn);
-        } else {
-        	store.remove(KEY_VOICE_REC_ON);
-        }
+    public void setVoiceRecOn(@NonNull Boolean voiceRecOn) {
+        setValue(KEY_VOICE_REC_ON, voiceRecOn);
     }
     
     /**
@@ -144,19 +172,15 @@ public class DeviceStatus extends RPCStruct {
      * @return whether the voice recognition is on
      */
     public Boolean getVoiceRecOn() {
-        return (Boolean) store.get(KEY_VOICE_REC_ON);
+        return getBoolean(KEY_VOICE_REC_ON);
     }
     
     /**
      * set the bluetooth connection established
      * @param btIconOn the bluetooth connection established
      */
-    public void setBtIconOn(Boolean btIconOn) {
-        if (btIconOn != null) {
-        	store.put(KEY_BT_ICON_ON, btIconOn);
-        } else {
-        	store.remove(KEY_BT_ICON_ON);
-        }
+    public void setBtIconOn(@NonNull Boolean btIconOn) {
+        setValue(KEY_BT_ICON_ON, btIconOn);
     }
     
     /**
@@ -164,19 +188,15 @@ public class DeviceStatus extends RPCStruct {
      * @return the bluetooth connection established
      */
     public Boolean getBtIconOn() {
-        return (Boolean) store.get(KEY_BT_ICON_ON);
+        return getBoolean(KEY_BT_ICON_ON);
     }
     
     /**
      * set a call is being active
      * @param callActive a call is being active
      */
-    public void setCallActive(Boolean callActive) {
-        if (callActive != null) {
-        	store.put(KEY_CALL_ACTIVE, callActive);
-        } else {
-        	store.remove(KEY_CALL_ACTIVE);
-        }
+    public void setCallActive(@NonNull Boolean callActive) {
+        setValue(KEY_CALL_ACTIVE, callActive);
     }
     
     /**
@@ -184,19 +204,15 @@ public class DeviceStatus extends RPCStruct {
      * @return  a call is being active
      */
     public Boolean getCallActive() {
-        return (Boolean) store.get(KEY_CALL_ACTIVE);
+        return getBoolean(KEY_CALL_ACTIVE);
     }
     
     /**
      * set the phone is in roaming mode
      * @param phoneRoaming  the phone is in roaming mode
      */
-    public void setPhoneRoaming(Boolean phoneRoaming) {
-        if (phoneRoaming != null) {
-        	store.put(KEY_PHONE_ROAMING, phoneRoaming);
-        } else {
-        	store.remove(KEY_PHONE_ROAMING);
-        }
+    public void setPhoneRoaming(@NonNull Boolean phoneRoaming) {
+        setValue(KEY_PHONE_ROAMING, phoneRoaming);
     }
     
     /**
@@ -204,14 +220,10 @@ public class DeviceStatus extends RPCStruct {
      * @return  the phone is in roaming mode
      */
     public Boolean getPhoneRoaming() {
-        return (Boolean) store.get(KEY_PHONE_ROAMING);
+        return getBoolean(KEY_PHONE_ROAMING);
     }
-    public void setTextMsgAvailable(Boolean textMsgAvailable) {
-        if (textMsgAvailable != null) {
-        	store.put(KEY_TEXT_MSG_AVAILABLE, textMsgAvailable);
-        } else {
-        	store.remove(KEY_TEXT_MSG_AVAILABLE);
-        }
+    public void setTextMsgAvailable(@NonNull Boolean textMsgAvailable) {
+        setValue(KEY_TEXT_MSG_AVAILABLE, textMsgAvailable);
     }
     
     /**
@@ -219,19 +231,15 @@ public class DeviceStatus extends RPCStruct {
      * @return a textmessage is available
      */
     public Boolean getTextMsgAvailable() {
-        return (Boolean) store.get(KEY_TEXT_MSG_AVAILABLE);
+        return getBoolean(KEY_TEXT_MSG_AVAILABLE);
     }
     
     /**
      * set battery level status
      * @param battLevelStatus battery level status
      */
-    public void setBattLevelStatus(DeviceLevelStatus battLevelStatus) {
-        if (battLevelStatus != null) {
-        	store.put(KEY_BATT_LEVEL_STATUS, battLevelStatus);
-        } else {
-        	store.remove(KEY_BATT_LEVEL_STATUS);
-        }
+    public void setBattLevelStatus(@NonNull DeviceLevelStatus battLevelStatus) {
+        setValue(KEY_BATT_LEVEL_STATUS, battLevelStatus);
     }
     
     /**
@@ -239,25 +247,15 @@ public class DeviceStatus extends RPCStruct {
      * @return battery level status
      */
     public DeviceLevelStatus getBattLevelStatus() {
-        Object obj = store.get(KEY_BATT_LEVEL_STATUS);
-        if (obj instanceof DeviceLevelStatus) {
-            return (DeviceLevelStatus) obj;
-        } else if (obj instanceof String) {
-        	return DeviceLevelStatus.valueForString((String) obj);
-        }
-        return null;
+        return (DeviceLevelStatus) getObject(DeviceLevelStatus.class, KEY_BATT_LEVEL_STATUS);
     }
     
     /**
      * set the status of the stereo audio output channel
      * @param stereoAudioOutputMuted the status of the stereo audio output channel
      */
-    public void setStereoAudioOutputMuted(Boolean stereoAudioOutputMuted) {
-        if (stereoAudioOutputMuted != null) {
-        	store.put(KEY_STEREO_AUDIO_OUTPUT_MUTED, stereoAudioOutputMuted);
-        } else {
-        	store.remove(KEY_STEREO_AUDIO_OUTPUT_MUTED);
-        }
+    public void setStereoAudioOutputMuted(@NonNull Boolean stereoAudioOutputMuted) {
+        setValue(KEY_STEREO_AUDIO_OUTPUT_MUTED, stereoAudioOutputMuted);
     }
     
     /**
@@ -265,19 +263,15 @@ public class DeviceStatus extends RPCStruct {
      * @return the status of the stereo audio output channel
      */
     public Boolean getStereoAudioOutputMuted() {
-        return (Boolean) store.get(KEY_STEREO_AUDIO_OUTPUT_MUTED);
+        return getBoolean(KEY_STEREO_AUDIO_OUTPUT_MUTED);
     }
     
     /**
      * set the status of the mono audio output channel
      * @param monoAudioOutputMuted the status of the mono audio output channel
      */
-    public void setMonoAudioOutputMuted(Boolean monoAudioOutputMuted) {
-        if (monoAudioOutputMuted != null) {
-        	store.put(KEY_MONO_AUDIO_OUTPUT_MUTED, monoAudioOutputMuted);
-        } else {
-        	store.remove(KEY_MONO_AUDIO_OUTPUT_MUTED);
-        }
+    public void setMonoAudioOutputMuted(@NonNull Boolean monoAudioOutputMuted) {
+        setValue(KEY_MONO_AUDIO_OUTPUT_MUTED, monoAudioOutputMuted);
     }
     
     /**
@@ -285,19 +279,15 @@ public class DeviceStatus extends RPCStruct {
      * @return the status of the mono audio output channel
      */
     public Boolean getMonoAudioOutputMuted() {
-        return (Boolean) store.get(KEY_MONO_AUDIO_OUTPUT_MUTED);
+        return getBoolean(KEY_MONO_AUDIO_OUTPUT_MUTED);
     }
     
     /**
      * set signal level status
      * @param signalLevelStatus signal level status
      */
-    public void setSignalLevelStatus(DeviceLevelStatus signalLevelStatus) {
-        if (signalLevelStatus != null) {
-        	store.put(KEY_SIGNAL_LEVEL_STATUS, signalLevelStatus);
-        } else {
-        	store.remove(KEY_SIGNAL_LEVEL_STATUS);
-        }
+    public void setSignalLevelStatus(@NonNull DeviceLevelStatus signalLevelStatus) {
+        setValue(KEY_SIGNAL_LEVEL_STATUS, signalLevelStatus);
     }
     
     /**
@@ -305,25 +295,15 @@ public class DeviceStatus extends RPCStruct {
      * @return signal level status
      */
     public DeviceLevelStatus getSignalLevelStatus() {
-        Object obj = store.get(KEY_SIGNAL_LEVEL_STATUS);
-        if (obj instanceof DeviceLevelStatus) {
-            return (DeviceLevelStatus) obj;
-        } else if (obj instanceof String) {
-        	return DeviceLevelStatus.valueForString((String) obj);
-        }
-        return null;
+        return (DeviceLevelStatus) getObject(DeviceLevelStatus.class, KEY_SIGNAL_LEVEL_STATUS);
     }
     
     /**
      * set the current primary audio source of SDL (if selected).
      * @param primaryAudioSource the current primary audio source of SDL (if selected).
      */
-    public void setPrimaryAudioSource(PrimaryAudioSource primaryAudioSource) {
-        if (primaryAudioSource != null) {
-        	store.put(KEY_PRIMARY_AUDIO_SOURCE, primaryAudioSource);
-        } else {
-        	store.remove(KEY_PRIMARY_AUDIO_SOURCE);
-        }
+    public void setPrimaryAudioSource(@NonNull PrimaryAudioSource primaryAudioSource) {
+        setValue(KEY_PRIMARY_AUDIO_SOURCE, primaryAudioSource);
     }
     
     /**
@@ -331,22 +311,12 @@ public class DeviceStatus extends RPCStruct {
      * @return  the current primary audio source of SDL (if selected).
      */
     public PrimaryAudioSource getPrimaryAudioSource() {
-        Object obj = store.get(KEY_PRIMARY_AUDIO_SOURCE);
-        if (obj instanceof PrimaryAudioSource) {
-            return (PrimaryAudioSource) obj;
-        } else if (obj instanceof String) {
-        	return PrimaryAudioSource.valueForString((String) obj);
-        }
-        return null;
+        return (PrimaryAudioSource) getObject(PrimaryAudioSource.class, KEY_PRIMARY_AUDIO_SOURCE);
     }
-    public void setECallEventActive(Boolean eCallEventActive) {
-        if (eCallEventActive != null) {
-        	store.put(KEY_E_CALL_EVENT_ACTIVE, eCallEventActive);
-        } else {
-        	store.remove(KEY_E_CALL_EVENT_ACTIVE);
-        }
+    public void setECallEventActive(@NonNull Boolean eCallEventActive) {
+        setValue(KEY_E_CALL_EVENT_ACTIVE, eCallEventActive);
     }
     public Boolean getECallEventActive() {
-        return (Boolean) store.get(KEY_E_CALL_EVENT_ACTIVE);
+        return getBoolean(KEY_E_CALL_EVENT_ACTIVE);
     }
 }

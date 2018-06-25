@@ -1,11 +1,16 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
+import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
+
+import java.util.Hashtable;
+
+import static com.smartdevicelink.proxy.rpc.AirbagStatus.KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED;
 
 /**
  *<p> Describes different audio type configurations for PerformAudioPassThru, e.g. {8kHz,8-bit,PCM}
@@ -62,17 +67,25 @@ public class AudioPassThruCapabilities extends RPCStruct {
     public AudioPassThruCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
+    /**
+     * Constructs a newly allocated AudioPassThruCapabilities object
+     * @param samplingRate the sampling rate for AudioPassThru
+     * @param bitsPerSample the sample depth in bit for AudioPassThru
+     * @param audioType the audiotype for AudioPassThru
+     */
+    public AudioPassThruCapabilities(@NonNull SamplingRate samplingRate, @NonNull BitsPerSample bitsPerSample, @NonNull AudioType audioType) {
+        this();
+        setSamplingRate(samplingRate);
+        setBitsPerSample(bitsPerSample);
+        setAudioType(audioType);
+    }
+
     /**
      * set the sampling rate for AudioPassThru
      * @param samplingRate the sampling rate for AudioPassThru
      */
-    public void setSamplingRate(SamplingRate samplingRate) {
-    	if (samplingRate != null) {
-    		store.put(KEY_SAMPLING_RATE, samplingRate);
-    	} else {
-    		store.remove(KEY_SAMPLING_RATE);
-    	}
+    public void setSamplingRate(@NonNull SamplingRate samplingRate) {
+    	setValue(KEY_SAMPLING_RATE, samplingRate);
     }
     
     /**
@@ -80,25 +93,15 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * @return  the sampling rate for AudioPassThru
      */
     public SamplingRate getSamplingRate() {
-        Object obj = store.get(KEY_SAMPLING_RATE);
-        if (obj instanceof SamplingRate) {
-            return (SamplingRate) obj;
-        } else if (obj instanceof String) {
-        	return SamplingRate.valueForString((String) obj);
-        }
-        return null;
+        return (SamplingRate) getObject(SamplingRate.class, KEY_SAMPLING_RATE);
     }
     
     /**
      * set the sample depth in bit for AudioPassThru
      * @param bitsPerSample the sample depth in bit for AudioPassThru
      */
-    public void setBitsPerSample(BitsPerSample bitsPerSample) {
-    	if (bitsPerSample != null) {
-    		store.put(KEY_BITS_PER_SAMPLE, bitsPerSample);
-    	} else {
-    		store.remove(KEY_BITS_PER_SAMPLE);
-    	}
+    public void setBitsPerSample(@NonNull BitsPerSample bitsPerSample) {
+    	setValue(KEY_BITS_PER_SAMPLE, bitsPerSample);
     }
     
     /**
@@ -106,25 +109,15 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * @return the sample depth in bit for AudioPassThru
      */
     public BitsPerSample getBitsPerSample() {
-        Object obj = store.get(KEY_BITS_PER_SAMPLE);
-        if (obj instanceof BitsPerSample) {
-            return (BitsPerSample) obj;
-        } else if (obj instanceof String) {
-        	return BitsPerSample.valueForString((String) obj);
-        }
-        return null;
+        return (BitsPerSample) getObject(BitsPerSample.class, KEY_BITS_PER_SAMPLE);
     }
     
     /**
      * set the audiotype for AudioPassThru
      * @param audioType the audiotype for AudioPassThru
      */
-    public void setAudioType(AudioType audioType) {
-    	if (audioType != null) {
-    		store.put(KEY_AUDIO_TYPE, audioType);
-    	} else {
-    		store.remove(KEY_AUDIO_TYPE);
-    	}
+    public void setAudioType(@NonNull AudioType audioType) {
+    	setValue(KEY_AUDIO_TYPE, audioType);
     }
     
     /**
@@ -132,12 +125,6 @@ public class AudioPassThruCapabilities extends RPCStruct {
      * @return the audiotype for AudioPassThru
      */
     public AudioType getAudioType() {
-        Object obj = store.get(KEY_AUDIO_TYPE);
-        if (obj instanceof AudioType) {
-            return (AudioType) obj;
-        } else if (obj instanceof String) {
-        	return AudioType.valueForString((String) obj);
-        }
-        return null;
+        return (AudioType) getObject(AudioType.class, KEY_AUDIO_TYPE);
     }
 }

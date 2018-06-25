@@ -1,8 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
+
+import java.util.Hashtable;
 
 /**
  * <p>Contains information about a SoftButton's capabilities.</p>
@@ -66,17 +68,28 @@ public class SoftButtonCapabilities extends RPCStruct {
     public SoftButtonCapabilities(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a newly allocated SoftButtonCapabilities object
+	 * @param shortPressAvailable The button supports a short press.
+	 * @param longPressAvailable The button supports a LONG press
+	 * @param upDownAvailable The button supports "button down" and "button up".
+	 * @param imageSupported The button supports referencing a static or dynamic image.
+	 */
+	public SoftButtonCapabilities(@NonNull Boolean shortPressAvailable, @NonNull Boolean longPressAvailable, @NonNull Boolean upDownAvailable, @NonNull Boolean imageSupported){
+		this();
+		setShortPressAvailable(shortPressAvailable);
+		setLongPressAvailable(longPressAvailable);
+		setUpDownAvailable(upDownAvailable);
+		setImageSupported(imageSupported);
+	}
     
     /**
      * set the button supports a short press.
      * @param shortPressAvailable whether the button supports a short press.
      */
-    public void setShortPressAvailable(Boolean shortPressAvailable) {
-        if (shortPressAvailable != null) {
-            store.put(KEY_SHORT_PRESS_AVAILABLE, shortPressAvailable);
-        } else {
-        	store.remove(KEY_SHORT_PRESS_AVAILABLE);
-        }
+    public void setShortPressAvailable(@NonNull Boolean shortPressAvailable) {
+        setValue(KEY_SHORT_PRESS_AVAILABLE, shortPressAvailable);
     }
     
     /**
@@ -84,19 +97,15 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @return whether the button supports a short press
      */
     public Boolean getShortPressAvailable() {
-        return (Boolean) store.get( KEY_SHORT_PRESS_AVAILABLE);
+        return getBoolean( KEY_SHORT_PRESS_AVAILABLE);
     }
     
     /**
      * set the button supports a LONG press.
      * @param longPressAvailable whether the button supports a long press
      */
-    public void setLongPressAvailable(Boolean longPressAvailable) {
-        if (longPressAvailable != null) {
-            store.put(KEY_LONG_PRESS_AVAILABLE, longPressAvailable);
-        } else {
-        	store.remove(KEY_LONG_PRESS_AVAILABLE);
-        }
+    public void setLongPressAvailable(@NonNull Boolean longPressAvailable) {
+        setValue(KEY_LONG_PRESS_AVAILABLE, longPressAvailable);
     }
     
     /**
@@ -104,19 +113,15 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @return whether  the button supports a LONG press
      */
     public Boolean getLongPressAvailable() {
-        return (Boolean) store.get( KEY_LONG_PRESS_AVAILABLE);
+        return getBoolean( KEY_LONG_PRESS_AVAILABLE);
     }
     
     /**
      * set the button supports "button down" and "button up". 
      * @param upDownAvailable the button supports "button down" and "button up". 
      */
-    public void setUpDownAvailable(Boolean upDownAvailable) {
-        if (upDownAvailable != null) {
-            store.put(KEY_UP_DOWN_AVAILABLE, upDownAvailable);
-        } else {
-        	store.remove(KEY_UP_DOWN_AVAILABLE);
-        }
+    public void setUpDownAvailable(@NonNull Boolean upDownAvailable) {
+        setValue(KEY_UP_DOWN_AVAILABLE, upDownAvailable);
     }
     
     /**
@@ -124,19 +129,15 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @return the button supports "button down" and "button up".
      */
     public Boolean getUpDownAvailable() {
-        return (Boolean) store.get( KEY_UP_DOWN_AVAILABLE);
+        return getBoolean( KEY_UP_DOWN_AVAILABLE);
     }
     
     /**
      * set the button supports referencing a static or dynamic image.
      * @param imageSupported whether the button supports referencing a static or dynamic image.
      */
-    public void setImageSupported(Boolean imageSupported) {
-        if (imageSupported != null) {
-            store.put(KEY_IMAGE_SUPPORTED, imageSupported);
-        } else {
-        	store.remove(KEY_IMAGE_SUPPORTED);
-        }
+    public void setImageSupported(@NonNull Boolean imageSupported) {
+        setValue(KEY_IMAGE_SUPPORTED, imageSupported);
     }
     
     /**
@@ -144,6 +145,6 @@ public class SoftButtonCapabilities extends RPCStruct {
      * @return the button supports referencing a static or dynamic image.
      */
     public Boolean getImageSupported() {
-        return (Boolean) store.get( KEY_IMAGE_SUPPORTED);
+        return getBoolean( KEY_IMAGE_SUPPORTED);
     }
 }

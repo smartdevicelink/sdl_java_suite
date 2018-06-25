@@ -1,8 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
+
+import java.util.Hashtable;
 
 /**
  * Describes the hour, minute and second values used to set the media clock.
@@ -53,60 +55,61 @@ public class StartTime extends RPCStruct {
     public StartTime(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a newly allocated StartTime object
+	 * @param hours The hour
+	 * @param minutes The minute
+	 * @param seconds The second
+	 */
+	public StartTime(@NonNull Integer hours, @NonNull Integer minutes, @NonNull Integer seconds){
+		this();
+		setHours(hours);
+		setMinutes(minutes);
+		setSeconds(seconds);
+	}
     /**
      * Get the hour. Minvalue="0", maxvalue="59"
  *					<p><b>Note:</b></p>Some display types only support a max value of 19. If out of range, it will be rejected.
      * @return hours Minvalue="0", maxvalue="59"
      */    
     public Integer getHours() {
-        return (Integer) store.get( KEY_HOURS );
+        return getInteger( KEY_HOURS );
     }
     /**
      * Set the hour. Minvalue="0", maxvalue="59"
  *					<p><b>Note:</b></p>Some display types only support a max value of 19. If out of range, it will be rejected.
      * @param hours min: 0; max: 59
      */    
-    public void setHours( Integer hours ) {
-        if (hours != null) {
-            store.put(KEY_HOURS, hours );
-        } else {
-        	store.remove(KEY_HOURS);
-        }
+    public void setHours(@NonNull Integer hours ) {
+        setValue(KEY_HOURS, hours);
     }
     /**
      * Get the minute. Minvalue="0", maxvalue="59".
      * @return minutes Minvalue="0", maxvalue="59"
      */    
     public Integer getMinutes() {
-        return (Integer) store.get( KEY_MINUTES );
+        return getInteger( KEY_MINUTES );
     }
     /**
      * Set the minute. Minvalue="0", maxvalue="59".
      * @param minutes min: 0; max: 59
      */    
-    public void setMinutes( Integer minutes ) {
-        if (minutes != null) {
-            store.put(KEY_MINUTES, minutes );
-        } else {
-        	store.remove(KEY_MINUTES);
-        }
+    public void setMinutes( @NonNull Integer minutes ) {
+        setValue(KEY_MINUTES, minutes);
     }
     /**
      * Get the second. Minvalue="0", maxvalue="59".
      * @return seconds. Minvalue="0", maxvalue="59".
      */    
     public Integer getSeconds() {
-        return (Integer) store.get( KEY_SECONDS );
+        return getInteger( KEY_SECONDS );
     }
     /**
      * Set the second. Minvalue="0", maxvalue="59".
      * @param seconds min: 0 max: 59
      */    
-    public void setSeconds( Integer seconds ) {
-        if (seconds != null) {
-            store.put(KEY_SECONDS, seconds );
-        } else {
-        	store.remove(KEY_SECONDS);
-        }
+    public void setSeconds( @NonNull Integer seconds ) {
+        setValue(KEY_SECONDS, seconds);
     }
 }

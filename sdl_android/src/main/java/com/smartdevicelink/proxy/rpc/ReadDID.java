@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * <p>Non periodic vehicle data read request. This is an RPC to get diagnostics
@@ -80,14 +82,29 @@ public class ReadDID extends RPCRequest {
 
 	/**
 	 * Constructs a new ReadDID object indicated by the Hashtable parameter
-	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public ReadDID(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new ReadDID object
+	 * @param ecuName an Integer value representing the ID of the vehicle module
+	 * <b>Notes: </b>Minvalue:0; Maxvalue:65535
+	 * @param didLocation a List<Integer> value representing raw data from vehicle data DID location(s) <br>
+	 * <b>Notes: </b>
+	 * <ul>
+	 * 		<li>Minvalue:0; Maxvalue:65535</li>
+	 * 		<li>ArrayMin:0; ArrayMax:1000</li>
+	 * </ul>
+	 */
+	public ReadDID(@NonNull Integer ecuName, @NonNull List<Integer> didLocation) {
+		this();
+		setEcuName(ecuName);
+		setDidLocation(didLocation);
+	}
 
 	/**
 	 * Sets an ID of the vehicle module
@@ -97,12 +114,8 @@ public class ReadDID extends RPCRequest {
 	 *            <p></p>
 	 *            <b>Notes: </b>Minvalue:0; Maxvalue:65535
 	 */
-    public void setEcuName(Integer ecuName) {
-    	if (ecuName != null) {
-    		parameters.put(KEY_ECU_NAME, ecuName);
-    	} else {
-    		parameters.remove(KEY_ECU_NAME);
-    	}
+    public void setEcuName(@NonNull Integer ecuName) {
+		setParameters(KEY_ECU_NAME, ecuName);
     }
 
 	/**
@@ -112,7 +125,7 @@ public class ReadDID extends RPCRequest {
 	 *         module
 	 */
     public Integer getEcuName() {
-    	return (Integer) parameters.get(KEY_ECU_NAME);
+    	return getInteger(KEY_ECU_NAME);
     }
 
 	/**
@@ -128,12 +141,8 @@ public class ReadDID extends RPCRequest {
 	 *            <li>ArrayMin:0; ArrayMax:1000</li>
 	 *            </ul>
 	 */
-    public void setDidLocation(List<Integer> didLocation) {
-    	if (didLocation != null) {
-    		parameters.put(KEY_DID_LOCATION, didLocation);
-    	} else {
-    		parameters.remove(KEY_DID_LOCATION);
-    	}
+    public void setDidLocation(@NonNull List<Integer> didLocation) {
+		setParameters(KEY_DID_LOCATION, didLocation);
     }
 
 	/**
@@ -144,15 +153,6 @@ public class ReadDID extends RPCRequest {
 	 */
     @SuppressWarnings("unchecked")
     public List<Integer> getDidLocation() {
-        if (parameters.get(KEY_DID_LOCATION) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_DID_LOCATION);
-        	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof Integer) {
-                	return (List<Integer>) list;
-        		}
-        	}
-        }
-        return null;
+		return (List<Integer>) getObject(Integer.class, KEY_DID_LOCATION);
     }
 }

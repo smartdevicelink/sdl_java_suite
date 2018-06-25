@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
@@ -44,50 +46,43 @@ public class HeadLampStatus extends RPCStruct {
 	public static final String KEY_AMBIENT_LIGHT_SENSOR_STATUS = "ambientLightSensorStatus";
 	public static final String KEY_HIGH_BEAMS_ON = "highBeamsOn";
     public static final String KEY_LOW_BEAMS_ON = "lowBeamsOn";
-	/**<p> Constructs a new HeadLampStatus object indicated by the Hashtable
-	 * parameter</p>
-	 * @param hash
-	 * The hash table to use
-	 */
 
+    /**
+	 * Constructs a new HeadLampStatus object
+     */
     public HeadLampStatus() {}
+    /**
+	 * <p>Constructs a new HeadLampStatus object indicated by the Hashtable
+     * parameter</p>
+     * @param hash The hash table to use
+     */
     public HeadLampStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
+    /**
+	 * Constructs a new HeadLampStatus object
+     */
+    public HeadLampStatus(@NonNull Boolean lowBeamsOn, @NonNull Boolean highBeamsOn) {
+        this();
+        setLowBeamsOn(lowBeamsOn);
+        setHighBeamsOn(highBeamsOn);
+    }
     public void setAmbientLightStatus(AmbientLightStatus ambientLightSensorStatus) {
-        if (ambientLightSensorStatus != null) {
-            store.put(KEY_AMBIENT_LIGHT_SENSOR_STATUS, ambientLightSensorStatus);
-        } else {
-        	store.remove(KEY_AMBIENT_LIGHT_SENSOR_STATUS);
-        }
+        setValue(KEY_AMBIENT_LIGHT_SENSOR_STATUS, ambientLightSensorStatus);
     }
     public AmbientLightStatus getAmbientLightStatus() {
-        Object obj = store.get(KEY_AMBIENT_LIGHT_SENSOR_STATUS);
-        if (obj instanceof AmbientLightStatus) {
-            return (AmbientLightStatus) obj;
-        } else if (obj instanceof String) {
-        	return AmbientLightStatus.valueForString((String) obj);
-        }
-        return null;
+        return (AmbientLightStatus) getObject(AmbientLightStatus.class, KEY_AMBIENT_LIGHT_SENSOR_STATUS);
     }
-    public void setHighBeamsOn(Boolean highBeamsOn) {
-        if (highBeamsOn != null) {
-            store.put(KEY_HIGH_BEAMS_ON, highBeamsOn);
-        } else {
-        	store.remove(KEY_HIGH_BEAMS_ON);
-        }
+    public void setHighBeamsOn(@NonNull Boolean highBeamsOn) {
+        setValue(KEY_HIGH_BEAMS_ON, highBeamsOn);
     }
     public Boolean getHighBeamsOn() {
-    	return (Boolean) store.get(KEY_HIGH_BEAMS_ON);
+    	return getBoolean(KEY_HIGH_BEAMS_ON);
     }
-    public void setLowBeamsOn(Boolean lowBeamsOn) {
-        if (lowBeamsOn != null) {
-            store.put(KEY_LOW_BEAMS_ON, lowBeamsOn);
-        } else {
-        	store.remove(KEY_LOW_BEAMS_ON);
-        }
+    public void setLowBeamsOn(@NonNull Boolean lowBeamsOn) {
+        setValue(KEY_LOW_BEAMS_ON, lowBeamsOn);
     }
     public Boolean getLowBeamsOn() {
-    	return (Boolean) store.get(KEY_LOW_BEAMS_ON);
+    	return getBoolean(KEY_LOW_BEAMS_ON);
     }
 }

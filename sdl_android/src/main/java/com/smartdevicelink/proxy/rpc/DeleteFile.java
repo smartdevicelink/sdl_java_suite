@@ -1,9 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
 
 /**
  * Used to delete a file resident on the SDL module in the app's local cache.
@@ -55,14 +57,20 @@ public class DeleteFile extends RPCRequest {
 
 	/**
 	 * <p>Constructs a new DeleteFile object indicated by the Hashtable parameter</p>
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public DeleteFile(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new DeleteFile object
+	 * @param sdlFileName a String value representing a file reference name
+	 */
+	public DeleteFile(@NonNull String sdlFileName) {
+		this();
+		setSdlFileName(sdlFileName);
+	}
 
 	/**
 	 * Sets a file reference name
@@ -70,12 +78,8 @@ public class DeleteFile extends RPCRequest {
 	 * @param sdlFileName
 	 *            a String value representing a file reference name
 	 */
-    public void setSdlFileName(String sdlFileName) {
-        if (sdlFileName != null) {
-            parameters.put(KEY_SDL_FILE_NAME, sdlFileName);
-        } else {
-        	parameters.remove(KEY_SDL_FILE_NAME);
-        }
+    public void setSdlFileName(@NonNull String sdlFileName) {
+		setParameters(KEY_SDL_FILE_NAME, sdlFileName);
     }
 
 	/**
@@ -84,6 +88,6 @@ public class DeleteFile extends RPCRequest {
 	 * @return String -a String value representing a file reference name
 	 */
     public String getSdlFileName() {
-        return (String) parameters.get(KEY_SDL_FILE_NAME);
+        return getString(KEY_SDL_FILE_NAME);
     }
 }

@@ -1,10 +1,14 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+
+import java.util.Hashtable;
+import java.util.List;
+
 /**
  * Diagnostic Message Response is sent, when DiagnosticMessage has been called.
  * 
@@ -22,25 +26,25 @@ public class DiagnosticMessageResponse extends RPCResponse {
     public DiagnosticMessageResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
+    /**
+     * Constructs a new DiagnosticMessageResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public DiagnosticMessageResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull List<Integer> messageDataResult) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+        setMessageDataResult(messageDataResult);
+    }
     @SuppressWarnings("unchecked")
     public List<Integer> getMessageDataResult() {
-    	if(parameters.get(KEY_MESSAGE_DATA_RESULT) instanceof List<?>){
-    		List<?> list = (List<?>)parameters.get(KEY_MESSAGE_DATA_RESULT);
-    		if(list != null && list.size()>0){
-        		Object obj = list.get(0);
-        		if(obj instanceof Integer){
-        			return (List<Integer>) list;
-        		}
-    		}
-    	}
-        return null;
+        return (List<Integer>) getObject(Integer.class, KEY_MESSAGE_DATA_RESULT);
     }
     
-    public void setMessageDataResult(List<Integer> messageDataResult) {
-        if (messageDataResult != null) {
-            parameters.put(KEY_MESSAGE_DATA_RESULT, messageDataResult);
-        } else {
-        	parameters.remove(KEY_MESSAGE_DATA_RESULT);
-        }
+    public void setMessageDataResult(@NonNull List<Integer> messageDataResult) {
+        setParameters(KEY_MESSAGE_DATA_RESULT, messageDataResult);
     }
+
+
 }

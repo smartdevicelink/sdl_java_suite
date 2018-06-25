@@ -2,9 +2,14 @@ package com.smartdevicelink.transport;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.smartdevicelink.util.AndroidTools;
+
+import java.util.List;
 
 /**
  * The USBAccessoryAttachmentActivity is a proxy to listen for
@@ -67,7 +72,10 @@ public class USBAccessoryAttachmentActivity extends Activity {
                     .putExtra(UsbManager.EXTRA_PERMISSION_GRANTED,
                             intent.getParcelableExtra(
                                     UsbManager.EXTRA_PERMISSION_GRANTED));
-            sendBroadcast(usbAccessoryAttachedIntent);
+
+
+            AndroidTools.sendExplicitBroadcast(getApplicationContext(),usbAccessoryAttachedIntent,null);
+
         }
 
         finish();

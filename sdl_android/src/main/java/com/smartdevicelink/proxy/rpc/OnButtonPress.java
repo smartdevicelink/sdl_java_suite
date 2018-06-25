@@ -1,11 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.ButtonPressMode;
+
+import java.util.Hashtable;
 
 /**
  * <p>
@@ -110,60 +112,46 @@ public class OnButtonPress extends RPCNotification {
         super(hash);
     }
     /**
+     *Constructs a newly allocated OnButtonPress object
+     * @param buttonName name of the button
+     * @param buttonPressMode indicates whether this is a short or long press
+     */
+    public OnButtonPress(@NonNull ButtonName buttonName, @NonNull ButtonPressMode buttonPressMode) {
+        this();
+        setButtonName(buttonName);
+        setButtonPressMode(buttonPressMode);
+    }
+    /**
      * <p>Returns an <i>{@linkplain ButtonName}</i> the button's name</p>
      * @return ButtonName Name of the button
      */    
     public ButtonName getButtonName() {
-        Object obj = parameters.get(KEY_BUTTON_NAME);
-        if (obj instanceof ButtonName) {
-            return (ButtonName) obj;
-        } else if (obj instanceof String) {
-            return ButtonName.valueForString((String) obj);
-        }
-        return null;
+        return (ButtonName) getObject(ButtonName.class, KEY_BUTTON_NAME);
     }
     /**
      * <p>Set the button's name</p>    
      * @param buttonName name of the button
      */    
-    public void setButtonName( ButtonName buttonName ) {
-        if (buttonName != null) {
-            parameters.put(KEY_BUTTON_NAME, buttonName );
-        } else {
-            parameters.remove(KEY_BUTTON_NAME);
-        }
+    public void setButtonName( @NonNull ButtonName buttonName ) {
+        setParameters(KEY_BUTTON_NAME, buttonName);
     }
     /**<p>Returns <i>{@linkplain ButtonPressMode}</i></p>
      * @return ButtonPressMode whether this is a long or short button press event
      */    
     public ButtonPressMode getButtonPressMode() {
-        Object obj = parameters.get(KEY_BUTTON_PRESS_MODE);
-        if (obj instanceof ButtonPressMode) {
-            return (ButtonPressMode) obj;
-        } else if (obj instanceof String) {
-            return ButtonPressMode.valueForString((String) obj);
-        }
-        return null;
+        return (ButtonPressMode) getObject(ButtonPressMode.class, KEY_BUTTON_PRESS_MODE);
     }
     /**
      * <p>Set the button press mode of the event</p>
      * @param buttonPressMode indicates whether this is a short or long press
      */    
-    public void setButtonPressMode( ButtonPressMode buttonPressMode ) {
-        if (buttonPressMode != null) {
-            parameters.put(KEY_BUTTON_PRESS_MODE, buttonPressMode );
-        } else {
-            parameters.remove(KEY_BUTTON_PRESS_MODE);
-        }
+    public void setButtonPressMode( @NonNull ButtonPressMode buttonPressMode ) {
+        setParameters(KEY_BUTTON_PRESS_MODE, buttonPressMode);
     }
     public void setCustomButtonName(Integer customButtonID) {
-    	if (customButtonID != null) {
-    		parameters.put(KEY_CUSTOM_BUTTON_ID, customButtonID);
-    	} else {
-    		parameters.remove(KEY_CUSTOM_BUTTON_ID);
-    	}
+        setParameters(KEY_CUSTOM_BUTTON_ID, customButtonID);
     }
     public Integer getCustomButtonName() {
-    	return (Integer) parameters.get(KEY_CUSTOM_BUTTON_ID);
+    	return getInteger(KEY_CUSTOM_BUTTON_ID);
     }
 }

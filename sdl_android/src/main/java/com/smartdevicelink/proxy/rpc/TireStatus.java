@@ -1,10 +1,16 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 import com.smartdevicelink.util.DebugTool;
+
+import java.util.Hashtable;
+
+import static com.smartdevicelink.proxy.rpc.ECallInfo.KEY_E_CALL_NOTIFICATION_STATUS;
+
 /** <p>The status and pressure of the tires.</p>
  *   <p><b> Parameter List:</b></p>
  *   
@@ -75,159 +81,85 @@ public class TireStatus extends RPCStruct {
 	public static final String KEY_INNER_LEFT_REAR = "innerLeftRear";
 	public static final String KEY_INNER_RIGHT_REAR = "innerRightRear";
 	public static final String KEY_RIGHT_REAR = "rightRear";
+
+	public TireStatus() { }
+
 	 /**
 		 * <p>Constructs a new TireStatus object indicated by the Hashtable parameter</p>
-		 * 
-		 * 
-		 * @param hash
-		 * <p>
-		 *            The Hashtable to use</p>
+		 *
+		 * @param hash The Hashtable to use
 		 */
-
-    public TireStatus() { }
-    public TireStatus(Hashtable<String, Object> hash) {
+	public TireStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
-    public void setPressureTellTale(WarningLightStatus pressureTellTale) {
-    	if (pressureTellTale != null) {
-    		store.put(KEY_PRESSURE_TELL_TALE, pressureTellTale);
-    	} else {
-    		store.remove(KEY_PRESSURE_TELL_TALE);
-    	}
+
+	/**
+	 * Constructs a new TireStatus object
+	 * @param pressureTellTale Status of the Tire Pressure TellTale
+	 * @param leftFront The status of the left front tire.
+	 * @param rightFront The status of the right front tire.
+	 * @param leftRear The status of the left rear tire.
+	 * @param rightRear The status of the right rear tire
+	 * @param innerLeftRear The status of the inner left rear tire.
+	 * @param innerRightRear The status of the inner right rear tire.
+	 */
+	public TireStatus(@NonNull WarningLightStatus pressureTellTale, @NonNull SingleTireStatus leftFront, @NonNull SingleTireStatus rightFront, @NonNull SingleTireStatus leftRear, @NonNull SingleTireStatus rightRear, @NonNull SingleTireStatus innerLeftRear, @NonNull SingleTireStatus innerRightRear){
+		this();
+		setPressureTellTale(pressureTellTale);
+		setLeftFront(leftFront);
+		setRightFront(rightFront);
+		setLeftRear(leftRear);
+		setRightRear(rightRear);
+		setInnerLeftRear(innerLeftRear);
+		setInnerRightRear(innerRightRear);
+	}
+
+    public void setPressureTellTale(@NonNull WarningLightStatus pressureTellTale) {
+    	setValue(KEY_PRESSURE_TELL_TALE, pressureTellTale);
     }
     public WarningLightStatus getPressureTellTale() {
-        Object obj = store.get(KEY_PRESSURE_TELL_TALE);
-        if (obj instanceof WarningLightStatus) {
-            return (WarningLightStatus) obj;
-        } else if (obj instanceof String) {
-        	return WarningLightStatus.valueForString((String) obj);
-        }
-        return null;
+        return (WarningLightStatus) getObject(WarningLightStatus.class, KEY_PRESSURE_TELL_TALE);
     }
-    public void setLeftFront(SingleTireStatus leftFront) {
-    	if (leftFront != null) {
-    		store.put(KEY_LEFT_FRONT, leftFront);
-    	} else {
-    		store.remove(KEY_LEFT_FRONT);
-    	}
+    public void setLeftFront(@NonNull SingleTireStatus leftFront) {
+    	setValue(KEY_LEFT_FRONT, leftFront);
     }
     @SuppressWarnings("unchecked")
     public SingleTireStatus getLeftFront() {
-    	Object obj = store.get(KEY_LEFT_FRONT);
-        if (obj instanceof SingleTireStatus) {
-            return (SingleTireStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new SingleTireStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_FRONT, e);
-            }
-        }
-        return null;
+        return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_LEFT_FRONT);
     }
-    public void setRightFront(SingleTireStatus rightFront) {
-    	if (rightFront != null) {
-    		store.put(KEY_RIGHT_FRONT, rightFront);
-    	} else {
-    		store.remove(KEY_RIGHT_FRONT);
-    	}
+    public void setRightFront(@NonNull SingleTireStatus rightFront) {
+    	setValue(KEY_RIGHT_FRONT, rightFront);
     }
     @SuppressWarnings("unchecked")
     public SingleTireStatus getRightFront() {
-    	Object obj = store.get(KEY_RIGHT_FRONT);
-        if (obj instanceof SingleTireStatus) {
-            return (SingleTireStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new SingleTireStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_FRONT, e);
-            }
-        }
-        return null;
+        return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_RIGHT_FRONT);
     }
-    public void setLeftRear(SingleTireStatus leftRear) {
-    	if (leftRear != null) {
-    		store.put(KEY_LEFT_REAR, leftRear);
-    	} else {
-    		store.remove(KEY_LEFT_REAR);
-    	}
+    public void setLeftRear(@NonNull SingleTireStatus leftRear) {
+    	setValue(KEY_LEFT_REAR, leftRear);
     }
     @SuppressWarnings("unchecked")
     public SingleTireStatus getLeftRear() {
-    	Object obj = store.get(KEY_LEFT_REAR);
-        if (obj instanceof SingleTireStatus) {
-            return (SingleTireStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new SingleTireStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_LEFT_REAR, e);
-            }
-        }
-        return null;
+        return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_LEFT_REAR);
     }
-    public void setRightRear(SingleTireStatus rightRear) {
-    	if (rightRear != null) {
-    		store.put(KEY_RIGHT_REAR, rightRear);
-    	} else {
-    		store.remove(KEY_RIGHT_REAR);
-    	}
+    public void setRightRear(@NonNull SingleTireStatus rightRear) {
+    	setValue(KEY_RIGHT_REAR, rightRear);
     }
     @SuppressWarnings("unchecked")
     public SingleTireStatus getRightRear() {
-    	Object obj = store.get(KEY_RIGHT_REAR);
-        if (obj instanceof SingleTireStatus) {
-            return (SingleTireStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new SingleTireStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_RIGHT_REAR, e);
-            }
-        }
-        return null;
+        return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_RIGHT_REAR);
     }
-    public void setInnerLeftRear(SingleTireStatus innerLeftRear) {
-    	if (innerLeftRear != null) {
-    		store.put(KEY_INNER_LEFT_REAR, innerLeftRear);
-    	} else {
-    		store.remove(KEY_INNER_LEFT_REAR);
-    	}
+    public void setInnerLeftRear(@NonNull SingleTireStatus innerLeftRear) {
+    	setValue(KEY_INNER_LEFT_REAR, innerLeftRear);
     }
     @SuppressWarnings("unchecked")
     public SingleTireStatus getInnerLeftRear() {
-    	Object obj = store.get(KEY_INNER_LEFT_REAR);
-        if (obj instanceof SingleTireStatus) {
-            return (SingleTireStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new SingleTireStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INNER_LEFT_REAR, e);
-            }
-        }
-        return null;
+        return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_INNER_LEFT_REAR);
     }
-    public void setInnerRightRear(SingleTireStatus innerRightRear) {
-    	if (innerRightRear != null) {
-    		store.put(KEY_INNER_RIGHT_REAR, innerRightRear);
-    	} else {
-    		store.remove(KEY_INNER_RIGHT_REAR);
-    	}
+    public void setInnerRightRear(@NonNull SingleTireStatus innerRightRear) {
+    	setValue(KEY_INNER_RIGHT_REAR, innerRightRear);
     }
     @SuppressWarnings("unchecked")
     public SingleTireStatus getInnerRightRear() {
-    	Object obj = store.get(KEY_INNER_RIGHT_REAR);
-        if (obj instanceof SingleTireStatus) {
-            return (SingleTireStatus) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new SingleTireStatus((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_INNER_RIGHT_REAR, e);
-            }
-        }
-        return null;
+        return (SingleTireStatus) getObject(SingleTireStatus.class, KEY_INNER_RIGHT_REAR);
     }
 }

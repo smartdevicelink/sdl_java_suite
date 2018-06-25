@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -60,28 +62,32 @@ public class ImageResolution extends RPCStruct {
     public ImageResolution(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+    public ImageResolution(@NonNull Integer resolutionWidth, @NonNull Integer resolutionHeight) {
+        this();
+        setResolutionWidth(resolutionWidth);
+        setResolutionHeight(resolutionHeight);
+    }
     
-    public void setResolutionWidth(Integer resolutionWidth) {
-        if (resolutionWidth != null) {
-            store.put(KEY_RESOLUTION_WIDTH, resolutionWidth);
-        } else {
-        	store.remove(KEY_RESOLUTION_WIDTH);
-        }
+    public void setResolutionWidth(@NonNull Integer resolutionWidth) {
+        setValue(KEY_RESOLUTION_WIDTH, resolutionWidth);
     }
     
     public Integer getResolutionWidth() {
-        return (Integer) store.get(KEY_RESOLUTION_WIDTH);
+        return getInteger(KEY_RESOLUTION_WIDTH);
     }
     
-    public void setResolutionHeight(Integer resolutionHeight) {
-        if (resolutionHeight != null) {
-            store.put(KEY_RESOLUTION_HEIGHT, resolutionHeight);
-        } else {
-        	store.remove(KEY_RESOLUTION_HEIGHT);
-        }
+    public void setResolutionHeight(@NonNull Integer resolutionHeight) {
+        setValue(KEY_RESOLUTION_HEIGHT, resolutionHeight);
     }
     
     public Integer getResolutionHeight() {
-        return (Integer) store.get(KEY_RESOLUTION_HEIGHT);
+        return getInteger(KEY_RESOLUTION_HEIGHT);
+    }
+
+    @Override
+    public String toString() {
+        return "width=" + String.valueOf(getResolutionWidth()) +
+               ", height=" + String.valueOf(getResolutionHeight());
     }
 }

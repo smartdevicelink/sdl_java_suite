@@ -1,12 +1,14 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
+
+import java.util.Hashtable;
 
 /**
  * Used to push a binary data onto the SDL module from a mobile device, such as
@@ -128,14 +130,24 @@ public class PutFile extends RPCRequest {
 
 	/**
 	 * Constructs a new PutFile object indicated by the Hashtable parameter
-	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public PutFile(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new PutFile object
+	 * @param syncFileName a String value representing a file reference name
+	 * <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
+	 * @param fileType a FileType value representing a selected file type
+	 */
+	public PutFile(@NonNull String syncFileName, @NonNull FileType fileType) {
+		this();
+		setSdlFileName(syncFileName);
+		setFileType(fileType);
+	}
 
 	/**
 	 * Sets a file reference name
@@ -143,14 +155,10 @@ public class PutFile extends RPCRequest {
 	 * @param sdlFileName
 	 *            a String value representing a file reference name
 	 *            <p></p>
-	 *            <b>Notes: </b>Maxlength=500
+	 *            <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
 	 */
-    public void setSdlFileName(String sdlFileName) {
-        if (sdlFileName != null) {
-            parameters.put(KEY_SDL_FILE_NAME, sdlFileName);
-        } else {
-        	parameters.remove(KEY_SDL_FILE_NAME);
-        }
+    public void setSdlFileName(@NonNull String sdlFileName) {
+        setParameters(KEY_SDL_FILE_NAME, sdlFileName);
     }
 
 	/**
@@ -159,7 +167,7 @@ public class PutFile extends RPCRequest {
 	 * @return String - a String value representing a file reference name
 	 */
     public String getSdlFileName() {
-        return (String) parameters.get(KEY_SDL_FILE_NAME);
+        return getString(KEY_SDL_FILE_NAME);
     }
 
 	/**
@@ -168,12 +176,8 @@ public class PutFile extends RPCRequest {
 	 * @param fileType
 	 *            a FileType value representing a selected file type
 	 */
-    public void setFileType(FileType fileType) {
-        if (fileType != null) {
-            parameters.put(KEY_FILE_TYPE, fileType);
-        } else {
-        	parameters.remove(KEY_FILE_TYPE);
-        }
+    public void setFileType(@NonNull FileType fileType) {
+        setParameters(KEY_FILE_TYPE, fileType);
     }
 
 	/**
@@ -182,13 +186,7 @@ public class PutFile extends RPCRequest {
 	 * @return FileType -a FileType value representing a selected file type
 	 */
     public FileType getFileType() {
-        Object obj = parameters.get(KEY_FILE_TYPE);
-        if (obj instanceof FileType) {
-            return (FileType) obj;
-        } else if (obj instanceof String) {
-        	return FileType.valueForString((String) obj);
-        }
-        return null;
+        return (FileType) getObject(FileType.class, KEY_FILE_TYPE);
     }
 
 	/**
@@ -205,11 +203,7 @@ public class PutFile extends RPCRequest {
 	 *            a Boolean value
 	 */
     public void setPersistentFile(Boolean persistentFile) {
-        if (persistentFile != null) {
-            parameters.put(KEY_PERSISTENT_FILE, persistentFile);
-        } else {
-        	parameters.remove(KEY_PERSISTENT_FILE);
-        }
+        setParameters(KEY_PERSISTENT_FILE, persistentFile);
     }
 
 	/**
@@ -220,7 +214,7 @@ public class PutFile extends RPCRequest {
 	 *         persist between sessions / ignition cycles
 	 */
     public Boolean getPersistentFile() {
-        return (Boolean) parameters.get(KEY_PERSISTENT_FILE);
+        return getBoolean(KEY_PERSISTENT_FILE);
     }
     public void setFileData(byte[] fileData) {
         setBulkData(fileData);
@@ -242,15 +236,11 @@ public class PutFile extends RPCRequest {
     }
     
     public void setOffset(Long offset) {
-        if (offset != null) {
-            parameters.put(KEY_OFFSET, offset);
-        } else {
-            parameters.remove(KEY_OFFSET);
-        }
+        setParameters(KEY_OFFSET, offset);
     }
 
     public Long getOffset() {
-        final Object o = parameters.get(KEY_OFFSET);
+        final Object o = getParameters(KEY_OFFSET);
         if (o == null){
         	return null;
         }
@@ -277,15 +267,11 @@ public class PutFile extends RPCRequest {
     }
     
     public void setLength(Long length) {
-        if (length != null) {
-            parameters.put(KEY_LENGTH, length);
-        } else {
-            parameters.remove(KEY_LENGTH);
-        }
+        setParameters(KEY_LENGTH, length);
     }
 
     public Long getLength() {
-        final Object o = parameters.get(KEY_LENGTH);
+        final Object o = getParameters(KEY_LENGTH);
         if (o == null){
         	return null;
         }
@@ -299,15 +285,11 @@ public class PutFile extends RPCRequest {
     }
 
     public void setSystemFile(Boolean systemFile) {
-        if (systemFile != null) {
-            parameters.put(KEY_SYSTEM_FILE, systemFile);
-        } else {
-            parameters.remove(KEY_SYSTEM_FILE);
-        }
+        setParameters(KEY_SYSTEM_FILE, systemFile);
     }
 
     public Boolean getSystemFile() {
-        final Object o = parameters.get(KEY_SYSTEM_FILE);
+        final Object o = getParameters(KEY_SYSTEM_FILE);
         if (o instanceof Boolean) {
             return (Boolean) o;
         }

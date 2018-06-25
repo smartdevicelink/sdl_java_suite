@@ -1,10 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
+
+import java.util.Hashtable;
+
 /**
  *<p> Establishes a subscription to button notifications for HMI buttons. Buttons
  * are not necessarily physical buttons, but can also be "soft" buttons on a
@@ -87,34 +90,32 @@ public class SubscribeButton extends RPCRequest {
 	 * parameter</p>
 	 * 
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */    
     public SubscribeButton(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new SubscribeButton object
+	 * @param buttonName Name of the button to subscribe.
+	 */
+	public SubscribeButton(@NonNull ButtonName buttonName){
+		this();
+		setButtonName(buttonName);
+	}
 	/**
 	 * Gets the name of the button to subscribe to
 	 * @return ButtonName -an enum value, see <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i>
 	 */    
     public ButtonName getButtonName() {
-        Object obj = parameters.get(KEY_BUTTON_NAME);
-        if (obj instanceof ButtonName) {
-            return (ButtonName) obj;
-        } else if (obj instanceof String) {
-            return ButtonName.valueForString((String) obj);
-        }
-        return null;
+		return (ButtonName) getObject(ButtonName.class, KEY_BUTTON_NAME);
     }
 	/**
 	 * Sets a name of the button to subscribe to
 	 * @param buttonName a <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonName}</i> value
 	 */    
-    public void setButtonName( ButtonName buttonName ) {
-        if (buttonName != null) {
-            parameters.put(KEY_BUTTON_NAME, buttonName );
-        } else {
-            parameters.remove(KEY_BUTTON_NAME);
-        }
+    public void setButtonName(@NonNull ButtonName buttonName ) {
+        setParameters(KEY_BUTTON_NAME, buttonName);
     }
 }

@@ -1,9 +1,15 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
+
+import static com.smartdevicelink.proxy.constants.Names.driverCurtainAirbagDeployed;
+import static com.smartdevicelink.proxy.constants.Names.driverSideAirbagDeployed;
+
 /**
  * <p>The status of the air bags.</p>
  *
@@ -103,132 +109,65 @@ public class AirbagStatus extends RPCStruct {
         super(hash);
     }
 
-    public void setDriverAirbagDeployed(VehicleDataEventStatus driverAirbagDeployed) {
-        if (driverAirbagDeployed != null) {
-            store.put(KEY_DRIVER_AIRBAG_DEPLOYED, driverAirbagDeployed);
-        } else {
-            store.remove(KEY_DRIVER_AIRBAG_DEPLOYED);
-        }
+    public AirbagStatus(@NonNull VehicleDataEventStatus driverAirbagDeployed, @NonNull VehicleDataEventStatus driverSideAirbagDeployed, @NonNull VehicleDataEventStatus driverCurtainAirbagDeployed, @NonNull VehicleDataEventStatus driverKneeAirbagDeployed,
+                        @NonNull VehicleDataEventStatus passengerCurtainAirbagDeployed, @NonNull VehicleDataEventStatus passengerAirbagDeployed, @NonNull VehicleDataEventStatus passengerSideAirbagDeployed, @NonNull VehicleDataEventStatus passengerKneeAirbagDeployed) {
+        this();
+        setDriverAirbagDeployed(driverAirbagDeployed);
+        setDriverSideAirbagDeployed(driverSideAirbagDeployed);
+        setDriverCurtainAirbagDeployed(driverCurtainAirbagDeployed);
+        setDriverKneeAirbagDeployed(driverKneeAirbagDeployed);
+        setPassengerAirbagDeployed(passengerAirbagDeployed);
+        setPassengerSideAirbagDeployed(passengerSideAirbagDeployed);
+        setPassengerCurtainAirbagDeployed(passengerCurtainAirbagDeployed);
+        setPassengerKneeAirbagDeployed(passengerKneeAirbagDeployed);
+    }
+
+    public void setDriverAirbagDeployed(@NonNull VehicleDataEventStatus driverAirbagDeployed) {
+        setValue(KEY_DRIVER_AIRBAG_DEPLOYED, driverAirbagDeployed);
     }
     public VehicleDataEventStatus getDriverAirbagDeployed() {
-        Object obj = store.get(KEY_DRIVER_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_AIRBAG_DEPLOYED);
     }
-    public void setDriverSideAirbagDeployed(VehicleDataEventStatus driverSideAirbagDeployed) {
-        if (driverSideAirbagDeployed != null) {
-            store.put(KEY_DRIVER_SIDE_AIRBAG_DEPLOYED, driverSideAirbagDeployed);
-        } else {
-            store.remove(KEY_DRIVER_SIDE_AIRBAG_DEPLOYED);
-        }
+    public void setDriverSideAirbagDeployed(@NonNull VehicleDataEventStatus driverSideAirbagDeployed) {
+        setValue(KEY_DRIVER_SIDE_AIRBAG_DEPLOYED, driverSideAirbagDeployed);
     }
     public VehicleDataEventStatus getDriverSideAirbagDeployed() {
-        Object obj = store.get(KEY_DRIVER_SIDE_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_SIDE_AIRBAG_DEPLOYED);
     }
-    public void setDriverCurtainAirbagDeployed(VehicleDataEventStatus driverCurtainAirbagDeployed) {
-        if (driverCurtainAirbagDeployed != null) {
-            store.put(KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED, driverCurtainAirbagDeployed);
-        } else {
-            store.remove(KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED);
-        }
+    public void setDriverCurtainAirbagDeployed(@NonNull VehicleDataEventStatus driverCurtainAirbagDeployed) {
+        setValue(KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED, driverCurtainAirbagDeployed);
     }
     public VehicleDataEventStatus getDriverCurtainAirbagDeployed() {
-        Object obj = store.get(KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED);
     }
-    public void setPassengerAirbagDeployed(VehicleDataEventStatus passengerAirbagDeployed) {
-        if (passengerAirbagDeployed != null) {
-            store.put(KEY_PASSENGER_AIRBAG_DEPLOYED, passengerAirbagDeployed);
-        } else {
-            store.remove(KEY_PASSENGER_AIRBAG_DEPLOYED);
-        }
+    public void setPassengerAirbagDeployed(@NonNull VehicleDataEventStatus passengerAirbagDeployed) {
+        setValue(KEY_PASSENGER_AIRBAG_DEPLOYED, passengerAirbagDeployed);
     }
     public VehicleDataEventStatus getPassengerAirbagDeployed() {
-        Object obj = store.get(KEY_PASSENGER_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_PASSENGER_AIRBAG_DEPLOYED);
     }
-    public void setPassengerCurtainAirbagDeployed(VehicleDataEventStatus passengerCurtainAirbagDeployed) {
-        if (passengerCurtainAirbagDeployed != null) {
-            store.put(KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED, passengerCurtainAirbagDeployed);
-        } else {
-            store.remove(KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED);
-        }
+    public void setPassengerCurtainAirbagDeployed(@NonNull VehicleDataEventStatus passengerCurtainAirbagDeployed) {
+        setValue(KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED, passengerCurtainAirbagDeployed);
     }
     public VehicleDataEventStatus getPassengerCurtainAirbagDeployed() {
-        Object obj = store.get(KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED);
     }
-    public void setDriverKneeAirbagDeployed(VehicleDataEventStatus driverKneeAirbagDeployed) {
-        if (driverKneeAirbagDeployed != null) {
-            store.put(KEY_DRIVER_KNEE_AIRBAG_DEPLOYED, driverKneeAirbagDeployed);
-        } else {
-            store.remove(KEY_DRIVER_KNEE_AIRBAG_DEPLOYED);
-        }
+    public void setDriverKneeAirbagDeployed(@NonNull VehicleDataEventStatus driverKneeAirbagDeployed) {
+        setValue(KEY_DRIVER_KNEE_AIRBAG_DEPLOYED, driverKneeAirbagDeployed);
     }
     public VehicleDataEventStatus getDriverKneeAirbagDeployed() {
-        Object obj = store.get(KEY_DRIVER_KNEE_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_DRIVER_KNEE_AIRBAG_DEPLOYED);
     }
-    public void setPassengerSideAirbagDeployed(VehicleDataEventStatus passengerSideAirbagDeployed) {
-        if (passengerSideAirbagDeployed != null) {
-            store.put(KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED, passengerSideAirbagDeployed);
-        } else {
-            store.remove(KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED);
-        }
+    public void setPassengerSideAirbagDeployed(@NonNull VehicleDataEventStatus passengerSideAirbagDeployed) {
+        setValue(KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED, passengerSideAirbagDeployed);
     }
     public VehicleDataEventStatus getPassengerSideAirbagDeployed() {
-        Object obj = store.get(KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED);
     }
-    public void setPassengerKneeAirbagDeployed(VehicleDataEventStatus passengerKneeAirbagDeployed) {
-        if (passengerKneeAirbagDeployed != null) {
-            store.put(KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED, passengerKneeAirbagDeployed);
-        } else {
-            store.remove(KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED);
-        }
+    public void setPassengerKneeAirbagDeployed(@NonNull VehicleDataEventStatus passengerKneeAirbagDeployed) {
+        setValue(KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED, passengerKneeAirbagDeployed);
     }
     public VehicleDataEventStatus getPassengerKneeAirbagDeployed() {
-        Object obj = store.get(KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED);
-        if (obj instanceof VehicleDataEventStatus) {
-            return (VehicleDataEventStatus) obj;
-        } else if (obj instanceof String) {
-            return VehicleDataEventStatus.valueForString((String) obj);
-        }
-        return null;
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED);
     }
 }

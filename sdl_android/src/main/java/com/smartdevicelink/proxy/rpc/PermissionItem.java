@@ -1,9 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.util.DebugTool;
 /**
  * Change in permissions for a given set of RPCs
@@ -52,69 +55,45 @@ public class PermissionItem extends RPCStruct {
 	public static final String KEY_HMI_PERMISSIONS = "hmiPermissions";
 	public static final String KEY_PARAMETER_PERMISSIONS = "parameterPermissions";
 	/**
-	* <p>
-	* Constructs a new PermissionItem object indicated by the Hashtable
-	* parameter
-	* </p>
-	* 
-	* @param hash
-	*            The Hashtable to use
+	* Constructs a new PermissionItem object
 	*/
-
-    public PermissionItem() { }
+    public PermissionItem(@NonNull String rpcName, @NonNull HMIPermissions hmiPermissions, @NonNull ParameterPermissions parameterPermissions) {
+        this();
+        setRpcName(rpcName);
+        setHMIPermissions(hmiPermissions);
+        setParameterPermissions(parameterPermissions);
+    }
+    /**
+     * Constructs a new PermissionItem object indicated by the Hashtable
+     * parameter
+     *
+     * @param hash The Hashtable to use
+     */
     public PermissionItem(Hashtable<String, Object> hash) {
         super(hash);
     }
+    /**
+     * Constructs a new PermissionItem object
+     */
+    public PermissionItem() { }
     public String getRpcName() {
-        return (String) store.get(KEY_RPC_NAME);
+        return getString(KEY_RPC_NAME);
     }
-    public void setRpcName(String rpcName) {
-        if (rpcName != null) {
-        	store.put(KEY_RPC_NAME, rpcName);
-        } else {
-        	store.remove(KEY_RPC_NAME);
-        }
+    public void setRpcName(@NonNull String rpcName) {
+        setValue(KEY_RPC_NAME, rpcName);
     }
     @SuppressWarnings("unchecked")
     public HMIPermissions getHMIPermissions() {
-    	Object obj = store.get(KEY_HMI_PERMISSIONS);
-        if (obj instanceof HMIPermissions) {
-            return (HMIPermissions) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new HMIPermissions((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_HMI_PERMISSIONS, e);
-            }
-        }
-        return null;
+        return (HMIPermissions) getObject(HMIPermissions.class, KEY_HMI_PERMISSIONS);
     }
-    public void setHMIPermissions(HMIPermissions hmiPermissions) {
-        if (hmiPermissions != null) {
-        	store.put(KEY_HMI_PERMISSIONS, hmiPermissions);
-        } else {
-        	store.remove(KEY_HMI_PERMISSIONS);
-        }
+    public void setHMIPermissions(@NonNull HMIPermissions hmiPermissions) {
+        setValue(KEY_HMI_PERMISSIONS, hmiPermissions);
     }
     @SuppressWarnings("unchecked")
     public ParameterPermissions getParameterPermissions() {
-    	Object obj = store.get(KEY_PARAMETER_PERMISSIONS);
-        if (obj instanceof ParameterPermissions) {
-            return (ParameterPermissions) obj;
-        } else if (obj instanceof Hashtable) {
-        	try {
-        		return new ParameterPermissions((Hashtable<String, Object>) obj);
-            } catch (Exception e) {
-            	DebugTool.logError("Failed to parse " + getClass().getSimpleName() + "." + KEY_PARAMETER_PERMISSIONS, e);
-            }
-        }
-        return null;
+    	return (ParameterPermissions) getObject(ParameterPermissions.class, KEY_PARAMETER_PERMISSIONS);
     }
-    public void setParameterPermissions(ParameterPermissions parameterPermissions) {
-        if (parameterPermissions != null) {
-        	store.put(KEY_PARAMETER_PERMISSIONS, parameterPermissions);
-        } else {
-        	store.remove(KEY_PARAMETER_PERMISSIONS);
-        }
+    public void setParameterPermissions(@NonNull ParameterPermissions parameterPermissions) {
+        setValue(KEY_PARAMETER_PERMISSIONS, parameterPermissions);
     }
 }

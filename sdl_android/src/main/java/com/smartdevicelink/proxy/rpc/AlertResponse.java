@@ -1,9 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+
+import java.util.Hashtable;
 
 /**
  * Alert Response is sent, when Alert has been called
@@ -31,14 +34,20 @@ public class AlertResponse extends RPCResponse {
     public AlertResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
+    /**
+     * Constructs a new AlertResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public AlertResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
     public Integer getTryAgainTime() {
-        return (Integer) parameters.get(KEY_TRY_AGAIN_TIME);
+        return getInteger(KEY_TRY_AGAIN_TIME);
     }
     public void setTryAgainTime(Integer tryAgainTime) {
-        if (tryAgainTime != null) {
-            parameters.put(KEY_TRY_AGAIN_TIME, tryAgainTime);
-        } else {
-            parameters.remove(KEY_TRY_AGAIN_TIME);
-        }
+        setParameters(KEY_TRY_AGAIN_TIME, tryAgainTime);
     }
 }

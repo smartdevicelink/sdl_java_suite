@@ -1,9 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
+
+import java.util.Hashtable;
 
 /**
  * Tire pressure status of a single tire.
@@ -41,17 +43,22 @@ public class SingleTireStatus extends RPCStruct {
     public SingleTireStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a newly allocated SingleTireStatus object
+	 * @param status Describes the volume status of a single tire
+	 */
+	public SingleTireStatus(@NonNull ComponentVolumeStatus status){
+		this();
+		setStatus(status);
+	}
     
     /**
      *  set the volume status of a single tire
      * @param status  the volume status of a single tire
      */
-    public void setStatus(ComponentVolumeStatus status) {
-    	if (status != null) {
-    		store.put(KEY_STATUS, status);
-    	} else {
-    		store.remove(KEY_STATUS);
-    	}
+    public void setStatus(@NonNull ComponentVolumeStatus status) {
+    	setValue(KEY_STATUS, status);
     }
     
     /**
@@ -59,12 +66,6 @@ public class SingleTireStatus extends RPCStruct {
      * @return  the volume status of a single tire
      */
     public ComponentVolumeStatus getStatus() {
-        Object obj = store.get(KEY_STATUS);
-        if (obj instanceof ComponentVolumeStatus) {
-            return (ComponentVolumeStatus) obj;
-        } else if (obj instanceof String) {
-        	return ComponentVolumeStatus.valueForString((String) obj);
-        }
-        return null;
+        return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_STATUS);
     }
 }

@@ -1,11 +1,14 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.Language;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Creates a full screen overlay containing a large block of formatted text that
@@ -64,7 +67,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  *	<p>REJECTED </p>
  *	<p>ABORTED</p>
  *
- *  @see  scrollableMessageBody 
+ *  @see scrollableMessageBody
  *  @see TextFieldName
  */
 public class ScrollableMessage extends RPCRequest {
@@ -84,12 +87,21 @@ public class ScrollableMessage extends RPCRequest {
 	 * parameter
 	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public ScrollableMessage(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new ScrollableMessage object
+	 * @param scrollableMessageBody a String value representing the Body of text that can include newlines and tabs <br>
+	 * <b>Notes: </b>Maxlength=500
+	 */
+	public ScrollableMessage(@NonNull String scrollableMessageBody) {
+		this();
+		setScrollableMessageBody(scrollableMessageBody);
+	}
 
 	/**
 	 * Sets a Body of text that can include newlines and tabs
@@ -100,12 +112,8 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500
 	 */
-    public void setScrollableMessageBody(String scrollableMessageBody) {
-        if (scrollableMessageBody != null) {
-            parameters.put(KEY_SCROLLABLE_MESSAGE_BODY, scrollableMessageBody);
-        } else {
-        	parameters.remove(KEY_SCROLLABLE_MESSAGE_BODY);
-        }
+    public void setScrollableMessageBody(@NonNull String scrollableMessageBody) {
+		setParameters(KEY_SCROLLABLE_MESSAGE_BODY, scrollableMessageBody);
     }
 
 	/**
@@ -114,7 +122,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * @return String -a String value
 	 */
     public String getScrollableMessageBody() {
-        return (String) parameters.get(KEY_SCROLLABLE_MESSAGE_BODY);
+        return getString(KEY_SCROLLABLE_MESSAGE_BODY);
     }
 
 	/**
@@ -127,11 +135,7 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <b>Notes</b>:Minval=0; Maxval=65535;Default=30000
 	 */
     public void setTimeout(Integer timeout) {
-        if (timeout != null) {
-            parameters.put(KEY_TIMEOUT, timeout);
-        } else {
-        	parameters.remove(KEY_TIMEOUT);
-        }
+		setParameters(KEY_TIMEOUT, timeout);
     }
 
 	/**
@@ -140,7 +144,7 @@ public class ScrollableMessage extends RPCRequest {
 	 * @return Integer -an Integer value representing an App defined timeout
 	 */
     public Integer getTimeout() {
-        return (Integer) parameters.get(KEY_TIMEOUT);
+        return getInteger(KEY_TIMEOUT);
     }
 
 	/**
@@ -154,11 +158,7 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <b>Notes: </b>Minsize=0, Maxsize=8
 	 */
     public void setSoftButtons(List<SoftButton> softButtons) {
-        if (softButtons != null) {
-            parameters.put(KEY_SOFT_BUTTONS, softButtons);
-        } else {
-        	parameters.remove(KEY_SOFT_BUTTONS);
-        }
+		setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
 
 	/**
@@ -167,21 +167,6 @@ public class ScrollableMessage extends RPCRequest {
 	 */
     @SuppressWarnings("unchecked")
     public List<SoftButton> getSoftButtons() {
-        if (parameters.get(KEY_SOFT_BUTTONS) instanceof List<?>) {
-        	List<?> list = (List<?>)parameters.get(KEY_SOFT_BUTTONS);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof SoftButton) {
-	                return (List<SoftButton>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<SoftButton> newList = new ArrayList<SoftButton>();
-	                for (Object hashObj : list) {
-	                    newList.add(new SoftButton((Hashtable<String, Object>) hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+		return (List<SoftButton>) getObject(SoftButton.class, KEY_SOFT_BUTTONS);
     }
 }

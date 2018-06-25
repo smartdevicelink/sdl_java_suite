@@ -1,9 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Defining sets of parameters, which are permitted or prohibited for a given RPC.
@@ -58,35 +60,33 @@ public class ParameterPermissions extends RPCStruct {
     public ParameterPermissions(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
+
+    /**
+     *  Constructs a newly allocated ParameterPermissions object
+     * @param allowed parameter that is permitted for this given RPC
+     * @param userDisallowed parameter that is prohibited for this given RPC
+     */
+    public ParameterPermissions(@NonNull List<String> allowed, @NonNull List<String> userDisallowed) {
+        this();
+        setAllowed(allowed);
+        setUserDisallowed(userDisallowed);
+    }
+
     /**
      * get a set of all parameters that are permitted for this given RPC.
      * @return a set of all parameters that are permitted for this given RPC.
      */
     @SuppressWarnings("unchecked")
     public List<String> getAllowed() {
-        if (store.get(KEY_ALLOWED) instanceof List<?>) {
-        	List<?> list = (List<?>)store.get( KEY_ALLOWED);
-        	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-                	return (List<String>) list;
-        		}
-        	}
-        }
-        return null;
+        return (List<String>) getObject(String.class, KEY_ALLOWED);
     }
     
     /**
      * set a set of all parameters that are permitted for this given RPC.
      * @param allowed parameter that is permitted for this given RPC
      */
-    public void setAllowed(List<String> allowed) {
-        if (allowed != null) {
-            store.put(KEY_ALLOWED, allowed);
-        } else {
-    		store.remove(KEY_ALLOWED);
-    	}
+    public void setAllowed(@NonNull List<String> allowed) {
+        setValue(KEY_ALLOWED, allowed);
     }
     
     /**
@@ -95,27 +95,14 @@ public class ParameterPermissions extends RPCStruct {
      */
     @SuppressWarnings("unchecked")
     public List<String> getUserDisallowed() {
-        if (store.get(KEY_USER_DISALLOWED) instanceof List<?>) {
-            List<?> list = (List<?>)store.get( KEY_USER_DISALLOWED);
-        	if (list != null && list.size() > 0) {
-        		Object obj = list.get(0);
-        		if (obj instanceof String) {
-                	return (List<String>) list;
-        		}
-        	}
-        }
-        return null;
+        return (List<String>) getObject(String.class, KEY_USER_DISALLOWED);
     }
     
     /**
      * set a set of all parameters that are prohibited for this given RPC.
      * @param userDisallowed paramter that is prohibited for this given RPC
      */
-    public void setUserDisallowed(List<String> userDisallowed) {
-        if (userDisallowed != null) {
-            store.put(KEY_USER_DISALLOWED, userDisallowed);
-        } else {
-    		store.remove(KEY_USER_DISALLOWED);
-    	}
+    public void setUserDisallowed(@NonNull List<String> userDisallowed) {
+        setValue(KEY_USER_DISALLOWED, userDisallowed);
     }
 }

@@ -52,7 +52,44 @@ public class ButtonNameTests extends TestCase {
 		ButtonName enumCustomButton = ButtonName.valueForString(example);
 		example = "SEARCH";
 		ButtonName enumSearch = ButtonName.valueForString(example);
-		
+		example = "AC_MAX";
+		ButtonName enumAcMax = ButtonName.valueForString(example);
+		example = "AC";
+		ButtonName enumAc = ButtonName.valueForString(example);
+		example = "RECIRCULATE";
+		ButtonName enumRecirculate = ButtonName.valueForString(example);
+		example = "FAN_UP";
+		ButtonName enumFanUp = ButtonName.valueForString(example);
+		example = "FAN_DOWN";
+		ButtonName enumFanDown = ButtonName.valueForString(example);
+		example = "TEMP_UP";
+		ButtonName enumTempUp = ButtonName.valueForString(example);
+		example = "TEMP_DOWN";
+		ButtonName enumTempDown = ButtonName.valueForString(example);
+		example = "DEFROST_MAX";
+		ButtonName enumDefrostMax = ButtonName.valueForString(example);
+		example = "DEFROST";
+		ButtonName enumDefrost = ButtonName.valueForString(example);
+		example = "DEFROST_REAR";
+		ButtonName enumDefrostRear = ButtonName.valueForString(example);
+		example = "UPPER_VENT";
+		ButtonName enumUpperVent = ButtonName.valueForString(example);
+		example = "LOWER_VENT";
+		ButtonName enumLowerVent = ButtonName.valueForString(example);
+		example = "VOLUME_UP";
+		ButtonName enumVolumeUp = ButtonName.valueForString(example);
+		example = "VOLUME_DOWN";
+		ButtonName enumVolumeDown = ButtonName.valueForString(example);
+		example = "EJECT";
+		ButtonName enumEject = ButtonName.valueForString(example);
+		example = "SOURCE";
+		ButtonName enumSource = ButtonName.valueForString(example);
+		example = "SHUFFLE";
+		ButtonName enumShuffle = ButtonName.valueForString(example);
+		example = "REPEAT";
+		ButtonName enumRepeat = ButtonName.valueForString(example);
+
+
 		
 		assertNotNull("OK returned null", enumOk);
 		assertNotNull("SEEKLEFT returned null", enumSeekLeft);
@@ -71,6 +108,24 @@ public class ButtonNameTests extends TestCase {
 		assertNotNull("PRESET_9 returned null", enumPreset9);
 		assertNotNull("CUSTOM_BUTTON returned null", enumCustomButton);
 		assertNotNull("SEARCH returned null", enumSearch);
+		assertNotNull("AC_MAX returned null", enumAcMax);
+		assertNotNull("AC returned null", enumAc);
+		assertNotNull("RECIRCULATE returned null", enumRecirculate);
+		assertNotNull("FAN_UP returned null", enumFanUp);
+		assertNotNull("FAN_DOWN returned null", enumFanDown);
+		assertNotNull("TEMP_UP returned null", enumTempUp);
+		assertNotNull("TEMP_DOWN returned null", enumTempDown);
+		assertNotNull("DEFROST_MAX returned null", enumDefrostMax);
+		assertNotNull("DEFROST returned null", enumDefrost);
+		assertNotNull("DEFROST_REAR returned null", enumDefrostRear);
+		assertNotNull("UPPER_VENT returned null", enumUpperVent);
+		assertNotNull("LOWER_VENT returned null", enumLowerVent);
+		assertNotNull("VOLUME_UP returned null", enumVolumeUp);
+		assertNotNull("VOLUME_DOWN returned null", enumVolumeDown);
+		assertNotNull("EJECT returned null", enumEject);
+		assertNotNull("SOURCE returned null", enumSource);
+		assertNotNull("SHUFFLE returned null", enumShuffle);
+		assertNotNull("REPEAT returned null", enumRepeat);
 	}
 
 	/**
@@ -125,7 +180,25 @@ public class ButtonNameTests extends TestCase {
 		enumTestList.add(ButtonName.PRESET_8);
 		enumTestList.add(ButtonName.PRESET_9);	
 		enumTestList.add(ButtonName.CUSTOM_BUTTON);	
-		enumTestList.add(ButtonName.SEARCH);	
+		enumTestList.add(ButtonName.SEARCH);
+		enumTestList.add(ButtonName.AC_MAX);
+		enumTestList.add(ButtonName.AC);
+		enumTestList.add(ButtonName.RECIRCULATE);
+		enumTestList.add(ButtonName.FAN_UP);
+		enumTestList.add(ButtonName.FAN_DOWN);
+		enumTestList.add(ButtonName.TEMP_UP);
+		enumTestList.add(ButtonName.TEMP_DOWN);
+		enumTestList.add(ButtonName.DEFROST_MAX);
+		enumTestList.add(ButtonName.DEFROST);
+		enumTestList.add(ButtonName.DEFROST_REAR);
+		enumTestList.add(ButtonName.UPPER_VENT);
+		enumTestList.add(ButtonName.LOWER_VENT);
+		enumTestList.add(ButtonName.VOLUME_UP);
+		enumTestList.add(ButtonName.VOLUME_DOWN);
+		enumTestList.add(ButtonName.EJECT);
+		enumTestList.add(ButtonName.SOURCE);
+		enumTestList.add(ButtonName.SHUFFLE);
+		enumTestList.add(ButtonName.REPEAT);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

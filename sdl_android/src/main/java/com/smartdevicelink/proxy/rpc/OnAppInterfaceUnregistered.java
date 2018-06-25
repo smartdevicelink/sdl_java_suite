@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
+
+import java.util.Hashtable;
 
 /**
  * <p>Notifies an application that its interface registration has been terminated. This means that all SDL resources 
@@ -55,27 +57,25 @@ public class OnAppInterfaceUnregistered extends RPCNotification {
         super(hash);
     }
     /**
+     *Constructs a newly allocated OnAppInterfaceUnregistered object
+     * @param reason The reason application's interface registration was terminated
+     */
+    public OnAppInterfaceUnregistered(@NonNull AppInterfaceUnregisteredReason reason) {
+        this();
+        setReason(reason);
+    }
+    /**
      * <p>Get the reason the registration was terminated</p>
      * @return {@linkplain AppInterfaceUnregisteredReason} the reason the application's interface registration was terminated
      */    
     public AppInterfaceUnregisteredReason getReason() {
-        Object obj = parameters.get(KEY_REASON);
-        if (obj instanceof AppInterfaceUnregisteredReason) {
-            return (AppInterfaceUnregisteredReason) obj;
-        } else if (obj instanceof String) {
-            return AppInterfaceUnregisteredReason.valueForString((String) obj);
-        }
-        return null;
+        return (AppInterfaceUnregisteredReason) getObject(AppInterfaceUnregisteredReason.class, KEY_REASON);
     }
     /**
      * <p>Set the reason application's interface was terminated</p>
      * @param reason The reason application's interface registration was terminated
      */    
-    public void setReason( AppInterfaceUnregisteredReason reason ) {
-        if (reason != null) {
-            parameters.put(KEY_REASON, reason );
-        } else {
-            parameters.remove(KEY_REASON);
-        }
+    public void setReason( @NonNull AppInterfaceUnregisteredReason reason ) {
+        setParameters(KEY_REASON, reason);
     }
 }

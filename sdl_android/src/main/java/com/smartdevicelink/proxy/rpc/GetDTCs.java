@@ -1,9 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
 
 /**
  * This RPC allows to request diagnostic module trouble codes from a certain
@@ -69,12 +71,21 @@ public class GetDTCs extends RPCRequest {
 	 * <p>Constructs a new GetDTCs object indicated by the Hashtable parameter
 	 * </p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public GetDTCs(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new GetDTCs object
+	 * @param ecuName an Integer value representing a name of the module to receive the DTC form <br>
+	 * <b>Notes: </b>Minvalue:0; Maxvalue:65535
+	 */
+	public GetDTCs(@NonNull Integer ecuName) {
+		this();
+		setEcuName(ecuName);
+	}
 
 	/**
 	 * Sets a name of the module to receive the DTC form
@@ -85,12 +96,8 @@ public class GetDTCs extends RPCRequest {
 	 *            <p>
 	 *            <b>Notes:</p> </b>Minvalue:0; Maxvalue:65535
 	 */
-    public void setEcuName(Integer ecuName) {
-    	if (ecuName != null) {
-    		parameters.put(KEY_ECU_NAME, ecuName);
-    	} else {
-    		parameters.remove(KEY_ECU_NAME);
-    	}
+    public void setEcuName(@NonNull Integer ecuName) {
+		setParameters(KEY_ECU_NAME, ecuName);
     }
 
 	/**
@@ -100,16 +107,12 @@ public class GetDTCs extends RPCRequest {
 	 *         receive the DTC form
 	 */
     public Integer getEcuName() {
-    	return (Integer) parameters.get(KEY_ECU_NAME);
+    	return getInteger(KEY_ECU_NAME);
     }
     public void setDtcMask(Integer dtcMask) {
-    	if (dtcMask != null) {
-    		parameters.put(KEY_DTC_MASK, dtcMask);
-    	} else {
-    		parameters.remove(KEY_DTC_MASK);
-    	}
+		setParameters(KEY_DTC_MASK, dtcMask);
     }
     public Integer getDtcMask() {
-    	return (Integer) parameters.get(KEY_DTC_MASK);
+    	return getInteger(KEY_DTC_MASK);
     }
 }

@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
+
+import java.util.Hashtable;
 
 /**
  * On-screen keyboard event. Can be full string or individual keypresses depending on keyboard mode.
@@ -46,7 +48,6 @@ public class OnKeyboardInput extends RPCNotification {
 	/**
 	 * Constructs a new OnKeyboardInput object
 	 */
-
     public OnKeyboardInput() {
         super(FunctionID.ON_KEYBOARD_INPUT.toString());
     }
@@ -63,34 +64,27 @@ public class OnKeyboardInput extends RPCNotification {
     public OnKeyboardInput(Hashtable<String, Object> hash) {
         super(hash);
     }
-
-    public KeyboardEvent getEvent() {
-        Object obj = parameters.get(KEY_EVENT);
-        if (obj instanceof KeyboardEvent) {
-            return (KeyboardEvent) obj;
-        } else if (obj instanceof String) {
-            return KeyboardEvent.valueForString((String) obj);
-        }
-        return null;
+    /**
+     * Constructs a new OnKeyboardInput object
+     */
+    public OnKeyboardInput(@NonNull KeyboardEvent event) {
+        this();
+        setEvent(event);
     }
 
-    public void setEvent(KeyboardEvent event) {
-        if (event != null) {
-            parameters.put(KEY_EVENT, event);
-        } else {
-            parameters.remove(KEY_EVENT);
-        }
+    public KeyboardEvent getEvent() {
+        return (KeyboardEvent) getObject(KeyboardEvent.class, KEY_EVENT);
+    }
+
+    public void setEvent(@NonNull KeyboardEvent event) {
+        setParameters(KEY_EVENT, event);
     }
 
     public void setData(String data) {
-        if (data != null) {
-            parameters.put(KEY_DATA, data);
-        } else {
-            parameters.remove(KEY_DATA);
-        }
+        setParameters(KEY_DATA, data);
     }
     public String getData() {
-        Object obj = parameters.get(KEY_DATA);
+        Object obj = getParameters(KEY_DATA);
         if (obj instanceof String) {
             return (String) obj;
         }

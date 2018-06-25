@@ -1,9 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+
+import java.util.Hashtable;
 
 /**
  * Delete File Response is sent, when DeleteFile has been called
@@ -22,14 +25,23 @@ public class DeleteFileResponse extends RPCResponse {
     public DeleteFileResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
-    public void setSpaceAvailable(Integer spaceAvailable) {
-        if (spaceAvailable != null) {
-            parameters.put(KEY_SPACE_AVAILABLE, spaceAvailable);
-        } else {
-        	parameters.remove(KEY_SPACE_AVAILABLE);
-        }
+    /**
+     * Constructs a new DeleteFileResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     * @param spaceAvailable  the total local space available on the module for the registered app.
+     */
+    public DeleteFileResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull Integer spaceAvailable) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+        setSpaceAvailable(spaceAvailable);
+    }
+    public void setSpaceAvailable(@NonNull Integer spaceAvailable) {
+        setParameters(KEY_SPACE_AVAILABLE, spaceAvailable);
     }
     public Integer getSpaceAvailable() {
-        return (Integer) parameters.get(KEY_SPACE_AVAILABLE);
+        return getInteger(KEY_SPACE_AVAILABLE);
     }
+
 }

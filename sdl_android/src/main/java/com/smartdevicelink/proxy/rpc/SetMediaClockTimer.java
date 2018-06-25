@@ -1,10 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
+
+import java.util.Hashtable;
+
 /**
  * Sets the media clock/timer value and the update method (e.g.count-up,
  * count-down, etc.)
@@ -84,12 +87,26 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * parameter
 	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */    
     public SetMediaClockTimer(Hashtable<String, Object> hash) {
         super(hash);
     }
+	/**
+	 * Constructs a new SetMediaClockTimer object
+	 * @param updateMode a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME) <br>
+	 * <b>Notes: </b>
+	 *      <ul>
+	 *            <li>When updateMode is PAUSE, RESUME or CLEAR, the start time value
+	 *            is ignored</li>
+	 *            <li>When updateMode is RESUME, the timer resumes counting from
+	 *            the timer's value when it was paused</li>
+	 *      </ul>
+	 */
+	public SetMediaClockTimer(@NonNull UpdateMode updateMode) {
+		this();
+		setUpdateMode(updateMode);
+	}
 	/**
 	 * Gets the Start Time which media clock timer is set
 	 * 
@@ -98,13 +115,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 */    
     @SuppressWarnings("unchecked")
     public StartTime getStartTime() {
-        Object obj = parameters.get(KEY_START_TIME);
-        if (obj instanceof StartTime) {
-        	return (StartTime)obj;
-        } else if (obj instanceof Hashtable) {
-        	return new StartTime((Hashtable<String, Object>)obj);
-        }
-        return null;
+		return (StartTime) getObject(StartTime.class, KEY_START_TIME);
     }
 	/**
 	 * Sets a Start Time with specifying hour, minute, second values
@@ -120,30 +131,16 @@ public class SetMediaClockTimer extends RPCRequest {
 	 *            </ul>
 	 */    
     public void setStartTime( StartTime startTime ) {
-        if (startTime != null) {
-            parameters.put(KEY_START_TIME, startTime );
-        } else {
-            parameters.remove(KEY_START_TIME);
-        }
+		setParameters(KEY_START_TIME, startTime);
     }
     
     @SuppressWarnings("unchecked")
     public StartTime getEndTime() {
-        Object obj = parameters.get(KEY_END_TIME);
-        if (obj instanceof StartTime) {
-        	return (StartTime)obj;
-        } else if (obj instanceof Hashtable) {
-        	return new StartTime((Hashtable<String, Object>)obj);
-        }
-        return null;
+		return (StartTime) getObject(StartTime.class, KEY_END_TIME);
     }
     
     public void setEndTime( StartTime endTime ) {
-        if (endTime != null) {
-            parameters.put(KEY_END_TIME, endTime );
-        } else {
-            parameters.remove(KEY_END_TIME);
-        }
+		setParameters(KEY_END_TIME, endTime);
     }
     
 	/**
@@ -152,13 +149,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * @return UpdateMode -a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME)
 	 */    
     public UpdateMode getUpdateMode() {
-        Object obj = parameters.get(KEY_UPDATE_MODE);
-        if (obj instanceof UpdateMode) {
-            return (UpdateMode) obj;
-        } else if (obj instanceof String) {
-            return UpdateMode.valueForString((String) obj);
-        }
-        return null;
+		return (UpdateMode) getObject(UpdateMode.class, KEY_UPDATE_MODE);
     }
 	/**
 	 * Sets the media clock/timer update mode (COUNTUP/COUNTDOWN/PAUSE/RESUME)
@@ -174,11 +165,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	 *            the timer's value when it was paused</li>
 	 *            </ul>
 	 */    
-    public void setUpdateMode( UpdateMode updateMode ) {
-        if (updateMode != null) {
-            parameters.put(KEY_UPDATE_MODE, updateMode );
-        } else {
-            parameters.remove(KEY_UPDATE_MODE);
-        }
+    public void setUpdateMode( @NonNull UpdateMode updateMode ) {
+		setParameters(KEY_UPDATE_MODE, updateMode);
     }
 }

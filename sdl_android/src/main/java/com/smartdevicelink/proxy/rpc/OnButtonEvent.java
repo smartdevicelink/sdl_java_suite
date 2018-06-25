@@ -1,11 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ButtonEventMode;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
+
+import java.util.Hashtable;
 
 /**
  * Notifies application that user has depressed or released a button to which
@@ -107,60 +109,46 @@ public class OnButtonEvent extends RPCNotification {
     /**
      * <p>Returns <i>{@linkplain ButtonName}</i> the button's name</p>
      * @return ButtonName Name of the button
-     */    
+     */
+    /**
+     *Constructs a newly allocated OnButtonEvent object
+     * @param buttonName name of the button
+     * @param buttonEventMode indicates the button is pressed or released
+     */
+    public OnButtonEvent(@NonNull ButtonName buttonName, @NonNull ButtonEventMode buttonEventMode) {
+        this();
+        setButtonName(buttonName);
+        setButtonEventMode(buttonEventMode);
+    }
     public ButtonName getButtonName() {
-        Object obj = parameters.get(KEY_BUTTON_NAME);
-        if (obj instanceof ButtonName) {
-            return (ButtonName) obj;
-        } else if (obj instanceof String) {
-            return ButtonName.valueForString((String) obj);
-        }
-        return null;
+        return (ButtonName) getObject(ButtonName.class, KEY_BUTTON_NAME);
     }
     /**
      * <p>Set the button's name</p>    
      * @param buttonName name of the button
      */    
-    public void setButtonName(ButtonName buttonName) {
-        if (buttonName != null) {
-            parameters.put(KEY_BUTTON_NAME, buttonName);
-        } else {
-        	parameters.remove(KEY_BUTTON_NAME);
-        }
+    public void setButtonName(@NonNull ButtonName buttonName) {
+        setParameters(KEY_BUTTON_NAME, buttonName);
     }
     /**
      * <p>Return <i>{@linkplain ButtonEventMode} indicates the button was depressed or released</i></p>
      * @return ButtonEventMode the button depressed or released
      */    
     public ButtonEventMode getButtonEventMode() {
-        Object obj = parameters.get(KEY_BUTTON_EVENT_MODE);
-        if (obj instanceof ButtonEventMode) {
-            return (ButtonEventMode) obj;
-        } else if (obj instanceof String) {
-            return ButtonEventMode.valueForString((String) obj);
-        }
-        return null;
+        return (ButtonEventMode) getObject(ButtonEventMode.class, KEY_BUTTON_EVENT_MODE);
     }
     /**
      * <p> Set the event mode of the button,pressed or released</p>
      * @param buttonEventMode indicates the button is pressed or released
      * @see ButtonEventMode
      */    
-    public void setButtonEventMode(ButtonEventMode buttonEventMode) {
-        if (buttonEventMode != null) {
-            parameters.put(KEY_BUTTON_EVENT_MODE, buttonEventMode);
-        } else {
-    		parameters.remove(KEY_BUTTON_EVENT_MODE);
-    	}
+    public void setButtonEventMode(@NonNull ButtonEventMode buttonEventMode) {
+        setParameters(KEY_BUTTON_EVENT_MODE, buttonEventMode);
     }
     public void setCustomButtonID(Integer customButtonID) {
-    	if (customButtonID != null) {
-    		parameters.put(KEY_CUSTOM_BUTTON_ID, customButtonID);
-    	} else {
-    		parameters.remove(KEY_CUSTOM_BUTTON_ID);
-    	}
+        setParameters(KEY_CUSTOM_BUTTON_ID, customButtonID);
     }
     public Integer getCustomButtonID() {
-    	return (Integer) parameters.get(KEY_CUSTOM_BUTTON_ID);
+    	return getInteger(KEY_CUSTOM_BUTTON_ID);
     }
 }

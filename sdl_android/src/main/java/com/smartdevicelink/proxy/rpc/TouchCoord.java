@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -45,42 +47,43 @@ import java.util.Hashtable;
 public class TouchCoord extends RPCStruct {
     public static final String KEY_X = "x";
     public static final String KEY_Y = "y";
+
     public TouchCoord() {}
+
 	 /**
 		 * <p>Constructs a new TouchCoord object indicated by the Hashtable parameter</p>
-		 * 
-		 * 
-		 * @param hash
-		 * <p>
-		 *            The Hashtable to use</p>
-		 */ 
-
+		 *
+		 * @param hash The Hashtable to use
+		 */
     public TouchCoord(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new TouchCoord object
+	 * @param x The x coordinate of the touch.
+	 * @param y The y coordinate of the touch.
+	 */
+	public TouchCoord(@NonNull Integer x, @NonNull Integer y){
+		this();
+		setX(x);
+		setY(y);
+	}
     
-    public void setX(Integer x) {
-        if (x != null) {
-            store.put(KEY_X, x);
-        } else {
-        	store.remove(KEY_X);
-        }
+    public void setX(@NonNull Integer x) {
+        setValue(KEY_X, x);
     }
     
     public Integer getX() {
-        return (Integer) store.get(KEY_X);
+        return getInteger(KEY_X);
     }
     
-    public void setY(Integer y) {
-        if (y != null) {
-            store.put(KEY_Y, y);
-        } else {
-        	store.remove(KEY_Y);
-        }
+    public void setY(@NonNull Integer y) {
+        setValue(KEY_Y, y);
     }
     
     public Integer getY() {
-        return (Integer) store.get(KEY_Y);
+        return getInteger(KEY_Y);
     }
     
 }

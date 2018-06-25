@@ -1,10 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-import java.util.List;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Get DTCs Response is sent, when GetDTCs has been called
@@ -24,39 +27,34 @@ public class GetDTCsResponse extends RPCResponse{
         super(hash);
     }
 
+    /**
+     * Constructs a new GetDTCsResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     * @param ecuHeader
+     */
+    public GetDTCsResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull Integer ecuHeader) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+        setEcuHeader(ecuHeader);
+    }
+
     @SuppressWarnings("unchecked")
     public List<String> getDtc(){
-        if(parameters.get(KEY_DTC) instanceof List<?>){
-            List<?> list = (List<?>) parameters.get(KEY_DTC);
-            if(list != null && list.size() > 0){
-                Object obj = list.get(0);
-                if(obj instanceof String){
-                    return (List<String>) list;
-                }
-            }
-        }
-        return null;
+        return (List<String>) getObject(String.class, KEY_DTC);
     }
 
     public void setDtc(List<String> dtc){
-        if(dtc != null){
-            parameters.put(KEY_DTC, dtc);
-        }
-        else{
-            parameters.remove(KEY_DTC);
-        }
+        setParameters(KEY_DTC, dtc);
     }
     
     public Integer getEcuHeader(){
-        return (Integer) parameters.get(KEY_ECU_HEADER);
+        return getInteger(KEY_ECU_HEADER);
     }
     
-    public void setEcuHeader(Integer ecuHeader){
-        if(ecuHeader != null){
-            parameters.put(KEY_ECU_HEADER, ecuHeader);
-        }
-        else{
-            parameters.remove(KEY_ECU_HEADER);
-        }
+    public void setEcuHeader(@NonNull Integer ecuHeader){
+        setParameters(KEY_ECU_HEADER, ecuHeader);
     }
+
 }

@@ -1,10 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
+import com.smartdevicelink.proxy.RPCStruct;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.smartdevicelink.proxy.RPCStruct;
 /**
  * <p>For touchscreen interactions, the mode of how the choices are presented.</p>
  *
@@ -63,25 +66,31 @@ public class TouchEvent extends RPCStruct {
     /**
 	 * <p>Constructs a new TouchEvent object indicated by the Hashtable parameter</p>
 	 * 
-	 * 
-	 * @param hash
-	 * <p>
-	 *            The Hashtable to use</p>
+	 * @param hash The Hashtable to use
 	 */
     public TouchEvent(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new TouchEvent object
+	 * @param id A touch's unique identifier.
+	 * @param ts The time that the touch was recorded.
+	 * @param c The coordinates of the screen area where the touch event occurred.
+	 */
+	public TouchEvent(@NonNull Integer id, @NonNull List<Long> ts, @NonNull List<TouchCoord> c){
+		this();
+		setId(id);
+		setTimestamps(ts);
+		setTouchCoordinates(c);
+	}
     
-    public void setId(Integer id) {
-        if (id != null) {
-            store.put(KEY_ID, id);
-        } else {
-        	store.remove(KEY_ID);
-        }
+    public void setId(@NonNull Integer id) {
+        setValue(KEY_ID, id);
     }
     
     public Integer getId() {
-        return (Integer) store.get(KEY_ID);
+        return getInteger(KEY_ID);
     }
     
     /**
@@ -96,8 +105,8 @@ public class TouchEvent extends RPCStruct {
     
     @SuppressWarnings("unchecked")
     public List<Long> getTimestamps() {
-    	if(store.get(KEY_TS) instanceof List<?>){
-    		List<?> list = (List<?>)store.get(KEY_TS);
+    	if(getValue(KEY_TS) instanceof List<?>){
+    		List<?> list = (List<?>) getValue(KEY_TS);
     		if(list != null && list.size()>0){
         		Object obj = list.get(0);
         		if(obj instanceof Integer){ //Backwards case
@@ -116,12 +125,8 @@ public class TouchEvent extends RPCStruct {
         return null;
     }
     
-    public void setTimestamps(List<Long> ts){
-    	if (ts != null) {
-            store.put(KEY_TS, ts);
-        } else {
-        	store.remove(KEY_TS);
-        }
+    public void setTimestamps(@NonNull List<Long> ts){
+        setValue(KEY_TS, ts);
     }
     
     /**
@@ -143,24 +148,9 @@ public class TouchEvent extends RPCStruct {
     public List<TouchCoord> getC() {
     	return getTouchCoordinates();
     }
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
     public List<TouchCoord> getTouchCoordinates() {
-        if (store.get(KEY_C) instanceof List<?>) {
-        	List<?> list = (List<?>)store.get(KEY_C);
-	        if (list != null && list.size() > 0) {
-	            Object obj = list.get(0);
-	            if (obj instanceof TouchCoord) {
-	                return (List<TouchCoord>) list;
-	            } else if (obj instanceof Hashtable) {
-	            	List<TouchCoord> newList = new ArrayList<TouchCoord>();
-	                for (Object hashObj : list) {
-	                    newList.add(new TouchCoord((Hashtable<String, Object>) hashObj));
-	                }
-	                return newList;
-	            }
-	        }
-        }
-        return null;
+        return (List<TouchCoord>) getObject(TouchCoord.class, KEY_C);
     } 
     
     /**
@@ -173,11 +163,7 @@ public class TouchEvent extends RPCStruct {
     	setTouchCoordinates(c);
     }
     
-    public void setTouchCoordinates( List<TouchCoord> c ) {
-        if (c != null) {
-            store.put(KEY_C, c );
-        } else {
-        	store.remove(KEY_C);
-        }        
+    public void setTouchCoordinates(@NonNull List<TouchCoord> c ) {
+        setValue(KEY_C, c);
     }          
 }

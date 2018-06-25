@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
+
+import java.util.Hashtable;
 
 /**
  * <p>Notifies the application of the current driver distraction state (whether driver distraction rules are in effect, or 
@@ -54,27 +56,25 @@ public class OnDriverDistraction  extends RPCNotification {
         super(hash);
     }
     /**
+     *Constructs a newly allocated OnDriverDistraction object
+     * @param state the current driver distraction state
+     */
+    public OnDriverDistraction(@NonNull DriverDistractionState state) {
+        this();
+        setState(state);
+    }
+    /**
      * <p>Called to get the current driver distraction state(i.e. whether driver distraction rules are in effect, or not)</p>
      * @return {@linkplain DriverDistractionState} the Current driver distraction state.
      */    
     public DriverDistractionState getState() {
-        Object obj = parameters.get(KEY_STATE);
-        if (obj instanceof DriverDistractionState) {
-        	return (DriverDistractionState)obj;
-        } else if(obj instanceof String) {
-        	return DriverDistractionState.valueForString((String) obj);
-        }    	
-    	return null;
+        return (DriverDistractionState) getObject(DriverDistractionState.class, KEY_STATE);
     }
     /**
      * <p>Called to set the driver distraction state(i.e. whether driver distraction rules are in effect, or not)</p>
      * @param state the current driver distraction state
      */    
-    public void setState( DriverDistractionState state ) {
-        if (state != null) {
-            parameters.put(KEY_STATE, state );
-        } else {
-            parameters.remove(KEY_STATE);
-        }
+    public void setState( @NonNull DriverDistractionState state ) {
+        setParameters(KEY_STATE, state);
     }  
 }
