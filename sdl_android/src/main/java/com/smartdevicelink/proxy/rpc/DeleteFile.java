@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -55,14 +57,20 @@ public class DeleteFile extends RPCRequest {
 
 	/**
 	 * <p>Constructs a new DeleteFile object indicated by the Hashtable parameter</p>
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public DeleteFile(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new DeleteFile object
+	 * @param sdlFileName a String value representing a file reference name
+	 */
+	public DeleteFile(@NonNull String sdlFileName) {
+		this();
+		setSdlFileName(sdlFileName);
+	}
 
 	/**
 	 * Sets a file reference name
@@ -70,7 +78,7 @@ public class DeleteFile extends RPCRequest {
 	 * @param sdlFileName
 	 *            a String value representing a file reference name
 	 */
-    public void setSdlFileName(String sdlFileName) {
+    public void setSdlFileName(@NonNull String sdlFileName) {
 		setParameters(KEY_SDL_FILE_NAME, sdlFileName);
     }
 

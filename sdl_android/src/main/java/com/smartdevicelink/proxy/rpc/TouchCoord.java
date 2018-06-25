@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -45,21 +47,30 @@ import java.util.Hashtable;
 public class TouchCoord extends RPCStruct {
     public static final String KEY_X = "x";
     public static final String KEY_Y = "y";
+
     public TouchCoord() {}
+
 	 /**
 		 * <p>Constructs a new TouchCoord object indicated by the Hashtable parameter</p>
-		 * 
-		 * 
-		 * @param hash
-		 * <p>
-		 *            The Hashtable to use</p>
-		 */ 
-
+		 *
+		 * @param hash The Hashtable to use
+		 */
     public TouchCoord(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new TouchCoord object
+	 * @param x The x coordinate of the touch.
+	 * @param y The y coordinate of the touch.
+	 */
+	public TouchCoord(@NonNull Integer x, @NonNull Integer y){
+		this();
+		setX(x);
+		setY(y);
+	}
     
-    public void setX(Integer x) {
+    public void setX(@NonNull Integer x) {
         setValue(KEY_X, x);
     }
     
@@ -67,7 +78,7 @@ public class TouchCoord extends RPCStruct {
         return getInteger(KEY_X);
     }
     
-    public void setY(Integer y) {
+    public void setY(@NonNull Integer y) {
         setValue(KEY_Y, y);
     }
     

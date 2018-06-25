@@ -1,7 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -35,7 +38,18 @@ public class SetDisplayLayoutResponse extends RPCResponse {
     public SetDisplayLayoutResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
+
+    /**
+     * Constructs a new SetDisplayLayoutResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public SetDisplayLayoutResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
+
     @SuppressWarnings("unchecked")
     public DisplayCapabilities getDisplayCapabilities() {
         return (DisplayCapabilities) getObject(DisplayCapabilities.class, KEY_DISPLAY_CAPABILITIES);

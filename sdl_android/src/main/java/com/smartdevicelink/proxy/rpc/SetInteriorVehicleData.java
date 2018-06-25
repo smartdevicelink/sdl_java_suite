@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -32,11 +34,20 @@ public class SetInteriorVehicleData extends RPCRequest {
     }
 
     /**
+     * Constructs a new SetInteriorVehicleData object
+     * @param moduleData
+     */
+    public SetInteriorVehicleData(@NonNull ModuleData moduleData) {
+        this();
+        setModuleData(moduleData);
+    }
+
+    /**
      * Sets the moduleData
      *
      * @param moduleData
      */
-    public void setModuleData(ModuleData moduleData) {
+    public void setModuleData(@NonNull ModuleData moduleData) {
         setParameters(KEY_MODULE_DATA, moduleData);
     }
 
