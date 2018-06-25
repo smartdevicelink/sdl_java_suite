@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -68,6 +70,16 @@ public class DeleteSubMenu extends RPCRequest {
         super(hash);
     }
     /**
+     * Constructs a new DeleteSubMenu object
+     * @param menuID an Integer value representing menuID that identifies the SubMenu to be delete
+     *
+     * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
+     */
+    public DeleteSubMenu(@NonNull Integer menuID) {
+        this();
+        setMenuID(menuID);
+    }
+    /**
      * Gets the Menu ID that identifies the SubMenu to be delete
      * @return Integer -an Integer value representing menuID that identifies the SubMenu to be delete
      */    
@@ -80,7 +92,7 @@ public class DeleteSubMenu extends RPCRequest {
      * 
      * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>
      */    
-    public void setMenuID( Integer menuID ) {
+    public void setMenuID( @NonNull Integer menuID ) {
         setParameters(KEY_MENU_ID, menuID);
     }
 }

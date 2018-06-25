@@ -231,6 +231,10 @@ public class RPCStruct {
 		return (Double) store.get(key);
 	}
 
+	public Float getFloat(String key) {
+		return (Float) store.get(key);
+	}
+
 	public Boolean getBoolean(String key) { return (Boolean) store.get(key); }
 
 	public Long getLong(String key){

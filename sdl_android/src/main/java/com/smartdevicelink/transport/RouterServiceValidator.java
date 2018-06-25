@@ -22,8 +22,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
+import android.os.Build;
 import android.util.Log;
 
+import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.HttpRequestTask;
 import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;
 
@@ -117,18 +119,29 @@ public class RouterServiceValidator {
 		
 		if(this.service != null){
 			Log.d(TAG, "Supplied service name of " + this.service.getClassName());
-			if(!isServiceRunning(context,this.service)){
+			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O && !isServiceRunning(context,this.service)){
 				//This means our service isn't actually running, so set to null. Hopefully we can find a real router service after this.
 				service = null;
 				Log.w(TAG, "Supplied service is not actually running.");
+			} else {
+				// If the running router service is created by this app, the validation is good by default
+				if (this.service.getPackageName().equals(context.getPackageName())) {
+					return true;
+				}
 			}
 		}
 		if(this.service == null){
-			this.service= componentNameForServiceRunning(pm); //Change this to an array if multiple services are started?
-			if(this.service == null){ //if this is still null we know there is no service running so we can return false
+			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O ) {
+				this.service = componentNameForServiceRunning(pm); //Change this to an array if multiple services are started?
+				if (this.service == null) { //if this is still null we know there is no service running so we can return false
+					wakeUpRouterServices();
+					return false;
+				}
+			}else{
 				wakeUpRouterServices();
 				return false;
 			}
+
 		}
 		
 		//Log.d(TAG, "Checking app package: " + service.getClassName());
@@ -154,7 +167,7 @@ public class RouterServiceValidator {
 		if(BluetoothAdapter.getDefaultAdapter()!=null && BluetoothAdapter.getDefaultAdapter().isEnabled()){
 			Intent intent = new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION);
 			intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
-			context.sendBroadcast(intent);
+			AndroidTools.sendExplicitBroadcast(context,intent,null);
 		}
 	}
 	public ComponentName getService(){

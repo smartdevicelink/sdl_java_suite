@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -74,9 +76,21 @@ public class Choice extends RPCStruct {
         super(hash);
     }
     /**
+     * Constructs a newly allocated Choice object
+     * @param choiceID Min: 0  Max: 65535
+     * @param menuName the menu name
+     * @param vrCommands the List of  vrCommands
+     */
+    public Choice(@NonNull Integer choiceID, @NonNull String menuName, @NonNull List<String> vrCommands) {
+        this();
+        setChoiceID(choiceID);
+        setMenuName(menuName);
+        setVrCommands(vrCommands);
+    }
+    /**
      * Get the application-scoped identifier that uniquely identifies this choice.
      * @return choiceID Min: 0;  Max: 65535
-     */    
+     */
     public Integer getChoiceID() {
         return getInteger(KEY_CHOICE_ID);
     }
@@ -84,7 +98,7 @@ public class Choice extends RPCStruct {
      * Set the application-scoped identifier that uniquely identifies this choice.
      * @param choiceID Min: 0  Max: 65535
      */    
-    public void setChoiceID(Integer choiceID) {
+    public void setChoiceID(@NonNull Integer choiceID) {
         setValue(KEY_CHOICE_ID, choiceID);
     }
     /**
@@ -102,7 +116,7 @@ public class Choice extends RPCStruct {
      *				Max: 100
      * @param menuName the menu name
      */    
-    public void setMenuName(String menuName) {
+    public void setMenuName(@NonNull String menuName) {
         setValue(KEY_MENU_NAME, menuName);
     }
     /**
@@ -119,7 +133,7 @@ public class Choice extends RPCStruct {
      * @param vrCommands the List of  vrCommands
      * @since SmartDeviceLink 2.0
      */    
-    public void setVrCommands(List<String> vrCommands) {
+    public void setVrCommands(@NonNull List<String> vrCommands) {
         setValue(KEY_VR_COMMANDS, vrCommands);
     }
     /**

@@ -115,7 +115,28 @@ public enum ButtonName{
 	 * 
 	 * @since SmartDeviceLink 1.0
 	 */
-	PRESET_9, CUSTOM_BUTTON, SEARCH;
+	PRESET_9,
+	CUSTOM_BUTTON,
+	SEARCH,
+	AC_MAX,
+	AC,
+	RECIRCULATE,
+	FAN_UP,
+	FAN_DOWN,
+	TEMP_UP,
+	TEMP_DOWN,
+	DEFROST_MAX,
+	DEFROST,
+	DEFROST_REAR,
+	UPPER_VENT,
+	LOWER_VENT,
+	VOLUME_UP,
+	VOLUME_DOWN,
+	EJECT,
+	SOURCE,
+	SHUFFLE,
+	REPEAT,
+	;
 
     public static ButtonName valueForString(String value) {
         try{

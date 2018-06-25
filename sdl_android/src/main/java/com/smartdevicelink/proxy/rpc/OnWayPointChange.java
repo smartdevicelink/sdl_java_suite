@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 
@@ -17,12 +19,17 @@ public class OnWayPointChange extends RPCNotification {
 		super(hash);
 	}
 
+	public OnWayPointChange(@NonNull List<LocationDetails> wayPoints) {
+		this();
+		setWayPoints(wayPoints);
+	}
+
     @SuppressWarnings("unchecked")
 	public List<LocationDetails> getWayPoints() {
 		return (List<LocationDetails>) getObject(LocationDetails.class, KEY_WAY_POINTS);
 	}
 
-	public void setWayPoints(List<LocationDetails> wayPoints) {
+	public void setWayPoints(@NonNull List<LocationDetails> wayPoints) {
 		setParameters(KEY_WAY_POINTS, wayPoints);
 	}
 }

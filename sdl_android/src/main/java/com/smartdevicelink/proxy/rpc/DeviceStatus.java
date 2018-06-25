@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
@@ -126,12 +128,42 @@ public class DeviceStatus extends RPCStruct {
     public DeviceStatus(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
+
+    /**
+     * Constructs a newly allocated DeviceStatus object
+     * @param voiceRecOn
+     * @param btIconOn the bluetooth connection established
+     * @param callActive a call is being active
+     * @param phoneRoaming  the phone is in roaming mode
+     * @param textMsgAvailable a textmessage is available
+     * @param battLevelStatus battery level status
+     * @param stereoAudioOutputMuted the status of the stereo audio output channel
+     * @param monoAudioOutputMuted the status of the mono audio output channel
+     * @param signalLevelStatus signal level status
+     * @param primaryAudioSource the current primary audio source of SDL (if selected
+     * @param eCallEventActive
+     */
+    public DeviceStatus(@NonNull Boolean voiceRecOn, @NonNull Boolean btIconOn, @NonNull Boolean callActive, @NonNull Boolean phoneRoaming, @NonNull Boolean textMsgAvailable, @NonNull DeviceLevelStatus battLevelStatus,
+                        @NonNull Boolean stereoAudioOutputMuted, @NonNull Boolean monoAudioOutputMuted, @NonNull DeviceLevelStatus signalLevelStatus, @NonNull PrimaryAudioSource primaryAudioSource, @NonNull Boolean eCallEventActive) {
+        this();
+        setVoiceRecOn(voiceRecOn);
+        setBtIconOn(btIconOn);
+        setCallActive(callActive);
+        setPhoneRoaming(phoneRoaming);
+        setTextMsgAvailable(textMsgAvailable);
+        setBattLevelStatus(battLevelStatus);
+        setStereoAudioOutputMuted(stereoAudioOutputMuted);
+        setMonoAudioOutputMuted(monoAudioOutputMuted);
+        setSignalLevelStatus(signalLevelStatus);
+        setPrimaryAudioSource(primaryAudioSource);
+        setECallEventActive(eCallEventActive);
+    }
+
     /**
      * set the voice recognition on or off
      * @param voiceRecOn
      */
-    public void setVoiceRecOn(Boolean voiceRecOn) {
+    public void setVoiceRecOn(@NonNull Boolean voiceRecOn) {
         setValue(KEY_VOICE_REC_ON, voiceRecOn);
     }
     
@@ -147,7 +179,7 @@ public class DeviceStatus extends RPCStruct {
      * set the bluetooth connection established
      * @param btIconOn the bluetooth connection established
      */
-    public void setBtIconOn(Boolean btIconOn) {
+    public void setBtIconOn(@NonNull Boolean btIconOn) {
         setValue(KEY_BT_ICON_ON, btIconOn);
     }
     
@@ -163,7 +195,7 @@ public class DeviceStatus extends RPCStruct {
      * set a call is being active
      * @param callActive a call is being active
      */
-    public void setCallActive(Boolean callActive) {
+    public void setCallActive(@NonNull Boolean callActive) {
         setValue(KEY_CALL_ACTIVE, callActive);
     }
     
@@ -179,7 +211,7 @@ public class DeviceStatus extends RPCStruct {
      * set the phone is in roaming mode
      * @param phoneRoaming  the phone is in roaming mode
      */
-    public void setPhoneRoaming(Boolean phoneRoaming) {
+    public void setPhoneRoaming(@NonNull Boolean phoneRoaming) {
         setValue(KEY_PHONE_ROAMING, phoneRoaming);
     }
     
@@ -190,7 +222,7 @@ public class DeviceStatus extends RPCStruct {
     public Boolean getPhoneRoaming() {
         return getBoolean(KEY_PHONE_ROAMING);
     }
-    public void setTextMsgAvailable(Boolean textMsgAvailable) {
+    public void setTextMsgAvailable(@NonNull Boolean textMsgAvailable) {
         setValue(KEY_TEXT_MSG_AVAILABLE, textMsgAvailable);
     }
     
@@ -206,7 +238,7 @@ public class DeviceStatus extends RPCStruct {
      * set battery level status
      * @param battLevelStatus battery level status
      */
-    public void setBattLevelStatus(DeviceLevelStatus battLevelStatus) {
+    public void setBattLevelStatus(@NonNull DeviceLevelStatus battLevelStatus) {
         setValue(KEY_BATT_LEVEL_STATUS, battLevelStatus);
     }
     
@@ -222,7 +254,7 @@ public class DeviceStatus extends RPCStruct {
      * set the status of the stereo audio output channel
      * @param stereoAudioOutputMuted the status of the stereo audio output channel
      */
-    public void setStereoAudioOutputMuted(Boolean stereoAudioOutputMuted) {
+    public void setStereoAudioOutputMuted(@NonNull Boolean stereoAudioOutputMuted) {
         setValue(KEY_STEREO_AUDIO_OUTPUT_MUTED, stereoAudioOutputMuted);
     }
     
@@ -238,7 +270,7 @@ public class DeviceStatus extends RPCStruct {
      * set the status of the mono audio output channel
      * @param monoAudioOutputMuted the status of the mono audio output channel
      */
-    public void setMonoAudioOutputMuted(Boolean monoAudioOutputMuted) {
+    public void setMonoAudioOutputMuted(@NonNull Boolean monoAudioOutputMuted) {
         setValue(KEY_MONO_AUDIO_OUTPUT_MUTED, monoAudioOutputMuted);
     }
     
@@ -254,7 +286,7 @@ public class DeviceStatus extends RPCStruct {
      * set signal level status
      * @param signalLevelStatus signal level status
      */
-    public void setSignalLevelStatus(DeviceLevelStatus signalLevelStatus) {
+    public void setSignalLevelStatus(@NonNull DeviceLevelStatus signalLevelStatus) {
         setValue(KEY_SIGNAL_LEVEL_STATUS, signalLevelStatus);
     }
     
@@ -270,7 +302,7 @@ public class DeviceStatus extends RPCStruct {
      * set the current primary audio source of SDL (if selected).
      * @param primaryAudioSource the current primary audio source of SDL (if selected).
      */
-    public void setPrimaryAudioSource(PrimaryAudioSource primaryAudioSource) {
+    public void setPrimaryAudioSource(@NonNull PrimaryAudioSource primaryAudioSource) {
         setValue(KEY_PRIMARY_AUDIO_SOURCE, primaryAudioSource);
     }
     
@@ -281,7 +313,7 @@ public class DeviceStatus extends RPCStruct {
     public PrimaryAudioSource getPrimaryAudioSource() {
         return (PrimaryAudioSource) getObject(PrimaryAudioSource.class, KEY_PRIMARY_AUDIO_SOURCE);
     }
-    public void setECallEventActive(Boolean eCallEventActive) {
+    public void setECallEventActive(@NonNull Boolean eCallEventActive) {
         setValue(KEY_E_CALL_EVENT_ACTIVE, eCallEventActive);
     }
     public Boolean getECallEventActive() {

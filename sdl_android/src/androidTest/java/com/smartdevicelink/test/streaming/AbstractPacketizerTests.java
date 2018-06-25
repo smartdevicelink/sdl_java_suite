@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -89,88 +90,3 @@ public class AbstractPacketizerTests extends TestCase {
 	}
 }
 
-/**
- * This is a mock class for testing the following : 
- * {@link com.smartdevicelink.streaming.AbstractPacketizer}
- */
-class MockStreamListener implements IStreamListener {
-	public MockStreamListener () { }
-	@Override public void sendStreamPacket(ProtocolMessage pm) { }
-}
-
-/**
- * This is a mock class for testing the following : 
- * {@link com.smartdevicelink.streaming.AbstractPacketizer}
- */
-class MockInterfaceBroker implements ISdlConnectionListener {
-	public MockInterfaceBroker () { }
-	@Override
-	public void onTransportDisconnected(String info) {
-		
-	}
-	@Override
-	public void onTransportError(String info, Exception e) {
-		
-	}
-	@Override
-	public void onProtocolMessageReceived(ProtocolMessage msg) {
-		
-	}
-	@Override
-	public void onProtocolSessionStartedNACKed(SessionType sessionType,
-			byte sessionID, byte version, String correlationID) {
-		
-	}
-	@Override
-	public void onProtocolSessionStarted(SessionType sessionType,
-			byte sessionID, byte version, String correlationID, int hashID,
-			boolean isEncrypted) {
-		
-	}
-	@Override
-	public void onProtocolSessionEnded(SessionType sessionType, byte sessionID,
-			String correlationID) {
-		
-	}
-	@Override
-	public void onProtocolSessionEndedNACKed(SessionType sessionType,
-			byte sessionID, String correlationID) {
-		
-	}
-	@Override
-	public void onProtocolError(String info, Exception e) {
-		
-	}
-	@Override
-	public void onHeartbeatTimedOut(byte sessionID) {
-		
-	}
-	@Override
-	public void onProtocolServiceDataACK(SessionType sessionType, int dataSize,
-			byte sessionID) {
-		
-	}
-}
-
-/**
- * This is a mock class for testing the following : 
- * {@link com.smartdevicelink.streaming.AbstractPacketizer}
- */
-class MockPacketizer extends AbstractPacketizer {
-	public MockPacketizer (IStreamListener l, InputStream i, SessionType s, byte sid, SdlSession sdlsession) throws IOException { super (l, i, s, sid, sdlsession); }
-	public MockPacketizer (IStreamListener l, InputStream i, RPCRequest r, SessionType s, byte sid, byte w, SdlSession sdlsession) throws IOException { super (l, i, r, s, sid, w, sdlsession); }
-
-	@Override public void start() throws IOException { }
-	@Override public void stop() { }
-	
-	public IStreamListener getListener () { return _streamListener; }
-	public InputStream getInputStream  () { return is;              }
-	public SessionType getSessionType  () { return _serviceType;    }
-	public SdlSession getSdlSession    () { return _session;    	}
-	public byte getSessionId           () { return _rpcSessionID;   }
-	public RPCRequest getRPCRequest    () { return _request;        }
-	public byte getWiproVersion        () { return _wiproVersion;   }
-	
-	@Override public void pause() { }
-	@Override public void resume() { }
-}

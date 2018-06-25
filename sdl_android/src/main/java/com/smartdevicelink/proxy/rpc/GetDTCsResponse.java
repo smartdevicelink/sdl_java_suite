@@ -1,7 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -24,6 +27,19 @@ public class GetDTCsResponse extends RPCResponse{
         super(hash);
     }
 
+    /**
+     * Constructs a new GetDTCsResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     * @param ecuHeader
+     */
+    public GetDTCsResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull Integer ecuHeader) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+        setEcuHeader(ecuHeader);
+    }
+
     @SuppressWarnings("unchecked")
     public List<String> getDtc(){
         return (List<String>) getObject(String.class, KEY_DTC);
@@ -37,7 +53,8 @@ public class GetDTCsResponse extends RPCResponse{
         return getInteger(KEY_ECU_HEADER);
     }
     
-    public void setEcuHeader(Integer ecuHeader){
+    public void setEcuHeader(@NonNull Integer ecuHeader){
         setParameters(KEY_ECU_HEADER, ecuHeader);
     }
+
 }

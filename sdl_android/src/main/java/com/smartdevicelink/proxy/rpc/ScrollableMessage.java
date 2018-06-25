@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -65,7 +67,7 @@ import java.util.List;
  *	<p>REJECTED </p>
  *	<p>ABORTED</p>
  *
- *  @see  scrollableMessageBody 
+ *  @see scrollableMessageBody
  *  @see TextFieldName
  */
 public class ScrollableMessage extends RPCRequest {
@@ -85,12 +87,21 @@ public class ScrollableMessage extends RPCRequest {
 	 * parameter
 	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public ScrollableMessage(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new ScrollableMessage object
+	 * @param scrollableMessageBody a String value representing the Body of text that can include newlines and tabs <br>
+	 * <b>Notes: </b>Maxlength=500
+	 */
+	public ScrollableMessage(@NonNull String scrollableMessageBody) {
+		this();
+		setScrollableMessageBody(scrollableMessageBody);
+	}
 
 	/**
 	 * Sets a Body of text that can include newlines and tabs
@@ -101,7 +112,7 @@ public class ScrollableMessage extends RPCRequest {
 	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500
 	 */
-    public void setScrollableMessageBody(String scrollableMessageBody) {
+    public void setScrollableMessageBody(@NonNull String scrollableMessageBody) {
 		setParameters(KEY_SCROLLABLE_MESSAGE_BODY, scrollableMessageBody);
     }
 

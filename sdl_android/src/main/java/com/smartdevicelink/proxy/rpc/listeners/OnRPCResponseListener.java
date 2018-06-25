@@ -12,6 +12,10 @@ public abstract class OnRPCResponseListener {
 	 * Listener type specific to putfile
 	 */
 	public final static int UPDATE_LISTENER_TYPE_PUT_FILE 		= 1;
+	/**
+	 * Listener type specific to sendRequests and sendSequentialRequests
+	 */
+	public final static int UPDATE_LISTENER_TYPE_MULTIPLE_REQUESTS 		= 2;
 
 	/**
 	 * Stores what type of listener this instance is. This prevents of from having to use reflection

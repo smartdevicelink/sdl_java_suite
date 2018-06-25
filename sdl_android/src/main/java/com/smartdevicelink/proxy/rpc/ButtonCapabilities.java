@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
@@ -76,6 +78,20 @@ public class ButtonCapabilities extends RPCStruct {
         super(hash);
     }
     /**
+     * Constructs a newly allocated ButtonCapabilities object
+     * @param name the name of button
+     * @param shortPressAvailable True if support otherwise False.
+     * @param longPressAvailable True if support otherwise False.
+     * @param upDownAvailable True if support otherwise False.
+     */
+    public ButtonCapabilities(@NonNull ButtonName name, @NonNull Boolean shortPressAvailable, @NonNull Boolean longPressAvailable, @NonNull Boolean upDownAvailable) {
+        this();
+        setName(name);
+        setShortPressAvailable(shortPressAvailable);
+        setLongPressAvailable(longPressAvailable);
+        setUpDownAvailable(upDownAvailable);
+    }
+    /**
      * Get the name of theSDL HMI button.
      * @return ButtonName the name of the Button
      */    
@@ -86,7 +102,7 @@ public class ButtonCapabilities extends RPCStruct {
      * Set the name of theSDL HMI button.
      * @param name the name of button
      */    
-    public void setName( ButtonName name ) {
+    public void setName( @NonNull  ButtonName name ) {
         setValue(KEY_NAME, name);
     }
     /**
@@ -100,7 +116,7 @@ public class ButtonCapabilities extends RPCStruct {
      * Set the button supports a SHORT press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
      * @param shortPressAvailable True if support otherwise False.
      */    
-    public void setShortPressAvailable( Boolean shortPressAvailable ) {
+    public void setShortPressAvailable( @NonNull Boolean shortPressAvailable ) {
         setValue(KEY_SHORT_PRESS_AVAILABLE, shortPressAvailable);
     }
     /**
@@ -114,7 +130,7 @@ public class ButtonCapabilities extends RPCStruct {
      * Set the button supports a LONG press. See <i>{@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode}</i> for more information.
      * @param longPressAvailable True if support otherwise False.
      */    
-    public void setLongPressAvailable( Boolean longPressAvailable ) {
+    public void setLongPressAvailable( @NonNull Boolean longPressAvailable ) {
         setValue(KEY_LONG_PRESS_AVAILABLE, longPressAvailable);
     }
     /**
@@ -128,7 +144,7 @@ public class ButtonCapabilities extends RPCStruct {
      * Set the button supports "button down" and "button up". When the button is depressed, the <i>{@linkplain OnButtonEvent}</i> notification will be invoked with a value of BUTTONDOWN.
      * @param upDownAvailable True if support otherwise False.
      */    
-    public void setUpDownAvailable( Boolean upDownAvailable ) {
+    public void setUpDownAvailable( @NonNull Boolean upDownAvailable ) {
         setValue(KEY_UP_DOWN_AVAILABLE, upDownAvailable);
     }
 }
