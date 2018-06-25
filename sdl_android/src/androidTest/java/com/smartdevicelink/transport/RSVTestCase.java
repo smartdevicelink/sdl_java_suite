@@ -1,5 +1,8 @@
 package com.smartdevicelink.transport;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.test.AndroidTestCase;
@@ -392,6 +395,38 @@ public class RSVTestCase extends AndroidTestCase {
 
 		releaseTListLock();
 	}
-	
+
+	/**
+	 * Test app's router validation. Validation should fail when the given context and ComponentName object are from different packages and security setting is not OFF
+	 * and app is not on trusted list. Validation should pass when the given context and ComponentName object are from the same package.
+	 */
+	public void testAppSelfValidation() {
+
+		class RouterServiceValidatorTest extends RouterServiceValidator{
+			public RouterServiceValidatorTest(Context context){
+				super(context);
+			}
+
+			public RouterServiceValidatorTest(Context context, ComponentName service){
+				super(context, service);
+			}
+
+			// Override this method and simply returning true for the purpose of this test
+			protected boolean isServiceRunning(Context context, ComponentName service){
+				return true;
+			}
+		}
+
+		// Fail, different package name for context and service and app security setting is not OFF and app is not on trusted list
+		RouterServiceValidatorTest rsvpFail = new RouterServiceValidatorTest(this.mContext, new ComponentName("anything", mContext.getClass().getSimpleName()));
+		rsvpFail.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
+		assertFalse(rsvpFail.validate());
+
+		// Success, same package name for context and service
+		RouterServiceValidatorTest rsvpPass = new RouterServiceValidatorTest(this.mContext, new ComponentName(mContext.getPackageName(), mContext.getClass().getSimpleName()));
+		rsvpPass.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
+		assertTrue(rsvpPass.validate());
+	}
+
 	 
 }

@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
@@ -46,7 +48,6 @@ public class OnKeyboardInput extends RPCNotification {
 	/**
 	 * Constructs a new OnKeyboardInput object
 	 */
-
     public OnKeyboardInput() {
         super(FunctionID.ON_KEYBOARD_INPUT.toString());
     }
@@ -63,12 +64,19 @@ public class OnKeyboardInput extends RPCNotification {
     public OnKeyboardInput(Hashtable<String, Object> hash) {
         super(hash);
     }
+    /**
+     * Constructs a new OnKeyboardInput object
+     */
+    public OnKeyboardInput(@NonNull KeyboardEvent event) {
+        this();
+        setEvent(event);
+    }
 
     public KeyboardEvent getEvent() {
         return (KeyboardEvent) getObject(KeyboardEvent.class, KEY_EVENT);
     }
 
-    public void setEvent(KeyboardEvent event) {
+    public void setEvent(@NonNull KeyboardEvent event) {
         setParameters(KEY_EVENT, event);
     }
 

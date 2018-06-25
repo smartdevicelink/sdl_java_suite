@@ -1,7 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
+import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 
@@ -57,30 +60,39 @@ public class ECallInfo extends RPCStruct {
     public static final String KEY_E_CALL_NOTIFICATION_STATUS = "eCallNotificationStatus";
     public static final String KEY_AUX_E_CALL_NOTIFICATION_STATUS = "auxECallNotificationStatus";
     public static final String KEY_E_CALL_CONFIRMATION_STATUS = "eCallConfirmationStatus";
-    /** Constructs a new ECallInfo object indicated by the Hashtable
-	 * parameter
-	 * @param hash
-	 * 
-	 * 			<p>The hash table to use</p>
+    /** Constructs a new ECallInfo object
 	 */
     public ECallInfo() { }
+    /** Constructs a new ECallInfo object indicated by the Hashtable
+     * parameter
+     * @param hash <p>The hash table to use</p>
+     */
     public ECallInfo(Hashtable<String, Object> hash) {
         super(hash);
     }
+    /**
+	 * Constructs a new ECallInfo object
+     */
+    public ECallInfo(@NonNull VehicleDataNotificationStatus eCallNotificationStatus, @NonNull VehicleDataNotificationStatus auxECallNotificationStatus, @NonNull ECallConfirmationStatus eCallConfirmationStatus) {
+        this();
+        setECallNotificationStatus(eCallNotificationStatus);
+        setAuxECallNotificationStatus(auxECallNotificationStatus);
+        setECallConfirmationStatus(eCallConfirmationStatus);
+    }
 
-    public void setECallNotificationStatus(VehicleDataNotificationStatus eCallNotificationStatus) {
+    public void setECallNotificationStatus(@NonNull VehicleDataNotificationStatus eCallNotificationStatus) {
         setValue(KEY_E_CALL_NOTIFICATION_STATUS, eCallNotificationStatus);
     }
     public VehicleDataNotificationStatus getECallNotificationStatus() {
         return (VehicleDataNotificationStatus) getObject(VehicleDataNotificationStatus.class, KEY_E_CALL_NOTIFICATION_STATUS);
     }
-    public void setAuxECallNotificationStatus(VehicleDataNotificationStatus auxECallNotificationStatus) {
+    public void setAuxECallNotificationStatus(@NonNull VehicleDataNotificationStatus auxECallNotificationStatus) {
         setValue(KEY_AUX_E_CALL_NOTIFICATION_STATUS, auxECallNotificationStatus);
     }
     public VehicleDataNotificationStatus getAuxECallNotificationStatus() {
         return (VehicleDataNotificationStatus) getObject(VehicleDataNotificationStatus.class, KEY_AUX_E_CALL_NOTIFICATION_STATUS);
     }
-    public void setECallConfirmationStatus(ECallConfirmationStatus eCallConfirmationStatus) {
+    public void setECallConfirmationStatus(@NonNull ECallConfirmationStatus eCallConfirmationStatus) {
         setValue(KEY_E_CALL_CONFIRMATION_STATUS, eCallConfirmationStatus);
     }
     public ECallConfirmationStatus getECallConfirmationStatus() {

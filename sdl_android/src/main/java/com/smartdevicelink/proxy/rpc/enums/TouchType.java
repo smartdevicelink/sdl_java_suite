@@ -20,7 +20,11 @@ public enum TouchType {
      * 
      */
 
-    END;
+    END,
+    /** The user has made a cancellation gesture.
+     *
+     */
+    CANCEL;
 	   /**
   * Convert String to TouchType
   * @param value String

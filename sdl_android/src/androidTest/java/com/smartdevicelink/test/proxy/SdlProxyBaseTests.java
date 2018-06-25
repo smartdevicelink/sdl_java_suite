@@ -1,13 +1,17 @@
 package com.smartdevicelink.test.proxy;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
+import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyALM;
+import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.SdlProxyBuilder;
 import com.smartdevicelink.proxy.SdlProxyConfigurationResources;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
@@ -17,6 +21,7 @@ import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
+import com.smartdevicelink.proxy.rpc.ButtonPressResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
 import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
@@ -28,6 +33,8 @@ import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
 import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
+import com.smartdevicelink.proxy.rpc.GetInteriorVehicleDataResponse;
+import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.GetWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
@@ -38,6 +45,7 @@ import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnHashChange;
+import com.smartdevicelink.proxy.rpc.OnInteriorVehicleData;
 import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
@@ -54,11 +62,14 @@ import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
+import com.smartdevicelink.proxy.rpc.SendHapticDataResponse;
 import com.smartdevicelink.proxy.rpc.SendLocationResponse;
 import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
+import com.smartdevicelink.proxy.rpc.SetInteriorVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
+import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
@@ -72,9 +83,18 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
+import com.smartdevicelink.streaming.video.VideoStreamingParameters;
+import com.smartdevicelink.test.streaming.video.SdlRemoteDisplayTest;
 
 import junit.framework.Assert;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SdlProxyBaseTests extends AndroidTestCase{
@@ -132,6 +152,131 @@ public class SdlProxyBaseTests extends AndroidTestCase{
             }
         }
     }
+
+    public void testRemoteDisplayStreaming(){
+        SdlProxyALM proxy = null;
+        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(new ProxyListenerTest(), "appId", "appName", true, getContext());
+        try{
+            proxy = builder.build();
+            //	public void startRemoteDisplayStream(Context context, final Class<? extends SdlRemoteDisplay> remoteDisplay, final VideoStreamingParameters parameters, final boolean encrypted){
+            Method m = SdlProxyALM.class.getDeclaredMethod("startRemoteDisplayStream", Context.class, SdlRemoteDisplay.class, VideoStreamingParameters.class, boolean.class);
+            assertNotNull(m);
+            m.setAccessible(true);
+            m.invoke(proxy,getContext(), SdlRemoteDisplayTest.MockRemoteDisplay.class, (VideoStreamingParameters)null, false);
+            assert true;
+
+        }catch (Exception e){
+            assert false;
+        }
+    }
+
+    public void testMultipleRPCSendSynchronous() {
+
+		List<RPCRequest> rpcs = new ArrayList<>();
+
+		// rpc 1
+		Show show = new Show();
+		show.setMainField1("hey y'all");
+		show.setMainField2("");
+		show.setMainField3("");
+		show.setMainField4("");
+		rpcs.add(show);
+
+		// rpc 2
+		Show show2 = new Show();
+		show2.setMainField1("");
+		show2.setMainField2("It is Wednesday My Dudes");
+		show2.setMainField3("");
+		show2.setMainField4("");
+		rpcs.add(show2);
+
+		OnMultipleRequestListener mrl = new OnMultipleRequestListener() {
+			@Override
+			public void onUpdate(int remainingRequests) {
+
+			}
+
+			@Override
+			public void onFinished() {
+
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				assert false;
+			}
+
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+
+			}
+		};
+		try{
+			// public void sendRequests(List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+			Method m = SdlProxyBase.class.getDeclaredMethod("sendRequests", SdlProxyBase.class);
+			assertNotNull(m);
+			m.setAccessible(true);
+			m.invoke(rpcs,mrl);
+			assert true;
+
+		}catch (Exception e){
+			assert false;
+		}
+	}
+
+	public void testMultipleRPCSendAsynchronous() {
+
+		List<RPCRequest> rpcs = new ArrayList<>();
+
+		// rpc 1
+		Show show = new Show();
+		show.setMainField1("hey y'all");
+		show.setMainField2("");
+		show.setMainField3("");
+		show.setMainField4("");
+		rpcs.add(show);
+
+		// rpc 2
+		Show show2 = new Show();
+		show2.setMainField1("");
+		show2.setMainField2("It is Wednesday My Dudes");
+		show2.setMainField3("");
+		show2.setMainField4("");
+		rpcs.add(show2);
+
+		OnMultipleRequestListener mrl = new OnMultipleRequestListener() {
+			@Override
+			public void onUpdate(int remainingRequests) {
+
+			}
+
+			@Override
+			public void onFinished() {
+
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				assert false;
+			}
+
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+
+			}
+		};
+		try{
+			// public void sendSequentialRequests(List<RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+			Method m = SdlProxyBase.class.getDeclaredMethod("sendSequentialRequests", SdlProxyBase.class);
+			assertNotNull(m);
+			m.setAccessible(true);
+			m.invoke(rpcs,mrl);
+			assert true;
+
+		}catch (Exception e){
+			assert false;
+		}
+	}
 
     public class ProxyListenerTest implements IProxyListenerALM {
 
@@ -432,6 +577,31 @@ public class SdlProxyBaseTests extends AndroidTestCase{
         }
 
         @Override
+        public void onGetSystemCapabilityResponse(GetSystemCapabilityResponse response) {
+            Log.i(TAG, "GetSystemCapability response from SDL: " + response);
+        }
+
+        @Override
+        public void onGetInteriorVehicleDataResponse(GetInteriorVehicleDataResponse response) {
+            Log.i(TAG, "GetInteriorVehicleData response from SDL: " + response);
+        }
+
+        @Override
+        public void onButtonPressResponse(ButtonPressResponse response) {
+            Log.i(TAG, "ButtonPress response from SDL: " + response);
+        }
+
+        @Override
+        public void onSetInteriorVehicleDataResponse(SetInteriorVehicleDataResponse response) {
+            Log.i(TAG, "SetInteriorVehicleData response from SDL: " + response);
+        }
+
+        @Override
+        public void onOnInteriorVehicleData(OnInteriorVehicleData notification) {
+
+        }
+
+        @Override
         public void onOnDriverDistraction(OnDriverDistraction notification) {
             // Some RPCs (depending on region) cannot be sent when driver distraction is active.
         }
@@ -444,5 +614,10 @@ public class SdlProxyBaseTests extends AndroidTestCase{
         public void onGenericResponse(GenericResponse response) {
             Log.i(TAG, "Generic response from SDL: " + response.getResultCode().name() + " Info: " + response.getInfo());
         }
+
+        @Override
+		public void onSendHapticDataResponse(SendHapticDataResponse response) {
+			Log.i(TAG, "SendHapticDataResponse response from SDL: " + response);
+		}
     }
 }

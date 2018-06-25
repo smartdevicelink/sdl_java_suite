@@ -82,6 +82,10 @@ public class ResultTests extends TestCase {
 		Result enumExpiredCert = Result.valueForString(example);
 		example = "RESUME_FAILED";
 		Result enumResumeFailed = Result.valueForString(example);
+		example = "DATA_NOT_AVAILABLE";
+		Result enumDataNotAvailable = Result.valueForString(example);
+		example = "READ_ONLY";
+		Result enumReadOnly = Result.valueForString(example);
 		
 		assertNotNull("SUCCESS returned null", enumSuccess);
 		assertNotNull("INVALID_DATA returned null", enumInvalidData);
@@ -115,6 +119,8 @@ public class ResultTests extends TestCase {
 		assertNotNull("INVALID_CERT returned null", enumInvalidCert);
 		assertNotNull("EXPIRED_CERT returned null", enumExpiredCert);
 		assertNotNull("RESUME_FAILED returned null", enumResumeFailed);
+		assertNotNull("DATA_NOT_AVAILABLE returned null", enumDataNotAvailable);
+		assertNotNull("READ_ONLY returned null", enumReadOnly);
 	}
 
 	/**
@@ -183,7 +189,9 @@ public class ResultTests extends TestCase {
 		enumTestList.add(Result.SAVED);	
 		enumTestList.add(Result.INVALID_CERT);
 		enumTestList.add(Result.EXPIRED_CERT);	
-		enumTestList.add(Result.RESUME_FAILED);	
+		enumTestList.add(Result.RESUME_FAILED);
+		enumTestList.add(Result.DATA_NOT_AVAILABLE);
+		enumTestList.add(Result.READ_ONLY);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

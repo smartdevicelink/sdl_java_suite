@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
@@ -70,26 +72,33 @@ public class ClusterModeStatus extends RPCStruct {
 	    public ClusterModeStatus(Hashtable<String, Object> hash) {
 	        super(hash);
 	    }
+		public ClusterModeStatus(@NonNull Boolean powerModeActive, @NonNull PowerModeQualificationStatus powerModeQualificationStatus, @NonNull CarModeStatus carModeStatus, @NonNull PowerModeStatus powerModeStatus) {
+	    	this();
+	    	setPowerModeActive(powerModeActive);
+	    	setPowerModeQualificationStatus(powerModeQualificationStatus);
+	    	setCarModeStatus(carModeStatus);
+	    	setPowerModeStatus(powerModeStatus);
+	    }
 
-	    public void setPowerModeActive(Boolean powerModeActive) {
+	    public void setPowerModeActive(@NonNull Boolean powerModeActive) {
 	        setValue(KEY_POWER_MODE_ACTIVE, powerModeActive);
 	    }
 	    public Boolean getPowerModeActive() {
 	        return getBoolean(KEY_POWER_MODE_ACTIVE);
 	    }
-	    public void setPowerModeQualificationStatus(PowerModeQualificationStatus powerModeQualificationStatus) {
+	    public void setPowerModeQualificationStatus(@NonNull PowerModeQualificationStatus powerModeQualificationStatus) {
 	        setValue(KEY_POWER_MODE_QUALIFICATION_STATUS, powerModeQualificationStatus);
 	    }
 	    public PowerModeQualificationStatus getPowerModeQualificationStatus() {
 			return (PowerModeQualificationStatus) getObject(PowerModeQualificationStatus.class, KEY_POWER_MODE_QUALIFICATION_STATUS);
 	    }
-	    public void setCarModeStatus(CarModeStatus carModeStatus) {
+	    public void setCarModeStatus(@NonNull CarModeStatus carModeStatus) {
 	        setValue(KEY_CAR_MODE_STATUS, carModeStatus);
 	    }
 	    public CarModeStatus getCarModeStatus() {
 			return (CarModeStatus) getObject(CarModeStatus.class, KEY_CAR_MODE_STATUS);
 	    }
-	    public void setPowerModeStatus(PowerModeStatus powerModeStatus) {
+	    public void setPowerModeStatus(@NonNull PowerModeStatus powerModeStatus) {
 	        setValue(KEY_POWER_MODE_STATUS, powerModeStatus);
 	    }
 	    public PowerModeStatus getPowerModeStatus() {
