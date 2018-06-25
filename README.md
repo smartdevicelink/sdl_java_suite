@@ -22,6 +22,36 @@ The mobile library component of SDL is meant to run on the end user’s smart-de
 
 ## SmartDeviceLink Android
 
-We're still working on creating documentation for each of these individual repositories, but in the meantime, you can find more information about SmartDeviceLink [here](https://github.com/smartdevicelink/sdl_core/blob/master/README.md) and [here](http://projects.genivi.org/smartdevicelink/about).
+We're still working on creating documentation for each of these individual repositories, but in the meantime, you can find more information about SmartDeviceLink [here](https://smartdevicelink.com)
 
 You can also find some branches that have yet to be merged into this GitHub project on the GENIVI page [here](http://git.projects.genivi.org/?p=smartdevicelink_android.git;a=summary).
+
+### Installation
+
+#### Dependency Managers
+
+To compile with the latest release of SDL Android, include the following in your app's `build.gradle` file,
+
+```
+repositories {
+    jcenter()
+}
+dependencies {
+    implementation 'com.smartdevicelink:sdl_android:4.+'
+}
+```
+
+For Maven or Ivy snippets please look at [Bintray](https://bintray.com/smartdevicelink/sdl_android/sdl_android)
+
+#### Manually
+
+If you prefer not to use any of the aforementioned dependency managers, you can integrate SDL Android into your project manually.
+
+### Proguard Rules
+
+Developers using Proguard to shrink and obfuscate their code should be sure to include the following lines in their proguard-rules.pro file:
+
+```
+-keep class com.smartdevicelink.** { *; }
+-keep class com.livio.** { *; }
+```

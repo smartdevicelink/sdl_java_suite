@@ -3,6 +3,8 @@ package com.smartdevicelink.protocol;
 import com.smartdevicelink.protocol.WiProProtocol.MessageFrameAssembler;
 import com.smartdevicelink.protocol.enums.SessionType;
 
+import java.util.List;
+
 public abstract class AbstractProtocol {
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 	
@@ -31,6 +33,7 @@ public abstract class AbstractProtocol {
 	public abstract void SendMessage(ProtocolMessage msg);
 
 	public abstract int getMtu();
+	public abstract long getMtu(SessionType type);
 	
 	public abstract void handlePacketReceived(SdlPacket packet);
 	
@@ -128,8 +131,8 @@ public abstract class AbstractProtocol {
 	}
 
 	protected void handleProtocolSessionNACKed(SessionType sessionType,
-			byte sessionID, byte version, String correlationID) {
-		_protocolListener.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID);
+			byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
+		_protocolListener.onProtocolSessionNACKed(sessionType, sessionID, version, correlationID, rejectedParams);
 	}
 	
 	// This method handles protocol errors. A callback is sent to the protocol

@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
@@ -107,20 +109,25 @@ public class BodyInformation extends RPCStruct {
     public BodyInformation(Hashtable<String, Object> hash) {
         super(hash);
     }
-
-    public void setParkBrakeActive(Boolean parkBrakeActive) {
+    public BodyInformation(@NonNull Boolean parkBrakeActive, @NonNull IgnitionStableStatus ignitionStableStatus, @NonNull IgnitionStatus ignitionStatus) {
+        this();
+        setParkBrakeActive(parkBrakeActive);
+        setIgnitionStableStatus(ignitionStableStatus);
+        setIgnitionStatus(ignitionStatus);
+    }
+    public void setParkBrakeActive(@NonNull Boolean parkBrakeActive) {
         setValue(KEY_PARK_BRAKE_ACTIVE, parkBrakeActive);
     }
     public Boolean getParkBrakeActive() {
         return getBoolean(KEY_PARK_BRAKE_ACTIVE);
     }
-    public void setIgnitionStableStatus(IgnitionStableStatus ignitionStableStatus) {
+    public void setIgnitionStableStatus(@NonNull IgnitionStableStatus ignitionStableStatus) {
         setValue(KEY_IGNITION_STABLE_STATUS, ignitionStableStatus);
     }
     public IgnitionStableStatus getIgnitionStableStatus() {
         return (IgnitionStableStatus) getObject(IgnitionStableStatus.class, KEY_IGNITION_STABLE_STATUS);
     }
-    public void setIgnitionStatus(IgnitionStatus ignitionStatus) {
+    public void setIgnitionStatus(@NonNull IgnitionStatus ignitionStatus) {
         setValue(KEY_IGNITION_STATUS, ignitionStatus);
     }
     public IgnitionStatus getIgnitionStatus() {

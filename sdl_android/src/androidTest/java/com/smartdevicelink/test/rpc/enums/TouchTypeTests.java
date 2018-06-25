@@ -1,16 +1,16 @@
 package com.smartdevicelink.test.rpc.enums;
 
+import com.smartdevicelink.proxy.rpc.enums.TouchType;
+
+import junit.framework.TestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-import com.smartdevicelink.proxy.rpc.enums.TouchType;
-
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.TouchType}
+ * {@link com.smartdevicelink.proxy.rpc.enums.TouchType}
  */
 public class TouchTypeTests extends TestCase {
 
@@ -24,10 +24,14 @@ public class TouchTypeTests extends TestCase {
 		TouchType enumMove = TouchType.valueForString(example);
 		example = "END";
 		TouchType enumEnd = TouchType.valueForString(example);
-		
+		example = "CANCEL";
+		TouchType enumCancel = TouchType.valueForString(example);
+
+
 		assertNotNull("BEGIN returned null", enumBegin);
 		assertNotNull("MOVE returned null", enumMove);
 		assertNotNull("END returned null", enumEnd);
+		assertNotNull("CANCEL returned null", enumCancel);
 	}
 
 	/**
@@ -69,6 +73,7 @@ public class TouchTypeTests extends TestCase {
 		enumTestList.add(TouchType.BEGIN);
 		enumTestList.add(TouchType.MOVE);
 		enumTestList.add(TouchType.END);
+		enumTestList.add(TouchType.CANCEL);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

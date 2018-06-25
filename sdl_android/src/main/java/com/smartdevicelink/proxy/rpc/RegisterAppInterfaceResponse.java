@@ -1,14 +1,18 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.Version;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -35,6 +39,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public static final String KEY_HMI_CAPABILITIES 			= "hmiCapabilities"; //As of v4.0
     public static final String KEY_SDL_VERSION 					= "sdlVersion"; //As of v4.0
     public static final String KEY_SYSTEM_SOFTWARE_VERSION		= "systemSoftwareVersion"; //As of v4.0
+	public static final String KEY_PCM_STREAM_CAPABILITIES      = "pcmStreamCapabilities";
 
     
 	/**
@@ -62,6 +67,16 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * @return SdlMsgVersion -a SdlMsgVersion object representing version of
 	 *         the SDL&reg; SmartDeviceLink interface
 	 */
+	/**
+	 * Constructs a new RegisterAppInterfaceResponse object
+	 * @param success whether the request is successfully processed
+	 * @param resultCode whether the request is successfully processed
+	 */
+	public RegisterAppInterfaceResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+		this();
+		setSuccess(success);
+		setResultCode(resultCode);
+	}
     @SuppressWarnings("unchecked")
     public SdlMsgVersion getSdlMsgVersion() {
 		return (SdlMsgVersion) getObject(SdlMsgVersion.class, KEY_SDL_MSG_VERSION);
@@ -228,7 +243,16 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 */
     @SuppressWarnings("unchecked")
     public List<SpeechCapabilities> getSpeechCapabilities() {
-		return (List<SpeechCapabilities>) getObject(SpeechCapabilities.class, KEY_SPEECH_CAPABILITIES);
+    	Object speechCapabilities = getObject(SpeechCapabilities.class, KEY_SPEECH_CAPABILITIES);
+		if (speechCapabilities instanceof List<?>) {
+			return (List<SpeechCapabilities>) speechCapabilities;
+		} else if (speechCapabilities instanceof SpeechCapabilities) {
+			// this is a known issue observed with some core implementations
+			List<SpeechCapabilities> newSpeechCapList = new ArrayList<>();
+			newSpeechCapList.add((SpeechCapabilities) speechCapabilities);
+			return newSpeechCapList;
+		}
+		return null;
     }
     /**
      * Sets speechCapabilities
@@ -299,6 +323,23 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public void setAudioPassThruCapabilities(List<AudioPassThruCapabilities> audioPassThruCapabilities) {
 		setParameters(KEY_AUDIO_PASS_THRU_CAPABILITIES, audioPassThruCapabilities);
     }
+
+	/**
+	 * Gets pcmStreamingCapabilities set when application interface is registered.
+	 *
+	 * @return pcmStreamingCapabilities
+	 */
+	@SuppressWarnings("unchecked")
+	public AudioPassThruCapabilities getPcmStreamingCapabilities() {
+		return (AudioPassThruCapabilities) getObject(AudioPassThruCapabilities.class, KEY_PCM_STREAM_CAPABILITIES);
+	}
+	/**
+	 * Sets pcmStreamingCapabilities
+	 * @param pcmStreamingCapabilities
+	 */
+	public void setPcmStreamingCapabilities(AudioPassThruCapabilities pcmStreamingCapabilities) {
+		setParameters(KEY_PCM_STREAM_CAPABILITIES, pcmStreamingCapabilities);
+	}
     public String getProxyVersionInfo() {
 		if (Version.VERSION != null)
 			return  Version.VERSION;
@@ -337,5 +378,5 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 
     public String getSystemSoftwareVersion() {    
     	 return getString(KEY_SYSTEM_SOFTWARE_VERSION);
-    } 
+    }
 }

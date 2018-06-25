@@ -76,7 +76,7 @@ public class SdlPsm{
 			frameType = rawByte&(byte)FRAME_TYPE_MASK;
 			//Log.trace(TAG, rawByte + " = Frame Type: " + frameType);
 			
-			if((version < 1 || version > 4) //These are known versions supported by this library.
+			if((version < 1 || version > 5) //These are known versions supported by this library.
 					&& frameType!=SdlPacket.FRAME_TYPE_CONTROL){
 					return ERROR_STATE;
 			}

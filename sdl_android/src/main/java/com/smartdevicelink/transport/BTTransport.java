@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.os.Build;
 import android.os.Build.VERSION;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
@@ -46,6 +47,8 @@ public class BTTransport extends SdlTransport {
 	
 	// Boolean to monitor if the transport is in a disconnecting state
     private boolean _disconnecting = false;
+
+	private final Object DISCONNECT_LOCK = new Object();
 	
 	public BTTransport(ITransportListener transportListener) {
 		super(transportListener);
@@ -55,8 +58,14 @@ public class BTTransport extends SdlTransport {
 		super(transportListener);
 		bKeepSocketActive = bKeepSocket;		
 	} // end-ctor	
-	
+
+	@Deprecated
 	public BluetoothSocket getBTSocket(BluetoothServerSocket bsSocket){
+
+		if(bsSocket == null || Build.VERSION.SDK_INT > Build.VERSION_CODES.O) { //Reflection is no longer allowed on SDK classes)
+			return null;
+		}
+
 	    Field[] f = bsSocket.getClass().getDeclaredFields();
 
 	    @SuppressWarnings("unused")
@@ -83,11 +92,14 @@ public class BTTransport extends SdlTransport {
 
 	    return null;
 	}
-	
+
+	@Deprecated
 	public int getChannel(BluetoothSocket bsSocket){
 
 		int channel = -1;
-		if (bsSocket == null) return channel;
+		if (bsSocket == null || Build.VERSION.SDK_INT > Build.VERSION_CODES.O){ //Reflection is no longer allowed on SDK classes
+			return channel;
+		}
 	    
 		Field[] f = bsSocket.getClass().getDeclaredFields();
 	    
@@ -172,7 +184,7 @@ public class BTTransport extends SdlTransport {
 
 			sComment = "Accepting Connections on SDP Server Port Number: " + iSocket + "\r\n";
 			sComment += "Keep Server Socket Open: " + bKeepSocketActive;
-			if (iSocket < 0)
+			if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O && iSocket < 0)
 			{
 				SdlConnection.enableLegacyMode(false, null);
 				throw new SdlException("Could not open connection to SDL.", SdlExceptionCause.BLUETOOTH_SOCKET_UNAVAILABLE);
@@ -229,13 +241,15 @@ public class BTTransport extends SdlTransport {
 	 * @param msg
 	 * @param ex
 	 */
-	private synchronized void disconnect(String msg, Exception ex) {		
-		// If already disconnecting, return
-		if (_disconnecting) {
-			// No need to recursively call
-			return;
-		}		
-		_disconnecting = true;
+	private void disconnect(String msg, Exception ex) {
+		synchronized(DISCONNECT_LOCK) {
+			// If already disconnecting, return
+			if (_disconnecting) {
+				// No need to recursively call
+				return;
+			}
+			_disconnecting = true;
+		}
 		
 		String disconnectMsg = (msg == null ? "" : msg);
 		if (ex != null) {

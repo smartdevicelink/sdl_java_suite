@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -22,6 +24,10 @@ public class DialNumber extends RPCRequest {
 		super(hash);
 	}
 
+	public DialNumber(@NonNull String number){
+		this();
+		setNumber(number);
+	}
 	/**
 	 * Sets a number to dial
 	 * 
@@ -31,7 +37,7 @@ public class DialNumber extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength=40</p>
 	 *             All characters shall be stripped from string except digits 0-9 and * # , ; +
 	 */
-    public void setNumber(String number) {
+    public void setNumber(@NonNull String number) {
         if (number != null) {
         	number = number.replaceAll("[^0-9*#,;+]", ""); //This will sanitize the input
         }

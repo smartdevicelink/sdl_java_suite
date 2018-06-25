@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -69,12 +71,21 @@ public class GetDTCs extends RPCRequest {
 	 * <p>Constructs a new GetDTCs object indicated by the Hashtable parameter
 	 * </p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public GetDTCs(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new GetDTCs object
+	 * @param ecuName an Integer value representing a name of the module to receive the DTC form <br>
+	 * <b>Notes: </b>Minvalue:0; Maxvalue:65535
+	 */
+	public GetDTCs(@NonNull Integer ecuName) {
+		this();
+		setEcuName(ecuName);
+	}
 
 	/**
 	 * Sets a name of the module to receive the DTC form
@@ -85,7 +96,7 @@ public class GetDTCs extends RPCRequest {
 	 *            <p>
 	 *            <b>Notes:</p> </b>Minvalue:0; Maxvalue:65535
 	 */
-    public void setEcuName(Integer ecuName) {
+    public void setEcuName(@NonNull Integer ecuName) {
 		setParameters(KEY_ECU_NAME, ecuName);
     }
 
