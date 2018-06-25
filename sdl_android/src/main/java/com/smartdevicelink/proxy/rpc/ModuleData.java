@@ -1,7 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+
 import java.util.Hashtable;
 
 public class ModuleData extends RPCStruct{
@@ -16,6 +20,11 @@ public class ModuleData extends RPCStruct{
         super(hash);
     }
 
+    public ModuleData(@NonNull ModuleType moduleType) {
+        this();
+        setModuleType(moduleType);
+    }
+
     /**
      * Sets the moduleType portion of the ModuleData class
      *
@@ -23,7 +32,7 @@ public class ModuleData extends RPCStruct{
      * The moduleType indicates which type of data should be changed and identifies which data object exists in this struct.
      * For example, if the moduleType is CLIMATE then a "climateControlData" should exist
      */
-    public void setModuleType(ModuleType moduleType) {
+    public void setModuleType(@NonNull ModuleType moduleType) {
         setValue(KEY_MODULE_TYPE, moduleType);
     }
 

@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
@@ -27,12 +29,23 @@ public class ButtonPress extends RPCRequest {
      * <p>Constructs a new ButtonPress object indicated by the
      * Hashtable parameter</p>
      *
-     *
-     * @param hash
-     * The Hashtable to use
+     * @param hash The Hashtable to use
      */
     public ButtonPress(Hashtable<String, Object> hash) {
         super(hash);
+    }
+
+    /**
+     * Constructs a new ButtonPress object
+     * @param moduleType Represents module where the button should be pressed
+     * @param buttonName Represents name of supported RC climate or radio button
+     * @param buttonPressMode Indicates whether this is a LONG or SHORT button press event.
+     */
+    public ButtonPress(@NonNull ModuleType moduleType, @NonNull ButtonName buttonName, @NonNull ButtonPressMode buttonPressMode) {
+        this();
+        setModuleType(moduleType);
+        setButtonName(buttonName);
+        setButtonPressMode(buttonPressMode);
     }
 
     /**
@@ -50,7 +63,7 @@ public class ButtonPress extends RPCRequest {
      * @param moduleType
      * Represents module where the button should be pressed
      */
-    public void setModuleType(ModuleType moduleType) {
+    public void setModuleType(@NonNull ModuleType moduleType) {
         setParameters(KEY_MODULE_TYPE, moduleType);
     }
 
@@ -69,7 +82,7 @@ public class ButtonPress extends RPCRequest {
      * @param buttonName
      * Represents name of supported RC climate or radio button
      */
-    public void setButtonName(ButtonName buttonName) {
+    public void setButtonName(@NonNull ButtonName buttonName) {
         setParameters(KEY_BUTTON_NAME, buttonName);
     }
 
@@ -88,7 +101,7 @@ public class ButtonPress extends RPCRequest {
      * @param buttonPressMode
      * Indicates whether this is a LONG or SHORT button press event.
      */
-    public void setButtonPressMode(ButtonPressMode buttonPressMode) {
+    public void setButtonPressMode(@NonNull ButtonPressMode buttonPressMode) {
         setParameters(KEY_BUTTON_PRESS_MODE, buttonPressMode);
     }
 }

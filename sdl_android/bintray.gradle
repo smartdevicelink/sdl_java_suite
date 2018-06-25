@@ -51,7 +51,7 @@ bintray {
     // Authorization
     user = props.getProperty("bintray.user")
     key = props.getProperty("bintray.key")
-
+    version = props.getProperty("bintray.version")
     configurations = ['archives']
     pkg {
         repo = props.getProperty("bintray.repo")

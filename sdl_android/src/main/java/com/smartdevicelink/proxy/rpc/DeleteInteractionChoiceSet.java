@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -79,6 +81,15 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
         super(hash);
     }
 	/**
+	 * Constructs a new DeleteInteractionChoiceSet object
+	 * @param interactionChoiceSetID a unique ID that identifies the Choice Set
+	 * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000 </p>
+	 */
+	public DeleteInteractionChoiceSet(@NonNull Integer interactionChoiceSetID) {
+		this();
+		setInteractionChoiceSetID(interactionChoiceSetID);
+	}
+    /**
 	 * Gets a unique ID that identifies the Choice Set
 	 * @return Integer -an Integer value representing the unique Choice Set ID
 	 */    
@@ -90,7 +101,7 @@ public class DeleteInteractionChoiceSet extends RPCRequest {
 	 * @param interactionChoiceSetID a unique ID that identifies the Choice Set
 	 * <p><b>Notes: </b>Min Value: 0; Max Value: 2000000000 </p>
 	 */    
-    public void setInteractionChoiceSetID( Integer interactionChoiceSetID ) {
+    public void setInteractionChoiceSetID( @NonNull Integer interactionChoiceSetID ) {
 		setParameters(KEY_INTERACTION_CHOICE_SET_ID, interactionChoiceSetID);
     }
 }
