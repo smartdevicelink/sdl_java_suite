@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -51,10 +53,18 @@ public class Rectangle extends RPCStruct {
 		super(hash);
 	}
 
+	public Rectangle(@NonNull Float x, @NonNull Float y, @NonNull Float width, @NonNull Float height) {
+		this();
+		setX(x);
+		setY(y);
+		setWidth(width);
+		setHeight(height);
+	}
+
 	/**
 	 * Set the X-coordinate pixel in of the user control that starts in the upper left corner
 	 */
-	public void setX(Float x) {
+	public void setX(@NonNull Float x) {
 		setValue(KEY_X, x);
 	}
 
@@ -68,7 +78,7 @@ public class Rectangle extends RPCStruct {
 	/**
 	 * Set the Y-coordinate pixel of the user control that starts in the upper left corner
 	 */
-	public void setY(Float y) {
+	public void setY(@NonNull Float y) {
 		setValue(KEY_Y, y);
 	}
 
@@ -82,7 +92,7 @@ public class Rectangle extends RPCStruct {
 	/**
 	 * Set the width in pixels of the user control's bounding rectangle in pixels
 	 */
-	public void setWidth(Float width) {
+	public void setWidth(@NonNull Float width) {
 		setValue(KEY_WIDTH, width);
 	}
 
@@ -96,7 +106,7 @@ public class Rectangle extends RPCStruct {
 	/**
 	 * The height in pixels of the user control's bounding rectangle
 	 */
-	public void setHeight(Float height) {
+	public void setHeight(@NonNull Float height) {
 		setValue(KEY_HEIGHT, height);
 	}
 

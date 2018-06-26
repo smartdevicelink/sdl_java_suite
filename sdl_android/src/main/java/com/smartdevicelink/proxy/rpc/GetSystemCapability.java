@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -31,6 +33,15 @@ public class GetSystemCapability extends RPCRequest {
     }
 
     /**
+     * Constructs a new GetSystemCapability object
+     * @param systemCapabilityType SystemCapabilityType being requested
+     */
+    public GetSystemCapability(@NonNull SystemCapabilityType systemCapabilityType){
+        this();
+        setSystemCapabilityType(systemCapabilityType);
+    }
+
+    /**
      * Used to get the SystemCapabilityType being requested
      * @return the SystemCapabilityType being requested
      */
@@ -42,7 +53,7 @@ public class GetSystemCapability extends RPCRequest {
      * Used to set the SystemCapabilityType being requested
      * @param value SystemCapabilityType being requested
      */
-    public void setSystemCapabilityType(SystemCapabilityType value){
+    public void setSystemCapabilityType(@NonNull SystemCapabilityType value){
         setParameters(KEY_SYSTEM_CAPABILITY_TYPE, value);
     }
 }

@@ -60,8 +60,8 @@ public class SdlProxyBuilder {
         sAppResumeHash = null;
         sdlSecList = null;
         dayColorScheme = null;
-        nightColorScheme = null;
-    }
+        nightColorScheme = null;    
+}
 
     public static class Builder {
         SdlProxyBuilder sdlProxyBuilder;
@@ -163,8 +163,7 @@ public class SdlProxyBuilder {
             sdlProxyBuilder.sdlSecList = val;
             return this;
         }
-
-        public Builder setDayColorScheme(TemplateColorScheme val) {
+ public Builder setDayColorScheme(TemplateColorScheme val) {
             sdlProxyBuilder.dayColorScheme = val;
             return this;
         }
@@ -188,3 +187,6 @@ public class SdlProxyBuilder {
         }
     }
 }
+
+
+

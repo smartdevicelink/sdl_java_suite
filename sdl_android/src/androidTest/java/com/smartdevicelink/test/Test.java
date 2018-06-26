@@ -37,6 +37,7 @@ import com.smartdevicelink.proxy.rpc.RemoteControlCapabilities;
 import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.StartTime;
@@ -71,6 +72,7 @@ import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
+import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -98,6 +100,7 @@ import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
 import com.smartdevicelink.proxy.rpc.enums.RadioBand;
 import com.smartdevicelink.proxy.rpc.enums.RadioState;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
@@ -122,6 +125,7 @@ import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
+import com.smartdevicelink.proxy.rpc.enums.WayPointType;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -225,6 +229,7 @@ public class Test {
 	public static final ComponentVolumeStatus          GENERAL_COMPONENTVOLUMESTATUS          = ComponentVolumeStatus.LOW;
 	public static final PresetBankCapabilities         GENERAL_PRESETBANKCAPABILITIES         = new PresetBankCapabilities();
 	public static final VehicleDataEventStatus         GENERAL_VEHCILEDATAEVENTSTATUS         = VehicleDataEventStatus.YES;
+	public static final VehicleDataEventStatus         GENERAL_VEHICLEDATAEVENTSTATUS         = VehicleDataEventStatus.YES;
 	public static final TouchEventCapabilities         GENERAL_TOUCHEVENTCAPABILITIES         = new TouchEventCapabilities();
 	public static final SoftButtonCapabilities         GENERAL_SOFTBUTTONCAPABILITIES         = new SoftButtonCapabilities();
 	public static final ECallConfirmationStatus        GENERAL_ECALLCONFIRMATIONSTATUS        = ECallConfirmationStatus.CALL_IN_PROGRESS;	
@@ -244,6 +249,11 @@ public class Test {
 	public static final RGBColor                       GENERAL_RGBCOLOR                       = new RGBColor();
 	public static final TemplateColorScheme            GENERAL_DAYCOLORSCHEME                 = new TemplateColorScheme();
 	public static final TemplateColorScheme            GENERAL_NIGHTCOLORSCHEME               = new TemplateColorScheme();
+	public static final Result                         GENERAL_RESULT                         = Result.SUCCESS;
+	public static final WayPointType                   GENERAL_WAYPOINTTYPE                   = WayPointType.DESTINATION;
+	public static final SingleTireStatus               GENERAL_SINGLETIRESTATUS               = new SingleTireStatus();
+	public static final DriverDistractionState         GENERAL_DRIVERDISTRACTIONSTATE         = DriverDistractionState.DD_ON;
+	public static final List<LocationDetails>          GENERAL_LOCATIONDETAILS_LIST           = Arrays.asList(new LocationDetails[] { Test.GENERAL_LOCATIONDETAILS, Test.GENERAL_LOCATIONDETAILS});
 
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;

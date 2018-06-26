@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.TemperatureUnit;
 import com.smartdevicelink.util.SdlDataTypeConverter;
@@ -15,13 +17,24 @@ public class Temperature extends RPCStruct{
         super(hash);
     }
 
+	/**
+	 * Create the temperature object
+	 * @param unit Temperature Unit.
+	 * @param value Temperature Value in TemperatureUnit specified unit
+	 */
+	public Temperature(@NonNull TemperatureUnit unit, @NonNull Float value){
+		this();
+		setUnit(unit);
+		setValue(value);
+	}
+
     /**
      * Sets the unit portion of the Temperature class
      *
      * @param unit
      * Temperature Unit.
      */
-    public void setUnit(TemperatureUnit unit) {
+    public void setUnit(@NonNull TemperatureUnit unit) {
         setValue(KEY_UNIT, unit);
     }
 
@@ -50,7 +63,7 @@ public class Temperature extends RPCStruct{
      * @param value
      * Temperature Value in TemperatureUnit specified unit. Range depends on OEM and is not checked by SDL.
      */
-    public void setValue(Float value) {
+    public void setValue(@NonNull Float value) {
         setValue(KEY_VALUE, value);
     }
 }

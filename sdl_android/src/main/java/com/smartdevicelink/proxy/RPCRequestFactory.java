@@ -54,9 +54,11 @@ import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
-
 import java.util.Vector;
-
+/**
+ * @deprecated Use RPC constructors directly instead
+ */
+@Deprecated
 public class RPCRequestFactory {
 
 	public static final int SDL_MSG_MAJOR_VERSION = 1;

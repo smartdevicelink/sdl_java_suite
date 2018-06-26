@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -60,8 +62,14 @@ public class ImageResolution extends RPCStruct {
     public ImageResolution(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+    public ImageResolution(@NonNull Integer resolutionWidth, @NonNull Integer resolutionHeight) {
+        this();
+        setResolutionWidth(resolutionWidth);
+        setResolutionHeight(resolutionHeight);
+    }
     
-    public void setResolutionWidth(Integer resolutionWidth) {
+    public void setResolutionWidth(@NonNull Integer resolutionWidth) {
         setValue(KEY_RESOLUTION_WIDTH, resolutionWidth);
     }
     
@@ -69,7 +77,7 @@ public class ImageResolution extends RPCStruct {
         return getInteger(KEY_RESOLUTION_WIDTH);
     }
     
-    public void setResolutionHeight(Integer resolutionHeight) {
+    public void setResolutionHeight(@NonNull Integer resolutionHeight) {
         setValue(KEY_RESOLUTION_HEIGHT, resolutionHeight);
     }
     

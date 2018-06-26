@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 
@@ -22,6 +24,15 @@ public class SystemCapability extends RPCStruct {
         super(hash);
     }
 
+	/**
+	 * Create a systemCapability object
+	 * @param systemCapabilityType The type
+	 */
+	public SystemCapability(@NonNull SystemCapabilityType systemCapabilityType){
+		this();
+		setSystemCapabilityType(systemCapabilityType);
+	}
+
     /**
      *
      * @return The SystemCapabilityType that indicates which type of data should be changed and identifies which data object exists in this struct. For example, if the SystemCapability Type is NAVIGATION then a "navigationCapability" should exist
@@ -33,7 +44,7 @@ public class SystemCapability extends RPCStruct {
     /**
      * @param value Set the SystemCapabilityType that indicates which type of data should be changed and identifies which data object exists in this struct.
      */
-    public void setSystemCapabilityType(SystemCapabilityType value){
+    public void setSystemCapabilityType(@NonNull SystemCapabilityType value){
         setValue(KEY_SYSTEM_CAPABILITY_TYPE, value);
     }
 

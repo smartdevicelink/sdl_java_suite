@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import java.util.Hashtable;
 
@@ -26,13 +28,23 @@ public class RadioControlCapabilities extends RPCStruct{
     }
 
     /**
+     * Constructs a new RadioControlCapabilities object
+     * @param moduleName
+     * The short friendly name of the climate control module.
+     * It should not be used to identify a module by mobile application.
+     */
+    public RadioControlCapabilities(@NonNull String moduleName) {
+        this();
+        setModuleName(moduleName);
+    }
+    /**
      * Sets the moduleName portion of the RadioControlCapabilities class
      *
      * @param moduleName
      * The short friendly name of the climate control module.
      * It should not be used to identify a module by mobile application.
      */
-    public void setModuleName(String moduleName) {
+    public void setModuleName(@NonNull String moduleName) {
         setValue(KEY_MODULE_NAME, moduleName);
     }
 
