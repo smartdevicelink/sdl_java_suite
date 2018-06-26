@@ -56,6 +56,7 @@ import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
+import com.smartdevicelink.proxy.rpc.enums.AudioStreamingIndicator;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
@@ -263,6 +264,7 @@ public class Test {
 	public static final ModuleData 					   GENERAL_MODULEDATA                     = new ModuleData();
 	public static final ClimateControlCapabilities     GENERAL_CLIMATECONTROLCAPABILITIES     = new ClimateControlCapabilities();
 	public static final RadioControlCapabilities       GENERAL_RADIOCONTROLCAPABILITIES       = new RadioControlCapabilities();
+	public static final AudioStreamingIndicator        GENERAL_AUDIO_STREAMING_INDICATOR      = AudioStreamingIndicator.PLAY;
 
 	public static final HMICapabilities                GENERAL_HMICAPABILITIES                = new HMICapabilities();
 
