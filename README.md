@@ -30,14 +30,14 @@ You can also find some branches that have yet to be merged into this GitHub proj
 
 #### Dependency Managers
 
-To compile with the a release of SDL Android, include the following in your app's `build.gradle` file,
+To compile with the latest release of SDL Android, include the following in your app's `build.gradle` file,
 
 ```
 repositories {
     jcenter()
 }
 dependencies {
-    compile 'com.smartdevicelink:sdl_android:4.+'
+    implementation 'com.smartdevicelink:sdl_android:4.+'
 }
 ```
 

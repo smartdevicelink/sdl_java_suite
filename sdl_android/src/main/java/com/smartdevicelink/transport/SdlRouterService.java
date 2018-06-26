@@ -97,7 +97,7 @@ public class SdlRouterService extends Service{
 	/**
 	 * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
 	 */
-	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 5;
+	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 6;
 	
 	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 	
@@ -418,7 +418,6 @@ public class SdlRouterService extends Service{
 	                	
 	                    break;
 	                case TransportConstants.ROUTER_SEND_PACKET:
-	                	Log.d(TAG, "Received packet to send");
 	                	if(receivedBundle!=null){
 	                		Runnable packetRun = new Runnable(){
 	                			@Override
@@ -908,7 +907,7 @@ public class SdlRouterService extends Service{
 					}
 				}
 				int timeout = getNotificationTimeout(address);
-				enterForeground("Waiting for connection...", timeout);
+				enterForeground("Waiting for connection...", timeout, false);
 				resetForegroundTimeOut(timeout);
 			}
 			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
@@ -1012,18 +1011,15 @@ public class SdlRouterService extends Service{
 		if(address != null){
 			if(hasSDLConnected(address)){
 				return FOREGROUND_TIMEOUT * 2;
-			}else if(this.isFirstStatusCheck(address)){
+			}else if(this.isFirstStatusCheck(address)) {
 				// If this is the first time the service has ever connected to this device we want
-				// to give it a few extra seconds.
-				setSDLConnectedStatus(address,false);
-				return FOREGROUND_TIMEOUT;
-			}else{
-				// If the service has seen this device before but hasn't ever connected, the
-				// notification can be removed ASAP.
-				return FOREGROUND_TIMEOUT/100;
+				// to ensure we have a record of it
+				setSDLConnectedStatus(address, false);
 			}
 		}
-		return FOREGROUND_TIMEOUT/100;
+		// If this is a new device or hasn't connected through SDL we want to limit the exposure
+		// of the SDL service in the foreground
+		return FOREGROUND_TIMEOUT/1000;
 	}
 
 	public void resetForegroundTimeOut(long delay){
@@ -1056,7 +1052,7 @@ public class SdlRouterService extends Service{
 
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
-	private void enterForeground(String content, long chronometerLength) {
+	private void enterForeground(String content, long chronometerLength, boolean ongoing) {
 		if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB){
 			Log.w(TAG, "Unable to start service as foreground due to OS SDK version being lower than 11");
 			isForeground = false;
@@ -1094,7 +1090,7 @@ public class SdlRouterService extends Service{
 			 builder.setSmallIcon(android.R.drawable.stat_sys_data_bluetooth);
 		}
         builder.setLargeIcon(icon);
-        builder.setOngoing(true);
+        builder.setOngoing(ongoing);
 
 		// Create an intent that will be fired when the user clicks the notification.
 		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SDL_NOTIFICATION_FAQS_PAGE));
@@ -1240,7 +1236,7 @@ public class SdlRouterService extends Service{
 	public void onTransportConnected(final TransportType type){
 		isTransportConnected = true;
 		cancelForegroundTimeOut();
-		enterForeground("Connected to " + this.getConnectedDeviceName(),0);
+		enterForeground("Connected to " + this.getConnectedDeviceName(),0, true);
 		if(packetWriteTaskMaster!=null){
 			packetWriteTaskMaster.close();
 			packetWriteTaskMaster = null;
@@ -2517,7 +2513,7 @@ public class SdlRouterService extends Service{
 			bytesToWrite = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
 			offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
 			size = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytesToWrite.length);  //In case there isn't anything just send the whole packet.
-			this.priorityCoefficient = bundle.getInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT,0); Log.d(TAG, "packet priority coef: "+ this.priorityCoefficient);
+			this.priorityCoefficient = bundle.getInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT,0);
 		}
 		
 		@Override
