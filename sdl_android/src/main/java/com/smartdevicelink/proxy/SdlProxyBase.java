@@ -5931,7 +5931,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param prndl -Subscribes to PRNDL data that houses the selected gear.
 	 * @param tirePressure -Subscribes to the TireStatus data containing status and pressure of tires. 
 	 * @param odometer -Subscribes to Odometer data in km.
-	 * @param engineOilLife -Subscribes to Engine Oil Life data.
 	 * @param beltStatus -Subscribes to status of the seat belts.
 	 * @param bodyInformation -Subscribes to body information including power modes.
 	 * @param deviceStatus -Subscribes to device status including signal and battery strength.
@@ -5939,6 +5938,56 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/
+	@SuppressWarnings("unused")
+	@Deprecated
+	public void subscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+									 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
+									 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+									 boolean driverBraking, Integer correlationID) throws SdlException
+	{
+		SubscribeVehicleData msg = new SubscribeVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
+		
+		sendRPCRequest(msg);
+	}
+
+
+	/**
+	 *     Subscribes for specific published data items.  The data will be only sent if it has changed.
+	 *     Responses are captured through callback on IProxyListener.
+	 *
+	 * @param gps -Subscribes to GPS data.
+	 * @param speed -Subscribes to vehicle speed data in kilometers per hour.
+	 * @param rpm -Subscribes to number of revolutions per minute of the engine.
+	 * @param fuelLevel -Subscribes to fuel level in the tank (percentage).
+	 * @param fuelLevel_State -Subscribes to fuel level state.
+	 * @param instantFuelConsumption -Subscribes to instantaneous fuel consumption in microlitres.
+	 * @param externalTemperature -Subscribes to the external temperature in degrees celsius.
+	 * @param prndl -Subscribes to PRNDL data that houses the selected gear.
+	 * @param tirePressure -Subscribes to the TireStatus data containing status and pressure of tires.
+	 * @param engineOilLife -Subscribes to Engine Oil Life data.
+	 * @param odometer -Subscribes to Odometer data in km.
+	 * @param beltStatus -Subscribes to status of the seat belts.
+	 * @param bodyInformation -Subscribes to body information including power modes.
+	 * @param deviceStatus -Subscribes to device status including signal and battery strength.
+	 * @param driverBraking -Subscribes to the status of the brake pedal.
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
 	@SuppressWarnings("unused")
 	public void subscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 									 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
@@ -5962,10 +6011,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		msg.setDeviceStatus(deviceStatus);
 		msg.setDriverBraking(driverBraking);
 		msg.setCorrelationID(correlationID);
-		
+
 		sendRPCRequest(msg);
 	}
-	
+
+
 	/**
 	 *     Unsubscribes for specific published data items.
 	 *     Responses are captured through callback on IProxyListener.
@@ -5980,7 +6030,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param prndl -Unsubscribes to PRNDL data that houses the selected gear.
 	 * @param tirePressure -Unsubscribes to the TireStatus data containing status and pressure of tires. 
 	 * @param odometer -Unsubscribes to Odometer data in km.
-	 * @param engineOilLife -Unsubscribes to Engine Oil Life data.
 	 * @param beltStatus -Unsubscribes to status of the seat belts.
 	 * @param bodyInformation -Unsubscribes to body information including power modes.
 	 * @param deviceStatus -Unsubscribes to device status including signal and battery strength.
@@ -5988,6 +6037,57 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/
+
+	@SuppressWarnings("unused")
+	@Deprecated
+	public void unsubscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+									   boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
+									   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+									   boolean driverBraking, Integer correlationID) throws SdlException
+	{
+		UnsubscribeVehicleData msg = new UnsubscribeVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
+
+		sendRPCRequest(msg);
+	}
+
+
+	/**
+	 *     Unsubscribes for specific published data items.
+	 *     Responses are captured through callback on IProxyListener.
+	 *
+	 * @param gps -Unsubscribes to GPS data.
+	 * @param speed -Unsubscribes to vehicle speed data in kilometers per hour.
+	 * @param rpm -Unsubscribes to number of revolutions per minute of the engine.
+	 * @param fuelLevel -Unsubscribes to fuel level in the tank (percentage).
+	 * @param fuelLevel_State -Unsubscribes to fuel level state.
+	 * @param instantFuelConsumption -Unsubscribes to instantaneous fuel consumption in microlitres.
+	 * @param externalTemperature -Unsubscribes to the external temperature in degrees celsius.
+	 * @param prndl -Unsubscribes to PRNDL data that houses the selected gear.
+	 * @param tirePressure -Unsubscribes to the TireStatus data containing status and pressure of tires.
+	 * @param engineOilLife -Unsubscribes to Engine Oil Life data.
+	 * @param odometer -Unsubscribes to Odometer data in km.
+	 * @param beltStatus -Unsubscribes to status of the seat belts.
+	 * @param bodyInformation -Unsubscribes to body information including power modes.
+	 * @param deviceStatus -Unsubscribes to device status including signal and battery strength.
+	 * @param driverBraking -Unsubscribes to the status of the brake pedal.
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
 
 	@SuppressWarnings("unused")
 	public void unsubscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
@@ -6032,7 +6132,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param prndl -Performs an ad-hoc request for PRNDL data that houses the selected gear.
 	 * @param tirePressure -Performs an ad-hoc request for the TireStatus data containing status and pressure of tires. 
 	 * @param odometer -Performs an ad-hoc request for Odometer data in km.
-	 * @param engineOilLife -Performs an ad-hoc request for Engine Oil Life data.
 	 * @param beltStatus -Performs an ad-hoc request for status of the seat belts.
 	 * @param bodyInformation -Performs an ad-hoc request for  body information including power modes.
 	 * @param deviceStatus -Performs an ad-hoc request for device status including signal and battery strength.
@@ -6040,6 +6139,58 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/
+	@SuppressWarnings("unused")
+	@Deprecated
+	public void getvehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+							   boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
+							   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+							   boolean driverBraking, Integer correlationID) throws SdlException
+	{
+		GetVehicleData msg = new GetVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setVin(vin);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
+
+		sendRPCRequest(msg);
+	}
+
+
+	/**
+	 *     Performs a Non periodic vehicle data read request.
+	 *     Responses are captured through callback on IProxyListener.
+	 *
+	 * @param gps -Performs an ad-hoc request for GPS data.
+	 * @param speed -Performs an ad-hoc request for vehicle speed data in kilometers per hour.
+	 * @param rpm -Performs an ad-hoc request for number of revolutions per minute of the engine.
+	 * @param fuelLevel -Performs an ad-hoc request for fuel level in the tank (percentage).
+	 * @param fuelLevel_State -Performs an ad-hoc request for fuel level state.
+	 * @param instantFuelConsumption -Performs an ad-hoc request for instantaneous fuel consumption in microlitres.
+	 * @param externalTemperature -Performs an ad-hoc request for the external temperature in degrees celsius.
+	 * @param vin -Performs an ad-hoc request for the Vehicle identification number
+	 * @param prndl -Performs an ad-hoc request for PRNDL data that houses the selected gear.
+	 * @param tirePressure -Performs an ad-hoc request for the TireStatus data containing status and pressure of tires.
+	 * @param engineOilLife -Performs an ad-hoc request for Engine Oil Life data.
+	 * @param odometer -Performs an ad-hoc request for Odometer data in km.
+	 * @param beltStatus -Performs an ad-hoc request for status of the seat belts.
+	 * @param bodyInformation -Performs an ad-hoc request for  body information including power modes.
+	 * @param deviceStatus -Performs an ad-hoc request for device status including signal and battery strength.
+	 * @param driverBraking -Performs an ad-hoc request for the status of the brake pedal.
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
 	@SuppressWarnings("unused")
 	public void getvehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 							   boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
