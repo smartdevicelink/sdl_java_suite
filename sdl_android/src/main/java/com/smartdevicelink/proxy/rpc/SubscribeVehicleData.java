@@ -222,8 +222,8 @@ import java.util.Hashtable;
  * 			<td>turnSignal</td>
  * 			<td>Boolean</td>
  * 			<td>@see TurnSignal</td>
- *                 <td>N</td>
- *                 <td>Subscribable</td>
+ *				<td>N</td>
+ *				<td>Subscribable</td>
  * 			<td>SmartDeviceLink 4.6 </td>
  * 		</tr>
  *  </table>
