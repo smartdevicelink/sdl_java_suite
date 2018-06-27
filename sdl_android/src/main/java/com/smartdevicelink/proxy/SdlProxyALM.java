@@ -1969,22 +1969,4 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 		return _bResumeSuccess;
 	}
 
-	/**
-	 * Tells developer whether or not their app icon has been resumed on core.
-	 * @return boolean - true if icon was resumed, false if not
-	 * @throws SdlException if proxy is disposed or app is not registered
-	 */
-	public boolean getIconResumed() throws SdlException {
-		// Test if proxy has been disposed
-		if (_proxyDisposed) {
-			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
-		}
-
-		// Test SDL availability
-		if (!_appInterfaceRegisterd) {
-			throw new SdlException("SDL is not connected. Unable to determine if app icon was resumed.", SdlExceptionCause.SDL_UNAVAILABLE);
-		}
-		return _iconResumed;
-	}
-
 }

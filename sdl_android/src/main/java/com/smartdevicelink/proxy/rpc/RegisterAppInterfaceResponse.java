@@ -380,6 +380,10 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         return getString(KEY_SYSTEM_SOFTWARE_VERSION);
     }
 
+    public void setIconResumed(Boolean iconResumed){
+        setParameters(KEY_ICON_RESUMED, iconResumed);
+    }
+
     public Boolean getIconResumed() {
         return getBoolean(KEY_ICON_RESUMED);
     }
