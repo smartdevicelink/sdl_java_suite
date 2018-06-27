@@ -41,6 +41,7 @@ import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.PhoneCapability;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
+import com.smartdevicelink.proxy.rpc.RGBColor;
 import com.smartdevicelink.proxy.rpc.RadioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.RadioControlData;
 import com.smartdevicelink.proxy.rpc.RdsData;
@@ -54,6 +55,7 @@ import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.StartTime;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.Temperature;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
@@ -1533,25 +1535,67 @@ public class Validator{
     	
     	return true;
     }
-    
+
     public static boolean validateDeviceInfo (DeviceInfo item1, DeviceInfo item2) {
-    	if (item1 == null) {
-    		return ( item2 == null );
-    	}
-    	if (item2 == null) {
-    		return ( item1 == null );
-    	}
-    	
-    	if (item1.getOs()                   != item2.getOs()          ||
-    		item1.getCarrier()              != item2.getCarrier()     ||    		
-    		item1.getHardware()             != item2.getHardware()    ||    		
-    		item1.getOsVersion()            != item2.getOsVersion()   ||
-			item1.getFirmwareRev()          != item2.getFirmwareRev() ||
-    		item1.getMaxNumberRFCOMMPorts() != item2.getMaxNumberRFCOMMPorts()) {
-    		return false;
-    	}
-    	
-    	return true;
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        if (item1.getOs()                   != item2.getOs()          ||
+                item1.getCarrier()              != item2.getCarrier()     ||
+                item1.getHardware()             != item2.getHardware()    ||
+                item1.getOsVersion()            != item2.getOsVersion()   ||
+                item1.getFirmwareRev()          != item2.getFirmwareRev() ||
+                item1.getMaxNumberRFCOMMPorts() != item2.getMaxNumberRFCOMMPorts()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateTemplateColorScheme (TemplateColorScheme item1, TemplateColorScheme item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        if (item1.getPrimaryColor().getRed() != item2.getPrimaryColor().getRed()
+                || item1.getPrimaryColor().getGreen() != item2.getPrimaryColor().getGreen()
+                || item1.getPrimaryColor().getBlue() != item2.getPrimaryColor().getBlue()
+                || item1.getSecondaryColor().getRed() != item2.getSecondaryColor().getRed()
+                || item1.getSecondaryColor().getGreen() != item2.getSecondaryColor().getGreen()
+                || item1.getSecondaryColor().getBlue() != item2.getSecondaryColor().getBlue()
+                || item1.getBackgroundColor().getRed() != item2.getBackgroundColor().getRed()
+                || item1.getBackgroundColor().getGreen() != item2.getBackgroundColor().getGreen()
+                || item1.getBackgroundColor().getBlue() != item2.getBackgroundColor().getBlue()
+
+                ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateRGBColor(RGBColor item1, RGBColor item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        if (item1.getRed() != item2.getRed()
+                || item1.getGreen() != item2.getGreen()
+                || item1.getBlue() != item2.getBlue()    ) {
+            return false;
+        }
+
+        return true;
     }
 
     public static boolean validateSupportedFormats (VideoStreamingFormat vsf1, VideoStreamingFormat vsf2) {

@@ -29,6 +29,7 @@ import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.PhoneCapability;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
+import com.smartdevicelink.proxy.rpc.RGBColor;
 import com.smartdevicelink.proxy.rpc.RadioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.RadioControlData;
 import com.smartdevicelink.proxy.rpc.RdsData;
@@ -43,6 +44,7 @@ import com.smartdevicelink.proxy.rpc.StartTime;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.Temperature;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
@@ -246,11 +248,15 @@ public class Test {
 	public static final VideoStreamingCodec            GENERAL_VIDEOSTREAMINGCODEC            = VideoStreamingCodec.H264;
 	public static final VideoStreamingCapability       GENERAL_VIDEOSTREAMINGCAPABILITY       = new VideoStreamingCapability();
 	public static final VideoStreamingFormat           GENERAL_VIDEOSTREAMINGFORMAT           = new VideoStreamingFormat();
+	public static final RGBColor                       GENERAL_RGBCOLOR                       = new RGBColor();
+	public static final TemplateColorScheme            GENERAL_DAYCOLORSCHEME                 = new TemplateColorScheme();
+	public static final TemplateColorScheme            GENERAL_NIGHTCOLORSCHEME               = new TemplateColorScheme();
 	public static final Result                         GENERAL_RESULT                         = Result.SUCCESS;
 	public static final WayPointType                   GENERAL_WAYPOINTTYPE                   = WayPointType.DESTINATION;
 	public static final SingleTireStatus               GENERAL_SINGLETIRESTATUS               = new SingleTireStatus();
 	public static final DriverDistractionState         GENERAL_DRIVERDISTRACTIONSTATE         = DriverDistractionState.DD_ON;
 	public static final List<LocationDetails>          GENERAL_LOCATIONDETAILS_LIST           = Arrays.asList(new LocationDetails[] { Test.GENERAL_LOCATIONDETAILS, Test.GENERAL_LOCATIONDETAILS});
+
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
@@ -347,6 +353,9 @@ public class Test {
 	public static final JSONObject JSON_PRESETBANKCAPABILITIES    = new JSONObject();
 	public static final JSONObject JSON_TOUCHEVENTCAPABILITIES    = new JSONObject();
 	public static final JSONObject JSON_PCMSTREAMCAPABILITIES     = new JSONObject();
+	public static final JSONObject JSON_RGBCOLOR                  = new JSONObject();
+	public static final JSONObject JSON_DAYCOLORSCHEME            = new JSONObject();
+	public static final JSONObject JSON_NIGHTCOLORSCHEME          = new JSONObject();
 
 	static {
 		GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
@@ -641,6 +650,18 @@ public class Test {
 		GENERAL_HAPTIC_RECT.setId(GENERAL_INTEGER);
 		GENERAL_HAPTIC_RECT.setRect(GENERAL_RECTANGLE);
 
+		GENERAL_RGBCOLOR.setRed(GENERAL_INTEGER);
+		GENERAL_RGBCOLOR.setGreen(GENERAL_INTEGER);
+		GENERAL_RGBCOLOR.setBlue(GENERAL_INTEGER);
+
+		GENERAL_NIGHTCOLORSCHEME.setPrimaryColor(GENERAL_RGBCOLOR);
+		GENERAL_NIGHTCOLORSCHEME.setSecondaryColor(GENERAL_RGBCOLOR);
+		GENERAL_NIGHTCOLORSCHEME.setBackgroundColor(GENERAL_RGBCOLOR);
+
+		GENERAL_DAYCOLORSCHEME.setPrimaryColor(GENERAL_RGBCOLOR);
+		GENERAL_DAYCOLORSCHEME.setSecondaryColor(GENERAL_RGBCOLOR);
+		GENERAL_DAYCOLORSCHEME.setBackgroundColor(GENERAL_RGBCOLOR);
+
         
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
@@ -730,6 +751,18 @@ public class Test {
 			JSON_DEVICEINFO.put(DeviceInfo.KEY_MAX_NUMBER_RFCOMM_PORTS, GENERAL_INT);
 			JSON_DEVICEINFO.put(DeviceInfo.KEY_OS, GENERAL_STRING);
 			JSON_DEVICEINFO.put(DeviceInfo.KEY_OS_VERSION, GENERAL_STRING);
+
+			JSON_RGBCOLOR.put(RGBColor.KEY_RED, GENERAL_INT);
+			JSON_RGBCOLOR.put(RGBColor.KEY_GREEN, GENERAL_INT);
+			JSON_RGBCOLOR.put(RGBColor.KEY_BLUE, GENERAL_INT);
+
+			JSON_DAYCOLORSCHEME.put(TemplateColorScheme.KEY_PRIMARY_COLOR, JSON_RGBCOLOR);
+			JSON_DAYCOLORSCHEME.put(TemplateColorScheme.KEY_SECONDARY_COLOR, JSON_RGBCOLOR);
+			JSON_DAYCOLORSCHEME.put(TemplateColorScheme.KEY_BACKGROUND_COLOR, JSON_RGBCOLOR);
+
+			JSON_NIGHTCOLORSCHEME.put(TemplateColorScheme.KEY_PRIMARY_COLOR, JSON_RGBCOLOR);
+			JSON_NIGHTCOLORSCHEME.put(TemplateColorScheme.KEY_SECONDARY_COLOR, JSON_RGBCOLOR);
+			JSON_NIGHTCOLORSCHEME.put(TemplateColorScheme.KEY_BACKGROUND_COLOR, JSON_RGBCOLOR);
 			
 			JSON_SDLMSGVERSION.put(SdlMsgVersion.KEY_MAJOR_VERSION, GENERAL_INT);
 			JSON_SDLMSGVERSION.put(SdlMsgVersion.KEY_MINOR_VERSION, GENERAL_INT);	
