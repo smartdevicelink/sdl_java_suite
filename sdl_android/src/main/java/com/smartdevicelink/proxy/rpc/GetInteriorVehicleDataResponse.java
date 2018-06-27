@@ -1,7 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+
 import java.util.Hashtable;
 
 public class GetInteriorVehicleDataResponse extends RPCResponse {
@@ -26,6 +30,20 @@ public class GetInteriorVehicleDataResponse extends RPCResponse {
     public GetInteriorVehicleDataResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new GetInteriorVehicleDataResponse object
+	 * @param moduleData
+	 * @param resultCode whether the request is successfully processed
+	 * @param success whether the request is successfully processed
+
+	 */
+	public GetInteriorVehicleDataResponse( @NonNull ModuleData moduleData, @NonNull Result resultCode, @NonNull Boolean success) {
+		this();
+		setModuleData(moduleData);
+		setResultCode(resultCode);
+		setSuccess(success);
+	}
 
 	/**
 	 * Gets the moduleData

@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 
@@ -28,6 +30,15 @@ public class OnInteriorVehicleData extends RPCNotification {
     }
 
     /**
+     * Constructs a new OnInteriorVehicleData object
+     * @param moduleData
+     */
+    public OnInteriorVehicleData(@NonNull ModuleData moduleData) {
+        this();
+        setModuleData(moduleData);
+    }
+
+    /**
      * Gets the moduleData
      *
      * @return ModuleData
@@ -41,7 +52,7 @@ public class OnInteriorVehicleData extends RPCNotification {
      *
      * @param moduleData
      */
-    public void setModuleData(ModuleData moduleData) {
+    public void setModuleData(@NonNull ModuleData moduleData) {
         setParameters(KEY_MODULE_DATA, moduleData);
     }
 }

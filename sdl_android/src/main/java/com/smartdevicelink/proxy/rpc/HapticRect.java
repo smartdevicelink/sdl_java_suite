@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -52,10 +54,15 @@ public class HapticRect extends RPCStruct {
 		super(hash);
 	}
 
+	public HapticRect(@NonNull Integer id, @NonNull Rectangle rect) {
+		this();
+		setId(id);
+		setRect(rect);
+	}
 	/**
 	 * Set a user control spatial identifier that references the supplied spatial data
 	 */
-	public void setId(Integer id) {
+	public void setId(@NonNull Integer id) {
 		setValue(KEY_ID, id);
 	}
 
@@ -69,7 +76,7 @@ public class HapticRect extends RPCStruct {
 	/**
 	 * Set the position of the haptic rectangle to be highlighted. The center of this rectangle will be "touched" when a press occurs.
 	 */
-	public void setRect(Rectangle rect) {
+	public void setRect(@NonNull Rectangle rect) {
 		setValue(KEY_RECT, rect);
 	}
 

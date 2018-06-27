@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
@@ -68,6 +70,16 @@ public class OnCommand extends RPCNotification {
         super(hash);
     }
     /**
+     *Constructs a newly allocated OnCommand object
+     * @param cmdID an integer object representing a Command ID
+     * @param triggerSource a TriggerSource object
+     */
+    public OnCommand(@NonNull Integer cmdID, @NonNull TriggerSource triggerSource) {
+        this();
+        setCmdID(cmdID);
+        setTriggerSource(triggerSource);
+    }
+    /**
      * <p>Returns an <i>Integer</i> object representing the Command ID</p>
      * @return Integer an integer representation of this object
      */    
@@ -78,7 +90,7 @@ public class OnCommand extends RPCNotification {
      * <p>Sets a Command ID</p>    
      * @param cmdID an integer object representing a Command ID
      */    
-    public void setCmdID( Integer cmdID ) {
+    public void setCmdID( @NonNull Integer cmdID ) {
         setParameters(KEY_CMD_ID, cmdID);
     }
     /**
@@ -93,7 +105,7 @@ public class OnCommand extends RPCNotification {
      * <p>Indicates whether command was selected via VR or via a menu selection (using the OK button).</p>    
      * @param triggerSource a TriggerSource object
      */    
-    public void setTriggerSource( TriggerSource triggerSource ) {
+    public void setTriggerSource( @NonNull TriggerSource triggerSource ) {
         setParameters(KEY_TRIGGER_SOURCE, triggerSource);
     }
 }

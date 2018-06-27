@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 
@@ -56,7 +58,16 @@ public class HMIPermissions extends RPCStruct {
     public HMIPermissions(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
+    /**
+     * Constructs a newly allocated HMIPermissions object
+     * @param allowed HMI level that is permitted for this given RPC
+     * @param userDisallowed  HMI level that is prohibited for this given RPC
+     */
+    public HMIPermissions(@NonNull List<HMILevel> allowed, @NonNull List<HMILevel> userDisallowed) {
+        this();
+        setAllowed(allowed);
+        setUserDisallowed(userDisallowed);
+    }
     /**
      * get a set of all HMI levels that are permitted for this given RPC.
      * @return   a set of all HMI levels that are permitted for this given RPC
@@ -70,7 +81,7 @@ public class HMIPermissions extends RPCStruct {
      * set  HMI level that is permitted for this given RPC.
      * @param allowed HMI level that is permitted for this given RPC
      */
-    public void setAllowed(List<HMILevel> allowed) {
+    public void setAllowed(@NonNull List<HMILevel> allowed) {
     	setValue(KEY_ALLOWED, allowed);
     }
     
@@ -87,7 +98,7 @@ public class HMIPermissions extends RPCStruct {
      * set a set of all HMI levels that are prohibited for this given RPC
      * @param userDisallowed  HMI level that is prohibited for this given RPC
      */
-    public void setUserDisallowed(List<HMILevel> userDisallowed) {
+    public void setUserDisallowed(@NonNull List<HMILevel> userDisallowed) {
     	setValue(KEY_USER_DISALLOWED, userDisallowed);
     }
 }

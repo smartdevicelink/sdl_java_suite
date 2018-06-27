@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -120,12 +122,20 @@ public class Speak extends RPCRequest {
 	 * Constructs a new Speak object indicated by the Hashtable parameter
 	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */	
     public Speak(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new Speak object
+	 * @param ttsChunks An array of 1-100 TTSChunk structs which, taken together, specify the phrase to be spoken.
+	 */
+	public Speak(@NonNull List<TTSChunk> ttsChunks){
+		this();
+		setTtsChunks(ttsChunks);
+	}
 	/**
 	 * Gets a List<TTSChunk> representing an array of 1-100 TTSChunk structs
 	 * which, taken together, specify the phrase to be spoken
@@ -152,7 +162,7 @@ public class Speak extends RPCRequest {
 	 *            <li>Each chunk can be no more than 500 characters</li>
 	 *            </ul>
 	 */    
-    public void setTtsChunks( List<TTSChunk> ttsChunks ) {
+    public void setTtsChunks( @NonNull List<TTSChunk> ttsChunks ) {
 		setParameters(KEY_TTS_CHUNKS, ttsChunks);
     }
 }

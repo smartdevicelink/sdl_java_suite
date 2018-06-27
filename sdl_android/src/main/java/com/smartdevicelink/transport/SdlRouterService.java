@@ -6,7 +6,6 @@ import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNE
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,20 +30,22 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
@@ -96,7 +97,7 @@ public class SdlRouterService extends Service{
 	/**
 	 * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
 	 */
-	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 5;
+	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 6;
 	
 	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 	
@@ -105,6 +106,9 @@ public class SdlRouterService extends Service{
 	private static final long CLIENT_PING_DELAY = 1000;
 	
 	public static final String REGISTER_NEWER_SERVER_INSTANCE_ACTION		= "com.sdl.android.newservice";
+
+	public static final String SDL_NOTIFICATION_FAQS_PAGE = "https://smartdevicelink.com/en/guides/android/frequently-asked-questions/sdl-notifications/";
+
 	/**
 	 * @deprecated use {@link TransportConstants#START_ROUTER_SERVICE_ACTION} instead
 	 */
@@ -122,7 +126,12 @@ public class SdlRouterService extends Service{
 	
     @SuppressWarnings("FieldCanBeLocal")
 	private final int UNREGISTER_APP_INTERFACE_CORRELATION_ID = 65530;
-    
+
+	/**
+	 * Preference location where the service stores known SDL status based on device address
+	 */
+	protected static final String SDL_DEVICE_STATUS_SHARED_PREFS = "sdl.device.status";
+
 	private MultiplexBluetoothTransport mSerialService = null;
 
 	private static boolean connectAsClient = false;
@@ -409,7 +418,6 @@ public class SdlRouterService extends Service{
 	                	
 	                    break;
 	                case TransportConstants.ROUTER_SEND_PACKET:
-	                	Log.d(TAG, "Received packet to send");
 	                	if(receivedBundle!=null){
 	                		Runnable packetRun = new Runnable(){
 	                			@Override
@@ -891,16 +899,15 @@ public class SdlRouterService extends Service{
 		}
 		if(intent != null ){
 			if(intent.getBooleanExtra(FOREGROUND_EXTRA, false)){
-
-				BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-				int timeout = FOREGROUND_TIMEOUT;
-				int state = adapter.getProfileConnectionState(BluetoothProfile.A2DP);
-				if(state == BluetoothAdapter.STATE_CONNECTED){
-					//If we've just connected over A2DP there is a fair chance we want to wait to
-					// listen for a connection so we double our wait time
-					timeout *= 2;
+				String address = null;
+				if(intent.hasExtra(BluetoothDevice.EXTRA_DEVICE)){
+					BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+					if(device != null){
+						address = device.getAddress();
+					}
 				}
-				enterForeground("Waiting for connection...", timeout);
+				int timeout = getNotificationTimeout(address);
+				enterForeground("Waiting for connection...", timeout, false);
 				resetForegroundTimeOut(timeout);
 			}
 			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
@@ -993,6 +1000,28 @@ public class SdlRouterService extends Service{
 		}
 	}
 
+	/**
+	 * Gets the correct timeout for the foreground notification.
+	 * @param address the address of the device that is currently connected
+	 * @return the amount of time for a timeout handler to remove the notification.
+	 */
+	@SuppressLint("MissingPermission")
+	private int getNotificationTimeout(String address){
+		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+		if(address != null){
+			if(hasSDLConnected(address)){
+				return FOREGROUND_TIMEOUT * 2;
+			}else if(this.isFirstStatusCheck(address)) {
+				// If this is the first time the service has ever connected to this device we want
+				// to ensure we have a record of it
+				setSDLConnectedStatus(address, false);
+			}
+		}
+		// If this is a new device or hasn't connected through SDL we want to limit the exposure
+		// of the SDL service in the foreground
+		return FOREGROUND_TIMEOUT/1000;
+	}
+
 	public void resetForegroundTimeOut(long delay){
 		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2){
 			return;
@@ -1023,7 +1052,7 @@ public class SdlRouterService extends Service{
 
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
-	private void enterForeground(String content, long chronometerLength) {
+	private void enterForeground(String content, long chronometerLength, boolean ongoing) {
 		if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB){
 			Log.w(TAG, "Unable to start service as foreground due to OS SDK version being lower than 11");
 			isForeground = false;
@@ -1061,7 +1090,12 @@ public class SdlRouterService extends Service{
 			 builder.setSmallIcon(android.R.drawable.stat_sys_data_bluetooth);
 		}
         builder.setLargeIcon(icon);
-        builder.setOngoing(true);
+        builder.setOngoing(ongoing);
+
+		// Create an intent that will be fired when the user clicks the notification.
+		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SDL_NOTIFICATION_FAQS_PAGE));
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+		builder.setContentIntent(pendingIntent);
 
         if(chronometerLength > 0) {
         	builder.setWhen(chronometerLength + System.currentTimeMillis());
@@ -1202,7 +1236,7 @@ public class SdlRouterService extends Service{
 	public void onTransportConnected(final TransportType type){
 		isTransportConnected = true;
 		cancelForegroundTimeOut();
-		enterForeground("Connected to " + this.getConnectedDeviceName(),0);
+		enterForeground("Connected to " + this.getConnectedDeviceName(),0, true);
 		if(packetWriteTaskMaster!=null){
 			packetWriteTaskMaster.close();
 			packetWriteTaskMaster = null;
@@ -1320,7 +1354,11 @@ public class SdlRouterService extends Service{
 				SdlRouterService service = this.provider.get();
 	            switch (msg.what) {
 	            	case MESSAGE_DEVICE_NAME:
-						service.connectedDeviceName = msg.getData().getString(MultiplexBluetoothTransport.DEVICE_NAME);
+						Bundle bundle = msg.getData();
+						if(bundle !=null) {
+							service.connectedDeviceName = bundle.getString(MultiplexBluetoothTransport.DEVICE_NAME);
+							service.setSDLConnectedStatus(bundle.getString(MultiplexBluetoothTransport.DEVICE_ADDRESS),true);
+						}
 	            		break;
 	            	case MESSAGE_STATE_CHANGE:
 	            		switch (msg.arg1) {
@@ -1716,6 +1754,39 @@ public class SdlRouterService extends Service{
 		{		
 			return 0;
 		}
+
+	/**
+	 * Set the connection establishment status of the particular device
+	 * @param address address of the device in quesiton
+	 * @param hasSDLConnected true if a connection has been established, false if not
+	 */
+	protected void setSDLConnectedStatus(String address, boolean hasSDLConnected){
+		SharedPreferences preferences = this.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putBoolean(address,hasSDLConnected);
+		editor.commit();
+	}
+
+	/**
+	 * Checks to see if a device address has connected to SDL before.
+	 * @param address the mac address of the device in quesiton
+	 * @return if this is the first status check of this device
+	 */
+	protected boolean isFirstStatusCheck(String address){
+		SharedPreferences preferences = this.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
+		return !preferences.contains(address) ;
+	}
+	/**
+	 * Checks to see if a device address has connected to SDL before.
+	 * @param address the mac address of the device in quesiton
+	 * @return if an SDL connection has ever been established with this device
+	 */
+	protected boolean hasSDLConnected(String address){
+		SharedPreferences preferences = this.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
+		return preferences.contains(address) && preferences.getBoolean(address,false);
+	}
+
+
 	
 	/* ***********************************************************************************************************************************************************************
 	 * *****************************************************************  CUSTOM ADDITIONS  ************************************************************************************
@@ -2442,7 +2513,7 @@ public class SdlRouterService extends Service{
 			bytesToWrite = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
 			offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
 			size = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytesToWrite.length);  //In case there isn't anything just send the whole packet.
-			this.priorityCoefficient = bundle.getInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT,0); Log.d(TAG, "packet priority coef: "+ this.priorityCoefficient);
+			this.priorityCoefficient = bundle.getInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT,0);
 		}
 		
 		@Override
