@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.RPCStruct;
@@ -41,28 +43,38 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 public class VehicleDataResult extends RPCStruct {
 	public static final String KEY_DATA_TYPE = "dataType";
 	public static final String KEY_RESULT_CODE = "resultCode";
+
+	public VehicleDataResult() { }
 	  /**
 		* <p>
 		* Constructs a new VehicleDataResult object indicated by the Hashtable
 		* parameter
 		* </p>
 		* 
-		* @param hash
-		* 
-		*            <p>The Hashtable to use</p>
+		* @param hash the Hashtable to use
 		*/
-
-    public VehicleDataResult() { }
     public VehicleDataResult(Hashtable<String, Object> hash) {
         super(hash);
     }
-    public void setDataType(VehicleDataType dataType) {
+
+	/**
+	 * Individual published data request result.
+	 * @param dataType Defined published data element type.
+	 * @param resultCode Published data result code.
+	 */
+	public VehicleDataResult(@NonNull VehicleDataType dataType, @NonNull VehicleDataResultCode resultCode){
+    	this();
+    	setDataType(dataType);
+    	setResultCode(resultCode);
+	}
+
+    public void setDataType(@NonNull VehicleDataType dataType) {
     	setValue(KEY_DATA_TYPE, dataType);
     }
     public VehicleDataType getDataType() {
         return (VehicleDataType) getObject(VehicleDataType.class, KEY_DATA_TYPE);
     }
-    public void setResultCode(VehicleDataResultCode resultCode) {
+    public void setResultCode(@NonNull VehicleDataResultCode resultCode) {
     	setValue(KEY_RESULT_CODE, resultCode);
     }
     public VehicleDataResultCode getResultCode() {

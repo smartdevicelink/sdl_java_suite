@@ -12,6 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ *
+ * Note: This file has been modified from its original form.
  */
 
 package com.smartdevicelink.transport;
@@ -29,6 +32,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -52,6 +56,7 @@ public class MultiplexBluetoothTransport {
     private static final String NAME_SECURE =" SdlRouterService";
     // Key names received from the BluetoothSerialServer Handler
     public static final String DEVICE_NAME = "device_name";
+    public static final String DEVICE_ADDRESS = "device_address";
     public static final String TOAST = "toast";
     private static final long MS_TILL_TIMEOUT = 2500;
     private static final int READ_BUFFER_SIZE = 4096;
@@ -256,15 +261,17 @@ public class MultiplexBluetoothTransport {
         mConnectedWriteThread = new ConnectedWriteThread(socket);
         mConnectedWriteThread.start();
 
-        //Store a static name of the device that is connected.
-        if(device!=null){
-        	currentlyConnectedDevice = device.getName();
-        }
+
         
         // Send the name of the connected device back to the UI Activity
         Message msg = mHandler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
-        bundle.putString(DEVICE_NAME, currentlyConnectedDevice);
+        //Store a static name of the device that is connected.
+        currentlyConnectedDevice = device.getName();
+        if(currentlyConnectedDevice != null){
+            bundle.putString(DEVICE_NAME, currentlyConnectedDevice);
+            bundle.putString(DEVICE_ADDRESS, device.getAddress());
+        }
         msg.setData(bundle);
         mHandler.sendMessage(msg);
         setState(STATE_CONNECTED);
@@ -781,7 +788,7 @@ public class MultiplexBluetoothTransport {
             while (true) {
                 try {
                     bytesRead = mmInStream.read(buffer);
-                    Log.i(getClass().getName(), "Received " + bytesRead + " bytes from Bluetooth");
+                    //Log.i(getClass().getName(), "Received " + bytesRead + " bytes from Bluetooth");
                     for (int i = 0; i < bytesRead; i++) {
                         input = buffer[i];
 
@@ -831,9 +838,9 @@ public class MultiplexBluetoothTransport {
 		return !(mState == STATE_NONE);
 	}
 
-	
+	@Deprecated
 	public BluetoothSocket getBTSocket(BluetoothServerSocket bsSocket){
-	    if(bsSocket == null){
+	    if(bsSocket == null || Build.VERSION.SDK_INT > Build.VERSION_CODES.O){ //Reflection is no longer allowed on SDK classes
 	    	return null;
 	    }
 		Field[] f = bsSocket.getClass().getDeclaredFields();
@@ -859,11 +866,12 @@ public class MultiplexBluetoothTransport {
 
 	    return null;
 	}
-	
+
+	@Deprecated
 	public int getChannel(BluetoothSocket bsSocket){
 
 		int channel = -1;
-		if (bsSocket == null){
+		if (bsSocket == null || Build.VERSION.SDK_INT > Build.VERSION_CODES.O){ //Reflection is no longer allowed on SDK classes
 			return channel;
 		}
 	    

@@ -18,6 +18,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
+import android.os.Looper;
 
 public class SdlRouterStatusProvider {
 
@@ -128,6 +129,7 @@ public class SdlRouterStatusProvider {
 		final WeakReference<SdlRouterStatusProvider> provider;
 
 		 public ClientHandler(SdlRouterStatusProvider provider){
+			 super(Looper.getMainLooper());
 			 this.provider = new WeakReference<SdlRouterStatusProvider>(provider);
 		 }
 		 

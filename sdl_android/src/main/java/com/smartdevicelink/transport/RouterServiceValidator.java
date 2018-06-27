@@ -25,6 +25,7 @@ import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.util.Log;
 
+import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.HttpRequestTask;
 import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;
 
@@ -166,7 +167,7 @@ public class RouterServiceValidator {
 		if(BluetoothAdapter.getDefaultAdapter()!=null && BluetoothAdapter.getDefaultAdapter().isEnabled()){
 			Intent intent = new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION);
 			intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
-			context.sendBroadcast(intent);
+			AndroidTools.sendExplicitBroadcast(context,intent,null);
 		}
 	}
 	public ComponentName getService(){

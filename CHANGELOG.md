@@ -1,48 +1,24 @@
-# 4.4.0 Release Notes
+# 4.6.0 Release Notes
 
 ### API New Features & Breaking Changes
-- Now uses compile version 26 to handle breaking changes in Android Oreo
-- `MOBILE_PROJECTION` added as an app type
-- Gesture cancellation was added as a touch even type
-- More languages were added to the `Language` enum
-- `SystemCapaibilityQuery` was added with a new `SystemCapabilityManager` that can retrieve capabilities
-- `VideoStreamingCapabilities` were added. Includes supported codecs, resolution, etc
-- Added constructed payloads using BSON
-- SDL Remote Control functionality was added. Supports radio and climate controls.
-- Added `MetadataType` to `Show` lines
-- Spatial data for video streaming apps added with `HapticData`
-
+- `RPCRequestFactory` has been deprecated. Please use the desired RPC's constructor instead.
+- The Android Annotations Library has been added to the project to better help and inform developers about the SDK.
 
 ### Enhancements
-- Enhanced video streaming APIs
-- Added much more test coverage
-- Updated buffer read in sizes and streaming packetizers to use TLS max record size
-- Consolidated all references to `sdl.router.startservice` string into single constant
-- Refactored RPC classes to consolidate redundant code for retrieving items from underlying data structures
-- `MultiplexBluetoothTransport` is no longer a singleton
-- Improved inline documentation
-- h.264 streaming now includes SPS/PPS NAL units with every I frame to match iOS library
-- Real-time Transport Protocol (RTP) video streaming is now supported
-- Correlation IDs are now set automatically. Can be retrieved or overwritten by developer.
-- Introduced new video streaming callback and deprecated used of pipped streams
-- Added an internal interface for common functions between different managers
+- The router service foreground lifecycle is improved. The notification should no longer be seen when connecting to non-SDL devices.
+- The SDL notification now links to a webpage to explain what the notification is and how to hide it.
+- The required `intent-filter` entires for the `SdlBroadcastReceiver` has been reduced. It is now only listening for the SDL custom intent, ACL connect, and USB connection if using AOA.
+- RPC classes now contain constructors with the required parameters for that RPC.
+- Moved project to newer version of Gradle. Updated configurations including from `compile` to `api` and `implementation`.
+- `SdlProxyBuilder` was cleaned up to remove redundant variables between the `SdlProxyBuilder.Builder` object and the `SdlProxyBuilder` class.
 
 ### Bug Fixes
-- Fixed potential out of bounds exception in `BinaryFrameHeader` 
-- Fixed issues with unit tests and TravisCI
-- Fixed potential NPE in `SdlProxyBase`method, `performBaseCommon()` 
-- Fixed potential NPE in `MultiplexTransport` constructor 
-- Fixed potential NPE in `SdlRouterService`method, `handleMessaage()` for `AltTransportHandler` 
-- Fixed potential NPE in `SdlRouterService`method, `writeBytesToTransport()`
-- Removed hardcoded `androidDebuggable = "true"` from manifest
-- Added fixes to be compatible with Android Oreo (Does not supported target API level 26 yet)
-- Fixed issue where intent from router service was delayed
-- Apps now trust themselves as router service hosts
-- Removed ambiguous validation call in `SdlBroadcastReceiver` and unused intent extra
-- Cleared all warnings from `SdlProxyBase`
-
-### Meta
-- Added integration that will deploy to Bintray
-- Issue and pull request templates were added for GitHub
-- Codecov integration was added
-- Updated README links
+- Fixed touch issues with the video streaming feature. A new module was added to handle touch events much more aligned with Android native views.
+- Fixed JavaDoc issue in `UnregisterAppInterface`.
+- Fixed JavaDoc issue in `AddCommand`.
+- Added tags to the string resource xml file to ignore translation
+- Temporary fix to the TCP transport to catch `NetworkOnTheMainThread` exceptions when the connection is closing.
+- Fix issue where the `SdlBroadcastReceiver` was attempting to send implicit intents to ping the `SdlRouterService`. They are now explicit. 
+- Fix a potential NPE in the `SdlBroadcastReceiver` while an app is only using USB and does not include an instance of an `SdlRouterService`. 
+- Removed reflection usage in bluetooth transports when operating on systems that are newer than Android Oreo in anticipation of Android P.
+- Fix an issue where the `SdlBroadcastReceiver` would throw a false positive regarding whether or not an app had included the correct `intent-filter` in their `SdlRouterService` manifest declaration.

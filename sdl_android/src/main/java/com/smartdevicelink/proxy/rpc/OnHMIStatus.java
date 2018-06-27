@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
@@ -83,6 +85,18 @@ public class OnHMIStatus extends RPCNotification {
         super(hash);
     }
     /**
+     *Constructs a newly allocated OnHMIStatus object
+     * @param hmiLevel the HMILevel to set
+     * @param audioStreamingState the state of audio streaming of the application
+     * @param systemContext Indicates that a user-initiated interaction is in-progress
+     */
+    public OnHMIStatus(@NonNull HMILevel hmiLevel, @NonNull AudioStreamingState audioStreamingState, @NonNull SystemContext systemContext) {
+        this();
+        setHmiLevel(hmiLevel);
+        setAudioStreamingState(audioStreamingState);
+        setSystemContext(systemContext);
+    }
+    /**
      * <p>Get HMILevel in effect for the application</p>
      * @return {@linkplain HMILevel} the current HMI Level in effect for the application
      */    
@@ -93,7 +107,7 @@ public class OnHMIStatus extends RPCNotification {
      * <p>Set the HMILevel of OnHMIStatus</p>
      * @param hmiLevel the HMILevel to set
      */    
-    public void setHmiLevel( HMILevel hmiLevel ) {
+    public void setHmiLevel( @NonNull HMILevel hmiLevel ) {
         setParameters(KEY_HMI_LEVEL, hmiLevel);
     }
     /**
@@ -107,7 +121,7 @@ public class OnHMIStatus extends RPCNotification {
      * <p>Set the audio streaming state</p>
      * @param audioStreamingState the state of audio streaming of the application
      */    
-    public void setAudioStreamingState( AudioStreamingState audioStreamingState ) {
+    public void setAudioStreamingState( @NonNull AudioStreamingState audioStreamingState ) {
         setParameters(KEY_AUDIO_STREAMING_STATE, audioStreamingState);
     }
     /**
@@ -122,7 +136,7 @@ public class OnHMIStatus extends RPCNotification {
      * @param systemContext Indicates that a user-initiated interaction is in-progress 
      * (VRSESSION or MENU), or not (MAIN)
      */    
-    public void setSystemContext( SystemContext systemContext ) {
+    public void setSystemContext( @NonNull SystemContext systemContext ) {
         setParameters(KEY_SYSTEM_CONTEXT, systemContext);
     }
     /**

@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -71,17 +73,24 @@ public class ImageField extends RPCStruct {
     public ImageField(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+    public ImageField(@NonNull ImageFieldName name, @NonNull List<FileType> imageTypeSupported) {
+        this();
+        setName(name);
+        setImageTypeSupported(imageTypeSupported);
+    }
+
     public ImageFieldName getName() {
         return (ImageFieldName) getObject(ImageFieldName.class, KEY_NAME);
     } 
-    public void setName( ImageFieldName name ) {
+    public void setName(@NonNull ImageFieldName name ) {
         setValue(KEY_NAME, name);
     } 
     @SuppressWarnings("unchecked")
 	public List<FileType> getImageTypeSupported() {
         return (List<FileType>) getObject(FileType.class, KEY_IMAGE_TYPE_SUPPORTED);
     }
-    public void setImageTypeSupported( List<FileType> imageTypeSupported ) {
+    public void setImageTypeSupported(@NonNull List<FileType> imageTypeSupported ) {
         setValue(KEY_IMAGE_TYPE_SUPPORTED, imageTypeSupported);
     }
     @SuppressWarnings("unchecked")

@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
@@ -75,6 +77,20 @@ public class DisplayCapabilities extends RPCStruct {
         super(hash);
     }
     /**
+     * Constructs a newly allocated DisplayCapabilities object
+     * @param displayType the display type
+     * @param textFields the List of textFields
+     * @param mediaClockFormats the List of MediaClockFormat
+     * @param graphicSupported
+     */
+    public DisplayCapabilities(@NonNull DisplayType displayType, @NonNull List<TextField> textFields, @NonNull List<MediaClockFormat> mediaClockFormats, @NonNull Boolean graphicSupported) {
+        this();
+        setDisplayType(displayType);
+        setTextFields(textFields);
+        setMediaClockFormats(mediaClockFormats);
+        setGraphicSupported(graphicSupported);
+    }
+    /**
      * Get the type of display
      * @return the type of display
      */    
@@ -85,7 +101,7 @@ public class DisplayCapabilities extends RPCStruct {
      * Set the type of display
      * @param displayType the display type
      */    
-    public void setDisplayType( DisplayType displayType ) {
+    public void setDisplayType( @NonNull DisplayType displayType ) {
         setValue(KEY_DISPLAY_TYPE, displayType);
     }
     /**
@@ -102,7 +118,7 @@ public class DisplayCapabilities extends RPCStruct {
      *	 This array of TextField structures identify all the text fields to which the application can write on the current display (identified by DisplayType ).
      * @param textFields the List of textFields
      */    
-    public void setTextFields( List<TextField> textFields ) {
+    public void setTextFields( @NonNull List<TextField> textFields ) {
         setValue(KEY_TEXT_FIELDS, textFields);
     }
     
@@ -137,7 +153,7 @@ public class DisplayCapabilities extends RPCStruct {
      * Set an array of MediaClockFormat elements, defining the valid string formats used in specifying the contents of the media clock field
      * @param mediaClockFormats the List of MediaClockFormat
      */    
-    public void setMediaClockFormats( List<MediaClockFormat> mediaClockFormats ) {
+    public void setMediaClockFormats( @NonNull List<MediaClockFormat> mediaClockFormats ) {
         setValue(KEY_MEDIA_CLOCK_FORMATS, mediaClockFormats);
     }
     
@@ -146,7 +162,7 @@ public class DisplayCapabilities extends RPCStruct {
      * @param graphicSupported
      * @since SmartDeviceLink 2.0
      */
-    public void setGraphicSupported(Boolean graphicSupported) {
+    public void setGraphicSupported(@NonNull Boolean graphicSupported) {
     	setValue(KEY_GRAPHIC_SUPPORTED, graphicSupported);
     }
     
