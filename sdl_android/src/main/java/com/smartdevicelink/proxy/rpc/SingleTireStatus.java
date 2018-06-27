@@ -109,6 +109,6 @@ public class SingleTireStatus extends RPCStruct {
 	 * @return the pressure value of the particular tire in kilo pascal.
 	 */
 	public Float getPressure() {
-    	return getFloat(KEY_PRESSURE);
+		return getFloat(KEY_PRESSURE);
 	}
 }
