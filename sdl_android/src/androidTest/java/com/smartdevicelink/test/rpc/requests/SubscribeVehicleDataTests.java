@@ -31,6 +31,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 		msg.setPrndl(Test.GENERAL_BOOLEAN);
 		msg.setTirePressure(Test.GENERAL_BOOLEAN);
 		msg.setEngineTorque(Test.GENERAL_BOOLEAN);
+		msg.setEngineOilLife(Test.GENERAL_BOOLEAN);
 		msg.setOdometer(Test.GENERAL_BOOLEAN);
 		msg.setGps(Test.GENERAL_BOOLEAN);
 		msg.setFuelLevelState(Test.GENERAL_BOOLEAN);
@@ -74,6 +75,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
             result.put(SubscribeVehicleData.KEY_PRNDL, Test.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_TIRE_PRESSURE, Test.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_ENGINE_TORQUE, Test.GENERAL_BOOLEAN);
+            result.put(SubscribeVehicleData.KEY_ENGINE_OIL_LIFE, Test.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_ODOMETER, Test.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_GPS, Test.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_FUEL_LEVEL_STATE, Test.GENERAL_BOOLEAN);
@@ -111,6 +113,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getPrndl());
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getTirePressure());
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getEngineTorque());
+		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getEngineOilLife());
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getOdometer());
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getGps());
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getFuelLevelState());
@@ -153,6 +156,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
         assertNull(Test.NULL, msg.getDeviceStatus());
         assertNull(Test.NULL, msg.getHeadLampStatus());
         assertNull(Test.NULL, msg.getEngineTorque());
+        assertNull(Test.NULL, msg.getEngineOilLife());
         assertNull(Test.NULL, msg.getSteeringWheelAngle());
         assertNull(Test.NULL, msg.getECallInfo());
         assertNull(Test.NULL, msg.getEmergencyEvent());
@@ -186,6 +190,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_PRNDL), cmd.getPrndl());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_TIRE_PRESSURE), cmd.getTirePressure());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_ENGINE_TORQUE), cmd.getEngineTorque());
+			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_ENGINE_OIL_LIFE), cmd.getEngineOilLife());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_ODOMETER), cmd.getOdometer());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_GPS), cmd.getGps());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_FUEL_LEVEL_STATE), cmd.getFuelLevelState());

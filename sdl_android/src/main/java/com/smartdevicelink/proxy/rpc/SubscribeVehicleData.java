@@ -163,6 +163,14 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
  * 		<tr>
+ * 			<td>engineOilLife</td>
+ * 			<td>Boolean</td>
+ * 			<td>The estimated percentage of remaining oil life of the engine</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 4.6 </td>
+ * 		</tr>
+ * 		<tr>
  * 			<td>accPedalPosition</td>
  * 			<td>Boolean</td>
  * 			<td>Accelerator pedal position (percentage depressed)</td>
@@ -244,6 +252,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
 	public static final String KEY_ENGINE_TORQUE = "engineTorque";
+	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
 	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
@@ -640,28 +649,49 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes Engine Torque data
-	 * 
+	 *
 	 * @param engineTorque
 	 *            a boolean value
 	 */
-    public void setEngineTorque(Boolean engineTorque) {
+	public void setEngineTorque(Boolean engineTorque) {
 		setParameters(KEY_ENGINE_TORQUE, engineTorque);
-    }
+	}
+
+	/**
+	 * Gets a boolean value. If true, means the Engine Oil Life data has been
+	 * subscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the Engine Oil Life data
+	 *         has been subscribed.
+	 */
+	public Boolean getEngineOilLife() {
+		return getBoolean(KEY_ENGINE_OIL_LIFE);
+	}
+
+	/**
+	 * Sets a boolean value. If true, subscribes Engine Oil Life data
+	 *
+	 * @param engineOilLife
+	 *            a boolean value
+	 */
+	public void setEngineOilLife(Boolean engineOilLife) {
+		setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
+	}
 
 	/**
 	 * Gets a boolean value. If true, means the Engine Torque data has been
 	 * subscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the Engine Torque data
 	 *         has been subscribed.
 	 */
-    public Boolean getEngineTorque() {
-        return getBoolean(KEY_ENGINE_TORQUE);
-    }
+	public Boolean getEngineTorque() {
+		return getBoolean(KEY_ENGINE_TORQUE);
+	}
 
 	/**
 	 * Sets a boolean value. If true, subscribes accPedalPosition data
-	 * 
+	 *
 	 * @param accPedalPosition
 	 *            a boolean value
 	 */

@@ -10,6 +10,7 @@
       "prndl":true,
       "tirePressure":true,
       "engineTorque":false,
+      "engineOilLife":true,
       "odometer":true,
       "gps":false,
       "fuelLevel_State":true,
@@ -60,6 +61,10 @@
       "engineTorque":{
         "dataType":"VEHICLEDATA_SPEED",
         "resultCode":"INVALID_ID"
+      },
+      "engineOilLife":{
+        "dataType":"VEHICLEDATA_ENGINEOILLIFE",
+        "resultCode":"SUCCESS"
       },
       "odometer":{
         "dataType":"VEHICLEDATA_ODOMETER",

@@ -56,6 +56,8 @@ public class VehicleDataTypeTests extends TestCase {
 		VehicleDataType enumVehicleDataBattVoltage = VehicleDataType.valueForString(example);
 		example = "VEHICLEDATA_ENGINETORQUE";
 		VehicleDataType enumVehicleDataEngineTorque = VehicleDataType.valueForString(example);
+		example = "VEHICLEDATA_ENGINEOILLIFE";
+		VehicleDataType enumVehicleDataEngineOilLife = VehicleDataType.valueForString(example);
 		example = "VEHICLEDATA_ACCPEDAL";
 		VehicleDataType enumVehicleDataAccPedal = VehicleDataType.valueForString(example);
 		example = "VEHICLEDATA_STEERINGWHEEL";
@@ -90,6 +92,7 @@ public class VehicleDataTypeTests extends TestCase {
 		assertNotNull("VEHICLEDATA_HEADLAMPSTATUS returned null", enumVehicleDataHeadlampStatus);
 		assertNotNull("VEHICLEDATA_BATTVOLTAGE returned null", enumVehicleDataBattVoltage);
 		assertNotNull("VEHICLEDATA_ENGINETORQUE returned null", enumVehicleDataEngineTorque);
+		assertNotNull("VEHICLEDATA_ENGINEOILLIFE returned null", enumVehicleDataEngineOilLife);
 		assertNotNull("VEHICLEDATA_ACCPEDAL returned null", enumVehicleDataAccPedal);
 		assertNotNull("VEHICLEDATA_STEERINGWHEEL returned null", enumVehicleDataSteeringWheel);
 		assertNotNull("VEHICLEDATA_ECALLINFO returned null", enumVehicleDataECallInfo);
@@ -153,6 +156,7 @@ public class VehicleDataTypeTests extends TestCase {
 		enumTestList.add(VehicleDataType.VEHICLEDATA_HEADLAMPSTATUS);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_BATTVOLTAGE);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_ENGINETORQUE);
+		enumTestList.add(VehicleDataType.VEHICLEDATA_ENGINEOILLIFE);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_ACCPEDAL);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_STEERINGWHEEL);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_ECALLINFO);		

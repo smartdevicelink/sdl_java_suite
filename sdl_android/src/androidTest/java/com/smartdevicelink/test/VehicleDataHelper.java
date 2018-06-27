@@ -45,6 +45,7 @@ public class VehicleDataHelper{
 	public static final PRNDL PRNDL_FINAL = PRNDL.SECOND;
 	public static final TireStatus TIRE_PRESSURE = new TireStatus();
 	public static final double ENGINE_TORQUE = 518.3;
+	public static final float ENGINE_OIL_LIFE = 19.3f;
 	public static final int ODOMETER = 140000;
 	public static final GPSData GPS = new GPSData();
 	public static final ComponentVolumeStatus FUEL_LEVEL_STATE = ComponentVolumeStatus.ALERT;
@@ -301,6 +302,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA.setPrndl(PRNDL_FINAL);
 		VEHICLE_DATA.setTirePressure(TIRE_PRESSURE);
 		VEHICLE_DATA.setEngineTorque(ENGINE_TORQUE);
+		VEHICLE_DATA.setEngineOilLife(ENGINE_OIL_LIFE);
 		VEHICLE_DATA.setOdometer(ODOMETER);
 		VEHICLE_DATA.setGps(GPS);
 		VEHICLE_DATA.setFuelLevelState(FUEL_LEVEL_STATE);
@@ -328,6 +330,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA_RESPONSE.setPrndl(PRNDL_FINAL);
 		VEHICLE_DATA_RESPONSE.setTirePressure(TIRE_PRESSURE);
 		VEHICLE_DATA_RESPONSE.setEngineTorque(ENGINE_TORQUE);
+		VEHICLE_DATA_RESPONSE.setEngineOilLife(ENGINE_OIL_LIFE);
 		VEHICLE_DATA_RESPONSE.setOdometer(ODOMETER);
 		VEHICLE_DATA_RESPONSE.setGps(GPS);
 		VEHICLE_DATA_RESPONSE.setFuelLevelState(FUEL_LEVEL_STATE);
