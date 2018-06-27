@@ -886,12 +886,12 @@ public class RPCRequestFactoryTests extends TestCase {
 	
 	public void testBuildSubscribeVehicleData () {
 		
-		boolean testGPS = true, testSpeed = true, testRPM = true, testFuelLevel = true, testFuelLevelState = true, testInstantFuelConsumption = true, testExternalTemperature = true, testPRNDL = true, testTirePressure = true, testEngineOilLife = true, testOdometer = true, testBeltStatus = true, testBodyInformation = true, testDeviceStatus = true, testDriverBraking = true;
+		boolean testGPS = true, testSpeed = true, testRPM = true, testFuelLevel = true, testFuelLevelState = true, testInstantFuelConsumption = true, testExternalTemperature = true, testPRNDL = true, testTirePressure = true, testOdometer = true, testBeltStatus = true, testBodyInformation = true, testDeviceStatus = true, testDriverBraking = true;
 		Integer testCorrelationID = 0;
 		SubscribeVehicleData testSVD;
 		
 		// Test -- BuildSubscribeVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State, boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus, boolean driverBraking, Integer correlationID) 
-		testSVD = RPCRequestFactory.BuildSubscribeVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testPRNDL, testTirePressure, testEngineOilLife, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, testCorrelationID);
+		testSVD = RPCRequestFactory.BuildSubscribeVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testPRNDL, testTirePressure, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, testCorrelationID);	
 		assertTrue(Test.TRUE, testSVD.getGps());
 		assertTrue(Test.TRUE, testSVD.getSpeed());
 		assertTrue(Test.TRUE, testSVD.getRpm());
@@ -901,7 +901,6 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertTrue(Test.TRUE, testSVD.getExternalTemperature());
 		assertTrue(Test.TRUE, testSVD.getPrndl());
 		assertTrue(Test.TRUE, testSVD.getTirePressure());
-		assertTrue(Test.TRUE, testSVD.getEngineOilLife());
 		assertTrue(Test.TRUE, testSVD.getOdometer());
 		assertTrue(Test.TRUE, testSVD.getBeltStatus());
 		assertTrue(Test.TRUE, testSVD.getBodyInformation());
@@ -909,18 +908,18 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertTrue(Test.TRUE, testSVD.getDriverBraking());
 		assertEquals(Test.MATCH, testCorrelationID, testSVD.getCorrelationID());
 		
-		testSVD = RPCRequestFactory.BuildSubscribeVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testPRNDL, testTirePressure, testEngineOilLife, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, null);
+		testSVD = RPCRequestFactory.BuildSubscribeVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testPRNDL, testTirePressure, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, null);
 		assertNotNull(Test.NULL, testSVD.getCorrelationID());
 	}
 	
 	public void testBuildUnsubscribeVehicleData () {
 		
-		boolean testGPS = true, testSpeed = true, testRPM = true, testFuelLevel = true, testFuelLevelState = true, testInstantFuelConsumption = true, testExternalTemperature = true, testPRNDL = true, testTirePressure = true, testEngineOilLife = true, testOdometer = true, testBeltStatus = true, testBodyInformation = true, testDeviceStatus = true, testDriverBraking = true;
+		boolean testGPS = true, testSpeed = true, testRPM = true, testFuelLevel = true, testFuelLevelState = true, testInstantFuelConsumption = true, testExternalTemperature = true, testPRNDL = true, testTirePressure = true, testOdometer = true, testBeltStatus = true, testBodyInformation = true, testDeviceStatus = true, testDriverBraking = true;
 		Integer testCorrelationID = 0;
 		UnsubscribeVehicleData testUVD;
 		
 		// Test -- BuildUnsubscribeVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State, boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus, boolean driverBraking, Integer correlationID) 
-		testUVD = RPCRequestFactory.BuildUnsubscribeVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testPRNDL, testTirePressure, testEngineOilLife, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, testCorrelationID);
+		testUVD = RPCRequestFactory.BuildUnsubscribeVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testPRNDL, testTirePressure, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, testCorrelationID);	
 		assertTrue(Test.TRUE, testUVD.getGps());
 		assertTrue(Test.TRUE, testUVD.getSpeed());
 		assertTrue(Test.TRUE, testUVD.getRpm());
@@ -930,7 +929,6 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertTrue(Test.TRUE, testUVD.getExternalTemperature());
 		assertTrue(Test.TRUE, testUVD.getPrndl());
 		assertTrue(Test.TRUE, testUVD.getTirePressure());
-		assertTrue(Test.TRUE, testUVD.getEngineOilLife());
 		assertTrue(Test.TRUE, testUVD.getOdometer());
 		assertTrue(Test.TRUE, testUVD.getBeltStatus());
 		assertTrue(Test.TRUE, testUVD.getBodyInformation());
@@ -938,18 +936,18 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertTrue(Test.TRUE, testUVD.getDriverBraking());
 		assertEquals(Test.MATCH, testCorrelationID, testUVD.getCorrelationID());
 		
-		testUVD = RPCRequestFactory.BuildUnsubscribeVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testPRNDL, testTirePressure, testEngineOilLife, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, null);
+		testUVD = RPCRequestFactory.BuildUnsubscribeVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testPRNDL, testTirePressure, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, null);
 		assertNotNull(Test.NULL, testUVD.getCorrelationID());
 	}
 	
 	public void testBuildGetVehicleData () {
 		
-		boolean testGPS = true, testSpeed = true, testRPM = true, testFuelLevel = true, testFuelLevelState = true, testInstantFuelConsumption = true, testExternalTemperature = true, testVIN = true, testPRNDL = true, testTirePressure = true, testEngineOilLife = true, testOdometer = true, testBeltStatus = true, testBodyInformation = true, testDeviceStatus = true, testDriverBraking = true;
+		boolean testGPS = true, testSpeed = true, testRPM = true, testFuelLevel = true, testFuelLevelState = true, testInstantFuelConsumption = true, testExternalTemperature = true, testVIN = true, testPRNDL = true, testTirePressure = true, testOdometer = true, testBeltStatus = true, testBodyInformation = true, testDeviceStatus = true, testDriverBraking = true;
 		Integer testCorrelationID = 0;
 		GetVehicleData testGVD;
 		
 		// Test -- BuildGetVehicleData(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State, boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus, boolean driverBraking, Integer correlationID)
-		testGVD = RPCRequestFactory.BuildGetVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testVIN, testPRNDL, testTirePressure, testEngineOilLife, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, testCorrelationID);
+		testGVD = RPCRequestFactory.BuildGetVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testVIN, testPRNDL, testTirePressure, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, testCorrelationID);	
 		assertTrue(Test.TRUE, testGVD.getGps());
 		assertTrue(Test.TRUE, testGVD.getSpeed());
 		assertTrue(Test.TRUE, testGVD.getRpm());
@@ -959,7 +957,6 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertTrue(Test.TRUE, testGVD.getExternalTemperature());
 		assertTrue(Test.TRUE, testGVD.getPrndl());
 		assertTrue(Test.TRUE, testGVD.getTirePressure());
-		assertTrue(Test.TRUE, testGVD.getEngineOilLife());
 		assertTrue(Test.TRUE, testGVD.getOdometer());
 		assertTrue(Test.TRUE, testGVD.getBeltStatus());
 		assertTrue(Test.TRUE, testGVD.getBodyInformation());
@@ -968,7 +965,7 @@ public class RPCRequestFactoryTests extends TestCase {
 		assertTrue(Test.TRUE, testGVD.getVin());
 		assertEquals(Test.MATCH, testCorrelationID, testGVD.getCorrelationID());
 		
-		testGVD = RPCRequestFactory.BuildGetVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testVIN, testPRNDL, testTirePressure, testEngineOilLife, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, null);
+		testGVD = RPCRequestFactory.BuildGetVehicleData(testGPS, testSpeed, testRPM, testFuelLevel, testFuelLevelState, testInstantFuelConsumption, testExternalTemperature, testVIN, testPRNDL, testTirePressure, testOdometer, testBeltStatus, testBodyInformation, testDeviceStatus, testDriverBraking, null);
 		assertNotNull(Test.NULL, testGVD.getCorrelationID());
 	}
 	
