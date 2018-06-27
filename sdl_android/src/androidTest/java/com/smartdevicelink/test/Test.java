@@ -124,6 +124,7 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.WayPointType;
@@ -224,6 +225,7 @@ public class Test {
 	public static final KeyboardProperties             GENERAL_KEYBOARDPROPERTIES             = new KeyboardProperties();	
 	public static final PrimaryAudioSource             GENERAL_PRIMARYAUDIOSOURCE             = PrimaryAudioSource.BLUETOOTH_STEREO_BTST;
 	public static final AudioStreamingState            GENERAL_AUDIOSTREAMINGSTATE            = AudioStreamingState.AUDIBLE;
+	public static final VideoStreamingState            GENERAL_VIDEOSTREAMINGSTATE            = VideoStreamingState.STREAMABLE;
 	public static final DisplayCapabilities            GENERAL_DISPLAYCAPABILITIES            = new DisplayCapabilities();
 	public static final ParameterPermissions           GENERAL_PARAMETERPERMISSIONS           = new ParameterPermissions();  
 	public static final IgnitionStableStatus           GENERAL_IGNITIONSTABLESTATUS           = IgnitionStableStatus.IGNITION_SWITCH_STABLE;	
