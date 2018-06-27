@@ -50,6 +50,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 		msg.setEmergencyEvent(Test.GENERAL_BOOLEAN);
 		msg.setClusterModeStatus(Test.GENERAL_BOOLEAN);
 		msg.setMyKey(Test.GENERAL_BOOLEAN);
+		msg.setFuelRange(Test.GENERAL_BOOLEAN);
 
 		return msg;
 	}
@@ -93,7 +94,8 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
             result.put(UnsubscribeVehicleData.KEY_AIRBAG_STATUS, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_EMERGENCY_EVENT, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_CLUSTER_MODE_STATUS, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_MY_KEY, Test.GENERAL_BOOLEAN);            
+            result.put(UnsubscribeVehicleData.KEY_MY_KEY, Test.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_FUEL_RANGE, Test.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -131,6 +133,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getEmergencyEvent());
 		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getClusterModeStatus());
 		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getMyKey());
+		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getFuelRange());
 		
 		// Invalid/Null Tests
 		UnsubscribeVehicleData msg = new UnsubscribeVehicleData();
@@ -161,8 +164,9 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
         assertNull(Test.NULL, msg.getECallInfo());
         assertNull(Test.NULL, msg.getEmergencyEvent());
         assertNull(Test.NULL, msg.getClusterModeStatus());
-        assertNull(Test.NULL, msg.getMyKey());		
-    }
+        assertNull(Test.NULL, msg.getMyKey());
+        assertNull(Test.NULL, msg.getFuelRange());
+	}
 
 	/**
      * Tests a valid JSON construction of this RPC message.
@@ -207,7 +211,8 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_AIRBAG_STATUS), cmd.getAirbagStatus());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_EMERGENCY_EVENT), cmd.getEmergencyEvent());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_CLUSTER_MODE_STATUS), cmd.getClusterModeStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_MY_KEY), cmd.getMyKey());			
+			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_MY_KEY), cmd.getMyKey());
+			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_FUEL_RANGE), cmd.getFuelRange());
 		} 
 		catch (JSONException e) {
 			fail(Test.JSON_FAIL);
