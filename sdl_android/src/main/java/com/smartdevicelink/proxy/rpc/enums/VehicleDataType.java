@@ -82,7 +82,7 @@ public enum VehicleDataType {
      */
     VEHICLEDATA_ENGINETORQUE,
     /**
-     * Notifies EGINEOILLIFEData may be subscribed
+     * Notifies ENGINEOILLIFEData may be subscribed
      */
     VEHICLEDATA_ENGINEOILLIFE,
     /**
