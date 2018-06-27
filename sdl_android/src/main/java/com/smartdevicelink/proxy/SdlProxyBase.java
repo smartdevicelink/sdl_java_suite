@@ -6626,7 +6626,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void setdisplaylayout(String displayLayout, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme, Integer correlationID) throws SdlException
 	{
-		SetDisplayLayout msg = RPCRequestFactory.BuildSetDisplayLayout(displayLayout, dayColorScheme, nightColorScheme, correlationID);
+		SetDisplayLayout msg = new SetDisplayLayout(displayLayout);
+		msg.setCorrelationID(correlationID);
+		msg.setDayColorScheme(dayColorScheme);
+		msg.setNightColorScheme(nightColorScheme);
 		sendRPCRequest(msg);
 	}
 
