@@ -163,7 +163,7 @@ import com.smartdevicelink.proxy.RPCRequest;
  * 			<td>The estimated percentage of remaining oil life of the engine</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 2.0 </td>
+ * 			<td>SmartDeviceLink 4.6 </td>
  * 		</tr>
  * 		<tr>
  * 			<td>accPedalPosition</td>
