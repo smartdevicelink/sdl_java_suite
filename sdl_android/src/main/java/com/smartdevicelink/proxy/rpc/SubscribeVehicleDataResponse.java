@@ -21,6 +21,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
 	public static final String KEY_ENGINE_TORQUE = "engineTorque";
+	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
 	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
@@ -38,6 +39,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
+	public static final String KEY_FUEL_RANGE = "fuelRange";
 
 	/**
 	 * Constructs a new SubscribeVehicleDataResponse object
@@ -338,6 +340,21 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ENGINE_TORQUE);
     }
     /**
+     * Sets Engine Oil Life
+     * @param engineOilLife
+     */
+    public void setEngineOilLife(VehicleDataResult engineOilLife) {
+        setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
+    }
+    /**
+     * Gets Engine Oil Life
+     * @return VehicleDataResult
+     */
+    @SuppressWarnings("unchecked")
+    public VehicleDataResult getEngineOilLife() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ENGINE_OIL_LIFE);
+    }
+    /**
      * Sets AccPedal Position
      * @param accPedalPosition
      */
@@ -396,5 +413,22 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public VehicleDataResult getMyKey() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_MY_KEY);
-    }       
+    }
+
+    /**
+     * Sets Fuel Range
+     * @param fuelRange
+     */
+    public void setFuelRange(VehicleDataResult fuelRange) {
+        setParameters(KEY_FUEL_RANGE, fuelRange);
+    }
+
+    /**
+     * Gets Fuel Range
+     * @return VehicleDataResult
+     */
+    @SuppressWarnings("unchecked")
+    public VehicleDataResult getFuelRange() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_RANGE);
+    }
 }

@@ -10,6 +10,7 @@
       "prndl":true,
       "tirePressure":true,
       "engineTorque":false,
+      "engineOilLife":true,
       "odometer":true,
       "gps":false,
       "fuelLevel_State":true,
@@ -26,7 +27,8 @@
       "airbagStatus":true,
       "emergencyEvent":false,
       "clusterModeStatus":true,
-      "myKey":true
+      "myKey":true,
+      "fuelRange":true
     }
   },
   "response":{
@@ -60,6 +62,10 @@
       "engineTorque":{
         "dataType":"VEHICLEDATA_SPEED",
         "resultCode":"INVALID_ID"
+      },
+      "engineOilLife":{
+        "dataType":"VEHICLEDATA_ENGINEOILLIFE",
+        "resultCode":"SUCCESS"
       },
       "odometer":{
         "dataType":"VEHICLEDATA_ODOMETER",
@@ -128,6 +134,10 @@
       "myKey":{
         "dataType":"VEHICLEDATA_MYKEY",
         "resultCode":"IGNORED"
+      },
+      "fuelRange":{
+        "dataType":"VEHICLEDATA_FUELRANGE",
+        "resultCode":"SUCCESS"
       }
     }
   }

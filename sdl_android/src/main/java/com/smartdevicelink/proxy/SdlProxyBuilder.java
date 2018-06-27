@@ -7,6 +7,7 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.security.SdlSecurityBase;
@@ -41,6 +42,7 @@ public class SdlProxyBuilder {
     private boolean preRegister;
     private String sAppResumeHash;
     private List<Class<? extends SdlSecurityBase>> sdlSecList;
+    private TemplateColorScheme dayColorScheme, nightColorScheme;
 
     private SdlProxyBuilder() {
         service = null;
@@ -57,7 +59,9 @@ public class SdlProxyBuilder {
         preRegister = false;
         sAppResumeHash = null;
         sdlSecList = null;
-    }
+        dayColorScheme = null;
+        nightColorScheme = null;    
+}
 
     public static class Builder {
         SdlProxyBuilder sdlProxyBuilder;
@@ -159,6 +163,15 @@ public class SdlProxyBuilder {
             sdlProxyBuilder.sdlSecList = val;
             return this;
         }
+ public Builder setDayColorScheme(TemplateColorScheme val) {
+            sdlProxyBuilder.dayColorScheme = val;
+            return this;
+        }
+
+        public Builder setNightColorScheme(TemplateColorScheme val) {
+            sdlProxyBuilder.nightColorScheme = val;
+            return this;
+        }
 
         public SdlProxyALM build() throws SdlException {
             SdlProxyALM proxy = new SdlProxyALM(sdlProxyBuilder.service, sdlProxyBuilder.listener,
@@ -166,11 +179,14 @@ public class SdlProxyBuilder {
                     sdlProxyBuilder.ttsChunks, sdlProxyBuilder.sShortAppName, sdlProxyBuilder.vrSynonyms,
                     sdlProxyBuilder.isMediaApp, sdlProxyBuilder.sdlMessageVersion, sdlProxyBuilder.lang,
                     sdlProxyBuilder.hmiLang, sdlProxyBuilder.vrAppHMITypes, sdlProxyBuilder.appId,
-                    sdlProxyBuilder.autoActivateID, sdlProxyBuilder.callbackToUIThread, sdlProxyBuilder.preRegister,
+                    sdlProxyBuilder.autoActivateID, sdlProxyBuilder.dayColorScheme, sdlProxyBuilder.nightColorScheme,
+                    sdlProxyBuilder.callbackToUIThread, sdlProxyBuilder.preRegister,
                     sdlProxyBuilder.sAppResumeHash, sdlProxyBuilder.mTransport);
             proxy.setSdlSecurityClassList(sdlProxyBuilder.sdlSecList);
             return proxy;
         }
     }
 }
+
+
 

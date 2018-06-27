@@ -29,6 +29,7 @@ import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.PhoneCapability;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
+import com.smartdevicelink.proxy.rpc.RGBColor;
 import com.smartdevicelink.proxy.rpc.RadioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.RadioControlData;
 import com.smartdevicelink.proxy.rpc.RdsData;
@@ -43,6 +44,7 @@ import com.smartdevicelink.proxy.rpc.StartTime;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.Temperature;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
@@ -75,6 +77,7 @@ import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
+import com.smartdevicelink.proxy.rpc.enums.FuelType;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
@@ -106,6 +109,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TBTState;
+import com.smartdevicelink.proxy.rpc.enums.TPMS;
 import com.smartdevicelink.proxy.rpc.enums.TemperatureUnit;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
@@ -121,6 +125,7 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.WayPointType;
@@ -155,6 +160,7 @@ public class Test {
 	public static final String                         GENERAL_STRING                         = "test";
 	public static final Double                         GENERAL_DOUBLE                         = 10.01;
 	public static final boolean                        GENERAL_BOOLEAN                        = true;
+	public static final TPMS                           GENERAL_TPMS                           = TPMS.UNKNOWN;
 	public static final TBTState                       GENERAL_TBTSTATE                       = TBTState.NEXT_TURN_REQUEST;
 	public static final FileType                       GENERAL_FILETYPE                       = FileType.BINARY;
 	public static final Language                       GENERAL_LANGUAGE                       = Language.EN_US;
@@ -220,6 +226,7 @@ public class Test {
 	public static final KeyboardProperties             GENERAL_KEYBOARDPROPERTIES             = new KeyboardProperties();	
 	public static final PrimaryAudioSource             GENERAL_PRIMARYAUDIOSOURCE             = PrimaryAudioSource.BLUETOOTH_STEREO_BTST;
 	public static final AudioStreamingState            GENERAL_AUDIOSTREAMINGSTATE            = AudioStreamingState.AUDIBLE;
+	public static final VideoStreamingState            GENERAL_VIDEOSTREAMINGSTATE            = VideoStreamingState.STREAMABLE;
 	public static final DisplayCapabilities            GENERAL_DISPLAYCAPABILITIES            = new DisplayCapabilities();
 	public static final ParameterPermissions           GENERAL_PARAMETERPERMISSIONS           = new ParameterPermissions();  
 	public static final IgnitionStableStatus           GENERAL_IGNITIONSTABLESTATUS           = IgnitionStableStatus.IGNITION_SWITCH_STABLE;	
@@ -244,11 +251,15 @@ public class Test {
 	public static final VideoStreamingCodec            GENERAL_VIDEOSTREAMINGCODEC            = VideoStreamingCodec.H264;
 	public static final VideoStreamingCapability       GENERAL_VIDEOSTREAMINGCAPABILITY       = new VideoStreamingCapability();
 	public static final VideoStreamingFormat           GENERAL_VIDEOSTREAMINGFORMAT           = new VideoStreamingFormat();
+	public static final RGBColor                       GENERAL_RGBCOLOR                       = new RGBColor();
+	public static final TemplateColorScheme            GENERAL_DAYCOLORSCHEME                 = new TemplateColorScheme();
+	public static final TemplateColorScheme            GENERAL_NIGHTCOLORSCHEME               = new TemplateColorScheme();
 	public static final Result                         GENERAL_RESULT                         = Result.SUCCESS;
 	public static final WayPointType                   GENERAL_WAYPOINTTYPE                   = WayPointType.DESTINATION;
 	public static final SingleTireStatus               GENERAL_SINGLETIRESTATUS               = new SingleTireStatus();
 	public static final DriverDistractionState         GENERAL_DRIVERDISTRACTIONSTATE         = DriverDistractionState.DD_ON;
 	public static final List<LocationDetails>          GENERAL_LOCATIONDETAILS_LIST           = Arrays.asList(new LocationDetails[] { Test.GENERAL_LOCATIONDETAILS, Test.GENERAL_LOCATIONDETAILS});
+
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
@@ -269,6 +280,7 @@ public class Test {
 	public static final MetadataTags                   GENERAL_METADATASTRUCT                 = new MetadataTags();
 	public static final Rectangle                      GENERAL_RECTANGLE                      = new Rectangle();
 	public static final HapticRect                     GENERAL_HAPTIC_RECT                    = new HapticRect();
+	public static final FuelType                       GENERAL_FUELTYPE                       = FuelType.GASOLINE;
 
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
@@ -345,6 +357,9 @@ public class Test {
 	public static final JSONObject JSON_PRESETBANKCAPABILITIES    = new JSONObject();
 	public static final JSONObject JSON_TOUCHEVENTCAPABILITIES    = new JSONObject();
 	public static final JSONObject JSON_PCMSTREAMCAPABILITIES     = new JSONObject();
+	public static final JSONObject JSON_RGBCOLOR                  = new JSONObject();
+	public static final JSONObject JSON_DAYCOLORSCHEME            = new JSONObject();
+	public static final JSONObject JSON_NIGHTCOLORSCHEME          = new JSONObject();
 
 	static {
 		GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
@@ -450,6 +465,7 @@ public class Test {
 		
 		GENERAL_IMAGE.setValue(GENERAL_STRING);
 		GENERAL_IMAGE.setImageType(GENERAL_IMAGETYPE);
+		GENERAL_IMAGE.setIsTemplate(GENERAL_BOOLEAN);
 		
 		GENERAL_SOFTBUTTON.setIsHighlighted(GENERAL_BOOLEAN);
 		GENERAL_SOFTBUTTON.setSoftButtonID(GENERAL_INT);
@@ -639,6 +655,18 @@ public class Test {
 		GENERAL_HAPTIC_RECT.setId(GENERAL_INTEGER);
 		GENERAL_HAPTIC_RECT.setRect(GENERAL_RECTANGLE);
 
+		GENERAL_RGBCOLOR.setRed(GENERAL_INTEGER);
+		GENERAL_RGBCOLOR.setGreen(GENERAL_INTEGER);
+		GENERAL_RGBCOLOR.setBlue(GENERAL_INTEGER);
+
+		GENERAL_NIGHTCOLORSCHEME.setPrimaryColor(GENERAL_RGBCOLOR);
+		GENERAL_NIGHTCOLORSCHEME.setSecondaryColor(GENERAL_RGBCOLOR);
+		GENERAL_NIGHTCOLORSCHEME.setBackgroundColor(GENERAL_RGBCOLOR);
+
+		GENERAL_DAYCOLORSCHEME.setPrimaryColor(GENERAL_RGBCOLOR);
+		GENERAL_DAYCOLORSCHEME.setSecondaryColor(GENERAL_RGBCOLOR);
+		GENERAL_DAYCOLORSCHEME.setBackgroundColor(GENERAL_RGBCOLOR);
+
         
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
@@ -679,6 +707,7 @@ public class Test {
 			
 			JSON_IMAGE.put(Image.KEY_IMAGE_TYPE, GENERAL_IMAGETYPE);
 			JSON_IMAGE.put(Image.KEY_VALUE, GENERAL_STRING);
+			JSON_IMAGE.put(Image.KEY_IS_TEMPLATE, GENERAL_BOOLEAN);
 			
 			JSON_SOFTBUTTON.put(SoftButton.KEY_IS_HIGHLIGHTED , GENERAL_BOOLEAN);
 			JSON_SOFTBUTTON.put(SoftButton.KEY_SOFT_BUTTON_ID, GENERAL_INT);
@@ -728,6 +757,18 @@ public class Test {
 			JSON_DEVICEINFO.put(DeviceInfo.KEY_MAX_NUMBER_RFCOMM_PORTS, GENERAL_INT);
 			JSON_DEVICEINFO.put(DeviceInfo.KEY_OS, GENERAL_STRING);
 			JSON_DEVICEINFO.put(DeviceInfo.KEY_OS_VERSION, GENERAL_STRING);
+
+			JSON_RGBCOLOR.put(RGBColor.KEY_RED, GENERAL_INT);
+			JSON_RGBCOLOR.put(RGBColor.KEY_GREEN, GENERAL_INT);
+			JSON_RGBCOLOR.put(RGBColor.KEY_BLUE, GENERAL_INT);
+
+			JSON_DAYCOLORSCHEME.put(TemplateColorScheme.KEY_PRIMARY_COLOR, JSON_RGBCOLOR);
+			JSON_DAYCOLORSCHEME.put(TemplateColorScheme.KEY_SECONDARY_COLOR, JSON_RGBCOLOR);
+			JSON_DAYCOLORSCHEME.put(TemplateColorScheme.KEY_BACKGROUND_COLOR, JSON_RGBCOLOR);
+
+			JSON_NIGHTCOLORSCHEME.put(TemplateColorScheme.KEY_PRIMARY_COLOR, JSON_RGBCOLOR);
+			JSON_NIGHTCOLORSCHEME.put(TemplateColorScheme.KEY_SECONDARY_COLOR, JSON_RGBCOLOR);
+			JSON_NIGHTCOLORSCHEME.put(TemplateColorScheme.KEY_BACKGROUND_COLOR, JSON_RGBCOLOR);
 			
 			JSON_SDLMSGVERSION.put(SdlMsgVersion.KEY_MAJOR_VERSION, GENERAL_INT);
 			JSON_SDLMSGVERSION.put(SdlMsgVersion.KEY_MINOR_VERSION, GENERAL_INT);	

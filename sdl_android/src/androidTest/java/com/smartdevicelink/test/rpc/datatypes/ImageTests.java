@@ -26,6 +26,7 @@ public class ImageTests extends TestCase{
 
         msg.setImageType(Test.GENERAL_IMAGETYPE);
         msg.setValue(Test.GENERAL_STRING);
+        msg.setIsTemplate(Test.GENERAL_BOOLEAN);
     }
 
     /**
@@ -35,10 +36,12 @@ public class ImageTests extends TestCase{
     	// Test Values
         ImageType imageType = msg.getImageType();
         String value = msg.getValue();
+        Boolean isTemplate = msg.getIsTemplate();
         
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_IMAGETYPE, imageType);
         assertEquals(Test.MATCH, Test.GENERAL_STRING, value);
+        assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, isTemplate);
         
         // Invalid/Null Tests
         Image msg = new Image();
@@ -47,6 +50,7 @@ public class ImageTests extends TestCase{
         assertNull(Test.NULL, msg.getImageType());
         assertNull(Test.NULL, msg.getValue());
         assertNull(Test.NULL, msg.getBulkData());
+        assertNull(Test.NULL, msg.getIsTemplate());
     }
 
     public void testJson(){
@@ -55,6 +59,7 @@ public class ImageTests extends TestCase{
         try{
             reference.put(Image.KEY_IMAGE_TYPE, Test.GENERAL_IMAGETYPE);
             reference.put(Image.KEY_VALUE, Test.GENERAL_STRING);
+            reference.put(Image.KEY_IS_TEMPLATE, Test.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());
