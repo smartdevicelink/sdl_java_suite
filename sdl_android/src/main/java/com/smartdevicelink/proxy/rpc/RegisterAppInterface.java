@@ -182,7 +182,14 @@ import java.util.List;
  *                 <td>Maxlength: 100</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
- * 
+ * 		<tr>
+ * 			<td>fullAppID</td>
+ * 			<td>String</td>
+ * 			<td>ID used to validate app with policy table entries</td>
+ *                 <td>Y</td>
+ *                 <td>Maxlength: 100</td>
+ * 			<td>SmartDeviceLink 4.6 </td>
+ * 		</tr>
  * 		<tr>
  * 			<td>hmiCapabilities</td>
  * 			<td>HMICapabilities</td>
@@ -238,6 +245,7 @@ public class RegisterAppInterface extends RPCRequest {
 	public static final String KEY_HMI_DISPLAY_LANGUAGE_DESIRED = "hmiDisplayLanguageDesired";
 	public static final String KEY_APP_HMI_TYPE = "appHMIType";
 	public static final String KEY_APP_ID = "appID";
+	public static final String KEY_FULL_APP_ID = "fullAppID";
 	public static final String KEY_LANGUAGE_DESIRED = "languageDesired";
 	public static final String KEY_DEVICE_INFO = "deviceInfo";
 	public static final String KEY_APP_NAME = "appName";
@@ -248,6 +256,7 @@ public class RegisterAppInterface extends RPCRequest {
 	public static final String KEY_HASH_ID = "hashID";
 	public static final String KEY_DAY_COLOR_SCHEME = "dayColorScheme";
 	public static final String KEY_NIGHT_COLOR_SCHEME = "nightColorScheme";
+	private static final int APP_ID_MAX_LENGTH = 10;
 
 	/**
 	 * Constructs a new RegisterAppInterface object
@@ -573,22 +582,22 @@ public class RegisterAppInterface extends RPCRequest {
    
     public void setHashID(String hashID) {
 		setParameters(KEY_HASH_ID, hashID);
-    }        
-    
+    }
+
 	/**
 	 * Gets the unique ID, which an app will be given when approved
-	 * 
+	 *
 	 * @return String - a String value representing the unique ID, which an app
 	 *         will be given when approved
 	 * @since SmartDeviceLink 2.0
 	 */
-    public String getAppID() {
-        return getString(KEY_APP_ID);
-    }
+	public String getAppID() {
+		return getString(KEY_APP_ID);
+	}
 
 	/**
 	 * Sets a unique ID, which an app will be given when approved
-	 * 
+	 *
 	 * @param appID
 	 *            a String value representing a unique ID, which an app will be
 	 *            given when approved
@@ -596,9 +605,27 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength = 100
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setAppID(@NonNull String appID) {
-		setParameters(KEY_APP_ID, appID);
-    }
+	public void setAppID(@NonNull String appID) {
+		if (appID != null) {
+			setParameters(KEY_FULL_APP_ID, appID);
+			if (appID.length() <= APP_ID_MAX_LENGTH) {
+				setParameters(KEY_APP_ID, appID);
+			} else {
+				setParameters(KEY_APP_ID, appID.replace("-", "").substring(0, APP_ID_MAX_LENGTH));
+			}
+		}
+	}
+
+	/**
+	 * Gets the unique ID, which an app will be given when approved
+	 *
+	 * @return String - a String value representing the unique ID, which an app
+	 *         will be given when approved
+	 * @since SmartDeviceLink 4.6
+	 */
+	public String getFullAppID() {
+		return getString(KEY_FULL_APP_ID);
+	}
 
 	/**
 	 * Gets the color scheme that is currently used for day
