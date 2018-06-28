@@ -68,6 +68,10 @@ public enum RequestType {
      * @since SmartDeviceLink 4.0
      */
     FOTA,
+    /**
+     * @since SmartDeviceLink 4.6
+     */
+    OEM_SPECIFIC,
 	;
 	/**
      * Convert String to RequestType

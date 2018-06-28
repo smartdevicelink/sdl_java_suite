@@ -4,7 +4,8 @@
     "correlationID":165,
     "parameters":{
       "fileName":"fileName.txt",
-      "requestType":"AUTH_CHALLENGE",
+      "requestType":"OEM_SPECIFIC",
+      "requestSubType":"TEST",
       "data":[
         "data1",
         "data2",
