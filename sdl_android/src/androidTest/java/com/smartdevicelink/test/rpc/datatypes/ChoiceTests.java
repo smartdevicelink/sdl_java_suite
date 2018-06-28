@@ -18,7 +18,7 @@ import com.smartdevicelink.test.Validator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.Choice}
+ * {@link com.smartdevicelink.proxy.rpc.Choice}
  */
 public class ChoiceTests extends TestCase{
 	
