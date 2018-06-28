@@ -300,18 +300,18 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @param isMediaApplication a Boolean value
 	 * @param languageDesired a Language Enumeration
 	 * @param hmiDisplayLanguageDesired
-	 * @param appID a String value representing a unique ID, which an app will be given when approved <br>
+	 * @param fullAppID a String value representing a unique ID, which an app will be given when approved <br>
 	 *            <b>Notes: </b>Maxlength = 100
 	 */
 	public RegisterAppInterface(@NonNull SdlMsgVersion syncMsgVersion, @NonNull String appName, @NonNull Boolean isMediaApplication,
-								@NonNull Language languageDesired, @NonNull Language hmiDisplayLanguageDesired, @NonNull String appID) {
+								@NonNull Language languageDesired, @NonNull Language hmiDisplayLanguageDesired, @NonNull String fullAppID) {
 		this();
 		setSdlMsgVersion(syncMsgVersion);
 		setAppName(appName);
 		setIsMediaApplication(isMediaApplication);
 		setLanguageDesired(languageDesired);
 		setHmiDisplayLanguageDesired(hmiDisplayLanguageDesired);
-		setAppID(appID);
+		setFullAppID(fullAppID);
 	}
 	/**
 	 * Gets the version of the SDL&reg; SmartDeviceLink interface
@@ -606,14 +606,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
 	public void setAppID(@NonNull String appID) {
-		if (appID != null) {
-			setParameters(KEY_FULL_APP_ID, appID);
-			if (appID.length() <= APP_ID_MAX_LENGTH) {
-				setParameters(KEY_APP_ID, appID);
-			} else {
-				setParameters(KEY_APP_ID, appID.replace("-", "").substring(0, APP_ID_MAX_LENGTH));
-			}
-		}
+		setParameters(KEY_APP_ID, appID);
 	}
 
 	/**
@@ -625,6 +618,29 @@ public class RegisterAppInterface extends RPCRequest {
 	 */
 	public String getFullAppID() {
 		return getString(KEY_FULL_APP_ID);
+	}
+
+	/**
+	 * Sets a unique ID, which an app will be given when approved
+	 *
+	 * @param fullAppID
+	 *            a String value representing a unique ID, which an app will be
+	 *            given when approved
+	 *            <p></p>
+	 *            <b>Notes: </b>Maxlength = 100
+	 * @since SmartDeviceLink 2.0
+	 */
+	public void setFullAppID(@NonNull String fullAppID) {
+		if (fullAppID != null) {
+			setParameters(KEY_FULL_APP_ID, fullAppID);
+			String appID;
+			if (fullAppID.length() <= APP_ID_MAX_LENGTH) {
+				appID = fullAppID;
+			} else {
+				appID = fullAppID.replace("-", "").substring(0, APP_ID_MAX_LENGTH);
+			}
+			setAppID(appID);
+		}
 	}
 
 	/**

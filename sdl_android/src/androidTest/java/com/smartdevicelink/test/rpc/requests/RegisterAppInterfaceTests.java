@@ -37,7 +37,7 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 		msg.setSdlMsgVersion(Test.GENERAL_SDLMSGVERSION);
 		msg.setAppName(Test.GENERAL_STRING);
 		msg.setNgnMediaScreenAppName(Test.GENERAL_STRING);
-		msg.setAppID(Test.GENERAL_FULL_APP_ID);
+		msg.setFullAppID(Test.GENERAL_FULL_APP_ID);
 		msg.setLanguageDesired(Test.GENERAL_LANGUAGE);
 		msg.setHmiDisplayLanguageDesired(Test.GENERAL_LANGUAGE);
 		msg.setHashID(Test.GENERAL_STRING);
