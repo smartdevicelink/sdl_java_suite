@@ -236,6 +236,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected Boolean _bResumeSuccess = false;	
 	protected List<Class<? extends SdlSecurityBase>> _secList = null;
 	protected SystemCapabilityManager _systemCapabilityManager;
+	protected Boolean _iconResumed = false;
 	
 	private final CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
 
@@ -2050,6 +2051,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_vehicleType = msg.getVehicleType();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 					_proxyVersionInfo = msg.getProxyVersionInfo();
+					_iconResumed = msg.getIconResumed();
 					
 
 
@@ -6920,6 +6922,23 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		return sPoliciesURL;
 	}
 
+	/**
+	 * Tells developer whether or not their app icon has been resumed on core.
+	 * @return boolean - true if icon was resumed, false if not
+	 * @throws SdlException if proxy is disposed or app is not registered
+	 */
+	public boolean getIconResumed() throws SdlException {
+		// Test if proxy has been disposed
+		if (_proxyDisposed) {
+			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
+		}
+
+		// Test SDL availability
+		if (!_appInterfaceRegisterd) {
+			throw new SdlException("SDL is not connected. Unable to determine if app icon was resumed.", SdlExceptionCause.SDL_UNAVAILABLE);
+		}
+		return _iconResumed;
+	}
 
 
 	/**
