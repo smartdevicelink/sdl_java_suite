@@ -1650,6 +1650,10 @@ public class Validator{
     	if (item1.getDisplayType() != item2.getDisplayType()) {
     		return false;
     	}
+
+        if (!item1.getDisplayName().equals(item2.getDisplayName())) {
+            return false;
+        }
     	
     	if (item1.getGraphicSupported() != item2.getGraphicSupported()) {    		
     		return false;
