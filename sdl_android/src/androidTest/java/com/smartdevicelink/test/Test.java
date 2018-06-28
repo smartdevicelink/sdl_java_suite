@@ -160,6 +160,7 @@ public class Test {
 	public static final String                         GENERAL_STRING                         = "test";
 	public static final Double                         GENERAL_DOUBLE                         = 10.01;
 	public static final boolean                        GENERAL_BOOLEAN                        = true;
+	public static final byte[]                         GENERAL_BYTE_ARRAY                     = new byte[0];
 	public static final TPMS                           GENERAL_TPMS                           = TPMS.UNKNOWN;
 	public static final TBTState                       GENERAL_TBTSTATE                       = TBTState.NEXT_TURN_REQUEST;
 	public static final FileType                       GENERAL_FILETYPE                       = FileType.BINARY;
@@ -532,6 +533,7 @@ public class Test {
         GENERAL_DIDRESULT_LIST.add(GENERAL_DIDRESULT);
         
         GENERAL_DISPLAYCAPABILITIES.setDisplayType(GENERAL_DISPLAYTYPE);
+        GENERAL_DISPLAYCAPABILITIES.setDisplayName(GENERAL_STRING);
         GENERAL_DISPLAYCAPABILITIES.setGraphicSupported(GENERAL_BOOLEAN);
         GENERAL_DISPLAYCAPABILITIES.setImageFields(GENERAL_IMAGEFIELD_LIST);
         GENERAL_DISPLAYCAPABILITIES.setMediaClockFormats(GENERAL_MEDIACLOCKFORMAT_LIST);
@@ -848,6 +850,7 @@ public class Test {
 			JSON_SCREENPARAMS.put(ScreenParams.KEY_TOUCH_EVENT_AVAILABLE, jsonTEC);
 			
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_DISPLAY_TYPE, GENERAL_DISPLAYTYPE);
+			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_DISPLAY_NAME, GENERAL_STRING);
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_GRAPHIC_SUPPORTED, GENERAL_BOOLEAN);
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_IMAGE_FIELDS, JSON_IMAGEFIELDS);
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS, JsonUtils.createJsonArray(GENERAL_MEDIACLOCKFORMAT_LIST));

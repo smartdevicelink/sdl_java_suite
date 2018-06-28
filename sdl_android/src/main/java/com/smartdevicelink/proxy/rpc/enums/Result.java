@@ -177,6 +177,11 @@ public enum Result {
 	 * The requested data is read only thus cannot be change via remote control
 	 */
 	READ_ONLY,
+	/**
+	 * The data sent failed to pass CRC check in receiver end
+	 */
+	CORRUPTED_DATA,
+
 	;
 	 /**
      * Convert String to Result

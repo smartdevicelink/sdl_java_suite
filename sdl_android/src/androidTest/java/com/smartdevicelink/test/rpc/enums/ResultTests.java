@@ -10,14 +10,14 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.Result}
+ * {@link com.smartdevicelink.proxy.rpc.enums.Result}
  */
 public class ResultTests extends TestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
-	public void testValidEnums () {	
+	public void testValidEnums () {
 		String example = "SUCCESS";
 		Result enumSuccess = Result.valueForString(example);
 		example = "INVALID_DATA";
@@ -86,6 +86,8 @@ public class ResultTests extends TestCase {
 		Result enumDataNotAvailable = Result.valueForString(example);
 		example = "READ_ONLY";
 		Result enumReadOnly = Result.valueForString(example);
+		example = "CORRUPTED_DATA";
+		Result enumCorruptData = Result.valueForString(example);
 		
 		assertNotNull("SUCCESS returned null", enumSuccess);
 		assertNotNull("INVALID_DATA returned null", enumInvalidData);
@@ -121,6 +123,7 @@ public class ResultTests extends TestCase {
 		assertNotNull("RESUME_FAILED returned null", enumResumeFailed);
 		assertNotNull("DATA_NOT_AVAILABLE returned null", enumDataNotAvailable);
 		assertNotNull("READ_ONLY returned null", enumReadOnly);
+		assertNotNull("CORRUPTED_DATA", enumCorruptData);
 	}
 
 	/**
@@ -192,6 +195,7 @@ public class ResultTests extends TestCase {
 		enumTestList.add(Result.RESUME_FAILED);
 		enumTestList.add(Result.DATA_NOT_AVAILABLE);
 		enumTestList.add(Result.READ_ONLY);
+		enumTestList.add(Result.CORRUPTED_DATA);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

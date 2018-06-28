@@ -502,6 +502,7 @@ public class RPCRequestFactory {
 		putFile.setFileType(fileType);
 		putFile.setPersistentFile(persistentFile);
 		putFile.setBulkData(fileData);
+		putFile.setCRC(fileData);
 		return putFile;
 	}
 	

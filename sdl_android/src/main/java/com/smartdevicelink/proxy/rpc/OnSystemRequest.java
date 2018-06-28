@@ -37,6 +37,15 @@ import java.util.List;
  *                 <td></td>
  * 			<td>SmartDeviceLink 2.3.2 </td>
  * 		</tr>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>requestSubType</td>
+ * 			<td>String</td>
+ * 			<td>This parameter is filled for supporting OEM proprietary data exchanges.</td>
+ *                 <td>N</td>
+ *                 <td>Max Length: 255</td>
+ * 			<td>SmartDeviceLink 4.6</td>
+ * 		</tr>
  * 		<tr>
  * 			<td>url</td>
  * 			<td>Array of Strings</td>
@@ -89,6 +98,7 @@ public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_BODY = "body";
 	public static final String KEY_FILE_TYPE = "fileType";
 	public static final String KEY_REQUEST_TYPE = "requestType";
+	public static final String KEY_REQUEST_SUB_TYPE = "requestSubType";
 	public static final String KEY_DATA = "data";
 	public static final String KEY_OFFSET = "offset";
 	public static final String KEY_LENGTH = "length";
@@ -225,13 +235,21 @@ public class OnSystemRequest extends RPCNotification {
     public Headers getHeader() {
     	return this.headers;
     }
-    
+
     public RequestType getRequestType() {
         return (RequestType) getObject(RequestType.class, KEY_REQUEST_TYPE);
     }
 
     public void setRequestType(@NonNull RequestType requestType) {
         setParameters(KEY_REQUEST_TYPE, requestType);
+    }
+
+    public String getRequestSubType() {
+        return getString(KEY_REQUEST_SUB_TYPE);
+    }
+
+    public void setRequestSubType(String requestSubType) {
+        setParameters(KEY_REQUEST_SUB_TYPE, requestSubType);
     }
 
     public String getUrl() {
