@@ -20,6 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.zip.CRC32;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1143,6 +1144,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	putFile.setCorrelationID(POLICIES_CORRELATION_ID);
 		    	putFile.setSdlFileName("response_data");
 		    	putFile.setFileData(response.toString().getBytes("UTF-8"));
+		    	putFile.setCRC(response.toString().getBytes());
 		    	updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + response.toString());
 		    	
 		    	sendRPCRequestPrivate(putFile);
