@@ -79,8 +79,21 @@ public class Choice extends RPCStruct {
      * Constructs a newly allocated Choice object
      * @param choiceID Min: 0  Max: 65535
      * @param menuName the menu name
-     * @param vrCommands the List of  vrCommands
      */
+    public Choice(@NonNull Integer choiceID, @NonNull String menuName) {
+        this();
+        setChoiceID(choiceID);
+        setMenuName(menuName);
+    }
+    /**
+     * Constructs a newly allocated Choice object
+     * @param choiceID Min: 0  Max: 65535
+     * @param menuName the menu name
+     * @param vrCommands the List of  vrCommands
+     *
+     * Deprecated - use constructor without the forced use of vrCommands
+     */
+    @Deprecated
     public Choice(@NonNull Integer choiceID, @NonNull String menuName, @NonNull List<String> vrCommands) {
         this();
         setChoiceID(choiceID);
