@@ -74,7 +74,7 @@ public class AddSubmenuTests extends BaseRpcTests{
         assertEquals("Menu ID didn't match input menu ID.", Test.GENERAL_INT, testMenuId);
         assertEquals("Menu name didn't match input menu name.", Test.GENERAL_STRING, testMenuName);
         assertEquals("Position didn't match input position.", Test.GENERAL_INT, testPosition);
-        assertTrue("Menu icon didn't match input position.", Validator.validateImage(Test.GENERAL_IMAGE, testMenuIcon));
+        assertTrue("Menu icon didn't match input icon.", Validator.validateImage(Test.GENERAL_IMAGE, testMenuIcon));
 
 
         // Invalid/Null Tests
