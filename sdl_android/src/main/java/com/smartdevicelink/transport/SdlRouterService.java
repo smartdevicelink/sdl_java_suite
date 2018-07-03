@@ -277,23 +277,20 @@ public class SdlRouterService extends Service{
 						Log.d(TAG, "Disconnect received. Action: " + intent.getAction());
 
 						if(action.equalsIgnoreCase(BluetoothAdapter.ACTION_STATE_CHANGED)){
-							BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-							if(adapter != null) {
-								int bluetoothState = adapter.getState();
-								switch (bluetoothState) {
-									case BluetoothAdapter.STATE_TURNING_ON:
-									case BluetoothAdapter.STATE_ON:
-										//There is nothing to do in the case the adapter is turning on or just switched to on
-										return;
-									case BluetoothAdapter.STATE_TURNING_OFF:
-									case BluetoothAdapter.STATE_OFF:
-										Log.d(TAG, "Bluetooth is shutting off, SDL Router Service is closing.");
-										connectAsClient = false;
-										shouldServiceRemainOpen(intent);
-										return;
-									default:
-										break;
-								}
+							int bluetoothState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+							switch (bluetoothState) {
+								case BluetoothAdapter.STATE_TURNING_ON:
+								case BluetoothAdapter.STATE_ON:
+									//There is nothing to do in the case the adapter is turning on or just switched to on
+									return;
+								case BluetoothAdapter.STATE_TURNING_OFF:
+								case BluetoothAdapter.STATE_OFF:
+									Log.d(TAG, "Bluetooth is shutting off, SDL Router Service is closing.");
+									connectAsClient = false;
+									shouldServiceRemainOpen(intent);
+									return;
+								default:
+									break;
 							}
 						}
 						//Otherwise
@@ -1004,10 +1001,10 @@ public class SdlRouterService extends Service{
 	}
 	
 	public void startUpSequence(){
-		IntentFilter disconnectFilter = new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED");
-		disconnectFilter.addAction("android.bluetooth.device.action.CLASS_CHANGED");
-		disconnectFilter.addAction("android.bluetooth.device.action.ACL_DISCONNECTED");
-		disconnectFilter.addAction("android.bluetooth.device.action.ACL_DISCONNECT_REQUESTED");
+		IntentFilter disconnectFilter = new IntentFilter(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+		disconnectFilter.addAction(BluetoothDevice.ACTION_CLASS_CHANGED);
+		disconnectFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+		disconnectFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
 		registerReceiver(mListenForDisconnect,disconnectFilter );
 		
 		IntentFilter filter = new IntentFilter();
