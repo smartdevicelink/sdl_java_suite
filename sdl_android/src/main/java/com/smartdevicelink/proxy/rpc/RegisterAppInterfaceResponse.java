@@ -39,8 +39,8 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     public static final String KEY_HMI_CAPABILITIES 			= "hmiCapabilities"; //As of v4.0
     public static final String KEY_SDL_VERSION 					= "sdlVersion"; //As of v4.0
     public static final String KEY_SYSTEM_SOFTWARE_VERSION		= "systemSoftwareVersion"; //As of v4.0
-	public static final String KEY_PCM_STREAM_CAPABILITIES      = "pcmStreamCapabilities";
-
+    public static final String KEY_ICON_RESUMED 				= "iconResumed";
+    public static final String KEY_PCM_STREAM_CAPABILITIES      = "pcmStreamCapabilities";
     
 	/**
 	 * Constructs a new RegisterAppInterfaceResponse object
@@ -376,7 +376,15 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 		setParameters(KEY_SYSTEM_SOFTWARE_VERSION, systemSoftwareVersion);
     }
 
-    public String getSystemSoftwareVersion() {    
-    	 return getString(KEY_SYSTEM_SOFTWARE_VERSION);
+    public String getSystemSoftwareVersion() {
+        return getString(KEY_SYSTEM_SOFTWARE_VERSION);
+    }
+
+    public void setIconResumed(Boolean iconResumed){
+        setParameters(KEY_ICON_RESUMED, iconResumed);
+    }
+
+    public Boolean getIconResumed() {
+        return getBoolean(KEY_ICON_RESUMED);
     }
 }

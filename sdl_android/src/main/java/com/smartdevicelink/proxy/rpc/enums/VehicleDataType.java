@@ -82,6 +82,10 @@ public enum VehicleDataType {
      */
     VEHICLEDATA_ENGINETORQUE,
     /**
+     * Notifies ENGINEOILLIFEData may be subscribed
+     */
+    VEHICLEDATA_ENGINEOILLIFE,
+    /**
      * Notifies ACCPEDALData may be subscribed
      */
     VEHICLEDATA_ACCPEDAL,
@@ -109,11 +113,16 @@ public enum VehicleDataType {
      * Notifies MYKEYData may be subscribed
      */
     VEHICLEDATA_MYKEY,
+
+    VEHICLEDATA_FUELRANGE,
+
     /**
-     * Notifies ELECTRONICPARKBRAKESTATUSData may be subscribed
+     * Notifies TURNSIGNALData may be subscribed
      */
-    VEHICLEDATA_ELECTRONICPARKBRAKESTATUS;
-	/**
+    VEHICLEDATA_TURNSIGNAL,
+    ;
+
+     /**
      * Convert String to VehicleDataType
      * @param value String
      * @return VehicleDataType

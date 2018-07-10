@@ -163,6 +163,14 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
  * 		<tr>
+ * 			<td>engineOilLife</td>
+ * 			<td>Boolean</td>
+ * 			<td>The estimated percentage of remaining oil life of the engine</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 4.6 </td>
+ * 		</tr>
+ * 		<tr>
  * 			<td>accPedalPosition</td>
  * 			<td>Boolean</td>
  * 			<td>Accelerator pedal position (percentage depressed)</td>
@@ -218,6 +226,14 @@ import java.util.Hashtable;
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>turnSignal</td>
+ * 			<td>Boolean</td>
+ * 			<td>@see TurnSignal</td>
+ *				<td>N</td>
+ *				<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 4.6 </td>
+ * 		</tr>
  *  </table>
  *  
  * <p> <b>Response</b></p>
@@ -244,6 +260,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
 	public static final String KEY_ENGINE_TORQUE = "engineTorque";
+	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
 	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
@@ -262,7 +279,8 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
 	public static final String KEY_SPEED = "speed";
-	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
+	public static final String KEY_FUEL_RANGE = "fuelRange";
+	public static final String KEY_TURN_SIGNAL = "turnSignal";
 
 	/**
 	 * Constructs a new SubscribeVehicleData object
@@ -641,28 +659,49 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes Engine Torque data
-	 * 
+	 *
 	 * @param engineTorque
 	 *            a boolean value
 	 */
-    public void setEngineTorque(Boolean engineTorque) {
+	public void setEngineTorque(Boolean engineTorque) {
 		setParameters(KEY_ENGINE_TORQUE, engineTorque);
-    }
+	}
+
+	/**
+	 * Gets a boolean value. If true, means the Engine Oil Life data has been
+	 * subscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the Engine Oil Life data
+	 *         has been subscribed.
+	 */
+	public Boolean getEngineOilLife() {
+		return getBoolean(KEY_ENGINE_OIL_LIFE);
+	}
+
+	/**
+	 * Sets a boolean value. If true, subscribes Engine Oil Life data
+	 *
+	 * @param engineOilLife
+	 *            a boolean value
+	 */
+	public void setEngineOilLife(Boolean engineOilLife) {
+		setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
+	}
 
 	/**
 	 * Gets a boolean value. If true, means the Engine Torque data has been
 	 * subscribed.
-	 * 
+	 *
 	 * @return Boolean -a Boolean value. If true, means the Engine Torque data
 	 *         has been subscribed.
 	 */
-    public Boolean getEngineTorque() {
-        return getBoolean(KEY_ENGINE_TORQUE);
-    }
+	public Boolean getEngineTorque() {
+		return getBoolean(KEY_ENGINE_TORQUE);
+	}
 
 	/**
 	 * Sets a boolean value. If true, subscribes accPedalPosition data
-	 * 
+	 *
 	 * @param accPedalPosition
 	 *            a boolean value
 	 */
@@ -717,12 +756,38 @@ public class SubscribeVehicleData extends RPCRequest {
     }
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);
-    }      
+    }
 
-    public void setElectronicParkBrakeStatus(boolean electronicParkBrakeStatus){
-    	setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
-    }
-    public Boolean getElectronicParkBrakeStatus(){
-    	return getBoolean(KEY_ELECTRONIC_PARK_BRAKE_STATUS);
-    }
+	/**
+	 * Sets a boolean value. If true, subscribes fuelRange data
+	 *
+	 * @param fuelRange
+	 *            a boolean value
+	 */
+	public void setFuelRange(Boolean fuelRange) {
+		setParameters(KEY_FUEL_RANGE, fuelRange);
+	}
+
+	/**
+	 * Gets a boolean value. If true, means the Fuel Range data has been
+	 * subscribed.
+	 *
+	 * @return Boolean -a Boolean value. If true, means the Fuel Range data
+	 *         has been subscribed.
+	 *
+	 */
+	public Boolean getFuelRange() {
+		return getBoolean(KEY_FUEL_RANGE);
+	}
+
+	/**
+	 * Sets a boolean value. If true, subscribes turnSignal data
+	 * @param turnSignal a boolean value
+	 */
+	public void setTurnSignal(Boolean turnSignal) { setParameters(KEY_TURN_SIGNAL, turnSignal); }
+	/**
+	 * Gets a boolean value. If true, means the turnSignal data has been subscribed.
+	 * @return a Boolean value.
+	 */
+	public Boolean getTurnSignal() { return getBoolean(KEY_TURN_SIGNAL); }
 }
