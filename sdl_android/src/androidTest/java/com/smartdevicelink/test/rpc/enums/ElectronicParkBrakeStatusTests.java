@@ -64,7 +64,7 @@ public class ElectronicParkBrakeStatusTests extends TestCase {
 	}
 
 	/**
-	 * Verifies the possible enum values of WiperStatus.
+	 * Verifies the possible enum values of Electronic Brake Status.
 	 */
 	public void testListEnum() {
 		List<ElectronicParkBrakeStatus> enumValueList = Arrays.asList(ElectronicParkBrakeStatus.values());
