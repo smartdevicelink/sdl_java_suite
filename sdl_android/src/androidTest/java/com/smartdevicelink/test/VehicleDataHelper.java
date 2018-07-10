@@ -31,6 +31,7 @@ import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
+import com.smartdevicelink.proxy.rpc.enums.TurnSignal;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
@@ -74,6 +75,7 @@ public class VehicleDataHelper{
 	public static final MyKey MY_KEY = new MyKey();
 	public static final FuelRange FUEL_RANGE = new FuelRange();
 	public static final List<FuelRange> FUEL_RANGE_LIST = new ArrayList<FuelRange>(1);
+	public static final TurnSignal TURN_SIGNAL = TurnSignal.OFF;
 
 	//other variables inside some of the above objects
     // tire status
@@ -349,6 +351,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA.setClusterModeStatus(CLUSTER_MODE_STATUS);
 		VEHICLE_DATA.setMyKey(MY_KEY);
 		VEHICLE_DATA.setFuelRange(FUEL_RANGE_LIST);
+		VEHICLE_DATA.setTurnSignal(TURN_SIGNAL);
 		
 		//set up the GetVehicleDataResponse object
 		VEHICLE_DATA_RESPONSE.setSpeed(SPEED);
@@ -378,6 +381,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA_RESPONSE.setClusterModeStatus(CLUSTER_MODE_STATUS);
 		VEHICLE_DATA_RESPONSE.setMyKey(MY_KEY);
 		VEHICLE_DATA_RESPONSE.setFuelRange(FUEL_RANGE_LIST);
+		VEHICLE_DATA_RESPONSE.setTurnSignal(TURN_SIGNAL);
 	}
 	
     private VehicleDataHelper(){}	

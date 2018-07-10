@@ -28,7 +28,8 @@
       "emergencyEvent":false,
       "clusterModeStatus":true,
       "myKey":true,
-      "fuelRange":true
+      "fuelRange":true,
+      "turnSignal":true
     }
   },
   "response":{
@@ -138,6 +139,10 @@
       "fuelRange":{
         "dataType":"VEHICLEDATA_FUELRANGE",
         "resultCode":"SUCCESS"
+      },
+      "turnSignal":{
+        "dataType":"VEHICLEDATA_TURNSIGNAL",
+        "resultCode":"IGNORED"
       }
     }
   }
