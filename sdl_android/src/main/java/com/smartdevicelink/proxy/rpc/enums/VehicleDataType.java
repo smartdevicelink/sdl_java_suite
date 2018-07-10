@@ -119,7 +119,8 @@ public enum VehicleDataType {
     /**
      * Notifies TURNSIGNALData may be subscribed
      */
-    VEHICLEDATA_TURNSIGNAL;
+    VEHICLEDATA_TURNSIGNAL,
+    ;
 
      /**
      * Convert String to VehicleDataType
