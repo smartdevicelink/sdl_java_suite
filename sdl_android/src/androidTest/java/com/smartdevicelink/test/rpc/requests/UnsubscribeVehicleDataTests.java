@@ -17,7 +17,7 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.proxy.rpc.UnsubscribeVehicleData}
+ * {@link com.smartdevicelink.rpc.UnsubscribeVehicleData}
  */
 public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 
@@ -32,6 +32,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 		msg.setPrndl(Test.GENERAL_BOOLEAN);
 		msg.setTirePressure(Test.GENERAL_BOOLEAN);
 		msg.setEngineTorque(Test.GENERAL_BOOLEAN);
+		msg.setEngineOilLife(Test.GENERAL_BOOLEAN);
 		msg.setOdometer(Test.GENERAL_BOOLEAN);
 		msg.setGps(Test.GENERAL_BOOLEAN);
 		msg.setFuelLevelState(Test.GENERAL_BOOLEAN);
@@ -49,7 +50,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 		msg.setEmergencyEvent(Test.GENERAL_BOOLEAN);
 		msg.setClusterModeStatus(Test.GENERAL_BOOLEAN);
 		msg.setMyKey(Test.GENERAL_BOOLEAN);
-		msg.setTurnSignal(Test.GENERAL_BOOLEAN);
+		msg.setFuelRange(Test.GENERAL_BOOLEAN);
 
 		return msg;
 	}
@@ -76,6 +77,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
             result.put(UnsubscribeVehicleData.KEY_PRNDL, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_TIRE_PRESSURE, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_ENGINE_TORQUE, Test.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_ENGINE_OIL_LIFE, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_ODOMETER, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_GPS, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_FUEL_LEVEL_STATE, Test.GENERAL_BOOLEAN);
@@ -93,7 +95,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
             result.put(UnsubscribeVehicleData.KEY_EMERGENCY_EVENT, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_CLUSTER_MODE_STATUS, Test.GENERAL_BOOLEAN);
             result.put(UnsubscribeVehicleData.KEY_MY_KEY, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_TURN_SIGNAL, Test.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_FUEL_RANGE, Test.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -113,6 +115,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getPrndl());
 		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getTirePressure());
 		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getEngineTorque());
+		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getEngineOilLife());
 		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getOdometer());
 		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getGps());
 		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getFuelLevelState());
@@ -130,7 +133,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getEmergencyEvent());
 		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getClusterModeStatus());
 		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getMyKey());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getTurnSignal());
+		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getFuelRange());
 		
 		// Invalid/Null Tests
 		UnsubscribeVehicleData msg = new UnsubscribeVehicleData();
@@ -156,13 +159,14 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
         assertNull(Test.NULL, msg.getDeviceStatus());
         assertNull(Test.NULL, msg.getHeadLampStatus());
         assertNull(Test.NULL, msg.getEngineTorque());
+        assertNull(Test.NULL, msg.getEngineOilLife());
         assertNull(Test.NULL, msg.getSteeringWheelAngle());
         assertNull(Test.NULL, msg.getECallInfo());
         assertNull(Test.NULL, msg.getEmergencyEvent());
         assertNull(Test.NULL, msg.getClusterModeStatus());
         assertNull(Test.NULL, msg.getMyKey());
-        assertNull(Test.NULL, msg.getTurnSignal());
-    }
+        assertNull(Test.NULL, msg.getFuelRange());
+	}
 
 	/**
      * Tests a valid JSON construction of this RPC message.
@@ -190,6 +194,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_PRNDL), cmd.getPrndl());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_TIRE_PRESSURE), cmd.getTirePressure());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ENGINE_TORQUE), cmd.getEngineTorque());
+			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ENGINE_OIL_LIFE), cmd.getEngineOilLife());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ODOMETER), cmd.getOdometer());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_GPS), cmd.getGps());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_FUEL_LEVEL_STATE), cmd.getFuelLevelState());
@@ -207,7 +212,7 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_EMERGENCY_EVENT), cmd.getEmergencyEvent());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_CLUSTER_MODE_STATUS), cmd.getClusterModeStatus());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_MY_KEY), cmd.getMyKey());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_TURN_SIGNAL), cmd.getTurnSignal());
+			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_FUEL_RANGE), cmd.getFuelRange());
 		} 
 		catch (JSONException e) {
 			fail(Test.JSON_FAIL);

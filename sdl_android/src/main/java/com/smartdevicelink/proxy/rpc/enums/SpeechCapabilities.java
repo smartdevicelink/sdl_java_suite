@@ -30,7 +30,12 @@ public enum SpeechCapabilities {
      * The SDL platform can play the prerecorded sound of 1 second of silence (i.e. no sound at all).
      */
 
-    SILENCE;
+    SILENCE,
+
+    /**
+     * The SDL platform can play audio files in conjunction with/without TTS text.
+     */
+    FILE;
     /**
      * Convert String to SpeechCapabilities
       * @param value String
