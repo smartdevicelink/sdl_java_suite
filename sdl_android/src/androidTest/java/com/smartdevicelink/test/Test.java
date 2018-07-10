@@ -263,9 +263,6 @@ public class Test {
 	public static final String                         GENERAL_APP_ID                         = "123e4567e8";
 	public static final String                         GENERAL_FULL_APP_ID                    = "123e4567-e89b-12d3-a456-426655440000";
 
-
-
-
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
 	public static final TemperatureUnit 			   GENERAL_TEMPERATUREUNIT                = TemperatureUnit.CELSIUS;
