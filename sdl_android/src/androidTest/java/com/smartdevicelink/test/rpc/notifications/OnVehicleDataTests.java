@@ -27,6 +27,7 @@ import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
+import com.smartdevicelink.proxy.rpc.enums.TurnSignal;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.test.BaseRpcTests;
@@ -37,7 +38,7 @@ import com.smartdevicelink.test.VehicleDataHelper;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.OnVehicleData}
+ * {@link com.smartdevicelink.proxy.rpc.OnVehicleData}
  */
 public class OnVehicleDataTests extends BaseRpcTests{
 	
@@ -88,6 +89,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
             result.put(OnVehicleData.KEY_CLUSTER_MODE_STATUS, VehicleDataHelper.CLUSTER_MODE_STATUS.serializeJSON());
             result.put(OnVehicleData.KEY_MY_KEY, VehicleDataHelper.MY_KEY.serializeJSON());
             result.put(OnVehicleData.KEY_FUEL_RANGE, VehicleDataHelper.JSON_FUEL_RANGE);
+			result.put(OnVehicleData.KEY_TURN_SIGNAL, VehicleDataHelper.TURN_SIGNAL);
         } catch(JSONException e) {
         	fail(Test.JSON_FAIL);
         }
@@ -127,6 +129,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
     	ClusterModeStatus cluster = ( (OnVehicleData) msg).getClusterModeStatus();
     	MyKey key = ( (OnVehicleData) msg).getMyKey();
     	List<FuelRange> fuelRangeList = ( (OnVehicleData) msg).getFuelRange();
+    	TurnSignal turnSignal = ( (OnVehicleData) msg).getTurnSignal();
     	
     	// Valid Tests
     	assertEquals(Test.MATCH, VehicleDataHelper.SPEED, speed);
@@ -156,6 +159,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 	    assertTrue(Test.TRUE, Validator.validateClusterModeStatus(VehicleDataHelper.CLUSTER_MODE_STATUS, cluster));
 	    assertTrue(Test.TRUE, Validator.validateMyKey(VehicleDataHelper.MY_KEY, key));
 	    assertTrue(Test.TRUE, Validator.validateFuelRange(VehicleDataHelper.FUEL_RANGE_LIST, fuelRangeList));
+	    assertEquals(Test.MATCH, VehicleDataHelper.TURN_SIGNAL, turnSignal);
     
 	    // Invalid/Null Tests
         OnVehicleData msg = new OnVehicleData();
@@ -189,6 +193,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
         assertNull(Test.NULL, msg.getClusterModeStatus());
         assertNull(Test.NULL, msg.getMyKey());
         assertNull(Test.NULL, msg.getFuelRange());
+        assertNull(Test.NULL, msg.getTurnSignal());
 	}
     
     public void testJson() {
@@ -360,6 +365,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 			reference.put(OnVehicleData.KEY_CLUSTER_MODE_STATUS, clusterModeStatusObj);
 			reference.put(OnVehicleData.KEY_MY_KEY, myKeyObj);
 			reference.put(OnVehicleData.KEY_FUEL_RANGE, fuelRangeArrayObj);
+			reference.put(OnVehicleData.KEY_TURN_SIGNAL, VehicleDataHelper.TURN_SIGNAL);
 			
 			JSONObject underTest = msg.serializeJSON();
 			//go inside underTest and only return the JSONObject inside the parameters key inside the notification key
