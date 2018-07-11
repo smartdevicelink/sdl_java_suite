@@ -620,15 +620,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param hmiDisplayLanguageDesired Desired language for HMI.
 	 * @param appType Type of application.
 	 * @param appID Application identifier.
+	 * @param dayColorScheme TemplateColorScheme for the day
+	 * @param nightColorScheme TemplateColorScheme for the night
 	 * @param transportConfig Configuration of transport to be used by underlying connection.
 	 * @param vrSynonyms List of synonyms.
 	 * @param ttsName TTS name.
 	 * @throws SdlException
 	 */
 	public SdlProxyBase(proxyListenerType listener, String appName,String shortAppName, Boolean isMediaApp, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
-						BaseTransportConfig transportConfig, Vector<String> vrSynonyms, Vector<TTSChunk> ttsName) throws SdlException {
+						BaseTransportConfig transportConfig, Vector<String> vrSynonyms, Vector<TTSChunk> ttsName, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme) throws SdlException {
 		performBaseCommon(listener, null, true, appName, ttsName, shortAppName, vrSynonyms, isMediaApp,
-				null, languageDesired, hmiDisplayLanguageDesired, appType, appID, null, null,null, false, false, null, null,  transportConfig);
+				null, languageDesired, hmiDisplayLanguageDesired, appType, appID, null, dayColorScheme,nightColorScheme, false, false, null, null,  transportConfig);
 	}
 	
 	/**

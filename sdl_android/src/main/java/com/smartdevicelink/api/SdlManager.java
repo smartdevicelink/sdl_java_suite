@@ -1,6 +1,7 @@
 package com.smartdevicelink.api;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -16,6 +17,7 @@ import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
@@ -56,6 +58,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	private Context context;
 	private Vector<String> vrSynonyms;
 	private Vector<TTSChunk> ttsChunks;
+	private TemplateColorScheme dayColorScheme, nightColorScheme;
 
 	private ProxyBridge proxyBridge;
 	//public LockScreenConfig lockScreenConfig;
@@ -103,6 +106,14 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	public static class Builder {
 		SdlManager sdlManager;
 
+		/**
+		 * Main Builder for SDL Manager<br>
+		 *
+		 * The following setters are <strong>REQUIRED:</strong><br>
+		 *
+		 * • setAppId <br>
+		 * • setAppName
+		 */
 		public Builder(){
 			sdlManager = new SdlManager();
 		}
@@ -111,7 +122,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		 * Sets the App ID
 		 * @param appId
 		 */
-		public Builder setAppId(final String appId){
+		public Builder setAppId(@NonNull final String appId){
 			sdlManager.appId = appId;
 			return this;
 		}
@@ -120,7 +131,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		 * Sets the Application Name
 		 * @param appName
 		 */
-		public Builder setAppName(final String appName){
+		public Builder setAppName(@NonNull final String appName){
 			sdlManager.appName = appName;
 			return this;
 		}
@@ -135,15 +146,6 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		}
 
 		/**
-		 * Sets if the app is a media app
-		 * @param isMediaApp
-		 */
-		public Builder setIsMediaApp(final Boolean isMediaApp){
-			sdlManager.isMediaApp = isMediaApp;
-			return this;
-		}
-
-		/**
 		 * Sets the Language of the App
 		 * @param hmiLanguage
 		 */
@@ -152,17 +154,36 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 			return this;
 		}
 
+		public Builder setDayColorScheme(final TemplateColorScheme dayColorScheme){
+			sdlManager.dayColorScheme = dayColorScheme;
+			return this;
+		}
+
+		public Builder setnightColorScheme(final TemplateColorScheme nightColorScheme){
+			sdlManager.nightColorScheme = nightColorScheme;
+			return this;
+		}
         /*public Builder setLockScreenConfig (final LockScreenConfig lockScreenConfig){
             sdlManager.lockScreenConfig = lockScreenConfig;
             return this;
         }*/
 
 		/**
-		 * Sets the vector of HMI Types
+		 * Sets the vector of AppHMIType
 		 * @param hmiTypes
 		 */
-		public Builder setHMITypes(final Vector<AppHMIType> hmiTypes){
-			sdlManager.hmiTypes = hmiTypes;
+		public Builder setAppTypes(final Vector<AppHMIType> hmiTypes){
+
+			if (hmiTypes != null) {
+				sdlManager.hmiTypes = hmiTypes;
+				sdlManager.isMediaApp = hmiTypes.contains(AppHMIType.MEDIA);
+			}else {
+				Vector<AppHMIType> hmiTypesDefault = new Vector<>();
+				hmiTypesDefault.add(AppHMIType.DEFAULT);
+				sdlManager.hmiTypes = hmiTypesDefault;
+				sdlManager.isMediaApp = false;
+			}
+
 			return this;
 		}
 
@@ -207,7 +228,27 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		public SdlManager build() {
 			try {
 				sdlManager.initialize();
-				sdlManager.proxy = new SdlProxyBase(sdlManager.proxyBridge, sdlManager.appName, sdlManager.shortAppName, sdlManager.isMediaApp, sdlManager.hmiLanguage, sdlManager.hmiLanguage, sdlManager.hmiTypes, sdlManager.appId, sdlManager.transport, sdlManager.vrSynonyms, sdlManager.ttsChunks) {};
+
+				if (sdlManager.hmiTypes == null) {
+					Vector<AppHMIType> hmiTypesDefault = new Vector<>();
+					hmiTypesDefault.add(AppHMIType.DEFAULT);
+					sdlManager.hmiTypes = hmiTypesDefault;
+					sdlManager.isMediaApp = false;
+				}
+
+				if (sdlManager.hmiLanguage == null){
+					sdlManager.hmiLanguage = Language.EN_US;
+				}
+
+				if (sdlManager.appName == null) {
+					throw new IllegalArgumentException("You must specify an app name by calling setAppName");
+				}
+
+				if (sdlManager.appId == null) {
+					throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
+				}
+
+				sdlManager.proxy = new SdlProxyBase(sdlManager.proxyBridge, sdlManager.appName, sdlManager.shortAppName, sdlManager.isMediaApp, sdlManager.hmiLanguage, sdlManager.hmiLanguage, sdlManager.hmiTypes, sdlManager.appId, sdlManager.transport, sdlManager.vrSynonyms, sdlManager.ttsChunks, sdlManager.dayColorScheme, sdlManager.nightColorScheme) {};
 			} catch (SdlException e) {
 				e.printStackTrace();
 			}
@@ -243,15 +284,15 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 
 	// SENDING REQUESTS
 
-	public void sendRPCRequest(RPCRequest request) throws SdlException {
+	public void sendRPC(RPCRequest request) throws SdlException {
 		proxy.sendRPCRequest(request);
 	}
 
-	public void sendSequentialRequests(final List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+	public void sendSequentialRPCs(final List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
 		proxy.sendSequentialRequests(rpcs, listener);
 	}
 
-	public void sendRequests(List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+	public void sendRPCs(List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
 		proxy.sendRequests(rpcs, listener);
 	}
 
