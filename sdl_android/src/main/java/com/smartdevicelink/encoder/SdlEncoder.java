@@ -153,6 +153,7 @@ public class SdlEncoder {
 			if (encoderStatus == MediaCodec.INFO_TRY_AGAIN_LATER) {
 				// no output available yet
 				if (!endOfStream) {
+					sendVideoKeepaliveIfPossible();
 					break; // out of while
 				}
 			} else if (encoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
@@ -215,5 +216,21 @@ public class SdlEncoder {
 				}
 			}
 		}
+	}
+
+	private void sendVideoKeepaliveIfPossible() {
+		if (mH264CodecSpecificData == null) {
+			return;
+		}
+
+		byte[] dataToWrite = mH264CodecSpecificData;
+		if (mOutputStream != null) {
+            try {
+                mOutputStream.write(dataToWrite, 0, mBufferInfo.size);
+            } catch (IOException e) {}
+        } else if (mOutputListener != null) {
+            mOutputListener.sendFrame(
+                    dataToWrite, 0, dataToWrite.length, mBufferInfo.presentationTimeUs);
+        }
 	}
 }
