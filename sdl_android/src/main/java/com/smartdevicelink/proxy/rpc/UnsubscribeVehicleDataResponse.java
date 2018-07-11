@@ -456,9 +456,18 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_TURN_SIGNAL);
     }
 
+    /**
+     * Sets electronicParkBrakeStatus
+     * @param electronicParkBrakeStatus
+     */
     public void setElectronicParkBrakeStatus(VehicleDataResult electronicParkBrakeStatus){
         setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
     }
+
+    /**
+     * Gets electronicParkBrakeStatus
+     * @return VehicleDataResult
+     */
     public VehicleDataResult getElectronicParkBrakeStatus(){
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ELECTRONIC_PARK_BRAKE_STATUS);
     }

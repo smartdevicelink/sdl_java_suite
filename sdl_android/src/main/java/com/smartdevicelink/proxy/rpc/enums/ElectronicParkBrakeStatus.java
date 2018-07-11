@@ -20,7 +20,8 @@ public enum ElectronicParkBrakeStatus {
 	/**
 	 * When system has a fault or is under maintenance.
 	 */
-	FAULT;
+	FAULT,
+	;
 
 	/**
 	 * Convert String to ElectronicParkBrakeStatus

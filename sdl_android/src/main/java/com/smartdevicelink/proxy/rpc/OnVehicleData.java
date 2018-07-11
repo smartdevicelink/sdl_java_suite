@@ -513,9 +513,18 @@ public class OnVehicleData extends RPCNotification {
         return (TurnSignal) getObject(TurnSignal.class, KEY_TURN_SIGNAL);
     }
 
+    /**
+     * Sets electronicParkBrakeStatus
+     * @param electronicParkBrakeStatus
+     */
     public void setElectronicParkBrakeStatus(ElectronicParkBrakeStatus electronicParkBrakeStatus){
         setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
     }
+
+    /**
+     * Gets electronicParkBrakeStatus
+     * @return ElectronicParkBrakeStatus
+     */
     public ElectronicParkBrakeStatus getElectronicParkBrakeStatus(){
         return (ElectronicParkBrakeStatus) getObject(ElectronicParkBrakeStatus.class, KEY_ELECTRONIC_PARK_BRAKE_STATUS);
     }
