@@ -200,13 +200,8 @@ public class SdlEncoder {
 
 						encoderOutputBuffer.get(dataToWrite, dataOffset, mBufferInfo.size);
 
-						if (mOutputStream != null) {
-							mOutputStream.write(dataToWrite, 0, mBufferInfo.size);
-						} else if (mOutputListener != null) {
-							mOutputListener.sendFrame(
-									dataToWrite, 0, dataToWrite.length, mBufferInfo.presentationTimeUs);
-						}
-					} catch (Exception e) {}
+                        emitFrame(dataToWrite);
+                    } catch (Exception e) {}
 				}
 
 				mEncoder.releaseOutputBuffer(encoderStatus, false);
@@ -223,14 +218,17 @@ public class SdlEncoder {
 			return;
 		}
 
-		byte[] dataToWrite = mH264CodecSpecificData;
-		if (mOutputStream != null) {
-            try {
-                mOutputStream.write(dataToWrite, 0, mBufferInfo.size);
-            } catch (IOException e) {}
+        try {
+            emitFrame(mH264CodecSpecificData);
+        } catch (IOException e) {}
+	}
+
+    private void emitFrame(final byte[] dataToWrite) throws IOException {
+        if (mOutputStream != null) {
+            mOutputStream.write(dataToWrite, 0, mBufferInfo.size);
         } else if (mOutputListener != null) {
             mOutputListener.sendFrame(
                     dataToWrite, 0, dataToWrite.length, mBufferInfo.presentationTimeUs);
         }
-	}
+    }
 }
