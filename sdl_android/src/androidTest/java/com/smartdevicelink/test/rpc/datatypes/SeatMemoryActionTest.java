@@ -29,11 +29,11 @@ public class SeatMemoryActionTest extends TestCase {
 		msg.setAction(Test.GENERAL_SEATMEMORYACTIONTYPE);
 	}
 
-    /**
+	/**
 	 * Tests the expected values of the RPC message.
 	 */
-    public void testRpcValues () {
-    	// Test Values
+	public void testRpcValues () {
+		// Test Values
 		Integer id = msg.getId();
 		String label = msg.getLabel();
 		SeatMemoryActionType action = msg.getAction();

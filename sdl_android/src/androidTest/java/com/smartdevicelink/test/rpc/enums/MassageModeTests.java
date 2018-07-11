@@ -37,10 +37,10 @@ public class MassageModeTests extends TestCase {
 		String example = "oFF";
 		try {
 			MassageMode temp = MassageMode.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+			assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (IllegalArgumentException exception) {
-            fail("Invalid enum throws IllegalArgumentException.");
+			fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
 
@@ -51,10 +51,10 @@ public class MassageModeTests extends TestCase {
 		String example = null;
 		try {
 			MassageMode temp = MassageMode.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
+			assertNull("Result of valueForString should be null.", temp);
 		}
 		catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
+			fail("Null string throws NullPointerException.");
 		}
 	}
 

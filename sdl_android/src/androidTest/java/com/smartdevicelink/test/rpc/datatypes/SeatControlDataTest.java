@@ -49,11 +49,11 @@ public class SeatControlDataTest extends TestCase {
 		msg.setMemory(Test.GENERAL_SEATMEMORYACTION);
 	}
 
-    /**
+	/**
 	 * Tests the expected values of the RPC message.
 	 */
-    public void testRpcValues () {
-    	// Test Values
+	public void testRpcValues () {
+		// Test Values
 		SupportedSeat id = msg.getId();
 		Boolean heatingEnabled = msg.getHeatingEnabled();
 		Boolean coolingEnabled = msg.getCoolingEnabled();

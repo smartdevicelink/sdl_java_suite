@@ -28,11 +28,11 @@ public class MassageCushionFirmnessTest extends TestCase {
 		msg.setFirmness(Test.GENERAL_INT);
 	}
 
-    /**
+	/**
 	 * Tests the expected values of the RPC message.
 	 */
-    public void testRpcValues () {
-    	// Test Values
+	public void testRpcValues () {
+		// Test Values
 		MassageCushion cushion = msg.getCushion();
 		Integer firmness = msg.getFirmness();
 		

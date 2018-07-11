@@ -29,11 +29,11 @@ public class MassageModeDataTest extends TestCase {
 		msg.setMassageMode(Test.GENERAL_MASSAGEMODE);
 	}
 
-    /**
+	/**
 	 * Tests the expected values of the RPC message.
 	 */
-    public void testRpcValues () {
-    	// Test Values
+	public void testRpcValues () {
+		// Test Values
 		MassageZone massageZone = msg.getMassageZone();
 		MassageMode massageMode = msg.getMassageMode();
 

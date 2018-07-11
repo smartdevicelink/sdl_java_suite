@@ -39,11 +39,11 @@ public class SeatControlCapabilitiesTest extends TestCase {
 		msg.setMemoryAvailable(Test.GENERAL_BOOLEAN);
 	}
 
-    /**
+	/**
 	 * Tests the expected values of the RPC message.
 	 */
-    public void testRpcValues () {
-    	// Test Values
+	public void testRpcValues () {
+		// Test Values
 		String moduleName = msg.getModuleName();
 		Boolean heatingEnabledAvailable = msg.getHeatingEnabledAvailable();
 		Boolean coolingEnabledAvailable = msg.getCoolingEnabledAvailable();
