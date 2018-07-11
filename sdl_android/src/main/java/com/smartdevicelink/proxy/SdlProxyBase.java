@@ -602,9 +602,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 
-	public SdlProxyBase(proxyListenerType listener, String appName, Boolean isMediaApp, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
+	// Used by SDLManager
+	public SdlProxyBase(proxyListenerType listener, String appName,String shortAppName, Boolean isMediaApp, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
 						BaseTransportConfig transportConfig, Vector<String> vrSynonyms, Vector<TTSChunk> ttsName) throws SdlException {
-		performBaseCommon(listener, null, true, appName, ttsName, null, vrSynonyms, isMediaApp,
+		performBaseCommon(listener, null, true, appName, ttsName, shortAppName, vrSynonyms, isMediaApp,
 				null, languageDesired, hmiDisplayLanguageDesired, appType, appID, null, null,null, false, false, null, null,  transportConfig);
 	}
 	

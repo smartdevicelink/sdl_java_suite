@@ -48,7 +48,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	private SdlProxyBase proxy;
 
 	// Required parameters for builder
-	private String appId, appName;
+	private String appId, appName, shortAppName;
 	private boolean isMediaApp;
 	private Language hmiLanguage;
 	private Vector<AppHMIType> hmiTypes;
@@ -117,6 +117,11 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 			return this;
 		}
 
+		public Builder setShortAppName(final String shortAppName) {
+			sdlManager.shortAppName = shortAppName;
+			return this;
+		}
+
 		public Builder setIsMediaApp(final Boolean isMediaApp){
 			sdlManager.isMediaApp = isMediaApp;
 			return this;
@@ -164,7 +169,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		public SdlManager build() {
 			try {
 				sdlManager.initialize();
-				sdlManager.proxy = new SdlProxyBase(sdlManager.proxyBridge, sdlManager.appName, sdlManager.isMediaApp, sdlManager.hmiLanguage, sdlManager.hmiLanguage, sdlManager.hmiTypes, sdlManager.appId, sdlManager.transport, sdlManager.vrSynonyms, sdlManager.ttsChunks) {};
+				sdlManager.proxy = new SdlProxyBase(sdlManager.proxyBridge, sdlManager.appName, sdlManager.shortAppName, sdlManager.isMediaApp, sdlManager.hmiLanguage, sdlManager.hmiLanguage, sdlManager.hmiTypes, sdlManager.appId, sdlManager.transport, sdlManager.vrSynonyms, sdlManager.ttsChunks) {};
 			} catch (SdlException e) {
 				e.printStackTrace();
 			}
