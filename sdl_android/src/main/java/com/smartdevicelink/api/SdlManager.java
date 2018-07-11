@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
@@ -29,6 +30,7 @@ import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -284,16 +286,69 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 
 	// SENDING REQUESTS
 
-	public void sendRPC(RPCRequest request) throws SdlException {
-		proxy.sendRPCRequest(request);
+	/**
+	 * Send RPC Message <br>
+	 * <strong>Note: Only takes type of RPCRequest for now, notifications and responses will be thrown out</strong>
+	 * @param message RPCMessage
+	 * @throws SdlException
+	 */
+	public void sendRPC(RPCMessage message) throws SdlException {
+
+		if (message instanceof RPCRequest){
+			proxy.sendRPCRequest((RPCRequest)message);
+		}
 	}
 
-	public void sendSequentialRPCs(final List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
-		proxy.sendSequentialRequests(rpcs, listener);
+	/**
+	 * Takes a list of RPCMessages and sends it to SDL in a synchronous fashion. Responses are captured through callback on OnMultipleRequestListener.
+	 * For sending requests asynchronously, use sendRequests <br>
+	 *
+	 * <strong>NOTE: This will override any listeners on individual RPCs</strong><br>
+	 *
+	 * <strong>ADDITIONAL NOTE: This only takes the type of RPCRequest for now, notifications and responses will be thrown out</strong>
+	 *
+	 * @param rpcs is the list of RPCMessages being sent
+	 * @param listener listener for updates and completions
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	public void sendSequentialRPCs(final List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+
+		List<RPCRequest> rpcRequestList = new ArrayList<>();
+		for (int i = 0; i < rpcs.size(); i++) {
+			if (rpcs.get(i) instanceof RPCRequest){
+				rpcRequestList.add((RPCRequest)rpcs.get(i));
+			}
+		}
+
+		if (rpcRequestList.size() > 0) {
+			proxy.sendSequentialRequests(rpcRequestList, listener);
+		}
 	}
 
-	public void sendRPCs(List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
-		proxy.sendRequests(rpcs, listener);
+	/**
+	 * Takes a list of RPCMessages and sends it to SDL. Responses are captured through callback on OnMultipleRequestListener.
+	 * For sending requests synchronously, use sendSequentialRPCs <br>
+	 *
+	 * <strong>NOTE: This will override any listeners on individual RPCs</strong> <br>
+	 *
+	 * <strong>ADDITIONAL NOTE: This only takes the type of RPCRequest for now, notifications and responses will be thrown out</strong>
+	 *
+	 * @param rpcs is the list of RPCMessages being sent
+	 * @param listener listener for updates and completions
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	public void sendRPCs(List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+
+		List<RPCRequest> rpcRequestList = new ArrayList<>();
+		for (int i = 0; i < rpcs.size(); i++) {
+			if (rpcs.get(i) instanceof RPCRequest){
+				rpcRequestList.add((RPCRequest)rpcs.get(i));
+			}
+		}
+
+		if (rpcRequestList.size() > 0) {
+			proxy.sendRequests(rpcRequestList, listener);
+		}
 	}
 
 	// LIFECYCLE / OTHER
