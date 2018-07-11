@@ -100,6 +100,12 @@ public interface ISdl {
     void startAudioService(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params);
 
     /**
+     * Starts the Audio streaming service
+     * @param encrypted flag to start this service with encryption or not
+     */
+    void startAudioService(boolean encrypted);
+
+    /**
      * Stops the audio service if open
      */
     void stopAudioService();

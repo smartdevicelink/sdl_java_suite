@@ -359,6 +359,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
+		public void startAudioService(boolean encrypted) {
+			if(isConnected()){
+				sdlSession.startService(SessionType.PCM,sdlSession.getSessionId(),encrypted);
+			}
+		}
+
+		@Override
 		public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters){
 			return SdlProxyBase.this.startVideoStream(isEncrypted, parameters);
 		}
@@ -602,7 +609,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 
-	// Used by SDLManager
+	/**
+	 * Used by the SdlManager
+	 *
+	 * @param listener Type of listener for this proxy base.
+	 * @param appName Client application name.
+	 * @param shortAppName Client short application name.
+	 * @param isMediaApp Flag that indicates that client application if media application or not.
+	 * @param languageDesired Desired language.
+	 * @param hmiDisplayLanguageDesired Desired language for HMI.
+	 * @param appType Type of application.
+	 * @param appID Application identifier.
+	 * @param transportConfig Configuration of transport to be used by underlying connection.
+	 * @param vrSynonyms List of synonyms.
+	 * @param ttsName TTS name.
+	 * @throws SdlException
+	 */
 	public SdlProxyBase(proxyListenerType listener, String appName,String shortAppName, Boolean isMediaApp, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
 						BaseTransportConfig transportConfig, Vector<String> vrSynonyms, Vector<TTSChunk> ttsName) throws SdlException {
 		performBaseCommon(listener, null, true, appName, ttsName, shortAppName, vrSynonyms, isMediaApp,

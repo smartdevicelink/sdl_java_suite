@@ -201,6 +201,9 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 			return null;
 		}
 
+		@Override
+		public void startAudioService(boolean encrypted){}
+
 	}
 
 

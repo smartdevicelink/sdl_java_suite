@@ -107,26 +107,46 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 			sdlManager = new SdlManager();
 		}
 
+		/**
+		 * Sets the App ID
+		 * @param appId
+		 */
 		public Builder setAppId(final String appId){
 			sdlManager.appId = appId;
 			return this;
 		}
 
+		/**
+		 * Sets the Application Name
+		 * @param appName
+		 */
 		public Builder setAppName(final String appName){
 			sdlManager.appName = appName;
 			return this;
 		}
 
+		/**
+		 * Sets the Short Application Name
+		 * @param shortAppName
+		 */
 		public Builder setShortAppName(final String shortAppName) {
 			sdlManager.shortAppName = shortAppName;
 			return this;
 		}
 
+		/**
+		 * Sets if the app is a media app
+		 * @param isMediaApp
+		 */
 		public Builder setIsMediaApp(final Boolean isMediaApp){
 			sdlManager.isMediaApp = isMediaApp;
 			return this;
 		}
 
+		/**
+		 * Sets the Language of the App
+		 * @param hmiLanguage
+		 */
 		public Builder setLanguage(final Language hmiLanguage){
 			sdlManager.hmiLanguage = hmiLanguage;
 			return this;
@@ -137,16 +157,28 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
             return this;
         }*/
 
+		/**
+		 * Sets the vector of HMI Types
+		 * @param hmiTypes
+		 */
 		public Builder setHMITypes(final Vector<AppHMIType> hmiTypes){
 			sdlManager.hmiTypes = hmiTypes;
 			return this;
 		}
 
+		/**
+		 * Sets the vector of vrSynonyms
+		 * @param vrSynonyms
+		 */
 		public Builder setVrSynonyms(final Vector<String> vrSynonyms) {
 			sdlManager.vrSynonyms = vrSynonyms;
 			return this;
 		}
 
+		/**
+		 * Sets the TTS Name
+		 * @param ttsChunks
+		 */
 		public Builder setTtsName(final Vector<TTSChunk> ttsChunks) {
 			sdlManager.ttsChunks = ttsChunks;
 			return this;
@@ -154,12 +186,18 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 
 		/**
 		 * This Object type may change with the transport refactor
+		 * Sets the BaseTransportConfig
+		 * @param transport
 		 */
 		public Builder setTransportType(BaseTransportConfig transport){
 			sdlManager.transport = transport;
 			return this;
 		}
 
+		/**
+		 * Sets the Context
+		 * @param context
+		 */
 		public Builder setContext(Context context){
 			sdlManager.context = context;
 			return this;
@@ -299,6 +337,13 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 									  AudioStreamingParams params) {
 			if(proxy.getIsConnected()){
 				proxy.startAudioStream(isEncrypted, codec, params);
+			}
+		}
+
+		@Override
+		public void startAudioService(boolean encrypted) {
+			if(isConnected()){
+				proxy.startService(SessionType.PCM, encrypted);
 			}
 		}
 
