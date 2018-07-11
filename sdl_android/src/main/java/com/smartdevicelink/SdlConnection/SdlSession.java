@@ -48,6 +48,7 @@ import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransport;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
+import com.smartdevicelink.transport.TransportConstants;
 import com.smartdevicelink.transport.TransportManager;
 import com.smartdevicelink.transport.enums.TransportType;
 
@@ -253,8 +254,8 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 		byte rpcSessionID = getSessionId();
 		try {
 			StreamPacketizer packetizer = new StreamPacketizer(this, null, SessionType.PCM, rpcSessionID, this);
-			mAudioPacketizer.setProtocol(wiProProtocol);
 			mAudioPacketizer = packetizer;
+			mAudioPacketizer.setProtocol(wiProProtocol);
 			mAudioPacketizer.start();
 			return packetizer;
 		} catch (IOException e) {
@@ -431,7 +432,8 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 			}			
 			return;
 		}
-		wiProProtocol.StartProtocolService(serviceType, sessionID, isEncrypted);
+		wiProProtocol.startService(serviceType, sessionID, isEncrypted, wiProProtocol.getTransportForSession(serviceType));
+		//wiProProtocol.StartProtocolService(serviceType, sessionID, isEncrypted);
 	}
 	
 	public void endService (SessionType serviceType, byte sessionID) {
@@ -532,22 +534,25 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 				transportManager.requestNewSession(wiProProtocol.getPreferredPrimaryTransport(transportTypes));
 			}
 			wiProProtocol.onTransportsConnectedUpdate(transportTypes);
+			wiProProtocol.printActiveTransports();
 		}
 
 	}
 
 	@Override
 	public void onTransportDisconnected(String info, TransportType type) {
-		if(type == null){
+		if (type == null) {
 			Log.d(TAG, "onTransportDisconnected");
-		}else{
+			return;
+		} else {
 			Log.d(TAG, "onTransportDisconnected - " + type.name());
 		}
-		if(type != null && type.equals(wiProProtocol.getTransportForSession(SessionType.NAV))){
+
+		if(type.equals(wiProProtocol.getTransportForSession(SessionType.NAV))){
 			stopVideoStream();
 			Log.d(TAG, "Stopping video stream.");
 		}
-		if(type != null && type.equals(wiProProtocol.getTransportForSession(SessionType.PCM))){
+		if(type.equals(wiProProtocol.getTransportForSession(SessionType.PCM))){
 			stopAudioStream();
 			Log.d(TAG, "Stopping audio stream.");
 		}
@@ -679,11 +684,12 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 		if(secondaryTransports != null) {
 			for (String s : secondaryTransports) {
 				Log.d(TAG, "Secondary transports allowed by core: " + s);
-				// TODO as these strings below as constants somewhere
-				if(s.equals("TCP_WIFI")){
+				if(s.equals(TransportConstants.TCP_WIFI)){
 					supportedTransports.add(TransportType.TCP);
-				}else if(s.equals("AOA_USB")){
+				}else if(s.equals(TransportConstants.AOA_USB)){
 					supportedTransports.add(TransportType.USB);
+				}else if(s.equals(TransportConstants.SPP_BLUETOOTH)){
+					supportedTransports.add(TransportType.BLUETOOTH);
 				}
 			}
 			wiProProtocol.setSupportedSecondaryTransports(supportedTransports);
@@ -703,13 +709,13 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 	@Override
 	public void onRegisterSecondaryTransportACK(byte sessionID) {
 		Log.d(TAG, "RegisterSecondaryTransportACK");
-		wiProProtocol.setRegisteredHighBandwidth(true);
+		wiProProtocol.setRegisteredForTransport(true);
 	}
 
 	@Override
 	public void onRegisterSecondaryTransportNACKed(byte sessionID, String reason) {
 		Log.d(TAG, "RegisterSecondaryTransportNACK" + reason);
-		wiProProtocol.setRegisteredHighBandwidth(false);
+		wiProProtocol.setRegisteredForTransport(false);
 	}
 
 	@Override

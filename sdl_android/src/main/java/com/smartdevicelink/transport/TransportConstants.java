@@ -238,8 +238,16 @@ public class TransportConstants {
 	public static final int ROUTER_USB_ACC_RECEIVED							= 0x56;
 
 
-
-
-	
+	/**
+	 * Multiple-transports related constants
+	 *
+	 */
+	public static final String IAP_BLUETOOTH                                = "IAP_BLUETOOTH";
+	public static final String IAP_USB                                      = "IAP_USB";
+	public static final String IAP_USB_HOST_MODE                            = "TCP_WIFI";
+	public static final String IAP_CARPLAY                                  = "IAP_CARPLAY";
+	public static final String SPP_BLUETOOTH                                = "SPP_BLUETOOTH";
+	public static final String AOA_USB                                      = "AOA_USB";
+	public static final String TCP_WIFI                                     = "TCP_WIFI";
 
 }

@@ -494,7 +494,7 @@ public class TransportBroker {
 					//Log.d(TAG, "Sending packet on transport " + packet.getTransportType().name());
 					bundle.putString(TransportConstants.TRANSPORT_FOR_PACKET, packet.getTransportType().name());
 				}else{
-					Log.d(TAG, "No transport to be found");
+					//Log.d(TAG, "No transport to be found");
 				}
 				message.setData(bundle);
 				
@@ -676,17 +676,25 @@ public class TransportBroker {
 			this.sendMessageToRouterService(msg);
 		}
 
+	/**
+	 * Request secondary transport and communicate details to router service
+	 * @param sessionId
+	 * @param params
+	 */
 		public void sendSecondaryTransportDetails(byte sessionId, Map<String, Object> params){
-			// Communicate transport details to router service
 			Message msg = Message.obtain();
 			msg.what = TransportConstants.ROUTER_SEND_SECONDARY_TRANSPORT_DETAILS;
 			msg.replyTo = this.clientMessenger;
 			Bundle bundle = new Bundle();
 			bundle.putByte(TransportConstants.SESSION_ID_EXTRA, sessionId);
-			bundle.putString(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS,
-					(String) params.get(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS));
-			bundle.putInt(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT,
-					(int) params.get(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT));
+			if(params.containsKey(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS)){
+				bundle.putString(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS,
+						(String) params.get(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS));
+			}
+			if(params.containsKey(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT)){
+				bundle.putInt(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT,
+						(int) params.get(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT));
+			}
 			msg.setData(bundle);
 			this.sendMessageToRouterService(msg);
 		}

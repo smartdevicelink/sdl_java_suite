@@ -50,7 +50,7 @@ public abstract class AbstractProtocol {
 	// This method notifies SDLCore that secondary transport is connected.  SDLCore needs this to
 	// identify which app is registering to use the secondary transport to pair up with the
 	// app's session from the primary transport.
-	public abstract void RegisterSecondaryTransport(byte sessionId);
+	public abstract void RegisterSecondaryTransport(byte sessionId, TransportType transportType);
 
 	public abstract void EndProtocolService(SessionType serviceType, byte sessionID);
 	// This method ends a protocol session.  A corresponding call to the protocol

@@ -480,7 +480,7 @@ public class SdlRouterService extends Service{
 										} else if(service.tcpTransport != null && service.tcpTransport.isConnected()){
 											transportType = TransportType.TCP;
 										}
-										Log.d(TAG, "Transport type was null, so router set it to " + transportType.name());
+										//Log.d(TAG, "Transport type was null, so router set it to " + transportType.name());
 										receivedBundle.putString(TransportConstants.TRANSPORT_FOR_PACKET, transportType.name());
 									}else{
 										//Log.d(TAG, "Transport type of packet to send: " + transportType.name());
@@ -494,7 +494,7 @@ public class SdlRouterService extends Service{
 										//Log.d(TAG, "handling incomming client message");
                                         buffApp.handleIncommingClientMessage(receivedBundle);
                                     }else{
-										Log.d(TAG, "Write bytes to transport");
+										//Log.d(TAG, "Write bytes to transport");
                                         service.writeBytesToTransport(receivedBundle);
                                     }
 								}
@@ -2197,6 +2197,7 @@ public class SdlRouterService extends Service{
 								appId =  bluetoothSessionMap.get(sessionId);
 								if(appId == null){
 									//TODO try USB
+									appId =  usbSessionMap.get(sessionId);
 								}
 								break;
 							default:
