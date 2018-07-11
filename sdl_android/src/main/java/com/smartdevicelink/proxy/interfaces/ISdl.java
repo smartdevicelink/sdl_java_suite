@@ -140,7 +140,7 @@ public interface ISdl {
     boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener);
 
     /**
-     * Get SystemCapabilityType Object
+     * Get SystemCapability Object
      * @param systemCapabilityType
      * @return Object
      */
