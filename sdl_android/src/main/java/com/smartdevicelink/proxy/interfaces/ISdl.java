@@ -3,7 +3,11 @@ package com.smartdevicelink.proxy.interfaces;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
+import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 
 /*
@@ -83,15 +87,31 @@ public interface ISdl {
     void stopVideoService();
 
     /**
+     * Starts the video streaming service
+     * @param isEncrypted flag to start this service with encryption or not
+     * @param parameters desired video streaming params for this sevice to be started with
+     */
+    IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters);
+
+    /**
      * Starts the Audio streaming service
      * @param encrypted flag to start this service with encryption or not
      */
-    void startAudioService(boolean encrypted);
+    void startAudioService(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params);
 
     /**
      * Stops the audio service if open
      */
     void stopAudioService();
+
+    /**
+     * Start Audio Stream and return IAudioStreamListener
+     * @param isEncrypted
+     * @param codec
+     * @param params
+     * @return IAudioStreamListener
+     */
+    IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params);
 
     /**
      * Pass an RPC message through the proxy to be sent to the connected module
@@ -112,5 +132,32 @@ public interface ISdl {
      * @param listener listener that was previously added for the notification ID
      */
     boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener);
+
+    /**
+     * Get SystemCapabilityType Object
+     * @param systemCapabilityType
+     * @return Object
+     */
+    Object getCapability(SystemCapabilityType systemCapabilityType);
+
+    /**
+     * Get Capability
+     * @param systemCapabilityType
+     * @param scListener
+     */
+    void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener);
+
+    /**
+     * Check if capability is supported
+     * @param systemCapabilityType
+     * @return Boolean
+     */
+    boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType);
+
+    /**
+     * Get SdlMsgVersion
+     * @return SdlMsgVersion
+     */
+    SdlMsgVersion getSdlMsgVersion();
 
 }

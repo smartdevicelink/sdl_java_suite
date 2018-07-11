@@ -300,13 +300,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void startAudioService(boolean encrypted) {
-			if(isConnected()){
-				sdlSession.startService(SessionType.PCM,sdlSession.getSessionId(),encrypted);
-			}
-		}
-
-		@Override
 		public void stopAudioService() {
 			if(isConnected()){
 				sdlSession.endService(SessionType.PCM,sdlSession.getSessionId());
@@ -330,6 +323,50 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
 			return SdlProxyBase.this.removeOnRPCNotificationListener(notificationId,listener);
+		}
+
+		@Override
+		public Object getCapability(SystemCapabilityType systemCapabilityType){
+			return SdlProxyBase.this.getCapability(systemCapabilityType);
+		}
+
+		@Override
+		public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
+			SdlProxyBase.this.getCapability(systemCapabilityType, scListener);
+		}
+
+		@Override
+		public SdlMsgVersion getSdlMsgVersion(){
+			try {
+				return SdlProxyBase.this.getSdlMsgVersion();
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
+			return SdlProxyBase.this.isCapabilitySupported(systemCapabilityType);
+		}
+
+		@Override
+		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,
+									  AudioStreamingParams params) {
+			if(getIsConnected()){
+				SdlProxyBase.this.startAudioStream(isEncrypted, codec, params);
+			}
+		}
+
+		@Override
+		public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters){
+			return SdlProxyBase.this.startVideoStream(isEncrypted, parameters);
+		}
+
+		@Override
+		public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec,
+													 AudioStreamingParams params) {
+			return SdlProxyBase.this.startAudioStream(isEncrypted, codec, params);
 		}
 	};
 	
@@ -563,6 +600,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_proxyListener.onServiceDataACK(dataSize);						
 			}
 		}
+	}
+
+	public SdlProxyBase(proxyListenerType listener, String appName, Boolean isMediaApp, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
+						BaseTransportConfig transportConfig, Vector<String> vrSynonyms, Vector<TTSChunk> ttsName) throws SdlException {
+		performBaseCommon(listener, null, true, appName, ttsName, null, vrSynonyms, isMediaApp,
+				null, languageDesired, hmiDisplayLanguageDesired, appType, appID, null, null,null, false, false, null, null,  transportConfig);
 	}
 	
 	/**
@@ -1315,7 +1358,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 	// Function to initialize new proxy connection
-	private void initializeProxy() throws SdlException {		
+	public void initializeProxy() throws SdlException {
 		// Reset all of the flags and state variables
 		_haveReceivedFirstNonNoneHMILevel = false;
 		_haveReceivedFirstFocusLevel = false;
@@ -3487,6 +3530,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		} // end-if notification
 
 		SdlTrace.logProxyEvent("Proxy received RPC Message: " + functionName, SDL_LIB_TRACE_KEY);
+	}
+
+	/**
+	 * Get SDL Message Version
+	 * @return SdlMsgVersion
+	 * @throws SdlException
+	 */
+	public SdlMsgVersion getSdlMsgVersion() throws SdlException{
+		return _sdlMsgVersion;
 	}
 
 	/**
