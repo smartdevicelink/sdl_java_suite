@@ -1,8 +1,8 @@
-package com.smartdevicelink.test.api;
+package com.smartdevicelink.api;
 
+import android.content.Context;
 import android.test.AndroidTestCase;
 
-import com.smartdevicelink.api.SdlManager;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
@@ -17,6 +17,7 @@ public class SdlManagerTests extends AndroidTestCase {
 
 	public static final String TAG = "SdlManagerTests";
 	public static BaseTransportConfig transport = null;
+	private Context mTestContext;
 
 	// transport related
 	@SuppressWarnings("FieldCanBeLocal")
@@ -34,6 +35,12 @@ public class SdlManagerTests extends AndroidTestCase {
 		super.tearDown();
 	}
 
+	// SETUP / HELPERS
+
+	private Context getTestContext() {
+		return mTestContext;
+	}
+
 	private SdlManager createSampleManager(String appName, String appId){
 
 		// set transport
@@ -43,14 +50,17 @@ public class SdlManagerTests extends AndroidTestCase {
 		Vector<AppHMIType> appType = new Vector<>();
 		appType.add(AppHMIType.DEFAULT);
 
+		// build manager object
 		SdlManager.Builder builder = new SdlManager.Builder();
 		builder.setAppId(appId);
 		builder.setAppName(appName);
 		builder.setAppTypes(appType);
 		builder.setTransportType(transport);
-
+		builder.setContext(getTestContext());
 		return builder.build();
 	}
+
+	// TESTS
 
 	public void testNotNull(){
 		assertNotNull(createSampleManager("app","123456"));

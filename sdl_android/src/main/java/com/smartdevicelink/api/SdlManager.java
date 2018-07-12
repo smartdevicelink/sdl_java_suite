@@ -271,6 +271,10 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 
 	// MANAGER GETTERS
 
+	protected String getAppName() {
+		return appName;
+	}
+
 	/*
 	public FileManager getFileManager() {
 		return fileManager;
