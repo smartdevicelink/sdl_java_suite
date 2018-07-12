@@ -144,4 +144,15 @@ public enum FunctionID{
         Integer result = functionMap.get(functionName);
         return ( result == null ) ? INVALID_ID : result;
     }
+
+    public static FunctionID getEnumForString(String name){
+        if(functionMap != null){
+            for(FunctionID value : EnumSet.allOf(FunctionID.class)) {
+                if(value.JSON_NAME.equals(name)){
+                    return value;
+                }
+            }
+        }
+        return null;
+    }
 }
