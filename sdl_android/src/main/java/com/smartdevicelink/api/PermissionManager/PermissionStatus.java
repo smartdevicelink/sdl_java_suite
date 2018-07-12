@@ -1,5 +1,7 @@
 package com.smartdevicelink.api.PermissionManager;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 
 import java.util.Map;
@@ -9,7 +11,7 @@ public class PermissionStatus {
     private boolean isRPCAllowed;
     private Map<String, Boolean> allowedParameters;
 
-    public PermissionStatus(FunctionID rpcName, boolean isRPCAllowed, Map<String, Boolean> allowedParameters) {
+    public PermissionStatus(@NonNull FunctionID rpcName, @NonNull boolean isRPCAllowed, Map<String, Boolean> allowedParameters) {
         this.rpcName = rpcName;
         this.isRPCAllowed = isRPCAllowed;
         this.allowedParameters = allowedParameters;
@@ -19,7 +21,7 @@ public class PermissionStatus {
         return rpcName;
     }
 
-    protected void setRpcName(FunctionID rpcName) {
+    protected void setRpcName(@NonNull FunctionID rpcName) {
         this.rpcName = rpcName;
     }
 
@@ -27,8 +29,8 @@ public class PermissionStatus {
         return isRPCAllowed;
     }
 
-    protected void setIsRPCAllowed(boolean isRPCAllowed) {
-        isRPCAllowed = isRPCAllowed;
+    protected void setIsRPCAllowed(@NonNull boolean isRPCAllowed) {
+        this.isRPCAllowed = isRPCAllowed;
     }
 
     public Map<String, Boolean> getAllowedParameters() {

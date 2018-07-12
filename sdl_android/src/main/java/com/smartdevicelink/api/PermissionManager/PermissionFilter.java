@@ -1,5 +1,7 @@
 package com.smartdevicelink.api.PermissionManager;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -7,9 +9,9 @@ class PermissionFilter {
     private UUID identifier;
     private List<PermissionElement> permissionElements;
     private int groupType;
-    private PermissionManager.OnPermissionChangeListener listener;
+    private OnPermissionChangeListener listener;
 
-    PermissionFilter(UUID identifier, List<PermissionElement> permissionElements, int groupType, PermissionManager.OnPermissionChangeListener listener) {
+    PermissionFilter(UUID identifier, @NonNull List<PermissionElement> permissionElements, @NonNull @PermissionManager.PermissionGroupType int groupType, @NonNull OnPermissionChangeListener listener) {
         this.identifier = identifier;
         if (this.identifier == null) {
             this.identifier = UUID.randomUUID();
@@ -19,19 +21,19 @@ class PermissionFilter {
         this.listener = listener;
     }
 
-    UUID getIdentifier() {
+    protected UUID getIdentifier() {
         return identifier;
     }
 
-    List<PermissionElement> getPermissionElements() {
+    protected List<PermissionElement> getPermissionElements() {
         return permissionElements;
     }
 
-    int getGroupType() {
+    protected int getGroupType() {
         return groupType;
     }
 
-    PermissionManager.OnPermissionChangeListener getListener() {
+    protected OnPermissionChangeListener getListener() {
         return listener;
     }
 
