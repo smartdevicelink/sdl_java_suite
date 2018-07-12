@@ -23,6 +23,7 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.protocol.AbstractProtocol;
 import com.smartdevicelink.protocol.IProtocolListener;
+import com.smartdevicelink.protocol.ISecondaryTransportListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.WiProProtocol;
@@ -432,7 +433,7 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 			}			
 			return;
 		}
-		wiProProtocol.startService(serviceType, sessionID, isEncrypted, wiProProtocol.getTransportForSession(serviceType));
+		wiProProtocol.startService(serviceType, sessionID, isEncrypted);
 		//wiProProtocol.StartProtocolService(serviceType, sessionID, isEncrypted);
 	}
 	
@@ -530,8 +531,11 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 			Log.d(TAG, "onTransportConnected");
 			//In the future we should move this logic into the Protocol Layer
 			TransportType type = wiProProtocol.getTransportForSession(SessionType.RPC);
-			if(type == null){ //There is currently no transport registered to the
-				transportManager.requestNewSession(wiProProtocol.getPreferredPrimaryTransport(transportTypes));
+			if(type == null){ //There is currently no transport registered
+				wiProProtocol.setConnectedPrimaryTransport(transportTypes);
+				if(wiProProtocol.getConnectedPrimaryTransport() != null){
+					transportManager.requestNewSession(wiProProtocol.getConnectedPrimaryTransport());
+				}
 			}
 			wiProProtocol.onTransportsConnectedUpdate(transportTypes);
 			wiProProtocol.printActiveTransports();
@@ -678,44 +682,9 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 	}
 
 	@Override
-	public void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransports,
-	        ArrayList<Integer> audioTransports, ArrayList<Integer> videoTransports) {
-		List<TransportType> supportedTransports = new ArrayList<>();
-		if(secondaryTransports != null) {
-			for (String s : secondaryTransports) {
-				Log.d(TAG, "Secondary transports allowed by core: " + s);
-				if(s.equals(TransportConstants.TCP_WIFI)){
-					supportedTransports.add(TransportType.TCP);
-				}else if(s.equals(TransportConstants.AOA_USB)){
-					supportedTransports.add(TransportType.USB);
-				}else if(s.equals(TransportConstants.SPP_BLUETOOTH)){
-					supportedTransports.add(TransportType.BLUETOOTH);
-				}
-			}
-			wiProProtocol.setSupportedSecondaryTransports(supportedTransports);
-			wiProProtocol.setSupportedServices(SessionType.PCM, audioTransports);
-			wiProProtocol.setSupportedServices(SessionType.NAV, videoTransports);
-		}else{
-			Log.d(TAG, "No secondary transports allowed.");
-		}
-	}
-
-	@Override
-	public void onTransportEventUpdate(byte sessionId, Map<String, Object> params) {
-		Log.d(TAG, "Transport Event Update Received From Core");
+	public void connectSecondaryTransport(byte sessionId, TransportType transportType, Map<String, Object> params) {
+		Log.d(TAG, "Connect Secondary Transport");
 		transportManager.sendSecondaryTransportDetails(sessionId, params);
-	}
-
-	@Override
-	public void onRegisterSecondaryTransportACK(byte sessionID) {
-		Log.d(TAG, "RegisterSecondaryTransportACK");
-		wiProProtocol.setRegisteredForTransport(true);
-	}
-
-	@Override
-	public void onRegisterSecondaryTransportNACKed(byte sessionID, String reason) {
-		Log.d(TAG, "RegisterSecondaryTransportNACK" + reason);
-		wiProProtocol.setRegisteredForTransport(false);
 	}
 
 	@Override

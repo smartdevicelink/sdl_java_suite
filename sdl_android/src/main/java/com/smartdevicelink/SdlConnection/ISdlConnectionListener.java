@@ -38,14 +38,4 @@ public interface ISdlConnectionListener {
 	public void onHeartbeatTimedOut(byte sessionID);
 	
 	public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID);
-
-	void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransports,
-	        ArrayList<Integer> audioTransports, ArrayList<Integer> videoTransports,
-	        TransportType type);
-
-	void onTransportEventUpdate(byte sessionID, Map<String, Object> params);
-
-	void onRegisterSecondaryTransportACK(byte sessionID);
-
-	void onRegisterSecondaryTransportNACKed(byte sessionID, String reason);
 }

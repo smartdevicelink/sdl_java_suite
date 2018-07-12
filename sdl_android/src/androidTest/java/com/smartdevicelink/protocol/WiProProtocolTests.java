@@ -59,22 +59,7 @@ public class WiProProtocolTests extends AndroidTestCase {
 		public void onProtocolError(String info, Exception e) {}
 
 		@Override
-		public void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransports, ArrayList<Integer> audioTransports, ArrayList<Integer> videoTransports) {
-
-		}
-
-		@Override
 		public void onTransportEventUpdate(byte sessionID, Map<String, Object> params) {
-
-		}
-
-		@Override
-		public void onRegisterSecondaryTransportACK(byte sessionID) {
-
-		}
-
-		@Override
-		public void onRegisterSecondaryTransportNACKed(byte sessionID, String reason) {
 
 		}
 	};
@@ -117,13 +102,7 @@ public class WiProProtocolTests extends AndroidTestCase {
 		@Override
 		public void onProtocolError(String info, Exception e) {}
 		@Override
-		public void onEnableSecondaryTransport(byte sessionID, ArrayList<String> secondaryTransports, ArrayList<Integer> audioTransports, ArrayList<Integer> videoTransports) {}
-		@Override
 		public void onTransportEventUpdate(byte sessionID, Map<String, Object> params) {}
-		@Override
-		public void onRegisterSecondaryTransportACK(byte sessionID) {}
-		@Override
-		public void onRegisterSecondaryTransportNACKed(byte sessionID, String reason) {}
 	};
 	DidReceiveListener onProtocolMessageReceivedListener = new DidReceiveListener();
 	

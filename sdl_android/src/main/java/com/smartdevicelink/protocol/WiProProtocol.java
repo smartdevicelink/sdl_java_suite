@@ -17,6 +17,7 @@ import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
+import com.smartdevicelink.transport.TransportConstants;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
@@ -27,16 +28,14 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 
 public class WiProProtocol extends AbstractProtocol {
-	private static final String TAG ="Protocol";
+	private static final String TAG ="SdlProtocol";
 	private final static String FailurePropagating_Msg = "Failure propagating ";
 	//If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
 	public static final Version MAX_PROTOCOL_VERSION = new Version("5.1.0");
@@ -69,17 +68,17 @@ public class WiProProtocol extends AbstractProtocol {
 	private HashMap<SessionType, Long> mtus = new HashMap<SessionType,Long>();
 	private HashMap<SessionType, TransportType> activeTransports = new HashMap<SessionType,TransportType>();
 	private List<TransportType> availableTransports = new ArrayList<>();
-	private Queue<TransportType> requestedTransportQueue = new LinkedList<>();
+	private Queue<TransportType> transportsToRegisterQueue = new LinkedList<>();
 
-	public static final List<TransportType> HIGH_BANDWIDTH_TRANSPORTS
-			= Arrays.asList(TransportType.USB, TransportType.TCP);
 	public static final List<SessionType> HIGH_BANDWIDTH_SERVICES
 			= Arrays.asList(SessionType.NAV, SessionType.PCM);
 	List<TransportType> requestedPrimaryTransports;
 	List<TransportType> supportedSecondaryTransports;
-	boolean registeredHighBandwidth = false;
 	Map<SessionType, List<Integer>> supportedServicesMap;
 	boolean requiresHighBandwidth = false;
+	Map<String, Object> secondaryTransportParams;
+	TransportType connectedPrimaryTransport;
+	Map<TransportType, List<ISecondaryTransportListener>> secondaryTransportListeners = new HashMap<>();
 
 	// Hide no-arg ctor
 	private WiProProtocol() {
@@ -161,19 +160,28 @@ public class WiProProtocol extends AbstractProtocol {
 		for(SessionType service : HIGH_BANDWIDTH_SERVICES){
 			if (supportedServicesMap.get(service) != null
 					&& supportedServicesMap.get(service).contains(PRIMARY_TRANSPORT_ID)) {
-				activeTransports.put(service, getPreferredPrimaryTransport((TransportType[]) requestedPrimaryTransports.toArray()));
-				// TODO: Double check if this logic is correct...
+				if(connectedPrimaryTransport != null) {
+					activeTransports.put(service, connectedPrimaryTransport);
+				}
 			}
 		}
 	}
 
 	public void setRegisteredForTransport(boolean registered){
-		TransportType transportType = requestedTransportQueue.poll();
+		TransportType transportType = transportsToRegisterQueue.poll();
+		List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.get(transportType);
+		if(listenerList != null){
+			for(ISecondaryTransportListener listener : listenerList){
+				if(registered) {
+					listener.onConnectionSuccess();
+				}else{
+					listener.onConnectionFailure();
+				}
+			}
+			secondaryTransportListeners.remove(transportType);
+		}
 		if(registered) {
 			Log.d(TAG, transportType.toString() + " transport was registered!");
-			if (HIGH_BANDWIDTH_TRANSPORTS.contains(transportType)) {
-				this.registeredHighBandwidth = registered;
-			}
 			if (supportedSecondaryTransports.contains(transportType)) {
 				for(SessionType secondaryService : HIGH_BANDWIDTH_SERVICES){
 					if (supportedServicesMap.containsKey(secondaryService)) {
@@ -191,6 +199,7 @@ public class WiProProtocol extends AbstractProtocol {
 		}else{
 			Log.d(TAG, transportType.toString() + " transport was NOT registered!");
 		}
+		printActiveTransports();
 	}
 
 	public void onTransportsConnectedUpdate(TransportType[] transportTypes){
@@ -199,16 +208,16 @@ public class WiProProtocol extends AbstractProtocol {
 		for(TransportType t : transportTypes) {
 			Log.d(TAG, t.toString());
 		}
+		List<TransportType> connectedTransports = Arrays.asList(transportTypes);
+		if(!connectedTransports.contains(connectedPrimaryTransport)){
+			connectedPrimaryTransport = null;
+			return;
+		}
 		if(activeTransports.get(SessionType.RPC) == null){
 			//need to start a service
-			TransportType transportType = getPreferredPrimaryTransport(transportTypes);
-			if(transportType != null){
-				Log.d(TAG, "Sending start service RPC on transport " + transportType);
-				startService(SessionType.RPC,(byte)0x00,false,transportType);
-				return;
-			}else{
-				onTransportNotAccepted("No transports match requested primary transport");
-			}
+			Log.d(TAG, "Sending start service RPC");
+			startService(SessionType.RPC,(byte)0x00,false);
+			return;
 		}else if(requiresHighBandwidth){
 			for(TransportType transportType : transportTypes){
 				if(supportedSecondaryTransports.contains(transportType)){
@@ -218,7 +227,7 @@ public class WiProProtocol extends AbstractProtocol {
 					}
 					if(session != null) {
 						Log.d(TAG, "Registering secondary transport!");
-						RegisterSecondaryTransport(session.getSessionId(), transportType);
+						registerSecondaryTransport(session.getSessionId(), transportType);
 					}else{
 						Log.d(TAG, "Session was null");
 					}
@@ -230,18 +239,24 @@ public class WiProProtocol extends AbstractProtocol {
 		}
 	}
 
-	public TransportType getPreferredPrimaryTransport(TransportType[] transportTypes){
-		List<TransportType> transportList = Arrays.asList(transportTypes);
-		for(TransportType transportType: transportList) {
-			Log.d(TAG, "Connected transport: " + transportType);
-		}
+	/**
+	 * Returns the preferred primary transport for an array of connected transport types
+	 * @param connectedTransports array of connected transports
+	 * @return The first connected TransportType requested by app
+	 */
+	public void setConnectedPrimaryTransport(TransportType[] connectedTransports){
+		connectedPrimaryTransport = null;
+		List<TransportType> transportList = Arrays.asList(connectedTransports);
 		for(TransportType transportType: requestedPrimaryTransports) {
-			Log.d(TAG, "Requested transport: " + transportType);
 			if (transportList.contains(transportType)) {
-				return transportType;
+				connectedPrimaryTransport = transportType;
+				break;
 			}
 		}
-		return null;
+	}
+
+	public TransportType getConnectedPrimaryTransport(){
+		return connectedPrimaryTransport;
 	}
 
 	private void onTransportNotAccepted(String info){
@@ -696,7 +711,21 @@ public class WiProProtocol extends AbstractProtocol {
 
 						Log.d(TAG, secondaryDetailsBldr.toString());
 
-						handleEnableSecondaryTransport((byte) packet.getSessionId(), secondary, audio, video);
+						List<TransportType> supportedTransports = new ArrayList<>();
+
+						for (String s : secondary) {
+							Log.d(TAG, "Secondary transports allowed by core: " + s);
+							if(s.equals(TransportConstants.TCP_WIFI)){
+								supportedTransports.add(TransportType.TCP);
+							}else if(s.equals(TransportConstants.AOA_USB)){
+								supportedTransports.add(TransportType.USB);
+							}else if(s.equals(TransportConstants.SPP_BLUETOOTH)){
+								supportedTransports.add(TransportType.BLUETOOTH);
+							}
+						}
+						setSupportedSecondaryTransports(supportedTransports);
+						setSupportedServices(SessionType.PCM, audio);
+						setSupportedServices(SessionType.NAV, video);
 
 						if(version!=null){
 							//At this point we have confirmed the negotiated version between the module and the proxy
@@ -812,21 +841,19 @@ public class WiProProtocol extends AbstractProtocol {
 					handleProtocolServiceDataACK(serviceType, serviceDataAckSize,(byte)packet.getSessionId ());
 				}
 			} else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportACK.getValue()) {
-				handleRegisterSecondaryTransportACK((byte) packet.sessionId);
+				setRegisteredForTransport(true);
 			} else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportNACK.getValue()) {
 				String reason = (String) packet.getTag(ControlFrameTags.RPC.RegisterSecondaryTransportNAK.REASON);
-				handleRegisterSecondaryTransportNAKed((byte) packet.sessionId, reason);
+				setRegisteredForTransport(false);
 			} else if (frameInfo == FrameDataControlFrameType.TransportEventUpdate.getValue()) {
 				// Get TCP params
 				String ipAddr = (String) packet.getTag(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS);
 				Integer port = (Integer) packet.getTag(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT);
-				HashMap<String, Object> params = new HashMap<>();
-				params.put(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS, ipAddr);
-				params.put(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT, port);
+				secondaryTransportParams = new HashMap<>();
+				secondaryTransportParams.put(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS, ipAddr);
+				secondaryTransportParams.put(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT, port);
 
-				// TODO: Get USB params
-
-				handleTransportEventUpdate((byte) packet.getSessionId(), params);
+				// TODO: Send these params later before connecting / sending registration
 			}
             _assemblerForMessageID.remove(packet.getMessageId());
 		} // end-method
@@ -903,26 +930,26 @@ public class WiProProtocol extends AbstractProtocol {
 	}
 
 	@Override
-	public void RegisterSecondaryTransport(byte sessionId, TransportType transportType) {
+	public void registerSecondaryTransport(byte sessionId, TransportType transportType) {
 		SdlPacket header = SdlPacketFactory.createRegisterSecondaryTransport(sessionId, getMajorVersionByte());
 		header.setTransportType(transportType);
-		requestedTransportQueue.add(transportType);
+		transportsToRegisterQueue.offer(transportType);
 		handlePacketToSend(header);
 	}
 
-	public void startService(SessionType serviceType, byte sessionID, boolean isEncrypted, TransportType transportType) {
+	public void startService(SessionType serviceType, byte sessionID, boolean isEncrypted) {
 		Log.d(TAG, "startService");
-		SdlPacket header = SdlPacketFactory.createStartSession(serviceType, 0x00, getMajorVersionByte(), sessionID, isEncrypted);
-		header.transportType = transportType;
+		final SdlPacket header = SdlPacketFactory.createStartSession(serviceType, 0x00, getMajorVersionByte(), sessionID, isEncrypted);
 		if(SessionType.RPC.equals(serviceType)){
-
-			if(!requestedPrimaryTransports.contains(transportType)){ // FIXME: Put back TCP condition after testing
-				onTransportNotAccepted("Attempt to start primary transport that is not requested: " + transportType);
+			if(connectedPrimaryTransport != null) {
+				header.setTransportType(connectedPrimaryTransport);
+			}else{
 				return;
 			}
-
 			//This is going to be our primary transport
 			header.putTag(ControlFrameTags.RPC.StartService.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
+			handlePacketToSend(header);
+			return; // We don't need to go any further
 		}else if(serviceType.equals(SessionType.NAV)){
 			SdlSession videoSession =  null;
 			if(sessionWeakReference != null){
@@ -942,8 +969,67 @@ public class WiProProtocol extends AbstractProtocol {
 					header.putTag(ControlFrameTags.Video.StartService.VIDEO_PROTOCOL, desiredFormat.getProtocol().toString());
 				}
 			}
+		}else if(serviceType.equals(SessionType.PCM)){
+			// PCM specific stuff
 		}
-		handlePacketToSend(header);
+		for(TransportType secondaryTransportType : supportedSecondaryTransports) {
+			if (supportedServicesMap.containsKey(serviceType)) {
+				int transportNum = supportedServicesMap.get(serviceType).get(0);
+				if(transportNum == PRIMARY_TRANSPORT_ID){
+					// Primary is favored, and we're already connected...
+					Log.d(TAG, "Starting service over primary.");
+					header.setTransportType(connectedPrimaryTransport);
+					handlePacketToSend(header);
+					return;
+				}else if(transportNum == SECONDARY_TRANSPORT_ID){
+					// Secondary is favored
+					Log.d(TAG, "Starting service over secondary.");
+					if(activeTransports.get(serviceType).equals(secondaryTransportType)){
+						// Transport is already active
+						header.setTransportType(connectedPrimaryTransport);
+						handlePacketToSend(header);
+						return;
+					}
+					List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.get(secondaryTransportType);
+					if(listenerList == null){
+						listenerList = new ArrayList<>();
+						secondaryTransportListeners.put(secondaryTransportType, listenerList);
+					}
+					if(supportedServicesMap.get(serviceType).contains(PRIMARY_TRANSPORT_ID)){
+						// Primary is also supported
+						listenerList.add(new ISecondaryTransportListener() {
+							@Override
+							public void onConnectionSuccess() {
+								handlePacketToSend(header);
+							}
+
+							@Override
+							public void onConnectionFailure() {
+								//TODO: Ensure this is called appropriately when secondary transport fails to connect
+								header.setTransportType(connectedPrimaryTransport);
+								handlePacketToSend(header);
+							}
+						});
+					}else{
+						// Only secondary is supported for this service
+						listenerList.add(new ISecondaryTransportListener() {
+							@Override
+							public void onConnectionSuccess() {
+								handlePacketToSend(header);
+							}
+
+							@Override
+							public void onConnectionFailure() {
+								//TODO: Ensure this is called appropriately when secondary transport fails to connect
+								Log.d(TAG, "Failed to connect secondary transport, threw away StartService");
+							}
+						});
+					}
+					header.setTransportType(secondaryTransportType);
+					connectSecondaryTransport(sessionID, secondaryTransportType, secondaryTransportParams);
+				}
+			}
+		}
 	}
 
 	@Override
