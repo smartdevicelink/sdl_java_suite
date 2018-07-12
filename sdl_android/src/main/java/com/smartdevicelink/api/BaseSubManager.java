@@ -16,33 +16,27 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 public abstract class BaseSubManager {
 
 	// states - if this gets more complicated we can move elsewhere
-	public enum ManagerState {
-		SETTING_UP,
-		READY,
-		SHUTDOWN,
-		;
-	}
+	public int state, SETTING_UP = 0x00, READY = 0x30, SHUTDOWN = 0x60;
 
-	protected ISdl internalInterface;
-	protected ManagerState state;
+	protected final ISdl internalInterface;
 
 	public BaseSubManager(@NonNull ISdl internalInterface){
 		this.internalInterface = internalInterface;
-		this.state = ManagerState.SETTING_UP;
+		this.state = SETTING_UP;
 	}
 
 	/**
 	 * <p>Called when manager is being torn down</p>
 	 */
 	public void dispose(){
-		this.state = ManagerState.SHUTDOWN;
+		this.state = SHUTDOWN;
 	}
 
-	protected void transitionToState(ManagerState state) {
+	protected void transitionToState(int state) {
 		this.state = state;
 	}
 
-	protected ManagerState getState() {
+	protected int getState() {
 		return state;
 	}
 }

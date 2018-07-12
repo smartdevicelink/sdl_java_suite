@@ -62,7 +62,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	private Vector<TTSChunk> ttsChunks;
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
 
-	private ProxyBridge proxyBridge;
+	private final ProxyBridge proxyBridge= new ProxyBridge(this);
 	//public LockScreenConfig lockScreenConfig;
 
 	// Managers
@@ -75,11 +75,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
     private PermissionManager permissionManager;
     */
 
-	private SdlManager() {}
-
 	private void initialize(){
-		// proxy bridge
-		this.proxyBridge = new ProxyBridge(this);
 		// instantiate managers
 
 		/*
@@ -182,19 +178,16 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		}*/
 
 		/**
-		 * Sets the vector of AppHMIType
+		 * Sets the vector of AppHMIType <br>
+		 * <strong>Note: This should be an ordered list from most -> least relevant</strong>
 		 * @param hmiTypes
 		 */
 		public Builder setAppTypes(final Vector<AppHMIType> hmiTypes){
 
+			sdlManager.hmiTypes = hmiTypes;
+
 			if (hmiTypes != null) {
-				sdlManager.hmiTypes = hmiTypes;
 				sdlManager.isMediaApp = hmiTypes.contains(AppHMIType.MEDIA);
-			}else {
-				Vector<AppHMIType> hmiTypesDefault = new Vector<>();
-				hmiTypesDefault.add(AppHMIType.DEFAULT);
-				sdlManager.hmiTypes = hmiTypesDefault;
-				sdlManager.isMediaApp = false;
 			}
 
 			return this;
@@ -240,7 +233,14 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		@SuppressWarnings("unchecked")
 		public SdlManager build() {
 			try {
-				sdlManager.initialize();
+
+				if (sdlManager.appName == null) {
+					throw new IllegalArgumentException("You must specify an app name by calling setAppName");
+				}
+
+				if (sdlManager.appId == null) {
+					throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
+				}
 
 				if (sdlManager.hmiTypes == null) {
 					Vector<AppHMIType> hmiTypesDefault = new Vector<>();
@@ -253,14 +253,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 					sdlManager.hmiLanguage = Language.EN_US;
 				}
 
-				if (sdlManager.appName == null) {
-					throw new IllegalArgumentException("You must specify an app name by calling setAppName");
-				}
-
-				if (sdlManager.appId == null) {
-					throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
-				}
-
+				sdlManager.initialize();
 				sdlManager.proxy = new SdlProxyBase(sdlManager.proxyBridge, sdlManager.appName, sdlManager.shortAppName, sdlManager.isMediaApp, sdlManager.hmiLanguage, sdlManager.hmiLanguage, sdlManager.hmiTypes, sdlManager.appId, sdlManager.transport, sdlManager.vrSynonyms, sdlManager.ttsChunks, sdlManager.dayColorScheme, sdlManager.nightColorScheme) {};
 			} catch (SdlException e) {
 				e.printStackTrace();
