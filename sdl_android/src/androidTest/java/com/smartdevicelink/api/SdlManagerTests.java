@@ -51,7 +51,6 @@ public class SdlManagerTests extends AndroidTestCase {
 		templateColorScheme.setBackgroundColor(Test.GENERAL_RGBCOLOR);
 		templateColorScheme.setPrimaryColor(Test.GENERAL_RGBCOLOR);
 		templateColorScheme.setSecondaryColor(Test.GENERAL_RGBCOLOR);
-
 		// set transport
 		transport = new TCPTransportConfig(TCP_PORT, DEV_MACHINE_IP_ADDRESS, true);
 
@@ -96,6 +95,19 @@ public class SdlManagerTests extends AndroidTestCase {
 		} catch (IllegalArgumentException ex) {
 			assertSame(ex.getMessage(), "You must specify an app ID by calling setAppId");
 		}
+	}
+
+	public void testManagerSetters() {
+
+		Vector<AppHMIType> appType = new Vector<>();
+		appType.add(AppHMIType.DEFAULT);
+
+		SdlManager manager = createSampleManager("heyApp", "123456");
+
+		assertEquals("123456", manager.getAppId());
+		assertEquals("heyApp", manager.getAppName());
+		assertEquals("heyApp", manager.getShortAppName());
+		assertEquals(appType, manager.getAppTypes());
 	}
 
 }
