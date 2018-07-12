@@ -29,6 +29,7 @@ public class OnRCStatusTests extends BaseRpcTests {
         listFreeModules.add(Test.GENERAL_MODULEDATA);
         msg.setFreeModules(listFreeModules);
 
+		msg.setAllowed(Test.GENERAL_BOOLEAN);
         return msg;
     }
 
@@ -58,6 +59,7 @@ public class OnRCStatusTests extends BaseRpcTests {
         try {
             result.put(OnRCStatus.KEY_ALLOCATED_MODULES, jsonArrayAllocatedModules);
             result.put(OnRCStatus.KEY_FREE_MODULES, jsonArrayFreeModules);
+			result.put(OnRCStatus.KEY_ALLOWED, Test.GENERAL_BOOLEAN);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -72,10 +74,12 @@ public class OnRCStatusTests extends BaseRpcTests {
         // Test Values
         List<ModuleData> listAllocatedModules = ((OnRCStatus) msg).getAllocatedModules();
         List<ModuleData> listFreeModules = ((OnRCStatus) msg).getFreeModules();
+		Boolean allowed = ( (OnRCStatus) msg ).getAllowed();
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_MODULEDATA, listAllocatedModules.get(0));
         assertEquals(Test.MATCH, Test.GENERAL_MODULEDATA, listFreeModules.get(0));
+		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, allowed);
 
         // Invalid/Null Tests
         OnRCStatus msg = new OnRCStatus();
@@ -84,5 +88,6 @@ public class OnRCStatusTests extends BaseRpcTests {
 
         assertNull(Test.NULL, msg.getAllocatedModules());
         assertNull(Test.NULL, msg.getFreeModules());
+		assertNull(Test.NULL, msg.getAllowed());
     }
 }

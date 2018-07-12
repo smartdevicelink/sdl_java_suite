@@ -9,6 +9,7 @@ import java.util.List;
 public class OnRCStatus extends RPCNotification {
 	public static final String KEY_ALLOCATED_MODULES = "allocatedModules";
 	public static final String KEY_FREE_MODULES = "freeModules";
+	public static final String KEY_ALLOWED = "allowed";
 
 	public OnRCStatus() {
 		super(FunctionID.ON_RC_STATUS.toString());
@@ -34,5 +35,13 @@ public class OnRCStatus extends RPCNotification {
 
 	public void setFreeModules(List<ModuleData> freeModules) {
 		setParameters(KEY_FREE_MODULES, freeModules);
+	}
+
+	public Boolean getAllowed() {
+		return getBoolean(KEY_ALLOWED);
+	}
+
+	public void setAllowed(Boolean allowed) {
+		setParameters(KEY_ALLOWED, allowed);
 	}
 }
