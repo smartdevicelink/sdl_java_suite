@@ -943,8 +943,6 @@ public class WiProProtocol extends AbstractProtocol {
 		if(SessionType.RPC.equals(serviceType)){
 			if(connectedPrimaryTransport != null) {
 				header.setTransportType(connectedPrimaryTransport);
-			}else{
-				return;
 			}
 			//This is going to be our primary transport
 			header.putTag(ControlFrameTags.RPC.StartService.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
@@ -969,65 +967,65 @@ public class WiProProtocol extends AbstractProtocol {
 					header.putTag(ControlFrameTags.Video.StartService.VIDEO_PROTOCOL, desiredFormat.getProtocol().toString());
 				}
 			}
-		}else if(serviceType.equals(SessionType.PCM)){
-			// PCM specific stuff
 		}
-		for(TransportType secondaryTransportType : supportedSecondaryTransports) {
-			if (supportedServicesMap.containsKey(serviceType)) {
-				int transportNum = supportedServicesMap.get(serviceType).get(0);
-				if(transportNum == PRIMARY_TRANSPORT_ID){
-					// Primary is favored, and we're already connected...
-					Log.d(TAG, "Starting service over primary.");
-					header.setTransportType(connectedPrimaryTransport);
+		if(supportedServicesMap == null || supportedServicesMap.get(serviceType) == null || supportedServicesMap.get(serviceType).isEmpty()){
+			handlePacketToSend(header);
+			return;
+		}
+		int transportNum = supportedServicesMap.get(serviceType).get(0);
+		if(transportNum == PRIMARY_TRANSPORT_ID){
+			// Primary is favored, and we're already connected...
+			Log.d(TAG, "Starting service over primary.");
+			header.setTransportType(connectedPrimaryTransport);
+			handlePacketToSend(header);
+		}else if(transportNum == SECONDARY_TRANSPORT_ID) {
+			for(TransportType secondaryTransportType : supportedSecondaryTransports) {
+				// Secondary is favored
+				Log.d(TAG, "Starting service over secondary.");
+				if(activeTransports.get(serviceType).equals(secondaryTransportType)){
+					// Transport is already active
+					header.setTransportType(secondaryTransportType);
 					handlePacketToSend(header);
 					return;
-				}else if(transportNum == SECONDARY_TRANSPORT_ID){
-					// Secondary is favored
-					Log.d(TAG, "Starting service over secondary.");
-					if(activeTransports.get(serviceType).equals(secondaryTransportType)){
-						// Transport is already active
-						header.setTransportType(connectedPrimaryTransport);
-						handlePacketToSend(header);
-						return;
-					}
-					List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.get(secondaryTransportType);
-					if(listenerList == null){
-						listenerList = new ArrayList<>();
-						secondaryTransportListeners.put(secondaryTransportType, listenerList);
-					}
-					if(supportedServicesMap.get(serviceType).contains(PRIMARY_TRANSPORT_ID)){
-						// Primary is also supported
-						listenerList.add(new ISecondaryTransportListener() {
-							@Override
-							public void onConnectionSuccess() {
-								handlePacketToSend(header);
-							}
-
-							@Override
-							public void onConnectionFailure() {
-								//TODO: Ensure this is called appropriately when secondary transport fails to connect
-								header.setTransportType(connectedPrimaryTransport);
-								handlePacketToSend(header);
-							}
-						});
-					}else{
-						// Only secondary is supported for this service
-						listenerList.add(new ISecondaryTransportListener() {
-							@Override
-							public void onConnectionSuccess() {
-								handlePacketToSend(header);
-							}
-
-							@Override
-							public void onConnectionFailure() {
-								//TODO: Ensure this is called appropriately when secondary transport fails to connect
-								Log.d(TAG, "Failed to connect secondary transport, threw away StartService");
-							}
-						});
-					}
-					header.setTransportType(secondaryTransportType);
-					connectSecondaryTransport(sessionID, secondaryTransportType, secondaryTransportParams);
 				}
+				List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.get(secondaryTransportType);
+				if(listenerList == null){
+					listenerList = new ArrayList<>();
+					secondaryTransportListeners.put(secondaryTransportType, listenerList);
+				}
+				if(supportedServicesMap.get(serviceType).contains(PRIMARY_TRANSPORT_ID)){
+					// Primary is also supported as backup
+					listenerList.add(new ISecondaryTransportListener() {
+						@Override
+						public void onConnectionSuccess() {
+							handlePacketToSend(header);
+						}
+
+						@Override
+						public void onConnectionFailure() {
+							//TODO: Ensure this is called appropriately when secondary transport fails to connect
+							header.setTransportType(connectedPrimaryTransport);
+							handlePacketToSend(header);
+						}
+					});
+				}else{
+					// Only secondary is supported for this service
+					listenerList.add(new ISecondaryTransportListener() {
+						@Override
+						public void onConnectionSuccess() {
+							handlePacketToSend(header);
+						}
+
+						@Override
+						public void onConnectionFailure() {
+							//TODO: Ensure this is called appropriately when secondary transport fails to connect
+							Log.d(TAG, "Failed to connect secondary transport, threw away StartService");
+						}
+					});
+				}
+				header.setTransportType(secondaryTransportType);
+				connectSecondaryTransport(sessionID, secondaryTransportType, secondaryTransportParams);
+
 			}
 		}
 	}
