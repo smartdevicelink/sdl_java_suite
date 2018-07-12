@@ -81,26 +81,27 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		// proxy bridge
 		this.proxyBridge = new ProxyBridge(this);
 		// instantiate managers
-        /*
-        this.fileManager = new FileManager(_internalInterface, context);
-        this.lockscreenManager = new LockscreenManager(lockScreenConfig, context, _internalInterface);
-        this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-        this.permissionManager = new PermissionManager(_internalInterface);
-        this.videoStreamingManager = new VideoStreamingManager(context, _internalInterface);
-        this.audioStreamManager = new AudioStreamManager(_internalInterface);
-        */
+
+		/*
+		this.fileManager = new FileManager(_internalInterface, context);
+		this.lockscreenManager = new LockscreenManager(lockScreenConfig, context, _internalInterface);
+		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
+		this.permissionManager = new PermissionManager(_internalInterface);
+		this.videoStreamingManager = new VideoStreamingManager(context, _internalInterface);
+		this.audioStreamManager = new AudioStreamManager(_internalInterface);
+		*/
 	}
 
 	private void dispose() {
-        /*
-        this.fileManager.dispose();
-        this.lockscreenManager.dispose();
-        this.audioStreamManager.dispose();
-        this.screenManager.dispose();
-        this.permissionManager.dispose();
-        this.videoStreamingManager.dispose();
-        this.audioStreamManager.dispose();
-                 */
+		/*
+		this.fileManager.dispose();
+		this.lockscreenManager.dispose();
+		this.audioStreamManager.dispose();
+		this.screenManager.dispose();
+		this.permissionManager.dispose();
+		this.videoStreamingManager.dispose();
+		this.audioStreamManager.dispose();
+		*/
 	}
 
 	// BUILDER
@@ -156,19 +157,29 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 			return this;
 		}
 
+		/**
+		 * Sets the TemplateColorScheme for daytime
+		 * @param dayColorScheme
+		 */
 		public Builder setDayColorScheme(final TemplateColorScheme dayColorScheme){
 			sdlManager.dayColorScheme = dayColorScheme;
 			return this;
 		}
 
+		/**
+		 * Sets the TemplateColorScheme for nighttime
+		 * @param nightColorScheme
+		 */
 		public Builder setnightColorScheme(final TemplateColorScheme nightColorScheme){
 			sdlManager.nightColorScheme = nightColorScheme;
 			return this;
 		}
-        /*public Builder setLockScreenConfig (final LockScreenConfig lockScreenConfig){
-            sdlManager.lockScreenConfig = lockScreenConfig;
-            return this;
-        }*/
+
+		/*
+		public Builder setLockScreenConfig (final LockScreenConfig lockScreenConfig){
+			sdlManager.lockScreenConfig = lockScreenConfig;
+			return this;
+		}*/
 
 		/**
 		 * Sets the vector of AppHMIType
@@ -260,29 +271,30 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 
 	// MANAGER GETTERS
 
-    /*public FileManager getFileManager() {
-        return fileManager;
-    }
+	/*
+	public FileManager getFileManager() {
+		return fileManager;
+	}
 
-    public VideoStreamingManager getVideoStreamingManager() {
-        return videoStreamingManager;
-    }
+	public VideoStreamingManager getVideoStreamingManager() {
+		return videoStreamingManager;
+	}
 
-    public AudioStreamManager getAudioStreamManager() {
-        return audioStreamManager;
-    }
+	public AudioStreamManager getAudioStreamManager() {
+		return audioStreamManager;
+	}
 
-    public ScreenManager getScreenManager() {
-        return screenManager;
-    }
+	public ScreenManager getScreenManager() {
+		return screenManager;
+	}
 
-    public LockscreenManager getLockscreenManager() {
-        return lockscreenManager;
-    }
+	public LockscreenManager getLockscreenManager() {
+		return lockscreenManager;
+	}
 
-    public PermissionManager getPermissionManager() {
-        return permissionManager;
-    }*/
+	public PermissionManager getPermissionManager() {
+		return permissionManager;
+	}*/
 
 	// SENDING REQUESTS
 
