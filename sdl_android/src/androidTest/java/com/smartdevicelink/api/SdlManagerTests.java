@@ -3,7 +3,10 @@ package com.smartdevicelink.api;
 import android.content.Context;
 import android.test.AndroidTestCase;
 
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
+import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 
@@ -43,6 +46,12 @@ public class SdlManagerTests extends AndroidTestCase {
 
 	private SdlManager createSampleManager(String appName, String appId){
 
+		// Color Scheme
+		TemplateColorScheme templateColorScheme = new TemplateColorScheme();
+		templateColorScheme.setBackgroundColor(Test.GENERAL_RGBCOLOR);
+		templateColorScheme.setPrimaryColor(Test.GENERAL_RGBCOLOR);
+		templateColorScheme.setSecondaryColor(Test.GENERAL_RGBCOLOR);
+
 		// set transport
 		transport = new TCPTransportConfig(TCP_PORT, DEV_MACHINE_IP_ADDRESS, true);
 
@@ -50,13 +59,20 @@ public class SdlManagerTests extends AndroidTestCase {
 		Vector<AppHMIType> appType = new Vector<>();
 		appType.add(AppHMIType.DEFAULT);
 
-		// build manager object
+		// build manager object - use all setters, will test using getters below
 		SdlManager.Builder builder = new SdlManager.Builder();
 		builder.setAppId(appId);
 		builder.setAppName(appName);
+		builder.setShortAppName(appName);
 		builder.setAppTypes(appType);
 		builder.setTransportType(transport);
 		builder.setContext(getTestContext());
+		builder.setLanguage(Language.EN_US);
+		builder.setDayColorScheme(templateColorScheme);
+		builder.setNightColorScheme(templateColorScheme);
+		builder.setVrSynonyms(null);
+		builder.setTtsName(null);
+
 		return builder.build();
 	}
 

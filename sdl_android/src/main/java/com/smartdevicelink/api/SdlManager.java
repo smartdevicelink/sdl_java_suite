@@ -166,7 +166,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		 * Sets the TemplateColorScheme for nighttime
 		 * @param nightColorScheme
 		 */
-		public Builder setnightColorScheme(final TemplateColorScheme nightColorScheme){
+		public Builder setNightColorScheme(final TemplateColorScheme nightColorScheme){
 			sdlManager.nightColorScheme = nightColorScheme;
 			return this;
 		}
