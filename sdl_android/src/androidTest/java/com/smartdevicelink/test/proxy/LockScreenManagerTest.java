@@ -12,7 +12,7 @@ import com.smartdevicelink.test.Test;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.proxy.LockScreenManager}
  */
-public class LockScreenManagerTest extends TestCase{
+public class LockScreenManagerTest extends TestCase {
 
 	/**
 	 * This is a unit test for the following methods : 
