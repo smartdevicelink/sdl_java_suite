@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 
@@ -19,12 +21,18 @@ public class OnRCStatus extends RPCNotification {
 		super(hash);
 	}
 
+	public OnRCStatus(@NonNull List<ModuleData> allocatedModules, @NonNull List<ModuleData> freeModules) {
+		this();
+		setAllocatedModules(allocatedModules);
+		setFreeModules(freeModules);
+	}
+
     @SuppressWarnings("unchecked")
 	public List<ModuleData> getAllocatedModules() {
 		return (List<ModuleData>) getObject(ModuleData.class, KEY_ALLOCATED_MODULES);
 	}
 
-	public void setAllocatedModules(List<ModuleData> allocatedModules) {
+	public void setAllocatedModules(@NonNull List<ModuleData> allocatedModules) {
 		setParameters(KEY_ALLOCATED_MODULES, allocatedModules);
 	}
 
@@ -33,7 +41,7 @@ public class OnRCStatus extends RPCNotification {
 		return (List<ModuleData>) getObject(ModuleData.class, KEY_FREE_MODULES);
 	}
 
-	public void setFreeModules(List<ModuleData> freeModules) {
+	public void setFreeModules(@NonNull List<ModuleData> freeModules) {
 		setParameters(KEY_FREE_MODULES, freeModules);
 	}
 

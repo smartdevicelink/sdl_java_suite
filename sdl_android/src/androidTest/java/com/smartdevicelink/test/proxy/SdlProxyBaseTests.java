@@ -621,9 +621,9 @@ public class SdlProxyBaseTests extends AndroidTestCase{
 			Log.i(TAG, "SendHapticDataResponse response from SDL: " + response);
 		}
 
-        @Override
-        public void onOnRCStatus(OnRCStatus notification) {
+		@Override
+		public void onOnRCStatus(OnRCStatus notification) {
 
-        }
-    }
+		}
+	}
 }

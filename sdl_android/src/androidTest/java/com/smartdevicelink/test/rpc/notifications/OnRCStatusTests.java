@@ -16,78 +16,78 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OnRCStatusTests extends BaseRpcTests {
-    @Override
-    protected RPCMessage createMessage(){
-        OnRCStatus msg = new OnRCStatus();
+	@Override
+	protected RPCMessage createMessage(){
+		OnRCStatus msg = new OnRCStatus();
 
-        List<ModuleData> listAllocatedModules = new ArrayList<>();
-        listAllocatedModules.add(Test.GENERAL_MODULEDATA);
+		List<ModuleData> listAllocatedModules = new ArrayList<>();
+		listAllocatedModules.add(Test.GENERAL_MODULEDATA);
 
-        msg.setAllocatedModules(listAllocatedModules);
+		msg.setAllocatedModules(listAllocatedModules);
 
-        List<ModuleData> listFreeModules = new ArrayList<>();
-        listFreeModules.add(Test.GENERAL_MODULEDATA);
-        msg.setFreeModules(listFreeModules);
+		List<ModuleData> listFreeModules = new ArrayList<>();
+		listFreeModules.add(Test.GENERAL_MODULEDATA);
+		msg.setFreeModules(listFreeModules);
 
 		msg.setAllowed(Test.GENERAL_BOOLEAN);
-        return msg;
-    }
+		return msg;
+	}
 
-    @Override
-    protected String getMessageType(){
+	@Override
+	protected String getMessageType(){
         return RPCMessage.KEY_NOTIFICATION;
     }
 
-    @Override
-    protected String getCommandType(){
+	@Override
+	protected String getCommandType(){
         return FunctionID.ON_RC_STATUS.toString();
     }
 
-    @Override
-    protected JSONObject getExpectedParameters(int sdlVersion){
-        JSONObject result = new JSONObject();
+	@Override
+	protected JSONObject getExpectedParameters(int sdlVersion){
+		JSONObject result = new JSONObject();
 
-        JSONArray jsonArrayAllocatedModules = new JSONArray();
-        JSONArray jsonArrayFreeModules = new JSONArray();
-        try {
-            jsonArrayAllocatedModules.put(JsonRPCMarshaller.serializeHashtable(Test.GENERAL_MODULEDATA.getStore()));
-            jsonArrayFreeModules.put(JsonRPCMarshaller.serializeHashtable(Test.GENERAL_MODULEDATA.getStore()));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+		JSONArray jsonArrayAllocatedModules = new JSONArray();
+		JSONArray jsonArrayFreeModules = new JSONArray();
+		try {
+			jsonArrayAllocatedModules.put(JsonRPCMarshaller.serializeHashtable(Test.GENERAL_MODULEDATA.getStore()));
+			jsonArrayFreeModules.put(JsonRPCMarshaller.serializeHashtable(Test.GENERAL_MODULEDATA.getStore()));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 
-        try {
-            result.put(OnRCStatus.KEY_ALLOCATED_MODULES, jsonArrayAllocatedModules);
-            result.put(OnRCStatus.KEY_FREE_MODULES, jsonArrayFreeModules);
+		try {
+			result.put(OnRCStatus.KEY_ALLOCATED_MODULES, jsonArrayAllocatedModules);
+			result.put(OnRCStatus.KEY_FREE_MODULES, jsonArrayFreeModules);
 			result.put(OnRCStatus.KEY_ALLOWED, Test.GENERAL_BOOLEAN);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 
-        return result;
-    }
+		return result;
+	}
 
-    /**
-     * Tests the expected values of the RPC message.
-     */
-    public void testRpcValues () {
-        // Test Values
-        List<ModuleData> listAllocatedModules = ((OnRCStatus) msg).getAllocatedModules();
-        List<ModuleData> listFreeModules = ((OnRCStatus) msg).getFreeModules();
+	/**
+	 * Tests the expected values of the RPC message.
+	 */
+	public void testRpcValues () {
+		// Test Values
+		List<ModuleData> listAllocatedModules = ((OnRCStatus) msg).getAllocatedModules();
+		List<ModuleData> listFreeModules = ((OnRCStatus) msg).getFreeModules();
 		Boolean allowed = ( (OnRCStatus) msg ).getAllowed();
 
-        // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_MODULEDATA, listAllocatedModules.get(0));
-        assertEquals(Test.MATCH, Test.GENERAL_MODULEDATA, listFreeModules.get(0));
+		// Valid Tests
+		assertEquals(Test.MATCH, Test.GENERAL_MODULEDATA, listAllocatedModules.get(0));
+		assertEquals(Test.MATCH, Test.GENERAL_MODULEDATA, listFreeModules.get(0));
 		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, allowed);
 
-        // Invalid/Null Tests
-        OnRCStatus msg = new OnRCStatus();
-        assertNotNull(Test.NOT_NULL, msg);
-        testNullBase(msg);
+		// Invalid/Null Tests
+		OnRCStatus msg = new OnRCStatus();
+		assertNotNull(Test.NOT_NULL, msg);
+		testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getAllocatedModules());
-        assertNull(Test.NULL, msg.getFreeModules());
+		assertNull(Test.NULL, msg.getAllocatedModules());
+		assertNull(Test.NULL, msg.getFreeModules());
 		assertNull(Test.NULL, msg.getAllowed());
-    }
+	}
 }
