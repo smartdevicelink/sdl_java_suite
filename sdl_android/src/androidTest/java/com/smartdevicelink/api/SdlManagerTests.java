@@ -104,9 +104,6 @@ public class SdlManagerTests extends AndroidTestCase {
 
 	public void testManagerSetters() {
 
-		Vector<AppHMIType> appType = new Vector<>();
-		appType.add(AppHMIType.DEFAULT);
-
 		SdlManager manager = createSampleManager("heyApp", "123456");
 
 		assertEquals("123456", manager.getAppId());
