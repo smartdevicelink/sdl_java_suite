@@ -113,6 +113,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		assertEquals("heyApp", manager.getAppName());
 		assertEquals("heyApp", manager.getShortAppName());
 		assertEquals(appType, manager.getAppTypes());
+		assertEquals(Language.EN_US, manager.getHmiLanguage());
 		assertEquals(transport, manager.getTransport());
 		assertEquals(templateColorScheme, manager.getDayColorScheme());
 		assertEquals(templateColorScheme, manager.getNightColorScheme());
