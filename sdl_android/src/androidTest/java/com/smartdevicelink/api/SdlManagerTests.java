@@ -3,9 +3,11 @@ package com.smartdevicelink.api;
 import android.content.Context;
 import android.test.AndroidTestCase;
 
+import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
@@ -21,6 +23,8 @@ public class SdlManagerTests extends AndroidTestCase {
 	public static final String TAG = "SdlManagerTests";
 	public static BaseTransportConfig transport = null;
 	private Context mTestContext;
+	private Vector<AppHMIType> appType;
+	private TemplateColorScheme templateColorScheme;
 
 	// transport related
 	@SuppressWarnings("FieldCanBeLocal")
@@ -31,6 +35,19 @@ public class SdlManagerTests extends AndroidTestCase {
 	@Override
 	public void setUp() throws Exception{
 		super.setUp();
+
+		// set transport
+		transport = new TCPTransportConfig(TCP_PORT, DEV_MACHINE_IP_ADDRESS, true);
+
+		// add AppTypes
+		appType = new Vector<>();
+		appType.add(AppHMIType.DEFAULT);
+
+		// Color Scheme
+		templateColorScheme = new TemplateColorScheme();
+		templateColorScheme.setBackgroundColor(Test.GENERAL_RGBCOLOR);
+		templateColorScheme.setPrimaryColor(Test.GENERAL_RGBCOLOR);
+		templateColorScheme.setSecondaryColor(Test.GENERAL_RGBCOLOR);
 	}
 
 	@Override
@@ -46,18 +63,6 @@ public class SdlManagerTests extends AndroidTestCase {
 
 	private SdlManager createSampleManager(String appName, String appId){
 
-		// Color Scheme
-		TemplateColorScheme templateColorScheme = new TemplateColorScheme();
-		templateColorScheme.setBackgroundColor(Test.GENERAL_RGBCOLOR);
-		templateColorScheme.setPrimaryColor(Test.GENERAL_RGBCOLOR);
-		templateColorScheme.setSecondaryColor(Test.GENERAL_RGBCOLOR);
-		// set transport
-		transport = new TCPTransportConfig(TCP_PORT, DEV_MACHINE_IP_ADDRESS, true);
-
-		// add AppTypes
-		Vector<AppHMIType> appType = new Vector<>();
-		appType.add(AppHMIType.DEFAULT);
-
 		// build manager object - use all setters, will test using getters below
 		SdlManager.Builder builder = new SdlManager.Builder();
 		builder.setAppId(appId);
@@ -69,8 +74,8 @@ public class SdlManagerTests extends AndroidTestCase {
 		builder.setLanguage(Language.EN_US);
 		builder.setDayColorScheme(templateColorScheme);
 		builder.setNightColorScheme(templateColorScheme);
-		builder.setVrSynonyms(null);
-		builder.setTtsName(null);
+		builder.setVrSynonyms(Test.GENERAL_VECTOR_STRING);
+		builder.setTtsName(Test.GENERAL_VECTOR_TTS_CHUNKS);
 
 		return builder.build();
 	}
@@ -108,6 +113,11 @@ public class SdlManagerTests extends AndroidTestCase {
 		assertEquals("heyApp", manager.getAppName());
 		assertEquals("heyApp", manager.getShortAppName());
 		assertEquals(appType, manager.getAppTypes());
+		assertEquals(transport, manager.getTransport());
+		assertEquals(templateColorScheme, manager.getDayColorScheme());
+		assertEquals(templateColorScheme, manager.getNightColorScheme());
+		assertEquals(Test.GENERAL_VECTOR_STRING, manager.getVrSynonyms());
+		assertEquals(Test.GENERAL_VECTOR_TTS_CHUNKS, manager.getTtsChunks());
 	}
 
 }
