@@ -68,7 +68,6 @@ public class WiProProtocol extends AbstractProtocol {
 	private HashMap<SessionType, Long> mtus = new HashMap<SessionType,Long>();
 	private HashMap<SessionType, TransportType> activeTransports = new HashMap<SessionType,TransportType>();
 	private List<TransportType> availableTransports = new ArrayList<>();
-	private Queue<TransportType> transportsToRegisterQueue = new LinkedList<>();
 
 	public static final List<SessionType> HIGH_BANDWIDTH_SERVICES
 			= Arrays.asList(SessionType.NAV, SessionType.PCM);
@@ -167,8 +166,7 @@ public class WiProProtocol extends AbstractProtocol {
 		}
 	}
 
-	public void setRegisteredForTransport(boolean registered){
-		TransportType transportType = transportsToRegisterQueue.poll();
+	public void setRegisteredForTransport(TransportType transportType, boolean registered){
 		List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.get(transportType);
 		if(listenerList != null){
 			for(ISecondaryTransportListener listener : listenerList){
@@ -841,10 +839,10 @@ public class WiProProtocol extends AbstractProtocol {
 					handleProtocolServiceDataACK(serviceType, serviceDataAckSize,(byte)packet.getSessionId ());
 				}
 			} else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportACK.getValue()) {
-				setRegisteredForTransport(true);
+				setRegisteredForTransport(packet.getTransportType(),true);
 			} else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportNACK.getValue()) {
 				String reason = (String) packet.getTag(ControlFrameTags.RPC.RegisterSecondaryTransportNAK.REASON);
-				setRegisteredForTransport(false);
+				setRegisteredForTransport(packet.getTransportType(),false);
 			} else if (frameInfo == FrameDataControlFrameType.TransportEventUpdate.getValue()) {
 				// Get TCP params
 				String ipAddr = (String) packet.getTag(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS);
@@ -933,7 +931,6 @@ public class WiProProtocol extends AbstractProtocol {
 	public void registerSecondaryTransport(byte sessionId, TransportType transportType) {
 		SdlPacket header = SdlPacketFactory.createRegisterSecondaryTransport(sessionId, getMajorVersionByte());
 		header.setTransportType(transportType);
-		transportsToRegisterQueue.offer(transportType);
 		handlePacketToSend(header);
 	}
 
