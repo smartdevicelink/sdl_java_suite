@@ -291,17 +291,11 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 
 	// PROTECTED GETTERS
 
-	protected String getAppName() {
-		return appName;
-	}
+	protected String getAppName() { return appName; }
 
-	protected String getAppId() {
-		return appId;
-	}
+	protected String getAppId() { return appId; }
 
-	protected String getShortAppName() {
-		return shortAppName;
-	}
+	protected String getShortAppName() { return shortAppName; }
 
 	protected Language getHmiLanguage() { return hmiLanguage; }
 
