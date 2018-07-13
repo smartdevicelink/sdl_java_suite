@@ -167,7 +167,7 @@ import java.util.UUID;
         }
 
         if (!hasAllowed && !hasDisallowed){
-            return PERMISSION_GROUP_TYPE_ALL_ALLOWED;
+            return PERMISSION_GROUP_STATUS_ALLOWED;
         } else if (hasAllowed && hasDisallowed) {
             return PERMISSION_GROUP_STATUS_MIXED;
         } else if (hasAllowed) {
