@@ -3,6 +3,7 @@ package com.smartdevicelink.api;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.smartdevicelink.api.PermissionManager.PermissionManager;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -72,8 +73,8 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
     private AudioStreamManager audioStreamManager;
     private LockscreenManager lockscreenManager;
     private ScreenManager screenManager;
-    private PermissionManager permissionManager;
     */
+	private PermissionManager permissionManager;
 
 	private void initialize(){
 		// instantiate managers
@@ -82,10 +83,11 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		this.fileManager = new FileManager(_internalInterface, context);
 		this.lockscreenManager = new LockscreenManager(lockScreenConfig, context, _internalInterface);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-		this.permissionManager = new PermissionManager(_internalInterface);
 		this.videoStreamingManager = new VideoStreamingManager(context, _internalInterface);
 		this.audioStreamManager = new AudioStreamManager(_internalInterface);
 		*/
+		this.permissionManager = new PermissionManager(_internalInterface);
+
 	}
 
 	private void dispose() {
@@ -94,10 +96,11 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		this.lockscreenManager.dispose();
 		this.audioStreamManager.dispose();
 		this.screenManager.dispose();
-		this.permissionManager.dispose();
 		this.videoStreamingManager.dispose();
 		this.audioStreamManager.dispose();
 		*/
+		this.permissionManager.dispose();
+
 	}
 
 	// BUILDER
@@ -285,9 +288,10 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		return lockscreenManager;
 	}
 
+	*/
 	public PermissionManager getPermissionManager() {
 		return permissionManager;
-	}*/
+	}
 
 	// SENDING REQUESTS
 

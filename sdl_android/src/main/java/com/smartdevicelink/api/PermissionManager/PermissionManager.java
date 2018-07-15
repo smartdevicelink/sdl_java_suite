@@ -57,7 +57,7 @@ import java.util.UUID;
      */
     public PermissionManager(@NonNull ISdl internalInterface){
         super(internalInterface);
-        transitionToState(ManagerState.SETTING_UP);
+        transitionToState(BaseSubManager.SETTING_UP);
         this.currentHMILevel = null;
         this.permissions = new HashMap<>();
         this.filters = new ArrayList<>();
@@ -74,8 +74,8 @@ import java.util.UUID;
         onHMIStatusListener = new OnRPCNotificationListener() {
             @Override
             public void onNotified(RPCNotification notification) {
-                if (currentHMILevel == null && getState() == ManagerState.SETTING_UP){
-                    transitionToState(ManagerState.READY);
+                if (currentHMILevel == null && getState() == BaseSubManager.SETTING_UP){
+                    transitionToState(BaseSubManager.READY);
                 }
                 HMILevel previousHMILevel = currentHMILevel;
                 currentHMILevel = ((OnHMIStatus)notification).getHmiLevel();
@@ -198,7 +198,7 @@ import java.util.UUID;
         // Remove developer's listeners
         filters.clear();
 
-        transitionToState(ManagerState.SHUTDOWN);
+        transitionToState(BaseSubManager.SHUTDOWN);
     }
 
     /**
