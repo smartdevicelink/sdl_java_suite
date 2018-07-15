@@ -72,7 +72,49 @@ import java.util.UUID;
                 if (currentHMILevel == null && getState() == ManagerState.SETTING_UP){
                     transitionToState(ManagerState.READY);
                 }
+                HMILevel previousHMILevel = currentHMILevel;
                 currentHMILevel = ((OnHMIStatus)notification).getHmiLevel();
+
+
+
+
+                for (PermissionFilter filter : filters) {
+                    boolean anyChange = false;
+                    boolean allRPCsWereAllowed = true;
+                    boolean allRPCsNowAllowed = true;
+                    boolean allParamsForAllRPCsAllowed = true;
+
+                    for (PermissionElement permissionElement : filter.getPermissionElements()) {
+                        boolean isRPCAllowedInPreviousHMILevel = isRPCAllowed(permissionElement.getRpcName(), previousHMILevel);
+                        boolean isRPCAllowedInCurrentHMILevel = isRPCAllowed(permissionElement.getRpcName(), currentHMILevel);
+                        if ((isRPCAllowedInPreviousHMILevel && !isRPCAllowedInCurrentHMILevel) || (!isRPCAllowedInPreviousHMILevel && isRPCAllowedInCurrentHMILevel)){
+                            anyChange = true;
+                        }
+                        if (!isRPCAllowedInPreviousHMILevel){
+                            allRPCsWereAllowed = false;
+                        }
+                        if (!isRPCAllowedInCurrentHMILevel){
+                            allRPCsNowAllowed = false;
+                        }
+                        if (permissionElement.getParameters() != null && permissionElement.getParameters().size() > 0) {
+                            for (String parameter : permissionElement.getParameters()) {
+                                if (!isPermissionParameterAllowed(permissionElement.getRpcName(), parameter)){
+                                    allParamsForAllRPCsAllowed = false;
+                                }
+                            }
+                        }
+                    }
+                    if (filter.getGroupType() == PERMISSION_GROUP_TYPE_ALL_ALLOWED && anyChange && (allRPCsWereAllowed || allRPCsNowAllowed) && allParamsForAllRPCsAllowed){
+                        callFilterListener(filter);
+                    } else if (anyChange && filter.getGroupType() == PERMISSION_GROUP_TYPE_ANY){
+                        callFilterListener(filter);
+                    }
+                }
+
+
+
+
+
             }
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, onHMIStatusListener);
@@ -82,7 +124,6 @@ import java.util.UUID;
             @Override
             public void onNotified(RPCNotification notification) {
                 List<PermissionItem> permissionItems = ((OnPermissionsChange)notification).getPermissionItem();
-
                 permissions.clear();
                 for (PermissionItem permissionItem : permissionItems) {
                     permissions.put(FunctionID.getEnumForString(permissionItem.getRpcName()), permissionItem);
@@ -94,13 +135,18 @@ import java.util.UUID;
 
     // Determine if an individual RPC is allowed for the current HMI level
     public boolean isRPCAllowed(@NonNull FunctionID rpcName){
+        return isRPCAllowed(rpcName, currentHMILevel);
+    }
+
+
+    private boolean isRPCAllowed(@NonNull FunctionID rpcName, HMILevel hmiLevel){
         PermissionItem permissionItem = permissions.get(rpcName);
-        if (currentHMILevel == null || permissionItem == null || permissionItem.getHMIPermissions() == null || permissionItem.getHMIPermissions().getAllowed() == null){
+        if (hmiLevel == null || permissionItem == null || permissionItem.getHMIPermissions() == null || permissionItem.getHMIPermissions().getAllowed() == null){
             return false;
         } else if (permissionItem.getHMIPermissions().getUserDisallowed() != null){
-            return permissionItem.getHMIPermissions().getAllowed().contains(currentHMILevel) && !permissionItem.getHMIPermissions().getUserDisallowed().contains(currentHMILevel);
+            return permissionItem.getHMIPermissions().getAllowed().contains(hmiLevel) && !permissionItem.getHMIPermissions().getUserDisallowed().contains(hmiLevel);
         } else {
-            return permissionItem.getHMIPermissions().getAllowed().contains(currentHMILevel);
+            return permissionItem.getHMIPermissions().getAllowed().contains(hmiLevel);
         }
     }
 
