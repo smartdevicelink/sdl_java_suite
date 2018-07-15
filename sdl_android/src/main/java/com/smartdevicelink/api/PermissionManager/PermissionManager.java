@@ -51,7 +51,10 @@ import java.util.UUID;
     public static final int PERMISSION_GROUP_TYPE_ALL_ALLOWED = 0;  // Be notified when all of the permission in the group are allowed, or, when they all stop being allowed in some sense, that is, when they were all allowed, and now they are not.
     public static final int PERMISSION_GROUP_TYPE_ANY = 1;          // Be notified when any change in availability occurs among the group
 
-
+    /**
+     * Creates a new instance of the PermissionManager
+     * @param internalInterface
+     */
     public PermissionManager(@NonNull ISdl internalInterface){
         super(internalInterface);
         transitionToState(ManagerState.SETTING_UP);
@@ -63,7 +66,9 @@ import java.util.UUID;
         setupInternalListeners();
     }
 
-    // Setup the PermissionManager's internal listeners
+    /**
+     * Setup the PermissionManager's internal listeners
+     */
     private void setupInternalListeners() {
         // Set PermissionManager's OnHMIStatusListener to keep currentHMILevel updated
         onHMIStatusListener = new OnRPCNotificationListener() {
@@ -133,12 +138,21 @@ import java.util.UUID;
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE, onPermissionsChangeListener);
     }
 
-    // Determine if an individual RPC is allowed for the current HMI level
+    /**
+     * Determine if an individual RPC is allowed for the current HMI level
+     * @param rpcName
+     * @return boolean represents whether the RPC is allowed or not
+     */
     public boolean isRPCAllowed(@NonNull FunctionID rpcName){
         return isRPCAllowed(rpcName, currentHMILevel);
     }
 
-
+    /**
+     * Determine if an individual RPC is allowed for any HMI level
+     * @param rpcName
+     * @param hmiLevel
+     * @return boolean represents whether the RPC is allowed or not
+     */
     private boolean isRPCAllowed(@NonNull FunctionID rpcName, HMILevel hmiLevel){
         PermissionItem permissionItem = permissions.get(rpcName);
         if (hmiLevel == null || permissionItem == null || permissionItem.getHMIPermissions() == null || permissionItem.getHMIPermissions().getAllowed() == null){
@@ -150,6 +164,12 @@ import java.util.UUID;
         }
     }
 
+    /**
+     * Determine if an individual permission parameter is allowed for the current HMI level
+     * @param rpcName
+     * @param parameter
+     * @return boolean represents whether the permission parameter is allowed or not
+     */
     public boolean isPermissionParameterAllowed(@NonNull FunctionID rpcName, @NonNull String parameter){
         PermissionItem permissionItem = permissions.get(rpcName);
         if (!isRPCAllowed(rpcName) || permissionItem.getParameterPermissions() == null || permissionItem.getParameterPermissions().getAllowed() == null){
@@ -161,6 +181,9 @@ import java.util.UUID;
         }
     }
 
+    /**
+     * Clean up everything after the manager is no longer needed
+     */
     public void dispose(){
         super.dispose();
 
@@ -178,7 +201,12 @@ import java.util.UUID;
         transitionToState(ManagerState.SHUTDOWN);
     }
 
-    // Determine if a group of permissions is allowed for the current HMI level
+    /**
+     * Determine if a group of permissions is allowed for the current HMI level
+     * @param permissionElements
+     * @return PermissionGroupStatus int value that gives an overall view whether the permissions are allowed or not
+     * @see PermissionGroupStatus
+     */
     public @PermissionGroupStatus int getGroupStatusOfPermissions(@NonNull List<PermissionElement> permissionElements){
         if (currentHMILevel == null){
             return PERMISSION_GROUP_STATUS_UNKNOWN;
@@ -223,8 +251,12 @@ import java.util.UUID;
         }
     }
 
-    // Retrieve a map with keys that are the passed in RPC names specifying if that RPC
-    // and its parameter permissions are currently allowed for the current HMI level
+    /**
+     * Determine if a group of permissions is allowed for the current HMI level
+     * This method is similar to getGroupStatusOfPermissions() but returns more detailed result about each individual permission
+     * @param permissionElements
+     * @return a map with keys that are the passed in RPC names specifying if that RPC and its parameter permissions are currently allowed for the current HMI level
+     */
     public Map <FunctionID, PermissionStatus> getStatusOfPermissions(@NonNull List<PermissionElement> permissionElements){
         Map<FunctionID, PermissionStatus> statusOfPermissions = new HashMap<>();
         for (PermissionElement permissionElement : permissionElements) {
@@ -244,19 +276,33 @@ import java.util.UUID;
         return statusOfPermissions;
     }
 
+    /**
+     * Call the listener for a specific filter
+     * @param filter
+     */
     private void callFilterListener(@NonNull PermissionFilter filter){
         int permissionGroupStatus = getGroupStatusOfPermissions(filter.getPermissionElements());
         Map <FunctionID, PermissionStatus> allowedPermissions = getStatusOfPermissions(filter.getPermissionElements());
         filter.getListener().onPermissionsChange(allowedPermissions, permissionGroupStatus);
     }
 
+    /**
+     * Add a listener to be called when there is permissions change
+     * @param permissionElements
+     * @param groupType PermissionGroupType int value represents whether we need the listener to be called when there is any permissions change or only when all permission become allowed
+     * @param listener
+     * @return unique uuid number for the listener. It can be used to remove the listener later.
+     */
     public UUID addListener(@NonNull List<PermissionElement> permissionElements, @NonNull @PermissionGroupType int groupType, @NonNull OnPermissionChangeListener listener){
         PermissionFilter filter = new PermissionFilter(null, permissionElements, groupType, listener);
         filters.add(filter);
         return filter.getIdentifier();
     }
 
-    // Removes specific listener
+    /**
+     * Removes specific listener
+     * @param listenerId
+     */
     public void removeListener(@NonNull UUID listenerId){
         for (PermissionFilter filter : filters) {
             if (filter.getIdentifier().equals(listenerId)) {
