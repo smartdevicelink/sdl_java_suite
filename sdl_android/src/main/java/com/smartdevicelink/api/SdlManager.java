@@ -66,8 +66,8 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	//public LockScreenConfig lockScreenConfig;
 
 	// Managers
-    /*
     private FileManager fileManager;
+    /*
     private VideoStreamingManager videoStreamingManager;
     private AudioStreamManager audioStreamManager;
     private LockscreenManager lockscreenManager;
@@ -78,8 +78,8 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	private void initialize(){
 		// instantiate managers
 
-		/*
 		this.fileManager = new FileManager(_internalInterface, context);
+		/*
 		this.lockscreenManager = new LockscreenManager(lockScreenConfig, context, _internalInterface);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
 		this.permissionManager = new PermissionManager(_internalInterface);
@@ -89,8 +89,8 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	}
 
 	private void dispose() {
-		/*
 		this.fileManager.dispose();
+		/*
 		this.lockscreenManager.dispose();
 		this.audioStreamManager.dispose();
 		this.screenManager.dispose();
@@ -264,11 +264,12 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 
 	// MANAGER GETTERS
 
-	/*
+
 	public FileManager getFileManager() {
 		return fileManager;
 	}
 
+	/*
 	public VideoStreamingManager getVideoStreamingManager() {
 		return videoStreamingManager;
 	}
