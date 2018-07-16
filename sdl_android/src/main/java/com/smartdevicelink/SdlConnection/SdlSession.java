@@ -1,17 +1,5 @@
 package com.smartdevicelink.SdlConnection;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.util.Log;
@@ -20,14 +8,10 @@ import android.view.Surface;
 import com.smartdevicelink.encoder.SdlEncoder;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.exception.SdlExceptionCause;
-import com.smartdevicelink.protocol.AbstractProtocol;
 import com.smartdevicelink.protocol.IProtocolListener;
-import com.smartdevicelink.protocol.ISecondaryTransportListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.WiProProtocol;
-import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
@@ -42,16 +26,25 @@ import com.smartdevicelink.security.ISecurityInitializedListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
-import com.smartdevicelink.streaming.video.RTPH264Packetizer;
 import com.smartdevicelink.streaming.StreamPacketizer;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
+import com.smartdevicelink.streaming.video.RTPH264Packetizer;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.MultiplexTransport;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
-import com.smartdevicelink.transport.TransportConstants;
 import com.smartdevicelink.transport.TransportManager;
 import com.smartdevicelink.transport.enums.TransportType;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SdlSession implements  IProtocolListener, TransportManager.TransportEventListener, IHeartbeatMonitorListener, IStreamListener, ISecurityInitializedListener {
 	private static final String TAG = "SdlSession";

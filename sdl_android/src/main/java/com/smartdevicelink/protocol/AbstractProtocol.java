@@ -4,7 +4,6 @@ import com.smartdevicelink.protocol.WiProProtocol.MessageFrameAssembler;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.transport.enums.TransportType;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
