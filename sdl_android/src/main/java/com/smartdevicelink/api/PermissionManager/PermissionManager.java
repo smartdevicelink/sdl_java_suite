@@ -22,8 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- This manager can be accessed through SdlManager.
- It gives the developer information about what permissions are permitted in specific HMI level
+ SdlManager gives the developer information about what permissions are permitted in specific HMI level
  and helps developers setup listeners to be called when specific permissions become allowed.
 **/
 
@@ -57,7 +56,7 @@ import java.util.UUID;
      */
     public PermissionManager(@NonNull ISdl internalInterface){
         super(internalInterface);
-        transitionToState(BaseSubManager.SETTING_UP);
+        transitionToState(SETTING_UP);
         this.currentHMILevel = null;
         this.currentPermissionItems = new HashMap<>();
         this.filters = new ArrayList<>();
@@ -68,8 +67,8 @@ import java.util.UUID;
         onHMIStatusListener = new OnRPCNotificationListener() {
             @Override
             public void onNotified(RPCNotification notification) {
-                if (currentHMILevel == null && getState() == BaseSubManager.SETTING_UP){
-                    transitionToState(BaseSubManager.READY);
+                if (currentHMILevel == null && getState() == SETTING_UP){
+                    transitionToState(READY);
                 }
                 HMILevel previousHMILevel = currentHMILevel;
                 currentHMILevel = ((OnHMIStatus)notification).getHmiLevel();
@@ -220,7 +219,7 @@ import java.util.UUID;
         // Remove developer's listeners
         filters.clear();
 
-        transitionToState(BaseSubManager.SHUTDOWN);
+        transitionToState(SHUTDOWN);
     }
 
     /**
