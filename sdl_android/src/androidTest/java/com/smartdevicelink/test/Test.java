@@ -1,7 +1,10 @@
 package com.smartdevicelink.test;
 
+import android.graphics.Color;
 import android.util.Log;
 
+import com.smartdevicelink.R;
+import com.smartdevicelink.api.lockscreen.LockScreenConfig;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
@@ -283,6 +286,7 @@ public class Test {
 	public static final Rectangle                      GENERAL_RECTANGLE                      = new Rectangle();
 	public static final HapticRect                     GENERAL_HAPTIC_RECT                    = new HapticRect();
 	public static final FuelType                       GENERAL_FUELTYPE                       = FuelType.GASOLINE;
+	public static final LockScreenConfig               GENERAL_LOCKSCREENCONFIG               = new LockScreenConfig();
 
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
@@ -672,7 +676,10 @@ public class Test {
 		GENERAL_DAYCOLORSCHEME.setSecondaryColor(GENERAL_RGBCOLOR);
 		GENERAL_DAYCOLORSCHEME.setBackgroundColor(GENERAL_RGBCOLOR);
 
-        
+		GENERAL_LOCKSCREENCONFIG.setAppIcon(R.drawable.sdl_lockscreen_icon);
+		GENERAL_LOCKSCREENCONFIG.setBackgroundColor(Color.BLUE);
+		GENERAL_LOCKSCREENCONFIG.setEnabled(true);
+
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_USER_DISALLOWED, GENERAL_HMILEVEL_LIST);

@@ -3,6 +3,7 @@ package com.smartdevicelink.api;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.smartdevicelink.api.lockscreen.LockScreenConfig;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -63,7 +64,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
 
 	private final ProxyBridge proxyBridge= new ProxyBridge(this);
-	//public LockScreenConfig lockScreenConfig;
+	public LockScreenConfig lockScreenConfig;
 
 	// Managers
     /*
@@ -171,11 +172,11 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 			return this;
 		}
 
-		/*
+
 		public Builder setLockScreenConfig (final LockScreenConfig lockScreenConfig){
 			sdlManager.lockScreenConfig = lockScreenConfig;
 			return this;
-		}*/
+		}
 
 		/**
 		 * Sets the vector of AppHMIType <br>
@@ -310,6 +311,8 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	protected Vector<TTSChunk> getTtsChunks() { return ttsChunks; }
 
 	protected BaseTransportConfig getTransport() { return transport; }
+
+	protected LockScreenConfig getLockScreenConfig() { return lockScreenConfig; }
 
 	// SENDING REQUESTS
 

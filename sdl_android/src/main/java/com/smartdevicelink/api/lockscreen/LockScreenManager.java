@@ -102,6 +102,7 @@ public class LockScreenManager extends BaseSubManager {
 			showLockScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			if(getLockScreenIcon() != null){
 				// send icon in intent as well
+				showLockScreenIntent.putExtra("icon", getLockScreenIcon());
 			}
 			context.get().startActivity(showLockScreenIntent);
 		}else if(status == LockScreenStatus.OFF){

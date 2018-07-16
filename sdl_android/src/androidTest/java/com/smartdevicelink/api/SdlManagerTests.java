@@ -76,6 +76,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		builder.setNightColorScheme(templateColorScheme);
 		builder.setVrSynonyms(Test.GENERAL_VECTOR_STRING);
 		builder.setTtsName(Test.GENERAL_VECTOR_TTS_CHUNKS);
+		builder.setLockScreenConfig(Test.GENERAL_LOCKSCREENCONFIG);
 
 		return builder.build();
 	}
@@ -116,6 +117,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		assertEquals(templateColorScheme, manager.getNightColorScheme());
 		assertEquals(Test.GENERAL_VECTOR_STRING, manager.getVrSynonyms());
 		assertEquals(Test.GENERAL_VECTOR_TTS_CHUNKS, manager.getTtsChunks());
+		assertEquals(Test.GENERAL_LOCKSCREENCONFIG, manager.getLockScreenConfig());
 	}
 
 }

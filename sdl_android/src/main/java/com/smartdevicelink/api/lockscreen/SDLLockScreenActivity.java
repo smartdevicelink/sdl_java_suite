@@ -10,8 +10,9 @@ import android.graphics.BitmapFactory;
 
 import android.os.Bundle;
 import android.view.Window;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.util.HttpUtils;
@@ -21,6 +22,8 @@ import java.io.IOException;
 public class SDLLockScreenActivity extends Activity {
 
 	private Bitmap lockScreenIcon, lockScreenOEMIcon;
+	private ImageView lockscreen_iv;
+	private TextView lockscreen_tv;
 	private int customView, customIcon;
 	public static final String LOCKSCREEN_COLOR_EXTRA = "LOCKSCREEN_COLOR_EXTRA";
 	public static final String LOCKSCREEN_BITMAP_EXTRA = "LOCKSCREEN_BITMAP_EXTRA";
@@ -66,7 +69,8 @@ public class SDLLockScreenActivity extends Activity {
 		// primitives init with a 0, cant do a null check
 		if (customView != 0) {
 			setContentView(R.layout.activity_sdllock_screen);
-			RelativeLayout lockscreenLayout = findViewById(R.id.lockscreen_relative_layout);
+			lockscreen_iv = findViewById(R.id.lockscreen_image);
+			lockscreen_tv = findViewById(R.id.lockscreen_text);
 			lockScreenIcon = BitmapFactory.decodeResource(getResources(), customIcon);
 
 			// if bg or icon not null, set them

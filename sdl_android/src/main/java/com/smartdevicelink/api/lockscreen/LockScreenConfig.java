@@ -1,7 +1,5 @@
 package com.smartdevicelink.api.lockscreen;
 
-import android.graphics.Color;
-
 /**
  * <strong>LockScreenConfig</strong> <br>
  *
@@ -19,9 +17,7 @@ import android.graphics.Color;
 public class LockScreenConfig {
 
 	public Boolean enableAutomaticLockScreen;
-	public Color backgroundColor;
-	public int appIconInt;
-	public int customViewInt;
+	public int backgroundColor, appIconInt, customViewInt;
 
 	public LockScreenConfig(){}
 
@@ -33,11 +29,11 @@ public class LockScreenConfig {
 		return enableAutomaticLockScreen;
 	}
 
-	public void setBackgroundColor(Color backgroundColor){
+	public void setBackgroundColor(int backgroundColor){
 		this.backgroundColor = backgroundColor;
 	}
 
-	public Color getBackgroundColor() {
+	public int getBackgroundColor() {
 		return backgroundColor;
 	}
 
