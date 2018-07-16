@@ -9,7 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
+import android.view.Window;
+import android.widget.LinearLayout;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.util.HttpUtils;
@@ -43,6 +44,7 @@ public class SDLLockScreenActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		initializeActivity();
 		registerReceiver(closeLockScreenBroadcastReceiver, new IntentFilter(CLOSE_LOCK_SCREEN_ACTION));
 		registerReceiver(downloadLockScreenIconBroadcastReceiver, new IntentFilter(DOWNLOAD_ICON_ACTION));
@@ -63,7 +65,7 @@ public class SDLLockScreenActivity extends Activity {
 		// primitives init with a 0, cant do a null check
 		if (customView != 0) {
 			setContentView(R.layout.activity_sdllock_screen);
-			ConstraintLayout constraintLayout = findViewById(R.id.lockscreenLayout);
+			LinearLayout lockscreenLayout = findViewById(R.id.lockscreenLayout);
 			lockScreenIcon = BitmapFactory.decodeResource(getResources(), customIcon);
 
 			// if bg or icon not null, set them

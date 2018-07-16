@@ -1,10 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/lockscreenLayout">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#2c3d4d"
+              android:id="@+id/lockscreenLayout"
+              android:orientation="vertical"
+              android:gravity="center_horizontal|center_vertical">
 
+    <ImageView
+        android:id="@+id/myimg"
+        android:layout_width="36dip"
+        android:layout_height="36dip"
+        android:scaleType="fitXY"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/sdl_tray_icon"/>
 
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
