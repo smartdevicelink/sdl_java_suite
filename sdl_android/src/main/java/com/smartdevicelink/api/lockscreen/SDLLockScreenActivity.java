@@ -1,5 +1,6 @@
 package com.smartdevicelink.api.lockscreen;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,14 +10,13 @@ import android.graphics.BitmapFactory;
 
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.util.HttpUtils;
 
 import java.io.IOException;
 
-public class SDLLockScreenActivity extends AppCompatActivity {
+public class SDLLockScreenActivity extends Activity {
 
 	private Bitmap lockScreenIcon, lockScreenOEMIcon;
 	private int customView, customIcon;
