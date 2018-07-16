@@ -1,6 +1,7 @@
 package com.smartdevicelink.api;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.util.Log;
 
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <strong>FileManager</strong> <br>
@@ -39,7 +41,7 @@ import java.util.ArrayList;
 public class FileManager extends BaseSubManager {
 
 	private static String TAG = "FileManager";
-	private ArrayList<String> remoteFiles;
+	private List<String> remoteFiles;
 	private WeakReference<Context> context;
 
 	FileManager(ISdl internalInterface, Context context) {
@@ -54,7 +56,7 @@ public class FileManager extends BaseSubManager {
 
 	// GETTERS
 
-	public ArrayList<String> getRemoteFileNames() {
+	public List<String> getRemoteFileNames() {
 		if (getState() != BaseSubManager.READY){
 			// error and dont return list
 			throw new IllegalArgumentException("FileManager is not READY");
@@ -80,6 +82,7 @@ public class FileManager extends BaseSubManager {
 				}
 			}
 		});
+		internalInterface.sendRPCRequest(listFiles);
 	}
 
 	// DELETION
@@ -96,9 +99,10 @@ public class FileManager extends BaseSubManager {
 				listener.onComplete(response.getSuccess());
 			}
 		});
+		internalInterface.sendRPCRequest(deleteFile);
 	}
 
-	public void deleteRemoteFilesWithNames(ArrayList<String> fileNames, CompletionListener listener){
+	public void deleteRemoteFilesWithNames(List<String> fileNames, CompletionListener listener){
 		for(String fileName : fileNames){
 			deleteRemoteFileWithName(fileName, listener);
 		}
@@ -156,7 +160,7 @@ public class FileManager extends BaseSubManager {
 		internalInterface.sendRPCRequest(putFile);
 	}
 
-	public void uploadFiles(ArrayList<SdlFile> files, CompletionListener listener){
+	public void uploadFiles(List<SdlFile> files, CompletionListener listener){
 		for(SdlFile file : files){
 			uploadFile(file, listener);
 		}
@@ -166,7 +170,7 @@ public class FileManager extends BaseSubManager {
 		uploadFile(file, listener);
 	}
 
-	public void uploadArtworks(ArrayList<SdlArtwork> files, CompletionListener listener){
+	public void uploadArtworks(List<SdlArtwork> files, CompletionListener listener){
 		for(SdlArtwork artwork : files){
 			uploadArtwork(artwork, listener);
 		}
@@ -191,7 +195,7 @@ public class FileManager extends BaseSubManager {
 				os.write(buffer, 0, available);
 			}
 			return os.toByteArray();
-		} catch (IOException e) {
+		} catch (IOException | Resources.NotFoundException e) {
 			Log.w(TAG, "Can't read from resource", e);
 			return null;
 		} finally {
