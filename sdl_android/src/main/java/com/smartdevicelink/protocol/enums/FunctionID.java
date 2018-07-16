@@ -146,11 +146,9 @@ public enum FunctionID{
     }
 
     public static FunctionID getEnumForString(String name){
-        if(functionMap != null){
-            for(FunctionID value : EnumSet.allOf(FunctionID.class)) {
-                if(value.JSON_NAME.equals(name)){
-                    return value;
-                }
+        for(FunctionID value : EnumSet.allOf(FunctionID.class)) {
+            if(value.JSON_NAME.equals(name)){
+                return value;
             }
         }
         return null;
