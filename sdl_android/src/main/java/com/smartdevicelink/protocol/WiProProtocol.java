@@ -730,26 +730,53 @@ public class WiProProtocol extends AbstractProtocol {
 							protocolVersion = new Version((String)version);
 
 							//Check if we support multiple transports by protocol version
-							if(protocolVersion != null && protocolVersion.isNewerThan(new Version("5.1.0")) <=-1) {
-								//Version is too old to just move on
-								/*TODO: Modify this logic below
-								if(requiresHighBandwidth
-										&& TransportType.BLUETOOTH.equals(transportType)){
-									//transport can't support high bandwidth
-									onTransportNotAccepted(transportType + " can't support high bandwidth requirement, and secondary transport not supported in this protocol version: " + version.toString());
+							if(protocolVersion != null
+									&& protocolVersion.isNewerThan(new Version("5.1.0")) >= 1) {
+
+								if (activeTransports.get(SessionType.RPC) == null) {    //Might be a better way to handle this
+
+									availableTransports.add(transportType);
+
+									activeTransports.put(SessionType.RPC, transportType);
+									activeTransports.put(SessionType.BULK_DATA, transportType);
+									activeTransports.put(SessionType.CONTROL, transportType);
+									if(secondary == null){
+										// If no secondary transports were attached we should assume
+										// the Video and Audio services can be used on primary
+										if(requiresHighBandwidth
+												&& TransportType.BLUETOOTH.equals(transportType)){
+											//transport can't support high bandwidth
+											onTransportNotAccepted(transportType + " can't support high bandwidth requirement, and secondary transport not supported.");
+											return;
+										}
+										activeTransports.put(SessionType.NAV, transportType);
+										activeTransports.put(SessionType.PCM, transportType);
+									}
+
+									return;
+
+								} else {
+									Log.w(TAG, "Received a start service ack for RPC service while already active on a different transport.");
 									return;
 								}
-								*/
-							} //else we are good to go
-							if(activeTransports.get(SessionType.RPC) == null) {	//Might be a better way to handle this
-								availableTransports.add(transportType);
-								activeTransports.put(SessionType.RPC, transportType);
-								activeTransports.put(SessionType.BULK_DATA, transportType);
-								activeTransports.put(SessionType.CONTROL, transportType);
-							} else{
-								Log.w(TAG, "Received a start service ack for RPC service while already active on a different transport.");
 							}
 						}
+						//Version is either not included or lower than 5.1.0
+						if(requiresHighBandwidth
+								&& TransportType.BLUETOOTH.equals(transportType)){
+							//transport can't support high bandwidth
+							onTransportNotAccepted(transportType + " can't support high bandwidth requirement, and secondary transport not supported in this protocol version: " + version.toString());
+							return;
+						}
+
+						activeTransports.put(SessionType.RPC, transportType);
+						activeTransports.put(SessionType.BULK_DATA, transportType);
+						activeTransports.put(SessionType.CONTROL, transportType);
+						activeTransports.put(SessionType.NAV, transportType);
+						activeTransports.put(SessionType.PCM, transportType);
+
+						return;
+
 					}else if(serviceType.equals(SessionType.NAV)){
 						SdlSession session = null;
 						if(sessionWeakReference != null){
@@ -782,8 +809,8 @@ public class WiProProtocol extends AbstractProtocol {
 					activeTransports.put(SessionType.RPC, transportType);
 					activeTransports.put(SessionType.BULK_DATA, transportType);
 					activeTransports.put(SessionType.CONTROL, transportType);
-					//activeTransports.put(SessionType.NAV, transportType);
-					//activeTransports.put(SessionType.PCM, transportType);
+					activeTransports.put(SessionType.NAV, transportType);
+					activeTransports.put(SessionType.PCM, transportType);
 
 					if (protocolVersion.getMajor() > 1){
 						if (packet.payload!= null && packet.dataSize == 4){ //hashid will be 4 bytes in length
