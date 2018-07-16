@@ -166,7 +166,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		 * Sets the TemplateColorScheme for nighttime
 		 * @param nightColorScheme
 		 */
-		public Builder setnightColorScheme(final TemplateColorScheme nightColorScheme){
+		public Builder setNightColorScheme(final TemplateColorScheme nightColorScheme){
 			sdlManager.nightColorScheme = nightColorScheme;
 			return this;
 		}
@@ -289,6 +289,28 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	public PermissionManager getPermissionManager() {
 		return permissionManager;
 	}*/
+
+	// PROTECTED GETTERS
+
+	protected String getAppName() { return appName; }
+
+	protected String getAppId() { return appId; }
+
+	protected String getShortAppName() { return shortAppName; }
+
+	protected Language getHmiLanguage() { return hmiLanguage; }
+
+	protected TemplateColorScheme getDayColorScheme() { return dayColorScheme; }
+
+	protected TemplateColorScheme getNightColorScheme() { return nightColorScheme; }
+
+	protected Vector<AppHMIType> getAppTypes() { return hmiTypes; }
+
+	protected Vector<String> getVrSynonyms() { return vrSynonyms; }
+
+	protected Vector<TTSChunk> getTtsChunks() { return ttsChunks; }
+
+	protected BaseTransportConfig getTransport() { return transport; }
 
 	// SENDING REQUESTS
 
