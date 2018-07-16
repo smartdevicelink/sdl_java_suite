@@ -137,6 +137,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 
 public class Test {
 	
@@ -315,6 +316,8 @@ public class Test {
 	public static final List<VentilationMode>           GENERAL_VENTILATIONMODE_LIST           = Arrays.asList(new VentilationMode[]{VentilationMode.LOWER, VentilationMode.UPPER});
 	public static final List<ClimateControlCapabilities> GENERAL_CLIMATECONTROLCAPABILITIES_LIST = new ArrayList<ClimateControlCapabilities>(1);
 	public static final List<RadioControlCapabilities>   GENERAL_RADIOCONTROLCAPABILITIES_LIST   = new ArrayList<RadioControlCapabilities>(1);
+	public static final Vector<String>                   GENERAL_VECTOR_STRING                   = new Vector<>(Arrays.asList(new String[] { "a", "b"}));
+	public static final Vector<TTSChunk>                 GENERAL_VECTOR_TTS_CHUNKS               = new Vector<>(Arrays.asList(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT, "Welcome to the jungle")));
 
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();		
