@@ -253,8 +253,8 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 					sdlManager.hmiLanguage = Language.EN_US;
 				}
 
-				sdlManager.initialize();
 				sdlManager.proxy = new SdlProxyBase(sdlManager.proxyBridge, sdlManager.appName, sdlManager.shortAppName, sdlManager.isMediaApp, sdlManager.hmiLanguage, sdlManager.hmiLanguage, sdlManager.hmiTypes, sdlManager.appId, sdlManager.transport, sdlManager.vrSynonyms, sdlManager.ttsChunks, sdlManager.dayColorScheme, sdlManager.nightColorScheme) {};
+				sdlManager.initialize();
 			} catch (SdlException e) {
 				e.printStackTrace();
 			}
