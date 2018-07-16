@@ -12,78 +12,78 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.AudioControlCapabilities}
  */
-public class AudioControlCapabilitiesTests extends TestCase{
-	
-    private AudioControlCapabilities msg;
+public class AudioControlCapabilitiesTests extends TestCase {
 
-    @Override
-    public void setUp(){
-        msg = new AudioControlCapabilities();
+	private AudioControlCapabilities msg;
 
-        msg.setModuleName(Test.GENERAL_STRING);
-        msg.setSourceAvailable(Test.GENERAL_BOOLEAN);
-        msg.setVolumeAvailable(Test.GENERAL_BOOLEAN);
-        msg.setEqualizerAvailable(Test.GENERAL_BOOLEAN);
-        msg.setVolumeAvailable(Test.GENERAL_BOOLEAN);
-        msg.setEqualizerMaxChannelId(Test.GENERAL_INT);
-    }
+	@Override
+	public void setUp() {
+		msg = new AudioControlCapabilities();
 
-    /**
-    * Tests the expected values of the RPC message.
-    */
-    public void testRpcValues () {
-        // Test Values
+		msg.setModuleName(Test.GENERAL_STRING);
+		msg.setSourceAvailable(Test.GENERAL_BOOLEAN);
+		msg.setVolumeAvailable(Test.GENERAL_BOOLEAN);
+		msg.setEqualizerAvailable(Test.GENERAL_BOOLEAN);
+		msg.setVolumeAvailable(Test.GENERAL_BOOLEAN);
+		msg.setEqualizerMaxChannelId(Test.GENERAL_INT);
+	}
 
-        String moduleName = msg.getModuleName();
-        Boolean sourceAvailable = msg.getSourceAvailable();
-        Boolean volumeAvailable = msg.getVolumeAvailable();
-        Boolean equalizerAvailable = msg.getEqualizerAvailable();
-        int equalizerMaxChannelId = msg.getEqualizerMaxChannelId();
+	/**
+	 * Tests the expected values of the RPC message.
+	 */
+	public void testRpcValues() {
+		// Test Values
 
-        // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, moduleName);
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean)sourceAvailable);
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean)volumeAvailable);
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean)equalizerAvailable);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, equalizerMaxChannelId);
+		String moduleName = msg.getModuleName();
+		Boolean sourceAvailable = msg.getSourceAvailable();
+		Boolean volumeAvailable = msg.getVolumeAvailable();
+		Boolean equalizerAvailable = msg.getEqualizerAvailable();
+		int equalizerMaxChannelId = msg.getEqualizerMaxChannelId();
 
-        // Invalid/Null Tests
-        AudioControlCapabilities msg = new AudioControlCapabilities();
-        assertNotNull(Test.NOT_NULL, msg);
+		// Valid Tests
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, moduleName);
+		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) sourceAvailable);
+		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) volumeAvailable);
+		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) equalizerAvailable);
+		assertEquals(Test.MATCH, Test.GENERAL_INT, equalizerMaxChannelId);
 
-        assertNull(Test.NULL, msg.getModuleName());
-        assertNull(Test.NULL, msg.getSourceAvailable());
-        assertNull(Test.NULL, msg.getVolumeAvailable());
-        assertNull(Test.NULL, msg.getEqualizerAvailable());
-        assertNull(Test.NULL, msg.getEqualizerMaxChannelId());
-    }
+		// Invalid/Null Tests
+		AudioControlCapabilities msg = new AudioControlCapabilities();
+		assertNotNull(Test.NOT_NULL, msg);
 
-    public void testJson(){
-        JSONObject reference = new JSONObject();
+		assertNull(Test.NULL, msg.getModuleName());
+		assertNull(Test.NULL, msg.getSourceAvailable());
+		assertNull(Test.NULL, msg.getVolumeAvailable());
+		assertNull(Test.NULL, msg.getEqualizerAvailable());
+		assertNull(Test.NULL, msg.getEqualizerMaxChannelId());
+	}
 
-        try{
+	public void testJson() {
+		JSONObject reference = new JSONObject();
 
-            reference.put(AudioControlCapabilities.KEY_MODULE_NAME, Test.GENERAL_STRING);
-            reference.put(AudioControlCapabilities.KEY_SOURCE_AVAILABLE, Test.GENERAL_BOOLEAN);
-            reference.put(AudioControlCapabilities.KEY_VOLUME_AVAILABLE, Test.GENERAL_BOOLEAN);
-            reference.put(AudioControlCapabilities.KEY_EQUALIZER_AVAILABLE, Test.GENERAL_BOOLEAN);
-            reference.put(AudioControlCapabilities.KEY_EQUALIZER_MAX_CHANNEL_ID, Test.GENERAL_INT);
+		try {
 
-            JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+			reference.put(AudioControlCapabilities.KEY_MODULE_NAME, Test.GENERAL_STRING);
+			reference.put(AudioControlCapabilities.KEY_SOURCE_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(AudioControlCapabilities.KEY_VOLUME_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(AudioControlCapabilities.KEY_EQUALIZER_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(AudioControlCapabilities.KEY_EQUALIZER_MAX_CHANNEL_ID, Test.GENERAL_INT);
 
-            Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
-                String key = (String) iterator.next();
+			JSONObject underTest = msg.serializeJSON();
+			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+			Iterator<?> iterator = reference.keys();
+			while (iterator.hasNext()) {
+				String key = (String) iterator.next();
 
-            }
-        } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
-        }
-    }
+				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+
+			}
+		} catch (JSONException e) {
+			fail(Test.JSON_FAIL);
+		}
+	}
 }

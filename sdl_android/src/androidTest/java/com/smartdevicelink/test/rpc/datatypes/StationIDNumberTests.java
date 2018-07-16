@@ -12,62 +12,62 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.StationIDNumber}
  */
-public class StationIDNumberTests extends TestCase{
-	
-    private StationIDNumber msg;
+public class StationIDNumberTests extends TestCase {
 
-    @Override
-    public void setUp(){
-        msg = new StationIDNumber();
+	private StationIDNumber msg;
 
-        msg.setCountryCode(Test.GENERAL_INT);
-        msg.setFccFacilityId(Test.GENERAL_INT);
-    }
+	@Override
+	public void setUp() {
+		msg = new StationIDNumber();
 
-    /**
+		msg.setCountryCode(Test.GENERAL_INT);
+		msg.setFccFacilityId(Test.GENERAL_INT);
+	}
+
+	/**
 	 * Tests the expected values of the RPC message.
 	 */
-    public void testRpcValues () {
-        // Test Values
+	public void testRpcValues() {
+		// Test Values
 
-        int countryCode = msg.getCountryCode();
-        int fccFacilityId = msg.getFccFacilityId();
+		int countryCode = msg.getCountryCode();
+		int fccFacilityId = msg.getFccFacilityId();
 
-        // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_INT, countryCode);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, fccFacilityId);
+		// Valid Tests
+		assertEquals(Test.MATCH, Test.GENERAL_INT, countryCode);
+		assertEquals(Test.MATCH, Test.GENERAL_INT, fccFacilityId);
 
-        // Invalid/Null Tests
-        StationIDNumber msg = new StationIDNumber();
-        assertNotNull(Test.NOT_NULL, msg);
+		// Invalid/Null Tests
+		StationIDNumber msg = new StationIDNumber();
+		assertNotNull(Test.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getCountryCode());
-        assertNull(Test.NULL, msg.getFccFacilityId());
-    }
+		assertNull(Test.NULL, msg.getCountryCode());
+		assertNull(Test.NULL, msg.getFccFacilityId());
+	}
 
-    public void testJson(){
-        JSONObject reference = new JSONObject();
+	public void testJson() {
+		JSONObject reference = new JSONObject();
 
-        try{
+		try {
 
-            reference.put(StationIDNumber.KEY_COUNTRY_CODE, Test.GENERAL_INT);
-            reference.put(StationIDNumber.KEY_FCC_FACILITY_ID, Test.GENERAL_INT);
+			reference.put(StationIDNumber.KEY_COUNTRY_CODE, Test.GENERAL_INT);
+			reference.put(StationIDNumber.KEY_FCC_FACILITY_ID, Test.GENERAL_INT);
 
-            JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+			JSONObject underTest = msg.serializeJSON();
+			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
-            Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
-                String key = (String) iterator.next();
+			Iterator<?> iterator = reference.keys();
+			while (iterator.hasNext()) {
+				String key = (String) iterator.next();
 
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 
-            }
-        } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
-        }
-    }
+			}
+		} catch (JSONException e) {
+			fail(Test.JSON_FAIL);
+		}
+	}
 }

@@ -12,67 +12,67 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.EqualizerSettings}
  */
-public class EqualizerSettingsTests extends TestCase{
-	
-    private EqualizerSettings msg;
+public class EqualizerSettingsTests extends TestCase {
 
-    @Override
-    public void setUp(){
-        msg = new EqualizerSettings();
+	private EqualizerSettings msg;
 
-        msg.setChannelId(Test.GENERAL_INT);
-        msg.setChannelName(Test.GENERAL_STRING);
-        msg.setChannelSetting(Test.GENERAL_INT);
-    }
+	@Override
+	public void setUp() {
+		msg = new EqualizerSettings();
 
-    /**
-    * Tests the expected values of the RPC message.
-    */
-    public void testRpcValues () {
-        // Test Values
+		msg.setChannelId(Test.GENERAL_INT);
+		msg.setChannelName(Test.GENERAL_STRING);
+		msg.setChannelSetting(Test.GENERAL_INT);
+	}
 
-        int channelId = msg.getChannelId();
-        String channelName = msg.getChannelName();
-        int channelSetting = msg.getChannelSetting();
+	/**
+	 * Tests the expected values of the RPC message.
+	 */
+	public void testRpcValues() {
+		// Test Values
 
-        // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_INT, channelId);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, channelName);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, channelSetting);
+		int channelId = msg.getChannelId();
+		String channelName = msg.getChannelName();
+		int channelSetting = msg.getChannelSetting();
 
-        // Invalid/Null Tests
-        EqualizerSettings msg = new EqualizerSettings();
-        assertNotNull(Test.NOT_NULL, msg);
+		// Valid Tests
+		assertEquals(Test.MATCH, Test.GENERAL_INT, channelId);
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, channelName);
+		assertEquals(Test.MATCH, Test.GENERAL_INT, channelSetting);
 
-        assertNull(Test.NULL, msg.getChannelId());
-        assertNull(Test.NULL, msg.getChannelName());
-        assertNull(Test.NULL, msg.getChannelSetting());
-    }
+		// Invalid/Null Tests
+		EqualizerSettings msg = new EqualizerSettings();
+		assertNotNull(Test.NOT_NULL, msg);
 
-    public void testJson(){
-        JSONObject reference = new JSONObject();
+		assertNull(Test.NULL, msg.getChannelId());
+		assertNull(Test.NULL, msg.getChannelName());
+		assertNull(Test.NULL, msg.getChannelSetting());
+	}
 
-        try{
+	public void testJson() {
+		JSONObject reference = new JSONObject();
 
-            reference.put(EqualizerSettings.KEY_CHANNEL_ID, Test.GENERAL_INT);
-            reference.put(EqualizerSettings.KEY_CHANNEL_NAME, Test.GENERAL_STRING);
-            reference.put(EqualizerSettings.KEY_CHANNEL_SETTING, Test.GENERAL_INT);
+		try {
 
-            JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+			reference.put(EqualizerSettings.KEY_CHANNEL_ID, Test.GENERAL_INT);
+			reference.put(EqualizerSettings.KEY_CHANNEL_NAME, Test.GENERAL_STRING);
+			reference.put(EqualizerSettings.KEY_CHANNEL_SETTING, Test.GENERAL_INT);
 
-            Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
-                String key = (String) iterator.next();
+			JSONObject underTest = msg.serializeJSON();
+			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+			Iterator<?> iterator = reference.keys();
+			while (iterator.hasNext()) {
+				String key = (String) iterator.next();
 
-            }
-        } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
-        }
-    }
+				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+
+			}
+		} catch (JSONException e) {
+			fail(Test.JSON_FAIL);
+		}
+	}
 }

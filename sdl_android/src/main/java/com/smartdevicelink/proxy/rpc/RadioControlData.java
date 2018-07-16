@@ -3,6 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.RadioBand;
 import com.smartdevicelink.proxy.rpc.enums.RadioState;
+
 import java.util.Hashtable;
 
 /**
@@ -20,7 +21,7 @@ public class RadioControlData extends RPCStruct{
     public static final String KEY_SIGNAL_CHANGE_THRESHOLD= "signalChangeThreshold";
     public static final String KEY_RADIO_ENABLE= "radioEnable";
     public static final String KEY_STATE= "state";
-    public static final String KEY_SIS_DATA= "sisData";
+	public static final String KEY_SIS_DATA= "sisData";
 
     public RadioControlData() {
     }
@@ -222,22 +223,21 @@ public class RadioControlData extends RPCStruct{
         return (RadioState) getObject(RadioState.class, KEY_STATE);
     }
 
-    /**
-     * Sets the sisData portion of the RadioControlData class
-     *
-     * @param sisData
-     * Read-only Station Information Service (SIS) data provides basic information about the station such as call sign, as well as information not displayable to the consumer such as the station identification number.
-     */
-    public void setSisData(SisData sisData) {
-        setValue(KEY_SIS_DATA, sisData);
-    }
+	/**
+	 * Sets the sisData portion of the RadioControlData class
+	 *
+	 * @param sisData Read-only Station Information Service (SIS) data provides basic information about the station such as call sign, as well as information not displayable to the consumer such as the station identification number.
+	 */
+	public void setSisData(SisData sisData) {
+		setValue(KEY_SIS_DATA, sisData);
+	}
 
-    /**
-     * Gets the sisData portion of the RadioControlData class
-     *
-     * @return SisData - Read-only Station Information Service (SIS) data provides basic information about the station such as call sign, as well as information not displayable to the consumer such as the station identification number.
-     */
-    public SisData getSisData() {
-        return (SisData) getObject(SisData.class, KEY_SIS_DATA);
-    }
+	/**
+	 * Gets the sisData portion of the RadioControlData class
+	 *
+	 * @return SisData - Read-only Station Information Service (SIS) data provides basic information about the station such as call sign, as well as information not displayable to the consumer such as the station identification number.
+	 */
+	public SisData getSisData() {
+		return (SisData) getObject(SisData.class, KEY_SIS_DATA);
+	}
 }

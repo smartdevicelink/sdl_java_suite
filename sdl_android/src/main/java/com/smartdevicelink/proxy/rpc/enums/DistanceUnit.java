@@ -1,15 +1,15 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
 public enum DistanceUnit {
-    MILES,
-    KILOMETERS,
-    ;
+	MILES,
+	KILOMETERS,
+	;
 
-    public static DistanceUnit valueForString(String value) {
-        try{
-            return valueOf(value);
-        }catch(Exception e){
-            return null;
-        }
-    }
+	public static DistanceUnit valueForString(String value) {
+		try {
+			return valueOf(value);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }

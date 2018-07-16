@@ -19,7 +19,7 @@ public class RadioControlCapabilities extends RPCStruct{
     public static final String KEY_STATE_AVAILABLE= "stateAvailable";
     public static final String KEY_SIGNAL_STRENGTH_AVAILABLE= "signalStrengthAvailable";
     public static final String KEY_SIGNAL_CHANGE_THRESHOLD_AVAILABLE= "signalChangeThresholdAvailable";
-    public static final String KEY_SIS_DATA_AVAILABLE= "sisDataAvailable";
+	public static final String KEY_SIS_DATA_AVAILABLE= "sisDataAvailable";
 
     public RadioControlCapabilities() {
     }
@@ -247,24 +247,24 @@ public class RadioControlCapabilities extends RPCStruct{
         return getBoolean(KEY_SIGNAL_CHANGE_THRESHOLD_AVAILABLE);
     }
 
-    /**
-     * Sets the sisDataAvailable portion of the RadioControlCapabilities class
-     *
-     * @param sisDataAvailable
-     * Availability of the getting HD radio Station Information Service (SIS) data.
-     * True: Available, False: Not Available, Not present: Not Available.
-     */
-    public void setSisDataAvailable(Boolean sisDataAvailable) {
-        setValue(KEY_SIS_DATA_AVAILABLE, sisDataAvailable);
-    }
+	/**
+	 * Sets the sisDataAvailable portion of the RadioControlCapabilities class
+	 *
+	 * @param sisDataAvailable
+	 * Availability of the getting HD radio Station Information Service (SIS) data.
+	 * True: Available, False: Not Available, Not present: Not Available.
+	 */
+	public void setSisDataAvailable(Boolean sisDataAvailable) {
+		setValue(KEY_SIS_DATA_AVAILABLE, sisDataAvailable);
+	}
 
-    /**
-     * Gets the sisDataAvailable portion of the RadioControlCapabilities class
-     *
-     * @return Boolean - Availability of the getting HD radio Station Information Service (SIS) data.
-     * True: Available, False: Not Available, Not present: Not Available.
-     */
-    public Boolean getSisDataAvailable() {
+	/**
+	 * Gets the sisDataAvailable portion of the RadioControlCapabilities class
+	 *
+	 * @return Boolean - Availability of the getting HD radio Station Information Service (SIS) data.
+	 * True: Available, False: Not Available, Not present: Not Available.
+	 */
+	public Boolean getSisDataAvailable() {
         return getBoolean(KEY_SIS_DATA_AVAILABLE);
     }
 }

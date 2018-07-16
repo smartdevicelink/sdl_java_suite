@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -9,69 +11,74 @@ import java.util.Hashtable;
  */
 
 public class EqualizerSettings extends RPCStruct {
-    public static final String KEY_CHANNEL_ID = "channelId";
-    public static final String KEY_CHANNEL_NAME = "channelName";
-    public static final String KEY_CHANNEL_SETTING = "channelSetting";
+	public static final String KEY_CHANNEL_ID = "channelId";
+	public static final String KEY_CHANNEL_NAME = "channelName";
+	public static final String KEY_CHANNEL_SETTING = "channelSetting";
 
-    public EqualizerSettings() {}
+	public EqualizerSettings() {
+	}
 
-    public EqualizerSettings(Hashtable<String, Object> hash) {
-        super(hash);
-    }
+	public EqualizerSettings(Hashtable<String, Object> hash) {
+		super(hash);
+	}
 
-    /**
-     * Sets the channelId portion of the EqualizerSettings class
-     *
-     * @param channelId
-     */
-    public void setChannelId(Integer channelId) {
-        setValue(KEY_CHANNEL_ID, channelId);
-    }
+	public EqualizerSettings(@NonNull Integer channelId, @NonNull Integer channelSetting) {
+		this();
+		setChannelId(channelId);
+		setChannelSetting(channelSetting);
+	}
 
-    /**
-     * Gets the channelId portion of the EqualizerSettings class
-     *
-     * @return Integer
-     */
-    public Integer getChannelId() {
-        return getInteger(KEY_CHANNEL_ID);
-    }
+	/**
+	 * Sets the channelId portion of the EqualizerSettings class
+	 *
+	 * @param channelId
+	 */
+	public void setChannelId(@NonNull Integer channelId) {
+		setValue(KEY_CHANNEL_ID, channelId);
+	}
 
-    /**
-     * Sets the channelName portion of the EqualizerSettings class
-     *
-     * @param channelName
-     * Read-only channel / frequency name (e.i. "Treble, Midrange, Bass" or "125 Hz").
-     */
-    public void setChannelName(String channelName) {
-        setValue(KEY_CHANNEL_NAME, channelName);
-    }
+	/**
+	 * Gets the channelId portion of the EqualizerSettings class
+	 *
+	 * @return Integer
+	 */
+	public Integer getChannelId() {
+		return getInteger(KEY_CHANNEL_ID);
+	}
 
-    /**
-     * Gets the channelName portion of the EqualizerSettings class
-     *
-     * @return String - Read-only channel / frequency name (e.i. "Treble, Midrange, Bass" or "125 Hz").
-     */
-    public String getChannelName() {
-        return getString(KEY_CHANNEL_NAME);
-    }
+	/**
+	 * Sets the channelName portion of the EqualizerSettings class
+	 *
+	 * @param channelName Read-only channel / frequency name (e.i. "Treble, Midrange, Bass" or "125 Hz").
+	 */
+	public void setChannelName(String channelName) {
+		setValue(KEY_CHANNEL_NAME, channelName);
+	}
 
-    /**
-     * Sets the channelSetting portion of the EqualizerSettings class
-     *
-     * @param channelSetting
-     * Reflects the setting, from 0%-100%.
-     */
-    public void setChannelSetting(Integer channelSetting) {
-        setValue(KEY_CHANNEL_SETTING, channelSetting);
-    }
+	/**
+	 * Gets the channelName portion of the EqualizerSettings class
+	 *
+	 * @return String - Read-only channel / frequency name (e.i. "Treble, Midrange, Bass" or "125 Hz").
+	 */
+	public String getChannelName() {
+		return getString(KEY_CHANNEL_NAME);
+	}
 
-    /**
-     * Gets the channelSetting portion of the EqualizerSettings class
-     *
-     * @return Integer - Reflects the setting, from 0%-100%.
-     */
-    public Integer getChannelSetting() {
-        return getInteger(KEY_CHANNEL_SETTING);
-    }
+	/**
+	 * Sets the channelSetting portion of the EqualizerSettings class
+	 *
+	 * @param channelSetting Reflects the setting, from 0%-100%.
+	 */
+	public void setChannelSetting(@NonNull Integer channelSetting) {
+		setValue(KEY_CHANNEL_SETTING, channelSetting);
+	}
+
+	/**
+	 * Gets the channelSetting portion of the EqualizerSettings class
+	 *
+	 * @return Integer - Reflects the setting, from 0%-100%.
+	 */
+	public Integer getChannelSetting() {
+		return getInteger(KEY_CHANNEL_SETTING);
+	}
 }
