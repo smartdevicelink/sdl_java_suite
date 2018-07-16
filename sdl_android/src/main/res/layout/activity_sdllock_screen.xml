@@ -1,9 +1,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/lockscreen_relative_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:background="#2c3d4d">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:id="@+id/lockscreen_linear_layout"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:orientation="vertical"

@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Window;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.util.HttpUtils;
@@ -65,7 +66,7 @@ public class SDLLockScreenActivity extends Activity {
 		// primitives init with a 0, cant do a null check
 		if (customView != 0) {
 			setContentView(R.layout.activity_sdllock_screen);
-			LinearLayout lockscreenLayout = findViewById(R.id.lockscreenLayout);
+			RelativeLayout lockscreenLayout = findViewById(R.id.lockscreen_relative_layout);
 			lockScreenIcon = BitmapFactory.decodeResource(getResources(), customIcon);
 
 			// if bg or icon not null, set them
