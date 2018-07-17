@@ -494,6 +494,15 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		}
 
 		@Override
+		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+			try {
+				proxy.sendRequests(rpcs, listener);
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
 		public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
 			proxy.addOnRPCNotificationListener(notificationId,listener);
 		}

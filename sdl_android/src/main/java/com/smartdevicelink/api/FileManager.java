@@ -3,7 +3,9 @@ package com.smartdevicelink.api;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.SparseArray;
 
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -13,6 +15,8 @@ import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ListFiles;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
 import com.smartdevicelink.proxy.rpc.PutFile;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
@@ -21,7 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <strong>FileManager</strong> <br>
@@ -88,6 +94,9 @@ public class FileManager extends BaseSubManager {
 	// DELETION
 
 	public void deleteRemoteFileWithName(final String fileName, final CompletionListener listener){
+		if(fileName == null){
+			return;
+		}
 		DeleteFile deleteFile = new DeleteFile();
 		deleteFile.setSdlFileName(fileName);
 		deleteFile.setOnRPCResponseListener(new OnRPCResponseListener() {
@@ -102,15 +111,63 @@ public class FileManager extends BaseSubManager {
 		internalInterface.sendRPCRequest(deleteFile);
 	}
 
-	public void deleteRemoteFilesWithNames(List<String> fileNames, CompletionListener listener){
-		for(String fileName : fileNames){
-			deleteRemoteFileWithName(fileName, listener);
+	public void deleteRemoteFilesWithNames(List<String> fileNames, final MultipleFileCompletionListener listener){
+		if(fileNames == null || fileNames.isEmpty()){
+			return;
 		}
+		final Map<String, String> errors = new HashMap<>();
+		final List<DeleteFile> deleteFileRequests = new ArrayList<>();
+		final SparseArray<String> fileNameMap = new SparseArray<>();
+		for(String fileName : fileNames){
+			DeleteFile deleteFile = new DeleteFile();
+			deleteFile.setSdlFileName(fileName);
+			deleteFileRequests.add(deleteFile);
+		}
+		internalInterface.sendRequests(deleteFileRequests, new OnMultipleRequestListener() {
+			int fileNum = 0;
+
+			@Override
+			public void addCorrelationId(int correlationid) {
+				super.addCorrelationId(correlationid);
+				fileNameMap.put(correlationid, deleteFileRequests.get(fileNum++).getSdlFileName());
+			}
+
+			@Override
+			public void onUpdate(int remainingRequests) {}
+
+			@Override
+			public void onFinished() {
+				if(errors.isEmpty()){
+					listener.onComplete(null);
+				}else{
+					listener.onComplete(errors);
+				}
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				if(fileNameMap.get(correlationId) != null){
+					errors.put(fileNameMap.get(correlationId), resultCode.toString() + " : " + info);
+				}// else no fileName for given correlation ID
+			}
+
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				if(response.getSuccess()){
+					if(fileNameMap.get(correlationId) != null){
+						remoteFiles.remove(fileNameMap.get(correlationId));
+					}
+				}
+			}
+		});
 	}
 
 	// UPLOAD FILES / ARTWORK
 
-	public void uploadFile(final SdlFile file, final CompletionListener listener){
+	private PutFile createPutFile(final SdlFile file){
+		if(file == null){
+			return null;
+		}
 		PutFile putFile = new PutFile();
 		if(file.getName() == null){
 			throw new IllegalArgumentException("You must specify an file name in the SdlFile");
@@ -147,6 +204,12 @@ public class FileManager extends BaseSubManager {
 		}
 		putFile.setPersistentFile(file.isPersistent());
 
+		return putFile;
+	}
+
+	public void uploadFile(final SdlFile file, final CompletionListener listener){
+		PutFile putFile = createPutFile(file);
+
 		putFile.setOnPutFileUpdateListener(new OnPutFileUpdateListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response, long totalSize) {
@@ -160,23 +223,68 @@ public class FileManager extends BaseSubManager {
 		internalInterface.sendRPCRequest(putFile);
 	}
 
-	public void uploadFiles(List<SdlFile> files, CompletionListener listener){
-		for(SdlFile file : files){
-			uploadFile(file, listener);
+	public void uploadFiles(List<? extends SdlFile> files, final MultipleFileCompletionListener listener){
+		if(files ==null || files.isEmpty()){
+			return;
 		}
+		final Map<String, String> errors = new HashMap<>();
+		final List<PutFile> putFileRequests = new ArrayList<>();
+		final SparseArray<String> fileNameMap = new SparseArray<>();
+		for(SdlFile file : files){
+			putFileRequests.add(createPutFile(file));
+		}
+		internalInterface.sendRequests(putFileRequests, new OnMultipleRequestListener() {
+			int fileNum = 0;
+
+			@Override
+			public void addCorrelationId(int correlationid) {
+				super.addCorrelationId(correlationid);
+				fileNameMap.put(correlationid, putFileRequests.get(fileNum++).getSdlFileName());
+			}
+
+			@Override
+			public void onUpdate(int remainingRequests) {}
+
+			@Override
+			public void onFinished() {
+				if(errors.isEmpty()){
+					listener.onComplete(null);
+				}else{
+					listener.onComplete(errors);
+				}
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				if(fileNameMap.get(correlationId) != null){
+					errors.put(fileNameMap.get(correlationId), buildErrorString(resultCode, info));
+				}// else no fileName for given correlation ID
+			}
+
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				if(response.getSuccess()){
+					if(fileNameMap.get(correlationId) != null){
+						remoteFiles.add(fileNameMap.get(correlationId));
+					}
+				}
+			}
+		});
 	}
 
 	public void uploadArtwork(final SdlArtwork file, final CompletionListener listener){
 		uploadFile(file, listener);
 	}
 
-	public void uploadArtworks(List<SdlArtwork> files, CompletionListener listener){
-		for(SdlArtwork artwork : files){
-			uploadArtwork(artwork, listener);
-		}
+	public void uploadArtworks(List<SdlArtwork> files, final MultipleFileCompletionListener listener){
+		uploadFiles(files, listener);
 	}
 
 	// HELPERS
+
+	static public String buildErrorString(Result resultCode, String info){
+		return resultCode.toString() + " : " + info;
+	}
 
 	/**
 	 * Helper method to take resource files and turn them into byte arrays
@@ -187,15 +295,8 @@ public class FileManager extends BaseSubManager {
 		InputStream is = null;
 		try {
 			is = context.get().getResources().openRawResource(resource);
-			ByteArrayOutputStream os = new ByteArrayOutputStream(is.available());
-			final int bufferSize = 4096;
-			final byte[] buffer = new byte[bufferSize];
-			int available;
-			while ((available = is.read(buffer)) >= 0) {
-				os.write(buffer, 0, available);
-			}
-			return os.toByteArray();
-		} catch (IOException | Resources.NotFoundException e) {
+			return contentsOfInputStream(is);
+		} catch (Resources.NotFoundException e) {
 			Log.w(TAG, "Can't read from resource", e);
 			return null;
 		} finally {
@@ -218,14 +319,7 @@ public class FileManager extends BaseSubManager {
 		InputStream is = null;
 		try{
 			is = context.get().getContentResolver().openInputStream(uri);
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-		    final int bufferSize = 4096;
-		    final byte[] buffer = new byte[bufferSize];
-		    int available;
-			while ((available = is.read(buffer)) >= 0) {
-				os.write(buffer, 0, available);
-			}
-		    return os.toByteArray();
+			return contentsOfInputStream(is);
 		} catch (IOException e){
 			Log.w(TAG, "Can't read from Uri", e);
 			return null;
@@ -237,6 +331,25 @@ public class FileManager extends BaseSubManager {
 					e.printStackTrace();
 				}
 			}
+		}
+	}
+
+	private byte[] contentsOfInputStream(InputStream is){
+		if(is == null){
+			return null;
+		}
+		try{
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			final int bufferSize = 4096;
+			final byte[] buffer = new byte[bufferSize];
+			int available;
+			while ((available = is.read(buffer)) >= 0) {
+				os.write(buffer, 0, available);
+			}
+			return os.toByteArray();
+		} catch (IOException e){
+			Log.w(TAG, "Can't read from InputStream", e);
+			return null;
 		}
 	}
 

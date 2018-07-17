@@ -21,7 +21,9 @@ import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
@@ -33,6 +35,7 @@ import com.smartdevicelink.transport.TCPTransportConfig;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import static com.smartdevicelink.api.SdlManagerTests.transport;
@@ -119,6 +122,11 @@ public class FileManagerTests extends AndroidTestCase {
 				listFilesResponse.setSuccess(true);
 				message.getOnRPCResponseListener().onResponse(correlationId, listFilesResponse);
 			}
+		}
+
+		@Override
+		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+
 		}
 
 		@Override
@@ -311,16 +319,19 @@ public class FileManagerTests extends AndroidTestCase {
 		}
 	}
 
-	public void testMultipleFileUpload(){
+	public void testMultipleFileUploadSuccess(){
 		class TestISdl extends BaseISdl{
 			@Override
-			public void sendRPCRequest(RPCRequest message) {
-				super.sendRPCRequest(message);
-				if(message instanceof PutFile){
-					int correlationId = message.getCorrelationID();
-					PutFileResponse putFileResponse = new PutFileResponse();
-					putFileResponse.setSuccess(true);
-					message.getOnRPCResponseListener().onResponse(correlationId, putFileResponse);
+			public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+				super.sendRequests(rpcs, listener);
+				if(rpcs.get(0) instanceof PutFile){
+					for(RPCRequest message : rpcs){
+						int correlationId = message.getCorrelationID();
+						listener.addCorrelationId(correlationId);
+						PutFileResponse putFileResponse = new PutFileResponse();
+						putFileResponse.setSuccess(true);
+						listener.onResponse(correlationId, putFileResponse);
+					}
 				}
 			}
 		}
@@ -348,29 +359,108 @@ public class FileManagerTests extends AndroidTestCase {
 		sdlFile.setType(FileType.BINARY);
 		filesToUpload.add(sdlFile);
 
-		fileManager.uploadFiles(filesToUpload, new CompletionListener() {
-			@Override
-			public void onComplete(boolean success) {
-				assertTrue(success);
-			}
-		});
+		fileManager.uploadFiles(filesToUpload,
+				new MultipleFileCompletionListener() {
+					@Override
+					public void onComplete(Map<String, String> errors) {
+						assertNull(errors);
+					}
+				});
 
-		List<String> uploadedFileNames = fileManager.getRemoteFileNames();
+		List < String > uploadedFileNames = fileManager.getRemoteFileNames();
 		for(SdlFile file : filesToUpload){
 			assertTrue(uploadedFileNames.contains(file.getName()));
 		}
 	}
 
-	public void testMultipleArtworkUpload(){
+	public void testMultipleFileUploadPartialFailure(){
+		final String failureReason = "No space available";
+
+		class TestISdl extends BaseISdl{
+			private int responseNum = 0;
+
+			@Override
+			public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+				if(rpcs.get(0) instanceof PutFile){
+					for(RPCRequest message : rpcs){
+						int correlationId = message.getCorrelationID();
+						listener.addCorrelationId(correlationId);
+						PutFileResponse putFileResponse = new PutFileResponse();
+						if(responseNum++ % 2 == 0){
+							listener.onError(correlationId, Result.OUT_OF_MEMORY, failureReason);
+						}else{
+							putFileResponse.setSuccess(true);
+							listener.onResponse(correlationId, putFileResponse);
+						}
+					}
+				}
+			}
+		}
+
+		FileManager fileManager = new FileManager(new TestISdl(), mTestContext);
+		while(fileManager.getState() == BaseSubManager.SETTING_UP);
+
+		final String baseFileName = "file";
+		int fileNum = 0;
+		final List<SdlFile> filesToUpload = new ArrayList<>();
+		SdlFile sdlFile = new SdlFile();
+		sdlFile.setName(baseFileName + fileNum++);
+		Uri uri = Uri.parse("android.resource://" + mTestContext.getPackageName() + "/drawable/ic_sdl");
+		sdlFile.setUri(uri);
+		filesToUpload.add(sdlFile);
+
+		sdlFile = new SdlFile();
+		sdlFile.setName(baseFileName + fileNum++);
+		sdlFile.setResourceId(com.smartdevicelink.test.R.drawable.ic_sdl);
+		filesToUpload.add(sdlFile);
+
+		sdlFile = new SdlFile();
+		sdlFile.setName(baseFileName + fileNum++);
+		sdlFile.setFileData(Test.GENERAL_BYTE_ARRAY);
+		sdlFile.setPersistent(true);
+		sdlFile.setType(FileType.BINARY);
+		filesToUpload.add(sdlFile);
+
+		fileManager.uploadFiles(filesToUpload,
+				new MultipleFileCompletionListener() {
+					@Override
+					public void onComplete(Map<String, String> errors) {
+						assertNotNull(errors);
+						for(int i = 0; i < filesToUpload.size(); i++){
+							if(i % 2 == 0){
+								assertTrue(errors.containsKey(filesToUpload.get(i).getName()));
+								assertEquals(FileManager.buildErrorString(Result.OUT_OF_MEMORY,
+										failureReason), errors.get(filesToUpload.get(i).getName()));
+							}else{
+								assertFalse(errors.containsKey(filesToUpload.get(i).getName()));
+							}
+						}
+					}
+				});
+
+		List <String> uploadedFileNames = fileManager.getRemoteFileNames();
+		for(int i = 0; i < filesToUpload.size(); i++){
+			if(i % 2 == 0){
+				assertFalse(uploadedFileNames.contains(filesToUpload.get(i).getName()));
+			}else{
+				assertTrue(uploadedFileNames.contains(filesToUpload.get(i).getName()));
+			}
+		}
+	}
+
+	public void testMultipleArtworkUploadSuccess(){
 		class TestISdl extends BaseISdl{
 			@Override
-			public void sendRPCRequest(RPCRequest message) {
-				super.sendRPCRequest(message);
-				if(message instanceof PutFile){
-					int correlationId = message.getCorrelationID();
-					PutFileResponse putFileResponse = new PutFileResponse();
-					putFileResponse.setSuccess(true);
-					message.getOnRPCResponseListener().onResponse(correlationId, putFileResponse);
+			public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+				super.sendRequests(rpcs, listener);
+				if(rpcs.get(0) instanceof PutFile){
+					for(RPCRequest message : rpcs){
+						int correlationId = message.getCorrelationID();
+						listener.addCorrelationId(correlationId);
+						PutFileResponse putFileResponse = new PutFileResponse();
+						putFileResponse.setSuccess(true);
+						listener.onResponse(correlationId, putFileResponse);
+					}
 				}
 			}
 		}
@@ -394,16 +484,17 @@ public class FileManagerTests extends AndroidTestCase {
 		sdlArtwork.setType(FileType.GRAPHIC_PNG);
 		artworkToUpload.add(sdlArtwork);
 
-		fileManager.uploadArtworks(artworkToUpload, new CompletionListener() {
-			@Override
-			public void onComplete(boolean success) {
-				assertTrue(success);
-			}
-		});
+		fileManager.uploadFiles(artworkToUpload,
+				new MultipleFileCompletionListener() {
+					@Override
+					public void onComplete(Map<String, String> errors) {
+						assertNull(errors);
+					}
+				});
 
-		List<String> uploadedArtworkNames = fileManager.getRemoteFileNames();
+		List < String > uploadedFileNames = fileManager.getRemoteFileNames();
 		for(SdlArtwork artwork : artworkToUpload){
-			assertTrue(uploadedArtworkNames.contains(artwork.getName()));
+			assertTrue(uploadedFileNames.contains(artwork.getName()));
 		}
 	}
 }
