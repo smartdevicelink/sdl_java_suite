@@ -49,7 +49,7 @@ public class LockScreenConfig {
 
 	/**
 	 * Gets the int reference to the custom lock screen background color
-	 * @return int of the color that was set
+	 * @return the color reference
 	 */
 	public int getBackgroundColor() {
 		return backgroundColor;
@@ -65,7 +65,7 @@ public class LockScreenConfig {
 
 	/**
 	 * Gets the resource reference of the icon to be displayed on the lock screen
-	 * @return an int
+	 * @return the icon reference
 	 */
 	public int getAppIcon() {
 		return appIconInt;
@@ -80,6 +80,10 @@ public class LockScreenConfig {
 		this.customViewInt = customViewInt;
 	}
 
+	/**
+	 * Gets the reference to the custom lockscreen layout to be used
+	 * @return the layout reference
+	 */
 	public int getCustomView() {
 		return customViewInt;
 	}
