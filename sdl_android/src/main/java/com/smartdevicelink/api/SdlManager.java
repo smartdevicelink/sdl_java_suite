@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.api.lockscreen.LockScreenConfig;
+import com.smartdevicelink.api.lockscreen.LockScreenManager;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -67,6 +68,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	public LockScreenConfig lockScreenConfig;
 
 	// Managers
+	private LockScreenManager lockscreenManager;
     /*
     private FileManager fileManager;
     private VideoStreamingManager videoStreamingManager;
@@ -78,7 +80,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 
 	private void initialize(){
 		// instantiate managers
-
+		this.lockscreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
 		/*
 		this.fileManager = new FileManager(_internalInterface, context);
 		this.lockscreenManager = new LockscreenManager(lockScreenConfig, context, _internalInterface);
@@ -90,9 +92,9 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	}
 
 	private void dispose() {
+		this.lockscreenManager.dispose();
 		/*
 		this.fileManager.dispose();
-		this.lockscreenManager.dispose();
 		this.audioStreamManager.dispose();
 		this.screenManager.dispose();
 		this.permissionManager.dispose();
@@ -254,8 +256,8 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 					sdlManager.hmiLanguage = Language.EN_US;
 				}
 
-				sdlManager.initialize();
 				sdlManager.proxy = new SdlProxyBase(sdlManager.proxyBridge, sdlManager.appName, sdlManager.shortAppName, sdlManager.isMediaApp, sdlManager.hmiLanguage, sdlManager.hmiLanguage, sdlManager.hmiTypes, sdlManager.appId, sdlManager.transport, sdlManager.vrSynonyms, sdlManager.ttsChunks, sdlManager.dayColorScheme, sdlManager.nightColorScheme) {};
+				sdlManager.initialize();
 			} catch (SdlException e) {
 				e.printStackTrace();
 			}
@@ -264,6 +266,10 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	}
 
 	// MANAGER GETTERS
+
+	public LockScreenManager getLockscreenManager() {
+		return lockscreenManager;
+	}
 
 	/*
 	public FileManager getFileManager() {
@@ -280,10 +286,6 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 
 	public ScreenManager getScreenManager() {
 		return screenManager;
-	}
-
-	public LockscreenManager getLockscreenManager() {
-		return lockscreenManager;
 	}
 
 	public PermissionManager getPermissionManager() {

@@ -679,6 +679,7 @@ public class Test {
 		GENERAL_LOCKSCREENCONFIG.setAppIcon(R.drawable.sdl_lockscreen_icon);
 		GENERAL_LOCKSCREENCONFIG.setBackgroundColor(Color.BLUE);
 		GENERAL_LOCKSCREENCONFIG.setEnabled(true);
+		GENERAL_LOCKSCREENCONFIG.setCustomView(R.layout.activity_sdllock_screen);
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

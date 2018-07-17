@@ -16,16 +16,16 @@ package com.smartdevicelink.api.lockscreen;
  */
 public class LockScreenConfig {
 
-	public Boolean enableAutomaticLockScreen;
-	public int backgroundColor, appIconInt, customViewInt;
+	private boolean enableAutomaticLockScreen;
+	private int backgroundColor, appIconInt, customViewInt;
 
 	public LockScreenConfig(){}
 
-	public void setEnabled(Boolean enableAutomaticLockScreen){
+	public void setEnabled(boolean enableAutomaticLockScreen){
 		this.enableAutomaticLockScreen = enableAutomaticLockScreen;
 	}
 
-	public Boolean getEnabled() {
+	public boolean getEnabled() {
 		return enableAutomaticLockScreen;
 	}
 
