@@ -27,7 +27,8 @@ public class SDLLockScreenActivity extends Activity {
 	private TextView lockscreen_tv;
 	private int customView, customIcon;
 	public static final String LOCKSCREEN_COLOR_EXTRA = "LOCKSCREEN_COLOR_EXTRA";
-	public static final String LOCKSCREEN_BITMAP_EXTRA = "LOCKSCREEN_BITMAP_EXTRA";
+	public static final String LOCKSCREEN_ICON_EXTRA = "LOCKSCREEN_ICON_EXTRA";
+	public static final String LOCKSCREEN_CUSTOM_VIEW_EXTRA = "LOCKSCREEN_CUSTOM_VIEW_EXTRA";
 	public static final String CLOSE_LOCK_SCREEN_ACTION = "CLOSE_LOCK_SCREEN";
 	public static final String DOWNLOAD_ICON_ACTION = "DOWNLOAD_ICON";
 
@@ -56,7 +57,7 @@ public class SDLLockScreenActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		initializeActivity();
+		initializeActivity(getIntent());
 		registerReceiver(closeLockScreenBroadcastReceiver, new IntentFilter(CLOSE_LOCK_SCREEN_ACTION));
 		registerReceiver(downloadLockScreenIconBroadcastReceiver, new IntentFilter(DOWNLOAD_ICON_ACTION));
 	}
@@ -69,7 +70,7 @@ public class SDLLockScreenActivity extends Activity {
 		super.onDestroy();
 	}
 
-	public void initializeActivity(){
+	public void initializeActivity(Intent intent){
 
 		// read intent and parse out view, bg color, icon.
 
