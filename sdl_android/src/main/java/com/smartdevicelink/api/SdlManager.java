@@ -256,6 +256,13 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 					sdlManager.hmiLanguage = Language.EN_US;
 				}
 
+				if (sdlManager.lockScreenConfig == null){
+					// if lock screen params are not set, use default
+					LockScreenConfig lsc = new LockScreenConfig();
+					lsc.setEnabled(true);
+					sdlManager.lockScreenConfig = lsc;
+				}
+
 				sdlManager.proxy = new SdlProxyBase(sdlManager.proxyBridge, sdlManager.appName, sdlManager.shortAppName, sdlManager.isMediaApp, sdlManager.hmiLanguage, sdlManager.hmiLanguage, sdlManager.hmiTypes, sdlManager.appId, sdlManager.transport, sdlManager.vrSynonyms, sdlManager.ttsChunks, sdlManager.dayColorScheme, sdlManager.nightColorScheme) {};
 				sdlManager.initialize();
 			} catch (SdlException e) {

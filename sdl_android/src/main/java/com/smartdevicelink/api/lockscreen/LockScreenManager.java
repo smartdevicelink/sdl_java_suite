@@ -8,8 +8,10 @@ import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
+import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
@@ -31,7 +33,8 @@ public class LockScreenManager extends BaseSubManager {
 	private WeakReference<Context> context;
 	private HMILevel hmiLevel;
 	private boolean isAppInUse, driverDistStatus;
-	private Bitmap lockScreenIcon;
+	private int lockScreenIcon, lockscreenColor, customView;
+	private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
 
 	public interface OnLockScreenIconDownloadedListener{
 		public void onLockScreenIconDownloaded(Bitmap icon);
@@ -49,29 +52,41 @@ public class LockScreenManager extends BaseSubManager {
 		driverDistStatus = false;
 
 		// add hmi listener
-		OnRPCNotificationListener hmiListener = new OnRPCNotificationListener() {
+		hmiListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
 				hmiLevel = ((OnHMIStatus)notification).getHmiLevel();
 				if (hmiLevel.equals(HMILevel.HMI_FULL) || hmiLevel.equals(HMILevel.HMI_LIMITED)){
 					isAppInUse = true;
 				}
-				handleLockScreenActivity();
+				launchLockScreenActivity();
 			}
 		};
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 
 		//set up driver distraction listener
-		OnRPCNotificationListener ddListener = new OnRPCNotificationListener() {
+		ddListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
 				// do something with the status
+				if (notification != null) {
+					OnDriverDistraction ddState = (OnDriverDistraction) notification;
+
+					if (ddState.getState() == DriverDistractionState.DD_ON){
+						// launch lock screen
+						driverDistStatus = true;
+						launchLockScreenActivity();
+					}else{
+						// close lock screen
+						driverDistStatus = false;
+					}
+				}
 			}
 		};
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_DRIVER_DISTRACTION, ddListener);
 
 		//set up driver distraction listener
-		OnRPCNotificationListener systemRequestListener = new OnRPCNotificationListener() {
+		systemRequestListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
 				// do something with the status
@@ -79,44 +94,57 @@ public class LockScreenManager extends BaseSubManager {
 				if (msg.getRequestType() == RequestType.LOCK_SCREEN_ICON_URL &&
 						msg.getUrl() != null) {
 					// send intent to activity to dl icon from core
-					sendDownloadIconBroadcast(msg.getUrl(), null);
+					sendDownloadIconBroadcast(msg.getUrl());
 				}
 			}
 		};
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_SYSTEM_REQUEST, systemRequestListener);
 
-		// if enabled, set up. If disabled, ignore.
-		if (this.lockScreenConfig.getEnabled()){
-			// set stuff up if enabled
-		}
-
 		transitionToState(READY);
 	}
 
-	private void handleLockScreenActivity(){
+	@Override
+	public void dispose(){
+
+		// remove listeners
+		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_SYSTEM_REQUEST, systemRequestListener);
+		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_DRIVER_DISTRACTION, ddListener);
+		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+
+		// transition state
+		transitionToState(SHUTDOWN);
+	}
+
+	private void launchLockScreenActivity(){
 		// intent to open SDLLockScreenActivity
-		// pass in icon, background color, or custom view, if set.
-		LockScreenStatus status = getLockScreenStatus();
-		if(hmiLevel == HMILevel.HMI_FULL && status == LockScreenStatus.REQUIRED) {
-			Intent showLockScreenIntent = new Intent(context.get(), SDLLockScreenActivity.class);
-			showLockScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			if(getLockScreenIcon() != null){
-				// send icon in intent as well
-				showLockScreenIntent.putExtra("icon", getLockScreenIcon());
+		// pass in icon, background color, and custom view
+		if (lockScreenConfig.getEnabled()) {
+			LockScreenStatus status = getLockScreenStatus();
+			if (hmiLevel == HMILevel.HMI_FULL && status == LockScreenStatus.REQUIRED) {
+				Intent showLockScreenIntent = new Intent(context.get(), SDLLockScreenActivity.class);
+				showLockScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+				// Extra parameters for customization of the lockscreen view
+				// Because each of them is an int primitive, we can send without null checks
+				// Not being set will have an equivalent of 0
+				showLockScreenIntent.putExtra("icon", lockScreenIcon);
+				showLockScreenIntent.putExtra("color", lockscreenColor);
+				showLockScreenIntent.putExtra("customView", customView);
+
+				context.get().startActivity(showLockScreenIntent);
+			} else if (status == LockScreenStatus.OFF) {
+				context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
 			}
-			context.get().startActivity(showLockScreenIntent);
-		}else if(status == LockScreenStatus.OFF){
-			context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
 		}
 	}
 
-	private void sendDownloadIconBroadcast(String URL, OnLockScreenIconDownloadedListener listener){
-		// add params to this intent
-		context.get().sendBroadcast(new Intent());
+	private void sendDownloadIconBroadcast(String URL){
+		Intent intent = new Intent(SDLLockScreenActivity.DOWNLOAD_ICON_ACTION);
+		intent.putExtra("URL", URL);
+		context.get().sendBroadcast(intent);
 	}
 
-	private synchronized LockScreenStatus getLockScreenStatus()
-	{
+	private synchronized LockScreenStatus getLockScreenStatus() {
 
 		if ( (hmiLevel == null) || (hmiLevel.equals(HMILevel.HMI_NONE)) )
 		{
@@ -151,10 +179,6 @@ public class LockScreenManager extends BaseSubManager {
 				return LockScreenStatus.REQUIRED;
 		}
 		return LockScreenStatus.OFF;
-	}
-
-	public Bitmap getLockScreenIcon(){
-		return this.lockScreenIcon;
 	}
 
 }

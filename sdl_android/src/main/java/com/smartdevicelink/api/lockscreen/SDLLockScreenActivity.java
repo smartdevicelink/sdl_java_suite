@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import java.io.IOException;
 
 public class SDLLockScreenActivity extends Activity {
 
+	private static final String TAG = "SDLLockScreenActivity";
 	private Bitmap lockScreenIcon, lockScreenOEMIcon;
 	private ImageView lockscreen_iv;
 	private TextView lockscreen_tv;
@@ -40,7 +42,13 @@ public class SDLLockScreenActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// get data from intent
-			downloadLockScreenIcon("URL STRING", null);
+			if (intent != null) {
+				Log.i(TAG, "downloadLockScreenIconBroadcastReceiver called");
+				String URL = intent.getStringExtra("URL");
+				if (URL != null) {
+					downloadLockScreenIcon(URL, null);
+				}
+			}
 		}
 	};
 
@@ -85,10 +93,12 @@ public class SDLLockScreenActivity extends Activity {
 				try{
 					lockScreenOEMIcon = HttpUtils.downloadImage(url);
 					if(lockScreenListener != null){
+						Log.i(TAG, "Lock Screen Icon Downloaded");
 						lockScreenListener.onLockScreenIconDownloaded(lockScreenOEMIcon);
 					}
 				}catch(IOException e){
 					if(lockScreenListener != null){
+						Log.e(TAG, "Lock Screen Icon Error Downloading");
 						lockScreenListener.onLockScreenIconDownloadError(e);
 					}
 				}
