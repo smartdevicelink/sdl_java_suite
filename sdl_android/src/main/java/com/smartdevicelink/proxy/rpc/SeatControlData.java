@@ -45,6 +45,10 @@ public class SeatControlData extends RPCStruct {
 		super(hash);
 	}
 
+	/**
+	 * Constructs a newly allocated SeatControlData object
+	 * @param id type of SupportedSeat.
+	 */
 	public SeatControlData(@NonNull SupportedSeat id) {
 		this();
 		setId(id);

@@ -30,6 +30,11 @@ public class MassageCushionFirmness extends RPCStruct {
 		super(hash);
 	}
 
+	/**
+	 * Constructs a newly allocated MassageCushionFirmness object
+	 * @param cushion  type of MassageCushion for multi-contour massage seat
+	 * @param firmness Min: 0  Max: 100
+	 */
 	public MassageCushionFirmness(@NonNull MassageCushion cushion, @NonNull Integer firmness) {
 		this();
 		setCushion(cushion);

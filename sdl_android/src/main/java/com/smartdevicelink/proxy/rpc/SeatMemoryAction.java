@@ -28,6 +28,11 @@ public class SeatMemoryAction extends RPCStruct {
 		super(hash);
 	}
 
+	/**
+	 * Constructs a newly allocated SeatMemoryAction object
+	 * @param id     Min: 0  Max: 10
+	 * @param action type of SeatMemoryActionType.
+	 */
 	public SeatMemoryAction(@NonNull Integer id, @NonNull SeatMemoryActionType action) {
 		this();
 		setId(id);

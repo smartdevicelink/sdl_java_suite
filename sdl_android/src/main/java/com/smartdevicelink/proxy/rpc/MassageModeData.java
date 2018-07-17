@@ -31,6 +31,11 @@ public class MassageModeData extends RPCStruct {
 		super(hash);
 	}
 
+	/**
+	 * Constructs a newly allocated MassageModeData object
+	 * @param massageZone type of MassageZone for multi-contour massage seat
+	 * @param massageMode mode of massage zone.
+	 */
 	public MassageModeData(@NonNull MassageZone massageZone, @NonNull MassageMode massageMode) {
 		this();
 		setMassageZone(massageZone);
