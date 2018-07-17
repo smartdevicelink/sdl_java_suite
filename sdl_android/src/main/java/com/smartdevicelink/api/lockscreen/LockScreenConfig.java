@@ -21,30 +21,61 @@ public class LockScreenConfig {
 
 	public LockScreenConfig(){}
 
+	/**
+	 * If set to true, SDL will manage the showing and dismissing of the lock screen for you. <br>
+	 *
+	 * If false, you must manage the lock screen
+	 * @param enableAutomaticLockScreen boolean
+	 */
 	public void setEnabled(boolean enableAutomaticLockScreen){
 		this.enableAutomaticLockScreen = enableAutomaticLockScreen;
 	}
 
+	/**
+	 * Gets whether the lock screen is being managed for you
+	 * @return boolean
+	 */
 	public boolean getEnabled() {
 		return enableAutomaticLockScreen;
 	}
 
+	/**
+	 * Set the int of the background color. You should define colors in your Colors.xml file
+	 * @param backgroundColor int of the color you'd like
+	 */
 	public void setBackgroundColor(int backgroundColor){
 		this.backgroundColor = backgroundColor;
 	}
 
+	/**
+	 * Gets the int reference to the custom lock screen background color
+	 * @return int of the color that was set
+	 */
 	public int getBackgroundColor() {
 		return backgroundColor;
 	}
 
+	/**
+	 * int of the drawable icon.
+	 * @param appIconInt the drawable of the icon to be displayed on the lock screen
+	 */
 	public void setAppIcon(int appIconInt) {
 		this.appIconInt = appIconInt;
 	}
 
+	/**
+	 * Gets the resource reference of the icon to be displayed on the lock screen
+	 * @return an int
+	 */
 	public int getAppIcon() {
 		return appIconInt;
 	}
 
+	/**
+	 * Sets the reference to the custom layout to be used for the lock screen <br>
+	 * <strong>If set, the color and icon setters will be ignored</strong>
+	 * @param customViewInt the layout
+	 */
 	public void setCustomView(int customViewInt) {
 		this.customViewInt = customViewInt;
 	}

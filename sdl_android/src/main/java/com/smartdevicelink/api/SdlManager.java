@@ -113,8 +113,9 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 		 *
 		 * The following setters are <strong>REQUIRED:</strong><br>
 		 *
-		 * • setAppId <br>
-		 * • setAppName
+		 * • setAppId() <br>
+		 * • setAppName() <br>
+		 * • setContext()
 		 */
 		public Builder(){
 			sdlManager = new SdlManager();
@@ -247,6 +248,10 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 
 				if (sdlManager.appId == null) {
 					throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
+				}
+
+				if (sdlManager.context == null) {
+					throw new IllegalArgumentException("You set context by calling setContext");
 				}
 
 				if (sdlManager.hmiTypes == null) {

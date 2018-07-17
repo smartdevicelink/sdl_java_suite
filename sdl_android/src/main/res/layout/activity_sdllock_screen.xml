@@ -29,6 +29,7 @@
         android:text="@string/lockscreen_text"
         android:textSize="18sp"
         android:gravity="center|bottom"
+        android:textColor="#FFFFFF"
         android:paddingBottom="10dp"/>
 
 </RelativeLayout>

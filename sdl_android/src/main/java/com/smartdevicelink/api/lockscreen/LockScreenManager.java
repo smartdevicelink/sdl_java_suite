@@ -130,6 +130,7 @@ public class LockScreenManager extends BaseSubManager {
 						Log.i(TAG, "DD Off Notification");
 						// close lock screen
 						driverDistStatus = false;
+						context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
 					}
 				}
 			}
