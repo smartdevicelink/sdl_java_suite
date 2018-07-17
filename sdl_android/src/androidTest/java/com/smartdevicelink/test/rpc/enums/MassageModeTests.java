@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.enums.MassageMode}
  */
 public class MassageModeTests extends TestCase {
@@ -17,7 +17,7 @@ public class MassageModeTests extends TestCase {
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
-	public void testValidEnums () {	
+	public void testValidEnums() {
 		String example = "OFF";
 		MassageMode enumOff = MassageMode.valueForString(example);
 		example = "LOW";
@@ -33,13 +33,12 @@ public class MassageModeTests extends TestCase {
 	/**
 	 * Verifies that an invalid assignment is null.
 	 */
-	public void testInvalidEnum () {
+	public void testInvalidEnum() {
 		String example = "oFF";
 		try {
 			MassageMode temp = MassageMode.valueForString(example);
 			assertNull("Result of valueForString should be null.", temp);
-		}
-		catch (IllegalArgumentException exception) {
+		} catch (IllegalArgumentException exception) {
 			fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
@@ -47,13 +46,12 @@ public class MassageModeTests extends TestCase {
 	/**
 	 * Verifies that a null assignment is invalid.
 	 */
-	public void testNullEnum () {
+	public void testNullEnum() {
 		String example = null;
 		try {
 			MassageMode temp = MassageMode.valueForString(example);
 			assertNull("Result of valueForString should be null.", temp);
-		}
-		catch (NullPointerException exception) {
+		} catch (NullPointerException exception) {
 			fail("Null string throws NullPointerException.");
 		}
 	}
@@ -62,14 +60,14 @@ public class MassageModeTests extends TestCase {
 	 * Verifies the possible enum values of MassageMode.
 	 */
 	public void testListEnum() {
- 		List<MassageMode> enumValueList = Arrays.asList(MassageMode.values());
+		List<MassageMode> enumValueList = Arrays.asList(MassageMode.values());
 
 		List<MassageMode> enumTestList = new ArrayList<MassageMode>();
 		enumTestList.add(MassageMode.OFF);
 		enumTestList.add(MassageMode.LOW);
 		enumTestList.add(MassageMode.HIGH);
 
-		assertTrue("Enum value list does not match enum class list", 
+		assertTrue("Enum value list does not match enum class list",
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
-	}	
+	}
 }

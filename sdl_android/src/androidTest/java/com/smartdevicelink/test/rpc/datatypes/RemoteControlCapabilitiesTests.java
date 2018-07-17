@@ -22,15 +22,15 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.RemoteControlCapabilities}
  */
-public class RemoteControlCapabilitiesTests extends TestCase{
-	
+public class RemoteControlCapabilitiesTests extends TestCase {
+
 	private RemoteControlCapabilities msg;
 
 	@Override
-	public void setUp(){
+	public void setUp() {
 		msg = new RemoteControlCapabilities();
 
 		msg.setButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES_LIST);
@@ -42,7 +42,7 @@ public class RemoteControlCapabilitiesTests extends TestCase{
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
-	public void testRpcValues () {
+	public void testRpcValues() {
 		// Test Values
 		List<ButtonCapabilities> buttonCapabilities = msg.getButtonCapabilities();
 		List<RadioControlCapabilities> radioControlCapabilities = msg.getRadioControlCapabilities();
@@ -72,10 +72,10 @@ public class RemoteControlCapabilitiesTests extends TestCase{
 
 	}
 
-	public void testJson(){
+	public void testJson() {
 		JSONObject reference = new JSONObject();
 
-		try{
+		try {
 			reference.put(RemoteControlCapabilities.KEY_BUTTON_CAPABILITIES, Test.JSON_BUTTONCAPABILITIES);
 			reference.put(RemoteControlCapabilities.KEY_RADIO_CONTROL_CAPABILITIES, Test.JSON_RADIOCONTROLCAPABILITIES);
 			reference.put(RemoteControlCapabilities.KEY_CLIMATE_CONTROL_CAPABILITIES, Test.JSON_CLIMATECONTROLCAPABILITIES);
@@ -85,61 +85,61 @@ public class RemoteControlCapabilitiesTests extends TestCase{
 			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
-			while(iterator.hasNext()){
+			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
 
-				if(key.equals(RemoteControlCapabilities.KEY_BUTTON_CAPABILITIES)){
+				if (key.equals(RemoteControlCapabilities.KEY_BUTTON_CAPABILITIES)) {
 					JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
 					JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
 					assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
 
 					List<ButtonCapabilities> referenceList = new ArrayList<ButtonCapabilities>();
 					List<ButtonCapabilities> testList = new ArrayList<ButtonCapabilities>();
-					for(int i = 0; i < referenceArray.length(); i++){
+					for (int i = 0; i < referenceArray.length(); i++) {
 						Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray.getJSONObject(i));
 						referenceList.add(new ButtonCapabilities(hashReference));
-						Hashtable<String, Object> hashTest= JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
+						Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
 						testList.add(new ButtonCapabilities(hashTest));
 					}
 					assertTrue(Test.TRUE, Validator.validateButtonCapabilities(referenceList, testList));
-				} else if(key.equals(RemoteControlCapabilities.KEY_RADIO_CONTROL_CAPABILITIES)){
+				} else if (key.equals(RemoteControlCapabilities.KEY_RADIO_CONTROL_CAPABILITIES)) {
 					JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
 					JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
 					assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
 
 					List<RadioControlCapabilities> referenceList = new ArrayList<RadioControlCapabilities>();
 					List<RadioControlCapabilities> testList = new ArrayList<RadioControlCapabilities>();
-					for(int i = 0; i < referenceArray.length(); i++){
+					for (int i = 0; i < referenceArray.length(); i++) {
 						Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray.getJSONObject(i));
 						referenceList.add(new RadioControlCapabilities(hashReference));
-						Hashtable<String, Object> hashTest= JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
+						Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
 						testList.add(new RadioControlCapabilities(hashTest));
 					}
 					assertTrue(Test.TRUE, Validator.validateRadioControlCapabilities(referenceList, testList));
-				} else if(key.equals(RemoteControlCapabilities.KEY_CLIMATE_CONTROL_CAPABILITIES)){
+				} else if (key.equals(RemoteControlCapabilities.KEY_CLIMATE_CONTROL_CAPABILITIES)) {
 					JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
 					JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
 					assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());
 
 					List<ClimateControlCapabilities> referenceList = new ArrayList<ClimateControlCapabilities>();
 					List<ClimateControlCapabilities> testList = new ArrayList<ClimateControlCapabilities>();
-					for(int i = 0; i < referenceArray.length(); i++){
+					for (int i = 0; i < referenceArray.length(); i++) {
 						Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(referenceArray.getJSONObject(i));
 						referenceList.add(new ClimateControlCapabilities(hashReference));
-						Hashtable<String, Object> hashTest= JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
+						Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(underTestArray.getJSONObject(i));
 						testList.add(new ClimateControlCapabilities(hashTest));
 					}
 					assertTrue(Test.TRUE, Validator.validateClimateControlCapabilities(referenceList, testList));
-				} else if(key.equals(RemoteControlCapabilities.KEY_SEAT_CONTROL_CAPABILITIES)){
+				} else if (key.equals(RemoteControlCapabilities.KEY_SEAT_CONTROL_CAPABILITIES)) {
 					List<SeatControlCapabilities> sccReference = (List<SeatControlCapabilities>) JsonUtils.readObjectFromJsonObject(reference, key);
 					JSONArray sccArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
 					int i = 0;
-					for(SeatControlCapabilities scc : sccReference){
+					for (SeatControlCapabilities scc : sccReference) {
 						assertTrue(Validator.validateSeatControlCapabilities(scc, new SeatControlCapabilities(JsonRPCMarshaller.deserializeJSONObject(sccArray.getJSONObject(i++)))));
 					}
 				}
 			}
-		} catch(JSONException e){
+		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
 	}

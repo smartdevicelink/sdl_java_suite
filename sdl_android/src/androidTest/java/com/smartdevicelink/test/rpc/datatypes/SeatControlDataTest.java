@@ -21,15 +21,15 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.SeatControlData}
  */
 public class SeatControlDataTest extends TestCase {
-	
+
 	private SeatControlData msg;
 
 	@Override
-	public void setUp() {		
+	public void setUp() {
 		msg = new SeatControlData();
 		msg.setId(Test.GENERAL_SUPPORTEDSEAT);
 		msg.setHeatingEnabled(Test.GENERAL_BOOLEAN);
@@ -52,7 +52,7 @@ public class SeatControlDataTest extends TestCase {
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
-	public void testRpcValues () {
+	public void testRpcValues() {
 		// Test Values
 		SupportedSeat id = msg.getId();
 		Boolean heatingEnabled = msg.getHeatingEnabled();
@@ -71,7 +71,7 @@ public class SeatControlDataTest extends TestCase {
 		List<MassageModeData> massageMode = msg.getMassageMode();
 		List<MassageCushionFirmness> massageCushionFirmness = msg.getMassageCushionFirmness();
 		SeatMemoryAction memory = msg.getMemory();
-		
+
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_SUPPORTEDSEAT, id);
 		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, heatingEnabled);
@@ -116,8 +116,8 @@ public class SeatControlDataTest extends TestCase {
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
-		
-		try {			
+
+		try {
 			reference.put(SeatControlData.KEY_ID, Test.GENERAL_SUPPORTEDSEAT);
 			reference.put(SeatControlData.KEY_HEATING_ENABLED, Test.GENERAL_BOOLEAN);
 			reference.put(SeatControlData.KEY_COOLING_ENABLED, Test.GENERAL_BOOLEAN);
@@ -144,21 +144,21 @@ public class SeatControlDataTest extends TestCase {
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
 
-				if (key.equals(SeatControlData.KEY_MASSAGE_MODE)){
+				if (key.equals(SeatControlData.KEY_MASSAGE_MODE)) {
 					List<MassageModeData> mmdReference = (List<MassageModeData>) JsonUtils.readObjectFromJsonObject(reference, key);
 					JSONArray mmdArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
 					int i = 0;
-					for(MassageModeData mmd : mmdReference){
+					for (MassageModeData mmd : mmdReference) {
 						assertTrue(Validator.validateMassageModeData(mmd, new MassageModeData(JsonRPCMarshaller.deserializeJSONObject(mmdArray.getJSONObject(i++)))));
 					}
-				} else if (key.equals(SeatControlData.KEY_MASSAGE_CUSHION_FIRMNESS)){
+				} else if (key.equals(SeatControlData.KEY_MASSAGE_CUSHION_FIRMNESS)) {
 					List<MassageCushionFirmness> mcfReference = (List<MassageCushionFirmness>) JsonUtils.readObjectFromJsonObject(reference, key);
 					JSONArray mcfArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
 					int i = 0;
-					for(MassageCushionFirmness mcf : mcfReference){
+					for (MassageCushionFirmness mcf : mcfReference) {
 						assertTrue(Validator.validateMassageCushionFirmness(mcf, new MassageCushionFirmness(JsonRPCMarshaller.deserializeJSONObject(mcfArray.getJSONObject(i++)))));
 					}
-				} else if(key.equals(SeatControlData.KEY_MEMORY)){
+				} else if (key.equals(SeatControlData.KEY_MEMORY)) {
 					SeatMemoryAction mReference = (SeatMemoryAction) JsonUtils.readObjectFromJsonObject(reference, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(JsonUtils.readJsonObjectFromJsonObject(underTest, key));
 					assertTrue(Validator.validateSeatMemoryAction(mReference, new SeatMemoryAction(hashTest)));

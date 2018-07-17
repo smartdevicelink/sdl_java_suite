@@ -1,34 +1,35 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.MassageMode;
 import com.smartdevicelink.proxy.rpc.enums.MassageZone;
-import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 /**
  * Specify the mode of a massage zone.
  */
-
-public class MassageModeData extends RPCStruct{
+public class MassageModeData extends RPCStruct {
 	public static final String KEY_MASSAGE_ZONE = "massageZone";
 	public static final String KEY_MASSAGE_MODE = "massageMode";
 
 	/**
 	 * Constructs a new MassageModeData object
 	 */
-	public MassageModeData() { }
+	public MassageModeData() {
+	}
 
 	/**
 	 * <p>Constructs a new MassageModeData object indicated by the Hashtable parameter
 	 * </p>
 	 *
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
 	public MassageModeData(Hashtable<String, Object> hash) {
-        super(hash);
-    }
+		super(hash);
+	}
 
 	public MassageModeData(@NonNull MassageZone massageZone, @NonNull MassageMode massageMode) {
 		this();

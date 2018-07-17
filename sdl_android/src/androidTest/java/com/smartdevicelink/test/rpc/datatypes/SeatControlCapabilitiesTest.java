@@ -5,21 +5,22 @@ import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 
 import junit.framework.TestCase;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.SeatControlCapabilities}
  */
 public class SeatControlCapabilitiesTest extends TestCase {
-	
+
 	private SeatControlCapabilities msg;
 
 	@Override
-	public void setUp() {		
+	public void setUp() {
 		msg = new SeatControlCapabilities();
 		msg.setModuleName(Test.GENERAL_STRING);
 		msg.setHeatingEnabledAvailable(Test.GENERAL_BOOLEAN);
@@ -42,7 +43,7 @@ public class SeatControlCapabilitiesTest extends TestCase {
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
-	public void testRpcValues () {
+	public void testRpcValues() {
 		// Test Values
 		String moduleName = msg.getModuleName();
 		Boolean heatingEnabledAvailable = msg.getHeatingEnabledAvailable();
@@ -61,7 +62,7 @@ public class SeatControlCapabilitiesTest extends TestCase {
 		Boolean massageCushionFirmnessAvailable = msg.getMassageCushionFirmnessAvailable();
 
 		Boolean memoryAvailable = msg.getMemoryAvailable();
-		
+
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, moduleName);
 		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, heatingEnabledAvailable);
@@ -104,8 +105,8 @@ public class SeatControlCapabilitiesTest extends TestCase {
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
-		
-		try {			
+
+		try {
 			reference.put(SeatControlCapabilities.KEY_MODULE_NAME, Test.GENERAL_STRING);
 			reference.put(SeatControlCapabilities.KEY_HEATING_ENABLED_AVAILABLE, Test.GENERAL_BOOLEAN);
 			reference.put(SeatControlCapabilities.KEY_COOLING_ENABLED_AVAILABLE, Test.GENERAL_BOOLEAN);
@@ -131,9 +132,7 @@ public class SeatControlCapabilitiesTest extends TestCase {
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-
 				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
-
 			}
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);

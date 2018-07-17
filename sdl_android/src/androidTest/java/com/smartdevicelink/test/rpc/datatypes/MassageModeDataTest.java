@@ -14,17 +14,17 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.MassageModeData}
  */
 public class MassageModeDataTest extends TestCase {
-	
+
 	private MassageModeData msg;
 
 	@Override
 	public void setUp() {
 		msg = new MassageModeData();
-		
+
 		msg.setMassageZone(Test.GENERAL_MASSAGEZONE);
 		msg.setMassageMode(Test.GENERAL_MASSAGEMODE);
 	}
@@ -32,7 +32,7 @@ public class MassageModeDataTest extends TestCase {
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
-	public void testRpcValues () {
+	public void testRpcValues() {
 		// Test Values
 		MassageZone massageZone = msg.getMassageZone();
 		MassageMode massageMode = msg.getMassageMode();
@@ -41,7 +41,7 @@ public class MassageModeDataTest extends TestCase {
 		assertEquals(Test.MATCH, Test.GENERAL_MASSAGEZONE, massageZone);
 		assertEquals(Test.MATCH, Test.GENERAL_MASSAGEMODE, massageMode);
 
-		
+
 		// Invalid/Null Tests
 		MassageModeData msg = new MassageModeData();
 		assertNotNull(Test.NOT_NULL, msg);
@@ -53,7 +53,7 @@ public class MassageModeDataTest extends TestCase {
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
-		try {			
+		try {
 			reference.put(MassageModeData.KEY_MASSAGE_MODE, Test.GENERAL_MASSAGEMODE);
 			reference.put(MassageModeData.KEY_MASSAGE_ZONE, Test.GENERAL_MASSAGEZONE);
 
@@ -63,7 +63,7 @@ public class MassageModeDataTest extends TestCase {
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				
+
 				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 
 			}

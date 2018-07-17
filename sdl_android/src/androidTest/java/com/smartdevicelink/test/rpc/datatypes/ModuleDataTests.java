@@ -19,15 +19,15 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.ModuleData}
  */
-public class ModuleDataTests extends TestCase{
-	
+public class ModuleDataTests extends TestCase {
+
 	private ModuleData msg;
 
 	@Override
-	public void setUp(){
+	public void setUp() {
 		msg = new ModuleData();
 
 		msg.setModuleType(Test.GENERAL_MODULETYPE);
@@ -39,7 +39,7 @@ public class ModuleDataTests extends TestCase{
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
-	public void testRpcValues () {
+	public void testRpcValues() {
 		// Test Values
 		ModuleType moduleType = msg.getModuleType();
 		RadioControlData radioControlData = msg.getRadioControlData();
@@ -62,10 +62,10 @@ public class ModuleDataTests extends TestCase{
 		assertNull(Test.NULL, msg.getSeatControlData());
 	}
 
-	public void testJson(){
+	public void testJson() {
 		JSONObject reference = new JSONObject();
 
-		try{
+		try {
 			reference.put(ModuleData.KEY_MODULE_TYPE, Test.GENERAL_MODULETYPE);
 			reference.put(ModuleData.KEY_RADIO_CONTROL_DATA, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_RADIOCONTROLDATA.getStore()));
 			reference.put(ModuleData.KEY_CLIMATE_CONTROL_DATA, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_CLIMATECONTROLDATA.getStore()));
@@ -75,32 +75,32 @@ public class ModuleDataTests extends TestCase{
 			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
-			while(iterator.hasNext()){
+			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
 
-				if(key.equals(ModuleData.KEY_RADIO_CONTROL_DATA)){
+				if (key.equals(ModuleData.KEY_RADIO_CONTROL_DATA)) {
 					JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateRadioControlData( new RadioControlData(hashReference), new RadioControlData(hashTest)));
-				} else if(key.equals(ModuleData.KEY_CLIMATE_CONTROL_DATA)){
+					assertTrue(Test.TRUE, Validator.validateRadioControlData(new RadioControlData(hashReference), new RadioControlData(hashTest)));
+				} else if (key.equals(ModuleData.KEY_CLIMATE_CONTROL_DATA)) {
 					JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateClimateControlData( new ClimateControlData(hashReference), new ClimateControlData(hashTest)));
-				} else if(key.equals(ModuleData.KEY_SEAT_CONTROL_DATA)){
+					assertTrue(Test.TRUE, Validator.validateClimateControlData(new ClimateControlData(hashReference), new ClimateControlData(hashTest)));
+				} else if (key.equals(ModuleData.KEY_SEAT_CONTROL_DATA)) {
 					JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
 					assertTrue(Test.TRUE, Validator.validateSeatControlData(new SeatControlData(hashReference), new SeatControlData(hashTest)));
-				} else{
+				} else {
 					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}
 			}
-		} catch(JSONException e){
+		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
 	}

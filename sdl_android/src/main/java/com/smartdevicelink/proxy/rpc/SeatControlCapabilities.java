@@ -1,10 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
-import com.smartdevicelink.proxy.RPCStruct;
 import android.support.annotation.NonNull;
+
+import com.smartdevicelink.proxy.RPCStruct;
+
 import java.util.Hashtable;
 
-public class SeatControlCapabilities extends RPCStruct{
+public class SeatControlCapabilities extends RPCStruct {
 	public static final String KEY_MODULE_NAME = "moduleName";
 	public static final String KEY_HEATING_ENABLED_AVAILABLE = "heatingEnabledAvailable";
 	public static final String KEY_COOLING_ENABLED_AVAILABLE = "coolingEnabledAvailable";
@@ -25,18 +27,18 @@ public class SeatControlCapabilities extends RPCStruct{
 	/**
 	 * Constructs a new SeatControlCapabilities object
 	 */
-	public SeatControlCapabilities() { }
+	public SeatControlCapabilities() {
+	}
 
 	/**
 	 * <p>Constructs a new SeatControlCapabilities object indicated by the Hashtable parameter
 	 * </p>
 	 *
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
 	public SeatControlCapabilities(Hashtable<String, Object> hash) {
-        super(hash);
-    }
+		super(hash);
+	}
 
 	public SeatControlCapabilities(@NonNull String moduleName) {
 		this();
@@ -45,19 +47,21 @@ public class SeatControlCapabilities extends RPCStruct{
 
 	/**
 	 * Get the moduleName portion of the SeatControlCapabilities class
+	 *
 	 * @return String
 	 */
 	public String getModuleName() {
-        return getString( KEY_MODULE_NAME );
-    }
+		return getString(KEY_MODULE_NAME);
+	}
 
 	/**
 	 * Sets the moduleName portion of the SeatControlCapabilities class
-	 * @param moduleName  -  The short friendly name of the light control module. It should not be used to identify a module by mobile application.
+	 *
+	 * @param moduleName -  The short friendly name of the light control module. It should not be used to identify a module by mobile application.
 	 */
-	public void setModuleName(@NonNull String moduleName ) {
-        setValue(KEY_MODULE_NAME, moduleName);
-    }
+	public void setModuleName(@NonNull String moduleName) {
+		setValue(KEY_MODULE_NAME, moduleName);
+	}
 
 	/**
 	 * Sets the heatingEnabledAvailable portion of the SeatControlCapabilities class
@@ -110,8 +114,8 @@ public class SeatControlCapabilities extends RPCStruct{
 	 * @return Boolean.
 	 */
 	public Boolean getHeatingLevelAvailable() {
-        return getBoolean(KEY_HEATING_LEVEL_AVAILABLE);
-    }
+		return getBoolean(KEY_HEATING_LEVEL_AVAILABLE);
+	}
 
 	/**
 	 * Sets the coolingLevelAvailable portion of the SeatControlCapabilities class
@@ -128,8 +132,8 @@ public class SeatControlCapabilities extends RPCStruct{
 	 * @return Boolean.
 	 */
 	public Boolean getCoolingLevelAvailable() {
-        return getBoolean(KEY_COOLING_LEVEL_AVAILABLE);
-    }
+		return getBoolean(KEY_COOLING_LEVEL_AVAILABLE);
+	}
 
 	/**
 	 * Sets the horizontalPositionAvailable portion of the SeatControlCapabilities class
@@ -218,8 +222,8 @@ public class SeatControlCapabilities extends RPCStruct{
 	 * @return Boolean.
 	 */
 	public Boolean getBackTiltAngleAvailable() {
-        return getBoolean(KEY_BACK_TILT_ANGLE_AVAILABLE);
-    }
+		return getBoolean(KEY_BACK_TILT_ANGLE_AVAILABLE);
+	}
 
 	/**
 	 * Sets the headSupportHorizontalPositionAvailable portion of the SeatControlCapabilities class
@@ -290,8 +294,8 @@ public class SeatControlCapabilities extends RPCStruct{
 	 * @return Boolean.
 	 */
 	public Boolean getMassageModeAvailable() {
-        return getBoolean(KEY_MASSAGE_MODE_AVAILABLE);
-    }
+		return getBoolean(KEY_MASSAGE_MODE_AVAILABLE);
+	}
 
 	/**
 	 * Sets the massageCushionFirmnessAvailable portion of the SeatControlCapabilities class
@@ -326,6 +330,6 @@ public class SeatControlCapabilities extends RPCStruct{
 	 * @return Boolean.
 	 */
 	public Boolean getMemoryAvailable() {
-        return getBoolean(KEY_MEMORY_AVAILABLE);
-    }
+		return getBoolean(KEY_MEMORY_AVAILABLE);
+	}
 }

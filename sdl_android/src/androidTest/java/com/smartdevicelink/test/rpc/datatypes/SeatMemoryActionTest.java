@@ -13,11 +13,11 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.SeatMemoryAction}
  */
 public class SeatMemoryActionTest extends TestCase {
-	
+
 	private SeatMemoryAction msg;
 
 	@Override
@@ -32,7 +32,7 @@ public class SeatMemoryActionTest extends TestCase {
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
-	public void testRpcValues () {
+	public void testRpcValues() {
 		// Test Values
 		Integer id = msg.getId();
 		String label = msg.getLabel();
@@ -55,7 +55,7 @@ public class SeatMemoryActionTest extends TestCase {
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
-		try {			
+		try {
 			reference.put(SeatMemoryAction.KEY_ID, Test.GENERAL_INT);
 			reference.put(SeatMemoryAction.KEY_LABEL, Test.GENERAL_STRING);
 			reference.put(SeatMemoryAction.KEY_ACTION, Test.GENERAL_SEATMEMORYACTIONTYPE);
@@ -66,7 +66,6 @@ public class SeatMemoryActionTest extends TestCase {
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				
 				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {

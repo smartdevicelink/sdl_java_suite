@@ -1,11 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.SeatMemoryActionType;
-import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
-public class SeatMemoryAction extends RPCStruct{
+public class SeatMemoryAction extends RPCStruct {
 	public static final String KEY_ID = "id";
 	public static final String KEY_LABEL = "label";
 	public static final String KEY_ACTION = "action";
@@ -13,18 +15,18 @@ public class SeatMemoryAction extends RPCStruct{
 	/**
 	 * Constructs a new SeatMemoryAction object
 	 */
-	public SeatMemoryAction() { }
+	public SeatMemoryAction() {
+	}
 
 	/**
 	 * <p>Constructs a new SeatMemoryAction object indicated by the Hashtable parameter
 	 * </p>
 	 *
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
 	public SeatMemoryAction(Hashtable<String, Object> hash) {
-        super(hash);
-    }
+		super(hash);
+	}
 
 	public SeatMemoryAction(@NonNull Integer id, @NonNull SeatMemoryActionType action) {
 		this();
@@ -38,8 +40,8 @@ public class SeatMemoryAction extends RPCStruct{
 	 * @param id
 	 */
 	public void setId(@NonNull Integer id) {
-        setValue(KEY_ID, id);
-    }
+		setValue(KEY_ID, id);
+	}
 
 	/**
 	 * Gets the id portion of the SeatMemoryAction class
@@ -47,8 +49,8 @@ public class SeatMemoryAction extends RPCStruct{
 	 * @return Integer
 	 */
 	public Integer getId() {
-        return getInteger(KEY_ID);
-    }
+		return getInteger(KEY_ID);
+	}
 
 	/**
 	 * Sets the label portion of the SeatMemoryAction class
@@ -56,8 +58,8 @@ public class SeatMemoryAction extends RPCStruct{
 	 * @param label
 	 */
 	public void setLabel(String label) {
-        setValue(KEY_LABEL, label);
-    }
+		setValue(KEY_LABEL, label);
+	}
 
 	/**
 	 * Gets the label portion of the SeatMemoryAction class
@@ -65,8 +67,8 @@ public class SeatMemoryAction extends RPCStruct{
 	 * @return String
 	 */
 	public String getLabel() {
-        return getString(KEY_LABEL);
-    }
+		return getString(KEY_LABEL);
+	}
 
 	/**
 	 * Sets the action portion of the SeatMemoryAction class
@@ -74,8 +76,8 @@ public class SeatMemoryAction extends RPCStruct{
 	 * @param action
 	 */
 	public void setAction(@NonNull SeatMemoryActionType action) {
-        setValue(KEY_ACTION, action);
-    }
+		setValue(KEY_ACTION, action);
+	}
 
 	/**
 	 * Gets the action portion of the SeatMemoryAction class

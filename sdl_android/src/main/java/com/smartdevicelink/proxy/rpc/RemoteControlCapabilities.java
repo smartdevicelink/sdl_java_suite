@@ -1,11 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
+
 import java.util.Hashtable;
 import java.util.List;
 
-public class RemoteControlCapabilities extends RPCStruct{
-	public static final String KEY_CLIMATE_CONTROL_CAPABILITIES= "climateControlCapabilities";
+public class RemoteControlCapabilities extends RPCStruct {
+	public static final String KEY_CLIMATE_CONTROL_CAPABILITIES = "climateControlCapabilities";
 	public static final String KEY_RADIO_CONTROL_CAPABILITIES = "radioControlCapabilities";
 	public static final String KEY_BUTTON_CAPABILITIES = "buttonCapabilities";
 	public static final String KEY_SEAT_CONTROL_CAPABILITIES = "seatControlCapabilities";
@@ -14,15 +15,14 @@ public class RemoteControlCapabilities extends RPCStruct{
 	}
 
 	public RemoteControlCapabilities(Hashtable<String, Object> hash) {
-        super(hash);
-    }
+		super(hash);
+	}
 
 	/**
 	 * Sets the climateControlCapabilities portion of the RemoteControlCapabilities class
 	 *
-	 * @param climateControlCapabilities
-	 * If included, the platform supports RC climate controls.
-	 * For this baseline version, maxsize=1. i.e. only one climate control module is supported.
+	 * @param climateControlCapabilities If included, the platform supports RC climate controls.
+	 *                                   For this baseline version, maxsize=1. i.e. only one climate control module is supported.
 	 */
 	public void setClimateControlCapabilities(List<ClimateControlCapabilities> climateControlCapabilities) {
 		setValue(KEY_CLIMATE_CONTROL_CAPABILITIES, climateControlCapabilities);
@@ -42,9 +42,8 @@ public class RemoteControlCapabilities extends RPCStruct{
 	/**
 	 * Sets the radioControlCapabilities portion of the RemoteControlCapabilities class
 	 *
-	 * @param radioControlCapabilities
-	 * If included, the platform supports RC climate controls.
-	 * For this baseline version, maxsize=1. i.e. only one radio control module is supported.
+	 * @param radioControlCapabilities If included, the platform supports RC climate controls.
+	 *                                 For this baseline version, maxsize=1. i.e. only one radio control module is supported.
 	 */
 	public void setRadioControlCapabilities(List<RadioControlCapabilities> radioControlCapabilities) {
 		setValue(KEY_RADIO_CONTROL_CAPABILITIES, radioControlCapabilities);
@@ -64,8 +63,7 @@ public class RemoteControlCapabilities extends RPCStruct{
 	/**
 	 * Sets the buttonCapabilities portion of the RemoteControlCapabilities class
 	 *
-	 * @param buttonCapabilities
-	 * If included, the platform supports RC button controls with the included button names.
+	 * @param buttonCapabilities If included, the platform supports RC button controls with the included button names.
 	 */
 	public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
 		setValue(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
@@ -84,8 +82,7 @@ public class RemoteControlCapabilities extends RPCStruct{
 	/**
 	 * Sets the seatControlCapabilities portion of the RemoteControlCapabilities class
 	 *
-	 * @param seatControlCapabilities
-	 * If included, the platform supports seat controls.
+	 * @param seatControlCapabilities If included, the platform supports seat controls.
 	 */
 	public void setSeatControlCapabilities(List<SeatControlCapabilities> seatControlCapabilities) {
 		setValue(KEY_SEAT_CONTROL_CAPABILITIES, seatControlCapabilities);
