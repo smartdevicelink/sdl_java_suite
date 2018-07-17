@@ -29,10 +29,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 public class WiProProtocol extends AbstractProtocol {
 	private static final String TAG ="SdlProtocol";
@@ -166,8 +164,13 @@ public class WiProProtocol extends AbstractProtocol {
 		}
 	}
 
-	public void setRegisteredForTransport(TransportType transportType, boolean registered){
-		List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.get(transportType);
+	/**
+	 * Handles when a secondary transport can be used to start services on or when the request as failed.
+	 * @param transportType the transport type that the event has taken place on
+	 * @param registered if the transport was successfully registered on
+	 */
+	private void handleSecondaryTransportRegistration(TransportType transportType, boolean registered){
+		List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.remove(transportType);
 		if(listenerList != null){
 			for(ISecondaryTransportListener listener : listenerList){
 				if(registered) {
@@ -176,17 +179,24 @@ public class WiProProtocol extends AbstractProtocol {
 					listener.onConnectionFailure();
 				}
 			}
-			secondaryTransportListeners.remove(transportType);
 		}
+
 		if(registered) {
 			Log.d(TAG, transportType.toString() + " transport was registered!");
 			if (supportedSecondaryTransports.contains(transportType)) {
+				// If the transport type that is now available to be used it should be checked
+				// against the list of services that might be able to be started on it
+
 				for(SessionType secondaryService : HIGH_BANDWIDTH_SERVICES){
 					if (supportedServicesMap.containsKey(secondaryService)) {
+						// If this service type has extra information from the RPC StartServiceACK
+						// parse through it to find which transport should be used to start this
+						// specific service type
 						for(int transportNum : supportedServicesMap.get(secondaryService)){
 							if(transportNum == PRIMARY_TRANSPORT_ID){
-								break; // Primary is favored, break out...
+								break; // Primary is favored for this service type, break out...
 							}else if(transportNum == SECONDARY_TRANSPORT_ID){
+								// The secondary transport can be used to start this service
 								activeTransports.put(secondaryService, transportType);
 								break;
 							}
@@ -871,10 +881,10 @@ public class WiProProtocol extends AbstractProtocol {
 					handleProtocolServiceDataACK(serviceType, serviceDataAckSize,(byte)packet.getSessionId ());
 				}
 			} else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportACK.getValue()) {
-				setRegisteredForTransport(packet.getTransportType(),true);
+				handleSecondaryTransportRegistration(packet.getTransportType(),true);
 			} else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportNACK.getValue()) {
 				String reason = (String) packet.getTag(ControlFrameTags.RPC.RegisterSecondaryTransportNAK.REASON);
-				setRegisteredForTransport(packet.getTransportType(),false);
+				handleSecondaryTransportRegistration(packet.getTransportType(),false);
 			} else if (frameInfo == FrameDataControlFrameType.TransportEventUpdate.getValue()) {
 				// Get TCP params
 				String ipAddr = (String) packet.getTag(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS);
