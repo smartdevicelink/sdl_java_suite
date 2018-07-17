@@ -725,6 +725,8 @@ public class WiProProtocol extends AbstractProtocol {
 						setSupportedServices(SessionType.PCM, audio);
 						setSupportedServices(SessionType.NAV, video);
 
+						boolean activeTransportsHandled = false;
+
 						if(version!=null){
 							//At this point we have confirmed the negotiated version between the module and the proxy
 							protocolVersion = new Version((String)version);
@@ -753,7 +755,7 @@ public class WiProProtocol extends AbstractProtocol {
 										activeTransports.put(SessionType.PCM, transportType);
 									}
 
-									return;
+									activeTransportsHandled = true;
 
 								} else {
 									Log.w(TAG, "Received a start service ack for RPC service while already active on a different transport.");
@@ -768,14 +770,16 @@ public class WiProProtocol extends AbstractProtocol {
 							onTransportNotAccepted(transportType + " can't support high bandwidth requirement, and secondary transport not supported in this protocol version: " + version.toString());
 							return;
 						}
+						if(!activeTransportsHandled) {
+							availableTransports.add(transportType);
 
-						activeTransports.put(SessionType.RPC, transportType);
-						activeTransports.put(SessionType.BULK_DATA, transportType);
-						activeTransports.put(SessionType.CONTROL, transportType);
-						activeTransports.put(SessionType.NAV, transportType);
-						activeTransports.put(SessionType.PCM, transportType);
+							activeTransports.put(SessionType.RPC, transportType);
+							activeTransports.put(SessionType.BULK_DATA, transportType);
+							activeTransports.put(SessionType.CONTROL, transportType);
+							activeTransports.put(SessionType.NAV, transportType);
+							activeTransports.put(SessionType.PCM, transportType);
+						}
 
-						return;
 
 					}else if(serviceType.equals(SessionType.NAV)){
 						SdlSession session = null;
@@ -806,6 +810,7 @@ public class WiProProtocol extends AbstractProtocol {
 						return;
 					}
 					//If version < 5 and transport is acceptable we need to just add these
+					availableTransports.add(transportType);
 					activeTransports.put(SessionType.RPC, transportType);
 					activeTransports.put(SessionType.BULK_DATA, transportType);
 					activeTransports.put(SessionType.CONTROL, transportType);
