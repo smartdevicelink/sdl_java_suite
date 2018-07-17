@@ -37,7 +37,7 @@ public class LockScreenManager extends BaseSubManager {
 	private int lockScreenIcon, lockscreenColor, customView;
 	private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
 
-	public interface OnLockScreenIconDownloadedListener{
+	public interface OnLockScreenIconDownloadedListener {
 		void onLockScreenIconDownloaded(Bitmap icon);
 		void onLockScreenIconDownloadError(Exception e);
 	}
@@ -198,7 +198,7 @@ public class LockScreenManager extends BaseSubManager {
 	 */
 	private void sendDownloadIconBroadcast(String URL){
 		Intent intent = new Intent(SDLLockScreenActivity.DOWNLOAD_ICON_ACTION);
-		intent.putExtra("URL", URL);
+		intent.putExtra(SDLLockScreenActivity.DOWNLOAD_ICON_URL, URL);
 		context.get().sendBroadcast(intent);
 	}
 
@@ -210,37 +210,30 @@ public class LockScreenManager extends BaseSubManager {
 	 */
 	private synchronized LockScreenStatus getLockScreenStatus() {
 
-		if ( (hmiLevel == null) || (hmiLevel.equals(HMILevel.HMI_NONE)) )
-		{
+		if ( (hmiLevel == null) || (hmiLevel.equals(HMILevel.HMI_NONE))) {
 			return LockScreenStatus.OFF;
 		}
-		else if ( hmiLevel.equals(HMILevel.HMI_BACKGROUND) )
-		{
-			if (!driverDistStatus)
-			{
+		else if ( hmiLevel.equals(HMILevel.HMI_BACKGROUND)) {
+			if (!driverDistStatus) {
 				//we don't have driver distraction, lock screen is entirely based on if user is using the app on the head unit
-				if (isAppInUse)
+				if (isAppInUse) {
 					return LockScreenStatus.REQUIRED;
-				else
+				} else {
 					return LockScreenStatus.OFF;
+				}
 			}
-			else if (isAppInUse)
-			{
+			else if (isAppInUse) {
 				return LockScreenStatus.REQUIRED;
-			}
-			else
-			{
+			} else {
 				return LockScreenStatus.OFF;
 			}
 		}
-		else if ( (hmiLevel.equals(HMILevel.HMI_FULL)) || (hmiLevel.equals(HMILevel.HMI_LIMITED)) )
-		{
-			if (!driverDistStatus)
-			{
+		else if ( (hmiLevel.equals(HMILevel.HMI_FULL)) || (hmiLevel.equals(HMILevel.HMI_LIMITED))) {
+			if (!driverDistStatus) {
 				return LockScreenStatus.OPTIONAL;
-			}
-			else
+			} else {
 				return LockScreenStatus.REQUIRED;
+			}
 		}
 		return LockScreenStatus.OFF;
 	}

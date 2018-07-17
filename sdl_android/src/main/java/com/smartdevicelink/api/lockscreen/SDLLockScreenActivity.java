@@ -6,13 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.util.HttpUtils;
@@ -21,16 +20,16 @@ import java.io.IOException;
 
 public class SDLLockScreenActivity extends Activity {
 
-	private static final String TAG = "SDLLockScreenActivity";
-	private Bitmap lockScreenIcon, lockScreenOEMIcon;
-	private ImageView lockscreen_iv;
-	private TextView lockscreen_tv;
-	private int customView, customIcon;
 	public static final String LOCKSCREEN_COLOR_EXTRA = "LOCKSCREEN_COLOR_EXTRA";
 	public static final String LOCKSCREEN_ICON_EXTRA = "LOCKSCREEN_ICON_EXTRA";
 	public static final String LOCKSCREEN_CUSTOM_VIEW_EXTRA = "LOCKSCREEN_CUSTOM_VIEW_EXTRA";
 	public static final String CLOSE_LOCK_SCREEN_ACTION = "CLOSE_LOCK_SCREEN";
 	public static final String DOWNLOAD_ICON_ACTION = "DOWNLOAD_ICON";
+	public static final String DOWNLOAD_ICON_URL = "DOWNLOAD_ICON_URL";
+	private static final String TAG = "SDLLockScreenActivity";
+
+	private Bitmap lockScreenOEMIcon;
+	private int customView, customIcon, customColor;
 
 	private final BroadcastReceiver closeLockScreenBroadcastReceiver = new BroadcastReceiver() {
 		@Override
@@ -45,7 +44,7 @@ public class SDLLockScreenActivity extends Activity {
 			// get data from intent
 			if (intent != null) {
 				Log.i(TAG, "downloadLockScreenIconBroadcastReceiver called");
-				String URL = intent.getStringExtra("URL");
+				String URL = intent.getStringExtra(DOWNLOAD_ICON_URL);
 				if (URL != null) {
 					downloadLockScreenIcon(URL, null);
 				}
@@ -57,7 +56,11 @@ public class SDLLockScreenActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+		// set any parameters that came from the lock screen manager
 		initializeActivity(getIntent());
+
+		// register broadcast receivers
 		registerReceiver(closeLockScreenBroadcastReceiver, new IntentFilter(CLOSE_LOCK_SCREEN_ACTION));
 		registerReceiver(downloadLockScreenIconBroadcastReceiver, new IntentFilter(DOWNLOAD_ICON_ACTION));
 	}
@@ -71,20 +74,39 @@ public class SDLLockScreenActivity extends Activity {
 	}
 
 	public void initializeActivity(Intent intent){
+		if (intent != null){
+			customColor = intent.getIntExtra(LOCKSCREEN_COLOR_EXTRA, 0);
+			customIcon = intent.getIntExtra(LOCKSCREEN_ICON_EXTRA, 0);
+			customView = intent.getIntExtra(LOCKSCREEN_CUSTOM_VIEW_EXTRA, 0);
 
-		// read intent and parse out view, bg color, icon.
+			if (customView != 0){
+				setCustomView();
+			} else {
+				setContentView(R.layout.activity_sdllock_screen);
 
-		// primitives init with a 0, cant do a null check
-		if (customView != 0) {
-			setContentView(R.layout.activity_sdllock_screen);
-			lockscreen_iv = findViewById(R.id.lockscreen_image);
-			lockscreen_tv = findViewById(R.id.lockscreen_text);
-			lockScreenIcon = BitmapFactory.decodeResource(getResources(), customIcon);
+				if (customColor != 0){
+					changeBackgroundColor();
+				}
 
-			// if bg or icon not null, set them
-		}else{
-			setContentView(customView);
+				if (customIcon != 0){
+					changeIcon();
+				}
+			}
 		}
+	}
+
+	private void changeBackgroundColor() {
+		RelativeLayout layout = findViewById(R.id.lockscreen_relative_layout);
+		layout.setBackgroundColor(customColor);
+	}
+
+	private void changeIcon() {
+		ImageView lockscreen_iv = findViewById(R.id.lockscreen_image);
+		lockscreen_iv.setBackgroundResource(customIcon);
+	}
+
+	private void setCustomView() {
+		setContentView(customView);
 	}
 
 	public void downloadLockScreenIcon(final String url, final LockScreenManager.OnLockScreenIconDownloadedListener lockScreenListener){

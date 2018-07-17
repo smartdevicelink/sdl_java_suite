@@ -174,7 +174,11 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 			return this;
 		}
 
-
+		/**
+		 * Sets the LockScreenConfig for the session. <br>
+		 * <strong>Note: If not set, the default configuration will be used.</strong>
+		 * @param lockScreenConfig - configuration options
+		 */
 		public Builder setLockScreenConfig (final LockScreenConfig lockScreenConfig){
 			sdlManager.lockScreenConfig = lockScreenConfig;
 			return this;
