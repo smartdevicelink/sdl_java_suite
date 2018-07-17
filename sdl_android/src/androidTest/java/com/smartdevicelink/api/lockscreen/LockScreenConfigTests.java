@@ -1,9 +1,9 @@
 package com.smartdevicelink.api.lockscreen;
 
-import android.graphics.Color;
 import android.test.AndroidTestCase;
 
-import com.smartdevicelink.R;
+import com.smartdevicelink.test.Test;
+
 
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
@@ -20,9 +20,9 @@ public class LockScreenConfigTests extends AndroidTestCase {
 		super.setUp();
 
 		// set info for all the setters
-		lockScreenConfig.setCustomView(R.layout.activity_sdllock_screen);
-		lockScreenConfig.setAppIcon(R.drawable.sdl_lockscreen_icon);
-		lockScreenConfig.setBackgroundColor(Color.BLUE);
+		lockScreenConfig.setCustomView(Test.GENERAL_INT);
+		lockScreenConfig.setAppIcon(Test.GENERAL_INT);
+		lockScreenConfig.setBackgroundColor(Test.GENERAL_INT);
 		lockScreenConfig.setEnabled(true);
 	}
 
@@ -34,9 +34,9 @@ public class LockScreenConfigTests extends AndroidTestCase {
 	public void testLockScreenConfig() {
 
 		// get the info and make sure its correct
-		assertEquals(R.layout.activity_sdllock_screen, lockScreenConfig.getCustomView());
-		assertEquals(R.drawable.sdl_lockscreen_icon, lockScreenConfig.getAppIcon());
-		assertEquals(Color.BLUE, lockScreenConfig.getBackgroundColor());
+		assertEquals(Test.GENERAL_INT, lockScreenConfig.getCustomView());
+		assertEquals(Test.GENERAL_INT, lockScreenConfig.getAppIcon());
+		assertEquals(Test.GENERAL_INT, lockScreenConfig.getBackgroundColor());
 		assertEquals(true, lockScreenConfig.getEnabled());
 	}
 
