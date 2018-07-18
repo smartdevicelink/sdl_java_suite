@@ -88,10 +88,19 @@ public class LockScreenConfig {
 		return customViewInt;
 	}
 
+	/**
+	 * Whether or not to show the OEM logo on the default lock screen <br>
+	 * If using a Custom View, this will be ignored.
+	 * @param showOEMLogo - boolean
+	 */
 	public void setShowOEMLogo(boolean showOEMLogo) {
 		this.showOEMLogo = showOEMLogo;
 	}
 
+	/**
+	 * Get whether or not to show the OEM Logo on the default lock screen
+	 * @return showOEMLogo - boolean
+	 */
 	public boolean getShowOEMLogo() {
 		return showOEMLogo;
 	}

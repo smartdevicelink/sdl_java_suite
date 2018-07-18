@@ -33,7 +33,7 @@ public class LockScreenManager extends BaseSubManager {
 	private static final String TAG = "LockScreenManager";
 	private WeakReference<Context> context;
 	private HMILevel hmiLevel;
-	private boolean isAppInUse, driverDistStatus, lockScreenEnabled;
+	private boolean isAppInUse, driverDistStatus, lockScreenEnabled, showOEMLogo;
 	private int lockScreenIcon, lockscreenColor, customView;
 	private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
 
@@ -84,6 +84,7 @@ public class LockScreenManager extends BaseSubManager {
 		lockscreenColor = lockScreenConfig.getBackgroundColor();
 		customView = lockScreenConfig.getCustomView();
 		lockScreenEnabled = lockScreenConfig.getEnabled();
+		showOEMLogo = lockScreenConfig.getShowOEMLogo();
 	}
 
 	/**
@@ -180,6 +181,7 @@ public class LockScreenManager extends BaseSubManager {
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_ICON_EXTRA, lockScreenIcon);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_COLOR_EXTRA, lockscreenColor);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_CUSTOM_VIEW_EXTRA, customView);
+				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_OEM_ICON_EXTRA, showOEMLogo);
 
 				context.get().startActivity(showLockScreenIntent);
 			} else if (status == LockScreenStatus.OFF) {

@@ -22,6 +22,7 @@ public class SDLLockScreenActivity extends Activity {
 
 	public static final String LOCKSCREEN_COLOR_EXTRA = "LOCKSCREEN_COLOR_EXTRA";
 	public static final String LOCKSCREEN_ICON_EXTRA = "LOCKSCREEN_ICON_EXTRA";
+	public static final String LOCKSCREEN_OEM_ICON_EXTRA = "LOCKSCREEN_OEM_ICON_EXTRA";
 	public static final String LOCKSCREEN_CUSTOM_VIEW_EXTRA = "LOCKSCREEN_CUSTOM_VIEW_EXTRA";
 	public static final String CLOSE_LOCK_SCREEN_ACTION = "CLOSE_LOCK_SCREEN";
 	public static final String DOWNLOAD_ICON_ACTION = "DOWNLOAD_ICON";
@@ -30,6 +31,7 @@ public class SDLLockScreenActivity extends Activity {
 
 	private Bitmap lockScreenOEMIcon;
 	private int customView, customIcon, customColor;
+	private boolean showOEMLogo;
 
 	private final BroadcastReceiver closeLockScreenBroadcastReceiver = new BroadcastReceiver() {
 		@Override
@@ -78,6 +80,7 @@ public class SDLLockScreenActivity extends Activity {
 			customColor = intent.getIntExtra(LOCKSCREEN_COLOR_EXTRA, 0);
 			customIcon = intent.getIntExtra(LOCKSCREEN_ICON_EXTRA, 0);
 			customView = intent.getIntExtra(LOCKSCREEN_CUSTOM_VIEW_EXTRA, 0);
+			showOEMLogo = intent.getBooleanExtra(LOCKSCREEN_OEM_ICON_EXTRA, true);
 
 			if (customView != 0){
 				setCustomView();
@@ -117,6 +120,14 @@ public class SDLLockScreenActivity extends Activity {
 					lockScreenOEMIcon = HttpUtils.downloadImage(url);
 					if(lockScreenListener != null){
 						Log.i(TAG, "Lock Screen Icon Downloaded");
+						if (showOEMLogo){
+							Log.i(TAG, "OEM LOGO SHOW == TRUE");
+							ImageView oem_iv = findViewById(R.id.OEM_image);
+							if (lockScreenOEMIcon != null) {
+								Log.i(TAG, "Setting OEM Logo Bitmap");
+								oem_iv.setImageBitmap(lockScreenOEMIcon);
+							}
+						}
 						lockScreenListener.onLockScreenIconDownloaded(lockScreenOEMIcon);
 					}
 				}catch(IOException e){

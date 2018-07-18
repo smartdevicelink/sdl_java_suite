@@ -24,6 +24,7 @@ public class LockScreenConfigTests extends AndroidTestCase {
 		lockScreenConfig.setCustomView(Test.GENERAL_INT);
 		lockScreenConfig.setAppIcon(Test.GENERAL_INT);
 		lockScreenConfig.setBackgroundColor(Test.GENERAL_INT);
+		lockScreenConfig.setShowOEMLogo(true);
 		lockScreenConfig.setEnabled(true);
 	}
 
@@ -39,6 +40,7 @@ public class LockScreenConfigTests extends AndroidTestCase {
 		assertEquals(Test.GENERAL_INT, lockScreenConfig.getAppIcon());
 		assertEquals(Test.GENERAL_INT, lockScreenConfig.getBackgroundColor());
 		assertEquals(true, lockScreenConfig.getEnabled());
+		assertEquals(true, lockScreenConfig.getShowOEMLogo());
 	}
 
 }
