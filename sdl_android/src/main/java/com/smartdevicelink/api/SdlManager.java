@@ -2,6 +2,7 @@ package com.smartdevicelink.api;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -65,6 +66,9 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	private final ProxyBridge proxyBridge= new ProxyBridge(this);
 	//public LockScreenConfig lockScreenConfig;
 
+	private InitializationListener initListener;
+	private boolean initialized = false;
+
 	// Managers
     /*
     private FileManager fileManager;
@@ -74,6 +78,27 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
     private ScreenManager screenManager;
     private PermissionManager permissionManager;
     */
+
+	InitializationListener subManagerListener = new InitializationListener() {
+		boolean allSucceeded = true;
+		int subManagerCount = 1; // Update per amount of sub managers implemented
+		@Override
+		public void OnInitialized(boolean success) {
+			if(!success){
+				allSucceeded = false;
+			}
+			subManagerCount--;
+			if(subManagerCount <= 0){
+				if(allSucceeded){
+					initialized = true;
+				}
+				if(initListener != null){
+					initListener.OnInitialized(allSucceeded);
+					initListener = null;
+				}
+			}
+		}
+	};
 
 	private void initialize(){
 		// instantiate managers
@@ -379,6 +404,20 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	}
 
 	// LIFECYCLE / OTHER
+
+	// STARTUP
+	public void start(InitializationListener listener){
+		initListener = listener;
+		if(initialized){
+			listener.OnInitialized(true);
+		}
+	}
+
+	@Override
+	public void onProxyConnected() {
+		Log.d(TAG, "Proxy is connected. Now initializing.");
+		this.initialize();
+	}
 
 	@Override
 	public void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason){

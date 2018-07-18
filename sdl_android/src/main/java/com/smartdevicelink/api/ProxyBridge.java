@@ -3,10 +3,10 @@ package com.smartdevicelink.api;
 import android.util.SparseArray;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.IProxyListener;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
-import com.smartdevicelink.proxy.interfaces.IProxyListenerBase;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
 import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
@@ -28,6 +28,7 @@ import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.GetWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
+import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
 import com.smartdevicelink.proxy.rpc.OnAudioPassThru;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
@@ -50,6 +51,7 @@ import com.smartdevicelink.proxy.rpc.PerformAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
 import com.smartdevicelink.proxy.rpc.SendHapticDataResponse;
@@ -68,6 +70,7 @@ import com.smartdevicelink.proxy.rpc.SubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
+import com.smartdevicelink.proxy.rpc.UnregisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
@@ -76,16 +79,33 @@ import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ProxyBridge implements IProxyListenerBase{
+public class ProxyBridge implements IProxyListener{
 	private final Object RPC_LISTENER_LOCK = new Object();
 	protected SparseArray<CopyOnWriteArrayList<OnRPCListener>> rpcListeners = null;
 	final LifecycleListener lifecycleListener;
+
+	@Override
+	public void onProxyOpened() {}
+
+	@Override
+	public void onRegisterAppInterfaceResponse(RegisterAppInterfaceResponse response) {
+		if(response.getSuccess()){
+			lifecycleListener.onProxyConnected();
+		}
+	}
+
+	@Override
+	public void onOnAppInterfaceUnregistered(OnAppInterfaceUnregistered notification) {}
+
+	@Override
+	public void onUnregisterAppInterfaceResponse(UnregisterAppInterfaceResponse response) {}
 
 	public interface OnRPCListener {
 		void onRpcReceived(int functionID, RPCMessage message);
 	}
 
 	protected interface LifecycleListener{
+		void onProxyConnected();
 		void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason);
 		void onServiceEnded(OnServiceEnded serviceEnded);
 		void onServiceNACKed(OnServiceNACKed serviceNACKed);
