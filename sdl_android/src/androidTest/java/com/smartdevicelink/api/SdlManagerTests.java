@@ -2,6 +2,7 @@ package com.smartdevicelink.api;
 
 import android.content.Context;
 import android.test.AndroidTestCase;
+import android.test.mock.MockContext;
 
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
@@ -22,7 +23,6 @@ public class SdlManagerTests extends AndroidTestCase {
 
 	public static final String TAG = "SdlManagerTests";
 	public static BaseTransportConfig transport = null;
-	private Context mTestContext;
 	private Vector<AppHMIType> appType;
 	private TemplateColorScheme templateColorScheme;
 
@@ -57,11 +57,9 @@ public class SdlManagerTests extends AndroidTestCase {
 
 	// SETUP / HELPERS
 
-	private Context getTestContext() {
-		return mTestContext;
-	}
-
 	private SdlManager createSampleManager(String appName, String appId){
+
+		Context context = new MockContext();
 
 		// build manager object - use all setters, will test using getters below
 		SdlManager.Builder builder = new SdlManager.Builder();
@@ -70,7 +68,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		builder.setShortAppName(appName);
 		builder.setAppTypes(appType);
 		builder.setTransportType(transport);
-		builder.setContext(getTestContext());
+		builder.setContext(context);
 		builder.setLanguage(Language.EN_US);
 		builder.setDayColorScheme(templateColorScheme);
 		builder.setNightColorScheme(templateColorScheme);
@@ -91,7 +89,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		try {
 			createSampleManager(null,"123456");
 		} catch (IllegalArgumentException ex) {
-			assertSame(ex.getMessage(), "You must specify an app name by calling setAppName");
+			assertSame(ex.getMessage(), "You must specify an app name by calling setAppName()");
 		}
 	}
 
@@ -99,7 +97,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		try {
 			createSampleManager("app",null);
 		} catch (IllegalArgumentException ex) {
-			assertSame(ex.getMessage(), "You must specify an app ID by calling setAppId");
+			assertSame(ex.getMessage(), "You must specify an app ID by calling setAppId()");
 		}
 	}
 

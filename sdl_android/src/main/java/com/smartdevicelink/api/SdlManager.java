@@ -243,15 +243,15 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 			try {
 
 				if (sdlManager.appName == null) {
-					throw new IllegalArgumentException("You must specify an app name by calling setAppName");
+					throw new IllegalArgumentException("You must specify an app name by calling setAppName()");
 				}
 
 				if (sdlManager.appId == null) {
-					throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
+					throw new IllegalArgumentException("You must specify an app ID by calling setAppId()");
 				}
 
 				if (sdlManager.context == null) {
-					throw new IllegalArgumentException("You set context by calling setContext");
+					throw new IllegalArgumentException("You need to set context by calling setContext()");
 				}
 
 				if (sdlManager.hmiTypes == null) {

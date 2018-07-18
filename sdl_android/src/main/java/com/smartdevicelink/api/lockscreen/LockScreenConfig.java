@@ -16,7 +16,7 @@ package com.smartdevicelink.api.lockscreen;
  */
 public class LockScreenConfig {
 
-	private boolean enableAutomaticLockScreen;
+	private boolean enableAutomaticLockScreen, showOEMLogo;
 	private int backgroundColor, appIconInt, customViewInt;
 
 	public LockScreenConfig(){}
@@ -86,6 +86,14 @@ public class LockScreenConfig {
 	 */
 	public int getCustomView() {
 		return customViewInt;
+	}
+
+	public void setShowOEMLogo(boolean showOEMLogo) {
+		this.showOEMLogo = showOEMLogo;
+	}
+
+	public boolean getShowOEMLogo() {
+		return showOEMLogo;
 	}
 
 }
