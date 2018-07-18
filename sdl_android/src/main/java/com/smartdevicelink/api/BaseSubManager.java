@@ -20,10 +20,23 @@ public abstract class BaseSubManager {
 	private final Object STATE_LOCK = new Object();
 	public static final int SETTING_UP = 0x00, READY = 0x30, SHUTDOWN = 0x60;
 	protected final ISdl internalInterface;
+	private CompletionListener completionListener;
 
 	public BaseSubManager(@NonNull ISdl internalInterface){
 		this.internalInterface = internalInterface;
 		transitionToState(SETTING_UP);
+	}
+
+	/**
+	 * Called to start
+	 * @param listener
+	 */
+	public void start(CompletionListener listener){
+		this.completionListener = listener;
+		if(state == READY){
+			completionListener.onComplete(true);
+			completionListener = null;
+		}
 	}
 
 	/**
@@ -36,6 +49,13 @@ public abstract class BaseSubManager {
 	protected void transitionToState(int state) {
 		synchronized (STATE_LOCK) {
 			this.state = state;
+		}
+		if(state == READY){
+			completionListener.onComplete(true);
+			completionListener = null;
+		}else if(state == SHUTDOWN){
+			completionListener.onComplete(false);
+			completionListener = null;
 		}
 	}
 

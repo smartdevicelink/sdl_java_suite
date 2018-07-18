@@ -64,10 +64,10 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
 
 	private final ProxyBridge proxyBridge= new ProxyBridge(this);
+	private CompletionListener initListener;
+	private boolean initialized = false;
 	//public LockScreenConfig lockScreenConfig;
 
-	private InitializationListener initListener;
-	private boolean initialized = false;
 
 	// Managers
     /*
@@ -79,11 +79,11 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
     private PermissionManager permissionManager;
     */
 
-	InitializationListener subManagerListener = new InitializationListener() {
+	CompletionListener subManagerListener = new CompletionListener() {
 		boolean allSucceeded = true;
 		int subManagerCount = 1; // Update per amount of sub managers implemented
 		@Override
-		public void OnInitialized(boolean success) {
+		public void onComplete(boolean success) {
 			if(!success){
 				allSucceeded = false;
 			}
@@ -93,7 +93,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 					initialized = true;
 				}
 				if(initListener != null){
-					initListener.OnInitialized(allSucceeded);
+					initListener.onComplete(allSucceeded);
 					initListener = null;
 				}
 			}
@@ -278,7 +278,6 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 					sdlManager.hmiLanguage = Language.EN_US;
 				}
 
-				sdlManager.initialize();
 				sdlManager.proxy = new SdlProxyBase(sdlManager.proxyBridge, sdlManager.appName, sdlManager.shortAppName, sdlManager.isMediaApp, sdlManager.hmiLanguage, sdlManager.hmiLanguage, sdlManager.hmiTypes, sdlManager.appId, sdlManager.transport, sdlManager.vrSynonyms, sdlManager.ttsChunks, sdlManager.dayColorScheme, sdlManager.nightColorScheme) {};
 			} catch (SdlException e) {
 				e.printStackTrace();
@@ -406,10 +405,10 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	// LIFECYCLE / OTHER
 
 	// STARTUP
-	public void start(InitializationListener listener){
+	public void start(CompletionListener listener){
 		initListener = listener;
 		if(initialized){
-			listener.OnInitialized(true);
+			listener.onComplete(true);
 		}
 	}
 
