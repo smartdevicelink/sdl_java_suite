@@ -18,7 +18,7 @@ public class LightNameTests extends TestCase {
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
-	public void testValidEnums () {	
+	public void testValidEnums () {
 		String example = "FRONT_LEFT_HIGH_BEAM";
 		LightName enumFrontLeftHighBeam = LightName.valueForString(example);
 		example = "FRONT_RIGHT_HIGH_BEAM";
@@ -36,9 +36,9 @@ public class LightNameTests extends TestCase {
 		example = "FRONT_RIGHT_FOG_LIGHT";
 		LightName enumFrontRightFogLight = LightName.valueForString(example);
 		example = "FRONT_LEFT_DAYTIME_RUNNING_LIGHT";
-		LightName enumFrontLeftDayTimeRunningLight = LightName.valueForString(example);
+		LightName enumFrontLeftDaytimeRunningLight = LightName.valueForString(example);
 		example = "FRONT_RIGHT_DAYTIME_RUNNING_LIGHT";
-		LightName enumFrontRightDayTimeRunningLight = LightName.valueForString(example);
+		LightName enumFrontRightDaytimeRunningLight = LightName.valueForString(example);
 		example = "FRONT_LEFT_TURN_LIGHT";
 		LightName enumFrontLeftTurnLight = LightName.valueForString(example);
 		example = "FRONT_RIGHT_TURN_LIGHT";
@@ -61,9 +61,8 @@ public class LightNameTests extends TestCase {
 		LightName enumRearRightTurnLight = LightName.valueForString(example);
 		example = "REAR_REGISTRATION_PLATE_LIGHT";
 		LightName enumRearRegistrationPlateLight = LightName.valueForString(example);
-
 		example = "HIGH_BEAMS";
-		LightName enumHightBeams = LightName.valueForString(example);
+		LightName enumHighBeams = LightName.valueForString(example);
 		example = "LOW_BEAMS";
 		LightName enumLowBeams = LightName.valueForString(example);
 		example = "FOG_LIGHTS";
@@ -84,6 +83,21 @@ public class LightNameTests extends TestCase {
 		LightName enumRightTurnLights = LightName.valueForString(example);
 		example = "HAZARD_LIGHTS";
 		LightName enumHazardLights = LightName.valueForString(example);
+
+		example = "REAR_CARGO_LIGHTS";
+		LightName enumRearCargoLights = LightName.valueForString(example);
+		example = "REAR_TRUCK_BED_LIGHTS";
+		LightName enumRearTruckBedLights = LightName.valueForString(example);
+		example = "REAR_TRAILER_LIGHTS";
+		LightName enumRearTrailerLights = LightName.valueForString(example);
+		example = "LEFT_SPOT_LIGHTS";
+		LightName enumLeftSpotLights = LightName.valueForString(example);
+		example = "RIGHT_SPOT_LIGHTS";
+		LightName enumRightSpotLights = LightName.valueForString(example);
+		example = "LEFT_PUDDLE_LIGHTS";
+		LightName enumLeftPuddleLights = LightName.valueForString(example);
+		example = "RIGHT_PUDDLE_LIGHTS";
+		LightName enumRightPuddleLights = LightName.valueForString(example);
 		example = "AMBIENT_LIGHTS";
 		LightName enumAmbientLights = LightName.valueForString(example);
 		example = "OVERHEAD_LIGHTS";
@@ -100,6 +114,8 @@ public class LightNameTests extends TestCase {
 		LightName enumExteriorLeftLights = LightName.valueForString(example);
 		example = "EXTERIOR_RIGHT_LIGHTS";
 		LightName enumExteriorRightLights = LightName.valueForString(example);
+		example = "EXTERIOR_ALL_LIGHTS";
+		LightName enumExteriorAllLights = LightName.valueForString(example);
 
 		assertNotNull("FRONT_LEFT_HIGH_BEAM returned null", enumFrontLeftHighBeam);
 		assertNotNull("FRONT_RIGHT_HIGH_BEAM returned null", enumFrontRightHighBeam);
@@ -109,8 +125,9 @@ public class LightNameTests extends TestCase {
 		assertNotNull("FRONT_RIGHT_PARKING_LIGHT returned null", enumFrontRightParkingLight);
 		assertNotNull("FRONT_LEFT_FOG_LIGHT returned null", enumFrontLeftFogLight);
 		assertNotNull("FRONT_RIGHT_FOG_LIGHT returned null", enumFrontRightFogLight);
-		assertNotNull("FRONT_LEFT_DAYTIME_RUNNING_LIGHT returned null", enumFrontLeftDayTimeRunningLight);
-		assertNotNull("FRONT_RIGHT_DAYTIME_RUNNING_LIGHT returned null", enumFrontRightDayTimeRunningLight);
+		assertNotNull("FRONT_LEFT_DAYTIME_RUNNING_LIGHT returned null", enumFrontLeftDaytimeRunningLight);
+		assertNotNull("FRONT_RIGHT_DAYTIME_RUNNING_LIGHT returned null", enumFrontRightDaytimeRunningLight);
+
 		assertNotNull("FRONT_LEFT_TURN_LIGHT returned null", enumFrontLeftTurnLight);
 		assertNotNull("FRONT_RIGHT_TURN_LIGHT returned null", enumFrontRightTurnLight);
 		assertNotNull("REAR_LEFT_FOG_LIGHT returned null", enumRearLeftFogLight);
@@ -122,25 +139,38 @@ public class LightNameTests extends TestCase {
 		assertNotNull("REAR_LEFT_TURN_LIGHT returned null", enumRearLeftTurnLight);
 		assertNotNull("REAR_RIGHT_TURN_LIGHT returned null", enumRearRightTurnLight);
 		assertNotNull("REAR_REGISTRATION_PLATE_LIGHT returned null", enumRearRegistrationPlateLight);
-		assertNotNull("HIGH_BEAMS returned null", enumHightBeams);
+
+		assertNotNull("HIGH_BEAMS returned null", enumHighBeams);
 		assertNotNull("LOW_BEAMS returned null", enumLowBeams);
 		assertNotNull("FOG_LIGHTS returned null", enumFogLights);
 		assertNotNull("RUNNING_LIGHTS returned null", enumRunningLights);
 		assertNotNull("PARKING_LIGHTS returned null", enumParkingLights);
 		assertNotNull("BRAKE_LIGHTS returned null", enumBrakeLights);
+
 		assertNotNull("REAR_REVERSING_LIGHTS returned null", enumRearReversingLights);
 		assertNotNull("SIDE_MARKER_LIGHTS returned null", enumSideMarkerLights);
 		assertNotNull("LEFT_TURN_LIGHTS returned null", enumLeftTurnLights);
 		assertNotNull("RIGHT_TURN_LIGHTS returned null", enumRightTurnLights);
 		assertNotNull("HAZARD_LIGHTS returned null", enumHazardLights);
+		assertNotNull("REAR_CARGO_LIGHTS returned null", enumRearCargoLights);
+		assertNotNull("REAR_TRUCK_BED_LIGHTS returned null", enumRearTruckBedLights);
+		assertNotNull("REAR_TRAILER_LIGHTS returned null", enumRearTrailerLights);
+		assertNotNull("LEFT_SPOT_LIGHTS returned null", enumLeftSpotLights);
+		assertNotNull("RIGHT_SPOT_LIGHTS returned null", enumRightSpotLights);
+		assertNotNull("LEFT_PUDDLE_LIGHTS returned null", enumLeftPuddleLights);
+		assertNotNull("RIGHT_PUDDLE_LIGHTS returned null", enumRightPuddleLights);
+
 		assertNotNull("AMBIENT_LIGHTS returned null", enumAmbientLights);
 		assertNotNull("OVERHEAD_LIGHTS returned null", enumOverheadLights);
 		assertNotNull("READING_LIGHTS returned null", enumReadingLights);
 		assertNotNull("TRUNK_LIGHTS returned null", enumTrunkLights);
+
 		assertNotNull("EXTERIOR_FRONT_LIGHTS returned null", enumExteriorFrontLights);
 		assertNotNull("EXTERIOR_REAR_LIGHTS returned null", enumExteriorRearLights);
 		assertNotNull("EXTERIOR_LEFT_LIGHTS returned null", enumExteriorLeftLights);
 		assertNotNull("EXTERIOR_RIGHT_LIGHTS returned null", enumExteriorRightLights);
+
+		assertNotNull("EXTERIOR_ALL_LIGHTS returned null", enumExteriorAllLights);
 	}
 
 	/**
@@ -211,6 +241,13 @@ public class LightNameTests extends TestCase {
 		enumTestList.add(LightName.LEFT_TURN_LIGHTS);
 		enumTestList.add(LightName.RIGHT_TURN_LIGHTS);
 		enumTestList.add(LightName.HAZARD_LIGHTS);
+		enumTestList.add(LightName.REAR_CARGO_LIGHTS);
+		enumTestList.add(LightName.REAR_TRUCK_BED_LIGHTS);
+		enumTestList.add(LightName.REAR_TRAILER_LIGHTS);
+		enumTestList.add(LightName.LEFT_SPOT_LIGHTS);
+		enumTestList.add(LightName.RIGHT_SPOT_LIGHTS);
+		enumTestList.add(LightName.LEFT_PUDDLE_LIGHTS);
+		enumTestList.add(LightName.RIGHT_PUDDLE_LIGHTS);
 		enumTestList.add(LightName.AMBIENT_LIGHTS);
 		enumTestList.add(LightName.OVERHEAD_LIGHTS);
 		enumTestList.add(LightName.READING_LIGHTS);
@@ -219,6 +256,7 @@ public class LightNameTests extends TestCase {
 		enumTestList.add(LightName.EXTERIOR_REAR_LIGHTS);
 		enumTestList.add(LightName.EXTERIOR_LEFT_LIGHTS);
 		enumTestList.add(LightName.EXTERIOR_RIGHT_LIGHTS);
+		enumTestList.add(LightName.EXTERIOR_ALL_LIGHTS);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
