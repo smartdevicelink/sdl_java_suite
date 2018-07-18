@@ -33,7 +33,7 @@ public abstract class BaseSubManager {
 	 */
 	public void start(CompletionListener listener){
 		this.completionListener = listener;
-		if(state == READY){
+		if(state == READY && completionListener != null){
 			completionListener.onComplete(true);
 			completionListener = null;
 		}
@@ -50,10 +50,10 @@ public abstract class BaseSubManager {
 		synchronized (STATE_LOCK) {
 			this.state = state;
 		}
-		if(state == READY){
+		if(state == READY && completionListener != null){
 			completionListener.onComplete(true);
 			completionListener = null;
-		}else if(state == SHUTDOWN){
+		}else if(state == SHUTDOWN && completionListener != null){
 			completionListener.onComplete(false);
 			completionListener = null;
 		}
