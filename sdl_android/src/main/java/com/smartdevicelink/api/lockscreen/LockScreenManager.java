@@ -12,11 +12,14 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
+import com.smartdevicelink.proxy.rpc.SystemRequest;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+
+import org.json.JSONException;
 
 import java.lang.ref.WeakReference;
 
@@ -55,6 +58,7 @@ public class LockScreenManager extends BaseSubManager {
 		// setup the manager
 		readConfiguration(lockScreenConfig);
 		setupListeners();
+		getIconURL();
 
 		// transition state
 		transitionToState(READY);
@@ -144,6 +148,11 @@ public class LockScreenManager extends BaseSubManager {
 			public void onNotified(RPCNotification notification) {
 				// do something with the status
 				final OnSystemRequest msg = (OnSystemRequest) notification;
+				try {
+					Log.i(TAG, "SYSTEM REQUEST: "+ notification.serializeJSON().toString());
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 				if (msg.getRequestType() == RequestType.LOCK_SCREEN_ICON_URL &&
 						msg.getUrl() != null) {
 					// send intent to activity to download icon from core
@@ -153,6 +162,12 @@ public class LockScreenManager extends BaseSubManager {
 			}
 		};
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_SYSTEM_REQUEST, systemRequestListener);
+	}
+
+	private void getIconURL(){
+		SystemRequest sr = new SystemRequest();
+		sr.setRequestType(RequestType.LOCK_SCREEN_ICON_URL);
+		internalInterface.sendRPCRequest(sr);
 	}
 
 	////

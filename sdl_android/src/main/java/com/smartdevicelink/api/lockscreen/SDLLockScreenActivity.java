@@ -67,7 +67,6 @@ public class SDLLockScreenActivity extends Activity {
 		registerReceiver(downloadLockScreenIconBroadcastReceiver, new IntentFilter(DOWNLOAD_ICON_ACTION));
 	}
 
-
 	@Override
 	protected void onDestroy() {
 		unregisterReceiver(closeLockScreenBroadcastReceiver);
@@ -100,7 +99,7 @@ public class SDLLockScreenActivity extends Activity {
 
 	private void changeBackgroundColor() {
 		RelativeLayout layout = findViewById(R.id.lockscreen_relative_layout);
-		layout.setBackgroundColor(customColor);
+		layout.setBackgroundColor(getResources().getColor(customColor));
 	}
 
 	private void changeIcon() {

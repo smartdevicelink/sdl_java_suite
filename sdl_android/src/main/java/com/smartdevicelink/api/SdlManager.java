@@ -269,6 +269,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 					// if lock screen params are not set, use default
 					LockScreenConfig lsc = new LockScreenConfig();
 					lsc.setEnabled(true);
+					lsc.setShowOEMLogo(true);
 					sdlManager.lockScreenConfig = lsc;
 				}
 
