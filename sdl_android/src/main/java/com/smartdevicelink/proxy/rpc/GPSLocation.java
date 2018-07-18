@@ -12,13 +12,25 @@ public class GPSLocation extends RPCStruct{
 	public static final String KEY_LONGITUDE_DEGREES = "longitudeDegrees";
 	public static final String KEY_ALTITUDE_METERS = "altitudeMeters";
 
+	/**
+	 * Constructs a newly allocated GPSLocation object
+	 */
 	public GPSLocation() {
 	}
 
+	/**
+	 * Constructs a newly allocated GPSLocation object indicated by the Hashtable parameter
+	 * @param hash The Hashtable to use
+	 */
 	public GPSLocation(Hashtable<String, Object> hash) {
         super(hash);
     }
 
+	/**
+	 * Constructs a newly allocated GPSLocation object
+	 * @param latitudeDegrees
+	 * @param longitudeDegrees
+	 */
 	public GPSLocation(@NonNull Float latitudeDegrees, @NonNull Float longitudeDegrees) {
 		this();
 		setLatitudeDegrees(latitudeDegrees);

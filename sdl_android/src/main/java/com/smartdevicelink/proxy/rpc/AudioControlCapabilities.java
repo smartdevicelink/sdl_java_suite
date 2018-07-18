@@ -13,13 +13,24 @@ public class AudioControlCapabilities extends RPCStruct {
 	public static final String KEY_EQUALIZER_AVAILABLE = "equalizerAvailable";
 	public static final String KEY_EQUALIZER_MAX_CHANNEL_ID = "equalizerMaxChannelId";
 
+	/**
+	 * Constructs a newly allocated AudioControlCapabilities object
+	 */
 	public AudioControlCapabilities() {
 	}
 
+	/**
+	 * Constructs a newly allocated AudioControlCapabilities object indicated by the Hashtable parameter
+	 * @param hash The Hashtable to use
+	 */
 	public AudioControlCapabilities(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 
+	/**
+	 * Constructs a newly allocated AudioControlCapabilities object
+	 * @param moduleName short friendly name of the light control module.
+	 */
 	public AudioControlCapabilities(@NonNull String moduleName) {
 		this();
 		setModuleName(moduleName);

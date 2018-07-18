@@ -1,7 +1,6 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
 public enum LightName {
-
 	/*Common Single Light*/
 	FRONT_LEFT_HIGH_BEAM,
 	FRONT_RIGHT_HIGH_BEAM,
@@ -49,7 +48,6 @@ public enum LightName {
 	 * Include all brake lights: rear_left and rear_right.
 	 */
 	BRAKE_LIGHTS,
-
 	REAR_REVERSING_LIGHTS,
 	SIDE_MARKER_LIGHTS,
 
@@ -66,9 +64,7 @@ public enum LightName {
 	 */
 	HAZARD_LIGHTS,
 
-
-
-    /*Interior Lights by common function groups*/
+	/*Interior Lights by common function groups*/
 
 	AMBIENT_LIGHTS,
 	OVERHEAD_LIGHTS,
@@ -76,7 +72,7 @@ public enum LightName {
 	TRUNK_LIGHTS,
 
 
-    /*Lights by location*/
+	/*Lights by location*/
 
 	/**
 	 * Include exterior lights located in front of the vehicle. For example, fog lights and low beams.

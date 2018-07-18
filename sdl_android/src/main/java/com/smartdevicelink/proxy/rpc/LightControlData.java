@@ -26,6 +26,11 @@ public class LightControlData extends RPCStruct {
 		super(hash);
 	}
 
+	/**
+	 * Constructs a newly allocated LightControlData object
+	 * @param lightState An array of LightNames and their current or desired status.
+	 *                   Status of the LightNames that are not listed in the array shall remain unchanged.
+	 */
 	public LightControlData(@NonNull List<LightState> lightState) {
 		this();
 		setLightState(lightState);

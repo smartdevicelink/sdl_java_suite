@@ -11,13 +11,26 @@ public class SRGBColor extends RPCStruct {
 	public static final String KEY_GREEN = "green";
 	public static final String KEY_BLUE = "blue";
 
+	/**
+	 * Constructs a newly allocated SRGBColor object
+	 */
 	public SRGBColor() {
 	}
 
+	/**
+	 * Constructs a newly allocated SRGBColor object indicated by the Hashtable parameter
+	 * @param hash The Hashtable to use
+	 */
 	public SRGBColor(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 
+	/**
+	 * Constructs a newly allocated SRGBColor object
+	 * @param red   Min: 0  Max: 255
+	 * @param green Min: 0  Max: 255
+	 * @param blue  Min: 0  Max: 255
+	 */
 	public SRGBColor(@NonNull Integer red, @NonNull Integer green, @NonNull Integer blue) {
 		this();
 		setRed(red);

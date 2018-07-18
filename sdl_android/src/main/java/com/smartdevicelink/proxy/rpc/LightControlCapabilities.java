@@ -27,6 +27,11 @@ public class LightControlCapabilities extends RPCStruct {
 		super(hash);
 	}
 
+	/**
+	 * Constructs a newly allocated LightControlCapabilities object
+	 * @param moduleName      short friendly name of the light control module.
+	 * @param supportedLights An array of available LightCapabilities that are controllable.
+	 */
 	public LightControlCapabilities(@NonNull String moduleName,@NonNull List<LightCapabilities> supportedLights) {
 		this();
 		setModuleName(moduleName);

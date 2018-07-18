@@ -12,9 +12,16 @@ public class AudioControlData extends RPCStruct {
 	public static final String KEY_VOLUME = "volume";
 	public static final String KEY_EQUALIZER_SETTINGS = "equalizerSettings";
 
+	/**
+	 * Constructs a newly allocated AudioControlData object
+	 */
 	public AudioControlData() {
 	}
 
+	/**
+	 * Constructs a newly allocated AudioControlData object indicated by the Hashtable parameter
+	 * @param hash The Hashtable to use
+	 */
 	public AudioControlData(Hashtable<String, Object> hash) {
 		super(hash);
 	}

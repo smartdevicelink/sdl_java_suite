@@ -12,13 +12,24 @@ public class LightCapabilities extends RPCStruct {
 	public static final String KEY_DENSITY_AVAILABLE = "densityAvailable";
 	public static final String KEY_SRGB_COLOR_SPACE_AVAILABLE = "sRGBColorSpaceAvailable";
 
+	/**
+	 * Constructs a newly allocated LightCapabilities object
+	 */
 	public LightCapabilities() {
 	}
 
+	/**
+	 * Constructs a newly allocated LightCapabilities object indicated by the Hashtable parameter
+	 * @param hash The Hashtable to use
+	 */
 	public LightCapabilities(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 
+	/**
+	 * Constructs a newly allocated LightCapabilities object
+	 * @param name name of Light
+	 */
 	public LightCapabilities(@NonNull LightName name) {
 		this();
 		setName(name);

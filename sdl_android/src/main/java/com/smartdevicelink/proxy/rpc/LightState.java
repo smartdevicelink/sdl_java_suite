@@ -31,6 +31,11 @@ public class LightState extends RPCStruct {
 		super(hash);
 	}
 
+	/**
+	 * Constructs a newly allocated LightState object
+	 * @param id     The name of a light or a group of lights.
+	 * @param status Status of Light.
+	 */
 	public LightState(@NonNull LightName id, @NonNull LightStatus status) {
 		this();
 		setId(id);

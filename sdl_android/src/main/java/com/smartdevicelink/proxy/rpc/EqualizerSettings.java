@@ -9,19 +9,30 @@ import java.util.Hashtable;
 /**
  * Defines the each Equalizer channel settings.
  */
-
 public class EqualizerSettings extends RPCStruct {
 	public static final String KEY_CHANNEL_ID = "channelId";
 	public static final String KEY_CHANNEL_NAME = "channelName";
 	public static final String KEY_CHANNEL_SETTING = "channelSetting";
 
+	/**
+	 * Constructs a newly allocated EqualizerSettings object
+	 */
 	public EqualizerSettings() {
 	}
 
+	/**
+	 * Constructs a newly allocated EqualizerSettings object indicated by the Hashtable parameter
+	 * @param hash The Hashtable to use
+	 */
 	public EqualizerSettings(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 
+	/**
+	 * Constructs a newly allocated EqualizerSettings object
+	 * @param channelId      Min: 0  Max: 100
+	 * @param channelSetting Min: 0  Max: 100
+	 */
 	public EqualizerSettings(@NonNull Integer channelId, @NonNull Integer channelSetting) {
 		this();
 		setChannelId(channelId);
