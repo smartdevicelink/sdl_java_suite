@@ -21,10 +21,22 @@ public abstract class OnMultipleRequestListener extends OnRPCResponseListener {
 	public OnMultipleRequestListener(){
 		setListenerType(UPDATE_LISTENER_TYPE_MULTIPLE_REQUESTS);
 		correlationIds = new Vector<>();
+		final OnMultipleRequestListener reference = this;
 
 		rpcResponseListener = new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
+				update(correlationId);
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				super.onError(correlationId, resultCode, info);
+				reference.onError(correlationId, resultCode, info);
+				update(correlationId);
+			}
+
+			private void update(int correlationId){
 				correlationIds.remove(Integer.valueOf(correlationId));
 				if(correlationIds.size()>0){
 					onUpdate(correlationIds.size());

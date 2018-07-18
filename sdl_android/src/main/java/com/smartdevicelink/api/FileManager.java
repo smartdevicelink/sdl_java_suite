@@ -210,13 +210,19 @@ public class FileManager extends BaseSubManager {
 	public void uploadFile(final SdlFile file, final CompletionListener listener){
 		PutFile putFile = createPutFile(file);
 
-		putFile.setOnPutFileUpdateListener(new OnPutFileUpdateListener() {
+		putFile.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
-			public void onResponse(int correlationId, RPCResponse response, long totalSize) {
+			public void onResponse(int correlationId, RPCResponse response) {
 				if(response.getSuccess()){
 					remoteFiles.add(file.getName());
 				}
 				listener.onComplete(response.getSuccess());
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				super.onError(correlationId, resultCode, info);
+				listener.onComplete(false);
 			}
 		});
 
