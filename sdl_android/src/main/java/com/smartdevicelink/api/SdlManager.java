@@ -326,7 +326,7 @@ public class SdlManager {
 			// if lock screen params are not set, use default
 			LockScreenConfig lsc = new LockScreenConfig();
 			lsc.setEnabled(true);
-			lsc.setShowOEMLogo(true);
+			lsc.setShowOEMLogo(false);
 			sdlManager.lockScreenConfig = lsc;
 		}
 
