@@ -451,14 +451,15 @@ public class SdlManager{
 	// STARTUP
 
 	/**
-	 * Starts up a SdlManager, and calls provided callback once all sub managers are no longer SETTING_UP
-	 * @param listener CompletionListener that is called once the SdlManager is READY or SHUTDOWN
+	 * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
+	 * @param listener CompletionListener that is called once the SdlManager state transitions
+	 * from SETTING_UP to READY or ERROR
 	 */
 	public void start(CompletionListener listener){
 		if(listener == null){
 			return;
 		}
-		if(state != BaseSubManager.SETTING_UP && state != -1){
+		if(state == BaseSubManager.READY || state == BaseSubManager.ERROR){
 			listener.onComplete(state == BaseSubManager.READY);
 			initListener = null;
 		}else{

@@ -18,7 +18,7 @@ public abstract class BaseSubManager {
 	// states - if this gets more complicated we can move elsewhere
 	private int state;
 	private final Object STATE_LOCK = new Object();
-	public static final int SETTING_UP = 0x00, READY = 0x30, SHUTDOWN = 0x60;
+	public static final int SETTING_UP = 0x00, READY = 0x30, SHUTDOWN = 0x60, ERROR = 0x90;
 	protected final ISdl internalInterface;
 	private CompletionListener completionListener;
 
@@ -28,13 +28,13 @@ public abstract class BaseSubManager {
 	}
 
 	/**
-	 * Called to start
-	 * @param listener
+	 * Starts up a BaseSubManager, and calls provided callback once BaseSubManager is done setting up or failed setup.
+	 * @param listener CompletionListener that is called once the BaseSubManager's state is READY or ERROR
 	 */
 	public void start(CompletionListener listener){
 		this.completionListener = listener;
-		if(state == READY && completionListener != null){
-			completionListener.onComplete(true);
+		if((state == READY || state == ERROR) && completionListener != null){
+			completionListener.onComplete(state == READY);
 			completionListener = null;
 		}
 	}
@@ -53,7 +53,7 @@ public abstract class BaseSubManager {
 		if(state == READY && completionListener != null){
 			completionListener.onComplete(true);
 			completionListener = null;
-		}else if(state == SHUTDOWN && completionListener != null){
+		}else if(state == ERROR && completionListener != null){
 			completionListener.onComplete(false);
 			completionListener = null;
 		}
