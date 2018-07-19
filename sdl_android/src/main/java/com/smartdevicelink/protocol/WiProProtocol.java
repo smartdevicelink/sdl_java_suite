@@ -137,6 +137,37 @@ public class WiProProtocol extends AbstractProtocol {
 		Log.d(TAG, "Active transports --- \n" + activeTransportString.toString());
 	}
 
+	private void printSecondaryTransportDetails(List<String> secondary, List<Integer> audio, List<Integer> video){
+		StringBuilder secondaryDetailsBldr = new StringBuilder();
+		secondaryDetailsBldr.append("Checking secondary transport details \n");
+
+		if(secondary != null){
+			secondaryDetailsBldr.append("Supported secondary transports: ");
+			for(String s : secondary){
+				secondaryDetailsBldr.append(" ").append(s);
+			}
+			secondaryDetailsBldr.append("\n");
+		}else{
+			Log.d(TAG, "Supported secondary transports list is empty!");
+		}
+		if(audio != null){
+			secondaryDetailsBldr.append("Supported audio transports: ");
+			for(int a : audio){
+				secondaryDetailsBldr.append(" ").append(a);
+			}
+			secondaryDetailsBldr.append("\n");
+		}
+		if(video != null){
+			secondaryDetailsBldr.append("Supported video transports: ");
+			for(int v : video){
+				secondaryDetailsBldr.append(" ").append(v);
+			}
+			secondaryDetailsBldr.append("\n");
+		}
+
+		Log.d(TAG, secondaryDetailsBldr.toString());
+	}
+
 	public void setRequiresHighBandwidth(boolean requiresHighBandwidth){
 		this.requiresHighBandwidth = requiresHighBandwidth;
 	}
@@ -641,7 +672,7 @@ public class WiProProtocol extends AbstractProtocol {
         private void handleProtocolHeartbeat(SdlPacket packet) {
         	WiProProtocol.this.handleProtocolHeartbeat(SessionType.valueOf((byte)packet.getServiceType()),(byte)packet.getSessionId());
         } // end-method		
-	
+
 		private void handleControlFrame(SdlPacket packet) {
 			Integer frameTemp = Integer.valueOf(packet.getFrameInfo());
 			Byte frameInfo = frameTemp.byteValue();
@@ -680,6 +711,13 @@ public class WiProProtocol extends AbstractProtocol {
 						hashID = (Integer) packet.getTag(ControlFrameTags.RPC.StartServiceACK.HASH_ID);
 						Object version = packet.getTag(ControlFrameTags.RPC.StartServiceACK.PROTOCOL_VERSION);
 
+						if(version!=null) {
+							//At this point we have confirmed the negotiated version between the module and the proxy
+							protocolVersion = new Version((String) version);
+						}else{
+							protocolVersion = new Version("5.0.0");
+						}
+
 						//Check to make sure this is a transport we are willing to accept
 						TransportType transportType = packet.getTransportType();
 						if(transportType == null || !requestedPrimaryTransports.contains(transportType)){
@@ -687,92 +725,67 @@ public class WiProProtocol extends AbstractProtocol {
 							return;
 						}
 
-						StringBuilder secondaryDetailsBldr = new StringBuilder();
-						secondaryDetailsBldr.append("RPC StartSessionACK: Checking secondary transport details \n");
-						ArrayList<String> secondary = (ArrayList<String>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.SECONDARY_TRANSPORTS);
-						ArrayList<Integer> audio = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.AUDIO_SERVICE_TRANSPORTS);
-						ArrayList<Integer> video = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.VIDEO_SERVICE_TRANSPORTS);
-
-						if(secondary != null){
-							secondaryDetailsBldr.append("Supported secondary transports: ");
-							for(String s : secondary){
-								secondaryDetailsBldr.append(" ").append(s);
-							}
-							secondaryDetailsBldr.append("\n");
-						}else{
-							Log.d(TAG, "Supported secondary transports list is empty!");
-						}
-						if(audio != null){
-							secondaryDetailsBldr.append("Supported audio transports: ");
-							for(int a : audio){
-								secondaryDetailsBldr.append(" ").append(a);
-							}
-							secondaryDetailsBldr.append("\n");
-						}
-						if(video != null){
-							secondaryDetailsBldr.append("Supported video transports: ");
-							for(int v : video){
-								secondaryDetailsBldr.append(" ").append(v);
-							}
-							secondaryDetailsBldr.append("\n");
-						}
-
-						Log.d(TAG, secondaryDetailsBldr.toString());
-
-						List<TransportType> supportedTransports = new ArrayList<>();
-
-						for (String s : secondary) {
-							Log.d(TAG, "Secondary transports allowed by core: " + s);
-							if(s.equals(TransportConstants.TCP_WIFI)){
-								supportedTransports.add(TransportType.TCP);
-							}else if(s.equals(TransportConstants.AOA_USB)){
-								supportedTransports.add(TransportType.USB);
-							}else if(s.equals(TransportConstants.SPP_BLUETOOTH)){
-								supportedTransports.add(TransportType.BLUETOOTH);
-							}
-						}
-						setSupportedSecondaryTransports(supportedTransports);
-						setSupportedServices(SessionType.PCM, audio);
-						setSupportedServices(SessionType.NAV, video);
-
 						boolean activeTransportsHandled = false;
 
-						if(version!=null){
-							//At this point we have confirmed the negotiated version between the module and the proxy
-							protocolVersion = new Version((String)version);
+						// This enables custom behavior based on protocol version specifics
+						if (protocolVersion.isNewerThan(new Version("5.1.0")) >= 0) {
 
-							//Check if we support multiple transports by protocol version
-							if(protocolVersion != null
-									&& protocolVersion.isNewerThan(new Version("5.1.0")) >= 1) {
+							if (activeTransports.get(SessionType.RPC) == null) {    //Might be a better way to handle this
 
-								if (activeTransports.get(SessionType.RPC) == null) {    //Might be a better way to handle this
+								// Add this transport to the available transport list
+								availableTransports.add(transportType);
 
-									availableTransports.add(transportType);
+								ArrayList<String> secondary = (ArrayList<String>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.SECONDARY_TRANSPORTS);
+								ArrayList<Integer> audio = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.AUDIO_SERVICE_TRANSPORTS);
+								ArrayList<Integer> video = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.VIDEO_SERVICE_TRANSPORTS);
 
-									activeTransports.put(SessionType.RPC, transportType);
-									activeTransports.put(SessionType.BULK_DATA, transportType);
-									activeTransports.put(SessionType.CONTROL, transportType);
-									if(secondary == null){
-										// If no secondary transports were attached we should assume
-										// the Video and Audio services can be used on primary
-										if(requiresHighBandwidth
-												&& TransportType.BLUETOOTH.equals(transportType)){
-											//transport can't support high bandwidth
-											onTransportNotAccepted(transportType + " can't support high bandwidth requirement, and secondary transport not supported.");
-											return;
-										}
-										activeTransports.put(SessionType.NAV, transportType);
-										activeTransports.put(SessionType.PCM, transportType);
+								printSecondaryTransportDetails(secondary,audio,video);
+
+								//Build out the supported secondary transports received from the
+								// RPC start service ACK.
+								List<TransportType> supportedTransports = new ArrayList<>();
+
+								for (String s : secondary) {
+									Log.d(TAG, "Secondary transports allowed by core: " + s);
+									if(s.equals(TransportConstants.TCP_WIFI)){
+										supportedTransports.add(TransportType.TCP);
+									}else if(s.equals(TransportConstants.AOA_USB)){
+										supportedTransports.add(TransportType.USB);
+									}else if(s.equals(TransportConstants.SPP_BLUETOOTH)){
+										supportedTransports.add(TransportType.BLUETOOTH);
+									}
+								}
+
+								setSupportedSecondaryTransports(supportedTransports);
+								setSupportedServices(SessionType.PCM, audio);
+								setSupportedServices(SessionType.NAV, video);
+
+								activeTransports.put(SessionType.RPC, transportType);
+								activeTransports.put(SessionType.BULK_DATA, transportType);
+								activeTransports.put(SessionType.CONTROL, transportType);
+
+								if (secondary == null) {
+									// If no secondary transports were attached we should assume
+									// the Video and Audio services can be used on primary
+									if (requiresHighBandwidth
+											&& TransportType.BLUETOOTH.equals(transportType)) {
+										//transport can't support high bandwidth
+										onTransportNotAccepted(transportType + " can't support high bandwidth requirement, and secondary transport not supported.");
+										return;
 									}
 
-									activeTransportsHandled = true;
-
-								} else {
-									Log.w(TAG, "Received a start service ack for RPC service while already active on a different transport.");
-									return;
+									activeTransports.put(SessionType.NAV, transportType);
+									activeTransports.put(SessionType.PCM, transportType);
 								}
+
+								activeTransportsHandled = true;
+
+							} else {
+								Log.w(TAG, "Received a start service ack for RPC service while already active on a different transport.");
+								return;
 							}
 						}
+
 						//Version is either not included or lower than 5.1.0
 						if(requiresHighBandwidth
 								&& TransportType.BLUETOOTH.equals(transportType)){
