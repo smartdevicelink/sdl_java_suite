@@ -47,7 +47,7 @@ import java.util.Vector;
  * 3. Sending Requests <br>
  * 4. Helper methods
  */
-public class SdlManager implements ProxyBridge.LifecycleListener {
+public class SdlManager{
 
 	private static String TAG = "Sdl Manager";
 	private SdlProxyBase proxy;
@@ -63,13 +63,13 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	private Vector<TTSChunk> ttsChunks;
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
 
-	private final ProxyBridge proxyBridge= new ProxyBridge(this);
 	private CompletionListener initListener;
-	private boolean initialized = false;
+	private int state = -1;
 	//public LockScreenConfig lockScreenConfig;
 
 
 	// Managers
+
     /*
     private FileManager fileManager;
     private VideoStreamingManager videoStreamingManager;
@@ -79,21 +79,55 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
     private PermissionManager permissionManager;
     */
 
-	CompletionListener subManagerListener = new CompletionListener() {
-		boolean allSucceeded = true;
-		int subManagerCount = 1; // Update per amount of sub managers implemented
+	// Initialize proxyBridge with anonymous lifecycleListener
+	private final ProxyBridge proxyBridge= new ProxyBridge(new ProxyBridge.LifecycleListener() {
 		@Override
-		public void onComplete(boolean success) {
+		public void onProxyConnected() {
+			Log.d(TAG, "Proxy is connected. Now initializing.");
+			initialize();
+		}
+
+		@Override
+		public void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason){
+			dispose();
+		}
+
+		@Override
+		public void onServiceEnded(OnServiceEnded serviceEnded){
+
+		}
+
+		@Override
+		public void onServiceNACKed(OnServiceNACKed serviceNACKed){
+
+		}
+
+		@Override
+		public void onError(String info, Exception e){
+
+		}
+	});
+
+    // Sub manager listener
+	private final CompletionListener subManagerListener = new CompletionListener() {
+		@Override
+		public synchronized void onComplete(boolean success) {
 			if(!success){
-				allSucceeded = false;
+				Log.d(TAG, "Sub manager failed to initialize");
 			}
-			subManagerCount--;
-			if(subManagerCount <= 0){
-				if(allSucceeded){
-					initialized = true;
-				}
+			if(
+					true
+					/*
+					fileManager.getState() != BaseSubManager.SETTING_UP &&
+					videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
+					audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
+					lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
+					screenManager.getState() != BaseSubManager.SETTING_UP
+					permissionManager.getState() != BaseSubManager.SETTING_UP
+					*/  ){
+				state = BaseSubManager.READY;
 				if(initListener != null){
-					initListener.onComplete(allSucceeded);
+					initListener.onComplete(true);
 					initListener = null;
 				}
 			}
@@ -105,12 +139,21 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 
 		/*
 		this.fileManager = new FileManager(_internalInterface, context);
+		this.fileManager.start(subManagerListener);
 		this.lockscreenManager = new LockscreenManager(lockScreenConfig, context, _internalInterface);
+		this.lockscreenManager.start(subManagerListener);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
+		this.screenManager.start(subManagerListener);
 		this.permissionManager = new PermissionManager(_internalInterface);
+		this.permissionManager.start(subManagerListener);
 		this.videoStreamingManager = new VideoStreamingManager(context, _internalInterface);
+		this.videoStreamingManager.start(subManagerListener);
 		this.audioStreamManager = new AudioStreamManager(_internalInterface);
+		this.audioStreamManager.start(subManagerListener);
 		*/
+
+		// If no managers, just call subManagerListener's onComplete
+		subManagerListener.onComplete(true);
 	}
 
 	private void dispose() {
@@ -279,6 +322,7 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 				}
 
 				sdlManager.proxy = new SdlProxyBase(sdlManager.proxyBridge, sdlManager.appName, sdlManager.shortAppName, sdlManager.isMediaApp, sdlManager.hmiLanguage, sdlManager.hmiLanguage, sdlManager.hmiTypes, sdlManager.appId, sdlManager.transport, sdlManager.vrSynonyms, sdlManager.ttsChunks, sdlManager.dayColorScheme, sdlManager.nightColorScheme) {};
+				sdlManager.state = BaseSubManager.SETTING_UP;
 			} catch (SdlException e) {
 				e.printStackTrace();
 			}
@@ -405,37 +449,21 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	// LIFECYCLE / OTHER
 
 	// STARTUP
+
+	/**
+	 * Starts up a SdlManager, and calls provided callback once all sub managers are no longer SETTING_UP
+	 * @param listener CompletionListener that is called once the SdlManager is READY or SHUTDOWN
+	 */
 	public void start(CompletionListener listener){
-		initListener = listener;
-		if(initialized){
-			listener.onComplete(true);
+		if(listener == null){
+			return;
 		}
-	}
-
-	@Override
-	public void onProxyConnected() {
-		Log.d(TAG, "Proxy is connected. Now initializing.");
-		this.initialize();
-	}
-
-	@Override
-	public void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason){
-		this.dispose();
-	}
-
-	@Override
-	public void onServiceEnded(OnServiceEnded serviceEnded){
-
-	}
-
-	@Override
-	public void onServiceNACKed(OnServiceNACKed serviceNACKed){
-
-	}
-
-	@Override
-	public void onError(String info, Exception e){
-
+		if(state != BaseSubManager.SETTING_UP && state != -1){
+			listener.onComplete(state == BaseSubManager.READY);
+			initListener = null;
+		}else{
+			initListener = listener;
+		}
 	}
 
 	// INTERNAL INTERFACE
