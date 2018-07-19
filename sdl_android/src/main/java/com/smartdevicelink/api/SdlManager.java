@@ -450,10 +450,7 @@ public class SdlManager{
 	 * from SETTING_UP to READY or ERROR
 	 */
 	@SuppressWarnings("unchecked")
-	public void start(CompletionListener listener){
-		if(listener == null){
-			return;
-		}
+	public void start(@NonNull CompletionListener listener){
 		initListener = listener;
 		try {
 			proxy = new SdlProxyBase(proxyBridge, appName, shortAppName, isMediaApp, hmiLanguage,
