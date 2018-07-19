@@ -1,5 +1,7 @@
 package com.smartdevicelink.protocol;
 
+import android.os.Bundle;
+
 import com.smartdevicelink.protocol.enums.*;
 import com.smartdevicelink.transport.enums.TransportType;
 
@@ -44,5 +46,5 @@ public interface IProtocolListener {
 	void onProtocolError(String info, Exception e);
 
 	// Called when SDLCore has updated secondary transport info or secondary transport is unavailable
-	void connectSecondaryTransport(byte sessionID, TransportType transportType, Map<String, Object> params);
+	void connectSecondaryTransport(byte sessionID, TransportType transportType, Bundle params);
 } // end-interfCe

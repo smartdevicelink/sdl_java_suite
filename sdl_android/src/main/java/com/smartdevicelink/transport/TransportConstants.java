@@ -179,17 +179,17 @@ public class TransportConstants {
      */
 	public static final int ROUTER_SEND_PACKET 											= 0x20;
 
-	/**
-	 * Command to tell router service details of secondary transport
-	 */
-	public static final int ROUTER_SEND_SECONDARY_TRANSPORT_DETAILS                     = 0x21;
-
 	//response
 	/**
 	 * Router has received a packet and sent it to the client
 	 */
 	public  static final int ROUTER_RECEIVED_PACKET 									= 0x26;
 	//response
+
+	/**
+	 * Command to tell router service details of secondary transport
+	 */
+	public static final int ROUTER_REQUEST_SECONDARY_TRANSPORT_CONNECTION 				= 0x30;
 
 	//BUNDLE EXTRAS
 	
@@ -202,7 +202,7 @@ public class TransportConstants {
 	
 	public static final String PACKET_PRIORITY_COEFFICIENT					= "priority_coefficient";
 
-	public static final String TRANSPORT_FOR_PACKET							= "transport.for.packet";
+	public static final String TRANSPORT 									= "transport";
 
 	public static final int BYTES_TO_SEND_FLAG_NONE								= 0x00;
 	public static final int BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED				= 0x01;

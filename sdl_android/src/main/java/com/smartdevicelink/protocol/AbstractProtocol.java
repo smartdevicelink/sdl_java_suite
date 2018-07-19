@@ -1,5 +1,7 @@
 package com.smartdevicelink.protocol;
 
+import android.os.Bundle;
+
 import com.smartdevicelink.protocol.WiProProtocol.MessageFrameAssembler;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -161,7 +163,7 @@ public abstract class AbstractProtocol {
 		resetIncomingHeartbeat(sessionType, sessionID);
     }
 
-    protected void connectSecondaryTransport(byte sessionID, TransportType transportType, Map<String, Object> params) {
+    protected void connectSecondaryTransport(byte sessionID, TransportType transportType, Bundle params) {
 		_protocolListener.connectSecondaryTransport(sessionID, transportType, params);
 	}
 } // end-class

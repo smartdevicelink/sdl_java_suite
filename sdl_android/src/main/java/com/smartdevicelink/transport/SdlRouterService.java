@@ -38,7 +38,6 @@ import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNE
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -467,7 +466,7 @@ public class SdlRouterService extends Service{
 									if(buffAppId == null){
                                         buffAppId = "" + receivedBundle.getLong(TransportConstants.APP_ID_EXTRA, -1);
                                     }
-                                    TransportType transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT_FOR_PACKET));
+                                    TransportType transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT));
 									if(transportType == null){
 										/* We check bluetooth first because we assume if this value
 										 * isn't included it is an older version of the proxy and
@@ -481,7 +480,7 @@ public class SdlRouterService extends Service{
 											transportType = TransportType.TCP;
 										}
 										//Log.d(TAG, "Transport type was null, so router set it to " + transportType.name());
-										receivedBundle.putString(TransportConstants.TRANSPORT_FOR_PACKET, transportType.name());
+										receivedBundle.putString(TransportConstants.TRANSPORT, transportType.name());
 									}else{
 										//Log.d(TAG, "Transport type of packet to send: " + transportType.name());
 									}
@@ -602,7 +601,7 @@ public class SdlRouterService extends Service{
 	                		Log.e(TAG, "No reply address included, can't send a reply");
 	                	}
 	                	break;
-	                case TransportConstants.ROUTER_SEND_SECONDARY_TRANSPORT_DETAILS:
+	                case TransportConstants.ROUTER_REQUEST_SECONDARY_TRANSPORT_CONNECTION:
 	                	// Currently this only handles one TCP connection
 		                String ipAddr = receivedBundle.getString(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS);
 		                int port = receivedBundle.getInt(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT);
@@ -1626,7 +1625,7 @@ public class SdlRouterService extends Service{
 			}
 			int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
 			int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
-			TransportType transportType = TransportType.valueForString(bundle.getString(TransportConstants.TRANSPORT_FOR_PACKET));
+			TransportType transportType = TransportType.valueForString(bundle.getString(TransportConstants.TRANSPORT));
 			switch ((transportType)){
 				case BLUETOOTH:
 					if(bluetoothTransport !=null && bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
@@ -2720,7 +2719,7 @@ public class SdlRouterService extends Service{
 		@SuppressWarnings("SameReturnValue")
 		public boolean handleIncommingClientMessage(final Bundle receivedBundle){
 			int flags = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
-			TransportType transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT_FOR_PACKET));
+			TransportType transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT));
 
 			if(flags!=TransportConstants.BYTES_TO_SEND_FLAG_NONE){
 				byte[] packet = receivedBundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME); 
@@ -2921,7 +2920,7 @@ public class SdlRouterService extends Service{
 			offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
 			size = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytesToWrite.length);  //In case there isn't anything just send the whole packet.
 			this.priorityCoefficient = bundle.getInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT,0); // Log.d(TAG, "packet priority coef: "+ this.priorityCoefficient);
-			this.transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT_FOR_PACKET));
+			this.transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT));
 		}
 
 		public void setTransportType(TransportType transportType){

@@ -19,7 +19,6 @@ import android.os.TransactionTooLargeException;
 import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
-import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
@@ -29,7 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 
 
 public class TransportBroker {
@@ -492,7 +490,7 @@ public class TransportBroker {
 				bundle.putInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT, packet.getPrioirtyCoefficient());
 				if(packet.getTransportType() != null){
 					//Log.d(TAG, "Sending packet on transport " + packet.getTransportType().name());
-					bundle.putString(TransportConstants.TRANSPORT_FOR_PACKET, packet.getTransportType().name());
+					bundle.putString(TransportConstants.TRANSPORT, packet.getTransportType().name());
 				}else{
 					//Log.d(TAG, "No transport to be found");
 				}
@@ -679,22 +677,16 @@ public class TransportBroker {
 	/**
 	 * Request secondary transport and communicate details to router service
 	 * @param sessionId
-	 * @param params
+	 * @param bundle
 	 */
-		public void sendSecondaryTransportDetails(byte sessionId, Map<String, Object> params){
+		public void requestSecondaryTransportConnection(byte sessionId, Bundle bundle){
 			Message msg = Message.obtain();
-			msg.what = TransportConstants.ROUTER_SEND_SECONDARY_TRANSPORT_DETAILS;
+			msg.what = TransportConstants.ROUTER_REQUEST_SECONDARY_TRANSPORT_CONNECTION;
 			msg.replyTo = this.clientMessenger;
-			Bundle bundle = new Bundle();
+			if(bundle == null) {
+				bundle = new Bundle();
+			}
 			bundle.putByte(TransportConstants.SESSION_ID_EXTRA, sessionId);
-			if(params.containsKey(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS)){
-				bundle.putString(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS,
-						(String) params.get(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS));
-			}
-			if(params.containsKey(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT)){
-				bundle.putInt(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT,
-						(int) params.get(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT));
-			}
 			msg.setData(bundle);
 			this.sendMessageToRouterService(msg);
 		}

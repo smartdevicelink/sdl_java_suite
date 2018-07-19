@@ -2,6 +2,7 @@ package com.smartdevicelink.SdlConnection;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Surface;
 
@@ -675,9 +676,9 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 	}
 
 	@Override
-	public void connectSecondaryTransport(byte sessionId, TransportType transportType, Map<String, Object> params) {
+	public void connectSecondaryTransport(byte sessionId, TransportType transportType, Bundle params) {
 		Log.d(TAG, "Connect Secondary Transport");
-		transportManager.sendSecondaryTransportDetails(sessionId, params);
+		transportManager.requestSecondaryTransportConnection(sessionId, params);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.smartdevicelink.transport;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
@@ -125,8 +126,8 @@ public class TransportManager {
         }
     }
 
-    public void sendSecondaryTransportDetails(byte sessionId, Map<String, Object> params){
-    	transport.sendSecondaryTransportDetails(sessionId, params);
+    public void requestSecondaryTransportConnection(byte sessionId, Bundle params){
+    	transport.requestSecondaryTransportConnection(sessionId, params);
     }
 
     private class TransportBrokerImpl extends TransportBroker{

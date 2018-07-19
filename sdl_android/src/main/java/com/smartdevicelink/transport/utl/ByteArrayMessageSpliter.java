@@ -101,7 +101,7 @@ public class ByteArrayMessageSpliter {
 		bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0);
 		bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytesRead);
 		if(transportType != null){
-			bundle.putString(TransportConstants.TRANSPORT_FOR_PACKET, transportType.name());
+			bundle.putString(TransportConstants.TRANSPORT, transportType.name());
 		}
 
 		//Determine which flag should be sent for this division of the packet

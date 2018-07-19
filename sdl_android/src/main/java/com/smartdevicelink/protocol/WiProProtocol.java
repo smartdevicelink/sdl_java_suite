@@ -1,5 +1,6 @@
 package com.smartdevicelink.protocol;
 
+import android.os.Bundle;
 import android.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
@@ -69,11 +70,17 @@ public class WiProProtocol extends AbstractProtocol {
 
 	public static final List<SessionType> HIGH_BANDWIDTH_SERVICES
 			= Arrays.asList(SessionType.NAV, SessionType.PCM);
+
 	List<TransportType> requestedPrimaryTransports;
 	List<TransportType> supportedSecondaryTransports;
-	Map<SessionType, List<Integer>> supportedServicesMap;
+
+	/**
+	 * Holds the priority of transports for a specific service when that service can be started
+	 * on a primary or secondary transport.
+	 */
+	Map<SessionType, List<Integer>> transportPriorityForServiceMap;
 	boolean requiresHighBandwidth = false;
-	Map<String, Object> secondaryTransportParams;
+	Map<TransportType, Bundle> secondaryTransportParams;
 	TransportType connectedPrimaryTransport;
 	Map<TransportType, List<ISecondaryTransportListener>> secondaryTransportListeners = new HashMap<>();
 
@@ -176,18 +183,14 @@ public class WiProProtocol extends AbstractProtocol {
 		this.requestedPrimaryTransports = primaryTransports;
 	}
 
-	public void setSupportedSecondaryTransports(List<TransportType> secondaryTransports){
-		this.supportedSecondaryTransports = secondaryTransports;
-	}
-
-	public void setSupportedServices(SessionType serviceType, List<Integer> order){
-		if(supportedServicesMap == null){
-			supportedServicesMap = new HashMap<>();
+	public void setTransortPriorityForService(SessionType serviceType, List<Integer> order){
+		if(transportPriorityForServiceMap == null){
+			transportPriorityForServiceMap = new HashMap<>();
 		}
-		this.supportedServicesMap.put(serviceType, order);
+		this.transportPriorityForServiceMap.put(serviceType, order);
 		for(SessionType service : HIGH_BANDWIDTH_SERVICES){
-			if (supportedServicesMap.get(service) != null
-					&& supportedServicesMap.get(service).contains(PRIMARY_TRANSPORT_ID)) {
+			if (transportPriorityForServiceMap.get(service) != null
+					&& transportPriorityForServiceMap.get(service).contains(PRIMARY_TRANSPORT_ID)) {
 				if(connectedPrimaryTransport != null) {
 					activeTransports.put(service, connectedPrimaryTransport);
 				}
@@ -219,11 +222,11 @@ public class WiProProtocol extends AbstractProtocol {
 				// against the list of services that might be able to be started on it
 
 				for(SessionType secondaryService : HIGH_BANDWIDTH_SERVICES){
-					if (supportedServicesMap.containsKey(secondaryService)) {
+					if (transportPriorityForServiceMap.containsKey(secondaryService)) {
 						// If this service type has extra information from the RPC StartServiceACK
 						// parse through it to find which transport should be used to start this
 						// specific service type
-						for(int transportNum : supportedServicesMap.get(secondaryService)){
+						for(int transportNum : transportPriorityForServiceMap.get(secondaryService)){
 							if(transportNum == PRIMARY_TRANSPORT_ID){
 								break; // Primary is favored for this service type, break out...
 							}else if(transportNum == SECONDARY_TRANSPORT_ID){
@@ -743,22 +746,21 @@ public class WiProProtocol extends AbstractProtocol {
 
 								//Build out the supported secondary transports received from the
 								// RPC start service ACK.
-								List<TransportType> supportedTransports = new ArrayList<>();
+								supportedSecondaryTransports = new ArrayList<>();
 
 								for (String s : secondary) {
 									Log.d(TAG, "Secondary transports allowed by core: " + s);
 									if(s.equals(TransportConstants.TCP_WIFI)){
-										supportedTransports.add(TransportType.TCP);
+										supportedSecondaryTransports.add(TransportType.TCP);
 									}else if(s.equals(TransportConstants.AOA_USB)){
-										supportedTransports.add(TransportType.USB);
+										supportedSecondaryTransports.add(TransportType.USB);
 									}else if(s.equals(TransportConstants.SPP_BLUETOOTH)){
-										supportedTransports.add(TransportType.BLUETOOTH);
+										supportedSecondaryTransports.add(TransportType.BLUETOOTH);
 									}
 								}
 
-								setSupportedSecondaryTransports(supportedTransports);
-								setSupportedServices(SessionType.PCM, audio);
-								setSupportedServices(SessionType.NAV, video);
+								setTransortPriorityForService(SessionType.PCM, audio);
+								setTransortPriorityForService(SessionType.NAV, video);
 
 								activeTransports.put(SessionType.RPC, transportType);
 								activeTransports.put(SessionType.BULK_DATA, transportType);
@@ -902,11 +904,19 @@ public class WiProProtocol extends AbstractProtocol {
 				// Get TCP params
 				String ipAddr = (String) packet.getTag(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS);
 				Integer port = (Integer) packet.getTag(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT);
-				secondaryTransportParams = new HashMap<>();
-				secondaryTransportParams.put(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS, ipAddr);
-				secondaryTransportParams.put(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT, port);
 
-				// TODO: Send these params later before connecting / sending registration
+				if(secondaryTransportParams == null){
+					secondaryTransportParams = new HashMap<>();
+				}
+
+				if(ipAddr != null && port != null) {
+					Bundle bundle = new Bundle();
+					bundle.putString(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS, ipAddr);
+					bundle.putInt(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT, port);
+					bundle.putString(TransportConstants.TRANSPORT, TransportType.TCP.name());
+					secondaryTransportParams.put(TransportType.TCP, bundle);
+				}
+
 			}
             _assemblerForMessageID.remove(packet.getMessageId());
 		} // end-method
@@ -1020,17 +1030,21 @@ public class WiProProtocol extends AbstractProtocol {
 				}
 			}
 		}
-		if(supportedServicesMap == null || supportedServicesMap.get(serviceType) == null || supportedServicesMap.get(serviceType).isEmpty()){
+		if(transportPriorityForServiceMap == null
+				|| transportPriorityForServiceMap.get(serviceType) == null
+				|| transportPriorityForServiceMap.get(serviceType).isEmpty()){
+			//If there is no transport priority for this service it can be assumed it's primary
+			header.setTransportType(connectedPrimaryTransport);
 			handlePacketToSend(header);
 			return;
 		}
-		int transportNum = supportedServicesMap.get(serviceType).get(0);
-		if(transportNum == PRIMARY_TRANSPORT_ID){
+		int transportPriority = transportPriorityForServiceMap.get(serviceType).get(0);
+		if(transportPriority == PRIMARY_TRANSPORT_ID){
 			// Primary is favored, and we're already connected...
 			Log.d(TAG, "Starting service over primary.");
 			header.setTransportType(connectedPrimaryTransport);
 			handlePacketToSend(header);
-		}else if(transportNum == SECONDARY_TRANSPORT_ID) {
+		}else if(transportPriority == SECONDARY_TRANSPORT_ID) {
 			for(TransportType secondaryTransportType : supportedSecondaryTransports) {
 				// Secondary is favored
 				Log.d(TAG, "Starting service over secondary.");
@@ -1040,43 +1054,40 @@ public class WiProProtocol extends AbstractProtocol {
 					handlePacketToSend(header);
 					return;
 				}
+
+				//If the secondary transport isn't connected yet that will have to be performed first
+
 				List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.get(secondaryTransportType);
 				if(listenerList == null){
 					listenerList = new ArrayList<>();
 					secondaryTransportListeners.put(secondaryTransportType, listenerList);
 				}
-				if(supportedServicesMap.get(serviceType).contains(PRIMARY_TRANSPORT_ID)){
-					// Primary is also supported as backup
-					listenerList.add(new ISecondaryTransportListener() {
-						@Override
-						public void onConnectionSuccess() {
-							handlePacketToSend(header);
-						}
 
-						@Override
-						public void onConnectionFailure() {
-							//TODO: Ensure this is called appropriately when secondary transport fails to connect
+				//Check to see if the primary transport can also be used as a backup
+				final boolean primaryTransportBackup = transportPriorityForServiceMap.get(serviceType).contains(PRIMARY_TRANSPORT_ID);
+
+				listenerList.add(new ISecondaryTransportListener() {
+					@Override
+					public void onConnectionSuccess() {
+						handlePacketToSend(header);
+					}
+
+					@Override
+					public void onConnectionFailure() {
+						if(primaryTransportBackup) {
+							// Primary is also supported as backup
 							header.setTransportType(connectedPrimaryTransport);
 							handlePacketToSend(header);
-						}
-					});
-				}else{
-					// Only secondary is supported for this service
-					listenerList.add(new ISecondaryTransportListener() {
-						@Override
-						public void onConnectionSuccess() {
-							handlePacketToSend(header);
-						}
-
-						@Override
-						public void onConnectionFailure() {
-							//TODO: Ensure this is called appropriately when secondary transport fails to connect
+						}else{
 							Log.d(TAG, "Failed to connect secondary transport, threw away StartService");
 						}
-					});
+					}
+				});
+
+				if(secondaryTransportParams.containsKey(secondaryTransportType)) {
+					header.setTransportType(secondaryTransportType);
+					connectSecondaryTransport(sessionID, secondaryTransportType, secondaryTransportParams.get(secondaryTransportType));
 				}
-				header.setTransportType(secondaryTransportType);
-				connectSecondaryTransport(sessionID, secondaryTransportType, secondaryTransportParams);
 
 			}
 		}
