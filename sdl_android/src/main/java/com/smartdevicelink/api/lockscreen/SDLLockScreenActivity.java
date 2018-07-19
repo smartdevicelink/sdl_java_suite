@@ -8,49 +8,30 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.smartdevicelink.R;
-import com.smartdevicelink.util.HttpUtils;
-
-import java.io.IOException;
 
 public class SDLLockScreenActivity extends Activity {
 
 	public static final String LOCKSCREEN_COLOR_EXTRA = "LOCKSCREEN_COLOR_EXTRA";
 	public static final String LOCKSCREEN_ICON_EXTRA = "LOCKSCREEN_ICON_EXTRA";
 	public static final String LOCKSCREEN_OEM_ICON_EXTRA = "LOCKSCREEN_OEM_ICON_EXTRA";
+	public static final String LOCKSCREEN_OEM_ICON_BITMAP = "LOCKSCREEN_OEM_ICON_BITMAP";
 	public static final String LOCKSCREEN_CUSTOM_VIEW_EXTRA = "LOCKSCREEN_CUSTOM_VIEW_EXTRA";
 	public static final String CLOSE_LOCK_SCREEN_ACTION = "CLOSE_LOCK_SCREEN";
-	public static final String DOWNLOAD_ICON_ACTION = "DOWNLOAD_ICON";
-	public static final String DOWNLOAD_ICON_URL = "DOWNLOAD_ICON_URL";
 	private static final String TAG = "SDLLockScreenActivity";
 
-	private Bitmap lockScreenOEMIcon;
 	private int customView, customIcon, customColor;
 	private boolean showOEMLogo;
+	private Bitmap lockScreenOEMIcon;
 
 	private final BroadcastReceiver closeLockScreenBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			finish();
-		}
-	};
-
-	private final BroadcastReceiver downloadLockScreenIconBroadcastReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			// get data from intent
-			if (intent != null) {
-				Log.i(TAG, "downloadLockScreenIconBroadcastReceiver called");
-				String URL = intent.getStringExtra(DOWNLOAD_ICON_URL);
-				if (URL != null) {
-					downloadLockScreenIcon(URL, null);
-				}
-			}
 		}
 	};
 
@@ -64,13 +45,11 @@ public class SDLLockScreenActivity extends Activity {
 
 		// register broadcast receivers
 		registerReceiver(closeLockScreenBroadcastReceiver, new IntentFilter(CLOSE_LOCK_SCREEN_ACTION));
-		registerReceiver(downloadLockScreenIconBroadcastReceiver, new IntentFilter(DOWNLOAD_ICON_ACTION));
 	}
 
 	@Override
 	protected void onDestroy() {
 		unregisterReceiver(closeLockScreenBroadcastReceiver);
-		unregisterReceiver(downloadLockScreenIconBroadcastReceiver);
 		super.onDestroy();
 	}
 
@@ -80,6 +59,7 @@ public class SDLLockScreenActivity extends Activity {
 			customIcon = intent.getIntExtra(LOCKSCREEN_ICON_EXTRA, 0);
 			customView = intent.getIntExtra(LOCKSCREEN_CUSTOM_VIEW_EXTRA, 0);
 			showOEMLogo = intent.getBooleanExtra(LOCKSCREEN_OEM_ICON_EXTRA, true);
+			lockScreenOEMIcon = intent.getParcelableExtra(LOCKSCREEN_OEM_ICON_BITMAP);
 
 			if (customView != 0){
 				setCustomView();
@@ -92,6 +72,10 @@ public class SDLLockScreenActivity extends Activity {
 
 				if (customIcon != 0){
 					changeIcon();
+				}
+
+				if (showOEMLogo && lockScreenOEMIcon != null){
+					showOEMIcon();
 				}
 			}
 		}
@@ -107,36 +91,15 @@ public class SDLLockScreenActivity extends Activity {
 		lockscreen_iv.setBackgroundResource(customIcon);
 	}
 
-	private void setCustomView() {
-		setContentView(customView);
+	private void showOEMIcon() {
+		ImageView oem_iv = findViewById(R.id.OEM_image);
+		if (lockScreenOEMIcon != null) {
+			oem_iv.setImageBitmap(lockScreenOEMIcon);
+		}
 	}
 
-	public void downloadLockScreenIcon(final String url, final LockScreenManager.OnLockScreenIconDownloadedListener lockScreenListener){
-		new Thread(new Runnable(){
-			@Override
-			public void run(){
-				try{
-					lockScreenOEMIcon = HttpUtils.downloadImage(url);
-					if(lockScreenListener != null){
-						Log.i(TAG, "Lock Screen Icon Downloaded");
-						if (showOEMLogo){
-							Log.i(TAG, "OEM LOGO SHOW == TRUE");
-							ImageView oem_iv = findViewById(R.id.OEM_image);
-							if (lockScreenOEMIcon != null) {
-								Log.i(TAG, "Setting OEM Logo Bitmap");
-								oem_iv.setImageBitmap(lockScreenOEMIcon);
-							}
-						}
-						lockScreenListener.onLockScreenIconDownloaded(lockScreenOEMIcon);
-					}
-				}catch(IOException e){
-					if(lockScreenListener != null){
-						Log.e(TAG, "Lock Screen Icon Error Downloading");
-						lockScreenListener.onLockScreenIconDownloadError(e);
-					}
-				}
-			}
-		}).start();
+	private void setCustomView() {
+		setContentView(customView);
 	}
 
 }

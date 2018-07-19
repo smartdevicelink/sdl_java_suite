@@ -12,15 +12,16 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
-import com.smartdevicelink.proxy.rpc.SystemRequest;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.util.HttpUtils;
 
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 /**
@@ -39,6 +40,8 @@ public class LockScreenManager extends BaseSubManager {
 	private boolean isAppInUse, driverDistStatus, lockScreenEnabled, showOEMLogo;
 	private int lockScreenIcon, lockscreenColor, customView;
 	private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
+	private String OEMIconUrl;
+	private Bitmap lockScreenOEMIcon;
 
 	public interface OnLockScreenIconDownloadedListener {
 		void onLockScreenIconDownloaded(Bitmap icon);
@@ -58,7 +61,6 @@ public class LockScreenManager extends BaseSubManager {
 		// setup the manager
 		readConfiguration(lockScreenConfig);
 		setupListeners();
-		getIconURL();
 
 		// transition state
 		transitionToState(READY);
@@ -157,17 +159,12 @@ public class LockScreenManager extends BaseSubManager {
 						msg.getUrl() != null) {
 					// send intent to activity to download icon from core
 					Log.i(TAG, "SYSTEM REQUEST - ICON Ready for Download");
-					sendDownloadIconBroadcast(msg.getUrl());
+					OEMIconUrl = msg.getUrl();
+					downloadLockScreenIcon(OEMIconUrl, null);
 				}
 			}
 		};
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_SYSTEM_REQUEST, systemRequestListener);
-	}
-
-	private void getIconURL(){
-		SystemRequest sr = new SystemRequest();
-		sr.setRequestType(RequestType.LOCK_SCREEN_ICON_URL);
-		internalInterface.sendRPCRequest(sr);
 	}
 
 	////
@@ -197,6 +194,7 @@ public class LockScreenManager extends BaseSubManager {
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_COLOR_EXTRA, lockscreenColor);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_CUSTOM_VIEW_EXTRA, customView);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_OEM_ICON_EXTRA, showOEMLogo);
+				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_OEM_ICON_BITMAP, lockScreenOEMIcon);
 
 				context.get().startActivity(showLockScreenIntent);
 			} else if (status == LockScreenStatus.OFF) {
@@ -208,17 +206,6 @@ public class LockScreenManager extends BaseSubManager {
 	////
 	// HELPERS
 	////
-
-	/**
-	 * Sends Broadcast to Download OEM Icon.
-	 * Currently that method is in SDLLockScreenActivity
-	 * @param URL - URL of Icon
-	 */
-	private void sendDownloadIconBroadcast(String URL){
-		Intent intent = new Intent(SDLLockScreenActivity.DOWNLOAD_ICON_ACTION);
-		intent.putExtra(SDLLockScreenActivity.DOWNLOAD_ICON_URL, URL);
-		context.get().sendBroadcast(intent);
-	}
 
 	/**
 	 * Step through some logic to determine if we need to show the lock screen or not
@@ -254,6 +241,26 @@ public class LockScreenManager extends BaseSubManager {
 			}
 		}
 		return LockScreenStatus.OFF;
+	}
+
+	private void downloadLockScreenIcon(final String url, final LockScreenManager.OnLockScreenIconDownloadedListener lockScreenListener){
+		new Thread(new Runnable(){
+			@Override
+			public void run(){
+				try{
+					lockScreenOEMIcon = HttpUtils.downloadImage(url);
+					Log.i(TAG, "Lock Screen Icon Downloaded");
+					if(lockScreenListener != null){
+						lockScreenListener.onLockScreenIconDownloaded(lockScreenOEMIcon);
+					}
+				}catch(IOException e){
+					if(lockScreenListener != null){
+						Log.e(TAG, "Lock Screen Icon Error Downloading");
+						lockScreenListener.onLockScreenIconDownloadError(e);
+					}
+				}
+			}
+		}).start();
 	}
 
 }
