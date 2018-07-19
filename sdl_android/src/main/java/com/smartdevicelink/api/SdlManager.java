@@ -117,12 +117,11 @@ public class SdlManager {
 				Log.d(TAG, "Sub manager failed to initialize");
 			}
 			if(
-					true
+					lockscreenManager.getState() != BaseSubManager.SETTING_UP
 					/*
 					fileManager.getState() != BaseSubManager.SETTING_UP &&
 					videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
 					audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
-					lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
 					screenManager.getState() != BaseSubManager.SETTING_UP
 					permissionManager.getState() != BaseSubManager.SETTING_UP
 					*/  ){
