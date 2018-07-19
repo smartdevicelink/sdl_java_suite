@@ -201,7 +201,7 @@ public class FileManagerTests extends AndroidTestCase {
 
 		FileManager fileManager = new FileManager(new TestISdl(), mTestContext);
 		while(fileManager.getState() == BaseSubManager.SETTING_UP);
-		assertEquals(fileManager.getState(), BaseSubManager.SHUTDOWN);
+		assertEquals(fileManager.getState(), BaseSubManager.ERROR);
 	}
 
 	public void testFileUploadSuccess(){

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DeleteFile;
@@ -79,12 +80,14 @@ public class FileManager extends BaseSubManager {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				if(response.getSuccess()){
-					remoteFiles.addAll(((ListFilesResponse) response).getFilenames());
+					if(((ListFilesResponse) response).getFilenames() != null){
+						remoteFiles.addAll(((ListFilesResponse) response).getFilenames());
+					}
 					// on callback set manager to ready state
 					transitionToState(BaseSubManager.READY);
 				}else{
 					// file list could not be received
-					transitionToState(BaseSubManager.SHUTDOWN);
+					transitionToState(BaseSubManager.ERROR);
 				}
 			}
 		});
@@ -115,55 +118,22 @@ public class FileManager extends BaseSubManager {
 		if(fileNames == null || fileNames.isEmpty()){
 			return;
 		}
-		final Map<String, String> errors = new HashMap<>();
 		final List<DeleteFile> deleteFileRequests = new ArrayList<>();
-		final SparseArray<String> fileNameMap = new SparseArray<>();
 		for(String fileName : fileNames){
 			DeleteFile deleteFile = new DeleteFile();
 			deleteFile.setSdlFileName(fileName);
 			deleteFileRequests.add(deleteFile);
 		}
-		internalInterface.sendRequests(deleteFileRequests, new OnMultipleRequestListener() {
-			int fileNum = 0;
-
-			@Override
-			public void addCorrelationId(int correlationid) {
-				super.addCorrelationId(correlationid);
-				fileNameMap.put(correlationid, deleteFileRequests.get(fileNum++).getSdlFileName());
-			}
-
-			@Override
-			public void onUpdate(int remainingRequests) {}
-
-			@Override
-			public void onFinished() {
-				if(errors.isEmpty()){
-					listener.onComplete(null);
-				}else{
-					listener.onComplete(errors);
-				}
-			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				if(fileNameMap.get(correlationId) != null){
-					errors.put(fileNameMap.get(correlationId), resultCode.toString() + " : " + info);
-				}// else no fileName for given correlation ID
-			}
-
-			@Override
-			public void onResponse(int correlationId, RPCResponse response) {
-				if(response.getSuccess()){
-					if(fileNameMap.get(correlationId) != null){
-						remoteFiles.remove(fileNameMap.get(correlationId));
-					}
-				}
-			}
-		});
+		sendMultipleFileOperations(deleteFileRequests, listener);
 	}
 
 	// UPLOAD FILES / ARTWORK
 
+	/**
+	 * Creates and returns a PutFile request that would upload a given SdlFile
+	 * @param file SdlFile with fileName and one of A) fileData, B) Uri, or C) resourceID set
+	 * @return a valid PutFile request if SdlFile contained a fileName and sufficient data
+	 */
 	private PutFile createPutFile(final SdlFile file){
 		if(file == null){
 			return null;
@@ -207,45 +177,34 @@ public class FileManager extends BaseSubManager {
 		return putFile;
 	}
 
-	public void uploadFile(final SdlFile file, final CompletionListener listener){
-		PutFile putFile = createPutFile(file);
-
-		putFile.setOnRPCResponseListener(new OnRPCResponseListener() {
-			@Override
-			public void onResponse(int correlationId, RPCResponse response) {
-				if(response.getSuccess()){
-					remoteFiles.add(file.getName());
-				}
-				listener.onComplete(response.getSuccess());
-			}
-
-			@Override
-			public void onError(int correlationId, Result resultCode, String info) {
-				super.onError(correlationId, resultCode, info);
-				listener.onComplete(false);
-			}
-		});
-
-		internalInterface.sendRPCRequest(putFile);
-	}
-
-	public void uploadFiles(List<? extends SdlFile> files, final MultipleFileCompletionListener listener){
-		if(files ==null || files.isEmpty()){
-			return;
-		}
+	/**
+	 * Sends list of provided requests (strictly PutFile or DeleteFile) asynchronously through internalInterface,
+	 * calls listener on conclusion of sending requests.
+	 * @param requests List of PutFile or DeleteFile requests
+	 * @param listener MultipleFileCompletionListener that is called upon conclusion of sending requests
+	 */
+	private void sendMultipleFileOperations(final List<? extends RPCRequest> requests, final MultipleFileCompletionListener listener){
 		final Map<String, String> errors = new HashMap<>();
-		final List<PutFile> putFileRequests = new ArrayList<>();
 		final SparseArray<String> fileNameMap = new SparseArray<>();
-		for(SdlFile file : files){
-			putFileRequests.add(createPutFile(file));
+		final Boolean deletionOperation;
+		if(requests.get(0) instanceof PutFile){
+			deletionOperation = false;
+		}else if(requests.get(0) instanceof DeleteFile){
+			deletionOperation = true;
+		}else{
+			return; // requests are not DeleteFile or PutFile
 		}
-		internalInterface.sendRequests(putFileRequests, new OnMultipleRequestListener() {
+		internalInterface.sendRequests(requests, new OnMultipleRequestListener() {
 			int fileNum = 0;
 
 			@Override
 			public void addCorrelationId(int correlationid) {
 				super.addCorrelationId(correlationid);
-				fileNameMap.put(correlationid, putFileRequests.get(fileNum++).getSdlFileName());
+				if(deletionOperation){
+					fileNameMap.put(correlationid, ((DeleteFile) requests.get(fileNum++)).getSdlFileName());
+				}else{
+					fileNameMap.put(correlationid, ((PutFile) requests.get(fileNum++)).getSdlFileName());
+				}
 			}
 
 			@Override
@@ -276,6 +235,39 @@ public class FileManager extends BaseSubManager {
 				}
 			}
 		});
+	}
+
+	public void uploadFile(final SdlFile file, final CompletionListener listener){
+		PutFile putFile = createPutFile(file);
+
+		putFile.setOnRPCResponseListener(new OnRPCResponseListener() {
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				if(response.getSuccess()){
+					remoteFiles.add(file.getName());
+				}
+				listener.onComplete(response.getSuccess());
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				super.onError(correlationId, resultCode, info);
+				listener.onComplete(false);
+			}
+		});
+
+		internalInterface.sendRPCRequest(putFile);
+	}
+
+	public void uploadFiles(List<? extends SdlFile> files, final MultipleFileCompletionListener listener){
+		if(files == null || files.isEmpty()){
+			return;
+		}
+		final List<PutFile> putFileRequests = new ArrayList<>();
+		for(SdlFile file : files){
+			putFileRequests.add(createPutFile(file));
+		}
+		sendMultipleFileOperations(putFileRequests, listener);
 	}
 
 	public void uploadArtwork(final SdlArtwork file, final CompletionListener listener){
