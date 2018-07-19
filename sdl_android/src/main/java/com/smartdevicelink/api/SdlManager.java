@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.smartdevicelink.api.PermissionManager.PermissionManager;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -70,13 +71,13 @@ public class SdlManager{
 
 	// Managers
 
+	private PermissionManager permissionManager;
     /*
     private FileManager fileManager;
     private VideoStreamingManager videoStreamingManager;
     private AudioStreamManager audioStreamManager;
     private LockscreenManager lockscreenManager;
     private ScreenManager screenManager;
-    private PermissionManager permissionManager;
     */
 
 	// Initialize proxyBridge with anonymous lifecycleListener
@@ -116,14 +117,13 @@ public class SdlManager{
 				Log.d(TAG, "Sub manager failed to initialize");
 			}
 			if(
-					true
+					permissionManager.getState() != BaseSubManager.SETTING_UP
 					/*
 					fileManager.getState() != BaseSubManager.SETTING_UP &&
 					videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
 					audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
 					lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
 					screenManager.getState() != BaseSubManager.SETTING_UP
-					permissionManager.getState() != BaseSubManager.SETTING_UP
 					*/  ){
 				state = BaseSubManager.READY;
 				if(initListener != null){
@@ -137,6 +137,9 @@ public class SdlManager{
 	private void initialize(){
 		// instantiate managers
 
+		this.permissionManager = new PermissionManager(_internalInterface);
+		this.permissionManager.start(subManagerListener);
+
 		/*
 		this.fileManager = new FileManager(_internalInterface, context);
 		this.fileManager.start(subManagerListener);
@@ -144,8 +147,6 @@ public class SdlManager{
 		this.lockscreenManager.start(subManagerListener);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
 		this.screenManager.start(subManagerListener);
-		this.permissionManager = new PermissionManager(_internalInterface);
-		this.permissionManager.start(subManagerListener);
 		this.videoStreamingManager = new VideoStreamingManager(context, _internalInterface);
 		this.videoStreamingManager.start(subManagerListener);
 		this.audioStreamManager = new AudioStreamManager(_internalInterface);
@@ -157,12 +158,12 @@ public class SdlManager{
 	}
 
 	private void dispose() {
+		this.permissionManager.dispose();
 		/*
 		this.fileManager.dispose();
 		this.lockscreenManager.dispose();
 		this.audioStreamManager.dispose();
 		this.screenManager.dispose();
-		this.permissionManager.dispose();
 		this.videoStreamingManager.dispose();
 		this.audioStreamManager.dispose();
 		*/
@@ -325,7 +326,9 @@ public class SdlManager{
 	}
 
 	// MANAGER GETTERS
-
+	public PermissionManager getPermissionManager() {
+		return permissionManager;
+	}
 	/*
 	public FileManager getFileManager() {
 		return fileManager;
@@ -345,10 +348,6 @@ public class SdlManager{
 
 	public LockscreenManager getLockscreenManager() {
 		return lockscreenManager;
-	}
-
-	public PermissionManager getPermissionManager() {
-		return permissionManager;
 	}*/
 
 	// PROTECTED GETTERS
