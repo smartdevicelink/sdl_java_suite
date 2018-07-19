@@ -298,34 +298,28 @@ public class SdlManager{
 			return this;
 		}
 
-		@SuppressWarnings("unchecked")
 		public SdlManager build() {
-			try {
-
-				if (sdlManager.appName == null) {
-					throw new IllegalArgumentException("You must specify an app name by calling setAppName");
-				}
-
-				if (sdlManager.appId == null) {
-					throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
-				}
-
-				if (sdlManager.hmiTypes == null) {
-					Vector<AppHMIType> hmiTypesDefault = new Vector<>();
-					hmiTypesDefault.add(AppHMIType.DEFAULT);
-					sdlManager.hmiTypes = hmiTypesDefault;
-					sdlManager.isMediaApp = false;
-				}
-
-				if (sdlManager.hmiLanguage == null){
-					sdlManager.hmiLanguage = Language.EN_US;
-				}
-
-				sdlManager.proxy = new SdlProxyBase(sdlManager.proxyBridge, sdlManager.appName, sdlManager.shortAppName, sdlManager.isMediaApp, sdlManager.hmiLanguage, sdlManager.hmiLanguage, sdlManager.hmiTypes, sdlManager.appId, sdlManager.transport, sdlManager.vrSynonyms, sdlManager.ttsChunks, sdlManager.dayColorScheme, sdlManager.nightColorScheme) {};
-				sdlManager.state = BaseSubManager.SETTING_UP;
-			} catch (SdlException e) {
-				e.printStackTrace();
+			if (sdlManager.appName == null) {
+				throw new IllegalArgumentException("You must specify an app name by calling setAppName");
 			}
+
+			if (sdlManager.appId == null) {
+				throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
+			}
+
+			if (sdlManager.hmiTypes == null) {
+				Vector<AppHMIType> hmiTypesDefault = new Vector<>();
+				hmiTypesDefault.add(AppHMIType.DEFAULT);
+				sdlManager.hmiTypes = hmiTypesDefault;
+				sdlManager.isMediaApp = false;
+			}
+
+			if (sdlManager.hmiLanguage == null){
+				sdlManager.hmiLanguage = Language.EN_US;
+			}
+
+			sdlManager.state = BaseSubManager.SETTING_UP;
+
 			return sdlManager;
 		}
 	}
@@ -455,15 +449,18 @@ public class SdlManager{
 	 * @param listener CompletionListener that is called once the SdlManager state transitions
 	 * from SETTING_UP to READY or ERROR
 	 */
+	@SuppressWarnings("unchecked")
 	public void start(CompletionListener listener){
 		if(listener == null){
 			return;
 		}
-		if(state == BaseSubManager.READY || state == BaseSubManager.ERROR){
-			listener.onComplete(state == BaseSubManager.READY);
-			initListener = null;
-		}else{
-			initListener = listener;
+		initListener = listener;
+		try {
+			proxy = new SdlProxyBase(proxyBridge, appName, shortAppName, isMediaApp, hmiLanguage,
+					hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
+					nightColorScheme) {};
+		} catch (SdlException e) {
+			listener.onComplete(false);
 		}
 	}
 
