@@ -252,4 +252,32 @@ public class LockScreenManager extends BaseSubManager {
 		}).start();
 	}
 
+	// protected getters for testing class
+	protected int getLockScreenIcon(){
+		return lockScreenIcon;
+	}
+
+	protected int getLockscreenColor(){
+		return lockscreenColor;
+	}
+
+	protected int getCustomView(){
+		return customView;
+	}
+
+	protected boolean getShowOEMLogo(){
+		return showOEMLogo;
+	}
+
+	protected boolean getLockScreenEnabled(){
+		return lockScreenEnabled;
+	}
+
+	protected Bitmap getLockScreenOEMIcon(){
+		return lockScreenOEMIcon;
+	}
+
+	protected LockScreenStatus testGetLockScreenStatus(){
+		return getLockScreenStatus();
+	}
 }
