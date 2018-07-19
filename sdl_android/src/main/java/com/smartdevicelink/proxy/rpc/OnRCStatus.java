@@ -13,21 +13,35 @@ public class OnRCStatus extends RPCNotification {
 	public static final String KEY_FREE_MODULES = "freeModules";
 	public static final String KEY_ALLOWED = "allowed";
 
+	/**
+	 * Constructs a new OnRCStatus object
+	 */
 	public OnRCStatus() {
 		super(FunctionID.ON_RC_STATUS.toString());
 	}
 
+	/**
+	 * Constructs a new OnRCStatus object indicated by the Hashtable
+	 * parameter
+	 * @param hash The Hashtable to use
+	 */
 	public OnRCStatus(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 
+	/**
+	 * Constructs a newly allocated OnRCStatus object
+	 *
+	 * @param allocatedModules Contains a list (zero or more) of module types that are allocated to the application.
+	 * @param freeModules      Contains a list (zero or more) of module types that are free to access for the application.
+	 */
 	public OnRCStatus(@NonNull List<ModuleData> allocatedModules, @NonNull List<ModuleData> freeModules) {
 		this();
 		setAllocatedModules(allocatedModules);
 		setFreeModules(freeModules);
 	}
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public List<ModuleData> getAllocatedModules() {
 		return (List<ModuleData>) getObject(ModuleData.class, KEY_ALLOCATED_MODULES);
 	}

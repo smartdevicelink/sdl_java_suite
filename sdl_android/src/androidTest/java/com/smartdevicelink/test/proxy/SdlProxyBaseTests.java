@@ -1,7 +1,6 @@
 package com.smartdevicelink.test.proxy;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.test.AndroidTestCase;
 import android.util.Log;
@@ -623,7 +622,6 @@ public class SdlProxyBaseTests extends AndroidTestCase{
 
 		@Override
 		public void onOnRCStatus(OnRCStatus notification) {
-
 		}
 	}
 }

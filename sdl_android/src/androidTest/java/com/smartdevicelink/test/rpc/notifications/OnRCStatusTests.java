@@ -17,7 +17,7 @@ import java.util.List;
 
 public class OnRCStatusTests extends BaseRpcTests {
 	@Override
-	protected RPCMessage createMessage(){
+	protected RPCMessage createMessage() {
 		OnRCStatus msg = new OnRCStatus();
 
 		List<ModuleData> listAllocatedModules = new ArrayList<>();
@@ -34,17 +34,17 @@ public class OnRCStatusTests extends BaseRpcTests {
 	}
 
 	@Override
-	protected String getMessageType(){
-        return RPCMessage.KEY_NOTIFICATION;
-    }
+	protected String getMessageType() {
+		return RPCMessage.KEY_NOTIFICATION;
+	}
 
 	@Override
-	protected String getCommandType(){
-        return FunctionID.ON_RC_STATUS.toString();
-    }
+	protected String getCommandType() {
+		return FunctionID.ON_RC_STATUS.toString();
+	}
 
 	@Override
-	protected JSONObject getExpectedParameters(int sdlVersion){
+	protected JSONObject getExpectedParameters(int sdlVersion) {
 		JSONObject result = new JSONObject();
 
 		JSONArray jsonArrayAllocatedModules = new JSONArray();
@@ -70,11 +70,11 @@ public class OnRCStatusTests extends BaseRpcTests {
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
-	public void testRpcValues () {
+	public void testRpcValues() {
 		// Test Values
 		List<ModuleData> listAllocatedModules = ((OnRCStatus) msg).getAllocatedModules();
 		List<ModuleData> listFreeModules = ((OnRCStatus) msg).getFreeModules();
-		Boolean allowed = ( (OnRCStatus) msg ).getAllowed();
+		Boolean allowed = ((OnRCStatus) msg).getAllowed();
 
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_MODULEDATA, listAllocatedModules.get(0));
