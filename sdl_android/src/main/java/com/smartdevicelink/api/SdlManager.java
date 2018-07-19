@@ -494,6 +494,7 @@ public class SdlManager {
 		@Override
 		public void stop() {
 			try{
+				dispose();
 				proxy.dispose();
 			}catch (SdlException e){
 				e.printStackTrace();
