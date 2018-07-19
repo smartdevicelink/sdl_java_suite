@@ -67,6 +67,8 @@ public class LockScreenManager extends BaseSubManager {
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_SYSTEM_REQUEST, systemRequestListener);
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_DRIVER_DISTRACTION, ddListener);
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+		lockScreenOEMIcon = null;
+		OEMIconUrl = null;
 
 		// transition state
 		transitionToState(SHUTDOWN);
