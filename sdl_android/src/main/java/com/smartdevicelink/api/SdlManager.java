@@ -2,6 +2,7 @@ package com.smartdevicelink.api;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -46,7 +47,7 @@ import java.util.Vector;
  * 3. Sending Requests <br>
  * 4. Helper methods
  */
-public class SdlManager implements ProxyBridge.LifecycleListener {
+public class SdlManager{
 
 	private static String TAG = "Sdl Manager";
 	private SdlProxyBase proxy;
@@ -62,10 +63,13 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 	private Vector<TTSChunk> ttsChunks;
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
 
-	private final ProxyBridge proxyBridge= new ProxyBridge(this);
+	private CompletionListener initListener;
+	private int state = -1;
 	//public LockScreenConfig lockScreenConfig;
 
+
 	// Managers
+
     /*
     private FileManager fileManager;
     private VideoStreamingManager videoStreamingManager;
@@ -75,17 +79,81 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
     private PermissionManager permissionManager;
     */
 
+	// Initialize proxyBridge with anonymous lifecycleListener
+	private final ProxyBridge proxyBridge= new ProxyBridge(new ProxyBridge.LifecycleListener() {
+		@Override
+		public void onProxyConnected() {
+			Log.d(TAG, "Proxy is connected. Now initializing.");
+			initialize();
+		}
+
+		@Override
+		public void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason){
+			dispose();
+		}
+
+		@Override
+		public void onServiceEnded(OnServiceEnded serviceEnded){
+
+		}
+
+		@Override
+		public void onServiceNACKed(OnServiceNACKed serviceNACKed){
+
+		}
+
+		@Override
+		public void onError(String info, Exception e){
+
+		}
+	});
+
+    // Sub manager listener
+	private final CompletionListener subManagerListener = new CompletionListener() {
+		@Override
+		public synchronized void onComplete(boolean success) {
+			if(!success){
+				Log.d(TAG, "Sub manager failed to initialize");
+			}
+			if(
+					true
+					/*
+					fileManager.getState() != BaseSubManager.SETTING_UP &&
+					videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
+					audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
+					lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
+					screenManager.getState() != BaseSubManager.SETTING_UP
+					permissionManager.getState() != BaseSubManager.SETTING_UP
+					*/  ){
+				state = BaseSubManager.READY;
+				if(initListener != null){
+					initListener.onComplete(true);
+					initListener = null;
+				}
+			}
+		}
+	};
+
 	private void initialize(){
 		// instantiate managers
 
 		/*
 		this.fileManager = new FileManager(_internalInterface, context);
+		this.fileManager.start(subManagerListener);
 		this.lockscreenManager = new LockscreenManager(lockScreenConfig, context, _internalInterface);
+		this.lockscreenManager.start(subManagerListener);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
+		this.screenManager.start(subManagerListener);
 		this.permissionManager = new PermissionManager(_internalInterface);
+		this.permissionManager.start(subManagerListener);
 		this.videoStreamingManager = new VideoStreamingManager(context, _internalInterface);
+		this.videoStreamingManager.start(subManagerListener);
 		this.audioStreamManager = new AudioStreamManager(_internalInterface);
+		this.audioStreamManager.start(subManagerListener);
 		*/
+
+		// If no managers, just call subManagerListener's onComplete
+		subManagerListener.onComplete(true);
 	}
 
 	private void dispose() {
@@ -230,34 +298,28 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 			return this;
 		}
 
-		@SuppressWarnings("unchecked")
 		public SdlManager build() {
-			try {
-
-				if (sdlManager.appName == null) {
-					throw new IllegalArgumentException("You must specify an app name by calling setAppName");
-				}
-
-				if (sdlManager.appId == null) {
-					throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
-				}
-
-				if (sdlManager.hmiTypes == null) {
-					Vector<AppHMIType> hmiTypesDefault = new Vector<>();
-					hmiTypesDefault.add(AppHMIType.DEFAULT);
-					sdlManager.hmiTypes = hmiTypesDefault;
-					sdlManager.isMediaApp = false;
-				}
-
-				if (sdlManager.hmiLanguage == null){
-					sdlManager.hmiLanguage = Language.EN_US;
-				}
-
-				sdlManager.initialize();
-				sdlManager.proxy = new SdlProxyBase(sdlManager.proxyBridge, sdlManager.appName, sdlManager.shortAppName, sdlManager.isMediaApp, sdlManager.hmiLanguage, sdlManager.hmiLanguage, sdlManager.hmiTypes, sdlManager.appId, sdlManager.transport, sdlManager.vrSynonyms, sdlManager.ttsChunks, sdlManager.dayColorScheme, sdlManager.nightColorScheme) {};
-			} catch (SdlException e) {
-				e.printStackTrace();
+			if (sdlManager.appName == null) {
+				throw new IllegalArgumentException("You must specify an app name by calling setAppName");
 			}
+
+			if (sdlManager.appId == null) {
+				throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
+			}
+
+			if (sdlManager.hmiTypes == null) {
+				Vector<AppHMIType> hmiTypesDefault = new Vector<>();
+				hmiTypesDefault.add(AppHMIType.DEFAULT);
+				sdlManager.hmiTypes = hmiTypesDefault;
+				sdlManager.isMediaApp = false;
+			}
+
+			if (sdlManager.hmiLanguage == null){
+				sdlManager.hmiLanguage = Language.EN_US;
+			}
+
+			sdlManager.state = BaseSubManager.SETTING_UP;
+
 			return sdlManager;
 		}
 	}
@@ -380,24 +442,23 @@ public class SdlManager implements ProxyBridge.LifecycleListener {
 
 	// LIFECYCLE / OTHER
 
-	@Override
-	public void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason){
-		this.dispose();
-	}
+	// STARTUP
 
-	@Override
-	public void onServiceEnded(OnServiceEnded serviceEnded){
-
-	}
-
-	@Override
-	public void onServiceNACKed(OnServiceNACKed serviceNACKed){
-
-	}
-
-	@Override
-	public void onError(String info, Exception e){
-
+	/**
+	 * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
+	 * @param listener CompletionListener that is called once the SdlManager state transitions
+	 * from SETTING_UP to READY or ERROR
+	 */
+	@SuppressWarnings("unchecked")
+	public void start(@NonNull CompletionListener listener){
+		initListener = listener;
+		try {
+			proxy = new SdlProxyBase(proxyBridge, appName, shortAppName, isMediaApp, hmiLanguage,
+					hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
+					nightColorScheme) {};
+		} catch (SdlException e) {
+			listener.onComplete(false);
+		}
 	}
 
 	// INTERNAL INTERFACE
