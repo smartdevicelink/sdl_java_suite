@@ -89,7 +89,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		try {
 			createSampleManager(null,"123456");
 		} catch (IllegalArgumentException ex) {
-			assertSame(ex.getMessage(), "You must specify an app name by calling setAppName()");
+			assertSame(ex.getMessage(), "You must specify an app name by calling setAppName");
 		}
 	}
 
@@ -97,7 +97,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		try {
 			createSampleManager("app",null);
 		} catch (IllegalArgumentException ex) {
-			assertSame(ex.getMessage(), "You must specify an app ID by calling setAppId()");
+			assertSame(ex.getMessage(), "You must specify an app ID by calling setAppId");
 		}
 	}
 
