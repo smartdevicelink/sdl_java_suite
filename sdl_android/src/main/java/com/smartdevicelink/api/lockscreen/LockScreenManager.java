@@ -43,11 +43,6 @@ public class LockScreenManager extends BaseSubManager {
 	private String OEMIconUrl;
 	private Bitmap lockScreenOEMIcon;
 
-	public interface OnLockScreenIconDownloadedListener {
-		void onLockScreenIconDownloaded(Bitmap icon);
-		void onLockScreenIconDownloadError(Exception e);
-	}
-
 	public LockScreenManager(LockScreenConfig lockScreenConfig, Context context, ISdl internalInterface){
 
 		super(internalInterface);
@@ -160,7 +155,7 @@ public class LockScreenManager extends BaseSubManager {
 					// send intent to activity to download icon from core
 					Log.i(TAG, "SYSTEM REQUEST - ICON Ready for Download");
 					OEMIconUrl = msg.getUrl();
-					downloadLockScreenIcon(OEMIconUrl, null);
+					downloadLockScreenIcon(OEMIconUrl);
 				}
 			}
 		};
@@ -188,8 +183,6 @@ public class LockScreenManager extends BaseSubManager {
 				showLockScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 				// Extra parameters for customization of the lock screen view
-				// Because each of them is an int primitive, we can send without null checks
-				// Not being set will have an equivalent of 0
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_ICON_EXTRA, lockScreenIcon);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_COLOR_EXTRA, lockscreenColor);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_CUSTOM_VIEW_EXTRA, customView);
@@ -243,21 +236,15 @@ public class LockScreenManager extends BaseSubManager {
 		return LockScreenStatus.OFF;
 	}
 
-	private void downloadLockScreenIcon(final String url, final LockScreenManager.OnLockScreenIconDownloadedListener lockScreenListener){
+	private void downloadLockScreenIcon(final String url){
 		new Thread(new Runnable(){
 			@Override
 			public void run(){
 				try{
 					lockScreenOEMIcon = HttpUtils.downloadImage(url);
 					Log.i(TAG, "Lock Screen Icon Downloaded");
-					if(lockScreenListener != null){
-						lockScreenListener.onLockScreenIconDownloaded(lockScreenOEMIcon);
-					}
 				}catch(IOException e){
-					if(lockScreenListener != null){
-						Log.e(TAG, "Lock Screen Icon Error Downloading");
-						lockScreenListener.onLockScreenIconDownloadError(e);
-					}
+					Log.e(TAG, "Lock Screen Icon Error Downloading");
 				}
 			}
 		}).start();

@@ -25,7 +25,6 @@ public class SDLLockScreenActivity extends Activity {
 	private static final String TAG = "SDLLockScreenActivity";
 
 	private int customView, customIcon, customColor;
-	private boolean showOEMLogo;
 	private Bitmap lockScreenOEMIcon;
 
 	private final BroadcastReceiver closeLockScreenBroadcastReceiver = new BroadcastReceiver() {
@@ -55,10 +54,10 @@ public class SDLLockScreenActivity extends Activity {
 
 	public void initializeActivity(Intent intent){
 		if (intent != null){
+			boolean showOEMLogo = intent.getBooleanExtra(LOCKSCREEN_OEM_ICON_EXTRA, true);
 			customColor = intent.getIntExtra(LOCKSCREEN_COLOR_EXTRA, 0);
 			customIcon = intent.getIntExtra(LOCKSCREEN_ICON_EXTRA, 0);
 			customView = intent.getIntExtra(LOCKSCREEN_CUSTOM_VIEW_EXTRA, 0);
-			showOEMLogo = intent.getBooleanExtra(LOCKSCREEN_OEM_ICON_EXTRA, true);
 			lockScreenOEMIcon = intent.getParcelableExtra(LOCKSCREEN_OEM_ICON_BITMAP);
 
 			if (customView != 0){
