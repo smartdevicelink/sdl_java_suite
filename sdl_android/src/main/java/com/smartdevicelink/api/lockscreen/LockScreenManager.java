@@ -38,7 +38,7 @@ public class LockScreenManager extends BaseSubManager {
 	private WeakReference<Context> context;
 	private HMILevel hmiLevel;
 	private boolean driverDistStatus, lockScreenEnabled, showOEMLogo;
-	private int lockScreenIcon, lockscreenColor, customView;
+	private int lockScreenIcon, lockScreenColor, customView;
 	private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
 	private String OEMIconUrl;
 	private Bitmap lockScreenOEMIcon;
@@ -87,7 +87,7 @@ public class LockScreenManager extends BaseSubManager {
 	 */
 	private void readConfiguration(LockScreenConfig lockScreenConfig){
 		lockScreenIcon = lockScreenConfig.getAppIcon();
-		lockscreenColor = lockScreenConfig.getBackgroundColor();
+		lockScreenColor = lockScreenConfig.getBackgroundColor();
 		customView = lockScreenConfig.getCustomView();
 		lockScreenEnabled = lockScreenConfig.getEnabled();
 		showOEMLogo = lockScreenConfig.getShowOEMLogo();
@@ -184,7 +184,7 @@ public class LockScreenManager extends BaseSubManager {
 
 				// Extra parameters for customization of the lock screen view
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_ICON_EXTRA, lockScreenIcon);
-				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_COLOR_EXTRA, lockscreenColor);
+				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_COLOR_EXTRA, lockScreenColor);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_CUSTOM_VIEW_EXTRA, customView);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_OEM_ICON_EXTRA, showOEMLogo);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_OEM_ICON_BITMAP, lockScreenOEMIcon);
@@ -248,8 +248,8 @@ public class LockScreenManager extends BaseSubManager {
 		return lockScreenIcon;
 	}
 
-	protected int getLockscreenColor(){
-		return lockscreenColor;
+	protected int getLockScreenColor(){
+		return lockScreenColor;
 	}
 
 	protected int getCustomView(){
