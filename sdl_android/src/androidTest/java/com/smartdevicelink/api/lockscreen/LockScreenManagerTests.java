@@ -4,23 +4,8 @@ import android.content.Context;
 import android.test.AndroidTestCase;
 import android.test.mock.MockContext;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
-import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
-import com.smartdevicelink.proxy.rpc.ListFiles;
-import com.smartdevicelink.proxy.rpc.ListFilesResponse;
-import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
-import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
-import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
-import com.smartdevicelink.streaming.audio.AudioStreamingParams;
-import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.Test;
 
 import static org.mockito.Mockito.mock;
@@ -32,7 +17,6 @@ import static org.mockito.Mockito.mock;
 public class LockScreenManagerTests extends AndroidTestCase {
 
 	private LockScreenManager lockScreenManager;
-	private LockScreenConfig lockScreenConfig;
 
 	@Override
 	public void setUp() throws Exception{
@@ -42,7 +26,7 @@ public class LockScreenManagerTests extends AndroidTestCase {
 
 		Context context = new MockContext();
 		// create config
-		lockScreenConfig = new LockScreenConfig();
+		LockScreenConfig lockScreenConfig = new LockScreenConfig();
 		lockScreenConfig.setCustomView(Test.GENERAL_INT);
 		lockScreenConfig.setAppIcon(Test.GENERAL_INT);
 		lockScreenConfig.setBackgroundColor(Test.GENERAL_INT);
