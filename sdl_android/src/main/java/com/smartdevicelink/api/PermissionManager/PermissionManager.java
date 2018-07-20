@@ -194,8 +194,8 @@ import java.util.UUID;
 
     /**
      * Determine if an individual permission parameter is allowed for current permission items and current HMI level
-     * @param rpcName
-     * @param parameter
+     * @param rpcName FunctionID value that represents the name of the RPC
+     * @param parameter String value that represents a parameter for the RPC
      * @return boolean represents whether the permission parameter is allowed or not
      */
     public boolean isPermissionParameterAllowed(@NonNull FunctionID rpcName, @NonNull String parameter){
@@ -224,7 +224,7 @@ import java.util.UUID;
 
     /**
      * Determine if a group of permissions is allowed for the current HMI level
-     * @param permissionElements
+     * @param permissionElements list of PermissionElement that represents the RPC names and their parameters
      * @return PermissionGroupStatus int value that gives an overall view whether the permissions are allowed or not
      * @see PermissionGroupStatus
      */
@@ -275,7 +275,7 @@ import java.util.UUID;
     /**
      * Determine if a group of permissions is allowed for the current HMI level
      * This method is similar to getGroupStatusOfPermissions() but returns more detailed result about each individual permission
-     * @param permissionElements
+     * @param permissionElements list of PermissionElement that represents the RPC names and their parameters
      * @return a map with keys that are the passed in RPC names specifying if that RPC and its parameter permissions are currently allowed for the current HMI level
      */
     public Map <FunctionID, PermissionStatus> getStatusOfPermissions(@NonNull List<PermissionElement> permissionElements){
@@ -309,9 +309,9 @@ import java.util.UUID;
 
     /**
      * Add a listener to be called when there is permissions change
-     * @param permissionElements
+     * @param permissionElements list of PermissionElement that represents the RPC names and their parameters
      * @param groupType PermissionGroupType int value represents whether we need the listener to be called when there is any permissions change or only when all permission become allowed
-     * @param listener
+     * @param listener OnPermissionChangeListener interface
      * @return unique uuid number for the listener. It can be used to remove the listener later.
      */
     public UUID addListener(@NonNull List<PermissionElement> permissionElements, @NonNull @PermissionGroupType int groupType, @NonNull OnPermissionChangeListener listener){
@@ -322,7 +322,7 @@ import java.util.UUID;
 
     /**
      * Removes specific listener
-     * @param listenerId
+     * @param listenerId the id of the listener
      */
     public void removeListener(@NonNull UUID listenerId){
         for (PermissionFilter filter : filters) {
