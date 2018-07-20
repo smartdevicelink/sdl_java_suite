@@ -9,24 +9,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
-import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
-
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
 
 /**
  *
  */
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-public class SdlAudioDecoder extends MediaCodec.Callback {
-    public enum SampleType { UNSIGNED_8_BIT, SIGNED_16_BIT, FLOAT }
 
-    private static final String TAG = SdlAudioDecoder.class.getSimpleName();
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+public class AudioDecoder extends MediaCodec.Callback {
+    private static final String TAG = AudioDecoder.class.getSimpleName();
 
     private int targetSampleRate;
     private SampleType targetSampleType;
@@ -34,6 +29,7 @@ public class SdlAudioDecoder extends MediaCodec.Callback {
     private SdlAudioFile audioFile;
     private MediaExtractor extractor;
     private MediaCodec decoder;
+    private AudioDecoderListener listener;
 
     private int outputSampleRate;
     private SampleType outputSampleType;
@@ -43,13 +39,13 @@ public class SdlAudioDecoder extends MediaCodec.Callback {
     private long lastOutputPresentationTimeUs = 0;
     private long lastTargetPresentationTimeUs = 0;
 
-    public SdlAudioDecoder(SdlAudioFile audioFile, int sampleRate, SampleType sampleType) {
+    public AudioDecoder(SdlAudioFile audioFile, int sampleRate, SampleType sampleType) {
         this.audioFile = audioFile;
         this.targetSampleRate = sampleRate;
         this.targetSampleType = sampleType;
     }
 
-    void start() {
+    public void start(AudioDecoderListener listener) {
         try {
             extractor = new MediaExtractor();
             extractor.setDataSource(audioFile.getInputFile().getPath());
@@ -57,37 +53,57 @@ public class SdlAudioDecoder extends MediaCodec.Callback {
             MediaFormat format = null;
             String mime = null;
 
-        // Select the first audio track we find.
-        int numTracks = extractor.getTrackCount();
-        for (int i = 0; i < numTracks; ++i) {
-            MediaFormat f = extractor.getTrackFormat(i);
-            String m = f.getString(MediaFormat.KEY_MIME);
-            if (m.startsWith("audio/")) {
-                format = f;
-                mime = m;
+            // Select the first audio track we find.
+            int numTracks = extractor.getTrackCount();
+            for (int i = 0; i < numTracks; ++i) {
+                MediaFormat f = extractor.getTrackFormat(i);
+                String m = f.getString(MediaFormat.KEY_MIME);
+                if (m.startsWith("audio/")) {
+                    format = f;
+                    mime = m;
 
-                extractor.selectTrack(i);
-                break;
+                    extractor.selectTrack(i);
+                    break;
+                }
             }
-        }
 
+            if (mime == null) {
+                throw new Exception("The input file does not contain an audio track.");
+            }
 
             decoder = MediaCodec.createDecoderByType(mime);
             decoder.configure(format, null, null, 0);
             decoder.setCallback(this);
             decoder.start();
-        } catch (IOException e) {
+
+            this.listener = listener;
+        } catch (Exception e) {
             e.printStackTrace();
+
+            listener.onDecoderError(e);
+
+            if (decoder != null) {
+                decoder.stop();
+                decoder = null;
+            }
+
+            if (extractor != null) {
+                extractor = null;
+            }
+
+            if (this.listener != null) {
+                this.listener = null;
+            }
         }
     }
 
-    Double sampleAtTargetTime(double lastOutputSample, ShortBuffer outputShortBuffer, long outputPresentationTimeUs, long outputDurationPerSampleUs, long targetPresentationTimeUs) {
+    Double sampleAtTargetTime(double lastOutputSample, SampleBuffer outputSampleBuffer, long outputPresentationTimeUs, long outputDurationPerSampleUs, long targetPresentationTimeUs) {
         double timeDiff = targetPresentationTimeUs - outputPresentationTimeUs;
         double index = timeDiff / outputDurationPerSampleUs;
 
         // the "last known sample" allows an index from -1.0 to 0
         // the index cannot exceed the last sample. it must be stored to become the "last known sample" in the next iteration
-        if (index < -1.0 || Math.ceil(index) >= outputShortBuffer.limit()) {
+        if (index < -1.0 || Math.ceil(index) >= outputSampleBuffer.limit()) {
             return null;
         }
 
@@ -96,11 +112,11 @@ public class SdlAudioDecoder extends MediaCodec.Callback {
             return lastOutputSample;
         } else if (index % 1 == 0) {
             // index has no digits. therefore current index points to a known sample
-            return (double) outputShortBuffer.get((int) index);
+            return (double) outputSampleBuffer.get((int) index);
         } else {
             // the first sample can be the last known one
-            double first = index < 0.0 ? lastOutputSample : outputShortBuffer.get((int) index);
-            double second = outputShortBuffer.get((int) Math.ceil(index));
+            double first = index < 0.0 ? lastOutputSample : outputSampleBuffer.get((int) index);
+            double second = outputSampleBuffer.get((int) Math.ceil(index));
             double rel = index % 1;
 
             // if the relative is between -1 and 0
@@ -108,13 +124,18 @@ public class SdlAudioDecoder extends MediaCodec.Callback {
                 rel = 1 + rel;
             }
 
-            return (double)(first + (second - first) * rel);
+            return first + (second - first) * rel;
         }
     }
 
     @Override
     public void onInputBufferAvailable(@NonNull MediaCodec mediaCodec, int i) {
         ByteBuffer inputBuffer = mediaCodec.getInputBuffer(i);
+
+        if (inputBuffer == null) {
+            return;
+        }
+
         long sampleTime = extractor.getSampleTime();
         int counter = 0;
         int result;
@@ -122,7 +143,6 @@ public class SdlAudioDecoder extends MediaCodec.Callback {
         do {
             result = extractor.readSampleData(inputBuffer, counter);
             if (result >= 0) {
-
                 extractor.advance();
                 counter += result;
             } else {
@@ -142,9 +162,8 @@ public class SdlAudioDecoder extends MediaCodec.Callback {
         ByteBuffer outputBuffer = mediaCodec.getOutputBuffer(i);
         if (outputBuffer == null) return;
 
-        outputBuffer.position(0);
-        int outputSamples = outputBuffer.limit() >> 1;
-        ShortBuffer outputShortBuffer = outputBuffer.asShortBuffer();
+        SampleBuffer outputSampleBuffer = SampleBuffer.wrap(outputBuffer, outputSampleType);
+        outputSampleBuffer.position(0);
 
         long outputPresentationTimeUs = lastOutputPresentationTimeUs;
         long outputDurationPerSampleUs = 1000000 / outputSampleRate;
@@ -153,47 +172,35 @@ public class SdlAudioDecoder extends MediaCodec.Callback {
         long targetDurationPerSampleUs = 1000000 / targetSampleRate;
 
         // the buffer size is related to the output and target sample rate
-        // multiply by two for short samples, add 2 to round up and add an extra sample
-        int bufferSize = outputSamples * targetSampleRate / outputSampleRate * 2 + 4;
+        // add 2 samples to round up and add an extra sample
+        int bufferSize = outputSampleBuffer.limit() * targetSampleRate / outputSampleRate + 2;
 
-        ByteBuffer targetBuffer = ByteBuffer.allocate(bufferSize);
-        targetBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        ShortBuffer targetShortBuffer = targetBuffer.asShortBuffer();
+        SampleBuffer targetSampleBuffer = SampleBuffer.allocate(bufferSize, targetSampleType, ByteOrder.LITTLE_ENDIAN);
         Double sample;
 
         do {
-            sample = sampleAtTargetTime(lastOutputSample, outputShortBuffer, outputPresentationTimeUs, outputDurationPerSampleUs, targetPresentationTimeUs);
+            sample = sampleAtTargetTime(lastOutputSample, outputSampleBuffer, outputPresentationTimeUs, outputDurationPerSampleUs, targetPresentationTimeUs);
             if (sample != null) {
-                targetShortBuffer.put((short)Math.round(sample));
+                targetSampleBuffer.put(sample);
                 targetPresentationTimeUs += targetDurationPerSampleUs;
             }
         } while (sample != null);
 
         lastTargetPresentationTimeUs = targetPresentationTimeUs;
-        lastOutputPresentationTimeUs += outputSamples * outputDurationPerSampleUs;
-        lastOutputSample = outputShortBuffer.get(outputSamples - 1);
+        lastOutputPresentationTimeUs += outputSampleBuffer.limit() * outputDurationPerSampleUs;
+        lastOutputSample = outputSampleBuffer.get(outputSampleBuffer.limit() - 1);
 
-        targetBuffer.limit(targetShortBuffer.position() * 2);
+        targetSampleBuffer.position(0);
+        targetSampleBuffer.limit(targetSampleBuffer.position());
 
-        FileOutputStream fileOutputStream = null;
-
-        try {
-            fileOutputStream = new FileOutputStream(outputFile, true);
-            fileOutputStream.getChannel().write(targetBuffer);
-            fileOutputStream.flush();
-            fileOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        listener.onAudioDataAvailable(targetSampleBuffer.getByteBuffer());
 
         mediaCodec.releaseOutputBuffer(i, false);
     }
 
     @Override
     public void onOutputFormatChanged(@NonNull MediaCodec mediaCodec, @NonNull MediaFormat mediaFormat) {
-        outputSampleRate = mediaFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE);;
+        outputSampleRate = mediaFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N && mediaFormat.containsKey(MediaFormat.KEY_PCM_ENCODING)) {
             int key = mediaFormat.getInteger(MediaFormat.KEY_PCM_ENCODING);
