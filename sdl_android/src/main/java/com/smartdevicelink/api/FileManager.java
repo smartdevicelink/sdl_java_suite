@@ -3,7 +3,6 @@ package com.smartdevicelink.api;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -11,14 +10,11 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DeleteFile;
-import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
-import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ListFiles;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
 import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.io.ByteArrayOutputStream;
@@ -63,6 +59,10 @@ public class FileManager extends BaseSubManager {
 
 	// GETTERS
 
+	/**
+	 * Returns a list of file names currently residing on core
+	 * @return List<String> of remote file names
+	 */
 	public List<String> getRemoteFileNames() {
 		if (getState() != BaseSubManager.READY){
 			// error and dont return list
@@ -96,6 +96,11 @@ public class FileManager extends BaseSubManager {
 
 	// DELETION
 
+	/**
+	 * Attempts to delete the desired file from core, calls listener with indication of success/failure
+	 * @param fileName name of file to be deleted
+	 * @param listener callback that is called on response from core
+	 */
 	public void deleteRemoteFileWithName(final String fileName, final CompletionListener listener){
 		if(fileName == null){
 			return;
@@ -114,6 +119,11 @@ public class FileManager extends BaseSubManager {
 		internalInterface.sendRPCRequest(deleteFile);
 	}
 
+	/**
+	 * Attempts to delete a list of files from core, calls listener with indication of success/failure
+	 * @param fileNames list of file names to be deleted
+	 * @param listener callback that is called once core responds to all deletion requests
+	 */
 	public void deleteRemoteFilesWithNames(List<String> fileNames, final MultipleFileCompletionListener listener){
 		if(fileNames == null || fileNames.isEmpty()){
 			return;
@@ -237,6 +247,11 @@ public class FileManager extends BaseSubManager {
 		});
 	}
 
+	/**
+	 * Attempts to upload a SdlFile to core
+	 * @param file SdlFile with file name and one of A) fileData, B) Uri, or C) resourceID set
+	 * @param listener called when core responds to the attempt to upload the file
+	 */
 	public void uploadFile(final SdlFile file, final CompletionListener listener){
 		PutFile putFile = createPutFile(file);
 
@@ -259,6 +274,11 @@ public class FileManager extends BaseSubManager {
 		internalInterface.sendRPCRequest(putFile);
 	}
 
+	/**
+	 * Attempts to upload a list of SdlFiles to core
+	 * @param files list of SdlFiles with file name and one of A) fileData, B) Uri, or C) resourceID set
+	 * @param listener callback that is called once core responds to all upload requests
+	 */
 	public void uploadFiles(List<? extends SdlFile> files, final MultipleFileCompletionListener listener){
 		if(files == null || files.isEmpty()){
 			return;
@@ -270,24 +290,40 @@ public class FileManager extends BaseSubManager {
 		sendMultipleFileOperations(putFileRequests, listener);
 	}
 
+	/**
+	 * Attempts to upload a SdlArtwork to core
+	 * @param file SdlArtwork with file name and one of A) fileData, B) Uri, or C) resourceID set
+	 * @param listener called when core responds to the attempt to upload the file
+	 */
 	public void uploadArtwork(final SdlArtwork file, final CompletionListener listener){
 		uploadFile(file, listener);
 	}
 
+	/**
+	 * Attempts to upload a list of SdlArtworks to core
+	 * @param files list of SdlArtworks with file name and one of A) fileData, B) Uri, or C) resourceID set
+	 * @param listener callback that is called once core responds to all upload requests
+	 */
 	public void uploadArtworks(List<SdlArtwork> files, final MultipleFileCompletionListener listener){
 		uploadFiles(files, listener);
 	}
 
 	// HELPERS
 
+	/**
+	 * Builds an error string for a given Result and info string
+	 * @param resultCode Result
+	 * @param info String returned from OnRPCRequestListener.onError()
+	 * @return Error string
+	 */
 	static public String buildErrorString(Result resultCode, String info){
 		return resultCode.toString() + " : " + info;
 	}
 
 	/**
 	 * Helper method to take resource files and turn them into byte arrays
-	 * @param resource Resource file id.
-	 * @return Resulting byte array.
+	 * @param resource Resource file id
+	 * @return Resulting byte array
 	 */
 	private byte[] contentsOfResource(int resource) {
 		InputStream is = null;
@@ -311,7 +347,7 @@ public class FileManager extends BaseSubManager {
 	/**
 	 * Helper method to take Uri and turn it into byte array
 	 * @param uri Uri for desired file
-	 * @return Resulting byte array.
+	 * @return Resulting byte array
 	 */
 	private byte[] contentsOfUri(Uri uri){
 		InputStream is = null;
@@ -332,6 +368,11 @@ public class FileManager extends BaseSubManager {
 		}
 	}
 
+	/**
+	 * Helper method to take InputStream and turn it into byte array
+	 * @param is valid InputStream
+	 * @return Resulting byte array
+	 */
 	private byte[] contentsOfInputStream(InputStream is){
 		if(is == null){
 			return null;
