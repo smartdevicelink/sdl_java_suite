@@ -37,7 +37,7 @@ public class LockScreenManager extends BaseSubManager {
 	private static final String TAG = "LockScreenManager";
 	private WeakReference<Context> context;
 	private HMILevel hmiLevel;
-	private boolean isAppInUse, driverDistStatus, lockScreenEnabled, showOEMLogo;
+	private boolean driverDistStatus, lockScreenEnabled, showOEMLogo;
 	private int lockScreenIcon, lockscreenColor, customView;
 	private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
 	private String OEMIconUrl;
@@ -50,7 +50,6 @@ public class LockScreenManager extends BaseSubManager {
 
 		// set initial class variables
 		hmiLevel = HMILevel.HMI_NONE;
-		isAppInUse = false;
 		driverDistStatus = false;
 
 		// setup the manager
@@ -68,7 +67,9 @@ public class LockScreenManager extends BaseSubManager {
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_SYSTEM_REQUEST, systemRequestListener);
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_DRIVER_DISTRACTION, ddListener);
-		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+		if (showOEMLogo) {
+			internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+		}
 		lockScreenOEMIcon = null;
 		OEMIconUrl = null;
 
@@ -107,13 +108,6 @@ public class LockScreenManager extends BaseSubManager {
 			@Override
 			public void onNotified(RPCNotification notification) {
 				hmiLevel = ((OnHMIStatus)notification).getHmiLevel();
-				if (hmiLevel.equals(HMILevel.HMI_FULL) || hmiLevel.equals(HMILevel.HMI_LIMITED)){
-					Log.i(TAG, "HMI Notification APP_IN_USE True");
-					isAppInUse = true;
-				}else{
-					Log.i(TAG, "HMI Notification APP_IN_USE False");
-					isAppInUse = false;
-				}
 				launchLockScreenActivity();
 			}
 		};
@@ -144,26 +138,28 @@ public class LockScreenManager extends BaseSubManager {
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_DRIVER_DISTRACTION, ddListener);
 
 		// set up system request listener
-		systemRequestListener = new OnRPCNotificationListener() {
-			@Override
-			public void onNotified(RPCNotification notification) {
-				// do something with the status
-				final OnSystemRequest msg = (OnSystemRequest) notification;
-				try {
-					Log.i(TAG, "SYSTEM REQUEST: "+ notification.serializeJSON().toString());
-				} catch (JSONException e) {
-					e.printStackTrace();
+		if (showOEMLogo) {
+			systemRequestListener = new OnRPCNotificationListener() {
+				@Override
+				public void onNotified(RPCNotification notification) {
+					// do something with the status
+					final OnSystemRequest msg = (OnSystemRequest) notification;
+					try {
+						Log.i(TAG, "SYSTEM REQUEST: " + notification.serializeJSON().toString());
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					if (msg.getRequestType() == RequestType.LOCK_SCREEN_ICON_URL &&
+							msg.getUrl() != null) {
+						// send intent to activity to download icon from core
+						Log.i(TAG, "SYSTEM REQUEST - ICON Ready for Download");
+						OEMIconUrl = msg.getUrl();
+						downloadLockScreenIcon(OEMIconUrl);
+					}
 				}
-				if (msg.getRequestType() == RequestType.LOCK_SCREEN_ICON_URL &&
-						msg.getUrl() != null) {
-					// send intent to activity to download icon from core
-					Log.i(TAG, "SYSTEM REQUEST - ICON Ready for Download");
-					OEMIconUrl = msg.getUrl();
-					downloadLockScreenIcon(OEMIconUrl);
-				}
-			}
-		};
-		internalInterface.addOnRPCNotificationListener(FunctionID.ON_SYSTEM_REQUEST, systemRequestListener);
+			};
+			internalInterface.addOnRPCNotificationListener(FunctionID.ON_SYSTEM_REQUEST, systemRequestListener);
+		}
 	}
 
 	////
@@ -218,16 +214,9 @@ public class LockScreenManager extends BaseSubManager {
 		else if ( hmiLevel.equals(HMILevel.HMI_BACKGROUND)) {
 			if (!driverDistStatus) {
 				//we don't have driver distraction, lock screen is entirely based on if user is using the app on the head unit
-				if (isAppInUse) {
-					return LockScreenStatus.REQUIRED;
-				} else {
-					return LockScreenStatus.OFF;
-				}
-			}
-			else if (isAppInUse) {
-				return LockScreenStatus.REQUIRED;
-			} else {
 				return LockScreenStatus.OFF;
+			} else {
+				return LockScreenStatus.REQUIRED;
 			}
 		}
 		else if ( (hmiLevel.equals(HMILevel.HMI_FULL)) || (hmiLevel.equals(HMILevel.HMI_LIMITED))) {
