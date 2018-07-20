@@ -7,17 +7,18 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 
+import java.io.File;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class AudioStreamManager implements ISdlServiceListener {
     private ISdl internalInterface;
     private boolean didRequestShutdown = false;
-    private BlockingQueue<SdlAudioFile> queue;
+    private BlockingQueue<AudioDecoder> queue;
 
     public AudioStreamManager(ISdl internalInterface) {
         this.internalInterface = internalInterface;
-        this.queue = new ArrayBlockingQueue<SdlAudioFile>(20);
+        this.queue = new ArrayBlockingQueue<AudioDecoder>(20);
     }
 
     public void start(boolean encrypted) {

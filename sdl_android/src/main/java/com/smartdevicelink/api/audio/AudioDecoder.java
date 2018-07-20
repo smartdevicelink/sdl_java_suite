@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class AudioDecoder extends MediaCodec.Callback {
     private int targetSampleRate;
     private SampleType targetSampleType;
 
-    private SdlAudioFile audioFile;
+    private File audioFile;
     private MediaExtractor extractor;
     private MediaCodec decoder;
     private AudioDecoderListener listener;
@@ -39,7 +40,7 @@ public class AudioDecoder extends MediaCodec.Callback {
     private long lastOutputPresentationTimeUs = 0;
     private long lastTargetPresentationTimeUs = 0;
 
-    public AudioDecoder(SdlAudioFile audioFile, int sampleRate, SampleType sampleType) {
+    public AudioDecoder(File audioFile, int sampleRate, SampleType sampleType) {
         this.audioFile = audioFile;
         this.targetSampleRate = sampleRate;
         this.targetSampleType = sampleType;
@@ -48,7 +49,7 @@ public class AudioDecoder extends MediaCodec.Callback {
     public void start(AudioDecoderListener listener) {
         try {
             extractor = new MediaExtractor();
-            extractor.setDataSource(audioFile.getInputFile().getPath());
+            extractor.setDataSource(audioFile.getPath());
 
             MediaFormat format = null;
             String mime = null;
@@ -71,29 +72,38 @@ public class AudioDecoder extends MediaCodec.Callback {
                 throw new Exception("The input file does not contain an audio track.");
             }
 
+            this.listener = listener;
+
             decoder = MediaCodec.createDecoderByType(mime);
             decoder.configure(format, null, null, 0);
             decoder.setCallback(this);
             decoder.start();
 
-            this.listener = listener;
+
         } catch (Exception e) {
             e.printStackTrace();
 
             listener.onDecoderError(e);
 
-            if (decoder != null) {
-                decoder.stop();
-                decoder = null;
-            }
+            stop();
+        }
+    }
 
-            if (extractor != null) {
-                extractor = null;
-            }
+    public void stop() {
+        if (decoder != null) {
+            decoder.stop();
+            decoder.release();
+            decoder = null;
+        }
 
-            if (this.listener != null) {
-                this.listener = null;
-            }
+        if (extractor != null) {
+            extractor = null;
+        }
+
+        if (this.listener != null) {
+            listener.onDecoderFinish();
+
+            this.listener = null;
         }
     }
 
@@ -196,6 +206,10 @@ public class AudioDecoder extends MediaCodec.Callback {
         listener.onAudioDataAvailable(targetSampleBuffer.getByteBuffer());
 
         mediaCodec.releaseOutputBuffer(i, false);
+
+        if (bufferInfo.flags == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
+            stop();
+        }
     }
 
     @Override
@@ -213,6 +227,7 @@ public class AudioDecoder extends MediaCodec.Callback {
                     break;
                 case AudioFormat.ENCODING_PCM_16BIT:
                 default:
+                    // by default we fallback to signed 16 bit samples
                     outputSampleType = SampleType.SIGNED_16_BIT;
                     break;
             }
