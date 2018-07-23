@@ -70,9 +70,9 @@ public class SdlManager{
 
 	// Managers
 
+	private VideoStreamingManager videoStreamingManager;
     /*
     private FileManager fileManager;
-    private VideoStreamingManager videoStreamingManager;
     private AudioStreamManager audioStreamManager;
     private LockscreenManager lockscreenManager;
     private ScreenManager screenManager;
@@ -116,10 +116,9 @@ public class SdlManager{
 				Log.d(TAG, "Sub manager failed to initialize");
 			}
 			if(
-					true
+					videoStreamingManager.getState() != BaseSubManager.SETTING_UP
 					/*
 					fileManager.getState() != BaseSubManager.SETTING_UP &&
-					videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
 					audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
 					lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
 					screenManager.getState() != BaseSubManager.SETTING_UP
@@ -137,6 +136,9 @@ public class SdlManager{
 	private void initialize(){
 		// instantiate managers
 
+		this.videoStreamingManager = new VideoStreamingManager(_internalInterface);
+		this.videoStreamingManager.start(subManagerListener);
+
 		/*
 		this.fileManager = new FileManager(_internalInterface, context);
 		this.fileManager.start(subManagerListener);
@@ -146,8 +148,6 @@ public class SdlManager{
 		this.screenManager.start(subManagerListener);
 		this.permissionManager = new PermissionManager(_internalInterface);
 		this.permissionManager.start(subManagerListener);
-		this.videoStreamingManager = new VideoStreamingManager(context, _internalInterface);
-		this.videoStreamingManager.start(subManagerListener);
 		this.audioStreamManager = new AudioStreamManager(_internalInterface);
 		this.audioStreamManager.start(subManagerListener);
 		*/
@@ -157,13 +157,13 @@ public class SdlManager{
 	}
 
 	private void dispose() {
+		this.videoStreamingManager.dispose();
 		/*
 		this.fileManager.dispose();
 		this.lockscreenManager.dispose();
 		this.audioStreamManager.dispose();
 		this.screenManager.dispose();
 		this.permissionManager.dispose();
-		this.videoStreamingManager.dispose();
 		this.audioStreamManager.dispose();
 		*/
 	}
@@ -326,13 +326,13 @@ public class SdlManager{
 
 	// MANAGER GETTERS
 
+	public VideoStreamingManager getVideoStreamingManager() {
+		return videoStreamingManager;
+	}
+
 	/*
 	public FileManager getFileManager() {
 		return fileManager;
-	}
-
-	public VideoStreamingManager getVideoStreamingManager() {
-		return videoStreamingManager;
 	}
 
 	public AudioStreamManager getAudioStreamManager() {
@@ -586,6 +586,11 @@ public class SdlManager{
 				e.printStackTrace();
 			}
 			return null;
+		}
+
+		@Override
+		public byte getWiProVersion() {
+			return proxy.getWiProVersion();
 		}
 	};
 

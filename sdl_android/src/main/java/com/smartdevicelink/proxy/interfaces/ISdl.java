@@ -166,4 +166,10 @@ public interface ISdl {
      */
     SdlMsgVersion getSdlMsgVersion();
 
+    /**
+     * Get wiProVersion
+     * @return byte representing wiProVersion
+     */
+    byte getWiProVersion();
+
 }

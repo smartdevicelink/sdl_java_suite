@@ -346,6 +346,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
+		public byte getWiProVersion() {
+			return SdlProxyBase.this.getWiProVersion();
+		}
+
+		@Override
 		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
 			return SdlProxyBase.this.isCapabilitySupported(systemCapabilityType);
 		}
@@ -1704,7 +1709,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 	
-	private byte getWiProVersion() {
+	public byte getWiProVersion() {
 		return this._wiproVersion;
 	}
 	
