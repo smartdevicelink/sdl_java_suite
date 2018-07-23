@@ -22,8 +22,10 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- SdlManager gives the developer information about what permissions are permitted in specific HMI level
- and helps developers setup listeners to be called when specific permissions become allowed.
+ Permission Manager gives the developer information about what permissions are permitted in specific HMI level
+ and helps developers setup listeners to be called when specific permissions become allowed. <br>
+
+ This should be used through the {@link com.smartdevicelink.api.SdlManager} and not be instantiated by itself
 **/
 
  public class PermissionManager extends BaseSubManager{
@@ -148,9 +150,9 @@ import java.util.UUID;
 
     /**
      * Determine if an individual RPC is allowed
-     * @param rpcName
-     * @param permissionItems
-     * @param hmiLevel
+     * @param rpcName FunctionID value that represents the name of the RPC
+     * @param permissionItems Map containing HMI and parameter permissions for a specific RPC
+     * @param hmiLevel If the RPC is allowed at that HMI Level. Ex: None or Full
      * @return boolean represents whether the RPC is allowed or not
      */
     private boolean isRPCAllowed(@NonNull FunctionID rpcName, Map<FunctionID, PermissionItem> permissionItems, HMILevel hmiLevel){
@@ -166,19 +168,20 @@ import java.util.UUID;
 
     /**
      * Determine if an individual RPC is allowed for the current permission items and HMI level
-     * @param rpcName
+     * @param rpcName rpcName FunctionID value that represents the name of the RPC
      * @return boolean represents whether the RPC is allowed or not
      */
+    @SuppressWarnings("WeakerAccess")
     public boolean isRPCAllowed(@NonNull FunctionID rpcName){
         return isRPCAllowed(rpcName, currentPermissionItems, currentHMILevel);
     }
 
     /**
      * Determine if an individual permission parameter is allowed
-     * @param rpcName
-     * @param parameter
-     * @param permissionItems
-     * @param hmiLevel
+     * @param rpcName FunctionID value that represents the name of the RPC
+     * @param parameter String value that represents a parameter for the RPC. Ex: "rpm" or "speed" for GetVehicleData
+     * @param permissionItems Map containing HMI and parameter permissions for a specific RPC
+     * @param hmiLevel If the RPC is allowed at that HMI Level. Ex: None or Full
      * @return boolean represents whether the permission parameter is allowed or not
      */
     private boolean isPermissionParameterAllowed(@NonNull FunctionID rpcName, @NonNull String parameter, Map<FunctionID, PermissionItem> permissionItems, HMILevel hmiLevel){
@@ -195,9 +198,10 @@ import java.util.UUID;
     /**
      * Determine if an individual permission parameter is allowed for current permission items and current HMI level
      * @param rpcName FunctionID value that represents the name of the RPC
-     * @param parameter String value that represents a parameter for the RPC
+     * @param parameter String value that represents a parameter for the RPC. Ex: "rpm" or "speed" for GetVehicleData
      * @return boolean represents whether the permission parameter is allowed or not
      */
+    @SuppressWarnings("WeakerAccess")
     public boolean isPermissionParameterAllowed(@NonNull FunctionID rpcName, @NonNull String parameter){
         return isPermissionParameterAllowed(rpcName, parameter, currentPermissionItems, currentHMILevel);
     }
@@ -228,6 +232,7 @@ import java.util.UUID;
      * @return PermissionGroupStatus int value that gives an overall view whether the permissions are allowed or not
      * @see PermissionGroupStatus
      */
+    @SuppressWarnings("WeakerAccess")
     public @PermissionGroupStatus int getGroupStatusOfPermissions(@NonNull List<PermissionElement> permissionElements){
         if (currentHMILevel == null){
             return PERMISSION_GROUP_STATUS_UNKNOWN;
@@ -278,6 +283,7 @@ import java.util.UUID;
      * @param permissionElements list of PermissionElement that represents the RPC names and their parameters
      * @return a map with keys that are the passed in RPC names specifying if that RPC and its parameter permissions are currently allowed for the current HMI level
      */
+    @SuppressWarnings("WeakerAccess")
     public Map <FunctionID, PermissionStatus> getStatusOfPermissions(@NonNull List<PermissionElement> permissionElements){
         Map<FunctionID, PermissionStatus> statusOfPermissions = new HashMap<>();
         for (PermissionElement permissionElement : permissionElements) {
@@ -299,7 +305,7 @@ import java.util.UUID;
 
     /**
      * Call the listener for a specific filter
-     * @param filter
+     * @param filter the permission filter to call
      */
     private void callListener(@NonNull PermissionFilter filter){
         int permissionGroupStatus = getGroupStatusOfPermissions(filter.getPermissionElements());
@@ -314,6 +320,7 @@ import java.util.UUID;
      * @param listener OnPermissionChangeListener interface
      * @return unique uuid number for the listener. It can be used to remove the listener later.
      */
+    @SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
     public UUID addListener(@NonNull List<PermissionElement> permissionElements, @NonNull @PermissionGroupType int groupType, @NonNull OnPermissionChangeListener listener){
         PermissionFilter filter = new PermissionFilter(null, permissionElements, groupType, listener);
         filters.add(filter);
@@ -324,6 +331,7 @@ import java.util.UUID;
      * Removes specific listener
      * @param listenerId the id of the listener
      */
+    @SuppressWarnings("WeakerAccess")
     public void removeListener(@NonNull UUID listenerId){
         for (PermissionFilter filter : filters) {
             if (filter.getIdentifier().equals(listenerId)) {
