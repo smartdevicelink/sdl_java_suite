@@ -16,12 +16,8 @@ public class SampleBuffer {
     private static final String TAG = SampleBuffer.class.getSimpleName();
 
     @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private Buffer buffer;
     private SampleType sampleType;
-
-    private ByteBuffer byteBuffer = null;
-    private ShortBuffer shortBuffer = null;
-    private FloatBuffer floatBuffer = null;
+    private ByteBuffer byteBuffer;
 
     public static SampleBuffer wrap(ByteBuffer buffer, SampleType sampleType) {
         return new SampleBuffer(buffer, sampleType);
@@ -39,105 +35,31 @@ public class SampleBuffer {
     }
 
     private SampleBuffer(int capacity, SampleType sampleType, ByteOrder byteOrder) {
+        this.byteBuffer = ByteBuffer.allocate(sampleType.bytes * capacity);
+        this.byteBuffer.order(byteOrder);
         this.sampleType = sampleType;
-        buffer = byteBuffer = ByteBuffer.allocate(sampleType.bytes * capacity);
-        byteBuffer.order(byteOrder);
-
-        switch (sampleType) {
-            case UNSIGNED_8_BIT:
-                // awesome! nothing to do.
-                break;
-            case SIGNED_16_BIT:
-                shortBuffer = byteBuffer.asShortBuffer();
-                break;
-            case FLOAT:
-                floatBuffer = byteBuffer.asFloatBuffer();
-                break;
-        }
     }
 
     private SampleBuffer(ByteBuffer buffer, SampleType sampleType) {
-        this.buffer = buffer;
+        this.byteBuffer = buffer;
         this.sampleType = sampleType;
-
-        switch (sampleType) {
-            case UNSIGNED_8_BIT:
-                byteBuffer = buffer;
-                break;
-            case SIGNED_16_BIT:
-                shortBuffer = buffer.asShortBuffer();
-                break;
-            case FLOAT:
-                floatBuffer = buffer.asFloatBuffer();
-                break;
-        }
     }
 
     // returns the number of samples in the buffer
     public int limit() {
-        switch (sampleType) {
-            case UNSIGNED_8_BIT:
-                return byteBuffer.limit();
-            case SIGNED_16_BIT:
-                return shortBuffer.limit();
-            case FLOAT:
-                return floatBuffer.limit();
-            default:
-                Log.e(TAG, "SampleBuffer.limit(): The sample type is not known: " + sampleType.toString());
-                return 0;
-        }
+        return byteBuffer.limit() / sampleType.bytes;
     }
 
     public void limit(int newLimit) {
         byteBuffer.limit(newLimit * sampleType.bytes);
-
-        switch (sampleType) {
-            case UNSIGNED_8_BIT:
-                // awesome! nothing to do
-                break;
-            case SIGNED_16_BIT:
-                shortBuffer.limit(newLimit);
-                break;
-            case FLOAT:
-                floatBuffer.limit(newLimit);
-                break;
-            default:
-                Log.e(TAG, "SampleBuffer.position(int): The sample type is not known: " + sampleType.toString());
-                break;
-        }
     }
 
     public int position() {
-        switch (sampleType) {
-            case UNSIGNED_8_BIT:
-                return byteBuffer.position();
-            case SIGNED_16_BIT:
-                return shortBuffer.position();
-            case FLOAT:
-                return floatBuffer.position();
-            default:
-                Log.e(TAG, "SampleBuffer.position(): The sample type is not known: " + sampleType.toString());
-                return 0;
-        }
+        return byteBuffer.position() / sampleType.bytes;
     }
 
     public void position(int newPosition) {
         byteBuffer.position(newPosition * sampleType.bytes);
-
-        switch (sampleType) {
-            case UNSIGNED_8_BIT:
-                // awesome! nothing to do
-                break;
-            case SIGNED_16_BIT:
-                shortBuffer.position(newPosition);
-                break;
-            case FLOAT:
-                floatBuffer.position(newPosition);
-                break;
-            default:
-                Log.e(TAG, "SampleBuffer.position(int): The sample type is not known: " + sampleType.toString());
-                break;
-        }
     }
 
     public double get() {
@@ -154,11 +76,11 @@ public class SampleBuffer {
                 return a * 2.0 / 255.0 - 1.0; //magic? check out SampleType
             }
             case SIGNED_16_BIT: {
-                short a = index == -1 ? shortBuffer.get() : shortBuffer.get(index);
+                short a = index == -1 ? byteBuffer.getShort() : byteBuffer.getShort(index * sampleType.bytes);
                 return (a + 32768.0) * 2.0 / 65535.0 - 1.0; //magic? check out SampleType
             }
             case FLOAT: {
-                return index == -1 ? floatBuffer.get() : floatBuffer.get(index);
+                return index == -1 ? byteBuffer.getFloat() : byteBuffer.getFloat(index * sampleType.bytes);
             }
             default: {
                 Log.e(TAG, "SampleBuffer.get(int): The sample type is not known: " + sampleType.toString());
@@ -186,17 +108,17 @@ public class SampleBuffer {
             case SIGNED_16_BIT: {
                 short a = (short)Math.round((sample + 1.0) * 65535 / 2.0 - 32767.0); //magic? check out SampleType
                 if (index == -1) {
-                    shortBuffer.put(a);
+                    byteBuffer.putShort(a);
                 } else {
-                    shortBuffer.put(index, a);
+                    byteBuffer.putShort(index * sampleType.bytes, a);
                 }
                 break;
             }
             case FLOAT: {
                 if (index == -1) {
-                    floatBuffer.put((float)sample);
+                    byteBuffer.putFloat((float)sample);
                 } else {
-                    floatBuffer.put(index, (float)sample);
+                    byteBuffer.putFloat(index * sampleType.bytes, (float)sample);
                 }
                 break;
             }
