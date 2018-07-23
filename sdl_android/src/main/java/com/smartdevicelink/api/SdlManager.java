@@ -134,7 +134,7 @@ public class SdlManager{
 		}
 	};
 
-	private void initialize(){
+	protected void initialize(){
 		// instantiate managers
 
 		/*
@@ -463,13 +463,20 @@ public class SdlManager{
 	@SuppressWarnings("unchecked")
 	public void start(@NonNull CompletionListener listener){
 		initListener = listener;
-		try {
-			proxy = new SdlProxyBase(proxyBridge, appName, shortAppName, isMediaApp, hmiLanguage,
-					hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
-					nightColorScheme) {};
-		} catch (SdlException e) {
-			listener.onComplete(false);
+		if (proxy == null) {
+			try {
+				proxy = new SdlProxyBase(proxyBridge, appName, shortAppName, isMediaApp, hmiLanguage,
+						hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
+						nightColorScheme) {
+				};
+			} catch (SdlException e) {
+				listener.onComplete(false);
+			}
 		}
+	}
+
+	protected void setProxy(SdlProxyBase proxy){
+		this.proxy = proxy;
 	}
 
 	// INTERNAL INTERFACE

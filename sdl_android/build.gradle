@@ -40,6 +40,7 @@ dependencies {
     })
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.9.0'
+    androidTestImplementation 'org.mockito:mockito-android:2.9.0'
     api 'com.android.support:support-annotations:27.1.1'
 }
 
