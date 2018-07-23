@@ -109,13 +109,13 @@ public class PermissionManagerTests extends AndroidTestCase {
         permissionManager.addListener(permissionElements, PermissionManager.PERMISSION_GROUP_TYPE_ALL_ALLOWED, new OnPermissionChangeListener() {
             @Override
             public void onPermissionsChange(@NonNull Map<FunctionID, PermissionStatus> allowedPermissions, @NonNull int permissionGroupStatus) {
-                // Make sure is the actual result matches the expected one
-                assertEquals(permissionGroupStatus, PERMISSION_GROUP_STATUS_ALLOWED);
-                assertTrue(allowedPermissions.get(FunctionID.SHOW).getIsRPCAllowed());
-                assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getIsRPCAllowed());
-                assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("rpm"));
-                assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("airbagStatus"));
-                listenerCalledCounter++;
+            // Make sure is the actual result matches the expected one
+            assertEquals(permissionGroupStatus, PERMISSION_GROUP_STATUS_ALLOWED);
+            assertTrue(allowedPermissions.get(FunctionID.SHOW).getIsRPCAllowed());
+            assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getIsRPCAllowed());
+            assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("rpm"));
+            assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("airbagStatus"));
+            listenerCalledCounter++;
             }
         });
 
@@ -167,11 +167,11 @@ public class PermissionManagerTests extends AndroidTestCase {
                     assertTrue(!allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("rpm"));
                     assertTrue(!allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("airbagStatus"));
                 } else if (listenerCalledCounter == 1) {  // Listener called for the second time
-                        assertEquals(permissionGroupStatus, PERMISSION_GROUP_STATUS_ALLOWED);
-                        assertTrue(allowedPermissions.get(FunctionID.SHOW).getIsRPCAllowed());
-                        assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getIsRPCAllowed());
-                        assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("rpm"));
-                        assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("airbagStatus"));
+                    assertEquals(permissionGroupStatus, PERMISSION_GROUP_STATUS_ALLOWED);
+                    assertTrue(allowedPermissions.get(FunctionID.SHOW).getIsRPCAllowed());
+                    assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getIsRPCAllowed());
+                    assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("rpm"));
+                    assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("airbagStatus"));
                 }
                 listenerCalledCounter++;
             }

@@ -145,6 +145,11 @@ public enum FunctionID{
         return ( result == null ) ? INVALID_ID : result;
     }
 
+    /**
+     * This method gives the corresponding FunctionID enum value for a string RPC 
+     * @param name String value represents the name of the RPC
+     * @return FunctionID represents the equivalent enum value for the provided string
+     */
     public static FunctionID getEnumForString(String name){
         for(FunctionID value : EnumSet.allOf(FunctionID.class)) {
             if(value.JSON_NAME.equals(name)){
