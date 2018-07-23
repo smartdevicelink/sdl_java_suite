@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -26,6 +28,47 @@ abstract class BaseAudioDecoder {
 
     private long lastOutputPresentationTimeUs = 0;
     private long lastTargetPresentationTimeUs = 0;
+
+    protected MediaExtractor mExtractor;
+    protected MediaCodec mDecoder;
+    protected File mInputFile;
+    protected AudioDecoderListener mListener;
+
+    public BaseAudioDecoder(File inFile, int sampleRate, SampleType sampleType) {
+        mInputFile = inFile;
+        this.targetSampleRate = sampleRate;
+        this.targetSampleType = sampleType;
+    }
+
+    protected void initMediaComponents() {
+        mExtractor = new MediaExtractor();
+        try {
+            mExtractor.setDataSource(mInputFile.getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        MediaFormat format = null;
+        String mime = null;
+
+        // Select the first audio track we find.
+        int numTracks = mExtractor.getTrackCount();
+        for (int i = 0; i < numTracks; ++i) {
+            MediaFormat f = mExtractor.getTrackFormat(i);
+            String m = f.getString(MediaFormat.KEY_MIME);
+            if (m.startsWith("audio/")) {
+                format = f;
+                mime = m;
+                mExtractor.selectTrack(i);
+                break;
+            }
+        }
+        try {
+            mDecoder = MediaCodec.createDecoderByType(mime);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mDecoder.configure(format, null, null, 0);
+    }
 
     private Double sampleAtTargetTime(double lastOutputSample, SampleBuffer outputSampleBuffer, long outputPresentationTimeUs, long outputDurationPerSampleUs, long targetPresentationTimeUs) {
         double timeDiff = targetPresentationTimeUs - outputPresentationTimeUs;
@@ -144,5 +187,29 @@ abstract class BaseAudioDecoder {
 
     protected void onMediaCodecError(@NonNull MediaCodec.CodecException e) {
         Log.e(TAG, "MediaCodec.onError: " + e.getLocalizedMessage());
+        if (mListener != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mListener.onDecoderError(e);
+            } else {
+                mListener.onDecoderError(new Exception("Error decoding audio file"));
+            }
+        }
+    }
+
+    public void stop() {
+        if (mDecoder != null) {
+            mDecoder.stop();
+            mDecoder.release();
+            mDecoder = null;
+        }
+
+        if (mExtractor != null) {
+            mExtractor = null;
+        }
+
+        if (mListener != null) {
+            mListener.onDecoderFinish();
+            mListener = null;
+        }
     }
 }

@@ -15,55 +15,23 @@ import java.nio.ByteBuffer;
 public class AudioDecoder extends BaseAudioDecoder {
     private static final String TAG = AudioDecoder.class.getSimpleName();
 
-    private File audioFile;
-    private AudioDecoderListener listener;
-
-    private MediaExtractor extractor;
-    private MediaCodec decoder;
-
     public AudioDecoder(File audioFile, int sampleRate, SampleType sampleType) {
-        this.audioFile = audioFile;
+        super(audioFile, sampleRate, sampleType);
         this.targetSampleRate = sampleRate;
         this.targetSampleType = sampleType;
     }
 
     public void start(AudioDecoderListener listener) {
         try {
-            extractor = new MediaExtractor();
-            extractor.setDataSource(audioFile.getPath());
-
-            MediaFormat format = null;
-            String mime = null;
-
-            // Select the first audio track we find.
-            int numTracks = extractor.getTrackCount();
-            for (int i = 0; i < numTracks; ++i) {
-                MediaFormat f = extractor.getTrackFormat(i);
-                String m = f.getString(MediaFormat.KEY_MIME);
-                if (m.startsWith("audio/")) {
-                    format = f;
-                    mime = m;
-
-                    extractor.selectTrack(i);
-                    break;
-                }
-            }
-
-            if (mime == null) {
-                throw new Exception("The input file does not contain an audio track.");
-            }
-
-            this.listener = listener;
-
-            decoder = MediaCodec.createDecoderByType(mime);
-            decoder.configure(format, null, null, 0);
-            decoder.setCallback(new MediaCodec.Callback() {
+            mListener = listener;
+            initMediaComponents();
+            mDecoder.setCallback(new MediaCodec.Callback() {
                 @Override
                 public void onInputBufferAvailable(@NonNull MediaCodec mediaCodec, int i) {
                     ByteBuffer inputBuffer = mediaCodec.getInputBuffer(i);
                     if (inputBuffer == null) return;
 
-                    MediaCodec.BufferInfo info = AudioDecoder.super.onInputBufferAvailable(extractor, inputBuffer);
+                    MediaCodec.BufferInfo info = AudioDecoder.super.onInputBufferAvailable(mExtractor, inputBuffer);
                     mediaCodec.queueInputBuffer(i, info.offset, info.size, info.presentationTimeUs, info.flags);
                 }
 
@@ -74,7 +42,7 @@ public class AudioDecoder extends BaseAudioDecoder {
 
                     SampleBuffer targetSampleBuffer = AudioDecoder.super.onOutputBufferAvailable(outputBuffer);
                     mediaCodec.releaseOutputBuffer(i, false);
-                    AudioDecoder.this.listener.onAudioDataAvailable(targetSampleBuffer.getByteBuffer());
+                    mListener.onAudioDataAvailable(targetSampleBuffer.getByteBuffer());
                     if (bufferInfo.flags == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
                         stop();
                     }
@@ -90,32 +58,11 @@ public class AudioDecoder extends BaseAudioDecoder {
                     AudioDecoder.super.onMediaCodecError(e);
                 }
             });
-            decoder.start();
-
+            mDecoder.start();
         } catch (Exception e) {
             e.printStackTrace();
-
-            listener.onDecoderError(e);
-
+            mListener.onDecoderError(e);
             stop();
-        }
-    }
-
-    public void stop() {
-        if (decoder != null) {
-            decoder.stop();
-            decoder.release();
-            decoder = null;
-        }
-
-        if (extractor != null) {
-            extractor = null;
-        }
-
-        if (this.listener != null) {
-            listener.onDecoderFinish();
-
-            this.listener = null;
         }
     }
 }
