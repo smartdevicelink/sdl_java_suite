@@ -40,34 +40,30 @@ abstract class BaseAudioDecoder {
         this.targetSampleType = sampleType;
     }
 
-    protected void initMediaComponents() {
+    protected void initMediaComponents() throws IOException{
         mExtractor = new MediaExtractor();
         try {
             mExtractor.setDataSource(mInputFile.getPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        MediaFormat format = null;
-        String mime = null;
+            MediaFormat format = null;
+            String mime = null;
 
-        // Select the first audio track we find.
-        int numTracks = mExtractor.getTrackCount();
-        for (int i = 0; i < numTracks; ++i) {
-            MediaFormat f = mExtractor.getTrackFormat(i);
-            String m = f.getString(MediaFormat.KEY_MIME);
-            if (m.startsWith("audio/")) {
-                format = f;
-                mime = m;
-                mExtractor.selectTrack(i);
-                break;
+            // Select the first audio track we find.
+            int numTracks = mExtractor.getTrackCount();
+            for (int i = 0; i < numTracks; ++i) {
+                MediaFormat f = mExtractor.getTrackFormat(i);
+                String m = f.getString(MediaFormat.KEY_MIME);
+                if (m.startsWith("audio/")) {
+                    format = f;
+                    mime = m;
+                    mExtractor.selectTrack(i);
+                    break;
+                }
             }
-        }
-        try {
             mDecoder = MediaCodec.createDecoderByType(mime);
+            mDecoder.configure(format, null, null, 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mDecoder.configure(format, null, null, 0);
     }
 
     private Double sampleAtTargetTime(double lastOutputSample, SampleBuffer outputSampleBuffer, long outputPresentationTimeUs, long outputDurationPerSampleUs, long targetPresentationTimeUs) {

@@ -7,6 +7,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -19,7 +20,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder{
         super(inFile, sampleRate, sampleType);
     }
 
-    public void start(AudioDecoderListener listener) {
+    public void start(AudioDecoderListener listener) throws IOException{
         mListener = listener;
         initMediaComponents();
         mDecoder.start();
