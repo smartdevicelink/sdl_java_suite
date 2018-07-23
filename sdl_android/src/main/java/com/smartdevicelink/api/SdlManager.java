@@ -118,12 +118,12 @@ public class SdlManager{
 			if(
 					true
 					/*
-					fileManager.getState() != BaseSubManager.SETTING_UP &&
-					videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
-					audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
-					lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
-					screenManager.getState() != BaseSubManager.SETTING_UP
-					permissionManager.getState() != BaseSubManager.SETTING_UP
+					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
+					videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
+					audioStreamManager != null && audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
+					lockscreenManager != null &&  lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
+					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
+					permissionManager != null && permissionManager.getState() != BaseSubManager.SETTING_UP
 					*/  ){
 				state = BaseSubManager.READY;
 				if(initListener != null){
@@ -324,30 +324,41 @@ public class SdlManager{
 		}
 	}
 
+	private void checkSdlManagerState(){
+		if (state != BaseSubManager.READY){
+			throw new IllegalStateException("SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
+		}
+	}
 	// MANAGER GETTERS
 
 	/*
 	public FileManager getFileManager() {
+		checkSdlManagerState();
 		return fileManager;
 	}
 
 	public VideoStreamingManager getVideoStreamingManager() {
+		checkSdlManagerState();
 		return videoStreamingManager;
 	}
 
 	public AudioStreamManager getAudioStreamManager() {
+		checkSdlManagerState();
 		return audioStreamManager;
 	}
 
 	public ScreenManager getScreenManager() {
+		checkSdlManagerState();
 		return screenManager;
 	}
 
 	public LockscreenManager getLockscreenManager() {
+		checkSdlManagerState();
 		return lockscreenManager;
 	}
 
 	public PermissionManager getPermissionManager() {
+		checkSdlManagerState();
 		return permissionManager;
 	}*/
 
