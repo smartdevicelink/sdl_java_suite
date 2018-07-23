@@ -1,6 +1,5 @@
 package com.smartdevicelink.api;
 
-import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 

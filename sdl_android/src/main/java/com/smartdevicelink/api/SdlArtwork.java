@@ -12,7 +12,7 @@ public class SdlArtwork extends SdlFile{
                 || fileType.equals(FileType.GRAPHIC_BMP)){
             super.setType(fileType);
         }else{
-            throw new IllegalArgumentException("Only JPEG and PNG image types are supported.");
+            throw new IllegalArgumentException("Only JPEG, PNG, and BMP image types are supported.");
         }
     }
 }

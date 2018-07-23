@@ -102,7 +102,7 @@ public class FileManager extends BaseSubManager {
 	 * @param listener callback that is called on response from core
 	 */
 	public void deleteRemoteFileWithName(final String fileName, final CompletionListener listener){
-		if(fileName == null){
+		if(fileName == null || listener == null){
 			return;
 		}
 		DeleteFile deleteFile = new DeleteFile();
@@ -125,7 +125,7 @@ public class FileManager extends BaseSubManager {
 	 * @param listener callback that is called once core responds to all deletion requests
 	 */
 	public void deleteRemoteFilesWithNames(List<String> fileNames, final MultipleFileCompletionListener listener){
-		if(fileNames == null || fileNames.isEmpty()){
+		if(fileNames == null || fileNames.isEmpty() || listener == null){
 			return;
 		}
 		final List<DeleteFile> deleteFileRequests = new ArrayList<>();
@@ -253,6 +253,10 @@ public class FileManager extends BaseSubManager {
 	 * @param listener called when core responds to the attempt to upload the file
 	 */
 	public void uploadFile(final SdlFile file, final CompletionListener listener){
+		if(file == null || listener == null){
+			return;
+		}
+
 		PutFile putFile = createPutFile(file);
 
 		putFile.setOnRPCResponseListener(new OnRPCResponseListener() {
@@ -280,7 +284,7 @@ public class FileManager extends BaseSubManager {
 	 * @param listener callback that is called once core responds to all upload requests
 	 */
 	public void uploadFiles(List<? extends SdlFile> files, final MultipleFileCompletionListener listener){
-		if(files == null || files.isEmpty()){
+		if(files == null || files.isEmpty() || listener == null){
 			return;
 		}
 		final List<PutFile> putFileRequests = new ArrayList<>();
