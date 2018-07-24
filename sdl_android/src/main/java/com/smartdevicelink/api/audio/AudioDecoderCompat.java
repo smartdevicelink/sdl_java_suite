@@ -5,6 +5,7 @@ import android.media.MediaFormat;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -40,33 +41,43 @@ class AudioDecoderCompat extends BaseAudioDecoder{
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            Log.v(TAG, " DecodeAsync onPostExecute");
+            if (listener != null) {
+                listener.onDecoderFinish();
+            }
+            stop();
         }
 
         @Override
         protected Void doInBackground(File... files) {
+            Log.v(TAG, " DecodeAsync doInBackground starts");
             ByteBuffer[] inputBuffersArray = decoder.getInputBuffers();
             ByteBuffer[] outputBuffersArray = decoder.getOutputBuffers();
             MediaCodec.BufferInfo outputBufferInfo = new MediaCodec.BufferInfo();
             while (true) {
                 int inputBuffersArrayIndex = 0;
+                ByteBuffer inputBuffer;
+                MediaCodec.BufferInfo info;
                 while (inputBuffersArrayIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
                     inputBuffersArrayIndex = decoder.dequeueInputBuffer(DEQUEUE_TIMEOUT);
                     if (inputBuffersArrayIndex >= 0) {
-                        ByteBuffer inputBuffer = inputBuffersArray[inputBuffersArrayIndex];
-                        MediaCodec.BufferInfo info = AudioDecoderCompat.super.onInputBufferAvailable(extractor, inputBuffer);
+                        inputBuffer = inputBuffersArray[inputBuffersArrayIndex];
+                        info = AudioDecoderCompat.super.onInputBufferAvailable(extractor, inputBuffer);
                         decoder.queueInputBuffer(inputBuffersArrayIndex, info.offset, info.size, info.presentationTimeUs, info.flags);
                     }
                 }
 
                 int outputBuffersArrayIndex = 0;
+                ByteBuffer decodedData;
+                SampleBuffer buffer;
                 while (outputBuffersArrayIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
                     outputBuffersArrayIndex = decoder.dequeueOutputBuffer(outputBufferInfo, DEQUEUE_TIMEOUT);
                     if (outputBuffersArrayIndex >= 0) {
-                        ByteBuffer decodedData = outputBuffersArray[outputBuffersArrayIndex];
+                        decodedData = outputBuffersArray[outputBuffersArrayIndex];
                         if ((outputBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0 && outputBufferInfo.size != 0) {
                             decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
                         } else {
-                            SampleBuffer buffer = AudioDecoderCompat.super.onOutputBufferAvailable(decodedData);
+                            buffer = AudioDecoderCompat.super.onOutputBufferAvailable(decodedData);
                             listener.onAudioDataAvailable(buffer.getByteBuffer());
                             decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
                         }
@@ -80,11 +91,6 @@ class AudioDecoderCompat extends BaseAudioDecoder{
                     break;
                 }
             }
-
-            if (listener != null) {
-                listener.onDecoderFinish();
-            }
-            stop();
 
             return null;
         }
