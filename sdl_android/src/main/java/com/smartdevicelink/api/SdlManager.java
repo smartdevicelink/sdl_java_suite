@@ -331,32 +331,72 @@ public class SdlManager{
 	}
 	// MANAGER GETTERS
 
+    /**
+     * Gets the FileManager.
+     * <strong>FileManager should be used only after the SdlManager.start() CompletionListener callback is completed successfully</strong>
+     * @return a FileManager object
+     */
 	/*
 	public FileManager getFileManager() {
 		checkSdlManagerState();
 		return fileManager;
 	}
+	*/
 
+    /**
+     * Gets the VideoStreamingManager.
+     * <strong>VideoStreamingManager should be used only after the SdlManager.start() CompletionListener callback is completed successfully</strong>
+     * @return a VideoStreamingManager object
+     */
+    /*
 	public VideoStreamingManager getVideoStreamingManager() {
 		checkSdlManagerState();
 		return videoStreamingManager;
 	}
+	*/
 
+    /**
+     * Gets the AudioStreamManager.
+     * <strong>AudioStreamManager should be used only after the SdlManager.start() CompletionListener callback is completed successfully</strong>
+     * @return a AudioStreamManager object
+     */
+    /*
 	public AudioStreamManager getAudioStreamManager() {
 		checkSdlManagerState();
 		return audioStreamManager;
 	}
+	*/
 
+    /**
+     * Gets the ScreenManager.
+     * <strong>ScreenManager should be used only after the SdlManager.start() CompletionListener callback is completed successfully</strong>
+     * @return a ScreenManager object
+     */
+    /*
 	public ScreenManager getScreenManager() {
 		checkSdlManagerState();
 		return screenManager;
 	}
+	*/
 
+    /**
+     * Gets the LockScreenManager.
+     * <strong>LockScreenManager should be used only after the SdlManager.start() CompletionListener callback is completed successfully</strong>
+     * @return a LockScreenManager object
+     */
+    /*
 	public LockscreenManager getLockscreenManager() {
 		checkSdlManagerState();
 		return lockscreenManager;
 	}
+	*/
 
+    /**
+     * Gets the PermissionManager.
+     * <strong>PermissionManager should be used only after the SdlManager.start() CompletionListener callback is completed successfully</strong>
+     * @return a PermissionManager object
+     */
+    /*
 	public PermissionManager getPermissionManager() {
 		checkSdlManagerState();
 		return permissionManager;
