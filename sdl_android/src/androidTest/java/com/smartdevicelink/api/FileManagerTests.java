@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
+import com.smartdevicelink.api.datatypes.SdlArtwork;
+import com.smartdevicelink.api.datatypes.SdlFile;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.ListFiles;

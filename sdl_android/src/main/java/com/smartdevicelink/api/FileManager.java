@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.smartdevicelink.api.datatypes.SdlArtwork;
+import com.smartdevicelink.api.datatypes.SdlFile;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
