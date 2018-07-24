@@ -39,6 +39,8 @@ class AudioDecoderCompat extends BaseAudioDecoder {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            listener.onDecoderFinish();
+            stop();
         }
 
         @Override
@@ -80,11 +82,6 @@ class AudioDecoderCompat extends BaseAudioDecoder {
                     break;
                 }
             }
-
-            if (listener != null) {
-                listener.onDecoderFinish();
-            }
-            stop();
 
             return null;
         }
