@@ -28,7 +28,7 @@ public class PermissionElement {
      * Get the RPC name
      * @return FunctionID value represents the RPC name
      */
-    public FunctionID getRpcName() {
+    public FunctionID getRPCName() {
         return rpcName;
     }
 
@@ -36,7 +36,7 @@ public class PermissionElement {
      * Set the RPC name
      * @param rpcName
      */
-    public void setRpcName(@NonNull FunctionID rpcName) {
+    public void setRPCName(@NonNull FunctionID rpcName) {
         this.rpcName = rpcName;
     }
 

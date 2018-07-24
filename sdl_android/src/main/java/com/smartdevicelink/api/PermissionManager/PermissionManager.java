@@ -71,7 +71,7 @@ import java.util.UUID;
                 }
                 HMILevel previousHMILevel = currentHMILevel;
                 currentHMILevel = ((OnHMIStatus)notification).getHmiLevel();
-                callAffectedListeners(currentPermissionItems, previousHMILevel, currentPermissionItems, currentHMILevel);
+                notifyListeners(currentPermissionItems, previousHMILevel, currentPermissionItems, currentHMILevel);
             }
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, onHMIStatusListener);
@@ -86,7 +86,7 @@ import java.util.UUID;
                 for (PermissionItem permissionItem : permissionItems) {
                     currentPermissionItems.put(FunctionID.getEnumForString(permissionItem.getRpcName()), permissionItem);
                 }
-                callAffectedListeners(previousPermissionItems, currentHMILevel, currentPermissionItems, currentHMILevel);
+                notifyListeners(previousPermissionItems, currentHMILevel, currentPermissionItems, currentHMILevel);
                 previousPermissionItems.clear();
             }
         };
@@ -100,7 +100,7 @@ import java.util.UUID;
      * @param currentPermissionItems
      * @param currentHMILevel
      */
-    private void callAffectedListeners(Map<FunctionID, PermissionItem> previousPermissionItems, HMILevel previousHmiLevel, Map<FunctionID, PermissionItem> currentPermissionItems, HMILevel currentHMILevel){
+    private void notifyListeners(Map<FunctionID, PermissionItem> previousPermissionItems, HMILevel previousHmiLevel, Map<FunctionID, PermissionItem> currentPermissionItems, HMILevel currentHMILevel){
         for (PermissionFilter filter : filters) {
             boolean anyChange = false;
             boolean allWereAllowed = true;
@@ -110,8 +110,8 @@ import java.util.UUID;
                 if (anyChange && !allWereAllowed && !allNowAllowed){
                     break;
                 }
-                boolean rpcWasAllowed = isRPCAllowed(permissionElement.getRpcName(), previousPermissionItems, previousHmiLevel);
-                boolean rpcNowAllowed = isRPCAllowed(permissionElement.getRpcName(), currentPermissionItems, currentHMILevel);
+                boolean rpcWasAllowed = isRPCAllowed(permissionElement.getRPCName(), previousPermissionItems, previousHmiLevel);
+                boolean rpcNowAllowed = isRPCAllowed(permissionElement.getRPCName(), currentPermissionItems, currentHMILevel);
                 if (rpcWasAllowed != rpcNowAllowed){
                     anyChange = true;
                 }
@@ -123,8 +123,8 @@ import java.util.UUID;
                 }
                 if (permissionElement.getParameters() != null && permissionElement.getParameters().size() > 0) {
                     for (String parameter : permissionElement.getParameters()) {
-                        boolean parameterWasAllowed = isPermissionParameterAllowed(permissionElement.getRpcName(), parameter, previousPermissionItems, previousHmiLevel);
-                        boolean parameterNowAllowed = isPermissionParameterAllowed(permissionElement.getRpcName(), parameter, currentPermissionItems, currentHMILevel);
+                        boolean parameterWasAllowed = isPermissionParameterAllowed(permissionElement.getRPCName(), parameter, previousPermissionItems, previousHmiLevel);
+                        boolean parameterNowAllowed = isPermissionParameterAllowed(permissionElement.getRPCName(), parameter, currentPermissionItems, currentHMILevel);
                         if (parameterWasAllowed != parameterNowAllowed){
                             anyChange = true;
                         }
@@ -138,9 +138,9 @@ import java.util.UUID;
                 }
             }
             if (filter.getGroupType() == PERMISSION_GROUP_TYPE_ALL_ALLOWED && anyChange && (allWereAllowed || allNowAllowed)){
-                callListener(filter);
+                notifyListener(filter);
             } else if (filter.getGroupType() == PERMISSION_GROUP_TYPE_ANY && anyChange){
-                callListener(filter);
+                notifyListener(filter);
             }
         }
     }
@@ -247,14 +247,14 @@ import java.util.UUID;
 
             if (permissionElement == null){
                 continue;
-            } else if (!isRPCAllowed(permissionElement.getRpcName())){
+            } else if (!isRPCAllowed(permissionElement.getRPCName())){
                 hasDisallowed = true;
             } else {
                 if (permissionElement.getParameters() == null || permissionElement.getParameters().size() == 0){
                     hasAllowed = true;
                 } else {
                     for (String permissionParameter : permissionElement.getParameters()) {
-                        if (isPermissionParameterAllowed(permissionElement.getRpcName(), permissionParameter)) {
+                        if (isPermissionParameterAllowed(permissionElement.getRPCName(), permissionParameter)) {
                             hasAllowed = true;
                         } else {
                             hasDisallowed = true;
@@ -292,11 +292,11 @@ import java.util.UUID;
             if (permissionElement.getParameters() != null && permissionElement.getParameters().size() > 0) {
                 allowedParameters = new HashMap<>();
                 for (String permissionParameter : permissionElement.getParameters()) {
-                    allowedParameters.put(permissionParameter, isPermissionParameterAllowed(permissionElement.getRpcName(), permissionParameter));
+                    allowedParameters.put(permissionParameter, isPermissionParameterAllowed(permissionElement.getRPCName(), permissionParameter));
                 }
             }
-            PermissionStatus permissionStatus = new PermissionStatus(permissionElement.getRpcName(), isRPCAllowed(permissionElement.getRpcName()), allowedParameters);
-            statusOfPermissions.put(permissionElement.getRpcName(), permissionStatus);
+            PermissionStatus permissionStatus = new PermissionStatus(permissionElement.getRPCName(), isRPCAllowed(permissionElement.getRPCName()), allowedParameters);
+            statusOfPermissions.put(permissionElement.getRPCName(), permissionStatus);
         }
         return statusOfPermissions;
     }
@@ -305,7 +305,7 @@ import java.util.UUID;
      * Call the listener for a specific filter
      * @param filter the permission filter to cal
      */
-    private void callListener(@NonNull PermissionFilter filter){
+    private void notifyListener(@NonNull PermissionFilter filter){
         int permissionGroupStatus = getGroupStatusOfPermissions(filter.getPermissionElements());
         Map <FunctionID, PermissionStatus> allowedPermissions = getStatusOfPermissions(filter.getPermissionElements());
         filter.getListener().onPermissionsChange(allowedPermissions, permissionGroupStatus);

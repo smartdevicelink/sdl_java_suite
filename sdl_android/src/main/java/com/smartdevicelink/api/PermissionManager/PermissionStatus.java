@@ -10,7 +10,7 @@ import java.util.Map;
  * PermissionStatus gives a detailed view about whether an RPC and its permission parameters are allowed or not
  */
 public class PermissionStatus {
-    private FunctionID rpcName;
+    private final FunctionID rpcName;
     private boolean isRPCAllowed;
     private Map<String, Boolean> allowedParameters;
 
@@ -30,16 +30,8 @@ public class PermissionStatus {
      * Get the name of the RPC
      * @return FunctionID value represents the name of the RPC
      */
-    public FunctionID getRpcName() {
+    public FunctionID getRPCName() {
         return rpcName;
-    }
-
-    /**
-     * Set the name of the RPC
-     * @param rpcName
-     */
-    protected void setRpcName(@NonNull FunctionID rpcName) {
-        this.rpcName = rpcName;
     }
 
     /**
