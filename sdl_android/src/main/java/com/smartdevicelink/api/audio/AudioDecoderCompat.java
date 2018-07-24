@@ -7,24 +7,28 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-public class AudioDecoderCompat extends BaseAudioDecoder{
+class AudioDecoderCompat extends BaseAudioDecoder{
+    private static final String TAG = AudioDecoderCompat.class.getSimpleName();
+    private static final int DEQUEUE_TIMEOUT = 3000;
 
-    public static final String TAG = AudioDecoderCompat.class.getSimpleName();
-    public static final int DEQUEUE_TIMEOUT = 3000;
-
-    public AudioDecoderCompat(File inFile, int sampleRate, SampleType sampleType) {
-        super(inFile, sampleRate, sampleType);
+    AudioDecoderCompat(File audioFile, int sampleRate, SampleType sampleType) {
+        super(audioFile, sampleRate, sampleType);
     }
 
-    public void start(AudioDecoderListener listener) throws IOException{
-        mListener = listener;
-        initMediaComponents();
-        mDecoder.start();
-        new DecodeAsync().execute(mInputFile);
+    void start(AudioDecoderListener listener) {
+        try {
+            this.listener = listener;
+            initMediaComponents();
+            decoder.start();
+            new DecodeAsync().execute(audioFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.listener.onDecoderError(e);
+            stop();
+        }
     }
 
     private class DecodeAsync extends AsyncTask<File, Void, Void> {
@@ -40,57 +44,45 @@ public class AudioDecoderCompat extends BaseAudioDecoder{
 
         @Override
         protected Void doInBackground(File... files) {
-            ByteBuffer[] inputBuffersArray = mDecoder.getInputBuffers();
-            ByteBuffer[] outputBuffersArray = mDecoder.getOutputBuffers();
+            ByteBuffer[] inputBuffersArray = decoder.getInputBuffers();
+            ByteBuffer[] outputBuffersArray = decoder.getOutputBuffers();
             MediaCodec.BufferInfo outputBufferInfo = new MediaCodec.BufferInfo();
             while (true) {
                 int inputBuffersArrayIndex = 0;
                 while (inputBuffersArrayIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
-                    inputBuffersArrayIndex = mDecoder.dequeueInputBuffer(DEQUEUE_TIMEOUT);
-                    ByteBuffer tempBuffer;
+                    inputBuffersArrayIndex = decoder.dequeueInputBuffer(DEQUEUE_TIMEOUT);
                     if (inputBuffersArrayIndex >= 0) {
-                        long sampleTime = mExtractor.getSampleTime();
-                        tempBuffer = inputBuffersArray[inputBuffersArrayIndex];
-                        int counter = 0;
-                        int result;
-                        do {
-                            result = mExtractor.readSampleData(tempBuffer, counter);
-                            if (result >= 0) {
-                                mExtractor.advance();
-                                counter += result;
-                            } else {
-                                break;
-                            }
-                        }
-                        while (counter < (tempBuffer.capacity() - result));
-                        int flags = result < 0 ? MediaCodec.BUFFER_FLAG_END_OF_STREAM : 0;
-                        mDecoder.queueInputBuffer(inputBuffersArrayIndex, 0, counter, sampleTime, flags);
+                        ByteBuffer inputBuffer = inputBuffersArray[inputBuffersArrayIndex];
+                        MediaCodec.BufferInfo info = AudioDecoderCompat.super.onInputBufferAvailable(extractor, inputBuffer);
+                        decoder.queueInputBuffer(inputBuffersArrayIndex, info.offset, info.size, info.presentationTimeUs, info.flags);
                     }
                 }
 
                 int outputBuffersArrayIndex = 0;
                 while (outputBuffersArrayIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
-                    outputBuffersArrayIndex = mDecoder.dequeueOutputBuffer(outputBufferInfo, DEQUEUE_TIMEOUT);
+                    outputBuffersArrayIndex = decoder.dequeueOutputBuffer(outputBufferInfo, DEQUEUE_TIMEOUT);
                     if (outputBuffersArrayIndex >= 0) {
                         ByteBuffer decodedData = outputBuffersArray[outputBuffersArrayIndex];
                         if ((outputBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0 && outputBufferInfo.size != 0) {
-                            mDecoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
+                            decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
                         } else {
                             SampleBuffer buffer = AudioDecoderCompat.super.onOutputBufferAvailable(decodedData);
-                            mListener.onAudioDataAvailable(buffer.getByteBuffer());
-                            mDecoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
+                            listener.onAudioDataAvailable(buffer.getByteBuffer());
+                            decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
                         }
                     } else if (outputBuffersArrayIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
-                        MediaFormat newFormat = mDecoder.getOutputFormat();
+                        MediaFormat newFormat = decoder.getOutputFormat();
                         AudioDecoderCompat.super.onOutputFormatChanged(newFormat);
                     }
                 }
+
                 if (outputBufferInfo.flags == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
                     break;
                 }
             }
-            if (mListener != null) {
-                mListener.onDecoderFinish();
+
+            if (listener != null) {
+                listener.onDecoderFinish();
             }
             stop();
 

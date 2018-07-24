@@ -1,37 +1,35 @@
 package com.smartdevicelink.api.audio;
 
 import android.media.MediaCodec;
-import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 
 import java.io.File;
 import java.nio.ByteBuffer;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-public class AudioDecoder extends BaseAudioDecoder {
+class AudioDecoder extends BaseAudioDecoder {
     private static final String TAG = AudioDecoder.class.getSimpleName();
 
-    public AudioDecoder(File audioFile, int sampleRate, SampleType sampleType) {
+    AudioDecoder(File audioFile, int sampleRate, SampleType sampleType) {
         super(audioFile, sampleRate, sampleType);
-        this.targetSampleRate = sampleRate;
-        this.targetSampleType = sampleType;
     }
 
-    public void start(AudioDecoderListener listener) {
+    void start(AudioDecoderListener listener) {
         try {
-            mListener = listener;
+            this.listener = listener;
+
             initMediaComponents();
-            mDecoder.setCallback(new MediaCodec.Callback() {
+
+            decoder.setCallback(new MediaCodec.Callback() {
                 @Override
                 public void onInputBufferAvailable(@NonNull MediaCodec mediaCodec, int i) {
                     ByteBuffer inputBuffer = mediaCodec.getInputBuffer(i);
                     if (inputBuffer == null) return;
 
-                    MediaCodec.BufferInfo info = AudioDecoder.super.onInputBufferAvailable(mExtractor, inputBuffer);
+                    MediaCodec.BufferInfo info = AudioDecoder.super.onInputBufferAvailable(extractor, inputBuffer);
                     mediaCodec.queueInputBuffer(i, info.offset, info.size, info.presentationTimeUs, info.flags);
                 }
 
@@ -42,7 +40,7 @@ public class AudioDecoder extends BaseAudioDecoder {
 
                     SampleBuffer targetSampleBuffer = AudioDecoder.super.onOutputBufferAvailable(outputBuffer);
                     mediaCodec.releaseOutputBuffer(i, false);
-                    mListener.onAudioDataAvailable(targetSampleBuffer.getByteBuffer());
+                    AudioDecoder.this.listener.onAudioDataAvailable(targetSampleBuffer.getByteBuffer());
                     if (bufferInfo.flags == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
                         stop();
                     }
@@ -58,10 +56,11 @@ public class AudioDecoder extends BaseAudioDecoder {
                     AudioDecoder.super.onMediaCodecError(e);
                 }
             });
-            mDecoder.start();
+
+            decoder.start();
         } catch (Exception e) {
             e.printStackTrace();
-            mListener.onDecoderError(e);
+            this.listener.onDecoderError(e);
             stop();
         }
     }

@@ -10,10 +10,10 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+@SuppressWarnings("WeakerAccess")
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 abstract class BaseAudioDecoder {
     private static final String TAG = AudioDecoder.class.getSimpleName();
@@ -29,41 +29,42 @@ abstract class BaseAudioDecoder {
     private long lastOutputPresentationTimeUs = 0;
     private long lastTargetPresentationTimeUs = 0;
 
-    protected MediaExtractor mExtractor;
-    protected MediaCodec mDecoder;
-    protected File mInputFile;
-    protected AudioDecoderListener mListener;
+    protected MediaExtractor extractor;
+    protected MediaCodec decoder;
+    protected File audioFile;
+    protected AudioDecoderListener listener;
 
-    public BaseAudioDecoder(File inFile, int sampleRate, SampleType sampleType) {
-        mInputFile = inFile;
-        this.targetSampleRate = sampleRate;
-        this.targetSampleType = sampleType;
+    BaseAudioDecoder(File audioFile, int sampleRate, SampleType sampleType) {
+        this.audioFile = audioFile;
+        targetSampleRate = sampleRate;
+        targetSampleType = sampleType;
     }
 
-    protected void initMediaComponents() throws IOException{
-        mExtractor = new MediaExtractor();
-        try {
-            mExtractor.setDataSource(mInputFile.getPath());
-            MediaFormat format = null;
-            String mime = null;
+    protected void initMediaComponents() throws Exception {
+        extractor = new MediaExtractor();
+        extractor.setDataSource(audioFile.getPath());
+        MediaFormat format = null;
+        String mime = null;
 
-            // Select the first audio track we find.
-            int numTracks = mExtractor.getTrackCount();
-            for (int i = 0; i < numTracks; ++i) {
-                MediaFormat f = mExtractor.getTrackFormat(i);
-                String m = f.getString(MediaFormat.KEY_MIME);
-                if (m.startsWith("audio/")) {
-                    format = f;
-                    mime = m;
-                    mExtractor.selectTrack(i);
-                    break;
-                }
+        // Select the first audio track we find.
+        int numTracks = extractor.getTrackCount();
+        for (int i = 0; i < numTracks; ++i) {
+            MediaFormat f = extractor.getTrackFormat(i);
+            String m = f.getString(MediaFormat.KEY_MIME);
+            if (m.startsWith("audio/")) {
+                format = f;
+                mime = m;
+                extractor.selectTrack(i);
+                break;
             }
-            mDecoder = MediaCodec.createDecoderByType(mime);
-            mDecoder.configure(format, null, null, 0);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
+        if (mime == null || format == null) {
+            throw new Exception("The audio file " + audioFile.getPath() + " doesn't contain an audio track.");
+        }
+
+        decoder = MediaCodec.createDecoderByType(mime);
+        decoder.configure(format, null, null, 0);
     }
 
     private Double sampleAtTargetTime(double lastOutputSample, SampleBuffer outputSampleBuffer, long outputPresentationTimeUs, long outputDurationPerSampleUs, long targetPresentationTimeUs) {
@@ -183,29 +184,29 @@ abstract class BaseAudioDecoder {
 
     protected void onMediaCodecError(@NonNull MediaCodec.CodecException e) {
         Log.e(TAG, "MediaCodec.onError: " + e.getLocalizedMessage());
-        if (mListener != null) {
+        if (listener != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mListener.onDecoderError(e);
+                listener.onDecoderError(e);
             } else {
-                mListener.onDecoderError(new Exception("Error decoding audio file"));
+                listener.onDecoderError(new Exception("Error decoding audio file"));
             }
         }
     }
 
     public void stop() {
-        if (mDecoder != null) {
-            mDecoder.stop();
-            mDecoder.release();
-            mDecoder = null;
+        if (decoder != null) {
+            decoder.stop();
+            decoder.release();
+            decoder = null;
         }
 
-        if (mExtractor != null) {
-            mExtractor = null;
+        if (extractor != null) {
+            extractor = null;
         }
 
-        if (mListener != null) {
-            mListener.onDecoderFinish();
-            mListener = null;
+        if (listener != null) {
+            listener.onDecoderFinish();
+            listener = null;
         }
     }
 }
