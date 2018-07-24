@@ -47,6 +47,7 @@ public class FileManagerTests extends AndroidTestCase {
 		validFile = new SdlFile();
 		validFile.setName(Test.GENERAL_STRING);
 		validFile.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile.setPersistent(false);
 	}
 
 	@Override
@@ -184,6 +185,7 @@ public class FileManagerTests extends AndroidTestCase {
 					public void onComplete(boolean success) {
 						assertTrue(success);
 						assertTrue(fileManager.getRemoteFileNames().contains(validFile.getName()));
+						assertTrue(fileManager.hasUploadedFile(validFile));
 					}
 				});
 			}
@@ -206,6 +208,7 @@ public class FileManagerTests extends AndroidTestCase {
 					public void onComplete(boolean success) {
 						assertFalse(success);
 						assertFalse(fileManager.getRemoteFileNames().contains(validFile.getName()));
+						assertFalse(fileManager.hasUploadedFile(validFile));
 					}
 				});
 			}
@@ -281,7 +284,7 @@ public class FileManagerTests extends AndroidTestCase {
 		}
 	}
 
-	public void testMultipleFileUploadSuccess(){
+	public void testMultipleFileUploadThenDeleteSuccess(){
 		ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPCRequest(any(ListFiles.class));
@@ -305,22 +308,25 @@ public class FileManagerTests extends AndroidTestCase {
 				sdlFile.setResourceId(com.smartdevicelink.test.R.drawable.ic_sdl);
 				filesToUpload.add(sdlFile);
 
-				sdlFile = new SdlFile();
-				sdlFile.setName("file" + fileNum++);
-				sdlFile.setFileData(Test.GENERAL_BYTE_ARRAY);
-				sdlFile.setPersistent(true);
-				sdlFile.setType(FileType.BINARY);
-				filesToUpload.add(sdlFile);
-
 				fileManager.uploadFiles(filesToUpload,
 						new MultipleFileCompletionListener() {
 							@Override
 							public void onComplete(Map<String, String> errors) {
 								assertNull(errors);
-								List < String > uploadedFileNames = fileManager.getRemoteFileNames();
+								List <String> uploadedFileNames = fileManager.getRemoteFileNames();
 								for(SdlFile file : filesToUpload){
 									assertTrue(uploadedFileNames.contains(file.getName()));
 								}
+								fileManager.deleteRemoteFilesWithNames(uploadedFileNames, new MultipleFileCompletionListener() {
+									@Override
+									public void onComplete(Map<String, String> errors) {
+										assertNull(errors);
+										List <String> uploadedFileNames = fileManager.getRemoteFileNames();
+										for(SdlFile file : filesToUpload){
+											assertFalse(uploadedFileNames.contains(file.getName()));
+										}
+									}
+								});
 							}
 						});
 			}
@@ -453,5 +459,19 @@ public class FileManagerTests extends AndroidTestCase {
 						});
 			}
 		});
+	}
+
+	public void testPersistentFileUploaded(){
+		ISdl internalInterface = mock(ISdl.class);
+
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPCRequest(any(ListFiles.class));
+
+		SdlFile file = new SdlFile();
+		file.setName(Test.GENERAL_STRING_LIST.get(0));
+		file.setPersistent(true);
+
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext);
+		assertTrue(fileManager.hasUploadedFile(file));
+		assertFalse(fileManager.hasUploadedFile(null));
 	}
 }

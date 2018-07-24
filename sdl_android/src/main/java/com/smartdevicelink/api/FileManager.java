@@ -46,7 +46,7 @@ import java.util.Map;
 public class FileManager extends BaseSubManager {
 
 	private static String TAG = "FileManager";
-	private List<String> remoteFiles;
+	private List<String> remoteFiles, uploadedEphemeralFileNames;
 	private WeakReference<Context> context;
 
 	FileManager(ISdl internalInterface, Context context) {
@@ -57,6 +57,7 @@ public class FileManager extends BaseSubManager {
 
 		// prepare manager - don't set state to ready until we have list of files
 		retrieveRemoteFiles();
+		uploadedEphemeralFileNames = new ArrayList<>();
 	}
 
 	// GETTERS
@@ -114,6 +115,7 @@ public class FileManager extends BaseSubManager {
 			public void onResponse(int correlationId, RPCResponse response) {
 				if(response.getSuccess()){
 					remoteFiles.remove(fileName);
+					uploadedEphemeralFileNames.remove(fileName);
 				}
 				listener.onComplete(response.getSuccess());
 			}
@@ -242,7 +244,13 @@ public class FileManager extends BaseSubManager {
 			public void onResponse(int correlationId, RPCResponse response) {
 				if(response.getSuccess()){
 					if(fileNameMap.get(correlationId) != null){
-						remoteFiles.add(fileNameMap.get(correlationId));
+						if(deletionOperation){
+							remoteFiles.remove(fileNameMap.get(correlationId));
+							uploadedEphemeralFileNames.remove(fileNameMap.get(correlationId));
+						}else{
+							remoteFiles.add(fileNameMap.get(correlationId));
+							uploadedEphemeralFileNames.add(fileNameMap.get(correlationId));
+						}
 					}
 				}
 			}
@@ -266,6 +274,7 @@ public class FileManager extends BaseSubManager {
 			public void onResponse(int correlationId, RPCResponse response) {
 				if(response.getSuccess()){
 					remoteFiles.add(file.getName());
+					uploadedEphemeralFileNames.add(file.getName());
 				}
 				listener.onComplete(response.getSuccess());
 			}
@@ -312,6 +321,24 @@ public class FileManager extends BaseSubManager {
 	 */
 	public void uploadArtworks(List<SdlArtwork> files, final MultipleFileCompletionListener listener){
 		uploadFiles(files, listener);
+	}
+
+	/**
+	 * Check if an SdlFile has been uploaded to core
+	 * @param file SdlFile
+	 * @return boolean that tells whether file has been uploaded to core (true) or not (false)
+	 */
+	public boolean hasUploadedFile(SdlFile file){
+		if(file == null){
+			return false;
+		}
+		if(file.isPersistent() && remoteFiles.contains(file.getName())){
+			return true;
+		}else if(!file.isPersistent() && remoteFiles.contains(file.getName())
+				&& uploadedEphemeralFileNames.contains(file.getName())){
+			return true;
+		}
+		return false;
 	}
 
 	// HELPERS
