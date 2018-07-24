@@ -332,11 +332,11 @@ public class SdlManager{
 	// MANAGER GETTERS
 
     /**
-     * Gets the FileManager.
-     * <strong>Note: FileManager should be used only after SdlManager.start() CompletionListener callback is completed successfully</strong>
+     * Gets the FileManager. <br>
+     * <strong>Note: FileManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
      * @return a FileManager object
      */
-	/*
+	/*]
 	public FileManager getFileManager() {
 		checkSdlManagerState();
 		return fileManager;
@@ -344,8 +344,8 @@ public class SdlManager{
 	*/
 
     /**
-     * Gets the VideoStreamingManager.
-     * <strong>Note: VideoStreamingManager should be used only after SdlManager.start() CompletionListener callback is completed successfully</strong>
+     * Gets the VideoStreamingManager. <br>
+     * <strong>Note: VideoStreamingManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
      * @return a VideoStreamingManager object
      */
     /*
@@ -356,8 +356,8 @@ public class SdlManager{
 	*/
 
     /**
-     * Gets the AudioStreamManager.
-     * <strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully</strong>
+     * Gets the AudioStreamManager. <br>
+     * <strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
      * @return a AudioStreamManager object
      */
     /*
@@ -368,8 +368,8 @@ public class SdlManager{
 	*/
 
     /**
-     * Gets the ScreenManager.
-     * <strong>Note: ScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully</strong>
+     * Gets the ScreenManager. <br>
+     * <strong>Note: ScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
      * @return a ScreenManager object
      */
     /*
@@ -380,8 +380,8 @@ public class SdlManager{
 	*/
 
     /**
-     * Gets the LockScreenManager.
-     * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully</strong>
+     * Gets the LockScreenManager. <br>
+     * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
      * @return a LockScreenManager object
      */
     /*
@@ -392,8 +392,8 @@ public class SdlManager{
 	*/
 
     /**
-     * Gets the PermissionManager.
-     * <strong>Note: PermissionManager should be used only after SdlManager.start() CompletionListener callback is completed successfully</strong>
+     * Gets the PermissionManager. <br>
+     * <strong>Note: PermissionManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
      * @return a PermissionManager object
      */
     /*
