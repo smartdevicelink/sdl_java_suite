@@ -1,11 +1,21 @@
 package com.smartdevicelink.api.screen;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.util.Log;
+
+import com.smartdevicelink.R;
 import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.api.FileManager;
 import com.smartdevicelink.api.SdlArtwork;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * <strong>TextAndGraphicManager</strong> <br>
@@ -20,24 +30,49 @@ import com.smartdevicelink.proxy.rpc.enums.MetadataType;
  */
 public class TextAndGraphicManager extends BaseSubManager {
 
+	private static final String TAG = "TextAndGraphicManager";
 	private FileManager fileManager;
+	private Show currentScreenData;
+	private Context context;
+	private SdlArtwork blankArtwork;
 
 	protected boolean batchUpdates;
-	private boolean isDirty;
-	protected SdlArtwork blankArtwork, primaryGraphic, secondaryGraphic;
+	protected SdlArtwork primaryGraphic, secondaryGraphic;
 	protected TextAlignment textAlignment;
-	private Show currentScreenData;
 	protected String textField1, textField2, textField3, textField4, mediaTrackTextField;
 	protected MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
 
 	//Constructors
 
-	public TextAndGraphicManager(ISdl internalInterface, FileManager fileManager) {
+	TextAndGraphicManager(ISdl internalInterface, FileManager fileManager, Context context) {
 		// set class vars
 		super(internalInterface);
 		this.fileManager = fileManager;
+		this.context = context;
 		batchUpdates = false;
+		getBlankArtwork();
 		transitionToState(READY);
+	}
+
+	@Override
+	public void dispose(){
+
+		textField1 = null;
+		textField1Type = null;
+		textField2 = null;
+		textField2Type = null;
+		textField3 = null;
+		textField3Type = null;
+		textField4 = null;
+		textField4Type = null;
+		mediaTrackTextField = null;
+		textAlignment = null;
+		primaryGraphic = null;
+		secondaryGraphic = null;
+		blankArtwork = null;
+
+		// transition state
+		transitionToState(SHUTDOWN);
 	}
 
 	// Upload / Send
@@ -163,6 +198,67 @@ public class TextAndGraphicManager extends BaseSubManager {
 
 	// Helpers
 
+	private SdlArtwork getBlankArtwork(){
+
+		if (blankArtwork != null){
+			return blankArtwork;
+		}
+
+		blankArtwork = new SdlArtwork();
+		blankArtwork.setType(FileType.GRAPHIC_PNG);
+		blankArtwork.setName("blankArtwork");
+		blankArtwork.setFileData(contentsOfResource(R.drawable.transparent));
+
+		return blankArtwork;
+	}
+
+	/**
+	 * Helper method to take resource files and turn them into byte arrays
+	 * @param resource Resource file id
+	 * @return Resulting byte array
+	 */
+	private byte[] contentsOfResource(int resource) {
+		InputStream is = null;
+		try {
+			is = context.getResources().openRawResource(resource);
+			return contentsOfInputStream(is);
+		} catch (Resources.NotFoundException e) {
+			Log.w(TAG, "Can't read from resource", e);
+			return null;
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Helper method to take InputStream and turn it into byte array
+	 * @param is valid InputStream
+	 * @return Resulting byte array
+	 */
+	private byte[] contentsOfInputStream(InputStream is){
+		if(is == null){
+			return null;
+		}
+		try{
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			final int bufferSize = 4096;
+			final byte[] buffer = new byte[bufferSize];
+			int available;
+			while ((available = is.read(buffer)) >= 0) {
+				os.write(buffer, 0, available);
+			}
+			return os.toByteArray();
+		} catch (IOException e){
+			Log.w(TAG, "Can't read from InputStream", e);
+			return null;
+		}
+	}
 
 	// Equality
 

@@ -12,6 +12,8 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
+import android.content.Context;
+
 /**
  * <strong>ScreenManager</strong> <br>
  *
@@ -34,16 +36,9 @@ public class ScreenManager extends BaseSubManager {
  	private TextAndGraphicManager textAndGraphicManager;
 	private HMILevel hmiLevel;
 
-	// Screen stuff
-	private String textField1, textField2, textField3, textField4, mediaTrackTextField;
-	private SdlArtwork primaryGraphic, secondaryGraphic;
-	private TextAlignment textAlignment;
-	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
-//	private ArrayList<SoftButtonObject> softButtonObjects;
-
 	// Constructors
 
-	public ScreenManager(ISdl internalInterface, FileManager fileManager) {
+	public ScreenManager(ISdl internalInterface, FileManager fileManager, Context context) {
 
 		// set class vars
 		super(internalInterface);
@@ -61,7 +56,7 @@ public class ScreenManager extends BaseSubManager {
 
 		// init sub managers
 		//this.softButtonManager = new SoftButtonManager(internalInterface,fileManager);
-		this.textAndGraphicManager = new TextAndGraphicManager(internalInterface,fileManager);
+		this.textAndGraphicManager = new TextAndGraphicManager(internalInterface,fileManager, context);
 		transitionToState(READY);
 	}
 
@@ -187,15 +182,15 @@ public class ScreenManager extends BaseSubManager {
 	public void beginUpdates(){
 
 //		softButtonManager.batchUpdates = true;
-//		textAndGraphicManager.batchUpdates = true;
+		textAndGraphicManager.batchUpdates = true;
 	}
 
 	public void endUpdates(CompletionListener listener){
 
 //		softButtonManager.batchUpdates = false;
-//		textAndGraphicManager.batchUpdates = false;
+		textAndGraphicManager.batchUpdates = false;
 //		softButtonManager.update();
-//		textAndGraphicManager.update();
+		textAndGraphicManager.update();
 	}
 
 }

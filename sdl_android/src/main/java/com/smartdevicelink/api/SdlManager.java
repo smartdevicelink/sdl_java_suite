@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.smartdevicelink.api.screen.ScreenManager;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -70,11 +71,12 @@ public class SdlManager{
 
 	// Managers
     private FileManager fileManager;
+    private ScreenManager screenManager;
+
     /*
     private VideoStreamingManager videoStreamingManager;
     private AudioStreamManager audioStreamManager;
     private LockscreenManager lockscreenManager;
-    private ScreenManager screenManager;
     private PermissionManager permissionManager;
     */
 
@@ -115,7 +117,8 @@ public class SdlManager{
 				Log.d(TAG, "Sub manager failed to initialize");
 			}
 			if(
-					fileManager.getState() != BaseSubManager.SETTING_UP
+					fileManager.getState() != BaseSubManager.SETTING_UP &&
+							screenManager.getState() != BaseSubManager.SETTING_UP
 					/*
 					videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
 					audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
@@ -137,11 +140,11 @@ public class SdlManager{
 
 		this.fileManager = new FileManager(_internalInterface, context);
 		this.fileManager.start(subManagerListener);
+		this.screenManager = new ScreenManager(_internalInterface, this.fileManager, context);
+		this.screenManager.start(subManagerListener);
 		/*
 		this.lockscreenManager = new LockscreenManager(lockScreenConfig, context, _internalInterface);
 		this.lockscreenManager.start(subManagerListener);
-		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-		this.screenManager.start(subManagerListener);
 		this.permissionManager = new PermissionManager(_internalInterface);
 		this.permissionManager.start(subManagerListener);
 		this.videoStreamingManager = new VideoStreamingManager(context, _internalInterface);
