@@ -3,7 +3,7 @@ package com.smartdevicelink.api.audio;
 import java.nio.ByteBuffer;
 
 public interface AudioDecoderListener {
-    void onAudioDataAvailable(ByteBuffer buffer);
+    void onAudioDataAvailable(SampleBuffer sampleBuffer);
 
     void onDecoderFinish();
 

@@ -4,32 +4,35 @@ import android.net.rtp.AudioStream;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
-import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
-import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 public class AudioStreamManager implements ISdlServiceListener {
-    private ISdl internalInterface;
+    private static final String TAG = AudioStreamManager.class.getSimpleName();
+
+    private ISdl sdlInterface;
+    private IAudioStreamListener sdlAudioStream;
     private int sdlSampleRate;
     private SampleType sdlSampleType;
-    private boolean didRequestShutdown = false;
-    private Queue<AudioDecoder> queue;
 
-    public AudioStreamManager(@NonNull ISdl internalInterface, @NonNull SamplingRate sampleRate, @NonNull BitsPerSample sampleType) {
-        this.internalInterface = internalInterface;
-        this.queue = new ArrayBlockingQueue<AudioDecoder>(20);
+    private final Queue<BaseAudioDecoder> queue;
+    private boolean didRequestShutdown = false;
+
+    public AudioStreamManager(@NonNull ISdl sdlInterface, @NonNull SamplingRate sampleRate, @NonNull BitsPerSample sampleType) {
+        this.sdlInterface = sdlInterface;
+        this.queue = new LinkedList<>();
 
         switch (sampleRate) {
             case _8KHZ:
@@ -61,40 +64,82 @@ public class AudioStreamManager implements ISdlServiceListener {
     }
 
     public void startAudioService(boolean encrypted) {
-        if (internalInterface != null && internalInterface.isConnected()) {
-            internalInterface.addServiceListener(SessionType.PCM, this);
-            internalInterface.startAudioService(encrypted);
+        if (sdlInterface != null && sdlInterface.isConnected()) {
+            sdlInterface.addServiceListener(SessionType.PCM, this);
+            sdlInterface.startAudioService(encrypted);
         }
     }
 
     public void stopAudioService() {
-        if (internalInterface != null && internalInterface.isConnected()) {
+        if (sdlInterface != null && sdlInterface.isConnected()) {
             didRequestShutdown = true;
-            internalInterface.stopAudioService();
+            sdlInterface.stopAudioService();
         }
     }
 
-
     public void pushAudioFile(File audioFile) {
-        AudioDecoder decoder = new AudioDecoder(audioFile, sdlSampleRate, sdlSampleType);
+        BaseAudioDecoder decoder;
+        AudioDecoderListener listener = new AudioDecoderListener() {
+            @Override
+            public void onAudioDataAvailable(SampleBuffer buffer) {
+                sdlAudioStream.sendAudio(buffer.getByteBuffer(), buffer.getPresentationTimeUs());
+            }
 
+            @Override
+            public void onDecoderFinish() {
+                synchronized (queue) {
+                    // remove throws an exception if the queue is empty. The decoder of this listener
+                    // should still be in this queue so we should be fine by just removing it
+                    // if the queue is empty than we have a bug somewhere in the code
+                    // and we deserve the crash...
+                    queue.remove();
 
+                    // if the queue contains more items then start the first one (without removing it)
+                    if (queue.size() > 0) {
+                        queue.element().start();
+                    }
+                }
+            }
+
+            @Override
+            public void onDecoderError(Exception e) {
+
+            }
+        };
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            decoder = new AudioDecoder(audioFile, sdlSampleRate, sdlSampleType, listener);
+        } else {
+            // this BaseAudioDecoder subclass uses methods deprecated with api 21
+            decoder = new AudioDecoderCompat(audioFile, sdlSampleRate, sdlSampleType, listener);
+        }
+
+        synchronized (queue) {
+            queue.add(decoder);
+
+            if (queue.size() == 1) {
+                decoder.start();
+            }
+        }
     }
 
     @Override
     public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
-
+        this.sdlAudioStream = session.startAudioStream();
     }
 
     @Override
     public void onServiceEnded(SdlSession session, SessionType type) {
-        if (didRequestShutdown && internalInterface != null) {
-            internalInterface.removeServiceListener(SessionType.PCM, this);
+        if (didRequestShutdown && sdlInterface != null) {
+            session.stopAudioStream();
+            sdlAudioStream = null;
+            sdlInterface.removeServiceListener(SessionType.PCM, this);
         }
     }
 
     @Override
     public void onServiceError(SdlSession session, SessionType type, String reason) {
-
+        Log.e(TAG, "OnServiceError: " + reason);
     }
 }

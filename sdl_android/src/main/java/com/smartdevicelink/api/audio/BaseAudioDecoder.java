@@ -34,8 +34,9 @@ abstract class BaseAudioDecoder {
     protected File audioFile;
     protected AudioDecoderListener listener;
 
-    BaseAudioDecoder(File audioFile, int sampleRate, SampleType sampleType) {
+    BaseAudioDecoder(File audioFile, int sampleRate, SampleType sampleType, AudioDecoderListener listener) {
         this.audioFile = audioFile;
+        this.listener = listener;
         targetSampleRate = sampleRate;
         targetSampleType = sampleType;
     }
@@ -125,20 +126,21 @@ abstract class BaseAudioDecoder {
     }
 
     protected SampleBuffer onOutputBufferAvailable(@NonNull ByteBuffer outputBuffer) {
-        SampleBuffer outputSampleBuffer = SampleBuffer.wrap(outputBuffer, outputSampleType);
-        outputSampleBuffer.position(0);
-
         long outputPresentationTimeUs = lastOutputPresentationTimeUs;
         long outputDurationPerSampleUs = 1000000 / outputSampleRate;
 
         long targetPresentationTimeUs = lastTargetPresentationTimeUs;
         long targetDurationPerSampleUs = 1000000 / targetSampleRate;
 
+        // wrap the output buffer to make it provide audio samples
+        SampleBuffer outputSampleBuffer = SampleBuffer.wrap(outputBuffer, outputSampleType, outputPresentationTimeUs);
+        outputSampleBuffer.position(0);
+
         // the buffer size is related to the output and target sample rate
         // add 2 samples to round up and add an extra sample
         int bufferSize = outputSampleBuffer.limit() * targetSampleRate / outputSampleRate + 2;
 
-        SampleBuffer targetSampleBuffer = SampleBuffer.allocate(bufferSize, targetSampleType, ByteOrder.LITTLE_ENDIAN);
+        SampleBuffer targetSampleBuffer = SampleBuffer.allocate(bufferSize, targetSampleType, ByteOrder.LITTLE_ENDIAN, targetPresentationTimeUs);
         Double sample;
 
         do {
@@ -193,6 +195,8 @@ abstract class BaseAudioDecoder {
         }
     }
 
+    abstract void start();
+
     public void stop() {
         if (decoder != null) {
             decoder.stop();
@@ -202,11 +206,6 @@ abstract class BaseAudioDecoder {
 
         if (extractor != null) {
             extractor = null;
-        }
-
-        if (listener != null) {
-            listener.onDecoderFinish();
-            listener = null;
         }
     }
 }

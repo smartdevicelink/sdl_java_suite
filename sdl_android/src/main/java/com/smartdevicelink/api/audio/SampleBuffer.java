@@ -18,9 +18,10 @@ public class SampleBuffer {
     @SuppressWarnings({"unused", "FieldCanBeLocal"})
     private SampleType sampleType;
     private ByteBuffer byteBuffer;
+    private long presentationTimeUs;
 
-    public static SampleBuffer wrap(ByteBuffer buffer, SampleType sampleType) {
-        return new SampleBuffer(buffer, sampleType);
+    public static SampleBuffer wrap(ByteBuffer buffer, SampleType sampleType, long presentationTimeUs) {
+        return new SampleBuffer(buffer, sampleType, presentationTimeUs);
     }
 
     /**
@@ -30,19 +31,21 @@ public class SampleBuffer {
      * @param byteOrder the byte order of the samples if a sampe size is > 1 byte
      * @return
      */
-    public static SampleBuffer allocate(int capacity, SampleType sampleType, ByteOrder byteOrder) {
-        return new SampleBuffer(capacity, sampleType, byteOrder);
+    public static SampleBuffer allocate(int capacity, SampleType sampleType, ByteOrder byteOrder, long presentationTimeUs) {
+        return new SampleBuffer(capacity, sampleType, byteOrder, presentationTimeUs);
     }
 
-    private SampleBuffer(int capacity, SampleType sampleType, ByteOrder byteOrder) {
+    private SampleBuffer(int capacity, SampleType sampleType, ByteOrder byteOrder, long presentationTimeUs) {
         this.byteBuffer = ByteBuffer.allocate(sampleType.bytes * capacity);
         this.byteBuffer.order(byteOrder);
         this.sampleType = sampleType;
+        this.presentationTimeUs = presentationTimeUs;
     }
 
-    private SampleBuffer(ByteBuffer buffer, SampleType sampleType) {
+    private SampleBuffer(ByteBuffer buffer, SampleType sampleType, long presentationTimeUs) {
         this.byteBuffer = buffer;
         this.sampleType = sampleType;
+        this.presentationTimeUs = presentationTimeUs;
     }
 
     // returns the number of samples in the buffer
@@ -141,5 +144,9 @@ public class SampleBuffer {
         }
 
         return bytes;
+    }
+
+    public long getPresentationTimeUs() {
+        return presentationTimeUs;
     }
 }

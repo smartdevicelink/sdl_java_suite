@@ -13,14 +13,12 @@ import java.nio.ByteBuffer;
 class AudioDecoder extends BaseAudioDecoder {
     private static final String TAG = AudioDecoder.class.getSimpleName();
 
-    AudioDecoder(File audioFile, int sampleRate, SampleType sampleType) {
-        super(audioFile, sampleRate, sampleType);
+    AudioDecoder(File audioFile, int sampleRate, SampleType sampleType, AudioDecoderListener listener) {
+        super(audioFile, sampleRate, sampleType, listener);
     }
 
-    void start(AudioDecoderListener listener) {
+    void start() {
         try {
-            this.listener = listener;
-
             initMediaComponents();
 
             decoder.setCallback(new MediaCodec.Callback() {
@@ -40,7 +38,7 @@ class AudioDecoder extends BaseAudioDecoder {
 
                     SampleBuffer targetSampleBuffer = AudioDecoder.super.onOutputBufferAvailable(outputBuffer);
                     mediaCodec.releaseOutputBuffer(i, false);
-                    AudioDecoder.this.listener.onAudioDataAvailable(targetSampleBuffer.getByteBuffer());
+                    AudioDecoder.this.listener.onAudioDataAvailable(targetSampleBuffer);
                     if (bufferInfo.flags == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
                         stop();
                     }
@@ -60,7 +58,7 @@ class AudioDecoder extends BaseAudioDecoder {
             decoder.start();
         } catch (Exception e) {
             e.printStackTrace();
-            this.listener.onDecoderError(e);
+            listener.onDecoderError(e);
             stop();
         }
     }
