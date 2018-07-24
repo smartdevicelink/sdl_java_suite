@@ -100,6 +100,8 @@ public class VideoStreamingManager extends BaseSubManager{
 	 * @param encrypted a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
 	 */
 	public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted){
+		this.context = new WeakReference<>(context);
+		this.remoteDisplayClass = remoteDisplayClass;
 		if(internalInterface.getWiProVersion() >= 5 && !internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			Log.e(TAG, "Video streaming not supported on this module");
 			return;
@@ -336,7 +338,6 @@ public class VideoStreamingManager extends BaseSubManager{
 		}
 
 		return MotionEvent.obtain(startTime, SystemClock.uptimeMillis(), eventAction, eventListSize, pointerProperties, pointerCoords, 0, 0,1,1,0,0, InputDevice.SOURCE_TOUCHSCREEN,0);
-
 	}
 
 	/**
