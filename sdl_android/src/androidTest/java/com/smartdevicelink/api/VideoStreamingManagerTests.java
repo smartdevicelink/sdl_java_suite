@@ -8,12 +8,16 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.OnTouchEvent;
+import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -24,10 +28,13 @@ import com.smartdevicelink.test.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -40,6 +47,7 @@ import static org.mockito.Mockito.when;
 public class VideoStreamingManagerTests extends AndroidTestCase {
 	public static final String TAG = "VideoStreamingManagerTests";
 	private Context mTestContext;
+	private static boolean touchEventOccured = false;
 
 	// SETUP / HELPERS
 
@@ -53,6 +61,30 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 	public void tearDown() throws Exception {
 		super.tearDown();
 	}
+
+	// TEST CLASSES
+
+	public static class TestPresentation extends SdlRemoteDisplay {
+		static View simulatedView = mock(View.class);
+
+		public TestPresentation(Context context, Display display) {
+			super(context, display);
+		}
+
+		@Override
+		protected void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			setContentView(simulatedView);
+		}
+
+		@Override
+		public boolean onTouchEvent(@NonNull MotionEvent event) {
+			touchEventOccured = true;
+			return super.onTouchEvent(event);
+		}
+	}
+
+	// TESTS
 
 	public void testInitialization(){
 		ISdl internalInterface = mock(ISdl.class);
@@ -78,25 +110,6 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 				assertTrue(success);
 			}
 		});
-	}
-
-	public static class TestPresentation extends SdlRemoteDisplay {
-		static View simulatedView = mock(View.class);
-
-		public TestPresentation(Context context, Display display) {
-			super(context, display);
-		}
-
-		@Override
-		protected void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			setContentView(simulatedView);
-		}
-
-		@Override
-		public boolean onTouchEvent(@NonNull MotionEvent event) {
-			return super.onTouchEvent(event);
-		}
 	}
 
 	public void testHMILevelNotFull(){
@@ -188,6 +201,15 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 
 		doAnswer(onRemoveServiceListener).when(internalInterface).removeServiceListener(eq(SessionType.NAV), any(ISdlServiceListener.class));
 
+		when(internalInterface.startVideoStream(anyBoolean(), any(VideoStreamingParameters.class))).thenReturn(new IVideoStreamListener() {
+			@Override
+			public void sendFrame(byte[] data, int offset, int length, long presentationTimeUs) throws ArrayIndexOutOfBoundsException {}
+			@Override
+			public void sendFrame(ByteBuffer data, long presentationTimeUs) {}
+		});
+
+		when(internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(Test.GENERAL_VIDEOSTREAMINGCAPABILITY);
+
 		final VideoStreamingManager videoStreamingManager = new VideoStreamingManager(internalInterface);
 		videoStreamingManager.start(new CompletionListener() {
 			@Override
@@ -200,11 +222,13 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 				hmiListener[0].onNotified(fullNotification);
 
 				videoStreamingManager.startRemoteDisplayStream(mTestContext, TestPresentation.class, null, false);
+
+				//assertTrue(touchEventOccured);
+
 				videoStreamingManager.dispose();
 				assertTrue(listenerSet.isEmpty());
 			}
 		});
-
 
 	}
 }
