@@ -16,17 +16,18 @@ import com.smartdevicelink.haptic.HapticInterfaceManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -42,15 +43,16 @@ public class VideoStreamingManager extends BaseSubManager{
 	private static String TAG = "VideoStreamingManager";
 
 	private WeakReference<Context> context;
-	volatile VirtualDisplayEncoder encoder;
+	private volatile VirtualDisplayEncoder encoder;
 	private Class<? extends SdlRemoteDisplay> remoteDisplayClass = null;
-	SdlRemoteDisplay remoteDisplay;
-	IVideoStreamListener streamListener;
-	float[] touchScalar = {1.0f,1.0f}; //x, y
+	private SdlRemoteDisplay remoteDisplay;
+	private float[] touchScalar = {1.0f,1.0f}; //x, y
 	private HapticInterfaceManager hapticManager;
-	SdlMotionEvent sdlMotionEvent = null;
+	private SdlMotionEvent sdlMotionEvent = null;
+	private HMILevel hmiLevel;
 
-	// INTERNAL INTERFACE
+	// INTERNAL INTERFACES
+
 	private final ISdlServiceListener serviceListener = new ISdlServiceListener() {
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {}
@@ -68,24 +70,40 @@ public class VideoStreamingManager extends BaseSubManager{
 		public void onServiceError(SdlSession session, SessionType type, String reason) {}
 	};
 
+	private final OnRPCNotificationListener hmiListener = new OnRPCNotificationListener() {
+		@Override
+		public void onNotified(RPCNotification notification) {
+			hmiLevel = ((OnHMIStatus)notification).getHmiLevel();
+		}
+	};
+
+	private final OnRPCNotificationListener touchListener = new OnRPCNotificationListener() {
+		@Override
+		public void onNotified(RPCNotification notification) {
+			if(notification !=null && remoteDisplay != null){
+				MotionEvent event = convertTouchEvent((OnTouchEvent)notification);
+				if(event!=null){
+					remoteDisplay.handleMotionEvent(event);
+				}
+			}
+		}
+	};
+
 	// MANAGER APIs
 
 	public VideoStreamingManager(ISdl internalInterface){
 		super(internalInterface);
+
 		encoder = new VirtualDisplayEncoder();
-		internalInterface.addServiceListener(SessionType.NAV,serviceListener);
-		//Take care of the touch events
-		internalInterface.addOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, new OnRPCNotificationListener() {
-			@Override
-			public void onNotified(RPCNotification notification) {
-				if(notification !=null && remoteDisplay != null){
-					MotionEvent event = convertTouchEvent((OnTouchEvent)notification);
-					if(event!=null){
-						remoteDisplay.handleMotionEvent(event);
-					}
-				}
-			}
-		});
+		hmiLevel = HMILevel.HMI_NONE;
+
+		// Listen for video service events
+		internalInterface.addServiceListener(SessionType.NAV, serviceListener);
+		// Take care of the touch events
+		internalInterface.addOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);
+		// Listen for HMILevel changes
+		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+
 		transitionToState(BaseSubManager.READY);
 	}
 
@@ -149,6 +167,10 @@ public class VideoStreamingManager extends BaseSubManager{
 	 *         started, null otherwise
 	 */
 	public IVideoStreamListener startVideoStream(VideoStreamingParameters parameters, boolean encrypted){
+		if(hmiLevel != HMILevel.HMI_FULL){
+			Log.e(TAG, "Cannot start video service if HMILevel is not FULL.");
+			return null;
+		}
 		return internalInterface.startVideoStream(encrypted, parameters);
 	}
 
@@ -159,7 +181,7 @@ public class VideoStreamingManager extends BaseSubManager{
 	 * @param encrypted Specify true if packets on this service have to be encrypted
 	 */
 	private void startVideoStreaming(VideoStreamingParameters parameters, boolean encrypted){
-		streamListener = startVideoStream(parameters, encrypted);
+		IVideoStreamListener streamListener = startVideoStream(parameters, encrypted);
 		if(streamListener == null){
 			Log.e(TAG, "Error starting video service");
 			return;
@@ -201,7 +223,11 @@ public class VideoStreamingManager extends BaseSubManager{
 	 */
 	public void dispose(){
 		stopStreaming();
+
+		// Remove listeners
 		internalInterface.removeServiceListener(SessionType.NAV, serviceListener);
+		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);
+		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 	}
 
 	// HELPER METHODS

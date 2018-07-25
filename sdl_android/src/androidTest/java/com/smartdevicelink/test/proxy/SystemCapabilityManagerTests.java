@@ -182,6 +182,11 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		}
 
 		@Override
+		public byte getWiProVersion() {
+			return 0;
+		}
+
+		@Override
 		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
 			return false;
 		}
