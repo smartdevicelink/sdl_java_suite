@@ -37,13 +37,12 @@ import static org.mockito.Mockito.mock;
  */
 public class SdlManagerTests extends AndroidTestCase {
 
-	public static final String TAG = "SdlManagerTests";
 	public static BaseTransportConfig transport = null;
 	private Context mTestContext;
 	private Vector<AppHMIType> appType;
 	private TemplateColorScheme templateColorScheme;
 	private int listenerCalledCounter;
-	private SdlManager manager;
+	private SdlManager sdlManager;
 	private SdlProxyBase sdlProxyBase;
 
 	// transport related
@@ -69,7 +68,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		templateColorScheme.setPrimaryColor(Test.GENERAL_RGBCOLOR);
 		templateColorScheme.setSecondaryColor(Test.GENERAL_RGBCOLOR);
 
-		manager = createSampleManager("heyApp", "123456");
+		sdlManager = createSampleManager("heyApp", "123456");
 	}
 
 	@Override
@@ -131,22 +130,22 @@ public class SdlManagerTests extends AndroidTestCase {
 	}
 
 	public void testManagerSetters() {
-		assertEquals("123456", manager.getAppId());
-		assertEquals("heyApp", manager.getAppName());
-		assertEquals("heyApp", manager.getShortAppName());
-		assertEquals(appType, manager.getAppTypes());
-		assertEquals(Language.EN_US, manager.getHmiLanguage());
-		assertEquals(transport, manager.getTransport());
-		assertEquals(templateColorScheme, manager.getDayColorScheme());
-		assertEquals(templateColorScheme, manager.getNightColorScheme());
-		assertEquals(Test.GENERAL_VECTOR_STRING, manager.getVrSynonyms());
-		assertEquals(Test.GENERAL_VECTOR_TTS_CHUNKS, manager.getTtsChunks());
+		assertEquals("123456", sdlManager.getAppId());
+		assertEquals("heyApp", sdlManager.getAppName());
+		assertEquals("heyApp", sdlManager.getShortAppName());
+		assertEquals(appType, sdlManager.getAppTypes());
+		assertEquals(Language.EN_US, sdlManager.getHmiLanguage());
+		assertEquals(transport, sdlManager.getTransport());
+		assertEquals(templateColorScheme, sdlManager.getDayColorScheme());
+		assertEquals(templateColorScheme, sdlManager.getNightColorScheme());
+		assertEquals(Test.GENERAL_VECTOR_STRING, sdlManager.getVrSynonyms());
+		assertEquals(Test.GENERAL_VECTOR_TTS_CHUNKS, sdlManager.getTtsChunks());
 	}
 
 	public void testStartingManager(){
 		listenerCalledCounter = 0;
 
-		manager.start(new CompletionListener() {
+		sdlManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
 				assertTrue(success);
@@ -156,13 +155,13 @@ public class SdlManagerTests extends AndroidTestCase {
 
 		// Create and force all sub managers to be ready manually. Because SdlManager will not start until all sub managers are ready.
 		// Note : SdlManager.initialize() will not be called automatically by proxy as in real life because we have mock proxy not a real one
-		manager.initialize();
+		sdlManager.initialize();
 		// manager.getFileManager().transitionToState(BaseSubManager.READY);
-		// manager.videoStreamingManager().transitionToState(BaseSubManager.READY);
-		// manager.audioStreamManager().transitionToState(BaseSubManager.READY);
-		// manager.lockScreenManager().transitionToState(BaseSubManager.READY);
-		// manager.screenManager().transitionToState(BaseSubManager.READY);
-		// manager.permissionManager().transitionToState(BaseSubManager.READY);
+		// manager.getVideoStreamingManager().transitionToState(BaseSubManager.READY);
+		// manager.getAudioStreamManager().transitionToState(BaseSubManager.READY);
+		// manager.getLockScreenManager().transitionToState(BaseSubManager.READY);
+		// manager.getScreenManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
 
 		// Make sure the listener is called exactly once
 		assertEquals("Listener was not called or called more/less frequently than expected", listenerCalledCounter, 1);
@@ -201,7 +200,7 @@ public class SdlManagerTests extends AndroidTestCase {
 			}
 		});
 		try {
-			manager.sendRPC(request);
+			sdlManager.sendRPC(request);
 		} catch (SdlException e) {
 			e.printStackTrace();
 		}
@@ -262,9 +261,9 @@ public class SdlManagerTests extends AndroidTestCase {
 		};
 		try {
 			if (sequentialSend) {
-				manager.sendSequentialRPCs(rpcsList, onMultipleRequestListener);
+				sdlManager.sendSequentialRPCs(rpcsList, onMultipleRequestListener);
 			} else {
-				manager.sendRPCs(rpcsList, onMultipleRequestListener);
+				sdlManager.sendRPCs(rpcsList, onMultipleRequestListener);
 			}
 		} catch (SdlException e) {
 			e.printStackTrace();
