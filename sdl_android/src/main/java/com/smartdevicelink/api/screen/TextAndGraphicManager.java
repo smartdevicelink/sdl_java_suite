@@ -10,14 +10,20 @@ import com.smartdevicelink.api.FileManager;
 import com.smartdevicelink.api.SdlArtwork;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 
+import org.json.JSONException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <strong>TextAndGraphicManager</strong> <br>
@@ -30,7 +36,7 @@ import java.io.InputStream;
  *
  * 1.  <br>
  */
-public class TextAndGraphicManager extends BaseSubManager {
+class TextAndGraphicManager extends BaseSubManager {
 
 	private static final String TAG = "TextAndGraphicManager";
 	private FileManager fileManager;
@@ -123,31 +129,44 @@ public class TextAndGraphicManager extends BaseSubManager {
 
 	private Show assembleShowText(Show show){
 
-		// this will call further sub functions to assemble the show text
+		if (mediaTrackTextField != null){
+			show.setMediaTrack(mediaTrackTextField);
+		} else {
+			show.setMediaTrack("");
+		}
 
+		List<String> nonNullFields = findNonNullTextFields();
 
-		int numberOfLines =  4; //get capabilities and see max number of lines
+		if (nonNullFields.size() == 0){
+			return show;
+		}
+
+		int numberOfLines = getNumberOfLines();
 
 		if (numberOfLines == 1){
-
-			assembleOneLineShowText(show);
-
+			show = assembleOneLineShowText(show, nonNullFields);
 		}else if (numberOfLines == 2){
-
-			assembleTwoLineShowText(show);
-
+			show = assembleTwoLineShowText(show);
 		}else if (numberOfLines == 3){
-
-			assembleThreeLineShowText(show);
-
+			show = assembleThreeLineShowText(show);
 		}else if (numberOfLines == 4){
-
-			assembleFourLineShowText(show);
+			show = assembleFourLineShowText(show);
 		}
 		return show;
 	}
 
-	private Show assembleOneLineShowText(Show show){
+	private Show assembleOneLineShowText(Show show, List<String> showFields){
+
+		StringBuilder showString1 = new StringBuilder();
+
+		for (int i = 1; i < showFields.size(); i++) {
+			showString1.append(" - ").append(showFields.get(i));
+		}
+
+		show.setMainField1(showString1.toString());
+
+		MetadataTags tags = new MetadataTags();
+		tags.setMainField1(findNonNullMetadataFields());
 
 		return show;
 	}
@@ -188,6 +207,18 @@ public class TextAndGraphicManager extends BaseSubManager {
 		return newShow;
 	}
 
+	private Show setBlankTextFields(){
+
+		Show newShow = new Show();
+		newShow.setMainField1("");
+		newShow.setMainField2("");
+		newShow.setMainField3("");
+		newShow.setMainField4("");
+		newShow.setMediaTrack("");
+
+		return newShow;
+	}
+
 	private void updateCurrentScreenDataFromShow(Show show){
 
 		// set all of the show fields, make sure items are not null before setting in the show
@@ -195,6 +226,51 @@ public class TextAndGraphicManager extends BaseSubManager {
 	}
 
 	// Helpers
+
+	private List<String> findNonNullTextFields(){
+		List<String> array = new ArrayList<>();
+
+		if (textField1.length() > 0) {
+			array.add(textField1);
+		}
+
+		if (textField2.length() > 0) {
+			array.add(textField2);
+		}
+
+		if (textField3.length() > 0) {
+			array.add(textField3);
+		}
+
+		if (textField4.length() > 0) {
+			array.add(textField4);
+		}
+
+		return array;
+	}
+
+
+	private List<MetadataType> findNonNullMetadataFields(){
+		List<MetadataType> array = new ArrayList<>();
+
+		if (textField1Type != null) {
+			array.add(textField1Type);
+		}
+
+		if (textField2Type != null) {
+			array.add(textField2Type);
+		}
+
+		if (textField3Type != null) {
+			array.add(textField3Type);
+		}
+
+		if (textField4Type != null) {
+			array.add(textField4Type);
+		}
+
+		return array;
+	}
 
 	private void getBlankArtwork(){
 
@@ -210,7 +286,20 @@ public class TextAndGraphicManager extends BaseSubManager {
 
 		if (displayCapabilities != null) {
 			displayCapabilities = (DisplayCapabilities) internalInterface.getCapability(SystemCapabilityType.DISPLAY);
+			try {
+				Log.i(TAG, "DISPLAY CAPABILITIES: "+ displayCapabilities.serializeJSON().toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
+	}
+
+	private int getNumberOfLines() {
+		if (displayCapabilities == null){
+			return 4;
+		}
+		List<TextField> textFields = displayCapabilities.getTextFields();
+		return textFields.size();
 	}
 
 	/**
