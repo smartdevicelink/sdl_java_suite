@@ -9,9 +9,11 @@ import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.api.FileManager;
 import com.smartdevicelink.api.SdlArtwork;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,6 +37,7 @@ public class TextAndGraphicManager extends BaseSubManager {
 	private Show currentScreenData;
 	private Context context;
 	private SdlArtwork blankArtwork;
+	private DisplayCapabilities displayCapabilities;
 
 	protected boolean batchUpdates;
 	protected SdlArtwork primaryGraphic, secondaryGraphic;
@@ -51,6 +54,7 @@ public class TextAndGraphicManager extends BaseSubManager {
 		this.context = context;
 		batchUpdates = false;
 		getBlankArtwork();
+		getDisplayCapabilities();
 		transitionToState(READY);
 	}
 
@@ -70,6 +74,7 @@ public class TextAndGraphicManager extends BaseSubManager {
 		primaryGraphic = null;
 		secondaryGraphic = null;
 		blankArtwork = null;
+		displayCapabilities = null;
 
 		// transition state
 		transitionToState(SHUTDOWN);
@@ -77,7 +82,7 @@ public class TextAndGraphicManager extends BaseSubManager {
 
 	// Upload / Send
 
-	public void update() {
+	protected void update() {
 
 		// check if is batch update
 
@@ -120,6 +125,7 @@ public class TextAndGraphicManager extends BaseSubManager {
 
 		// this will call further sub functions to assemble the show text
 
+
 		int numberOfLines =  4; //get capabilities and see max number of lines
 
 		if (numberOfLines == 1){
@@ -143,28 +149,20 @@ public class TextAndGraphicManager extends BaseSubManager {
 
 	private Show assembleOneLineShowText(Show show){
 
-
-
 		return show;
 	}
 
 	private Show assembleTwoLineShowText(Show show){
-
-
 
 		return show;
 	}
 
 	private Show assembleThreeLineShowText(Show show){
 
-
-
 		return show;
 	}
 
 	private Show assembleFourLineShowText(Show show){
-
-
 
 		return show;
 	}
@@ -198,18 +196,21 @@ public class TextAndGraphicManager extends BaseSubManager {
 
 	// Helpers
 
-	private SdlArtwork getBlankArtwork(){
+	private void getBlankArtwork(){
 
 		if (blankArtwork != null){
-			return blankArtwork;
+			blankArtwork = new SdlArtwork();
+			blankArtwork.setType(FileType.GRAPHIC_PNG);
+			blankArtwork.setName("blankArtwork");
+			blankArtwork.setFileData(contentsOfResource(R.drawable.transparent));
 		}
+	}
 
-		blankArtwork = new SdlArtwork();
-		blankArtwork.setType(FileType.GRAPHIC_PNG);
-		blankArtwork.setName("blankArtwork");
-		blankArtwork.setFileData(contentsOfResource(R.drawable.transparent));
+	private void getDisplayCapabilities() {
 
-		return blankArtwork;
+		if (displayCapabilities != null) {
+			displayCapabilities = (DisplayCapabilities) internalInterface.getCapability(SystemCapabilityType.DISPLAY);
+		}
 	}
 
 	/**
