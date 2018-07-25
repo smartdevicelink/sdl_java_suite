@@ -117,13 +117,13 @@ public class SdlManager{
 				Log.d(TAG, "Sub manager failed to initialize");
 			}
 			if(
-					permissionManager.getState() != BaseSubManager.SETTING_UP
+					permissionManager != null && permissionManager.getState() != BaseSubManager.SETTING_UP
 					/*
-					fileManager.getState() != BaseSubManager.SETTING_UP &&
-					videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
-					audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
-					lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
-					screenManager.getState() != BaseSubManager.SETTING_UP
+					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
+					videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
+					audioStreamManager != null && audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
+					lockscreenManager != null &&  lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
+					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
 					*/  ){
 				state = BaseSubManager.READY;
 				if(initListener != null){
@@ -134,7 +134,7 @@ public class SdlManager{
 		}
 	};
 
-	private void initialize(){
+	protected void initialize(){
 		// instantiate managers
 
 		this.permissionManager = new PermissionManager(_internalInterface);
@@ -325,30 +325,83 @@ public class SdlManager{
 		}
 	}
 
+	private void checkSdlManagerState(){
+		if (state != BaseSubManager.READY){
+			throw new IllegalStateException("SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
+		}
+	}
 	// MANAGER GETTERS
+
+	/**
+	 * Gets the PermissionManager. <br>
+	 * <strong>Note: PermissionManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * @return a PermissionManager object
+	 */
 	public PermissionManager getPermissionManager() {
 		return permissionManager;
 	}
-	/*
+
+	/**
+	 * Gets the FileManager. <br>
+	 * <strong>Note: FileManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * @return a FileManager object
+	 */
+    /*
 	public FileManager getFileManager() {
+		checkSdlManagerState();
 		return fileManager;
 	}
+	*/
 
+    /**
+     * Gets the VideoStreamingManager. <br>
+     * <strong>Note: VideoStreamingManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     * @return a VideoStreamingManager object
+     */
+    /*
 	public VideoStreamingManager getVideoStreamingManager() {
+		checkSdlManagerState();
 		return videoStreamingManager;
 	}
+	*/
 
+    /**
+     * Gets the AudioStreamManager. <br>
+     * <strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     * @return a AudioStreamManager object
+     */
+    /*
 	public AudioStreamManager getAudioStreamManager() {
+		checkSdlManagerState();
 		return audioStreamManager;
 	}
+	*/
 
+    /**
+     * Gets the ScreenManager. <br>
+     * <strong>Note: ScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     * @return a ScreenManager object
+     */
+    /*
 	public ScreenManager getScreenManager() {
+		checkSdlManagerState();
 		return screenManager;
 	}
+	*/
 
+    /**
+     * Gets the LockScreenManager. <br>
+     * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     * @return a LockScreenManager object
+     */
+    /*
 	public LockscreenManager getLockscreenManager() {
+		checkSdlManagerState();
 		return lockscreenManager;
-	}*/
+	}
+	*/
+
+
 
 	// PROTECTED GETTERS
 
@@ -451,13 +504,20 @@ public class SdlManager{
 	@SuppressWarnings("unchecked")
 	public void start(@NonNull CompletionListener listener){
 		initListener = listener;
-		try {
-			proxy = new SdlProxyBase(proxyBridge, appName, shortAppName, isMediaApp, hmiLanguage,
-					hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
-					nightColorScheme) {};
-		} catch (SdlException e) {
-			listener.onComplete(false);
+		if (proxy == null) {
+			try {
+				proxy = new SdlProxyBase(proxyBridge, appName, shortAppName, isMediaApp, hmiLanguage,
+						hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
+						nightColorScheme) {
+				};
+			} catch (SdlException e) {
+				listener.onComplete(false);
+			}
 		}
+	}
+
+	protected void setProxy(SdlProxyBase proxy){
+		this.proxy = proxy;
 	}
 
 	// INTERNAL INTERFACE
