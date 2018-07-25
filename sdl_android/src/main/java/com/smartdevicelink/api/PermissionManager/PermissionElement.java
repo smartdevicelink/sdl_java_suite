@@ -11,8 +11,8 @@ import java.util.List;
  * It also holds any permission parameters for that RPC that the developer wants to track as well.
  */
 public class PermissionElement {
-    private FunctionID rpcName;
-    private List<String> parameters;
+    private final FunctionID rpcName;
+    private final List<String> parameters;
 
     /**
      * Create a new instance of PermissionElement
@@ -33,26 +33,10 @@ public class PermissionElement {
     }
 
     /**
-     * Set the RPC name
-     * @param rpcName
-     */
-    public void setRPCName(@NonNull FunctionID rpcName) {
-        this.rpcName = rpcName;
-    }
-
-    /**
      * Get the permission parameters for the RPC
      * @return List<String> represents the permission parameters for the RPC
      */
     public List<String> getParameters() {
         return parameters;
-    }
-
-    /**
-     * Set the permission parameters for the RPC
-     * @param parameters
-     */
-    public void setParameters(List<String> parameters) {
-        this.parameters = parameters;
     }
 }

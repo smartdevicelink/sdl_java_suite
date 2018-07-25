@@ -9,10 +9,10 @@ import java.util.UUID;
  * PermissionFilter holds all the required information for a specific OnPermissionChangeListener
  */
 class PermissionFilter {
-    private UUID identifier;
-    private List<PermissionElement> permissionElements;
-    private int groupType;
-    private OnPermissionChangeListener listener;
+    private final UUID identifier;
+    private final List<PermissionElement> permissionElements;
+    private final int groupType;
+    private final OnPermissionChangeListener listener;
 
     /**
      * Creates a new instance of PermissionFilter
@@ -23,9 +23,10 @@ class PermissionFilter {
      * @see com.smartdevicelink.api.PermissionManager.PermissionManager.PermissionGroupType
      */
     PermissionFilter(UUID identifier, @NonNull List<PermissionElement> permissionElements, @NonNull @PermissionManager.PermissionGroupType int groupType, @NonNull OnPermissionChangeListener listener) {
-        this.identifier = identifier;
-        if (this.identifier == null) {
+        if (identifier == null) {
             this.identifier = UUID.randomUUID();
+        } else {
+            this.identifier = identifier;
         }
         this.permissionElements = permissionElements;
         this.groupType = groupType;
