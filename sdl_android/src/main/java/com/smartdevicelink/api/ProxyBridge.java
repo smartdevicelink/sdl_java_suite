@@ -89,16 +89,21 @@ public class ProxyBridge implements IProxyListener{
 
 	@Override
 	public void onRegisterAppInterfaceResponse(RegisterAppInterfaceResponse response) {
+		onRPCReceived(response);
 		if(response.getSuccess()){
 			lifecycleListener.onProxyConnected();
 		}
 	}
 
 	@Override
-	public void onOnAppInterfaceUnregistered(OnAppInterfaceUnregistered notification) {}
+	public void onOnAppInterfaceUnregistered(OnAppInterfaceUnregistered notification) {
+		onRPCReceived(notification);
+	}
 
 	@Override
-	public void onUnregisterAppInterfaceResponse(UnregisterAppInterfaceResponse response) {}
+	public void onUnregisterAppInterfaceResponse(UnregisterAppInterfaceResponse response) {
+		onRPCReceived(response);
+	}
 
 	public interface OnRPCListener {
 		void onRpcReceived(int functionID, RPCMessage message);

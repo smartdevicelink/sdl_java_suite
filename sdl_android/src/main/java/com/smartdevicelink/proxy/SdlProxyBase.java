@@ -51,6 +51,7 @@ import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.api.ProxyBridge;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
@@ -332,6 +333,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
 			return SdlProxyBase.this.removeOnRPCNotificationListener(notificationId,listener);
+		}
+
+		@Override
+		public void addOnRPCResponseListener(FunctionID responseId, ProxyBridge.OnRPCListener listener) {
+			DebugTool.logError("Proxy.addOnRPCResponseListener() is not implemented yet");
+
+		}
+
+		@Override
+		public boolean removeOnRPCResponseListener(FunctionID responseId, ProxyBridge.OnRPCListener listener) {
+			DebugTool.logError("Proxy.removeOnRPCResponseListener() is not implemented yet");
+			return false;
 		}
 
 		@Override
