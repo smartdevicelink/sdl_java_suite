@@ -3,6 +3,7 @@ package com.smartdevicelink.api;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -45,9 +46,9 @@ import java.util.Map;
  */
 public class FileManager extends BaseSubManager {
 
-	private static String TAG = "FileManager";
+	private final static String TAG = "FileManager";
 	private List<String> remoteFiles, uploadedEphemeralFileNames;
-	private WeakReference<Context> context;
+	private final WeakReference<Context> context;
 
 	FileManager(ISdl internalInterface, Context context) {
 
@@ -88,10 +89,13 @@ public class FileManager extends BaseSubManager {
 					}
 					// on callback set manager to ready state
 					transitionToState(BaseSubManager.READY);
-				}else{
-					// file list could not be received
-					transitionToState(BaseSubManager.ERROR);
 				}
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				// file list could not be received
+				transitionToState(BaseSubManager.ERROR);
 			}
 		});
 		internalInterface.sendRPCRequest(listFiles);
@@ -104,10 +108,7 @@ public class FileManager extends BaseSubManager {
 	 * @param fileName name of file to be deleted
 	 * @param listener callback that is called on response from core
 	 */
-	public void deleteRemoteFileWithName(final String fileName, final CompletionListener listener){
-		if(fileName == null || listener == null){
-			return;
-		}
+	public void deleteRemoteFileWithName(@NonNull final String fileName, final CompletionListener listener){
 		DeleteFile deleteFile = new DeleteFile();
 		deleteFile.setSdlFileName(fileName);
 		deleteFile.setOnRPCResponseListener(new OnRPCResponseListener() {
@@ -117,7 +118,9 @@ public class FileManager extends BaseSubManager {
 					remoteFiles.remove(fileName);
 					uploadedEphemeralFileNames.remove(fileName);
 				}
-				listener.onComplete(response.getSuccess());
+				if(listener != null){
+					listener.onComplete(response.getSuccess());
+				}
 			}
 		});
 		internalInterface.sendRPCRequest(deleteFile);
@@ -128,8 +131,8 @@ public class FileManager extends BaseSubManager {
 	 * @param fileNames list of file names to be deleted
 	 * @param listener callback that is called once core responds to all deletion requests
 	 */
-	public void deleteRemoteFilesWithNames(List<String> fileNames, final MultipleFileCompletionListener listener){
-		if(fileNames == null || fileNames.isEmpty() || listener == null){
+	public void deleteRemoteFilesWithNames(@NonNull List<String> fileNames, final MultipleFileCompletionListener listener){
+		if(fileNames.isEmpty()){
 			return;
 		}
 		final List<DeleteFile> deleteFileRequests = new ArrayList<>();
@@ -148,10 +151,7 @@ public class FileManager extends BaseSubManager {
 	 * @param file SdlFile with fileName and one of A) fileData, B) Uri, or C) resourceID set
 	 * @return a valid PutFile request if SdlFile contained a fileName and sufficient data
 	 */
-	private PutFile createPutFile(final SdlFile file){
-		if(file == null){
-			return null;
-		}
+	private PutFile createPutFile(@NonNull final SdlFile file){
 		PutFile putFile = new PutFile();
 		if(file.getName() == null){
 			throw new IllegalArgumentException("You must specify an file name in the SdlFile");
@@ -194,13 +194,13 @@ public class FileManager extends BaseSubManager {
 	/**
 	 * Sends list of provided requests (strictly PutFile or DeleteFile) asynchronously through internalInterface,
 	 * calls listener on conclusion of sending requests.
-	 * @param requests List of PutFile or DeleteFile requests
+	 * @param requests Non-empty list of PutFile or DeleteFile requests
 	 * @param listener MultipleFileCompletionListener that is called upon conclusion of sending requests
 	 */
 	private void sendMultipleFileOperations(final List<? extends RPCRequest> requests, final MultipleFileCompletionListener listener){
 		final Map<String, String> errors = new HashMap<>();
 		final SparseArray<String> fileNameMap = new SparseArray<>();
-		final Boolean deletionOperation;
+		final boolean deletionOperation;
 		if(requests.get(0) instanceof PutFile){
 			deletionOperation = false;
 		}else if(requests.get(0) instanceof DeleteFile){
@@ -226,10 +226,12 @@ public class FileManager extends BaseSubManager {
 
 			@Override
 			public void onFinished() {
-				if(errors.isEmpty()){
-					listener.onComplete(null);
-				}else{
-					listener.onComplete(errors);
+				if(listener != null) {
+					if (errors.isEmpty()) {
+						listener.onComplete(null);
+					} else {
+						listener.onComplete(errors);
+					}
 				}
 			}
 
@@ -262,11 +264,7 @@ public class FileManager extends BaseSubManager {
 	 * @param file SdlFile with file name and one of A) fileData, B) Uri, or C) resourceID set
 	 * @param listener called when core responds to the attempt to upload the file
 	 */
-	public void uploadFile(final SdlFile file, final CompletionListener listener){
-		if(file == null || listener == null){
-			return;
-		}
-
+	public void uploadFile(@NonNull final SdlFile file, final CompletionListener listener){
 		PutFile putFile = createPutFile(file);
 
 		putFile.setOnRPCResponseListener(new OnRPCResponseListener() {
@@ -276,13 +274,17 @@ public class FileManager extends BaseSubManager {
 					remoteFiles.add(file.getName());
 					uploadedEphemeralFileNames.add(file.getName());
 				}
-				listener.onComplete(response.getSuccess());
+				if(listener != null){
+					listener.onComplete(response.getSuccess());
+				}
 			}
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
 				super.onError(correlationId, resultCode, info);
-				listener.onComplete(false);
+				if(listener != null){
+					listener.onComplete(false);
+				}
 			}
 		});
 
@@ -294,8 +296,8 @@ public class FileManager extends BaseSubManager {
 	 * @param files list of SdlFiles with file name and one of A) fileData, B) Uri, or C) resourceID set
 	 * @param listener callback that is called once core responds to all upload requests
 	 */
-	public void uploadFiles(List<? extends SdlFile> files, final MultipleFileCompletionListener listener){
-		if(files == null || files.isEmpty() || listener == null){
+	public void uploadFiles(@NonNull List<? extends SdlFile> files, final MultipleFileCompletionListener listener){
+		if(files.isEmpty()){
 			return;
 		}
 		final List<PutFile> putFileRequests = new ArrayList<>();
@@ -328,10 +330,7 @@ public class FileManager extends BaseSubManager {
 	 * @param file SdlFile
 	 * @return boolean that tells whether file has been uploaded to core (true) or not (false)
 	 */
-	public boolean hasUploadedFile(SdlFile file){
-		if(file == null){
-			return false;
-		}
+	public boolean hasUploadedFile(@NonNull SdlFile file){
 		if(file.isPersistent() && remoteFiles.contains(file.getName())){
 			return true;
 		}else if(!file.isPersistent() && remoteFiles.contains(file.getName())

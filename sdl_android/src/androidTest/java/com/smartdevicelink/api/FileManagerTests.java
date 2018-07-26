@@ -472,6 +472,5 @@ public class FileManagerTests extends AndroidTestCase {
 
 		final FileManager fileManager = new FileManager(internalInterface, mTestContext);
 		assertTrue(fileManager.hasUploadedFile(file));
-		assertFalse(fileManager.hasUploadedFile(null));
 	}
 }
