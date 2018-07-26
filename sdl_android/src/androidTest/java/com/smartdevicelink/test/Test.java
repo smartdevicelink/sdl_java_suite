@@ -63,6 +63,7 @@ import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
+import com.smartdevicelink.proxy.rpc.enums.AudioStreamingIndicator;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
@@ -278,6 +279,7 @@ public class Test {
 	public static final SingleTireStatus               GENERAL_SINGLETIRESTATUS               = new SingleTireStatus();
 	public static final DriverDistractionState         GENERAL_DRIVERDISTRACTIONSTATE         = DriverDistractionState.DD_ON;
 	public static final List<LocationDetails>          GENERAL_LOCATIONDETAILS_LIST           = Arrays.asList(new LocationDetails[] { Test.GENERAL_LOCATIONDETAILS, Test.GENERAL_LOCATIONDETAILS});
+	public static final AudioStreamingIndicator        GENERAL_AUDIO_STREAMING_INDICATOR      = AudioStreamingIndicator.PLAY;
 
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
