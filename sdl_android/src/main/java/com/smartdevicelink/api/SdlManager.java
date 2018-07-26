@@ -637,6 +637,16 @@ public class SdlManager{
 		}
 
 		@Override
+		public void addOnRPCResponseListener(FunctionID responseId, ProxyBridge.OnRPCListener listener) {
+			proxyBridge.addRpcListener(responseId, listener);
+		}
+
+		@Override
+		public boolean removeOnRPCResponseListener(FunctionID responseId, ProxyBridge.OnRPCListener listener) {
+			return proxyBridge.removeOnRPCListener(responseId, listener);
+		}
+
+		@Override
 		public Object getCapability(SystemCapabilityType systemCapabilityType){
 			return proxy.getCapability(systemCapabilityType);
 		}
