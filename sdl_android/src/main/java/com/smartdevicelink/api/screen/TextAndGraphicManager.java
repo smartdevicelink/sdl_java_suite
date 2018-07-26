@@ -136,7 +136,6 @@ class TextAndGraphicManager extends BaseSubManager {
 		}
 
 		List<String> nonNullFields = findNonNullTextFields();
-
 		if (nonNullFields.size() == 0){
 			return show;
 		}
@@ -158,11 +157,9 @@ class TextAndGraphicManager extends BaseSubManager {
 	private Show assembleOneLineShowText(Show show, List<String> showFields){
 
 		StringBuilder showString1 = new StringBuilder();
-
 		for (int i = 1; i < showFields.size(); i++) {
 			showString1.append(" - ").append(showFields.get(i));
 		}
-
 		show.setMainField1(showString1.toString());
 
 		MetadataTags tags = new MetadataTags();
@@ -173,6 +170,47 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	private Show assembleTwoLineShowText(Show show){
 
+		StringBuilder tempString = new StringBuilder();
+		MetadataTags tags = show.getMetadataTags();
+
+		if (textField1.length() > 0) {
+			tempString.append(textField1);
+			if (textField1Type != null){
+				tags.setMainField1(textField1Type);
+			}
+		}
+
+		if (textField2.length() > 0) {
+
+			if (!(textField3.length() > 0) || !(textField4.length() > 0)){
+				// text does not exist in slots 3 or 4, put i slot 2
+				show.setMainField2(textField2);
+				if (textField2Type != null){
+					tags.setMainField2(textField2Type);
+				}
+			} else if (textField1.length() > 0) {
+				// If text 1 exists, put it in slot 1 formatted
+				tempString.append(" - ").append(textField2);
+				if (textField2Type != null){
+					List<MetadataType> tags2 = tags.getMainField1();
+					tags2.add(textField2Type);
+					tags.setMainField1(tags2);
+				}
+			}else {
+				// If text 1 does not exist, put it in slot 1 unformatted
+				tempString.append(textField2);
+				if (textField2Type != null){
+					tags.setMainField1(textField2Type);
+				}
+			}
+		}
+
+		// set mainfield 1
+		show.setMainField1(tempString.toString());
+
+		
+
+		show.setMetadataTags(tags);
 		return show;
 	}
 
