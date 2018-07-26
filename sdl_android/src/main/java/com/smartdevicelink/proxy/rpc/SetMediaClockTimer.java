@@ -190,7 +190,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	/**
 	 * Sets the playback status of a media app
 	 */
-	public void setAudioStreamingIndicator(@NonNull AudioStreamingIndicator audioStreamingIndicator ) {
+	public void setAudioStreamingIndicator(AudioStreamingIndicator audioStreamingIndicator ) {
 		setParameters(KEY_AUDIO_STREAMING_INDICATOR, audioStreamingIndicator);
 	}
 }
