@@ -247,11 +247,87 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	private Show assembleThreeLineShowText(Show show){
 
+		MetadataTags tags = show.getMetadataTags();
+
+		if (textField1 != null && textField1.length() > 0) {
+			show.setMainField1(textField1);
+			if (textField1Type != null){
+				tags.setMainField1(textField1Type);
+			}
+		}
+
+		if (textField2 != null && textField2.length() > 0) {
+			show.setMainField2(textField2);
+			if (textField2Type != null){
+				tags.setMainField2(textField2Type);
+			}
+		}
+
+		StringBuilder tempString = new StringBuilder();
+
+		if (textField3 != null && textField3.length() > 0){
+			tempString.append(textField3);
+			if (textField3Type != null){
+				tags.setMainField2(textField3Type);
+			}
+		}
+
+		if (textField4 != null && textField4.length() > 0) {
+			if (textField3 != null && textField3.length() > 0) {
+				// If text 3 exists, put it in slot 3 formatted
+				tempString.append(" - ").append(textField4);
+				if (textField4Type != null){
+					List<MetadataType> tags4 = tags.getMainField3();
+					tags4.add(textField4Type);
+					tags.setMainField3(tags4);
+				}
+			} else {
+				// If text 3 does not exist, put it in slot 3 formatted
+				tempString.append(textField4);
+				if (textField4Type != null){
+					tags.setMainField3(textField4Type);
+				}
+			}
+		}
+
+		show.setMainField3(tempString.toString());
+		show.setMetadataTags(tags);
 		return show;
 	}
 
 	private Show assembleFourLineShowText(Show show){
 
+		MetadataTags tags = show.getMetadataTags();
+
+		if (textField1 != null && textField1.length() > 0) {
+			show.setMainField1(textField1);
+			if (textField1Type != null){
+				tags.setMainField1(textField1Type);
+			}
+		}
+
+		if (textField2 != null && textField2.length() > 0) {
+			show.setMainField2(textField2);
+			if (textField2Type != null){
+				tags.setMainField2(textField2Type);
+			}
+		}
+
+		if (textField3 != null && textField3.length() > 0) {
+			show.setMainField3(textField3);
+			if (textField3Type != null){
+				tags.setMainField3(textField3Type);
+			}
+		}
+
+		if (textField4 != null && textField4.length() > 0) {
+			show.setMainField4(textField4);
+			if (textField4Type != null){
+				tags.setMainField2(textField4Type);
+			}
+		}
+
+		show.setMetadataTags(tags);
 		return show;
 	}
 
