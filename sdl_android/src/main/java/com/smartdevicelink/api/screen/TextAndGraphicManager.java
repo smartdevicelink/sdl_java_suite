@@ -173,22 +173,22 @@ class TextAndGraphicManager extends BaseSubManager {
 		StringBuilder tempString = new StringBuilder();
 		MetadataTags tags = show.getMetadataTags();
 
-		if (textField1.length() > 0) {
+		if (textField1 != null && textField1.length() > 0) {
 			tempString.append(textField1);
 			if (textField1Type != null){
 				tags.setMainField1(textField1Type);
 			}
 		}
 
-		if (textField2.length() > 0) {
+		if (textField2 != null && textField2.length() > 0) {
 
-			if (!(textField3.length() > 0) || !(textField4.length() > 0)){
+			if (textField3 == null || !(textField3.length() > 0) || textField4 == null || !(textField4.length() > 0)){
 				// text does not exist in slots 3 or 4, put i slot 2
 				show.setMainField2(textField2);
 				if (textField2Type != null){
 					tags.setMainField2(textField2Type);
 				}
-			} else if (textField1.length() > 0) {
+			} else if (textField1 != null && textField1.length() > 0) {
 				// If text 1 exists, put it in slot 1 formatted
 				tempString.append(" - ").append(textField2);
 				if (textField2Type != null){
@@ -208,7 +208,38 @@ class TextAndGraphicManager extends BaseSubManager {
 		// set mainfield 1
 		show.setMainField1(tempString.toString());
 
-		
+		// new stringbuilder object
+		tempString = new StringBuilder();
+
+		if (textField3 != null && textField3.length() > 0){
+			// If text 3 exists, put it in slot 2
+			tempString.append(textField3);
+			if (textField3Type != null){
+				tags.setMainField2(textField3Type);
+			}
+		}
+
+		if (textField4 != null && textField4.length() > 0){
+			if (textField3 != null && textField3.length() > 0){
+				// If text 3 exists, put it in slot 2 formatted
+				tempString.append(" - ").append(textField4);
+				if (textField4Type != null){
+					List<MetadataType> tags3 = tags.getMainField1();
+					tags3.add(textField4Type);
+					tags.setMainField2(tags3);
+				}
+			} else {
+				// If text 3 does not exist, put it in slot 3 unformatted
+				tempString.append(textField4);
+				if (textField4Type != null){
+					tags.setMainField2(textField4Type);
+				}
+			}
+		}
+
+		if (tempString.toString().length() > 0){
+			show.setMainField2(tempString.toString());
+		}
 
 		show.setMetadataTags(tags);
 		return show;
