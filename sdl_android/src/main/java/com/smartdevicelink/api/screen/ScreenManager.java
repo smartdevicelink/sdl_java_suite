@@ -12,6 +12,8 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
+import java.util.List;
+
 /**
  * <strong>ScreenManager</strong> <br>
  *
@@ -30,7 +32,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
  */
 public class ScreenManager extends BaseSubManager {
 
-//	private SoftButtonManager softButtonManager;
+	private SoftButtonManager softButtonManager;
 //	private TextAndGraphicManager textAndGraphicManager;
 	private HMILevel hmiLevel;
 
@@ -60,7 +62,7 @@ public class ScreenManager extends BaseSubManager {
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 
 		// init sub managers
-		//this.softButtonManager = new SoftButtonManager(internalInterface,fileManager);
+		this.softButtonManager = new SoftButtonManager(internalInterface, fileManager);
 		//this.textAndGraphicManager = new TextAndGraphicManager(internalInterface,fileManager);
 		transitionToState(READY);
 	}
@@ -77,7 +79,8 @@ public class ScreenManager extends BaseSubManager {
 	 */
 
 	public void setTextField1(String textField1) {
-		this.textField1 = textField1;
+		//textAndGraphicManager.setMainField1(textField1);
+		softButtonManager.setCurrentMainField1(textField1);
 	}
 
 	public void setTextField2(String textField2) {
@@ -124,9 +127,9 @@ public class ScreenManager extends BaseSubManager {
 		this.textField4Type = textField4Type;
 	}
 
-	/*public void setSoftButtonObjects(ArrayList<SoftButtonObject> softButtonObjects) {
-		this.softButtonObjects = softButtonObjects;
-	}*/
+	public void setSoftButtonObjects(List<SoftButtonObject> softButtonObjects) {
+		softButtonManager.setSoftButtonObjects(softButtonObjects);
+	}
 
 	// Getters
 
@@ -178,23 +181,26 @@ public class ScreenManager extends BaseSubManager {
 		return textField4Type;
 	}
 
-	/*public ArrayList<SoftButtonObject> getSoftButtonObjects() {
-		return softButtonObjects;
-	}*/
+	public List<SoftButtonObject> getSoftButtonObjects() {
+		return softButtonManager.getSoftButtonObjects();
+	}
+
+	public SoftButtonObject getSoftButtonObjectNamed(String name){
+		return softButtonManager.getSoftButtonNamed(name);
+	}
 
 	// Updates
 
 	public void beginUpdates(){
-
-//		softButtonManager.batchUpdates = true;
+		softButtonManager.setBatchUpdates(true);
 //		textAndGraphicManager.batchUpdates = true;
 	}
 
 	public void endUpdates(CompletionListener listener){
 
-//		softButtonManager.batchUpdates = false;
+		softButtonManager.setBatchUpdates(false);
 //		textAndGraphicManager.batchUpdates = false;
-//		softButtonManager.update();
+		softButtonManager.update(true, listener);
 //		textAndGraphicManager.update();
 	}
 

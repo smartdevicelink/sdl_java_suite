@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.smartdevicelink.api.screen.ScreenManager;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -70,11 +71,11 @@ public class SdlManager{
 
 	// Managers
     private FileManager fileManager;
+	private ScreenManager screenManager;
     /*
     private VideoStreamingManager videoStreamingManager;
     private AudioStreamManager audioStreamManager;
     private LockscreenManager lockscreenManager;
-    private ScreenManager screenManager;
     private PermissionManager permissionManager;
     */
 
@@ -116,11 +117,12 @@ public class SdlManager{
 			}
 			if(
 					fileManager.getState() != BaseSubManager.SETTING_UP
+					&& screenManager.getState() != BaseSubManager.SETTING_UP
+
 					/*
 					videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
 					audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
 					lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
-					screenManager.getState() != BaseSubManager.SETTING_UP
 					permissionManager.getState() != BaseSubManager.SETTING_UP
 					*/  ){
 				state = BaseSubManager.READY;
@@ -137,11 +139,12 @@ public class SdlManager{
 
 		this.fileManager = new FileManager(_internalInterface, context);
 		this.fileManager.start(subManagerListener);
+		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
+		this.screenManager.start(subManagerListener);
 		/*
 		this.lockscreenManager = new LockscreenManager(lockScreenConfig, context, _internalInterface);
 		this.lockscreenManager.start(subManagerListener);
-		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-		this.screenManager.start(subManagerListener);
+
 		this.permissionManager = new PermissionManager(_internalInterface);
 		this.permissionManager.start(subManagerListener);
 		this.videoStreamingManager = new VideoStreamingManager(context, _internalInterface);
@@ -153,10 +156,10 @@ public class SdlManager{
 
 	private void dispose() {
 		this.fileManager.dispose();
+		this.screenManager.dispose();
 		/*
 		this.lockscreenManager.dispose();
 		this.audioStreamManager.dispose();
-		this.screenManager.dispose();
 		this.permissionManager.dispose();
 		this.videoStreamingManager.dispose();
 		this.audioStreamManager.dispose();
@@ -326,6 +329,10 @@ public class SdlManager{
 		return fileManager;
 	}
 
+	public ScreenManager getScreenManager() {
+		return screenManager;
+	}
+
 	/*
 	public VideoStreamingManager getVideoStreamingManager() {
 		return videoStreamingManager;
@@ -335,9 +342,7 @@ public class SdlManager{
 		return audioStreamManager;
 	}
 
-	public ScreenManager getScreenManager() {
-		return screenManager;
-	}
+
 
 	public LockscreenManager getLockscreenManager() {
 		return lockscreenManager;
@@ -568,7 +573,17 @@ public class SdlManager{
 			return proxy.removeOnRPCNotificationListener(notificationId,listener);
 		}
 
-		@Override
+        @Override
+        public void addOnRPCResponseListener(FunctionID responseId, ProxyBridge.OnRPCListener listener) {
+            proxyBridge.addRpcListener(responseId, listener);
+        }
+
+        @Override
+        public boolean removeOnRPCResponseListener(FunctionID responseId, ProxyBridge.OnRPCListener listener) {
+            return proxyBridge.removeOnRPCListener(responseId, listener);
+        }
+
+        @Override
 		public Object getCapability(SystemCapabilityType systemCapabilityType){
 			return proxy.getCapability(systemCapabilityType);
 		}
