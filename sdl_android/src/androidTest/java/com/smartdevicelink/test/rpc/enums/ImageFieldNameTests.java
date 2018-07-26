@@ -42,6 +42,8 @@ public class ImageFieldNameTests extends TestCase {
 		ImageFieldName enumShowConstantTbtNextTurnIcon = ImageFieldName.valueForString(example);
 		example = "locationImage";
 		ImageFieldName enumLocationImage = ImageFieldName.valueForString(example);
+		example = "secondaryGraphic";
+		ImageFieldName enumSecondaryGraphic = ImageFieldName.valueForString(example);
 				
 		assertNotNull("softButtonImage returned null", enumSoftButtonImage);
 		assertNotNull("choiceImage returned null", enumChoiceImage);
@@ -55,6 +57,7 @@ public class ImageFieldNameTests extends TestCase {
 		assertNotNull("showConstantTBTIcon returned null", enumShowConstantTbtIcon);
 		assertNotNull("showConstantTBTNextTurnIcon returned null", enumShowConstantTbtNextTurnIcon);
 		assertNotNull("location image returned null", enumLocationImage);
+		assertNotNull("secondary graphic returned null", enumSecondaryGraphic);
 	}
 
 	/**
@@ -104,6 +107,7 @@ public class ImageFieldNameTests extends TestCase {
 		enumTestList.add(ImageFieldName.showConstantTBTIcon);	
 		enumTestList.add(ImageFieldName.showConstantTBTNextTurnIcon);	
 		enumTestList.add(ImageFieldName.locationImage);
+		enumTestList.add(ImageFieldName.secondaryGraphic);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

@@ -35,6 +35,7 @@ import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
+import com.smartdevicelink.proxy.rpc.OnRCStatus;
 import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.OnTBTClientState;
@@ -353,4 +354,6 @@ public interface IProxyListenerBase  {
 	public void onOnInteriorVehicleData(OnInteriorVehicleData notification);
 
 	public void onSendHapticDataResponse(SendHapticDataResponse response);
+
+	public void onOnRCStatus(OnRCStatus notification);
 }

@@ -1,7 +1,10 @@
 package com.smartdevicelink.test.rpc.notifications;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,6 +18,7 @@ import com.smartdevicelink.proxy.rpc.ClusterModeStatus;
 import com.smartdevicelink.proxy.rpc.DeviceStatus;
 import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.EmergencyEvent;
+import com.smartdevicelink.proxy.rpc.FuelRange;
 import com.smartdevicelink.proxy.rpc.GPSData;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.MyKey;
@@ -22,7 +26,9 @@ import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
+import com.smartdevicelink.proxy.rpc.enums.ElectronicParkBrakeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
+import com.smartdevicelink.proxy.rpc.enums.TurnSignal;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.test.BaseRpcTests;
@@ -33,7 +39,7 @@ import com.smartdevicelink.test.VehicleDataHelper;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.OnVehicleData}
+ * {@link com.smartdevicelink.proxy.rpc.OnVehicleData}
  */
 public class OnVehicleDataTests extends BaseRpcTests{
 	
@@ -65,6 +71,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
             result.put(OnVehicleData.KEY_PRNDL, VehicleDataHelper.PRNDL_FINAL);
             result.put(OnVehicleData.KEY_TIRE_PRESSURE, VehicleDataHelper.TIRE_PRESSURE.serializeJSON());
             result.put(OnVehicleData.KEY_ENGINE_TORQUE, VehicleDataHelper.ENGINE_TORQUE);
+            result.put(OnVehicleData.KEY_ENGINE_OIL_LIFE, VehicleDataHelper.ENGINE_OIL_LIFE);
             result.put(OnVehicleData.KEY_ODOMETER, VehicleDataHelper.ODOMETER);
             result.put(OnVehicleData.KEY_GPS, VehicleDataHelper.GPS.serializeJSON());
             result.put(OnVehicleData.KEY_FUEL_LEVEL_STATE, VehicleDataHelper.FUEL_LEVEL_STATE);
@@ -82,6 +89,9 @@ public class OnVehicleDataTests extends BaseRpcTests{
             result.put(OnVehicleData.KEY_EMERGENCY_EVENT, VehicleDataHelper.EMERGENCY_EVENT.serializeJSON());
             result.put(OnVehicleData.KEY_CLUSTER_MODE_STATUS, VehicleDataHelper.CLUSTER_MODE_STATUS.serializeJSON());
             result.put(OnVehicleData.KEY_MY_KEY, VehicleDataHelper.MY_KEY.serializeJSON());
+            result.put(OnVehicleData.KEY_FUEL_RANGE, VehicleDataHelper.JSON_FUEL_RANGE);
+			result.put(OnVehicleData.KEY_TURN_SIGNAL, VehicleDataHelper.TURN_SIGNAL);
+			result.put(OnVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS);
         } catch(JSONException e) {
         	fail(Test.JSON_FAIL);
         }
@@ -102,6 +112,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
     	PRNDL prndl = ( (OnVehicleData) msg).getPrndl();
     	TireStatus pressure = ( (OnVehicleData) msg).getTirePressure();
     	Double torque = ( (OnVehicleData) msg).getEngineTorque();
+    	Float engineOilLife = ( (OnVehicleData) msg).getEngineOilLife();
     	int odometer = ( (OnVehicleData) msg).getOdometer();
     	GPSData gps = ( (OnVehicleData) msg).getGps();
     	ComponentVolumeStatus state = ( (OnVehicleData) msg).getFuelLevelState();
@@ -119,6 +130,9 @@ public class OnVehicleDataTests extends BaseRpcTests{
     	EmergencyEvent event = ( (OnVehicleData) msg).getEmergencyEvent();
     	ClusterModeStatus cluster = ( (OnVehicleData) msg).getClusterModeStatus();
     	MyKey key = ( (OnVehicleData) msg).getMyKey();
+    	List<FuelRange> fuelRangeList = ( (OnVehicleData) msg).getFuelRange();
+    	TurnSignal turnSignal = ( (OnVehicleData) msg).getTurnSignal();
+    	ElectronicParkBrakeStatus electronicParkBrakeStatus = ( (OnVehicleData) msg).getElectronicParkBrakeStatus();
     	
     	// Valid Tests
     	assertEquals(Test.MATCH, VehicleDataHelper.SPEED, speed);
@@ -129,6 +143,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
     	assertEquals(Test.MATCH, VehicleDataHelper.PRNDL_FINAL, prndl);
     	assertTrue(Test.MATCH, Validator.validateTireStatus(VehicleDataHelper.TIRE_PRESSURE, pressure));
     	assertEquals(Test.MATCH, VehicleDataHelper.ENGINE_TORQUE, torque);
+    	assertEquals(Test.MATCH, VehicleDataHelper.ENGINE_OIL_LIFE, engineOilLife);
     	assertEquals(Test.MATCH, VehicleDataHelper.ODOMETER, odometer);
     	assertTrue(Test.MATCH, Validator.validateGpsData(VehicleDataHelper.GPS, gps));
     	assertEquals(Test.MATCH, VehicleDataHelper.FUEL_LEVEL_STATE, state);
@@ -146,6 +161,9 @@ public class OnVehicleDataTests extends BaseRpcTests{
 	    assertTrue(Test.TRUE, Validator.validateEmergencyEvent(VehicleDataHelper.EMERGENCY_EVENT, event));
 	    assertTrue(Test.TRUE, Validator.validateClusterModeStatus(VehicleDataHelper.CLUSTER_MODE_STATUS, cluster));
 	    assertTrue(Test.TRUE, Validator.validateMyKey(VehicleDataHelper.MY_KEY, key));
+	    assertTrue(Test.TRUE, Validator.validateFuelRange(VehicleDataHelper.FUEL_RANGE_LIST, fuelRangeList));
+	    assertEquals(Test.MATCH, VehicleDataHelper.TURN_SIGNAL, turnSignal);
+	    assertEquals(Test.MATCH, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
     
 	    // Invalid/Null Tests
         OnVehicleData msg = new OnVehicleData();
@@ -160,6 +178,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
         assertNull(Test.NULL, msg.getPrndl());
         assertNull(Test.NULL, msg.getTirePressure());
         assertNull(Test.NULL, msg.getEngineTorque());
+        assertNull(Test.NULL, msg.getEngineOilLife());
         assertNull(Test.NULL, msg.getOdometer());
         assertNull(Test.NULL, msg.getGps());
         assertNull(Test.NULL, msg.getFuelLevelState());
@@ -176,8 +195,11 @@ public class OnVehicleDataTests extends BaseRpcTests{
         assertNull(Test.NULL, msg.getAirbagStatus());
         assertNull(Test.NULL, msg.getEmergencyEvent());
         assertNull(Test.NULL, msg.getClusterModeStatus());
-        assertNull(Test.NULL, msg.getMyKey());    	
-    }  
+        assertNull(Test.NULL, msg.getMyKey());
+        assertNull(Test.NULL, msg.getFuelRange());
+        assertNull(Test.NULL, msg.getTurnSignal());
+        assertNull(Test.NULL, msg.getElectronicParkBrakeStatus());
+	}
     
     public void testJson() {
 		JSONObject reference = new JSONObject();
@@ -194,6 +216,8 @@ public class OnVehicleDataTests extends BaseRpcTests{
 		JSONObject emergencyEventObj = new JSONObject();
 		JSONObject clusterModeStatusObj = new JSONObject();
 		JSONObject myKeyObj = new JSONObject();
+		JSONObject fuelRangeObj = new JSONObject();
+		JSONArray fuelRangeArrayObj = new JSONArray();
 		
 		try {
 			//Set up the JSONObject to represent OnVehicleData:
@@ -313,7 +337,12 @@ public class OnVehicleDataTests extends BaseRpcTests{
 			
 			//MY_KEY
 			myKeyObj.put(MyKey.KEY_E_911_OVERRIDE, VehicleDataHelper.MY_KEY_E_911_OVERRIDE);
-			
+
+			// FUEL_RANGE
+			fuelRangeObj.put(FuelRange.KEY_TYPE, VehicleDataHelper.FUEL_RANGE_TYPE);
+			fuelRangeObj.put(FuelRange.KEY_RANGE, VehicleDataHelper.FUEL_RANGE_RANGE);
+			fuelRangeArrayObj.put(fuelRangeObj);
+
 			reference.put(OnVehicleData.KEY_SPEED, VehicleDataHelper.SPEED);
 			reference.put(OnVehicleData.KEY_RPM, VehicleDataHelper.RPM);
 			reference.put(OnVehicleData.KEY_EXTERNAL_TEMPERATURE, VehicleDataHelper.EXTERNAL_TEMPERATURE);
@@ -322,6 +351,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 			reference.put(OnVehicleData.KEY_PRNDL, VehicleDataHelper.PRNDL_FINAL);
 			reference.put(OnVehicleData.KEY_TIRE_PRESSURE, tireStatusObj);
 			reference.put(OnVehicleData.KEY_ENGINE_TORQUE, VehicleDataHelper.ENGINE_TORQUE);
+			reference.put(OnVehicleData.KEY_ENGINE_OIL_LIFE, VehicleDataHelper.ENGINE_OIL_LIFE);
 			reference.put(OnVehicleData.KEY_ODOMETER, VehicleDataHelper.ODOMETER);
 			reference.put(OnVehicleData.KEY_GPS, GPSDataObj);
 			reference.put(OnVehicleData.KEY_FUEL_LEVEL_STATE, VehicleDataHelper.FUEL_LEVEL_STATE);
@@ -339,6 +369,9 @@ public class OnVehicleDataTests extends BaseRpcTests{
 			reference.put(OnVehicleData.KEY_EMERGENCY_EVENT, emergencyEventObj);
 			reference.put(OnVehicleData.KEY_CLUSTER_MODE_STATUS, clusterModeStatusObj);
 			reference.put(OnVehicleData.KEY_MY_KEY, myKeyObj);
+			reference.put(OnVehicleData.KEY_FUEL_RANGE, fuelRangeArrayObj);
+			reference.put(OnVehicleData.KEY_TURN_SIGNAL, VehicleDataHelper.TURN_SIGNAL);
+			reference.put(OnVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS);
 			
 			JSONObject underTest = msg.serializeJSON();
 			//go inside underTest and only return the JSONObject inside the parameters key inside the notification key
@@ -432,6 +465,28 @@ public class OnVehicleDataTests extends BaseRpcTests{
 					assertTrue(Test.TRUE, Validator.validateMyKey(
 						new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjReference)),
 						new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjTest))));
+				}
+				else if (key.equals(OnVehicleData.KEY_ENGINE_OIL_LIFE)) {
+					assertEquals(JsonUtils.readDoubleFromJsonObject(reference, key), JsonUtils.readDoubleFromJsonObject(underTest, key));
+				}
+				else if (key.equals(OnVehicleData.KEY_FUEL_RANGE)) {
+					JSONArray fuelRangeArrayObjReference = JsonUtils.readJsonArrayFromJsonObject(reference, key);
+					List<FuelRange> fuelRangeRefereceList = new ArrayList<FuelRange>();
+					for (int index = 0; index < fuelRangeArrayObjReference.length(); index++) {
+						FuelRange fuelRange = new FuelRange(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)fuelRangeArrayObjReference.get(index) ));
+						fuelRangeRefereceList.add(fuelRange);
+					}
+
+					JSONArray fuelRangeArrayObjTest = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
+					List<FuelRange> fuelRangeUnderTestList = new ArrayList<FuelRange>();
+					for (int index = 0; index < fuelRangeArrayObjTest.length(); index++) {
+						FuelRange fuelRange = new FuelRange(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)fuelRangeArrayObjTest.get(index) ));
+						fuelRangeUnderTestList.add(fuelRange);
+					}
+
+					assertTrue(Test.TRUE, Validator.validateFuelRange(
+									fuelRangeRefereceList,
+									fuelRangeUnderTestList));
 				}
 				else {
 					assertEquals(Test.TRUE, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));

@@ -5,7 +5,11 @@
     "parameters":{
     	"menuID":765,
     	"position":2,
-    	"menuName":"Menu Name"
+    	"menuName":"Menu Name",
+    	"menuIcon":{
+    		"value":"cmdImage1.png",
+    		"imageType":"DYNAMIC"
+    	}
     }
 	},
 	"response":{

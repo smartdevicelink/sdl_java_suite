@@ -20,6 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.zip.CRC32;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +51,7 @@ import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
@@ -191,6 +193,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private Language _hmiDisplayLanguageDesired = null;
 	private Vector<AppHMIType> _appType = null;
 	private String _appID = null;
+	private TemplateColorScheme _dayColorScheme = null;
+	private TemplateColorScheme _nightColorScheme = null;
 	@SuppressWarnings({"FieldCanBeLocal", "unused"}) //Need to understand what this is used for
 	private String _autoActivateIdDesired = null;
 	private String _lastHashID = null;
@@ -232,6 +236,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected Boolean _bResumeSuccess = false;	
 	protected List<Class<? extends SdlSecurityBase>> _secList = null;
 	protected SystemCapabilityManager _systemCapabilityManager;
+	protected Boolean _iconResumed = false;
 	
 	private final CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
 
@@ -589,7 +594,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			throws SdlException {
 				
 			performBaseCommon(listener, sdlProxyConfigurationResources, enableAdvancedLifecycleManagement, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp,
-				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, callbackToUIThread, null, null, null, transportConfig);	
+				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, null, null, callbackToUIThread, null, null, null, transportConfig);
 	}
 	
 	@SuppressWarnings("ConstantConditions")
@@ -597,7 +602,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								   boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName,
 								   String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion,
 								   Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
-								   String autoActivateID, boolean callbackToUIThread, Boolean preRegister, String sHashID, Boolean bAppResumeEnab,
+								   String autoActivateID, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme,
+								   boolean callbackToUIThread, Boolean preRegister, String sHashID, Boolean bAppResumeEnab,
 								   BaseTransportConfig transportConfig) throws SdlException
 	{
 		Log.i(TAG, "SDL_LIB_VERSION: " + Version.VERSION);
@@ -635,6 +641,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		_appType = appType;
 		_appID = appID;
 		_autoActivateIdDesired = autoActivateID;
+		_dayColorScheme = dayColorScheme;
+		_nightColorScheme = nightColorScheme;
 		_transportConfig = transportConfig;
 				
 		// Test conditions to invalidate the proxy
@@ -783,14 +791,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName, 
 			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, 
 			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, 
-			String autoActivateID, boolean callbackToUIThread, boolean preRegister, String sHashID, Boolean bEnableResume, BaseTransportConfig transportConfig) 
+			String autoActivateID, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme,
+		    boolean callbackToUIThread, boolean preRegister, String sHashID, Boolean bEnableResume, BaseTransportConfig transportConfig)
 			throws SdlException 
 	{
 			performBaseCommon(listener, sdlProxyConfigurationResources, enableAdvancedLifecycleManagement, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp,
-				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, callbackToUIThread, preRegister, sHashID, bEnableResume, transportConfig);
+				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, dayColorScheme, nightColorScheme, callbackToUIThread, preRegister, sHashID, bEnableResume, transportConfig);
 	}
-	
-	
 	
 	/**
 	 * Constructor.
@@ -814,15 +821,51 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param transportConfig Configuration of transport to be used by underlying connection.
 	 * @throws SdlException if there is an unrecoverable error class might throw an exception.
 	 */	
-	protected SdlProxyBase(proxyListenerType listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
-			boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName, 
-			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, 
-			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, 
-			String autoActivateID, boolean callbackToUIThread, boolean preRegister, BaseTransportConfig transportConfig) 
+	protected SdlProxyBase(proxyListenerType listener, SdlProxyConfigurationResources sdlProxyConfigurationResources,
+						   boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName,
+						   String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion,
+						   Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
+						   String autoActivateID, boolean callbackToUIThread, boolean preRegister, BaseTransportConfig transportConfig)
 			throws SdlException 
 	{
 			performBaseCommon(listener, sdlProxyConfigurationResources, enableAdvancedLifecycleManagement, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp,
-				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, callbackToUIThread, preRegister, null, null, transportConfig);
+				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, null, null, callbackToUIThread, preRegister, null, null, transportConfig);
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param listener Type of listener for this proxy base.
+	 * @param sdlProxyConfigurationResources Configuration resources for this proxy.
+	 * @param enableAdvancedLifecycleManagement Flag that ALM should be enabled or not.
+	 * @param appName Client application name.
+	 * @param ttsName TTS name.
+	 * @param ngnMediaScreenAppName Media Screen Application name.
+	 * @param vrSynonyms List of synonyms.
+	 * @param isMediaApp Flag that indicates that client application if media application or not.
+	 * @param sdlMsgVersion Version of Sdl Message.
+	 * @param languageDesired Desired language.
+	 * @param hmiDisplayLanguageDesired Desired language for HMI.
+	 * @param appType Type of application.
+	 * @param appID Application identifier.
+	 * @param autoActivateID Auto activation identifier.
+	 * @param dayColorScheme Day color scheme.
+	 * @param dayColorScheme Night color scheme.
+	 * @param callbackToUIThread Flag that indicates that this proxy should send callback to UI thread or not.
+	 * @param preRegister Flag that indicates that this proxy should be pre-registerd or not.
+	 * @param transportConfig Configuration of transport to be used by underlying connection.
+	 * @throws SdlException if there is an unrecoverable error class might throw an exception.
+	 */
+	protected SdlProxyBase(proxyListenerType listener, SdlProxyConfigurationResources sdlProxyConfigurationResources,
+						   boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName,
+						   String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion,
+						   Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
+						   String autoActivateID, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme,
+						   boolean callbackToUIThread, boolean preRegister, BaseTransportConfig transportConfig)
+			throws SdlException
+	{
+		performBaseCommon(listener, sdlProxyConfigurationResources, enableAdvancedLifecycleManagement, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp,
+				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, dayColorScheme, nightColorScheme, callbackToUIThread, preRegister, null, null, transportConfig);
 	}
 
 	private Intent createBroadcastIntent()
@@ -1102,6 +1145,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	putFile.setCorrelationID(POLICIES_CORRELATION_ID);
 		    	putFile.setSdlFileName("response_data");
 		    	putFile.setFileData(response.toString().getBytes("UTF-8"));
+		    	putFile.setCRC(response.toString().getBytes());
 		    	updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + response.toString());
 		    	
 		    	sendRPCRequestPrivate(putFile);
@@ -2007,6 +2051,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_vehicleType = msg.getVehicleType();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 					_proxyVersionInfo = msg.getProxyVersionInfo();
+					_iconResumed = msg.getIconResumed();
 					
 
 
@@ -3431,6 +3476,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					onRPCNotificationReceived(msg);
 				}
 			}
+			else if (functionName.equals(FunctionID.ON_RC_STATUS.toString())) {
+				final OnRCStatus msg = new OnRCStatus(hash);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onOnRCStatus(msg);
+							onRPCNotificationReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onOnRCStatus(msg);
+					onRPCNotificationReceived(msg);
+				}
+			}
 			else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logInfo("Unrecognized notification Message: " + functionName +
@@ -3650,6 +3711,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						_hmiDisplayLanguageDesired,
 						_appType,
 						_appID,
+						_dayColorScheme,
+						_nightColorScheme,
 						REGISTER_APP_INTERFACE_CORRELATION_ID);
 				
 			} catch (Exception e) {
@@ -4806,8 +4869,30 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		addCommand(commandID, null, null, null, vrCommands, correlationID);
 	}
-		
-	
+
+	/**
+	 * Sends an AddSubMenu RPCRequest to SDL. Responses are captured through callback on IProxyListener.
+	 *
+	 * @param menuID -Unique ID of the sub menu to add.
+	 * @param menuName -Text to show in the menu for this sub menu.
+	 * @param position -Position within the items that are are at top level of the in application menu.
+	 * @param menuIcon -Image to be be shown along with the submenu item
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("SameParameterValue")
+	public void addSubMenu(@NonNull Integer menuID, @NonNull String menuName,
+						   Integer position, Image menuIcon, Integer correlationID)
+			throws SdlException {
+
+		AddSubMenu msg = new AddSubMenu(menuID, menuName);
+		msg.setCorrelationID(correlationID);
+		msg.setPosition(position);
+		msg.setMenuIcon(menuIcon);
+
+		sendRPCRequest(msg);
+	}
+
 	/**
 	 * Sends an AddSubMenu RPCRequest to SDL. Responses are captured through callback on IProxyListener.
 	 * 
@@ -4817,16 +4902,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@Deprecated
 	@SuppressWarnings("SameParameterValue")
 	public void addSubMenu(@NonNull Integer menuID, @NonNull String menuName,
 						   Integer position, Integer correlationID)
 			throws SdlException {
 
-		AddSubMenu msg = new AddSubMenu(menuID, menuName);
-		msg.setCorrelationID(correlationID);
-		msg.setPosition(position);
-		
-		sendRPCRequest(msg);
+		addSubMenu(menuID, menuName, position, null, correlationID);
 	}
 	
 	/**
@@ -4837,11 +4919,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@Deprecated
 	@SuppressWarnings("unused")
 	public void addSubMenu(Integer menuID, String menuName,
 						   Integer correlationID) throws SdlException {
 		
-		addSubMenu(menuID, menuName, null, correlationID);
+		addSubMenu(menuID, menuName, null, null, correlationID);
 	}
 	
 	/*Begin V1 Enhanced helper*/	
@@ -5393,14 +5476,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		sendRPCRequest(msg);
 	}
-	
+
 	// Protected registerAppInterface used to ensure only non-ALM applications call
 	// reqisterAppInterface
 	protected void registerAppInterfacePrivate(
 			@NonNull SdlMsgVersion sdlMsgVersion, @NonNull String appName, Vector<TTSChunk> ttsName,
 			String ngnMediaScreenAppName, Vector<String> vrSynonyms, @NonNull Boolean isMediaApp,
 			@NonNull Language languageDesired, @NonNull Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
-			@NonNull String appID, Integer correlationID)
+			@NonNull String appID, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme, Integer correlationID)
 			throws SdlException {
 		String carrierName = null;
 		if(telephonyManager != null){
@@ -5448,6 +5531,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		msg.setVrSynonyms(vrSynonyms);
 
 		msg.setAppHMIType(appType);
+
+		msg.setDayColorScheme(dayColorScheme);
+		msg.setNightColorScheme(nightColorScheme);
 
 		if (_bAppResumeEnabled)
 		{
@@ -5939,6 +6025,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/
 	@SuppressWarnings("unused")
+	@Deprecated
 	public void subscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 									 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
 									 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
@@ -5963,7 +6050,58 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		sendRPCRequest(msg);
 	}
-	
+
+
+	/**
+	 *     Subscribes for specific published data items.  The data will be only sent if it has changed.
+	 *     Responses are captured through callback on IProxyListener.
+	 *
+	 * @param gps -Subscribes to GPS data.
+	 * @param speed -Subscribes to vehicle speed data in kilometers per hour.
+	 * @param rpm -Subscribes to number of revolutions per minute of the engine.
+	 * @param fuelLevel -Subscribes to fuel level in the tank (percentage).
+	 * @param fuelLevel_State -Subscribes to fuel level state.
+	 * @param instantFuelConsumption -Subscribes to instantaneous fuel consumption in microlitres.
+	 * @param externalTemperature -Subscribes to the external temperature in degrees celsius.
+	 * @param prndl -Subscribes to PRNDL data that houses the selected gear.
+	 * @param tirePressure -Subscribes to the TireStatus data containing status and pressure of tires.
+	 * @param engineOilLife -Subscribes to Engine Oil Life data.
+	 * @param odometer -Subscribes to Odometer data in km.
+	 * @param beltStatus -Subscribes to status of the seat belts.
+	 * @param bodyInformation -Subscribes to body information including power modes.
+	 * @param deviceStatus -Subscribes to device status including signal and battery strength.
+	 * @param driverBraking -Subscribes to the status of the brake pedal.
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("unused")
+	public void subscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+									 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
+									 boolean engineOilLife, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+									 boolean driverBraking, Integer correlationID) throws SdlException
+	{
+		SubscribeVehicleData msg = new SubscribeVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setEngineOilLife(engineOilLife);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
+
+		sendRPCRequest(msg);
+	}
+
+
 	/**
 	 *     Unsubscribes for specific published data items.
 	 *     Responses are captured through callback on IProxyListener.
@@ -5987,6 +6125,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	*/
 
 	@SuppressWarnings("unused")
+	@Deprecated
 	public void unsubscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 									   boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
 									   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
@@ -6002,6 +6141,57 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		msg.setExternalTemperature(externalTemperature);
 		msg.setPrndl(prndl);
 		msg.setTirePressure(tirePressure);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
+
+		sendRPCRequest(msg);
+	}
+
+
+	/**
+	 *     Unsubscribes for specific published data items.
+	 *     Responses are captured through callback on IProxyListener.
+	 *
+	 * @param gps -Unsubscribes to GPS data.
+	 * @param speed -Unsubscribes to vehicle speed data in kilometers per hour.
+	 * @param rpm -Unsubscribes to number of revolutions per minute of the engine.
+	 * @param fuelLevel -Unsubscribes to fuel level in the tank (percentage).
+	 * @param fuelLevel_State -Unsubscribes to fuel level state.
+	 * @param instantFuelConsumption -Unsubscribes to instantaneous fuel consumption in microlitres.
+	 * @param externalTemperature -Unsubscribes to the external temperature in degrees celsius.
+	 * @param prndl -Unsubscribes to PRNDL data that houses the selected gear.
+	 * @param tirePressure -Unsubscribes to the TireStatus data containing status and pressure of tires.
+	 * @param engineOilLife -Unsubscribes to Engine Oil Life data.
+	 * @param odometer -Unsubscribes to Odometer data in km.
+	 * @param beltStatus -Unsubscribes to status of the seat belts.
+	 * @param bodyInformation -Unsubscribes to body information including power modes.
+	 * @param deviceStatus -Unsubscribes to device status including signal and battery strength.
+	 * @param driverBraking -Unsubscribes to the status of the brake pedal.
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+
+	@SuppressWarnings("unused")
+	public void unsubscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+									   boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
+									   boolean engineOilLife, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+									   boolean driverBraking, Integer correlationID) throws SdlException
+	{
+		UnsubscribeVehicleData msg = new UnsubscribeVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setEngineOilLife(engineOilLife);
 		msg.setOdometer(odometer);
 		msg.setBeltStatus(beltStatus);
 		msg.setBodyInformation(bodyInformation);
@@ -6036,6 +6226,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/
 	@SuppressWarnings("unused")
+	@Deprecated
 	public void getvehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 							   boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
 							   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
@@ -6052,6 +6243,58 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		msg.setVin(vin);
 		msg.setPrndl(prndl);
 		msg.setTirePressure(tirePressure);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
+
+		sendRPCRequest(msg);
+	}
+
+
+	/**
+	 *     Performs a Non periodic vehicle data read request.
+	 *     Responses are captured through callback on IProxyListener.
+	 *
+	 * @param gps -Performs an ad-hoc request for GPS data.
+	 * @param speed -Performs an ad-hoc request for vehicle speed data in kilometers per hour.
+	 * @param rpm -Performs an ad-hoc request for number of revolutions per minute of the engine.
+	 * @param fuelLevel -Performs an ad-hoc request for fuel level in the tank (percentage).
+	 * @param fuelLevel_State -Performs an ad-hoc request for fuel level state.
+	 * @param instantFuelConsumption -Performs an ad-hoc request for instantaneous fuel consumption in microlitres.
+	 * @param externalTemperature -Performs an ad-hoc request for the external temperature in degrees celsius.
+	 * @param vin -Performs an ad-hoc request for the Vehicle identification number
+	 * @param prndl -Performs an ad-hoc request for PRNDL data that houses the selected gear.
+	 * @param tirePressure -Performs an ad-hoc request for the TireStatus data containing status and pressure of tires.
+	 * @param engineOilLife -Performs an ad-hoc request for Engine Oil Life data.
+	 * @param odometer -Performs an ad-hoc request for Odometer data in km.
+	 * @param beltStatus -Performs an ad-hoc request for status of the seat belts.
+	 * @param bodyInformation -Performs an ad-hoc request for  body information including power modes.
+	 * @param deviceStatus -Performs an ad-hoc request for device status including signal and battery strength.
+	 * @param driverBraking -Performs an ad-hoc request for the status of the brake pedal.
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("unused")
+	public void getvehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+							   boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
+							   boolean engineOilLife, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+							   boolean driverBraking, Integer correlationID) throws SdlException
+	{
+		GetVehicleData msg = new GetVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setVin(vin);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setEngineOilLife(engineOilLife);
 		msg.setOdometer(odometer);
 		msg.setBeltStatus(beltStatus);
 		msg.setBodyInformation(bodyInformation);
@@ -6549,21 +6792,41 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		sendRPCRequest(msg);
 	}
-	
+
 	/**
 	 *     Set an alternate display layout. If not sent, default screen for given platform will be shown.
 	 *     Responses are captured through callback on IProxyListener.
-	 * 
+	 *
 	 * @param displayLayout -Predefined or dynamically created screen layout.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
-	*/	
+	 */
 	@SuppressWarnings("unused")
 	public void setdisplaylayout(@NonNull String displayLayout, Integer correlationID) throws SdlException
 	{
 		SetDisplayLayout msg = new SetDisplayLayout(displayLayout);
 		msg.setCorrelationID(correlationID);
 
+		sendRPCRequest(msg);
+	}
+
+	/**
+	 *     Set an alternate display layout. If not sent, default screen for given platform will be shown.
+	 *     Responses are captured through callback on IProxyListener.
+	 *
+	 * @param displayLayout -Predefined or dynamically created screen layout.
+	 * @param dayColorScheme a TemplateColorScheme object representing the colors that will be used for day color scheme
+     * @param nightColorScheme a TemplateColorScheme object representing the colors that will be used for night color scheme
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("unused")
+	public void setdisplaylayout(String displayLayout, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme, Integer correlationID) throws SdlException
+	{
+		SetDisplayLayout msg = new SetDisplayLayout(displayLayout);
+		msg.setCorrelationID(correlationID);
+		msg.setDayColorScheme(dayColorScheme);
+		msg.setNightColorScheme(nightColorScheme);
 		sendRPCRequest(msg);
 	}
 
@@ -6695,6 +6958,23 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		return sPoliciesURL;
 	}
 
+	/**
+	 * Tells developer whether or not their app icon has been resumed on core.
+	 * @return boolean - true if icon was resumed, false if not
+	 * @throws SdlException if proxy is disposed or app is not registered
+	 */
+	public boolean getIconResumed() throws SdlException {
+		// Test if proxy has been disposed
+		if (_proxyDisposed) {
+			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
+		}
+
+		// Test SDL availability
+		if (!_appInterfaceRegisterd) {
+			throw new SdlException("SDL is not connected. Unable to determine if app icon was resumed.", SdlExceptionCause.SDL_UNAVAILABLE);
+		}
+		return _iconResumed;
+	}
 
 
 	/**

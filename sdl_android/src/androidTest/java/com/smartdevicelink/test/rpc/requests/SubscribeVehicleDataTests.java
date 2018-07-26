@@ -16,7 +16,7 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.SubscribeVehicleData}
+ * {@link com.smartdevicelink.proxy.rpc.SubscribeVehicleData}
  */
 public class SubscribeVehicleDataTests extends BaseRpcTests {
 		
@@ -31,6 +31,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 		msg.setPrndl(Test.GENERAL_BOOLEAN);
 		msg.setTirePressure(Test.GENERAL_BOOLEAN);
 		msg.setEngineTorque(Test.GENERAL_BOOLEAN);
+		msg.setEngineOilLife(Test.GENERAL_BOOLEAN);
 		msg.setOdometer(Test.GENERAL_BOOLEAN);
 		msg.setGps(Test.GENERAL_BOOLEAN);
 		msg.setFuelLevelState(Test.GENERAL_BOOLEAN);
@@ -48,6 +49,9 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 		msg.setEmergencyEvent(Test.GENERAL_BOOLEAN);
 		msg.setClusterModeStatus(Test.GENERAL_BOOLEAN);
 		msg.setMyKey(Test.GENERAL_BOOLEAN);
+		msg.setFuelRange(Test.GENERAL_BOOLEAN);
+		msg.setTurnSignal(Test.GENERAL_BOOLEAN);
+		msg.setElectronicParkBrakeStatus(Test.GENERAL_BOOLEAN);
 		
 		return msg;
 	}
@@ -74,6 +78,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
             result.put(SubscribeVehicleData.KEY_PRNDL, Test.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_TIRE_PRESSURE, Test.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_ENGINE_TORQUE, Test.GENERAL_BOOLEAN);
+            result.put(SubscribeVehicleData.KEY_ENGINE_OIL_LIFE, Test.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_ODOMETER, Test.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_GPS, Test.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_FUEL_LEVEL_STATE, Test.GENERAL_BOOLEAN);
@@ -91,6 +96,9 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
             result.put(SubscribeVehicleData.KEY_EMERGENCY_EVENT, Test.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_CLUSTER_MODE_STATUS, Test.GENERAL_BOOLEAN);
             result.put(SubscribeVehicleData.KEY_MY_KEY, Test.GENERAL_BOOLEAN);
+            result.put(SubscribeVehicleData.KEY_FUEL_RANGE, Test.GENERAL_BOOLEAN);
+            result.put(SubscribeVehicleData.KEY_TURN_SIGNAL, Test.GENERAL_BOOLEAN);
+            result.put(SubscribeVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, Test.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -111,6 +119,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getPrndl());
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getTirePressure());
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getEngineTorque());
+		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getEngineOilLife());
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getOdometer());
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getGps());
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getFuelLevelState());
@@ -128,6 +137,9 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getEmergencyEvent());
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getClusterModeStatus());
 		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getMyKey());
+		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getFuelRange());
+		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getTurnSignal());
+		assertTrue(Test.MATCH,( (SubscribeVehicleData) msg ).getElectronicParkBrakeStatus());
     
 		// Invalid/Null Tests
 		SubscribeVehicleData msg = new SubscribeVehicleData();
@@ -153,11 +165,15 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
         assertNull(Test.NULL, msg.getDeviceStatus());
         assertNull(Test.NULL, msg.getHeadLampStatus());
         assertNull(Test.NULL, msg.getEngineTorque());
+        assertNull(Test.NULL, msg.getEngineOilLife());
         assertNull(Test.NULL, msg.getSteeringWheelAngle());
         assertNull(Test.NULL, msg.getECallInfo());
         assertNull(Test.NULL, msg.getEmergencyEvent());
         assertNull(Test.NULL, msg.getClusterModeStatus());
         assertNull(Test.NULL, msg.getMyKey());
+        assertNull(Test.NULL, msg.getFuelRange());
+        assertNull(Test.NULL, msg.getTurnSignal());
+        assertNull(Test.NULL, msg.getElectronicParkBrakeStatus());
 	}
 	
     /**
@@ -186,6 +202,7 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_PRNDL), cmd.getPrndl());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_TIRE_PRESSURE), cmd.getTirePressure());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_ENGINE_TORQUE), cmd.getEngineTorque());
+			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_ENGINE_OIL_LIFE), cmd.getEngineOilLife());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_ODOMETER), cmd.getOdometer());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_GPS), cmd.getGps());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_FUEL_LEVEL_STATE), cmd.getFuelLevelState());
@@ -202,7 +219,10 @@ public class SubscribeVehicleDataTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_AIRBAG_STATUS), cmd.getAirbagStatus());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_EMERGENCY_EVENT), cmd.getEmergencyEvent());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_CLUSTER_MODE_STATUS), cmd.getClusterModeStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_MY_KEY), cmd.getMyKey());	
+			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_MY_KEY), cmd.getMyKey());
+			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_FUEL_RANGE), cmd.getFuelRange());
+			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_TURN_SIGNAL), cmd.getTurnSignal());
+			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, SubscribeVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS), cmd.getElectronicParkBrakeStatus());
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}    	
