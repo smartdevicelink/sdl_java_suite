@@ -17,6 +17,7 @@ import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -49,8 +50,9 @@ class TextAndGraphicManager extends BaseSubManager {
 	private Context context;
 	private SdlArtwork blankArtwork;
 	private DisplayCapabilities displayCapabilities;
+	private HMILevel currentHMILevel;
 
-	protected boolean batchUpdates;
+	protected boolean batchingUpdates;
 	protected SdlArtwork primaryGraphic, secondaryGraphic;
 	protected TextAlignment textAlignment;
 	protected String textField1, textField2, textField3, textField4, mediaTrackTextField;
@@ -63,7 +65,8 @@ class TextAndGraphicManager extends BaseSubManager {
 		super(internalInterface);
 		this.fileManager = fileManager;
 		this.context = context;
-		batchUpdates = false;
+		batchingUpdates = false;
+		currentHMILevel = HMILevel.HMI_NONE;
 		getBlankArtwork();
 		getDisplayCapabilities();
 		transitionToState(READY);
@@ -96,8 +99,14 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected void update() {
 
 		// check if is batch update
+		if (batchingUpdates) {
+			return;
+		}
 
 		// make sure hmi is not none
+		if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE){
+			return;
+		}
 
 		// create show
 
@@ -404,8 +413,34 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	private void updateCurrentScreenDataFromShow(Show show){
 
-		// set all of the show fields, make sure items are not null before setting in the show
-
+		// If the items are null, they were not updated, so we can't just set it directly
+		if (show.getMainField1() != null){
+			currentScreenData.setMainField1(show.getMainField1());
+		}
+		if (show.getMainField2() != null){
+			currentScreenData.setMainField2(show.getMainField2());
+		}
+		if (show.getMainField3() != null){
+			currentScreenData.setMainField3(show.getMainField3());
+		}
+		if (show.getMainField4() != null){
+			currentScreenData.setMainField4(show.getMainField4());
+		}
+		if (show.getMediaTrack() != null){
+			currentScreenData.setMediaTrack(show.getMediaTrack());
+		}
+		if (show.getMetadataTags() != null){
+			currentScreenData.setMetadataTags(show.getMetadataTags());
+		}
+		if (show.getAlignment() != null){
+			currentScreenData.setAlignment(show.getAlignment());
+		}
+		if (show.getGraphic() != null){
+			currentScreenData.setGraphic(show.getGraphic());
+		}
+		if (show.getSecondaryGraphic() != null){
+			currentScreenData.setSecondaryGraphic(show.getSecondaryGraphic());
+		}
 	}
 
 	// Helpers
