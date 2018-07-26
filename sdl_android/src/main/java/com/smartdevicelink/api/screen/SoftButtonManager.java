@@ -13,6 +13,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
@@ -23,6 +24,7 @@ import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
@@ -63,6 +65,40 @@ class SoftButtonManager extends BaseSubManager {
         this.waitingOnHMILevelUpdateToSetButtons = false;
 
 
+        // Set SoftButtonCapabilities
+        this.internalInterface.getCapability(SystemCapabilityType.SOFTBUTTON, new OnSystemCapabilityListener() {
+            @Override
+            public void onCapabilityRetrieved(Object capability) {
+                List<SoftButtonCapabilities> softButtonCapabilitiesList = (List<SoftButtonCapabilities>)capability;
+                if (softButtonCapabilitiesList != null && !softButtonCapabilitiesList.isEmpty()){
+                    softButtonCapabilities = softButtonCapabilitiesList.get(0);
+                } else {
+                    softButtonCapabilities = null;
+                }
+            }
+
+            @Override
+            public void onError(String info) {
+                softButtonCapabilities = null;
+            }
+        });
+
+
+        // Set DisplayCapabilities
+        this.internalInterface.getCapability(SystemCapabilityType.DISPLAY, new OnSystemCapabilityListener() {
+            @Override
+            public void onCapabilityRetrieved(Object capability) {
+                displayCapabilities = (DisplayCapabilities)capability;
+            }
+
+            @Override
+            public void onError(String info) {
+                displayCapabilities = null;
+            }
+        });
+
+
+        // Setup onRegisterAppInterfaceListener to listen for capabilities changes when app registers
         this.onRegisterAppInterfaceListener = new ProxyBridge.OnRPCListener() {
             @Override
             public void onRpcReceived(int functionID, RPCMessage message) {
@@ -82,6 +118,7 @@ class SoftButtonManager extends BaseSubManager {
         this.internalInterface.addOnRPCResponseListener(FunctionID.REGISTER_APP_INTERFACE, onRegisterAppInterfaceListener);
 
 
+        // Setup onSetDisplayLayoutListener to listen for capabilities changes when SetDisplayLayoutResponse is received
         this.onSetDisplayLayoutListener = new ProxyBridge.OnRPCListener() {
             @Override
             public void onRpcReceived(int functionID, RPCMessage message) {
