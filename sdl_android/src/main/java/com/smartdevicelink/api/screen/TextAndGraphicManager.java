@@ -6,14 +6,18 @@ import android.util.Log;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.api.BaseSubManager;
+import com.smartdevicelink.api.CompletionListener;
 import com.smartdevicelink.api.FileManager;
+import com.smartdevicelink.api.MultipleFileCompletionListener;
 import com.smartdevicelink.api.SdlArtwork;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 
@@ -24,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <strong>TextAndGraphicManager</strong> <br>
@@ -108,19 +113,52 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	// Images
 
-	private void uploadImages() {
-		//ArrayList<SDLArtwork> artworksToUpload = new ArrayList<>();
+	private void uploadImages(CompletionListener listener) {
+
+		List<SdlArtwork> artworksToUpload = new ArrayList<>();
 
 		// add primary image
+		if (shouldUpdatePrimaryImage()){
+			artworksToUpload.add(primaryGraphic);
+		}
 
 		// add secondary image
+		if (shouldUpdateSecondaryImage()){
+			artworksToUpload.add(secondaryGraphic);
+		}
 
 		// use file manager to upload art
+		fileManager.uploadArtworks(artworksToUpload, new MultipleFileCompletionListener() {
+			@Override
+			public void onComplete(Map<String, String> errors) {
+				if (errors != null) {
+					Log.e(TAG, "Error Uploading Artworks. Error: " + errors.toString());
+				}else{
+					Log.d(TAG, "Successfully uploaded Artworks");
+				}
+			}
+		});
 	}
 
 	private Show assembleShowImages(Show show){
 
-		// attach primary and secondary images if there
+		if (!shouldUpdatePrimaryImage() && ! shouldUpdateSecondaryImage()){
+			return show;
+		}
+
+		if (shouldUpdatePrimaryImage()){
+			Image primaryImage = new Image();
+			primaryImage.setImageType(ImageType.DYNAMIC);
+			primaryImage.setValue(primaryGraphic.getName());
+			show.setGraphic(primaryImage);
+		}
+
+		if (shouldUpdateSecondaryImage()){
+			Image secondaryImage = new Image();
+			secondaryImage.setImageType(ImageType.DYNAMIC);
+			secondaryImage.setValue(secondaryGraphic.getName());
+			show.setSecondaryGraphic(secondaryImage);
+		}
 
 		return show;
 	}
@@ -427,6 +465,17 @@ class TextAndGraphicManager extends BaseSubManager {
 		}
 	}
 
+	private boolean shouldUpdatePrimaryImage() {
+		boolean hasGraphic = displayCapabilities.getGraphicSupported();
+		return (hasGraphic && primaryGraphic != null && currentScreenData.getGraphic().getValue().equalsIgnoreCase(primaryGraphic.getName()));
+	}
+
+	private boolean shouldUpdateSecondaryImage() {
+		// Cannot detect if there is a secondary image, so we'll just try to detect if there's a primary image and allow it if there is.
+		boolean hasGraphic = displayCapabilities.getGraphicSupported();
+		return (hasGraphic && secondaryGraphic != null && currentScreenData.getSecondaryGraphic().getValue().equalsIgnoreCase(secondaryGraphic.getName()));
+	}
+
 	private void getDisplayCapabilities() {
 
 		if (displayCapabilities != null) {
@@ -494,8 +543,5 @@ class TextAndGraphicManager extends BaseSubManager {
 			return null;
 		}
 	}
-
-	// Equality
-
 
 }
