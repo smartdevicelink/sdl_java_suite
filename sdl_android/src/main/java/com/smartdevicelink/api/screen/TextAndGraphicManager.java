@@ -10,10 +10,13 @@ import com.smartdevicelink.api.CompletionListener;
 import com.smartdevicelink.api.FileManager;
 import com.smartdevicelink.api.MultipleFileCompletionListener;
 import com.smartdevicelink.api.SdlArtwork;
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -21,6 +24,7 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 import org.json.JSONException;
 
@@ -51,6 +55,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	private SdlArtwork blankArtwork;
 	private DisplayCapabilities displayCapabilities;
 	private HMILevel currentHMILevel;
+	private OnRPCNotificationListener hmiListener;
 
 	protected boolean batchingUpdates;
 	protected SdlArtwork primaryGraphic, secondaryGraphic;
@@ -67,6 +72,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		this.context = context;
 		batchingUpdates = false;
 		currentHMILevel = HMILevel.HMI_NONE;
+		addListeners();
 		getBlankArtwork();
 		getDisplayCapabilities();
 		transitionToState(READY);
@@ -90,8 +96,22 @@ class TextAndGraphicManager extends BaseSubManager {
 		blankArtwork = null;
 		displayCapabilities = null;
 
+		// remove listeners
+		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+
 		// transition state
 		transitionToState(SHUTDOWN);
+	}
+
+	private void addListeners() {
+		// add listener
+		hmiListener = new OnRPCNotificationListener() {
+			@Override
+			public void onNotified(RPCNotification notification) {
+				currentHMILevel = ((OnHMIStatus)notification).getHmiLevel();
+			}
+		};
+		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 	}
 
 	// Upload / Send

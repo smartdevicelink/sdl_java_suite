@@ -182,13 +182,13 @@ public class ScreenManager extends BaseSubManager {
 	public void beginUpdates(){
 
 //		softButtonManager.batchUpdates = true;
-		textAndGraphicManager.batchUpdates = true;
+		textAndGraphicManager.batchingUpdates = true;
 	}
 
 	public void endUpdates(CompletionListener listener){
 
 //		softButtonManager.batchUpdates = false;
-		textAndGraphicManager.batchUpdates = false;
+		textAndGraphicManager.batchingUpdates = false;
 //		softButtonManager.update();
 		textAndGraphicManager.update();
 	}
