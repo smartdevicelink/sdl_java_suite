@@ -2,6 +2,7 @@ package com.smartdevicelink.test.proxy;
 
 import android.test.AndroidTestCase;
 
+import com.smartdevicelink.api.ProxyBridge;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -175,6 +176,12 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 
 		@Override
 		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {return false;}
+
+		@Override
+		public void addOnRPCResponseListener(FunctionID responseId, ProxyBridge.OnRPCListener listener) { }
+
+		@Override
+		public boolean removeOnRPCResponseListener(FunctionID responseId, ProxyBridge.OnRPCListener listener) { return false; }
 
 		@Override
 		public Object getCapability(SystemCapabilityType systemCapabilityType){return null;}
