@@ -167,6 +167,14 @@ public class SdlManager{
 		*/
 	}
 
+	/**
+	 * Sets the state of SdlManager to one of those defined in BaseSubManager
+	 * @param state int representing desired state of SdlManager
+	 */
+	protected void setState(int state){
+		this.state = state;
+	}
+
 	// BUILDER
 
 	public static class Builder {
@@ -336,6 +344,7 @@ public class SdlManager{
 	 * @return a PermissionManager object
 	 */
 	public PermissionManager getPermissionManager() {
+		checkSdlManagerState();
 		return permissionManager;
 	}
 

@@ -156,12 +156,13 @@ public class SdlManagerTests extends AndroidTestCase {
 		// Create and force all sub managers to be ready manually. Because SdlManager will not start until all sub managers are ready.
 		// Note : SdlManager.initialize() will not be called automatically by proxy as in real life because we have mock proxy not a real one
 		sdlManager.initialize();
-		// manager.getFileManager().transitionToState(BaseSubManager.READY);
+		sdlManager.setState(BaseSubManager.READY);
 		// manager.getVideoStreamingManager().transitionToState(BaseSubManager.READY);
 		// manager.getAudioStreamManager().transitionToState(BaseSubManager.READY);
 		// manager.getLockScreenManager().transitionToState(BaseSubManager.READY);
 		// manager.getScreenManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
 
 		// Make sure the listener is called exactly once
 		assertEquals("Listener was not called or called more/less frequently than expected", listenerCalledCounter, 1);

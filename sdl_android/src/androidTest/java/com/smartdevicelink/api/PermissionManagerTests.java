@@ -1,4 +1,4 @@
-package com.smartdevicelink;
+package com.smartdevicelink.api;
 
 import android.support.annotation.NonNull;
 import android.test.AndroidTestCase;
