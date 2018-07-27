@@ -50,16 +50,22 @@ public class VideoStreamingManager extends BaseSubManager{
 	private HapticInterfaceManager hapticManager;
 	private SdlMotionEvent sdlMotionEvent = null;
 	private HMILevel hmiLevel;
+	private StreamingStateMachine stateMachine;
 
 	// INTERNAL INTERFACES
 
 	private final ISdlServiceListener serviceListener = new ISdlServiceListener() {
 		@Override
-		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {}
+		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
+			if(SessionType.NAV.equals(type)){
+				stateMachine.transitionToState(StreamingStateMachine.READY);
+			}
+		}
 
 		@Override
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if(SessionType.NAV.equals(type)){
+				stateMachine.transitionToState(StreamingStateMachine.NONE);
 				if(remoteDisplay!=null){
 					stopStreaming();
 				}
@@ -104,7 +110,7 @@ public class VideoStreamingManager extends BaseSubManager{
 		// Listen for HMILevel changes
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 
-		transitionToState(BaseSubManager.READY);
+		stateMachine = new StreamingStateMachine();
 	}
 
 	/**
@@ -122,6 +128,7 @@ public class VideoStreamingManager extends BaseSubManager{
 		this.remoteDisplayClass = remoteDisplayClass;
 		if(internalInterface.getWiProVersion() >= 5 && !internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			Log.e(TAG, "Video streaming not supported on this module");
+			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			return;
 		}
 		if(parameters == null){
@@ -136,8 +143,8 @@ public class VideoStreamingManager extends BaseSubManager{
 
 					@Override
 					public void onError(String info) {
+						stateMachine.transitionToState(StreamingStateMachine.ERROR);
 						Log.e(TAG, "Error retrieving video streaming capability: " + info);
-
 					}
 				});
 			}else{
@@ -171,7 +178,13 @@ public class VideoStreamingManager extends BaseSubManager{
 			Log.e(TAG, "Cannot start video service if HMILevel is not FULL.");
 			return null;
 		}
-		return internalInterface.startVideoStream(encrypted, parameters);
+		IVideoStreamListener listener = internalInterface.startVideoStream(encrypted, parameters);
+		if(listener != null){
+			stateMachine.transitionToState(StreamingStateMachine.STARTED);
+		}else{
+			stateMachine.transitionToState(StreamingStateMachine.ERROR);
+		}
+		return listener;
 	}
 
 	/**
@@ -184,6 +197,7 @@ public class VideoStreamingManager extends BaseSubManager{
 		IVideoStreamListener streamListener = startVideoStream(parameters, encrypted);
 		if(streamListener == null){
 			Log.e(TAG, "Error starting video service");
+			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			return;
 		}
 		VideoStreamingCapability capability = (VideoStreamingCapability) internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING);
@@ -196,7 +210,9 @@ public class VideoStreamingManager extends BaseSubManager{
 			encoder.start();
 			//Encoder should be up and running
 			createRemoteDisplay(encoder.getVirtualDisplay());
+			stateMachine.transitionToState(StreamingStateMachine.STARTED);
 		} catch (Exception e) {
+			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			e.printStackTrace();
 		}
 		Log.d(TAG, parameters.toString());
@@ -216,6 +232,7 @@ public class VideoStreamingManager extends BaseSubManager{
 		if(internalInterface!=null){
 			internalInterface.stopVideoService();
 		}
+		stateMachine.transitionToState(StreamingStateMachine.STOPPED);
 	}
 
 	/**
@@ -228,6 +245,35 @@ public class VideoStreamingManager extends BaseSubManager{
 		internalInterface.removeServiceListener(SessionType.NAV, serviceListener);
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+	}
+
+	// PUBLIC METHODS FOR CHECKING STATE
+
+	/**
+	 * Check if a video service is currently active
+	 * @return boolean (true = active, false = inactive)
+	 */
+	public boolean isVideoConnected(){
+		return (stateMachine.getState() == StreamingStateMachine.READY) ||
+				(stateMachine.getState() == StreamingStateMachine.STARTED) ||
+				(stateMachine.getState() == StreamingStateMachine.STOPPED);
+	}
+
+	/**
+	 * Check if video streaming has been paused due to app moving to background
+	 * @return boolean (true = not paused, false = paused)
+	 */
+	public boolean isVideoStreamingPaused(){
+		return (stateMachine.getState() == StreamingStateMachine.STARTED) &&
+				(hmiLevel != HMILevel.HMI_FULL);
+	}
+
+	/**
+	 * Gets the current video streaming state as defined in @StreamingStateMachine
+	 * @return int representing StreamingStateMachine.StreamingState
+	 */
+	public @StreamingStateMachine.StreamingState int currentVideoStreamState(){
+		return stateMachine.getState();
 	}
 
 	// HELPER METHODS

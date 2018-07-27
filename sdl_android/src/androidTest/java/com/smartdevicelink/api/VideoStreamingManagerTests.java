@@ -118,8 +118,13 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 		when(internalInterface.getWiProVersion()).thenReturn((byte) 5);
 		when(internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(true);
 
-		VideoStreamingManager videoStreamingManager = new VideoStreamingManager(internalInterface);
-		assertNull(videoStreamingManager.startVideoStream(new VideoStreamingParameters(), false));
+		final VideoStreamingManager videoStreamingManager = new VideoStreamingManager(internalInterface);
+		videoStreamingManager.start(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				assertNull(videoStreamingManager.startVideoStream(new VideoStreamingParameters(), false));
+			}
+		});
 	}
 
 	public void testRemoteDisplayStream(){
@@ -230,5 +235,62 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 			}
 		});
 
+	}
+
+	public void testClassicVideoStreaming(){
+		ISdl internalInterface = mock(ISdl.class);
+
+		final OnRPCNotificationListener[] hmiListener = {null};
+
+		Answer<Void> onAddHMIListener = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				hmiListener[0] = (OnRPCNotificationListener) args[1];
+				return null;
+			}
+		};
+
+		doAnswer(onAddHMIListener).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCNotificationListener.class));
+
+		when(internalInterface.startVideoStream(anyBoolean(), any(VideoStreamingParameters.class))).thenReturn(new IVideoStreamListener() {
+			@Override
+			public void sendFrame(byte[] data, int offset, int length, long presentationTimeUs) throws ArrayIndexOutOfBoundsException {}
+			@Override
+			public void sendFrame(ByteBuffer data, long presentationTimeUs) {}
+		});
+
+		final VideoStreamingManager videoStreamingManager = new VideoStreamingManager(internalInterface);
+		videoStreamingManager.start(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				assertEquals(videoStreamingManager.currentVideoStreamState(), StreamingStateMachine.NONE);
+
+				OnHMIStatus hmiNotification = new OnHMIStatus();
+				hmiNotification.setHmiLevel(HMILevel.HMI_FULL);
+				hmiListener[0].onNotified(hmiNotification);
+
+				videoStreamingManager.startVideoStream(new VideoStreamingParameters(), false);
+
+				assertEquals(videoStreamingManager.currentVideoStreamState(), StreamingStateMachine.STARTED);
+				assertTrue(videoStreamingManager.isVideoConnected());
+				assertFalse(videoStreamingManager.isVideoStreamingPaused());
+
+				hmiNotification.setHmiLevel(HMILevel.HMI_BACKGROUND);
+				hmiListener[0].onNotified(hmiNotification);
+
+				assertTrue(videoStreamingManager.isVideoConnected());
+				assertTrue(videoStreamingManager.isVideoStreamingPaused());
+
+				hmiNotification.setHmiLevel(HMILevel.HMI_FULL);
+				hmiListener[0].onNotified(hmiNotification);
+
+				assertTrue(videoStreamingManager.isVideoConnected());
+				assertFalse(videoStreamingManager.isVideoStreamingPaused());
+
+				videoStreamingManager.dispose();
+				assertFalse(videoStreamingManager.isVideoConnected());
+			}
+		});
 	}
 }
