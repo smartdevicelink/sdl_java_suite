@@ -12,6 +12,7 @@ import com.smartdevicelink.api.MultipleFileCompletionListener;
 import com.smartdevicelink.api.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.Image;
@@ -26,6 +27,7 @@ import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import org.json.JSONException;
 
@@ -179,6 +181,69 @@ class TextAndGraphicManager extends BaseSubManager {
 
 		inProgressListener = listener;
 
+		if (!shouldUpdatePrimaryImage() || !shouldUpdateSecondaryImage()){
+
+			Log.v(TAG, "No Images to send, only sending text");
+			inProgressUpdate = extractTextFromShow(fullShow);
+
+		}else if (isArtworkUploadedOrDoesntExist(primaryGraphic) && isArtworkUploadedOrDoesntExist(secondaryGraphic)){
+
+			Log.v(TAG, "Images already uploaded, sending full update");
+			// The files to be updated are already uploaded, send the full show immediately
+			inProgressUpdate = fullShow;
+		} else{
+
+			Log.v(TAG, "Images need to be uploaded, sending text and uploading images");
+			// We need to upload or queue the upload of the images
+			// Send the text immediately
+			inProgressUpdate = extractTextFromShow(fullShow);
+			// start uploading images
+			Show thisUpdate = fullShow;
+
+			uploadImages(new CompletionListener() {
+				@Override
+				public void onComplete(boolean success) {
+					if (!success){
+						Log.e(TAG, "Error uploading text and graphic image");
+					}
+
+					// Check if queued image update still matches our images (there could have been a new Show in the meantime)
+					// and send a new update if it does. Since the images will already be on the head unit, the whole show will be sent
+					if (thisUpdate.getGraphic().equals(queuedImageUpdate.getGraphic()) &&
+							thisUpdate.getSecondaryGraphic().equals(queuedImageUpdate.getSecondaryGraphic())){
+						Log.v(TAG, "Queued image update matches the images we need, sending update");
+						sdl_update(inProgressListener);
+					} else {
+						Log.v(TAG, "Queued image update does not match the images we need, skipping update");
+					}
+				}
+			});
+			queuedImageUpdate = fullShow;
+		}
+
+		fullShow.setOnRPCResponseListener(new OnRPCResponseListener() {
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				if (response.getSuccess()){
+					updateCurrentScreenDataFromShow(queuedImageUpdate);
+				}
+
+				inProgressUpdate = null;
+				if (inProgressListener != null){
+					inProgressListener.onComplete(false);
+					inProgressListener = null;
+				}
+
+				if (hasQueuedUpdate){
+					Log.v(TAG, "Queued update exists, sending another update");
+					sdl_update(queuedUpdateListener);
+					queuedUpdateListener = null;
+					hasQueuedUpdate = false;
+				}
+			}
+		});
+
+		internalInterface.sendRPCRequest(fullShow);
 	}
 
 	// Images
@@ -203,8 +268,10 @@ class TextAndGraphicManager extends BaseSubManager {
 			public void onComplete(Map<String, String> errors) {
 				if (errors != null) {
 					Log.e(TAG, "Error Uploading Artworks. Error: " + errors.toString());
+					listener.onComplete(false);
 				}else{
 					Log.d(TAG, "Successfully uploaded Artworks");
+					listener.onComplete(true);
 				}
 			}
 		});
@@ -561,6 +628,11 @@ class TextAndGraphicManager extends BaseSubManager {
 		}
 	}
 
+	private boolean isArtworkUploadedOrDoesntExist(SdlArtwork artwork){
+		//return ((artwork != null) || fileManager.hasUploadedFile(artwork));
+		return false;
+	}
+
 	private boolean shouldUpdatePrimaryImage() {
 		boolean hasGraphic = displayCapabilities.getGraphicSupported();
 		return (hasGraphic && primaryGraphic != null && currentScreenData.getGraphic().getValue().equalsIgnoreCase(primaryGraphic.getName()));
@@ -590,54 +662,6 @@ class TextAndGraphicManager extends BaseSubManager {
 		}
 		List<TextField> textFields = displayCapabilities.getTextFields();
 		return textFields.size();
-	}
-
-	/**
-	 * Helper method to take resource files and turn them into byte arrays
-	 * @param resource Resource file id
-	 * @return Resulting byte array
-	 */
-	private byte[] contentsOfResource(int resource) {
-		InputStream is = null;
-		try {
-			is = context.getResources().openRawResource(resource);
-			return contentsOfInputStream(is);
-		} catch (Resources.NotFoundException e) {
-			Log.w(TAG, "Can't read from resource", e);
-			return null;
-		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	/**
-	 * Helper method to take InputStream and turn it into byte array
-	 * @param is valid InputStream
-	 * @return Resulting byte array
-	 */
-	private byte[] contentsOfInputStream(InputStream is){
-		if(is == null){
-			return null;
-		}
-		try{
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			final int bufferSize = 4096;
-			final byte[] buffer = new byte[bufferSize];
-			int available;
-			while ((available = is.read(buffer)) >= 0) {
-				os.write(buffer, 0, available);
-			}
-			return os.toByteArray();
-		} catch (IOException e){
-			Log.w(TAG, "Can't read from InputStream", e);
-			return null;
-		}
 	}
 
 	// SCREEN ITEM SETTERS AND GETTERS
@@ -798,5 +822,51 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected SdlArtwork getSecondaryGraphic(){
 		return secondaryGraphic;
 	}
+	/**
+	 * Helper method to take resource files and turn them into byte arrays
+	 * @param resource Resource file id
+	 * @return Resulting byte array
+	 */
+	private byte[] contentsOfResource(int resource) {
+		InputStream is = null;
+		try {
+			is = context.getResources().openRawResource(resource);
+			return contentsOfInputStream(is);
+		} catch (Resources.NotFoundException e) {
+			Log.w(TAG, "Can't read from resource", e);
+			return null;
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
+	/**
+	 * Helper method to take InputStream and turn it into byte array
+	 * @param is valid InputStream
+	 * @return Resulting byte array
+	 */
+	private byte[] contentsOfInputStream(InputStream is){
+		if(is == null){
+			return null;
+		}
+		try{
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			final int bufferSize = 4096;
+			final byte[] buffer = new byte[bufferSize];
+			int available;
+			while ((available = is.read(buffer)) >= 0) {
+				os.write(buffer, 0, available);
+			}
+			return os.toByteArray();
+		} catch (IOException e){
+			Log.w(TAG, "Can't read from InputStream", e);
+			return null;
+		}
+	}
 }
