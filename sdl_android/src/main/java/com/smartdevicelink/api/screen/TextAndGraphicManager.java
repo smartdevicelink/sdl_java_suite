@@ -198,7 +198,7 @@ class TextAndGraphicManager extends BaseSubManager {
 			// Send the text immediately
 			inProgressUpdate = extractTextFromShow(fullShow);
 			// start uploading images
-			Show thisUpdate = fullShow;
+			final Show thisUpdate = fullShow;
 
 			uploadImages(new CompletionListener() {
 				@Override
@@ -248,7 +248,7 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	// Images
 
-	private void uploadImages(CompletionListener listener) {
+	private void uploadImages(final CompletionListener listener) {
 
 		List<SdlArtwork> artworksToUpload = new ArrayList<>();
 
@@ -303,6 +303,8 @@ class TextAndGraphicManager extends BaseSubManager {
 	// Text
 
 	private Show assembleShowText(Show show){
+
+		show = setBlankTextFields(show);
 
 		if (mediaTrackTextField != null){
 			show.setMediaTrack(mediaTrackTextField);
@@ -519,17 +521,8 @@ class TextAndGraphicManager extends BaseSubManager {
 		return newShow;
 	}
 
-	private Show extractImageFromShow(Show show){
+	private Show setBlankTextFields(Show newShow){
 
-		Show newShow = new Show();
-		newShow.setGraphic(show.getGraphic());
-
-		return newShow;
-	}
-
-	private Show setBlankTextFields(){
-
-		Show newShow = new Show();
 		newShow.setMainField1("");
 		newShow.setMainField2("");
 		newShow.setMainField3("");
