@@ -5,6 +5,7 @@ import android.util.SparseArray;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.IProxyListener;
 import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
@@ -77,6 +78,7 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -125,7 +127,10 @@ public class ProxyBridge implements IProxyListener{
 			CopyOnWriteArrayList<OnRPCListener> listeners = rpcListeners.get(id);
 			if(listeners!=null && listeners.size()>0) {
 				for (OnRPCListener listener : listeners) {
-					listener.onReceived(message);
+					if (message instanceof RPCResponse && listener instanceof OnRPCResponseListener){
+						RPCResponse response = (RPCResponse) message;
+						((OnRPCResponseListener)listener).onResponse(response.getCorrelationID(), response);
+					}
 				}
 				return true;
 			}
