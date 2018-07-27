@@ -19,6 +19,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
@@ -497,6 +498,22 @@ public class SdlManager{
 		if (rpcRequestList.size() > 0) {
 			proxy.sendRequests(rpcRequestList, listener);
 		}
+	}
+
+	/**
+	 * Add an OnRPCNotificationListener for HMI status notifications
+	 * @param listener listener that will be called when the HMI status changes
+	 */
+	public void addOnHmiStatusListener(OnRPCNotificationListener listener){
+		proxy.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS,listener);
+	}
+
+	/**
+	 * Remove an OnRPCNotificationListener for HMI status notifications
+	 * @param listener listener that was previously added for the HMI status notifications
+	 */
+	public void removeOnHmiStatusListener(OnRPCNotificationListener listener){
+		proxy.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, listener);
 	}
 
 	// LIFECYCLE / OTHER
