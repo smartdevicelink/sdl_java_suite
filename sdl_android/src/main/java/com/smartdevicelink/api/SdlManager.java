@@ -10,6 +10,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
@@ -27,6 +28,7 @@ import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -637,12 +639,12 @@ public class SdlManager{
 		}
 
 		@Override
-		public void addOnRPCResponseListener(FunctionID responseId, ProxyBridge.OnRPCListener listener) {
+		public void addOnRPCResponseListener(final FunctionID responseId, final OnRPCResponseListener listener) {
 			proxyBridge.addRpcListener(responseId, listener);
 		}
 
 		@Override
-		public boolean removeOnRPCResponseListener(FunctionID responseId, ProxyBridge.OnRPCListener listener) {
+		public boolean removeOnRPCResponseListener(final FunctionID responseId, final OnRPCResponseListener listener) {
 			return proxyBridge.removeOnRPCListener(responseId, listener);
 		}
 

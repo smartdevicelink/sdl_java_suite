@@ -63,11 +63,7 @@ public class SystemCapabilityManager {
 			CopyOnWriteArrayList<OnSystemCapabilityListener> listeners = onSystemCapabilityListeners.get(systemCapabilityType);
 			if(listeners != null && listeners.size() > 0) {
 				for (OnSystemCapabilityListener listener : listeners) {
-					if (capability != null) {
-						listener.onCapabilityRetrieved(capability);
-					} else {
-						listener.onError(String.format("capability: %s is null", systemCapabilityType.toString()));
-					}
+					listener.onCapabilityRetrieved(capability);
 				}
 			}
 		}
@@ -137,6 +133,7 @@ public class SystemCapabilityManager {
 	 * @param listener callback to execute upon retrieving capability
 	 */
 	public void addOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener){
+		getCapability(systemCapabilityType, listener);
 		synchronized(LISTENER_LOCK){
 			if (systemCapabilityType != null && listener != null) {
 				if (onSystemCapabilityListeners.get(systemCapabilityType) == null) {

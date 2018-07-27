@@ -2,7 +2,6 @@ package com.smartdevicelink.test.proxy;
 
 import android.test.AndroidTestCase;
 
-import com.smartdevicelink.api.ProxyBridge;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -28,6 +27,7 @@ import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -178,10 +178,10 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {return false;}
 
 		@Override
-		public void addOnRPCResponseListener(FunctionID responseId, ProxyBridge.OnRPCListener listener) { }
+		public void addOnRPCResponseListener(FunctionID responseId, OnRPCResponseListener listener) { }
 
 		@Override
-		public boolean removeOnRPCResponseListener(FunctionID responseId, ProxyBridge.OnRPCListener listener) { return false; }
+		public boolean removeOnRPCResponseListener(FunctionID responseId, OnRPCResponseListener listener) { return false; }
 
 		@Override
 		public Object getCapability(SystemCapabilityType systemCapabilityType){return null;}
