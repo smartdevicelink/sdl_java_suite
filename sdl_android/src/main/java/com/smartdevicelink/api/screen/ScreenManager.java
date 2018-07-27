@@ -72,51 +72,51 @@ public class ScreenManager extends BaseSubManager {
 	 */
 
 	public void setTextField1(String textField1) {
-		this.textAndGraphicManager.textField1 = textField1;
+		this.textAndGraphicManager.setTextField1(textField1);
 	}
 
 	public void setTextField2(String textField2) {
-		this.textAndGraphicManager.textField2 = textField2;
+		this.textAndGraphicManager.setTextField2(textField2);
 	}
 
 	public void setTextField3(String textField3) {
-		this.textAndGraphicManager.textField3 = textField3;
+		this.textAndGraphicManager.setTextField3(textField3);
 	}
 
 	public void setTextField4(String textField4) {
-		this.textAndGraphicManager.textField4 = textField4;
+		this.textAndGraphicManager.setTextField4(textField4);
 	}
 
 	public void setMediaTrackTextField(String mediaTrackTextField) {
-		this.textAndGraphicManager.mediaTrackTextField = mediaTrackTextField;
+		this.textAndGraphicManager.setMediaTrackTextField(mediaTrackTextField);
 	}
 
 	public void setPrimaryGraphic(SdlArtwork primaryGraphic) {
-		this.textAndGraphicManager.primaryGraphic = primaryGraphic;
+		this.textAndGraphicManager.setPrimaryGraphic(primaryGraphic);
 	}
 
 	public void setSecondaryGraphic(SdlArtwork secondaryGraphic) {
-		this.textAndGraphicManager.secondaryGraphic = secondaryGraphic;
+		this.textAndGraphicManager.setSecondaryGraphic(secondaryGraphic);
 	}
 
 	public void setTextAlignment(TextAlignment textAlignment) {
-		this.textAndGraphicManager.textAlignment = textAlignment;
+		this.textAndGraphicManager.setTextAlignment(textAlignment);
 	}
 
 	public void setTextField1Type(MetadataType textField1Type) {
-		this.textAndGraphicManager.textField1Type = textField1Type;
+		this.textAndGraphicManager.setTextField1Type(textField1Type);
 	}
 
 	public void setTextField2Type(MetadataType textField2Type) {
-		this.textAndGraphicManager.textField2Type = textField2Type;
+		this.textAndGraphicManager.setTextField2Type(textField2Type);
 	}
 
 	public void setTextField3Type(MetadataType textField3Type) {
-		this.textAndGraphicManager.textField3Type = textField3Type;
+		this.textAndGraphicManager.setTextField3Type(textField3Type);
 	}
 
 	public void setTextField4Type(MetadataType textField4Type) {
-		this.textAndGraphicManager.textField4Type = textField4Type;
+		this.textAndGraphicManager.setTextField4Type(textField4Type);
 	}
 
 	/*public void setSoftButtonObjects(ArrayList<SoftButtonObject> softButtonObjects) {
@@ -126,51 +126,51 @@ public class ScreenManager extends BaseSubManager {
 	// Getters
 
 	public String getTextField1() {
-		return this.textAndGraphicManager.textField1;
+		return this.textAndGraphicManager.getTextField1();
 	}
 
 	public String getTextField2() {
-		return this.textAndGraphicManager.textField2;
+		return this.textAndGraphicManager.getTextField2();
 	}
 
 	public String getTextField3() {
-		return this.textAndGraphicManager.textField3;
+		return this.textAndGraphicManager.getTextField3();
 	}
 
 	public String getTextField4() {
-		return this.textAndGraphicManager.textField4;
+		return this.textAndGraphicManager.getTextField4();
 	}
 
 	public String getMediaTrackTextField() {
-		return this.textAndGraphicManager.mediaTrackTextField;
+		return this.textAndGraphicManager.getMediaTrackTextField();
 	}
 
 	public SdlArtwork getPrimaryGraphic() {
-		return this.textAndGraphicManager.primaryGraphic;
+		return this.textAndGraphicManager.getPrimaryGraphic();
 	}
 
 	public SdlArtwork getSecondaryGraphic() {
-		return this.textAndGraphicManager.secondaryGraphic;
+		return this.textAndGraphicManager.getSecondaryGraphic();
 	}
 
 	public TextAlignment getTextAlignment() {
-		return this.textAndGraphicManager.textAlignment;
+		return this.textAndGraphicManager.getTextAlignment();
 	}
 
 	public MetadataType getTextField1Type() {
-		return this.textAndGraphicManager.textField1Type;
+		return this.textAndGraphicManager.getTextField1Type();
 	}
 
 	public MetadataType getTextField2Type() {
-		return this.textAndGraphicManager.textField2Type;
+		return this.textAndGraphicManager.getTextField2Type();
 	}
 
 	public MetadataType getTextField3Type() {
-		return this.textAndGraphicManager.textField3Type;
+		return this.textAndGraphicManager.getTextField3Type();
 	}
 
 	public MetadataType getTextField4Type() {
-		return this.textAndGraphicManager.textField4Type;
+		return this.textAndGraphicManager.getTextField4Type();
 	}
 
 	/*public ArrayList<SoftButtonObject> getSoftButtonObjects() {

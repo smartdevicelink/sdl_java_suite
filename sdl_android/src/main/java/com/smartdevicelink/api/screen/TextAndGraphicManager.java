@@ -49,6 +49,7 @@ import java.util.Map;
 class TextAndGraphicManager extends BaseSubManager {
 
 	private static final String TAG = "TextAndGraphicManager";
+	private boolean isDirty;
 	private FileManager fileManager;
 	private Show currentScreenData;
 	private Context context;
@@ -56,12 +57,13 @@ class TextAndGraphicManager extends BaseSubManager {
 	private DisplayCapabilities displayCapabilities;
 	private HMILevel currentHMILevel;
 	private OnRPCNotificationListener hmiListener;
+	private SdlArtwork primaryGraphic, secondaryGraphic;
+	private TextAlignment textAlignment;
+	private String textField1, textField2, textField3, textField4, mediaTrackTextField;
+	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
 
 	protected boolean batchingUpdates;
-	protected SdlArtwork primaryGraphic, secondaryGraphic;
-	protected TextAlignment textAlignment;
-	protected String textField1, textField2, textField3, textField4, mediaTrackTextField;
-	protected MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
+
 
 	//Constructors
 
@@ -71,6 +73,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		this.fileManager = fileManager;
 		this.context = context;
 		batchingUpdates = false;
+		isDirty = false;
 		currentHMILevel = HMILevel.HMI_NONE;
 		addListeners();
 		getBlankArtwork();
@@ -95,6 +98,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		secondaryGraphic = null;
 		blankArtwork = null;
 		displayCapabilities = null;
+		isDirty = false;
 
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -116,7 +120,7 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	// Upload / Send
 
-	protected void update() {
+	protected void update(CompletionListener listener) {
 
 		// check if is batch update
 		if (batchingUpdates) {
@@ -597,6 +601,165 @@ class TextAndGraphicManager extends BaseSubManager {
 			Log.w(TAG, "Can't read from InputStream", e);
 			return null;
 		}
+	}
+
+	// SCREEN ITEM SETTERS AND GETTERS
+
+	protected void setTextAlignment(TextAlignment textAlignment){
+		this.textAlignment = textAlignment;
+		// If we aren't batching, send the update immediately, if we are, set ourselves as dirty (so we know we should send an update after the batch ends)
+		if (!batchingUpdates){
+			update(null);
+		}else{
+			isDirty = true;
+		}
+	}
+
+	protected TextAlignment getTextAlignment(){
+		return textAlignment;
+	}
+
+	protected void setMediaTrackTextField(String mediaTrackTextField){
+		this.mediaTrackTextField = mediaTrackTextField;
+		if (!batchingUpdates){
+			update(null);
+		}else{
+			isDirty = true;
+		}
+	}
+
+	protected String getMediaTrackTextField(){
+		return mediaTrackTextField;
+	}
+
+	protected void setTextField1(String textField1){
+		this.textField1 = textField1;
+		if (!batchingUpdates){
+			update(null);
+		}else{
+			isDirty = true;
+		}
+	}
+
+	protected String getTextField1(){
+		return textField1;
+	}
+
+	protected void setTextField2(String textField2){
+		this.textField2 = textField2;
+		if (!batchingUpdates){
+			update(null);
+		}else{
+			isDirty = true;
+		}
+	}
+
+	protected String getTextField2(){
+		return textField2;
+	}
+
+	protected void setTextField3(String textField3){
+		this.textField3 = textField3;
+		if (!batchingUpdates){
+			update(null);
+		}else{
+			isDirty = true;
+		}
+	}
+
+	protected String getTextField3(){
+		return textField3;
+	}
+
+	protected void setTextField4(String textField4){
+		this.textField4 = textField4;
+		if (!batchingUpdates){
+			update(null);
+		}else{
+			isDirty = true;
+		}
+	}
+
+	protected String getTextField4(){
+		return textField4;
+	}
+
+	protected void setTextField1Type(MetadataType textField1Type){
+		this.textField1Type = textField1Type;
+		if (!batchingUpdates){
+			update(null);
+		}else{
+			isDirty = true;
+		}
+	}
+
+	protected MetadataType getTextField1Type(){
+		return textField1Type;
+	}
+
+	protected void setTextField2Type(MetadataType textField2Type){
+		this.textField2Type = textField2Type;
+		if (!batchingUpdates){
+			update(null);
+		}else{
+			isDirty = true;
+		}
+	}
+
+	protected MetadataType getTextField2Type(){
+		return textField2Type;
+	}
+
+	protected void setTextField3Type(MetadataType textField3Type){
+		this.textField3Type = textField3Type;
+		if (!batchingUpdates){
+			update(null);
+		}else{
+			isDirty = true;
+		}
+	}
+
+	protected MetadataType getTextField3Type(){
+		return textField3Type;
+	}
+
+	protected void setTextField4Type(MetadataType textField4Type){
+		this.textField4Type = textField4Type;
+		if (!batchingUpdates){
+			update(null);
+		}else{
+			isDirty = true;
+		}
+	}
+
+	protected MetadataType getTextField4Type(){
+		return textField4Type;
+	}
+
+	protected void setPrimaryGraphic(SdlArtwork primaryGraphic){
+		this.primaryGraphic = primaryGraphic;
+		if (!batchingUpdates){
+			update(null);
+		}else{
+			isDirty = true;
+		}
+	}
+
+	protected SdlArtwork getPrimaryGraphic(){
+		return primaryGraphic;
+	}
+
+	protected void setSecondaryGraphic(SdlArtwork secondaryGraphic){
+		this.secondaryGraphic = secondaryGraphic;
+		if (!batchingUpdates){
+			update(null);
+		}else{
+			isDirty = true;
+		}
+	}
+
+	protected SdlArtwork getSecondaryGraphic(){
+		return secondaryGraphic;
 	}
 
 }
