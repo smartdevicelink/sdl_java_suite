@@ -148,7 +148,7 @@ public class AudioStreamManager implements ISdlServiceListener {
 
     @IntDef({SampleType.UNSIGNED_8_BIT, SampleType.SIGNED_16_BIT, SampleType.FLOAT})
     @Retention(RetentionPolicy.SOURCE)
-    @interface SampleType {
+    public @interface SampleType {
         int UNSIGNED_8_BIT = Byte.SIZE >> 3;
         int SIGNED_16_BIT = Short.SIZE >> 3;
         int FLOAT = Float.SIZE >> 3;
@@ -156,14 +156,14 @@ public class AudioStreamManager implements ISdlServiceListener {
 
     @IntDef({BitsPerSample.EIGHT_BIT, BitsPerSample.SIXTEEN_BIT})
     @Retention(RetentionPolicy.SOURCE)
-    @interface BitsPerSample {
+    public @interface BitsPerSample {
         int EIGHT_BIT = 8;
         int SIXTEEN_BIT = 16;
     }
 
     @StringDef({SamplingRate.EIGHT_KHZ, SamplingRate.SIXTEEN_KHZ, SamplingRate.TWENTY_TWO_KHZ, SamplingRate.FOURTY_FOUR_KHX})
     @Retention(RetentionPolicy.SOURCE)
-    @interface SamplingRate {
+    public @interface SamplingRate {
         String EIGHT_KHZ = "8KHZ";
         String SIXTEEN_KHZ = "16KHZ";
         String TWENTY_TWO_KHZ = "22KHZ";

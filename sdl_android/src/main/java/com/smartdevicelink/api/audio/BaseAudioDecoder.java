@@ -16,7 +16,7 @@ import java.nio.ByteOrder;
 
 @SuppressWarnings("WeakerAccess")
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-abstract class BaseAudioDecoder {
+public abstract class BaseAudioDecoder {
     private static final String TAG = AudioDecoder.class.getSimpleName();
 
     protected int targetSampleRate;
