@@ -79,11 +79,11 @@ public class SampleBuffer {
                 int a = b & 0xff; // convert the 8 bits into int so we can calc > 127
                 return a * 2.0 / 255.0 - 1.0; //magic? check out SampleType
             }
-            case SampleType.SIGNED_16_BIT:SIGNED_16_BIT: {
+            case SampleType.SIGNED_16_BIT: {
                 short a = index == -1 ? byteBuffer.getShort() : byteBuffer.getShort(index * sampleType);
                 return (a + 32768.0) * 2.0 / 65535.0 - 1.0; //magic? check out SampleType
             }
-            case SampleType.FLOAT:FLOAT: {
+            case SampleType.FLOAT: {
                 return index == -1 ? byteBuffer.getFloat() : byteBuffer.getFloat(index * sampleType);
             }
             default: {
