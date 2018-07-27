@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import com.smartdevicelink.api.audio.AudioStreamManager.SampleType;
 
 /**
  * Wraps a buffer of raw audio samples depending on the sample type (8 bit, 16 bit)
@@ -16,11 +17,11 @@ public class SampleBuffer {
     private static final String TAG = SampleBuffer.class.getSimpleName();
 
     @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private SampleType sampleType;
+    private @SampleType int sampleType;
     private ByteBuffer byteBuffer;
     private long presentationTimeUs;
 
-    public static SampleBuffer wrap(ByteBuffer buffer, SampleType sampleType, long presentationTimeUs) {
+    public static SampleBuffer wrap(ByteBuffer buffer, @SampleType int sampleType, long presentationTimeUs) {
         return new SampleBuffer(buffer, sampleType, presentationTimeUs);
     }
 
@@ -31,18 +32,18 @@ public class SampleBuffer {
      * @param byteOrder the byte order of the samples if a sampe size is > 1 byte
      * @return
      */
-    public static SampleBuffer allocate(int capacity, SampleType sampleType, ByteOrder byteOrder, long presentationTimeUs) {
+    public static SampleBuffer allocate(int capacity, @SampleType int sampleType, ByteOrder byteOrder, long presentationTimeUs) {
         return new SampleBuffer(capacity, sampleType, byteOrder, presentationTimeUs);
     }
 
-    private SampleBuffer(int capacity, SampleType sampleType, ByteOrder byteOrder, long presentationTimeUs) {
-        this.byteBuffer = ByteBuffer.allocate(sampleType.bytes * capacity);
+    private SampleBuffer(int capacity, @SampleType int sampleType, ByteOrder byteOrder, long presentationTimeUs) {
+        this.byteBuffer = ByteBuffer.allocate(sampleType * capacity);
         this.byteBuffer.order(byteOrder);
         this.sampleType = sampleType;
         this.presentationTimeUs = presentationTimeUs;
     }
 
-    private SampleBuffer(ByteBuffer buffer, SampleType sampleType, long presentationTimeUs) {
+    private SampleBuffer(ByteBuffer buffer, @SampleType int sampleType, long presentationTimeUs) {
         this.byteBuffer = buffer;
         this.sampleType = sampleType;
         this.presentationTimeUs = presentationTimeUs;
@@ -50,19 +51,19 @@ public class SampleBuffer {
 
     // returns the number of samples in the buffer
     public int limit() {
-        return byteBuffer.limit() / sampleType.bytes;
+        return byteBuffer.limit() / sampleType;
     }
 
     public void limit(int newLimit) {
-        byteBuffer.limit(newLimit * sampleType.bytes);
+        byteBuffer.limit(newLimit * sampleType);
     }
 
     public int position() {
-        return byteBuffer.position() / sampleType.bytes;
+        return byteBuffer.position() / sampleType;
     }
 
     public void position(int newPosition) {
-        byteBuffer.position(newPosition * sampleType.bytes);
+        byteBuffer.position(newPosition * sampleType);
     }
 
     public double get() {
@@ -73,20 +74,20 @@ public class SampleBuffer {
     // returns the sample at the given index
     public double get(int index) {
         switch (sampleType) {
-            case UNSIGNED_8_BIT: {
+            case SampleType.UNSIGNED_8_BIT: {
                 byte b = index == -1 ? byteBuffer.get() : byteBuffer.get(index);
                 int a = b & 0xff; // convert the 8 bits into int so we can calc > 127
                 return a * 2.0 / 255.0 - 1.0; //magic? check out SampleType
             }
-            case SIGNED_16_BIT: {
-                short a = index == -1 ? byteBuffer.getShort() : byteBuffer.getShort(index * sampleType.bytes);
+            case SampleType.SIGNED_16_BIT:SIGNED_16_BIT: {
+                short a = index == -1 ? byteBuffer.getShort() : byteBuffer.getShort(index * sampleType);
                 return (a + 32768.0) * 2.0 / 65535.0 - 1.0; //magic? check out SampleType
             }
-            case FLOAT: {
-                return index == -1 ? byteBuffer.getFloat() : byteBuffer.getFloat(index * sampleType.bytes);
+            case SampleType.FLOAT:FLOAT: {
+                return index == -1 ? byteBuffer.getFloat() : byteBuffer.getFloat(index * sampleType);
             }
             default: {
-                Log.e(TAG, "SampleBuffer.get(int): The sample type is not known: " + sampleType.toString());
+                Log.e(TAG, "SampleBuffer.get(int): The sample type is not known: " + sampleType);
                 return 0.0;
             }
         }
@@ -98,7 +99,7 @@ public class SampleBuffer {
 
     public void put(int index, double sample) {
         switch (sampleType) {
-            case UNSIGNED_8_BIT: {
+            case SampleType.UNSIGNED_8_BIT: {
                 int a = (int)Math.round((sample + 1.0) * 255.0 / 2.0); //magic? check out SampleType
                 byte b = (byte)a;
                 if (index == -1) {
@@ -108,25 +109,25 @@ public class SampleBuffer {
                 }
                 break;
             }
-            case SIGNED_16_BIT: {
+            case SampleType.SIGNED_16_BIT: {
                 short a = (short)Math.round((sample + 1.0) * 65535 / 2.0 - 32767.0); //magic? check out SampleType
                 if (index == -1) {
                     byteBuffer.putShort(a);
                 } else {
-                    byteBuffer.putShort(index * sampleType.bytes, a);
+                    byteBuffer.putShort(index * sampleType, a);
                 }
                 break;
             }
-            case FLOAT: {
+            case SampleType.FLOAT: {
                 if (index == -1) {
                     byteBuffer.putFloat((float)sample);
                 } else {
-                    byteBuffer.putFloat(index * sampleType.bytes, (float)sample);
+                    byteBuffer.putFloat(index * sampleType, (float)sample);
                 }
                 break;
             }
             default: {
-                Log.e(TAG, "SampleBuffer.set(int): The sample type is not known: " + sampleType.toString());
+                Log.e(TAG, "SampleBuffer.set(int): The sample type is not known: " + sampleType);
             }
         }
     }
