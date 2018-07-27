@@ -13,7 +13,7 @@ import java.util.List;
  *
  * Note: This class must be accessed through the SdlManager->ScreenManager. Do not instantiate it by itself.
  */
-class SoftButtonObject {
+public class SoftButtonObject {
 
     private static final String TAG = "SoftButtonObject";
     private String name;
@@ -28,7 +28,7 @@ class SoftButtonObject {
 
 
 
-	protected SoftButtonObject(String name, List<SoftButtonState> states, String initialStateName) {
+	public SoftButtonObject(String name, List<SoftButtonState> states, String initialStateName) {
 
 		// Make sure there aren't two states with the same name
 		if (hasTwoStatesOfSameName(states)){

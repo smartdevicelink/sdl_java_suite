@@ -13,14 +13,14 @@ import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
  *
  * Note: This class must be accessed through the SdlManager->ScreenManager. Do not instantiate it by itself.
  */
-class SoftButtonState {
+public class SoftButtonState {
 
 	private static final String TAG = "SoftButtonState";
 	private String name;
 	private SdlArtwork artwork;
 	private SoftButton softButton;
 
-	protected SoftButtonState(String name, String text, SdlArtwork artwork) {
+	public SoftButtonState(String name, String text, SdlArtwork artwork) {
 		if (text == null && artwork == null){
 			Log.w(TAG, "Attempted to create an invalid soft button state: text and artwork are both null");
 			return;
