@@ -50,6 +50,14 @@ import java.util.Hashtable;
  * 			<td>maxlength:500</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>menuIcon</td>
+ * 			<td>Image</td>
+ * 			<td>Image to be be shown along with the submenu item</td>
+ *                 <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 4.6</td>
+ * 		</tr>
  *  </table>
  *  <b>Response</b>
  *  <p>Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code, this means the SubMenu was added to the Command Menu successfully</p>
@@ -66,6 +74,7 @@ public class AddSubMenu extends RPCRequest {
 	public static final String KEY_POSITION = "position";
 	public static final String KEY_MENU_NAME = "menuName";
 	public static final String KEY_MENU_ID = "menuID";
+	public static final String KEY_MENU_ICON = "menuIcon";
 
 	/**
 	 * Constructs a new AddSubMenu object
@@ -166,4 +175,21 @@ public class AddSubMenu extends RPCRequest {
     public void setMenuName( @NonNull String menuName ) {
 		setParameters(KEY_MENU_NAME, menuName);
     }
+	/**
+	 * Returns Image to be be shown along with the submenu item
+	 *
+	 * @return Image - the submenu icon
+	 */
+	public Image getMenuIcon() {
+		return (Image) getObject(Image.class, KEY_MENU_ICON);
+	}
+	/**
+	 * Sets image to be be shown along with the submenu item
+	 *
+	 * @param menuIcon
+	 *            Image to be be shown along with the submenu item
+	 */
+	public void setMenuIcon(Image menuIcon) {
+		setParameters(KEY_MENU_ICON, menuIcon);
+	}
 }

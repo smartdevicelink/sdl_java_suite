@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.VehicleData}
+ * {@link com.smartdevicelink.proxy.rpc.enums.VehicleDataType}
  */
 public class VehicleDataTypeTests extends TestCase {
 
@@ -74,6 +74,10 @@ public class VehicleDataTypeTests extends TestCase {
 		VehicleDataType enumVehicleDataMyKey = VehicleDataType.valueForString(example);
 		example = "VEHICLEDATA_FUELRANGE";
 		VehicleDataType enumVehicleDataFuelRange = VehicleDataType.valueForString(example);
+		example = "VEHICLEDATA_TURNSIGNAL";
+		VehicleDataType enumVehicleDataTurnSignal = VehicleDataType.valueForString(example);
+		example = "VEHICLEDATA_ELECTRONICPARKBRAKESTATUS";
+		VehicleDataType enumVehicleDataElectronicParkBrakeStatus = VehicleDataType.valueForString(example);
 		
 		assertNotNull("VEHICLEDATA_GPS returned null", enumVehicleDataGps);
 		assertNotNull("VEHICLEDATA_SPEED returned null", enumVehicleDataSpeed);
@@ -103,6 +107,8 @@ public class VehicleDataTypeTests extends TestCase {
 		assertNotNull("VEHICLEDATA_CLUSTERMODESTATUS returned null", enumVehicleDataClusterModeStatus);
 		assertNotNull("VEHICLEDATA_MYKEY returned null", enumVehicleDataMyKey);
 		assertNotNull("VEHICLEDATA_FUELRANGE returned null", enumVehicleDataFuelRange);
+		assertNotNull("VEHICLEDATA_TURNSIGNAL returned null", enumVehicleDataTurnSignal);
+		assertNotNull("VEHICLEDATA_ELECTRONICPARKBRAKESTATUS returned null", enumVehicleDataElectronicParkBrakeStatus);
 	}
 	
 	/**
@@ -168,6 +174,8 @@ public class VehicleDataTypeTests extends TestCase {
 		enumTestList.add(VehicleDataType.VEHICLEDATA_CLUSTERMODESTATUS);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_MYKEY);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_FUELRANGE);
+		enumTestList.add(VehicleDataType.VEHICLEDATA_TURNSIGNAL);
+		enumTestList.add(VehicleDataType.VEHICLEDATA_ELECTRONICPARKBRAKESTATUS);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

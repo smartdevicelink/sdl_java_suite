@@ -40,6 +40,8 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
 	public static final String KEY_FUEL_RANGE = "fuelRange";
+	public static final String KEY_TURN_SIGNAL = "turnSignal";
+	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
 
 	/**
 	 * Constructs a new SubscribeVehicleDataResponse object
@@ -430,5 +432,38 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public VehicleDataResult getFuelRange() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_RANGE);
+    }
+
+    /**
+     * Sets turnSignal
+     * @param turnSignal
+     */
+    public void setTurnSignal(VehicleDataResult turnSignal) {
+        setParameters(KEY_TURN_SIGNAL, turnSignal);
+    }
+
+    /**
+     * Gets turnSignal
+     * @return VehicleDataResult
+     */
+    @SuppressWarnings("unchecked")
+    public VehicleDataResult getTurnSignal() {
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_TURN_SIGNAL);
+    }
+
+    /**
+     * Sets electronicParkBrakeStatus
+     * @param electronicParkBrakeStatus
+     */
+    public void setElectronicParkBrakeStatus(VehicleDataResult electronicParkBrakeStatus){
+        setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+    }
+
+    /**
+     * Gets electronicParkBrakeStatus
+     * @return VehicleDataResult
+     */
+    public VehicleDataResult getElectronicParkBrakeStatus(){
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ELECTRONIC_PARK_BRAKE_STATUS);
     }
 }

@@ -115,9 +115,19 @@ public enum VehicleDataType {
     VEHICLEDATA_MYKEY,
 
     VEHICLEDATA_FUELRANGE,
+
+    /**
+     * Notifies TURNSIGNALData may be subscribed
+     */
+    VEHICLEDATA_TURNSIGNAL,
+
+    /**
+     * Notifies ELECTRONICPARKBRAKESTATUSData may be subscribed
+     */
+    VEHICLEDATA_ELECTRONICPARKBRAKESTATUS,
     ;
 
-	/**
+     /**
      * Convert String to VehicleDataType
      * @param value String
      * @return VehicleDataType
