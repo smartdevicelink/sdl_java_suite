@@ -81,8 +81,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ProxyBridge implements IProxyListener{
 	private final Object RPC_LISTENER_LOCK = new Object();
-	protected SparseArray<CopyOnWriteArrayList<OnRPCListener>> rpcListeners = null;
-	final LifecycleListener lifecycleListener;
+	private SparseArray<CopyOnWriteArrayList<OnRPCListener>> rpcListeners = null;
+	private final LifecycleListener lifecycleListener;
 
 	@Override
 	public void onProxyOpened() {}

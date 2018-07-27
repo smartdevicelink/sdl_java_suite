@@ -662,6 +662,16 @@ public class SdlManager{
 		}
 
 		@Override
+		public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
+			proxy.addOnSystemCapabilityListener(systemCapabilityType, listener);
+		}
+
+		@Override
+		public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
+			return proxy.removeOnSystemCapabilityListener(systemCapabilityType, listener);
+		}
+
+		@Override
 		public SdlMsgVersion getSdlMsgVersion(){
 			try {
 				return proxy.getSdlMsgVersion();

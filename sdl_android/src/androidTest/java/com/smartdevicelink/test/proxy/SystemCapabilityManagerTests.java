@@ -200,6 +200,12 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		}
 
 		@Override
+		public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { }
+
+		@Override
+		public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { return false; }
+
+		@Override
 		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,
 									  AudioStreamingParams params) {}
 

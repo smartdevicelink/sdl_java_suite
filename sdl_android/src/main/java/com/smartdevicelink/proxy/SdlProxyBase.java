@@ -373,6 +373,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
+		public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
+			SdlProxyBase.this.removeOnSystemCapabilityListener(systemCapabilityType, listener);
+		}
+
+		@Override
+		public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
+			return SdlProxyBase.this.removeOnSystemCapabilityListener(systemCapabilityType, listener);
+		}
+
+		@Override
 		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,
 									  AudioStreamingParams params) {
 			if(getIsConnected()){
@@ -6932,6 +6942,29 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}else{
 			return null;
 		}
+	}
+
+	/**
+	 * Add a listener to be called whenever a new capability is retrieved
+	 * @param systemCapabilityType Type of capability desired
+	 * @param listener callback to execute upon retrieving capability
+	 */
+	public void addOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener) {
+		if(_systemCapabilityManager != null){
+			_systemCapabilityManager.addOnSystemCapabilityListener(systemCapabilityType, listener);
+		}
+	}
+
+	/**
+	 * Remove an OnSystemCapabilityListener that was previously added
+	 * @param systemCapabilityType Type of capability
+	 * @param listener the listener that should be removed
+	 */
+	public boolean removeOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener){
+		if(_systemCapabilityManager != null){
+			return _systemCapabilityManager.removeOnSystemCapabilityListener(systemCapabilityType, listener);
+		}
+		return false;
 	}
 
 	/* ******************* END Public Helper Methods *************************/

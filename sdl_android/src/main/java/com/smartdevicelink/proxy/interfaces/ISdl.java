@@ -186,6 +186,20 @@ public interface ISdl {
     boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType);
 
     /**
+     * Add a listener to be called whenever a new capability is retrieved
+     * @param systemCapabilityType Type of capability desired
+     * @param listener callback to execute upon retrieving capability
+     */
+    void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
+
+    /**
+     * Remove an OnSystemCapabilityListener that was previously added
+     * @param systemCapabilityType Type of capability
+     * @param listener the listener that should be removed
+     */
+    boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
+
+    /**
      * Get SdlMsgVersion
      * @return SdlMsgVersion
      */
