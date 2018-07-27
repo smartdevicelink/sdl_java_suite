@@ -25,6 +25,7 @@ import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 
 import org.json.JSONException;
 
@@ -34,6 +35,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.smartdevicelink.proxy.rpc.enums.TextAlignment.CENTERED;
 
 /**
  * <strong>TextAndGraphicManager</strong> <br>
@@ -49,16 +52,17 @@ import java.util.Map;
 class TextAndGraphicManager extends BaseSubManager {
 
 	private static final String TAG = "TextAndGraphicManager";
-	private boolean isDirty;
+	private boolean isDirty, hasQueuedUpdate;
 	private FileManager fileManager;
-	private Show currentScreenData;
+	private Show currentScreenData, inProgressUpdate, queuedImageUpdate;
+	private CompletionListener queuedUpdateListener, inProgressListener;
 	private Context context;
 	private SdlArtwork blankArtwork;
 	private DisplayCapabilities displayCapabilities;
 	private HMILevel currentHMILevel;
 	private OnRPCNotificationListener hmiListener;
 	private SdlArtwork primaryGraphic, secondaryGraphic;
-	private TextAlignment textAlignment;
+	private com.smartdevicelink.proxy.rpc.enums.TextAlignment textAlignment;
 	private String textField1, textField2, textField3, textField4, mediaTrackTextField;
 	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
 
@@ -74,6 +78,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		this.context = context;
 		batchingUpdates = false;
 		isDirty = false;
+		textAlignment = CENTERED;
 		currentHMILevel = HMILevel.HMI_NONE;
 		addListeners();
 		getBlankArtwork();
@@ -98,6 +103,12 @@ class TextAndGraphicManager extends BaseSubManager {
 		secondaryGraphic = null;
 		blankArtwork = null;
 		displayCapabilities = null;
+		inProgressUpdate = null;
+		queuedImageUpdate = null;
+		currentScreenData = null;
+		queuedUpdateListener = null;
+		inProgressListener = null;
+		hasQueuedUpdate = false;
 		isDirty = false;
 
 		// remove listeners
@@ -127,20 +138,46 @@ class TextAndGraphicManager extends BaseSubManager {
 			return;
 		}
 
+		if (isDirty){
+			isDirty = false;
+			sdl_update(listener);
+		}
+	}
+
+
+	private void sdl_update(CompletionListener listener){
+
 		// make sure hmi is not none
 		if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE){
 			return;
 		}
 
-		// create show
+		Log.d(TAG, "Updating Text and Graphics");
+		if (inProgressUpdate != null){
 
-		// check if only text
+			Log.v(TAG, "In progress update exists, queueing update");
+			if (queuedUpdateListener != null){
 
-		// if image is already there, send
+				Log.v(TAG, "Queued update already exists, superseding previous queued update");
+				queuedUpdateListener.onComplete(false);
+				queuedUpdateListener = null;
+			}
 
-		// if image not there, upload
+			if (listener != null){
+				queuedUpdateListener = listener;
+			}else{
+				hasQueuedUpdate = true;
+			}
+			return;
+		}
 
-		// send show
+		Show fullShow = new Show();
+		fullShow.setAlignment(textAlignment);
+		fullShow.setMetadataTags(new MetadataTags());
+		fullShow = assembleShowText(fullShow);
+		fullShow = assembleShowImages(fullShow);
+
+		inProgressListener = listener;
 
 	}
 
@@ -609,7 +646,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		this.textAlignment = textAlignment;
 		// If we aren't batching, send the update immediately, if we are, set ourselves as dirty (so we know we should send an update after the batch ends)
 		if (!batchingUpdates){
-			update(null);
+			sdl_update(null);
 		}else{
 			isDirty = true;
 		}
@@ -622,7 +659,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected void setMediaTrackTextField(String mediaTrackTextField){
 		this.mediaTrackTextField = mediaTrackTextField;
 		if (!batchingUpdates){
-			update(null);
+			sdl_update(null);
 		}else{
 			isDirty = true;
 		}
@@ -635,7 +672,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected void setTextField1(String textField1){
 		this.textField1 = textField1;
 		if (!batchingUpdates){
-			update(null);
+			sdl_update(null);
 		}else{
 			isDirty = true;
 		}
@@ -648,7 +685,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected void setTextField2(String textField2){
 		this.textField2 = textField2;
 		if (!batchingUpdates){
-			update(null);
+			sdl_update(null);
 		}else{
 			isDirty = true;
 		}
@@ -661,7 +698,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected void setTextField3(String textField3){
 		this.textField3 = textField3;
 		if (!batchingUpdates){
-			update(null);
+			sdl_update(null);
 		}else{
 			isDirty = true;
 		}
@@ -674,7 +711,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected void setTextField4(String textField4){
 		this.textField4 = textField4;
 		if (!batchingUpdates){
-			update(null);
+			sdl_update(null);
 		}else{
 			isDirty = true;
 		}
@@ -687,7 +724,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected void setTextField1Type(MetadataType textField1Type){
 		this.textField1Type = textField1Type;
 		if (!batchingUpdates){
-			update(null);
+			sdl_update(null);
 		}else{
 			isDirty = true;
 		}
@@ -700,7 +737,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected void setTextField2Type(MetadataType textField2Type){
 		this.textField2Type = textField2Type;
 		if (!batchingUpdates){
-			update(null);
+			sdl_update(null);
 		}else{
 			isDirty = true;
 		}
@@ -713,7 +750,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected void setTextField3Type(MetadataType textField3Type){
 		this.textField3Type = textField3Type;
 		if (!batchingUpdates){
-			update(null);
+			sdl_update(null);
 		}else{
 			isDirty = true;
 		}
@@ -726,7 +763,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected void setTextField4Type(MetadataType textField4Type){
 		this.textField4Type = textField4Type;
 		if (!batchingUpdates){
-			update(null);
+			sdl_update(null);
 		}else{
 			isDirty = true;
 		}
@@ -739,7 +776,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected void setPrimaryGraphic(SdlArtwork primaryGraphic){
 		this.primaryGraphic = primaryGraphic;
 		if (!batchingUpdates){
-			update(null);
+			sdl_update(null);
 		}else{
 			isDirty = true;
 		}
@@ -752,7 +789,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected void setSecondaryGraphic(SdlArtwork secondaryGraphic){
 		this.secondaryGraphic = secondaryGraphic;
 		if (!batchingUpdates){
-			update(null);
+			sdl_update(null);
 		}else{
 			isDirty = true;
 		}

@@ -11,6 +11,7 @@ import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 
 import android.content.Context;
 
@@ -190,7 +191,7 @@ public class ScreenManager extends BaseSubManager {
 //		softButtonManager.batchUpdates = false;
 		textAndGraphicManager.batchingUpdates = false;
 //		softButtonManager.update();
-		textAndGraphicManager.update();
+		textAndGraphicManager.update(listener);
 	}
 
 }
