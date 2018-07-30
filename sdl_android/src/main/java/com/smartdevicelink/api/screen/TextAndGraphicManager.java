@@ -170,6 +170,8 @@ class TextAndGraphicManager extends BaseSubManager {
 			return;
 		}
 
+		currentScreenData = new Show();
+
 		Log.d(TAG, "Updating Text and Graphics");
 		if (inProgressUpdate != null){
 
@@ -197,12 +199,12 @@ class TextAndGraphicManager extends BaseSubManager {
 
 		inProgressListener = listener;
 
-		if (!shouldUpdatePrimaryImage() || !shouldUpdateSecondaryImage()){
+		if (!shouldUpdatePrimaryImage() && !shouldUpdateSecondaryImage()){
 
 			Log.v(TAG, "No Images to send, only sending text");
 			inProgressUpdate = extractTextFromShow(fullShow);
 
-		}else if (isArtworkUploadedOrDoesntExist(primaryGraphic) && isArtworkUploadedOrDoesntExist(secondaryGraphic)){
+		}else if (isArtworkUploadedOrDoesntExist(primaryGraphic) || isArtworkUploadedOrDoesntExist(secondaryGraphic)){
 
 			Log.v(TAG, "Images already uploaded, sending full update");
 			// The files to be updated are already uploaded, send the full show immediately
@@ -222,11 +224,10 @@ class TextAndGraphicManager extends BaseSubManager {
 					if (!success){
 						Log.e(TAG, "Error uploading text and graphic image");
 					}
-
 					// Check if queued image update still matches our images (there could have been a new Show in the meantime)
 					// and send a new update if it does. Since the images will already be on the head unit, the whole show will be sent
-					if (thisUpdate.getGraphic().equals(queuedImageUpdate.getGraphic()) &&
-							thisUpdate.getSecondaryGraphic().equals(queuedImageUpdate.getSecondaryGraphic())){
+					if ((thisUpdate.getGraphic() != null && queuedImageUpdate.getGraphic() != null) && thisUpdate.getGraphic().equals(queuedImageUpdate.getGraphic()) ||
+							(thisUpdate.getSecondaryGraphic() != null && queuedImageUpdate.getSecondaryGraphic() != null) && thisUpdate.getSecondaryGraphic().equals(queuedImageUpdate.getSecondaryGraphic())){
 						Log.v(TAG, "Queued image update matches the images we need, sending update");
 						sdl_update(inProgressListener);
 					} else {
@@ -237,13 +238,11 @@ class TextAndGraphicManager extends BaseSubManager {
 			queuedImageUpdate = fullShow;
 		}
 
-		fullShow.setOnRPCResponseListener(new OnRPCResponseListener() {
+		inProgressUpdate.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()){
-					if (queuedImageUpdate != null) {
-						updateCurrentScreenDataFromShow(queuedImageUpdate);
-					}
+					Log.v(TAG, "Show Successful");
 				}
 
 				inProgressUpdate = null;
@@ -262,12 +261,12 @@ class TextAndGraphicManager extends BaseSubManager {
 		});
 
 		try {
-			Log.i(TAG, "FULL SHOW: "+ fullShow.serializeJSON().toString());
+			Log.i(TAG, "SENDING SHOW: "+ inProgressUpdate.serializeJSON().toString());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 
-		internalInterface.sendRPCRequest(fullShow);
+		internalInterface.sendRPCRequest(inProgressUpdate);
 	}
 
 	// Images
@@ -336,7 +335,7 @@ class TextAndGraphicManager extends BaseSubManager {
 			show.setMediaTrack("");
 		}
 
-		List<String> nonNullFields = findNonNullTextFields();
+		List<String> nonNullFields = findNonNullMainTextFields();
 		if (nonNullFields.size() == 0){
 			return show;
 		}
@@ -386,7 +385,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		}
 
 		if (textField2 != null && textField2.length() > 0) {
-			if ((( textField3 == null || !(textField3.length() > 0)) && (textField4 == null || !(textField4.length() > 0)))){
+			if (( textField3 == null || !(textField3.length() > 0)) && (textField4 == null || !(textField4.length() > 0))){
 				// text does not exist in slots 3 or 4, put i slot 2
 				show.setMainField2(textField2);
 				if (textField2Type != null){
@@ -527,7 +526,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		if (textField4 != null && textField4.length() > 0) {
 			show.setMainField4(textField4);
 			if (textField4Type != null){
-				tags.setMainField2(textField4Type);
+				tags.setMainField4(textField4Type);
 			}
 		}
 
@@ -598,7 +597,7 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	// Helpers
 
-	private List<String> findNonNullTextFields(){
+	private List<String> findNonNullMainTextFields(){
 		List<String> array = new ArrayList<>();
 
 		if (textField1 != null && textField1.length() > 0) {
@@ -654,18 +653,28 @@ class TextAndGraphicManager extends BaseSubManager {
 	}
 
 	private boolean isArtworkUploadedOrDoesntExist(SdlArtwork artwork){
-		return artwork != null && (fileManager.hasUploadedFile(artwork));
+		return artwork != null && fileManager.hasUploadedFile(artwork);
 	}
 
 	private boolean shouldUpdatePrimaryImage() {
 		boolean hasGraphic = displayCapabilities.getGraphicSupported();
-		return (hasGraphic && primaryGraphic != null && currentScreenData.getGraphic().getValue().equalsIgnoreCase(primaryGraphic.getName()));
+		if (hasGraphic && currentScreenData.getGraphic() == null && primaryGraphic != null){
+			return true;
+		} else if (hasGraphic && currentScreenData.getGraphic() == null && primaryGraphic == null){
+			return false;
+		}
+		return currentScreenData != null && (hasGraphic && primaryGraphic != null && !currentScreenData.getGraphic().getValue().equalsIgnoreCase(primaryGraphic.getName()));
 	}
 
 	private boolean shouldUpdateSecondaryImage() {
 		// Cannot detect if there is a secondary image, so we'll just try to detect if there's a primary image and allow it if there is.
 		boolean hasGraphic = displayCapabilities.getGraphicSupported();
-		return (hasGraphic && secondaryGraphic != null && currentScreenData.getSecondaryGraphic().getValue().equalsIgnoreCase(secondaryGraphic.getName()));
+		if (hasGraphic && currentScreenData.getGraphic() == null && secondaryGraphic != null){
+			return true;
+		} else if (hasGraphic && currentScreenData.getGraphic() == null && secondaryGraphic == null){
+			return false;
+		}
+		return currentScreenData != null && (hasGraphic && secondaryGraphic != null && currentScreenData.getGraphic().getValue().equalsIgnoreCase(secondaryGraphic.getName()));
 	}
 
 	private int getNumberOfLines() {
