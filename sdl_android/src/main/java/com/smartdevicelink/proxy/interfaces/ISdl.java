@@ -7,6 +7,7 @@ import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -150,6 +151,20 @@ public interface ISdl {
     boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener);
 
     /**
+     * Add an OnRPCResponseListener for specified response
+     * @param responseId FunctionID of the response that is to be listened for
+     * @param listener listener that should be added for the response ID
+     */
+    void addOnRPCResponseListener(FunctionID responseId, OnRPCResponseListener listener);
+
+    /**
+     * Removes an OnRPCResponseListener for specified response
+     * @param responseId FunctionID of the response that was to be listened for
+     * @param listener listener that was previously added for the response ID
+     */
+    boolean removeOnRPCResponseListener(FunctionID responseId, OnRPCResponseListener listener);
+
+    /**
      * Get SystemCapability Object
      * @param systemCapabilityType
      * @return Object
@@ -169,6 +184,20 @@ public interface ISdl {
      * @return Boolean
      */
     boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType);
+
+    /**
+     * Add a listener to be called whenever a new capability is retrieved
+     * @param systemCapabilityType Type of capability desired
+     * @param listener callback to execute upon retrieving capability
+     */
+    void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
+
+    /**
+     * Remove an OnSystemCapabilityListener that was previously added
+     * @param systemCapabilityType Type of capability
+     * @param listener the listener that should be removed
+     */
+    boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
 
     /**
      * Get SdlMsgVersion

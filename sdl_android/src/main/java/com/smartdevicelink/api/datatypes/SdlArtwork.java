@@ -1,11 +1,13 @@
-package com.smartdevicelink.api;
+package com.smartdevicelink.api.datatypes;
 
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.rpc.enums.FileType;
-import com.smartdevicelink.proxy.rpc.enums.ImageType;
 
-public class SdlArtwork extends SdlFile{
+/**
+ * A class that extends SdlFile, representing artwork (JPEG, PNG, or BMP) to be uploaded to core
+ */
+public class SdlArtwork extends SdlFile {
     @Override
     public void setType(@NonNull FileType fileType) {
         if(fileType.equals(FileType.GRAPHIC_JPEG) || fileType.equals(FileType.GRAPHIC_PNG)
