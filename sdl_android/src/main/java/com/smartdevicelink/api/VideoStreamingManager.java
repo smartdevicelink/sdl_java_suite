@@ -9,8 +9,10 @@ import android.util.SparseIntArray;
 import android.view.Display;
 import android.view.InputDevice;
 import android.view.MotionEvent;
+import android.view.Surface;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.encoder.SdlEncoder;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.haptic.HapticInterfaceManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -51,6 +53,7 @@ public class VideoStreamingManager extends BaseSubManager{
 	private SdlMotionEvent sdlMotionEvent = null;
 	private HMILevel hmiLevel;
 	private StreamingStateMachine stateMachine;
+	private SdlEncoder mSdlEncoder;
 
 	// INTERNAL INTERFACES
 
@@ -111,6 +114,7 @@ public class VideoStreamingManager extends BaseSubManager{
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 
 		stateMachine = new StreamingStateMachine();
+		transitionToState(BaseSubManager.READY);
 	}
 
 	/**
@@ -158,6 +162,79 @@ public class VideoStreamingManager extends BaseSubManager{
 			}
 		}else{
 			startVideoStreaming(parameters, encrypted);
+		}
+	}
+
+	/**
+	 * Opens the video service (serviceType 11) and creates a Surface (used for streaming video) with input parameters provided by the app
+	 * @param frameRate - specified rate of frames to utilize for creation of Surface
+	 * @param iFrameInterval - specified interval to utilize for creation of Surface
+	 * @param width - specified width to utilize for creation of Surface
+	 * @param height - specified height to utilize for creation of Surface
+	 * @param bitrate - specified bitrate to utilize for creation of Surface
+	 *@return Surface if service is opened successfully and stream is started, return null otherwise
+	 */
+	@SuppressWarnings("unused")
+	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
+	                                        int height, int bitrate, boolean isEncrypted) {
+		if(hmiLevel != HMILevel.HMI_FULL){
+			Log.e(TAG, "Cannot start video service if HMILevel is not FULL.");
+			return null;
+		}
+
+		IVideoStreamListener encoderListener = startVideoStream(new VideoStreamingParameters(), isEncrypted);
+		if (encoderListener == null) {
+			stateMachine.transitionToState(StreamingStateMachine.ERROR);
+			Log.e(TAG, "Cannot create encoderListener");
+			return null;
+		}
+
+		mSdlEncoder = new SdlEncoder();
+		mSdlEncoder.setFrameRate(frameRate);
+		mSdlEncoder.setFrameInterval(iFrameInterval);
+		mSdlEncoder.setFrameWidth(width);
+		mSdlEncoder.setFrameHeight(height);
+		mSdlEncoder.setBitrate(bitrate);
+		mSdlEncoder.setOutputListener(encoderListener);
+		Surface surface = mSdlEncoder.prepareEncoder();
+
+		if(surface != null){
+			stateMachine.transitionToState(StreamingStateMachine.STARTED);
+		}else{
+			Log.e(TAG, "Cannot create surface.");
+			stateMachine.transitionToState(StreamingStateMachine.ERROR);
+		}
+		return surface;
+	}
+
+	/**
+	 * Starts the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
+	 * @see #createOpenGLInputSurface(int, int, int, int, int, boolean)
+	 */
+	public void startEncoder(){
+		if(mSdlEncoder != null){
+			mSdlEncoder.startEncoder();
+		}
+	}
+
+	/**
+	 * Releases the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
+	 * @see #createOpenGLInputSurface(int, int, int, int, int, boolean)
+	 */
+	public void releaseEncoder(){
+		if(mSdlEncoder != null){
+			mSdlEncoder.releaseEncoder();
+		}
+	}
+
+	/**
+	 * Drains the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
+	 * @param endOfStream indicates if this is the end of stream
+	 * @see #createOpenGLInputSurface(int, int, int, int, int, boolean)
+	 */
+	public void drainEncoder(boolean endOfStream){
+		if(mSdlEncoder != null) {
+			mSdlEncoder.drainEncoder(endOfStream);
 		}
 	}
 
