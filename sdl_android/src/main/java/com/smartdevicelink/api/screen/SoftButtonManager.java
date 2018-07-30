@@ -184,19 +184,29 @@ class SoftButtonManager extends BaseSubManager {
 
             // Prepare initial states images for upload
             for (SoftButtonObject softButtonObject : softButtonObjects){
-                if (softButtonObject.getCurrentState().getArtwork() != null && !fileManager.hasUploadedFile(softButtonObject.getCurrentState().getArtwork())){
+                SoftButtonState initialState = null;
+                if (softButtonObject != null){
+                    initialState = softButtonObject.getCurrentState();
+                }
+                if (initialState != null && initialState.getArtwork() != null && !fileManager.hasUploadedFile(initialState.getArtwork())){
                     initialStatesToBeUploaded.add(softButtonObject.getCurrentState().getArtwork());
                 }
             }
 
             // Prepare other states images for upload
             for (SoftButtonObject softButtonObject : softButtonObjects){
-                for (SoftButtonState softButtonState : softButtonObject.getStates()){
-                    if (softButtonState.getName().equals(softButtonObject.getCurrentState().getName())){
-                        continue;
-                    }
-                    if (softButtonState.getArtwork() != null && !fileManager.hasUploadedFile(softButtonObject.getCurrentState().getArtwork())){
-                        otherStatesToBeUploaded.add(softButtonState.getArtwork());
+                SoftButtonState initialState = null;
+                if (softButtonObject != null){
+                    initialState = softButtonObject.getCurrentState();
+                }
+                if (initialState != null && softButtonObject.getStates() != null){
+                    for (SoftButtonState softButtonState : softButtonObject.getStates()) {
+                        if (softButtonState == null || softButtonState.getName() == null || softButtonState.getName().equals(initialState.getName())) {
+                            continue;
+                        }
+                        if (softButtonState.getArtwork() != null && !fileManager.hasUploadedFile(initialState.getArtwork())) {
+                            otherStatesToBeUploaded.add(softButtonState.getArtwork());
+                        }
                     }
                 }
             }
@@ -287,7 +297,7 @@ class SoftButtonManager extends BaseSubManager {
             if (textOnlyButtons != null){
                 Log.i(TAG, "Soft button images unavailable, sending text buttons");
                 inProgressShowRPC.setSoftButtons(textOnlyButtons);
-                
+
             } else {
                 Log.i(TAG, "Soft button images unavailable, text buttons unavailable");
                 inProgressShowRPC = null;
@@ -377,7 +387,7 @@ class SoftButtonManager extends BaseSubManager {
 
     private boolean currentStateHasImages() {
         for (SoftButtonObject softButtonObject : this.softButtonObjects) {
-            if (softButtonObject.getCurrentState().getArtwork() != null){
+            if (softButtonObject.getCurrentState() != null && softButtonObject.getCurrentState().getArtwork() != null){
                 return true;
             }
         }

@@ -1,5 +1,6 @@
 package com.smartdevicelink.api.screen;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.api.CompletionListener;
@@ -18,7 +19,7 @@ public class SoftButtonObject {
     private static final String TAG = "SoftButtonObject";
     private String name;
 	private List<SoftButtonState> states;
-	private SoftButtonState currentState;
+	//private SoftButtonState currentState;
 	private String currentStateName;
 	private int buttonId;
 	private SoftButtonManager softButtonManager;
@@ -32,7 +33,7 @@ public class SoftButtonObject {
 
 		// Make sure there aren't two states with the same name
 		if (hasTwoStatesOfSameName(states)){
-			Log.e(TAG, String.format("Two states have the same name in states list for soft button object: ", this.name));
+			Log.e(TAG, "Two states have the same name in states list for soft button object");
 			return;
 		}
 
@@ -47,20 +48,20 @@ public class SoftButtonObject {
 		this(name, Collections.singletonList(state), state.getName());
 	}
 
-	protected boolean transitionToStateNamed(String newStateName){
+	public boolean transitionToStateNamed(String newStateName){
 		SoftButtonState newState = getStateNamed(newStateName);
 		if (newState == null){
 			Log.e(TAG, String.format("Attempted to transition to state: %s on soft button object: %s but no state with that name was found", newStateName, this.name));
 			return false;
 		}
 		Log.i(TAG, String.format("Transitioning soft button object %s to state %s", this.name, newStateName));
-		currentState = newState;
+		//currentState = newState;
 		currentStateName = newStateName;
 		softButtonManager.update(true,null);
 		return true;
 	}
 
-	protected void transitionToNextState() {
+	public void transitionToNextState() {
 		String nextStateName = null;
 		for (int i = 0; i < states.size(); i++) {
 			if (states.get(i).getName().equals(currentStateName)){
@@ -79,7 +80,7 @@ public class SoftButtonObject {
 		transitionToStateNamed(nextStateName);
 	}
 
-	protected SoftButtonState getCurrentState() {
+	public SoftButtonState getCurrentState() {
 		SoftButtonState state = getStateNamed(currentStateName);
 		if (state == null){
 			Log.e(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
@@ -87,7 +88,11 @@ public class SoftButtonObject {
 		return state;
 	}
 
-	protected SoftButton getCurrentStateSoftButton(){
+	public SoftButton getCurrentStateSoftButton(){
+		if (getCurrentState() == null || getCurrentState().getSoftButton() == null){
+			return null;
+		}
+
 		SoftButton softButton = getCurrentState().getSoftButton();
 		softButton.setSoftButtonID(this.buttonId);
 		//softButton.setListener(listener);
@@ -95,11 +100,12 @@ public class SoftButtonObject {
 		return softButton;
 	}
 
-	// used by screen manger ///
 	private SoftButtonState getStateNamed(String stateName) {
-		for (SoftButtonState state : states){
-			if (state.getName().equals(stateName)){
-				return state;
+		if (stateName != null && states != null) {
+			for (SoftButtonState state : states) {
+				if (state.getName().equals(stateName)) {
+					return state;
+				}
 			}
 		}
 		return null;
@@ -163,9 +169,9 @@ public class SoftButtonObject {
 		this.states = states;
 	}
 
-	protected void setCurrentState(SoftButtonState currentState) {
-		this.currentState = currentState;
-	}
+//	protected void setCurrentState(SoftButtonState currentState) {
+//		this.currentState = currentState;
+//	}
 
 
 

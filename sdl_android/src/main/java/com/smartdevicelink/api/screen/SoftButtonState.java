@@ -56,19 +56,19 @@ public class SoftButtonState {
 		}
 	}
 
-	protected void setName(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
-	protected String getName() {
+	public String getName() {
 		return name;
 	}
 
-	protected SoftButton getSoftButton() {
+	public SoftButton getSoftButton() {
 		return softButton;
 	}
 
-	protected SdlArtwork getArtwork() {
+	public SdlArtwork getArtwork() {
 		return artwork;
 	}
 }
