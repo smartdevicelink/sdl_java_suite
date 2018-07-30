@@ -36,10 +36,10 @@ class SoftButtonManager extends BaseSubManager {
 
     private static final String TAG = "SoftButtonManager";
     private FileManager fileManager;
-	private DisplayCapabilities displayCapabilities;
-	private SoftButtonCapabilities softButtonCapabilities;
-	private List<SoftButtonObject> softButtonObjects;
-	private HMILevel currentHMILevel;
+    private DisplayCapabilities displayCapabilities;
+    private SoftButtonCapabilities softButtonCapabilities;
+    private List<SoftButtonObject> softButtonObjects;
+    private HMILevel currentHMILevel;
     private Show inProgressShowRPC;
     private CompletionListener inProgressListener, queuedUpdateListener;
     private boolean hasQueuedUpdate, batchUpdates, waitingOnHMILevelUpdateToSetButtons;
@@ -47,18 +47,18 @@ class SoftButtonManager extends BaseSubManager {
     private OnSystemCapabilityListener onSoftButtonCapabilitiesListener, onDisplayCapabilitiesListener;
     private OnRPCNotificationListener onHMIStatusListener;
 
-	/**
-	 HAX: This is necessary due to a Ford Sync 3 bug that doesn't like Show requests without a main field being set (it will accept them, but with a GENERIC_ERROR, and 10-15 seconds late...)
-	 */
+    /**
+     * HAX: This is necessary due to a Ford Sync 3 bug that doesn't like Show requests without a main field being set (it will accept them, but with a GENERIC_ERROR, and 10-15 seconds late...)
+     */
     private String currentMainField1;
 
 
     SoftButtonManager(ISdl internalInterface, FileManager fileManager) {
-	    super(internalInterface);
+        super(internalInterface);
         transitionToState(BaseSubManager.SETTING_UP);
         this.fileManager = fileManager;
-		this.softButtonObjects = new ArrayList<>();
-		this.currentHMILevel = HMILevel.HMI_NONE;  // Assume NONE until we get something else
+        this.softButtonObjects = new ArrayList<>();
+        this.currentHMILevel = HMILevel.HMI_NONE;  // Assume NONE until we get something else
         this.waitingOnHMILevelUpdateToSetButtons = false;
 
 
@@ -66,8 +66,8 @@ class SoftButtonManager extends BaseSubManager {
         onSoftButtonCapabilitiesListener = new OnSystemCapabilityListener() {
             @Override
             public void onCapabilityRetrieved(Object capability) {
-                List<SoftButtonCapabilities> softButtonCapabilitiesList = (List<SoftButtonCapabilities>)capability;
-                if (softButtonCapabilitiesList != null && !softButtonCapabilitiesList.isEmpty()){
+                List<SoftButtonCapabilities> softButtonCapabilitiesList = (List<SoftButtonCapabilities>) capability;
+                if (softButtonCapabilitiesList != null && !softButtonCapabilitiesList.isEmpty()) {
                     softButtonCapabilities = softButtonCapabilitiesList.get(0);
                 } else {
                     softButtonCapabilities = null;
@@ -87,7 +87,7 @@ class SoftButtonManager extends BaseSubManager {
         onDisplayCapabilitiesListener = new OnSystemCapabilityListener() {
             @Override
             public void onCapabilityRetrieved(Object capability) {
-                displayCapabilities = (DisplayCapabilities)capability;
+                displayCapabilities = (DisplayCapabilities) capability;
             }
 
             @Override
@@ -103,7 +103,7 @@ class SoftButtonManager extends BaseSubManager {
         this.onHMIStatusListener = new OnRPCNotificationListener() {
             @Override
             public void onNotified(RPCNotification notification) {
-                OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+                OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
 
                 transitionToState(READY);
 
@@ -112,11 +112,11 @@ class SoftButtonManager extends BaseSubManager {
 
 
                 // Auto-send an updated show if we were in NONE and now we are not
-                if (oldHmiLevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE){
-                    if (waitingOnHMILevelUpdateToSetButtons){
+                if (oldHmiLevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE) {
+                    if (waitingOnHMILevelUpdateToSetButtons) {
                         setSoftButtonObjects(softButtonObjects);
                     } else {
-                        update(false, null);
+                        update(null);
                     }
                 }
             }
@@ -129,8 +129,8 @@ class SoftButtonManager extends BaseSubManager {
     }
 
     protected SoftButtonObject getSoftButtonObjectNamed(String name) {
-        for (SoftButtonObject softButtonObject : softButtonObjects){
-            if (softButtonObject.getName().equals(name)){
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            if (softButtonObject.getName().equals(name)) {
                 return softButtonObject;
             }
         }
@@ -138,66 +138,66 @@ class SoftButtonManager extends BaseSubManager {
     }
 
     // Upload images to head unit
-	protected void setSoftButtonObjects(List<SoftButtonObject> softButtonObjects){
-        if (hasTwoSoftButtonObjectsOfSameName(softButtonObjects)){
+    protected void setSoftButtonObjects(List<SoftButtonObject> softButtonObjects) {
+        if (hasTwoSoftButtonObjectsOfSameName(softButtonObjects)) {
             this.softButtonObjects = new ArrayList<>();
             Log.e(TAG, "Attempted to set soft button objects, but two buttons had the same name");
             return;
         }
 
         // Set ids and managers for soft button objects
-        for (int i = 0; i < softButtonObjects.size(); i++){
+        for (int i = 0; i < softButtonObjects.size(); i++) {
             softButtonObjects.get(i).setButtonId(i * 100);
             softButtonObjects.get(i).setSoftButtonManager(this);
         }
         this.softButtonObjects = softButtonObjects;
 
 
-        if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE){
-	        waitingOnHMILevelUpdateToSetButtons = true;
-	        return;
+        if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE) {
+            waitingOnHMILevelUpdateToSetButtons = true;
+            return;
         }
 
 
         // End any in-progress update
         inProgressShowRPC = null;
-	    if (inProgressListener != null){
-	        inProgressListener.onComplete(false);
-	        inProgressListener = null;
+        if (inProgressListener != null) {
+            inProgressListener.onComplete(false);
+            inProgressListener = null;
         }
 
 
         // End any queued update
         hasQueuedUpdate = false;
-	    if (queuedUpdateListener != null){
-	        queuedUpdateListener.onComplete(false);
-	        queuedUpdateListener = null;
+        if (queuedUpdateListener != null) {
+            queuedUpdateListener.onComplete(false);
+            queuedUpdateListener = null;
         }
 
 
-	    // Upload all soft button images to the head unit, the initial state images first, then the other states.
+        // Upload all soft button images to the head unit, the initial state images first, then the other states.
         List<SdlArtwork> initialStatesToBeUploaded = new ArrayList<>();
         List<SdlArtwork> otherStatesToBeUploaded = new ArrayList<>();
-        if(displayCapabilities == null || displayCapabilities.getGraphicSupported()){
+        if (displayCapabilities == null || displayCapabilities.getGraphicSupported()) {
 
             // Prepare initial states images for upload
-            for (SoftButtonObject softButtonObject : softButtonObjects){
+            for (SoftButtonObject softButtonObject : softButtonObjects) {
                 SoftButtonState initialState = null;
-                if (softButtonObject != null){
+                if (softButtonObject != null) {
                     initialState = softButtonObject.getCurrentState();
                 }
-                if (initialState != null && initialState.getArtwork() != null && !fileManager.hasUploadedFile(initialState.getArtwork())){
+                if (initialState != null && initialState.getArtwork() != null && !fileManager.hasUploadedFile(initialState.getArtwork())) {
                     initialStatesToBeUploaded.add(softButtonObject.getCurrentState().getArtwork());
                 }
             }
 
             // Prepare other states images for upload
-            for (SoftButtonObject softButtonObject : softButtonObjects){
+            for (SoftButtonObject softButtonObject : softButtonObjects) {
                 SoftButtonState initialState = null;
-                if (softButtonObject != null){
+                if (softButtonObject != null) {
                     initialState = softButtonObject.getCurrentState();
                 }
-                if (initialState != null && softButtonObject.getStates() != null){
+                if (initialState != null && softButtonObject.getStates() != null) {
                     for (SoftButtonState softButtonState : softButtonObject.getStates()) {
                         if (softButtonState == null || softButtonState.getName() == null || softButtonState.getName().equals(initialState.getName())) {
                             continue;
@@ -212,47 +212,47 @@ class SoftButtonManager extends BaseSubManager {
 
 
         // Upload initial state images
-        if (initialStatesToBeUploaded.size() > 0){
+        if (initialStatesToBeUploaded.size() > 0) {
             Log.i(TAG, "Uploading soft button initial state artworks");
             fileManager.uploadArtworks(initialStatesToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
-                    if (errors != null && errors.size() > 0){
+                    if (errors != null && errors.size() > 0) {
                         Log.e(TAG, "Error uploading soft button artworks");
                     }
                     Log.i(TAG, "Soft button initial artworks uploaded");
-                    update(false, null);
+                    update(null);
                 }
             });
         }
 
 
         // Upload other state images
-        if (otherStatesToBeUploaded.size() > 0){
+        if (otherStatesToBeUploaded.size() > 0) {
             Log.i(TAG, "Uploading soft button other state artworks");
             fileManager.uploadArtworks(otherStatesToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
-                    if (errors != null && errors.size() > 0){
+                    if (errors != null && errors.size() > 0) {
                         Log.e(TAG, "Error uploading soft button artworks");
                     }
                     Log.i(TAG, "Soft button other state artworks uploaded");
-                    update(false, null);
+                    update(null);
                 }
             });
         }
 
-        update(false, null);
+        update(null);
     }
 
     // Send RPCs
-    protected void update(boolean checkBatchUpdates, CompletionListener listener){
-        if (batchUpdates){
+    protected void update(CompletionListener listener) {
+        if (batchUpdates) {
             return;
         }
 
         // Don't send if we're in HMI NONE
-        if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE){
+        if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE) {
             return;
         }
 
@@ -260,17 +260,17 @@ class SoftButtonManager extends BaseSubManager {
 
 
         // Check if we have update already in progress
-        if (inProgressShowRPC != null){
+        if (inProgressShowRPC != null) {
             Log.i(TAG, "In progress update exists, queueing update");
             // If we already have a pending update, we're going to tell the old listener that it was superseded by a new update and then return
-            if (queuedUpdateListener != null){
+            if (queuedUpdateListener != null) {
                 Log.i(TAG, "Queued update already exists, superseding previous queued update");
                 queuedUpdateListener.onComplete(false);
                 queuedUpdateListener = null;
             }
 
             // Note: the queued update will be started after the in-progress one finishes
-            if (listener != null){
+            if (listener != null) {
                 queuedUpdateListener = listener;
             }
             hasQueuedUpdate = true;
@@ -281,18 +281,18 @@ class SoftButtonManager extends BaseSubManager {
         // Send Show RPC with soft buttons representing the current state for the soft button objects
         inProgressListener = listener;
         inProgressShowRPC = new Show();
-        if (currentMainField1 == null){
+        if (currentMainField1 == null) {
             inProgressShowRPC.setMainField1("");
         } else {
             inProgressShowRPC.setMainField1(currentMainField1);
         }
-        if (softButtonObjects == null){
+        if (softButtonObjects == null) {
             Log.i(TAG, "Soft button objects are null, sending an empty array");
             inProgressShowRPC.setSoftButtons(new ArrayList<SoftButton>());
-        } else if ( (currentStateHasImages() && !allCurrentStateImagesAreUploaded()) && (softButtonCapabilities == null || !softButtonCapabilities.getImageSupported()) ){
+        } else if ((currentStateHasImages() && !allCurrentStateImagesAreUploaded()) && (softButtonCapabilities == null || !softButtonCapabilities.getImageSupported())) {
             // The images don't yet exist on the head unit, or we cannot use images, send a text update if possible, otherwise, don't send anything yet
             List<SoftButton> textOnlyButtons = createTextButtonsForCurrentState();
-            if (textOnlyButtons != null){
+            if (textOnlyButtons != null) {
                 Log.i(TAG, "Soft button images unavailable, sending text buttons");
                 inProgressShowRPC.setSoftButtons(textOnlyButtons);
 
@@ -313,15 +313,15 @@ class SoftButtonManager extends BaseSubManager {
                 Log.i(TAG, "Soft button update completed");
 
                 inProgressShowRPC = null;
-                if (inProgressListener != null){
+                if (inProgressListener != null) {
                     inProgressListener.onComplete(true);
                     inProgressListener = null;
                 }
 
 
-                if (hasQueuedUpdate){
+                if (hasQueuedUpdate) {
                     Log.i(TAG, "Queued update exists, sending another update");
-                    update(true, queuedUpdateListener);
+                    update(queuedUpdateListener);
                     queuedUpdateListener = null;
                     hasQueuedUpdate = false;
                 }
@@ -334,15 +334,15 @@ class SoftButtonManager extends BaseSubManager {
                 Log.e(TAG, "Soft button update error");
 
                 inProgressShowRPC = null;
-                if (inProgressListener != null){
+                if (inProgressListener != null) {
                     inProgressListener.onComplete(false);
                     inProgressListener = null;
                 }
 
 
-                if (hasQueuedUpdate){
+                if (hasQueuedUpdate) {
                     Log.i(TAG, "Queued update exists, sending another update");
-                    update(true, queuedUpdateListener);
+                    update(queuedUpdateListener);
                     queuedUpdateListener = null;
                     hasQueuedUpdate = false;
                 }
@@ -351,11 +351,11 @@ class SoftButtonManager extends BaseSubManager {
         internalInterface.sendRPCRequest(inProgressShowRPC);
     }
 
-    private boolean hasTwoSoftButtonObjectsOfSameName(List<SoftButtonObject> softButtonObjects){
-        for (int i = 0; i < softButtonObjects.size(); i++){
+    private boolean hasTwoSoftButtonObjectsOfSameName(List<SoftButtonObject> softButtonObjects) {
+        for (int i = 0; i < softButtonObjects.size(); i++) {
             String buttonName = softButtonObjects.get(i).getName();
-            for (int j = (i + 1); j < softButtonObjects.size(); j++){
-                if (softButtonObjects.get(j).getName().equals(buttonName)){
+            for (int j = (i + 1); j < softButtonObjects.size(); j++) {
+                if (softButtonObjects.get(j).getName().equals(buttonName)) {
                     return true;
                 }
             }
@@ -385,47 +385,48 @@ class SoftButtonManager extends BaseSubManager {
 
     private boolean currentStateHasImages() {
         for (SoftButtonObject softButtonObject : this.softButtonObjects) {
-            if (softButtonObject.getCurrentState() != null && softButtonObject.getCurrentState().getArtwork() != null){
+            if (softButtonObject.getCurrentState() != null && softButtonObject.getCurrentState().getArtwork() != null) {
                 return true;
             }
         }
-		return false;
-	}
+        return false;
+    }
 
-	private boolean allCurrentStateImagesAreUploaded() {
+    private boolean allCurrentStateImagesAreUploaded() {
         for (SoftButtonObject softButtonObject : softButtonObjects) {
-            SdlArtwork artwork = softButtonObject.getCurrentState().getArtwork();
-            if (artwork != null && !fileManager.hasUploadedFile(artwork)){
+            SoftButtonState currentState = softButtonObject.getCurrentState();
+            if (currentState != null && currentState.getArtwork() != null && !fileManager.hasUploadedFile(currentState.getArtwork())) {
                 return false;
             }
         }
-		return true;
-	}
+        return true;
+    }
 
     /**
-     Returns text soft buttons representing the initial states of the button objects, or null if _any_ of the buttons' current states are image only buttons.
-     @return The text soft buttons
+     * Returns text soft buttons representing the initial states of the button objects, or null if _any_ of the buttons' current states are image only buttons.
+     *
+     * @return The text soft buttons
      */
-	private List<SoftButton> createTextButtonsForCurrentState() {
-	    List<SoftButton> textButtons = new ArrayList<>();
-	    for (SoftButtonObject softButtonObject : softButtonObjects){
-	        SoftButton softButton = softButtonObject.getCurrentStateSoftButton();
-	        if (softButton.getText() == null){
-	            return null;
+    private List<SoftButton> createTextButtonsForCurrentState() {
+        List<SoftButton> textButtons = new ArrayList<>();
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            SoftButton softButton = softButtonObject.getCurrentStateSoftButton();
+            if (softButton.getText() == null) {
+                return null;
             }
             softButton.setImage(null);
-	        softButton.setType(SoftButtonType.SBT_TEXT);
-	        textButtons.add(softButton);
+            softButton.setType(SoftButtonType.SBT_TEXT);
+            textButtons.add(softButton);
         }
-		return textButtons;
-	}
+        return textButtons;
+    }
 
-	private List<SoftButton> softButtonsForCurrentState() {
-	    List<SoftButton> softButtons = new ArrayList<>();
-	    for(SoftButtonObject softButtonObject : softButtonObjects){
-	        softButtons.add(softButtonObject.getCurrentStateSoftButton());
+    private List<SoftButton> softButtonsForCurrentState() {
+        List<SoftButton> softButtons = new ArrayList<>();
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            softButtons.add(softButtonObject.getCurrentStateSoftButton());
         }
-	    return softButtons;
-	}
+        return softButtons;
+    }
 
 }

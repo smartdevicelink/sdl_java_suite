@@ -1,5 +1,7 @@
 package com.smartdevicelink.api.screen;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.api.CompletionListener;
 import com.smartdevicelink.api.FileManager;
@@ -78,7 +80,7 @@ public class ScreenManager extends BaseSubManager {
 	 *
 	 */
 
-	public void setTextField1(String textField1) {
+	public void setTextField1(@NonNull String textField1) {
 		//textAndGraphicManager.setMainField1(textField1);
 		softButtonManager.setCurrentMainField1(textField1);
 	}
@@ -127,7 +129,7 @@ public class ScreenManager extends BaseSubManager {
 		this.textField4Type = textField4Type;
 	}
 
-	public void setSoftButtonObjects(List<SoftButtonObject> softButtonObjects) {
+	public void setSoftButtonObjects(@NonNull List<SoftButtonObject> softButtonObjects) {
 		softButtonManager.setSoftButtonObjects(softButtonObjects);
 	}
 
@@ -185,7 +187,7 @@ public class ScreenManager extends BaseSubManager {
 		return softButtonManager.getSoftButtonObjects();
 	}
 
-	public SoftButtonObject getSoftButtonObjectNamed(String name){
+	public SoftButtonObject getSoftButtonObjectNamed(@NonNull String name){
 		return softButtonManager.getSoftButtonObjectNamed(name);
 	}
 
@@ -200,7 +202,7 @@ public class ScreenManager extends BaseSubManager {
 
 		softButtonManager.setBatchUpdates(false);
 //		textAndGraphicManager.batchUpdates = false;
-		softButtonManager.update(true, listener);
+		softButtonManager.update(listener);
 //		textAndGraphicManager.update();
 	}
 
