@@ -32,7 +32,7 @@ public class SoftButtonObject {
 
 		// Make sure there aren't two states with the same name
 		if (hasTwoStatesOfSameName(states)){
-			Log.w(TAG, String.format("Two states have the same name in states list for soft button object: ", this.name));
+			Log.e(TAG, String.format("Two states have the same name in states list for soft button object: ", this.name));
 			return;
 		}
 
@@ -43,14 +43,14 @@ public class SoftButtonObject {
 		//this.listener = listener;
 	}
 
-	protected SoftButtonObject(String name, SoftButtonState state){
+	public SoftButtonObject(String name, SoftButtonState state){
 		this(name, Collections.singletonList(state), state.getName());
 	}
 
 	protected boolean transitionToStateNamed(String newStateName){
 		SoftButtonState newState = getStateNamed(newStateName);
 		if (newState == null){
-			Log.w(TAG, String.format("Attempted to transition to state: %s on soft button object: %s but no state with that name was found", newStateName, this.name));
+			Log.e(TAG, String.format("Attempted to transition to state: %s on soft button object: %s but no state with that name was found", newStateName, this.name));
 			return false;
 		}
 		Log.i(TAG, String.format("Transitioning soft button object %s to state %s", this.name, newStateName));
@@ -73,7 +73,7 @@ public class SoftButtonObject {
 			}
 		}
 		if (nextStateName == null){
-			Log.w(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
+			Log.e(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
 			return;
 		}
 		transitionToStateNamed(nextStateName);
@@ -82,13 +82,13 @@ public class SoftButtonObject {
 	protected SoftButtonState getCurrentState() {
 		SoftButtonState state = getStateNamed(currentStateName);
 		if (state == null){
-			Log.w(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
+			Log.e(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
 		}
 		return state;
 	}
 
 	protected SoftButton getCurrentStateSoftButton(){
-		SoftButton softButton = currentState.getSoftButton();
+		SoftButton softButton = getCurrentState().getSoftButton();
 		softButton.setSoftButtonID(this.buttonId);
 		//softButton.setListener(listener);
 

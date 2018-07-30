@@ -3,7 +3,7 @@ package com.smartdevicelink.api.screen;
 import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.api.CompletionListener;
 import com.smartdevicelink.api.FileManager;
-import com.smartdevicelink.api.SdlArtwork;
+import com.smartdevicelink.api.datatypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.ISdl;

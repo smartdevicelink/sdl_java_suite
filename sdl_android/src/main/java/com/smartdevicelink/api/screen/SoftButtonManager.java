@@ -6,18 +6,14 @@ import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.api.CompletionListener;
 import com.smartdevicelink.api.FileManager;
 import com.smartdevicelink.api.MultipleFileCompletionListener;
-import com.smartdevicelink.api.ProxyBridge;
-import com.smartdevicelink.api.SdlArtwork;
+import com.smartdevicelink.api.datatypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
-import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
-import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
@@ -47,7 +43,8 @@ class SoftButtonManager extends BaseSubManager {
     private Show inProgressShowRPC;
     private CompletionListener inProgressListener, queuedUpdateListener;
     private boolean hasQueuedUpdate, batchUpdates, waitingOnHMILevelUpdateToSetButtons;
-    ProxyBridge.OnRPCListener onRegisterAppInterfaceListener, onSetDisplayLayoutListener;
+    //private OnRPCResponseListener onRegisterAppInterfaceListener, onSetDisplayLayoutListener;
+    private OnSystemCapabilityListener onSoftButtonCapabilitiesListener, onDisplayCapabilitiesListener;
     private OnRPCNotificationListener onHMIStatusListener;
 
 	/**
@@ -65,8 +62,8 @@ class SoftButtonManager extends BaseSubManager {
         this.waitingOnHMILevelUpdateToSetButtons = false;
 
 
-        // Set SoftButtonCapabilities
-        this.internalInterface.getCapability(SystemCapabilityType.SOFTBUTTON, new OnSystemCapabilityListener() {
+        // Add OnSoftButtonCapabilitiesListener to keep softButtonCapabilities updated
+        onSoftButtonCapabilitiesListener = new OnSystemCapabilityListener() {
             @Override
             public void onCapabilityRetrieved(Object capability) {
                 List<SoftButtonCapabilities> softButtonCapabilitiesList = (List<SoftButtonCapabilities>)capability;
@@ -79,13 +76,15 @@ class SoftButtonManager extends BaseSubManager {
 
             @Override
             public void onError(String info) {
+                Log.w(TAG, "SoftButton Capability cannot be retrieved:");
                 softButtonCapabilities = null;
             }
-        });
+        };
+        this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.SOFTBUTTON, onSoftButtonCapabilitiesListener);
 
 
-        // Set DisplayCapabilities
-        this.internalInterface.getCapability(SystemCapabilityType.DISPLAY, new OnSystemCapabilityListener() {
+        // Add OnDisplayButtonCapabilitiesListener to keep displayCapabilities updated
+        onDisplayCapabilitiesListener = new OnSystemCapabilityListener() {
             @Override
             public void onCapabilityRetrieved(Object capability) {
                 displayCapabilities = (DisplayCapabilities)capability;
@@ -93,55 +92,14 @@ class SoftButtonManager extends BaseSubManager {
 
             @Override
             public void onError(String info) {
+                Log.w(TAG, "DISPLAY Capability cannot be retrieved:");
                 displayCapabilities = null;
             }
-        });
-
-
-        // Setup onRegisterAppInterfaceListener to listen for capabilities changes when app registers
-        this.onRegisterAppInterfaceListener = new ProxyBridge.OnRPCListener() {
-            @Override
-            public void onRpcReceived(int functionID, RPCMessage message) {
-                RegisterAppInterfaceResponse response = (RegisterAppInterfaceResponse)message;
-                if(response != null && response.getSoftButtonCapabilities() != null && !response.getSoftButtonCapabilities().isEmpty()){
-                    softButtonCapabilities = response.getSoftButtonCapabilities().get(0);
-                } else {
-                    softButtonCapabilities = null;
-                }
-                if (response != null) {
-                    displayCapabilities = response.getDisplayCapabilities();
-                } else {
-                    displayCapabilities = null;
-                }
-            }
         };
-        this.internalInterface.addOnRPCResponseListener(FunctionID.REGISTER_APP_INTERFACE, onRegisterAppInterfaceListener);
+        this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, onDisplayCapabilitiesListener);
 
 
-        // Setup onSetDisplayLayoutListener to listen for capabilities changes when SetDisplayLayoutResponse is received
-        this.onSetDisplayLayoutListener = new ProxyBridge.OnRPCListener() {
-            @Override
-            public void onRpcReceived(int functionID, RPCMessage message) {
-                SetDisplayLayoutResponse response = (SetDisplayLayoutResponse)message;
-                if(response != null && response.getSoftButtonCapabilities() != null && !response.getSoftButtonCapabilities().isEmpty()){
-                    softButtonCapabilities = response.getSoftButtonCapabilities().get(0);
-                } else {
-                    softButtonCapabilities = null;
-                }
-                if (response != null) {
-                    displayCapabilities = response.getDisplayCapabilities();
-                } else {
-                    displayCapabilities = null;
-                }
-
-                // Auto-send an updated Show
-                update(true, null);
-            }
-        };
-        this.internalInterface.addOnRPCResponseListener(FunctionID.SET_DISPLAY_LAYOUT, onSetDisplayLayoutListener);
-
-
-        // Set PermissionManager's OnHMIStatusListener to keep currentHMILevel updated
+        // Add OnHMIStatusListener to keep currentHMILevel updated
         this.onHMIStatusListener = new OnRPCNotificationListener() {
             @Override
             public void onNotified(RPCNotification notification) {
@@ -183,7 +141,7 @@ class SoftButtonManager extends BaseSubManager {
 	protected void setSoftButtonObjects(List<SoftButtonObject> softButtonObjects){
         if (hasTwoSoftButtonObjectsOfSameName(softButtonObjects)){
             this.softButtonObjects = new ArrayList<>();
-            Log.w(TAG, "Attempted to set soft button objects, but two buttons had the same name");
+            Log.e(TAG, "Attempted to set soft button objects, but two buttons had the same name");
             return;
         }
 
@@ -252,7 +210,7 @@ class SoftButtonManager extends BaseSubManager {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null && errors.size() > 0){
-                        Log.w(TAG, "Error uploading soft button artworks");
+                        Log.e(TAG, "Error uploading soft button artworks");
                     }
                     Log.i(TAG, "Soft button initial artworks uploaded");
                     update(false, null);
@@ -268,7 +226,7 @@ class SoftButtonManager extends BaseSubManager {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null && errors.size() > 0){
-                        Log.w(TAG, "Error uploading soft button artworks");
+                        Log.e(TAG, "Error uploading soft button artworks");
                     }
                     Log.i(TAG, "Soft button other state artworks uploaded");
                     update(false, null);
@@ -365,7 +323,7 @@ class SoftButtonManager extends BaseSubManager {
             public void onError(int correlationId, Result resultCode, String info) {
                 super.onError(correlationId, resultCode, info);
 
-                Log.i(TAG, "Soft button update error");
+                Log.e(TAG, "Soft button update error: " + info);
 
                 inProgressShowRPC = null;
                 if (inProgressListener != null){
@@ -413,8 +371,8 @@ class SoftButtonManager extends BaseSubManager {
 
         // Remove listeners
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, onHMIStatusListener);
-        internalInterface.removeOnRPCResponseListener(FunctionID.REGISTER_APP_INTERFACE, onRegisterAppInterfaceListener);
-        internalInterface.removeOnRPCResponseListener(FunctionID.SET_DISPLAY_LAYOUT, onSetDisplayLayoutListener);
+        internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.SOFTBUTTON, onSoftButtonCapabilitiesListener);
+        internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, onDisplayCapabilitiesListener);
     }
 
     private boolean currentStateHasImages() {

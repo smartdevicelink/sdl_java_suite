@@ -2,7 +2,7 @@ package com.smartdevicelink.api.screen;
 
 import android.util.Log;
 
-import com.smartdevicelink.api.SdlArtwork;
+import com.smartdevicelink.api.datatypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
@@ -22,7 +22,7 @@ public class SoftButtonState {
 
 	public SoftButtonState(String name, String text, SdlArtwork artwork) {
 		if (text == null && artwork == null){
-			Log.w(TAG, "Attempted to create an invalid soft button state: text and artwork are both null");
+			Log.e(TAG, "Attempted to create an invalid soft button state: text and artwork are both null");
 			return;
 		}
 		this.name = name;
