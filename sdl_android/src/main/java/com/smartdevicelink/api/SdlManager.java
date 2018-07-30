@@ -329,6 +329,10 @@ public class SdlManager{
 		return fileManager;
 	}
 
+	public ScreenManager getScreenManager() {
+		return screenManager;
+	}
+
 	/*
 	public VideoStreamingManager getVideoStreamingManager() {
 		return videoStreamingManager;
@@ -336,10 +340,6 @@ public class SdlManager{
 
 	public AudioStreamManager getAudioStreamManager() {
 		return audioStreamManager;
-	}
-
-	public ScreenManager getScreenManager() {
-		return screenManager;
 	}
 
 	public LockscreenManager getLockscreenManager() {

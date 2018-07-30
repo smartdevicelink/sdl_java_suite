@@ -45,11 +45,6 @@ import static com.smartdevicelink.proxy.rpc.enums.TextAlignment.CENTERED;
  *
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
  *
- * The TextAndGraphicManager  <br>
- *
- * It is broken down to these areas: <br>
- *
- * 1.  <br>
  */
 class TextAndGraphicManager extends BaseSubManager {
 
@@ -69,7 +64,6 @@ class TextAndGraphicManager extends BaseSubManager {
 	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
 
 	protected boolean batchingUpdates;
-
 
 	//Constructors
 
@@ -136,21 +130,26 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected void update(CompletionListener listener) {
 
 		// check if is batch update
+		Log.i(TAG, "UPDATE CALLED");
 		if (batchingUpdates) {
+			Log.i(TAG, "BATCHING UPDATES TRUE, BAILING");
 			return;
 		}
 
 		if (isDirty){
+			Log.i(TAG, "SUPER DIRTY, LETS UPDATE");
 			isDirty = false;
 			sdl_update(listener);
+		}else{
+			Log.i(TAG, "NOT DIRTY, DYING");
 		}
 	}
-
-
+	
 	private void sdl_update(CompletionListener listener){
 
 		// make sure hmi is not none
 		if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE){
+			Log.i(TAG, "HMI NOT ALLOWING US TO UPDATE");
 			return;
 		}
 
