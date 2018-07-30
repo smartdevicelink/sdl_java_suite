@@ -9,6 +9,8 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
  * A class that extends SdlFile, representing artwork (JPEG, PNG, or BMP) to be uploaded to core
  */
 public class SdlArtwork extends SdlFile {
+    public SdlArtwork(){}
+
     public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, int id, boolean persistentFile) {
         super(fileName, fileType, id, persistentFile);
     }

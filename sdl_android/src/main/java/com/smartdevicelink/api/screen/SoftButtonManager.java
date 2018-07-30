@@ -52,6 +52,11 @@ class SoftButtonManager extends BaseSubManager {
     private String currentMainField1;
 
 
+    /**
+     * Creates a new instance of the SoftButtonManager
+     * @param internalInterface
+     * @param fileManager
+     */
     SoftButtonManager(ISdl internalInterface, FileManager fileManager) {
         super(internalInterface);
         transitionToState(BaseSubManager.SETTING_UP);
@@ -123,10 +128,19 @@ class SoftButtonManager extends BaseSubManager {
         this.internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, onHMIStatusListener);
     }
 
+    /**
+     * Get the soft button objects list
+     * @return a List<SoftButtonObject>
+     */
     protected List<SoftButtonObject> getSoftButtonObjects() {
         return softButtonObjects;
     }
 
+    /**
+     * Get the SoftButtonObject that has the provided name
+     * @param name a String value that represents the name
+     * @return a SoftButtonObject
+     */
     protected SoftButtonObject getSoftButtonObjectNamed(String name) {
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             if (softButtonObject.getName().equals(name)) {
@@ -136,7 +150,10 @@ class SoftButtonManager extends BaseSubManager {
         return null;
     }
 
-    // Upload images to head unit
+    /**
+     * Set softButtonObjects list and upload the images to the head unit
+     * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
+     */
     protected void setSoftButtonObjects(List<SoftButtonObject> softButtonObjects) {
         if (hasTwoSoftButtonObjectsOfSameName(softButtonObjects)) {
             this.softButtonObjects = new ArrayList<>();
@@ -244,7 +261,10 @@ class SoftButtonManager extends BaseSubManager {
         update(null);
     }
 
-    // Send RPCs
+    /**
+     * Update the SoftButtonManger by sending a new Show RPC to reflect the changes
+     * @param listener a CompletionListener
+     */
     protected void update(CompletionListener listener) {
         if (batchUpdates) {
             return;
@@ -350,6 +370,11 @@ class SoftButtonManager extends BaseSubManager {
         internalInterface.sendRPCRequest(inProgressShowRPC);
     }
 
+    /**
+     * Check if two SoftButtonObject have the same name
+     * @param softButtonObjects
+     * @return a boolean value
+     */
     private boolean hasTwoSoftButtonObjectsOfSameName(List<SoftButtonObject> softButtonObjects) {
         for (int i = 0; i < softButtonObjects.size(); i++) {
             String buttonName = softButtonObjects.get(i).getName();
@@ -362,14 +387,25 @@ class SoftButtonManager extends BaseSubManager {
         return false;
     }
 
+    /**
+     * Set the TextField1
+     * @param currentMainField1
+     */
     protected void setCurrentMainField1(String currentMainField1) {
         this.currentMainField1 = currentMainField1;
     }
 
+    /**
+     * Set the batchUpdates flag that represents whether the manger should wait until endUpdates() is called to send the updated show RPC
+     * @param batchUpdates
+     */
     protected void setBatchUpdates(boolean batchUpdates) {
         this.batchUpdates = batchUpdates;
     }
 
+    /**
+     * Clean up everything after the manager is no longer needed
+     */
     @Override
     public void dispose() {
         super.dispose();
@@ -382,6 +418,10 @@ class SoftButtonManager extends BaseSubManager {
         internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, onDisplayCapabilitiesListener);
     }
 
+    /**
+     * Check if the current state for any SoftButtonObject has images
+     * @return a boolean value
+     */
     private boolean currentStateHasImages() {
         for (SoftButtonObject softButtonObject : this.softButtonObjects) {
             if (softButtonObject.getCurrentState() != null && softButtonObject.getCurrentState().getArtwork() != null) {
@@ -391,6 +431,10 @@ class SoftButtonManager extends BaseSubManager {
         return false;
     }
 
+    /**
+     * Check if the current state for any SoftButtonObject has images that are not uploaded yet
+     * @return a boolean value
+     */
     private boolean allCurrentStateImagesAreUploaded() {
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             SoftButtonState currentState = softButtonObject.getCurrentState();
@@ -403,7 +447,6 @@ class SoftButtonManager extends BaseSubManager {
 
     /**
      * Returns text soft buttons representing the initial states of the button objects, or null if _any_ of the buttons' current states are image only buttons.
-     *
      * @return The text soft buttons
      */
     private List<SoftButton> createTextButtonsForCurrentState() {
@@ -420,6 +463,10 @@ class SoftButtonManager extends BaseSubManager {
         return textButtons;
     }
 
+    /**
+     * Returns a list of the SoftButton for the SoftButtonObjects' current state
+     * @return a List<SoftButton>
+     */
     private List<SoftButton> softButtonsForCurrentState() {
         List<SoftButton> softButtons = new ArrayList<>();
         for (SoftButtonObject softButtonObject : softButtonObjects) {

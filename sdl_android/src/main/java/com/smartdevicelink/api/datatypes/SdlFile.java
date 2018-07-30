@@ -16,6 +16,8 @@ public class SdlFile{
     private FileType    fileType;
     private boolean     persistentFile;
 
+    public SdlFile(){}
+
     public SdlFile(@NonNull String fileName, @NonNull FileType fileType, int id, boolean persistentFile){
         setName(fileName);
         setType(fileType);
