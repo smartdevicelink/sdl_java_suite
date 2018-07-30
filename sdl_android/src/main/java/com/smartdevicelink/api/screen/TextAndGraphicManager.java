@@ -9,11 +9,12 @@ import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.api.CompletionListener;
 import com.smartdevicelink.api.FileManager;
 import com.smartdevicelink.api.MultipleFileCompletionListener;
-import com.smartdevicelink.api.SdlArtwork;
+import com.smartdevicelink.api.datatypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
@@ -58,6 +59,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	private DisplayCapabilities displayCapabilities;
 	private HMILevel currentHMILevel;
 	private OnRPCNotificationListener hmiListener;
+	private OnSystemCapabilityListener onDisplayCapabilitiesListener;
 	private SdlArtwork primaryGraphic, secondaryGraphic;
 	private com.smartdevicelink.proxy.rpc.enums.TextAlignment textAlignment;
 	private String textField1, textField2, textField3, textField4, mediaTrackTextField;
@@ -78,7 +80,6 @@ class TextAndGraphicManager extends BaseSubManager {
 		currentHMILevel = HMILevel.HMI_NONE;
 		addListeners();
 		getBlankArtwork();
-		getDisplayCapabilities();
 		transitionToState(READY);
 	}
 
@@ -109,6 +110,7 @@ class TextAndGraphicManager extends BaseSubManager {
 
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+		internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, onDisplayCapabilitiesListener);
 
 		// transition state
 		transitionToState(SHUTDOWN);
@@ -123,6 +125,21 @@ class TextAndGraphicManager extends BaseSubManager {
 			}
 		};
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+
+		// Add OnDisplayCapabilitiesListener to keep displayCapabilities updated
+		onDisplayCapabilitiesListener = new OnSystemCapabilityListener() {
+			@Override
+			public void onCapabilityRetrieved(Object capability) {
+				displayCapabilities = (DisplayCapabilities)capability;
+			}
+
+			@Override
+			public void onError(String info) {
+				Log.w(TAG, "DISPLAY Capability cannot be retrieved:");
+				displayCapabilities = null;
+			}
+		};
+		this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, onDisplayCapabilitiesListener);
 	}
 
 	// Upload / Send
@@ -224,7 +241,9 @@ class TextAndGraphicManager extends BaseSubManager {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()){
-					updateCurrentScreenDataFromShow(queuedImageUpdate);
+					if (queuedImageUpdate != null) {
+						updateCurrentScreenDataFromShow(queuedImageUpdate);
+					}
 				}
 
 				inProgressUpdate = null;
@@ -241,6 +260,12 @@ class TextAndGraphicManager extends BaseSubManager {
 				}
 			}
 		});
+
+		try {
+			Log.i(TAG, "FULL SHOW: "+ fullShow.serializeJSON().toString());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 
 		internalInterface.sendRPCRequest(fullShow);
 	}
@@ -316,7 +341,8 @@ class TextAndGraphicManager extends BaseSubManager {
 			return show;
 		}
 
-		int numberOfLines = getNumberOfLines();
+		//int numberOfLines = getNumberOfLines();
+		int numberOfLines = 1;
 
 		if (numberOfLines == 1){
 			show = assembleOneLineShowText(show, nonNullFields);
@@ -333,8 +359,12 @@ class TextAndGraphicManager extends BaseSubManager {
 	private Show assembleOneLineShowText(Show show, List<String> showFields){
 
 		StringBuilder showString1 = new StringBuilder();
-		for (int i = 1; i < showFields.size(); i++) {
-			showString1.append(" - ").append(showFields.get(i));
+		for (int i = 0; i < showFields.size(); i++) {
+			if (i > 0) {
+				showString1.append(" - ").append(showFields.get(i));
+			}else{
+				showString1.append(showFields.get(i));
+			}
 		}
 		show.setMainField1(showString1.toString());
 
@@ -533,6 +563,11 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	private void updateCurrentScreenDataFromShow(Show show){
 
+		if (show == null){
+			Log.d(TAG, "Cannot updateCurrentScreenDataFromShow from null show");
+			return;
+		}
+
 		// If the items are null, they were not updated, so we can't just set it directly
 		if (show.getMainField1() != null){
 			currentScreenData.setMainField1(show.getMainField1());
@@ -621,8 +656,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	}
 
 	private boolean isArtworkUploadedOrDoesntExist(SdlArtwork artwork){
-		//return ((artwork != null) || fileManager.hasUploadedFile(artwork));
-		return false;
+		return artwork != null && (fileManager.hasUploadedFile(artwork));
 	}
 
 	private boolean shouldUpdatePrimaryImage() {
@@ -636,24 +670,26 @@ class TextAndGraphicManager extends BaseSubManager {
 		return (hasGraphic && secondaryGraphic != null && currentScreenData.getSecondaryGraphic().getValue().equalsIgnoreCase(secondaryGraphic.getName()));
 	}
 
-	private void getDisplayCapabilities() {
-
-		if (displayCapabilities != null) {
-			displayCapabilities = (DisplayCapabilities) internalInterface.getCapability(SystemCapabilityType.DISPLAY);
-			try {
-				Log.i(TAG, "DISPLAY CAPABILITIES: "+ displayCapabilities.serializeJSON().toString());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
 	private int getNumberOfLines() {
+
 		if (displayCapabilities == null){
 			return 4;
 		}
+
+		int highestFound = 0;
+
 		List<TextField> textFields = displayCapabilities.getTextFields();
-		return textFields.size();
+
+		for (TextField field : textFields) {
+			if (field.getName() != null) {
+				String name = field.getName().toString();
+				if (name.equalsIgnoreCase("mainField1") || name.equalsIgnoreCase("mainField2") || name.equalsIgnoreCase("mainField3") || name.equalsIgnoreCase("mainField4")) {
+					highestFound += 1;
+				}
+			}
+		}
+
+		return highestFound;
 	}
 
 	// SCREEN ITEM SETTERS AND GETTERS
