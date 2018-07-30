@@ -30,8 +30,6 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
-import org.json.JSONException;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,6 +48,10 @@ import static com.smartdevicelink.proxy.rpc.enums.TextAlignment.CENTERED;
 class TextAndGraphicManager extends BaseSubManager {
 
 	private static final String TAG = "TextAndGraphicManager";
+	private static final String MAIN_FIELD_1 = "mainField1";
+	private static final String MAIN_FIELD_2 = "mainField2";
+	private static final String MAIN_FIELD_3 = "mainField3";
+	private static final String MAIN_FIELD_4 = "mainField4";
 	private boolean isDirty, hasQueuedUpdate;
 	private FileManager fileManager;
 	private Show currentScreenData, inProgressUpdate, queuedImageUpdate;
@@ -61,7 +63,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	private OnRPCNotificationListener hmiListener;
 	private OnSystemCapabilityListener onDisplayCapabilitiesListener;
 	private SdlArtwork primaryGraphic, secondaryGraphic;
-	private com.smartdevicelink.proxy.rpc.enums.TextAlignment textAlignment;
+	private TextAlignment textAlignment;
 	private String textField1, textField2, textField3, textField4, mediaTrackTextField;
 	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
 
@@ -147,18 +149,13 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected void update(CompletionListener listener) {
 
 		// check if is batch update
-		Log.i(TAG, "UPDATE CALLED");
 		if (batchingUpdates) {
-			Log.i(TAG, "BATCHING UPDATES TRUE, BAILING");
 			return;
 		}
 
 		if (isDirty){
-			Log.i(TAG, "SUPER DIRTY, LETS UPDATE");
 			isDirty = false;
 			sdl_update(listener);
-		}else{
-			Log.i(TAG, "NOT DIRTY, DYING");
 		}
 	}
 	
@@ -166,13 +163,13 @@ class TextAndGraphicManager extends BaseSubManager {
 
 		// make sure hmi is not none
 		if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE){
-			Log.i(TAG, "HMI NOT ALLOWING US TO UPDATE");
+			Log.e(TAG, "Trying to send show on HMI_NONE");
 			return;
 		}
 
 		currentScreenData = new Show();
 
-		Log.d(TAG, "Updating Text and Graphics");
+		Log.v(TAG, "Updating Text and Graphics");
 		if (inProgressUpdate != null){
 
 			Log.v(TAG, "In progress update exists, queueing update");
@@ -243,11 +240,12 @@ class TextAndGraphicManager extends BaseSubManager {
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()){
 					Log.v(TAG, "Show Successful");
+					updateCurrentScreenDataFromShow(inProgressUpdate);
 				}
 
 				inProgressUpdate = null;
 				if (inProgressListener != null){
-					inProgressListener.onComplete(false);
+					inProgressListener.onComplete(true);
 					inProgressListener = null;
 				}
 
@@ -259,12 +257,6 @@ class TextAndGraphicManager extends BaseSubManager {
 				}
 			}
 		});
-
-		try {
-			Log.i(TAG, "SENDING SHOW: "+ inProgressUpdate.serializeJSON().toString());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
 
 		internalInterface.sendRPCRequest(inProgressUpdate);
 	}
@@ -293,7 +285,7 @@ class TextAndGraphicManager extends BaseSubManager {
 					Log.e(TAG, "Error Uploading Artworks. Error: " + errors.toString());
 					listener.onComplete(false);
 				}else{
-					Log.d(TAG, "Successfully uploaded Artworks");
+					Log.v(TAG, "Successfully uploaded Artworks");
 					listener.onComplete(true);
 				}
 			}
@@ -561,7 +553,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	private void updateCurrentScreenDataFromShow(Show show){
 
 		if (show == null){
-			Log.d(TAG, "Cannot updateCurrentScreenDataFromShow from null show");
+			Log.e(TAG, "can not updateCurrentScreenDataFromShow from null show");
 			return;
 		}
 
@@ -691,7 +683,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		for (TextField field : textFields) {
 			if (field.getName() != null) {
 				String name = field.getName().toString();
-				if (name.equalsIgnoreCase("mainField1") || name.equalsIgnoreCase("mainField2") || name.equalsIgnoreCase("mainField3") || name.equalsIgnoreCase("mainField4")) {
+				if (name.equalsIgnoreCase(MAIN_FIELD_1) || name.equalsIgnoreCase(MAIN_FIELD_2) || name.equalsIgnoreCase(MAIN_FIELD_3) || name.equalsIgnoreCase(MAIN_FIELD_4)) {
 					highestFound += 1;
 				}
 			}
