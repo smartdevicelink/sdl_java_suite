@@ -341,8 +341,7 @@ class TextAndGraphicManager extends BaseSubManager {
 			return show;
 		}
 
-		//int numberOfLines = getNumberOfLines();
-		int numberOfLines = 1;
+		int numberOfLines = getNumberOfLines();
 
 		if (numberOfLines == 1){
 			show = assembleOneLineShowText(show, nonNullFields);
@@ -387,8 +386,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		}
 
 		if (textField2 != null && textField2.length() > 0) {
-
-			if (textField3 == null || !(textField3.length() > 0) || textField4 == null || !(textField4.length() > 0)){
+			if ((( textField3 == null || !(textField3.length() > 0)) && (textField4 == null || !(textField4.length() > 0)))){
 				// text does not exist in slots 3 or 4, put i slot 2
 				show.setMainField2(textField2);
 				if (textField2Type != null){
@@ -603,19 +601,19 @@ class TextAndGraphicManager extends BaseSubManager {
 	private List<String> findNonNullTextFields(){
 		List<String> array = new ArrayList<>();
 
-		if (textField1.length() > 0) {
+		if (textField1 != null && textField1.length() > 0) {
 			array.add(textField1);
 		}
 
-		if (textField2.length() > 0) {
+		if (textField2 != null && textField2.length() > 0) {
 			array.add(textField2);
 		}
 
-		if (textField3.length() > 0) {
+		if (textField3 != null && textField3.length() > 0) {
 			array.add(textField3);
 		}
 
-		if (textField4.length() > 0) {
+		if (textField4 != null && textField4.length() > 0) {
 			array.add(textField4);
 		}
 
