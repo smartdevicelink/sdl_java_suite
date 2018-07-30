@@ -93,10 +93,16 @@ public class ScreenManager extends BaseSubManager {
 	}
 
 	public void setPrimaryGraphic(SdlArtwork primaryGraphic) {
+		if (primaryGraphic == null){
+			primaryGraphic = textAndGraphicManager.getBlankArtwork();
+		}
 		this.textAndGraphicManager.setPrimaryGraphic(primaryGraphic);
 	}
 
 	public void setSecondaryGraphic(SdlArtwork secondaryGraphic) {
+		if (secondaryGraphic == null){
+			secondaryGraphic = textAndGraphicManager.getBlankArtwork();
+		}
 		this.textAndGraphicManager.setSecondaryGraphic(secondaryGraphic);
 	}
 

@@ -642,7 +642,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		return array;
 	}
 
-	private void getBlankArtwork(){
+	protected SdlArtwork getBlankArtwork(){
 
 		if (blankArtwork != null){
 			blankArtwork = new SdlArtwork();
@@ -650,6 +650,7 @@ class TextAndGraphicManager extends BaseSubManager {
 			blankArtwork.setName("blankArtwork");
 			blankArtwork.setFileData(contentsOfResource(R.drawable.transparent));
 		}
+		return blankArtwork;
 	}
 
 	private boolean isArtworkUploadedOrDoesntExist(SdlArtwork artwork){
