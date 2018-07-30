@@ -1,10 +1,13 @@
-package com.smartdevicelink.api;
+package com.smartdevicelink.api.datatypes;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 
+/**
+ * A class representing data to be uploaded to core
+ */
 public class SdlFile{
     private String      fileName;
     private int         id = -1;
