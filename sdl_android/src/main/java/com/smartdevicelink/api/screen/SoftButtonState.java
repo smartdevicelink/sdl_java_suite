@@ -11,8 +11,10 @@ import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 
 /**
  * <strong>SoftButtonState</strong> <br>
- * <p>
- * Note: This class must be accessed through the SdlManager->ScreenManager. Do not instantiate it by itself.
+ * Defines an individual state for SoftButtonObject.<br>
+ * The states of SoftButtonObject allow the developer to not have to manage multiple SoftButtons that have very similar functionality.<br>
+ * For example, a repeat button in a music app can be thought of as one SoftButtonObject with three typical states: repeat off, repeat 1, and repeat on.<br>
+ * @see SoftButtonObject
  */
 public class SoftButtonState {
 
@@ -21,7 +23,14 @@ public class SoftButtonState {
     private SdlArtwork artwork;
     private SoftButton softButton;
 
-    public SoftButtonState(String name, String text, SdlArtwork artwork) {
+    /**
+     * Creates a new instance of SoftButtonState
+     * Note: state names should be different for each SoftButtonObject
+     * @param name a String value represents name of the state
+     * @param text a String represents the text for the state
+     * @param artwork an SdlArtwork represents the artwork for the state
+     */
+    public SoftButtonState(@NonNull String name, String text, SdlArtwork artwork) {
         if (text == null && artwork == null) {
             Log.e(TAG, "Attempted to create an invalid soft button state: text and artwork are both null");
             return;
@@ -43,12 +52,8 @@ public class SoftButtonState {
 
 
         // Set the SoftButton's image
-        Image image = null;
         if (artwork != null) {
-            image = new Image();
-            image.setValue(artwork.getName());
-            image.setImageType(ImageType.DYNAMIC);
-            softButton.setImage(image);
+            softButton.setImage(new Image(artwork.getName(), ImageType.DYNAMIC));
         }
 
         // Set the SoftButton's text
@@ -57,18 +62,34 @@ public class SoftButtonState {
         }
     }
 
+    /**
+     * Get the state name
+     * @return a String value represents the name of the state
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set the state name
+     * @param name a String value represents the name of the state
+     */
     public void setName(@NonNull String name) {
         this.name = name;
     }
 
+    /**
+     * Get the SoftButton for the state
+     * @return a SoftButton object represents the SoftButton for the state
+     */
     public SoftButton getSoftButton() {
         return softButton;
     }
 
+    /**
+     * Get the Artwork for the state
+     * @return an SdlArtwork object represents the artwork for the state
+     */
     public SdlArtwork getArtwork() {
         return artwork;
     }

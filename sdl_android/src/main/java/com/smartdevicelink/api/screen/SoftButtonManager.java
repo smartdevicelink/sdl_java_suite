@@ -43,7 +43,6 @@ class SoftButtonManager extends BaseSubManager {
     private Show inProgressShowRPC;
     private CompletionListener inProgressListener, queuedUpdateListener;
     private boolean hasQueuedUpdate, batchUpdates, waitingOnHMILevelUpdateToSetButtons;
-    //private OnRPCResponseListener onRegisterAppInterfaceListener, onSetDisplayLayoutListener;
     private OnSystemCapabilityListener onSoftButtonCapabilitiesListener, onDisplayCapabilitiesListener;
     private OnRPCNotificationListener onHMIStatusListener;
 
