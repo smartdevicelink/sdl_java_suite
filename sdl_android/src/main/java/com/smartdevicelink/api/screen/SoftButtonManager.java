@@ -83,7 +83,7 @@ class SoftButtonManager extends BaseSubManager {
         this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.SOFTBUTTON, onSoftButtonCapabilitiesListener);
 
 
-        // Add OnDisplayButtonCapabilitiesListener to keep displayCapabilities updated
+        // Add OnDisplayCapabilitiesListener to keep displayCapabilities updated
         onDisplayCapabilitiesListener = new OnSystemCapabilityListener() {
             @Override
             public void onCapabilityRetrieved(Object capability) {
@@ -323,7 +323,7 @@ class SoftButtonManager extends BaseSubManager {
             public void onError(int correlationId, Result resultCode, String info) {
                 super.onError(correlationId, resultCode, info);
 
-                Log.e(TAG, "Soft button update error: " + info);
+                Log.e(TAG, "Soft button update error");
 
                 inProgressShowRPC = null;
                 if (inProgressListener != null){
