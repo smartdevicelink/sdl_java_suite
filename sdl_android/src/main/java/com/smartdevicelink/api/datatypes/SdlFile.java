@@ -16,6 +16,27 @@ public class SdlFile{
     private FileType    fileType;
     private boolean     persistentFile;
 
+    public SdlFile(@NonNull String fileName, @NonNull FileType fileType, int id, boolean persistentFile){
+        setName(fileName);
+        setType(fileType);
+        setResourceId(id);
+        setPersistent(persistentFile);
+    }
+
+    public SdlFile(@NonNull String fileName, @NonNull FileType fileType, Uri uri, boolean persistentFile){
+        setName(fileName);
+        setType(fileType);
+        setUri(uri);
+        setPersistent(persistentFile);
+    }
+
+    public SdlFile(@NonNull String fileName, @NonNull FileType fileType, byte[] data, boolean persistentFile){
+        setName(fileName);
+        setType(fileType);
+        setFileData(data);
+        setPersistent(persistentFile);
+    }
+
     public void setName(@NonNull String fileName){
         this.fileName = fileName;
     }

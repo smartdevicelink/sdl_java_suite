@@ -128,7 +128,7 @@ class SoftButtonManager extends BaseSubManager {
         return softButtonObjects;
     }
 
-    protected SoftButtonObject getSoftButtonNamed(String name) {
+    protected SoftButtonObject getSoftButtonObjectNamed(String name) {
         for (SoftButtonObject softButtonObject : softButtonObjects){
             if (softButtonObject.getName().equals(name)){
                 return softButtonObject;
@@ -145,6 +145,11 @@ class SoftButtonManager extends BaseSubManager {
             return;
         }
 
+        // Set ids and managers for soft button objects
+        for (int i = 0; i < softButtonObjects.size(); i++){
+            softButtonObjects.get(i).setButtonId(i * 100);
+            softButtonObjects.get(i).setSoftButtonManager(this);
+        }
         this.softButtonObjects = softButtonObjects;
 
 
@@ -167,13 +172,6 @@ class SoftButtonManager extends BaseSubManager {
 	    if (queuedUpdateListener != null){
 	        queuedUpdateListener.onComplete(false);
 	        queuedUpdateListener = null;
-        }
-
-
-        // Set ids and managers for soft button objects
-        for (int i = 0; i < softButtonObjects.size(); i++){
-	        softButtonObjects.get(i).setButtonId(i * 100);
-            softButtonObjects.get(i).setSoftButtonManager(this);
         }
 
 
