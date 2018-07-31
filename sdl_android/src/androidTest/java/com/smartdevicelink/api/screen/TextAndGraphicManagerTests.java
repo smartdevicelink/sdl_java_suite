@@ -13,7 +13,6 @@ import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.test.utl.AndroidToolsTests;
 
-
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -27,18 +26,15 @@ import static org.mockito.Mockito.mock;
 public class TextAndGraphicManagerTests extends AndroidToolsTests{
 
 	// SETUP / HELPERS
-	private Context mTestContext;
-	private ISdl internalInterface;
-	private FileManager fileManager;
 	private TextAndGraphicManager textAndGraphicManager;
 
 	@Override
 	public void setUp() throws Exception{
 		super.setUp();
-		mTestContext = this.getContext();
+		Context mTestContext = this.getContext();
 		// mock things
-		internalInterface = mock(ISdl.class);
-		fileManager = mock(FileManager.class);
+		ISdl internalInterface = mock(ISdl.class);
+		FileManager fileManager = mock(FileManager.class);
 
 		textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager, mTestContext);
 	}
@@ -108,6 +104,8 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 	public void testGetMainLines(){
 
 		// We want to test that the looping works. By default, it will return 4 if display cap is null
+
+		// Null test
 		assertEquals(textAndGraphicManager.getNumberOfLines(), 4);
 
 		// The tests.java class has an example of this, but we must build it to do what
@@ -155,28 +153,102 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 
 		Show inputShow = new Show();
 
-		// Force it to return display with support for only 1 line of text
+		// Force it to return display with support for only 2 lines of text
 		textAndGraphicManager.displayCapabilities = getDisplayCapability(2);
 
+		textAndGraphicManager.setTextField1("It is");
 
+		Show assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+
+		textAndGraphicManager.setTextField2("Wednesday");
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "Wednesday");
+
+		textAndGraphicManager.setTextField3("My");
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is - Wednesday");
+		assertEquals(assembledShow.getMainField2(), "My");
+
+		textAndGraphicManager.setTextField4("Dudes");
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is - Wednesday");
+		assertEquals(assembledShow.getMainField2(), "My - Dudes");
+
+		// For some obscurity, lets try setting just fields 2 and 4 for a 2 line display
+		textAndGraphicManager.setTextField1(null);
+		textAndGraphicManager.setTextField3(null);
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "Wednesday");
+		assertEquals(assembledShow.getMainField2(), "Dudes");
+
+		// And 3 fields without setting 1
+		textAndGraphicManager.setTextField3("My");
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "Wednesday");
+		assertEquals(assembledShow.getMainField2(), "My - Dudes");
 	}
 
 	public void testAssemble3Lines() {
 
 		Show inputShow = new Show();
 
-		// Force it to return display with support for only 1 line of text
+		// Force it to return display with support for only 3 lines of text
 		textAndGraphicManager.displayCapabilities = getDisplayCapability(3);
 
+		textAndGraphicManager.setTextField1("It is");
 
+		Show assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "");
+		assertEquals(assembledShow.getMainField3(), "");
 
+		textAndGraphicManager.setTextField2("Wednesday");
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "Wednesday");
+		assertEquals(assembledShow.getMainField3(), "");
+
+		textAndGraphicManager.setTextField3("My");
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "Wednesday");
+		assertEquals(assembledShow.getMainField3(), "My");
+
+		textAndGraphicManager.setTextField4("Dudes");
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "Wednesday");
+		assertEquals(assembledShow.getMainField3(), "My - Dudes");
+
+		// Someone might not want to set the fields in order? We should handle that
+		textAndGraphicManager.setTextField1(null);
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		try {
+			System.out.println(assembledShow.serializeJSON().toString());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		assertEquals(assembledShow.getMainField2(), "Wednesday");
+		assertEquals(assembledShow.getMainField3(), "My - Dudes");
 	}
 
 	public void testAssemble4Lines() {
 
 		Show inputShow = new Show();
 
-		// Force it to return display with support for only 1 line of text
+		// Force it to return display with support for only 4 lines of text
 		textAndGraphicManager.displayCapabilities = getDisplayCapability(4);
 
 
