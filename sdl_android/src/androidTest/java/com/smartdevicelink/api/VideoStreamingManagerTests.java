@@ -295,6 +295,7 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 				assertTrue(videoStreamingManager.isVideoConnected());
 				assertFalse(videoStreamingManager.isVideoStreamingPaused());
 
+				videoStreamingManager.drainEncoder(true);
 				videoStreamingManager.releaseEncoder();
 				assertEquals(videoStreamingManager.currentVideoStreamState(), StreamingStateMachine.STOPPED);
 
