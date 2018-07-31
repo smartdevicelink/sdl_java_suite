@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.test.AndroidTestCase;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
@@ -270,11 +271,17 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 				hmiNotification.setHmiLevel(HMILevel.HMI_FULL);
 				hmiListener[0].onNotified(hmiNotification);
 
-				videoStreamingManager.startVideoStream(new VideoStreamingParameters(), false);
+				Surface surface = videoStreamingManager.createOpenGLInputSurface(Test.GENERAL_INT,
+						Test.GENERAL_INT, Test.GENERAL_INT, Test.GENERAL_INT, Test.GENERAL_INT, false);
 
-				assertEquals(videoStreamingManager.currentVideoStreamState(), StreamingStateMachine.STARTED);
+				assertNotNull(surface);
+
+				assertEquals(videoStreamingManager.currentVideoStreamState(), StreamingStateMachine.READY);
 				assertTrue(videoStreamingManager.isVideoConnected());
 				assertFalse(videoStreamingManager.isVideoStreamingPaused());
+
+				videoStreamingManager.startEncoder();
+				assertEquals(videoStreamingManager.currentVideoStreamState(), StreamingStateMachine.STARTED);
 
 				hmiNotification.setHmiLevel(HMILevel.HMI_BACKGROUND);
 				hmiListener[0].onNotified(hmiNotification);
@@ -287,6 +294,9 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 
 				assertTrue(videoStreamingManager.isVideoConnected());
 				assertFalse(videoStreamingManager.isVideoStreamingPaused());
+
+				videoStreamingManager.releaseEncoder();
+				assertEquals(videoStreamingManager.currentVideoStreamState(), StreamingStateMachine.STOPPED);
 
 				videoStreamingManager.dispose();
 				assertFalse(videoStreamingManager.isVideoConnected());

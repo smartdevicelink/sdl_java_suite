@@ -199,7 +199,7 @@ public class VideoStreamingManager extends BaseSubManager{
 		Surface surface = mSdlEncoder.prepareEncoder();
 
 		if(surface != null){
-			stateMachine.transitionToState(StreamingStateMachine.STARTED);
+			stateMachine.transitionToState(StreamingStateMachine.READY);
 		}else{
 			Log.e(TAG, "Cannot create surface.");
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
@@ -214,6 +214,7 @@ public class VideoStreamingManager extends BaseSubManager{
 	public void startEncoder(){
 		if(mSdlEncoder != null){
 			mSdlEncoder.startEncoder();
+			stateMachine.transitionToState(StreamingStateMachine.STARTED);
 		}
 	}
 
@@ -224,6 +225,7 @@ public class VideoStreamingManager extends BaseSubManager{
 	public void releaseEncoder(){
 		if(mSdlEncoder != null){
 			mSdlEncoder.releaseEncoder();
+			stateMachine.transitionToState(StreamingStateMachine.STOPPED);
 		}
 	}
 
@@ -322,6 +324,8 @@ public class VideoStreamingManager extends BaseSubManager{
 		internalInterface.removeServiceListener(SessionType.NAV, serviceListener);
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+
+		stateMachine.transitionToState(StreamingStateMachine.NONE);
 	}
 
 	// PUBLIC METHODS FOR CHECKING STATE
