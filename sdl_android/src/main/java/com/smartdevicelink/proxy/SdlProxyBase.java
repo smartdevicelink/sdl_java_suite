@@ -316,6 +316,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
+		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+			try {
+				SdlProxyBase.this.sendRequests(rpcs, listener);
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
 		public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
 			SdlProxyBase.this.addOnRPCNotificationListener(notificationId,listener);
 		}

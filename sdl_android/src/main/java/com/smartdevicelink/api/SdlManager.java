@@ -73,8 +73,8 @@ public class SdlManager{
 
 	private PermissionManager permissionManager;
 	private VideoStreamingManager videoStreamingManager;
+	private FileManager fileManager;
     /*
-    private FileManager fileManager;
     private AudioStreamManager audioStreamManager;
     private LockscreenManager lockscreenManager;
     private ScreenManager screenManager;
@@ -118,13 +118,14 @@ public class SdlManager{
 			}
 			if(
 					permissionManager != null && permissionManager.getState() != BaseSubManager.SETTING_UP &&
+					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
 					videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP 
 					/*
-					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
 					audioStreamManager != null && audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
 					lockscreenManager != null &&  lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
 					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
-					*/  ){
+					*/
+					){
 				state = BaseSubManager.READY;
 				if(initListener != null){
 					initListener.onComplete(true);
@@ -139,12 +140,13 @@ public class SdlManager{
 
 		this.permissionManager = new PermissionManager(_internalInterface);
 		this.permissionManager.start(subManagerListener);
+
 		this.videoStreamingManager = new VideoStreamingManager(_internalInterface);
 		this.videoStreamingManager.start(subManagerListener);
 
-		/*
 		this.fileManager = new FileManager(_internalInterface, context);
 		this.fileManager.start(subManagerListener);
+		/*
 		this.lockscreenManager = new LockscreenManager(lockScreenConfig, context, _internalInterface);
 		this.lockscreenManager.start(subManagerListener);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
@@ -152,21 +154,26 @@ public class SdlManager{
 		this.audioStreamManager = new AudioStreamManager(_internalInterface);
 		this.audioStreamManager.start(subManagerListener);
 		*/
-
-		// If no managers, just call subManagerListener's onComplete
-		subManagerListener.onComplete(true);
 	}
 
 	private void dispose() {
 		this.permissionManager.dispose();
 		this.videoStreamingManager.dispose();
-		/*
 		this.fileManager.dispose();
+		/*
 		this.lockscreenManager.dispose();
 		this.audioStreamManager.dispose();
 		this.screenManager.dispose();
 		this.audioStreamManager.dispose();
 		*/
+	}
+
+	/**
+	 * Sets the state of SdlManager to one of those defined in BaseSubManager
+	 * @param state int representing desired state of SdlManager
+	 */
+	protected void setState(int state){
+		this.state = state;
 	}
 
 	// BUILDER
@@ -339,6 +346,7 @@ public class SdlManager{
 	 * @return a PermissionManager object
 	 */
 	public PermissionManager getPermissionManager() {
+		checkSdlManagerState();
 		return permissionManager;
 	}
 
@@ -347,12 +355,11 @@ public class SdlManager{
 	 * <strong>Note: FileManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
 	 * @return a FileManager object
 	 */
-    /*
 	public FileManager getFileManager() {
 		checkSdlManagerState();
 		return fileManager;
 	}
-	*/
+
 
     /**
      * Gets the VideoStreamingManager. <br>
@@ -366,7 +373,12 @@ public class SdlManager{
 	}
 	
 
-	/*
+    /**
+     * Gets the AudioStreamManager. <br>
+     * <strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     * @return a AudioStreamManager object
+     */
+    /*
 	public AudioStreamManager getAudioStreamManager() {
 		checkSdlManagerState();
 		return audioStreamManager;
@@ -396,7 +408,6 @@ public class SdlManager{
 		return lockscreenManager;
 	}
 	*/
-
 
 
 	// PROTECTED GETTERS
@@ -603,6 +614,15 @@ public class SdlManager{
 		public void sendRPCRequest(RPCRequest message){
 			try {
 				proxy.sendRPCRequest(message);
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+			try {
+				proxy.sendRequests(rpcs, listener);
 			} catch (SdlException e) {
 				e.printStackTrace();
 			}

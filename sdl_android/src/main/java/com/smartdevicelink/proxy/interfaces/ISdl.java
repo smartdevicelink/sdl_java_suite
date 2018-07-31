@@ -5,10 +5,13 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
+
+import java.util.List;
 
 /*
  * Copyright (c) 2017 Livio, Inc.
@@ -124,6 +127,13 @@ public interface ISdl {
      * @param message RPCRequest that should be sent to the module
      */
     void sendRPCRequest(RPCRequest message);
+
+    /**
+     * Pass a list of RPC requests through the proxy to be sent to core
+     * @param rpcs List of RPC requests
+     * @param listener OnMultipleRequestListener that is called between requests and after all are processed
+     */
+    void sendRequests(List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener);
 
     /**
      * Add an OnRPCNotificationListener for specified notification
