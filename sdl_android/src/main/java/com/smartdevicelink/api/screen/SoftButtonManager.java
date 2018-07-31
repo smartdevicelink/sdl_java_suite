@@ -30,7 +30,8 @@ import java.util.Map;
 
 /**
  * <strong>SoftButtonManager</strong> <br>
- * Note: This class must be accessed through the SdlManager->ScreenManager. Do not instantiate it by itself. <br>
+ * SoftButtonManager gives the developer the ability to control how soft buttons are displayed on the head unit.<br>
+ * Note: This class must be accessed through the SdlManager->ScreenManager. Do not instantiate it by itself.<br>
  */
 class SoftButtonManager extends BaseSubManager {
 
@@ -96,7 +97,7 @@ class SoftButtonManager extends BaseSubManager {
 
             @Override
             public void onError(String info) {
-                Log.w(TAG, "DISPLAY Capability cannot be retrieved:");
+                Log.w(TAG, "Display Capability cannot be retrieved:");
                 displayCapabilities = null;
             }
         };
@@ -107,10 +108,10 @@ class SoftButtonManager extends BaseSubManager {
         this.onHMIStatusListener = new OnRPCNotificationListener() {
             @Override
             public void onNotified(RPCNotification notification) {
-                OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
-
                 transitionToState(READY);
 
+
+                OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
                 HMILevel oldHmiLevel = currentHMILevel;
                 currentHMILevel = onHMIStatus.getHmiLevel();
 
@@ -126,14 +127,6 @@ class SoftButtonManager extends BaseSubManager {
             }
         };
         this.internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, onHMIStatusListener);
-    }
-
-    /**
-     * Get the soft button objects list
-     * @return a List<SoftButtonObject>
-     */
-    protected List<SoftButtonObject> getSoftButtonObjects() {
-        return softButtonObjects;
     }
 
     /**
@@ -162,6 +155,14 @@ class SoftButtonManager extends BaseSubManager {
             }
         }
         return null;
+    }
+
+    /**
+     * Get the soft button objects list
+     * @return a List<SoftButtonObject>
+     */
+    protected List<SoftButtonObject> getSoftButtonObjects() {
+        return softButtonObjects;
     }
 
     /**
@@ -205,23 +206,12 @@ class SoftButtonManager extends BaseSubManager {
         }
 
 
-        // Upload all soft button images to the head unit, the initial state images first, then the other states.
+        // Prepare soft button images to be uploaded to the head unit.
+        // we will prepare a list for initial state images and another list for other state images
+        // so we can upload the initial state images first, then the other states images.
         List<SdlArtwork> initialStatesToBeUploaded = new ArrayList<>();
         List<SdlArtwork> otherStatesToBeUploaded = new ArrayList<>();
         if (displayCapabilities == null || displayCapabilities.getGraphicSupported()) {
-
-            // Prepare initial states images for upload
-            for (SoftButtonObject softButtonObject : softButtonObjects) {
-                SoftButtonState initialState = null;
-                if (softButtonObject != null) {
-                    initialState = softButtonObject.getCurrentState();
-                }
-                if (initialState != null && initialState.getArtwork() != null && !fileManager.hasUploadedFile(initialState.getArtwork())) {
-                    initialStatesToBeUploaded.add(softButtonObject.getCurrentState().getArtwork());
-                }
-            }
-
-            // Prepare other states images for upload
             for (SoftButtonObject softButtonObject : softButtonObjects) {
                 SoftButtonState initialState = null;
                 if (softButtonObject != null) {
@@ -229,11 +219,12 @@ class SoftButtonManager extends BaseSubManager {
                 }
                 if (initialState != null && softButtonObject.getStates() != null) {
                     for (SoftButtonState softButtonState : softButtonObject.getStates()) {
-                        if (softButtonState == null || softButtonState.getName() == null || softButtonState.getName().equals(initialState.getName())) {
-                            continue;
-                        }
-                        if (softButtonState.getArtwork() != null && !fileManager.hasUploadedFile(initialState.getArtwork())) {
-                            otherStatesToBeUploaded.add(softButtonState.getArtwork());
+                        if (softButtonState != null && softButtonState.getName() != null && softButtonState.getArtwork() != null && !fileManager.hasUploadedFile(softButtonState.getArtwork())) {
+                            if (softButtonState.getName().equals(initialState.getName())) {
+                                initialStatesToBeUploaded.add(softButtonObject.getCurrentState().getArtwork());
+                            } else{
+                                otherStatesToBeUploaded.add(softButtonState.getArtwork());
+                            }
                         }
                     }
                 }
@@ -267,11 +258,13 @@ class SoftButtonManager extends BaseSubManager {
                         Log.e(TAG, "Error uploading soft button artworks");
                     }
                     Log.i(TAG, "Soft button other state artworks uploaded");
+                    // In case our soft button states have changed in the meantime
                     update(null);
                 }
             });
         }
 
+        // This is necessary because there may be no images needed to be uploaded
         update(null);
     }
 
@@ -324,10 +317,10 @@ class SoftButtonManager extends BaseSubManager {
             inProgressShowRPC.setSoftButtons(new ArrayList<SoftButton>());
         } else if ((currentStateHasImages() && !allCurrentStateImagesAreUploaded()) && (softButtonCapabilities == null || !softButtonCapabilities.getImageSupported())) {
             // The images don't yet exist on the head unit, or we cannot use images, send a text update if possible, otherwise, don't send anything yet
-            List<SoftButton> textOnlyButtons = createTextButtonsForCurrentState();
-            if (textOnlyButtons != null) {
+            List<SoftButton> textOnlySoftButtons = createTextSoftButtonsForCurrentState();
+            if (textOnlySoftButtons != null) {
                 Log.i(TAG, "Soft button images unavailable, sending text buttons");
-                inProgressShowRPC.setSoftButtons(textOnlyButtons);
+                inProgressShowRPC.setSoftButtons(textOnlySoftButtons);
 
             } else {
                 Log.i(TAG, "Soft button images unavailable, text buttons unavailable");
@@ -337,7 +330,7 @@ class SoftButtonManager extends BaseSubManager {
 
         } else {
             Log.i(TAG, "Sending soft buttons with images");
-            inProgressShowRPC.setSoftButtons(softButtonsForCurrentState());
+            inProgressShowRPC.setSoftButtons(createSoftButtonsForCurrentState());
         }
 
         inProgressShowRPC.setOnRPCResponseListener(new OnRPCResponseListener() {
@@ -463,7 +456,7 @@ class SoftButtonManager extends BaseSubManager {
      * Returns text soft buttons representing the initial states of the button objects, or null if _any_ of the buttons' current states are image only buttons.
      * @return The text soft buttons
      */
-    private List<SoftButton> createTextButtonsForCurrentState() {
+    private List<SoftButton> createTextSoftButtonsForCurrentState() {
         List<SoftButton> textButtons = new ArrayList<>();
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             SoftButton softButton = softButtonObject.getCurrentStateSoftButton();
@@ -481,7 +474,7 @@ class SoftButtonManager extends BaseSubManager {
      * Returns a list of the SoftButton for the SoftButtonObjects' current state
      * @return a List<SoftButton>
      */
-    private List<SoftButton> softButtonsForCurrentState() {
+    private List<SoftButton> createSoftButtonsForCurrentState() {
         List<SoftButton> softButtons = new ArrayList<>();
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             softButtons.add(softButtonObject.getCurrentStateSoftButton());
