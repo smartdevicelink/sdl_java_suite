@@ -1651,15 +1651,28 @@ public class SdlRouterService extends Service{
 			return false;
 		}
 		
-		private boolean manuallyWriteBytes(byte[] bytes, int offset, int count){
-			if(bluetoothTransport !=null && bluetoothTransport.getState()==MultiplexBluetoothTransport.STATE_CONNECTED){
-				if(bytes!=null){
-					bluetoothTransport.write(bytes,offset,count);
-					return true;
-				}
-				return false;
-			}else {
-				return sendThroughAltTransport(bytes,offset,count);
+		private boolean manuallyWriteBytes(TransportType transportType, byte[] packet, int offset, int count){
+			switch ((transportType)){
+				case BLUETOOTH:
+					if(bluetoothTransport !=null && bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
+						bluetoothTransport.write(packet, offset, count);
+						return true;
+					}
+				case USB:
+					if(usbTransport != null && usbTransport.getState() ==  MultiplexBaseTransport.STATE_CONNECTED) {
+						usbTransport.write(packet, offset, count);
+						return true;
+					}
+				case TCP:
+					if(tcpTransport != null && tcpTransport.getState() ==  MultiplexBaseTransport.STATE_CONNECTED) {
+						tcpTransport.write(packet, offset, count);
+						return true;
+					}
+				default:
+					if(sendThroughAltTransport(packet, offset, count)){
+						return true;
+					}
+					return false;
 			}
 		}
 		
@@ -1721,44 +1734,64 @@ public class SdlRouterService extends Service{
 		 * @return whether or not the sending was successful 
 		 */
 		public boolean sendPacketToRegisteredApp(SdlPacket packet) {
-			if(registeredApps!=null && (registeredApps.size()>0)){
-				int session = packet.getSessionId();
+			if(registeredApps != null && registeredApps.size() > 0 ){
+				final int session = packet.getSessionId();
 				boolean isNewSessionRequest = false, isNewTransportRequest = false;
 
+				final int frameInfo = packet.getFrameInfo();
 				if(packet.getFrameType() == FrameType.Control){
-					isNewSessionRequest = (packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK || packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_NAK)
+					isNewSessionRequest = (frameInfo == SdlPacket.FRAME_INFO_START_SERVICE_ACK ||frameInfo == SdlPacket.FRAME_INFO_START_SERVICE_NAK)
 							&& packet.getServiceType() == SdlPacket.SERVICE_TYPE_RPC;
-					isNewTransportRequest = (packet.getFrameInfo() == SdlPacket.FRAME_INFO_REGISTER_SECONDARY_TRANSPORT_ACK
-							|| packet.getFrameInfo() == SdlPacket.FRAME_INFO_REGISTER_SECONDARY_TRANSPORT_NAK); // && packet.getServiceType() != SdlPacket.SERVICE_TYPE_RPC;
+					isNewTransportRequest = (frameInfo == SdlPacket.FRAME_INFO_REGISTER_SECONDARY_TRANSPORT_ACK
+							|| frameInfo == SdlPacket.FRAME_INFO_REGISTER_SECONDARY_TRANSPORT_NAK); // && packet.getServiceType() != SdlPacket.SERVICE_TYPE_RPC;
 					if(isNewTransportRequest){
 						Log.d(TAG, "New transport request!");
 					}
 				}
 
-	    		String appid = getAppIDForSession(session, isNewSessionRequest, isNewTransportRequest, packet.getTransportType()); //Find where this packet should go
+				//Find where this packet should go
+	    		String appid = getAppIDForSession(session, isNewSessionRequest, isNewTransportRequest, packet.getTransportType());
 
-				if(appid!=null && appid.length()>0){
+				if(appid != null && appid.length() > 0){
+
 	    			RegisteredApp app;
 	    			synchronized(REGISTERED_APPS_LOCK){
 	    				 app = registeredApps.get(appid);
 	    			}
-	    			if(app==null){
+
+	    			if(app == null){
 	    				Log.e(TAG, "No app found for app id " + appid + " Removing session mapping and sending unregisterAI to head unit.");
+
 	    				//We have no app to match the app id tied to this session
 	    				removeSessionFromMap(session, Arrays.asList(packet.getTransportType()));
-	    				byte[] uai = createForceUnregisterApp((byte)session, (byte)packet.getVersion());
-	    				manuallyWriteBytes(uai,0,uai.length);
-	    				int hashId = 0;
-	    				synchronized(this.SESSION_LOCK){
-	    					if(this.sessionHashIdMap.indexOfKey(session)>=0){
-	    						hashId = this.sessionHashIdMap.get(session); 
-	    						this.sessionHashIdMap.delete(session);
-	    					}
-	    				}
-	    				byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion(),BitConverter.intToByteArray(hashId))).constructPacket();
-						manuallyWriteBytes(stopService,0,stopService.length);
-	    				return false;
+
+						final int serviceType = packet.getServiceType();
+	    				if(serviceType == SdlPacket.SERVICE_TYPE_RPC || serviceType == SdlPacket.SERVICE_TYPE_BULK_DATA) {
+	    					//This is a primary transport packet as it is an RPC packet
+							//Create an unregister app interface to remove the app as it doesn't appear to exist anymore
+							byte[] uai = createForceUnregisterApp((byte) session, (byte) packet.getVersion());
+							manuallyWriteBytes(packet.getTransportType(),uai, 0, uai.length);
+
+							int hashId = 0;
+							synchronized(this.SESSION_LOCK){
+								if(this.sessionHashIdMap.indexOfKey(session)>=0){
+									hashId = this.sessionHashIdMap.get(session);
+									this.sessionHashIdMap.delete(session);
+								}
+							}
+
+							//TODO stop other services on that transport for the session with no app
+							SdlPacket endService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion(),BitConverter.intToByteArray(hashId));
+							byte[] stopService = endService.constructPacket();
+							manuallyWriteBytes(packet.getTransportType(), stopService,0,stopService.length);
+						}else{
+	    					Log.w(TAG, "No where to send a packet from what appears to be a non primary transport");
+						}
+
+						return false;
 	    			}
+
+	    			//There is an app id and can continue to normal flow
 	    			byte version = (byte)packet.getVersion();
 	    			
 	    			if(isNewSessionRequest && version > 1 && packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK){ //we know this was a start session response
@@ -1870,7 +1903,7 @@ public class SdlRouterService extends Service{
 		private void attemptToCleanUpModule(int session, int version, TransportType primaryTransport){
 			Log.i(TAG, "Attempting to stop session " + session);
 			byte[] uai = createForceUnregisterApp((byte)session, (byte)version);
-			manuallyWriteBytes(uai,0,uai.length);
+			manuallyWriteBytes(primaryTransport,uai,0,uai.length);
 			int hashId = 0;
 			synchronized(this.SESSION_LOCK){
 				if(this.sessionHashIdMap.indexOfKey(session)>=0){
@@ -1880,7 +1913,7 @@ public class SdlRouterService extends Service{
 				}
 			}
 			byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version,BitConverter.intToByteArray(hashId))).constructPacket();
-			manuallyWriteBytes(stopService,0,stopService.length);
+			manuallyWriteBytes(primaryTransport,stopService,0,stopService.length);
 		}
 		
 	    private boolean sendPacketMessageToClient(RegisteredApp app, Message message, byte version){
@@ -1896,19 +1929,22 @@ public class SdlRouterService extends Service{
 				for(int i=0; i<size;i++){
 					sessionId = sessions.get(i).intValue();
 					unregister = createForceUnregisterApp((byte)sessionId,version);
-					manuallyWriteBytes(unregister,0,unregister.length);
-					int hashId = 0;
-					synchronized(this.SESSION_LOCK){
-						if(this.sessionHashIdMap.indexOfKey(sessionId)>=0){
-							hashId = this.sessionHashIdMap.get(sessionId); 
+					List<TransportType> transportTypes = app.getTransportsForSession(sessionId);
+					if(transportTypes != null && !transportTypes.isEmpty()) {
+						manuallyWriteBytes(transportTypes.get(0),unregister, 0, unregister.length);
+						int hashId = 0;
+						synchronized (this.SESSION_LOCK) {
+							if (this.sessionHashIdMap.indexOfKey(sessionId) >= 0) {
+								hashId = this.sessionHashIdMap.get(sessionId);
+							}
 						}
-					}
-					stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)sessionId, 0, version,BitConverter.intToByteArray(hashId))).constructPacket();
-					
-					manuallyWriteBytes(stopService,0,stopService.length);
-					synchronized(SESSION_LOCK){
-						this.bluetoothSessionMap.remove(sessionId);
-						this.sessionHashIdMap.delete(sessionId);
+						stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte) sessionId, 0, version, BitConverter.intToByteArray(hashId))).constructPacket();
+
+						manuallyWriteBytes(transportTypes.get(0),stopService, 0, stopService.length);
+						synchronized (SESSION_LOCK) {
+							this.bluetoothSessionMap.remove(sessionId);
+							this.sessionHashIdMap.delete(sessionId);
+						}
 					}
 				}
 				synchronized(REGISTERED_APPS_LOCK){
@@ -2120,6 +2156,7 @@ public class SdlRouterService extends Service{
 	private String getAppIDForSession(int sessionId, boolean newSession, boolean newTransport, TransportType transportType){
 		synchronized(SESSION_LOCK){
 			//Log.d(TAG, "Looking for session: " + sessionId);
+			//First get the session map for the correct transport
 			SparseArray<String> sessionMap;
 			switch(transportType){
 				case BLUETOOTH:
@@ -2147,7 +2184,7 @@ public class SdlRouterService extends Service{
 					return null;
 			}
 
-			String appId = sessionMap.get(sessionId);// SdlRouterService.this.bluetoothSessionMap.get(sessionId);
+			String appId = sessionMap.get(sessionId);
 			if(appId==null){
 				// If service type is RPC then we know we need to just skip ahead and see if there
 				// is a registered app awaiting a session.
@@ -2170,37 +2207,33 @@ public class SdlRouterService extends Service{
 					}
 				}else if(newTransport){
 
-					// If  this is anything other than RPC with a start service response we can assume
+					// If this is anything other than RPC with a start service response we can assume
 					// the app wants to use a new transport as secondary.
 
 					// We would only receive a start service response for RPC service when an app is
 					// attempting to register for the first time. Other services can be ran on
 					//secondary transports.
 					switch (transportType){
-						case BLUETOOTH:
+						case BLUETOOTH:			//Check for BT as a secondary transport
 							//USB is potential primary
 							appId = usbSessionMap.get(sessionId);
+							// No other suitable transport for primary transport
+							break;
+						case USB:				//Check for USB as a secondary transport
+							//BT potential primary transport
+							appId = bluetoothSessionMap.get(sessionId);
+							// No other suitable transport for primary transport
+							break;
+						case TCP:				//Check for TCP as a secondary transport
+							//BT potential primary transport
+							appId =  bluetoothSessionMap.get(sessionId);
 							if(appId == null){
-									//TODO try TCP
-								}
-								break;
-							case USB:
-								//BT potential primary transport
-								appId = bluetoothSessionMap.get(sessionId);
-								if(appId == null){
-									//TODO try TCP
-								}
-								break;
-							case TCP:
-								//TODO TCP as secondary
-								appId =  bluetoothSessionMap.get(sessionId);
-								if(appId == null){
-									//TODO try USB
-									appId =  usbSessionMap.get(sessionId);
-								}
-								break;
-							default:
-								return null;
+								//USB is potential primary transport
+								appId =  usbSessionMap.get(sessionId);
+							}
+							break;
+						default:
+							return null;
 						}
 
 						if(appId != null){
@@ -2213,6 +2246,8 @@ public class SdlRouterService extends Service{
 									//session map associated with this transport
 									app.registerTransport(sessionId, transportType);
 									sessionMap.put(sessionId,appId);
+								}else{
+									Log.w(TAG, "No registered app found when register secondary transport");
 								}
 							}
 						}
@@ -2781,7 +2816,7 @@ public class SdlRouterService extends Service{
 					byte[] bytes = buffer.getBytes();
 					PacketWriteTaskBlockingQueue queue = queues.get(transportType);
 					if (queue != null) {
-						queue.add(new PacketWriteTask(bytes, 0, bytes.length, this.priorityForBuffingMessage));
+						queue.add(new PacketWriteTask(bytes, 0, bytes.length, this.priorityForBuffingMessage,transportType));
 						PacketWriteTaskMaster packetWriteTaskMaster = packetWriteTaskMasterMap.get(transportType);
 						if (packetWriteTaskMaster != null) {
 							packetWriteTaskMaster.alert();
@@ -2904,13 +2939,19 @@ public class SdlRouterService extends Service{
 		TransportType transportType;
 		
 		@SuppressWarnings("SameParameterValue")
-		public PacketWriteTask(byte[] bytes, int offset, int size, int priorityCoefficient){
+		@Deprecated
+		public PacketWriteTask(int fuck, byte[] bytes, int offset, int size, int priorityCoefficient) {
+			this(bytes, offset, size, priorityCoefficient,null);
+		}
+
+		public PacketWriteTask(byte[] bytes, int offset, int size, int priorityCoefficient, TransportType transportType){
 			timestamp = System.currentTimeMillis();
 			bytesToWrite = bytes;
 			this.offset = offset;
 			this.size = size;
 			this.priorityCoefficient = priorityCoefficient;
 			receivedBundle = null;
+			this.transportType = transportType;
 		}
 		
 		public PacketWriteTask(Bundle bundle){
@@ -2929,10 +2970,10 @@ public class SdlRouterService extends Service{
 
 		@Override
 		public void run() {
-			if(receivedBundle!=null){
+			if(receivedBundle != null){
 				writeBytesToTransport(receivedBundle);
 			}else if(bytesToWrite !=null){
-				manuallyWriteBytes(bytesToWrite, offset, size);
+				manuallyWriteBytes(this.transportType, bytesToWrite, offset, size);
 			}
 		}
 		
