@@ -52,14 +52,14 @@ class TextAndGraphicManager extends BaseSubManager {
 	private static final String MAIN_FIELD_2 = "mainField2";
 	private static final String MAIN_FIELD_3 = "mainField3";
 	private static final String MAIN_FIELD_4 = "mainField4";
-	private boolean isDirty, hasQueuedUpdate;
+	protected boolean isDirty, hasQueuedUpdate;
+	protected Show currentScreenData, inProgressUpdate, queuedImageUpdate;
+	protected DisplayCapabilities displayCapabilities;
+	protected HMILevel currentHMILevel;
 	private FileManager fileManager;
-	private Show currentScreenData, inProgressUpdate, queuedImageUpdate;
 	private CompletionListener queuedUpdateListener, inProgressListener;
 	private Context context;
 	private SdlArtwork blankArtwork;
-	private DisplayCapabilities displayCapabilities;
-	private HMILevel currentHMILevel;
 	private OnRPCNotificationListener hmiListener;
 	private OnSystemCapabilityListener onDisplayCapabilitiesListener;
 	private SdlArtwork primaryGraphic, secondaryGraphic;
@@ -80,6 +80,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		isDirty = false;
 		textAlignment = CENTERED;
 		currentHMILevel = HMILevel.HMI_NONE;
+		currentScreenData = new Show();
 		addListeners();
 		getBlankArtwork();
 		transitionToState(READY);
@@ -166,8 +167,6 @@ class TextAndGraphicManager extends BaseSubManager {
 			Log.e(TAG, "Trying to send show on HMI_NONE");
 			return;
 		}
-
-		currentScreenData = new Show();
 
 		Log.v(TAG, "Updating Text and Graphics");
 		if (inProgressUpdate != null){
@@ -670,7 +669,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		return currentScreenData != null && (hasGraphic && secondaryGraphic != null && currentScreenData.getGraphic().getValue().equalsIgnoreCase(secondaryGraphic.getName()));
 	}
 
-	private int getNumberOfLines() {
+	protected int getNumberOfLines() {
 
 		if (displayCapabilities == null){
 			return 4;
@@ -850,6 +849,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected SdlArtwork getSecondaryGraphic(){
 		return secondaryGraphic;
 	}
+
 	/**
 	 * Helper method to take resource files and turn them into byte arrays
 	 * @param resource Resource file id
