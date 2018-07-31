@@ -286,6 +286,8 @@ class SoftButtonManager extends BaseSubManager {
 
         Log.i(TAG, "Updating soft buttons");
 
+        cachedListener = null;
+
 
         // Check if we have update already in progress
         if (inProgressShowRPC != null) {
@@ -341,17 +343,20 @@ class SoftButtonManager extends BaseSubManager {
                 Log.i(TAG, "Soft button update completed");
 
                 inProgressShowRPC = null;
+                CompletionListener currentListener;
                 if (inProgressListener != null) {
-                    inProgressListener.onComplete(true);
+                    currentListener = inProgressListener;
                     inProgressListener = null;
+                    currentListener.onComplete(true);
                 }
 
 
                 if (hasQueuedUpdate) {
                     Log.i(TAG, "Queued update exists, sending another update");
-                    update(queuedUpdateListener);
+                    currentListener = queuedUpdateListener;
                     queuedUpdateListener = null;
                     hasQueuedUpdate = false;
+                    update(currentListener);
                 }
             }
 
@@ -362,17 +367,20 @@ class SoftButtonManager extends BaseSubManager {
                 Log.e(TAG, "Soft button update error");
 
                 inProgressShowRPC = null;
+                CompletionListener currentListener;
                 if (inProgressListener != null) {
-                    inProgressListener.onComplete(false);
+                    currentListener = inProgressListener;
                     inProgressListener = null;
+                    currentListener.onComplete(false);
                 }
 
 
                 if (hasQueuedUpdate) {
                     Log.i(TAG, "Queued update exists, sending another update");
-                    update(queuedUpdateListener);
+                    currentListener = queuedUpdateListener;
                     queuedUpdateListener = null;
                     hasQueuedUpdate = false;
+                    update(currentListener);
                 }
             }
         });
