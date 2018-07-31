@@ -49,7 +49,7 @@ public class ScreenManager extends BaseSubManager {
 
 	// Constructors
 
-	// TODO: 7/31/18 the screenManager should not be ready unless all submanagers are ready! 
+	// TODO: 7/31/18 the screenManager should not be ready unless all submanagers are ready!
 	public ScreenManager(ISdl internalInterface, FileManager fileManager) {
 
 		// set class vars
@@ -83,6 +83,8 @@ public class ScreenManager extends BaseSubManager {
 	 *
 	 */
 
+
+	// TODO: 7/31/18 we have to make sure that screen manager will inform soft button manager about all MainField1 updates
 	public void setTextField1(@NonNull String textField1) {
 		//textAndGraphicManager.setMainField1(textField1);
 		softButtonManager.setCurrentMainField1(textField1);
@@ -205,7 +207,7 @@ public class ScreenManager extends BaseSubManager {
 //		textAndGraphicManager.batchUpdates = true;
 	}
 
-	// TODO: 7/31/18 what if one manger falied and the other succeeded?  
+	// TODO: 7/31/18 what if one manger failed and the other succeeded?
 	public void endUpdates(final CompletionListener listener){
 		final Map<BaseSubManager, Boolean> subManagersCompletionListenersStatus = new HashMap<>();
 
@@ -215,7 +217,7 @@ public class ScreenManager extends BaseSubManager {
 			@Override
 			public void onComplete(boolean success) {
 				subManagersCompletionListenersStatus.put(softButtonManager, true);
-				if (allSubManagersListernsCompleted(subManagersCompletionListenersStatus)){
+				if (allSubManagersListenersCompleted(subManagersCompletionListenersStatus)){
 					listener.onComplete(success);
 				}
 			}
@@ -226,7 +228,7 @@ public class ScreenManager extends BaseSubManager {
 	}
 
 
-	private boolean allSubManagersListernsCompleted(Map<BaseSubManager, Boolean> subManagersCompletionListenersStatus){
+	private boolean allSubManagersListenersCompleted(Map<BaseSubManager, Boolean> subManagersCompletionListenersStatus){
 		boolean allSubManagersCompleted = true;
 		for (BaseSubManager subManager : subManagersCompletionListenersStatus.keySet()) {
 			if (!subManagersCompletionListenersStatus.get(subManager)){
