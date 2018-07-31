@@ -187,9 +187,13 @@ public class ScreenManager extends BaseSubManager {
 		return softButtonManager.getSoftButtonObjects();
 	}
 
-	public SoftButtonObject getSoftButtonObjectNamed(@NonNull String name){
-		return softButtonManager.getSoftButtonObjectNamed(name);
-	}
+    public SoftButtonObject getSoftButtonObjectByName(@NonNull String name){
+        return softButtonManager.getSoftButtonObjectByName(name);
+    }
+
+    public SoftButtonObject getSoftButtonObjectById(int buttonId){
+        return softButtonManager.getSoftButtonObjectById(buttonId);
+    }
 
 	// Updates
 

@@ -59,8 +59,8 @@ public class SoftButtonObject {
      * @param newStateName a String value represents the name fo the state that we want to transition the SoftButtonObject to
      * @return a boolean value that represents whether the transition succeeded or failed
      */
-    public boolean transitionToStateNamed(@NonNull String newStateName) {
-        SoftButtonState newState = getStateNamed(newStateName);
+    public boolean transitionToStateByName(@NonNull String newStateName) {
+        SoftButtonState newState = getStateByName(newStateName);
         if (newState == null) {
             Log.e(TAG, String.format("Attempted to transition to state: %s on soft button object: %s but no state with that name was found", newStateName, this.name));
             return false;
@@ -93,7 +93,7 @@ public class SoftButtonObject {
             Log.e(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
             return;
         }
-        transitionToStateNamed(nextStateName);
+        transitionToStateByName(nextStateName);
     }
 
     /**
@@ -101,7 +101,7 @@ public class SoftButtonObject {
      * @return a SoftButtonState represents the current state
      */
     public SoftButtonState getCurrentState() {
-        SoftButtonState state = getStateNamed(currentStateName);
+        SoftButtonState state = getStateByName(currentStateName);
         if (state == null) {
             Log.e(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
         }
@@ -128,7 +128,7 @@ public class SoftButtonObject {
      * @param stateName a String value that represents the name of the state
      * @return a SoftButtonState object that represents the state that has the provided name
      */
-    private SoftButtonState getStateNamed(String stateName) {
+    private SoftButtonState getStateByName(String stateName) {
         if (stateName != null && states != null) {
             for (SoftButtonState state : states) {
                 if (state.getName().equals(stateName)) {

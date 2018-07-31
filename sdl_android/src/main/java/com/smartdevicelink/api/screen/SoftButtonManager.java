@@ -141,9 +141,23 @@ class SoftButtonManager extends BaseSubManager {
      * @param name a String value that represents the name
      * @return a SoftButtonObject
      */
-    protected SoftButtonObject getSoftButtonObjectNamed(String name) {
+    protected SoftButtonObject getSoftButtonObjectByName(String name) {
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             if (softButtonObject.getName().equals(name)) {
+                return softButtonObject;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the SoftButtonObject that has the provided buttonId
+     * @param buttonId a int value that represents the id of the button
+     * @return a SoftButtonObject
+     */
+    protected SoftButtonObject getSoftButtonObjectById(int buttonId) {
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            if (softButtonObject.getButtonId() == buttonId) {
                 return softButtonObject;
             }
         }
