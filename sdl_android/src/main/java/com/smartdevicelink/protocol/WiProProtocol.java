@@ -204,18 +204,8 @@ public class WiProProtocol extends AbstractProtocol {
 	 * @param registered if the transport was successfully registered on
 	 */
 	private void handleSecondaryTransportRegistration(TransportType transportType, boolean registered){
-		List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.remove(transportType);
-		if(listenerList != null){
-			for(ISecondaryTransportListener listener : listenerList){
-				if(registered) {
-					listener.onConnectionSuccess();
-				}else{
-					listener.onConnectionFailure();
-				}
-			}
-		}
-
 		if(registered) {
+			//Session has been registered on secondary transport
 			Log.d(TAG, transportType.toString() + " transport was registered!");
 			if (supportedSecondaryTransports.contains(transportType)) {
 				// If the transport type that is now available to be used it should be checked
@@ -241,6 +231,17 @@ public class WiProProtocol extends AbstractProtocol {
 		}else{
 			Log.d(TAG, transportType.toString() + " transport was NOT registered!");
 		}
+		//Notify any listeners for this secondary transport
+		List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.remove(transportType);
+		if(listenerList != null){
+			for(ISecondaryTransportListener listener : listenerList){
+				if(registered) {
+					listener.onConnectionSuccess();
+				}else{
+					listener.onConnectionFailure();
+				}
+			}
+		}
 		printActiveTransports();
 	}
 
@@ -250,51 +251,68 @@ public class WiProProtocol extends AbstractProtocol {
 		for(TransportType t : transportTypes) {
 			Log.d(TAG, t.toString());
 		}
+
 		List<TransportType> connectedTransports = Arrays.asList(transportTypes);
-		if(!connectedTransports.contains(connectedPrimaryTransport)){
+
+		if(connectedPrimaryTransport != null && !connectedTransports.contains(connectedPrimaryTransport)){
+			//The primary transport being used is no longer part of the connected transports
+			//TODO Should we perform a callback to SdlSession to inform of disconnect?
 			connectedPrimaryTransport = null;
 			return;
 		}
+
 		if(activeTransports.get(SessionType.RPC) == null){
-			//need to start a service
-			Log.d(TAG, "Sending start service RPC");
-			startService(SessionType.RPC,(byte)0x00,false);
+			//There is no currently active transport for the RPC service meaning no primary transport
+			TransportType preferredPrimaryTransport = getPreferredTransport(requestedPrimaryTransports,connectedTransports);
+			if(preferredPrimaryTransport != null) {
+				Log.d(TAG, "Sending start service RPC - " + preferredPrimaryTransport.name());
+				connectedPrimaryTransport = preferredPrimaryTransport;
+				startService(SessionType.RPC, (byte) 0x00, false);
+			}else{
+				onTransportNotAccepted("No transports match requested primary transport");
+			}
 			return;
 		}else if(requiresHighBandwidth){
-			for(TransportType transportType : transportTypes){
-				if(supportedSecondaryTransports.contains(transportType)){
-					SdlSession session = null;
-					if(sessionWeakReference != null){
-						session = sessionWeakReference.get();
-					}
-					if(session != null) {
-						Log.d(TAG, "Registering secondary transport!");
-						registerSecondaryTransport(session.getSessionId(), transportType);
-					}else{
-						Log.d(TAG, "Session was null");
-					}
-					return; // For now, only support registering one secondary transport
-				}else{
-					Log.d(TAG, transportType.toString() + " not supported as secondary transport");
+			//If this app has a primary transport already but requires a high bandwidth transport
+			//to properly function, it is now time to register over that transport to be used
+			TransportType preferredSecondaryTransport = getPreferredTransport(supportedSecondaryTransports,connectedTransports);
+			if(preferredSecondaryTransport != null) {
+				SdlSession session = null;
+				if(sessionWeakReference != null){
+					session = sessionWeakReference.get();
 				}
+				if(session != null) {
+					Log.d(TAG, "Registering secondary transport!");
+					registerSecondaryTransport(session.getSessionId(), preferredSecondaryTransport);
+				}else{
+					Log.e(TAG, "Session was null");
+				}
+				return; // For now, only support registering one secondary transport
+			}else{
+				Log.d(TAG, "No supported secondary transport");
 			}
+
 		}
 	}
 
 	/**
-	 * Returns the preferred primary transport for an array of connected transport types
-	 * @param connectedTransports array of connected transports
-	 * @return The first connected TransportType requested by app
+	 * Retrieves the perferred transport for the given connected transport
+	 * @param preferredList the list of perferred transports (primary or secondary)
+	 * @param connectedTransports the current list of connected transports
+	 * @return the preferred connected transport
 	 */
-	public void setConnectedPrimaryTransport(TransportType[] connectedTransports){
-		connectedPrimaryTransport = null;
-		List<TransportType> transportList = Arrays.asList(connectedTransports);
-		for(TransportType transportType: requestedPrimaryTransports) {
-			if (transportList.contains(transportType)) {
-				connectedPrimaryTransport = transportType;
-				break;
+	private TransportType getPreferredTransport(List<TransportType> preferredList, List<TransportType> connectedTransports) {
+		for (TransportType transportType : preferredList) {
+			if (connectedTransports.contains(transportType)) {
+				return transportType;
 			}
 		}
+		return null;
+	}
+
+	public TransportType getPreferredPrimaryTransport(TransportType[] transportTypes){
+		return getPreferredTransport(requestedPrimaryTransports,  Arrays.asList(transportTypes));
+
 	}
 
 	public TransportType getConnectedPrimaryTransport(){
@@ -377,6 +395,7 @@ public class WiProProtocol extends AbstractProtocol {
 	} // end-method
 	
 	public void EndProtocolSession(SessionType sessionType, byte sessionID, int hashId) {
+		Log.d(TAG, "EndProtocolSession");
 		SdlPacket header;
 			if (sessionType.equals(SessionType.RPC)) { // check for RPC session
 				if(_version < 5){
@@ -677,6 +696,7 @@ public class WiProProtocol extends AbstractProtocol {
         } // end-method		
 
 		private void handleControlFrame(SdlPacket packet) {
+			Log.d(TAG, "Control frame received: /n" + packet.toString());
 			Integer frameTemp = Integer.valueOf(packet.getFrameInfo());
 			Byte frameInfo = frameTemp.byteValue();
 			
@@ -1087,6 +1107,8 @@ public class WiProProtocol extends AbstractProtocol {
 				if(secondaryTransportParams.containsKey(secondaryTransportType)) {
 					header.setTransportType(secondaryTransportType);
 					connectSecondaryTransport(sessionID, secondaryTransportType, secondaryTransportParams.get(secondaryTransportType));
+				}else{
+					Log.w(TAG, "No params to connect to secondary transport");
 				}
 
 			}
@@ -1121,6 +1143,7 @@ public class WiProProtocol extends AbstractProtocol {
 
 	@Override
 	public void EndProtocolService(SessionType serviceType, byte sessionID) {
+		Log.d(TAG, "End protocol service called: " + serviceType.getName());
 		if(serviceType.equals(SessionType.RPC)){ //RPC session will close all other sessions so we want to make sure we use the correct EndProtocolSession method
 			EndProtocolSession(serviceType,sessionID,hashID);
 		}else {

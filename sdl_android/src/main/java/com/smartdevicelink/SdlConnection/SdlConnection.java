@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.content.ComponentName;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
@@ -283,7 +284,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	}
 
 	@Override
-	public void connectSecondaryTransport(byte sessionID, TransportType transportType, Map<String, Object> params) {
+	public void connectSecondaryTransport(byte sessionID, TransportType transportType, Bundle params) {
+
 	}
 
 	/**

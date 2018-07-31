@@ -63,6 +63,7 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 	private VideoStreamingParameters desiredVideoParams = null;
 	private VideoStreamingParameters acceptedVideoParams = null;
 	private CopyOnWriteArrayList<SessionType> encryptedServices = new CopyOnWriteArrayList<SessionType>();
+	private boolean requestedSession = false;
 
 	IHeartbeatMonitor _outgoingHeartbeatMonitor = null;
 	IHeartbeatMonitor _incomingHeartbeatMonitor = null;
@@ -87,6 +88,7 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 	}
 
 	public SdlSession(ISdlConnectionListener listener, MultiplexTransportConfig config){
+		Log.d(TAG, "SdlSession created");
 		transportConfig = config;
 		sessionListener = listener;
 		wiProProtocol = new WiProProtocol(this);
@@ -525,11 +527,9 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 			Log.d(TAG, "onTransportConnected");
 			//In the future we should move this logic into the Protocol Layer
 			TransportType type = wiProProtocol.getTransportForSession(SessionType.RPC);
-			if(type == null){ //There is currently no transport registered
-				wiProProtocol.setConnectedPrimaryTransport(transportTypes);
-				if(wiProProtocol.getConnectedPrimaryTransport() != null){
-					transportManager.requestNewSession(wiProProtocol.getConnectedPrimaryTransport());
-				}
+			if(type == null && !requestedSession){ //There is currently no transport registered
+				requestedSession = true;
+				transportManager.requestNewSession(wiProProtocol.getPreferredPrimaryTransport(transportTypes));
 			}
 			wiProProtocol.onTransportsConnectedUpdate(transportTypes);
 			wiProProtocol.printActiveTransports();
@@ -556,7 +556,7 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 		}
 
 		Log.d(TAG, "rpc transport? - " + wiProProtocol.getTransportForSession(SessionType.RPC));
-		if(type != null && type.equals(wiProProtocol.getTransportForSession(SessionType.RPC))){
+		if(type.equals(wiProProtocol.getTransportForSession(SessionType.RPC))){
 			final MultiplexTransportConfig config = (MultiplexTransportConfig)this.transportConfig;
 			List<TransportType> transportTypes = config.getPrimaryTransports();
 			//transportTypes.remove(type);
@@ -575,8 +575,11 @@ public class SdlSession implements  IProtocolListener, TransportManager.Transpor
 			}
 			this.transportManager.close(this.sessionId);
 			this.transportManager = null;
+			requestedSession = false;
 			this.sessionListener.onTransportDisconnected(info, primaryTransportAvailable, (MultiplexTransportConfig)this.transportConfig);
 
+		}else{
+			Log.d(TAG, "Transport was not primary, continuing to stay connected");
 		}
 
 	}
