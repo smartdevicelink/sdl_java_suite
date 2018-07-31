@@ -1,7 +1,6 @@
 package com.smartdevicelink.api.screen;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.api.FileManager;
@@ -13,7 +12,6 @@ import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.test.utl.AndroidToolsTests;
 
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +45,38 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		super.tearDown();
 	}
 
+	private DisplayCapabilities getDisplayCapability(int numberOfMainFields){
+
+		TextField mainField1 = new TextField();
+		mainField1.setName(TextFieldName.mainField1);
+		TextField mainField2 = new TextField();
+		mainField2.setName(TextFieldName.mainField2);
+		TextField mainField3 = new TextField();
+		mainField3.setName(TextFieldName.mainField3);
+		TextField mainField4 = new TextField();
+		mainField4.setName(TextFieldName.mainField4);
+
+		List<TextField> textFieldList = new ArrayList<>();
+
+		textFieldList.add(mainField1);
+		textFieldList.add(mainField2);
+		textFieldList.add(mainField3);
+		textFieldList.add(mainField4);
+
+		List<TextField> returnList = new ArrayList<>();
+
+		if (numberOfMainFields > 0){
+			for (int i = 0; i < numberOfMainFields; i++) {
+				returnList.add(textFieldList.get(i));
+			}
+		}
+
+		DisplayCapabilities displayCapabilities = new DisplayCapabilities();
+		displayCapabilities.setTextFields(returnList);
+
+		return displayCapabilities;
+	}
+
 	public void testInstantiation(){
 
 		assertNull(textAndGraphicManager.getTextField1());
@@ -74,31 +104,13 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 
 	public void testGetMainLines(){
 
-		// We want to test that the looping works. By default, it will return 4
+		// We want to test that the looping works. By default, it will return 4 if display cap is null
 		assertEquals(textAndGraphicManager.getNumberOfLines(), 4);
 
 		// The tests.java class has an example of this, but we must build it to do what
-		// we need it to do.
+		// we need it to do. Build display cap w/ 3 main fields and test that it returns 3
 
-		TextField mainField1 = new TextField();
-		mainField1.setName(TextFieldName.mainField1);
-		TextField mainField2 = new TextField();
-		mainField2.setName(TextFieldName.mainField2);
-		TextField mainField3 = new TextField();
-		mainField3.setName(TextFieldName.mainField3);
-		TextField someOtherField = new TextField();
-		someOtherField.setName(TextFieldName.menuName);
-
-		List<TextField> textFieldList = new ArrayList<>();
-		textFieldList.add(mainField1);
-		textFieldList.add(mainField2);
-		textFieldList.add(mainField3);
-		textFieldList.add(someOtherField);
-
-		DisplayCapabilities displayCapabilities = new DisplayCapabilities();
-		displayCapabilities.setTextFields(textFieldList);
-
-		textAndGraphicManager.displayCapabilities = displayCapabilities;
+		textAndGraphicManager.displayCapabilities = getDisplayCapability(3);
 
 		assertEquals(textAndGraphicManager.getNumberOfLines(), 3);
 	}
