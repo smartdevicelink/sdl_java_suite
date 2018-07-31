@@ -14,7 +14,9 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <strong>ScreenManager</strong> <br>
@@ -47,6 +49,7 @@ public class ScreenManager extends BaseSubManager {
 
 	// Constructors
 
+	// TODO: 7/31/18 the screenManager should not be ready unless all submanagers are ready! 
 	public ScreenManager(ISdl internalInterface, FileManager fileManager) {
 
 		// set class vars
@@ -202,12 +205,35 @@ public class ScreenManager extends BaseSubManager {
 //		textAndGraphicManager.batchUpdates = true;
 	}
 
-	public void endUpdates(CompletionListener listener){
+	// TODO: 7/31/18 what if one manger falied and the other succeeded?  
+	public void endUpdates(final CompletionListener listener){
+		final Map<BaseSubManager, Boolean> subManagersCompletionListenersStatus = new HashMap<>();
 
 		softButtonManager.setBatchUpdates(false);
+		subManagersCompletionListenersStatus.put(softButtonManager, false);
+		softButtonManager.update(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				subManagersCompletionListenersStatus.put(softButtonManager, true);
+				if (allSubManagersListernsCompleted(subManagersCompletionListenersStatus)){
+					listener.onComplete(success);
+				}
+			}
+		});
+
 //		textAndGraphicManager.batchUpdates = false;
-		softButtonManager.update(listener);
-//		textAndGraphicManager.update();
+//		textAndGraphicManager.update(screenManagerListener);
+	}
+
+
+	private boolean allSubManagersListernsCompleted(Map<BaseSubManager, Boolean> subManagersCompletionListenersStatus){
+		boolean allSubManagersCompleted = true;
+		for (BaseSubManager subManager : subManagersCompletionListenersStatus.keySet()) {
+			if (!subManagersCompletionListenersStatus.get(subManager)){
+				allSubManagersCompleted = false;
+			}
+		}
+		return  allSubManagersCompleted;
 	}
 
 }
