@@ -316,7 +316,7 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	// Text
 
-	private Show assembleShowText(Show show){
+	protected Show assembleShowText(Show show){
 
 		show = setBlankTextFields(show);
 
