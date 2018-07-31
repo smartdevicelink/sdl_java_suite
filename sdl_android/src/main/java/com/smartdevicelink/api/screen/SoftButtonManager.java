@@ -42,7 +42,7 @@ class SoftButtonManager extends BaseSubManager {
     private List<SoftButtonObject> softButtonObjects;
     private HMILevel currentHMILevel;
     private Show inProgressShowRPC;
-    private CompletionListener inProgressListener, queuedUpdateListener;
+    private CompletionListener inProgressListener, queuedUpdateListener, cachedListener;
     private boolean hasQueuedUpdate, batchUpdates, waitingOnHMILevelUpdateToSetButtons;
     private OnSystemCapabilityListener onSoftButtonCapabilitiesListener, onDisplayCapabilitiesListener;
     private OnRPCNotificationListener onHMIStatusListener;
@@ -121,7 +121,7 @@ class SoftButtonManager extends BaseSubManager {
                     if (waitingOnHMILevelUpdateToSetButtons) {
                         setSoftButtonObjects(softButtonObjects);
                     } else {
-                        update(null);
+                        update(cachedListener);
                     }
                 }
             }
@@ -242,7 +242,7 @@ class SoftButtonManager extends BaseSubManager {
                         Log.e(TAG, "Error uploading soft button artworks");
                     }
                     Log.i(TAG, "Soft button initial artworks uploaded");
-                    update(null);
+                    update(cachedListener);
                 }
             });
         }
@@ -259,13 +259,13 @@ class SoftButtonManager extends BaseSubManager {
                     }
                     Log.i(TAG, "Soft button other state artworks uploaded");
                     // In case our soft button states have changed in the meantime
-                    update(null);
+                    update(cachedListener);
                 }
             });
         }
 
         // This is necessary because there may be no images needed to be uploaded
-        update(null);
+        update(cachedListener);
     }
 
     /**
@@ -273,6 +273,8 @@ class SoftButtonManager extends BaseSubManager {
      * @param listener a CompletionListener
      */
     protected void update(CompletionListener listener) {
+        cachedListener = listener;
+
         if (batchUpdates) {
             return;
         }
