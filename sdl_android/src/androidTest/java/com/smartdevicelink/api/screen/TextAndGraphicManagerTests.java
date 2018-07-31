@@ -251,7 +251,46 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		// Force it to return display with support for only 4 lines of text
 		textAndGraphicManager.displayCapabilities = getDisplayCapability(4);
 
+		textAndGraphicManager.setTextField1("It is");
 
+		Show assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "");
+		assertEquals(assembledShow.getMainField3(), "");
+		assertEquals(assembledShow.getMainField4(), "");
 
+		textAndGraphicManager.setTextField2("Wednesday");
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "Wednesday");
+		assertEquals(assembledShow.getMainField3(), "");
+		assertEquals(assembledShow.getMainField4(), "");
+
+		textAndGraphicManager.setTextField3("My");
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "Wednesday");
+		assertEquals(assembledShow.getMainField3(), "My");
+		assertEquals(assembledShow.getMainField4(), "");
+
+		textAndGraphicManager.setTextField4("Dudes");
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "Wednesday");
+		assertEquals(assembledShow.getMainField3(), "My");
+		assertEquals(assembledShow.getMainField4(), "Dudes");
+
+		// try just setting line 1 and 4
+		textAndGraphicManager.setTextField2(null);
+		textAndGraphicManager.setTextField3(null);
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "");
+		assertEquals(assembledShow.getMainField3(), "");
+		assertEquals(assembledShow.getMainField4(), "Dudes");
 	}
 }
