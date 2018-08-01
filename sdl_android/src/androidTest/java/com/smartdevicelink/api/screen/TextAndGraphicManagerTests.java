@@ -9,6 +9,7 @@ import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.test.utl.AndroidToolsTests;
@@ -252,8 +253,16 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		textAndGraphicManager.displayCapabilities = getDisplayCapability(4);
 
 		textAndGraphicManager.setTextField1("It is");
+		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
 
 		Show assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+
+		try {
+			System.out.println(assembledShow.serializeJSON().toString());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
 		assertEquals(assembledShow.getMainField1(), "It is");
 		assertEquals(assembledShow.getMainField2(), "");
 		assertEquals(assembledShow.getMainField3(), "");
@@ -293,4 +302,17 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		assertEquals(assembledShow.getMainField3(), "");
 		assertEquals(assembledShow.getMainField4(), "Dudes");
 	}
+
+	// add types to test above
+
+	// TEST SETTERS
+
+		// batching
+
+		// not batching
+
+
+	// TEST IMAGES
+
+	// TEST DISPOSE
 }

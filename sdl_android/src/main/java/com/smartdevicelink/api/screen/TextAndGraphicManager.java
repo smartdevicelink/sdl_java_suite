@@ -366,7 +366,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	private Show assembleTwoLineShowText(Show show){
 
 		StringBuilder tempString = new StringBuilder();
-		MetadataTags tags = show.getMetadataTags();
+		MetadataTags tags = new MetadataTags();
 
 		if (textField1 != null && textField1.length() > 0) {
 			tempString.append(textField1);
@@ -441,7 +441,7 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	private Show assembleThreeLineShowText(Show show){
 
-		MetadataTags tags = show.getMetadataTags();
+		MetadataTags tags = new MetadataTags();
 
 		if (textField1 != null && textField1.length() > 0) {
 			show.setMainField1(textField1);
@@ -491,7 +491,7 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	private Show assembleFourLineShowText(Show show){
 
-		MetadataTags tags = show.getMetadataTags();
+		MetadataTags tags = new MetadataTags();
 
 		if (textField1 != null && textField1.length() > 0) {
 			show.setMainField1(textField1);
