@@ -5,6 +5,7 @@ import android.media.MediaFormat;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -36,10 +37,17 @@ class AudioDecoder extends BaseAudioDecoder {
                     ByteBuffer outputBuffer = mediaCodec.getOutputBuffer(i);
                     if (outputBuffer == null) return;
 
-                    SampleBuffer targetSampleBuffer = AudioDecoder.super.onOutputBufferAvailable(outputBuffer);
+                    if (outputBuffer.limit() > 0) {
+                        SampleBuffer targetSampleBuffer = AudioDecoder.super.onOutputBufferAvailable(outputBuffer);
+                        AudioDecoder.this.listener.onAudioDataAvailable(targetSampleBuffer);
+                    } else {
+                        Log.w(TAG, "output buffer empty. Chance that silence was detected");
+                    }
+
                     mediaCodec.releaseOutputBuffer(i, false);
-                    AudioDecoder.this.listener.onAudioDataAvailable(targetSampleBuffer);
+
                     if (bufferInfo.flags == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
+                        listener.onDecoderFinish();
                         stop();
                     }
                 }

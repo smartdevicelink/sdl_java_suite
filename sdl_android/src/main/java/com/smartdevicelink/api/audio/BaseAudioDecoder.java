@@ -21,13 +21,14 @@ abstract class BaseAudioDecoder {
     protected int targetSampleRate;
     protected SampleType targetSampleType;
 
+    private int outputChannelCount;
     private int outputSampleRate;
     private SampleType outputSampleType;
 
     private double lastOutputSample = 0;
 
-    private long lastOutputPresentationTimeUs = 0;
-    private long lastTargetPresentationTimeUs = 0;
+    private double lastOutputPresentationTimeUs = 0;
+    private double lastTargetPresentationTimeUs = 0;
 
     protected MediaExtractor extractor;
     protected MediaCodec decoder;
@@ -68,7 +69,7 @@ abstract class BaseAudioDecoder {
         decoder.configure(format, null, null, 0);
     }
 
-    private Double sampleAtTargetTime(double lastOutputSample, SampleBuffer outputSampleBuffer, long outputPresentationTimeUs, long outputDurationPerSampleUs, long targetPresentationTimeUs) {
+    private Double sampleAtTargetTime(double lastOutputSample, SampleBuffer outputSampleBuffer, double outputPresentationTimeUs, double outputDurationPerSampleUs, double targetPresentationTimeUs) {
         double timeDiff = targetPresentationTimeUs - outputPresentationTimeUs;
         double index = timeDiff / outputDurationPerSampleUs;
 
@@ -126,21 +127,21 @@ abstract class BaseAudioDecoder {
     }
 
     protected SampleBuffer onOutputBufferAvailable(@NonNull ByteBuffer outputBuffer) {
-        long outputPresentationTimeUs = lastOutputPresentationTimeUs;
-        long outputDurationPerSampleUs = 1000000 / outputSampleRate;
+        double outputPresentationTimeUs = lastOutputPresentationTimeUs;
+        double outputDurationPerSampleUs = 1000000.0 / (double)outputSampleRate;
 
-        long targetPresentationTimeUs = lastTargetPresentationTimeUs;
-        long targetDurationPerSampleUs = 1000000 / targetSampleRate;
+        double targetPresentationTimeUs = lastTargetPresentationTimeUs;
+        double targetDurationPerSampleUs = 1000000.0 / (double)targetSampleRate;
 
         // wrap the output buffer to make it provide audio samples
-        SampleBuffer outputSampleBuffer = SampleBuffer.wrap(outputBuffer, outputSampleType, outputPresentationTimeUs);
+        SampleBuffer outputSampleBuffer = SampleBuffer.wrap(outputBuffer, outputSampleType, (long)outputPresentationTimeUs);
         outputSampleBuffer.position(0);
 
         // the buffer size is related to the output and target sample rate
         // add 2 samples to round up and add an extra sample
-        int bufferSize = outputSampleBuffer.limit() * targetSampleRate / outputSampleRate + 2;
+        int sampleSize = outputSampleBuffer.limit() * targetSampleRate / outputSampleRate + 2;
 
-        SampleBuffer targetSampleBuffer = SampleBuffer.allocate(bufferSize, targetSampleType, ByteOrder.LITTLE_ENDIAN, targetPresentationTimeUs);
+        SampleBuffer targetSampleBuffer = SampleBuffer.allocate(sampleSize, targetSampleType, ByteOrder.LITTLE_ENDIAN, (long)targetPresentationTimeUs);
         Double sample;
 
         do {
@@ -162,6 +163,7 @@ abstract class BaseAudioDecoder {
     }
 
     protected void onOutputFormatChanged(@NonNull MediaFormat mediaFormat) {
+        outputChannelCount = mediaFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
         outputSampleRate = mediaFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N && mediaFormat.containsKey(MediaFormat.KEY_PCM_ENCODING)) {

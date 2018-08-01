@@ -18,10 +18,11 @@ public class SampleBuffer {
     @SuppressWarnings({"unused", "FieldCanBeLocal"})
     private SampleType sampleType;
     private ByteBuffer byteBuffer;
+    private int channelCount;
     private long presentationTimeUs;
 
-    public static SampleBuffer wrap(ByteBuffer buffer, SampleType sampleType, long presentationTimeUs) {
-        return new SampleBuffer(buffer, sampleType, presentationTimeUs);
+    public static SampleBuffer wrap(ByteBuffer buffer, SampleType sampleType, int channelCount, long presentationTimeUs) {
+        return new SampleBuffer(buffer, sampleType, channelCount, presentationTimeUs);
     }
 
     /**
@@ -42,9 +43,10 @@ public class SampleBuffer {
         this.presentationTimeUs = presentationTimeUs;
     }
 
-    private SampleBuffer(ByteBuffer buffer, SampleType sampleType, long presentationTimeUs) {
+    private SampleBuffer(ByteBuffer buffer, SampleType sampleType, int channelCount, long presentationTimeUs) {
         this.byteBuffer = buffer;
         this.sampleType = sampleType;
+        this.channelCount = channelCount;
         this.presentationTimeUs = presentationTimeUs;
     }
 
