@@ -1,14 +1,17 @@
 package com.smartdevicelink.api.screen;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.api.FileManager;
+import com.smartdevicelink.api.datatypes.SdlArtwork;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TextField;
+import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
@@ -23,12 +26,14 @@ import java.util.List;
 import static org.mockito.Mockito.mock;
 
 /**
- * Created by brettywhite on 7/31/18.
+ * This is a unit test class for the SmartDeviceLink library manager class :
+ * {@link com.smartdevicelink.api.screen.TextAndGraphicManager}
  */
 public class TextAndGraphicManagerTests extends AndroidToolsTests{
 
 	// SETUP / HELPERS
 	private TextAndGraphicManager textAndGraphicManager;
+	private SdlArtwork testArtwork;
 
 	@Override
 	public void setUp() throws Exception{
@@ -37,6 +42,12 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		// mock things
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
+
+		testArtwork = new SdlArtwork();
+		testArtwork.setName("testFile");
+		Uri uri = Uri.parse("android.resource://" + mTestContext.getPackageName() + "/drawable/ic_sdl");
+		testArtwork.setUri(uri);
+		testArtwork.setType(FileType.GRAPHIC_PNG);
 
 		textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager, mTestContext);
 	}
@@ -150,6 +161,7 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 
 		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
 		assertEquals(assembledShow.getMainField1(), "It is - Wednesday - My - Dudes");
+
 		// test tags
 		tags = assembledShow.getMetadataTags();
 		tagsList = new ArrayList<>();
@@ -463,16 +475,55 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		assertEquals(tags.getMainField4(), tagsList4);
 	}
 
-	// add types to test above
+	public void testMediaTrackTextField() {
 
-	// TEST SETTERS
+		String songTitle = "Wild For The Night";
+		textAndGraphicManager.setMediaTrackTextField(songTitle);
+		assertEquals(textAndGraphicManager.getMediaTrackTextField(), songTitle);
+	}
 
-		// batching
+	public void testAlignment() {
 
-		// not batching
-
+		textAndGraphicManager.setTextAlignment(TextAlignment.LEFT_ALIGNED);
+		assertEquals(textAndGraphicManager.getTextAlignment(), TextAlignment.LEFT_ALIGNED);
+	}
 
 	// TEST IMAGES
 
+	public void testSetPrimaryGraphic() {
+		textAndGraphicManager.setPrimaryGraphic(testArtwork);
+		assertEquals(textAndGraphicManager.getPrimaryGraphic(), testArtwork);
+	}
+
+	public void testSetSecondaryGraphic() {
+		textAndGraphicManager.setSecondaryGraphic(testArtwork);
+		assertEquals(textAndGraphicManager.getSecondaryGraphic(), testArtwork);
+	}
+
 	// TEST DISPOSE
+
+	public void testDispose() {
+		textAndGraphicManager.dispose();
+
+		assertNull(textAndGraphicManager.getTextField1());
+		assertNull(textAndGraphicManager.getTextField2());
+		assertNull(textAndGraphicManager.getTextField3());
+		assertNull(textAndGraphicManager.getTextField4());
+		assertNull(textAndGraphicManager.getMediaTrackTextField());
+		assertNull(textAndGraphicManager.getPrimaryGraphic());
+		assertNull(textAndGraphicManager.getSecondaryGraphic());
+		assertNull(textAndGraphicManager.getTextAlignment());
+		assertNull(textAndGraphicManager.getTextField1Type());
+		assertNull(textAndGraphicManager.getTextField2Type());
+		assertNull(textAndGraphicManager.getTextField3Type());
+		assertNull(textAndGraphicManager.getTextField4Type());
+		assertNull(textAndGraphicManager.getBlankArtwork());
+		assertNull(textAndGraphicManager.currentScreenData);
+		assertNull(textAndGraphicManager.inProgressUpdate);
+		assertNull(textAndGraphicManager.queuedImageUpdate);
+		assertEquals(textAndGraphicManager.hasQueuedUpdate, false);
+		assertNull(textAndGraphicManager.displayCapabilities);
+		assertEquals(textAndGraphicManager.isDirty, false);
+		assertEquals(textAndGraphicManager.getState(), BaseSubManager.SHUTDOWN);
+	}
 }
