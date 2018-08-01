@@ -311,11 +311,7 @@ class SoftButtonManager extends BaseSubManager {
         // Send Show RPC with soft buttons representing the current state for the soft button objects
         inProgressListener = listener;
         inProgressShowRPC = new Show();
-        if (currentMainField1 == null) {
-            inProgressShowRPC.setMainField1("");
-        } else {
-            inProgressShowRPC.setMainField1(currentMainField1);
-        }
+        inProgressShowRPC.setMainField1(getCurrentMainField1());
         if (softButtonObjects == null) {
             Log.i(TAG, "Soft button objects are null, sending an empty array");
             inProgressShowRPC.setSoftButtons(new ArrayList<SoftButton>());
@@ -405,6 +401,17 @@ class SoftButtonManager extends BaseSubManager {
     }
 
     /**
+     * Get the TextField1
+     * @return currentMainField1
+     */
+    protected String getCurrentMainField1() {
+        if (currentMainField1 == null){
+            return "";
+        }
+        return currentMainField1;
+    }
+
+    /**
      * Set the TextField1
      * @param currentMainField1
      */
@@ -484,7 +491,7 @@ class SoftButtonManager extends BaseSubManager {
      * Returns a list of the SoftButton for the SoftButtonObjects' current state
      * @return a List<SoftButton>
      */
-    private List<SoftButton> createSoftButtonsForCurrentState() {
+    protected List<SoftButton> createSoftButtonsForCurrentState() {
         List<SoftButton> softButtons = new ArrayList<>();
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             softButtons.add(softButtonObject.getCurrentStateSoftButton());
