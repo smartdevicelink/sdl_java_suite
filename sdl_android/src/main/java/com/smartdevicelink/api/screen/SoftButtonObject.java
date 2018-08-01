@@ -69,7 +69,11 @@ public class SoftButtonObject {
         currentStateName = newStateName;
 
         // Send a new Show RPC because the state has changed which means the actual SoftButton has changed
-        softButtonManager.update(null);
+        if (softButtonManager != null) {
+            softButtonManager.update(null);
+        } else {
+            Log.e(TAG, String.format("SoftButtonManager is not set for soft button object: %s. Update cannot be triggered", this.name));
+        }
 
         return true;
     }

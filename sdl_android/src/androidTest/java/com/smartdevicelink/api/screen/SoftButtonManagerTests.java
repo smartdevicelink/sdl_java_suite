@@ -158,14 +158,18 @@ public class SoftButtonManagerTests extends AndroidTestCase {
     public void testSoftButtonManagerGetSoftButtonObject() {
         softButtonManager.setSoftButtonObjects(Arrays.asList(softButtonObject1, softButtonObject2));
 
+
         // Test get by valid name
         assertEquals("Returned SoftButtonObject doesn't match the expected value", softButtonObject2, softButtonManager.getSoftButtonObjectByName("object2"));
+
 
         // Test get by invalid name
         assertNull("Returned SoftButtonObject doesn't match the expected value", softButtonManager.getSoftButtonObjectByName("object300"));
 
+
         // Test get by valid id
         assertEquals("Returned SoftButtonObject doesn't match the expected value", softButtonObject2, softButtonManager.getSoftButtonObjectById(100));
+
 
         // Test get by invalid id
         assertNull("Returned SoftButtonObject doesn't match the expected value", softButtonManager.getSoftButtonObjectById(500));
@@ -176,9 +180,11 @@ public class SoftButtonManagerTests extends AndroidTestCase {
         String nameExpectedValue = "object1-state1";
         assertEquals("Returned state name doesn't match the expected value", nameExpectedValue, softButtonState1.getName());
 
+
         // Test SoftButtonState.getArtwork()
         SdlArtwork artworkExpectedValue = new SdlArtwork("image1", FileType.GRAPHIC_PNG, 1, true);
         assertTrue("Returned SdlArtwork doesn't match the expected value", Validator.validateSdlFile(artworkExpectedValue, softButtonState1.getArtwork()));
+
 
         // Test SoftButtonState.getSoftButton()
         SoftButton softButtonExpectedValue = new SoftButton(SoftButtonType.SBT_BOTH, 0);
@@ -186,8 +192,48 @@ public class SoftButtonManagerTests extends AndroidTestCase {
         softButtonExpectedValue.setImage(new Image(artworkExpectedValue.getName(), ImageType.DYNAMIC));
         assertTrue("Returned SoftButton doesn't match the expected value", Validator.validateSoftButton(softButtonExpectedValue, softButtonState1.getSoftButton()));
     }
-    
-    public void testSoftButtonObject(){
 
+    public void testSoftButtonObject(){
+        // Test SoftButtonObject.getName()
+        assertEquals("Returned object name doesn't match the expected value", "object1", softButtonObject1.getName());
+
+
+        // Test SoftButtonObject.getCurrentState()
+        assertEquals("Returned current state doesn't match the expected value", softButtonState1, softButtonObject1.getCurrentState());
+
+
+        // Test SoftButtonObject.getCurrentStateName()
+        assertEquals("Returned current state name doesn't match the expected value", softButtonState1.getName(), softButtonObject1.getCurrentStateName());
+
+
+        // Test SoftButtonObject.getButtonId()
+        assertEquals("Returned button Id doesn't match the expected value", 0, softButtonObject1.getButtonId());
+
+
+        // Test SoftButtonObject.getCurrentStateSoftButton()
+        SoftButton softButtonExpectedValue = new SoftButton(SoftButtonType.SBT_TEXT, 0);
+        softButtonExpectedValue.setText("o2s1");
+        assertTrue("Returned current state SoftButton doesn't match the expected value", Validator.validateSoftButton(softButtonExpectedValue, softButtonObject2.getCurrentStateSoftButton()));
+
+
+        // Test SoftButtonObject.getStates()
+        assertEquals("Returned object states doesn't match the expected value", Arrays.asList(softButtonState1, softButtonState2), softButtonObject1.getStates());
+
+
+        // Test SoftButtonObject.transitionToNextState()
+        assertEquals(softButtonState1, softButtonObject1.getCurrentState());
+        softButtonObject1.transitionToNextState();
+        assertEquals(softButtonState2, softButtonObject1.getCurrentState());
+
+
+        // Test SoftButtonObject.transitionToStateByName() - transitioning to a none existing state
+        boolean success = softButtonObject1.transitionToStateByName("none existing name");
+        assertFalse(success);
+
+
+        // Test SoftButtonObject.transitionToStateByName() - transitioning to an existing state
+        success = softButtonObject1.transitionToStateByName("object1-state1");
+        assertTrue(success);
+        assertEquals(softButtonState1, softButtonObject1.getCurrentState());
     }
 }
