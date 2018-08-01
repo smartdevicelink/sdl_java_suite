@@ -540,7 +540,7 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	// Extraction
 
-	private Show extractTextFromShow(Show show){
+	protected Show extractTextFromShow(Show show){
 
 		Show newShow = new Show();
 		newShow.setMainField1(show.getMainField1());

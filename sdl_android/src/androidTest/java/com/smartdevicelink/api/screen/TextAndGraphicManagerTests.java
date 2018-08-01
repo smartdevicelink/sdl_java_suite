@@ -488,6 +488,21 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		assertEquals(textAndGraphicManager.getTextAlignment(), TextAlignment.LEFT_ALIGNED);
 	}
 
+	public void testExtractTextFromShow(){
+
+		Show mainShow = new Show();
+		mainShow.setMainField1("test");
+		mainShow.setMainField3("Sauce");
+		mainShow.setMainField4("");
+
+		Show newShow = textAndGraphicManager.extractTextFromShow(mainShow);
+
+		assertEquals(newShow.getMainField1(), "test");
+		assertEquals(newShow.getMainField3(), "Sauce");
+		assertEquals(newShow.getMainField4(), "");
+		assertNull(newShow.getMainField2());
+	}
+
 	// TEST IMAGES
 
 	public void testSetPrimaryGraphic() {
