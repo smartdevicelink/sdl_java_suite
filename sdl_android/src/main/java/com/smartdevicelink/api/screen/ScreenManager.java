@@ -1,18 +1,14 @@
 package com.smartdevicelink.api.screen;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.api.CompletionListener;
 import com.smartdevicelink.api.FileManager;
 import com.smartdevicelink.api.datatypes.SdlArtwork;
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.rpc.OnHMIStatus;
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,55 +32,66 @@ import java.util.Map;
  */
 public class ScreenManager extends BaseSubManager {
 
+	private static String TAG = "ScreenManager";
+	private FileManager fileManager;
 	private SoftButtonManager softButtonManager;
 //	private TextAndGraphicManager textAndGraphicManager;
-	private HMILevel hmiLevel;
 
 	// Screen stuff
 	private String textField1, textField2, textField3, textField4, mediaTrackTextField;
 	private SdlArtwork primaryGraphic, secondaryGraphic;
 	private TextAlignment textAlignment;
 	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
-//	private ArrayList<SoftButtonObject> softButtonObjects;
+
 
 	// Constructors
 
-	// TODO: 7/31/18 the screenManager should not be ready unless all submanagers are ready!
 	public ScreenManager(ISdl internalInterface, FileManager fileManager) {
-
-		// set class vars
 		super(internalInterface);
 
-		hmiLevel = HMILevel.HMI_NONE;
+		transitionToState(SETTING_UP);
 
-		// add listener
-		OnRPCNotificationListener hmiListener = new OnRPCNotificationListener() {
-			@Override
-			public void onNotified(RPCNotification notification) {
-				hmiLevel = ((OnHMIStatus)notification).getHmiLevel();
+		this.fileManager = fileManager;
+
+		initialize();
+	}
+
+
+	// Sub manager listener
+	private final CompletionListener subManagerListener = new CompletionListener() {
+		@Override
+		public synchronized void onComplete(boolean success) {
+			if(!success){
+				Log.d(TAG, "Sub manager failed to initialize");
 			}
-		};
-		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+			if(
+					softButtonManager != null && softButtonManager.getState() != BaseSubManager.SETTING_UP
+					/*
+					textAndGraphicManager != null && textAndGraphicManager.getState() != BaseSubManager.SETTING_UP
+					*/
+					){
+				transitionToState(READY);
+			}
+		}
+	};
 
-		// init sub managers
+	private void initialize(){
 		this.softButtonManager = new SoftButtonManager(internalInterface, fileManager);
-		//this.textAndGraphicManager = new TextAndGraphicManager(internalInterface,fileManager);
-		transitionToState(READY);
+		this.softButtonManager.start(subManagerListener);
+		//this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager);
+		//this.textAndGraphicManager.start(subManagerListener);
+	}
+
+	/**
+	 * <p>Called when manager is being torn down</p>
+	 */
+	public void dispose(){
+		transitionToState(SHUTDOWN);
 	}
 
 	// Setters
 
-	/*******
-	 *
-	 * THESE SETTERS / GETTERS WILL END UP CALLING THEIR SPECIFIC SUB-SUB MANAGERS
-	 *
-	 * FOR EXAMPLE FOR SETTEXTFIELD1 IT WILL CALL: this.textAndGraphicManager.textField1 = textField1;
-	 * (SAME FOR THE GETTERS)
-	 *
-	 */
-
-
-	// TODO: 7/31/18 we have to make sure that screen manager will inform soft button manager about all MainField1 updates
+	// TODO: IMPORTANT: we have to make sure that ScreenManager informs softButtonManager about all MainField1 updates, otherwise softButtonManager will override textField1 with old values
 	public void setTextField1(@NonNull String textField1) {
 		//textAndGraphicManager.setMainField1(textField1);
 		softButtonManager.setCurrentMainField1(textField1);
