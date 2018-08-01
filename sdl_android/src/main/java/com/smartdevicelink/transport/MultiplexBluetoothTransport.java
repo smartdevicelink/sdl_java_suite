@@ -59,7 +59,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     // Key names received from the BluetoothSerialServer Handler
     private static final long MS_TILL_TIMEOUT = 2500;
     private static final int READ_BUFFER_SIZE = 4096;
-    private static final Object THREAD_LOCK =  new Object();;
+    private final Object THREAD_LOCK =  new Object();;
 
     protected static final String SHARED_PREFS = "sdl.bluetoothprefs";
 
