@@ -124,7 +124,7 @@ public class SampleBuffer {
 
                 // get a sample mix to mono from the index
                 for (int i = 0; i < channelCount; i++) {
-                    byte b = index == -1 ? byteBuffer.get() : byteBuffer.get(internalIndex + i);
+                    byte b = index == -1 ? byteBuffer.get() : byteBuffer.get(internalIndex + i * sampleType);
                     int a = b & 0xff; // convert the 8 bits into int so we can calc > 127
                     avg += a / (double)channelCount;
                 }
@@ -136,7 +136,7 @@ public class SampleBuffer {
 
                 // get a sample mix to mono from the index
                 for (int i = 0; i < channelCount; i++) {
-                    short a = index == -1 ? byteBuffer.getShort() : byteBuffer.getShort(internalIndex + i);
+                    short a = index == -1 ? byteBuffer.getShort() : byteBuffer.getShort(internalIndex + i * sampleType);
                     avg += a / (double)channelCount;
                 }
 
@@ -147,7 +147,7 @@ public class SampleBuffer {
 
                 // get a sample mix to mono from the index
                 for (int i = 0; i < channelCount; i++) {
-                    double a = index == -1 ? byteBuffer.getFloat() : byteBuffer.getFloat(internalIndex);
+                    double a = index == -1 ? byteBuffer.getFloat() : byteBuffer.getFloat(internalIndex + i * sampleType);
                     avg += a / (double)channelCount;
                 }
 
@@ -176,7 +176,7 @@ public class SampleBuffer {
                     }
                 } else {
                     for (int i = 0; i < channelCount; i++) {
-                        byteBuffer.put(internalIndex + i, b);
+                        byteBuffer.put(internalIndex + i * sampleType, b);
                     }
                 }
                 break;
@@ -189,7 +189,7 @@ public class SampleBuffer {
                     }
                 } else {
                     for (int i = 0; i < channelCount; i++) {
-                        byteBuffer.putShort(internalIndex + i, a);
+                        byteBuffer.putShort(internalIndex + i * sampleType, a);
                     }
                 }
                 break;
@@ -201,7 +201,7 @@ public class SampleBuffer {
                     }
                 } else {
                     for (int i = 0; i < channelCount; i++) {
-                        byteBuffer.putFloat(internalIndex + i, (float) sample);
+                        byteBuffer.putFloat(internalIndex + i * sampleType, (float) sample);
                     }
                 }
                 break;

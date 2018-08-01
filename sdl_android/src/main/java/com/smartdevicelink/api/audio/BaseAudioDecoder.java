@@ -135,7 +135,7 @@ public abstract class BaseAudioDecoder {
         double targetDurationPerSampleUs = 1000000.0 / (double)targetSampleRate;
 
         // wrap the output buffer to make it provide audio samples
-        SampleBuffer outputSampleBuffer = SampleBuffer.wrap(outputBuffer, outputSampleType, (long)outputPresentationTimeUs);
+        SampleBuffer outputSampleBuffer = SampleBuffer.wrap(outputBuffer, outputSampleType, outputChannelCount, (long)outputPresentationTimeUs);
         outputSampleBuffer.position(0);
 
         // the buffer size is related to the output and target sample rate
