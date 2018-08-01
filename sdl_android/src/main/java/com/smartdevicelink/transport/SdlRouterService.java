@@ -2940,7 +2940,7 @@ public class SdlRouterService extends Service{
 		
 		@SuppressWarnings("SameParameterValue")
 		@Deprecated
-		public PacketWriteTask(int fuck, byte[] bytes, int offset, int size, int priorityCoefficient) {
+		public PacketWriteTask(byte[] bytes, int offset, int size, int priorityCoefficient) {
 			this(bytes, offset, size, priorityCoefficient,null);
 		}
 

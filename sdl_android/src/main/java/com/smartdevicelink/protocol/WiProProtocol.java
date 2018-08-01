@@ -183,7 +183,7 @@ public class WiProProtocol extends AbstractProtocol {
 		this.requestedPrimaryTransports = primaryTransports;
 	}
 
-	public void setTransortPriorityForService(SessionType serviceType, List<Integer> order){
+	public void setTransportPriorityForService(SessionType serviceType, List<Integer> order){
 		if(transportPriorityForServiceMap == null){
 			transportPriorityForServiceMap = new HashMap<>();
 		}
@@ -779,8 +779,8 @@ public class WiProProtocol extends AbstractProtocol {
 									}
 								}
 
-								setTransortPriorityForService(SessionType.PCM, audio);
-								setTransortPriorityForService(SessionType.NAV, video);
+								setTransportPriorityForService(SessionType.PCM, audio);
+								setTransportPriorityForService(SessionType.NAV, video);
 
 								activeTransports.put(SessionType.RPC, transportType);
 								activeTransports.put(SessionType.BULK_DATA, transportType);
