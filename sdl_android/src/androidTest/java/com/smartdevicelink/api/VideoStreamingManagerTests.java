@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.test.AndroidTestCase;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -21,6 +22,7 @@ import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -30,8 +32,11 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -295,12 +300,46 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 				assertTrue(videoStreamingManager.isVideoConnected());
 				assertFalse(videoStreamingManager.isVideoStreamingPaused());
 
-				videoStreamingManager.drainEncoder(true);
-				videoStreamingManager.releaseEncoder();
-				assertEquals(videoStreamingManager.currentVideoStreamState(), StreamingStateMachine.STOPPED);
-
 				videoStreamingManager.dispose();
 				assertFalse(videoStreamingManager.isVideoConnected());
+			}
+		});
+	}
+
+	public void testConvertTouchEvent(){
+		ISdl internalInterface = mock(ISdl.class);
+
+		final VideoStreamingManager videoStreamingManager = new VideoStreamingManager(internalInterface);
+		videoStreamingManager.start(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				assertTrue(success);
+				OnTouchEvent testOnTouchEvent = new OnTouchEvent();
+				TouchEvent touchEvent = Test.GENERAL_TOUCHEVENT;
+				testOnTouchEvent.setEvent(Collections.singletonList(touchEvent));
+				testOnTouchEvent.setType(Test.GENERAL_TOUCHTYPE);
+				MotionEvent motionEvent;
+
+				// Touch one pointer (100)
+				motionEvent = videoStreamingManager.convertTouchEvent(testOnTouchEvent);
+				assertEquals(motionEvent.getAction(), MotionEvent.ACTION_DOWN);
+
+				// Touch another pointer (101) without release
+				touchEvent.setId(Test.GENERAL_INT + 1);
+				testOnTouchEvent.setEvent(Collections.singletonList(touchEvent));
+				motionEvent = videoStreamingManager.convertTouchEvent(testOnTouchEvent);
+				assertEquals(motionEvent.getAction(), MotionEvent.ACTION_POINTER_DOWN);
+
+				// Release one of the pointers (101)
+				testOnTouchEvent.setType(TouchType.END);
+				motionEvent = videoStreamingManager.convertTouchEvent(testOnTouchEvent);
+				assertEquals(motionEvent.getAction(), MotionEvent.ACTION_POINTER_UP);
+
+				// Release the other pointer (100)
+				touchEvent.setId(Test.GENERAL_INT);
+				testOnTouchEvent.setEvent(Collections.singletonList(touchEvent));
+				motionEvent = videoStreamingManager.convertTouchEvent(testOnTouchEvent);
+				assertEquals(motionEvent.getAction(), MotionEvent.ACTION_UP);
 			}
 		});
 	}

@@ -426,7 +426,7 @@ public class VideoStreamingManager extends BaseSubManager{
 		}
 	}
 
-	private MotionEvent convertTouchEvent(OnTouchEvent touchEvent){
+	protected MotionEvent convertTouchEvent(OnTouchEvent touchEvent){
 		List<TouchEvent> eventList = touchEvent.getEvent();
 		if (eventList == null || eventList.size() == 0) return null;
 
