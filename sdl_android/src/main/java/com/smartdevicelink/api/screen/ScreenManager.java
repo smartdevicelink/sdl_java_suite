@@ -204,38 +204,68 @@ public class ScreenManager extends BaseSubManager {
 
 	public void beginUpdates(){
 		softButtonManager.setBatchUpdates(true);
-//		textAndGraphicManager.batchUpdates = true;
+		//textAndGraphicManager.setBatchUpdates(true);
 	}
 
-	// TODO: 7/31/18 what if one manger failed and the other succeeded?
 	public void endUpdates(final CompletionListener listener){
+		// This map stores the update completion status for each SubManager.
+		// The key is the SubManager, and the value is the status for that SubManager
+		// null means the SubManager didn't finished the update yet, true means it finished with success, and false means it finished with failure
 		final Map<BaseSubManager, Boolean> subManagersCompletionListenersStatus = new HashMap<>();
 
+
+		// SoftButtonManager
+		subManagersCompletionListenersStatus.put(softButtonManager, null);
 		softButtonManager.setBatchUpdates(false);
-		subManagersCompletionListenersStatus.put(softButtonManager, false);
 		softButtonManager.update(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
-				subManagersCompletionListenersStatus.put(softButtonManager, true);
-				if (allSubManagersListenersCompleted(subManagersCompletionListenersStatus)){
-					listener.onComplete(success);
+				subManagersCompletionListenersStatus.put(softButtonManager, success);
+				Boolean allFinishedSuccessfully = allSubManagersFinishedUpdatingSuccessfully(subManagersCompletionListenersStatus);
+				if (allFinishedSuccessfully != null){
+					listener.onComplete(allFinishedSuccessfully);
 				}
 			}
 		});
 
-//		textAndGraphicManager.batchUpdates = false;
-//		textAndGraphicManager.update(screenManagerListener);
+//		// TextAndGraphicManager
+//		subManagersCompletionListenersStatus.put(textAndGraphicManager, null);
+//		textAndGraphicManager.setBatchUpdates(false);
+//		textAndGraphicManager.update(new CompletionListener() {
+//			@Override
+//			public void onComplete(boolean success) {
+//				subManagersCompletionListenersStatus.put(textAndGraphicManager, success);
+//				Boolean allSubManagersFinishedSuccessfully = allSubManagersFinishedUpdatingSuccessfully(subManagersCompletionListenersStatus);
+//				if (allSubManagersFinishedSuccessfully != null){
+//					listener.onComplete(allSubManagersFinishedSuccessfully);
+//				}
+//			}
+//		});
 	}
 
 
-	private boolean allSubManagersListenersCompleted(Map<BaseSubManager, Boolean> subManagersCompletionListenersStatus){
+	// null means not all SubManagers finished the update
+	// true means all SubManagers finished the update with success
+	// false means all SubManagers finished the update but some finished with failure
+	private Boolean allSubManagersFinishedUpdatingSuccessfully(Map<BaseSubManager, Boolean> subManagersCompletionListenersStatus){
 		boolean allSubManagersCompleted = true;
+		boolean allCompletedSubManagersFinishedWithSuccess = true;
 		for (BaseSubManager subManager : subManagersCompletionListenersStatus.keySet()) {
-			if (!subManagersCompletionListenersStatus.get(subManager)){
+			Boolean listenerStatus = subManagersCompletionListenersStatus.get(subManager);
+			if (listenerStatus != null){
+				if (!listenerStatus){
+					allCompletedSubManagersFinishedWithSuccess = false;
+				}
+			} else {
 				allSubManagersCompleted = false;
+				break;
 			}
 		}
-		return  allSubManagersCompleted;
+		if (!allSubManagersCompleted){
+			return null;
+		} else {
+			return allCompletedSubManagersFinishedWithSuccess;
+		}
 	}
 
 }
