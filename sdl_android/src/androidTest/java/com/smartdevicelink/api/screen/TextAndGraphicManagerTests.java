@@ -6,6 +6,7 @@ import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.api.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
@@ -123,9 +124,16 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		textAndGraphicManager.displayCapabilities = getDisplayCapability(1);
 
 		textAndGraphicManager.setTextField1("It is");
+		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
 
 		Show assembledShow = textAndGraphicManager.assembleShowText(inputShow);
 		assertEquals(assembledShow.getMainField1(), "It is");
+
+		// test tags (just 1)
+		MetadataTags tags = assembledShow.getMetadataTags();
+		List<MetadataType> tagsList = new ArrayList<>();
+		tagsList.add(MetadataType.HUMIDITY);
+		assertEquals(tags.getMainField1(), tagsList);
 
 		textAndGraphicManager.setTextField2("Wednesday");
 
@@ -138,9 +146,16 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		assertEquals(assembledShow.getMainField1(), "It is - Wednesday - My");
 
 		textAndGraphicManager.setTextField4("Dudes");
+		textAndGraphicManager.setTextField4Type(MetadataType.CURRENT_TEMPERATURE);
 
 		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
 		assertEquals(assembledShow.getMainField1(), "It is - Wednesday - My - Dudes");
+		// test tags
+		tags = assembledShow.getMetadataTags();
+		tagsList = new ArrayList<>();
+		tagsList.add(MetadataType.HUMIDITY);
+		tagsList.add(MetadataType.CURRENT_TEMPERATURE);
+		assertEquals(tags.getMainField1(), tagsList);
 
 		// For some obscurity, lets try setting just fields 2 and 4 for a 1 line display
 		textAndGraphicManager.setTextField1(null);
@@ -158,31 +173,79 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		textAndGraphicManager.displayCapabilities = getDisplayCapability(2);
 
 		textAndGraphicManager.setTextField1("It is");
+		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
 
 		Show assembledShow = textAndGraphicManager.assembleShowText(inputShow);
 		assertEquals(assembledShow.getMainField1(), "It is");
 
+		// test tags
+		MetadataTags tags = assembledShow.getMetadataTags();
+		List<MetadataType> tagsList = new ArrayList<>();
+		tagsList.add(MetadataType.HUMIDITY);
+		assertEquals(tags.getMainField1(), tagsList);
+
 		textAndGraphicManager.setTextField2("Wednesday");
+		textAndGraphicManager.setTextField2Type(MetadataType.CURRENT_TEMPERATURE);
 
 		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
 		assertEquals(assembledShow.getMainField1(), "It is");
 		assertEquals(assembledShow.getMainField2(), "Wednesday");
 
+		// test tags
+		tags = assembledShow.getMetadataTags();
+		tagsList = new ArrayList<>();
+		List<MetadataType> tagsList2 = new ArrayList<>();
+		tagsList.add(MetadataType.HUMIDITY);
+		tagsList2.add(MetadataType.CURRENT_TEMPERATURE);
+		assertEquals(tags.getMainField1(), tagsList);
+		assertEquals(tags.getMainField2(), tagsList2);
+
 		textAndGraphicManager.setTextField3("My");
+		textAndGraphicManager.setTextField3Type(MetadataType.MEDIA_ALBUM);
 
 		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
 		assertEquals(assembledShow.getMainField1(), "It is - Wednesday");
 		assertEquals(assembledShow.getMainField2(), "My");
 
+		// test tags
+		tags = assembledShow.getMetadataTags();
+		tagsList = new ArrayList<>();
+		tagsList2 = new ArrayList<>();
+		tagsList.add(MetadataType.CURRENT_TEMPERATURE);
+		tagsList.add(MetadataType.HUMIDITY);
+		tagsList2.add(MetadataType.MEDIA_ALBUM);
+		assertEquals(tags.getMainField1(), tagsList);
+		assertEquals(tags.getMainField2(), tagsList2);
+
 		textAndGraphicManager.setTextField4("Dudes");
+		textAndGraphicManager.setTextField4Type(MetadataType.MEDIA_STATION);
 
 		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
 		assertEquals(assembledShow.getMainField1(), "It is - Wednesday");
 		assertEquals(assembledShow.getMainField2(), "My - Dudes");
 
+		try {
+			System.out.println(assembledShow.serializeJSON().toString());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		// test tags
+		tags = assembledShow.getMetadataTags();
+		tagsList = new ArrayList<>();
+		tagsList2 = new ArrayList<>();
+		tagsList.add(MetadataType.CURRENT_TEMPERATURE);
+		tagsList.add(MetadataType.HUMIDITY);
+		tagsList2.add(MetadataType.MEDIA_STATION);
+		tagsList2.add(MetadataType.MEDIA_ALBUM);
+		assertEquals(tags.getMainField1(), tagsList);
+		assertEquals(tags.getMainField2(), tagsList2);
+
 		// For some obscurity, lets try setting just fields 2 and 4 for a 2 line display
 		textAndGraphicManager.setTextField1(null);
 		textAndGraphicManager.setTextField3(null);
+		textAndGraphicManager.setTextField1Type(null);
+		textAndGraphicManager.setTextField3Type(null);
 
 		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
 		assertEquals(assembledShow.getMainField1(), "Wednesday");
@@ -194,6 +257,15 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
 		assertEquals(assembledShow.getMainField1(), "Wednesday");
 		assertEquals(assembledShow.getMainField2(), "My - Dudes");
+
+		// test tags
+		tags = assembledShow.getMetadataTags();
+		tagsList = new ArrayList<>();
+		tagsList2 = new ArrayList<>();
+		tagsList.add(MetadataType.CURRENT_TEMPERATURE);
+		tagsList2.add(MetadataType.MEDIA_STATION);
+		assertEquals(tags.getMainField1(), tagsList);
+		assertEquals(tags.getMainField2(), tagsList2);
 	}
 
 	public void testAssemble3Lines() {
@@ -257,16 +329,16 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 
 		Show assembledShow = textAndGraphicManager.assembleShowText(inputShow);
 
-		try {
-			System.out.println(assembledShow.serializeJSON().toString());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
 		assertEquals(assembledShow.getMainField1(), "It is");
 		assertEquals(assembledShow.getMainField2(), "");
 		assertEquals(assembledShow.getMainField3(), "");
 		assertEquals(assembledShow.getMainField4(), "");
+
+		// test tags
+		MetadataTags tags = assembledShow.getMetadataTags();
+		List<MetadataType> tagsList = new ArrayList<>();
+		tagsList.add(MetadataType.HUMIDITY);
+		assertEquals(tags.getMainField1(), tagsList);
 
 		textAndGraphicManager.setTextField2("Wednesday");
 

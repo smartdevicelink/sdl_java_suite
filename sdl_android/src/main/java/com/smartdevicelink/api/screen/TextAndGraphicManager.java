@@ -360,6 +360,8 @@ class TextAndGraphicManager extends BaseSubManager {
 		MetadataTags tags = new MetadataTags();
 		tags.setMainField1(findNonNullMetadataFields());
 
+		show.setMetadataTags(tags);
+
 		return show;
 	}
 
@@ -386,9 +388,12 @@ class TextAndGraphicManager extends BaseSubManager {
 				// If text 1 exists, put it in slot 1 formatted
 				tempString.append(" - ").append(textField2);
 				if (textField2Type != null){
-					List<MetadataType> tags2 = tags.getMainField1();
-					tags2.add(textField2Type);
-					tags.setMainField1(tags2);
+					List<MetadataType> typeList = new ArrayList<>();
+					typeList.add(textField2Type);
+					if (textField1Type != null){
+						typeList.add(textField1Type);
+					}
+					tags.setMainField1(typeList);
 				}
 			}else {
 				// If text 1 does not exist, put it in slot 1 unformatted
@@ -409,7 +414,9 @@ class TextAndGraphicManager extends BaseSubManager {
 			// If text 3 exists, put it in slot 2
 			tempString.append(textField3);
 			if (textField3Type != null){
-				tags.setMainField2(textField3Type);
+				List<MetadataType> typeList = new ArrayList<>();
+				typeList.add(textField3Type);
+				tags.setMainField2(typeList);
 			}
 		}
 
@@ -418,9 +425,12 @@ class TextAndGraphicManager extends BaseSubManager {
 				// If text 3 exists, put it in slot 2 formatted
 				tempString.append(" - ").append(textField4);
 				if (textField4Type != null){
-					List<MetadataType> tags3 = tags.getMainField1();
-					tags3.add(textField4Type);
-					tags.setMainField2(tags3);
+					List<MetadataType> typeList = new ArrayList<>();
+					typeList.add(textField4Type);
+					if (textField3Type != null){
+						typeList.add(textField3Type);
+					}
+					tags.setMainField2(typeList);
 				}
 			} else {
 				// If text 3 does not exist, put it in slot 3 unformatted
