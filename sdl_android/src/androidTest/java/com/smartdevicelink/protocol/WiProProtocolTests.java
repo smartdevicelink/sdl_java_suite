@@ -1,5 +1,6 @@
 package com.smartdevicelink.protocol;
 
+import android.os.Bundle;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
@@ -11,6 +12,7 @@ import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.RouterServiceValidator;
+import com.smartdevicelink.transport.enums.TransportType;
 
 import junit.framework.Assert;
 
@@ -57,11 +59,9 @@ public class WiProProtocolTests extends AndroidTestCase {
 		public void onResetIncomingHeartbeat(SessionType sessionType,byte sessionID) {}
 		@Override
 		public void onProtocolError(String info, Exception e) {}
-
 		@Override
-		public void onTransportEventUpdate(byte sessionID, Map<String, Object> params) {
+		public void connectSecondaryTransport(byte sessionID, TransportType transportType, Bundle params) {}
 
-		}
 	};
 	public static class DidReceiveListener implements IProtocolListener{
 		boolean didReceive = false;
@@ -102,7 +102,7 @@ public class WiProProtocolTests extends AndroidTestCase {
 		@Override
 		public void onProtocolError(String info, Exception e) {}
 		@Override
-		public void onTransportEventUpdate(byte sessionID, Map<String, Object> params) {}
+		public void connectSecondaryTransport(byte sessionID, TransportType transportType, Bundle params) {}
 	};
 	DidReceiveListener onProtocolMessageReceivedListener = new DidReceiveListener();
 	
