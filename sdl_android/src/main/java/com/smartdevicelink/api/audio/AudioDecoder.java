@@ -6,15 +6,16 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
+import com.smartdevicelink.api.audio.AudioStreamManager.SampleType;
 
 import java.io.File;
 import java.nio.ByteBuffer;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-class AudioDecoder extends BaseAudioDecoder {
+public class AudioDecoder extends BaseAudioDecoder {
     private static final String TAG = AudioDecoder.class.getSimpleName();
 
-    AudioDecoder(File audioFile, int sampleRate, SampleType sampleType, AudioDecoderListener listener) {
+    AudioDecoder(File audioFile, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
         super(audioFile, sampleRate, sampleType, listener);
     }
 

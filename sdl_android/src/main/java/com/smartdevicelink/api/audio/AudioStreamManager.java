@@ -2,8 +2,10 @@ package com.smartdevicelink.api.audio;
 
 import android.net.rtp.AudioStream;
 import android.os.Build;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.annotation.StringDef;
 import android.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
@@ -15,6 +17,8 @@ import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 
 import java.io.File;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -25,28 +29,27 @@ public class AudioStreamManager implements ISdlServiceListener {
     private ISdl sdlInterface;
     private IAudioStreamListener sdlAudioStream;
     private int sdlSampleRate;
-    private SampleType sdlSampleType;
-
+    private @SampleType int sdlSampleType;
     private final Queue<BaseAudioDecoder> queue;
     private boolean didRequestShutdown = false;
 
-    public AudioStreamManager(@NonNull ISdl sdlInterface, @NonNull SamplingRate sampleRate, @NonNull BitsPerSample sampleType) {
+    public AudioStreamManager(@NonNull ISdl sdlInterface, @NonNull @SamplingRate String sampleRate, @NonNull @BitsPerSample int sampleType) {
         this.sdlInterface = sdlInterface;
         this.queue = new LinkedList<>();
 
         switch (sampleRate) {
-            case _8KHZ:
+            case SamplingRate.EIGHT_KHZ:
                 sdlSampleRate = 8000;
                 break;
-            case _16KHZ:
+            case SamplingRate.SIXTEEN_KHZ:
                 sdlSampleRate = 16000;
                 break;
-            case _22KHZ:
+            case SamplingRate.TWENTY_TWO_KHZ:
                 // common sample rate is 22050, not 22000
                 // see https://en.wikipedia.org/wiki/Sampling_(signal_processing)#Audio_sampling
                 sdlSampleRate = 22050;
                 break;
-            case _44KHZ:
+            case SamplingRate.FOURTY_FOUR_KHX:
                 // 2x 22050 is 44100
                 // see https://en.wikipedia.org/wiki/Sampling_(signal_processing)#Audio_sampling
                 sdlSampleRate = 44100;
@@ -54,10 +57,10 @@ public class AudioStreamManager implements ISdlServiceListener {
         }
 
         switch (sampleType) {
-            case _8_BIT:
+            case BitsPerSample.EIGHT_BIT:
                 sdlSampleType = SampleType.UNSIGNED_8_BIT;
                 break;
-            case _16_BIT:
+            case BitsPerSample.SIXTEEN_BIT:
                 sdlSampleType = SampleType.SIGNED_16_BIT;
                 break;
         }
@@ -141,5 +144,29 @@ public class AudioStreamManager implements ISdlServiceListener {
     @Override
     public void onServiceError(SdlSession session, SessionType type, String reason) {
         Log.e(TAG, "OnServiceError: " + reason);
+    }
+
+    @IntDef({SampleType.UNSIGNED_8_BIT, SampleType.SIGNED_16_BIT, SampleType.FLOAT})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface SampleType {
+        int UNSIGNED_8_BIT = Byte.SIZE >> 3;
+        int SIGNED_16_BIT = Short.SIZE >> 3;
+        int FLOAT = Float.SIZE >> 3;
+    }
+
+    @IntDef({BitsPerSample.EIGHT_BIT, BitsPerSample.SIXTEEN_BIT})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface BitsPerSample {
+        int EIGHT_BIT = 8;
+        int SIXTEEN_BIT = 16;
+    }
+
+    @StringDef({SamplingRate.EIGHT_KHZ, SamplingRate.SIXTEEN_KHZ, SamplingRate.TWENTY_TWO_KHZ, SamplingRate.FOURTY_FOUR_KHX})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface SamplingRate {
+        String EIGHT_KHZ = "8KHZ";
+        String SIXTEEN_KHZ = "16KHZ";
+        String TWENTY_TWO_KHZ = "22KHZ";
+        String FOURTY_FOUR_KHX = "44KHZ";
     }
 }

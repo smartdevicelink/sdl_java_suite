@@ -5,16 +5,17 @@ import android.media.MediaFormat;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import com.smartdevicelink.api.audio.AudioStreamManager.SampleType;
 
 import java.io.File;
 import java.nio.ByteBuffer;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-class AudioDecoderCompat extends BaseAudioDecoder {
+public class AudioDecoderCompat extends BaseAudioDecoder {
     private static final String TAG = AudioDecoderCompat.class.getSimpleName();
     private static final int DEQUEUE_TIMEOUT = 3000;
 
-    AudioDecoderCompat(File audioFile, int sampleRate, SampleType sampleType, AudioDecoderListener listener) {
+    AudioDecoderCompat(File audioFile, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
         super(audioFile, sampleRate, sampleType, listener);
     }
 

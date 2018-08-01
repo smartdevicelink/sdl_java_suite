@@ -8,6 +8,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
+import com.smartdevicelink.api.audio.AudioStreamManager.SampleType;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -15,15 +16,15 @@ import java.nio.ByteOrder;
 
 @SuppressWarnings("WeakerAccess")
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-abstract class BaseAudioDecoder {
+public abstract class BaseAudioDecoder {
     private static final String TAG = AudioDecoder.class.getSimpleName();
 
     protected int targetSampleRate;
-    protected SampleType targetSampleType;
+    protected @SampleType int targetSampleType;
 
     private int outputChannelCount;
     private int outputSampleRate;
-    private SampleType outputSampleType;
+    private @SampleType int outputSampleType;
 
     private double lastOutputSample = 0;
 
@@ -35,7 +36,7 @@ abstract class BaseAudioDecoder {
     protected File audioFile;
     protected AudioDecoderListener listener;
 
-    BaseAudioDecoder(File audioFile, int sampleRate, SampleType sampleType, AudioDecoderListener listener) {
+    BaseAudioDecoder(File audioFile, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
         this.audioFile = audioFile;
         this.listener = listener;
         targetSampleRate = sampleRate;
