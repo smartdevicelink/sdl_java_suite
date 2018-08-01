@@ -472,7 +472,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		if (textField3 != null && textField3.length() > 0){
 			tempString.append(textField3);
 			if (textField3Type != null){
-				tags.setMainField2(textField3Type);
+				tags.setMainField3(textField3Type);
 			}
 		}
 
@@ -481,7 +481,10 @@ class TextAndGraphicManager extends BaseSubManager {
 				// If text 3 exists, put it in slot 3 formatted
 				tempString.append(" - ").append(textField4);
 				if (textField4Type != null){
-					List<MetadataType> tags4 = tags.getMainField3();
+					List<MetadataType> tags4 = new ArrayList<>();
+					if (textField3Type != null){
+						tags4.add(textField3Type);
+					}
 					tags4.add(textField4Type);
 					tags.setMainField3(tags4);
 				}
