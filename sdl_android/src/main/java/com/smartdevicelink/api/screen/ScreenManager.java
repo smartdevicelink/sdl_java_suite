@@ -7,8 +7,10 @@ import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.api.CompletionListener;
 import com.smartdevicelink.api.FileManager;
 import com.smartdevicelink.api.datatypes.SdlArtwork;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -211,6 +213,14 @@ public class ScreenManager extends BaseSubManager {
     public SoftButtonObject getSoftButtonObjectById(int buttonId){
         return softButtonManager.getSoftButtonObjectById(buttonId);
     }
+
+	/**
+	 * Add an OnRPCNotificationListener for button press notifications
+	 * @param listener a listener that will be called when a button is pressed
+	 */
+	public void addOnButtonPressListener(OnRPCNotificationListener listener){
+		softButtonManager.addOnButtonPressListener(listener);
+	}
 
 	// Updates
 
