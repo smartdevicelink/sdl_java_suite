@@ -673,7 +673,7 @@ class TextAndGraphicManager extends BaseSubManager {
 			blankArtwork = new SdlArtwork();
 			blankArtwork.setType(FileType.GRAPHIC_PNG);
 			blankArtwork.setName("blankArtwork");
-			blankArtwork.setFileData(contentsOfResource(R.drawable.transparent));
+			blankArtwork.setResourceId(R.drawable.transparent);
 		}
 		return blankArtwork;
 	}
@@ -887,52 +887,5 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected SdlArtwork getSecondaryGraphic(){
 		return secondaryGraphic;
 	}
-
-	/**
-	 * Helper method to take resource files and turn them into byte arrays
-	 * @param resource Resource file id
-	 * @return Resulting byte array
-	 */
-	private byte[] contentsOfResource(int resource) {
-		InputStream is = null;
-		try {
-			is = context.getResources().openRawResource(resource);
-			return contentsOfInputStream(is);
-		} catch (Resources.NotFoundException e) {
-			Log.w(TAG, "Can't read from resource", e);
-			return null;
-		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	/**
-	 * Helper method to take InputStream and turn it into byte array
-	 * @param is valid InputStream
-	 * @return Resulting byte array
-	 */
-	private byte[] contentsOfInputStream(InputStream is){
-		if(is == null){
-			return null;
-		}
-		try{
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			final int bufferSize = 4096;
-			final byte[] buffer = new byte[bufferSize];
-			int available;
-			while ((available = is.read(buffer)) >= 0) {
-				os.write(buffer, 0, available);
-			}
-			return os.toByteArray();
-		} catch (IOException e){
-			Log.w(TAG, "Can't read from InputStream", e);
-			return null;
-		}
-	}
+	
 }
