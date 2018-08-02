@@ -52,12 +52,12 @@ class TextAndGraphicManager extends BaseSubManager {
 	private static final String MAIN_FIELD_2 = "mainField2";
 	private static final String MAIN_FIELD_3 = "mainField3";
 	private static final String MAIN_FIELD_4 = "mainField4";
-	protected boolean isDirty, hasQueuedUpdate;
+	protected boolean isDirty, hasQueuedUpdate, pendingHMIFull;
 	protected Show currentScreenData, inProgressUpdate, queuedImageUpdate;
 	protected DisplayCapabilities displayCapabilities;
 	protected HMILevel currentHMILevel;
 	private FileManager fileManager;
-	private CompletionListener queuedUpdateListener, inProgressListener;
+	private CompletionListener queuedUpdateListener, inProgressListener, pendingHMIListener;
 	private Context context;
 	private SdlArtwork blankArtwork;
 	private OnRPCNotificationListener hmiListener;
@@ -78,6 +78,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		this.context = context;
 		batchingUpdates = false;
 		isDirty = false;
+		pendingHMIFull = false;
 		textAlignment = CENTERED;
 		currentHMILevel = HMILevel.HMI_NONE;
 		currentScreenData = new Show();
@@ -107,9 +108,11 @@ class TextAndGraphicManager extends BaseSubManager {
 		queuedImageUpdate = null;
 		currentScreenData = null;
 		queuedUpdateListener = null;
+		pendingHMIListener = null;
 		inProgressListener = null;
 		hasQueuedUpdate = false;
 		isDirty = false;
+		pendingHMIFull = false;
 
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -125,6 +128,14 @@ class TextAndGraphicManager extends BaseSubManager {
 			@Override
 			public void onNotified(RPCNotification notification) {
 				currentHMILevel = ((OnHMIStatus)notification).getHmiLevel();
+				if (currentHMILevel == HMILevel.HMI_FULL){
+					if (pendingHMIFull){
+						Log.v(TAG, "Acquired HMI_FULL with pending update. Sending now");
+						pendingHMIFull = false;
+						sdl_update(pendingHMIListener);
+						pendingHMIListener = null;
+					}
+				}
 			}
 		};
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -164,7 +175,11 @@ class TextAndGraphicManager extends BaseSubManager {
 
 		// make sure hmi is not none
 		if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE){
-			Log.e(TAG, "Trying to send show on HMI_NONE");
+			Log.v(TAG, "Trying to send show on HMI_NONE, waiting for full");
+			pendingHMIFull = true;
+			if (listener != null){
+				pendingHMIListener = listener;
+			}
 			return;
 		}
 
