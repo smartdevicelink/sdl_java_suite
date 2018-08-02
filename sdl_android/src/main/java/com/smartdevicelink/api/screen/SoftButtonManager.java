@@ -499,4 +499,12 @@ class SoftButtonManager extends BaseSubManager {
         return softButtons;
     }
 
+    /**
+     * Add an OnRPCNotificationListener for button press notifications
+     * @param listener a listener that will be called when a button is pressed
+     */
+    public void addOnButtonPressListener(OnRPCNotificationListener listener){
+        internalInterface.addOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, listener);
+    }
+
 }
