@@ -667,24 +667,28 @@ class TextAndGraphicManager extends BaseSubManager {
 	}
 
 	private boolean shouldUpdatePrimaryImage() {
-		boolean hasGraphic = displayCapabilities.getGraphicSupported();
-		if (hasGraphic && currentScreenData.getGraphic() == null && primaryGraphic != null){
-			return true;
-		} else if (hasGraphic && currentScreenData.getGraphic() == null && primaryGraphic == null){
-			return false;
+		if (displayCapabilities == null || displayCapabilities.getGraphicSupported()) {
+			if (currentScreenData.getGraphic() == null && primaryGraphic != null) {
+				return true;
+			} else if (currentScreenData.getGraphic() == null && primaryGraphic == null) {
+				return false;
+			}
+			return currentScreenData != null && (primaryGraphic != null && !currentScreenData.getGraphic().getValue().equalsIgnoreCase(primaryGraphic.getName()));
 		}
-		return currentScreenData != null && (hasGraphic && primaryGraphic != null && !currentScreenData.getGraphic().getValue().equalsIgnoreCase(primaryGraphic.getName()));
+		return false;
 	}
 
 	private boolean shouldUpdateSecondaryImage() {
 		// Cannot detect if there is a secondary image, so we'll just try to detect if there's a primary image and allow it if there is.
-		boolean hasGraphic = displayCapabilities.getGraphicSupported();
-		if (hasGraphic && currentScreenData.getGraphic() == null && secondaryGraphic != null){
-			return true;
-		} else if (hasGraphic && currentScreenData.getGraphic() == null && secondaryGraphic == null){
-			return false;
+		if (displayCapabilities == null || displayCapabilities.getGraphicSupported()) {
+			if (currentScreenData.getGraphic() == null && secondaryGraphic != null) {
+				return true;
+			} else if (currentScreenData.getGraphic() == null && secondaryGraphic == null) {
+				return false;
+			}
+			return currentScreenData != null && (secondaryGraphic != null && !currentScreenData.getGraphic().getValue().equalsIgnoreCase(secondaryGraphic.getName()));
 		}
-		return currentScreenData != null && (hasGraphic && secondaryGraphic != null && currentScreenData.getGraphic().getValue().equalsIgnoreCase(secondaryGraphic.getName()));
+		return false;
 	}
 
 	protected int getNumberOfLines() {
