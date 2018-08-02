@@ -47,6 +47,7 @@ public class AudioStreamManagerTest extends TestCase {
     public void testStartAudioStreamManager() {
         AudioStreamManager manager = new AudioStreamManager(sdlInterface, SamplingRate.SIXTEEN_KHZ, BitsPerSample.SIXTEEN_BIT);
         manager.startAudioService(false);
+        manager.stopAudioService();
     }
 
     public void testCompleteDecoderFlow() {
@@ -62,7 +63,91 @@ public class AudioStreamManagerTest extends TestCase {
         manager.pushAudioFile(getSampleFile("warning.mp3"));
     }
 
+    public void testSampleAtTargetTimeReturnNull() {
+        Constructor<AudioDecoderCompat> constructor = (Constructor<AudioDecoderCompat>) AudioDecoderCompat.class.getDeclaredConstructors()[0];
+        constructor.setAccessible(true);
+        BaseAudioDecoder mockDecoder = getMockDecoder();
+        Method sampleAtTargetMethod = getSampleAtTargetMethod();
+
+        SampleBuffer sample = SampleBuffer.allocate(1, SampleType.SIGNED_16_BIT, ByteOrder.LITTLE_ENDIAN, 1);
+        Double result = new Double(5.0);
+        try {
+            result = (Double) sampleAtTargetMethod.invoke(mockDecoder, 1.0, sample, 1, 3, 2);
+            assertNull(result);
+            result = (Double) sampleAtTargetMethod.invoke(mockDecoder, 1.0, sample, 5, 3, 1);
+            assertNull(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    public void testSampleAtTargetTimeReturnLastOutputSample() {
+        Constructor<AudioDecoderCompat> constructor = (Constructor<AudioDecoderCompat>) AudioDecoderCompat.class.getDeclaredConstructors()[0];
+        constructor.setAccessible(true);
+        BaseAudioDecoder mockDecoder = getMockDecoder();
+        Method sampleAtTargetMethod = getSampleAtTargetMethod();
+
+        SampleBuffer sample = SampleBuffer.allocate(1, SampleType.SIGNED_16_BIT, ByteOrder.LITTLE_ENDIAN, 1);
+        Double result = null;
+        Double lastOutputSample = 15.0;
+        try {
+            result = (Double) sampleAtTargetMethod.invoke(mockDecoder, lastOutputSample, sample, 6, 1, 5);
+            assertTrue(result.doubleValue() == lastOutputSample);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    public void testSampleAtTargetTimeReturnOutputSampleGet() {
+        Constructor<AudioDecoderCompat> constructor = (Constructor<AudioDecoderCompat>) AudioDecoderCompat.class.getDeclaredConstructors()[0];
+        constructor.setAccessible(true);
+        BaseAudioDecoder mockDecoder = getMockDecoder();
+        Method sampleAtTargetMethod = getSampleAtTargetMethod();
+
+        SampleBuffer sample = SampleBuffer.allocate(10, SampleType.SIGNED_16_BIT, ByteOrder.LITTLE_ENDIAN, 1);
+        Double result = null;
+        try {
+            result = (Double) sampleAtTargetMethod.invoke(mockDecoder, 1.0, sample, 1, 1, 2);
+            assertTrue(result.doubleValue() == sample.get(1));
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
     public void testSampleAtTargetTime() {
+        Constructor<AudioDecoderCompat> constructor = (Constructor<AudioDecoderCompat>) AudioDecoderCompat.class.getDeclaredConstructors()[0];
+        constructor.setAccessible(true);
+        BaseAudioDecoder mockDecoder = getMockDecoder();
+        Method sampleAtTargetMethod = getSampleAtTargetMethod();
+
+        SampleBuffer sample = SampleBuffer.allocate(10, SampleType.SIGNED_16_BIT, ByteOrder.LITTLE_ENDIAN, 1);
+        Double result = null;
+        try {
+            result = (Double) sampleAtTargetMethod.invoke(mockDecoder, 1.0, sample, 1, 3, 2);
+            assertNotNull(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    private Method getSampleAtTargetMethod() {
+        Method method = null;
+        try {
+            method = BaseAudioDecoder.class.getDeclaredMethod("sampleAtTargetTime",
+                    double.class, SampleBuffer.class, double.class, double.class, double.class);
+            method.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            fail();
+        }
+        return method;
+    }
+
+    private AudioDecoderCompat getMockDecoder() {
         Constructor<AudioDecoderCompat> constructor = (Constructor<AudioDecoderCompat>) AudioDecoderCompat.class.getDeclaredConstructors()[0];
         constructor.setAccessible(true);
         BaseAudioDecoder mockDecoder = null;
@@ -85,29 +170,7 @@ public class AudioStreamManagerTest extends TestCase {
             e.printStackTrace();
             fail();
         }
-
-        Method sampleAtTargetMethod = null;
-        try {
-            sampleAtTargetMethod = BaseAudioDecoder.class.getDeclaredMethod("sampleAtTargetTime",
-                    double.class, SampleBuffer.class, long.class, long.class, long.class);
-            sampleAtTargetMethod.setAccessible(true);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-            fail();
-        }
-
-        // TODO: supply range of values here to test
-        SampleBuffer sample = SampleBuffer.allocate(1, SampleType.SIGNED_16_BIT, ByteOrder.LITTLE_ENDIAN, 1);
-        Double result = null;
-        try {
-            // TODO: supply range of values here to test
-            result = (Double) sampleAtTargetMethod.invoke(mockDecoder, 1.0, sample, 1, 2, 3);
-            // TODO: depending on supplied values, assert result's value
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
+        return (AudioDecoderCompat)mockDecoder;
     }
 
     private File getSampleFile(String fileName) {
