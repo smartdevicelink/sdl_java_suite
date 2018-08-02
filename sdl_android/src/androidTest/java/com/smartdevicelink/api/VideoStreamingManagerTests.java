@@ -71,7 +71,7 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 	// TEST CLASSES
 
 	public static class TestPresentation extends SdlRemoteDisplay {
-		View simulatedView = mock(View.class);
+		View simulatedView = new View(this.getContext());
 
 		public TestPresentation(Context context, Display display) {
 			super(context, display);
