@@ -26,6 +26,7 @@ public class AudioDecoder extends BaseAudioDecoder {
             decoder.setCallback(new MediaCodec.Callback() {
                 ByteBuffer inputBuffer;
                 ByteBuffer outputBuffer;
+                SampleBuffer targetSampleBuffer;
                 @Override
                 public void onInputBufferAvailable(@NonNull MediaCodec mediaCodec, int i) {
                     inputBuffer = mediaCodec.getInputBuffer(i);
@@ -41,7 +42,7 @@ public class AudioDecoder extends BaseAudioDecoder {
                     if (outputBuffer == null) return;
 
                     if (outputBuffer.limit() > 0) {
-                        SampleBuffer targetSampleBuffer = AudioDecoder.super.onOutputBufferAvailable(outputBuffer);
+                        targetSampleBuffer = AudioDecoder.super.onOutputBufferAvailable(outputBuffer);
                         AudioDecoder.this.listener.onAudioDataAvailable(targetSampleBuffer);
                     } else {
                         Log.w(TAG, "output buffer empty. Chance that silence was detected");
