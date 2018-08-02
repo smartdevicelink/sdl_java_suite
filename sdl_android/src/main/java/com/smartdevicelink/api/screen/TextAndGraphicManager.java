@@ -199,19 +199,20 @@ class TextAndGraphicManager extends BaseSubManager {
 
 			Log.v(TAG, "No Images to send, only sending text");
 			inProgressUpdate = extractTextFromShow(fullShow);
+			sendShow();
 
 		}else if (isArtworkUploadedOrDoesntExist(primaryGraphic) || isArtworkUploadedOrDoesntExist(secondaryGraphic)){
 
 			Log.v(TAG, "Images already uploaded, sending full update");
 			// The files to be updated are already uploaded, send the full show immediately
 			inProgressUpdate = fullShow;
+			sendShow();
 		} else{
 
 			Log.v(TAG, "Images need to be uploaded, sending text and uploading images");
 			// We need to upload or queue the upload of the images
-			// Send the text immediately
-			inProgressUpdate = extractTextFromShow(fullShow);
 			// start uploading images
+			inProgressUpdate = fullShow;
 			final Show thisUpdate = fullShow;
 
 			uploadImages(new CompletionListener() {
@@ -225,7 +226,7 @@ class TextAndGraphicManager extends BaseSubManager {
 					if ((thisUpdate.getGraphic() != null && queuedImageUpdate.getGraphic() != null) && thisUpdate.getGraphic().equals(queuedImageUpdate.getGraphic()) ||
 							(thisUpdate.getSecondaryGraphic() != null && queuedImageUpdate.getSecondaryGraphic() != null) && thisUpdate.getSecondaryGraphic().equals(queuedImageUpdate.getSecondaryGraphic())){
 						Log.v(TAG, "Queued image update matches the images we need, sending update");
-						sdl_update(inProgressListener);
+						sendShow();
 					} else {
 						Log.v(TAG, "Queued image update does not match the images we need, skipping update");
 					}
@@ -233,7 +234,9 @@ class TextAndGraphicManager extends BaseSubManager {
 			});
 			queuedImageUpdate = fullShow;
 		}
+	}
 
+	private void sendShow(){
 		inProgressUpdate.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
@@ -275,7 +278,7 @@ class TextAndGraphicManager extends BaseSubManager {
 		if (shouldUpdateSecondaryImage()){
 			artworksToUpload.add(secondaryGraphic);
 		}
-
+		Log.i(TAG, "Artworks to upload: "+ artworksToUpload.toString());
 		// use file manager to upload art
 		fileManager.uploadArtworks(artworksToUpload, new MultipleFileCompletionListener() {
 			@Override
