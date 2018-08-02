@@ -23,7 +23,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         try {
             initMediaComponents();
             decoder.start();
-            new DecodeAsync().execute(audioFile);
+            new DecodeAsync().execute();
         } catch (Exception e) {
             e.printStackTrace();
             this.listener.onDecoderError(e);
@@ -31,7 +31,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         }
     }
 
-    private class DecodeAsync extends AsyncTask<File, Void, Void> {
+    private class DecodeAsync extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -45,7 +45,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         }
 
         @Override
-        protected Void doInBackground(File... files) {
+        protected Void doInBackground(Void... voids) {
             ByteBuffer[] inputBuffersArray = decoder.getInputBuffers();
             ByteBuffer[] outputBuffersArray = decoder.getOutputBuffers();
             MediaCodec.BufferInfo outputBufferInfo = new MediaCodec.BufferInfo();
