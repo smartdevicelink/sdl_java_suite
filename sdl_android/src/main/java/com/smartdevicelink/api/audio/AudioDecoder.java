@@ -24,9 +24,11 @@ public class AudioDecoder extends BaseAudioDecoder {
             initMediaComponents();
 
             decoder.setCallback(new MediaCodec.Callback() {
+                ByteBuffer inputBuffer;
+                ByteBuffer outputBuffer;
                 @Override
                 public void onInputBufferAvailable(@NonNull MediaCodec mediaCodec, int i) {
-                    ByteBuffer inputBuffer = mediaCodec.getInputBuffer(i);
+                    inputBuffer = mediaCodec.getInputBuffer(i);
                     if (inputBuffer == null) return;
 
                     MediaCodec.BufferInfo info = AudioDecoder.super.onInputBufferAvailable(extractor, inputBuffer);
@@ -35,7 +37,7 @@ public class AudioDecoder extends BaseAudioDecoder {
 
                 @Override
                 public void onOutputBufferAvailable(@NonNull MediaCodec mediaCodec, int i, @NonNull MediaCodec.BufferInfo bufferInfo) {
-                    ByteBuffer outputBuffer = mediaCodec.getOutputBuffer(i);
+                    outputBuffer = mediaCodec.getOutputBuffer(i);
                     if (outputBuffer == null) return;
 
                     if (outputBuffer.limit() > 0) {

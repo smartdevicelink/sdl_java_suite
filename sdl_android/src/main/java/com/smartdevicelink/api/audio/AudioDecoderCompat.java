@@ -49,13 +49,16 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
             ByteBuffer[] inputBuffersArray = decoder.getInputBuffers();
             ByteBuffer[] outputBuffersArray = decoder.getOutputBuffers();
             MediaCodec.BufferInfo outputBufferInfo = new MediaCodec.BufferInfo();
+            ByteBuffer inputBuffer;
+            ByteBuffer outputBuffer;
+            SampleBuffer sampleBuffer;
 
             while (true) {
                 int inputBuffersArrayIndex = 0;
                 while (inputBuffersArrayIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
                     inputBuffersArrayIndex = decoder.dequeueInputBuffer(DEQUEUE_TIMEOUT);
                     if (inputBuffersArrayIndex >= 0) {
-                        ByteBuffer inputBuffer = inputBuffersArray[inputBuffersArrayIndex];
+                        inputBuffer = inputBuffersArray[inputBuffersArrayIndex];
                         MediaCodec.BufferInfo inputBufferInfo = AudioDecoderCompat.super.onInputBufferAvailable(extractor, inputBuffer);
                         decoder.queueInputBuffer(inputBuffersArrayIndex, inputBufferInfo.offset, inputBufferInfo.size, inputBufferInfo.presentationTimeUs, inputBufferInfo.flags);
                     }
@@ -65,12 +68,12 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
                 while (outputBuffersArrayIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
                     outputBuffersArrayIndex = decoder.dequeueOutputBuffer(outputBufferInfo, DEQUEUE_TIMEOUT);
                     if (outputBuffersArrayIndex >= 0) {
-                        ByteBuffer outputBuffer = outputBuffersArray[outputBuffersArrayIndex];
+                        outputBuffer = outputBuffersArray[outputBuffersArrayIndex];
                         if ((outputBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0 && outputBufferInfo.size != 0) {
                             decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
                         } else {
-                            SampleBuffer buffer = AudioDecoderCompat.super.onOutputBufferAvailable(outputBuffer);
-                            listener.onAudioDataAvailable(buffer);
+                            sampleBuffer = AudioDecoderCompat.super.onOutputBufferAvailable(outputBuffer);
+                            listener.onAudioDataAvailable(sampleBuffer);
                             decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
                         }
                     } else if (outputBuffersArrayIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
