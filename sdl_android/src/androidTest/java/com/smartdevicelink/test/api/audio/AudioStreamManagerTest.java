@@ -40,6 +40,11 @@ public class AudioStreamManagerTest extends TestCase {
         mContext = InstrumentationRegistry.getContext();
     }
 
+    @Override
+    public void tearDown() {
+        mContext = null;
+    }
+
     public void testCreatingAudioStreamManager() {
         AudioStreamManager manager = new AudioStreamManager(sdlInterface, SamplingRate.SIXTEEN_KHZ, BitsPerSample.SIXTEEN_BIT);
     }
@@ -64,11 +69,8 @@ public class AudioStreamManagerTest extends TestCase {
     }
 
     public void testSampleAtTargetTimeReturnNull() {
-        Constructor<AudioDecoderCompat> constructor = (Constructor<AudioDecoderCompat>) AudioDecoderCompat.class.getDeclaredConstructors()[0];
-        constructor.setAccessible(true);
         BaseAudioDecoder mockDecoder = getMockDecoder();
         Method sampleAtTargetMethod = getSampleAtTargetMethod();
-
         SampleBuffer sample = SampleBuffer.allocate(1, SampleType.SIGNED_16_BIT, ByteOrder.LITTLE_ENDIAN, 1);
         Double result = new Double(5.0);
         try {
@@ -83,11 +85,8 @@ public class AudioStreamManagerTest extends TestCase {
     }
 
     public void testSampleAtTargetTimeReturnLastOutputSample() {
-        Constructor<AudioDecoderCompat> constructor = (Constructor<AudioDecoderCompat>) AudioDecoderCompat.class.getDeclaredConstructors()[0];
-        constructor.setAccessible(true);
         BaseAudioDecoder mockDecoder = getMockDecoder();
         Method sampleAtTargetMethod = getSampleAtTargetMethod();
-
         SampleBuffer sample = SampleBuffer.allocate(1, SampleType.SIGNED_16_BIT, ByteOrder.LITTLE_ENDIAN, 1);
         Double result = null;
         Double lastOutputSample = 15.0;
@@ -101,11 +100,8 @@ public class AudioStreamManagerTest extends TestCase {
     }
 
     public void testSampleAtTargetTimeReturnOutputSampleGet() {
-        Constructor<AudioDecoderCompat> constructor = (Constructor<AudioDecoderCompat>) AudioDecoderCompat.class.getDeclaredConstructors()[0];
-        constructor.setAccessible(true);
         BaseAudioDecoder mockDecoder = getMockDecoder();
         Method sampleAtTargetMethod = getSampleAtTargetMethod();
-
         SampleBuffer sample = SampleBuffer.allocate(10, SampleType.SIGNED_16_BIT, ByteOrder.LITTLE_ENDIAN, 1);
         Double result = null;
         try {
@@ -118,11 +114,8 @@ public class AudioStreamManagerTest extends TestCase {
     }
 
     public void testSampleAtTargetTime() {
-        Constructor<AudioDecoderCompat> constructor = (Constructor<AudioDecoderCompat>) AudioDecoderCompat.class.getDeclaredConstructors()[0];
-        constructor.setAccessible(true);
         BaseAudioDecoder mockDecoder = getMockDecoder();
         Method sampleAtTargetMethod = getSampleAtTargetMethod();
-
         SampleBuffer sample = SampleBuffer.allocate(10, SampleType.SIGNED_16_BIT, ByteOrder.LITTLE_ENDIAN, 1);
         Double result = null;
         try {
@@ -170,7 +163,7 @@ public class AudioStreamManagerTest extends TestCase {
             e.printStackTrace();
             fail();
         }
-        return (AudioDecoderCompat)mockDecoder;
+        return (AudioDecoderCompat) mockDecoder;
     }
 
     private File getSampleFile(String fileName) {
