@@ -219,7 +219,9 @@ class TextAndGraphicManager extends BaseSubManager {
 				@Override
 				public void onComplete(boolean success) {
 					if (!success){
-						Log.e(TAG, "Error uploading text and graphic image");
+						Log.e(TAG, "Error uploading image");
+						inProgressUpdate = extractTextFromShow(inProgressUpdate);
+						sendShow();
 					}
 					// Check if queued image update still matches our images (there could have been a new Show in the meantime)
 					// and send a new update if it does. Since the images will already be on the head unit, the whole show will be sent
