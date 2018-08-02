@@ -663,7 +663,8 @@ public class SdlManager{
 			return proxyBridge.removeOnRPCListener(responseId, listener);
 		}
 
-		@Override		public Object getCapability(SystemCapabilityType systemCapabilityType){
+		@Override
+		public Object getCapability(SystemCapabilityType systemCapabilityType){
 			return proxy.getCapability(systemCapabilityType);
 		}
 
