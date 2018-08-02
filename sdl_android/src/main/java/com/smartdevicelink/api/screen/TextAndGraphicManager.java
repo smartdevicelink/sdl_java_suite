@@ -52,10 +52,11 @@ class TextAndGraphicManager extends BaseSubManager {
 	private static final String MAIN_FIELD_2 = "mainField2";
 	private static final String MAIN_FIELD_3 = "mainField3";
 	private static final String MAIN_FIELD_4 = "mainField4";
-	protected boolean isDirty, hasQueuedUpdate, pendingHMIFull;
+	protected boolean isDirty, hasQueuedUpdate;
 	protected Show currentScreenData, inProgressUpdate, queuedImageUpdate;
 	protected DisplayCapabilities displayCapabilities;
 	protected HMILevel currentHMILevel;
+	private boolean pendingHMIFull;
 	private FileManager fileManager;
 	private CompletionListener queuedUpdateListener, inProgressListener, pendingHMIListener;
 	private Context context;
