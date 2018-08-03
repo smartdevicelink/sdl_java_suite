@@ -3,6 +3,8 @@ package com.smartdevicelink.api.screen;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.smartdevicelink.proxy.rpc.OnButtonEvent;
+import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 
 import java.util.Collections;
@@ -22,6 +24,7 @@ public class SoftButtonObject {
     private List<SoftButtonState> states;
     private String currentStateName;
     private int buttonId;
+    private OnEventListener onEventListener;
     private SoftButtonManager softButtonManager;
 
     /**
@@ -29,9 +32,10 @@ public class SoftButtonObject {
      * @param name a String value represents name of the object
      * @param states a list of SoftButtonState represents the SoftButtonState values for the object
      * @param initialStateName a String value represents the name for the initial state
+     * @param onEventListener a listener that has a callback that will be triggered when a button event happens
      * Note: the initialStateName should match exactly the name of one of the states for the object. Otherwise an exception will be thrown.
      */
-    public SoftButtonObject(@NonNull String name, @NonNull List<SoftButtonState> states, @NonNull String initialStateName) {
+    public SoftButtonObject(@NonNull String name, @NonNull List<SoftButtonState> states, @NonNull String initialStateName, OnEventListener onEventListener) {
 
         // Make sure there aren't two states with the same name
         if (hasTwoStatesOfSameName(states)) {
@@ -43,15 +47,17 @@ public class SoftButtonObject {
         this.states = states;
         currentStateName = initialStateName;
         this.buttonId = 0;
+        this.onEventListener = onEventListener;
     }
 
     /**
      * Create a new instance of the SoftButtonObject with one state
      * @param name a String value represents name of the object
      * @param state a SoftButtonState represents state for the object
+     * @param onEventListener a listener that has a callback that will be triggered when a button event happens
      */
-    public SoftButtonObject(@NonNull String name, @NonNull SoftButtonState state) {
-        this(name, Collections.singletonList(state), state.getName());
+    public SoftButtonObject(@NonNull String name, @NonNull SoftButtonState state, OnEventListener onEventListener) {
+        this(name, Collections.singletonList(state), state.getName(), onEventListener);
     }
 
     /**
@@ -230,5 +236,26 @@ public class SoftButtonObject {
      */
     public void setButtonId(int buttonId) {
         this.buttonId = buttonId;
+    }
+
+    /**
+     * Get the event listener for the SoftButtonObject
+     * @return OnEventListener
+     */
+    public OnEventListener getOnEventListener() {
+        return onEventListener;
+    }
+
+    /**
+     * Set the event listener for the SoftButtonObject
+     * @param onEventListener a listener that has a callback that will be triggered when a button event happens
+     */
+    public void setOnEventListener(OnEventListener onEventListener) {
+        this.onEventListener = onEventListener;
+    }
+
+    public interface OnEventListener{
+        void onPress(SoftButtonObject softButtonObject, OnButtonPress onButtonPress);
+        void onEvent(SoftButtonObject softButtonObject, OnButtonEvent onButtonEvent);
     }
 }

@@ -13,6 +13,8 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.OnButtonEvent;
+import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
@@ -45,7 +47,7 @@ class SoftButtonManager extends BaseSubManager {
     private CompletionListener inProgressListener, queuedUpdateListener, cachedListener;
     private boolean hasQueuedUpdate, batchUpdates, waitingOnHMILevelUpdateToSetButtons;
     private OnSystemCapabilityListener onSoftButtonCapabilitiesListener, onDisplayCapabilitiesListener;
-    private OnRPCNotificationListener onHMIStatusListener;
+    private OnRPCNotificationListener onHMIStatusListener, onButtonPressListener, onButtonEventListener;
 
     /**
      * HAX: This is necessary due to a Ford Sync 3 bug that doesn't like Show requests without a main field being set (it will accept them, but with a GENERIC_ERROR, and 10-15 seconds late...)
@@ -126,6 +128,45 @@ class SoftButtonManager extends BaseSubManager {
         };
         this.internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, onHMIStatusListener);
 
+
+        // Add OnButtonPressListener to notify SoftButtonObjects when there is a button press
+        this.onButtonPressListener = new OnRPCNotificationListener() {
+            @Override
+            public void onNotified(RPCNotification notification) {
+                OnButtonPress onButtonPress = (OnButtonPress) notification;
+                Integer buttonId = onButtonPress.getCustomButtonName();
+                if (getSoftButtonObjects() != null) {
+                    for (SoftButtonObject softButtonObject : getSoftButtonObjects()) {
+                        if (softButtonObject.getButtonId() == buttonId && softButtonObject.getOnEventListener() != null){
+                            softButtonObject.getOnEventListener().onPress(getSoftButtonObjectById(buttonId), onButtonPress);
+                            break;
+                        }
+                    }
+                }
+            }
+        };
+        this.internalInterface.addOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, onButtonPressListener);
+
+
+        // Add OnButtonEventListener to notify SoftButtonObjects when there is a button event
+        this.onButtonEventListener = new OnRPCNotificationListener() {
+            @Override
+            public void onNotified(RPCNotification notification) {
+                OnButtonEvent onButtonEvent = (OnButtonEvent) notification;
+                Integer buttonId = onButtonEvent.getCustomButtonID();
+                if (getSoftButtonObjects() != null) {
+                    for (SoftButtonObject softButtonObject : getSoftButtonObjects()) {
+                        if (softButtonObject.getButtonId() == buttonId && softButtonObject.getOnEventListener() != null){
+                            softButtonObject.getOnEventListener().onEvent(getSoftButtonObjectById(buttonId), onButtonEvent);
+                            break;
+                        }
+                    }
+                }
+            }
+        };
+        this.internalInterface.addOnRPCNotificationListener(FunctionID.ON_BUTTON_EVENT, onButtonEventListener);
+
+        // Transition to ready state
         transitionToState(READY);
     }
 
@@ -420,7 +461,7 @@ class SoftButtonManager extends BaseSubManager {
     }
 
     /**
-     * Set the batchUpdates flag that represents whether the manger should wait until endUpdates() is called to send the updated show RPC
+     * Set the batchUpdates flag that represents whether the manager should wait until commit() is called to send the updated show RPC
      * @param batchUpdates
      */
     protected void setBatchUpdates(boolean batchUpdates) {
@@ -438,6 +479,8 @@ class SoftButtonManager extends BaseSubManager {
 
         // Remove listeners
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, onHMIStatusListener);
+        internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, onButtonPressListener);
+        internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_EVENT, onButtonEventListener);
         internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.SOFTBUTTON, onSoftButtonCapabilitiesListener);
         internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, onDisplayCapabilitiesListener);
     }
@@ -498,13 +541,4 @@ class SoftButtonManager extends BaseSubManager {
         }
         return softButtons;
     }
-
-    /**
-     * Add an OnRPCNotificationListener for button press notifications
-     * @param listener a listener that will be called when a button is pressed
-     */
-    public void addOnButtonPressListener(OnRPCNotificationListener listener){
-        internalInterface.addOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, listener);
-    }
-
 }

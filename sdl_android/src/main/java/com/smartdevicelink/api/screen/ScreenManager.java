@@ -206,14 +206,6 @@ public class ScreenManager extends BaseSubManager {
         return softButtonManager.getSoftButtonObjectById(buttonId);
     }
 
-	/**
-	 * Add an OnRPCNotificationListener for button press notifications
-	 * @param listener a listener that will be called when a button is pressed
-	 */
-	public void addOnButtonPressListener(OnRPCNotificationListener listener){
-		softButtonManager.addOnButtonPressListener(listener);
-	}
-
 	// Updates
 
 	public void beginTransaction(){
