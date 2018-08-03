@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.api.PermissionManager.PermissionManager;
+import com.smartdevicelink.api.screen.ScreenManager;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -71,14 +72,14 @@ public class SdlManager{
 
 
 	// Managers
+    private FileManager fileManager;
+    private ScreenManager screenManager;
+    private PermissionManager permissionManager;
 
-	private PermissionManager permissionManager;
-	private FileManager fileManager;
     /*
     private VideoStreamingManager videoStreamingManager;
     private AudioStreamManager audioStreamManager;
     private LockscreenManager lockscreenManager;
-    private ScreenManager screenManager;
     */
 
 	// Initialize proxyBridge with anonymous lifecycleListener
@@ -119,12 +120,13 @@ public class SdlManager{
 			}
 			if(
 					permissionManager != null && permissionManager.getState() != BaseSubManager.SETTING_UP &&
-					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP
+					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
+					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
+
 					/*
 					videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
 					audioStreamManager != null && audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
 					lockscreenManager != null &&  lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
-					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
 					*/
 					){
 				state = BaseSubManager.READY;
@@ -141,14 +143,14 @@ public class SdlManager{
 
 		this.permissionManager = new PermissionManager(_internalInterface);
 		this.permissionManager.start(subManagerListener);
-
 		this.fileManager = new FileManager(_internalInterface, context);
 		this.fileManager.start(subManagerListener);
+		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
+		this.screenManager.start(subManagerListener);
+
 		/*
 		this.lockscreenManager = new LockscreenManager(lockScreenConfig, context, _internalInterface);
 		this.lockscreenManager.start(subManagerListener);
-		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-		this.screenManager.start(subManagerListener);
 		this.videoStreamingManager = new VideoStreamingManager(context, _internalInterface);
 		this.videoStreamingManager.start(subManagerListener);
 		this.audioStreamManager = new AudioStreamManager(_internalInterface);
@@ -159,12 +161,12 @@ public class SdlManager{
 	private void dispose() {
 		this.permissionManager.dispose();
 		this.fileManager.dispose();
+		this.screenManager.dispose();
+
 		/*
 		this.lockscreenManager.dispose();
 		this.audioStreamManager.dispose();
-		this.screenManager.dispose();
 		this.videoStreamingManager.dispose();
-		this.audioStreamManager.dispose();
 		*/
 	}
 
@@ -389,12 +391,10 @@ public class SdlManager{
      * <strong>Note: ScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
      * @return a ScreenManager object
      */
-    /*
 	public ScreenManager getScreenManager() {
 		checkSdlManagerState();
 		return screenManager;
 	}
-	*/
 
     /**
      * Gets the LockScreenManager. <br>

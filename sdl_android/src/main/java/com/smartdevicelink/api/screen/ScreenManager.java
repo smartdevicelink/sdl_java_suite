@@ -1,16 +1,19 @@
 package com.smartdevicelink.api.screen;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
 import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.api.CompletionListener;
 import com.smartdevicelink.api.FileManager;
-import com.smartdevicelink.api.SdlArtwork;
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.api.datatypes.SdlArtwork;
 import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.rpc.OnHMIStatus;
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <strong>ScreenManager</strong> <br>
@@ -30,54 +33,69 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
  */
 public class ScreenManager extends BaseSubManager {
 
-//	private SoftButtonManager softButtonManager;
+	private static String TAG = "ScreenManager";
+	private FileManager fileManager;
+	private SoftButtonManager softButtonManager;
 //	private TextAndGraphicManager textAndGraphicManager;
-	private HMILevel hmiLevel;
 
 	// Screen stuff
 	private String textField1, textField2, textField3, textField4, mediaTrackTextField;
 	private SdlArtwork primaryGraphic, secondaryGraphic;
 	private TextAlignment textAlignment;
 	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
-//	private ArrayList<SoftButtonObject> softButtonObjects;
+
 
 	// Constructors
 
 	public ScreenManager(ISdl internalInterface, FileManager fileManager) {
-
-		// set class vars
 		super(internalInterface);
 
-		hmiLevel = HMILevel.HMI_NONE;
+		transitionToState(SETTING_UP);
 
-		// add listener
-		OnRPCNotificationListener hmiListener = new OnRPCNotificationListener() {
-			@Override
-			public void onNotified(RPCNotification notification) {
-				hmiLevel = ((OnHMIStatus)notification).getHmiLevel();
+		this.fileManager = fileManager;
+
+		initialize();
+	}
+
+
+	// Sub manager listener
+	private final CompletionListener subManagerListener = new CompletionListener() {
+		@Override
+		public synchronized void onComplete(boolean success) {
+			if(!success){
+				Log.d(TAG, "Sub manager failed to initialize");
 			}
-		};
-		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+			if(
+					softButtonManager != null && softButtonManager.getState() != BaseSubManager.SETTING_UP
+					/*
+					textAndGraphicManager != null && textAndGraphicManager.getState() != BaseSubManager.SETTING_UP
+					*/
+					){
+				transitionToState(READY);
+			}
+		}
+	};
 
-		// init sub managers
-		//this.softButtonManager = new SoftButtonManager(internalInterface,fileManager);
-		//this.textAndGraphicManager = new TextAndGraphicManager(internalInterface,fileManager);
-		transitionToState(READY);
+	private void initialize(){
+		this.softButtonManager = new SoftButtonManager(internalInterface, fileManager);
+		this.softButtonManager.start(subManagerListener);
+		//this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager);
+		//this.textAndGraphicManager.start(subManagerListener);
+	}
+
+	/**
+	 * <p>Called when manager is being torn down</p>
+	 */
+	public void dispose(){
+		transitionToState(SHUTDOWN);
 	}
 
 	// Setters
 
-	/*******
-	 *
-	 * THESE SETTERS / GETTERS WILL END UP CALLING THEIR SPECIFIC SUB-SUB MANAGERS
-	 *
-	 * FOR EXAMPLE FOR SETTEXTFIELD1 IT WILL CALL: this.textAndGraphicManager.textField1 = textField1;
-	 * (SAME FOR THE GETTERS)
-	 *
-	 */
-
-	public void setTextField1(String textField1) {
-		this.textField1 = textField1;
+	// TODO: IMPORTANT: we have to make sure that ScreenManager informs softButtonManager about all MainField1 updates, otherwise softButtonManager will override textField1 with old values
+	public void setTextField1(@NonNull String textField1) {
+		//textAndGraphicManager.setMainField1(textField1);
+		softButtonManager.setCurrentMainField1(textField1);
 	}
 
 	public void setTextField2(String textField2) {
@@ -124,9 +142,9 @@ public class ScreenManager extends BaseSubManager {
 		this.textField4Type = textField4Type;
 	}
 
-	/*public void setSoftButtonObjects(ArrayList<SoftButtonObject> softButtonObjects) {
-		this.softButtonObjects = softButtonObjects;
-	}*/
+	public void setSoftButtonObjects(@NonNull List<SoftButtonObject> softButtonObjects) {
+		softButtonManager.setSoftButtonObjects(softButtonObjects);
+	}
 
 	// Getters
 
@@ -178,24 +196,92 @@ public class ScreenManager extends BaseSubManager {
 		return textField4Type;
 	}
 
-	/*public ArrayList<SoftButtonObject> getSoftButtonObjects() {
-		return softButtonObjects;
-	}*/
+	public List<SoftButtonObject> getSoftButtonObjects() {
+		return softButtonManager.getSoftButtonObjects();
+	}
+
+    public SoftButtonObject getSoftButtonObjectByName(@NonNull String name){
+        return softButtonManager.getSoftButtonObjectByName(name);
+    }
+
+    public SoftButtonObject getSoftButtonObjectById(int buttonId){
+        return softButtonManager.getSoftButtonObjectById(buttonId);
+    }
+
+	/**
+	 * Add an OnRPCNotificationListener for button press notifications
+	 * @param listener a listener that will be called when a button is pressed
+	 */
+	public void addOnButtonPressListener(OnRPCNotificationListener listener){
+		softButtonManager.addOnButtonPressListener(listener);
+	}
 
 	// Updates
 
 	public void beginUpdates(){
-
-//		softButtonManager.batchUpdates = true;
-//		textAndGraphicManager.batchUpdates = true;
+		softButtonManager.setBatchUpdates(true);
+		//textAndGraphicManager.setBatchUpdates(true);
 	}
 
-	public void endUpdates(CompletionListener listener){
+	public void endUpdates(final CompletionListener listener){
+		// This map stores the update completion status for each SubManager.
+		// The key is the SubManager, and the value is the status for that SubManager
+		// null means the SubManager didn't finished the update yet, true means it finished with success, and false means it finished with failure
+		final Map<BaseSubManager, Boolean> subManagersCompletionListenersStatus = new HashMap<>();
 
-//		softButtonManager.batchUpdates = false;
-//		textAndGraphicManager.batchUpdates = false;
-//		softButtonManager.update();
-//		textAndGraphicManager.update();
+
+		// SoftButtonManager
+		subManagersCompletionListenersStatus.put(softButtonManager, null);
+		softButtonManager.setBatchUpdates(false);
+		softButtonManager.update(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				subManagersCompletionListenersStatus.put(softButtonManager, success);
+				Boolean allFinishedSuccessfully = allSubManagersFinishedUpdatingSuccessfully(subManagersCompletionListenersStatus);
+				if (allFinishedSuccessfully != null){
+					listener.onComplete(allFinishedSuccessfully);
+				}
+			}
+		});
+
+//		// TextAndGraphicManager
+//		subManagersCompletionListenersStatus.put(textAndGraphicManager, null);
+//		textAndGraphicManager.setBatchUpdates(false);
+//		textAndGraphicManager.update(new CompletionListener() {
+//			@Override
+//			public void onComplete(boolean success) {
+//				subManagersCompletionListenersStatus.put(textAndGraphicManager, success);
+//				Boolean allSubManagersFinishedSuccessfully = allSubManagersFinishedUpdatingSuccessfully(subManagersCompletionListenersStatus);
+//				if (allSubManagersFinishedSuccessfully != null){
+//					listener.onComplete(allSubManagersFinishedSuccessfully);
+//				}
+//			}
+//		});
+	}
+
+
+	// null means not all SubManagers finished the update
+	// true means all SubManagers finished the update with success
+	// false means all SubManagers finished the update but some finished with failure
+	private Boolean allSubManagersFinishedUpdatingSuccessfully(Map<BaseSubManager, Boolean> subManagersCompletionListenersStatus){
+		boolean allSubManagersCompleted = true;
+		boolean allCompletedSubManagersFinishedWithSuccess = true;
+		for (BaseSubManager subManager : subManagersCompletionListenersStatus.keySet()) {
+			Boolean listenerStatus = subManagersCompletionListenersStatus.get(subManager);
+			if (listenerStatus != null){
+				if (!listenerStatus){
+					allCompletedSubManagersFinishedWithSuccess = false;
+				}
+			} else {
+				allSubManagersCompleted = false;
+				break;
+			}
+		}
+		if (!allSubManagersCompleted){
+			return null;
+		} else {
+			return allCompletedSubManagersFinishedWithSuccess;
+		}
 	}
 
 }
