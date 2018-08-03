@@ -57,7 +57,7 @@ public class ScreenManager extends BaseSubManager {
 
 		// init sub managers
 		//this.softButtonManager = new SoftButtonManager(internalInterface,fileManager);
-		this.textAndGraphicManager = new TextAndGraphicManager(internalInterface,fileManager, context);
+		this.textAndGraphicManager = new TextAndGraphicManager(internalInterface,fileManager);
 		transitionToState(READY);
 	}
 

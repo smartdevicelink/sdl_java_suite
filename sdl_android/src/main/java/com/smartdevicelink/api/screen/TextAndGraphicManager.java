@@ -1,7 +1,6 @@
 package com.smartdevicelink.api.screen;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.Log;
 
 import com.smartdevicelink.R;
@@ -30,9 +29,6 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +55,6 @@ class TextAndGraphicManager extends BaseSubManager {
 	private boolean pendingHMIFull;
 	private FileManager fileManager;
 	private CompletionListener queuedUpdateListener, inProgressListener, pendingHMIListener;
-	private Context context;
 	private SdlArtwork blankArtwork;
 	private OnRPCNotificationListener hmiListener;
 	private OnSystemCapabilityListener onDisplayCapabilitiesListener;
@@ -72,11 +67,10 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	//Constructors
 
-	TextAndGraphicManager(ISdl internalInterface, FileManager fileManager, Context context) {
+	TextAndGraphicManager(ISdl internalInterface, FileManager fileManager) {
 		// set class vars
 		super(internalInterface);
 		this.fileManager = fileManager;
-		this.context = context;
 		batchingUpdates = false;
 		isDirty = false;
 		pendingHMIFull = false;
