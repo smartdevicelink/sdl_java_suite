@@ -1,6 +1,5 @@
 package com.smartdevicelink.api.screen;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.smartdevicelink.R;
