@@ -9,6 +9,7 @@ import com.smartdevicelink.api.FileManager;
 import com.smartdevicelink.api.datatypes.SdlArtwork;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
+import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 import java.util.HashMap;
@@ -36,14 +37,7 @@ public class ScreenManager extends BaseSubManager {
 	private static String TAG = "ScreenManager";
 	private FileManager fileManager;
 	private SoftButtonManager softButtonManager;
-//	private TextAndGraphicManager textAndGraphicManager;
-
-	// Screen stuff
-	private String textField1, textField2, textField3, textField4, mediaTrackTextField;
-	private SdlArtwork primaryGraphic, secondaryGraphic;
-	private TextAlignment textAlignment;
-	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
-
+	private TextAndGraphicManager textAndGraphicManager;
 
 	// Constructors
 
@@ -66,10 +60,8 @@ public class ScreenManager extends BaseSubManager {
 				Log.d(TAG, "Sub manager failed to initialize");
 			}
 			if(
-					softButtonManager != null && softButtonManager.getState() != BaseSubManager.SETTING_UP
-					/*
+					softButtonManager != null && softButtonManager.getState() != BaseSubManager.SETTING_UP &&
 					textAndGraphicManager != null && textAndGraphicManager.getState() != BaseSubManager.SETTING_UP
-					*/
 					){
 				transitionToState(READY);
 			}
@@ -79,8 +71,8 @@ public class ScreenManager extends BaseSubManager {
 	private void initialize(){
 		this.softButtonManager = new SoftButtonManager(internalInterface, fileManager);
 		this.softButtonManager.start(subManagerListener);
-		//this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager);
-		//this.textAndGraphicManager.start(subManagerListener);
+		this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager);
+		this.textAndGraphicManager.start(subManagerListener);
 	}
 
 	/**
@@ -94,52 +86,58 @@ public class ScreenManager extends BaseSubManager {
 
 	// TODO: IMPORTANT: we have to make sure that ScreenManager informs softButtonManager about all MainField1 updates, otherwise softButtonManager will override textField1 with old values
 	public void setTextField1(@NonNull String textField1) {
-		//textAndGraphicManager.setMainField1(textField1);
+		this.textAndGraphicManager.setTextField1(textField1);
 		softButtonManager.setCurrentMainField1(textField1);
 	}
 
 	public void setTextField2(String textField2) {
-		this.textField2 = textField2;
+		this.textAndGraphicManager.setTextField2(textField2);
 	}
 
 	public void setTextField3(String textField3) {
-		this.textField3 = textField3;
+		this.textAndGraphicManager.setTextField3(textField3);
 	}
 
 	public void setTextField4(String textField4) {
-		this.textField4 = textField4;
+		this.textAndGraphicManager.setTextField4(textField4);
 	}
 
 	public void setMediaTrackTextField(String mediaTrackTextField) {
-		this.mediaTrackTextField = mediaTrackTextField;
+		this.textAndGraphicManager.setMediaTrackTextField(mediaTrackTextField);
 	}
 
 	public void setPrimaryGraphic(SdlArtwork primaryGraphic) {
-		this.primaryGraphic = primaryGraphic;
+		if (primaryGraphic == null){
+			primaryGraphic = textAndGraphicManager.getBlankArtwork();
+		}
+		this.textAndGraphicManager.setPrimaryGraphic(primaryGraphic);
 	}
 
 	public void setSecondaryGraphic(SdlArtwork secondaryGraphic) {
-		this.secondaryGraphic = secondaryGraphic;
+		if (secondaryGraphic == null){
+			secondaryGraphic = textAndGraphicManager.getBlankArtwork();
+		}
+		this.textAndGraphicManager.setSecondaryGraphic(secondaryGraphic);
 	}
 
 	public void setTextAlignment(TextAlignment textAlignment) {
-		this.textAlignment = textAlignment;
+		this.textAndGraphicManager.setTextAlignment(textAlignment);
 	}
 
 	public void setTextField1Type(MetadataType textField1Type) {
-		this.textField1Type = textField1Type;
+		this.textAndGraphicManager.setTextField1Type(textField1Type);
 	}
 
 	public void setTextField2Type(MetadataType textField2Type) {
-		this.textField2Type = textField2Type;
+		this.textAndGraphicManager.setTextField2Type(textField2Type);
 	}
 
 	public void setTextField3Type(MetadataType textField3Type) {
-		this.textField3Type = textField3Type;
+		this.textAndGraphicManager.setTextField3Type(textField3Type);
 	}
 
 	public void setTextField4Type(MetadataType textField4Type) {
-		this.textField4Type = textField4Type;
+		this.textAndGraphicManager.setTextField4Type(textField4Type);
 	}
 
 	public void setSoftButtonObjects(@NonNull List<SoftButtonObject> softButtonObjects) {
@@ -149,51 +147,51 @@ public class ScreenManager extends BaseSubManager {
 	// Getters
 
 	public String getTextField1() {
-		return textField1;
+		return this.textAndGraphicManager.getTextField1();
 	}
 
 	public String getTextField2() {
-		return textField2;
+		return this.textAndGraphicManager.getTextField2();
 	}
 
 	public String getTextField3() {
-		return textField3;
+		return this.textAndGraphicManager.getTextField3();
 	}
 
 	public String getTextField4() {
-		return textField4;
+		return this.textAndGraphicManager.getTextField4();
 	}
 
 	public String getMediaTrackTextField() {
-		return mediaTrackTextField;
+		return this.textAndGraphicManager.getMediaTrackTextField();
 	}
 
 	public SdlArtwork getPrimaryGraphic() {
-		return primaryGraphic;
+		return this.textAndGraphicManager.getPrimaryGraphic();
 	}
 
 	public SdlArtwork getSecondaryGraphic() {
-		return secondaryGraphic;
+		return this.textAndGraphicManager.getSecondaryGraphic();
 	}
 
 	public TextAlignment getTextAlignment() {
-		return textAlignment;
+		return this.textAndGraphicManager.getTextAlignment();
 	}
 
 	public MetadataType getTextField1Type() {
-		return textField1Type;
+		return this.textAndGraphicManager.getTextField1Type();
 	}
 
 	public MetadataType getTextField2Type() {
-		return textField2Type;
+		return this.textAndGraphicManager.getTextField2Type();
 	}
 
 	public MetadataType getTextField3Type() {
-		return textField3Type;
+		return this.textAndGraphicManager.getTextField3Type();
 	}
 
 	public MetadataType getTextField4Type() {
-		return textField4Type;
+		return this.textAndGraphicManager.getTextField4Type();
 	}
 
 	public List<SoftButtonObject> getSoftButtonObjects() {
@@ -220,7 +218,7 @@ public class ScreenManager extends BaseSubManager {
 
 	public void beginUpdates(){
 		softButtonManager.setBatchUpdates(true);
-		//textAndGraphicManager.setBatchUpdates(true);
+		textAndGraphicManager.setBatchUpdates(true);
 	}
 
 	public void endUpdates(final CompletionListener listener){
@@ -245,18 +243,18 @@ public class ScreenManager extends BaseSubManager {
 		});
 
 //		// TextAndGraphicManager
-//		subManagersCompletionListenersStatus.put(textAndGraphicManager, null);
-//		textAndGraphicManager.setBatchUpdates(false);
-//		textAndGraphicManager.update(new CompletionListener() {
-//			@Override
-//			public void onComplete(boolean success) {
-//				subManagersCompletionListenersStatus.put(textAndGraphicManager, success);
-//				Boolean allSubManagersFinishedSuccessfully = allSubManagersFinishedUpdatingSuccessfully(subManagersCompletionListenersStatus);
-//				if (allSubManagersFinishedSuccessfully != null){
-//					listener.onComplete(allSubManagersFinishedSuccessfully);
-//				}
-//			}
-//		});
+		subManagersCompletionListenersStatus.put(textAndGraphicManager, null);
+		textAndGraphicManager.setBatchUpdates(false);
+		textAndGraphicManager.update(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				subManagersCompletionListenersStatus.put(textAndGraphicManager, success);
+				Boolean allSubManagersFinishedSuccessfully = allSubManagersFinishedUpdatingSuccessfully(subManagersCompletionListenersStatus);
+				if (allSubManagersFinishedSuccessfully != null){
+					listener.onComplete(allSubManagersFinishedSuccessfully);
+				}
+			}
+		});
 	}
 
 

@@ -879,5 +879,12 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected SdlArtwork getSecondaryGraphic(){
 		return secondaryGraphic;
 	}
-	
+
+	protected void setBatchUpdates(boolean batching){
+		this.batchingUpdates = batching;
+	}
+
+	protected boolean getBatchUpdates(){
+		return batchingUpdates;
+	}
 }
