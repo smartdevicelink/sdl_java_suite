@@ -205,7 +205,6 @@ class TextAndGraphicManager extends BaseSubManager {
 
 		Show fullShow = new Show();
 		fullShow.setAlignment(textAlignment);
-		fullShow.setMetadataTags(new MetadataTags());
 		fullShow = assembleShowText(fullShow);
 		fullShow = assembleShowImages(fullShow);
 
@@ -217,7 +216,7 @@ class TextAndGraphicManager extends BaseSubManager {
 			inProgressUpdate = extractTextFromShow(fullShow);
 			sendShow();
 
-		}else if (isArtworkUploadedOrDoesntExist(primaryGraphic) || isArtworkUploadedOrDoesntExist(secondaryGraphic)){
+		}else if (isArtworkUploadedOrDoesntExist(primaryGraphic) && ( secondaryGraphic == blankArtwork || isArtworkUploadedOrDoesntExist(secondaryGraphic))){
 
 			Log.v(TAG, "Images already uploaded, sending full update");
 			// The files to be updated are already uploaded, send the full show immediately
@@ -400,7 +399,7 @@ class TextAndGraphicManager extends BaseSubManager {
 
 		if (textField2 != null && textField2.length() > 0) {
 			if (( textField3 == null || !(textField3.length() > 0)) && (textField4 == null || !(textField4.length() > 0))){
-				// text does not exist in slots 3 or 4, put i slot 2
+				// text does not exist in slots 3 or 4, put text2 in slot 2
 				show.setMainField2(textField2);
 				if (textField2Type != null){
 					tags.setMainField2(textField2Type);
