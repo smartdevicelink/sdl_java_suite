@@ -87,7 +87,7 @@ public class ScreenManager extends BaseSubManager {
 	// TODO: IMPORTANT: we have to make sure that ScreenManager informs softButtonManager about all MainField1 updates, otherwise softButtonManager will override textField1 with old values
 	public void setTextField1(@NonNull String textField1) {
 		this.textAndGraphicManager.setTextField1(textField1);
-		softButtonManager.setCurrentMainField1(textField1);
+		this.softButtonManager.setCurrentMainField1(textField1);
 	}
 
 	public void setTextField2(String textField2) {

@@ -49,7 +49,7 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		testArtwork.setUri(uri);
 		testArtwork.setType(FileType.GRAPHIC_PNG);
 
-		textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager, mTestContext);
+		textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager);
 	}
 
 	@Override
