@@ -7,12 +7,10 @@ import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.api.CompletionListener;
 import com.smartdevicelink.api.FileManager;
 import com.smartdevicelink.api.datatypes.SdlArtwork;
-import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,10 +144,6 @@ public class ScreenManager extends BaseSubManager {
 
 	public void setSoftButtonObjects(@NonNull List<SoftButtonObject> softButtonObjects) {
 		softButtonManager.setSoftButtonObjects(softButtonObjects);
-	}
-
-	public void setSoftButtonObjects(@NonNull SoftButtonObject softButtonObject) {
-		softButtonManager.setSoftButtonObjects(Collections.singletonList(softButtonObject));
 	}
 
 	// Getters
