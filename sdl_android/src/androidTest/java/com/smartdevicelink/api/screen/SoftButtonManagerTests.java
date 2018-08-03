@@ -109,10 +109,10 @@ public class SoftButtonManagerTests extends AndroidTestCase {
         // Create soft button objects
         softButtonState1 = new SoftButtonState("object1-state1", "o1s1", new SdlArtwork("image1", FileType.GRAPHIC_PNG, 1, true));
         softButtonState2 = new SoftButtonState("object1-state2", "o1s2", new SdlArtwork("image2", FileType.GRAPHIC_PNG, 2, true));
-        softButtonObject1 = new SoftButtonObject("object1", Arrays.asList(softButtonState1, softButtonState2), softButtonState1.getName());
+        softButtonObject1 = new SoftButtonObject("object1", Arrays.asList(softButtonState1, softButtonState2), softButtonState1.getName(), null);
         softButtonState3 = new SoftButtonState("object2-state1", "o2s1", null);
         softButtonState4 = new SoftButtonState("object2-state2", "o2s2", new SdlArtwork("image3", FileType.GRAPHIC_PNG, 3, true));
-        softButtonObject2 = new SoftButtonObject("object2", Arrays.asList(softButtonState3, softButtonState4), softButtonState3.getName());
+        softButtonObject2 = new SoftButtonObject("object2", Arrays.asList(softButtonState3, softButtonState4), softButtonState3.getName(), null);
     }
 
     @Override
