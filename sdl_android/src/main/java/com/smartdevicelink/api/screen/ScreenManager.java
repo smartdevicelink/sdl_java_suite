@@ -216,12 +216,12 @@ public class ScreenManager extends BaseSubManager {
 
 	// Updates
 
-	public void beginUpdates(){
+	public void beginTransaction(){
 		softButtonManager.setBatchUpdates(true);
 		textAndGraphicManager.setBatchUpdates(true);
 	}
 
-	public void endUpdates(final CompletionListener listener){
+	public void commit(final CompletionListener listener){
 		// This map stores the update completion status for each SubManager.
 		// The key is the SubManager, and the value is the status for that SubManager
 		// null means the SubManager didn't finished the update yet, true means it finished with success, and false means it finished with failure
