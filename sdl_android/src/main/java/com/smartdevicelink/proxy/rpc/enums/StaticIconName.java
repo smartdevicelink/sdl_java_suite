@@ -29,7 +29,7 @@ public enum StaticIconName {
 	/**
 	 * Icon Name arrow - north
 	 */
-	ARROW__NORTH("0x40"),
+	ARROW_NORTH("0x40"),
 
 	/**
 	 * Icon Name audio mute
@@ -449,7 +449,7 @@ public enum StaticIconName {
 	/**
 	 * Icon Name origin / nearby locale / current position
 	 */
-	ORIGIN_("0x96"),
+	ORIGIN("0x96"),
 
 	/**
 	 * Icon Name outgoing calls (in list of phone calls)
@@ -544,7 +544,7 @@ public enum StaticIconName {
 	/**
 	 * Icon Name remote diagnostics - check engine
 	 */
-	REMOTE_DIAGNOSTICS__CHECK_ENGINE("0x7E"),
+	REMOTE_DIAGNOSTICS_CHECK_ENGINE("0x7E"),
 
 	/**
 	 * Icon Name rendered 911 assist / emergency assistance
@@ -664,7 +664,7 @@ public enum StaticIconName {
 	/**
 	 * Icon Name settings / menu
 	 */
-	SETTINGS_("0x49"),
+	SETTINGS("0x49"),
 
 	/**
 	 * Icon Name sharp left
@@ -689,7 +689,7 @@ public enum StaticIconName {
 	/**
 	 * Icon Name ski places / elevation / altitude
 	 */
-	SKI_PLACES_("0xab"),
+	SKI_PLACES("0xab"),
 
 	/**
 	 * Icon Name slight left
@@ -734,7 +734,7 @@ public enum StaticIconName {
 	/**
 	 * Icon Name speed dial numbers - number 4
 	 */
-	SPEED_DIAL_NUMBERSNUMBER_4("0xDA"),
+	SPEED_DIAL_NUMBERS_NUMBER_4("0xDA"),
 
 	/**
 	 * Icon Name speed dial numbers - number 5
