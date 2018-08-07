@@ -36,7 +36,7 @@ public abstract class BaseAudioDecoder {
     protected File audioFile;
     protected AudioDecoderListener listener;
 
-    BaseAudioDecoder(File audioFile, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
+    public BaseAudioDecoder(File audioFile, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
         this.audioFile = audioFile;
         this.listener = listener;
         targetSampleRate = sampleRate;
@@ -164,8 +164,13 @@ public abstract class BaseAudioDecoder {
     }
 
     protected void onOutputFormatChanged(@NonNull MediaFormat mediaFormat) {
-        outputChannelCount = mediaFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
-        outputSampleRate = mediaFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE);
+        if (mediaFormat.containsKey(MediaFormat.KEY_CHANNEL_COUNT)) {
+            outputChannelCount = mediaFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
+        }
+
+        if (mediaFormat.containsKey(MediaFormat.KEY_SAMPLE_RATE)) {
+            outputSampleRate = mediaFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE);
+        }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N && mediaFormat.containsKey(MediaFormat.KEY_PCM_ENCODING)) {
             int key = mediaFormat.getInteger(MediaFormat.KEY_PCM_ENCODING);
@@ -198,7 +203,7 @@ public abstract class BaseAudioDecoder {
         }
     }
 
-    abstract void start();
+    public abstract void start();
 
     public void stop() {
         if (decoder != null) {

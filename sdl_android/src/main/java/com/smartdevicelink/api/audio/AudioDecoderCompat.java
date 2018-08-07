@@ -19,7 +19,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         super(audioFile, sampleRate, sampleType, listener);
     }
 
-    void start() {
+    public void start() {
         try {
             initMediaComponents();
             decoder.start();
