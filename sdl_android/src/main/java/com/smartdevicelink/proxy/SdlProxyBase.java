@@ -2053,7 +2053,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyVersionInfo = msg.getProxyVersionInfo();
 					_iconResumed = msg.getIconResumed();
 					
-
+					if (_iconResumed == null){
+						_iconResumed = false;
+					}
 
 					if (_bAppResumeEnabled)
 					{
