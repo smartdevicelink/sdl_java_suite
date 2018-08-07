@@ -339,7 +339,7 @@ public enum StaticIconName {
 	/**
 	 * Icon Name key / keycode
 	 */
-	KEY_("0x7D"),
+	KEY("0x7D"),
 
 	/**
 	 * Icon Name left
@@ -895,7 +895,6 @@ public enum StaticIconName {
 		}
 
 		for (StaticIconName type : StaticIconName.values()) {
-			System.out.println("TYPE: "+ type.toString());
 			if (type.toString().equals(value)) {
 				return type;
 			}

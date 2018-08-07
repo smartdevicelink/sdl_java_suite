@@ -4,6 +4,10 @@ import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 
 import junit.framework.TestCase;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.proxy.rpc.enums.StaticIconName}
@@ -706,9 +710,222 @@ public class StaticIconNameTests extends TestCase {
 		example = "0x9a";
 		StaticIconName ZOOM_OUT = StaticIconName.valueForString(example);
 		assertNotNull("ZOOM_OUT returned null", ZOOM_OUT);
+	}
 
+	/**
+	 * Verifies that an invalid assignment is null.
+	 */
+	public void testInvalidEnum () {
+		String example = "SoMeThInG";
+		try {
+			StaticIconName SOMETHING = StaticIconName.valueForString(example);
+			assertNull("Result of valueForString should be null.", SOMETHING);
+		}
+		catch (IllegalArgumentException exception) {
+			fail("Invalid enum throws IllegalArgumentException.");
+		}
+	}
 
+	/**
+	 * Verifies that a null assignment is invalid.
+	 */
+	public void testNullEnum () {
+		String example = null;
+		try {
+			StaticIconName temp = StaticIconName.valueForString(example);
+			assertNull("Result of valueForString should be null.", temp);
+		}
+		catch (NullPointerException exception) {
+			fail("Null string throws NullPointerException.");
+		}
+	}
 
+	/**
+	 * Verifies the possible enum values of StaticIconNames.
+	 */
+	public void testListEnum() {
+
+		List<StaticIconName> enumValueList = Arrays.asList(StaticIconName.values());
+
+		List<StaticIconName> enumTestList = new ArrayList<>();
+		enumTestList.add(StaticIconName.ACCEPT_CALL);
+		enumTestList.add(StaticIconName.ADD_WAYPOINT);
+		enumTestList.add(StaticIconName.ALBUM);
+		enumTestList.add(StaticIconName.AMBIENT_LIGHTING);
+		enumTestList.add(StaticIconName.ARROW_NORTH);
+		enumTestList.add(StaticIconName.AUDIO_MUTE);
+		enumTestList.add(StaticIconName.AUDIOBOOK_EPISODE);
+		enumTestList.add(StaticIconName.AUDIOBOOK_NARRATOR);
+		enumTestList.add(StaticIconName.AUXILLARY_AUDIO);
+		enumTestList.add(StaticIconName.BACK);
+		enumTestList.add(StaticIconName.BATTERY_CAPACITY_0_OF_5);
+		enumTestList.add(StaticIconName.BATTERY_CAPACITY_1_OF_5);
+		enumTestList.add(StaticIconName.BATTERY_CAPACITY_2_OF_5);
+		enumTestList.add(StaticIconName.BATTERY_CAPACITY_3_OF_5);
+		enumTestList.add(StaticIconName.BATTERY_CAPACITY_4_OF_5);
+		enumTestList.add(StaticIconName.BATTERY_CAPACITY_5_OF_5);
+		enumTestList.add(StaticIconName.BLUETOOTH_AUDIO_SOURCE);
+		enumTestList.add(StaticIconName.BLUETOOTH1);
+		enumTestList.add(StaticIconName.BLUETOOTH2);
+		enumTestList.add(StaticIconName.BROWSE);
+		enumTestList.add(StaticIconName.CELL_PHONE_IN_ROAMING_MODE);
+		enumTestList.add(StaticIconName.CELL_SERVICE_SIGNAL_STRENGTH_0_OF_5_BARS);
+		enumTestList.add(StaticIconName.CELL_SERVICE_SIGNAL_STRENGTH_1_OF_5_BARS);
+		enumTestList.add(StaticIconName.CELL_SERVICE_SIGNAL_STRENGTH_2_OF_5_BARS);
+		enumTestList.add(StaticIconName.CELL_SERVICE_SIGNAL_STRENGTH_3_OF_5_BARS);
+		enumTestList.add(StaticIconName.CELL_SERVICE_SIGNAL_STRENGTH_4_OF_5_BARS);
+		enumTestList.add(StaticIconName.CELL_SERVICE_SIGNAL_STRENGTH_5_OF_5_BARS);
+		enumTestList.add(StaticIconName.CHANGE_LANE_LEFT);
+		enumTestList.add(StaticIconName.CHANGE_LANE_RIGHT);
+		enumTestList.add(StaticIconName.CHECK_BOX_CHECKED);
+		enumTestList.add(StaticIconName.CHECK_BOX_UNCHECKED);
+		enumTestList.add(StaticIconName.CLIMATE);
+		enumTestList.add(StaticIconName.CLOCK);
+		enumTestList.add(StaticIconName.COMPOSE);
+		enumTestList.add(StaticIconName.CONTACT);
+		enumTestList.add(StaticIconName.CONTINUE);
+		enumTestList.add(StaticIconName.DASH);
+		enumTestList.add(StaticIconName.DATE);
+		enumTestList.add(StaticIconName.DELETE);
+		enumTestList.add(StaticIconName.DESTINATION);
+		enumTestList.add(StaticIconName.DESTINATION_FERRY_AHEAD);
+		enumTestList.add(StaticIconName.EBOOKMARK);
+		enumTestList.add(StaticIconName.END_CALL);
+		enumTestList.add(StaticIconName.FAIL);
+		enumTestList.add(StaticIconName.FAST_FORWARD_30_SECS);
+		enumTestList.add(StaticIconName.FAVORITE_HEART);
+		enumTestList.add(StaticIconName.FAVORITE_STAR);
+		enumTestList.add(StaticIconName.FAX_NUMBER);
+		enumTestList.add(StaticIconName.FILENAME);
+		enumTestList.add(StaticIconName.FILTER);
+		enumTestList.add(StaticIconName.FOLDER);
+		enumTestList.add(StaticIconName.FUEL_PRICES);
+		enumTestList.add(StaticIconName.FULL_MAP);
+		enumTestList.add(StaticIconName.GENERIC_PHONE_NUMBER);
+		enumTestList.add(StaticIconName.GENRE);
+		enumTestList.add(StaticIconName.GLOBAL_KEYBOARD);
+		enumTestList.add(StaticIconName.HIGHWAY_EXIT_INFORMATION);
+		enumTestList.add(StaticIconName.HOME_PHONE_NUMBER);
+		enumTestList.add(StaticIconName.HYPERLINK);
+		enumTestList.add(StaticIconName.ID3_TAG_UNKNOWN);
+		enumTestList.add(StaticIconName.INCOMING_CALLS);
+		enumTestList.add(StaticIconName.INFORMATION);
+		enumTestList.add(StaticIconName.IPOD_MEDIA_SOURCE);
+		enumTestList.add(StaticIconName.JOIN_CALLS);
+		enumTestList.add(StaticIconName.KEEP_LEFT);
+		enumTestList.add(StaticIconName.KEEP_RIGHT);
+		enumTestList.add(StaticIconName.KEY);
+		enumTestList.add(StaticIconName.LEFT);
+		enumTestList.add(StaticIconName.LEFT_ARROW);
+		enumTestList.add(StaticIconName.LEFT_EXIT);
+		enumTestList.add(StaticIconName.LINE_IN_AUDIO_SOURCE);
+		enumTestList.add(StaticIconName.LOCKED);
+		enumTestList.add(StaticIconName.MEDIA_CONTROL_LEFT_ARROW);
+		enumTestList.add(StaticIconName.MEDIA_CONTROL_RECORDING);
+		enumTestList.add(StaticIconName.MEDIA_CONTROL_RIGHT_ARROW);
+		enumTestList.add(StaticIconName.MEDIA_CONTROL_STOP);
+		enumTestList.add(StaticIconName.MICROPHONE);
+		enumTestList.add(StaticIconName.MISSED_CALLS);
+		enumTestList.add(StaticIconName.MOBILE_PHONE_NUMBER);
+		enumTestList.add(StaticIconName.MOVE_DOWN);
+		enumTestList.add(StaticIconName.MOVE_UP);
+		enumTestList.add(StaticIconName.MP3_TAG_ARTIST);
+		enumTestList.add(StaticIconName.NAVIGATION);
+		enumTestList.add(StaticIconName.NAVIGATION_CURRENT_DIRECTION);
+		enumTestList.add(StaticIconName.NEGATIVE_RATING_THUMBS_DOWN);
+		enumTestList.add(StaticIconName.NEW);
+		enumTestList.add(StaticIconName.OFFICE_PHONE_NUMBER);
+		enumTestList.add(StaticIconName.OPENED);
+		enumTestList.add(StaticIconName.ORIGIN);
+		enumTestList.add(StaticIconName.OUTGOING_CALLS);
+		enumTestList.add(StaticIconName.PHONE_CALL_1);
+		enumTestList.add(StaticIconName.PHONE_CALL_2);
+		enumTestList.add(StaticIconName.PHONE_DEVICE);
+		enumTestList.add(StaticIconName.PHONEBOOK);
+		enumTestList.add(StaticIconName.PHOTO);
+		enumTestList.add(StaticIconName.PLAY);
+		enumTestList.add(StaticIconName.PLAYLIST);
+		enumTestList.add(StaticIconName.POPUP);
+		enumTestList.add(StaticIconName.POSITIVE_RATING_THUMBS_UP);
+		enumTestList.add(StaticIconName.POWER);
+		enumTestList.add(StaticIconName.PRIMARY_PHONE);
+		enumTestList.add(StaticIconName.RADIO_BUTTON_CHECKED);
+		enumTestList.add(StaticIconName.RADIO_BUTTON_UNCHECKED);
+		enumTestList.add(StaticIconName.RECENT_CALLS);
+		enumTestList.add(StaticIconName.RECENT_DESTINATIONS);
+		enumTestList.add(StaticIconName.REDO);
+		enumTestList.add(StaticIconName.REFRESH);
+		enumTestList.add(StaticIconName.REMOTE_DIAGNOSTICS_CHECK_ENGINE);
+		enumTestList.add(StaticIconName.RENDERED_911_ASSIST);
+		enumTestList.add(StaticIconName.REPEAT);
+		enumTestList.add(StaticIconName.REPEAT_PLAY);
+		enumTestList.add(StaticIconName.REPLY);
+		enumTestList.add(StaticIconName.REWIND_30_SECS);
+		enumTestList.add(StaticIconName.RIGHT);
+		enumTestList.add(StaticIconName.RIGHT_EXIT);
+		enumTestList.add(StaticIconName.RINGTONES);
+		enumTestList.add(StaticIconName.ROUNDABOUT_LEFT_HAND_1);
+		enumTestList.add(StaticIconName.ROUNDABOUT_LEFT_HAND_2);
+		enumTestList.add(StaticIconName.ROUNDABOUT_LEFT_HAND_3);
+		enumTestList.add(StaticIconName.ROUNDABOUT_LEFT_HAND_4);
+		enumTestList.add(StaticIconName.ROUNDABOUT_LEFT_HAND_5);
+		enumTestList.add(StaticIconName.ROUNDABOUT_LEFT_HAND_6);
+		enumTestList.add(StaticIconName.ROUNDABOUT_LEFT_HAND_7);
+		enumTestList.add(StaticIconName.ROUNDABOUT_RIGHT_HAND_1);
+		enumTestList.add(StaticIconName.ROUNDABOUT_RIGHT_HAND_2);
+		enumTestList.add(StaticIconName.ROUNDABOUT_RIGHT_HAND_3);
+		enumTestList.add(StaticIconName.ROUNDABOUT_RIGHT_HAND_4);
+		enumTestList.add(StaticIconName.ROUNDABOUT_RIGHT_HAND_5);
+		enumTestList.add(StaticIconName.ROUNDABOUT_RIGHT_HAND_6);
+		enumTestList.add(StaticIconName.ROUNDABOUT_RIGHT_HAND_7);
+		enumTestList.add(StaticIconName.RSS);
+		enumTestList.add(StaticIconName.SETTINGS);
+		enumTestList.add(StaticIconName.SHARP_LEFT);
+		enumTestList.add(StaticIconName.SHARP_RIGHT);
+		enumTestList.add(StaticIconName.SHOW);
+		enumTestList.add(StaticIconName.SHUFFLE_PLAY);
+		enumTestList.add(StaticIconName.SKI_PLACES);
+		enumTestList.add(StaticIconName.SLIGHT_LEFT);
+		enumTestList.add(StaticIconName.SLIGHT_RIGHT);
+		enumTestList.add(StaticIconName.SMARTPHONE);
+		enumTestList.add(StaticIconName.SORT_LIST);
+		enumTestList.add(StaticIconName.SPEED_DIAL_NUMBERS_NUMBER_0);
+		enumTestList.add(StaticIconName.SPEED_DIAL_NUMBERS_NUMBER_1);
+		enumTestList.add(StaticIconName.SPEED_DIAL_NUMBERS_NUMBER_2);
+		enumTestList.add(StaticIconName.SPEED_DIAL_NUMBERS_NUMBER_3);
+		enumTestList.add(StaticIconName.SPEED_DIAL_NUMBERS_NUMBER_4);
+		enumTestList.add(StaticIconName.SPEED_DIAL_NUMBERS_NUMBER_5);
+		enumTestList.add(StaticIconName.SPEED_DIAL_NUMBERS_NUMBER_6);
+		enumTestList.add(StaticIconName.SPEED_DIAL_NUMBERS_NUMBER_7);
+		enumTestList.add(StaticIconName.SPEED_DIAL_NUMBERS_NUMBER_8);
+		enumTestList.add(StaticIconName.SPEED_DIAL_NUMBERS_NUMBER_9);
+		enumTestList.add(StaticIconName.SUCCESS);
+		enumTestList.add(StaticIconName.TRACK_TITLE);
+		enumTestList.add(StaticIconName.TRAFFIC_REPORT);
+		enumTestList.add(StaticIconName.TURN_LIST);
+		enumTestList.add(StaticIconName.UTURN_LEFT_TRAFFIC);
+		enumTestList.add(StaticIconName.UTURN_RIGHT_TRAFFIC);
+		enumTestList.add(StaticIconName.UNDO);
+		enumTestList.add(StaticIconName.UNLOCKED);
+		enumTestList.add(StaticIconName.USB_MEDIA_AUDIO_SOURCE);
+		enumTestList.add(StaticIconName.VOICE_CONTROL_SCROLLBAR_LIST_ITEM_NO_1);
+		enumTestList.add(StaticIconName.VOICE_CONTROL_SCROLLBAR_LIST_ITEM_NO_2);
+		enumTestList.add(StaticIconName.VOICE_CONTROL_SCROLLBAR_LIST_ITEM_NO_3);
+		enumTestList.add(StaticIconName.VOICE_CONTROL_SCROLLBAR_LIST_ITEM_NO_4);
+		enumTestList.add(StaticIconName.VOICE_RECOGNITION_FAILED);
+		enumTestList.add(StaticIconName.VOICE_RECOGNITION_PAUSE);
+		enumTestList.add(StaticIconName.VOICE_RECOGNITION_SUCCESSFUL);
+		enumTestList.add(StaticIconName.VOICE_RECOGNITION_SYSTEM_ACTIVE);
+		enumTestList.add(StaticIconName.VOICE_RECOGNITION_SYSTEM_LISTENING);
+		enumTestList.add(StaticIconName.VOICE_RECOGNITION_TRY_AGAIN);
+		enumTestList.add(StaticIconName.WARNING);
+		enumTestList.add(StaticIconName.WEATHER);
+		enumTestList.add(StaticIconName.WIFI_FULL);
+		enumTestList.add(StaticIconName.ZOOM_IN);
+		enumTestList.add(StaticIconName.ZOOM_OUT);
+
+		assertTrue("Enum value list does not match enum class list",
+				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
 	}
 
 }
