@@ -889,12 +889,13 @@ public enum StaticIconName {
 		this.INTERNAL_NAME = internalName;
 	}
 
-	public static DisplayType valueForString(String value) {
+	public static StaticIconName valueForString(String value) {
 		if(value == null){
 			return null;
 		}
 
-		for (DisplayType type : DisplayType.values()) {
+		for (StaticIconName type : StaticIconName.values()) {
+			System.out.println("TYPE: "+ type.toString());
 			if (type.toString().equals(value)) {
 				return type;
 			}
