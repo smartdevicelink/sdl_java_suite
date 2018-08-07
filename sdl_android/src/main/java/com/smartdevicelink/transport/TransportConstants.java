@@ -41,9 +41,11 @@ public class TransportConstants {
 	public static final String SESSION_ID_EXTRA								= "session.id";
 
 	public static final String ENABLE_LEGACY_MODE_EXTRA 					= "ENABLE_LEGACY_MODE_EXTRA";
-	
+
+	@Deprecated
 	public static final String HARDWARE_DISCONNECTED						= "hardware.disconect";
-	public static final String HARDWARE_CONNECTED							= "hardware.connected";	
+	public static final String TRANSPORT_DISCONNECTED						= "transport.disconect";
+	public static final String HARDWARE_CONNECTED							= "hardware.connected";
 	public static final String CURRENT_HARDWARE_CONNECTED					= "current.hardware.connected";
 
 	public static final String SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME 		= "senderintent";
@@ -75,10 +77,11 @@ public class TransportConstants {
 	}
 	
 	
-	/**
+	/*
 	 * Alt transport
 	 * 
 	 */
+
 	/**
 	 * This will be the response when a hardware connect event comes through from an alt transport. 
 	 * This is because it only makes sense to register an alt transport when a connection is established with that
@@ -101,7 +104,7 @@ public class TransportConstants {
 	 */
 	public static final int ROUTER_SHUTTING_DOWN_REASON_NEWER_SERVICE					= 0x00;
 	
-	/**
+	/*
 	 * Router to Client binding service
 	 * 
 	 */
@@ -211,7 +214,7 @@ public class TransportConstants {
 	public static final int BYTES_TO_SEND_FLAG_LARGE_PACKET_END					= 0x08;
 	
 	public static final String CONNECTED_DEVICE_STRING_EXTRA_NAME			= "devicestring";
-	
+
 	public static final int PACKET_SENDING_ERROR_NOT_REGISTERED_APP 		= 0x00;
 	public static final int PACKET_SENDING_ERROR_NOT_CONNECTED 				= 0x01;
 	public static final int PACKET_SENDING_ERROR_UKNOWN 					= 0xFF;

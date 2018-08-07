@@ -25,8 +25,11 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 	private static final int RECONNECT_DELAY = 5000;
 	private static final int RECONNECT_RETRY_COUNT = 30;
 
+    final String ipAddress;
+    final int port;
+    final boolean autoReconnect;
+
 	private Socket mSocket = null;
-	private TCPTransportConfig mConfig = null;
 	private InputStream mInputStream = null;
 	private OutputStream mOutputStream = null;
 	private MultiplexTcpTransport.TcpTransportThread mThread = null;
@@ -35,7 +38,10 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 
 	public MultiplexTcpTransport(int port, String ipAddress, boolean autoReconnect, Handler handler) {
 		super(handler, TransportType.TCP);
-		mConfig = new TCPTransportConfig(port, ipAddress, autoReconnect);
+		this.ipAddress = ipAddress;
+		this.port = port;
+        connectedDeviceAddress = ipAddress + ":" + port;
+		this.autoReconnect = autoReconnect;
 		setState(STATE_NONE);
 	}
 
@@ -175,9 +181,9 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 							mSocket.close();
 						}
 
-						logInfo(String.format("TCPTransport.connect: Socket is closed. Trying to connect to %s", mConfig));
+						logInfo(String.format("TCPTransport.connect: Socket is closed. Trying to connect to %s", getAddress()));
 						mSocket = new Socket();
-						mSocket.connect(new InetSocketAddress(mConfig.getIPAddress(), mConfig.getPort()));
+						mSocket.connect(new InetSocketAddress(ipAddress, port));
 						mOutputStream = mSocket.getOutputStream();
 						mInputStream = mSocket.getInputStream();
 						startWriteThread();
@@ -191,7 +197,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 						logInfo("TCPTransport.connect: Socket connected");
 						setState(STATE_CONNECTED);
 					}else{
-						if(mConfig.getAutoReconnect()){
+						if(autoReconnect){
 							remainingRetry--;
 							logInfo(String.format("TCPTransport.connect: Socket not connected. AutoReconnect is ON. retryCount is: %d. Waiting for reconnect delay: %d"
 									, remainingRetry, RECONNECT_DELAY));
@@ -200,7 +206,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 							logInfo("TCPTransport.connect: Socket not connected. AutoReconnect is OFF");
 						}
 					}
-				} while ((!bConnected) && (mConfig.getAutoReconnect()) && (remainingRetry > 0) && (!isHalted));
+				} while ((!bConnected) && (autoReconnect) && (remainingRetry > 0) && (!isHalted));
 
 				return bConnected;
 			}

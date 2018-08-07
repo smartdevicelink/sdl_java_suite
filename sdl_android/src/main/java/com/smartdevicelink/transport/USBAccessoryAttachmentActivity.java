@@ -32,6 +32,7 @@
 
 package com.smartdevicelink.transport;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -52,6 +53,7 @@ import java.util.Vector;
 
 import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 
+@TargetApi(12)
 /**
  * The USBAccessoryAttachmentActivity is a proxy to listen for
  * USB_ACCESSORY_ATTACHED intents.

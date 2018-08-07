@@ -20,6 +20,7 @@ import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.TransportConstants;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
@@ -245,14 +246,18 @@ public class WiProProtocol extends AbstractProtocol {
 		printActiveTransports();
 	}
 
-	public void onTransportsConnectedUpdate(TransportType[] transportTypes){
+	public void onTransportsConnectedUpdate(List<TransportRecord> transports){
 		//TODO error checking for no longer connected transports
 		Log.d(TAG, "onTransportsConnectedUpdate: ");
-		for(TransportType t : transportTypes) {
+		for(TransportRecord t : transports) {
 			Log.d(TAG, t.toString());
 		}
 
-		List<TransportType> connectedTransports = Arrays.asList(transportTypes);
+		//Temporary: this logic should all be changed to handle multiple transports of the same type
+		ArrayList<TransportType> connectedTransports = new ArrayList<>();
+		for(TransportRecord record: transports){
+			connectedTransports.add(record.getType());
+		}
 
 		if(connectedPrimaryTransport != null && !connectedTransports.contains(connectedPrimaryTransport)){
 			//The primary transport being used is no longer part of the connected transports
@@ -263,7 +268,7 @@ public class WiProProtocol extends AbstractProtocol {
 
 		if(activeTransports.get(SessionType.RPC) == null){
 			//There is no currently active transport for the RPC service meaning no primary transport
-			TransportType preferredPrimaryTransport = getPreferredTransport(requestedPrimaryTransports,connectedTransports);
+			TransportType preferredPrimaryTransport = getPreferredTransport(requestedPrimaryTransports,transports);
 			if(preferredPrimaryTransport != null) {
 				Log.d(TAG, "Sending start service RPC - " + preferredPrimaryTransport.name());
 				connectedPrimaryTransport = preferredPrimaryTransport;
@@ -275,7 +280,7 @@ public class WiProProtocol extends AbstractProtocol {
 		}else if(requiresHighBandwidth){
 			//If this app has a primary transport already but requires a high bandwidth transport
 			//to properly function, it is now time to register over that transport to be used
-			TransportType preferredSecondaryTransport = getPreferredTransport(supportedSecondaryTransports,connectedTransports);
+			TransportType preferredSecondaryTransport = getPreferredTransport(supportedSecondaryTransports,transports);
 			if(preferredSecondaryTransport != null) {
 				SdlSession session = null;
 				if(sessionWeakReference != null){
@@ -301,17 +306,19 @@ public class WiProProtocol extends AbstractProtocol {
 	 * @param connectedTransports the current list of connected transports
 	 * @return the preferred connected transport
 	 */
-	private TransportType getPreferredTransport(List<TransportType> preferredList, List<TransportType> connectedTransports) {
+	private TransportType getPreferredTransport(List<TransportType> preferredList, List<TransportRecord> connectedTransports) {
 		for (TransportType transportType : preferredList) {
-			if (connectedTransports.contains(transportType)) {
-				return transportType;
+			for(TransportRecord record: connectedTransports) {
+				if (record.getType().equals(transportType)) {
+					return transportType;
+				}
 			}
 		}
 		return null;
 	}
 
-	public TransportType getPreferredPrimaryTransport(TransportType[] transportTypes){
-		return getPreferredTransport(requestedPrimaryTransports,  Arrays.asList(transportTypes));
+	public TransportType getPreferredPrimaryTransport(List<TransportRecord> transports){
+		return getPreferredTransport(requestedPrimaryTransports, transports);
 
 	}
 

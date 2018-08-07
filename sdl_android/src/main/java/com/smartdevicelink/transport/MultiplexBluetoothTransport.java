@@ -233,6 +233,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         //Store a static name of the device that is connected.
         if(device!=null){
         	currentlyConnectedDevice = device.getName();
+            connectedDeviceAddress = device.getAddress();
         }
         
         // Send the name of the connected device back to the UI Activity
@@ -746,7 +747,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             int bytesRead = 0;
             byte[] buffer = new byte[READ_BUFFER_SIZE];
             MultiplexBluetoothTransport.currentlyConnectedDevice = mmSocket.getRemoteDevice().getName();
-            MultiplexBluetoothTransport.currentlyConnectedDeviceAddress = mmSocket.getRemoteDevice().getAddress();
+            MultiplexBluetoothTransport.this.connectedDeviceAddress = mmSocket.getRemoteDevice().getAddress();
             // Keep listening to the InputStream while connected
             boolean stateProgress;
             

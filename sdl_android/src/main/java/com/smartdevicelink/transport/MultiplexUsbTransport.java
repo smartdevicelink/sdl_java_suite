@@ -54,11 +54,19 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
 
     private static final String TAG = "MultiplexUsbTransport";
 
+    public static final String MANUFACTURER     = "manufacturer";
+    public static final String MODEL            = "model";
+    public static final String VERSION          = "version";
+    public static final String URI              = "uri";
+    public static final String SERIAL           = "serial";
+    public static final String DESCRIPTION      = "description";
+
+    final Bundle deviceInfo;
     ReaderThread readerThread;
     WriterThread writerThread;
     final ParcelFileDescriptor parcelFileDescriptor;
 
-    MultiplexUsbTransport(ParcelFileDescriptor parcelFileDescriptor, Handler handler){
+    MultiplexUsbTransport(ParcelFileDescriptor parcelFileDescriptor, Handler handler, Bundle bundle){
         super(handler, TransportType.USB);
         if(parcelFileDescriptor == null){
             Log.e(TAG, "Error with object");
@@ -67,6 +75,16 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         }else{
             this.parcelFileDescriptor = parcelFileDescriptor;
             currentlyConnectedDevice = "USB";
+            deviceInfo = bundle;
+            if(deviceInfo != null){
+                //Fill in info
+                connectedDeviceAddress = bundle.getString(SERIAL);
+                if(connectedDeviceAddress == null){
+                    connectedDeviceAddress = bundle.getString(DESCRIPTION);
+                }
+            }else{
+                connectedDeviceAddress = "USB";
+            }
         }
     }
 
