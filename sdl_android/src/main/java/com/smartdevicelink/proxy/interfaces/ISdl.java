@@ -3,8 +3,15 @@ package com.smartdevicelink.proxy.interfaces;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
+import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
+
+import java.util.List;
 
 /*
  * Copyright (c) 2017 Livio, Inc.
@@ -83,6 +90,19 @@ public interface ISdl {
     void stopVideoService();
 
     /**
+     * Starts the video streaming service
+     * @param isEncrypted flag to start this service with encryption or not
+     * @param parameters desired video streaming params for this sevice to be started with
+     */
+    IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters);
+
+    /**
+     * Starts the Audio streaming service
+     * @param encrypted flag to start this service with encryption or not
+     */
+    void startAudioService(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params);
+
+    /**
      * Starts the Audio streaming service
      * @param encrypted flag to start this service with encryption or not
      */
@@ -94,10 +114,26 @@ public interface ISdl {
     void stopAudioService();
 
     /**
+     * Start Audio Stream and return IAudioStreamListener
+     * @param isEncrypted
+     * @param codec
+     * @param params
+     * @return IAudioStreamListener
+     */
+    IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params);
+
+    /**
      * Pass an RPC message through the proxy to be sent to the connected module
      * @param message RPCRequest that should be sent to the module
      */
     void sendRPCRequest(RPCRequest message);
+
+    /**
+     * Pass a list of RPC requests through the proxy to be sent to core
+     * @param rpcs List of RPC requests
+     * @param listener OnMultipleRequestListener that is called between requests and after all are processed
+     */
+    void sendRequests(List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener);
 
     /**
      * Add an OnRPCNotificationListener for specified notification
@@ -112,5 +148,32 @@ public interface ISdl {
      * @param listener listener that was previously added for the notification ID
      */
     boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener);
+
+    /**
+     * Get SystemCapability Object
+     * @param systemCapabilityType
+     * @return Object
+     */
+    Object getCapability(SystemCapabilityType systemCapabilityType);
+
+    /**
+     * Get Capability
+     * @param systemCapabilityType
+     * @param scListener
+     */
+    void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener);
+
+    /**
+     * Check if capability is supported
+     * @param systemCapabilityType
+     * @return Boolean
+     */
+    boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType);
+
+    /**
+     * Get SdlMsgVersion
+     * @return SdlMsgVersion
+     */
+    SdlMsgVersion getSdlMsgVersion();
 
 }

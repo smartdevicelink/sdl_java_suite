@@ -300,13 +300,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void startAudioService(boolean encrypted) {
-			if(isConnected()){
-				sdlSession.startService(SessionType.PCM,sdlSession.getSessionId(),encrypted);
-			}
-		}
-
-		@Override
 		public void stopAudioService() {
 			if(isConnected()){
 				sdlSession.endService(SessionType.PCM,sdlSession.getSessionId());
@@ -323,6 +316,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
+		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+			try {
+				SdlProxyBase.this.sendRequests(rpcs, listener);
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
 		public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
 			SdlProxyBase.this.addOnRPCNotificationListener(notificationId,listener);
 		}
@@ -330,6 +332,57 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
 			return SdlProxyBase.this.removeOnRPCNotificationListener(notificationId,listener);
+		}
+
+		@Override
+		public Object getCapability(SystemCapabilityType systemCapabilityType){
+			return SdlProxyBase.this.getCapability(systemCapabilityType);
+		}
+
+		@Override
+		public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
+			SdlProxyBase.this.getCapability(systemCapabilityType, scListener);
+		}
+
+		@Override
+		public SdlMsgVersion getSdlMsgVersion(){
+			try {
+				return SdlProxyBase.this.getSdlMsgVersion();
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
+			return SdlProxyBase.this.isCapabilitySupported(systemCapabilityType);
+		}
+
+		@Override
+		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,
+									  AudioStreamingParams params) {
+			if(getIsConnected()){
+				SdlProxyBase.this.startAudioStream(isEncrypted, codec, params);
+			}
+		}
+
+		@Override
+		public void startAudioService(boolean encrypted) {
+			if(isConnected()){
+				sdlSession.startService(SessionType.PCM,sdlSession.getSessionId(),encrypted);
+			}
+		}
+
+		@Override
+		public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters){
+			return SdlProxyBase.this.startVideoStream(isEncrypted, parameters);
+		}
+
+		@Override
+		public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec,
+													 AudioStreamingParams params) {
+			return SdlProxyBase.this.startAudioStream(isEncrypted, codec, params);
 		}
 	};
 	
@@ -563,6 +616,30 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_proxyListener.onServiceDataACK(dataSize);						
 			}
 		}
+	}
+
+	/**
+	 * Used by the SdlManager
+	 *
+	 * @param listener Type of listener for this proxy base.
+	 * @param appName Client application name.
+	 * @param shortAppName Client short application name.
+	 * @param isMediaApp Flag that indicates that client application if media application or not.
+	 * @param languageDesired Desired language.
+	 * @param hmiDisplayLanguageDesired Desired language for HMI.
+	 * @param appType Type of application.
+	 * @param appID Application identifier.
+	 * @param dayColorScheme TemplateColorScheme for the day
+	 * @param nightColorScheme TemplateColorScheme for the night
+	 * @param transportConfig Configuration of transport to be used by underlying connection.
+	 * @param vrSynonyms List of synonyms.
+	 * @param ttsName TTS name.
+	 * @throws SdlException
+	 */
+	public SdlProxyBase(proxyListenerType listener, String appName,String shortAppName, Boolean isMediaApp, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
+						BaseTransportConfig transportConfig, Vector<String> vrSynonyms, Vector<TTSChunk> ttsName, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme) throws SdlException {
+		performBaseCommon(listener, null, true, appName, ttsName, shortAppName, vrSynonyms, isMediaApp,
+				null, languageDesired, hmiDisplayLanguageDesired, appType, appID, null, dayColorScheme,nightColorScheme, false, false, null, null,  transportConfig);
 	}
 	
 	/**
@@ -1315,7 +1392,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 	// Function to initialize new proxy connection
-	private void initializeProxy() throws SdlException {		
+	public void initializeProxy() throws SdlException {
 		// Reset all of the flags and state variables
 		_haveReceivedFirstNonNoneHMILevel = false;
 		_haveReceivedFirstFocusLevel = false;
@@ -3487,6 +3564,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		} // end-if notification
 
 		SdlTrace.logProxyEvent("Proxy received RPC Message: " + functionName, SDL_LIB_TRACE_KEY);
+	}
+
+	/**
+	 * Get SDL Message Version
+	 * @return SdlMsgVersion
+	 * @throws SdlException
+	 */
+	public SdlMsgVersion getSdlMsgVersion() throws SdlException{
+		return _sdlMsgVersion;
 	}
 
 	/**
