@@ -22,11 +22,13 @@ import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
+import com.smartdevicelink.transport.utl.TransportRecord;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -111,7 +113,7 @@ public class TransportBroker {
     					routerServiceMessenger = null;
     					registeredWithRouterService = false;
     					isBound = false;
-    					onHardwareDisconnected(null);
+    					onHardwareDisconnected(null, null);
     					return false;
     				}
     			} catch (NullPointerException e){
@@ -119,7 +121,7 @@ public class TransportBroker {
 					routerServiceMessenger = null;
 					registeredWithRouterService = false;
 					isBound = false;
-					onHardwareDisconnected(null);
+					onHardwareDisconnected(null,null);
 					return false;
 				}
     		}else{
@@ -178,16 +180,12 @@ public class TransportBroker {
             					if(bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
             						//Keep track if we actually get this
             					}
-            					broker.onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
+            					//broker.onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
             				}
 
             				if(bundle.containsKey(TransportConstants.CURRENT_HARDWARE_CONNECTED)){
-            					ArrayList<String> transports = bundle.getStringArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED);
-            					TransportType[] transportTypes = new TransportType[transports.size()];
-            					for(int i = 0; i < transports.size(); i++){
-            						transportTypes[i] = TransportType.valueForString(transports.get(i));
-								}
-            					broker.onHardwareConnected(transportTypes);
+            					ArrayList<TransportRecord> transports = bundle.getParcelableArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED);
+            					broker.onHardwareConnected(transports);
 							}
             				if(bundle.containsKey(TransportConstants.ROUTER_SERVICE_VERSION)){
             					broker.routerServiceVersion = bundle.getInt(TransportConstants.ROUTER_SERVICE_VERSION);
@@ -268,30 +266,33 @@ public class TransportBroker {
             		}
             		break;
             	case TransportConstants.HARDWARE_CONNECTION_EVENT:
-        			if(bundle.containsKey(TransportConstants.HARDWARE_DISCONNECTED)){
+        			if(bundle.containsKey(TransportConstants.TRANSPORT_DISCONNECTED)
+                            || bundle.containsKey(TransportConstants.HARDWARE_DISCONNECTED)){
         				//We should shut down, so call 
         				Log.d(TAG, "Hardware disconnected");
         				if(isLegacyModeEnabled()){
         					broker.onLegacyModeEnabled();
         				}else{
-        					broker.onHardwareDisconnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_DISCONNECTED)));
+        				    if(bundle.containsKey(TransportConstants.TRANSPORT_DISCONNECTED)){
+        				        TransportRecord disconnectedTransport = bundle.getParcelable(TransportConstants.TRANSPORT_DISCONNECTED);
+        				        List<TransportRecord> connectedTransports = bundle.getParcelableArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED);
+        				        broker.onHardwareDisconnected(disconnectedTransport,connectedTransports);
+                            }else{
+        				        TransportType transportType = TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_DISCONNECTED));
+                                broker.onHardwareDisconnected(new TransportRecord(transportType,null),null);
+                            }
+
+
         				}
         				break;
         			}
         			
         			if(bundle.containsKey(TransportConstants.HARDWARE_CONNECTED) || bundle.containsKey(TransportConstants.CURRENT_HARDWARE_CONNECTED)){
-            			if(bundle!=null && bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)){
-        					//Keep track if we actually get this
-        				}
-            			broker.onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
+            			//broker.onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
 
             			if(bundle.containsKey(TransportConstants.CURRENT_HARDWARE_CONNECTED)){
-							ArrayList<String> transports = bundle.getStringArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED);
-							TransportType[] transportTypes = new TransportType[transports.size()];
-							for(int i = 0; i < transports.size(); i++){
-								transportTypes[i] = TransportType.valueForString(transports.get(i));
-							}
-							broker.onHardwareConnected(transportTypes);
+							ArrayList<TransportRecord> transports = bundle.getParcelableArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED);
+							broker.onHardwareConnected(transports);
 						}
         				break;
         			}
@@ -398,17 +399,31 @@ public class TransportBroker {
 		public void onServiceUnregsiteredFromRouterService(int unregisterCode){
 			queuedOnTransportConnect = null;
 		}
-		
-		public void onHardwareDisconnected(TransportType type){
-			synchronized(INIT_LOCK){
-				unBindFromRouterService();
-				routerServiceMessenger = null;
-				routerConnection = null;
-				queuedOnTransportConnect = null;
-			}
-		}
 
 		@Deprecated
+		public void onHardwareDisconnected(TransportType type){
+            routerServiceDisconnect();
+		}
+
+		public void onHardwareDisconnected(TransportRecord record, List<TransportRecord> connectedTransports){
+            routerServiceDisconnect();
+		}
+
+		private void routerServiceDisconnect(){
+            synchronized(INIT_LOCK){
+                unBindFromRouterService();
+                routerServiceMessenger = null;
+                routerConnection = null;
+                queuedOnTransportConnect = null;
+            }
+        }
+
+    /**
+     * WILL NO LONGER BE CALLED
+     * @param type
+     * @return
+     */
+    @Deprecated
 		public boolean onHardwareConnected(TransportType type){
 			synchronized(INIT_LOCK){
 				if(routerServiceMessenger==null){
@@ -419,10 +434,10 @@ public class TransportBroker {
 			}
 		}
 
-		public boolean onHardwareConnected(TransportType[] transportTypes){
+		public boolean onHardwareConnected(List<TransportRecord>  transports){
 			synchronized(INIT_LOCK){
-				if(routerServiceMessenger==null){
-					queuedOnTransportConnect = transportTypes[0];
+				if(routerServiceMessenger==null && transports != null && transports.size() > 0){
+					queuedOnTransportConnect = transports.get(transports.size()-1).getType();
 					return false;
 				}
 				return true;
@@ -489,10 +504,10 @@ public class TransportBroker {
 				bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
 				bundle.putInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT, packet.getPrioirtyCoefficient());
 				if(packet.getTransportType() != null){
-					Log.d(TAG, "Sending packet on transport " + packet.getTransportType().name());
-					bundle.putString(TransportConstants.TRANSPORT_FOR_PACKET, packet.getTransportType().name());
+					//Log.d(TAG, "Sending packet on transport " + packet.getTransportType().name());
+					bundle.putString(TransportConstants.TRANSPORT, packet.getTransportType().name());
 				}else{
-					Log.d(TAG, "No transport to be found");
+					//Log.d(TAG, "No transport to be found");
 				}
 				message.setData(bundle);
 				
@@ -663,13 +678,30 @@ public class TransportBroker {
 			msg.what = TransportConstants.ROUTER_REQUEST_NEW_SESSION;
 			msg.replyTo = this.clientMessenger; //Including this in case this app isn't actually registered with the router service
 			Bundle bundle = new Bundle();
-			if(routerServiceVersion< TransportConstants.RouterServiceVersions.APPID_STRING){
+			if(routerServiceVersion < TransportConstants.RouterServiceVersions.APPID_STRING){
 				bundle.putLong(TransportConstants.APP_ID_EXTRA,convertAppId(appId));
 			}
 			bundle.putString(TransportConstants.APP_ID_EXTRA_STRING, appId);
 			if(transportType != null) {
 				bundle.putString(TransportConstants.ROUTER_REQUEST_NEW_SESSION_TRANSPORT_TYPE, transportType.name());
 			}
+			msg.setData(bundle);
+			this.sendMessageToRouterService(msg);
+		}
+
+	/**
+	 * Request secondary transport and communicate details to router service
+	 * @param sessionId
+	 * @param bundle
+	 */
+		public void requestSecondaryTransportConnection(byte sessionId, Bundle bundle){
+			Message msg = Message.obtain();
+			msg.what = TransportConstants.ROUTER_REQUEST_SECONDARY_TRANSPORT_CONNECTION;
+			msg.replyTo = this.clientMessenger;
+			if(bundle == null) {
+				bundle = new Bundle();
+			}
+			bundle.putByte(TransportConstants.SESSION_ID_EXTRA, sessionId);
 			msg.setData(bundle);
 			this.sendMessageToRouterService(msg);
 		}

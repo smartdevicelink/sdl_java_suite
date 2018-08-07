@@ -33,13 +33,14 @@
 package com.smartdevicelink.transport;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
-import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -50,22 +51,23 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.smartdevicelink.util.AndroidTools;
-
 import java.lang.ref.WeakReference;
 
+@TargetApi(12)
 public class UsbTransferProvider {
     private static final String TAG = "UsbTransferProvider";
 
-    private Context context = null;
+    private Context context ;
     private boolean isBound = false;
-    Messenger routerServiceMessenger = null;
-    private ComponentName routerService = null;
+    private ComponentName routerService;
     private int flags = 0;
-    UsbTransferCallback callback;
 
     final Messenger clientMessenger;
 
+    UsbTransferCallback callback;
+    Messenger routerServiceMessenger = null;
     ParcelFileDescriptor usbPfd;
+    Bundle usbInfoBundle;
 
     private ServiceConnection routerConnection= new ServiceConnection() {
 
@@ -80,6 +82,9 @@ public class UsbTransferProvider {
             msg.arg1 = flags;
             msg.replyTo = clientMessenger;
             msg.obj = usbPfd;
+            if(usbInfoBundle != null){
+                msg.setData(usbInfoBundle);
+            }
             try {
                 routerServiceMessenger.send(msg);
             } catch (RemoteException e) {
@@ -104,6 +109,13 @@ public class UsbTransferProvider {
         this.clientMessenger = new Messenger(new ClientHandler(this));
         usbPfd = getFileDescriptor(usbAccessory);
         if(usbPfd != null){
+            usbInfoBundle = new Bundle();
+            usbInfoBundle.putString(MultiplexUsbTransport.MANUFACTURER, usbAccessory.getManufacturer());
+            usbInfoBundle.putString(MultiplexUsbTransport.MODEL, usbAccessory.getModel());
+            usbInfoBundle.putString(MultiplexUsbTransport.VERSION, usbAccessory.getVersion());
+            usbInfoBundle.putString(MultiplexUsbTransport.URI, usbAccessory.getUri());
+            usbInfoBundle.putString(MultiplexUsbTransport.SERIAL, usbAccessory.getSerial());
+            usbInfoBundle.putString(MultiplexUsbTransport.DESCRIPTION, usbAccessory.getDescription());
             checkIsConnected();
         }
 

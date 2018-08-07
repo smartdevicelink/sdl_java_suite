@@ -3,8 +3,11 @@ package com.smartdevicelink.SdlConnection;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
+import com.smartdevicelink.transport.enums.TransportType;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public interface ISdlConnectionListener {

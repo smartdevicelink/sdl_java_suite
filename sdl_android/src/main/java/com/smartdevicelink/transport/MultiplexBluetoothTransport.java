@@ -59,7 +59,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     // Key names received from the BluetoothSerialServer Handler
     private static final long MS_TILL_TIMEOUT = 2500;
     private static final int READ_BUFFER_SIZE = 4096;
-    private static final Object THREAD_LOCK =  new Object();;
+    private final Object THREAD_LOCK =  new Object();;
 
     protected static final String SHARED_PREFS = "sdl.bluetoothprefs";
 
@@ -233,6 +233,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         //Store a static name of the device that is connected.
         if(device!=null){
         	currentlyConnectedDevice = device.getName();
+            connectedDeviceAddress = device.getAddress();
         }
         
         // Send the name of the connected device back to the UI Activity
@@ -746,7 +747,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             int bytesRead = 0;
             byte[] buffer = new byte[READ_BUFFER_SIZE];
             MultiplexBluetoothTransport.currentlyConnectedDevice = mmSocket.getRemoteDevice().getName();
-            MultiplexBluetoothTransport.currentlyConnectedDeviceAddress = mmSocket.getRemoteDevice().getAddress();
+            MultiplexBluetoothTransport.this.connectedDeviceAddress = mmSocket.getRemoteDevice().getAddress();
             // Keep listening to the InputStream while connected
             boolean stateProgress;
             

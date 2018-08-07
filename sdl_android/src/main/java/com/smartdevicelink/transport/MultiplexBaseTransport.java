@@ -35,6 +35,7 @@ package com.smartdevicelink.transport;
 import android.os.Handler;
 
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 
 public abstract class MultiplexBaseTransport {
 
@@ -52,8 +53,10 @@ public abstract class MultiplexBaseTransport {
     protected final Handler handler;
     protected final TransportType transportType;
 
+    private TransportRecord transportRecord;
     public static String currentlyConnectedDevice = null;
-    public static String currentlyConnectedDeviceAddress = null;
+    public String connectedDeviceAddress = null;
+
 
     public MultiplexBaseTransport(Handler handler, TransportType transportType){
         this.handler = handler;
@@ -70,7 +73,22 @@ public abstract class MultiplexBaseTransport {
 
         // Give the new state to the Handler so the UI Activity can update
         //Also sending the previous state so we know if we lost a connection
-        handler.obtainMessage(SdlRouterService.MESSAGE_STATE_CHANGE, state, previousState,transportType).sendToTarget();
+        handler.obtainMessage(SdlRouterService.MESSAGE_STATE_CHANGE, state, previousState, getTransportRecord()).sendToTarget();
+    }
+
+    public String getAddress(){
+        return connectedDeviceAddress;
+    }
+
+    /**
+     * Should only be called after a connection has been established
+     * @return
+     */
+    public TransportRecord getTransportRecord() {
+        if(transportRecord == null){
+            transportRecord = new TransportRecord(transportType,connectedDeviceAddress);
+        }
+        return transportRecord;
     }
 
     /**

@@ -1,8 +1,13 @@
 package com.smartdevicelink.protocol;
 
-import com.smartdevicelink.protocol.enums.*;
+import android.os.Bundle;
 
+import com.smartdevicelink.protocol.enums.*;
+import com.smartdevicelink.transport.enums.TransportType;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface IProtocolListener {
 	// Called to indicate that these bytes are to be sent as part of a message.
@@ -39,4 +44,7 @@ public interface IProtocolListener {
 
 	// Called to indicate that a protocol error was detected in received data.
 	void onProtocolError(String info, Exception e);
+
+	// Called when SDLCore has updated secondary transport info or secondary transport is unavailable
+	void connectSecondaryTransport(byte sessionID, TransportType transportType, Bundle params);
 } // end-interfCe

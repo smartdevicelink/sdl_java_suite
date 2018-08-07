@@ -41,9 +41,11 @@ public class TransportConstants {
 	public static final String SESSION_ID_EXTRA								= "session.id";
 
 	public static final String ENABLE_LEGACY_MODE_EXTRA 					= "ENABLE_LEGACY_MODE_EXTRA";
-	
+
+	@Deprecated
 	public static final String HARDWARE_DISCONNECTED						= "hardware.disconect";
-	public static final String HARDWARE_CONNECTED							= "hardware.connected";	
+	public static final String TRANSPORT_DISCONNECTED						= "transport.disconect";
+	public static final String HARDWARE_CONNECTED							= "hardware.connected";
 	public static final String CURRENT_HARDWARE_CONNECTED					= "current.hardware.connected";
 
 	public static final String SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME 		= "senderintent";
@@ -75,10 +77,11 @@ public class TransportConstants {
 	}
 	
 	
-	/**
+	/*
 	 * Alt transport
 	 * 
 	 */
+
 	/**
 	 * This will be the response when a hardware connect event comes through from an alt transport. 
 	 * This is because it only makes sense to register an alt transport when a connection is established with that
@@ -101,7 +104,7 @@ public class TransportConstants {
 	 */
 	public static final int ROUTER_SHUTTING_DOWN_REASON_NEWER_SERVICE					= 0x00;
 	
-	/**
+	/*
 	 * Router to Client binding service
 	 * 
 	 */
@@ -178,15 +181,18 @@ public class TransportConstants {
      * Command to have router service to send a packet
      */
 	public static final int ROUTER_SEND_PACKET 											= 0x20;
-	
 
-	
 	//response
 	/**
 	 * Router has received a packet and sent it to the client
 	 */
 	public  static final int ROUTER_RECEIVED_PACKET 									= 0x26;
 	//response
+
+	/**
+	 * Command to tell router service details of secondary transport
+	 */
+	public static final int ROUTER_REQUEST_SECONDARY_TRANSPORT_CONNECTION 				= 0x30;
 
 	//BUNDLE EXTRAS
 	
@@ -199,7 +205,7 @@ public class TransportConstants {
 	
 	public static final String PACKET_PRIORITY_COEFFICIENT					= "priority_coefficient";
 
-	public static final String TRANSPORT_FOR_PACKET							= "transport.for.packet";
+	public static final String TRANSPORT 									= "transport";
 
 	public static final int BYTES_TO_SEND_FLAG_NONE								= 0x00;
 	public static final int BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED				= 0x01;
@@ -208,7 +214,7 @@ public class TransportConstants {
 	public static final int BYTES_TO_SEND_FLAG_LARGE_PACKET_END					= 0x08;
 	
 	public static final String CONNECTED_DEVICE_STRING_EXTRA_NAME			= "devicestring";
-	
+
 	public static final int PACKET_SENDING_ERROR_NOT_REGISTERED_APP 		= 0x00;
 	public static final int PACKET_SENDING_ERROR_NOT_CONNECTED 				= 0x01;
 	public static final int PACKET_SENDING_ERROR_UKNOWN 					= 0xFF;
@@ -235,8 +241,16 @@ public class TransportConstants {
 	public static final int ROUTER_USB_ACC_RECEIVED							= 0x56;
 
 
-
-
-	
+	/**
+	 * Multiple-transports related constants
+	 *
+	 */
+	public static final String IAP_BLUETOOTH                                = "IAP_BLUETOOTH";
+	public static final String IAP_USB                                      = "IAP_USB";
+	public static final String IAP_USB_HOST_MODE                            = "TCP_WIFI";
+	public static final String IAP_CARPLAY                                  = "IAP_CARPLAY";
+	public static final String SPP_BLUETOOTH                                = "SPP_BLUETOOTH";
+	public static final String AOA_USB                                      = "AOA_USB";
+	public static final String TCP_WIFI                                     = "TCP_WIFI";
 
 }

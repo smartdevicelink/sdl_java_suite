@@ -77,7 +77,12 @@ public class SdlPacketFactory {
 				serviceType.getValue(),frameSequenceNumber,sessionID,
 				length,messageID,payload,offset,length);
 	}
-	
+
+	public static SdlPacket createRegisterSecondaryTransport(byte sessionID, byte version) {
+		return new SdlPacket(version, false, SdlPacket.FRAME_TYPE_CONTROL,
+				SessionType.CONTROL.getValue(), SdlPacket.FRAME_INFO_REGISTER_SECONDARY_TRANSPORT,
+				sessionID, 0, 0x01, null);
+	}
 	
 	public static BinaryFrameHeader createBinaryFrameHeader(byte rpcType, int functionID, int corrID, int jsonSize) {
 		BinaryFrameHeader msg = new BinaryFrameHeader();
