@@ -48,11 +48,6 @@ public abstract class AbstractProtocol {
 	
 	public abstract void StartProtocolService(SessionType sessionType, byte sessionID, boolean isEncrypted);
 
-	// This method notifies SDLCore that secondary transport is connected.  SDLCore needs this to
-	// identify which app is registering to use the secondary transport to pair up with the
-	// app's session from the primary transport.
-	public abstract void registerSecondaryTransport(byte sessionId, TransportType transportType);
-
 	public abstract void EndProtocolService(SessionType serviceType, byte sessionID);
 	// This method ends a protocol session.  A corresponding call to the protocol
 	// listener onProtocolSessionEnded() method will be made when the protocol
@@ -163,7 +158,4 @@ public abstract class AbstractProtocol {
 		resetIncomingHeartbeat(sessionType, sessionID);
     }
 
-    protected void connectSecondaryTransport(byte sessionID, TransportType transportType, Bundle params) {
-		_protocolListener.connectSecondaryTransport(sessionID, transportType, params);
-	}
 } // end-class

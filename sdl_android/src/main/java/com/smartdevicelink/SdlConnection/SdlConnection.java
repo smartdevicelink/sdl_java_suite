@@ -283,10 +283,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		_connectionListener.onProtocolError(info, e);
 	}
 
-	@Override
-	public void connectSecondaryTransport(byte sessionID, TransportType transportType, Bundle params) {
-
-	}
 
 	/**
 	 * Gets type of transport currently used by this connection.

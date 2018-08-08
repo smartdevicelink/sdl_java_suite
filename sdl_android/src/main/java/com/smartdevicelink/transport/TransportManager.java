@@ -186,10 +186,10 @@ public class TransportManager {
                 Log.d(TAG, "Transport disconnected");
 
             }
-            if(connectedTransports == null || connectedTransports.isEmpty()){
-                //There are no more transports to use so we can unbind
-                super.onHardwareDisconnected(record,connectedTransports);
-            }
+//            if(connectedTransports == null || connectedTransports.isEmpty()){
+//                //There are no more transports to use so we can unbind
+//                super.onHardwareDisconnected(record,connectedTransports);
+//            }
 
             synchronized (TRANSPORT_STATUS_LOCK){
                 TransportManager.this.transportStatus.remove(record);

@@ -21,6 +21,7 @@ import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.SdlConnection.SdlSession2;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
@@ -1289,7 +1290,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		// Setup SdlConnection
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 			if(_transportConfig.getTransportType().equals(TransportType.MULTIPLEX)){
-				this.sdlSession = new SdlSession(_interfaceBroker,(MultiplexTransportConfig)_transportConfig);
+				this.sdlSession = new SdlSession2(_interfaceBroker,(MultiplexTransportConfig)_transportConfig);
 			}else{
 				//FIXME this won't actually work
 				this.sdlSession = SdlSession.createSession(_wiproVersion,_interfaceBroker, _transportConfig);

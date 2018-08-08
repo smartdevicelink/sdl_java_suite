@@ -36,6 +36,7 @@ import java.util.Map;
 public class SdlProtocol {
     private static final String TAG ="SdlProtocol";
     private final static String FailurePropagating_Msg = "Failure propagating ";
+
     //If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
     public static final Version MAX_PROTOCOL_VERSION = new Version("5.1.0");
 
@@ -1021,6 +1022,8 @@ public class SdlProtocol {
         public void onTransportDisconnected(String info, TransportRecord disconnectedTransport, List<TransportRecord> connectedTransports) {
             if (disconnectedTransport == null) {
                 Log.d(TAG, "onTransportDisconnected");
+                transportManager.close(iSdlProtocol.getSessionId());
+                iSdlProtocol.shutdown("No transports left connected");
                 return;
             } else {
                 Log.d(TAG, "onTransportDisconnected - " + disconnectedTransport.getType().name());

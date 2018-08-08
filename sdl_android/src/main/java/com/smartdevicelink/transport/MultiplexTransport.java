@@ -12,6 +12,9 @@ import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
+
+import java.util.List;
 
 public class MultiplexTransport extends SdlTransport{
 	private final static String TAG = "Multiplex Transport";
@@ -255,6 +258,10 @@ public class MultiplexTransport extends SdlTransport{
 					return false;
 				}
 
+				@Override
+				public void onHardwareDisconnected(TransportRecord transportRecord, List<TransportRecord> connected) {
+					onHardwareDisconnected(TransportType.BLUETOOTH);
+				}
 				@Override
 				public void onHardwareDisconnected(TransportType type) {
 					super.onHardwareDisconnected(type);

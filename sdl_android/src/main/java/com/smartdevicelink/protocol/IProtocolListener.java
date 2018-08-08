@@ -45,6 +45,4 @@ public interface IProtocolListener {
 	// Called to indicate that a protocol error was detected in received data.
 	void onProtocolError(String info, Exception e);
 
-	// Called when SDLCore has updated secondary transport info or secondary transport is unavailable
-	void connectSecondaryTransport(byte sessionID, TransportType transportType, Bundle params);
 } // end-interfCe
