@@ -9,12 +9,15 @@ import android.support.annotation.StringDef;
 import android.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.api.BaseSubManager;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 
 import java.io.File;
 import java.lang.annotation.Retention;
@@ -23,60 +26,88 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-public class AudioStreamManager implements ISdlServiceListener {
+public class AudioStreamManager extends BaseSubManager {
     private static final String TAG = AudioStreamManager.class.getSimpleName();
 
-    private ISdl sdlInterface;
     private IAudioStreamListener sdlAudioStream;
     private int sdlSampleRate;
     private @SampleType int sdlSampleType;
     private final Queue<BaseAudioDecoder> queue;
     private boolean didRequestShutdown = false;
 
-    public AudioStreamManager(@NonNull ISdl sdlInterface, @NonNull @SamplingRate String sampleRate, @NonNull @BitsPerSample int sampleType) {
-        this.sdlInterface = sdlInterface;
+    // INTERNAL INTERFACE
+
+    private final ISdlServiceListener serviceListener = new ISdlServiceListener() {
+        @Override
+        public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
+            if (SessionType.PCM.equals(type)) {
+                sdlAudioStream = session.startAudioStream();
+            }
+        }
+
+        @Override
+        public void onServiceEnded(SdlSession session, SessionType type) {
+            if (SessionType.PCM.equals(type)) {
+                if (didRequestShutdown && internalInterface != null) {
+                    session.stopAudioStream();
+                    sdlAudioStream = null;
+                    internalInterface.removeServiceListener(SessionType.PCM, this);
+                }
+            }
+        }
+
+        @Override
+        public void onServiceError(SdlSession session, SessionType type, String reason) {
+            Log.e(TAG, "OnServiceError: " + reason);
+        }
+    };
+
+    public AudioStreamManager(@NonNull ISdl internalInterface) {
+        super(internalInterface);
         this.queue = new LinkedList<>();
 
-        switch (sampleRate) {
-            case SamplingRate.EIGHT_KHZ:
+        AudioPassThruCapabilities capabilities = (AudioPassThruCapabilities)internalInterface.getCapability(SystemCapabilityType.PCM_STREAMING);
+
+        switch (capabilities.getSamplingRate()) {
+            case _8KHZ:
                 sdlSampleRate = 8000;
                 break;
-            case SamplingRate.SIXTEEN_KHZ:
+            case _16KHZ:
                 sdlSampleRate = 16000;
                 break;
-            case SamplingRate.TWENTY_TWO_KHZ:
+            case _22KHZ:
                 // common sample rate is 22050, not 22000
                 // see https://en.wikipedia.org/wiki/Sampling_(signal_processing)#Audio_sampling
                 sdlSampleRate = 22050;
                 break;
-            case SamplingRate.FOURTY_FOUR_KHX:
+            case _44KHZ:
                 // 2x 22050 is 44100
                 // see https://en.wikipedia.org/wiki/Sampling_(signal_processing)#Audio_sampling
                 sdlSampleRate = 44100;
                 break;
         }
 
-        switch (sampleType) {
-            case BitsPerSample.EIGHT_BIT:
+        switch (capabilities.getBitsPerSample()) {
+            case _8_BIT:
                 sdlSampleType = SampleType.UNSIGNED_8_BIT;
                 break;
-            case BitsPerSample.SIXTEEN_BIT:
+            case _16_BIT:
                 sdlSampleType = SampleType.SIGNED_16_BIT;
                 break;
         }
     }
 
     public void startAudioService(boolean encrypted) {
-        if (sdlInterface != null && sdlInterface.isConnected()) {
-            sdlInterface.addServiceListener(SessionType.PCM, this);
-            sdlInterface.startAudioService(encrypted);
+        if (internalInterface != null && internalInterface.isConnected()) {
+            internalInterface.addServiceListener(SessionType.PCM, this.serviceListener);
+            internalInterface.startAudioService(encrypted);
         }
     }
 
     public void stopAudioService() {
-        if (sdlInterface != null && sdlInterface.isConnected()) {
+        if (internalInterface != null && internalInterface.isConnected()) {
             didRequestShutdown = true;
-            sdlInterface.stopAudioService();
+            internalInterface.stopAudioService();
         }
     }
 
@@ -127,25 +158,6 @@ public class AudioStreamManager implements ISdlServiceListener {
         }
     }
 
-    @Override
-    public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
-        this.sdlAudioStream = session.startAudioStream();
-    }
-
-    @Override
-    public void onServiceEnded(SdlSession session, SessionType type) {
-        if (didRequestShutdown && sdlInterface != null) {
-            session.stopAudioStream();
-            sdlAudioStream = null;
-            sdlInterface.removeServiceListener(SessionType.PCM, this);
-        }
-    }
-
-    @Override
-    public void onServiceError(SdlSession session, SessionType type, String reason) {
-        Log.e(TAG, "OnServiceError: " + reason);
-    }
-
     @IntDef({SampleType.UNSIGNED_8_BIT, SampleType.SIGNED_16_BIT, SampleType.FLOAT})
     @Retention(RetentionPolicy.SOURCE)
     public @interface SampleType {
@@ -174,6 +186,7 @@ public class AudioStreamManager implements ISdlServiceListener {
         int FLOAT = Float.SIZE >> 3;
     }
 
+    /*
     @IntDef({BitsPerSample.EIGHT_BIT, BitsPerSample.SIXTEEN_BIT})
     @Retention(RetentionPolicy.SOURCE)
     public @interface BitsPerSample {
@@ -188,5 +201,5 @@ public class AudioStreamManager implements ISdlServiceListener {
         String SIXTEEN_KHZ = "16KHZ";
         String TWENTY_TWO_KHZ = "22KHZ";
         String FOURTY_FOUR_KHX = "44KHZ";
-    }
+    }*/
 }

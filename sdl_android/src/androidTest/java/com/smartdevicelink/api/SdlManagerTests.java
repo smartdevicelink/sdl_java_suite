@@ -157,8 +157,8 @@ public class SdlManagerTests extends AndroidTestCase {
 		// Note : SdlManager.initialize() will not be called automatically by proxy as in real life because we have mock proxy not a real one
 		sdlManager.initialize();
 		sdlManager.setState(BaseSubManager.READY);
+		sdlManager.getAudioStreamManager().transitionToState(BaseSubManager.READY);
 		// manager.getVideoStreamingManager().transitionToState(BaseSubManager.READY);
-		// manager.getAudioStreamManager().transitionToState(BaseSubManager.READY);
 		// manager.getLockScreenManager().transitionToState(BaseSubManager.READY);
 		// manager.getScreenManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
