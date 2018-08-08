@@ -143,14 +143,15 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 		}
 		finally
 		{
-			if(protocol == null) {
+			if(_session == null) {
 				if (sdlConnection != null) {
 					protocol = sdlConnection.getWiProProtocol();
 					protocol.EndProtocolService(_serviceType,_rpcSessionID);
 					//sdlConnection.endService(_serviceType, _rpcSessionID);
 				}
 			}else{
-				protocol.EndProtocolService(_serviceType,_rpcSessionID);
+				_session.endService(_serviceType,_rpcSessionID);
+				//protocol.EndProtocolService(_serviceType,_rpcSessionID);
 			}
 
 
