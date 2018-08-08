@@ -41,6 +41,7 @@ import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
+import com.smartdevicelink.proxy.rpc.OnRCStatus;
 import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.OnTBTClientState;
@@ -548,5 +549,10 @@ public class ProxyBridge implements IProxyListener{
 	@Override
 	public void onSendHapticDataResponse(SendHapticDataResponse response) {
 		onRPCReceived(response);
+	}
+
+	@Override
+	public void onOnRCStatus(OnRCStatus notification) {
+		onRPCReceived(notification);
 	}
 }
