@@ -27,6 +27,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         } catch (Exception e) {
             e.printStackTrace();
             this.listener.onDecoderError(e);
+            this.listener.onDecoderFinish(false);
             stop();
         }
     }
@@ -40,7 +41,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            listener.onDecoderFinish();
+            listener.onDecoderFinish(true);
             stop();
         }
 

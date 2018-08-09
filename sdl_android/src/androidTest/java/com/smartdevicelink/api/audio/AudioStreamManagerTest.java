@@ -3,11 +3,11 @@ package com.smartdevicelink.api.audio;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.MediaFormat;
-import android.net.rtp.AudioStream;
 import android.support.test.InstrumentationRegistry;
 import android.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.api.CompletionListener;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -21,7 +21,6 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 
 import junit.framework.TestCase;
 
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -39,8 +38,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 
 public class AudioStreamManagerTest extends TestCase {
     public static final String TAG = AudioStreamManagerTest.class.getSimpleName();
@@ -102,20 +101,89 @@ public class AudioStreamManagerTest extends TestCase {
 
 
         AudioStreamManager manager = new AudioStreamManager(internalInterface);
-        manager.startAudioService(false);
-        manager.stopAudioService();
+        manager.startAudioStream(false);
+        manager.stopAudioStream();
     }
 
-    public void testCompleteDecoderFlow() {
+    public void testWithSquareSampleAudio16BitAnd8Khz() {
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._8KHZ, BitsPerSample._16_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(8000, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio16BitAnd16Khz() {
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._16_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(16000, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio16BitAnd22Khz() {
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._22KHZ, BitsPerSample._16_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(22050, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio16BitAnd44Khz() {
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._44KHZ, BitsPerSample._16_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(44100, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio8BitAnd8Khz() {
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._8KHZ, BitsPerSample._8_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(8000, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio8BitAnd16Khz() {
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._8_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(16000, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio8BitAnd22Khz() {
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._22KHZ, BitsPerSample._8_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(22050, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio8BitAnd44Khz() {
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._44KHZ, BitsPerSample._8_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(44100, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+    }
+
+    private int testFullAudioManagerDecodeFlowCorrectCounter = 0;
+    private int testFullAudioManagerDecodeFlowWrongCounter = 0;
+    private void runFullAudioManagerDecodeFlowWithSquareSampleAudio(final int sampleRate, final @SampleType int sampleType, final AudioPassThruCapabilities audioCapabilities) {
+        testFullAudioManagerDecodeFlowCorrectCounter = 0;
+        testFullAudioManagerDecodeFlowWrongCounter = 0;
+
         IAudioStreamListener audioStreamListener = new IAudioStreamListener() {
             @Override
             public void sendAudio(byte[] data, int offset, int length, long presentationTimeUs) throws ArrayIndexOutOfBoundsException {
-
+                ByteBuffer buffer = ByteBuffer.wrap(data, offset, length);
+                this.sendAudio(buffer, presentationTimeUs);
             }
 
             @Override
             public void sendAudio(ByteBuffer data, long presentationTimeUs) {
+                SampleBuffer samples = SampleBuffer.wrap(data, sampleType, presentationTimeUs);
+                double timeUs = presentationTimeUs;
+                double sampleDurationUs = 1000000.0 / sampleRate;
 
+                for (int i = 0; i < samples.limit(); ++i) {
+                    double sample = samples.get(i);
+                    double edge = timeUs % 4000.0;
+
+                    if (edge > 2000.0) {
+                        // swap sample as it's negative expected
+                        sample = sample * -1.0;
+                    }
+
+                    edge = edge % 2000.0;
+
+                    // at the edge of a wave the sample can be lower than 0.7
+                    if ((sample > 0.7 && sample < 0.95) || (edge < sampleDurationUs || (2000.0 - sampleDurationUs) < edge)) {
+                        testFullAudioManagerDecodeFlowCorrectCounter++;
+                    } else {
+                        testFullAudioManagerDecodeFlowWrongCounter++;
+                    }
+
+                    timeUs += sampleDurationUs;
+                }
             }
         };
 
@@ -146,15 +214,34 @@ public class AudioStreamManagerTest extends TestCase {
         };
 
         ISdl internalInterface = mock(ISdl.class);
-        AudioPassThruCapabilities audioCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         doReturn(true).when(internalInterface).isConnected();
         doReturn(audioCapabilities).when(internalInterface).getCapability(any(SystemCapabilityType.class));
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
         doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
 
+        File file = getSampleFile("raw/test_audio_square_250hz_80amp_1s.mp3");
+
+        CompletionListener completionListener = new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                assertEquals(true, success);
+
+                // not more than 2.5 percent samples must be wrong
+                double relation = 100.0 * (double)testFullAudioManagerDecodeFlowWrongCounter / (double)testFullAudioManagerDecodeFlowCorrectCounter;
+                Log.v(TAG, "Validating number of correct samples (" + Math.round(relation) + "%)");
+                if (relation > 2.5) {
+                    fail("Validating raw audio failed. " + Math.round(relation) + " % wrong samples detected. Correct: " + testFullAudioManagerDecodeFlowCorrectCounter + ", Wrong: " + testFullAudioManagerDecodeFlowWrongCounter);
+                }
+            }
+        };
+
+        CompletionListener mockListener = Mockito.spy(completionListener);
+
         AudioStreamManager manager = new AudioStreamManager(internalInterface);
-        manager.startAudioService(false);
-        manager.pushAudioFile(getSampleFile("warning.mp3"));
+        manager.startAudioStream(false);
+        manager.pushAudioFile(file, mockListener);
+
+        verify(mockListener, timeout(10000)).onComplete(any(Boolean.class));
     }
 
     public void testSampleAtTargetTimeReturnNull() {
@@ -276,6 +363,8 @@ public class AudioStreamManagerTest extends TestCase {
 
     private File getSampleFile(String fileName) {
         File file = new File(mContext.getCacheDir() + "/" + fileName);
+        file.getParentFile().mkdirs();
+
         try {
             InputStream is = mContext.getAssets().open(fileName);
             FileOutputStream fos = new FileOutputStream(file);

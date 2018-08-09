@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 public interface AudioDecoderListener {
     void onAudioDataAvailable(SampleBuffer sampleBuffer);
 
-    void onDecoderFinish();
+    void onDecoderFinish(boolean success);
 
     void onDecoderError(Exception e);
 }

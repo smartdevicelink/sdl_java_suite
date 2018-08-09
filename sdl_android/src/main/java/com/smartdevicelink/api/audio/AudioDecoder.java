@@ -48,7 +48,7 @@ public class AudioDecoder extends BaseAudioDecoder {
                     mediaCodec.releaseOutputBuffer(i, false);
 
                     if (bufferInfo.flags == MediaCodec.BUFFER_FLAG_END_OF_STREAM) {
-                        listener.onDecoderFinish();
+                        listener.onDecoderFinish(true);
                         stop();
                     }
                 }
@@ -68,6 +68,7 @@ public class AudioDecoder extends BaseAudioDecoder {
         } catch (Exception e) {
             e.printStackTrace();
             listener.onDecoderError(e);
+            listener.onDecoderFinish(false);
             stop();
         }
     }

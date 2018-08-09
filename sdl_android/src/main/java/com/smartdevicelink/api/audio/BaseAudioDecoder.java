@@ -104,22 +104,24 @@ public abstract class BaseAudioDecoder {
     protected MediaCodec.BufferInfo onInputBufferAvailable(@NonNull MediaExtractor extractor, @NonNull ByteBuffer inputBuffer) {
         long sampleTime = extractor.getSampleTime();
         int counter = 0;
-        int result;
+        int result = 0;
+        int maxresult = 0;
+        boolean advanced = false;
 
         do {
             result = extractor.readSampleData(inputBuffer, counter);
             if (result >= 0) {
-                extractor.advance();
+                advanced = extractor.advance();
+                maxresult = Math.max(maxresult, result);
                 counter += result;
-            } else {
-                break;
             }
-        } while (counter < (inputBuffer.capacity() - result)); //-result is the amount of data expected next
+        } while (result >= 0 && advanced && inputBuffer.capacity() - inputBuffer.limit() > maxresult);
+        // the remaining capacity should be more than enough for another sample data block
 
         // queue the input buffer. At end of file counter will be 0 and flags marks end of stream
         // offset MUST be 0. The output buffer code cannot handle offsets
         // result < 0 means the end of the file input is reached
-        int flags = result < 0 ? MediaCodec.BUFFER_FLAG_END_OF_STREAM : 0;
+        int flags = advanced ? 0 : MediaCodec.BUFFER_FLAG_END_OF_STREAM;
 
         MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
         bufferInfo.set(0, counter, sampleTime, flags);
