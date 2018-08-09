@@ -338,9 +338,16 @@ public class AudioStreamManagerTest extends TestCase {
 
                 mockDecoder.onOutputFormatChanged(format);
 
-                assertEquals(channel_count, outputChannelCountField.getInt(mockDecoder));
-                assertEquals(sample_rate, outputSampleRateField.getInt(mockDecoder));
-                assertEquals(sample_type_result, outputSampleTypeField.getInt(mockDecoder));
+                int output_channel_count = outputChannelCountField.getInt(mockDecoder);
+                int output_sample_rate = outputSampleRateField.getInt(mockDecoder);
+                int output_sample_type = outputSampleTypeField.getInt(mockDecoder);
+
+                Log.v(TAG, "Assert: channel_count == output_channel_count (" + channel_count + " == " + output_channel_count + ")");
+                assertEquals(channel_count, output_channel_count);
+                Log.v(TAG, "Assert: sample_rate == output_sample_rate (" + sample_rate + " == " + output_sample_rate + ")");
+                assertEquals(sample_rate, output_sample_rate);
+                Log.v(TAG, "Assert: sample_type_result == output_sample_type (" + sample_type_result + " == " + output_sample_type + ")");
+                assertEquals(sample_type_result, output_sample_type);
             }
         } catch (Exception e) {
             e.printStackTrace();
