@@ -1,11 +1,9 @@
 package com.smartdevicelink.api.audio;
 
-import android.net.rtp.AudioStream;
 import android.os.Build;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.annotation.StringDef;
 import android.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
@@ -17,9 +15,6 @@ import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
-import com.smartdevicelink.proxy.rpc.enums.AudioType;
-import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
-import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 
 import java.io.File;
@@ -28,6 +23,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * The AudioStreamManager class provides methods to start and stop an audio stream
+ * to the connected device. Audio files can be pushed to the manager in order to
+ * play them on the connected device. The manager uses the Android built-in MediaCodec.
+ */
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 public class AudioStreamManager extends BaseSubManager {
     private static final String TAG = AudioStreamManager.class.getSimpleName();
@@ -68,6 +68,10 @@ public class AudioStreamManager extends BaseSubManager {
         }
     };
 
+    /**
+     * Creates a new object of AudioStreamManager
+     * @param internalInterface The internal interface to the connected device.
+     */
     public AudioStreamManager(@NonNull ISdl internalInterface) {
         super(internalInterface);
         this.queue = new LinkedList<>();
@@ -83,6 +87,11 @@ public class AudioStreamManager extends BaseSubManager {
         streamingStateMachine.transitionToState(StreamingStateMachine.NONE);
     }
 
+    /**
+     * Starts the audio service and audio stream to the connected device.
+     * The method is non-blocking.
+     * @param encrypted Specify whether or not the audio stream should be encrypted.
+     */
     public void startAudioStream(boolean encrypted) {
         // audio stream cannot be started without a connected internal interface
         if (internalInterface == null || !internalInterface.isConnected()) {
@@ -135,6 +144,10 @@ public class AudioStreamManager extends BaseSubManager {
         }
     }
 
+    /**
+     * Stops the audio service and audio stream to the connected device.
+     * The method is non-blocking.
+     */
     public void stopAudioStream() {
         if (internalInterface == null || !internalInterface.isConnected()) {
             return;
@@ -145,11 +158,18 @@ public class AudioStreamManager extends BaseSubManager {
             return;
         }
 
-        internalInterface.stopAudioService();
-
         streamingStateMachine.transitionToState(StreamingStateMachine.STOPPED);
+
+        internalInterface.stopAudioService();
     }
 
+    /**
+     * Pushes the specified audio file to the playback queue.
+     * The audio file will be played immediately. If another audio file is currently playing
+     * the specified file will stay queued and automatically played when ready.
+     * @param audioFile The specified audio file to be played.
+     * @param completionListener A completion listener that informs when the audio file is played.
+     */
     public void pushAudioFile(File audioFile, final CompletionListener completionListener) {
         // streaming state must be STARTED (starting the service is ready. starting stream is started)
         if (streamingStateMachine.getState() != StreamingStateMachine.STARTED) {

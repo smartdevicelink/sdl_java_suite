@@ -22,25 +22,49 @@ public class SampleBuffer {
     private int channelCount;
     private long presentationTimeUs;
 
+    /**
+     * Wraps a raw (mono) byte buffer to a new sample buffer.
+     * @param buffer The raw buffer to be wrapped.
+     * @param sampleType The sample type of the samples in the raw buffer.
+     * @param presentationTimeUs The presentation time of the buffer.
+     * @return A new sample buffer wrapping the specified raw buffer.
+     */
     public static SampleBuffer wrap(ByteBuffer buffer, @SampleType int sampleType, long presentationTimeUs) {
         return new SampleBuffer(buffer, sampleType, 1, presentationTimeUs);
     }
 
+    /**
+     * Wraps a raw byte buffer to a new sample buffer.
+     * @param buffer The raw buffer to be wrapped.
+     * @param sampleType The sample type of the samples in the raw buffer.
+     * @param channelCount The number of channels (1 = mono, 2 = stereo).
+     * @param presentationTimeUs The presentation time of the buffer.
+     * @return A new sample buffer wrapping the specified raw buffer.
+     */
     public static SampleBuffer wrap(ByteBuffer buffer, @SampleType int sampleType, int channelCount, long presentationTimeUs) {
         return new SampleBuffer(buffer, sampleType, channelCount, presentationTimeUs);
     }
 
+    /**
+     * Allocates a new sample buffer.
+     * @param capacity The specified sample capacity of the sample buffer.
+     * @param sampleType The sample type of the samples the buffer should store.
+     * @param byteOrder The byte order for the samples (little or big endian).
+     * @param presentationTimeUs The presentation time for the buffer.
+     * @return A new and empty sample buffer.
+     */
     public static SampleBuffer allocate(int capacity, @SampleType int sampleType, ByteOrder byteOrder, long presentationTimeUs) {
         return new SampleBuffer(capacity, sampleType, 1, byteOrder, presentationTimeUs);
     }
 
     /**
-     * Allocates memory for a sample buffer with capacity provided
-     * @param capacity The number of samples the buffer should hold
-     * @param sampleType The type of the samples
-     * @param channelCount The number of channels requested (mono use 1, stereo use 2)
-     * @param byteOrder The byte order of the samples if a sampe size is > 1 byte
-     * @return
+     * Allocates a new sample buffer.
+     * @param capacity The specified sample capacity of the sample buffer.
+     * @param sampleType The sample type of the samples the buffer should store.
+     * @param channelCount The number of channels (1 = mono, 2 = stereo).
+     * @param byteOrder The byte order for the samples (little or big endian).
+     * @param presentationTimeUs The presentation time for the buffer.
+     * @return A new and empty sample buffer.
      */
     public static SampleBuffer allocate(int capacity, @SampleType int sampleType, int channelCount, ByteOrder byteOrder, long presentationTimeUs) {
         return new SampleBuffer(capacity, sampleType, channelCount, byteOrder, presentationTimeUs);
@@ -77,7 +101,7 @@ public class SampleBuffer {
 
     /**
      * Sets the number of samples in the buffer to the new limit.
-     * @param newLimit
+     * @param newLimit The new limit of the sample buffer.
      */
     public void limit(int newLimit) {
         byteBuffer.limit(newLimit * sampleType * channelCount);
@@ -85,7 +109,7 @@ public class SampleBuffer {
 
     /**
      * Returns the current position in the buffer per channel.
-     * @return
+     * @return The position of the sample buffer.
      */
     public int position() {
         return byteBuffer.position() / sampleType / channelCount;
@@ -93,7 +117,7 @@ public class SampleBuffer {
 
     /**
      *Sets the position of the sample buffer to the new index.
-     * @param newPosition
+     * @param newPosition The new position of the sample buffer.
      */
     public void position(int newPosition) {
         byteBuffer.position(newPosition * sampleType * channelCount);
@@ -111,9 +135,10 @@ public class SampleBuffer {
 
     /**
      * Returns the sample from the given index in the buffer.
-     * The sample returned is a mixed sample getting all samples from each channel.
-     * @param index
-     * @return
+     * If the buffer's channel count is > 1 the sample returned
+     * is a mixed sample getting all samples from each channel.
+     * @param index The index of the sample requested.
+     * @return The sample requested.
      */
     public double get(int index) {
         int internalIndex = index * channelCount * sampleType;
@@ -160,10 +185,21 @@ public class SampleBuffer {
         }
     }
 
+    /**
+     * Puts a sample to the current position and increments the position.
+     * @param sample The sample to put into the buffer.
+     */
     public void put(double sample) {
         put(-1, sample);
     }
 
+    /**
+     * Puts a sample to the given index in the buffer.
+     * If the buffer's channel count is > 1 the sample
+     * will be stored in each channel at the given index.
+     * @param index The index to put the sample.
+     * @param sample The sample to store in the buffer.
+     */
     public void put(int index, double sample) {
         int internalIndex = index * channelCount * sampleType;
         switch (sampleType) {
@@ -212,10 +248,18 @@ public class SampleBuffer {
         }
     }
 
+    /**
+     * Returns the raw byte buffer managed by this sample buffer.
+     * @return The raw byte buffer managed by this sample buffer.
+     */
     public ByteBuffer getByteBuffer() {
         return byteBuffer;
     }
 
+    /**
+     * Returns a copy of the bytes from position 0 to the current limit.
+     * @return A copy of the bytes.
+     */
     public byte[] getBytes() {
         int limit = byteBuffer.limit();
         byte[] bytes = new byte[limit];
@@ -227,6 +271,10 @@ public class SampleBuffer {
         return bytes;
     }
 
+    /**
+     * The presentation time of this sample buffer.
+     * @return The presentation time of this sample buffer.
+     */
     public long getPresentationTimeUs() {
         return presentationTimeUs;
     }

@@ -11,14 +11,27 @@ import com.smartdevicelink.api.audio.AudioStreamManager.SampleType;
 import java.io.File;
 import java.nio.ByteBuffer;
 
+/**
+ * The audio decoder to decode a single audio file to PCM.
+ */
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class AudioDecoder extends BaseAudioDecoder {
     private static final String TAG = AudioDecoder.class.getSimpleName();
 
+    /**
+     * Creates a new object of AudioDecoder.
+     * @param audioFile The audio file to decode.
+     * @param sampleRate The desired sample rate for decoded audio data.
+     * @param sampleType The desired sample type (8bit, 16bit, float).
+     * @param listener A listener who receives the decoded audio.
+     */
     AudioDecoder(File audioFile, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
         super(audioFile, sampleRate, sampleType, listener);
     }
 
+    /**
+     * Starts the audio decoding asynchronously.
+     */
     public void start() {
         try {
             initMediaComponents();
