@@ -342,12 +342,19 @@ public class AudioStreamManagerTest extends TestCase {
                 int output_sample_rate = outputSampleRateField.getInt(mockDecoder);
                 int output_sample_type = outputSampleTypeField.getInt(mockDecoder);
 
-                Log.v(TAG, "Assert: channel_count == output_channel_count (" + channel_count + " == " + output_channel_count + ")");
-                assertEquals(channel_count, output_channel_count);
-                Log.v(TAG, "Assert: sample_rate == output_sample_rate (" + sample_rate + " == " + output_sample_rate + ")");
-                assertEquals(sample_rate, output_sample_rate);
-                Log.v(TAG, "Assert: sample_type_result == output_sample_type (" + sample_type_result + " == " + output_sample_type + ")");
-                assertEquals(sample_type_result, output_sample_type);
+                // changing from assertEquals to if and fail so travis gives better results
+
+                if (channel_count != output_channel_count) {
+                    fail("AssertEqualsFailed: channel_count == output_channel_count (" + channel_count + " == " + output_channel_count + ")");
+                }
+
+                if (sample_rate != output_sample_rate) {
+                    fail("AssertEqualsFailed: sample_rate == output_sample_rate (" + sample_rate + " == " + output_sample_rate + ")");
+                }
+
+                if (sample_type_result != output_sample_type) {
+                    fail("Assert: sample_type_result == output_sample_type (" + sample_type_result + " == " + output_sample_type + ")");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
