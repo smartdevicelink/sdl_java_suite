@@ -336,6 +336,12 @@ public class AudioStreamManagerTest extends TestCase {
                 format.setInteger(MediaFormat.KEY_SAMPLE_RATE, sample_rate);
                 format.setInteger(MediaFormat.KEY_PCM_ENCODING, sample_type);
 
+                // in case the phone version is old the method does not take sample type into account but
+                // always expected 16 bit. See https://developer.android.com/reference/android/media/MediaFormat.html#KEY_PCM_ENCODING
+                if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.N) {
+                    sample_type_result = SampleType.SIGNED_16_BIT;
+                }
+
                 mockDecoder.onOutputFormatChanged(format);
 
                 int output_channel_count = outputChannelCountField.getInt(mockDecoder);
