@@ -3,6 +3,10 @@ package com.smartdevicelink.proxy.rpc.enums;
 public enum LightStatus {
 	ON,
 	OFF,
+	RAMP_UP,
+	RAMP_DOWN,
+	UNKNOWN,
+	INVALID,
 	;
 
 	public static LightStatus valueForString(String value) {

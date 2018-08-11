@@ -27,6 +27,7 @@ public class LightCapabilitiesTests extends TestCase {
 		msg.setName(Test.GENERAL_LIGHTNAME);
 		msg.setDensityAvailable(Test.GENERAL_BOOLEAN);
 		msg.setRGBColorSpaceAvailable(Test.GENERAL_BOOLEAN);
+		msg.setStatusAvailable(Test.GENERAL_BOOLEAN);
 	}
 
 	/**
@@ -37,11 +38,13 @@ public class LightCapabilitiesTests extends TestCase {
 		LightName name = msg.getName();
 		Boolean densityAvailable = msg.getDensityAvailable();
 		Boolean rgbColorSpaceAvailable = msg.getRGBColorSpaceAvailable();
+		Boolean statusAvailable = msg.getStatusAvailable();
 
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_LIGHTNAME, name);
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) densityAvailable);
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) rgbColorSpaceAvailable);
+		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) statusAvailable);
 
 		// Invalid/Null Tests
 		LightCapabilities msg = new LightCapabilities();
@@ -50,6 +53,7 @@ public class LightCapabilitiesTests extends TestCase {
 		assertNull(Test.NULL, msg.getName());
 		assertNull(Test.NULL, msg.getDensityAvailable());
 		assertNull(Test.NULL, msg.getRGBColorSpaceAvailable());
+		assertNull(Test.NULL, msg.getStatusAvailable());
 	}
 
 	public void testJson() {
@@ -59,6 +63,7 @@ public class LightCapabilitiesTests extends TestCase {
 			reference.put(LightCapabilities.KEY_NAME, Test.GENERAL_LIGHTNAME);
 			reference.put(LightCapabilities.KEY_DENSITY_AVAILABLE, Test.GENERAL_BOOLEAN);
 			reference.put(LightCapabilities.KEY_RGB_COLOR_SPACE_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(LightCapabilities.KEY_STATUS_AVAILABLE, Test.GENERAL_BOOLEAN);
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());

@@ -8,9 +8,11 @@ import com.smartdevicelink.proxy.rpc.enums.LightName;
 import java.util.Hashtable;
 
 public class LightCapabilities extends RPCStruct {
+
 	public static final String KEY_NAME = "name";
 	public static final String KEY_DENSITY_AVAILABLE = "densityAvailable";
 	public static final String KEY_RGB_COLOR_SPACE_AVAILABLE = "RGBColorSpaceAvailable";
+	public static final String KEY_STATUS_AVAILABLE = "statusAvailable";
 
 	/**
 	 * Constructs a newly allocated LightCapabilities object
@@ -89,5 +91,23 @@ public class LightCapabilities extends RPCStruct {
 	 */
 	public Boolean getRGBColorSpaceAvailable() {
 		return getBoolean(KEY_RGB_COLOR_SPACE_AVAILABLE);
+	}
+
+	/**
+	 * Sets the statusAvailable portion of the LightCapabilities class
+	 *
+	 * @param statusAvailable Indicates if the status (ON/OFF) can be set remotely. App shall not use read-only values (RAMP_UP/RAMP_DOWN/UNKNOWN/INVALID) in a setInteriorVehicleData request.
+	 */
+	public void setStatusAvailable(Boolean statusAvailable) {
+		setValue(KEY_STATUS_AVAILABLE, statusAvailable);
+	}
+
+	/**
+	 * Gets the statusAvailable portion of the LightCapabilities class
+	 *
+	 * @return Boolean - Indicates if the status (ON/OFF) can be set remotely. App shall not use read-only values (RAMP_UP/RAMP_DOWN/UNKNOWN/INVALID) in a setInteriorVehicleData request.
+	 */
+	public Boolean getStatusAvailable() {
+		return getBoolean(KEY_STATUS_AVAILABLE);
 	}
 }

@@ -63,6 +63,34 @@ public enum LightName {
 	 * Include all hazard lights: front_left, front_right, rear_left and rear_right.
 	 */
 	HAZARD_LIGHTS,
+	/**
+	 * Cargo lamps illuminate the cargo area.
+	 */
+	REAR_CARGO_LIGHTS,
+	/**
+	 * Truck bed lamps light up the bed of the truck.
+	 */
+	REAR_TRUCK_BED_LIGHTS,
+	/**
+	 * Trailer lights are lamps mounted on a trailer hitch.
+	 */
+	REAR_TRAILER_LIGHTS,
+	/**
+	 * It is the spotlights mounted on the left side of a vehicle.
+	 */
+	LEFT_SPOT_LIGHTS,
+	/**
+	 * It is the spotlights mounted on the right side of a vehicle.
+	 */
+	RIGHT_SPOT_LIGHTS,
+	/**
+	 * Puddle lamps illuminate the ground beside the door as the customer is opening or approaching the door.
+	 */
+	LEFT_PUDDLE_LIGHTS,
+	/**
+	 * Puddle lamps illuminate the ground beside the door as the customer is opening or approaching the door.
+	 */
+	RIGHT_PUDDLE_LIGHTS,
 
 	/*Interior Lights by common function groups*/
 
@@ -90,6 +118,10 @@ public enum LightName {
 	 * Include exterior lights located at the right side of the vehicle. For example, right puddle lights and spot lights.
 	 */
 	EXTERIOR_RIGHT_LIGHTS,
+	/**
+	 * Include all exterior lights around the vehicle.
+	 */
+	EXTERIOR_ALL_LIGHTS,
 	;
 
 	public static LightName valueForString(String value) {
