@@ -24,10 +24,19 @@ public class ModuleTypeTests extends TestCase {
 		ModuleType enumRadio = ModuleType.valueForString(example);
 		example = "SEAT";
 		ModuleType enumSeat = ModuleType.valueForString(example);
+		example = "AUDIO";
+		ModuleType enumAudio = ModuleType.valueForString(example);
+		example = "LIGHT";
+		ModuleType enumLight = ModuleType.valueForString(example);
+		example = "HMI_SETTINGS";
+		ModuleType enumHmiSettings = ModuleType.valueForString(example);
 
 		assertNotNull("CLIMATE returned null", enumClimate);
 		assertNotNull("RADIO returned null", enumRadio);
 		assertNotNull("SEAT returned null", enumSeat);
+		assertNotNull("AUDIO returned null", enumAudio);
+		assertNotNull("LIGHT returned null", enumLight);
+		assertNotNull("HMI_SETTINGS returned null", enumHmiSettings);
 	}
 
 	/**
@@ -68,6 +77,9 @@ public class ModuleTypeTests extends TestCase {
 		enumTestList.add(ModuleType.CLIMATE);
 		enumTestList.add(ModuleType.RADIO);
 		enumTestList.add(ModuleType.SEAT);
+		enumTestList.add(ModuleType.AUDIO);
+		enumTestList.add(ModuleType.LIGHT);
+		enumTestList.add(ModuleType.HMI_SETTINGS);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

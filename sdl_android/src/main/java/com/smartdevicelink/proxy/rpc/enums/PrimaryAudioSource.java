@@ -9,7 +9,11 @@ public enum PrimaryAudioSource {
 	 * Currently no source selected
 	 */
     NO_SOURCE_SELECTED,
-    /**
+	/**
+	 * CD is current source
+	 */
+	CD,
+	/**
      * USB is current source
      */
     USB,
@@ -32,7 +36,12 @@ public enum PrimaryAudioSource {
     /**
      * Mobile app is current source
      */
-    MOBILE_APP;
+	MOBILE_APP,
+	/**
+	 * Radio may be on AM, FM or XM
+	 */
+	RADIO_TUNER,
+	;
 
     /**
      * Convert String to PrimaryAudioSource
