@@ -15,7 +15,6 @@ import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
-import com.smartdevicelink.proxy.rpc.GPSLocation;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities;
@@ -313,8 +312,6 @@ public class Test {
 	public static final SeatControlData                GENERAL_SEATCONTROLDATA                = new SeatControlData();
 	public static final RdsData                        GENERAL_RDSDATA                        = new RdsData();
 	public static final StationIDNumber                GENERAL_STATIONIDNUMBER                = new StationIDNumber();
-	public static final SRGBColor                      GENERAL_SRGBCOLOR                	  = new SRGBColor();
-	public static final GPSLocation                    GENERAL_GPSLOCATION                    = new GPSLocation();
 	public static final SisData                        GENERAL_SISDATA                        = new SisData();
 	public static final RadioState                     GENERAL_RADIOSTATE              	      = RadioState.ACQUIRED;
 	public static final RadioControlData               GENERAL_RADIOCONTROLDATA               = new RadioControlData();
@@ -482,16 +479,9 @@ public class Test {
 		GENERAL_STATIONIDNUMBER.setCountryCode(GENERAL_INT);
 		GENERAL_STATIONIDNUMBER.setFccFacilityId(GENERAL_INT);
 
-		GENERAL_SRGBCOLOR.setBlue(GENERAL_INT);
-		GENERAL_SRGBCOLOR.setGreen(GENERAL_INT);
-		GENERAL_SRGBCOLOR.setRed(GENERAL_INT);
-
-		GENERAL_GPSLOCATION.setLongitudeDegrees(GENERAL_FLOAT);
-		GENERAL_GPSLOCATION.setLatitudeDegrees(GENERAL_FLOAT);
-		GENERAL_GPSLOCATION.setAltitudeMeters(GENERAL_FLOAT);
-
 		GENERAL_SISDATA.setStationMessage(GENERAL_STRING);
-		GENERAL_SISDATA.setStationLocation(GENERAL_GPSLOCATION);
+		GENERAL_SISDATA.setStationLocation(VehicleDataHelper.GPS);
+
 		GENERAL_SISDATA.setStationLongName(GENERAL_STRING);
 		GENERAL_SISDATA.setStationIDNumber(GENERAL_STATIONIDNUMBER);
 		GENERAL_SISDATA.setStationShortName(GENERAL_STRING);
@@ -791,13 +781,13 @@ public class Test {
 
 		GENERAL_LIGHTCAPABILITIES.setName(GENERAL_LIGHTNAME);
 		GENERAL_LIGHTCAPABILITIES.setDensityAvailable(GENERAL_BOOLEAN);
-		GENERAL_LIGHTCAPABILITIES.setSRGBColorSpaceAvailable(GENERAL_BOOLEAN);
+		GENERAL_LIGHTCAPABILITIES.setRGBColorSpaceAvailable(GENERAL_BOOLEAN);
 		GENERAL_LIGHTCAPABILITIES_LIST.add(GENERAL_LIGHTCAPABILITIES);
 
 		GENERAL_LIGHTSTATE.setId(GENERAL_LIGHTNAME);
 		GENERAL_LIGHTSTATE.setDensity(GENERAL_FLOAT);
 		GENERAL_LIGHTSTATE.setStatus(GENERAL_LIGHTSTATUS);
-		GENERAL_LIGHTSTATE.setSRGBColor(GENERAL_SRGBCOLOR);
+		GENERAL_LIGHTSTATE.setColor(GENERAL_RGBCOLOR);
 		GENERAL_LIGHTSTATE_LIST.add(GENERAL_LIGHTSTATE);
 
 		GENERAL_REMOTECONTROLCAPABILITIES.setButtonCapabilities(GENERAL_BUTTONCAPABILITIES_LIST);

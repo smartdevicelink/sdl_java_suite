@@ -87,18 +87,18 @@ public class SisData extends RPCStruct {
 	 *
 	 * @param stationLocation Provides the 3-dimensional geographic station location.
 	 */
-	public void setStationLocation(GPSLocation stationLocation) {
+	public void setStationLocation(GPSData stationLocation) {
 		setValue(KEY_STATION_LOCATION, stationLocation);
 	}
 
 	/**
 	 * Gets the stationLocation portion of the SisData class
 	 *
-	 * @return GPSLocation - Provides the 3-dimensional geographic station location.
+	 * @return GPSData - Provides the 3-dimensional geographic station location.
 	 */
 	@SuppressWarnings("unchecked")
-	public GPSLocation getStationLocation() {
-		return (GPSLocation) getObject(GPSLocation.class, KEY_STATION_LOCATION);
+	public GPSData getStationLocation() {
+		return (GPSData) getObject(GPSData.class, KEY_STATION_LOCATION);
 	}
 
 	/**

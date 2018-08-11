@@ -18,7 +18,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.ClimateControlData}
  */
 public class ClimateControlDataTests extends TestCase{

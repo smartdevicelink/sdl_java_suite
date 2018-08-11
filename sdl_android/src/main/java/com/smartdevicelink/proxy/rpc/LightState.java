@@ -13,7 +13,7 @@ public class LightState extends RPCStruct {
 	public static final String KEY_ID = "id";
 	public static final String KEY_STATUS = "status";
 	public static final String KEY_DENSITY = "density";
-	public static final String KEY_SRGB_COLOR = "sRGBColor";
+	public static final String KEY_COLOR = "color";
 
 	/**
 	 * Constructs a new LightState object
@@ -99,21 +99,21 @@ public class LightState extends RPCStruct {
 	}
 
 	/**
-	 * Gets the sRGBColor portion of the LightState class
+	 * Gets the color portion of the LightState class
 	 *
-	 * @return SRGBColor
+	 * @return RGBColor
 	 */
 	@SuppressWarnings("unchecked")
-	public SRGBColor getSRGBColor() {
-		return (SRGBColor) getObject(SRGBColor.class, KEY_SRGB_COLOR);
+	public RGBColor getColor() {
+		return (RGBColor) getObject(RGBColor.class, KEY_COLOR);
 	}
 
 	/**
-	 * Sets the sRGBColor portion of the LightState class
+	 * Sets the color portion of the LightState class
 	 *
-	 * @param sRGBColor
+	 * @param color
 	 */
-	public void setSRGBColor(SRGBColor sRGBColor) {
-		setValue(KEY_SRGB_COLOR, sRGBColor);
+	public void setColor(RGBColor color) {
+		setValue(KEY_COLOR, color);
 	}
 }

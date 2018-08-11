@@ -54,13 +54,11 @@ public class DistanceUnitTests extends TestCase {
 		}
 	}
 
-
 	/**
 	 * Verifies the possible enum values of DistanceUnit.
 	 */
 	public void testListEnum() {
 		List<DistanceUnit> enumValueList = Arrays.asList(DistanceUnit.values());
-
 		List<DistanceUnit> enumTestList = new ArrayList<DistanceUnit>();
 		enumTestList.add(DistanceUnit.MILES);
 		enumTestList.add(DistanceUnit.KILOMETERS);

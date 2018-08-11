@@ -1,12 +1,13 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
-import com.smartdevicelink.proxy.rpc.GPSLocation;
+import com.smartdevicelink.proxy.rpc.GPSData;
 import com.smartdevicelink.proxy.rpc.SisData;
 import com.smartdevicelink.proxy.rpc.StationIDNumber;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
+import com.smartdevicelink.test.VehicleDataHelper;
 
 import junit.framework.TestCase;
 
@@ -31,7 +32,7 @@ public class SisDataTests extends TestCase {
 		msg.setStationShortName(Test.GENERAL_STRING);
 		msg.setStationIDNumber(Test.GENERAL_STATIONIDNUMBER);
 		msg.setStationLongName(Test.GENERAL_STRING);
-		msg.setStationLocation(Test.GENERAL_GPSLOCATION);
+		msg.setStationLocation(VehicleDataHelper.GPS);
 		msg.setStationMessage(Test.GENERAL_STRING);
 	}
 
@@ -43,14 +44,14 @@ public class SisDataTests extends TestCase {
 		String stationShortName = msg.getStationShortName();
 		StationIDNumber stationIDNumber = msg.getStationIDNumber();
 		String stationLongName = msg.getStationLongName();
-		GPSLocation stationLocation = msg.getStationLocation();
+		GPSData stationLocation = msg.getStationLocation();
 		String stationMessage = msg.getStationMessage();
 
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, stationShortName);
 		assertEquals(Test.MATCH, Test.GENERAL_STATIONIDNUMBER, stationIDNumber);
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, stationLongName);
-		assertEquals(Test.MATCH, Test.GENERAL_GPSLOCATION, stationLocation);
+		assertEquals(Test.MATCH, VehicleDataHelper.GPS, stationLocation);
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, stationMessage);
 
 		// Invalid/Null Tests
@@ -71,7 +72,7 @@ public class SisDataTests extends TestCase {
 			reference.put(SisData.KEY_STATION_SHORT_NAME, Test.GENERAL_STRING);
 			reference.put(SisData.KEY_STATION_ID_NUMBER, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_STATIONIDNUMBER.getStore()));
 			reference.put(SisData.KEY_STATION_LONG_NAME, Test.GENERAL_STRING);
-			reference.put(SisData.KEY_STATION_LOCATION, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_GPSLOCATION.getStore()));
+			reference.put(SisData.KEY_STATION_LOCATION, JsonRPCMarshaller.serializeHashtable(VehicleDataHelper.GPS.getStore()));
 			reference.put(SisData.KEY_STATION_MESSAGE, Test.GENERAL_STRING);
 
 			JSONObject underTest = msg.serializeJSON();
@@ -92,7 +93,7 @@ public class SisDataTests extends TestCase {
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateGPSLocation(new GPSLocation(hashReference), new GPSLocation(hashTest)));
+					assertTrue(Test.TRUE, Validator.validateGpsData(new GPSData(hashReference), new GPSData(hashTest)));
 				} else {
 					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}

@@ -54,7 +54,6 @@ public class LightStatusTests extends TestCase {
 		}
 	}
 
-
 	/**
 	 * Verifies the possible enum values of LightStatus.
 	 */

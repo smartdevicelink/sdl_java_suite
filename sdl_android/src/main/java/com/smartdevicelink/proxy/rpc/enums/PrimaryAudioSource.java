@@ -43,16 +43,16 @@ public enum PrimaryAudioSource {
 	RADIO_TUNER,
 	;
 
-    /**
-     * Convert String to PrimaryAudioSource
-     * @param value String
-     * @return PrimaryAudioSource
-     */	
-    public static PrimaryAudioSource valueForString(String value) {
-        try{
-            return valueOf(value);
-        }catch(Exception e){
-            return null;
-        }
-    }
+	/**
+	 * Convert String to PrimaryAudioSource
+	 * @param value String
+	 * @return PrimaryAudioSource
+	 */
+	public static PrimaryAudioSource valueForString(String value) {
+		try{
+			return valueOf(value);
+		}catch(Exception e){
+			return null;
+		}
+	}
 }

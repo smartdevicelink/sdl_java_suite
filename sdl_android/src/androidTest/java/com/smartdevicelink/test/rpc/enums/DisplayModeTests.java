@@ -57,7 +57,6 @@ public class DisplayModeTests extends TestCase {
 		}
 	}
 
-
 	/**
 	 * Verifies the possible enum values of DisplayMode.
 	 */

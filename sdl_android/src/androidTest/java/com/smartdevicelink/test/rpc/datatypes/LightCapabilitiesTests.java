@@ -13,64 +13,64 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.LightCapabilities}
  */
-public class LightCapabilitiesTests extends TestCase{
-	
-    private LightCapabilities msg;
+public class LightCapabilitiesTests extends TestCase {
 
-    @Override
-    public void setUp(){
-        msg = new LightCapabilities();
+	private LightCapabilities msg;
 
-        msg.setName(Test.GENERAL_LIGHTNAME);
-        msg.setDensityAvailable(Test.GENERAL_BOOLEAN);
-        msg.setSRGBColorSpaceAvailable(Test.GENERAL_BOOLEAN);
-    }
+	@Override
+	public void setUp() {
+		msg = new LightCapabilities();
 
-    /**
-    * Tests the expected values of the RPC message.
-    */
-    public void testRpcValues () {
-        // Test Values
-        LightName name = msg.getName();
-        Boolean densityAvailable = msg.getDensityAvailable();
-        Boolean srgbColorSpaceAvailable = msg.getSRGBColorSpaceAvailable();
+		msg.setName(Test.GENERAL_LIGHTNAME);
+		msg.setDensityAvailable(Test.GENERAL_BOOLEAN);
+		msg.setRGBColorSpaceAvailable(Test.GENERAL_BOOLEAN);
+	}
 
-        // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_LIGHTNAME, name);
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean)densityAvailable);
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean)srgbColorSpaceAvailable);
+	/**
+	 * Tests the expected values of the RPC message.
+	 */
+	public void testRpcValues() {
+		// Test Values
+		LightName name = msg.getName();
+		Boolean densityAvailable = msg.getDensityAvailable();
+		Boolean rgbColorSpaceAvailable = msg.getRGBColorSpaceAvailable();
 
-        // Invalid/Null Tests
-        LightCapabilities msg = new LightCapabilities();
-        assertNotNull(Test.NOT_NULL, msg);
+		// Valid Tests
+		assertEquals(Test.MATCH, Test.GENERAL_LIGHTNAME, name);
+		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) densityAvailable);
+		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) rgbColorSpaceAvailable);
 
-        assertNull(Test.NULL, msg.getName());
-        assertNull(Test.NULL, msg.getDensityAvailable());
-        assertNull(Test.NULL, msg.getSRGBColorSpaceAvailable());
-    }
+		// Invalid/Null Tests
+		LightCapabilities msg = new LightCapabilities();
+		assertNotNull(Test.NOT_NULL, msg);
 
-    public void testJson(){
-        JSONObject reference = new JSONObject();
+		assertNull(Test.NULL, msg.getName());
+		assertNull(Test.NULL, msg.getDensityAvailable());
+		assertNull(Test.NULL, msg.getRGBColorSpaceAvailable());
+	}
 
-        try{
-            reference.put(LightCapabilities.KEY_NAME, Test.GENERAL_LIGHTNAME);
-            reference.put(LightCapabilities.KEY_DENSITY_AVAILABLE, Test.GENERAL_BOOLEAN);
-            reference.put(LightCapabilities.KEY_SRGB_COLOR_SPACE_AVAILABLE, Test.GENERAL_BOOLEAN);
+	public void testJson() {
+		JSONObject reference = new JSONObject();
 
-            JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+		try {
+			reference.put(LightCapabilities.KEY_NAME, Test.GENERAL_LIGHTNAME);
+			reference.put(LightCapabilities.KEY_DENSITY_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(LightCapabilities.KEY_RGB_COLOR_SPACE_AVAILABLE, Test.GENERAL_BOOLEAN);
 
-            Iterator<?> iterator = reference.keys();
-            while(iterator.hasNext()){
-                String key = (String) iterator.next();
+			JSONObject underTest = msg.serializeJSON();
+			assertEquals(Test.MATCH, reference.length(), underTest.length());
 
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
-            }
-        } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
-        }
-    }
+			Iterator<?> iterator = reference.keys();
+			while (iterator.hasNext()) {
+				String key = (String) iterator.next();
+
+				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+			}
+		} catch (JSONException e) {
+			fail(Test.JSON_FAIL);
+		}
+	}
 }

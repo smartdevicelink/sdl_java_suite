@@ -920,59 +920,36 @@ public class Validator{
         return true;
     }
 
-    public static boolean validateSisData(SisData sisData1, SisData sisData2){
-        if(sisData1 == null){
-            return ( sisData2 == null );
-        }
-        if(sisData2 == null){
-            return ( sisData1 == null );
-        }
+	public static boolean validateSisData(SisData sisData1, SisData sisData2) {
+		if (sisData1 == null) {
+			return (sisData2 == null);
+		}
+		if (sisData2 == null) {
+			return (sisData1 == null);
+		}
 
-        if(sisData1.getStationShortName() != sisData2.getStationShortName()){
-            return false;
-        }
+		if (sisData1.getStationShortName() != sisData2.getStationShortName()) {
+			return false;
+		}
 
-        if(!( validateStationIDNumber(sisData1.getStationIDNumber(), sisData2.getStationIDNumber()) )){
-            return false;
-        }
+		if (!(validateStationIDNumber(sisData1.getStationIDNumber(), sisData2.getStationIDNumber()))) {
+			return false;
+		}
 
-        if(sisData1.getStationLongName() != sisData2.getStationLongName()){
-            return false;
-        }
+		if (sisData1.getStationLongName() != sisData2.getStationLongName()) {
+			return false;
+		}
 
-        if(!( validateGPSLocation(sisData1.getStationLocation(), sisData2.getStationLocation()) )){
-            return false;
-        }
+		if (!(validateGpsData(sisData1.getStationLocation(), sisData2.getStationLocation()))) {
+			return false;
+		}
 
-        if(sisData1.getStationMessage() != sisData2.getStationMessage()){
-            return false;
-        }
+		if (sisData1.getStationMessage() != sisData2.getStationMessage()) {
+			return false;
+		}
 
-        return true;
-    }
-
-    public static boolean validateGPSLocation(GPSLocation gpsLocation1, GPSLocation gpsLocation2){
-        if(gpsLocation1 == null){
-            return ( gpsLocation2 == null );
-        }
-        if(gpsLocation2 == null){
-            return ( gpsLocation1 == null );
-        }
-
-        if(gpsLocation1.getLongitudeDegrees() != gpsLocation2.getLongitudeDegrees()){
-            return false;
-        }
-
-        if(gpsLocation1.getLatitudeDegrees() != gpsLocation2.getLatitudeDegrees()){
-            return false;
-        }
-
-        if(gpsLocation1.getAltitudeMeters() != gpsLocation2.getAltitudeMeters()){
-            return false;
-        }
-
-        return true;
-    }
+		return true;
+	}
 
     public static boolean validateStationIDNumber(StationIDNumber stationIDNumber1, StationIDNumber stationIDNumber2){
         if(stationIDNumber1 == null){
@@ -987,29 +964,6 @@ public class Validator{
         }
 
         if(stationIDNumber1.getFccFacilityId() != stationIDNumber2.getFccFacilityId()){
-            return false;
-        }
-
-        return true;
-    }
-
-    public static boolean validateSRGBColor(SRGBColor srgbColor1, SRGBColor srgbColor2){
-        if(srgbColor1 == null){
-            return ( srgbColor2 == null );
-        }
-        if(srgbColor2 == null){
-            return ( srgbColor1 == null );
-        }
-
-        if(srgbColor1.getRed() != srgbColor2.getRed()){
-            return false;
-        }
-
-        if(srgbColor1.getGreen() != srgbColor2.getGreen()){
-            return false;
-        }
-
-        if(srgbColor1.getBlue() != srgbColor2.getBlue()){
             return false;
         }
 
@@ -2478,7 +2432,7 @@ public class Validator{
 			return false;
 		}
 
-		if (!(validateSRGBColor(item1.getSRGBColor(), item2.getSRGBColor()))) {
+		if (!(validateRGBColor(item1.getColor(), item2.getColor()))) {
 			return false;
 		}
 
@@ -2522,7 +2476,7 @@ public class Validator{
 			return false;
 		}
 
-		if (item1.getSRGBColorSpaceAvailable() != item2.getSRGBColorSpaceAvailable()) {
+		if (item1.getRGBColorSpaceAvailable() != item2.getRGBColorSpaceAvailable()) {
 			return false;
 		}
 

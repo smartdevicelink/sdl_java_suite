@@ -169,7 +169,6 @@ public class LightNameTests extends TestCase {
 		}
 	}
 
-
 	/**
 	 * Verifies the possible enum values of LightName.
 	 */
