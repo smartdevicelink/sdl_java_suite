@@ -33,10 +33,16 @@ public class PrimaryAudioSourceTests extends TestCase {
 		PrimaryAudioSource enumIpod = PrimaryAudioSource.valueForString(example);
 		example = "MOBILE_APP";
 		PrimaryAudioSource enumMobileApp = PrimaryAudioSource.valueForString(example);
-		example = "RADIO_TUNER";
-		PrimaryAudioSource enumRadioTuner = PrimaryAudioSource.valueForString(example);
 		example = "CD";
 		PrimaryAudioSource enumCd = PrimaryAudioSource.valueForString(example);
+		example = "AM";
+		PrimaryAudioSource enumAm = PrimaryAudioSource.valueForString(example);
+		example = "FM";
+		PrimaryAudioSource enumFm = PrimaryAudioSource.valueForString(example);
+		example = "XM";
+		PrimaryAudioSource enumXm = PrimaryAudioSource.valueForString(example);
+		example = "DAB";
+		PrimaryAudioSource enumDab = PrimaryAudioSource.valueForString(example);
 
 		assertNotNull("NO_SOURCE_SELECTED returned null", enumNoSourceSelected);
 		assertNotNull("USB returned null", enumUsb);
@@ -45,8 +51,11 @@ public class PrimaryAudioSourceTests extends TestCase {
 		assertNotNull("LINE_IN returned null", enumLineIn);
 		assertNotNull("IPOD returned null", enumIpod);
 		assertNotNull("MOBILE_APP returned null", enumMobileApp);
-		assertNotNull("RADIO_TUNER returned null", enumRadioTuner);
 		assertNotNull("CD returned null", enumCd);
+		assertNotNull("AM returned null", enumAm);
+		assertNotNull("FM returned null", enumFm);
+		assertNotNull("XM returned null", enumXm);
+		assertNotNull("DAB returned null", enumDab);
 	}
 
 	/**
@@ -90,8 +99,11 @@ public class PrimaryAudioSourceTests extends TestCase {
 		enumTestList.add(PrimaryAudioSource.LINE_IN);
 		enumTestList.add(PrimaryAudioSource.IPOD);
 		enumTestList.add(PrimaryAudioSource.MOBILE_APP);
-		enumTestList.add(PrimaryAudioSource.RADIO_TUNER);
 		enumTestList.add(PrimaryAudioSource.CD);
+		enumTestList.add(PrimaryAudioSource.AM);
+		enumTestList.add(PrimaryAudioSource.FM);
+		enumTestList.add(PrimaryAudioSource.XM);
+		enumTestList.add(PrimaryAudioSource.DAB);
 
 		assertTrue("Enum value list does not match enum class list",
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

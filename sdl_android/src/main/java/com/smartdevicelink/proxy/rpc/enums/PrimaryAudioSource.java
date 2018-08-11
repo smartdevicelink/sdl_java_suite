@@ -37,10 +37,10 @@ public enum PrimaryAudioSource {
      * Mobile app is current source
      */
 	MOBILE_APP,
-	/**
-	 * Radio may be on AM, FM or XM
-	 */
-	RADIO_TUNER,
+	AM,
+	FM,
+	XM,
+	DAB,
 	;
 
 	/**
