@@ -355,8 +355,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public byte getWiProVersion() {
-			return SdlProxyBase.this.getWiProVersion();
+		public com.smartdevicelink.util.Version getProtocolVersion() {
+			return new com.smartdevicelink.util.Version(Byte.toString(SdlProxyBase.this.getWiProVersion()) + ".0.0");
 		}
 
 		@Override

@@ -27,6 +27,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.Test;
+import com.smartdevicelink.util.Version;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -121,7 +122,7 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 	public void testHMILevelNotFull(){
 		ISdl internalInterface = mock(ISdl.class);
 
-		when(internalInterface.getWiProVersion()).thenReturn((byte) 5);
+		when(internalInterface.getProtocolVersion()).thenReturn(new Version("5.0.0"));
 		when(internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(true);
 
 		final VideoStreamingManager videoStreamingManager = new VideoStreamingManager(internalInterface);
@@ -138,7 +139,7 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 
 		final Set<Object> listenerSet = new HashSet<>();
 
-		when(internalInterface.getWiProVersion()).thenReturn((byte) 5);
+		when(internalInterface.getProtocolVersion()).thenReturn(new Version("5.0.0"));
 		when(internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(true);
 
 		Answer<Void> onGetCapability = new Answer<Void>() {

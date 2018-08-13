@@ -3,6 +3,7 @@ package com.smartdevicelink.proxy.interfaces;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.Version;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
@@ -177,9 +178,9 @@ public interface ISdl {
     SdlMsgVersion getSdlMsgVersion();
 
     /**
-     * Get wiProVersion
-     * @return byte representing wiProVersion
+     * Get protocol version
+     * @return Version object representing protocol version
      */
-    byte getWiProVersion();
+    Version getProtocolVersion();
 
 }

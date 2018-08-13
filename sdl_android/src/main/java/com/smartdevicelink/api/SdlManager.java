@@ -31,6 +31,7 @@ import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.util.Version;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +120,7 @@ public class SdlManager{
 			if(
 					permissionManager != null && permissionManager.getState() != BaseSubManager.SETTING_UP &&
 					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
-					videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP 
+					(videoStreamingManager == null || (videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP))
 					/*
 					audioStreamManager != null && audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
 					lockscreenManager != null &&  lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
@@ -141,8 +142,10 @@ public class SdlManager{
 		this.permissionManager = new PermissionManager(_internalInterface);
 		this.permissionManager.start(subManagerListener);
 
-		this.videoStreamingManager = new VideoStreamingManager(_internalInterface);
-		this.videoStreamingManager.start(subManagerListener);
+		if(getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)){
+			this.videoStreamingManager = new VideoStreamingManager(_internalInterface);
+			this.videoStreamingManager.start(subManagerListener);
+		}
 
 		this.fileManager = new FileManager(_internalInterface, context);
 		this.fileManager.start(subManagerListener);
@@ -158,7 +161,9 @@ public class SdlManager{
 
 	private void dispose() {
 		this.permissionManager.dispose();
-		this.videoStreamingManager.dispose();
+		if(this.videoStreamingManager != null) {
+			this.videoStreamingManager.dispose();
+		}
 		this.fileManager.dispose();
 		/*
 		this.lockscreenManager.dispose();
@@ -664,9 +669,10 @@ public class SdlManager{
 		}
 
 		@Override
-		public byte getWiProVersion() {
-			return proxy.getWiProVersion();
+		public Version getProtocolVersion() {
+			return new Version(Byte.toString(proxy.getWiProVersion()) + ".0.0");
 		}
+
 	};
 
 }
