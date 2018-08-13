@@ -46,7 +46,6 @@ import com.smartdevicelink.proxy.rpc.RadioControlData;
 import com.smartdevicelink.proxy.rpc.RdsData;
 import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.RemoteControlCapabilities;
-import com.smartdevicelink.proxy.rpc.SRGBColor;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
