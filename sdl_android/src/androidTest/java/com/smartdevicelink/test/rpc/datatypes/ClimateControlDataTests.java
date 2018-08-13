@@ -39,10 +39,10 @@ public class ClimateControlDataTests extends TestCase{
         msg.setDualModeEnable(Test.GENERAL_BOOLEAN);
         msg.setAcMaxEnable(Test.GENERAL_BOOLEAN);
         msg.setVentilationMode(Test.GENERAL_VENTILATIONMODE);
-	    msg.setHeatedSteeringWheelEnable(Test.GENERAL_BOOLEAN);
-	    msg.setHeatedWindshieldEnable(Test.GENERAL_BOOLEAN);
-	    msg.setHeatedRearWindowEnable(Test.GENERAL_BOOLEAN);
-	    msg.setHeatedMirrorsEnable(Test.GENERAL_BOOLEAN);
+        msg.setHeatedSteeringWheelEnable(Test.GENERAL_BOOLEAN);
+        msg.setHeatedWindshieldEnable(Test.GENERAL_BOOLEAN);
+        msg.setHeatedRearWindowEnable(Test.GENERAL_BOOLEAN);
+        msg.setHeatedMirrorsEnable(Test.GENERAL_BOOLEAN);
     }
 
     /**
@@ -60,10 +60,10 @@ public class ClimateControlDataTests extends TestCase{
         boolean dualModeEnable = msg.getDualModeEnable();
         boolean acMaxEnable = msg.getAcMaxEnable();
         VentilationMode ventilationMode = msg.getVentilationMode();
-	    boolean heatedSteeringWheelEnable = msg.getHeatedSteeringWheelEnable();
-	    boolean heatedWindshieldEnable = msg.getHeatedWindshieldEnable();
-	    boolean heatedRearWindowEnable = msg.getHeatedRearWindowEnable();
-	    boolean heatedMirrorsEnable = msg.getHeatedMirrorsEnable();
+        boolean heatedSteeringWheelEnable = msg.getHeatedSteeringWheelEnable();
+        boolean heatedWindshieldEnable = msg.getHeatedWindshieldEnable();
+        boolean heatedRearWindowEnable = msg.getHeatedRearWindowEnable();
+        boolean heatedMirrorsEnable = msg.getHeatedMirrorsEnable();
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_INT, fanSpeed);
@@ -76,10 +76,10 @@ public class ClimateControlDataTests extends TestCase{
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, dualModeEnable);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, acMaxEnable);
         assertEquals(Test.MATCH, Test.GENERAL_VENTILATIONMODE, ventilationMode);
-	    assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedSteeringWheelEnable);
-	    assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedWindshieldEnable);
-	    assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedRearWindowEnable);
-	    assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedMirrorsEnable);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedSteeringWheelEnable);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedWindshieldEnable);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedRearWindowEnable);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedMirrorsEnable);
 
         // Invalid/Null Tests
         ClimateControlData msg = new ClimateControlData();
@@ -95,10 +95,10 @@ public class ClimateControlDataTests extends TestCase{
         assertNull(Test.NULL, msg.getDualModeEnable());
         assertNull(Test.NULL, msg.getAcMaxEnable());
         assertNull(Test.NULL, msg.getVentilationMode());
-	    assertNull(Test.NULL, msg.getHeatedSteeringWheelEnable());
-	    assertNull(Test.NULL, msg.getHeatedWindshieldEnable());
-	    assertNull(Test.NULL, msg.getHeatedRearWindowEnable());
-	    assertNull(Test.NULL, msg.getHeatedMirrorsEnable());
+        assertNull(Test.NULL, msg.getHeatedSteeringWheelEnable());
+        assertNull(Test.NULL, msg.getHeatedWindshieldEnable());
+        assertNull(Test.NULL, msg.getHeatedRearWindowEnable());
+        assertNull(Test.NULL, msg.getHeatedMirrorsEnable());
     }
 
     public void testJson(){
@@ -115,10 +115,10 @@ public class ClimateControlDataTests extends TestCase{
             reference.put(ClimateControlData.KEY_AC_MAX_ENABLE, Test.GENERAL_BOOLEAN);
             reference.put(ClimateControlData.KEY_DEFROST_ZONE, Test.GENERAL_DEFROSTZONE);
             reference.put(ClimateControlData.KEY_VENTILATION_MODE, Test.GENERAL_VENTILATIONMODE);
-	        reference.put(ClimateControlData.KEY_HEATED_STEERING_WHEEL_ENABLE, Test.GENERAL_BOOLEAN);
-	        reference.put(ClimateControlData.KEY_HEATED_WIND_SHIELD_ENABLE, Test.GENERAL_BOOLEAN);
-	        reference.put(ClimateControlData.KEY_HEATED_REAR_WINDOW_ENABLE, Test.GENERAL_BOOLEAN);
-	        reference.put(ClimateControlData.KEY_HEATED_MIRRORS_ENABLE, Test.GENERAL_BOOLEAN);
+            reference.put(ClimateControlData.KEY_HEATED_STEERING_WHEEL_ENABLE, Test.GENERAL_BOOLEAN);
+            reference.put(ClimateControlData.KEY_HEATED_WIND_SHIELD_ENABLE, Test.GENERAL_BOOLEAN);
+            reference.put(ClimateControlData.KEY_HEATED_REAR_WINDOW_ENABLE, Test.GENERAL_BOOLEAN);
+            reference.put(ClimateControlData.KEY_HEATED_MIRRORS_ENABLE, Test.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());
