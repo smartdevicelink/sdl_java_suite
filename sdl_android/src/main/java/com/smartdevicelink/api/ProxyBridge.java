@@ -127,10 +127,7 @@ public class ProxyBridge implements IProxyListener{
 			CopyOnWriteArrayList<OnRPCListener> listeners = rpcListeners.get(id);
 			if(listeners!=null && listeners.size()>0) {
 				for (OnRPCListener listener : listeners) {
-					if (message instanceof RPCResponse && listener instanceof OnRPCResponseListener){
-						RPCResponse response = (RPCResponse) message;
-						((OnRPCResponseListener)listener).onResponse(response.getCorrelationID(), response);
-					}
+					listener.onReceived(message);
 				}
 				return true;
 			}

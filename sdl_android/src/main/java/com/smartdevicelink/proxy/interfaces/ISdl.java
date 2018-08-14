@@ -152,17 +152,15 @@ public interface ISdl {
 
     /**
      * Add an OnRPCResponseListener for specified response
-     * @param responseId FunctionID of the response that is to be listened for
      * @param listener listener that should be added for the response ID
      */
-    void addOnRPCResponseListener(FunctionID responseId, OnRPCResponseListener listener);
+    void addOnRPCResponseListener(OnRPCResponseListener listener);
 
     /**
      * Removes an OnRPCResponseListener for specified response
-     * @param responseId FunctionID of the response that was to be listened for
      * @param listener listener that was previously added for the response ID
      */
-    boolean removeOnRPCResponseListener(FunctionID responseId, OnRPCResponseListener listener);
+    boolean removeOnRPCResponseListener(OnRPCResponseListener listener);
 
     /**
      * Get SystemCapability Object

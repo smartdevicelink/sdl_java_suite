@@ -12,7 +12,9 @@ public abstract class OnRPCResponseListener extends OnRPCListener {
 	}
 
 	public final void onReceived(final RPCMessage message){
-		//Do nothing
+		if (message != null && message instanceof RPCResponse){
+			onResponse(((RPCResponse) message).getCorrelationID(), (RPCResponse)message);
+		}
 	}
 
 	/* *****************************************************************
