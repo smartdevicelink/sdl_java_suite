@@ -1,7 +1,9 @@
 package com.smartdevicelink.api.audio;
 
+import android.content.Context;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -20,13 +22,14 @@ public class AudioDecoder extends BaseAudioDecoder {
 
     /**
      * Creates a new object of AudioDecoder.
-     * @param audioFile The audio file to decode.
+     * @param audioSource The audio source to decode.
+     * @param context The context object to use to open the audio source.
      * @param sampleRate The desired sample rate for decoded audio data.
      * @param sampleType The desired sample type (8bit, 16bit, float).
      * @param listener A listener who receives the decoded audio.
      */
-    AudioDecoder(File audioFile, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
-        super(audioFile, sampleRate, sampleType, listener);
+    AudioDecoder(Uri audioSource, Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
+        super(audioSource, context, sampleRate, sampleType, listener);
     }
 
     /**

@@ -1,7 +1,10 @@
 package com.smartdevicelink.api.audio;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -21,13 +24,14 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
 
     /**
      * Creates a new object of AudioDecoder.
-     * @param audioFile The audio file to decode.
+     * @param audioSource The audio source to decode.
+     * @param context The context object to use to open the audio source.
      * @param sampleRate The desired sample rate for decoded audio data.
      * @param sampleType The desired sample type (8bit, 16bit, float).
      * @param listener A listener who receives the decoded audio.
      */
-    AudioDecoderCompat(File audioFile, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
-        super(audioFile, sampleRate, sampleType, listener);
+    AudioDecoderCompat(Uri audioSource, Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
+        super(audioSource, context, sampleRate, sampleType, listener);
     }
 
     /**
@@ -37,7 +41,8 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         try {
             initMediaComponents();
             decoder.start();
-            new DecodeAsync().execute();
+            //new DecodeAsync().execute();
+            asyncTask.execute();
         } catch (Exception e) {
             e.printStackTrace();
             this.listener.onDecoderError(e);
@@ -46,7 +51,9 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         }
     }
 
-    private class DecodeAsync extends AsyncTask<Void, Void, Void> {
+    //private class DecodeAsync extends AsyncTask<Void, Void, Void> {
+    @SuppressLint("StaticFieldLeak")
+    private AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -86,7 +93,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
                         outputBuffer = outputBuffersArray[outputBuffersArrayIndex];
                         if ((outputBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0 && outputBufferInfo.size != 0) {
                             decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
-                        } else {
+                        } else if (outputBuffer.limit() > 0) {
                             sampleBuffer = AudioDecoderCompat.super.onOutputBufferAvailable(outputBuffer);
                             listener.onAudioDataAvailable(sampleBuffer);
                             decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
@@ -104,5 +111,5 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
 
             return null;
         }
-    }
+    };
 }

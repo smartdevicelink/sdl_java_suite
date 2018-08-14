@@ -148,7 +148,7 @@ public class SdlManager{
 		this.fileManager = new FileManager(_internalInterface, context);
 		this.fileManager.start(subManagerListener);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			this.audioStreamManager = new AudioStreamManager(_internalInterface);
+			this.audioStreamManager = new AudioStreamManager(_internalInterface, context);
 			this.audioStreamManager.start(subManagerListener);
 		} else {
 			this.audioStreamManager = null;
@@ -167,13 +167,15 @@ public class SdlManager{
 	private void dispose() {
 		this.permissionManager.dispose();
 		this.fileManager.dispose();
-		this.audioStreamManager.dispose();
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			this.audioStreamManager.dispose();
+		}
 		/*
 		this.lockscreenManager.dispose();
 
 		this.screenManager.dispose();
 		this.videoStreamingManager.dispose();
-		this.audioStreamManager.dispose();
 		*/
 	}
 

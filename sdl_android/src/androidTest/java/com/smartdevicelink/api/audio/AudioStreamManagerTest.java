@@ -3,6 +3,7 @@ package com.smartdevicelink.api.audio;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.MediaFormat;
+import android.os.Build;
 import android.support.test.InstrumentationRegistry;
 import android.util.Log;
 
@@ -25,12 +26,9 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -63,7 +61,7 @@ public class AudioStreamManagerTest extends TestCase {
         doReturn(true).when(internalInterface).isConnected();
         doReturn(audioCapabilities).when(internalInterface).getCapability(SystemCapabilityType.PCM_STREAMING);
 
-        AudioStreamManager manager = new AudioStreamManager(internalInterface);
+        new AudioStreamManager(internalInterface, mContext);
     }
 
     public void testStartAudioStreamManager() {
@@ -72,20 +70,26 @@ public class AudioStreamManagerTest extends TestCase {
         Answer<Void> audioServiceAnswer = new Answer<Void>() {
             ISdlServiceListener serviceListener = null;
             @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
+            public Void answer(InvocationOnMock invocation) {
                 Method method = invocation.getMethod();
                 Object[] args = invocation.getArguments();
 
-                if (method.getName().equals("addServiceListener")) {
-                    // (SessionType serviceType, ISdlServiceListener sdlServiceListener);
-                    SessionType sessionType = (SessionType) args[0];
-                    assertEquals(sessionType, SessionType.PCM);
-
-                    serviceListener = (ISdlServiceListener) args[1];
-                } else if (method.getName().equals("startAudioService")) {
-                    //(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params);
-                    Boolean encrypted = (Boolean)args[0];
-                    serviceListener.onServiceStarted(mockSession, SessionType.PCM, encrypted);
+                switch (method.getName()) {
+                    case "addServiceListener":
+                        // parameters (SessionType serviceType, ISdlServiceListener sdlServiceListener);
+                        SessionType sessionType = (SessionType) args[0];
+                        assertEquals(sessionType, SessionType.PCM);
+                        serviceListener = (ISdlServiceListener) args[1];
+                        break;
+                    case "startAudioService":
+                        // parameters (boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params);
+                        Boolean encrypted = (Boolean) args[0];
+                        serviceListener.onServiceStarted(mockSession, SessionType.PCM, encrypted);
+                        break;
+                    case "stopAudioService":
+                        // parameters ()
+                        serviceListener.onServiceEnded(mockSession, SessionType.PCM);
+                        break;
                 }
 
                 return null;
@@ -97,50 +101,116 @@ public class AudioStreamManagerTest extends TestCase {
         doReturn(true).when(internalInterface).isConnected();
         doReturn(audioCapabilities).when(internalInterface).getCapability(SystemCapabilityType.PCM_STREAMING);
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
-        doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(false);
+        doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
+        doAnswer(audioServiceAnswer).when(internalInterface).stopAudioService();
 
+        CompletionListener completionListener = new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                assertEquals(true, success);
+            }
+        };
 
-        AudioStreamManager manager = new AudioStreamManager(internalInterface);
-        manager.startAudioStream(false);
-        manager.stopAudioStream();
+        CompletionListener mockListener = Mockito.spy(completionListener);
+        AudioStreamManager manager = new AudioStreamManager(internalInterface, mContext);
+
+        manager.startAudioStream(false, mockListener);
+        manager.stopAudioStream(mockListener);
+        verify(mockListener, timeout(10000).times(2)).onComplete(any(Boolean.class));
     }
 
-    public void testWithSquareSampleAudio16BitAnd8Khz() {
+    public void testWithSquareSampleAudio16BitAnd8KhzApi16() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._8KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(8000, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
     }
 
-    public void testWithSquareSampleAudio16BitAnd16Khz() {
+    public void testWithSquareSampleAudio16BitAnd16KhzApi16() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(16000, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
     }
 
-    public void testWithSquareSampleAudio16BitAnd22Khz() {
+    public void testWithSquareSampleAudio16BitAnd22KhzApi16() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._22KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(22050, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
     }
 
-    public void testWithSquareSampleAudio16BitAnd44Khz() {
+    public void testWithSquareSampleAudio16BitAnd44KhzApi16() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._44KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(44100, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
     }
 
-    public void testWithSquareSampleAudio8BitAnd8Khz() {
+    public void testWithSquareSampleAudio8BitAnd8KhzApi16() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._8KHZ, BitsPerSample._8_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(8000, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
     }
 
-    public void testWithSquareSampleAudio8BitAnd16Khz() {
+    public void testWithSquareSampleAudio8BitAnd16KhzApi16() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._8_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(16000, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
     }
 
-    public void testWithSquareSampleAudio8BitAnd22Khz() {
+    public void testWithSquareSampleAudio8BitAnd22KhzApi16() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._22KHZ, BitsPerSample._8_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(22050, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
     }
 
-    public void testWithSquareSampleAudio8BitAnd44Khz() {
+    public void testWithSquareSampleAudio8BitAnd44KhzApi16() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._44KHZ, BitsPerSample._8_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(44100, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio16BitAnd8KhzApi21() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._8KHZ, BitsPerSample._16_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(8000, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio16BitAnd16KhzApi21() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._16_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(16000, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio16BitAnd22KhzApi21() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._22KHZ, BitsPerSample._16_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(22050, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio16BitAnd44KhzApi21() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._44KHZ, BitsPerSample._16_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(44100, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio8BitAnd8KhzApi21() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._8KHZ, BitsPerSample._8_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(8000, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio8BitAnd16KhzApi21() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._8_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(16000, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio8BitAnd22KhzApi21() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
+        AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._22KHZ, BitsPerSample._8_BIT, AudioType.PCM);
+        runFullAudioManagerDecodeFlowWithSquareSampleAudio(22050, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+    }
+
+    public void testWithSquareSampleAudio8BitAnd44KhzApi21() throws Exception {
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._44KHZ, BitsPerSample._8_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(44100, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
     }
@@ -193,20 +263,27 @@ public class AudioStreamManagerTest extends TestCase {
         Answer<Void> audioServiceAnswer = new Answer<Void>() {
             ISdlServiceListener serviceListener = null;
             @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
+            public Void answer(InvocationOnMock invocation) {
                 Method method = invocation.getMethod();
                 Object[] args = invocation.getArguments();
 
-                if (method.getName().equals("addServiceListener")) {
-                    // (SessionType serviceType, ISdlServiceListener sdlServiceListener);
-                    SessionType sessionType = (SessionType) args[0];
-                    assertEquals(sessionType, SessionType.PCM);
+                switch (method.getName()) {
+                    case "addServiceListener":
+                        // (SessionType serviceType, ISdlServiceListener sdlServiceListener);
+                        SessionType sessionType = (SessionType) args[0];
+                        assertEquals(sessionType, SessionType.PCM);
 
-                    serviceListener = (ISdlServiceListener) args[1];
-                } else if (method.getName().equals("startAudioService")) {
-                    //(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params);
-                    Boolean encrypted = (Boolean)args[0];
-                    serviceListener.onServiceStarted(mockSession, SessionType.PCM, encrypted);
+                        serviceListener = (ISdlServiceListener) args[1];
+                        break;
+                    case "startAudioService":
+                        //(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params);
+                        Boolean encrypted = (Boolean) args[0];
+                        serviceListener.onServiceStarted(mockSession, SessionType.PCM, encrypted);
+                        break;
+                    case "stopAudioService":
+                        // parameters ()
+                        serviceListener.onServiceEnded(mockSession, SessionType.PCM);
+                        break;
                 }
 
                 return null;
@@ -218,10 +295,9 @@ public class AudioStreamManagerTest extends TestCase {
         doReturn(audioCapabilities).when(internalInterface).getCapability(any(SystemCapabilityType.class));
         doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
         doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
+        doAnswer(audioServiceAnswer).when(internalInterface).stopAudioService();
 
-        File file = getSampleFile("raw/test_audio_square_250hz_80amp_1s.mp3");
-
-        CompletionListener completionListener = new CompletionListener() {
+        CompletionListener fileCompletionListener = new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
                 assertEquals(true, success);
@@ -235,20 +311,26 @@ public class AudioStreamManagerTest extends TestCase {
             }
         };
 
-        CompletionListener mockListener = Mockito.spy(completionListener);
+        final CompletionListener mockFileListener = Mockito.spy(fileCompletionListener);
 
-        AudioStreamManager manager = new AudioStreamManager(internalInterface);
-        manager.startAudioStream(false);
-        manager.pushAudioFile(file, mockListener);
+        final AudioStreamManager manager = new AudioStreamManager(internalInterface, mContext);
+        manager.startAudioStream(false, new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                assertEquals(true, success);
 
-        verify(mockListener, timeout(10000)).onComplete(any(Boolean.class));
+                manager.pushResource(com.smartdevicelink.test.R.raw.test_audio_square_250hz_80amp_1s, mockFileListener);
+            }
+        });
+
+        verify(mockFileListener, timeout(10000)).onComplete(any(Boolean.class));
     }
 
     public void testSampleAtTargetTimeReturnNull() {
         BaseAudioDecoder mockDecoder = mock(BaseAudioDecoder.class, Mockito.CALLS_REAL_METHODS);
         Method sampleAtTargetMethod = getSampleAtTargetMethod();
         SampleBuffer sample = SampleBuffer.allocate(1, SampleType.SIGNED_16_BIT, ByteOrder.LITTLE_ENDIAN, 1);
-        Double result = new Double(5.0);
+        Double result;
         try {
             result = (Double) sampleAtTargetMethod.invoke(mockDecoder, 1.0, sample, 1, 3, 2);
             assertNull(result);
@@ -264,7 +346,7 @@ public class AudioStreamManagerTest extends TestCase {
         BaseAudioDecoder mockDecoder = mock(BaseAudioDecoder.class, Mockito.CALLS_REAL_METHODS);
         Method sampleAtTargetMethod = getSampleAtTargetMethod();
         SampleBuffer sample = SampleBuffer.allocate(1, SampleType.SIGNED_16_BIT, ByteOrder.LITTLE_ENDIAN, 1);
-        Double result = null;
+        Double result;
         Double lastOutputSample = 15.0;
         try {
             result = (Double) sampleAtTargetMethod.invoke(mockDecoder, lastOutputSample, sample, 6, 1, 5);
@@ -279,10 +361,10 @@ public class AudioStreamManagerTest extends TestCase {
         BaseAudioDecoder mockDecoder = mock(BaseAudioDecoder.class, Mockito.CALLS_REAL_METHODS);
         Method sampleAtTargetMethod = getSampleAtTargetMethod();
         SampleBuffer sample = SampleBuffer.allocate(10, SampleType.SIGNED_16_BIT, ByteOrder.LITTLE_ENDIAN, 1);
-        Double result = null;
+        Double result;
         try {
             result = (Double) sampleAtTargetMethod.invoke(mockDecoder, 1.0, sample, 1, 1, 2);
-            assertTrue(result.doubleValue() == sample.get(1));
+            assertTrue(result == sample.get(1));
         } catch (Exception e) {
             e.printStackTrace();
             fail();
@@ -293,7 +375,7 @@ public class AudioStreamManagerTest extends TestCase {
         BaseAudioDecoder mockDecoder = mock(BaseAudioDecoder.class, Mockito.CALLS_REAL_METHODS);
         Method sampleAtTargetMethod = getSampleAtTargetMethod();
         SampleBuffer sample = SampleBuffer.allocate(10, SampleType.SIGNED_16_BIT, ByteOrder.LITTLE_ENDIAN, 1);
-        Double result = null;
+        Double result;
         try {
             result = (Double) sampleAtTargetMethod.invoke(mockDecoder, 1.0, sample, 1, 3, 2);
             assertNotNull(result);
@@ -381,30 +463,8 @@ public class AudioStreamManagerTest extends TestCase {
         return method;
     }
 
-    private File getSampleFile(String fileName) {
-        File file = new File(mContext.getCacheDir() + "/" + fileName);
-        file.getParentFile().mkdirs();
-
-        try {
-            InputStream is = mContext.getAssets().open(fileName);
-            FileOutputStream fos = new FileOutputStream(file);
-            byte[] buffer = new byte[1 << 12];
-            int length;
-            do {
-                length = is.read(buffer);
-                if (length > 0) {
-                    fos.write(buffer, 0, length);
-                }
-            } while (length > 0);
-
-            fos.flush();
-            fos.close();
-            is.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail();
-        }
-
-        return file;
+    static void setFinalStatic(Field field, Object newValue) throws Exception {
+        field.setAccessible(true);
+        field.set(null, newValue);
     }
 }

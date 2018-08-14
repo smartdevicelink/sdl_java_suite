@@ -1,16 +1,17 @@
 package com.smartdevicelink.api.audio;
 
+import android.content.Context;
 import android.media.AudioFormat;
 import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import com.smartdevicelink.api.audio.AudioStreamManager.SampleType;
 
-import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -33,19 +34,23 @@ public abstract class BaseAudioDecoder {
 
     protected MediaExtractor extractor;
     protected MediaCodec decoder;
-    protected File audioFile;
+
+    protected Uri audioSource;
+    protected Context context;
     protected AudioDecoderListener listener;
 
-    public BaseAudioDecoder(File audioFile, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
-        this.audioFile = audioFile;
+    public BaseAudioDecoder(Uri audioSource, Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
+        this.audioSource = audioSource;
+        this.context = context;
         this.listener = listener;
+
         targetSampleRate = sampleRate;
         targetSampleType = sampleType;
     }
 
     protected void initMediaComponents() throws Exception {
         extractor = new MediaExtractor();
-        extractor.setDataSource(audioFile.getPath());
+        extractor.setDataSource(context, audioSource, null);
         MediaFormat format = null;
         String mime = null;
 
@@ -62,8 +67,8 @@ public abstract class BaseAudioDecoder {
             }
         }
 
-        if (mime == null || format == null) {
-            throw new Exception("The audio file " + audioFile.getPath() + " doesn't contain an audio track.");
+        if (mime == null) {
+            throw new Exception("The audio file " + audioSource.getPath() + " doesn't contain an audio track.");
         }
 
         decoder = MediaCodec.createDecoderByType(mime);
@@ -104,8 +109,8 @@ public abstract class BaseAudioDecoder {
     protected MediaCodec.BufferInfo onInputBufferAvailable(@NonNull MediaExtractor extractor, @NonNull ByteBuffer inputBuffer) {
         long sampleTime = extractor.getSampleTime();
         int counter = 0;
-        int result = 0;
         int maxresult = 0;
+        int result;
         boolean advanced = false;
 
         do {

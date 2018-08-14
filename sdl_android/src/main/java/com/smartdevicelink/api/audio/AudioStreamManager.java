@@ -1,8 +1,15 @@
 package com.smartdevicelink.api.audio;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.RawRes;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
@@ -20,6 +27,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -36,8 +44,22 @@ public class AudioStreamManager extends BaseSubManager {
     private int sdlSampleRate;
     private @SampleType int sdlSampleType;
     private final Queue<BaseAudioDecoder> queue;
-
+    private final WeakReference<Context> context;
     private StreamingStateMachine streamingStateMachine;
+
+    // This completion listener is used as a callback to the app developer when starting/stopping audio service
+    private CompletionListener serviceCompletionListener;
+    // As the internal interface does not provide timeout we need to use a future task
+    private Handler serviceCompletionHandler;
+    private int serviceCompletionTimeoutDuration;
+    private Runnable serviceCompletionTimeoutCallback = new Runnable() {
+        @Override
+        public void run() {
+            serviceListener.onServiceError(null, SessionType.PCM, "Service operation timeout reached");
+        }
+    };
+
+
 
     // INTERNAL INTERFACE
 
@@ -45,26 +67,51 @@ public class AudioStreamManager extends BaseSubManager {
         @Override
         public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
             if (SessionType.PCM.equals(type)) {
+                serviceCompletionHandler.removeCallbacks(serviceCompletionTimeoutCallback);
+
                 sdlAudioStream = session.startAudioStream();
                 streamingStateMachine.transitionToState(StreamingStateMachine.STARTED);
+
+                if (serviceCompletionListener != null) {
+                    CompletionListener completionListener = serviceCompletionListener;
+                    serviceCompletionListener = null;
+                    completionListener.onComplete(true);
+                }
             }
         }
 
         @Override
         public void onServiceEnded(SdlSession session, SessionType type) {
             if (SessionType.PCM.equals(type)) {
-                if (internalInterface != null) {
-                    session.stopAudioStream();
-                    sdlAudioStream = null;
-                    internalInterface.removeServiceListener(SessionType.PCM, this);
-                    streamingStateMachine.transitionToState(StreamingStateMachine.NONE);
+                serviceCompletionHandler.removeCallbacks(serviceCompletionTimeoutCallback);
+
+                session.stopAudioStream();
+                sdlAudioStream = null;
+                streamingStateMachine.transitionToState(StreamingStateMachine.NONE);
+
+                if (serviceCompletionListener != null) {
+                    CompletionListener completionListener = serviceCompletionListener;
+                    serviceCompletionListener = null;
+                    completionListener.onComplete(true);
                 }
             }
         }
 
         @Override
         public void onServiceError(SdlSession session, SessionType type, String reason) {
-            Log.e(TAG, "OnServiceError: " + reason);
+            if (SessionType.PCM.equals(type)) {
+                serviceCompletionHandler.removeCallbacks(serviceCompletionTimeoutCallback);
+
+                streamingStateMachine.transitionToState(StreamingStateMachine.ERROR);
+                Log.e(TAG, "OnServiceError: " + reason);
+                streamingStateMachine.transitionToState(StreamingStateMachine.NONE);
+
+                if (serviceCompletionListener != null) {
+                    CompletionListener completionListener = serviceCompletionListener;
+                    serviceCompletionListener = null;
+                    completionListener.onComplete(false);
+                }
+            }
         }
     };
 
@@ -72,9 +119,14 @@ public class AudioStreamManager extends BaseSubManager {
      * Creates a new object of AudioStreamManager
      * @param internalInterface The internal interface to the connected device.
      */
-    public AudioStreamManager(@NonNull ISdl internalInterface) {
+    public AudioStreamManager(@NonNull ISdl internalInterface, @NonNull Context context) {
         super(internalInterface);
         this.queue = new LinkedList<>();
+        this.context = new WeakReference<>(context);
+        this.serviceCompletionHandler = new Handler(Looper.getMainLooper());
+        this.serviceCompletionTimeoutDuration = 2000;
+
+        internalInterface.addServiceListener(SessionType.PCM, serviceListener);
 
         streamingStateMachine = new StreamingStateMachine();
         transitionToState(BaseSubManager.READY);
@@ -82,9 +134,14 @@ public class AudioStreamManager extends BaseSubManager {
 
     @Override
     public void dispose() {
-        stopAudioStream();
+        internalInterface.removeServiceListener(SessionType.PCM, serviceListener);
+
+        stopAudioStream(null);
 
         streamingStateMachine.transitionToState(StreamingStateMachine.NONE);
+        streamingStateMachine = null;
+
+        super.dispose();
     }
 
     /**
@@ -92,85 +149,117 @@ public class AudioStreamManager extends BaseSubManager {
      * The method is non-blocking.
      * @param encrypted Specify whether or not the audio stream should be encrypted.
      */
-    public void startAudioStream(boolean encrypted) {
+    public void startAudioStream(boolean encrypted, final CompletionListener completionListener) {
         // audio stream cannot be started without a connected internal interface
-        if (internalInterface == null || !internalInterface.isConnected()) {
+        if (!internalInterface.isConnected()) {
+            Log.w(TAG, "startAudioStream called without being connected.");
+            if (completionListener != null) {
+                completionListener.onComplete(false);
+            }
             return;
         }
 
         // streaming state must be NONE (starting the service is ready. starting stream is started)
         if (streamingStateMachine.getState() != StreamingStateMachine.NONE) {
+            Log.w(TAG, "startAudioStream called but streamingStateMachine is not in state NONE (current: " + streamingStateMachine.getState() + ")");
+            if (completionListener != null) {
+                completionListener.onComplete(false);
+            }
             return;
         }
 
-        try {
-            AudioPassThruCapabilities capabilities = (AudioPassThruCapabilities)internalInterface.getCapability(SystemCapabilityType.PCM_STREAMING);
+        AudioPassThruCapabilities capabilities = (AudioPassThruCapabilities) internalInterface.getCapability(SystemCapabilityType.PCM_STREAMING);
 
-            switch (capabilities.getSamplingRate()) {
-                case _8KHZ:
-                    sdlSampleRate = 8000;
-                    break;
-                case _16KHZ:
-                    sdlSampleRate = 16000;
-                    break;
-                case _22KHZ:
-                    // common sample rate is 22050, not 22000
-                    // see https://en.wikipedia.org/wiki/Sampling_(signal_processing)#Audio_sampling
-                    sdlSampleRate = 22050;
-                    break;
-                case _44KHZ:
-                    // 2x 22050 is 44100
-                    // see https://en.wikipedia.org/wiki/Sampling_(signal_processing)#Audio_sampling
-                    sdlSampleRate = 44100;
-                    break;
-            }
-
-            switch (capabilities.getBitsPerSample()) {
-                case _8_BIT:
-                    sdlSampleType = SampleType.UNSIGNED_8_BIT;
-                    break;
-                case _16_BIT:
-                    sdlSampleType = SampleType.SIGNED_16_BIT;
-                    break;
-            }
-
-            streamingStateMachine.transitionToState(StreamingStateMachine.READY);
-
-            internalInterface.addServiceListener(SessionType.PCM, this.serviceListener);
-            internalInterface.startAudioService(encrypted);
-        } catch (Exception e) {
-            Log.e(TAG, "error starting audio stream", e);
-            streamingStateMachine.transitionToState(StreamingStateMachine.ERROR);
+        switch (capabilities.getSamplingRate()) {
+            case _8KHZ:
+                sdlSampleRate = 8000;
+                break;
+            case _16KHZ:
+                sdlSampleRate = 16000;
+                break;
+            case _22KHZ:
+                // common sample rate is 22050, not 22000
+                // see https://en.wikipedia.org/wiki/Sampling_(signal_processing)#Audio_sampling
+                sdlSampleRate = 22050;
+                break;
+            case _44KHZ:
+                // 2x 22050 is 44100
+                // see https://en.wikipedia.org/wiki/Sampling_(signal_processing)#Audio_sampling
+                sdlSampleRate = 44100;
+                break;
         }
+
+        switch (capabilities.getBitsPerSample()) {
+            case _8_BIT:
+                sdlSampleType = SampleType.UNSIGNED_8_BIT;
+                break;
+            case _16_BIT:
+                sdlSampleType = SampleType.SIGNED_16_BIT;
+                break;
+        }
+
+        streamingStateMachine.transitionToState(StreamingStateMachine.READY);
+        serviceCompletionListener = completionListener;
+        serviceCompletionHandler.postDelayed(serviceCompletionTimeoutCallback, 2000);
+        internalInterface.startAudioService(encrypted);
     }
 
     /**
      * Stops the audio service and audio stream to the connected device.
      * The method is non-blocking.
      */
-    public void stopAudioStream() {
-        if (internalInterface == null || !internalInterface.isConnected()) {
+    public void stopAudioStream(final CompletionListener completionListener) {
+        if (!internalInterface.isConnected()) {
+            Log.w(TAG, "stopAudioStream called without being connected");
+            if (completionListener != null) {
+                completionListener.onComplete(false);
+            }
             return;
         }
 
         // streaming state must be STARTED (starting the service is ready. starting stream is started)
         if (streamingStateMachine.getState() != StreamingStateMachine.STARTED) {
+            Log.w(TAG, "stopAudioStream called but streamingStateMachine is not STARTED (current: " + streamingStateMachine.getState() + ")");
+            if (completionListener != null) {
+                completionListener.onComplete(false);
+            }
             return;
         }
 
         streamingStateMachine.transitionToState(StreamingStateMachine.STOPPED);
-
+        serviceCompletionListener = completionListener;
+        serviceCompletionHandler.postDelayed(serviceCompletionTimeoutCallback, 2000);
         internalInterface.stopAudioService();
+    }
+
+    /**
+     * Pushes the specified resource file to the playback queue.
+     * The audio file will be played immediately. If another audio file is currently playing
+     * the specified file will stay queued and automatically played when ready.
+     * @param resourceId The specified resource file to be played.
+     * @param completionListener A completion listener that informs when the audio file is played.
+     */
+    public void pushResource(int resourceId, final CompletionListener completionListener) {
+        Context c = context.get();
+        Resources r = c.getResources();
+        Uri uri = new Uri.Builder()
+                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+                .authority(r.getResourcePackageName(resourceId))
+                .appendPath(r.getResourceTypeName(resourceId))
+                .appendPath(r.getResourceEntryName(resourceId))
+                .build();
+
+        this.pushAudioSource(uri, completionListener);
     }
 
     /**
      * Pushes the specified audio file to the playback queue.
      * The audio file will be played immediately. If another audio file is currently playing
      * the specified file will stay queued and automatically played when ready.
-     * @param audioFile The specified audio file to be played.
+     * @param audioSource The specified audio file to be played.
      * @param completionListener A completion listener that informs when the audio file is played.
      */
-    public void pushAudioFile(File audioFile, final CompletionListener completionListener) {
+    public void pushAudioSource(Uri audioSource, final CompletionListener completionListener) {
         // streaming state must be STARTED (starting the service is ready. starting stream is started)
         if (streamingStateMachine.getState() != StreamingStateMachine.STARTED) {
             return;
@@ -208,11 +297,10 @@ public class AudioStreamManager extends BaseSubManager {
         };
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            decoder = new AudioDecoder(audioFile, sdlSampleRate, sdlSampleType, decoderListener);
+            decoder = new AudioDecoder(audioSource, context.get(), sdlSampleRate, sdlSampleType, decoderListener);
         } else {
             // this BaseAudioDecoder subclass uses methods deprecated with api 21
-            decoder = new AudioDecoderCompat(audioFile, sdlSampleRate, sdlSampleType, decoderListener);
+            decoder = new AudioDecoderCompat(audioSource, context.get(), sdlSampleRate, sdlSampleType, decoderListener);
         }
 
         synchronized (queue) {
