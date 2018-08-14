@@ -1,8 +1,11 @@
 package com.smartdevicelink.api.lockscreen;
 
+import android.app.ActivityManager;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.util.Log;
 
 import com.smartdevicelink.api.BaseSubManager;
@@ -176,7 +179,7 @@ public class LockScreenManager extends BaseSubManager {
 	private void launchLockScreenActivity(){
 		// intent to open SDLLockScreenActivity
 		// pass in icon, background color, and custom view
-		if (lockScreenEnabled) {
+		if (lockScreenEnabled && shouldShowNotification()) {
 			LockScreenStatus status = getLockScreenStatus();
 			if (hmiLevel == HMILevel.HMI_FULL && status == LockScreenStatus.REQUIRED) {
 				Intent showLockScreenIntent = new Intent(context.get(), SDLLockScreenActivity.class);
@@ -194,6 +197,15 @@ public class LockScreenManager extends BaseSubManager {
 				context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
 			}
 		}
+	}
+
+	private static boolean shouldShowNotification() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
+			ActivityManager.getMyMemoryState(myProcess);
+			return myProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
+		}
+		return true;
 	}
 
 	////
@@ -235,7 +247,11 @@ public class LockScreenManager extends BaseSubManager {
 			public void run(){
 				try{
 					lockScreenOEMIcon = HttpUtils.downloadImage(url);
-					Log.i(TAG, "Lock Screen Icon Downloaded");
+					Log.v(TAG, "Lock Screen Icon Downloaded");
+					Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_ICON_DOWNLOADED);
+					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_OEM_ICON_EXTRA, showOEMLogo);
+					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_OEM_ICON_BITMAP, lockScreenOEMIcon);
+					context.get().sendBroadcast(intent);
 				}catch(IOException e){
 					Log.e(TAG, "Lock Screen Icon Error Downloading");
 				}

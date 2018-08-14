@@ -21,16 +21,31 @@ public class SDLLockScreenActivity extends Activity {
 	public static final String LOCKSCREEN_OEM_ICON_EXTRA = "LOCKSCREEN_OEM_ICON_EXTRA";
 	public static final String LOCKSCREEN_OEM_ICON_BITMAP = "LOCKSCREEN_OEM_ICON_BITMAP";
 	public static final String LOCKSCREEN_CUSTOM_VIEW_EXTRA = "LOCKSCREEN_CUSTOM_VIEW_EXTRA";
+	public static final String LOCKSCREEN_ICON_DOWNLOADED = "LOCKSCREEN_ICON_DOWNLOADED";
 	public static final String CLOSE_LOCK_SCREEN_ACTION = "CLOSE_LOCK_SCREEN";
 	private static final String TAG = "SDLLockScreenActivity";
 
 	private int customView, customIcon, customColor;
 	private Bitmap lockScreenOEMIcon;
+	private boolean showOEMLogo;
 
-	private final BroadcastReceiver closeLockScreenBroadcastReceiver = new BroadcastReceiver() {
+	private final BroadcastReceiver lockScreenBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			finish();
+			if (intent != null){
+				String action = intent.getAction();
+				if (action != null){
+					if (action.equalsIgnoreCase(CLOSE_LOCK_SCREEN_ACTION)){
+						finish();
+					} else if (action.equalsIgnoreCase(LOCKSCREEN_ICON_DOWNLOADED)){
+						showOEMLogo = intent.getBooleanExtra(LOCKSCREEN_OEM_ICON_EXTRA, true);
+						lockScreenOEMIcon = intent.getParcelableExtra(LOCKSCREEN_OEM_ICON_BITMAP);
+						if (showOEMLogo && lockScreenOEMIcon != null){
+							showOEMIcon();
+						}
+					}
+				}
+			}
 		}
 	};
 
@@ -43,18 +58,18 @@ public class SDLLockScreenActivity extends Activity {
 		initializeActivity(getIntent());
 
 		// register broadcast receivers
-		registerReceiver(closeLockScreenBroadcastReceiver, new IntentFilter(CLOSE_LOCK_SCREEN_ACTION));
+		registerReceiver(lockScreenBroadcastReceiver, new IntentFilter(CLOSE_LOCK_SCREEN_ACTION));
 	}
 
 	@Override
 	protected void onDestroy() {
-		unregisterReceiver(closeLockScreenBroadcastReceiver);
+		unregisterReceiver(lockScreenBroadcastReceiver);
 		super.onDestroy();
 	}
 
 	public void initializeActivity(Intent intent){
 		if (intent != null){
-			boolean showOEMLogo = intent.getBooleanExtra(LOCKSCREEN_OEM_ICON_EXTRA, true);
+			showOEMLogo = intent.getBooleanExtra(LOCKSCREEN_OEM_ICON_EXTRA, true);
 			customColor = intent.getIntExtra(LOCKSCREEN_COLOR_EXTRA, 0);
 			customIcon = intent.getIntExtra(LOCKSCREEN_ICON_EXTRA, 0);
 			customView = intent.getIntExtra(LOCKSCREEN_CUSTOM_VIEW_EXTRA, 0);
