@@ -30,7 +30,7 @@ public class LockScreenManagerTests extends AndroidTestCase {
 		lockScreenConfig.setCustomView(Test.GENERAL_INT);
 		lockScreenConfig.setAppIcon(Test.GENERAL_INT);
 		lockScreenConfig.setBackgroundColor(Test.GENERAL_INT);
-		lockScreenConfig.setDisplayDeviceLogo(true);
+		lockScreenConfig.displayDeviceLogo(true);
 		lockScreenConfig.setEnabled(true);
 
 		lockScreenManager = new LockScreenManager(lockScreenConfig, context, internalInterface);
@@ -45,7 +45,7 @@ public class LockScreenManagerTests extends AndroidTestCase {
 		assertEquals(Test.GENERAL_INT, lockScreenManager.getCustomView());
 		assertEquals(Test.GENERAL_INT, lockScreenManager.getLockScreenIcon());
 		assertEquals(Test.GENERAL_INT, lockScreenManager.getLockScreenColor());
-		assertEquals(true, lockScreenManager.getDisplayDeviceLogo());
+		assertEquals(true, lockScreenManager.displayDeviceLogo());
 		assertEquals(true, lockScreenManager.getLockScreenEnabled());
 		assertNull(lockScreenManager.getLockScreenOEMIcon());
 	}

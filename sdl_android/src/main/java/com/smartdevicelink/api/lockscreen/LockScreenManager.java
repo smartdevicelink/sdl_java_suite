@@ -40,10 +40,10 @@ public class LockScreenManager extends BaseSubManager {
 	private static final String TAG = "LockScreenManager";
 	private WeakReference<Context> context;
 	private HMILevel hmiLevel;
-	private boolean driverDistStatus, lockScreenEnabled, showDisplayDeviceLogo;
+	private boolean driverDistStatus, lockScreenEnabled, displayDeviceLogo;
 	private int lockScreenIcon, lockScreenColor, customView;
 	private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
-	private String OEMIconUrl;
+	private String deviceIconUrl;
 	private Bitmap lockScreenOEMIcon;
 
 	public LockScreenManager(LockScreenConfig lockScreenConfig, Context context, ISdl internalInterface){
@@ -70,11 +70,11 @@ public class LockScreenManager extends BaseSubManager {
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_DRIVER_DISTRACTION, ddListener);
-		if (showDisplayDeviceLogo) {
+		if (displayDeviceLogo) {
 			internalInterface.removeOnRPCNotificationListener(FunctionID.ON_SYSTEM_REQUEST, systemRequestListener);
 		}
 		lockScreenOEMIcon = null;
-		OEMIconUrl = null;
+		deviceIconUrl = null;
 
 		// transition state
 		transitionToState(SHUTDOWN);
@@ -93,7 +93,7 @@ public class LockScreenManager extends BaseSubManager {
 		lockScreenColor = lockScreenConfig.getBackgroundColor();
 		customView = lockScreenConfig.getCustomView();
 		lockScreenEnabled = lockScreenConfig.isEnabled();
-		showDisplayDeviceLogo = lockScreenConfig.getDisplayDeviceLogo();
+		displayDeviceLogo = lockScreenConfig.displayDeviceLogo();
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class LockScreenManager extends BaseSubManager {
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_DRIVER_DISTRACTION, ddListener);
 
 		// set up system request listener
-		if (showDisplayDeviceLogo) {
+		if (displayDeviceLogo) {
 			systemRequestListener = new OnRPCNotificationListener() {
 				@Override
 				public void onNotified(RPCNotification notification) {
@@ -156,8 +156,8 @@ public class LockScreenManager extends BaseSubManager {
 							msg.getUrl() != null) {
 						// send intent to activity to download icon from core
 						Log.i(TAG, "SYSTEM REQUEST - ICON Ready for Download");
-						OEMIconUrl = msg.getUrl();
-						downloadLockScreenIcon(OEMIconUrl);
+						deviceIconUrl = msg.getUrl();
+						downloadLockScreenIcon(deviceIconUrl);
 					}
 				}
 			};
@@ -189,7 +189,7 @@ public class LockScreenManager extends BaseSubManager {
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_ICON_EXTRA, lockScreenIcon);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_COLOR_EXTRA, lockScreenColor);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_CUSTOM_VIEW_EXTRA, customView);
-				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_EXTRA, showDisplayDeviceLogo);
+				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_EXTRA, displayDeviceLogo);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_BITMAP, lockScreenOEMIcon);
 
 				context.get().startActivity(showLockScreenIntent);
@@ -249,7 +249,7 @@ public class LockScreenManager extends BaseSubManager {
 					lockScreenOEMIcon = HttpUtils.downloadImage(url);
 					Log.v(TAG, "Lock Screen Icon Downloaded");
 					Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_ICON_DOWNLOADED);
-					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_EXTRA, showDisplayDeviceLogo);
+					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_EXTRA, displayDeviceLogo);
 					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_BITMAP, lockScreenOEMIcon);
 					context.get().sendBroadcast(intent);
 				}catch(IOException e){
@@ -272,8 +272,8 @@ public class LockScreenManager extends BaseSubManager {
 		return customView;
 	}
 
-	protected boolean getDisplayDeviceLogo(){
-		return showDisplayDeviceLogo;
+	protected boolean displayDeviceLogo(){
+		return displayDeviceLogo;
 	}
 
 	protected boolean getLockScreenEnabled(){
