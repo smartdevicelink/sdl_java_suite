@@ -26,8 +26,8 @@ import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -178,10 +178,10 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {return false;}
 
 		@Override
-		public void addOnRPCResponseListener(FunctionID responseId, OnRPCResponseListener listener) { }
+		public void addOnRPCListener(FunctionID responseId, OnRPCListener listener) { }
 
 		@Override
-		public boolean removeOnRPCResponseListener(FunctionID responseId, OnRPCResponseListener listener) { return false; }
+		public boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener) { return false; }
 
 		@Override
 		public Object getCapability(SystemCapabilityType systemCapabilityType){return null;}
