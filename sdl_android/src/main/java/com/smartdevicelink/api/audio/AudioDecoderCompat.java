@@ -1,6 +1,5 @@
 package com.smartdevicelink.api.audio;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
@@ -8,9 +7,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
+
 import com.smartdevicelink.api.audio.AudioStreamManager.SampleType;
 
-import java.io.File;
+import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 
 /**
@@ -41,8 +42,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         try {
             initMediaComponents();
             decoder.start();
-            //new DecodeAsync().execute();
-            asyncTask.execute();
+            new DecodeAsync(this).execute();
         } catch (Exception e) {
             e.printStackTrace();
             this.listener.onDecoderError(e);
@@ -51,9 +51,13 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         }
     }
 
-    //private class DecodeAsync extends AsyncTask<Void, Void, Void> {
-    @SuppressLint("StaticFieldLeak")
-    private AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+    private static class DecodeAsync extends AsyncTask<Void, Void, Void> {
+        private WeakReference<AudioDecoderCompat> weakReference;
+
+        DecodeAsync(AudioDecoderCompat reference) {
+            this.weakReference = new WeakReference<>(reference);
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -62,14 +66,26 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            listener.onDecoderFinish(true);
-            stop();
+            AudioDecoderCompat reference = weakReference.get();
+            if (reference == null) {
+                Log.w(TAG, "Weak reference actually got null...");
+                return;
+            }
+
+            reference.listener.onDecoderFinish(true);
+            reference.stop();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            ByteBuffer[] inputBuffersArray = decoder.getInputBuffers();
-            ByteBuffer[] outputBuffersArray = decoder.getOutputBuffers();
+            AudioDecoderCompat reference = weakReference.get();
+            if (reference == null) {
+                Log.w(TAG, "Weak reference actually got null...");
+                return null;
+            }
+
+            ByteBuffer[] inputBuffersArray = reference.decoder.getInputBuffers();
+            ByteBuffer[] outputBuffersArray = reference.decoder.getOutputBuffers();
             MediaCodec.BufferInfo outputBufferInfo = new MediaCodec.BufferInfo();
             ByteBuffer inputBuffer;
             ByteBuffer outputBuffer;
@@ -78,29 +94,29 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
             while (true) {
                 int inputBuffersArrayIndex = 0;
                 while (inputBuffersArrayIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
-                    inputBuffersArrayIndex = decoder.dequeueInputBuffer(DEQUEUE_TIMEOUT);
+                    inputBuffersArrayIndex = reference.decoder.dequeueInputBuffer(DEQUEUE_TIMEOUT);
                     if (inputBuffersArrayIndex >= 0) {
                         inputBuffer = inputBuffersArray[inputBuffersArrayIndex];
-                        MediaCodec.BufferInfo inputBufferInfo = AudioDecoderCompat.super.onInputBufferAvailable(extractor, inputBuffer);
-                        decoder.queueInputBuffer(inputBuffersArrayIndex, inputBufferInfo.offset, inputBufferInfo.size, inputBufferInfo.presentationTimeUs, inputBufferInfo.flags);
+                        MediaCodec.BufferInfo inputBufferInfo = reference.onInputBufferAvailable(reference.extractor, inputBuffer);
+                        reference.decoder.queueInputBuffer(inputBuffersArrayIndex, inputBufferInfo.offset, inputBufferInfo.size, inputBufferInfo.presentationTimeUs, inputBufferInfo.flags);
                     }
                 }
 
                 int outputBuffersArrayIndex = 0;
                 while (outputBuffersArrayIndex != MediaCodec.INFO_TRY_AGAIN_LATER) {
-                    outputBuffersArrayIndex = decoder.dequeueOutputBuffer(outputBufferInfo, DEQUEUE_TIMEOUT);
+                    outputBuffersArrayIndex = reference.decoder.dequeueOutputBuffer(outputBufferInfo, DEQUEUE_TIMEOUT);
                     if (outputBuffersArrayIndex >= 0) {
                         outputBuffer = outputBuffersArray[outputBuffersArrayIndex];
                         if ((outputBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0 && outputBufferInfo.size != 0) {
-                            decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
+                            reference.decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
                         } else if (outputBuffer.limit() > 0) {
-                            sampleBuffer = AudioDecoderCompat.super.onOutputBufferAvailable(outputBuffer);
-                            listener.onAudioDataAvailable(sampleBuffer);
-                            decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
+                            sampleBuffer = reference.onOutputBufferAvailable(outputBuffer);
+                            reference.listener.onAudioDataAvailable(sampleBuffer);
+                            reference.decoder.releaseOutputBuffer(outputBuffersArrayIndex, false);
                         }
                     } else if (outputBuffersArrayIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
-                        MediaFormat newFormat = decoder.getOutputFormat();
-                        AudioDecoderCompat.super.onOutputFormatChanged(newFormat);
+                        MediaFormat newFormat = reference.decoder.getOutputFormat();
+                        reference.onOutputFormatChanged(newFormat);
                     }
                 }
 
@@ -111,5 +127,5 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
 
             return null;
         }
-    };
+    }
 }
