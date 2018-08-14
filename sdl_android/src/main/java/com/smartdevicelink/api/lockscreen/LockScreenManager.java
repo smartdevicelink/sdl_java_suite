@@ -40,7 +40,7 @@ public class LockScreenManager extends BaseSubManager {
 	private static final String TAG = "LockScreenManager";
 	private WeakReference<Context> context;
 	private HMILevel hmiLevel;
-	private boolean driverDistStatus, lockScreenEnabled, showOEMLogo;
+	private boolean driverDistStatus, lockScreenEnabled, showDisplayDeviceLogo;
 	private int lockScreenIcon, lockScreenColor, customView;
 	private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
 	private String OEMIconUrl;
@@ -70,7 +70,7 @@ public class LockScreenManager extends BaseSubManager {
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_DRIVER_DISTRACTION, ddListener);
-		if (showOEMLogo) {
+		if (showDisplayDeviceLogo) {
 			internalInterface.removeOnRPCNotificationListener(FunctionID.ON_SYSTEM_REQUEST, systemRequestListener);
 		}
 		lockScreenOEMIcon = null;
@@ -92,8 +92,8 @@ public class LockScreenManager extends BaseSubManager {
 		lockScreenIcon = lockScreenConfig.getAppIcon();
 		lockScreenColor = lockScreenConfig.getBackgroundColor();
 		customView = lockScreenConfig.getCustomView();
-		lockScreenEnabled = lockScreenConfig.getEnabled();
-		showOEMLogo = lockScreenConfig.getShowOEMLogo();
+		lockScreenEnabled = lockScreenConfig.isEnabled();
+		showDisplayDeviceLogo = lockScreenConfig.getDisplayDeviceLogo();
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class LockScreenManager extends BaseSubManager {
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_DRIVER_DISTRACTION, ddListener);
 
 		// set up system request listener
-		if (showOEMLogo) {
+		if (showDisplayDeviceLogo) {
 			systemRequestListener = new OnRPCNotificationListener() {
 				@Override
 				public void onNotified(RPCNotification notification) {
@@ -189,8 +189,8 @@ public class LockScreenManager extends BaseSubManager {
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_ICON_EXTRA, lockScreenIcon);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_COLOR_EXTRA, lockScreenColor);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_CUSTOM_VIEW_EXTRA, customView);
-				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_OEM_ICON_EXTRA, showOEMLogo);
-				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_OEM_ICON_BITMAP, lockScreenOEMIcon);
+				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_EXTRA, showDisplayDeviceLogo);
+				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_BITMAP, lockScreenOEMIcon);
 
 				context.get().startActivity(showLockScreenIntent);
 			} else if (status == LockScreenStatus.OFF) {
@@ -249,8 +249,8 @@ public class LockScreenManager extends BaseSubManager {
 					lockScreenOEMIcon = HttpUtils.downloadImage(url);
 					Log.v(TAG, "Lock Screen Icon Downloaded");
 					Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_ICON_DOWNLOADED);
-					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_OEM_ICON_EXTRA, showOEMLogo);
-					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_OEM_ICON_BITMAP, lockScreenOEMIcon);
+					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_EXTRA, showDisplayDeviceLogo);
+					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_BITMAP, lockScreenOEMIcon);
 					context.get().sendBroadcast(intent);
 				}catch(IOException e){
 					Log.e(TAG, "Lock Screen Icon Error Downloading");
@@ -272,8 +272,8 @@ public class LockScreenManager extends BaseSubManager {
 		return customView;
 	}
 
-	protected boolean getShowOEMLogo(){
-		return showOEMLogo;
+	protected boolean getDisplayDeviceLogo(){
+		return showDisplayDeviceLogo;
 	}
 
 	protected boolean getLockScreenEnabled(){

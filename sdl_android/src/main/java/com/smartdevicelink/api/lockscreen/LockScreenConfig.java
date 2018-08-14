@@ -5,7 +5,7 @@ package com.smartdevicelink.api.lockscreen;
  *
  * This is set during SdlManager instantiation. <br>
  *
- * <li> enableAutomaticLockScreen - if false, don't worry about the other parameters. You are responsible for creating and managing a lockscreen.
+ * <li> enable - if false, don't worry about the other parameters. You are responsible for creating and managing a lockscreen.
  * If true, also set the backgroundColor and appIcon if you want. If you don't set the backgroundColor or appIcon, it will use the defaults.</li>
  *
  * <li> backgroundColor - if using the default lockscreen, you can set this to a color of your choosing </li>
@@ -16,39 +16,39 @@ package com.smartdevicelink.api.lockscreen;
  */
 public class LockScreenConfig {
 
-	private boolean enableAutomaticLockScreen, showOEMLogo;
+	private boolean enable, showDisplayDeviceLogo;
 	private int backgroundColor, appIconInt, customViewInt;
 
 	public LockScreenConfig(){
 		// set default values
-		this.enableAutomaticLockScreen = true;
-		this.showOEMLogo = false;
+		this.enable = true;
+		this.showDisplayDeviceLogo = false;
 	}
 
 	/**
 	 * If set to true, SDL will manage the showing and dismissing of the lock screen for you. <br>
 	 *
 	 * If false, you must manage the lock screen
-	 * @param enableAutomaticLockScreen boolean
+	 * @param enable boolean
 	 */
-	public void setEnabled(boolean enableAutomaticLockScreen){
-		this.enableAutomaticLockScreen = enableAutomaticLockScreen;
+	public void setEnabled(boolean enable){
+		this.enable = enable;
 	}
 
 	/**
 	 * Gets whether the lock screen is being managed for you
 	 * @return boolean
 	 */
-	public boolean getEnabled() {
-		return enableAutomaticLockScreen;
+	public boolean isEnabled() {
+		return enable;
 	}
 
 	/**
-	 * Set the int of the background color. You should define colors in your Colors.xml file
-	 * @param backgroundColor int of the color you'd like
+	 * Set the resource int of the background color. Colors should define colors in your Colors.xml file
+	 * @param resourceColor resource int of the color
 	 */
-	public void setBackgroundColor(int backgroundColor){
-		this.backgroundColor = backgroundColor;
+	public void setBackgroundColor(int resourceColor){
+		this.backgroundColor = resourceColor;
 	}
 
 	/**
@@ -93,20 +93,22 @@ public class LockScreenConfig {
 	}
 
 	/**
-	 * Whether or not to show the OEM logo on the default lock screen <br>
+	 * Whether or not to show the Display Device's logo on the default lock screen <br>
+	 * The logo will come from the connected hardware, if set by the manufacturer <br>
 	 * If using a Custom View, this will be ignored.
-	 * @param showOEMLogo - boolean
+	 * @param showDisplayDeviceLogo - boolean
 	 */
-	public void setShowOEMLogo(boolean showOEMLogo) {
-		this.showOEMLogo = showOEMLogo;
+	public void setDisplayDeviceLogo(boolean showDisplayDeviceLogo) {
+		this.showDisplayDeviceLogo = showDisplayDeviceLogo;
 	}
 
 	/**
-	 * Get whether or not to show the OEM Logo on the default lock screen
-	 * @return showOEMLogo - boolean
+	 * Get whether or not to show the Display Device's Logo on the default lock screen <br>
+	 * The logo will come from the connected hardware, if set by the manufacturer <br>
+	 * @return showDisplayDeviceLogo - boolean
 	 */
-	public boolean getShowOEMLogo() {
-		return showOEMLogo;
+	public boolean getDisplayDeviceLogo() {
+		return showDisplayDeviceLogo;
 	}
 
 }
