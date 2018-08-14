@@ -26,6 +26,7 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
@@ -654,12 +655,12 @@ public class SdlManager{
 		}
 
 		@Override
-		public void addOnRPCResponseListener(final FunctionID responseId, final OnRPCResponseListener listener) {
+		public void addOnRPCListener(final FunctionID responseId, final OnRPCListener listener) {
 			proxyBridge.addRpcListener(responseId, listener);
 		}
 
 		@Override
-		public boolean removeOnRPCResponseListener(final FunctionID responseId, final OnRPCResponseListener listener) {
+		public boolean removeOnRPCListener(final FunctionID responseId, final OnRPCListener listener) {
 			return proxyBridge.removeOnRPCListener(responseId, listener);
 		}
 

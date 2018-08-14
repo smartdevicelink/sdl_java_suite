@@ -74,6 +74,7 @@ import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
@@ -333,13 +334,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void addOnRPCResponseListener(FunctionID responseId, OnRPCResponseListener listener) {
+		public void addOnRPCListener(FunctionID responseId, OnRPCListener listener) {
 			DebugTool.logError("Proxy.addOnRPCResponseListener() is not implemented yet");
 
 		}
 
 		@Override
-		public boolean removeOnRPCResponseListener(FunctionID responseId, OnRPCResponseListener listener) {
+		public boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener) {
 			DebugTool.logError("Proxy.removeOnRPCResponseListener() is not implemented yet");
 			return false;
 		}

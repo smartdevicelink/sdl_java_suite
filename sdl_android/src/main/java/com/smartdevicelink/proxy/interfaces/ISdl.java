@@ -6,8 +6,8 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -152,15 +152,17 @@ public interface ISdl {
 
     /**
      * Add an OnRPCResponseListener for specified response
+     * @param responseId FunctionID of the response that is to be listened for
      * @param listener listener that should be added for the response ID
      */
-    void addOnRPCResponseListener(OnRPCResponseListener listener);
+    void addOnRPCListener(FunctionID responseId, OnRPCListener listener);
 
     /**
      * Removes an OnRPCResponseListener for specified response
+     * @param responseId FunctionID of the response that was to be listened for
      * @param listener listener that was previously added for the response ID
      */
-    boolean removeOnRPCResponseListener(OnRPCResponseListener listener);
+    boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener);
 
     /**
      * Get SystemCapability Object
