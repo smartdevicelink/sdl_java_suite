@@ -67,7 +67,7 @@ public class SdlManager {
 
 	private CompletionListener initListener;
 	private int state = -1;
-	public LockScreenConfig lockScreenConfig;
+	private LockScreenConfig lockScreenConfig;
 
 	// Managers
 	private LockScreenManager lockscreenManager;
@@ -324,10 +324,7 @@ public class SdlManager {
 
 		if (sdlManager.lockScreenConfig == null){
 			// if lock screen params are not set, use default
-			LockScreenConfig lsc = new LockScreenConfig();
-			lsc.setEnabled(true);
-			lsc.setShowOEMLogo(false);
-			sdlManager.lockScreenConfig = lsc;
+			sdlManager.lockScreenConfig = new LockScreenConfig();
 		}
 
 		if (sdlManager.hmiLanguage == null){

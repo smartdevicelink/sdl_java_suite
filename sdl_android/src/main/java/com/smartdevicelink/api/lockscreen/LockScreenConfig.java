@@ -19,7 +19,11 @@ public class LockScreenConfig {
 	private boolean enableAutomaticLockScreen, showOEMLogo;
 	private int backgroundColor, appIconInt, customViewInt;
 
-	public LockScreenConfig(){}
+	public LockScreenConfig(){
+		// set default values
+		this.enableAutomaticLockScreen = true;
+		this.showOEMLogo = false;
+	}
 
 	/**
 	 * If set to true, SDL will manage the showing and dismissing of the lock screen for you. <br>
