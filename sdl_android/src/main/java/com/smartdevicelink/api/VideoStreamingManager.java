@@ -45,7 +45,7 @@ public class VideoStreamingManager extends BaseSubManager{
 	private static String TAG = "VideoStreamingManager";
 
 	private WeakReference<Context> context;
-	private volatile VirtualDisplayEncoder encoder;
+	private volatile VirtualDisplayEncoder virtualDisplayEncoder;
 	private Class<? extends SdlRemoteDisplay> remoteDisplayClass = null;
 	private SdlRemoteDisplay remoteDisplay;
 	private float[] touchScalar = {1.0f,1.0f}; //x, y
@@ -53,7 +53,8 @@ public class VideoStreamingManager extends BaseSubManager{
 	private SdlMotionEvent sdlMotionEvent = null;
 	private HMILevel hmiLevel;
 	private StreamingStateMachine stateMachine;
-	private SdlEncoder mSdlEncoder;
+	private VideoStreamingParameters parameters;
+	private IVideoStreamListener streamListener;
 
 	// INTERNAL INTERFACES
 
@@ -76,20 +77,25 @@ public class VideoStreamingManager extends BaseSubManager{
 		}
 
 		@Override
-		public void onServiceError(SdlSession session, SessionType type, String reason) {}
+		public void onServiceError(SdlSession session, SessionType type, String reason) {
+			stateMachine.transitionToState(StreamingStateMachine.ERROR);
+			transitionToState(BaseSubManager.ERROR);
+		}
 	};
 
 	private final OnRPCNotificationListener hmiListener = new OnRPCNotificationListener() {
 		@Override
 		public void onNotified(RPCNotification notification) {
-			hmiLevel = ((OnHMIStatus)notification).getHmiLevel();
+			if(notification != null){
+				hmiLevel = ((OnHMIStatus)notification).getHmiLevel();
+			}
 		}
 	};
 
 	private final OnRPCNotificationListener touchListener = new OnRPCNotificationListener() {
 		@Override
 		public void onNotified(RPCNotification notification) {
-			if(notification !=null && remoteDisplay != null){
+			if(notification != null && remoteDisplay != null){
 				MotionEvent event = convertTouchEvent((OnTouchEvent)notification);
 				if(event!=null){
 					remoteDisplay.handleMotionEvent(event);
@@ -103,7 +109,7 @@ public class VideoStreamingManager extends BaseSubManager{
 	public VideoStreamingManager(ISdl internalInterface){
 		super(internalInterface);
 
-		encoder = new VirtualDisplayEncoder();
+		virtualDisplayEncoder = new VirtualDisplayEncoder();
 		hmiLevel = HMILevel.HMI_NONE;
 
 		// Listen for video service events
@@ -142,7 +148,7 @@ public class VideoStreamingManager extends BaseSubManager{
 					public void onCapabilityRetrieved(Object capability) {
 						VideoStreamingParameters params = new VideoStreamingParameters();
 						params.update((VideoStreamingCapability)capability);	//Streaming parameters are ready time to stream
-						startVideoStreaming(params, encrypted);
+						startStreaming(params, encrypted);
 					}
 
 					@Override
@@ -158,85 +164,10 @@ public class VideoStreamingManager extends BaseSubManager{
 				if(dispCap !=null){
 					params.setResolution(dispCap.getScreenParams().getImageResolution());
 				}
-				startVideoStreaming(params, encrypted);
+				startStreaming(params, encrypted);
 			}
 		}else{
-			startVideoStreaming(parameters, encrypted);
-		}
-	}
-
-	/**
-	 * Opens the video service (serviceType 11) and creates a Surface (used for streaming video) with input parameters provided by the app
-	 * @param frameRate - specified rate of frames to utilize for creation of Surface
-	 * @param iFrameInterval - specified interval to utilize for creation of Surface
-	 * @param width - specified width to utilize for creation of Surface
-	 * @param height - specified height to utilize for creation of Surface
-	 * @param bitrate - specified bitrate to utilize for creation of Surface
-	 *@return Surface if service is opened successfully and stream is started, return null otherwise
-	 */
-	@SuppressWarnings("unused")
-	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
-	                                        int height, int bitrate, boolean isEncrypted) {
-		if(hmiLevel != HMILevel.HMI_FULL){
-			Log.e(TAG, "Cannot start video service if HMILevel is not FULL.");
-			return null;
-		}
-
-		IVideoStreamListener encoderListener = startVideoStream(new VideoStreamingParameters(), isEncrypted);
-		if (encoderListener == null) {
-			stateMachine.transitionToState(StreamingStateMachine.ERROR);
-			Log.e(TAG, "Cannot create encoderListener");
-			return null;
-		}
-
-		mSdlEncoder = new SdlEncoder();
-		mSdlEncoder.setFrameRate(frameRate);
-		mSdlEncoder.setFrameInterval(iFrameInterval);
-		mSdlEncoder.setFrameWidth(width);
-		mSdlEncoder.setFrameHeight(height);
-		mSdlEncoder.setBitrate(bitrate);
-		mSdlEncoder.setOutputListener(encoderListener);
-		Surface surface = mSdlEncoder.prepareEncoder();
-
-		if(surface != null){
-			stateMachine.transitionToState(StreamingStateMachine.READY);
-		}else{
-			Log.e(TAG, "Cannot create surface.");
-			stateMachine.transitionToState(StreamingStateMachine.ERROR);
-		}
-		return surface;
-	}
-
-	/**
-	 * Starts the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
-	 * @see #createOpenGLInputSurface(int, int, int, int, int, boolean)
-	 */
-	public void startEncoder(){
-		if(mSdlEncoder != null){
-			mSdlEncoder.startEncoder();
-			stateMachine.transitionToState(StreamingStateMachine.STARTED);
-		}
-	}
-
-	/**
-	 * Releases the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
-	 * @see #createOpenGLInputSurface(int, int, int, int, int, boolean)
-	 */
-	public void releaseEncoder(){
-		if(mSdlEncoder != null){
-			mSdlEncoder.releaseEncoder();
-			stateMachine.transitionToState(StreamingStateMachine.STOPPED);
-		}
-	}
-
-	/**
-	 * Drains the MediaCodec encoder utilized in conjunction with the Surface returned via the createOpenGLInputSurface method
-	 * @param endOfStream indicates if this is the end of stream
-	 * @see #createOpenGLInputSurface(int, int, int, int, int, boolean)
-	 */
-	public void drainEncoder(boolean endOfStream){
-		if(mSdlEncoder != null) {
-			mSdlEncoder.drainEncoder(endOfStream);
+			startStreaming(parameters, encrypted);
 		}
 	}
 
@@ -252,7 +183,7 @@ public class VideoStreamingManager extends BaseSubManager{
 	 * @return IVideoStreamListener interface if service is opened successfully and streaming is
 	 *         started, null otherwise
 	 */
-	public IVideoStreamListener startVideoStream(VideoStreamingParameters parameters, boolean encrypted){
+	protected IVideoStreamListener startVideoService(VideoStreamingParameters parameters, boolean encrypted){
 		if(hmiLevel != HMILevel.HMI_FULL){
 			Log.e(TAG, "Cannot start video service if HMILevel is not FULL.");
 			return null;
@@ -272,8 +203,9 @@ public class VideoStreamingManager extends BaseSubManager{
 	 *                    VideoStreamingCodec.H264 is accepted), height and width of the video in pixels.
 	 * @param encrypted Specify true if packets on this service have to be encrypted
 	 */
-	private void startVideoStreaming(VideoStreamingParameters parameters, boolean encrypted){
-		IVideoStreamListener streamListener = startVideoStream(parameters, encrypted);
+	private void startStreaming(VideoStreamingParameters parameters, boolean encrypted){
+		this.parameters = parameters;
+		this.streamListener = startVideoService(parameters, encrypted);
 		if(streamListener == null){
 			Log.e(TAG, "Error starting video service");
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
@@ -283,42 +215,66 @@ public class VideoStreamingManager extends BaseSubManager{
 		if(capability != null && capability.getIsHapticSpatialDataSupported()){
 			hapticManager = new HapticInterfaceManager(internalInterface);
 		}
+		startEncoder();
+	}
+
+	/**
+	 * Initializes and starts the virtual display encoder and creates the remote display
+	 */
+	private void startEncoder(){
 		try {
-			encoder.init(this.context.get(),streamListener,parameters);
+			virtualDisplayEncoder.init(this.context.get(), streamListener, parameters);
 			//We are all set so we can start streaming at at this point
-			encoder.start();
+			virtualDisplayEncoder.start();
 			//Encoder should be up and running
-			createRemoteDisplay(encoder.getVirtualDisplay());
+			createRemoteDisplay(virtualDisplayEncoder.getVirtualDisplay());
 			stateMachine.transitionToState(StreamingStateMachine.STARTED);
 		} catch (Exception e) {
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			e.printStackTrace();
 		}
-		Log.d(TAG, parameters.toString());
 	}
 
 	/**
-	 * Stops streaming service and remote display encoder if applicable.
+	 * Stops streaming from the remote display. To restart, call
+	 * @see #resumeStreaming()
 	 */
 	public void stopStreaming(){
 		if(remoteDisplay!=null){
 			remoteDisplay.stop();
-			remoteDisplay = null;
 		}
-		if(encoder!=null){
-			encoder.shutDown();
-		}
-		if(internalInterface!=null){
-			internalInterface.stopVideoService();
+		if(virtualDisplayEncoder!=null){
+			virtualDisplayEncoder.shutDown();
 		}
 		stateMachine.transitionToState(StreamingStateMachine.STOPPED);
 	}
 
 	/**
-	 * Stops video streaming service and removes service listener.
+	 * Resumes streaming after calling
+	 * @see #startRemoteDisplayStream(android.content.Context, Class, com.smartdevicelink.streaming.video.VideoStreamingParameters, boolean)
+	 * followed by a call to
+	 * @see #stopStreaming()
+	 */
+	public void resumeStreaming(){
+		if(stateMachine.getState() != StreamingStateMachine.STOPPED){
+			return;
+		}
+		startEncoder();
+	}
+
+	/**
+	 * Stops streaming, ends video streaming service and removes service listeners.
 	 */
 	public void dispose(){
 		stopStreaming();
+
+		hapticManager = null;
+		remoteDisplay = null;
+		parameters = null;
+		virtualDisplayEncoder = null;
+		if(internalInterface!=null){
+			internalInterface.stopVideoService();
+		}
 
 		// Remove listeners
 		internalInterface.removeServiceListener(SessionType.NAV, serviceListener);
@@ -334,18 +290,27 @@ public class VideoStreamingManager extends BaseSubManager{
 	 * Check if a video service is currently active
 	 * @return boolean (true = active, false = inactive)
 	 */
-	public boolean isVideoConnected(){
+	public boolean isServiceActive(){
 		return (stateMachine.getState() == StreamingStateMachine.READY) ||
 				(stateMachine.getState() == StreamingStateMachine.STARTED) ||
 				(stateMachine.getState() == StreamingStateMachine.STOPPED);
 	}
 
 	/**
-	 * Check if video streaming has been paused due to app moving to background
+	 * Check if video is currently streaming and visible
+	 * @return boolean (true = yes, false = no)
+	 */
+	public boolean isStreaming(){
+		return (stateMachine.getState() == StreamingStateMachine.STARTED) ||
+				(hmiLevel == HMILevel.HMI_FULL);
+	}
+
+	/**
+	 * Check if video streaming has been paused due to app moving to background or manually stopped
 	 * @return boolean (true = not paused, false = paused)
 	 */
-	public boolean isVideoStreamingPaused(){
-		return (stateMachine.getState() == StreamingStateMachine.STARTED) &&
+	public boolean isPaused(){
+		return (stateMachine.getState() == StreamingStateMachine.STARTED) ||
 				(hmiLevel != HMILevel.HMI_FULL);
 	}
 

@@ -670,7 +670,7 @@ public class SdlManager{
 
 		@Override
 		public Version getProtocolVersion() {
-			return new Version(Byte.toString(proxy.getWiProVersion()) + ".0.0");
+			return proxy.getProtocolVersion();
 		}
 
 	};
