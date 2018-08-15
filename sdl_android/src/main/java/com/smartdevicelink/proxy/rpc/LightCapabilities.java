@@ -11,7 +11,7 @@ public class LightCapabilities extends RPCStruct {
 
 	public static final String KEY_NAME = "name";
 	public static final String KEY_DENSITY_AVAILABLE = "densityAvailable";
-	public static final String KEY_RGB_COLOR_SPACE_AVAILABLE = "RGBColorSpaceAvailable";
+	public static final String KEY_RGB_COLOR_SPACE_AVAILABLE = "rgbColorSpaceAvailable";
 	public static final String KEY_STATUS_AVAILABLE = "statusAvailable";
 
 	/**
