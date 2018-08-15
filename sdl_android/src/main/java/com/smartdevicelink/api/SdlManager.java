@@ -483,6 +483,9 @@ public class SdlManager {
 		public void start() {
 			try{
 				proxy.initializeProxy();
+
+				// clean up objects
+				lockScreenConfig = null;
 			}catch (SdlException e){
 				e.printStackTrace();
 			}

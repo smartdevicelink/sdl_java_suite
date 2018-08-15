@@ -51,7 +51,7 @@ public class LockScreenManagerTests extends AndroidTestCase {
 	}
 
 	public void testGetLockScreenStatus(){
-		assertEquals(LockScreenStatus.OFF, lockScreenManager.testGetLockScreenStatus());
+		assertEquals(LockScreenStatus.OFF, lockScreenManager.getLockScreenStatus());
 	}
 
 }

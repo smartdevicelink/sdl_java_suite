@@ -1,7 +1,6 @@
 package com.smartdevicelink.api.lockscreen;
 
 import android.app.ActivityManager;
-import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,8 +20,6 @@ import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.HttpUtils;
-
-import org.json.JSONException;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -56,7 +53,12 @@ public class LockScreenManager extends BaseSubManager {
 		driverDistStatus = false;
 
 		// setup the manager
-		readConfiguration(lockScreenConfig);
+		lockScreenIcon = lockScreenConfig.getAppIcon();
+		lockScreenColor = lockScreenConfig.getBackgroundColor();
+		customView = lockScreenConfig.getCustomView();
+		lockScreenEnabled = lockScreenConfig.isEnabled();
+		displayDeviceLogo = lockScreenConfig.displayDeviceLogo();
+
 		setupListeners();
 
 		// transition state
@@ -83,18 +85,6 @@ public class LockScreenManager extends BaseSubManager {
 	////
 	// SETUP
 	////
-
-	/**
-	 * Reads configuration set in SDLManager Builder
-	 * @param lockScreenConfig - the configuration set.
-	 */
-	private void readConfiguration(LockScreenConfig lockScreenConfig){
-		lockScreenIcon = lockScreenConfig.getAppIcon();
-		lockScreenColor = lockScreenConfig.getBackgroundColor();
-		customView = lockScreenConfig.getCustomView();
-		lockScreenEnabled = lockScreenConfig.isEnabled();
-		displayDeviceLogo = lockScreenConfig.displayDeviceLogo();
-	}
 
 	/**
 	 * Adds 3 listeners that help determine whether or not a lockscreen should be shown.
@@ -125,15 +115,15 @@ public class LockScreenManager extends BaseSubManager {
 					OnDriverDistraction ddState = (OnDriverDistraction) notification;
 
 					if (ddState.getState() == DriverDistractionState.DD_ON){
-						Log.i(TAG, "DD On Notification");
 						// launch lock screen
 						driverDistStatus = true;
 						launchLockScreenActivity();
 					}else{
-						Log.i(TAG, "DD Off Notification");
 						// close lock screen
 						driverDistStatus = false;
-						context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
+						if (context.get() != null) {
+							context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
+						}
 					}
 				}
 			}
@@ -147,15 +137,9 @@ public class LockScreenManager extends BaseSubManager {
 				public void onNotified(RPCNotification notification) {
 					// do something with the status
 					final OnSystemRequest msg = (OnSystemRequest) notification;
-					try {
-						Log.i(TAG, "SYSTEM REQUEST: " + notification.serializeJSON().toString());
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
 					if (msg.getRequestType() == RequestType.LOCK_SCREEN_ICON_URL &&
 							msg.getUrl() != null) {
 						// send intent to activity to download icon from core
-						Log.i(TAG, "SYSTEM REQUEST - ICON Ready for Download");
 						deviceIconUrl = msg.getUrl();
 						downloadLockScreenIcon(deviceIconUrl);
 					}
@@ -181,7 +165,7 @@ public class LockScreenManager extends BaseSubManager {
 		// pass in icon, background color, and custom view
 		if (lockScreenEnabled && shouldShowNotification()) {
 			LockScreenStatus status = getLockScreenStatus();
-			if (hmiLevel == HMILevel.HMI_FULL && status == LockScreenStatus.REQUIRED) {
+			if (status == LockScreenStatus.REQUIRED) {
 				Intent showLockScreenIntent = new Intent(context.get(), SDLLockScreenActivity.class);
 				showLockScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -192,9 +176,13 @@ public class LockScreenManager extends BaseSubManager {
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_EXTRA, displayDeviceLogo);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_BITMAP, lockScreenOEMIcon);
 
-				context.get().startActivity(showLockScreenIntent);
+				if (context.get() != null) {
+					context.get().startActivity(showLockScreenIntent);
+				}
 			} else if (status == LockScreenStatus.OFF) {
-				context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
+				if (context.get() != null) {
+					context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
+				}
 			}
 		}
 	}
@@ -218,7 +206,7 @@ public class LockScreenManager extends BaseSubManager {
 	 *
 	 * @return Whether or not the Lock Screen is required
 	 */
-	private synchronized LockScreenStatus getLockScreenStatus() {
+	protected synchronized LockScreenStatus getLockScreenStatus() {
 
 		if ( (hmiLevel == null) || (hmiLevel.equals(HMILevel.HMI_NONE))) {
 			return LockScreenStatus.OFF;
@@ -247,11 +235,12 @@ public class LockScreenManager extends BaseSubManager {
 			public void run(){
 				try{
 					lockScreenOEMIcon = HttpUtils.downloadImage(url);
-					Log.v(TAG, "Lock Screen Icon Downloaded");
 					Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_ICON_DOWNLOADED);
 					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_EXTRA, displayDeviceLogo);
 					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_BITMAP, lockScreenOEMIcon);
-					context.get().sendBroadcast(intent);
+					if (context.get() != null) {
+						context.get().sendBroadcast(intent);
+					}
 				}catch(IOException e){
 					Log.e(TAG, "Lock Screen Icon Error Downloading");
 				}
@@ -284,7 +273,4 @@ public class LockScreenManager extends BaseSubManager {
 		return lockScreenOEMIcon;
 	}
 
-	protected LockScreenStatus testGetLockScreenStatus(){
-		return getLockScreenStatus();
-	}
 }

@@ -2,5 +2,5 @@
 <resources>
     <string name="lockscreen_text">Locked for your safety</string>
     <string name="lockscreen_image_description">SDL Icon</string>
-    <string name="lockscreen_OEM_image_description">OEM Icon</string>
+    <string name="lockscreen_device_image_description">Display Device Icon</string>
 </resources>

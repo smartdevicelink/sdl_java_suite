@@ -21,13 +21,13 @@
             android:background="@drawable/sdl_lockscreen_icon"/>
 
         <ImageView
-            android:id="@+id/OEM_image"
+            android:id="@+id/display_device_image"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_marginTop="30dp"
             android:scaleType="fitXY"
             android:layout_gravity="center_horizontal"
-            android:contentDescription="@string/lockscreen_OEM_image_description"/>
+            android:contentDescription="@string/lockscreen_device_image_description"/>
 
     </LinearLayout>
 
