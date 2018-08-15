@@ -116,15 +116,7 @@ public class SdlManager {
 			if(!success){
 				Log.d(TAG, "Sub manager failed to initialize");
 			}
-			if(
-					lockscreenManager.getState() != BaseSubManager.SETTING_UP
-					/*
-					fileManager.getState() != BaseSubManager.SETTING_UP &&
-					videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
-					audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
-					screenManager.getState() != BaseSubManager.SETTING_UP
-					permissionManager.getState() != BaseSubManager.SETTING_UP
-					*/  ){
+			if(lockscreenManager == null || lockscreenManager.getState() != BaseSubManager.SETTING_UP){
 				state = BaseSubManager.READY;
 				if(initListener != null){
 					initListener.onComplete(true);
@@ -136,8 +128,10 @@ public class SdlManager {
 
 	private void initialize(){
 		// instantiate managers
-		this.lockscreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
-		this.lockscreenManager.start(subManagerListener);
+		if (lockScreenConfig.isEnabled()) {
+			this.lockscreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
+			this.lockscreenManager.start(subManagerListener);
+		}
 		/*
 		this.fileManager = new FileManager(_internalInterface, context);
 		this.fileManager.start(subManagerListener);
@@ -156,7 +150,9 @@ public class SdlManager {
 	}
 
 	private void dispose() {
-		this.lockscreenManager.dispose();
+		if (this.lockscreenManager != null) {
+			this.lockscreenManager.dispose();
+		}
 		/*
 		this.fileManager.dispose();
 		this.audioStreamManager.dispose();
