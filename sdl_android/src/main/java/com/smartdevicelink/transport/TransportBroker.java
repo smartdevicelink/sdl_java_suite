@@ -35,6 +35,15 @@ import java.util.Locale;
 public class TransportBroker {
 	
 	private static final String TAG = "SdlTransportBroker";
+
+	/**
+	 * Version 2 additions
+	 * -----------------------------
+	 * <br>TransportRecord as a parcel
+	 */
+	private static final int MAX_MESSAGING_VERSION = 2;
+	private static final int MIN_MESSAGING_VERSION = 1;
+
 	private final String WHERE_TO_REPLY_PREFIX	 = "com.sdl.android.";
 	private String appId = null;
 	private String whereToReply = null;
@@ -57,6 +66,7 @@ public class TransportBroker {
 	
 	private ServiceConnection routerConnection;
 	private int routerServiceVersion = 1;
+	private int messagingVersion = MAX_MESSAGING_VERSION;
 	
 	private void initRouterConnection(){
 		routerConnection= new ServiceConnection() {
@@ -582,6 +592,7 @@ public class TransportBroker {
 			Bundle bundle = new Bundle();
 			bundle.putLong(TransportConstants.APP_ID_EXTRA,convertAppId(appId)); //We send this no matter what due to us not knowing what router version we are connecting to
 			bundle.putString(TransportConstants.APP_ID_EXTRA_STRING, appId);
+			bundle.putInt(TransportConstants.ROUTER_MESSAGING_VERSION, messagingVersion);
 			msg.setData(bundle);
 			sendMessageToRouterService(msg);
 		}

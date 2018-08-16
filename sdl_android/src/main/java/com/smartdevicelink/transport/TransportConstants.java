@@ -31,12 +31,13 @@ public class TransportConstants {
 	public static final String FORCE_TRANSPORT_CONNECTED					= "force_connect"; //This is legacy, do not refactor this. 
 	public static final String ROUTER_SERVICE_VALIDATED						= "router_service_validated"; 
 
-	
+	@Deprecated
 	public static final String REPLY_TO_INTENT_EXTRA 						= "ReplyAddress";
 	public static final String CONNECT_AS_CLIENT_BOOLEAN_EXTRA				= "connectAsClient";
 	public static final String PACKAGE_NAME_STRING							= "package.name";
 	public static final String APP_ID_EXTRA									= "app.id";//Sent as a Long. This is no longer used
 	public static final String APP_ID_EXTRA_STRING							= "app.id.string";
+	public static final String ROUTER_MESSAGING_VERSION						= "router.messaging.version";
 
 	public static final String SESSION_ID_EXTRA								= "session.id";
 
@@ -146,7 +147,9 @@ public class TransportConstants {
 	 * attached to the message
 	 */
 	public static final int HARDWARE_CONNECTION_EVENT										= 0x05;
-	
+	public static final int HARDWARE_CONNECTION_EVENT_CONNECTED								= 0x10;
+	public static final int HARDWARE_CONNECTION_EVENT_DISCONNECTED							= 0x30;
+
 
 	public static final int ROUTER_REQUEST_BT_CLIENT_CONNECT 								= 0x10;
 	public static final int ROUTER_REQUEST_BT_CLIENT_CONNECT_RESPONSE						= 0x11;
