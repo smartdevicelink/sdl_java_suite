@@ -76,6 +76,7 @@ public class SpeechCapabilitiesTests extends TestCase {
 		enumTestList.add(SpeechCapabilities.LHPLUS_PHONEMES);
 		enumTestList.add(SpeechCapabilities.PRE_RECORDED);
 		enumTestList.add(SpeechCapabilities.SILENCE);
+		enumTestList.add(SpeechCapabilities.FILE);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

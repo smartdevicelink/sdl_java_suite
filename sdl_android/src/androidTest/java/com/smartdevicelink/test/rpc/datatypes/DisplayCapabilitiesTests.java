@@ -36,6 +36,7 @@ public class DisplayCapabilitiesTests extends TestCase{
         msg.setGraphicSupported(Test.GENERAL_BOOLEAN);
         msg.setNumCustomPresetsAvailable(Test.GENERAL_INT);
         msg.setDisplayType(Test.GENERAL_DISPLAYTYPE);
+        msg.setDisplayName(Test.GENERAL_STRING);
         msg.setImageFields(Test.GENERAL_IMAGEFIELD_LIST);
         msg.setTextFields(Test.GENERAL_TEXTFIELD_LIST);
         msg.setMediaClockFormats(Test.GENERAL_MEDIACLOCKFORMAT_LIST);
@@ -51,6 +52,7 @@ public class DisplayCapabilitiesTests extends TestCase{
         boolean graphicSupported = msg.getGraphicSupported();
         int numPresets = msg.getNumCustomPresetsAvailable();
         DisplayType displayType = msg.getDisplayType();
+        String displayName = msg.getDisplayName();
         ScreenParams screenParams = msg.getScreenParams();
         List<String> templatesAvailable = msg.getTemplatesAvailable();
         List<MediaClockFormat> mediaClock = msg.getMediaClockFormats();
@@ -61,6 +63,7 @@ public class DisplayCapabilitiesTests extends TestCase{
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, graphicSupported);
         assertEquals(Test.MATCH, Test.GENERAL_INT, numPresets);
         assertEquals(Test.MATCH, Test.GENERAL_DISPLAYTYPE, displayType);
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, displayName);
         assertTrue(Test.TRUE, Validator.validateScreenParams(Test.GENERAL_SCREENPARAMS, screenParams));
         assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST.size(), templatesAvailable.size());
 		assertEquals(Test.MATCH, Test.GENERAL_MEDIACLOCKFORMAT_LIST.size(), mediaClock.size());
@@ -88,6 +91,7 @@ public class DisplayCapabilitiesTests extends TestCase{
         assertNotNull(Test.NOT_NULL, msg);
 
         assertNull(Test.NULL, msg.getDisplayType());
+        assertNull(Test.NULL, msg.getDisplayName());
         assertNull(Test.NULL, msg.getGraphicSupported());
         assertNull(Test.NULL, msg.getImageFields());
         assertNull(Test.NULL, msg.getMediaClockFormats());
@@ -104,6 +108,7 @@ public class DisplayCapabilitiesTests extends TestCase{
             reference.put(DisplayCapabilities.KEY_NUM_CUSTOM_PRESETS_AVAILABLE, Test.GENERAL_INT);
             reference.put(DisplayCapabilities.KEY_GRAPHIC_SUPPORTED, Test.GENERAL_BOOLEAN);
             reference.put(DisplayCapabilities.KEY_DISPLAY_TYPE, Test.GENERAL_DISPLAYTYPE);
+            reference.put(DisplayCapabilities.KEY_DISPLAY_NAME, Test.GENERAL_STRING);
             reference.put(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));
             reference.put(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS, JsonUtils.createJsonArray(Test.GENERAL_MEDIACLOCKFORMAT_LIST));
             reference.put(DisplayCapabilities.KEY_TEXT_FIELDS, Test.JSON_TEXTFIELDS);

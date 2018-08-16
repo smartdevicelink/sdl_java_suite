@@ -10,6 +10,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimer;
 import com.smartdevicelink.proxy.rpc.StartTime;
+import com.smartdevicelink.proxy.rpc.enums.AudioStreamingIndicator;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
@@ -19,7 +20,7 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.SetMediaClockTimer}
+ * {@link com.smartdevicelink.proxy.rpc.SetMediaClockTimer}
  */
 public class SetMediaClockTimerTests extends BaseRpcTests {
 
@@ -30,6 +31,7 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 		msg.setStartTime(Test.GENERAL_STARTTIME);
 		msg.setEndTime(Test.GENERAL_STARTTIME);
 		msg.setUpdateMode(Test.GENERAL_UPDATEMODE);
+		msg.setAudioStreamingIndicator(Test.GENERAL_AUDIO_STREAMING_INDICATOR);
 
 		return msg;
 	}
@@ -51,7 +53,8 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 		try {
 			result.put(SetMediaClockTimer.KEY_START_TIME, Test.JSON_STARTTIME);
 			result.put(SetMediaClockTimer.KEY_END_TIME, Test.JSON_STARTTIME);
-			result.put(SetMediaClockTimer.KEY_UPDATE_MODE, Test.GENERAL_UPDATEMODE);			
+			result.put(SetMediaClockTimer.KEY_UPDATE_MODE, Test.GENERAL_UPDATEMODE);
+			result.put(SetMediaClockTimer.KEY_AUDIO_STREAMING_INDICATOR, Test.GENERAL_AUDIO_STREAMING_INDICATOR);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -67,9 +70,11 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 		StartTime  testStartTime  = ( (SetMediaClockTimer) msg ).getStartTime();
 		StartTime  testEndTime    = ( (SetMediaClockTimer) msg ).getEndTime();
 		UpdateMode testUpdateMode = ( (SetMediaClockTimer) msg ).getUpdateMode();
+		AudioStreamingIndicator testAudioStreamingIndicator = ( (SetMediaClockTimer) msg ).getAudioStreamingIndicator();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_UPDATEMODE, testUpdateMode);
+		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, testAudioStreamingIndicator);
 		assertTrue(Test.TRUE, Validator.validateStartTime(Test.GENERAL_STARTTIME, testStartTime));
 		assertTrue(Test.TRUE, Validator.validateStartTime(Test.GENERAL_STARTTIME, testEndTime));
 		
@@ -81,6 +86,7 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getStartTime());
 		assertNull(Test.NULL, msg.getEndTime());
 		assertNull(Test.NULL, msg.getUpdateMode());
+		assertNull(Test.NULL, msg.getAudioStreamingIndicator());
 	}
 	
 	/**
@@ -110,6 +116,7 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 			StartTime referenceEndTime = new StartTime(JsonRPCMarshaller.deserializeJSONObject(endTime));
 			assertTrue(Test.TRUE, Validator.validateStartTime(referenceEndTime, cmd.getEndTime()));
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SetMediaClockTimer.KEY_UPDATE_MODE), cmd.getUpdateMode().toString());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SetMediaClockTimer.KEY_AUDIO_STREAMING_INDICATOR), cmd.getAudioStreamingIndicator().toString());
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}    	

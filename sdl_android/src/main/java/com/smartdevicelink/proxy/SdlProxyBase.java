@@ -2053,7 +2053,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyVersionInfo = msg.getProxyVersionInfo();
 					_iconResumed = msg.getIconResumed();
 					
-
+					if (_iconResumed == null){
+						_iconResumed = false;
+					}
 
 					if (_bAppResumeEnabled)
 					{
@@ -3476,6 +3478,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					onRPCNotificationReceived(msg);
 				}
 			}
+			else if (functionName.equals(FunctionID.ON_RC_STATUS.toString())) {
+				final OnRCStatus msg = new OnRCStatus(hash);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onOnRCStatus(msg);
+							onRPCNotificationReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onOnRCStatus(msg);
+					onRPCNotificationReceived(msg);
+				}
+			}
 			else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logInfo("Unrecognized notification Message: " + functionName +
@@ -4853,8 +4871,30 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		addCommand(commandID, null, null, null, vrCommands, correlationID);
 	}
-		
-	
+
+	/**
+	 * Sends an AddSubMenu RPCRequest to SDL. Responses are captured through callback on IProxyListener.
+	 *
+	 * @param menuID -Unique ID of the sub menu to add.
+	 * @param menuName -Text to show in the menu for this sub menu.
+	 * @param position -Position within the items that are are at top level of the in application menu.
+	 * @param menuIcon -Image to be be shown along with the submenu item
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("SameParameterValue")
+	public void addSubMenu(@NonNull Integer menuID, @NonNull String menuName,
+						   Integer position, Image menuIcon, Integer correlationID)
+			throws SdlException {
+
+		AddSubMenu msg = new AddSubMenu(menuID, menuName);
+		msg.setCorrelationID(correlationID);
+		msg.setPosition(position);
+		msg.setMenuIcon(menuIcon);
+
+		sendRPCRequest(msg);
+	}
+
 	/**
 	 * Sends an AddSubMenu RPCRequest to SDL. Responses are captured through callback on IProxyListener.
 	 * 
@@ -4864,16 +4904,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@Deprecated
 	@SuppressWarnings("SameParameterValue")
 	public void addSubMenu(@NonNull Integer menuID, @NonNull String menuName,
 						   Integer position, Integer correlationID)
 			throws SdlException {
 
-		AddSubMenu msg = new AddSubMenu(menuID, menuName);
-		msg.setCorrelationID(correlationID);
-		msg.setPosition(position);
-		
-		sendRPCRequest(msg);
+		addSubMenu(menuID, menuName, position, null, correlationID);
 	}
 	
 	/**
@@ -4884,11 +4921,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@Deprecated
 	@SuppressWarnings("unused")
 	public void addSubMenu(Integer menuID, String menuName,
 						   Integer correlationID) throws SdlException {
 		
-		addSubMenu(menuID, menuName, null, correlationID);
+		addSubMenu(menuID, menuName, null, null, correlationID);
 	}
 	
 	/*Begin V1 Enhanced helper*/	

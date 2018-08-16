@@ -380,11 +380,22 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
         return getString(KEY_SYSTEM_SOFTWARE_VERSION);
     }
 
-    public void setIconResumed(Boolean iconResumed){
-        setParameters(KEY_ICON_RESUMED, iconResumed);
-    }
+	/**
+	 * Sets Icon Resumed Boolean
+	 * @param iconResumed - if param not included, set to false
+	 */
+	public void setIconResumed(Boolean iconResumed){
+		if(iconResumed == null){
+			iconResumed = false;
+		}
+		setParameters(KEY_ICON_RESUMED, iconResumed);
+	}
 
-    public Boolean getIconResumed() {
-        return getBoolean(KEY_ICON_RESUMED);
-    }
+	/**
+	 * Tells developer whether or not their app icon has been resumed on core.
+	 * @return boolean - true if icon was resumed, false if not
+	 */
+	public Boolean getIconResumed() {
+		return getBoolean(KEY_ICON_RESUMED);
+	}
 }
