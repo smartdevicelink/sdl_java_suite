@@ -145,11 +145,16 @@ public class SdlManagerTests extends AndroidTestCase {
 	public void testStartingManager(){
 		listenerCalledCounter = 0;
 
-		sdlManager.start(new CompletionListener() {
+		sdlManager.start(new ManagerListener() {
 			@Override
-			public void onComplete(boolean success) {
+			public void onStart(boolean success) {
 				assertTrue(success);
 				listenerCalledCounter++;
+			}
+
+			@Override
+			public void onDestroy() {
+
 			}
 		});
 
