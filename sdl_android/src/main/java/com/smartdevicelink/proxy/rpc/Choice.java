@@ -91,7 +91,7 @@ public class Choice extends RPCStruct {
      * @param menuName the menu name
      * @param vrCommands the List of  vrCommands
      *
-     * Deprecated - use constructor without the forced use of vrCommands
+     * Deprecated - use {@link #Choice(Integer, String)}
      */
     @Deprecated
     public Choice(@NonNull Integer choiceID, @NonNull String menuName, @NonNull List<String> vrCommands) {
