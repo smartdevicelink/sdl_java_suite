@@ -50,11 +50,9 @@ public class SystemCapabilityManager {
 	 * @param systemCapabilityType
 	 * @param capability
 	 */
-	public void setCapability(SystemCapabilityType systemCapabilityType, Object capability){
-		synchronized(LISTENER_LOCK) {
+	public synchronized void setCapability(SystemCapabilityType systemCapabilityType, Object capability){
 			cachedSystemCapabilities.put(systemCapabilityType, capability);
 			notifyListeners(systemCapabilityType, capability);
-		}
 	}
 
 	/**
