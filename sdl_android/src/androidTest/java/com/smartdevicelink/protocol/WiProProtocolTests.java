@@ -59,8 +59,6 @@ public class WiProProtocolTests extends AndroidTestCase {
 		public void onResetIncomingHeartbeat(SessionType sessionType,byte sessionID) {}
 		@Override
 		public void onProtocolError(String info, Exception e) {}
-		@Override
-		public void connectSecondaryTransport(byte sessionID, TransportType transportType, Bundle params) {}
 
 	};
 	public static class DidReceiveListener implements IProtocolListener{
@@ -101,8 +99,6 @@ public class WiProProtocolTests extends AndroidTestCase {
 		public void onResetIncomingHeartbeat(SessionType sessionType,byte sessionID) {}
 		@Override
 		public void onProtocolError(String info, Exception e) {}
-		@Override
-		public void connectSecondaryTransport(byte sessionID, TransportType transportType, Bundle params) {}
 	};
 	DidReceiveListener onProtocolMessageReceivedListener = new DidReceiveListener();
 	
