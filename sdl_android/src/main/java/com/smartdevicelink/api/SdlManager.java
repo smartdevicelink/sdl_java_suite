@@ -500,6 +500,22 @@ public class SdlManager{
 		}
 	}
 
+	/**
+	 * Add an OnRPCNotificationListener for HMI status notifications
+	 * @param listener listener that will be called when the HMI status changes
+	 */
+	public void addOnHmiStatusListener(OnRPCNotificationListener listener){
+		proxy.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS,listener);
+	}
+
+	/**
+	 * Remove an OnRPCNotificationListener for HMI status notifications
+	 * @param listener listener that was previously added for the HMI status notifications
+	 */
+	public void removeOnHmiStatusListener(OnRPCNotificationListener listener){
+		proxy.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, listener);
+	}
+
 	// LIFECYCLE / OTHER
 
 	// STARTUP
