@@ -64,7 +64,7 @@ public class SdlManager{
 	private Vector<TTSChunk> ttsChunks;
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
 
-	private CompletionListener initListener;
+	private ManagerListener managerListener;
 	private int state = -1;
 	//public LockScreenConfig lockScreenConfig;
 
@@ -127,9 +127,8 @@ public class SdlManager{
 					*/
 					){
 				state = BaseSubManager.READY;
-				if(initListener != null){
-					initListener.onComplete(true);
-					initListener = null;
+				if(managerListener != null){
+					managerListener.onStart(true);
 				}
 			}
 		}
@@ -165,6 +164,10 @@ public class SdlManager{
 		this.videoStreamingManager.dispose();
 		this.audioStreamManager.dispose();
 		*/
+		if(managerListener != null){
+			managerListener.onDestroy();
+			managerListener = null;
+		}
 	}
 
 	/**
@@ -503,12 +506,11 @@ public class SdlManager{
 
 	/**
 	 * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
-	 * @param listener CompletionListener that is called once the SdlManager state transitions
-	 * from SETTING_UP to READY or ERROR
+	 * @param listener ManagerListener that is called when the SdlManager is ready / failed to start, or is destroyed
 	 */
 	@SuppressWarnings("unchecked")
-	public void start(@NonNull CompletionListener listener){
-		initListener = listener;
+	public void start(@NonNull ManagerListener listener){
+		managerListener = listener;
 		if (proxy == null) {
 			try {
 				proxy = new SdlProxyBase(proxyBridge, appName, shortAppName, isMediaApp, hmiLanguage,
@@ -516,7 +518,7 @@ public class SdlManager{
 						nightColorScheme) {
 				};
 			} catch (SdlException e) {
-				listener.onComplete(false);
+				listener.onStart(false);
 			}
 		}
 	}
