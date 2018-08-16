@@ -64,7 +64,7 @@ public class SdlManager{
 	private Vector<TTSChunk> ttsChunks;
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
 
-	private ManagerListener managerListener;
+	private SdlManagerListener managerListener;
 	private int state = -1;
 	//public LockScreenConfig lockScreenConfig;
 
@@ -500,22 +500,6 @@ public class SdlManager{
 		}
 	}
 
-	/**
-	 * Add an OnRPCNotificationListener for HMI status notifications
-	 * @param listener listener that will be called when the HMI status changes
-	 */
-	public void addOnHmiStatusListener(OnRPCNotificationListener listener){
-		proxy.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS,listener);
-	}
-
-	/**
-	 * Remove an OnRPCNotificationListener for HMI status notifications
-	 * @param listener listener that was previously added for the HMI status notifications
-	 */
-	public void removeOnHmiStatusListener(OnRPCNotificationListener listener){
-		proxy.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, listener);
-	}
-
 	// LIFECYCLE / OTHER
 
 	// STARTUP
@@ -525,7 +509,7 @@ public class SdlManager{
 	 * @param listener ManagerListener that is called when the SdlManager is ready / failed to start, or is destroyed
 	 */
 	@SuppressWarnings("unchecked")
-	public void start(@NonNull ManagerListener listener){
+	public void start(@NonNull SdlManagerListener listener){
 		managerListener = listener;
 		if (proxy == null) {
 			try {
