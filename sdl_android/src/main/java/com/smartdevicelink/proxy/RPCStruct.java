@@ -57,7 +57,7 @@ public class RPCStruct {
 		return JsonRPCMarshaller.deserializeJSONObject(jsonObject);
 	}
 	
-	public JSONObject serializeJSON(boolean test) throws JSONException {
+	public JSONObject serializeJSON() throws JSONException {
 		return serializeStoreJSON(null);
 	}
 
@@ -67,7 +67,7 @@ public class RPCStruct {
 	}
 	
 	@SuppressWarnings("unchecked")
-    public JSONObject serializeJSON(byte protocolVersion,boolean test) throws JSONException {
+    public JSONObject serializeJSON(byte protocolVersion) throws JSONException {
 		return serializeJSON(new Version(protocolVersion+".0.0"), null);
 	}
 

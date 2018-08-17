@@ -26,7 +26,7 @@ public class JsonRPCMarshaller {
 	private static final String SDL_LIB_PRIVATE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 
 	@Deprecated
-	public static byte[] marshall(RPCMessage msg, byte version, boolean test) {
+	public static byte[] marshall(RPCMessage msg, byte version) {
 		return marshall(msg,new Version(version+""),null);
 	}
 
@@ -89,7 +89,7 @@ public class JsonRPCMarshaller {
 
     @SuppressWarnings("unchecked")
 	@Deprecated
-	private static JSONArray serializeList(List<?> list, boolean test) throws JSONException{
+	private static JSONArray serializeList(List<?> list) throws JSONException{
 		return serializeList(list,null);
 
 	}
@@ -114,7 +114,7 @@ public class JsonRPCMarshaller {
 
 	@SuppressWarnings({"unchecked" })
 	@Deprecated
-    public static JSONObject serializeHashtable(Hashtable<String, Object> hash, boolean test) throws JSONException{
+    public static JSONObject serializeHashtable(Hashtable<String, Object> hash) throws JSONException{
 		return serializeHashtable(hash,null);
 	}
 
