@@ -241,6 +241,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private final CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
 
 	protected byte _wiproVersion = 1;
+	protected com.smartdevicelink.util.Version rpcSpecVersion;
 	
 	protected SparseArray<OnRPCResponseListener> rpcResponseListeners = null;
 	protected SparseArray<CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners = null;
@@ -1649,7 +1650,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		String sReturn;
 		try
 		{
-			sReturn = msg.serializeJSON(getWiProVersion()).toString(2);
+			//sReturn = msg.serializeJSON(getWiProVersion()).toString(2);
+			sReturn = msg.serializeJSON(new com.smartdevicelink.util.Version(getWiProVersion()+".0.0"),
+					rpcSpecVersion ).toString(2);
 		}
 		catch (final Exception e) 
 		{
@@ -1802,7 +1805,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			try {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, request, SDL_LIB_TRACE_KEY);
 						
-			byte[] msgBytes = JsonRPCMarshaller.marshall(request, _wiproVersion);
+			byte[] msgBytes = JsonRPCMarshaller.marshall(request, new com.smartdevicelink.util.Version(_wiproVersion+".0.0"), rpcSpecVersion);
 	
 			ProtocolMessage pm = new ProtocolMessage();
 			pm.setData(msgBytes);
@@ -2048,6 +2051,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_sdlLanguage = msg.getLanguage();
 					_hmiDisplayLanguage = msg.getHmiDisplayLanguage();
 					_sdlMsgVersion = msg.getSdlMsgVersion();
+					rpcSpecVersion = new com.smartdevicelink.util.Version(_sdlMsgVersion.getMajorVersion(),_sdlMsgVersion.getMinorVersion(), _sdlMsgVersion.getPatchVersion());
 					_vehicleType = msg.getVehicleType();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 					_proxyVersionInfo = msg.getProxyVersionInfo();
@@ -2196,6 +2200,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_sdlLanguage = msg.getLanguage();
 				_hmiDisplayLanguage = msg.getHmiDisplayLanguage();
 				_sdlMsgVersion = msg.getSdlMsgVersion();
+				rpcSpecVersion = new com.smartdevicelink.util.Version(_sdlMsgVersion.getMajorVersion(),_sdlMsgVersion.getMinorVersion(), _sdlMsgVersion.getPatchVersion());
 				_vehicleType = msg.getVehicleType();
 				_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 				_proxyVersionInfo = msg.getProxyVersionInfo();

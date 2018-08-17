@@ -78,6 +78,7 @@ import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.SdlAppInfo;
+import com.smartdevicelink.util.Version;
 
 import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 import static com.smartdevicelink.transport.TransportConstants.SDL_NOTIFICATION_CHANNEL_ID;
@@ -1977,7 +1978,7 @@ public class SdlRouterService extends Service{
 	private byte[] createForceUnregisterApp(byte sessionId,byte version){
 		UnregisterAppInterface request = new UnregisterAppInterface();
 		request.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
-		byte[] msgBytes = JsonRPCMarshaller.marshall(request, version);
+		byte[] msgBytes = JsonRPCMarshaller.marshall(request, new Version(version+".0.0"), null);
 		ProtocolMessage pm = new ProtocolMessage();
 		pm.setData(msgBytes);
 		pm.setSessionID(sessionId);

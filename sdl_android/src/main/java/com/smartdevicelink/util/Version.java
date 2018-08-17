@@ -11,6 +11,12 @@ public class Version {
         patch = 0;
     }
 
+    public Version(int major, int minor, int patch){
+        this.major = major;
+        this.minor = minor;
+        this.patch = patch;
+    }
+
     public Version(String versionString){
         String[] versions = versionString.split("\\.");
         if(versions.length!=3){

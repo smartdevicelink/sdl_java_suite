@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.util.Version;
 import com.smartdevicelink.trace.*;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.util.DebugTool;
@@ -23,11 +24,16 @@ import com.smartdevicelink.util.DebugTool;
 public class JsonRPCMarshaller {
 	
 	private static final String SDL_LIB_PRIVATE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
-	
-	public static byte[] marshall(RPCMessage msg, byte version) {
+
+	@Deprecated
+	public static byte[] marshall(RPCMessage msg, byte version, boolean test) {
+		return marshall(msg,new Version(version+""),null);
+	}
+
+	public static byte[] marshall(RPCMessage msg, Version protocolVersion, Version rpcMsgVersion) {
 		byte[] jsonBytes = null;
 		try {
-			JSONObject jsonObject = msg.serializeJSON(version);
+			JSONObject jsonObject = msg.serializeJSON(protocolVersion, rpcMsgVersion);
 			jsonBytes = jsonObject.toString().getBytes();
 			
 			SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Transmit, jsonBytes, SDL_LIB_PRIVATE_KEY);
@@ -82,17 +88,23 @@ public class JsonRPCMarshaller {
 	}
 
     @SuppressWarnings("unchecked")
-	private static JSONArray serializeList(List<?> list) throws JSONException{
+	@Deprecated
+	private static JSONArray serializeList(List<?> list, boolean test) throws JSONException{
+		return serializeList(list,null);
+
+	}
+
+	private static JSONArray serializeList(List<?> list, Version rpcVersion) throws JSONException{
 		JSONArray toPut = new JSONArray();
 		Iterator<Object> valueIterator = (Iterator<Object>) list.iterator();
 		while(valueIterator.hasNext()){
 			Object anObject = valueIterator.next();
 			if (anObject instanceof RPCStruct) {
 				RPCStruct toSerialize = (RPCStruct) anObject;
-				toPut.put(toSerialize.serializeJSON());
+				toPut.put(toSerialize.serializeStoreJSON(rpcVersion));
 			} else if(anObject instanceof Hashtable){
 				Hashtable<String, Object> toSerialize = (Hashtable<String, Object>)anObject;
-				toPut.put(serializeHashtable(toSerialize));
+				toPut.put(serializeHashtable(toSerialize,rpcVersion));
 			} else {
 				toPut.put(anObject);
 			}
@@ -101,18 +113,23 @@ public class JsonRPCMarshaller {
 	}
 
 	@SuppressWarnings({"unchecked" })
-    public static JSONObject serializeHashtable(Hashtable<String, Object> hash) throws JSONException{
+	@Deprecated
+    public static JSONObject serializeHashtable(Hashtable<String, Object> hash, boolean test) throws JSONException{
+		return serializeHashtable(hash,null);
+	}
+
+    public static JSONObject serializeHashtable(Hashtable<String, Object> hash, Version rpcVersion) throws JSONException{
 		JSONObject obj = new JSONObject();
 		Iterator<String> hashKeyIterator = hash.keySet().iterator();
 		while (hashKeyIterator.hasNext()){
 			String key = (String) hashKeyIterator.next();
 			Object value = hash.get(key);
 			if (value instanceof RPCStruct) {
-				obj.put(key, ((RPCStruct) value).serializeJSON());
+				obj.put(key, ((RPCStruct) value).serializeStoreJSON(rpcVersion));
 			} else if (value instanceof List<?>) {
-				obj.put(key, serializeList((List<?>) value));
+				obj.put(key, serializeList((List<?>) value,rpcVersion));
 			} else if (value instanceof Hashtable) {
-				obj.put(key, serializeHashtable((Hashtable<String, Object>)value));
+				obj.put(key, serializeHashtable((Hashtable<String, Object>)value, rpcVersion));
 			} else {
 				obj.put(key, value);
 			}

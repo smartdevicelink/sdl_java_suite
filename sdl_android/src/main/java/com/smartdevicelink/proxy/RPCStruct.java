@@ -1,6 +1,7 @@
 package com.smartdevicelink.proxy;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
+import com.smartdevicelink.util.Version;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +46,7 @@ public class RPCStruct {
 	
 	public void deserializeJSON(JSONObject jsonObject) throws JSONException {
 		store = JsonRPCMarshaller.deserializeJSONObject(jsonObject);
+
 	}
 	
 	// deserializeJSONObject method moved to JsonRPCMarshaller for consistency
@@ -55,19 +57,37 @@ public class RPCStruct {
 		return JsonRPCMarshaller.deserializeJSONObject(jsonObject);
 	}
 	
-	public JSONObject serializeJSON() throws JSONException {
-		return JsonRPCMarshaller.serializeHashtable(store);
+	public JSONObject serializeJSON(boolean test) throws JSONException {
+		return serializeStoreJSON(null);
+	}
+
+	public JSONObject serializeStoreJSON(Version rpcMsgVersion) throws JSONException {
+		format(rpcMsgVersion);
+		return JsonRPCMarshaller.serializeHashtable(store, rpcMsgVersion);
 	}
 	
 	@SuppressWarnings("unchecked")
-    public JSONObject serializeJSON(byte version) throws JSONException {
-		if (version > 1) {
+    public JSONObject serializeJSON(byte protocolVersion,boolean test) throws JSONException {
+		return serializeJSON(new Version(protocolVersion+".0.0"), null);
+	}
+
+    public JSONObject serializeJSON(Version version, Version rpcMsgVersion) throws JSONException {
+		if (version.getMajor() > 1) {
 			String messageType = getMessageTypeName(store.keySet());
 			Hashtable<String, Object> function = (Hashtable<String, Object>) store.get(messageType);
 			Hashtable<String, Object> parameters = (Hashtable<String, Object>) function.get(RPCMessage.KEY_PARAMETERS);
-			return JsonRPCMarshaller.serializeHashtable(parameters);
-		} else return JsonRPCMarshaller.serializeHashtable(store);
+			return JsonRPCMarshaller.serializeHashtable(parameters,rpcMsgVersion);
+		} else return JsonRPCMarshaller.serializeHashtable(store, rpcMsgVersion);
 	}
+
+	/**
+	 * This method should clean the the RPC to make sure it is compliant with the spec
+	 * @param rpcVersion
+	 */
+	protected void format(Version rpcVersion){
+		//Should override this method when breaking changes are made to the RPC spec
+	}
+
 
 	public byte[] getBulkData() {
 		return this._bulkData;
