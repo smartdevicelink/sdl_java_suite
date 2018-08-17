@@ -2,11 +2,8 @@ package com.smartdevicelink.api.audio;
 
 import android.util.Log;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 import com.smartdevicelink.api.audio.AudioStreamManager.SampleType;
 
 /**
@@ -66,6 +63,7 @@ public class SampleBuffer {
      * @param presentationTimeUs The presentation time for the buffer.
      * @return A new and empty sample buffer.
      */
+    @SuppressWarnings("unused")
     public static SampleBuffer allocate(int capacity, @SampleType int sampleType, int channelCount, ByteOrder byteOrder, long presentationTimeUs) {
         return new SampleBuffer(capacity, sampleType, channelCount, byteOrder, presentationTimeUs);
     }
@@ -88,6 +86,7 @@ public class SampleBuffer {
     /**
      * Returns the capacity of the buffer per channel.
      */
+    @SuppressWarnings("unused")
     public int capacity() {
         return byteBuffer.capacity() / sampleType / channelCount;
     }

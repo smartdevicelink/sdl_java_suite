@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.annotation.RawRes;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
@@ -24,7 +23,6 @@ import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 
-import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
@@ -39,6 +37,7 @@ import java.util.Queue;
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 public class AudioStreamManager extends BaseSubManager {
     private static final String TAG = AudioStreamManager.class.getSimpleName();
+    private static final int COMPLETION_TIMEOUT = 2000;
 
     private IAudioStreamListener sdlAudioStream;
     private int sdlSampleRate;
@@ -51,7 +50,7 @@ public class AudioStreamManager extends BaseSubManager {
     private CompletionListener serviceCompletionListener;
     // As the internal interface does not provide timeout we need to use a future task
     private Handler serviceCompletionHandler;
-    private int serviceCompletionTimeoutDuration;
+
     private Runnable serviceCompletionTimeoutCallback = new Runnable() {
         @Override
         public void run() {
@@ -124,7 +123,6 @@ public class AudioStreamManager extends BaseSubManager {
         this.queue = new LinkedList<>();
         this.context = new WeakReference<>(context);
         this.serviceCompletionHandler = new Handler(Looper.getMainLooper());
-        this.serviceCompletionTimeoutDuration = 2000;
 
         internalInterface.addServiceListener(SessionType.PCM, serviceListener);
 
@@ -134,12 +132,12 @@ public class AudioStreamManager extends BaseSubManager {
 
     @Override
     public void dispose() {
-        internalInterface.removeServiceListener(SessionType.PCM, serviceListener);
-
-        stopAudioStream(null);
-
-        streamingStateMachine.transitionToState(StreamingStateMachine.NONE);
-        streamingStateMachine = null;
+        stopAudioStream(new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                internalInterface.removeServiceListener(SessionType.PCM, serviceListener);
+            }
+        });
 
         super.dispose();
     }
@@ -200,7 +198,7 @@ public class AudioStreamManager extends BaseSubManager {
 
         streamingStateMachine.transitionToState(StreamingStateMachine.READY);
         serviceCompletionListener = completionListener;
-        serviceCompletionHandler.postDelayed(serviceCompletionTimeoutCallback, 2000);
+        serviceCompletionHandler.postDelayed(serviceCompletionTimeoutCallback, COMPLETION_TIMEOUT);
         internalInterface.startAudioService(encrypted);
     }
 
@@ -228,7 +226,7 @@ public class AudioStreamManager extends BaseSubManager {
 
         streamingStateMachine.transitionToState(StreamingStateMachine.STOPPED);
         serviceCompletionListener = completionListener;
-        serviceCompletionHandler.postDelayed(serviceCompletionTimeoutCallback, 2000);
+        serviceCompletionHandler.postDelayed(serviceCompletionTimeoutCallback, COMPLETION_TIMEOUT);
         internalInterface.stopAudioService();
     }
 
@@ -259,6 +257,7 @@ public class AudioStreamManager extends BaseSubManager {
      * @param audioSource The specified audio file to be played.
      * @param completionListener A completion listener that informs when the audio file is played.
      */
+    @SuppressWarnings("WeakerAccess")
     public void pushAudioSource(Uri audioSource, final CompletionListener completionListener) {
         // streaming state must be STARTED (starting the service is ready. starting stream is started)
         if (streamingStateMachine.getState() != StreamingStateMachine.STARTED) {

@@ -3,7 +3,9 @@ package com.smartdevicelink.api.audio;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.MediaFormat;
+import android.media.MediaPlayer;
 import android.os.Build;
+import android.os.Environment;
 import android.support.test.InstrumentationRegistry;
 import android.util.Log;
 
@@ -26,16 +28,22 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
@@ -111,7 +119,7 @@ public class AudioStreamManagerTest extends TestCase {
             }
         };
 
-        CompletionListener mockListener = Mockito.spy(completionListener);
+        CompletionListener mockListener = spy(completionListener);
         AudioStreamManager manager = new AudioStreamManager(internalInterface, mContext);
 
         manager.startAudioStream(false, mockListener);
@@ -311,7 +319,7 @@ public class AudioStreamManagerTest extends TestCase {
             }
         };
 
-        final CompletionListener mockFileListener = Mockito.spy(fileCompletionListener);
+        final CompletionListener mockFileListener = spy(fileCompletionListener);
 
         final AudioStreamManager manager = new AudioStreamManager(internalInterface, mContext);
         manager.startAudioStream(false, new CompletionListener() {
@@ -450,6 +458,118 @@ public class AudioStreamManagerTest extends TestCase {
         }
     }
 
+    public void testPlayAudioFileForManualTest() throws IOException {
+        AudioPassThruCapabilities audioCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._16_BIT, AudioType.PCM);
+        final int sampleType = SampleType.SIGNED_16_BIT;
+        final int sampleRate = 16000;
+
+        File externalStorageDirectory = Environment.getExternalStorageDirectory();
+        final File outputFile = new File(externalStorageDirectory, "test_audio_file.wav");
+        final FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+        writeWaveHeader(fileOutputStream, sampleRate, sampleType << 3);
+
+        IAudioStreamListener audioStreamListener = new IAudioStreamListener() {
+            long audioLength = 0;
+
+            @Override
+            public void sendAudio(byte[] data, int offset, int length, long presentationTimeUs) throws ArrayIndexOutOfBoundsException {
+                ByteBuffer buffer = ByteBuffer.wrap(data, offset, length);
+                this.sendAudio(buffer, presentationTimeUs);
+            }
+
+            @Override
+            public void sendAudio(ByteBuffer data, long presentationTimeUs) {
+                try {
+                    long length = data.limit();
+                    byte[] d = data.array();
+                    fileOutputStream.write(d, 0, (int) length);
+
+                    audioLength += length;
+                    RandomAccessFile raf = new RandomAccessFile(outputFile, "rw");
+                    updateWaveHeaderLength(raf, audioLength);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        final SdlSession mockSession = mock(SdlSession.class);
+        doReturn(audioStreamListener).when(mockSession).startAudioStream();
+
+        Answer<Void> audioServiceAnswer = new Answer<Void>() {
+            ISdlServiceListener serviceListener = null;
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                Method method = invocation.getMethod();
+                Object[] args = invocation.getArguments();
+
+                switch (method.getName()) {
+                    case "addServiceListener":
+                        // (SessionType serviceType, ISdlServiceListener sdlServiceListener);
+                        SessionType sessionType = (SessionType) args[0];
+                        assertEquals(sessionType, SessionType.PCM);
+
+                        serviceListener = (ISdlServiceListener) args[1];
+                        break;
+                    case "startAudioService":
+                        //(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params);
+                        Boolean encrypted = (Boolean) args[0];
+                        serviceListener.onServiceStarted(mockSession, SessionType.PCM, encrypted);
+                        break;
+                    case "stopAudioService":
+                        // parameters ()
+                        serviceListener.onServiceEnded(mockSession, SessionType.PCM);
+                        break;
+                }
+
+                return null;
+            }
+        };
+
+        ISdl internalInterface = mock(ISdl.class);
+        doReturn(true).when(internalInterface).isConnected();
+        doReturn(audioCapabilities).when(internalInterface).getCapability(any(SystemCapabilityType.class));
+        doAnswer(audioServiceAnswer).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
+        doAnswer(audioServiceAnswer).when(internalInterface).startAudioService(any(Boolean.class));
+        doAnswer(audioServiceAnswer).when(internalInterface).stopAudioService();
+
+        final MediaPlayer.OnCompletionListener mockPlayerCompletionListener = mock(MediaPlayer.OnCompletionListener.class);
+        final MediaPlayer player = new MediaPlayer();
+        player.setOnCompletionListener(mockPlayerCompletionListener);
+
+        CompletionListener fileCompletionListener = new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                try {
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
+
+                    player.setDataSource(outputFile.getPath());
+                    player.prepare();
+                    player.start();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        final CompletionListener mockFileListener = spy(fileCompletionListener);
+
+        final AudioStreamManager manager = new AudioStreamManager(internalInterface, mContext);
+        manager.startAudioStream(false, new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                assertEquals(true, success);
+
+                manager.pushResource(com.smartdevicelink.test.R.raw.test_audio_square_250hz_80amp_1s, mockFileListener);
+            }
+        });
+
+        verify(mockFileListener, timeout(10000)).onComplete(any(Boolean.class));
+        verify(mockPlayerCompletionListener, timeout(10000)).onCompletion(any(MediaPlayer.class));
+    }
+
     private Method getSampleAtTargetMethod() {
         Method method = null;
         try {
@@ -463,8 +583,100 @@ public class AudioStreamManagerTest extends TestCase {
         return method;
     }
 
-    static void setFinalStatic(Field field, Object newValue) throws Exception {
+    private void setFinalStatic(Field field, Object newValue) throws Exception {
         field.setAccessible(true);
         field.set(null, newValue);
+    }
+
+    private void writeWaveHeader(OutputStream stream, long samplerate, long bitspersample) throws IOException {
+        byte[] header = new byte[44];
+        // the data header is 36 bytes large
+        long datalength = 36;
+        long audiolength = 0;
+        long format = 1; // 1 = PCM
+        long channels = 1;
+        long blockalign = (channels * bitspersample) >> 3;
+        long byterate = (samplerate * channels * bitspersample) >> 3;
+
+        // RIFF header.
+        header[0] = 'R';
+        header[1] = 'I';
+        header[2] = 'F';
+        header[3] = 'F';
+        // Total data length (UInt32).
+        header[4] = (byte)((datalength) & 0xff);
+        header[5] = (byte)((datalength >> 8) & 0xff);
+        header[6] = (byte)((datalength >> 16) & 0xff);
+        header[7] = (byte)((datalength >> 24) & 0xff);
+        // WAVE header.
+        header[8] = 'W';
+        header[9] = 'A';
+        header[10] = 'V';
+        header[11] = 'E';
+        // Format (fmt) header.
+        header[12] = 'f';
+        header[13] = 'm';
+        header[14] = 't';
+        header[15] = ' ';
+        // Format header size (UInt32).
+        header[16] = 16;
+        header[17] = 0;
+        header[18] = 0;
+        header[19] = 0;
+        // Format type (UInt16). Set 1 for PCM.
+        header[20] = (byte)((format) & 0xff);
+        header[21] = (byte)((format >> 8) & 0xff);
+        // Channels
+        header[22] = (byte)((channels) & 0xff);
+        header[23] = (byte)((channels >> 8) & 0xff);
+        // Sample rate (UInt32).
+        header[24] = (byte)((samplerate) & 0xff);
+        header[25] = (byte)((samplerate >> 8) & 0xff);
+        header[26] = (byte)((samplerate >> 16) & 0xff);
+        header[27] = (byte)((samplerate >> 24) & 0xff);
+        // Byte rate (UInt32).
+        header[28] = (byte)((byterate) & 0xff);
+        header[29] = (byte)((byterate >> 8) & 0xff);
+        header[30] = (byte)((byterate >> 16) & 0xff);
+        header[31] = (byte)((byterate >> 24) & 0xff);
+        // Block alignment (UInt16).
+        header[32] = (byte)((blockalign) & 0xff);
+        header[33] = (byte)((blockalign >> 8) & 0xff);
+        // Bits per sample (UInt16).
+        header[34] = (byte)((bitspersample) & 0xff);
+        header[35] = (byte)((bitspersample >> 8) & 0xff);
+        // Data header
+        header[36] = 'd';
+        header[37] = 'a';
+        header[38] = 't';
+        header[39] = 'a';
+        // Total audio length (UInt32).
+        header[40] = (byte)((audiolength) & 0xff);
+        header[41] = (byte)((audiolength >> 8) & 0xff);
+        header[42] = (byte)((audiolength >> 16) & 0xff);
+        header[43] = (byte)((audiolength >> 24) & 0xff);
+
+        stream.write(header, 0, header.length);
+    }
+
+    /** Updates the data length and audio length of an existing RIFF/WAVE header in the file pointed by the RandomAccessFile object. */
+    private void updateWaveHeaderLength(RandomAccessFile stream, long audiolength) throws IOException {
+        // the data header is 36 bytes large
+        long datalength = 36 + audiolength;
+
+        // Seek from the beginning to data length
+        stream.seek(4);
+        // Overwrite total data length
+        stream.write((int)((datalength) & 0xff));
+        stream.write((int)((datalength >> 8) & 0xff));
+        stream.write((int)((datalength >> 16) & 0xff));
+        stream.write((int)((datalength >> 24) & 0xff));
+        // Seek from the end of data length to audio length
+        stream.seek(40);
+        // overwrite total audio length
+        stream.write((int)((audiolength) & 0xff));
+        stream.write((int)((audiolength >> 8) & 0xff));
+        stream.write((int)((audiolength >> 16) & 0xff));
+        stream.write((int)((audiolength >> 24) & 0xff));
     }
 }

@@ -10,7 +10,6 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 import com.smartdevicelink.api.audio.AudioStreamManager.SampleType;
 
-import java.io.File;
 import java.nio.ByteBuffer;
 
 /**

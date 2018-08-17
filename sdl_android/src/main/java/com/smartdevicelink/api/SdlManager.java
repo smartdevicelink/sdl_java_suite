@@ -169,7 +169,9 @@ public class SdlManager{
 		this.fileManager.dispose();
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			this.audioStreamManager.dispose();
+			if (this.audioStreamManager != null) {
+				this.audioStreamManager.dispose();
+			}
 		}
 		/*
 		this.lockscreenManager.dispose();
