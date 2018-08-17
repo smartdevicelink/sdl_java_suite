@@ -146,7 +146,7 @@ public class Choice extends RPCStruct {
      * @param vrCommands the List of  vrCommands
      * @since SmartDeviceLink 2.0
      */    
-    public void setVrCommands(@NonNull List<String> vrCommands) {
+    public void setVrCommands(List<String> vrCommands) {
         setValue(KEY_VR_COMMANDS, vrCommands);
     }
     /**
