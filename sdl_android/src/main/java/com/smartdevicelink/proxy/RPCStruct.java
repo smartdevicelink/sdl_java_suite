@@ -56,7 +56,8 @@ public class RPCStruct {
 			throws JSONException {
 		return JsonRPCMarshaller.deserializeJSONObject(jsonObject);
 	}
-	
+
+	@Deprecated
 	public JSONObject serializeJSON() throws JSONException {
 		return serializeStoreJSON(null);
 	}
@@ -68,7 +69,7 @@ public class RPCStruct {
 	
 	@SuppressWarnings("unchecked")
     public JSONObject serializeJSON(byte protocolVersion) throws JSONException {
-		return serializeJSON(new Version(protocolVersion+".0.0"), null);
+		return serializeJSON(new Version(protocolVersion,0,0), null);
 	}
 
     public JSONObject serializeJSON(Version version, Version rpcMsgVersion) throws JSONException {
@@ -82,7 +83,8 @@ public class RPCStruct {
 
 	/**
 	 * This method should clean the the RPC to make sure it is compliant with the spec
-	 * @param rpcVersion
+	 * @param rpcVersion the rpc spec version that has been negotiated. If value is null the
+	 *                   the max value of RPC spec version this library supports should be used.
 	 */
 	protected void format(Version rpcVersion){
 		//Should override this method when breaking changes are made to the RPC spec

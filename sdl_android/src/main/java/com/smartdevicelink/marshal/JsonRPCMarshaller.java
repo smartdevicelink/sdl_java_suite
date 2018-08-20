@@ -27,7 +27,7 @@ public class JsonRPCMarshaller {
 
 	@Deprecated
 	public static byte[] marshall(RPCMessage msg, byte version) {
-		return marshall(msg,new Version(version+""),null);
+		return marshall(msg,new Version(version,0,0),null);
 	}
 
 	public static byte[] marshall(RPCMessage msg, Version protocolVersion, Version rpcMsgVersion) {

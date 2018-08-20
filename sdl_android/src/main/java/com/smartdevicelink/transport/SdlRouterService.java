@@ -1978,7 +1978,7 @@ public class SdlRouterService extends Service{
 	private byte[] createForceUnregisterApp(byte sessionId,byte version){
 		UnregisterAppInterface request = new UnregisterAppInterface();
 		request.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
-		byte[] msgBytes = JsonRPCMarshaller.marshall(request, new Version(version+".0.0"), null);
+		byte[] msgBytes = JsonRPCMarshaller.marshall(request, new Version(version,0,0), null);
 		ProtocolMessage pm = new ProtocolMessage();
 		pm.setData(msgBytes);
 		pm.setSessionID(sessionId);

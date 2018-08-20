@@ -1651,7 +1651,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		try
 		{
 			//sReturn = msg.serializeJSON(getWiProVersion()).toString(2);
-			sReturn = msg.serializeJSON(new com.smartdevicelink.util.Version(getWiProVersion()+".0.0"),
+			sReturn = msg.serializeJSON(new com.smartdevicelink.util.Version(getWiProVersion(),0,0),
 					rpcSpecVersion ).toString(2);
 		}
 		catch (final Exception e) 
@@ -1805,7 +1805,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			try {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, request, SDL_LIB_TRACE_KEY);
 						
-			byte[] msgBytes = JsonRPCMarshaller.marshall(request, new com.smartdevicelink.util.Version(_wiproVersion+".0.0"), rpcSpecVersion);
+			byte[] msgBytes = JsonRPCMarshaller.marshall(request, new com.smartdevicelink.util.Version(_wiproVersion,0,0), rpcSpecVersion);
 	
 			ProtocolMessage pm = new ProtocolMessage();
 			pm.setData(msgBytes);
@@ -2013,6 +2013,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	private void handleRPCMessage(Hashtable<String, Object> hash) {
 		RPCMessage rpcMsg = new RPCMessage(hash);
+		//Call format to ensure the RPC is ready to be handled regardless of RPC spec version
+		rpcMsg.format(rpcSpecVersion);
+
 		String functionName = rpcMsg.getFunctionName();
 		String messageType = rpcMsg.getMessageType();
 		
