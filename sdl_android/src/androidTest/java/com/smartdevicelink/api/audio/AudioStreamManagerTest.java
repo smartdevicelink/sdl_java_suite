@@ -463,8 +463,7 @@ public class AudioStreamManagerTest extends TestCase {
         final int sampleType = SampleType.SIGNED_16_BIT;
         final int sampleRate = 16000;
 
-        File externalStorageDirectory = Environment.getExternalStorageDirectory();
-        final File outputFile = new File(externalStorageDirectory, "test_audio_file.wav");
+        final File outputFile = new File(mContext.getCacheDir(), "test_audio_file.wav");
         final FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
         writeWaveHeader(fileOutputStream, sampleRate, sampleType << 3);
 
