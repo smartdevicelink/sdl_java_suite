@@ -103,7 +103,7 @@ public class LockScreenConfig {
 	}
 
 	/**
-	 * Get whether or not to show the device's Logo on the default lock screen <br>
+	 * Get whether or not the device's Logo is shown on the default lock screen <br>
 	 * The logo will come from the connected hardware, if set by the manufacturer <br>
 	 * @return deviceLogo - boolean
 	 */

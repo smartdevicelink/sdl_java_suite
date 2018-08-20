@@ -53,8 +53,13 @@ public class SDLLockScreenActivity extends Activity {
 		// set any parameters that came from the lock screen manager
 		initializeActivity(getIntent());
 
+		// create intent filter
+		IntentFilter lockscreenFilter = new IntentFilter();
+		lockscreenFilter.addAction(CLOSE_LOCK_SCREEN_ACTION);
+		lockscreenFilter.addAction(LOCKSCREEN_DEVICE_ICON_DOWNLOADED);
+
 		// register broadcast receivers
-		registerReceiver(lockScreenBroadcastReceiver, new IntentFilter(CLOSE_LOCK_SCREEN_ACTION));
+		registerReceiver(lockScreenBroadcastReceiver, lockscreenFilter);
 	}
 
 	@Override
