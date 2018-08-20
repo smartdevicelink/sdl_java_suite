@@ -127,7 +127,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private static final int PROX_PROT_VER_ONE = 1;
 	private static final int RESPONSE_WAIT_TIME = 2000;
 
-	private static final com.smartdevicelink.util.Version MAX_SUPPORTED_RPC_VERSION = new com.smartdevicelink.util.Version("4.5.0");
+	public static final com.smartdevicelink.util.Version MAX_SUPPORTED_RPC_VERSION = new com.smartdevicelink.util.Version("5.0.0");
 
 	private SdlSession sdlSession = null;
 	private proxyListenerType _proxyListener = null;
