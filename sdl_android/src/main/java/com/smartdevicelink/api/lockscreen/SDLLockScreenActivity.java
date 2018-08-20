@@ -16,14 +16,14 @@ import com.smartdevicelink.R;
 
 public class SDLLockScreenActivity extends Activity {
 
+	private static final String TAG = "SDLLockScreenActivity";
 	public static final String LOCKSCREEN_COLOR_EXTRA = "LOCKSCREEN_COLOR_EXTRA";
 	public static final String LOCKSCREEN_ICON_EXTRA = "LOCKSCREEN_ICON_EXTRA";
 	public static final String LOCKSCREEN_DEVICE_ICON_EXTRA = "LOCKSCREEN_DEVICE_ICON_EXTRA";
 	public static final String LOCKSCREEN_DEVICE_ICON_BITMAP = "LOCKSCREEN_DEVICE_ICON_BITMAP";
 	public static final String LOCKSCREEN_CUSTOM_VIEW_EXTRA = "LOCKSCREEN_CUSTOM_VIEW_EXTRA";
-	public static final String LOCKSCREEN_ICON_DOWNLOADED = "LOCKSCREEN_ICON_DOWNLOADED";
+	public static final String LOCKSCREEN_DEVICE_ICON_DOWNLOADED = "LOCKSCREEN_DEVICE_ICON_DOWNLOADED";
 	public static final String CLOSE_LOCK_SCREEN_ACTION = "CLOSE_LOCK_SCREEN";
-	private static final String TAG = "SDLLockScreenActivity";
 
 	private final BroadcastReceiver lockScreenBroadcastReceiver = new BroadcastReceiver() {
 		@Override
@@ -33,11 +33,11 @@ public class SDLLockScreenActivity extends Activity {
 				if (action != null){
 					if (action.equalsIgnoreCase(CLOSE_LOCK_SCREEN_ACTION)){
 						finish();
-					} else if (action.equalsIgnoreCase(LOCKSCREEN_ICON_DOWNLOADED)){
-						boolean displayDeviceImage = intent.getBooleanExtra(LOCKSCREEN_DEVICE_ICON_EXTRA, true);
-						Bitmap displayDeviceIcon = intent.getParcelableExtra(LOCKSCREEN_DEVICE_ICON_BITMAP);
-						if (displayDeviceImage && displayDeviceIcon != null){
-							displayDeviceImage(displayDeviceIcon);
+					} else if (action.equalsIgnoreCase(LOCKSCREEN_DEVICE_ICON_DOWNLOADED)){
+						boolean deviceImage = intent.getBooleanExtra(LOCKSCREEN_DEVICE_ICON_EXTRA, true);
+						Bitmap deviceIcon = intent.getParcelableExtra(LOCKSCREEN_DEVICE_ICON_BITMAP);
+						if (deviceImage && deviceIcon != null){
+							setDeviceIcon(deviceIcon);
 						}
 					}
 				}
@@ -65,11 +65,11 @@ public class SDLLockScreenActivity extends Activity {
 
 	public void initializeActivity(Intent intent){
 		if (intent != null){
-			boolean displayDeviceImage = intent.getBooleanExtra(LOCKSCREEN_DEVICE_ICON_EXTRA, true);
+			boolean deviceImage = intent.getBooleanExtra(LOCKSCREEN_DEVICE_ICON_EXTRA, true);
 			int customColor = intent.getIntExtra(LOCKSCREEN_COLOR_EXTRA, 0);
 			int customIcon = intent.getIntExtra(LOCKSCREEN_ICON_EXTRA, 0);
 			int customView = intent.getIntExtra(LOCKSCREEN_CUSTOM_VIEW_EXTRA, 0);
-			Bitmap displayDeviceIcon = intent.getParcelableExtra(LOCKSCREEN_DEVICE_ICON_BITMAP);
+			Bitmap deviceIcon = intent.getParcelableExtra(LOCKSCREEN_DEVICE_ICON_BITMAP);
 
 			if (customView != 0){
 				setCustomView(customView);
@@ -84,8 +84,8 @@ public class SDLLockScreenActivity extends Activity {
 					changeIcon(customIcon);
 				}
 
-				if (displayDeviceImage && displayDeviceIcon != null){
-					displayDeviceImage(displayDeviceIcon);
+				if (deviceImage && deviceIcon != null){
+					setDeviceIcon(deviceIcon);
 				}
 			}
 		}
@@ -101,10 +101,10 @@ public class SDLLockScreenActivity extends Activity {
 		lockscreen_iv.setBackgroundResource(customIcon);
 	}
 
-	private void displayDeviceImage(Bitmap displayDeviceIcon) {
-		ImageView display_device_iv = findViewById(R.id.display_device_image);
-		if (displayDeviceIcon != null) {
-			display_device_iv.setImageBitmap(displayDeviceIcon);
+	private void setDeviceIcon(Bitmap deviceIcon) {
+		ImageView device_iv = findViewById(R.id.device_image);
+		if (deviceIcon != null) {
+			device_iv.setImageBitmap(deviceIcon);
 		}
 	}
 

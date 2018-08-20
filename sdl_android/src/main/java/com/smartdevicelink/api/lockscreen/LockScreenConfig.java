@@ -16,13 +16,13 @@ package com.smartdevicelink.api.lockscreen;
  */
 public class LockScreenConfig {
 
-	private boolean enable, displayDeviceLogo;
+	private boolean enable, deviceLogo;
 	private int backgroundColor, appIconInt, customViewInt;
 
 	public LockScreenConfig(){
 		// set default values
 		this.enable = true;
-		this.displayDeviceLogo = false;
+		this.deviceLogo = false;
 	}
 
 	/**
@@ -93,22 +93,22 @@ public class LockScreenConfig {
 	}
 
 	/**
-	 * Whether or not to show the Display Device's logo on the default lock screen <br>
+	 * Whether or not to show the device's logo on the default lock screen <br>
 	 * The logo will come from the connected hardware, if set by the manufacturer <br>
 	 * If using a Custom View, this will be ignored.
-	 * @param displayDeviceLogo - boolean
+	 * @param deviceLogo - boolean
 	 */
-	public void displayDeviceLogo(boolean displayDeviceLogo) {
-		this.displayDeviceLogo = displayDeviceLogo;
+	public void setDeviceLogo(boolean deviceLogo) {
+		this.deviceLogo = deviceLogo;
 	}
 
 	/**
-	 * Get whether or not to show the Display Device's Logo on the default lock screen <br>
+	 * Get whether or not to show the device's Logo on the default lock screen <br>
 	 * The logo will come from the connected hardware, if set by the manufacturer <br>
-	 * @return displayDeviceLogo - boolean
+	 * @return deviceLogo - boolean
 	 */
-	public boolean displayDeviceLogo() {
-		return displayDeviceLogo;
+	public boolean getDeviceLogo() {
+		return deviceLogo;
 	}
 
 }

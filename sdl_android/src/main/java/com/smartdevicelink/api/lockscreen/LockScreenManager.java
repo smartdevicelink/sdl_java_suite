@@ -37,11 +37,12 @@ public class LockScreenManager extends BaseSubManager {
 	private static final String TAG = "LockScreenManager";
 	private WeakReference<Context> context;
 	private HMILevel hmiLevel;
-	private boolean driverDistStatus, lockScreenEnabled, displayDeviceLogo;
-	private int lockScreenIcon, lockScreenColor, customView;
 	private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
 	private String deviceIconUrl;
-	private Bitmap lockScreenOEMIcon;
+	private boolean driverDistStatus;
+	protected boolean lockScreenEnabled, deviceLogo;
+	protected int lockScreenIcon, lockScreenColor, customView;
+	protected Bitmap deviceIcon;
 
 	public LockScreenManager(LockScreenConfig lockScreenConfig, Context context, ISdl internalInterface){
 
@@ -57,7 +58,7 @@ public class LockScreenManager extends BaseSubManager {
 		lockScreenColor = lockScreenConfig.getBackgroundColor();
 		customView = lockScreenConfig.getCustomView();
 		lockScreenEnabled = lockScreenConfig.isEnabled();
-		displayDeviceLogo = lockScreenConfig.displayDeviceLogo();
+		deviceLogo = lockScreenConfig.getDeviceLogo();
 
 		setupListeners();
 
@@ -72,10 +73,10 @@ public class LockScreenManager extends BaseSubManager {
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_DRIVER_DISTRACTION, ddListener);
-		if (displayDeviceLogo) {
+		if (deviceLogo) {
 			internalInterface.removeOnRPCNotificationListener(FunctionID.ON_SYSTEM_REQUEST, systemRequestListener);
 		}
-		lockScreenOEMIcon = null;
+		deviceIcon = null;
 		deviceIconUrl = null;
 
 		// transition state
@@ -93,7 +94,7 @@ public class LockScreenManager extends BaseSubManager {
 	 *
 	 * 1. ON_HMI_STATUS
 	 * 2. ON_DRIVER_DISTRACTION
-	 * 3. ON_SYSTEM_REQUEST (used for OEM Icon Downloading)
+	 * 3. ON_SYSTEM_REQUEST (used for device Icon Downloading)
 	 */
 	private void setupListeners(){
 		// add hmi listener
@@ -131,7 +132,7 @@ public class LockScreenManager extends BaseSubManager {
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_DRIVER_DISTRACTION, ddListener);
 
 		// set up system request listener
-		if (displayDeviceLogo) {
+		if (deviceLogo) {
 			systemRequestListener = new OnRPCNotificationListener() {
 				@Override
 				public void onNotified(RPCNotification notification) {
@@ -141,7 +142,7 @@ public class LockScreenManager extends BaseSubManager {
 							msg.getUrl() != null) {
 						// send intent to activity to download icon from core
 						deviceIconUrl = msg.getUrl();
-						downloadLockScreenIcon(deviceIconUrl);
+						downloadDeviceIcon(deviceIconUrl);
 					}
 				}
 			};
@@ -163,7 +164,7 @@ public class LockScreenManager extends BaseSubManager {
 	private void launchLockScreenActivity(){
 		// intent to open SDLLockScreenActivity
 		// pass in icon, background color, and custom view
-		if (lockScreenEnabled && shouldShowNotification()) {
+		if (lockScreenEnabled && isForegrounded() && context.get() != null) {
 			LockScreenStatus status = getLockScreenStatus();
 			if (status == LockScreenStatus.REQUIRED) {
 				Intent showLockScreenIntent = new Intent(context.get(), SDLLockScreenActivity.class);
@@ -173,21 +174,16 @@ public class LockScreenManager extends BaseSubManager {
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_ICON_EXTRA, lockScreenIcon);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_COLOR_EXTRA, lockScreenColor);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_CUSTOM_VIEW_EXTRA, customView);
-				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_EXTRA, displayDeviceLogo);
-				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_BITMAP, lockScreenOEMIcon);
-
-				if (context.get() != null) {
-					context.get().startActivity(showLockScreenIntent);
-				}
+				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_EXTRA, deviceLogo);
+				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_BITMAP, deviceIcon);
+				context.get().startActivity(showLockScreenIntent);
 			} else if (status == LockScreenStatus.OFF) {
-				if (context.get() != null) {
-					context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
-				}
+				context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
 			}
 		}
 	}
 
-	private static boolean shouldShowNotification() {
+	private boolean isForegrounded() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
 			ActivityManager.getMyMemoryState(myProcess);
@@ -229,48 +225,26 @@ public class LockScreenManager extends BaseSubManager {
 		return LockScreenStatus.OFF;
 	}
 
-	private void downloadLockScreenIcon(final String url){
+	private void downloadDeviceIcon(final String url){
+
+		if (deviceIcon != null || context.get() == null){
+			return;
+		}
+
 		new Thread(new Runnable(){
 			@Override
 			public void run(){
 				try{
-					lockScreenOEMIcon = HttpUtils.downloadImage(url);
-					Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_ICON_DOWNLOADED);
-					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_EXTRA, displayDeviceLogo);
-					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_BITMAP, lockScreenOEMIcon);
-					if (context.get() != null) {
-						context.get().sendBroadcast(intent);
-					}
+					deviceIcon = HttpUtils.downloadImage(url);
+					Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_DOWNLOADED);
+					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_EXTRA, deviceLogo);
+					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_BITMAP, deviceIcon);
+					context.get().sendBroadcast(intent);
 				}catch(IOException e){
-					Log.e(TAG, "Lock Screen Icon Error Downloading");
+					Log.e(TAG, "device Icon Error Downloading");
 				}
 			}
 		}).start();
-	}
-
-	// protected getters for testing class
-	protected int getLockScreenIcon(){
-		return lockScreenIcon;
-	}
-
-	protected int getLockScreenColor(){
-		return lockScreenColor;
-	}
-
-	protected int getCustomView(){
-		return customView;
-	}
-
-	protected boolean displayDeviceLogo(){
-		return displayDeviceLogo;
-	}
-
-	protected boolean getLockScreenEnabled(){
-		return lockScreenEnabled;
-	}
-
-	protected Bitmap getLockScreenOEMIcon(){
-		return lockScreenOEMIcon;
 	}
 
 }
