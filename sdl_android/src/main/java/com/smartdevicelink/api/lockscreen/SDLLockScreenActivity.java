@@ -63,6 +63,10 @@ public class SDLLockScreenActivity extends Activity {
 		super.onDestroy();
 	}
 
+	@Override
+	public void onBackPressed() {
+	}
+
 	public void initializeActivity(Intent intent){
 		if (intent != null){
 			boolean deviceImage = intent.getBooleanExtra(LOCKSCREEN_DEVICE_ICON_EXTRA, true);

@@ -98,7 +98,7 @@ public class LockScreenConfig {
 	 * If using a Custom View, this will be ignored.
 	 * @param deviceLogo - boolean
 	 */
-	public void setDeviceLogo(boolean deviceLogo) {
+	public void showDeviceLogo(boolean deviceLogo) {
 		this.deviceLogo = deviceLogo;
 	}
 

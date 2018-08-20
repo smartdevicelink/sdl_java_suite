@@ -24,7 +24,7 @@ public class LockScreenConfigTests extends AndroidTestCase {
 		lockScreenConfig.setCustomView(Test.GENERAL_INT);
 		lockScreenConfig.setAppIcon(Test.GENERAL_INT);
 		lockScreenConfig.setBackgroundColor(Test.GENERAL_INT);
-		lockScreenConfig.setDeviceLogo(true);
+		lockScreenConfig.showDeviceLogo(true);
 		lockScreenConfig.setEnabled(true);
 	}
 
