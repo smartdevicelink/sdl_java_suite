@@ -71,7 +71,7 @@ public class ScreenManager extends BaseSubManager {
 	private void initialize(){
 		this.softButtonManager = new SoftButtonManager(internalInterface, fileManager);
 		this.softButtonManager.start(subManagerListener);
-		this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager);
+		this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager, softButtonManager);
 		this.textAndGraphicManager.start(subManagerListener);
 	}
 
@@ -84,7 +84,6 @@ public class ScreenManager extends BaseSubManager {
 
 	// Setters
 
-	// TODO: IMPORTANT: we have to make sure that ScreenManager informs softButtonManager about all MainField1 updates, otherwise softButtonManager will override textField1 with old values
 	public void setTextField1(@NonNull String textField1) {
 		this.textAndGraphicManager.setTextField1(textField1);
 		this.softButtonManager.setCurrentMainField1(textField1);

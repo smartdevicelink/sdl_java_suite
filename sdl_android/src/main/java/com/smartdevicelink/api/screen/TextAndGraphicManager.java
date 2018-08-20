@@ -53,6 +53,7 @@ class TextAndGraphicManager extends BaseSubManager {
 	protected HMILevel currentHMILevel;
 	private boolean pendingHMIFull;
 	private FileManager fileManager;
+	private SoftButtonManager softButtonManager;
 	private CompletionListener queuedUpdateListener, inProgressListener, pendingHMIListener;
 	private SdlArtwork blankArtwork;
 	private OnRPCNotificationListener hmiListener;
@@ -66,10 +67,11 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	//Constructors
 
-	TextAndGraphicManager(ISdl internalInterface, FileManager fileManager) {
+	TextAndGraphicManager(ISdl internalInterface, FileManager fileManager, SoftButtonManager softButtonManager) {
 		// set class vars
 		super(internalInterface);
 		this.fileManager = fileManager;
+		this.softButtonManager = softButtonManager;
 		batchingUpdates = false;
 		isDirty = false;
 		pendingHMIFull = false;
@@ -270,6 +272,7 @@ class TextAndGraphicManager extends BaseSubManager {
 			}
 		});
 
+		this.softButtonManager.setCurrentMainField1(inProgressUpdate.getMainField1());
 		internalInterface.sendRPCRequest(inProgressUpdate);
 	}
 
