@@ -14,12 +14,12 @@ import java.util.List;
  * {@link com.smartdevicelink.proxy.rpc.MetadataTags}
  */
 
-public class MetadataTypeTests extends TestCase{
+public class MetadataTypeTests extends TestCase {
 
 	/**
 	 * Verifies that the enum values are not null upon valid assignment.
 	 */
-	public void testValidEnums () {
+	public void testValidEnums() {
 		String example = "mediaTitle";
 		MetadataType enumMediaTitle = MetadataType.valueForString(example);
 		example = "mediaArtist";
@@ -63,13 +63,12 @@ public class MetadataTypeTests extends TestCase{
 	/**
 	 * Verifies that an invalid assignment is null.
 	 */
-	public void testInvalidEnum () {
+	public void testInvalidEnum() {
 		String example = "MEDIA_TITLEZ";
 		try {
 			MetadataType temp = MetadataType.valueForString(example);
 			assertNull("Result of valueForString should be null.", temp);
-		}
-		catch (IllegalArgumentException exception) {
+		} catch (IllegalArgumentException exception) {
 			fail("Invalid enum throws IllegalArgumentException.");
 		}
 	}
@@ -77,13 +76,12 @@ public class MetadataTypeTests extends TestCase{
 	/**
 	 * Verifies that a null assignment is invalid.
 	 */
-	public void testNullEnum () {
+	public void testNullEnum() {
 		String example = null;
 		try {
 			MetadataType temp = MetadataType.valueForString(example);
 			assertNull("Result of valueForString should be null.", temp);
-		}
-		catch (NullPointerException exception) {
+		} catch (NullPointerException exception) {
 			fail("Null string throws NullPointerException.");
 		}
 	}

@@ -82,6 +82,7 @@ public enum FunctionID{
     ON_HASH_CHANGE(32782, "OnHashChange"),
     ON_INTERIOR_VEHICLE_DATA(32783, "OnInteriorVehicleData"),
     ON_WAY_POINT_CHANGE(32784, "OnWayPointChange"),
+    ON_RC_STATUS(32785, "OnRCStatus"),
 
     // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)
     ON_LOCK_SCREEN_STATUS(-1, "OnLockScreenStatus"),
@@ -143,5 +144,19 @@ public enum FunctionID{
 
         Integer result = functionMap.get(functionName);
         return ( result == null ) ? INVALID_ID : result;
+    }
+
+    /**
+     * This method gives the corresponding FunctionID enum value for a string RPC 
+     * @param name String value represents the name of the RPC
+     * @return FunctionID represents the equivalent enum value for the provided string
+     */
+    public static FunctionID getEnumForString(String name){
+        for(FunctionID value : EnumSet.allOf(FunctionID.class)) {
+            if(value.JSON_NAME.equals(name)){
+                return value;
+            }
+        }
+        return null;
     }
 }

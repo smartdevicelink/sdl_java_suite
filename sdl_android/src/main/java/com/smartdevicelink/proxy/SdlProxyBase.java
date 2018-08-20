@@ -316,6 +316,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
+		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+			try {
+				SdlProxyBase.this.sendRequests(rpcs, listener);
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
 		public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
 			SdlProxyBase.this.addOnRPCNotificationListener(notificationId,listener);
 		}
@@ -3541,6 +3550,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					});
 				} else {
 					_proxyListener.onOnInteriorVehicleData(msg);
+					onRPCNotificationReceived(msg);
+				}
+			}
+			else if (functionName.equals(FunctionID.ON_RC_STATUS.toString())) {
+				final OnRCStatus msg = new OnRCStatus(hash);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onOnRCStatus(msg);
+							onRPCNotificationReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onOnRCStatus(msg);
 					onRPCNotificationReceived(msg);
 				}
 			}

@@ -29,7 +29,8 @@
       "clusterModeStatus":true,
       "myKey":true,
       "fuelRange":true,
-      "turnSignal":true
+      "turnSignal":true,
+      "electronicParkBrakeStatus":true
     }
   },
   "response":{
@@ -143,6 +144,10 @@
       "turnSignal":{
         "dataType":"VEHICLEDATA_TURNSIGNAL",
         "resultCode":"IGNORED"
+      },
+      "electronicParkBrakeStatus":{
+        "dataType":"VEHICLEDATA_ELECTRONICPARKBRAKESTATUS",
+        "resultCode":"SUCCESS"
       }
     }
   }

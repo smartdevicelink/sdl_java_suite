@@ -120,6 +120,11 @@ public enum VehicleDataType {
      * Notifies TURNSIGNALData may be subscribed
      */
     VEHICLEDATA_TURNSIGNAL,
+
+    /**
+     * Notifies ELECTRONICPARKBRAKESTATUSData may be subscribed
+     */
+    VEHICLEDATA_ELECTRONICPARKBRAKESTATUS,
     ;
 
      /**

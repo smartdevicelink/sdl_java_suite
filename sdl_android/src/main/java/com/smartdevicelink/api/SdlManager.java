@@ -4,8 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.smartdevicelink.api.lockscreen.LockScreenConfig;
-import com.smartdevicelink.api.lockscreen.LockScreenManager;
+import com.smartdevicelink.api.PermissionManager.PermissionManager;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -49,7 +48,7 @@ import java.util.Vector;
  * 3. Sending Requests <br>
  * 4. Helper methods
  */
-public class SdlManager {
+public class SdlManager{
 
 	private static String TAG = "Sdl Manager";
 	private SdlProxyBase proxy;
@@ -67,17 +66,18 @@ public class SdlManager {
 
 	private CompletionListener initListener;
 	private int state = -1;
-	private LockScreenConfig lockScreenConfig;
+	//public LockScreenConfig lockScreenConfig;
+
 
 	// Managers
-	private LockScreenManager lockscreenManager;
+
+	private PermissionManager permissionManager;
+	private FileManager fileManager;
     /*
-    private FileManager fileManager;
     private VideoStreamingManager videoStreamingManager;
     private AudioStreamManager audioStreamManager;
     private LockscreenManager lockscreenManager;
     private ScreenManager screenManager;
-    private PermissionManager permissionManager;
     */
 
 	// Initialize proxyBridge with anonymous lifecycleListener
@@ -109,14 +109,23 @@ public class SdlManager {
 		}
 	});
 
-	// Sub manager listener
+    // Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
 		@Override
 		public synchronized void onComplete(boolean success) {
 			if(!success){
 				Log.d(TAG, "Sub manager failed to initialize");
 			}
-			if(lockscreenManager == null || lockscreenManager.getState() != BaseSubManager.SETTING_UP){
+			if(
+					permissionManager != null && permissionManager.getState() != BaseSubManager.SETTING_UP &&
+					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP
+					/*
+					videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
+					audioStreamManager != null && audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
+					lockscreenManager != null &&  lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
+					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
+					*/
+					){
 				state = BaseSubManager.READY;
 				if(initListener != null){
 					initListener.onComplete(true);
@@ -126,41 +135,44 @@ public class SdlManager {
 		}
 	};
 
-	private void initialize(){
+	protected void initialize(){
 		// instantiate managers
-		if (lockScreenConfig.isEnabled()) {
-			this.lockscreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
-			this.lockscreenManager.start(subManagerListener);
-		}
-		/*
-		this.fileManager = new FileManager(_internalInterface, context);
-		this.fileManager.start(subManagerListener);
-		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-		this.screenManager.start(subManagerListener);
+
 		this.permissionManager = new PermissionManager(_internalInterface);
 		this.permissionManager.start(subManagerListener);
+
+		this.fileManager = new FileManager(_internalInterface, context);
+		this.fileManager.start(subManagerListener);
+		/*
+		this.lockscreenManager = new LockscreenManager(lockScreenConfig, context, _internalInterface);
+		this.lockscreenManager.start(subManagerListener);
+		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
+		this.screenManager.start(subManagerListener);
 		this.videoStreamingManager = new VideoStreamingManager(context, _internalInterface);
 		this.videoStreamingManager.start(subManagerListener);
 		this.audioStreamManager = new AudioStreamManager(_internalInterface);
 		this.audioStreamManager.start(subManagerListener);
 		*/
-
-		// If no managers, just call subManagerListener's onComplete
-		subManagerListener.onComplete(true);
 	}
 
 	private void dispose() {
-		if (this.lockscreenManager != null) {
-			this.lockscreenManager.dispose();
-		}
-		/*
+		this.permissionManager.dispose();
 		this.fileManager.dispose();
+		/*
+		this.lockscreenManager.dispose();
 		this.audioStreamManager.dispose();
 		this.screenManager.dispose();
-		this.permissionManager.dispose();
 		this.videoStreamingManager.dispose();
 		this.audioStreamManager.dispose();
 		*/
+	}
+
+	/**
+	 * Sets the state of SdlManager to one of those defined in BaseSubManager
+	 * @param state int representing desired state of SdlManager
+	 */
+	protected void setState(int state){
+		this.state = state;
 	}
 
 	// BUILDER
@@ -173,9 +185,8 @@ public class SdlManager {
 		 *
 		 * The following setters are <strong>REQUIRED:</strong><br>
 		 *
-		 * • setAppId() <br>
-		 * • setAppName() <br>
-		 * • setContext()
+		 * • setAppId <br>
+		 * • setAppName
 		 */
 		public Builder(){
 			sdlManager = new SdlManager();
@@ -235,15 +246,11 @@ public class SdlManager {
 			return this;
 		}
 
-		/**
-		 * Sets the LockScreenConfig for the session. <br>
-		 * <strong>Note: If not set, the default configuration will be used.</strong>
-		 * @param lockScreenConfig - configuration options
-		 */
+		/*
 		public Builder setLockScreenConfig (final LockScreenConfig lockScreenConfig){
 			sdlManager.lockScreenConfig = lockScreenConfig;
 			return this;
-		}
+		}*/
 
 		/**
 		 * Sets the vector of AppHMIType <br>
@@ -298,67 +305,108 @@ public class SdlManager {
 			return this;
 		}
 
-	public SdlManager build() {
-		if (sdlManager.appName == null) {
-			throw new IllegalArgumentException("You must specify an app name by calling setAppName");
+		public SdlManager build() {
+			if (sdlManager.appName == null) {
+				throw new IllegalArgumentException("You must specify an app name by calling setAppName");
+			}
+
+			if (sdlManager.appId == null) {
+				throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
+			}
+
+			if (sdlManager.hmiTypes == null) {
+				Vector<AppHMIType> hmiTypesDefault = new Vector<>();
+				hmiTypesDefault.add(AppHMIType.DEFAULT);
+				sdlManager.hmiTypes = hmiTypesDefault;
+				sdlManager.isMediaApp = false;
+			}
+
+			if (sdlManager.hmiLanguage == null){
+				sdlManager.hmiLanguage = Language.EN_US;
+			}
+
+			sdlManager.state = BaseSubManager.SETTING_UP;
+
+			return sdlManager;
 		}
-
-		if (sdlManager.appId == null) {
-			throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
-		}
-
-		if (sdlManager.context == null) {
-			throw new IllegalArgumentException("You need to set context by calling setContext()");
-		}
-
-		if (sdlManager.hmiTypes == null) {
-			Vector<AppHMIType> hmiTypesDefault = new Vector<>();
-			hmiTypesDefault.add(AppHMIType.DEFAULT);
-			sdlManager.hmiTypes = hmiTypesDefault;
-			sdlManager.isMediaApp = false;
-		}
-
-		if (sdlManager.lockScreenConfig == null){
-			// if lock screen params are not set, use default
-			sdlManager.lockScreenConfig = new LockScreenConfig();
-		}
-
-		if (sdlManager.hmiLanguage == null){
-			sdlManager.hmiLanguage = Language.EN_US;
-		}
-
-		sdlManager.state = BaseSubManager.SETTING_UP;
-
-		return sdlManager;
 	}
-}
 
+	private void checkSdlManagerState(){
+		if (state != BaseSubManager.READY){
+			throw new IllegalStateException("SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
+		}
+	}
 	// MANAGER GETTERS
 
-	public LockScreenManager getLockscreenManager() {
-		return lockscreenManager;
+	/**
+	 * Gets the PermissionManager. <br>
+	 * <strong>Note: PermissionManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * @return a PermissionManager object
+	 */
+	public PermissionManager getPermissionManager() {
+		checkSdlManagerState();
+		return permissionManager;
 	}
 
-	/*
+	/**
+	 * Gets the FileManager. <br>
+	 * <strong>Note: FileManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * @return a FileManager object
+	 */
 	public FileManager getFileManager() {
+		checkSdlManagerState();
 		return fileManager;
 	}
 
+
+	/**
+	 * Gets the VideoStreamingManager. <br>
+	 * <strong>Note: VideoStreamingManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * @return a VideoStreamingManager object
+	 */
+	/*
 	public VideoStreamingManager getVideoStreamingManager() {
+		checkSdlManagerState();
 		return videoStreamingManager;
 	}
+	*/
 
+    /**
+     * Gets the AudioStreamManager. <br>
+     * <strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     * @return a AudioStreamManager object
+     */
+    /*
 	public AudioStreamManager getAudioStreamManager() {
+		checkSdlManagerState();
 		return audioStreamManager;
 	}
+	*/
 
+    /**
+     * Gets the ScreenManager. <br>
+     * <strong>Note: ScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     * @return a ScreenManager object
+     */
+    /*
 	public ScreenManager getScreenManager() {
+		checkSdlManagerState();
 		return screenManager;
 	}
+	*/
 
-	public PermissionManager getPermissionManager() {
-		return permissionManager;
-	}*/
+    /**
+     * Gets the LockScreenManager. <br>
+     * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     * @return a LockScreenManager object
+     */
+    /*
+	public LockscreenManager getLockscreenManager() {
+		checkSdlManagerState();
+		return lockscreenManager;
+	}
+	*/
+
 
 	// PROTECTED GETTERS
 
@@ -381,8 +429,6 @@ public class SdlManager {
 	protected Vector<TTSChunk> getTtsChunks() { return ttsChunks; }
 
 	protected BaseTransportConfig getTransport() { return transport; }
-
-	protected LockScreenConfig getLockScreenConfig() { return lockScreenConfig; }
 
 	// SENDING REQUESTS
 
@@ -463,13 +509,20 @@ public class SdlManager {
 	@SuppressWarnings("unchecked")
 	public void start(@NonNull CompletionListener listener){
 		initListener = listener;
-		try {
-			proxy = new SdlProxyBase(proxyBridge, appName, shortAppName, isMediaApp, hmiLanguage,
-					hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
-					nightColorScheme) {};
-		} catch (SdlException e) {
-			listener.onComplete(false);
+		if (proxy == null) {
+			try {
+				proxy = new SdlProxyBase(proxyBridge, appName, shortAppName, isMediaApp, hmiLanguage,
+						hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
+						nightColorScheme) {
+				};
+			} catch (SdlException e) {
+				listener.onComplete(false);
+			}
 		}
+	}
+
+	protected void setProxy(SdlProxyBase proxy){
+		this.proxy = proxy;
 	}
 
 	// INTERNAL INTERFACE
@@ -479,9 +532,6 @@ public class SdlManager {
 		public void start() {
 			try{
 				proxy.initializeProxy();
-
-				// clean up objects
-				lockScreenConfig = null;
 			}catch (SdlException e){
 				e.printStackTrace();
 			}
@@ -490,7 +540,6 @@ public class SdlManager {
 		@Override
 		public void stop() {
 			try{
-				dispose();
 				proxy.dispose();
 			}catch (SdlException e){
 				e.printStackTrace();
@@ -563,6 +612,15 @@ public class SdlManager {
 		public void sendRPCRequest(RPCRequest message){
 			try {
 				proxy.sendRPCRequest(message);
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+			try {
+				proxy.sendRequests(rpcs, listener);
 			} catch (SdlException e) {
 				e.printStackTrace();
 			}
