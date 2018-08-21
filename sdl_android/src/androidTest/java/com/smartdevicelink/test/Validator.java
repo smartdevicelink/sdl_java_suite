@@ -3,6 +3,7 @@ package com.smartdevicelink.test;
 import java.util.Iterator;
 import java.util.List;
 
+import com.smartdevicelink.api.datatypes.SdlFile;
 import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
