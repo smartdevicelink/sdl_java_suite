@@ -12,7 +12,7 @@ import static org.mockito.Mockito.mock;
 
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
- * {@link com.smartdevicelink.api.SdlManager}
+ * {@link com.smartdevicelink.api.lockscreen.LockScreenManager}
  */
 public class LockScreenManagerTests extends AndroidTestCase {
 
