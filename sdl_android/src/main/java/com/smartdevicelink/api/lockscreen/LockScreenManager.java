@@ -58,7 +58,7 @@ public class LockScreenManager extends BaseSubManager {
 		lockScreenColor = lockScreenConfig.getBackgroundColor();
 		customView = lockScreenConfig.getCustomView();
 		lockScreenEnabled = lockScreenConfig.isEnabled();
-		deviceLogo = lockScreenConfig.getDeviceLogo();
+		deviceLogo = lockScreenConfig.isDeviceLogoEnabled();
 
 		setupListeners();
 

@@ -107,7 +107,7 @@ public class LockScreenConfig {
 	 * The logo will come from the connected hardware, if set by the manufacturer <br>
 	 * @return deviceLogo - boolean
 	 */
-	public boolean getDeviceLogo() {
+	public boolean isDeviceLogoEnabled() {
 		return deviceLogo;
 	}
 

@@ -40,7 +40,7 @@ public class LockScreenConfigTests extends AndroidTestCase {
 		assertEquals(Test.GENERAL_INT, lockScreenConfig.getAppIcon());
 		assertEquals(Test.GENERAL_INT, lockScreenConfig.getBackgroundColor());
 		assertEquals(true, lockScreenConfig.isEnabled());
-		assertEquals(true, lockScreenConfig.getDeviceLogo());
+		assertEquals(true, lockScreenConfig.isDeviceLogoEnabled());
 	}
 
 }
