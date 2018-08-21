@@ -2,7 +2,6 @@ package com.smartdevicelink.proxy.rpc.enums;
 
 /**
  * Enumeration of Static Icon Names
- * @since SmartDeviceLink 4.5
  */
 public enum StaticIconName {
 
