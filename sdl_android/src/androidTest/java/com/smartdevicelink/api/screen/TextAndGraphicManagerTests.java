@@ -42,6 +42,7 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		// mock things
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
+		SoftButtonManager softButtonManager = mock(SoftButtonManager.class);
 
 		testArtwork = new SdlArtwork();
 		testArtwork.setName("testFile");
@@ -49,7 +50,7 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		testArtwork.setUri(uri);
 		testArtwork.setType(FileType.GRAPHIC_PNG);
 
-		textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager);
+		textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager, softButtonManager);
 	}
 
 	@Override
