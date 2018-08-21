@@ -40,9 +40,9 @@ public class LockScreenManager extends BaseSubManager {
 	private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
 	private String deviceIconUrl;
 	private boolean driverDistStatus;
-	protected boolean lockScreenEnabled, deviceLogo;
+	protected boolean lockScreenEnabled, deviceLogoEnabled;
 	protected int lockScreenIcon, lockScreenColor, customView;
-	protected Bitmap deviceIcon;
+	protected Bitmap deviceLogo;
 
 	public LockScreenManager(LockScreenConfig lockScreenConfig, Context context, ISdl internalInterface){
 
@@ -58,7 +58,7 @@ public class LockScreenManager extends BaseSubManager {
 		lockScreenColor = lockScreenConfig.getBackgroundColor();
 		customView = lockScreenConfig.getCustomView();
 		lockScreenEnabled = lockScreenConfig.isEnabled();
-		deviceLogo = lockScreenConfig.isDeviceLogoEnabled();
+		deviceLogoEnabled = lockScreenConfig.isDeviceLogoEnabled();
 
 		setupListeners();
 
@@ -75,10 +75,10 @@ public class LockScreenManager extends BaseSubManager {
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_DRIVER_DISTRACTION, ddListener);
-		if (deviceLogo) {
+		if (deviceLogoEnabled) {
 			internalInterface.removeOnRPCNotificationListener(FunctionID.ON_SYSTEM_REQUEST, systemRequestListener);
 		}
-		deviceIcon = null;
+		deviceLogo = null;
 		deviceIconUrl = null;
 
 		// transition state
@@ -134,7 +134,7 @@ public class LockScreenManager extends BaseSubManager {
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_DRIVER_DISTRACTION, ddListener);
 
 		// set up system request listener
-		if (deviceLogo) {
+		if (deviceLogoEnabled) {
 			systemRequestListener = new OnRPCNotificationListener() {
 				@Override
 				public void onNotified(RPCNotification notification) {
@@ -176,8 +176,8 @@ public class LockScreenManager extends BaseSubManager {
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_ICON_EXTRA, lockScreenIcon);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_COLOR_EXTRA, lockScreenColor);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_CUSTOM_VIEW_EXTRA, customView);
-				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_EXTRA, deviceLogo);
-				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_BITMAP, deviceIcon);
+				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
+				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);
 				context.get().startActivity(showLockScreenIntent);
 			} else if (status == LockScreenStatus.OFF) {
 				context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
@@ -229,7 +229,7 @@ public class LockScreenManager extends BaseSubManager {
 
 	private void downloadDeviceIcon(final String url){
 
-		if (deviceIcon != null || context.get() == null){
+		if (deviceLogo != null || context.get() == null){
 			return;
 		}
 
@@ -237,10 +237,10 @@ public class LockScreenManager extends BaseSubManager {
 			@Override
 			public void run(){
 				try{
-					deviceIcon = HttpUtils.downloadImage(url);
-					Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_DOWNLOADED);
-					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_EXTRA, deviceLogo);
-					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_ICON_BITMAP, deviceIcon);
+					deviceLogo = HttpUtils.downloadImage(url);
+					Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_DOWNLOADED);
+					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
+					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);
 					context.get().sendBroadcast(intent);
 				}catch(IOException e){
 					Log.e(TAG, "device Icon Error Downloading");

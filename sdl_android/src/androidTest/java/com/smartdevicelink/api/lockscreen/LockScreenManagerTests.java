@@ -45,9 +45,9 @@ public class LockScreenManagerTests extends AndroidTestCase {
 		assertEquals(Test.GENERAL_INT, lockScreenManager.customView);
 		assertEquals(Test.GENERAL_INT, lockScreenManager.lockScreenIcon);
 		assertEquals(Test.GENERAL_INT, lockScreenManager.lockScreenColor);
-		assertEquals(true, lockScreenManager.deviceLogo);
+		assertEquals(true, lockScreenManager.deviceLogoEnabled);
 		assertEquals(true, lockScreenManager.lockScreenEnabled);
-		assertNull(lockScreenManager.deviceIcon);
+		assertNull(lockScreenManager.deviceLogo);
 	}
 
 	public void testGetLockScreenStatus(){
