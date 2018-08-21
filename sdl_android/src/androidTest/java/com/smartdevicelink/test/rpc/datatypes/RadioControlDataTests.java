@@ -39,6 +39,7 @@ public class RadioControlDataTests extends TestCase{
         msg.setSignalChangeThreshold(Test.GENERAL_INT);
         msg.setRadioEnable(Test.GENERAL_BOOLEAN);
         msg.setState(Test.GENERAL_RADIOSTATE);
+		msg.setHdRadioEnable(Test.GENERAL_BOOLEAN);
     }
 
     /**
@@ -56,6 +57,7 @@ public class RadioControlDataTests extends TestCase{
         int signalChangeThreshold = msg.getSignalChangeThreshold();
         boolean radioEnable = msg.getRadioEnable();
         RadioState state = msg.getState();
+		boolean hdRadioEnable = msg.getHdRadioEnable();
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_INT, frequencyInteger);
@@ -68,6 +70,7 @@ public class RadioControlDataTests extends TestCase{
         assertEquals(Test.MATCH, Test.GENERAL_INT, signalChangeThreshold);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, radioEnable);
         assertEquals(Test.MATCH, Test.GENERAL_RADIOSTATE, state);
+		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, hdRadioEnable);
 
         // Invalid/Null Tests
         RadioControlData msg = new RadioControlData();
@@ -83,6 +86,7 @@ public class RadioControlDataTests extends TestCase{
         assertNull(Test.NULL, msg.getSignalChangeThreshold());
         assertNull(Test.NULL, msg.getRadioEnable());
         assertNull(Test.NULL, msg.getState());
+		assertNull(Test.NULL, msg.getHdRadioEnable());
     }
 
     public void testJson(){
@@ -99,6 +103,7 @@ public class RadioControlDataTests extends TestCase{
             reference.put(RadioControlData.KEY_SIGNAL_CHANGE_THRESHOLD, Test.GENERAL_INT);
             reference.put(RadioControlData.KEY_RADIO_ENABLE, Test.GENERAL_BOOLEAN);
             reference.put(RadioControlData.KEY_STATE, Test.GENERAL_RADIOSTATE);
+			reference.put(RadioControlData.KEY_HD_RADIO_ENABLE, Test.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());
