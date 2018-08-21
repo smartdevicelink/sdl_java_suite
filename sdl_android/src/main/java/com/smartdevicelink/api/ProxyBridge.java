@@ -5,7 +5,6 @@ import android.util.SparseArray;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.IProxyListener;
 import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.rpc.AddCommandResponse;
@@ -42,6 +41,7 @@ import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
+import com.smartdevicelink.proxy.rpc.OnRCStatus;
 import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.OnTBTClientState;
@@ -78,7 +78,6 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -127,10 +126,7 @@ public class ProxyBridge implements IProxyListener{
 			CopyOnWriteArrayList<OnRPCListener> listeners = rpcListeners.get(id);
 			if(listeners!=null && listeners.size()>0) {
 				for (OnRPCListener listener : listeners) {
-					if (message instanceof RPCResponse && listener instanceof OnRPCResponseListener){
-						RPCResponse response = (RPCResponse) message;
-						((OnRPCResponseListener)listener).onResponse(response.getCorrelationID(), response);
-					}
+					listener.onReceived(message);
 				}
 				return true;
 			}
@@ -555,5 +551,10 @@ public class ProxyBridge implements IProxyListener{
 	@Override
 	public void onSendHapticDataResponse(SendHapticDataResponse response) {
 		onRPCReceived(response);
+	}
+
+	@Override
+	public void onOnRCStatus(OnRCStatus notification) {
+		onRPCReceived(notification);
 	}
 }

@@ -82,6 +82,7 @@ public enum FunctionID{
     ON_HASH_CHANGE(32782, "OnHashChange"),
     ON_INTERIOR_VEHICLE_DATA(32783, "OnInteriorVehicleData"),
     ON_WAY_POINT_CHANGE(32784, "OnWayPointChange"),
+    ON_RC_STATUS(32785, "OnRCStatus"),
 
     // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)
     ON_LOCK_SCREEN_STATUS(-1, "OnLockScreenStatus"),

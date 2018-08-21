@@ -17,14 +17,16 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SystemCapabilityManager {
-	private HashMap<SystemCapabilityType, Object> cachedSystemCapabilities = new HashMap<>();
-	private HashMap<SystemCapabilityType, CopyOnWriteArrayList<OnSystemCapabilityListener>> onSystemCapabilityListeners;
-	private final Object LISTENER_LOCK = new Object();
-	private ISdl callback;
+	private final HashMap<SystemCapabilityType, Object> cachedSystemCapabilities;
+	private final HashMap<SystemCapabilityType, CopyOnWriteArrayList<OnSystemCapabilityListener>> onSystemCapabilityListeners;
+	private final Object LISTENER_LOCK;
+	private final ISdl callback;
 
 	public SystemCapabilityManager(ISdl callback){
 		this.callback = callback;
+		this.LISTENER_LOCK = new Object();
 		this.onSystemCapabilityListeners = new HashMap<>();
+		this.cachedSystemCapabilities = new HashMap<>();
 	}
 
 	public void parseRAIResponse(RegisterAppInterfaceResponse response){
@@ -48,9 +50,9 @@ public class SystemCapabilityManager {
 	 * @param systemCapabilityType
 	 * @param capability
 	 */
-	public void setCapability(SystemCapabilityType systemCapabilityType, Object capability){
-		cachedSystemCapabilities.put(systemCapabilityType, capability);
-		notifyListeners(systemCapabilityType, capability);
+	public synchronized void setCapability(SystemCapabilityType systemCapabilityType, Object capability){
+			cachedSystemCapabilities.put(systemCapabilityType, capability);
+			notifyListeners(systemCapabilityType, capability);
 	}
 
 	/**
