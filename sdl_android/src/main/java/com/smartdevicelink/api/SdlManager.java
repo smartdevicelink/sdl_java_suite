@@ -29,7 +29,6 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -67,7 +66,7 @@ public class SdlManager{
 	private Vector<TTSChunk> ttsChunks;
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
 
-	private CompletionListener initListener;
+	private SdlManagerListener managerListener;
 	private int state = -1;
 	//public LockScreenConfig lockScreenConfig;
 
@@ -112,7 +111,7 @@ public class SdlManager{
 		}
 	});
 
-    // Sub manager listener
+	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
 		@Override
 		public synchronized void onComplete(boolean success) {
@@ -123,7 +122,6 @@ public class SdlManager{
 					permissionManager != null && permissionManager.getState() != BaseSubManager.SETTING_UP &&
 					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
 					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
-
 					/*
 					videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
 					audioStreamManager != null && audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
@@ -131,9 +129,8 @@ public class SdlManager{
 					*/
 					){
 				state = BaseSubManager.READY;
-				if(initListener != null){
-					initListener.onComplete(true);
-					initListener = null;
+				if(managerListener != null){
+					managerListener.onStart();
 				}
 			}
 		}
@@ -169,6 +166,10 @@ public class SdlManager{
 		this.audioStreamManager.dispose();
 		this.videoStreamingManager.dispose();
 		*/
+		if(managerListener != null){
+			managerListener.onDestroy();
+			managerListener = null;
+		}
 	}
 
 	/**
@@ -185,15 +186,18 @@ public class SdlManager{
 		SdlManager sdlManager;
 
 		/**
-		 * Main Builder for SDL Manager<br>
-		 *
-		 * The following setters are <strong>REQUIRED:</strong><br>
-		 *
-		 * • setAppId <br>
-		 * • setAppName
+		 * Builder for the SdlManager. Parameters in the constructor are required.
+		 * @param context the current context
+		 * @param appId the app's ID
+		 * @param appName the app's name
+		 * @param listener a SdlManagerListener object
 		 */
-		public Builder(){
+		public Builder(@NonNull Context context, @NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener){
 			sdlManager = new SdlManager();
+			setContext(context);
+			setAppId(appId);
+			setAppName(appName);
+			setManagerListener(listener);
 		}
 
 		/**
@@ -309,13 +313,27 @@ public class SdlManager{
 			return this;
 		}
 
+		/**
+		 * Set the SdlManager Listener
+		 * @param listener the listener
+		 */
+		public Builder setManagerListener(@NonNull final SdlManagerListener listener){
+			sdlManager.managerListener = listener;
+			return this;
+		}
+
 		public SdlManager build() {
+
 			if (sdlManager.appName == null) {
 				throw new IllegalArgumentException("You must specify an app name by calling setAppName");
 			}
 
 			if (sdlManager.appId == null) {
 				throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
+			}
+
+			if (sdlManager.managerListener == null) {
+				throw new IllegalArgumentException("You must set a SdlManagerListener object");
 			}
 
 			if (sdlManager.hmiTypes == null) {
@@ -375,11 +393,11 @@ public class SdlManager{
 	}
 	*/
 
-    /**
-     * Gets the AudioStreamManager. <br>
-     * <strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-     * @return a AudioStreamManager object
-     */
+	/**
+	 * Gets the AudioStreamManager. <br>
+	 * <strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * @return a AudioStreamManager object
+	 */
     /*
 	public AudioStreamManager getAudioStreamManager() {
 		checkSdlManagerState();
@@ -397,11 +415,11 @@ public class SdlManager{
 		return screenManager;
 	}
 
-    /**
-     * Gets the LockScreenManager. <br>
-     * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-     * @return a LockScreenManager object
-     */
+	/**
+	 * Gets the LockScreenManager. <br>
+	 * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * @return a LockScreenManager object
+	 */
     /*
 	public LockscreenManager getLockscreenManager() {
 		checkSdlManagerState();
@@ -521,12 +539,9 @@ public class SdlManager{
 
 	/**
 	 * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
-	 * @param listener CompletionListener that is called once the SdlManager state transitions
-	 * from SETTING_UP to READY or ERROR
 	 */
 	@SuppressWarnings("unchecked")
-	public void start(@NonNull CompletionListener listener){
-		initListener = listener;
+	public void start(){
 		if (proxy == null) {
 			try {
 				proxy = new SdlProxyBase(proxyBridge, appName, shortAppName, isMediaApp, hmiLanguage,
@@ -534,7 +549,9 @@ public class SdlManager{
 						nightColorScheme) {
 				};
 			} catch (SdlException e) {
-				listener.onComplete(false);
+				if (managerListener != null) {
+					managerListener.onError("Unable to start manager", e);
+				}
 			}
 		}
 	}
@@ -600,7 +617,7 @@ public class SdlManager{
 
 		@Override
 		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,
-									  AudioStreamingParams params) {
+		                              AudioStreamingParams params) {
 			if(proxy.getIsConnected()){
 				proxy.startAudioStream(isEncrypted, codec, params);
 			}
@@ -615,7 +632,7 @@ public class SdlManager{
 
 		@Override
 		public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec,
-													 AudioStreamingParams params) {
+		                                             AudioStreamingParams params) {
 			return proxy.startAudioStream(isEncrypted, codec, params);
 		}
 
