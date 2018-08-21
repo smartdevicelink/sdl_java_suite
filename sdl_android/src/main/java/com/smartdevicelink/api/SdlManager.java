@@ -26,7 +26,9 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -497,6 +499,22 @@ public class SdlManager{
 		}
 	}
 
+	/**
+	 * Add an OnRPCNotificationListener for HMI status notifications
+	 * @param listener listener that will be called when the HMI status changes
+	 */
+	public void addOnHmiStatusListener(OnRPCNotificationListener listener){
+		proxy.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS,listener);
+	}
+
+	/**
+	 * Remove an OnRPCNotificationListener for HMI status notifications
+	 * @param listener listener that was previously added for the HMI status notifications
+	 */
+	public void removeOnHmiStatusListener(OnRPCNotificationListener listener){
+		proxy.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, listener);
+	}
+
 	// LIFECYCLE / OTHER
 
 	// STARTUP
@@ -637,6 +655,16 @@ public class SdlManager{
 		}
 
 		@Override
+		public void addOnRPCListener(final FunctionID responseId, final OnRPCListener listener) {
+			proxyBridge.addRpcListener(responseId, listener);
+		}
+
+		@Override
+		public boolean removeOnRPCListener(final FunctionID responseId, final OnRPCListener listener) {
+			return proxyBridge.removeOnRPCListener(responseId, listener);
+		}
+
+		@Override
 		public Object getCapability(SystemCapabilityType systemCapabilityType){
 			return proxy.getCapability(systemCapabilityType);
 		}
@@ -649,6 +677,16 @@ public class SdlManager{
 		@Override
 		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
 			return proxy.isCapabilitySupported(systemCapabilityType);
+		}
+
+		@Override
+		public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
+			proxy.addOnSystemCapabilityListener(systemCapabilityType, listener);
+		}
+
+		@Override
+		public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
+			return proxy.removeOnSystemCapabilityListener(systemCapabilityType, listener);
 		}
 
 		@Override

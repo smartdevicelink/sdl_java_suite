@@ -26,6 +26,7 @@ import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
@@ -177,6 +178,12 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {return false;}
 
 		@Override
+		public void addOnRPCListener(FunctionID responseId, OnRPCListener listener) { }
+
+		@Override
+		public boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener) { return false; }
+
+		@Override
 		public Object getCapability(SystemCapabilityType systemCapabilityType){return null;}
 
 		@Override
@@ -191,6 +198,12 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
 			return false;
 		}
+
+		@Override
+		public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { }
+
+		@Override
+		public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { return false; }
 
 		@Override
 		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,
