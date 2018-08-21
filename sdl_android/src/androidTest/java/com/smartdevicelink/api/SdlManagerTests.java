@@ -98,6 +98,22 @@ public class SdlManagerTests extends AndroidTestCase {
 		builder.setNightColorScheme(templateColorScheme);
 		builder.setVrSynonyms(Test.GENERAL_VECTOR_STRING);
 		builder.setTtsName(Test.GENERAL_VECTOR_TTS_CHUNKS);
+		builder.setManagerListener(new SdlManagerListener() {
+			@Override
+			public void onStart() {
+				listenerCalledCounter++;
+			}
+
+			@Override
+			public void onDestroy() {
+
+			}
+
+			@Override
+			public void onError(String info, Exception e) {
+
+			}
+		});
 		manager = builder.build();
 
 		// mock SdlProxyBase and set it manually
@@ -145,23 +161,7 @@ public class SdlManagerTests extends AndroidTestCase {
 	public void testStartingManager(){
 		listenerCalledCounter = 0;
 
-		sdlManager.start(new SdlManagerListener() {
-			@Override
-			public void onStart(boolean success) {
-				assertTrue(success);
-				listenerCalledCounter++;
-			}
-
-			@Override
-			public void onDestroy() {
-
-			}
-
-			@Override
-			public void onError(String info, Exception e) {
-
-			}
-		});
+		sdlManager.start();
 
 		// Create and force all sub managers to be ready manually. Because SdlManager will not start until all sub managers are ready.
 		// Note : SdlManager.initialize() will not be called automatically by proxy as in real life because we have mock proxy not a real one

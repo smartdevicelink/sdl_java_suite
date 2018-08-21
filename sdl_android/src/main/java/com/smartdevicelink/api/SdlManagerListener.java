@@ -3,10 +3,9 @@ package com.smartdevicelink.api;
 public interface SdlManagerListener {
 
 	/**
-	 * Called when a manager is ready for use or failed setup
-	 * @param success - success or fail
+	 * Called when a manager is ready for use
 	 */
-	void onStart(boolean success);
+	void onStart();
 
 	/**
 	 * Called when the manager is destroyed

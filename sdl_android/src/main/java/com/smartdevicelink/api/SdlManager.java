@@ -128,7 +128,7 @@ public class SdlManager{
 					){
 				state = BaseSubManager.READY;
 				if(managerListener != null){
-					managerListener.onStart(true);
+					managerListener.onStart();
 				}
 			}
 		}
@@ -308,13 +308,27 @@ public class SdlManager{
 			return this;
 		}
 
+		/**
+		 * Set the SdlManager Listener
+		 * @param listener the listener
+		 */
+		public Builder setManagerListener(@NonNull SdlManagerListener listener){
+			sdlManager.managerListener = listener;
+			return this;
+		}
+
 		public SdlManager build() {
+
 			if (sdlManager.appName == null) {
 				throw new IllegalArgumentException("You must specify an app name by calling setAppName");
 			}
 
 			if (sdlManager.appId == null) {
 				throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
+			}
+
+			if (sdlManager.managerListener == null) {
+				throw new IllegalArgumentException("You must set a SdlManagerListener object");
 			}
 
 			if (sdlManager.hmiTypes == null) {
@@ -506,11 +520,9 @@ public class SdlManager{
 
 	/**
 	 * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
-	 * @param listener ManagerListener that is called when the SdlManager is ready / failed to start, or is destroyed
 	 */
 	@SuppressWarnings("unchecked")
-	public void start(@NonNull SdlManagerListener listener){
-		managerListener = listener;
+	public void start(){
 		if (proxy == null) {
 			try {
 				proxy = new SdlProxyBase(proxyBridge, appName, shortAppName, isMediaApp, hmiLanguage,
@@ -518,7 +530,9 @@ public class SdlManager{
 						nightColorScheme) {
 				};
 			} catch (SdlException e) {
-				listener.onStart(false);
+				if (managerListener != null) {
+					managerListener.onError("Unable to start manager", e);
+				}
 			}
 		}
 	}
