@@ -184,15 +184,18 @@ public class SdlManager{
 		SdlManager sdlManager;
 
 		/**
-		 * Main Builder for SDL Manager<br>
-		 *
-		 * The following setters are <strong>REQUIRED:</strong><br>
-		 *
-		 * • setAppId <br>
-		 * • setAppName
+		 * Builder for the SdlManager. Parameters in the constructor are required.
+		 * @param context the current context
+		 * @param appId the app's ID
+		 * @param appName the app's name
+		 * @param listener a SdlManagerListener object
 		 */
-		public Builder(){
+		public Builder(@NonNull Context context, @NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener){
 			sdlManager = new SdlManager();
+			setContext(context);
+			setAppId(appId);
+			setAppName(appName);
+			setManagerListener(listener);
 		}
 
 		/**
@@ -312,7 +315,7 @@ public class SdlManager{
 		 * Set the SdlManager Listener
 		 * @param listener the listener
 		 */
-		public Builder setManagerListener(@NonNull SdlManagerListener listener){
+		public Builder setManagerListener(@NonNull final SdlManagerListener listener){
 			sdlManager.managerListener = listener;
 			return this;
 		}

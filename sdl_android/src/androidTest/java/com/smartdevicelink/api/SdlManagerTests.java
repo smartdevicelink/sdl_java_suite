@@ -85,20 +85,7 @@ public class SdlManagerTests extends AndroidTestCase {
 	private SdlManager createSampleManager(String appName, String appId){
 		SdlManager manager;
 
-		// build manager object - use all setters, will test using getters below
-		SdlManager.Builder builder = new SdlManager.Builder();
-		builder.setAppId(appId);
-		builder.setAppName(appName);
-		builder.setShortAppName(appName);
-		builder.setAppTypes(appType);
-		builder.setTransportType(transport);
-		builder.setContext(getTestContext());
-		builder.setLanguage(Language.EN_US);
-		builder.setDayColorScheme(templateColorScheme);
-		builder.setNightColorScheme(templateColorScheme);
-		builder.setVrSynonyms(Test.GENERAL_VECTOR_STRING);
-		builder.setTtsName(Test.GENERAL_VECTOR_TTS_CHUNKS);
-		builder.setManagerListener(new SdlManagerListener() {
+		SdlManagerListener listener = new SdlManagerListener() {
 			@Override
 			public void onStart() {
 				listenerCalledCounter++;
@@ -113,7 +100,18 @@ public class SdlManagerTests extends AndroidTestCase {
 			public void onError(String info, Exception e) {
 
 			}
-		});
+		};
+
+		// build manager object - use all setters, will test using getters below
+		SdlManager.Builder builder = new SdlManager.Builder(getTestContext(),appId,appName,listener);
+		builder.setShortAppName(appName);
+		builder.setAppTypes(appType);
+		builder.setTransportType(transport);
+		builder.setLanguage(Language.EN_US);
+		builder.setDayColorScheme(templateColorScheme);
+		builder.setNightColorScheme(templateColorScheme);
+		builder.setVrSynonyms(Test.GENERAL_VECTOR_STRING);
+		builder.setTtsName(Test.GENERAL_VECTOR_TTS_CHUNKS);
 		manager = builder.build();
 
 		// mock SdlProxyBase and set it manually
