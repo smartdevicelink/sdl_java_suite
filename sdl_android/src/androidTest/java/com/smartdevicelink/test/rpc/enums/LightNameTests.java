@@ -51,10 +51,10 @@ public class LightNameTests extends TestCase {
 		LightName enumRearLeftTailLight = LightName.valueForString(example);
 		example = "REAR_RIGHT_TAIL_LIGHT";
 		LightName enumRearRightTailLight = LightName.valueForString(example);
-		example = "REAR_LEFT_BREAK_LIGHT";
-		LightName enumRearLeftBreakLight = LightName.valueForString(example);
-		example = "REAR_RIGHT_BREAK_LIGHT";
-		LightName enumRearRightBreakLight = LightName.valueForString(example);
+		example = "REAR_LEFT_BRAKE_LIGHT";
+		LightName enumRearLeftBrakeLight = LightName.valueForString(example);
+		example = "REAR_RIGHT_BRAKE_LIGHT";
+		LightName enumRearRightBrakeLight = LightName.valueForString(example);
 		example = "REAR_LEFT_TURN_LIGHT";
 		LightName enumRearLeftTurnLight = LightName.valueForString(example);
 		example = "REAR_RIGHT_TURN_LIGHT";
@@ -134,8 +134,8 @@ public class LightNameTests extends TestCase {
 		assertNotNull("REAR_RIGHT_FOG_LIGHT returned null", enumRearRightFogLight);
 		assertNotNull("REAR_LEFT_TAIL_LIGHT returned null", enumRearLeftTailLight);
 		assertNotNull("REAR_RIGHT_TAIL_LIGHT returned null", enumRearRightTailLight);
-		assertNotNull("REAR_LEFT_BREAK_LIGHT returned null", enumRearLeftBreakLight);
-		assertNotNull("REAR_RIGHT_BREAK_LIGHT returned null", enumRearRightBreakLight);
+		assertNotNull("REAR_LEFT_BRAKE_LIGHT returned null", enumRearLeftBrakeLight);
+		assertNotNull("REAR_RIGHT_BRAKE_LIGHT returned null", enumRearRightBrakeLight);
 		assertNotNull("REAR_LEFT_TURN_LIGHT returned null", enumRearLeftTurnLight);
 		assertNotNull("REAR_RIGHT_TURN_LIGHT returned null", enumRearRightTurnLight);
 		assertNotNull("REAR_REGISTRATION_PLATE_LIGHT returned null", enumRearRegistrationPlateLight);
@@ -222,8 +222,8 @@ public class LightNameTests extends TestCase {
 		enumTestList.add(LightName.REAR_RIGHT_FOG_LIGHT);
 		enumTestList.add(LightName.REAR_LEFT_TAIL_LIGHT);
 		enumTestList.add(LightName.REAR_RIGHT_TAIL_LIGHT);
-		enumTestList.add(LightName.REAR_LEFT_BREAK_LIGHT);
-		enumTestList.add(LightName.REAR_RIGHT_BREAK_LIGHT);
+		enumTestList.add(LightName.REAR_LEFT_BRAKE_LIGHT);
+		enumTestList.add(LightName.REAR_RIGHT_BRAKE_LIGHT);
 		enumTestList.add(LightName.REAR_LEFT_TURN_LIGHT);
 		enumTestList.add(LightName.REAR_RIGHT_TURN_LIGHT);
 		enumTestList.add(LightName.REAR_REGISTRATION_PLATE_LIGHT);
