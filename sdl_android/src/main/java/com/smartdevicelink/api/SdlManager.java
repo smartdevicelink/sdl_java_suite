@@ -468,6 +468,8 @@ public class SdlManager{
 
 	protected BaseTransportConfig getTransport() { return transport; }
 
+	protected LockScreenConfig getLockScreenConfig() { return lockScreenConfig; }
+
 	// SENDING REQUESTS
 
 	/**
