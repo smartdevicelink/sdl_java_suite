@@ -11,9 +11,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <strong>ScreenManager</strong> <br>
@@ -26,6 +24,7 @@ public class ScreenManager extends BaseSubManager {
 	private FileManager fileManager;
 	private SoftButtonManager softButtonManager;
 	private TextAndGraphicManager textAndGraphicManager;
+	private boolean allSubManagersFinishedUpdatingSuccesslly;
 
 	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
@@ -311,65 +310,26 @@ public class ScreenManager extends BaseSubManager {
 	 * @param listener a CompletionListener that has a callback that will be called when the updates are finished
 	 */
 	public void commit(final CompletionListener listener){
-		// This map stores the update completion status for each SubManager.
-		// The key is the SubManager, and the value is the status for that SubManager;
-		// null means the SubManager didn't finished the update yet, true means it finished with success, and false means it finished with failure
-		final Map<BaseSubManager, Boolean> subManagersCompletionListenersStatus = new HashMap<>();
-
-
-		// SoftButtonManager
-		subManagersCompletionListenersStatus.put(softButtonManager, null);
+		allSubManagersFinishedUpdatingSuccesslly = true;
 		softButtonManager.setBatchUpdates(false);
 		softButtonManager.update(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
-				subManagersCompletionListenersStatus.put(softButtonManager, success);
-				Boolean allFinishedSuccessfully = allSubManagersFinishedUpdatingSuccessfully(subManagersCompletionListenersStatus);
-				if (allFinishedSuccessfully != null){
-					listener.onComplete(allFinishedSuccessfully);
+				if (!success){
+					allSubManagersFinishedUpdatingSuccesslly = false;
 				}
+				textAndGraphicManager.setBatchUpdates(false);
+				textAndGraphicManager.update(new CompletionListener() {
+					@Override
+					public void onComplete(boolean success) {
+						if (!success){
+							allSubManagersFinishedUpdatingSuccesslly = false;
+						}
+						listener.onComplete(allSubManagersFinishedUpdatingSuccesslly);
+					}
+				});
 			}
 		});
-
-		// TextAndGraphicManager
-		subManagersCompletionListenersStatus.put(textAndGraphicManager, null);
-		textAndGraphicManager.setBatchUpdates(false);
-		textAndGraphicManager.update(new CompletionListener() {
-			@Override
-			public void onComplete(boolean success) {
-				subManagersCompletionListenersStatus.put(textAndGraphicManager, success);
-				Boolean allSubManagersFinishedSuccessfully = allSubManagersFinishedUpdatingSuccessfully(subManagersCompletionListenersStatus);
-				if (allSubManagersFinishedSuccessfully != null){
-					listener.onComplete(allSubManagersFinishedSuccessfully);
-				}
-			}
-		});
-	}
-
-	/**
-	 * Get the overall update completion status for all sub managers
-	 * @param subManagersCompletionListenersStatus map stores the update completion status for each SubManager.
-	 * @return a boolean value that represents the overall update completion status for all sub managers; null means not all SubManagers finished the update, true means all SubManagers finished the update with success, and false means all SubManagers finished the update but some finished with failure
-	 */
-	private Boolean allSubManagersFinishedUpdatingSuccessfully(Map<BaseSubManager, Boolean> subManagersCompletionListenersStatus){
-		boolean allSubManagersCompleted = true;
-		boolean allCompletedSubManagersFinishedWithSuccess = true;
-		for (BaseSubManager subManager : subManagersCompletionListenersStatus.keySet()) {
-			Boolean listenerStatus = subManagersCompletionListenersStatus.get(subManager);
-			if (listenerStatus != null){
-				if (!listenerStatus){
-					allCompletedSubManagersFinishedWithSuccess = false;
-				}
-			} else {
-				allSubManagersCompleted = false;
-				break;
-			}
-		}
-		if (!allSubManagersCompleted){
-			return null;
-		} else {
-			return allCompletedSubManagersFinishedWithSuccess;
-		}
 	}
 
 }
