@@ -86,7 +86,7 @@ public class JsonRPCMarshaller {
 		return ret;
 	}
 
-	@SuppressWarnings({"unchecked" })
+	@SuppressWarnings("unchecked" )
 	private static JSONArray serializeList(List<?> list) throws JSONException{
 		JSONArray toPut = new JSONArray();
 		Iterator<Object> valueIterator = (Iterator<Object>) list.iterator();
