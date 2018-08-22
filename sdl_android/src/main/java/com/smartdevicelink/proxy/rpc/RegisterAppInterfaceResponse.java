@@ -77,6 +77,17 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 		setSuccess(success);
 		setResultCode(resultCode);
 	}
+
+	@Override
+	public void format(com.smartdevicelink.util.Version rpcVersion, boolean formatParams){
+		//Add in 5.0.0 of the rpc spec
+		if(getIconResumed() == null){
+			setIconResumed(Boolean.FALSE);
+		}
+
+		super.format(rpcVersion,formatParams);
+	}
+
     @SuppressWarnings("unchecked")
     public SdlMsgVersion getSdlMsgVersion() {
 		return (SdlMsgVersion) getObject(SdlMsgVersion.class, KEY_SDL_MSG_VERSION);

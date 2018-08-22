@@ -25,15 +25,15 @@ public class JsonRPCMarshaller {
 	
 	private static final String SDL_LIB_PRIVATE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 
-	@Deprecated
+	/**
+	 * @param msg RPC message to be marshaled
+	 * @param version protocol version
+	 * @return byte array of the marshalled message
+	 */
 	public static byte[] marshall(RPCMessage msg, byte version) {
-		return marshall(msg,new Version(version,0,0),null);
-	}
-
-	public static byte[] marshall(RPCMessage msg, Version protocolVersion, Version rpcMsgVersion) {
 		byte[] jsonBytes = null;
 		try {
-			JSONObject jsonObject = msg.serializeJSON(protocolVersion, rpcMsgVersion);
+			JSONObject jsonObject = msg.serializeJSON(version);
 			jsonBytes = jsonObject.toString().getBytes();
 			
 			SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Transmit, jsonBytes, SDL_LIB_PRIVATE_KEY);
@@ -87,24 +87,17 @@ public class JsonRPCMarshaller {
 		return ret;
 	}
 
-    @SuppressWarnings("unchecked")
-	@Deprecated
 	private static JSONArray serializeList(List<?> list) throws JSONException{
-		return serializeList(list,null);
-
-	}
-
-	private static JSONArray serializeList(List<?> list, Version rpcVersion) throws JSONException{
 		JSONArray toPut = new JSONArray();
 		Iterator<Object> valueIterator = (Iterator<Object>) list.iterator();
 		while(valueIterator.hasNext()){
 			Object anObject = valueIterator.next();
 			if (anObject instanceof RPCStruct) {
 				RPCStruct toSerialize = (RPCStruct) anObject;
-				toPut.put(toSerialize.serializeStoreJSON(rpcVersion));
+				toPut.put(toSerialize.serializeJSON());
 			} else if(anObject instanceof Hashtable){
 				Hashtable<String, Object> toSerialize = (Hashtable<String, Object>)anObject;
-				toPut.put(serializeHashtable(toSerialize,rpcVersion));
+				toPut.put(serializeHashtable(toSerialize));
 			} else {
 				toPut.put(anObject);
 			}
@@ -113,23 +106,18 @@ public class JsonRPCMarshaller {
 	}
 
 	@SuppressWarnings({"unchecked" })
-	@Deprecated
     public static JSONObject serializeHashtable(Hashtable<String, Object> hash) throws JSONException{
-		return serializeHashtable(hash,null);
-	}
-
-    public static JSONObject serializeHashtable(Hashtable<String, Object> hash, Version rpcVersion) throws JSONException{
 		JSONObject obj = new JSONObject();
 		Iterator<String> hashKeyIterator = hash.keySet().iterator();
 		while (hashKeyIterator.hasNext()){
 			String key = (String) hashKeyIterator.next();
 			Object value = hash.get(key);
 			if (value instanceof RPCStruct) {
-				obj.put(key, ((RPCStruct) value).serializeStoreJSON(rpcVersion));
+				obj.put(key, ((RPCStruct) value).serializeJSON());
 			} else if (value instanceof List<?>) {
-				obj.put(key, serializeList((List<?>) value,rpcVersion));
+				obj.put(key, serializeList((List<?>) value));
 			} else if (value instanceof Hashtable) {
-				obj.put(key, serializeHashtable((Hashtable<String, Object>)value, rpcVersion));
+				obj.put(key, serializeHashtable((Hashtable<String, Object>)value));
 			} else {
 				obj.put(key, value);
 			}

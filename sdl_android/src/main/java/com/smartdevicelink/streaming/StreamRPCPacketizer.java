@@ -223,7 +223,8 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 					if (msg.getOffset() != 0)
 			        	msg.setLength((Long)null); //only need to send length when offset 0
 
-					msgBytes = JsonRPCMarshaller.marshall(msg, _wiproVersion,rpcSpecVersion);
+					msg.format(rpcSpecVersion,true);
+					msgBytes = JsonRPCMarshaller.marshall(msg, (byte)_wiproVersion.getMajor());
 					pm = new ProtocolMessage();
 					pm.setData(msgBytes);
 
