@@ -11,7 +11,6 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.util.Version;
 import com.smartdevicelink.trace.*;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.util.DebugTool;
@@ -87,6 +86,7 @@ public class JsonRPCMarshaller {
 		return ret;
 	}
 
+	@SuppressWarnings({"unchecked" })
 	private static JSONArray serializeList(List<?> list) throws JSONException{
 		JSONArray toPut = new JSONArray();
 		Iterator<Object> valueIterator = (Iterator<Object>) list.iterator();
