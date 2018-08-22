@@ -30,7 +30,8 @@
       "clusterModeStatus":true,
       "myKey":true,
       "fuelRange":true,
-      "turnSignal":true
+      "turnSignal":true,
+      "electronicParkBrakeStatus":true
     }
   },
   "response":{
@@ -157,6 +158,7 @@
       "myKey":{
         "e911Override":"NO_DATA_EXISTS"
       },
+      "electronicParkBrakeStatus":"CLOSED",
       "fuelRange":[
         {
           "type":"GASOLINE",

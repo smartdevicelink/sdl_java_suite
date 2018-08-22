@@ -22,6 +22,7 @@ import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
+import com.smartdevicelink.proxy.rpc.enums.ElectronicParkBrakeStatus;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
 import com.smartdevicelink.proxy.rpc.enums.FuelType;
@@ -76,6 +77,7 @@ public class VehicleDataHelper{
 	public static final FuelRange FUEL_RANGE = new FuelRange();
 	public static final List<FuelRange> FUEL_RANGE_LIST = new ArrayList<FuelRange>(1);
 	public static final TurnSignal TURN_SIGNAL = TurnSignal.OFF;
+	public static final ElectronicParkBrakeStatus ELECTRONIC_PARK_BRAKE_STATUS = ElectronicParkBrakeStatus.CLOSED;
 
 	//other variables inside some of the above objects
     // tire status
@@ -352,6 +354,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA.setMyKey(MY_KEY);
 		VEHICLE_DATA.setFuelRange(FUEL_RANGE_LIST);
 		VEHICLE_DATA.setTurnSignal(TURN_SIGNAL);
+		VEHICLE_DATA.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
 		
 		//set up the GetVehicleDataResponse object
 		VEHICLE_DATA_RESPONSE.setSpeed(SPEED);
@@ -382,6 +385,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA_RESPONSE.setMyKey(MY_KEY);
 		VEHICLE_DATA_RESPONSE.setFuelRange(FUEL_RANGE_LIST);
 		VEHICLE_DATA_RESPONSE.setTurnSignal(TURN_SIGNAL);
+		VEHICLE_DATA_RESPONSE.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
 	}
 	
     private VehicleDataHelper(){}	

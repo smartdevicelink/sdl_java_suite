@@ -41,6 +41,7 @@ import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
+import com.smartdevicelink.proxy.rpc.OnRCStatus;
 import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.OnTBTClientState;
@@ -76,32 +77,34 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ProxyBridge implements IProxyListener{
 	private final Object RPC_LISTENER_LOCK = new Object();
-	protected SparseArray<CopyOnWriteArrayList<OnRPCListener>> rpcListeners = null;
-	final LifecycleListener lifecycleListener;
+	private SparseArray<CopyOnWriteArrayList<OnRPCListener>> rpcListeners = null;
+	private final LifecycleListener lifecycleListener;
 
 	@Override
 	public void onProxyOpened() {}
 
 	@Override
 	public void onRegisterAppInterfaceResponse(RegisterAppInterfaceResponse response) {
+		onRPCReceived(response);
 		if(response.getSuccess()){
 			lifecycleListener.onProxyConnected();
 		}
 	}
 
 	@Override
-	public void onOnAppInterfaceUnregistered(OnAppInterfaceUnregistered notification) {}
+	public void onOnAppInterfaceUnregistered(OnAppInterfaceUnregistered notification) {
+		onRPCReceived(notification);
+	}
 
 	@Override
-	public void onUnregisterAppInterfaceResponse(UnregisterAppInterfaceResponse response) {}
-
-	public interface OnRPCListener {
-		void onRpcReceived(int functionID, RPCMessage message);
+	public void onUnregisterAppInterfaceResponse(UnregisterAppInterfaceResponse response) {
+		onRPCReceived(response);
 	}
 
 	protected interface LifecycleListener{
@@ -123,7 +126,7 @@ public class ProxyBridge implements IProxyListener{
 			CopyOnWriteArrayList<OnRPCListener> listeners = rpcListeners.get(id);
 			if(listeners!=null && listeners.size()>0) {
 				for (OnRPCListener listener : listeners) {
-					listener.onRpcReceived(id,message);
+					listener.onReceived(message);
 				}
 				return true;
 			}
@@ -548,5 +551,10 @@ public class ProxyBridge implements IProxyListener{
 	@Override
 	public void onSendHapticDataResponse(SendHapticDataResponse response) {
 		onRPCReceived(response);
+	}
+
+	@Override
+	public void onOnRCStatus(OnRCStatus notification) {
+		onRPCReceived(notification);
 	}
 }

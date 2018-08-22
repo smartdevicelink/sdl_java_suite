@@ -26,7 +26,9 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -65,7 +67,7 @@ public class SdlManager{
 	private Vector<TTSChunk> ttsChunks;
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
 
-	private CompletionListener initListener;
+	private SdlManagerListener managerListener;
 	private int state = -1;
 	//public LockScreenConfig lockScreenConfig;
 
@@ -110,7 +112,7 @@ public class SdlManager{
 		}
 	});
 
-    // Sub manager listener
+	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
 		@Override
 		public synchronized void onComplete(boolean success) {
@@ -128,9 +130,8 @@ public class SdlManager{
 					*/
 					){
 				state = BaseSubManager.READY;
-				if(initListener != null){
-					initListener.onComplete(true);
-					initListener = null;
+				if(managerListener != null){
+					managerListener.onStart();
 				}
 			}
 		}
@@ -171,6 +172,10 @@ public class SdlManager{
 		this.screenManager.dispose();
 		this.audioStreamManager.dispose();
 		*/
+		if(managerListener != null){
+			managerListener.onDestroy();
+			managerListener = null;
+		}
 	}
 
 	/**
@@ -187,15 +192,18 @@ public class SdlManager{
 		SdlManager sdlManager;
 
 		/**
-		 * Main Builder for SDL Manager<br>
-		 *
-		 * The following setters are <strong>REQUIRED:</strong><br>
-		 *
-		 * • setAppId <br>
-		 * • setAppName
+		 * Builder for the SdlManager. Parameters in the constructor are required.
+		 * @param context the current context
+		 * @param appId the app's ID
+		 * @param appName the app's name
+		 * @param listener a SdlManagerListener object
 		 */
-		public Builder(){
+		public Builder(@NonNull Context context, @NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener){
 			sdlManager = new SdlManager();
+			setContext(context);
+			setAppId(appId);
+			setAppName(appName);
+			setManagerListener(listener);
 		}
 
 		/**
@@ -311,13 +319,27 @@ public class SdlManager{
 			return this;
 		}
 
+		/**
+		 * Set the SdlManager Listener
+		 * @param listener the listener
+		 */
+		public Builder setManagerListener(@NonNull final SdlManagerListener listener){
+			sdlManager.managerListener = listener;
+			return this;
+		}
+
 		public SdlManager build() {
+
 			if (sdlManager.appName == null) {
 				throw new IllegalArgumentException("You must specify an app name by calling setAppName");
 			}
 
 			if (sdlManager.appId == null) {
 				throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
+			}
+
+			if (sdlManager.managerListener == null) {
+				throw new IllegalArgumentException("You must set a SdlManagerListener object");
 			}
 
 			if (sdlManager.hmiTypes == null) {
@@ -378,11 +400,11 @@ public class SdlManager{
 	}
 	
 
-    /**
-     * Gets the AudioStreamManager. <br>
-     * <strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-     * @return a AudioStreamManager object
-     */
+	/**
+	 * Gets the AudioStreamManager. <br>
+	 * <strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * @return a AudioStreamManager object
+	 */
     /*
 	public AudioStreamManager getAudioStreamManager() {
 		checkSdlManagerState();
@@ -390,11 +412,11 @@ public class SdlManager{
 	}
 	*/
 
-    /**
-     * Gets the ScreenManager. <br>
-     * <strong>Note: ScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-     * @return a ScreenManager object
-     */
+	/**
+	 * Gets the ScreenManager. <br>
+	 * <strong>Note: ScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * @return a ScreenManager object
+	 */
     /*
 	public ScreenManager getScreenManager() {
 		checkSdlManagerState();
@@ -402,11 +424,11 @@ public class SdlManager{
 	}
 	*/
 
-    /**
-     * Gets the LockScreenManager. <br>
-     * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-     * @return a LockScreenManager object
-     */
+	/**
+	 * Gets the LockScreenManager. <br>
+	 * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * @return a LockScreenManager object
+	 */
     /*
 	public LockscreenManager getLockscreenManager() {
 		checkSdlManagerState();
@@ -504,18 +526,31 @@ public class SdlManager{
 		}
 	}
 
+	/**
+	 * Add an OnRPCNotificationListener for HMI status notifications
+	 * @param listener listener that will be called when the HMI status changes
+	 */
+	public void addOnHmiStatusListener(OnRPCNotificationListener listener){
+		proxy.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS,listener);
+	}
+
+	/**
+	 * Remove an OnRPCNotificationListener for HMI status notifications
+	 * @param listener listener that was previously added for the HMI status notifications
+	 */
+	public void removeOnHmiStatusListener(OnRPCNotificationListener listener){
+		proxy.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, listener);
+	}
+
 	// LIFECYCLE / OTHER
 
 	// STARTUP
 
 	/**
 	 * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
-	 * @param listener CompletionListener that is called once the SdlManager state transitions
-	 * from SETTING_UP to READY or ERROR
 	 */
 	@SuppressWarnings("unchecked")
-	public void start(@NonNull CompletionListener listener){
-		initListener = listener;
+	public void start(){
 		if (proxy == null) {
 			try {
 				proxy = new SdlProxyBase(proxyBridge, appName, shortAppName, isMediaApp, hmiLanguage,
@@ -523,7 +558,9 @@ public class SdlManager{
 						nightColorScheme) {
 				};
 			} catch (SdlException e) {
-				listener.onComplete(false);
+				if (managerListener != null) {
+					managerListener.onError("Unable to start manager", e);
+				}
 			}
 		}
 	}
@@ -589,7 +626,7 @@ public class SdlManager{
 
 		@Override
 		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,
-									  AudioStreamingParams params) {
+		                              AudioStreamingParams params) {
 			if(proxy.getIsConnected()){
 				proxy.startAudioStream(isEncrypted, codec, params);
 			}
@@ -604,7 +641,7 @@ public class SdlManager{
 
 		@Override
 		public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec,
-													 AudioStreamingParams params) {
+		                                             AudioStreamingParams params) {
 			return proxy.startAudioStream(isEncrypted, codec, params);
 		}
 
@@ -644,6 +681,16 @@ public class SdlManager{
 		}
 
 		@Override
+		public void addOnRPCListener(final FunctionID responseId, final OnRPCListener listener) {
+			proxyBridge.addRpcListener(responseId, listener);
+		}
+
+		@Override
+		public boolean removeOnRPCListener(final FunctionID responseId, final OnRPCListener listener) {
+			return proxyBridge.removeOnRPCListener(responseId, listener);
+		}
+
+		@Override
 		public Object getCapability(SystemCapabilityType systemCapabilityType){
 			return proxy.getCapability(systemCapabilityType);
 		}
@@ -656,6 +703,16 @@ public class SdlManager{
 		@Override
 		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
 			return proxy.isCapabilitySupported(systemCapabilityType);
+		}
+
+		@Override
+		public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
+			proxy.addOnSystemCapabilityListener(systemCapabilityType, listener);
+		}
+
+		@Override
+		public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
+			return proxy.removeOnSystemCapabilityListener(systemCapabilityType, listener);
 		}
 
 		@Override
