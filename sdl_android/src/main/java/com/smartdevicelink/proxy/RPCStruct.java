@@ -89,7 +89,7 @@ public class RPCStruct {
 		formatRequested = true;
 		rpcSpecVersion = rpcVersion;
 		//Should override this method when breaking changes are made to the RPC spec
-		if(formatParams == true && store != null){
+		if(formatParams && store != null){
 			Hashtable<String, Object> parameters;
 
 			if(this instanceof RPCMessage) {
