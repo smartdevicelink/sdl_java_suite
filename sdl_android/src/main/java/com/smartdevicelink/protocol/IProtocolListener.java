@@ -1,13 +1,9 @@
 package com.smartdevicelink.protocol;
 
-import android.os.Bundle;
 
 import com.smartdevicelink.protocol.enums.*;
-import com.smartdevicelink.transport.enums.TransportType;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public interface IProtocolListener {
 	// Called to indicate that these bytes are to be sent as part of a message.
