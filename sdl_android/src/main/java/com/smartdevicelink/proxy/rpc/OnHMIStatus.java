@@ -1,10 +1,13 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingState;
 
 import java.util.Hashtable;
 
@@ -51,6 +54,12 @@ import java.util.Hashtable;
  * <td>SmartDeviceLink 1.0</td>
  * </tr>
  * <tr>
+ * <td>videoStreamingState</td>
+ * <td>{@linkplain VideoStreamingState}</td>
+ * <td>If it is NOT_STREAMABLE, the app must stop streaming video to SDL Core(stop service).</td>
+ * <td>SmartDeviceLink 4.6</td>
+ * </tr>
+ * <tr>
  * <td>systemContext</td>
  * <td>{@linkplain SystemContext}</td>
  * <td>Indicates that a user-initiated interaction is in-progress 
@@ -63,7 +72,8 @@ import java.util.Hashtable;
  * @see RegisterAppInterface 
  */
 public class OnHMIStatus extends RPCNotification {
-	public static final String KEY_AUDIO_STREAMING_STATE = "audioStreamingState";
+    public static final String KEY_AUDIO_STREAMING_STATE = "audioStreamingState";
+    public static final String KEY_VIDEO_STREAMING_STATE = "videoStreamingState";
 	public static final String KEY_SYSTEM_CONTEXT = "systemContext";
 	public static final String KEY_HMI_LEVEL = "hmiLevel";
 
@@ -83,6 +93,30 @@ public class OnHMIStatus extends RPCNotification {
         super(hash);
     }
     /**
+     *Constructs a newly allocated OnHMIStatus object
+     * @param hmiLevel the HMILevel to set
+     * @param audioStreamingState the state of audio streaming of the application
+     * @param systemContext Indicates that a user-initiated interaction is in-progress
+     */
+    public OnHMIStatus(@NonNull HMILevel hmiLevel, @NonNull AudioStreamingState audioStreamingState, @NonNull SystemContext systemContext) {
+        this();
+        setHmiLevel(hmiLevel);
+        setAudioStreamingState(audioStreamingState);
+        setSystemContext(systemContext);
+    }
+
+    @Override
+    public void format(com.smartdevicelink.util.Version rpcVersion, boolean formatParams){
+        if(rpcVersion.getMajor() < 5){
+            if(getVideoStreamingState() == null){
+                setVideoStreamingState(VideoStreamingState.STREAMABLE);
+            }
+        }
+
+        super.format(rpcVersion,formatParams);
+    }
+
+    /**
      * <p>Get HMILevel in effect for the application</p>
      * @return {@linkplain HMILevel} the current HMI Level in effect for the application
      */    
@@ -93,13 +127,13 @@ public class OnHMIStatus extends RPCNotification {
      * <p>Set the HMILevel of OnHMIStatus</p>
      * @param hmiLevel the HMILevel to set
      */    
-    public void setHmiLevel( HMILevel hmiLevel ) {
+    public void setHmiLevel( @NonNull HMILevel hmiLevel ) {
         setParameters(KEY_HMI_LEVEL, hmiLevel);
     }
     /**
      * <p>Get current state of audio streaming for the application</p>
      * @return {@linkplain AudioStreamingState} Returns current state of audio streaming for the application
-     */    
+     */
     public AudioStreamingState getAudioStreamingState() {
         return (AudioStreamingState) getObject(AudioStreamingState.class, KEY_AUDIO_STREAMING_STATE);
     }
@@ -107,8 +141,22 @@ public class OnHMIStatus extends RPCNotification {
      * <p>Set the audio streaming state</p>
      * @param audioStreamingState the state of audio streaming of the application
      */    
-    public void setAudioStreamingState( AudioStreamingState audioStreamingState ) {
+    public void setAudioStreamingState(@NonNull AudioStreamingState audioStreamingState ) {
         setParameters(KEY_AUDIO_STREAMING_STATE, audioStreamingState);
+    }
+    /**
+     * <p>Get current state of video streaming for the application</p>
+     * @return {@linkplain VideoStreamingState} Returns current state of video streaming for the application
+     */
+    public VideoStreamingState getVideoStreamingState() {
+        return (VideoStreamingState) getObject(VideoStreamingState.class, KEY_VIDEO_STREAMING_STATE);
+    }
+    /**
+     * <p>Set the video streaming state</p>
+     * @param videoStreamingState the state of video streaming of the application
+     */
+    public void setVideoStreamingState( VideoStreamingState videoStreamingState ) {
+        setParameters(KEY_VIDEO_STREAMING_STATE, videoStreamingState);
     }
     /**
      * <p>Get the System Context</p>
@@ -122,7 +170,7 @@ public class OnHMIStatus extends RPCNotification {
      * @param systemContext Indicates that a user-initiated interaction is in-progress 
      * (VRSESSION or MENU), or not (MAIN)
      */    
-    public void setSystemContext( SystemContext systemContext ) {
+    public void setSystemContext( @NonNull SystemContext systemContext ) {
         setParameters(KEY_SYSTEM_CONTEXT, systemContext);
     }
     /**

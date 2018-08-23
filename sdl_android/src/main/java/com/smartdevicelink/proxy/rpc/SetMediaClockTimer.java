@@ -1,7 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.AudioStreamingIndicator;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 
 import java.util.Hashtable;
@@ -52,6 +55,13 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
+ * 			<td>audioStreamingIndicator</td>
+ * 			<td>AudioStreamingIndicator</td>
+ * 			<td></td>
+ *                 <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 4.6</td>
+ * 		</tr>
  *
  *  </table>
  *  
@@ -74,6 +84,7 @@ public class SetMediaClockTimer extends RPCRequest {
 	public static final String KEY_START_TIME = "startTime";
 	public static final String KEY_END_TIME = "endTime";
 	public static final String KEY_UPDATE_MODE = "updateMode";
+	public static final String KEY_AUDIO_STREAMING_INDICATOR = "audioStreamingIndicator";
 	/**
 	 * Constructs a new SetMediaClockTimer object
 	 */
@@ -85,12 +96,26 @@ public class SetMediaClockTimer extends RPCRequest {
 	 * parameter
 	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */    
     public SetMediaClockTimer(Hashtable<String, Object> hash) {
         super(hash);
     }
+	/**
+	 * Constructs a new SetMediaClockTimer object
+	 * @param updateMode a Enumeration value (COUNTUP/COUNTDOWN/PAUSE/RESUME) <br>
+	 * <b>Notes: </b>
+	 *      <ul>
+	 *            <li>When updateMode is PAUSE, RESUME or CLEAR, the start time value
+	 *            is ignored</li>
+	 *            <li>When updateMode is RESUME, the timer resumes counting from
+	 *            the timer's value when it was paused</li>
+	 *      </ul>
+	 */
+	public SetMediaClockTimer(@NonNull UpdateMode updateMode) {
+		this();
+		setUpdateMode(updateMode);
+	}
 	/**
 	 * Gets the Start Time which media clock timer is set
 	 * 
@@ -149,7 +174,23 @@ public class SetMediaClockTimer extends RPCRequest {
 	 *            the timer's value when it was paused</li>
 	 *            </ul>
 	 */    
-    public void setUpdateMode( UpdateMode updateMode ) {
+    public void setUpdateMode( @NonNull UpdateMode updateMode ) {
 		setParameters(KEY_UPDATE_MODE, updateMode);
     }
+
+	/**
+	 * Gets the playback status of a media app
+	 *
+	 * @return AudioStreamingIndicator - a Enumeration value
+	 */
+	public AudioStreamingIndicator getAudioStreamingIndicator() {
+		return (AudioStreamingIndicator) getObject(AudioStreamingIndicator.class, KEY_AUDIO_STREAMING_INDICATOR);
+	}
+
+	/**
+	 * Sets the playback status of a media app
+	 */
+	public void setAudioStreamingIndicator(AudioStreamingIndicator audioStreamingIndicator ) {
+		setParameters(KEY_AUDIO_STREAMING_INDICATOR, audioStreamingIndicator);
+	}
 }

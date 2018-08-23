@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.WayPointType;
@@ -17,11 +19,16 @@ public class GetWayPoints extends RPCRequest {
         super(hash);
     }
 
+    public GetWayPoints(@NonNull WayPointType wayPointType) {
+        this();
+        setWayPointType(wayPointType);
+    }
+
     public WayPointType getWayPointType() {
         return (WayPointType) getObject(WayPointType.class, KEY_WAY_POINT_TYPE);
     }
 
-    public void setWayPointType(WayPointType wayPointType) {
+    public void setWayPointType(@NonNull WayPointType wayPointType) {
         setParameters(KEY_WAY_POINT_TYPE, wayPointType);
     }
 }

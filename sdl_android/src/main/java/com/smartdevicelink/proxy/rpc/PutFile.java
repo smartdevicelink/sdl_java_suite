@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -7,6 +9,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
 import java.util.Hashtable;
+import java.util.zip.CRC32;
 
 /**
  * Used to push a binary data onto the SDL module from a mobile device, such as
@@ -71,6 +74,14 @@ import java.util.Hashtable;
  * 			<td>Minvalue=0; Maxvalue=100000000000</td>
  * 			<td>SmartDeviceLink 2.3.2</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>crc</td>
+ * 			<td>Long</td>
+ * 			<td>Additional CRC32 checksum to protect data integrity up to 512 Mbits .</td>
+ *                 <td>N</td>
+ * 			<td>minvalue="0" maxvalue="4294967295"</td>
+ * 			<td>SmartDeviceLink 2.3.2</td>
+ * 		</tr>
  *  </table>
  * <p> <b>Note: </b></p>
  *  When using PutFiles you may want to check for memory
@@ -117,7 +128,7 @@ public class PutFile extends RPCRequest {
     public static final String KEY_SDL_FILE_NAME = "syncFileName";
     public static final String KEY_OFFSET = "offset";
     public static final String KEY_LENGTH = "length";
-    
+    public static final String KEY_CRC = "crc";
 
 	/**
 	 * Constructs a new PutFile object
@@ -128,14 +139,24 @@ public class PutFile extends RPCRequest {
 
 	/**
 	 * Constructs a new PutFile object indicated by the Hashtable parameter
-	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use
 	 */
     public PutFile(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new PutFile object
+	 * @param syncFileName a String value representing a file reference name
+	 * <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
+	 * @param fileType a FileType value representing a selected file type
+	 */
+	public PutFile(@NonNull String syncFileName, @NonNull FileType fileType) {
+		this();
+		setSdlFileName(syncFileName);
+		setFileType(fileType);
+	}
 
 	/**
 	 * Sets a file reference name
@@ -145,7 +166,7 @@ public class PutFile extends RPCRequest {
 	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength=500, however the max file name length may vary based on remote filesystem limitations
 	 */
-    public void setSdlFileName(String sdlFileName) {
+    public void setSdlFileName(@NonNull String sdlFileName) {
         setParameters(KEY_SDL_FILE_NAME, sdlFileName);
     }
 
@@ -164,7 +185,7 @@ public class PutFile extends RPCRequest {
 	 * @param fileType
 	 *            a FileType value representing a selected file type
 	 */
-    public void setFileType(FileType fileType) {
+    public void setFileType(@NonNull FileType fileType) {
         setParameters(KEY_FILE_TYPE, fileType);
     }
 
@@ -285,16 +306,61 @@ public class PutFile extends RPCRequest {
         	return null;
     }
 
+	/**
+	 * This takes the file data as an array of bytes and calculates the
+	 * CRC32 for it.
+	 * @param fileData - the file as a byte array
+	 */
+	public void setCRC(byte[] fileData) {
+		if (fileData != null) {
+			CRC32 crc = new CRC32();
+			crc.update(fileData);
+			parameters.put(KEY_CRC, crc.getValue());
+		} else {
+			parameters.remove(KEY_CRC);
+		}
+	}
+
+	/**
+	 * This assumes you have created your own CRC32 and are setting it with the file
+	 * <STRONG>Please avoid using your own calculations for this, and use the method
+	 * included in java.util</STRONG>
+	 * @param crc - the CRC32 of the file being set
+	 */
+	public void setCRC(Long crc) {
+		if (crc != null) {
+			parameters.put(KEY_CRC, crc);
+		} else {
+			parameters.remove(KEY_CRC);
+		}
+	}
+
+	/**
+	 * This returns the CRC, if it has been set, for the file object
+	 * @return - a CRC32 Long
+	 */
+	public Long getCRC() {
+		final Object o = parameters.get(KEY_CRC);
+		if (o == null){
+			return null;
+		}
+		if (o instanceof Integer) {
+			return ((Integer) o).longValue();
+		}else if(o instanceof Long){
+			return (Long) o;
+		}
+		return null;
+	}
 
 	@Override
 	public final void setOnRPCResponseListener(OnRPCResponseListener listener) {
 		super.setOnRPCResponseListener(listener);
 	}
-    
+
 	public void setOnPutFileUpdateListener(OnPutFileUpdateListener listener) {
 		super.setOnRPCResponseListener(listener); //We can use the same method because it get stored as a parent class
 	}
-    
+
 	public OnPutFileUpdateListener getOnPutFileUpdateListener() {
 		return (OnPutFileUpdateListener)getOnRPCResponseListener();
 	}

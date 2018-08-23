@@ -15,6 +15,7 @@ import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
@@ -55,6 +56,7 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 		msg.setVrCapabilities(Test.GENERAL_VRCAPABILITIES_LIST);
 		msg.setPrerecordedSpeech(Test.GENERAL_PRERECORDEDSPEECH_LIST);
 		msg.setSupportedDiagModes(Test.GENERAL_INTEGER_LIST);
+		msg.setIconResumed(Test.GENERAL_BOOLEAN);
 
 		return msg;
 	}
@@ -90,6 +92,7 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 			result.put(RegisterAppInterfaceResponse.KEY_VR_CAPABILITIES, JsonUtils.createJsonArray(Test.GENERAL_VRCAPABILITIES_LIST));	
 			result.put(RegisterAppInterfaceResponse.KEY_HMI_ZONE_CAPABILITIES, JsonUtils.createJsonArray(Test.GENERAL_HMIZONECAPABILITIES_LIST));
 			result.put(RegisterAppInterfaceResponse.KEY_PRERECORDED_SPEECH, JsonUtils.createJsonArray(Test.GENERAL_PRERECORDEDSPEECH_LIST));
+			result.put(RegisterAppInterfaceResponse.KEY_ICON_RESUMED, Test.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -117,6 +120,7 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 		SdlMsgVersion testMsgVersion = ( (RegisterAppInterfaceResponse) msg ).getSdlMsgVersion();
 		List<AudioPassThruCapabilities> testAptc = ( (RegisterAppInterfaceResponse) msg ).getAudioPassThruCapabilities();
 		AudioPassThruCapabilities testPcmStream = ( (RegisterAppInterfaceResponse) msg ).getPcmStreamingCapabilities();
+		Boolean testIconResumed = ( (RegisterAppInterfaceResponse) msg ).getIconResumed();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_INTEGER_LIST, testSupportedDiagModes);
@@ -134,6 +138,7 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 		assertTrue(Test.TRUE, Validator.validateSdlMsgVersion(Test.GENERAL_SDLMSGVERSION, testMsgVersion));
 		assertTrue(Test.TRUE, Validator.validateAudioPassThruCapabilities(Test.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST, testAptc));
 		assertTrue(Test.TRUE, Validator.validatePcmStreamCapabilities(Test.GENERAL_AUDIOPASSTHRUCAPABILITIES, testPcmStream));
+		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, testIconResumed);
 
 		// Invalid/Null Tests
 		RegisterAppInterfaceResponse msg = new RegisterAppInterfaceResponse();
@@ -155,6 +160,7 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getVrCapabilities());
 		assertNull(Test.NULL, msg.getPrerecordedSpeech());
 		assertNull(Test.NULL, msg.getSupportedDiagModes());
+	    assertNull(Test.NULL, msg.getIconResumed());
 	}
 	
     /**
@@ -253,6 +259,9 @@ public class RegisterAppInterfaceResponseTest extends BaseRpcTests {
 			JSONObject presetBankCapabilitiesObj = JsonUtils.readJsonObjectFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_PRESET_BANK_CAPABILITIES);
 			PresetBankCapabilities presetBankCapabilities = new PresetBankCapabilities(JsonRPCMarshaller.deserializeJSONObject(presetBankCapabilitiesObj));
 			assertTrue(Test.TRUE,  Validator.validatePresetBankCapabilities(presetBankCapabilities, cmd.getPresetBankCapabilities()) );
+
+			Boolean iconResumed = JsonUtils.readBooleanFromJsonObject(parameters, RegisterAppInterfaceResponse.KEY_ICON_RESUMED);
+			assertEquals(Test.MATCH, iconResumed, cmd.getIconResumed());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}    	

@@ -231,7 +231,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         mConnectedWriteThread.start();
 
         //Store a static name of the device that is connected.
-        if(device!=null){
+        if(device != null){
         	currentlyConnectedDevice = device.getName();
             connectedDeviceAddress = device.getAddress();
         }
@@ -239,7 +239,10 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         // Send the name of the connected device back to the UI Activity
         Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
-        bundle.putString(DEVICE_NAME, currentlyConnectedDevice);
+        if(currentlyConnectedDevice != null) {
+            bundle.putString(DEVICE_NAME, currentlyConnectedDevice);
+            bundle.putString(DEVICE_ADDRESS, connectedDeviceAddress);
+        }
         msg.setData(bundle);
         handler.sendMessage(msg);
         setState(STATE_CONNECTED);

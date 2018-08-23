@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -58,12 +60,21 @@ public class ScreenParams extends RPCStruct {
     public ScreenParams(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
+
+    /**
+     * Constructs a new ScreenParams object
+     */
+
+    public ScreenParams(@NonNull ImageResolution resolution) {
+        this();
+        setImageResolution(resolution);
+    }
+
     @SuppressWarnings("unchecked")
     public ImageResolution getImageResolution() {
         return (ImageResolution) getObject(ImageResolution.class, KEY_RESOLUTION);
     } 
-    public void setImageResolution( ImageResolution resolution ) {
+    public void setImageResolution( @NonNull ImageResolution resolution ) {
         setValue(KEY_RESOLUTION, resolution);
     }
     @SuppressWarnings("unchecked")

@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.AudioStreaming}
+ * {@link com.smartdevicelink.proxy.rpc.enums.AudioStreamingState}
  */
 public class AudioStreamingStateTests extends TestCase {
 

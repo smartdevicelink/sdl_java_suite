@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -198,7 +200,7 @@ import java.util.List;
  *                 <td>Maxlength: 100</td>
  * 			<td>SmartDeviceLink 2.3.2.2</td>
  * 		</tr>
- * 
+ *
  * 		<tr>
  * 			<td>systemSoftwareVersion</td>
  * 			<td>String</td>
@@ -206,6 +208,24 @@ import java.util.List;
  *                 <td>N</td>
  *                 <td>Maxlength: 100</td>
  * 			<td>SmartDeviceLink 2.3.2.2</td>
+ * 		</tr>
+ *
+ * 		<tr>
+ * 			<td>dayColorScheme</td>
+ * 			<td>TemplateColorScheme</td>
+ * 			<td>The color scheme that is used for day.</td>
+ *                 <td>N</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 4.6</td>
+ * 		</tr>
+ *
+ * 		<tr>
+ * 			<td>nightColorScheme</td>
+ * 			<td>TemplateColorScheme</td>
+ * 			<td>The color scheme that is used for night.</td>
+ *                 <td>N</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 4.6</td>
  * 		</tr>
  *  </table>
  *  <p></p>
@@ -226,6 +246,9 @@ public class RegisterAppInterface extends RPCRequest {
 	public static final String KEY_VR_SYNONYMS = "vrSynonyms";
 	public static final String KEY_SDL_MSG_VERSION = "syncMsgVersion";
 	public static final String KEY_HASH_ID = "hashID";
+	public static final String KEY_DAY_COLOR_SCHEME = "dayColorScheme";
+	public static final String KEY_NIGHT_COLOR_SCHEME = "nightColorScheme";
+
 	/**
 	 * Constructs a new RegisterAppInterface object
 	 */
@@ -243,6 +266,44 @@ public class RegisterAppInterface extends RPCRequest {
     public RegisterAppInterface(Hashtable<String, Object> hash) {
         super(hash);
     }
+	/**
+	 * Constructs a new RegisterAppInterface object
+	 * @param syncMsgVersion a SdlMsgVersion object representing version of the SDL&reg; SmartDeviceLink interface <br>
+	 *            <b>Notes: </b>To be compatible, app msg major version number
+	 *            must be less than or equal to SDL&reg; major version number.
+	 *            If msg versions are incompatible, app has 20 seconds to
+	 *            attempt successful RegisterAppInterface (w.r.t. msg version)
+	 *            on underlying protocol session, else will be terminated. Major
+	 *            version number is a compatibility declaration. Minor version
+	 *            number indicates minor functional variations (e.g. features,
+	 *            capabilities, bug fixes) when sent from SDL&reg; to app (in
+	 *            RegisterAppInterface response). However, the minor version
+	 *            number sent from the app to SDL&reg; (in RegisterAppInterface
+	 *            request) is ignored by SDL&reg;
+	 * @param appName a String value representing the Mobile Application's Name <br>
+	 *            <b>Notes: </b>
+	 *            <ul>
+	 *            <li>Must be 1-100 characters in length</li>
+	 *            <li>May not be the same (by case insensitive comparison) as
+	 *            the name or any synonym of any currently-registered
+	 *            application</li>
+	 *            </ul>
+	 * @param isMediaApplication a Boolean value
+	 * @param languageDesired a Language Enumeration
+	 * @param hmiDisplayLanguageDesired
+	 * @param appID a String value representing a unique ID, which an app will be given when approved <br>
+	 *            <b>Notes: </b>Maxlength = 100
+	 */
+	public RegisterAppInterface(@NonNull SdlMsgVersion syncMsgVersion, @NonNull String appName, @NonNull Boolean isMediaApplication,
+								@NonNull Language languageDesired, @NonNull Language hmiDisplayLanguageDesired, @NonNull String appID) {
+		this();
+		setSdlMsgVersion(syncMsgVersion);
+		setAppName(appName);
+		setIsMediaApplication(isMediaApplication);
+		setLanguageDesired(languageDesired);
+		setHmiDisplayLanguageDesired(hmiDisplayLanguageDesired);
+		setAppID(appID);
+	}
 	/**
 	 * Gets the version of the SDL&reg; SmartDeviceLink interface
 	 * 
@@ -271,8 +332,9 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            RegisterAppInterface response). However, the minor version
 	 *            number sent from the app to SDL&reg; (in RegisterAppInterface
 	 *            request) is ignored by SDL&reg;
+	 *
 	 */    
-    public void setSdlMsgVersion(SdlMsgVersion sdlMsgVersion) {
+    public void setSdlMsgVersion(@NonNull SdlMsgVersion sdlMsgVersion) {
         setParameters(KEY_SDL_MSG_VERSION, sdlMsgVersion);
     }
     
@@ -308,7 +370,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            application</li>
 	 *            </ul>
 	 */    
-    public void setAppName(String appName) {
+    public void setAppName(@NonNull String appName) {
 		setParameters(KEY_APP_NAME, appName);
     }
 
@@ -422,7 +484,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @param isMediaApplication
 	 *            a Boolean value
 	 */    
-    public void setIsMediaApplication(Boolean isMediaApplication) {
+    public void setIsMediaApplication(@NonNull Boolean isMediaApplication) {
 		setParameters(KEY_IS_MEDIA_APPLICATION, isMediaApplication);
     }
 	/**
@@ -443,7 +505,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            
 	 * 
 	 */    
-    public void setLanguageDesired(Language languageDesired) {
+    public void setLanguageDesired(@NonNull Language languageDesired) {
 		setParameters(KEY_LANGUAGE_DESIRED, languageDesired);
     }
 
@@ -467,7 +529,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @param hmiDisplayLanguageDesired
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setHmiDisplayLanguageDesired(Language hmiDisplayLanguageDesired) {
+    public void setHmiDisplayLanguageDesired(@NonNull Language hmiDisplayLanguageDesired) {
 		setParameters(KEY_HMI_DISPLAY_LANGUAGE_DESIRED, hmiDisplayLanguageDesired);
     }
 
@@ -534,7 +596,51 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            <b>Notes: </b>Maxlength = 100
 	 * @since SmartDeviceLink 2.0
 	 */
-    public void setAppID(String appID) {
+    public void setAppID(@NonNull String appID) {
 		setParameters(KEY_APP_ID, appID);
     }
+
+	/**
+	 * Gets the color scheme that is currently used for day
+	 *
+	 * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
+	 * for day color scheme
+	 * @since SmartDeviceLink 4.6
+	 */
+    public TemplateColorScheme getDayColorScheme(){
+		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_DAY_COLOR_SCHEME);
+	}
+
+	/**
+	 * Sets the color scheme that is intended to be used for day
+	 *
+	 * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
+	 * used for day color scheme
+	 * @since SmartDeviceLink 4.6
+	 */
+    public void setDayColorScheme(TemplateColorScheme templateColorScheme){
+		setParameters(KEY_DAY_COLOR_SCHEME, templateColorScheme);
+	}
+
+	/**
+	 * Gets the color scheme that is currently used for night
+	 *
+	 * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
+	 * for night color scheme
+	 * @since SmartDeviceLink 4.6
+	 */
+	public TemplateColorScheme getNightColorScheme(){
+		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_NIGHT_COLOR_SCHEME);
+	}
+
+	/**
+	 * Sets the color scheme that is intended to be used for night
+	 *
+	 * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
+	 * used for night color scheme
+	 * @since SmartDeviceLink 4.6
+	 */
+	public void setNightColorScheme(TemplateColorScheme templateColorScheme){
+		setParameters(KEY_NIGHT_COLOR_SCHEME, templateColorScheme);
+	}
 }

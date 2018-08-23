@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -124,13 +126,24 @@ public class ChangeRegistration extends RPCRequest {
         super(hash);
     }
 
+    /**
+     * Constructs a new ChangeRegistration object
+     * @param language a language value
+     * @param hmiDisplayLanguage a Language value
+     */
+    public ChangeRegistration(@NonNull Language language, @NonNull Language hmiDisplayLanguage) {
+        this();
+        setLanguage(language);
+        setHmiDisplayLanguage(hmiDisplayLanguage);
+    }
+
 	/**
 	 * Sets language
 	 * 
 	 * @param language
 	 *            a language value
 	 */
-    public void setLanguage(Language language) {
+    public void setLanguage(@NonNull Language language) {
         setParameters(KEY_LANGUAGE, language);
     }
 
@@ -149,7 +162,7 @@ public class ChangeRegistration extends RPCRequest {
 	 * @param hmiDisplayLanguage
 	 *            a Language value
 	 */
-    public void setHmiDisplayLanguage(Language hmiDisplayLanguage) {
+    public void setHmiDisplayLanguage(@NonNull Language hmiDisplayLanguage) {
         setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
     }
 

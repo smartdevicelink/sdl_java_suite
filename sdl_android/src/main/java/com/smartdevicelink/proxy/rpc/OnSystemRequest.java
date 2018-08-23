@@ -1,5 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -35,6 +36,15 @@ import java.util.List;
  *                 <td>Y</td>
  *                 <td></td>
  * 			<td>SmartDeviceLink 2.3.2 </td>
+ * 		</tr>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>requestSubType</td>
+ * 			<td>String</td>
+ * 			<td>This parameter is filled for supporting OEM proprietary data exchanges.</td>
+ *                 <td>N</td>
+ *                 <td>Max Length: 255</td>
+ * 			<td>SmartDeviceLink 4.6</td>
  * 		</tr>
  * 		<tr>
  * 			<td>url</td>
@@ -76,7 +86,7 @@ import java.util.List;
  *                 <td>minvalue: 0; maxvalue:100000000000</td>
  * 			<td>SmartDeviceLink 2.3.2 </td>
  * 		</tr>
- *  </table>	      	
+ *  </table>
  * @since SmartDeviceLink 2.3.2
  */
 public class OnSystemRequest extends RPCNotification {
@@ -88,17 +98,17 @@ public class OnSystemRequest extends RPCNotification {
 	public static final String KEY_BODY = "body";
 	public static final String KEY_FILE_TYPE = "fileType";
 	public static final String KEY_REQUEST_TYPE = "requestType";
+	public static final String KEY_REQUEST_SUB_TYPE = "requestSubType";
 	public static final String KEY_DATA = "data";
 	public static final String KEY_OFFSET = "offset";
 	public static final String KEY_LENGTH = "length";
 	
 	private String body;
-	private Headers headers;	
+	private Headers headers;
 	
-	/** Constructs a new OnSystemsRequest object
-	 * 	
+	/**
+	 * Constructs a new OnSystemsRequest object
 	 */
-
     public OnSystemRequest() {
         super(FunctionID.ON_SYSTEM_REQUEST.toString());
     }
@@ -110,6 +120,14 @@ public class OnSystemRequest extends RPCNotification {
     public OnSystemRequest(Hashtable<String, Object> hash, byte[] bulkData){
         super(hash);
         setBulkData(bulkData);
+    }
+
+    /**
+	 * Constructs a new OnSystemsRequest object
+     */
+    public OnSystemRequest(@NonNull RequestType requestType) {
+        this();
+        setRequestType(requestType);
     }
     
     private void handleBulkData(byte[] bulkData){
@@ -217,13 +235,21 @@ public class OnSystemRequest extends RPCNotification {
     public Headers getHeader() {
     	return this.headers;
     }
-    
+
     public RequestType getRequestType() {
         return (RequestType) getObject(RequestType.class, KEY_REQUEST_TYPE);
     }
 
-    public void setRequestType(RequestType requestType) {
+    public void setRequestType(@NonNull RequestType requestType) {
         setParameters(KEY_REQUEST_TYPE, requestType);
+    }
+
+    public String getRequestSubType() {
+        return getString(KEY_REQUEST_SUB_TYPE);
+    }
+
+    public void setRequestSubType(String requestSubType) {
+        setParameters(KEY_REQUEST_SUB_TYPE, requestSubType);
     }
 
     public String getUrl() {

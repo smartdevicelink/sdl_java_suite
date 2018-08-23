@@ -99,6 +99,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
         bundle.putString(DEVICE_NAME, currentlyConnectedDevice);
+        bundle.putString(DEVICE_ADDRESS, connectedDeviceAddress);
         msg.setData(bundle);
         handler.sendMessage(msg);
 

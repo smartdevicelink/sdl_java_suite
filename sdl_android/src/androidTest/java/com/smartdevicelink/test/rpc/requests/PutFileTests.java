@@ -1,6 +1,7 @@
 package com.smartdevicelink.test.rpc.requests;
 
 import java.util.Hashtable;
+import java.util.zip.CRC32;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +18,7 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.PutFile}
+ * {@link com.smartdevicelink.proxy.rpc.PutFile}
  */
 public class PutFileTests extends BaseRpcTests {
 	
@@ -30,6 +31,8 @@ public class PutFileTests extends BaseRpcTests {
 		msg.setSystemFile(Test.GENERAL_BOOLEAN);
 		msg.setOffset(Test.GENERAL_LONG);
 		msg.setLength(Test.GENERAL_LONG);
+		msg.setCRC(Test.GENERAL_BYTE_ARRAY);
+		msg.setCRC(Test.GENERAL_LONG);
 
 		return msg;
 	}
@@ -53,7 +56,8 @@ public class PutFileTests extends BaseRpcTests {
 			result.put(PutFile.KEY_PERSISTENT_FILE, Test.GENERAL_BOOLEAN);
 			result.put(PutFile.KEY_SYSTEM_FILE, Test.GENERAL_BOOLEAN);
 			result.put(PutFile.KEY_OFFSET, Test.GENERAL_LONG);
-			result.put(PutFile.KEY_LENGTH, Test.GENERAL_LONG);			
+			result.put(PutFile.KEY_LENGTH, Test.GENERAL_LONG);
+			result.put(PutFile.KEY_CRC, Test.GENERAL_LONG);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -71,14 +75,16 @@ public class PutFileTests extends BaseRpcTests {
 		boolean  testSystemFile = ( (PutFile) msg ).getSystemFile();
 		Long     testOffset = ( (PutFile) msg ).getOffset();
 		Long     testLength = ( (PutFile) msg ).getLength();
-		
+		Long     testCRC = ( (PutFile) msg ).getCRC();
+
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_FILETYPE, testFileType);
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testPersistentFile);
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testSystemFile);
 		assertEquals(Test.MATCH, Test.GENERAL_LONG, testOffset);
 		assertEquals(Test.MATCH, Test.GENERAL_LONG, testLength);
-	
+		assertEquals(Test.MATCH, Test.GENERAL_LONG, testCRC);
+
 		// Invalid/Null Tests
 		PutFile msg = new PutFile();
 		assertNotNull("Null object creation failed.", msg);
@@ -89,7 +95,26 @@ public class PutFileTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getSystemFile());
 		assertNull(Test.NULL, msg.getOffset());
 		assertNull(Test.NULL, msg.getLength());
+		assertNull(Test.NULL, msg.getCRC());
 	}
+
+	/**
+	 * Tests the expected values of the CRC checksum.
+	 */
+	public void testByteArrayCheckSum () {
+		// Test Values
+		PutFile msgCRC = new PutFile();
+		msgCRC.setCRC(Test.GENERAL_BYTE_ARRAY);
+		Long testCRCByteArray = msgCRC.getCRC();
+
+		CRC32 crc = new CRC32();
+		crc.update(Test.GENERAL_BYTE_ARRAY);
+		Long crcValue = crc.getValue();
+
+		assertEquals(Test.MATCH, crcValue, testCRCByteArray);
+	}
+
+
 
     /**
      * Tests a valid JSON construction of this RPC message.
@@ -115,7 +140,8 @@ public class PutFileTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_FILE_TYPE), cmd.getFileType().toString());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_SDL_FILE_NAME), cmd.getSdlFileName());
 			assertEquals(Test.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_OFFSET).longValue(), cmd.getOffset());
-			assertEquals(Test.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_LENGTH).longValue(), cmd.getLength());		
+			assertEquals(Test.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_LENGTH).longValue(), cmd.getLength());
+			assertEquals(Test.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_CRC).longValue(), cmd.getCRC());
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}    	

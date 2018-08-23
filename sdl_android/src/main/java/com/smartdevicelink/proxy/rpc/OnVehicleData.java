@@ -1,11 +1,14 @@
 package com.smartdevicelink.proxy.rpc;
 
 import java.util.Hashtable;
+import java.util.List;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
+import com.smartdevicelink.proxy.rpc.enums.ElectronicParkBrakeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
+import com.smartdevicelink.proxy.rpc.enums.TurnSignal;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.util.DebugTool;
@@ -222,6 +225,14 @@ import static com.smartdevicelink.proxy.constants.Names.timeout;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
+ * 			<td>engineOilLife</td>
+ * 			<td>Float</td>
+ * 			<td>The estimated percentage of remaining oil life of the engine</td>
+ *                 <td>N</td>
+ * 			<td>minvalue:0; maxvalue:100</td>
+ * 			<td>SmartDeviceLink 4.6</td>
+ * 		</tr>
+ * 		<tr>
  * 			<td>accPedalPosition</td>
  * 			<td>Float</td>
  * 			<td>Accelerator pedal position (percentage depressed)</td>
@@ -255,6 +266,7 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
 	public static final String KEY_ENGINE_TORQUE = "engineTorque";
+	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
 	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
@@ -272,6 +284,9 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
+	public static final String KEY_FUEL_RANGE = "fuelRange";
+	public static final String KEY_TURN_SIGNAL = "turnSignal";
+	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
 
     public OnVehicleData() {
         super(FunctionID.ON_VEHICLE_DATA.toString());
@@ -403,8 +418,15 @@ public class OnVehicleData extends RPCNotification {
         setParameters(KEY_ENGINE_TORQUE, engineTorque);
     }
     public Double getEngineTorque() {
-    	Object object = getParameters(KEY_ENGINE_TORQUE);
-    	return SdlDataTypeConverter.objectToDouble(object);
+        Object object = getParameters(KEY_ENGINE_TORQUE);
+        return SdlDataTypeConverter.objectToDouble(object);
+    }
+    public void setEngineOilLife(Float engineOilLife) {
+        setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
+    }
+    public Float getEngineOilLife() {
+        Object object = getParameters(KEY_ENGINE_OIL_LIFE);
+        return SdlDataTypeConverter.objectToFloat(object);
     }
     public void setAccPedalPosition(Double accPedalPosition) {
         setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
@@ -454,5 +476,56 @@ public class OnVehicleData extends RPCNotification {
     @SuppressWarnings("unchecked")
     public MyKey getMyKey() {
         return (MyKey) getObject(MyKey.class, KEY_MY_KEY);
-    }    
+    }
+
+    /**
+     * Sets Fuel Range List. Fuel Range - The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     * @param fuelRange
+     */
+    public void setFuelRange(List<FuelRange> fuelRange) {
+        setParameters(KEY_FUEL_RANGE, fuelRange);
+    }
+
+    /**
+     * Gets Fuel Range List.
+     * @return List<FuelRange>
+     *     Fuel Range - The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     */
+    @SuppressWarnings("unchecked")
+    public List<FuelRange> getFuelRange() {
+        return (List<FuelRange>) getObject(FuelRange.class, KEY_FUEL_RANGE);
+    }
+
+    /**
+     * Sets turnSignal
+     * @param turnSignal
+     */
+    public void setTurnSignal(TurnSignal turnSignal) {
+        setParameters(KEY_TURN_SIGNAL, turnSignal);
+    }
+
+    /**
+     * Gets turnSignal
+     * @return TurnSignal
+     */
+    @SuppressWarnings("unchecked")
+    public TurnSignal getTurnSignal() {
+        return (TurnSignal) getObject(TurnSignal.class, KEY_TURN_SIGNAL);
+    }
+
+    /**
+     * Sets electronicParkBrakeStatus
+     * @param electronicParkBrakeStatus
+     */
+    public void setElectronicParkBrakeStatus(ElectronicParkBrakeStatus electronicParkBrakeStatus){
+        setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+    }
+
+    /**
+     * Gets electronicParkBrakeStatus
+     * @return ElectronicParkBrakeStatus
+     */
+    public ElectronicParkBrakeStatus getElectronicParkBrakeStatus(){
+        return (ElectronicParkBrakeStatus) getObject(ElectronicParkBrakeStatus.class, KEY_ELECTRONIC_PARK_BRAKE_STATUS);
+    }
 }

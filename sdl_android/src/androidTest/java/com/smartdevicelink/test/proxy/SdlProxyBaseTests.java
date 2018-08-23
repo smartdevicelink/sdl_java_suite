@@ -1,7 +1,6 @@
 package com.smartdevicelink.test.proxy;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.test.AndroidTestCase;
 import android.util.Log;
@@ -50,6 +49,7 @@ import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
+import com.smartdevicelink.proxy.rpc.OnRCStatus;
 import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.OnTBTClientState;
@@ -646,5 +646,9 @@ public class SdlProxyBaseTests extends AndroidTestCase{
 		public void onSendHapticDataResponse(SendHapticDataResponse response) {
 			Log.i(TAG, "SendHapticDataResponse response from SDL: " + response);
 		}
-    }
+
+		@Override
+		public void onOnRCStatus(OnRCStatus notification) {
+		}
+	}
 }

@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
@@ -9,6 +11,9 @@ import com.smartdevicelink.util.DebugTool;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
+import static com.smartdevicelink.proxy.constants.Names.displayType;
+
 /**
  * Contains information about the display for the SDL system to which the application is currently connected.
  * <p><b> Parameter List</b></p>
@@ -20,11 +25,19 @@ import java.util.List;
  * 			<th>SmartDeviceLink Ver. Available</th>
  * 		</tr>
  * 		<tr>
+ * 		    @Deprecated
  * 			<td>displayType</td>
  * 			<td>DisplayType</td>
  * 			<td>The type of display
  *			</td>
  * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>displayName</td>
+ * 			<td>String</td>
+ * 			<td>The name of the display
+ *			</td>
+ * 			<td>SmartDeviceLink 4.6</td>
  * 		</tr>
  * 		<tr>
  * 			<td>textField</td>
@@ -34,13 +47,13 @@ import java.util.List;
  * 			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
- *     <tr>
+ * 		<tr>
  * 			<td>mediaClockFormats</td>
  * 			<td>MediaClockFormat[]</td>
  * 			<td>An array of MediaClockFormat elements, defining the valid string formats used in specifying the contents of the media clock field</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
- *     <tr>
+ * 		<tr>
  * 			<td>graphicSupported</td>
  * 			<td>Boolean</td>
  * 			<td>The display's persistent screen supports referencing a static or dynamic image.</td>
@@ -56,6 +69,7 @@ import java.util.List;
  */
 public class DisplayCapabilities extends RPCStruct {
 	public static final String KEY_DISPLAY_TYPE = "displayType";
+	public static final String KEY_DISPLAY_NAME = "displayName";
 	public static final String KEY_MEDIA_CLOCK_FORMATS = "mediaClockFormats";
 	public static final String KEY_TEXT_FIELDS = "textFields";
 	public static final String KEY_IMAGE_FIELDS = "imageFields";
@@ -75,18 +89,62 @@ public class DisplayCapabilities extends RPCStruct {
         super(hash);
     }
     /**
+     * Constructs a newly allocated DisplayCapabilities object
+     * @param displayType the display type
+     * @param textFields the List of textFields
+     * @param mediaClockFormats the List of MediaClockFormat
+     * @param graphicSupported
+     */
+    @Deprecated
+    public DisplayCapabilities(@NonNull DisplayType displayType, @NonNull List<TextField> textFields, @NonNull List<MediaClockFormat> mediaClockFormats, @NonNull Boolean graphicSupported) {
+        this();
+        setDisplayType(displayType);
+        setTextFields(textFields);
+        setMediaClockFormats(mediaClockFormats);
+        setGraphicSupported(graphicSupported);
+    }
+    /**
+     * Constructs a newly allocated DisplayCapabilities object
+     * @param displayName the display name (String)
+     * @param textFields the List of textFields
+     * @param mediaClockFormats the List of MediaClockFormat
+     * @param graphicSupported
+     */
+    public DisplayCapabilities(String displayName, @NonNull List<TextField> textFields, @NonNull List<MediaClockFormat> mediaClockFormats, @NonNull Boolean graphicSupported) {
+        this();
+        setDisplayName(displayName);
+        setTextFields(textFields);
+        setMediaClockFormats(mediaClockFormats);
+        setGraphicSupported(graphicSupported);
+    }
+    /**
      * Get the type of display
      * @return the type of display
-     */    
+     */
+    @Deprecated
     public DisplayType getDisplayType() {
         return (DisplayType) getObject(DisplayType.class, KEY_DISPLAY_TYPE);
     }
     /**
      * Set the type of display
      * @param displayType the display type
-     */    
-    public void setDisplayType( DisplayType displayType ) {
+     */
+    @Deprecated
+    public void setDisplayType( @NonNull DisplayType displayType ) {
         setValue(KEY_DISPLAY_TYPE, displayType);
+    }
+    /** Get the name of the display
+     * @return the name of the display
+     */
+    public String getDisplayName() {
+        return getString(KEY_DISPLAY_NAME);
+    }
+    /**
+     * Set the name of the display
+     * @param displayName the name of the display
+     */
+    public void setDisplayName( String displayName ) {
+        setValue(KEY_DISPLAY_NAME, displayName);
     }
     /**
      *Get an array of TextField structures, each of which describes a field in the HMI which the application can write to using operations such as <i>{@linkplain Show}</i>, <i>{@linkplain SetMediaClockTimer}</i>, etc. 
@@ -102,7 +160,7 @@ public class DisplayCapabilities extends RPCStruct {
      *	 This array of TextField structures identify all the text fields to which the application can write on the current display (identified by DisplayType ).
      * @param textFields the List of textFields
      */    
-    public void setTextFields( List<TextField> textFields ) {
+    public void setTextFields( @NonNull List<TextField> textFields ) {
         setValue(KEY_TEXT_FIELDS, textFields);
     }
     
@@ -137,7 +195,7 @@ public class DisplayCapabilities extends RPCStruct {
      * Set an array of MediaClockFormat elements, defining the valid string formats used in specifying the contents of the media clock field
      * @param mediaClockFormats the List of MediaClockFormat
      */    
-    public void setMediaClockFormats( List<MediaClockFormat> mediaClockFormats ) {
+    public void setMediaClockFormats( @NonNull List<MediaClockFormat> mediaClockFormats ) {
         setValue(KEY_MEDIA_CLOCK_FORMATS, mediaClockFormats);
     }
     
@@ -146,7 +204,7 @@ public class DisplayCapabilities extends RPCStruct {
      * @param graphicSupported
      * @since SmartDeviceLink 2.0
      */
-    public void setGraphicSupported(Boolean graphicSupported) {
+    public void setGraphicSupported(@NonNull Boolean graphicSupported) {
     	setValue(KEY_GRAPHIC_SUPPORTED, graphicSupported);
     }
     

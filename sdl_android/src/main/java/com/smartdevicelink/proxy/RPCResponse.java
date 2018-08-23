@@ -3,6 +3,8 @@
  */
 package com.smartdevicelink.proxy;
 
+import android.support.annotation.NonNull;
+
 import java.util.Hashtable;
 
 import com.smartdevicelink.proxy.rpc.enums.Result;
@@ -121,7 +123,7 @@ public class RPCResponse extends RPCMessage {
 	 * @param success
 	 *             whether the request is successfully processed
 	 */
-    public void setSuccess( Boolean success ) {
+    public void setSuccess( @NonNull Boolean success ) {
         if (success != null) {
             parameters.put(RPCResponse.KEY_SUCCESS, success );
         }
@@ -150,7 +152,7 @@ public class RPCResponse extends RPCMessage {
 	 * @param resultCode
 	 *             whether the request is successfully processed
 	 */
-    public void setResultCode( Result resultCode ) {
+    public void setResultCode( @NonNull Result resultCode ) {
         if (resultCode != null) {
             parameters.put(RPCResponse.KEY_RESULT_CODE, resultCode );
         }

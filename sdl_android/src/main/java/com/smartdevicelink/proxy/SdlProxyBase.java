@@ -1,18 +1,49 @@
 package com.smartdevicelink.proxy;
 
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.zip.CRC32;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.annotation.TargetApi;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.view.Display;
+import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.Surface;
 
@@ -22,6 +53,7 @@ import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.SdlConnection.SdlSession2;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
@@ -89,30 +121,6 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.ScheduledExecutorService;
 
 
 @SuppressWarnings({"WeakerAccess", "Convert2Diamond"})
@@ -122,6 +130,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 	private static final int PROX_PROT_VER_ONE = 1;
 	private static final int RESPONSE_WAIT_TIME = 2000;
+
+	public static final com.smartdevicelink.util.Version MAX_SUPPORTED_RPC_VERSION = new com.smartdevicelink.util.Version("5.0.0");
 
 	private SdlSession sdlSession = null;
 	private proxyListenerType _proxyListener = null;
@@ -187,6 +197,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private Language _hmiDisplayLanguageDesired = null;
 	private Vector<AppHMIType> _appType = null;
 	private String _appID = null;
+	private TemplateColorScheme _dayColorScheme = null;
+	private TemplateColorScheme _nightColorScheme = null;
 	@SuppressWarnings({"FieldCanBeLocal", "unused"}) //Need to understand what this is used for
 	private String _autoActivateIdDesired = null;
 	private String _lastHashID = null;
@@ -228,10 +240,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected Boolean _bResumeSuccess = false;	
 	protected List<Class<? extends SdlSecurityBase>> _secList = null;
 	protected SystemCapabilityManager _systemCapabilityManager;
+	protected Boolean _iconResumed = false;
 	
 	private final CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
 
 	protected byte _wiproVersion = 1;
+	protected com.smartdevicelink.util.Version rpcSpecVersion;
 	
 	protected SparseArray<OnRPCResponseListener> rpcResponseListeners = null;
 	protected SparseArray<CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners = null;
@@ -601,7 +615,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			throws SdlException {
 				
 			performBaseCommon(listener, sdlProxyConfigurationResources, enableAdvancedLifecycleManagement, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp,
-				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, callbackToUIThread, null, null, null, transportConfig);	
+				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, null, null, callbackToUIThread, null, null, null, transportConfig);
 	}
 	
 	@SuppressWarnings("ConstantConditions")
@@ -609,7 +623,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								   boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName,
 								   String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion,
 								   Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
-								   String autoActivateID, boolean callbackToUIThread, Boolean preRegister, String sHashID, Boolean bAppResumeEnab,
+								   String autoActivateID, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme,
+								   boolean callbackToUIThread, Boolean preRegister, String sHashID, Boolean bAppResumeEnab,
 								   BaseTransportConfig transportConfig) throws SdlException
 	{
 		Log.i(TAG, "SDL_LIB_VERSION: " + Version.VERSION);
@@ -647,6 +662,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		_appType = appType;
 		_appID = appID;
 		_autoActivateIdDesired = autoActivateID;
+		_dayColorScheme = dayColorScheme;
+		_nightColorScheme = nightColorScheme;
 		_transportConfig = transportConfig;
 				
 		// Test conditions to invalidate the proxy
@@ -795,14 +812,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName, 
 			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, 
 			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, 
-			String autoActivateID, boolean callbackToUIThread, boolean preRegister, String sHashID, Boolean bEnableResume, BaseTransportConfig transportConfig) 
+			String autoActivateID, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme,
+		    boolean callbackToUIThread, boolean preRegister, String sHashID, Boolean bEnableResume, BaseTransportConfig transportConfig)
 			throws SdlException 
 	{
 			performBaseCommon(listener, sdlProxyConfigurationResources, enableAdvancedLifecycleManagement, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp,
-				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, callbackToUIThread, preRegister, sHashID, bEnableResume, transportConfig);
+				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, dayColorScheme, nightColorScheme, callbackToUIThread, preRegister, sHashID, bEnableResume, transportConfig);
 	}
-	
-	
 	
 	/**
 	 * Constructor.
@@ -826,15 +842,51 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param transportConfig Configuration of transport to be used by underlying connection.
 	 * @throws SdlException if there is an unrecoverable error class might throw an exception.
 	 */	
-	protected SdlProxyBase(proxyListenerType listener, SdlProxyConfigurationResources sdlProxyConfigurationResources, 
-			boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName, 
-			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion, 
-			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID, 
-			String autoActivateID, boolean callbackToUIThread, boolean preRegister, BaseTransportConfig transportConfig) 
+	protected SdlProxyBase(proxyListenerType listener, SdlProxyConfigurationResources sdlProxyConfigurationResources,
+						   boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName,
+						   String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion,
+						   Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
+						   String autoActivateID, boolean callbackToUIThread, boolean preRegister, BaseTransportConfig transportConfig)
 			throws SdlException 
 	{
 			performBaseCommon(listener, sdlProxyConfigurationResources, enableAdvancedLifecycleManagement, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp,
-				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, callbackToUIThread, preRegister, null, null, transportConfig);
+				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, null, null, callbackToUIThread, preRegister, null, null, transportConfig);
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param listener Type of listener for this proxy base.
+	 * @param sdlProxyConfigurationResources Configuration resources for this proxy.
+	 * @param enableAdvancedLifecycleManagement Flag that ALM should be enabled or not.
+	 * @param appName Client application name.
+	 * @param ttsName TTS name.
+	 * @param ngnMediaScreenAppName Media Screen Application name.
+	 * @param vrSynonyms List of synonyms.
+	 * @param isMediaApp Flag that indicates that client application if media application or not.
+	 * @param sdlMsgVersion Version of Sdl Message.
+	 * @param languageDesired Desired language.
+	 * @param hmiDisplayLanguageDesired Desired language for HMI.
+	 * @param appType Type of application.
+	 * @param appID Application identifier.
+	 * @param autoActivateID Auto activation identifier.
+	 * @param dayColorScheme Day color scheme.
+	 * @param dayColorScheme Night color scheme.
+	 * @param callbackToUIThread Flag that indicates that this proxy should send callback to UI thread or not.
+	 * @param preRegister Flag that indicates that this proxy should be pre-registerd or not.
+	 * @param transportConfig Configuration of transport to be used by underlying connection.
+	 * @throws SdlException if there is an unrecoverable error class might throw an exception.
+	 */
+	protected SdlProxyBase(proxyListenerType listener, SdlProxyConfigurationResources sdlProxyConfigurationResources,
+						   boolean enableAdvancedLifecycleManagement, String appName, Vector<TTSChunk> ttsName,
+						   String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, SdlMsgVersion sdlMsgVersion,
+						   Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
+						   String autoActivateID, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme,
+						   boolean callbackToUIThread, boolean preRegister, BaseTransportConfig transportConfig)
+			throws SdlException
+	{
+		performBaseCommon(listener, sdlProxyConfigurationResources, enableAdvancedLifecycleManagement, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp,
+				sdlMsgVersion, languageDesired, hmiDisplayLanguageDesired, appType, appID, autoActivateID, dayColorScheme, nightColorScheme, callbackToUIThread, preRegister, null, null, transportConfig);
 	}
 
 	private Intent createBroadcastIntent()
@@ -1114,6 +1166,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	putFile.setCorrelationID(POLICIES_CORRELATION_ID);
 		    	putFile.setSdlFileName("response_data");
 		    	putFile.setFileData(response.toString().getBytes("UTF-8"));
+		    	putFile.setCRC(response.toString().getBytes());
 		    	updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + response.toString());
 		    	
 		    	sendRPCRequestPrivate(putFile);
@@ -1164,12 +1217,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + sResponse);
 
 		    	// Send new SystemRequest to SDL
-		    	SystemRequest mySystemRequest;
+		    	SystemRequest mySystemRequest = null;
 
 		    	if (bLegacy){
-		    		mySystemRequest = RPCRequestFactory.buildSystemRequestLegacy(cloudDataReceived, getPoliciesReservedCorrelationID());
+					if(cloudDataReceived != null) {
+						mySystemRequest = new SystemRequest(true);
+						mySystemRequest.setCorrelationID(getPoliciesReservedCorrelationID());
+						mySystemRequest.setLegacyData(cloudDataReceived);
+					}
 		    	}else{
-		    		mySystemRequest = RPCRequestFactory.buildSystemRequest(response.toString(), getPoliciesReservedCorrelationID());
+					if (response != null) {
+						mySystemRequest = new SystemRequest();
+						mySystemRequest.setRequestType(RequestType.PROPRIETARY);
+						mySystemRequest.setCorrelationID(getPoliciesReservedCorrelationID());
+						mySystemRequest.setBulkData(response.toString().getBytes());
+					}
 		    	}
 
 		    	if (getIsConnected())
@@ -1612,18 +1674,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	public String serializeJSON(RPCMessage msg)
 	{
-		String sReturn;
 		try
 		{
-			sReturn = msg.serializeJSON(getWiProVersion()).toString(2);
-		}
+			return msg.serializeJSON(getWiProVersion()).toString(2);
+        }
 		catch (final Exception e) 
 		{
 			DebugTool.logError("Error handing proxy event.", e);
 			passErrorToProxyListener("Error serializing message.", e);
 			return null;
 		}
-		return sReturn;
 	}
 
 	private void handleErrorsFromIncomingMessageDispatcher(String info, Exception e) {
@@ -1767,7 +1827,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private void sendRPCRequestPrivate(RPCRequest request) throws SdlException {
 			try {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, request, SDL_LIB_TRACE_KEY);
-						
+
+			request.format(rpcSpecVersion,true);
 			byte[] msgBytes = JsonRPCMarshaller.marshall(request, _wiproVersion);
 	
 			ProtocolMessage pm = new ProtocolMessage();
@@ -1976,6 +2037,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	private void handleRPCMessage(Hashtable<String, Object> hash) {
 		RPCMessage rpcMsg = new RPCMessage(hash);
+		//Call format to ensure the RPC is ready to be handled regardless of RPC spec version
+
 		String functionName = rpcMsg.getFunctionName();
 		String messageType = rpcMsg.getMessageType();
 		
@@ -1990,6 +2053,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						&& _advancedLifecycleManagementEnabled 
 						&& functionName.equals(FunctionID.REGISTER_APP_INTERFACE.toString())) {
 					final RegisterAppInterfaceResponse msg = new RegisterAppInterfaceResponse(hash);
+					msg.format(rpcSpecVersion, true);
 					if (msg.getSuccess()) {
 						_appInterfaceRegisterd = true;
 					}
@@ -2014,11 +2078,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_sdlLanguage = msg.getLanguage();
 					_hmiDisplayLanguage = msg.getHmiDisplayLanguage();
 					_sdlMsgVersion = msg.getSdlMsgVersion();
+					if(_sdlMsgVersion != null){
+						rpcSpecVersion = new com.smartdevicelink.util.Version(_sdlMsgVersion.getMajorVersion(),_sdlMsgVersion.getMinorVersion(), _sdlMsgVersion.getPatchVersion());
+					}else{
+						rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
+					}
 					_vehicleType = msg.getVehicleType();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 					_proxyVersionInfo = msg.getProxyVersionInfo();
+					_iconResumed = msg.getIconResumed();
 					
-
+					if (_iconResumed == null){
+						_iconResumed = false;
+					}
 
 					if (_bAppResumeEnabled)
 					{
@@ -2131,6 +2203,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							APP_INTERFACE_REGISTERED_LOCK.notify();
 						}
 						final UnregisterAppInterfaceResponse msg = new UnregisterAppInterfaceResponse(hash);
+						msg.format(rpcSpecVersion, true);
 						Intent sendIntent = createBroadcastIntent();
 						updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.UNREGISTER_APP_INTERFACE.toString());
 						updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_RESPONSE);
@@ -2146,6 +2219,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			if (functionName.equals(FunctionID.REGISTER_APP_INTERFACE.toString())) {
 				final RegisterAppInterfaceResponse msg = new RegisterAppInterfaceResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (msg.getSuccess()) {
 					_appInterfaceRegisterd = true;
 				}
@@ -2159,6 +2233,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_sdlLanguage = msg.getLanguage();
 				_hmiDisplayLanguage = msg.getHmiDisplayLanguage();
 				_sdlMsgVersion = msg.getSdlMsgVersion();
+				rpcSpecVersion = new com.smartdevicelink.util.Version(_sdlMsgVersion.getMajorVersion(),_sdlMsgVersion.getMinorVersion(), _sdlMsgVersion.getPatchVersion());
 				_vehicleType = msg.getVehicleType();
 				_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 				_proxyVersionInfo = msg.getProxyVersionInfo();
@@ -2219,6 +2294,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// SpeakResponse
 				
 				final SpeakResponse msg = new SpeakResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2236,6 +2312,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// AlertResponse
 				
 				final AlertResponse msg = new AlertResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2253,6 +2330,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// ShowResponse
 				
 				final ShowResponse msg = new ShowResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2270,6 +2348,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// AddCommand
 				
 				final AddCommandResponse msg = new AddCommandResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2287,6 +2366,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// DeleteCommandResponse
 				
 				final DeleteCommandResponse msg = new DeleteCommandResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2304,6 +2384,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// AddSubMenu
 				
 				final AddSubMenuResponse msg = new AddSubMenuResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2321,6 +2402,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// DeleteSubMenu
 				
 				final DeleteSubMenuResponse msg = new DeleteSubMenuResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2338,6 +2420,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// SubscribeButton
 				
 				final SubscribeButtonResponse msg = new SubscribeButtonResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2355,6 +2438,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// UnsubscribeButton
 				
 				final UnsubscribeButtonResponse msg = new UnsubscribeButtonResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2372,6 +2456,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// SetMediaClockTimer
 				
 				final SetMediaClockTimerResponse msg = new SetMediaClockTimerResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2388,7 +2473,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ENCODED_SYNC_P_DATA.toString())) {
 				
 				final SystemRequestResponse msg = new SystemRequestResponse(hash);
-				
+				msg.format(rpcSpecVersion,true);
 				Intent sendIntent = createBroadcastIntent();
 				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.SYSTEM_REQUEST.toString());
 				updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_RESPONSE);
@@ -2415,6 +2500,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// CreateInteractionChoiceSet
 				
 				final CreateInteractionChoiceSetResponse msg = new CreateInteractionChoiceSetResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2432,6 +2518,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// DeleteInteractionChoiceSet
 				
 				final DeleteInteractionChoiceSetResponse msg = new DeleteInteractionChoiceSetResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2449,6 +2536,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// PerformInteraction
 				
 				final PerformInteractionResponse msg = new PerformInteractionResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2466,6 +2554,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// SetGlobalPropertiesResponse 
 				
 				final SetGlobalPropertiesResponse msg = new SetGlobalPropertiesResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 						// Run in UI thread
 						_mainUIHandler.post(new Runnable() {
@@ -2483,6 +2572,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// ResetGlobalProperties				
 				
 				final ResetGlobalPropertiesResponse msg = new ResetGlobalPropertiesResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2505,7 +2595,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 				
 				final UnregisterAppInterfaceResponse msg = new UnregisterAppInterfaceResponse(hash);
-				
+				msg.format(rpcSpecVersion,true);
 				Intent sendIntent = createBroadcastIntent();
 				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.UNREGISTER_APP_INTERFACE.toString());
 				updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_RESPONSE);
@@ -2538,6 +2628,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.GENERIC_RESPONSE.toString())) {
 				// GenericResponse (Usually and error)
 				final GenericResponse msg = new GenericResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -2554,6 +2645,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.SLIDER.toString())) {
                 // Slider
                 final SliderResponse msg = new SliderResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2570,6 +2662,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.PUT_FILE.toString())) {
                 // PutFile
                 final PutFileResponse msg = new PutFileResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2588,6 +2681,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.DELETE_FILE.toString())) {
                 // DeleteFile
                 final DeleteFileResponse msg = new DeleteFileResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2604,6 +2698,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.LIST_FILES.toString())) {
                 // ListFiles
                 final ListFilesResponse msg = new ListFilesResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2620,6 +2715,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.SET_APP_ICON.toString())) {
                 // SetAppIcon
                 final SetAppIconResponse msg = new SetAppIconResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2636,6 +2732,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.SCROLLABLE_MESSAGE.toString())) {
                 // ScrollableMessage
                 final ScrollableMessageResponse msg = new ScrollableMessageResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2652,6 +2749,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.CHANGE_REGISTRATION.toString())) {
                 // ChangeLanguageRegistration
                 final ChangeRegistrationResponse msg = new ChangeRegistrationResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2668,7 +2766,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.SET_DISPLAY_LAYOUT.toString())) {
                 // SetDisplayLayout
                 final SetDisplayLayoutResponse msg = new SetDisplayLayoutResponse(hash);
-                
+				msg.format(rpcSpecVersion,true);
                 // successfully changed display layout - update layout capabilities
                 if(msg.getSuccess() && _systemCapabilityManager!=null){
 					_systemCapabilityManager.setCapability(SystemCapabilityType.DISPLAY, msg.getDisplayCapabilities());
@@ -2693,6 +2791,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.PERFORM_AUDIO_PASS_THRU.toString())) {
                 // PerformAudioPassThru
                 final PerformAudioPassThruResponse msg = new PerformAudioPassThruResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2709,6 +2808,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.END_AUDIO_PASS_THRU.toString())) {
                 // EndAudioPassThru
                 final EndAudioPassThruResponse msg = new EndAudioPassThruResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2725,6 +2825,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.SUBSCRIBE_VEHICLE_DATA.toString())) {
             	// SubscribeVehicleData
                 final SubscribeVehicleDataResponse msg = new SubscribeVehicleDataResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2741,6 +2842,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.UNSUBSCRIBE_VEHICLE_DATA.toString())) {
             	// UnsubscribeVehicleData
                 final UnsubscribeVehicleDataResponse msg = new UnsubscribeVehicleDataResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2757,6 +2859,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.GET_VEHICLE_DATA.toString())) {
            		// GetVehicleData
                 final GetVehicleDataResponse msg = new GetVehicleDataResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2773,6 +2876,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.SUBSCRIBE_WAY_POINTS.toString())) {
             	// SubscribeWayPoints
                 final SubscribeWayPointsResponse msg = new SubscribeWayPointsResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2789,6 +2893,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.UNSUBSCRIBE_WAY_POINTS.toString())) {
             	// UnsubscribeWayPoints
                 final UnsubscribeWayPointsResponse msg = new UnsubscribeWayPointsResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2805,6 +2910,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             } else if (functionName.equals(FunctionID.GET_WAY_POINTS.toString())) {
            		// GetWayPoints
                 final GetWayPointsResponse msg = new GetWayPointsResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2820,6 +2926,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     }            	               
             } else if (functionName.equals(FunctionID.READ_DID.toString())) {
                 final ReadDIDResponse msg = new ReadDIDResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2835,6 +2942,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }            	            	
             } else if (functionName.equals(FunctionID.GET_DTCS.toString())) {
                 final GetDTCsResponse msg = new GetDTCsResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2850,6 +2958,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 }
             } else if (functionName.equals(FunctionID.DIAGNOSTIC_MESSAGE.toString())) {
                 final DiagnosticMessageResponse msg = new DiagnosticMessageResponse(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -2867,6 +2976,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             else if (functionName.equals(FunctionID.SYSTEM_REQUEST.toString())) {
 
    				final SystemRequestResponse msg = new SystemRequestResponse(hash);
+   				msg.format(rpcSpecVersion, true);
    				if (_callbackToUIThread) {
    					// Run in UI thread
    					_mainUIHandler.post(new Runnable() {
@@ -2884,6 +2994,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             else if (functionName.equals(FunctionID.SEND_LOCATION.toString())) {
 
    				final SendLocationResponse msg = new SendLocationResponse(hash);
+   				msg.format(rpcSpecVersion, true);
    				if (_callbackToUIThread) {
    					// Run in UI thread
    					_mainUIHandler.post(new Runnable() {
@@ -2901,6 +3012,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             else if (functionName.equals(FunctionID.DIAL_NUMBER.toString())) {
 
    				final DialNumberResponse msg = new DialNumberResponse(hash);
+   				msg.format(rpcSpecVersion, true);
    				if (_callbackToUIThread) {
    					// Run in UI thread
    					_mainUIHandler.post(new Runnable() {
@@ -2917,6 +3029,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             }
             else if (functionName.equals(FunctionID.SHOW_CONSTANT_TBT.toString())) {
 				final ShowConstantTbtResponse msg = new ShowConstantTbtResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					_mainUIHandler.post(new Runnable() {
 						@Override
@@ -2932,6 +3045,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			else if (functionName.equals(FunctionID.ALERT_MANEUVER.toString())) {
 				final AlertManeuverResponse msg = new AlertManeuverResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					_mainUIHandler.post(new Runnable() {
 						@Override
@@ -2946,6 +3060,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			} else if (functionName.equals(FunctionID.UPDATE_TURN_LIST.toString())) {
 				final UpdateTurnListResponse msg = new UpdateTurnListResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					_mainUIHandler.post(new Runnable() {
 						@Override
@@ -2960,6 +3075,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			} else if (functionName.equals(FunctionID.SET_INTERIOR_VEHICLE_DATA.toString())) {
 				final SetInteriorVehicleDataResponse msg = new SetInteriorVehicleDataResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					_mainUIHandler.post(new Runnable() {
 						@Override
@@ -2974,6 +3090,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			} else if (functionName.equals(FunctionID.GET_INTERIOR_VEHICLE_DATA.toString())) {
 				final GetInteriorVehicleDataResponse msg = new GetInteriorVehicleDataResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					_mainUIHandler.post(new Runnable() {
 						@Override
@@ -2989,6 +3106,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.GET_SYSTEM_CAPABILITY.toString())) {
 				// GetSystemCapabilityResponse
 				final GetSystemCapabilityResponse msg = new GetSystemCapabilityResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					_mainUIHandler.post(new Runnable() {
 						@Override
@@ -3003,6 +3121,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			} else if (functionName.equals(FunctionID.BUTTON_PRESS.toString())) {
 				final ButtonPressResponse msg = new ButtonPressResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					_mainUIHandler.post(new Runnable() {
 						@Override
@@ -3017,6 +3136,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			} else if (functionName.equals(FunctionID.SEND_HAPTIC_DATA.toString())) {
 				final SendHapticDataResponse msg = new SendHapticDataResponse(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3059,6 +3179,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_hmiLevel = msg.getHmiLevel();
 				_audioStreamingState = msg.getAudioStreamingState();
 
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3078,6 +3199,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// OnCommand
 				
 				final OnCommand msg = new OnCommand(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3103,6 +3225,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					sdlSession.getLockScreenMan().setDriverDistStatus(drDist == DriverDistractionState.DD_ON);
 				}
 				
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3129,7 +3252,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// If url is null, then send notification to the app, otherwise, send to URL
 				if (msg.getUrl() == null) {
 					updateBroadcastIntent(sendIntent, "COMMENT1", "URL is a null value (received)");
-					sendBroadcastIntent(sendIntent);					
+					sendBroadcastIntent(sendIntent);
+					msg.format(rpcSpecVersion, true);
 					if (_callbackToUIThread) {
 						// Run in UI thread
 						_mainUIHandler.post(new Runnable() {
@@ -3165,6 +3289,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				//OnPermissionsChange
 				
 				final OnPermissionsChange msg = new OnPermissionsChange(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3182,6 +3307,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// OnTBTClientState
 				
 				final OnTBTClientState msg = new OnTBTClientState(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3199,6 +3325,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// OnButtonPress
 				
 				final OnButtonPress msg = new OnButtonPress(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3216,6 +3343,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// OnButtonEvent
 				
 				final OnButtonEvent msg = new OnButtonEvent(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3233,6 +3361,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// OnLanguageChange
 				
 				final OnLanguageChange msg = new OnLanguageChange(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3250,6 +3379,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// OnLanguageChange
 				
 				final OnHashChange msg = new OnHashChange(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3275,7 +3405,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					// OnSystemRequest
 					
 					final OnSystemRequest msg = new OnSystemRequest(hash);
-					
+					msg.format(rpcSpecVersion,true);
 					if ((msg.getUrl() != null) &&
 							(((msg.getRequestType() == RequestType.PROPRIETARY) && (msg.getFileType() == FileType.JSON)) 
 									|| ((msg.getRequestType() == RequestType.HTTP) && (msg.getFileType() == FileType.BINARY)))){
@@ -3295,6 +3425,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					    lockScreenIconRequest = msg;
 					}
 					
+					msg.format(rpcSpecVersion, true);
 					if (_callbackToUIThread) {
 						// Run in UI thread
 						_mainUIHandler.post(new Runnable() {
@@ -3311,6 +3442,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ON_AUDIO_PASS_THRU.toString())) {
 				// OnAudioPassThru
 				final OnAudioPassThru msg = new OnAudioPassThru(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -3327,6 +3459,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (functionName.equals(FunctionID.ON_VEHICLE_DATA.toString())) {
 				// OnVehicleData
                 final OnVehicleData msg = new OnVehicleData(hash);
+                msg.format(rpcSpecVersion, true);
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {
@@ -3350,6 +3483,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 				
 				final OnAppInterfaceUnregistered msg = new OnAppInterfaceUnregistered(hash);
+				msg.format(rpcSpecVersion,true);
 								
 				Intent sendIntent = createBroadcastIntent();
 				updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.ON_APP_INTERFACE_UNREGISTERED.toString());
@@ -3379,6 +3513,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} 
 			else if (functionName.equals(FunctionID.ON_KEYBOARD_INPUT.toString())) {
 				final OnKeyboardInput msg = new OnKeyboardInput(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3395,6 +3530,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			else if (functionName.equals(FunctionID.ON_TOUCH_EVENT.toString())) {
 				final OnTouchEvent msg = new OnTouchEvent(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3411,6 +3547,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			else if (functionName.equals(FunctionID.ON_WAY_POINT_CHANGE.toString())) {
 				final OnWayPointChange msg = new OnWayPointChange(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3427,6 +3564,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			else if (functionName.equals(FunctionID.ON_INTERIOR_VEHICLE_DATA.toString())) {
 				final OnInteriorVehicleData msg = new OnInteriorVehicleData(hash);
+				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3438,6 +3576,23 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					});
 				} else {
 					_proxyListener.onOnInteriorVehicleData(msg);
+					onRPCNotificationReceived(msg);
+				}
+			}
+			else if (functionName.equals(FunctionID.ON_RC_STATUS.toString())) {
+				final OnRCStatus msg = new OnRCStatus(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onOnRCStatus(msg);
+							onRPCNotificationReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onOnRCStatus(msg);
 					onRPCNotificationReceived(msg);
 				}
 			}
@@ -3661,6 +3816,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						_hmiDisplayLanguageDesired,
 						_appType,
 						_appID,
+						_dayColorScheme,
+						_nightColorScheme,
 						REGISTER_APP_INTERFACE_CORRELATION_ID);
 				
 			} catch (Exception e) {
@@ -4563,13 +4720,35 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public void addCommand(Integer commandID,
+	public void addCommand(@NonNull Integer commandID,
 						   String menuText, Integer parentID, Integer position,
 						   Vector<String> vrCommands, String IconValue, ImageType IconType, Integer correlationID)
 			throws SdlException {
-		
-		AddCommand msg = RPCRequestFactory.buildAddCommand(commandID, menuText, parentID, position,
-			vrCommands, IconValue, IconType, correlationID);
+
+
+		AddCommand msg = new AddCommand(commandID);
+		msg.setCorrelationID(correlationID);
+
+		if (vrCommands != null) msg.setVrCommands(vrCommands);
+
+		Image cmdIcon = null;
+
+		if (IconValue != null && IconType != null)
+		{
+			cmdIcon = new Image();
+			cmdIcon.setValue(IconValue);
+			cmdIcon.setImageType(IconType);
+		}
+
+		if (cmdIcon != null) msg.setCmdIcon(cmdIcon);
+
+		if(menuText != null || parentID != null || position != null) {
+			MenuParams menuParams = new MenuParams();
+			menuParams.setMenuName(menuText);
+			menuParams.setPosition(position);
+			menuParams.setParentID(parentID);
+			msg.setMenuParams(menuParams);
+		}
 		
 		sendRPCRequest(msg);
 	}
@@ -4684,13 +4863,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public void addCommand(Integer commandID,
+	public void addCommand(@NonNull Integer commandID,
 						   String menuText, Integer parentID, Integer position,
 						   Vector<String> vrCommands, Integer correlationID)
 			throws SdlException {
-		
-		AddCommand msg = RPCRequestFactory.buildAddCommand(commandID, menuText, parentID, position,
-			vrCommands, correlationID);
+
+		AddCommand msg = new AddCommand(commandID);
+		msg.setCorrelationID(correlationID);
+		msg.setVrCommands(vrCommands);
+		if(menuText != null || parentID != null || position != null) {
+			MenuParams menuParams = new MenuParams();
+			menuParams.setMenuName(menuText);
+			menuParams.setPosition(position);
+			menuParams.setParentID(parentID);
+			msg.setMenuParams(menuParams);
+		}
 		
 		sendRPCRequest(msg);
 	}
@@ -4779,8 +4966,30 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		addCommand(commandID, null, null, null, vrCommands, correlationID);
 	}
-		
-	
+
+	/**
+	 * Sends an AddSubMenu RPCRequest to SDL. Responses are captured through callback on IProxyListener.
+	 *
+	 * @param menuID -Unique ID of the sub menu to add.
+	 * @param menuName -Text to show in the menu for this sub menu.
+	 * @param position -Position within the items that are are at top level of the in application menu.
+	 * @param menuIcon -Image to be be shown along with the submenu item
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("SameParameterValue")
+	public void addSubMenu(@NonNull Integer menuID, @NonNull String menuName,
+						   Integer position, Image menuIcon, Integer correlationID)
+			throws SdlException {
+
+		AddSubMenu msg = new AddSubMenu(menuID, menuName);
+		msg.setCorrelationID(correlationID);
+		msg.setPosition(position);
+		msg.setMenuIcon(menuIcon);
+
+		sendRPCRequest(msg);
+	}
+
 	/**
 	 * Sends an AddSubMenu RPCRequest to SDL. Responses are captured through callback on IProxyListener.
 	 * 
@@ -4790,15 +4999,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@Deprecated
 	@SuppressWarnings("SameParameterValue")
-	public void addSubMenu(Integer menuID, String menuName,
+	public void addSubMenu(@NonNull Integer menuID, @NonNull String menuName,
 						   Integer position, Integer correlationID)
 			throws SdlException {
-		
-		AddSubMenu msg = RPCRequestFactory.buildAddSubMenu(menuID, menuName,
-				position, correlationID);
-		
-		sendRPCRequest(msg);
+
+		addSubMenu(menuID, menuName, position, null, correlationID);
 	}
 	
 	/**
@@ -4809,11 +5016,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
+	@Deprecated
 	@SuppressWarnings("unused")
 	public void addSubMenu(Integer menuID, String menuName,
 						   Integer correlationID) throws SdlException {
 		
-		addSubMenu(menuID, menuName, null, correlationID);
+		addSubMenu(menuID, menuName, null, null, correlationID);
 	}
 	
 	/*Begin V1 Enhanced helper*/	
@@ -4835,7 +5043,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					  String alertText2, String alertText3, Boolean playTone, Integer duration, Vector<SoftButton> softButtons,
 					  Integer correlationID) throws SdlException {
 
-		Alert msg = RPCRequestFactory.buildAlert(ttsText, alertText1, alertText2, alertText3, playTone, duration, softButtons, correlationID);
+		Vector<TTSChunk> chunks = TTSChunkFactory.createSimpleTTSChunks(ttsText);
+		Alert msg = new Alert();
+		msg.setCorrelationID(correlationID);
+		msg.setAlertText1(alertText1);
+		msg.setAlertText2(alertText2);
+		msg.setAlertText3(alertText3);
+		msg.setDuration(duration);
+		msg.setPlayTone(playTone);
+		msg.setTtsChunks(chunks);
+		msg.setSoftButtons(softButtons);
 
 		sendRPCRequest(msg);
 	}
@@ -4856,8 +5073,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void alert(Vector<TTSChunk> ttsChunks,
 			String alertText1, String alertText2, String alertText3, Boolean playTone,
 			Integer duration, Vector<SoftButton> softButtons, Integer correlationID) throws SdlException {
-		
-		Alert msg = RPCRequestFactory.buildAlert(ttsChunks, alertText1, alertText2, alertText3, playTone, duration, softButtons, correlationID);
+
+		Alert msg = new Alert();
+		msg.setCorrelationID(correlationID);
+		msg.setAlertText1(alertText1);
+		msg.setAlertText2(alertText2);
+		msg.setAlertText3(alertText3);
+		msg.setDuration(duration);
+		msg.setPlayTone(playTone);
+		msg.setTtsChunks(ttsChunks);
+		msg.setSoftButtons(softButtons);
 
 		sendRPCRequest(msg);
 	}
@@ -4932,8 +5157,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					  String alertText2, Boolean playTone, Integer duration,
 					  Integer correlationID) throws SdlException {
 
-		Alert msg = RPCRequestFactory.buildAlert(ttsText, alertText1, alertText2, 
-				playTone, duration, correlationID);
+		Vector<TTSChunk> chunks = TTSChunkFactory.createSimpleTTSChunks(ttsText);
+		Alert msg = new Alert();
+		msg.setCorrelationID(correlationID);
+		msg.setAlertText1(alertText1);
+		msg.setAlertText2(alertText2);
+		msg.setDuration(duration);
+		msg.setPlayTone(playTone);
+		msg.setTtsChunks(chunks);
 
 		sendRPCRequest(msg);
 	}
@@ -4952,9 +5183,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void alert(Vector<TTSChunk> ttsChunks,
 			String alertText1, String alertText2, Boolean playTone,
 			Integer duration, Integer correlationID) throws SdlException {
-		
-		Alert msg = RPCRequestFactory.buildAlert(ttsChunks, alertText1, alertText2, playTone,
-				duration, correlationID);
+
+		Alert msg = new Alert();
+		msg.setCorrelationID(correlationID);
+		msg.setAlertText1(alertText1);
+		msg.setAlertText2(alertText2);
+		msg.setDuration(duration);
+		msg.setPlayTone(playTone);
+		msg.setTtsChunks(ttsChunks);
 
 		sendRPCRequest(msg);
 	}
@@ -5017,11 +5253,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void createInteractionChoiceSet(
-			Vector<Choice> choiceSet, Integer interactionChoiceSetID,
+			@NonNull Vector<Choice> choiceSet, @NonNull Integer interactionChoiceSetID,
 			Integer correlationID) throws SdlException {
-		
-		CreateInteractionChoiceSet msg = RPCRequestFactory.buildCreateInteractionChoiceSet(
-				choiceSet, interactionChoiceSetID, correlationID);
+
+		CreateInteractionChoiceSet msg = new CreateInteractionChoiceSet(interactionChoiceSetID, choiceSet);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5034,10 +5270,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void deleteCommand(Integer commandID,
+	public void deleteCommand(@NonNull Integer commandID,
 							  Integer correlationID) throws SdlException {
-		
-		DeleteCommand msg = RPCRequestFactory.buildDeleteCommand(commandID, correlationID);
+
+		DeleteCommand msg = new DeleteCommand(commandID);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5051,11 +5288,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void deleteInteractionChoiceSet(
-			Integer interactionChoiceSetID, Integer correlationID) 
+			@NonNull Integer interactionChoiceSetID, Integer correlationID)
 			throws SdlException {
-		
-		DeleteInteractionChoiceSet msg = RPCRequestFactory.buildDeleteInteractionChoiceSet(
-				interactionChoiceSetID, correlationID);
+
+		DeleteInteractionChoiceSet msg = new DeleteInteractionChoiceSet(interactionChoiceSetID);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5070,8 +5307,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void deleteSubMenu(Integer menuID,
 							  Integer correlationID) throws SdlException {
-		
-		DeleteSubMenu msg = RPCRequestFactory.buildDeleteSubMenu(menuID, correlationID);
+
+		DeleteSubMenu msg = new DeleteSubMenu(menuID);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5092,11 +5330,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-								   String displayText, Integer interactionChoiceSetID, Vector<VrHelpItem> vrHelp,
+								   @NonNull String displayText, @NonNull Integer interactionChoiceSetID, Vector<VrHelpItem> vrHelp,
 								   Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(initPrompt,
-				displayText, interactionChoiceSetID, vrHelp, correlationID);
+
+		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
+		interactionChoiceSetIDs.add(interactionChoiceSetID);
+		Vector<TTSChunk> initChunks = TTSChunkFactory.createSimpleTTSChunks(initPrompt);
+		PerformInteraction msg = new PerformInteraction(displayText, InteractionMode.BOTH, interactionChoiceSetIDs);
+		msg.setInitialPrompt(initChunks);
+		msg.setVrHelp(vrHelp);
+		msg.setCorrelationID(correlationID);
 		
 		sendRPCRequest(msg);
 	}
@@ -5117,15 +5360,23 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-								   String displayText, Integer interactionChoiceSetID,
+								   @NonNull String displayText, @NonNull Integer interactionChoiceSetID,
 								   String helpPrompt, String timeoutPrompt,
-								   InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
+								   @NonNull InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
 								   Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(
-				initPrompt, displayText, interactionChoiceSetID,
-				helpPrompt, timeoutPrompt, interactionMode, 
-				timeout, vrHelp, correlationID);
+
+		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
+		interactionChoiceSetIDs.add(interactionChoiceSetID);
+		Vector<TTSChunk> initChunks = TTSChunkFactory.createSimpleTTSChunks(initPrompt);
+		Vector<TTSChunk> helpChunks = TTSChunkFactory.createSimpleTTSChunks(helpPrompt);
+		Vector<TTSChunk> timeoutChunks = TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt);
+		PerformInteraction msg = new PerformInteraction(displayText, interactionMode, interactionChoiceSetIDs);
+		msg.setInitialPrompt(initChunks);
+		msg.setTimeout(timeout);
+		msg.setHelpPrompt(helpChunks);
+		msg.setTimeoutPrompt(timeoutChunks);
+		msg.setVrHelp(vrHelp);
+		msg.setCorrelationID(correlationID);
 		
 		sendRPCRequest(msg);
 	}
@@ -5146,15 +5397,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-								   String displayText, Vector<Integer> interactionChoiceSetIDList,
+								   @NonNull String displayText, @NonNull Vector<Integer> interactionChoiceSetIDList,
 								   String helpPrompt, String timeoutPrompt,
-								   InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
+								   @NonNull InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
 								   Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(initPrompt,
-				displayText, interactionChoiceSetIDList,
-				helpPrompt, timeoutPrompt, interactionMode, timeout, vrHelp,
-				correlationID);
+
+		Vector<TTSChunk> initChunks = TTSChunkFactory.createSimpleTTSChunks(initPrompt);
+		Vector<TTSChunk> helpChunks = TTSChunkFactory.createSimpleTTSChunks(helpPrompt);
+		Vector<TTSChunk> timeoutChunks = TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt);
+		PerformInteraction msg = new PerformInteraction(displayText, interactionMode, interactionChoiceSetIDList);
+		msg.setInitialPrompt(initChunks);
+		msg.setTimeout(timeout);
+		msg.setHelpPrompt(helpChunks);
+		msg.setTimeoutPrompt(timeoutChunks);
+		msg.setVrHelp(vrHelp);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5175,16 +5432,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(
-			Vector<TTSChunk> initChunks, String displayText,
-			Vector<Integer> interactionChoiceSetIDList,
+			Vector<TTSChunk> initChunks, @NonNull String displayText,
+			@NonNull Vector<Integer> interactionChoiceSetIDList,
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
-			InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
+			@NonNull InteractionMode interactionMode, Integer timeout, Vector<VrHelpItem> vrHelp,
 			Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(
-				initChunks, displayText, interactionChoiceSetIDList,
-				helpChunks, timeoutChunks, interactionMode, timeout,vrHelp,
-				correlationID);
+
+		PerformInteraction msg = new PerformInteraction(displayText, interactionMode, interactionChoiceSetIDList);
+		msg.setInitialPrompt(initChunks);
+		msg.setTimeout(timeout);
+		msg.setHelpPrompt(helpChunks);
+		msg.setTimeoutPrompt(timeoutChunks);
+		msg.setVrHelp(vrHelp);
+		msg.setCorrelationID(correlationID);
 		
 		sendRPCRequest(msg);
 	}
@@ -5202,11 +5462,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-								   String displayText, Integer interactionChoiceSetID,
+								   @NonNull String displayText, @NonNull Integer interactionChoiceSetID,
 								   Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(initPrompt,
-				displayText, interactionChoiceSetID, correlationID);
+
+		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
+		interactionChoiceSetIDs.add(interactionChoiceSetID);
+		Vector<TTSChunk> initChunks = TTSChunkFactory.createSimpleTTSChunks(initPrompt);
+		PerformInteraction msg = new PerformInteraction(displayText, InteractionMode.BOTH, interactionChoiceSetIDs);
+		msg.setInitialPrompt(initChunks);
+		msg.setCorrelationID(correlationID);
 		
 		sendRPCRequest(msg);
 	}
@@ -5226,16 +5490,23 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-								   String displayText, Integer interactionChoiceSetID,
+								   @NonNull String displayText, @NonNull Integer interactionChoiceSetID,
 								   String helpPrompt, String timeoutPrompt,
-								   InteractionMode interactionMode, Integer timeout,
+								   @NonNull InteractionMode interactionMode, Integer timeout,
 								   Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(
-				initPrompt, displayText, interactionChoiceSetID,
-				helpPrompt, timeoutPrompt, interactionMode, 
-				timeout, correlationID);
-		
+
+		Vector<Integer> interactionChoiceSetIDs = new Vector<Integer>();
+		interactionChoiceSetIDs.add(interactionChoiceSetID);
+		Vector<TTSChunk> initChunks = TTSChunkFactory.createSimpleTTSChunks(initPrompt);
+		Vector<TTSChunk> helpChunks = TTSChunkFactory.createSimpleTTSChunks(helpPrompt);
+		Vector<TTSChunk> timeoutChunks = TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt);
+		PerformInteraction msg = new PerformInteraction(displayText, interactionMode, interactionChoiceSetIDs);
+		msg.setInitialPrompt(initChunks);
+		msg.setTimeout(timeout);
+		msg.setHelpPrompt(helpChunks);
+		msg.setTimeoutPrompt(timeoutChunks);
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 	
@@ -5254,15 +5525,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(String initPrompt,
-								   String displayText, Vector<Integer> interactionChoiceSetIDList,
+								   @NonNull String displayText, @NonNull Vector<Integer> interactionChoiceSetIDList,
 								   String helpPrompt, String timeoutPrompt,
-								   InteractionMode interactionMode, Integer timeout,
+								   @NonNull InteractionMode interactionMode, Integer timeout,
 								   Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(initPrompt,
-				displayText, interactionChoiceSetIDList,
-				helpPrompt, timeoutPrompt, interactionMode, timeout,
-				correlationID);
+
+		Vector<TTSChunk> initChunks = TTSChunkFactory.createSimpleTTSChunks(initPrompt);
+		Vector<TTSChunk> helpChunks = TTSChunkFactory.createSimpleTTSChunks(helpPrompt);
+		Vector<TTSChunk> timeoutChunks = TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt);
+		PerformInteraction msg = new PerformInteraction(displayText, interactionMode, interactionChoiceSetIDList);
+		msg.setInitialPrompt(initChunks);
+		msg.setTimeout(timeout);
+		msg.setHelpPrompt(helpChunks);
+		msg.setTimeoutPrompt(timeoutChunks);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5282,37 +5558,80 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performInteraction(
-			Vector<TTSChunk> initChunks, String displayText,
-			Vector<Integer> interactionChoiceSetIDList,
+			Vector<TTSChunk> initChunks, @NonNull String displayText,
+			@NonNull Vector<Integer> interactionChoiceSetIDList,
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
-			InteractionMode interactionMode, Integer timeout,
+			@NonNull InteractionMode interactionMode, Integer timeout,
 			Integer correlationID) throws SdlException {
-		
-		PerformInteraction msg = RPCRequestFactory.buildPerformInteraction(
-				initChunks, displayText, interactionChoiceSetIDList,
-				helpChunks, timeoutChunks, interactionMode, timeout,
-				correlationID);
+
+		PerformInteraction msg = new PerformInteraction(displayText, interactionMode, interactionChoiceSetIDList);
+		msg.setInitialPrompt(initChunks);
+		msg.setTimeout(timeout);
+		msg.setHelpPrompt(helpChunks);
+		msg.setTimeoutPrompt(timeoutChunks);
+		msg.setCorrelationID(correlationID);
 		
 		sendRPCRequest(msg);
 	}
-	
+
 	// Protected registerAppInterface used to ensure only non-ALM applications call
 	// reqisterAppInterface
 	protected void registerAppInterfacePrivate(
-			SdlMsgVersion sdlMsgVersion, String appName, Vector<TTSChunk> ttsName,
-			String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp, 
-			Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
-			String appID, Integer correlationID)
+			@NonNull SdlMsgVersion sdlMsgVersion, @NonNull String appName, Vector<TTSChunk> ttsName,
+			String ngnMediaScreenAppName, Vector<String> vrSynonyms, @NonNull Boolean isMediaApp,
+			@NonNull Language languageDesired, @NonNull Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
+			@NonNull String appID, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme, Integer correlationID)
 			throws SdlException {
 		String carrierName = null;
 		if(telephonyManager != null){
 			carrierName = telephonyManager.getNetworkOperatorName();
 		}
-		deviceInfo = RPCRequestFactory.BuildDeviceInfo(carrierName);
-		RegisterAppInterface msg = RPCRequestFactory.buildRegisterAppInterface(
-				sdlMsgVersion, appName, ttsName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, 
-				languageDesired, hmiDisplayLanguageDesired, appType, appID, correlationID, deviceInfo);
-		
+
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setHardware(android.os.Build.MODEL);
+		deviceInfo.setOs(DeviceInfo.DEVICE_OS);
+		deviceInfo.setOsVersion(Build.VERSION.RELEASE);
+		deviceInfo.setCarrier(carrierName);
+
+		if (sdlMsgVersion == null) {
+			sdlMsgVersion = new SdlMsgVersion();
+			sdlMsgVersion.setMajorVersion(MAX_SUPPORTED_RPC_VERSION.getMajor());
+			sdlMsgVersion.setMinorVersion(MAX_SUPPORTED_RPC_VERSION.getMinor());
+		}
+		if (languageDesired == null) {
+			languageDesired = Language.EN_US;
+		}
+		if (hmiDisplayLanguageDesired == null) {
+			hmiDisplayLanguageDesired = Language.EN_US;
+		}
+
+		RegisterAppInterface msg = new RegisterAppInterface(sdlMsgVersion, appName, isMediaApp, languageDesired, hmiDisplayLanguageDesired, appID);
+
+		if (correlationID != null) {
+			msg.setCorrelationID(correlationID);
+		}
+
+		msg.setDeviceInfo(deviceInfo);
+
+		msg.setTtsName(ttsName);
+
+		if (ngnMediaScreenAppName == null) {
+			ngnMediaScreenAppName = appName;
+		}
+
+		msg.setNgnMediaScreenAppName(ngnMediaScreenAppName);
+
+		if (vrSynonyms == null) {
+			vrSynonyms = new Vector<String>();
+			vrSynonyms.add(appName);
+		}
+		msg.setVrSynonyms(vrSynonyms);
+
+		msg.setAppHMIType(appType);
+
+		msg.setDayColorScheme(dayColorScheme);
+		msg.setNightColorScheme(nightColorScheme);
+
 		if (_bAppResumeEnabled)
 		{
 			if (_lastHashID != null)
@@ -5345,9 +5664,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void setGlobalProperties(
 			String helpPrompt, String timeoutPrompt, String vrHelpTitle, Vector<VrHelpItem> vrHelp, Integer correlationID) 
 		throws SdlException {
-		
-		SetGlobalProperties req = RPCRequestFactory.buildSetGlobalProperties(helpPrompt, 
-				timeoutPrompt, vrHelpTitle, vrHelp, correlationID);
+
+		SetGlobalProperties req = new SetGlobalProperties();
+		req.setCorrelationID(correlationID);
+		req.setHelpPrompt(TTSChunkFactory.createSimpleTTSChunks(helpPrompt));
+		req.setTimeoutPrompt(TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt));
+		req.setVrHelpTitle(vrHelpTitle);
+		req.setVrHelp(vrHelp);
 		
 		sendRPCRequest(req);
 	}
@@ -5366,9 +5689,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void setGlobalProperties(
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks, String vrHelpTitle, Vector<VrHelpItem> vrHelp,
 			Integer correlationID) throws SdlException {
-		
-		SetGlobalProperties req = RPCRequestFactory.buildSetGlobalProperties(
-				helpChunks, timeoutChunks, vrHelpTitle, vrHelp, correlationID);
+
+		SetGlobalProperties req = new SetGlobalProperties();
+		req.setCorrelationID(correlationID);
+		req.setHelpPrompt(helpChunks);
+		req.setTimeoutPrompt(timeoutChunks);
+		req.setVrHelpTitle(vrHelpTitle);
+		req.setVrHelp(vrHelp);
 
 		sendRPCRequest(req);
 	}
@@ -5387,9 +5714,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void setGlobalProperties(
 			String helpPrompt, String timeoutPrompt, Integer correlationID) 
 		throws SdlException {
-		
-		SetGlobalProperties req = RPCRequestFactory.buildSetGlobalProperties(helpPrompt, 
-				timeoutPrompt, correlationID);
+
+		SetGlobalProperties req = new SetGlobalProperties();
+		req.setCorrelationID(correlationID);
+		req.setHelpPrompt(TTSChunkFactory.createSimpleTTSChunks(helpPrompt));
+		req.setTimeoutPrompt(TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt));
 		
 		sendRPCRequest(req);
 	}
@@ -5406,9 +5735,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void setGlobalProperties(
 			Vector<TTSChunk> helpChunks, Vector<TTSChunk> timeoutChunks,
 			Integer correlationID) throws SdlException {
-		
-		SetGlobalProperties req = RPCRequestFactory.buildSetGlobalProperties(
-				helpChunks, timeoutChunks, correlationID);
+
+		SetGlobalProperties req = new SetGlobalProperties();
+		req.setCorrelationID(correlationID);
+		req.setHelpPrompt(helpChunks);
+		req.setTimeoutPrompt(timeoutChunks);
 
 		sendRPCRequest(req);
 	}
@@ -5438,11 +5769,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void setMediaClockTimer(Integer hours,
-								   Integer minutes, Integer seconds, UpdateMode updateMode,
+								   Integer minutes, Integer seconds, @NonNull UpdateMode updateMode,
 								   Integer correlationID) throws SdlException {
 
-		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(hours,
-				minutes, seconds, updateMode, correlationID);
+		SetMediaClockTimer msg = new SetMediaClockTimer(updateMode);
+		if (hours != null || minutes != null || seconds != null) {
+			StartTime startTime = new StartTime(hours, minutes, seconds);
+			msg.setStartTime(startTime);
+		}
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5457,8 +5792,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void pauseMediaClockTimer(Integer correlationID)
 			throws SdlException {
 
-		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(0,
-				0, 0, UpdateMode.PAUSE, correlationID);
+		SetMediaClockTimer msg = new SetMediaClockTimer(UpdateMode.PAUSE);
+		StartTime startTime = new StartTime(0, 0, 0);
+		msg.setStartTime(startTime);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5473,8 +5810,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void resumeMediaClockTimer(Integer correlationID)
 			throws SdlException {
 
-		SetMediaClockTimer msg = RPCRequestFactory.buildSetMediaClockTimer(0,
-				0, 0, UpdateMode.RESUME, correlationID);
+		SetMediaClockTimer msg = new SetMediaClockTimer(UpdateMode.RESUME);
+		StartTime startTime = new StartTime(0, 0, 0);
+		msg.setStartTime(startTime);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5489,7 +5828,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void clearMediaClockTimer(Integer correlationID)
 			throws SdlException {
 
-		Show msg = RPCRequestFactory.buildShow(null, null, null, "     ", null, null, correlationID);
+		Show msg = new Show();
+		msg.setCorrelationID(correlationID);
+		msg.setMediaClock("     ");
 
 		sendRPCRequest(msg);
 	}
@@ -5518,10 +5859,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					 Image graphic, Vector<SoftButton> softButtons, Vector <String> customPresets,
 					 TextAlignment alignment, Integer correlationID)
 			throws SdlException {
-		
-		Show msg = RPCRequestFactory.buildShow(mainText1, mainText2, mainText3, mainText4,
-				statusBar, mediaClock, mediaTrack, graphic, softButtons, customPresets,
-				alignment, correlationID);
+
+		Show msg = new Show();
+		msg.setCorrelationID(correlationID);
+		msg.setMainField1(mainText1);
+		msg.setMainField2(mainText2);
+		msg.setStatusBar(statusBar);
+		msg.setMediaClock(mediaClock);
+		msg.setMediaTrack(mediaTrack);
+		msg.setAlignment(alignment);
+		msg.setMainField3(mainText3);
+		msg.setMainField4(mainText4);
+		msg.setGraphic(graphic);
+		msg.setSoftButtons(softButtons);
+		msg.setCustomPresets(customPresets);
 
 		sendRPCRequest(msg);
 	}
@@ -5567,10 +5918,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					 String statusBar, String mediaClock, String mediaTrack,
 					 TextAlignment alignment, Integer correlationID)
 			throws SdlException {
-		
-		Show msg = RPCRequestFactory.buildShow(mainText1, mainText2,
-				statusBar, mediaClock, mediaTrack,
-				alignment, correlationID);
+
+		Show msg = new Show();
+		msg.setCorrelationID(correlationID);
+		msg.setMainField1(mainText1);
+		msg.setMainField2(mainText2);
+		msg.setStatusBar(statusBar);
+		msg.setMediaClock(mediaClock);
+		msg.setMediaTrack(mediaTrack);
+		msg.setAlignment(alignment);
 
 		sendRPCRequest(msg);
 	}
@@ -5600,11 +5956,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void speak(String ttsText, Integer correlationID)
+	public void speak(@NonNull String ttsText, Integer correlationID)
 			throws SdlException {
-		
-		Speak msg = RPCRequestFactory.buildSpeak(TTSChunkFactory.createSimpleTTSChunks(ttsText),
-				correlationID);
+
+		Speak msg = new Speak(TTSChunkFactory.createSimpleTTSChunks(ttsText));
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5617,10 +5973,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void speak(Vector<TTSChunk> ttsChunks,
+	public void speak(@NonNull Vector<TTSChunk> ttsChunks,
 					  Integer correlationID) throws SdlException {
 
-		Speak msg = RPCRequestFactory.buildSpeak(ttsChunks, correlationID);
+		Speak msg = new Speak(ttsChunks);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5633,11 +5990,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void subscribeButton(ButtonName buttonName,
+	public void subscribeButton(@NonNull ButtonName buttonName,
 								Integer correlationID) throws SdlException {
 
-		SubscribeButton msg = RPCRequestFactory.buildSubscribeButton(buttonName,
-				correlationID);
+		SubscribeButton msg = new SubscribeButton(buttonName);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5647,8 +6004,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected void unregisterAppInterfacePrivate(Integer correlationID) 
 		throws SdlException {
 
-		UnregisterAppInterface msg = 
-				RPCRequestFactory.buildUnregisterAppInterface(correlationID);
+		UnregisterAppInterface msg = new UnregisterAppInterface();
+		msg.setCorrelationID(correlationID);
+
 		Intent sendIntent = createBroadcastIntent();
 
 		updateBroadcastIntent(sendIntent, "RPC_NAME", FunctionID.UNREGISTER_APP_INTERFACE.toString());
@@ -5668,11 +6026,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void unsubscribeButton(ButtonName buttonName,
+	public void unsubscribeButton(@NonNull ButtonName buttonName,
 								  Integer correlationID) throws SdlException {
 
-		UnsubscribeButton msg = RPCRequestFactory.buildUnsubscribeButton(
-				buttonName, correlationID);
+		UnsubscribeButton msg = new UnsubscribeButton(buttonName);
+		msg.setCorrelationID(correlationID);
 
 		sendRPCRequest(msg);
 	}
@@ -5714,11 +6072,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	public void performaudiopassthru(String initialPrompt, String audioPassThruDisplayText1, String audioPassThruDisplayText2,
-									 SamplingRate samplingRate, Integer maxDuration, BitsPerSample bitsPerSample,
-									 AudioType audioType, Boolean muteAudio, Integer correlationID) throws SdlException {
+									 @NonNull SamplingRate samplingRate, @NonNull Integer maxDuration, @NonNull BitsPerSample bitsPerSample,
+									 @NonNull AudioType audioType, Boolean muteAudio, Integer correlationID) throws SdlException {
+		Vector<TTSChunk> chunks = TTSChunkFactory.createSimpleTTSChunks(initialPrompt);
+		PerformAudioPassThru msg = new PerformAudioPassThru(samplingRate, maxDuration, bitsPerSample, audioType);
+		msg.setCorrelationID(correlationID);
+		msg.setInitialPrompt(chunks);
+		msg.setAudioPassThruDisplayText1(audioPassThruDisplayText1);
+		msg.setAudioPassThruDisplayText2(audioPassThruDisplayText2);
+		msg.setMuteAudio(muteAudio);
 
-		PerformAudioPassThru msg = RPCRequestFactory.BuildPerformAudioPassThru(initialPrompt, audioPassThruDisplayText1, audioPassThruDisplayText2, 
-																				samplingRate, maxDuration, bitsPerSample, audioType, muteAudio, correlationID);
 		sendRPCRequest(msg);
 	}
 
@@ -5731,7 +6094,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void endaudiopassthru(Integer correlationID) throws SdlException
 	{
-		EndAudioPassThru msg = RPCRequestFactory.BuildEndAudioPassThru(correlationID);		
+		EndAudioPassThru msg = new EndAudioPassThru();
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 	
@@ -5757,17 +6122,83 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/
 	@SuppressWarnings("unused")
+	@Deprecated
 	public void subscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 									 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
 									 boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 									 boolean driverBraking, Integer correlationID) throws SdlException
 	{
-		SubscribeVehicleData msg = RPCRequestFactory.BuildSubscribeVehicleData(gps, speed, rpm, fuelLevel, fuelLevel_State, instantFuelConsumption, externalTemperature, prndl, tirePressure, 
-																				odometer, beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
+		SubscribeVehicleData msg = new SubscribeVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
 		
 		sendRPCRequest(msg);
 	}
-	
+
+
+	/**
+	 *     Subscribes for specific published data items.  The data will be only sent if it has changed.
+	 *     Responses are captured through callback on IProxyListener.
+	 *
+	 * @param gps -Subscribes to GPS data.
+	 * @param speed -Subscribes to vehicle speed data in kilometers per hour.
+	 * @param rpm -Subscribes to number of revolutions per minute of the engine.
+	 * @param fuelLevel -Subscribes to fuel level in the tank (percentage).
+	 * @param fuelLevel_State -Subscribes to fuel level state.
+	 * @param instantFuelConsumption -Subscribes to instantaneous fuel consumption in microlitres.
+	 * @param externalTemperature -Subscribes to the external temperature in degrees celsius.
+	 * @param prndl -Subscribes to PRNDL data that houses the selected gear.
+	 * @param tirePressure -Subscribes to the TireStatus data containing status and pressure of tires.
+	 * @param engineOilLife -Subscribes to Engine Oil Life data.
+	 * @param odometer -Subscribes to Odometer data in km.
+	 * @param beltStatus -Subscribes to status of the seat belts.
+	 * @param bodyInformation -Subscribes to body information including power modes.
+	 * @param deviceStatus -Subscribes to device status including signal and battery strength.
+	 * @param driverBraking -Subscribes to the status of the brake pedal.
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("unused")
+	public void subscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+									 boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
+									 boolean engineOilLife, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+									 boolean driverBraking, Integer correlationID) throws SdlException
+	{
+		SubscribeVehicleData msg = new SubscribeVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setEngineOilLife(engineOilLife);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
+
+		sendRPCRequest(msg);
+	}
+
+
 	/**
 	 *     Unsubscribes for specific published data items.
 	 *     Responses are captured through callback on IProxyListener.
@@ -5791,13 +6222,80 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	*/
 
 	@SuppressWarnings("unused")
+	@Deprecated
 	public void unsubscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 									   boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
 									   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 									   boolean driverBraking, Integer correlationID) throws SdlException
 	{
-		UnsubscribeVehicleData msg = RPCRequestFactory.BuildUnsubscribeVehicleData(gps, speed, rpm, fuelLevel, fuelLevel_State, instantFuelConsumption, externalTemperature, prndl, tirePressure,
-																					odometer, beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
+		UnsubscribeVehicleData msg = new UnsubscribeVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
+
+		sendRPCRequest(msg);
+	}
+
+
+	/**
+	 *     Unsubscribes for specific published data items.
+	 *     Responses are captured through callback on IProxyListener.
+	 *
+	 * @param gps -Unsubscribes to GPS data.
+	 * @param speed -Unsubscribes to vehicle speed data in kilometers per hour.
+	 * @param rpm -Unsubscribes to number of revolutions per minute of the engine.
+	 * @param fuelLevel -Unsubscribes to fuel level in the tank (percentage).
+	 * @param fuelLevel_State -Unsubscribes to fuel level state.
+	 * @param instantFuelConsumption -Unsubscribes to instantaneous fuel consumption in microlitres.
+	 * @param externalTemperature -Unsubscribes to the external temperature in degrees celsius.
+	 * @param prndl -Unsubscribes to PRNDL data that houses the selected gear.
+	 * @param tirePressure -Unsubscribes to the TireStatus data containing status and pressure of tires.
+	 * @param engineOilLife -Unsubscribes to Engine Oil Life data.
+	 * @param odometer -Unsubscribes to Odometer data in km.
+	 * @param beltStatus -Unsubscribes to status of the seat belts.
+	 * @param bodyInformation -Unsubscribes to body information including power modes.
+	 * @param deviceStatus -Unsubscribes to device status including signal and battery strength.
+	 * @param driverBraking -Unsubscribes to the status of the brake pedal.
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+
+	@SuppressWarnings("unused")
+	public void unsubscribevehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+									   boolean instantFuelConsumption, boolean externalTemperature, boolean prndl, boolean tirePressure,
+									   boolean engineOilLife, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+									   boolean driverBraking, Integer correlationID) throws SdlException
+	{
+		UnsubscribeVehicleData msg = new UnsubscribeVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setEngineOilLife(engineOilLife);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 
@@ -5825,14 +6323,82 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/
 	@SuppressWarnings("unused")
+	@Deprecated
 	public void getvehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
 							   boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
 							   boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
 							   boolean driverBraking, Integer correlationID) throws SdlException
 	{
-	
-		GetVehicleData msg = RPCRequestFactory.BuildGetVehicleData(gps, speed, rpm, fuelLevel, fuelLevel_State, instantFuelConsumption, externalTemperature, vin, prndl, tirePressure, odometer,
-																   beltStatus, bodyInformation, deviceStatus, driverBraking, correlationID);
+		GetVehicleData msg = new GetVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setVin(vin);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
+
+		sendRPCRequest(msg);
+	}
+
+
+	/**
+	 *     Performs a Non periodic vehicle data read request.
+	 *     Responses are captured through callback on IProxyListener.
+	 *
+	 * @param gps -Performs an ad-hoc request for GPS data.
+	 * @param speed -Performs an ad-hoc request for vehicle speed data in kilometers per hour.
+	 * @param rpm -Performs an ad-hoc request for number of revolutions per minute of the engine.
+	 * @param fuelLevel -Performs an ad-hoc request for fuel level in the tank (percentage).
+	 * @param fuelLevel_State -Performs an ad-hoc request for fuel level state.
+	 * @param instantFuelConsumption -Performs an ad-hoc request for instantaneous fuel consumption in microlitres.
+	 * @param externalTemperature -Performs an ad-hoc request for the external temperature in degrees celsius.
+	 * @param vin -Performs an ad-hoc request for the Vehicle identification number
+	 * @param prndl -Performs an ad-hoc request for PRNDL data that houses the selected gear.
+	 * @param tirePressure -Performs an ad-hoc request for the TireStatus data containing status and pressure of tires.
+	 * @param engineOilLife -Performs an ad-hoc request for Engine Oil Life data.
+	 * @param odometer -Performs an ad-hoc request for Odometer data in km.
+	 * @param beltStatus -Performs an ad-hoc request for status of the seat belts.
+	 * @param bodyInformation -Performs an ad-hoc request for  body information including power modes.
+	 * @param deviceStatus -Performs an ad-hoc request for device status including signal and battery strength.
+	 * @param driverBraking -Performs an ad-hoc request for the status of the brake pedal.
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("unused")
+	public void getvehicledata(boolean gps, boolean speed, boolean rpm, boolean fuelLevel, boolean fuelLevel_State,
+							   boolean instantFuelConsumption, boolean externalTemperature, boolean vin, boolean prndl, boolean tirePressure,
+							   boolean engineOilLife, boolean odometer, boolean beltStatus, boolean bodyInformation, boolean deviceStatus,
+							   boolean driverBraking, Integer correlationID) throws SdlException
+	{
+		GetVehicleData msg = new GetVehicleData();
+		msg.setGps(gps);
+		msg.setSpeed(speed);
+		msg.setRpm(rpm);
+		msg.setFuelLevel(fuelLevel);
+		msg.setFuelLevel_State(fuelLevel_State);
+		msg.setInstantFuelConsumption(instantFuelConsumption);
+		msg.setExternalTemperature(externalTemperature);
+		msg.setVin(vin);
+		msg.setPrndl(prndl);
+		msg.setTirePressure(tirePressure);
+		msg.setEngineOilLife(engineOilLife);
+		msg.setOdometer(odometer);
+		msg.setBeltStatus(beltStatus);
+		msg.setBodyInformation(bodyInformation);
+		msg.setDeviceStatus(deviceStatus);
+		msg.setDriverBraking(driverBraking);
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 
@@ -5848,9 +6414,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/		
 	@SuppressWarnings("unused")
-	public void scrollablemessage(String scrollableMessageBody, Integer timeout, Vector<SoftButton> softButtons, Integer correlationID) throws SdlException
+	public void scrollablemessage(@NonNull String scrollableMessageBody, Integer timeout, Vector<SoftButton> softButtons, Integer correlationID) throws SdlException
 	{
-		ScrollableMessage msg = RPCRequestFactory.BuildScrollableMessage(scrollableMessageBody, timeout, softButtons, correlationID);		
+		ScrollableMessage msg = new ScrollableMessage(scrollableMessageBody);
+		msg.setCorrelationID(correlationID);
+		msg.setTimeout(timeout);
+		msg.setSoftButtons(softButtons);
+
 		sendRPCRequest(msg);
 	}
 
@@ -5868,9 +6438,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	@SuppressWarnings("unused")
-	public void slider(Integer numTicks, Integer position, String sliderHeader, Vector<String> sliderFooter, Integer timeout, Integer correlationID) throws SdlException
+	public void slider(@NonNull Integer numTicks, @NonNull Integer position, @NonNull String sliderHeader, Vector<String> sliderFooter, Integer timeout, Integer correlationID) throws SdlException
 	{
-		Slider msg = RPCRequestFactory.BuildSlider(numTicks, position, sliderHeader, sliderFooter, timeout, correlationID);		
+		Slider msg = new Slider(numTicks, position, sliderHeader);
+		msg.setCorrelationID(correlationID);
+		msg.setSliderFooter(sliderFooter);
+		msg.setTimeout(timeout);
+
 		sendRPCRequest(msg);		
 	}
 
@@ -5883,9 +6457,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	@SuppressWarnings("unused")
-	public void changeregistration(Language language, Language hmiDisplayLanguage, Integer correlationID) throws SdlException
+	public void changeregistration(@NonNull Language language, @NonNull Language hmiDisplayLanguage, Integer correlationID) throws SdlException
 	{
-		ChangeRegistration msg = RPCRequestFactory.BuildChangeRegistration(language, hmiDisplayLanguage, correlationID);
+		ChangeRegistration msg = new ChangeRegistration(language, hmiDisplayLanguage);
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 	
@@ -5903,9 +6479,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	*/
 	@SuppressWarnings("unused")
 	@Deprecated
-	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
+	public void putFileStream(InputStream is, @NonNull String sdlFileName, Integer iOffset, Integer iLength) throws SdlException
 	{
-		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);
+		PutFile msg = new PutFile(sdlFileName, FileType.BINARY);
+		msg.setCorrelationID(10000);
+		msg.setSystemFile(true);
+		msg.setOffset(iOffset);
+		msg.setLength(iLength);
+
 		startRPCStream(is, msg);
 	}
 	
@@ -5922,8 +6503,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length) throws SdlException {
-		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+	public void putFileStream(InputStream inputStream, @NonNull String fileName, Long offset, Long length) throws SdlException {
+		PutFile msg = new PutFile(fileName, FileType.BINARY);
+		msg.setCorrelationID(10000);
+		msg.setSystemFile(true);
+		msg.setOffset(offset);
+		msg.setLength(length);
+
 		startRPCStream(inputStream, msg);
 	}
 	
@@ -5942,9 +6528,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	@Deprecated
-	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength) throws SdlException 
+	public OutputStream putFileStream(@NonNull String sdlFileName, Integer iOffset, Integer iLength) throws SdlException
 	{
-		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength);
+		PutFile msg = new PutFile(sdlFileName, FileType.BINARY);
+		msg.setCorrelationID(10000);
+		msg.setSystemFile(true);
+		msg.setOffset(iOffset);
+		msg.setLength(iLength);
+
 		return startRPCStream(msg);
 	}	
 	
@@ -5960,8 +6551,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public OutputStream putFileStream(String fileName, Long offset, Long length) throws SdlException {
-		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+	public OutputStream putFileStream(@NonNull String fileName, Long offset, Long length) throws SdlException {
+		PutFile msg = new PutFile(fileName, FileType.BINARY);
+		msg.setCorrelationID(10000);
+		msg.setSystemFile(true);
+		msg.setOffset(offset);
+		msg.setLength(length);
+
 		return startRPCStream(msg);
 	}
 
@@ -5982,9 +6578,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	@Deprecated
-	public void putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
+	public void putFileStream(InputStream is, @NonNull String sdlFileName, Integer iOffset, Integer iLength, @NonNull FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
-		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
+		PutFile msg = new PutFile(sdlFileName, fileType);
+		msg.setCorrelationID(10000);
+		msg.setPersistentFile(bPersistentFile);
+		msg.setSystemFile(bSystemFile);
+		msg.setOffset(iOffset);
+		msg.setLength(iLength);
+
 		startRPCStream(is, msg);
 	}
 	
@@ -6007,8 +6609,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
-		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+	public void putFileStream(InputStream inputStream, @NonNull String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
+		PutFile msg = new PutFile(fileName, FileType.BINARY);
+		msg.setCorrelationID(10000);
+		msg.setSystemFile(true);
+		msg.setOffset(offset);
+		msg.setLength(length);
 		msg.setOnPutFileUpdateListener(cb);
 		startRPCStream(inputStream, msg);
 	}
@@ -6030,9 +6636,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@SuppressWarnings("unused")
 	@Deprecated
-	public OutputStream putFileStream(String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
+	public OutputStream putFileStream(@NonNull String sdlFileName, Integer iOffset, Integer iLength, @NonNull FileType fileType, Boolean bPersistentFile, Boolean bSystemFile) throws SdlException
 	{
-		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile);
+		PutFile msg = new PutFile(sdlFileName, fileType);
+		msg.setCorrelationID(10000);
+		msg.setPersistentFile(bPersistentFile);
+		msg.setSystemFile(bSystemFile);
+		msg.setOffset(iOffset);
+		msg.setLength(iLength);
+
 		return startRPCStream(msg);
 	}
 	
@@ -6054,9 +6666,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public OutputStream putFileStream(String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
-		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length);
+	public OutputStream putFileStream(@NonNull String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, OnPutFileUpdateListener cb) throws SdlException {
+		PutFile msg = new PutFile(fileName, FileType.BINARY);
+		msg.setCorrelationID(10000);
+		msg.setSystemFile(true);
+		msg.setOffset(offset);
+		msg.setLength(length);
 		msg.setOnPutFileUpdateListener(cb);
+
 		return startRPCStream(msg);
 	}
 	
@@ -6078,9 +6695,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */	
 	@SuppressWarnings("unused")
 	@Deprecated
-	public RPCStreamController putFileStream(String sPath, String sdlFileName, Integer iOffset, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
+	public RPCStreamController putFileStream(String sPath, @NonNull String sdlFileName, Integer iOffset, @NonNull FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException
 	{
-		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, 0, fileType, bPersistentFile, bSystemFile, iCorrelationID);
+		PutFile msg = new PutFile(sdlFileName, fileType);
+		msg.setCorrelationID(iCorrelationID);
+		msg.setPersistentFile(bPersistentFile);
+		msg.setSystemFile(bSystemFile);
+		msg.setOffset(iOffset);
+		msg.setLength(0);
+
 		return startPutFileStream(sPath, msg);
 	}
 	
@@ -6107,9 +6730,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public RPCStreamController putFileStream(String path, String fileName, Long offset, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId, OnPutFileUpdateListener cb ) throws SdlException {
-		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, 0L, fileType, isPersistentFile, isSystemFile, isPayloadProtected, correlationId);
+	public RPCStreamController putFileStream(String path, @NonNull String fileName, Long offset, @NonNull FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId, OnPutFileUpdateListener cb ) throws SdlException {
+		PutFile msg = new PutFile(fileName, fileType);
+		msg.setCorrelationID(correlationId);
+		msg.setPersistentFile(isPersistentFile);
+		msg.setSystemFile(isSystemFile);
+		msg.setOffset(offset);
+		msg.setLength(0L);
+		msg.setPayloadProtected(isPayloadProtected);
 		msg.setOnPutFileUpdateListener(cb);
+
 		return startPutFileStream(path,msg);
 	}
 
@@ -6131,9 +6761,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */	
 	@SuppressWarnings("unused")
 	@Deprecated
-	public RPCStreamController putFileStream(InputStream is, String sdlFileName, Integer iOffset, Integer iLength, FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException 
+	public RPCStreamController putFileStream(InputStream is, @NonNull String sdlFileName, Integer iOffset, Integer iLength, @NonNull FileType fileType, Boolean bPersistentFile, Boolean bSystemFile, Integer iCorrelationID) throws SdlException
 	{
-		@SuppressWarnings("deprecation") PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, iOffset, iLength, fileType, bPersistentFile, bSystemFile, iCorrelationID);
+		PutFile msg = new PutFile(sdlFileName, fileType);
+		msg.setCorrelationID(iCorrelationID);
+		msg.setPersistentFile(bPersistentFile);
+		msg.setSystemFile(bSystemFile);
+		msg.setOffset(iOffset);
+		msg.setLength(iLength);
+
 		return startPutFileStream(is, msg);
 	}
 	
@@ -6158,8 +6794,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public RPCStreamController putFileStream(InputStream inputStream, String fileName, Long offset, Long length, FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId) throws SdlException {
-		PutFile msg = RPCRequestFactory.buildPutFile(fileName, offset, length, fileType, isPersistentFile, isSystemFile, isPayloadProtected, correlationId);
+	public RPCStreamController putFileStream(InputStream inputStream, @NonNull String fileName, Long offset, Long length, @NonNull FileType fileType, Boolean isPersistentFile, Boolean isSystemFile, Boolean isPayloadProtected, Integer correlationId) throws SdlException {
+		PutFile msg = new PutFile(fileName, fileType);
+		msg.setCorrelationID(correlationId);
+		msg.setPersistentFile(isPersistentFile);
+		msg.setSystemFile(isSystemFile);
+		msg.setOffset(offset);
+		msg.setLength(length);
+		msg.setPayloadProtected(isPayloadProtected);
+
 		return startPutFileStream(inputStream, msg);
 	}
 
@@ -6187,9 +6830,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	@SuppressWarnings("unused")
-	public void putfile(String sdlFileName, FileType fileType, Boolean persistentFile, byte[] fileData, Integer correlationID) throws SdlException
+	public void putfile(@NonNull String sdlFileName, @NonNull FileType fileType, Boolean persistentFile, byte[] fileData, Integer correlationID) throws SdlException
 	{
-		PutFile msg = RPCRequestFactory.buildPutFile(sdlFileName, fileType, persistentFile, fileData, correlationID);
+		PutFile msg = new PutFile(sdlFileName, fileType);
+		msg.setCorrelationID(correlationID);
+		msg.setPersistentFile(persistentFile);
+		msg.setBulkData(fileData);
+
 		sendRPCRequest(msg);
 	}
 	
@@ -6202,9 +6849,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	@SuppressWarnings("unused")
-	public void deletefile(String sdlFileName, Integer correlationID) throws SdlException
+	public void deletefile(@NonNull String sdlFileName, Integer correlationID) throws SdlException
 	{
-		DeleteFile msg = RPCRequestFactory.buildDeleteFile(sdlFileName, correlationID);
+		DeleteFile msg = new DeleteFile(sdlFileName);
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 	
@@ -6218,7 +6867,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("unused")
 	public void listfiles(Integer correlationID) throws SdlException
 	{
-		ListFiles msg = RPCRequestFactory.buildListFiles(correlationID);
+		ListFiles msg = new ListFiles();
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
 
@@ -6231,24 +6882,48 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @throws SdlException if an unrecoverable error is encountered
 	*/	
 	@SuppressWarnings("unused")
-	public void setappicon(String sdlFileName, Integer correlationID) throws SdlException
+	public void setappicon(@NonNull String sdlFileName, Integer correlationID) throws SdlException
 	{
-		SetAppIcon msg = RPCRequestFactory.buildSetAppIcon(sdlFileName, correlationID);
+		SetAppIcon msg = new SetAppIcon(sdlFileName);
+		msg.setCorrelationID(correlationID);
+
 		sendRPCRequest(msg);
 	}
-	
+
 	/**
 	 *     Set an alternate display layout. If not sent, default screen for given platform will be shown.
 	 *     Responses are captured through callback on IProxyListener.
-	 * 
+	 *
 	 * @param displayLayout -Predefined or dynamically created screen layout.
 	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
 	 * @throws SdlException if an unrecoverable error is encountered
-	*/	
+	 */
 	@SuppressWarnings("unused")
-	public void setdisplaylayout(String displayLayout, Integer correlationID) throws SdlException
+	public void setdisplaylayout(@NonNull String displayLayout, Integer correlationID) throws SdlException
 	{
-		SetDisplayLayout msg = RPCRequestFactory.BuildSetDisplayLayout(displayLayout, correlationID);
+		SetDisplayLayout msg = new SetDisplayLayout(displayLayout);
+		msg.setCorrelationID(correlationID);
+
+		sendRPCRequest(msg);
+	}
+
+	/**
+	 *     Set an alternate display layout. If not sent, default screen for given platform will be shown.
+	 *     Responses are captured through callback on IProxyListener.
+	 *
+	 * @param displayLayout -Predefined or dynamically created screen layout.
+	 * @param dayColorScheme a TemplateColorScheme object representing the colors that will be used for day color scheme
+     * @param nightColorScheme a TemplateColorScheme object representing the colors that will be used for night color scheme
+	 * @param correlationID -A unique ID that correlates each RPCRequest and RPCResponse.
+	 * @throws SdlException if an unrecoverable error is encountered
+	 */
+	@SuppressWarnings("unused")
+	public void setdisplaylayout(String displayLayout, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme, Integer correlationID) throws SdlException
+	{
+		SetDisplayLayout msg = new SetDisplayLayout(displayLayout);
+		msg.setCorrelationID(correlationID);
+		msg.setDayColorScheme(dayColorScheme);
+		msg.setNightColorScheme(nightColorScheme);
 		sendRPCRequest(msg);
 	}
 
@@ -6380,6 +7055,23 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		return sPoliciesURL;
 	}
 
+	/**
+	 * Tells developer whether or not their app icon has been resumed on core.
+	 * @return boolean - true if icon was resumed, false if not
+	 * @throws SdlException if proxy is disposed or app is not registered
+	 */
+	public boolean getIconResumed() throws SdlException {
+		// Test if proxy has been disposed
+		if (_proxyDisposed) {
+			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
+		}
+
+		// Test SDL availability
+		if (!_appInterfaceRegisterd) {
+			throw new SdlException("SDL is not connected. Unable to determine if app icon was resumed.", SdlExceptionCause.SDL_UNAVAILABLE);
+		}
+		return _iconResumed;
+	}
 
 
 	/**
@@ -6396,6 +7088,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		IVideoStreamListener streamListener;
 		float[] touchScalar = {1.0f,1.0f}; //x, y
 		private HapticInterfaceManager hapticManager;
+		SdlMotionEvent sdlMotionEvent = null;
 
 		public VideoStreamingManager(Context context,ISdl iSdl){
 			this.context = context;
@@ -6551,41 +7244,143 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			TouchType touchType = touchEvent.getType();
 			if (touchType == null){ return null;}
 
-			float x;
-			float y;
+			int eventListSize = eventList.size();
 
-			TouchEvent event = eventList.get(eventList.size() - 1);
-			List<TouchCoord> coordList = event.getTouchCoordinates();
-			if (coordList == null || coordList.size() == 0){ return null;}
+			MotionEvent.PointerProperties[] pointerProperties = new MotionEvent.PointerProperties[eventListSize];
+			MotionEvent.PointerCoords[] pointerCoords = new MotionEvent.PointerCoords[eventListSize];
 
-			TouchCoord coord = coordList.get(coordList.size() - 1);
-			if (coord == null){ return null;}
+			TouchEvent event;
+			MotionEvent.PointerProperties properties;
+			MotionEvent.PointerCoords coords;
+			TouchCoord touchCoord;
 
-			x = (coord.getX() * touchScalar[0]);
-			y = (coord.getY() * touchScalar[1]);
+			for(int i = 0; i < eventListSize; i++){
+				event = eventList.get(i);
+				if(event == null || event.getId() == null || event.getTouchCoordinates() == null){
+					continue;
+				}
 
-			if (x == 0 && y == 0){ return null;}
+				properties = new MotionEvent.PointerProperties();
+				properties.id = event.getId();
+				properties.toolType = MotionEvent.TOOL_TYPE_FINGER;
 
-			int eventAction = MotionEvent.ACTION_DOWN;
-			long downTime = 0;
 
-			if (touchType == TouchType.BEGIN) {
-				downTime = SystemClock.uptimeMillis();
-				eventAction = MotionEvent.ACTION_DOWN;
+				List<TouchCoord> coordList = event.getTouchCoordinates();
+				if (coordList == null || coordList.size() == 0){ continue; }
+
+				touchCoord = coordList.get(coordList.size() -1);
+				if(touchCoord == null){ continue; }
+
+				coords = new MotionEvent.PointerCoords();
+				coords.x = touchCoord.getX() * touchScalar[0];
+				coords.y = touchCoord.getY() * touchScalar[1];
+				coords.orientation = 0;
+				coords.pressure = 1.0f;
+				coords.size = 1;
+
+				//Add the info to lists only after we are sure we have all available info
+				pointerProperties[i] = properties;
+				pointerCoords[i] = coords;
+
 			}
 
-			long eventTime = SystemClock.uptimeMillis();
-			if (downTime == 0){ downTime = eventTime - 100;}
 
-			if (touchType == TouchType.MOVE) {
-				eventAction = MotionEvent.ACTION_MOVE;
+			if(sdlMotionEvent == null) {
+				if (touchType == TouchType.BEGIN) {
+					sdlMotionEvent = new SdlMotionEvent();
+				}else{
+					return  null;
+				}
 			}
 
-			if (touchType == TouchType.END) {
-				eventAction = MotionEvent.ACTION_UP;
+			int eventAction = sdlMotionEvent.getMotionEvent(touchType, pointerProperties);
+			long startTime = sdlMotionEvent.startOfEvent;
+
+			//If the motion event should be finished we should clear our reference
+			if(eventAction == MotionEvent.ACTION_UP || eventAction == MotionEvent.ACTION_CANCEL){
+				sdlMotionEvent = null;
 			}
 
-			return MotionEvent.obtain(downTime, eventTime, eventAction, x, y, 0);
+			return MotionEvent.obtain(startTime, SystemClock.uptimeMillis(), eventAction, eventListSize, pointerProperties, pointerCoords, 0, 0,1,1,0,0, InputDevice.SOURCE_TOUCHSCREEN,0);
+
+		}
+
+
+
+	}
+
+	/**
+	 * Keeps track of the current motion event for VPM
+	 */
+	private static class SdlMotionEvent{
+		long startOfEvent;
+		SparseIntArray pointerStatuses = new SparseIntArray();
+
+		SdlMotionEvent(){
+			startOfEvent = SystemClock.uptimeMillis();
+		}
+
+		/**
+		 * Handles the SDL Touch Event to keep track of pointer status and returns the appropirate
+		 * Android MotionEvent according to this events status
+		 * @param touchType The SDL TouchType that was received from the module
+		 * @param pointerProperties the parsed pointer properties built from the OnTouchEvent RPC
+		 * @return the correct native Andorid MotionEvent action to dispatch
+		 */
+		synchronized int  getMotionEvent(TouchType touchType, MotionEvent.PointerProperties[] pointerProperties){
+			int motionEvent = MotionEvent.ACTION_DOWN;
+			switch (touchType){
+				case BEGIN:
+					if(pointerStatuses.size() == 0){
+						//The motion event has just begun
+						motionEvent = MotionEvent.ACTION_DOWN;
+					}else{
+						motionEvent = MotionEvent.ACTION_POINTER_DOWN;
+					}
+					setPointerStatuses(motionEvent, pointerProperties);
+					break;
+				case MOVE:
+					motionEvent = MotionEvent.ACTION_MOVE;
+					setPointerStatuses(motionEvent, pointerProperties);
+
+					break;
+				case END:
+					//Clears out pointers that have ended
+					setPointerStatuses(MotionEvent.ACTION_UP, pointerProperties);
+
+					if(pointerStatuses.size() == 0){
+						//The motion event has just ended
+						motionEvent = MotionEvent.ACTION_UP;
+					}else{
+						motionEvent = MotionEvent.ACTION_POINTER_UP;
+					}
+					break;
+				case CANCEL:
+					//Assuming this cancels the entire event
+					motionEvent = MotionEvent.ACTION_CANCEL;
+					pointerStatuses.clear();
+					break;
+				default:
+					break;
+			}
+			return motionEvent;
+		}
+
+		private void setPointerStatuses(int motionEvent, MotionEvent.PointerProperties[] pointerProperties){
+
+					for(int i = 0; i < pointerProperties.length; i ++){
+						MotionEvent.PointerProperties properties = pointerProperties[i];
+						if(properties != null){
+							if(motionEvent == MotionEvent.ACTION_UP || motionEvent == MotionEvent.ACTION_POINTER_UP){
+								pointerStatuses.delete(properties.id);
+							}else if(motionEvent == MotionEvent.ACTION_DOWN && properties.id == 0){
+								pointerStatuses.put(properties.id, MotionEvent.ACTION_DOWN);
+							}else{
+								pointerStatuses.put(properties.id, motionEvent);
+							}
+
+					}
+			}
 		}
 	}
 } // end-class

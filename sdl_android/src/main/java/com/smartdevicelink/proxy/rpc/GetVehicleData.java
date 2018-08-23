@@ -171,6 +171,14 @@ import static com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet.KEY_CHOIC
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  * 		<tr>
+ * 			<td>engineOilLife</td>
+ * 			<td>Boolean</td>
+ * 			<td>The estimated percentage of remaining oil life of the engine</td>
+ *                 <td>N</td>
+ *                 <td>Subscribable</td>
+ * 			<td>SmartDeviceLink 4.6</td>
+ * 		</tr>
+ * 		<tr>
  * 			<td>accPedalPosition</td>
  * 			<td>Boolean</td>
  * 			<td>Accelerator pedal position (percentage depressed)</td>
@@ -185,6 +193,14 @@ import static com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet.KEY_CHOIC
  *                 <td>N</td>
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>turnSignal</td>
+ * 			<td>Boolean</td>
+ * 			<td>@see TurnSignal</td>
+ * 			<td>N</td>
+ * 			<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 4.6</td>
  * 		</tr>
  *  </table>
  *  
@@ -218,6 +234,7 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_PRNDL = "prndl";
 	public static final String KEY_TIRE_PRESSURE = "tirePressure";
 	public static final String KEY_ENGINE_TORQUE = "engineTorque";
+	public static final String KEY_ENGINE_OIL_LIFE = "engineOilLife";
 	public static final String KEY_ODOMETER = "odometer";
 	public static final String KEY_GPS = "gps";
 	public static final String KEY_FUEL_LEVEL_STATE = "fuelLevel_State";
@@ -235,6 +252,10 @@ public class GetVehicleData extends RPCRequest {
 	public static final String KEY_EMERGENCY_EVENT = "emergencyEvent";
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
+	public static final String KEY_FUEL_RANGE = "fuelRange";
+	public static final String KEY_TURN_SIGNAL = "turnSignal";
+	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
+
 	/**
 	 * Constructs a new GetVehicleData object
 	 */
@@ -373,6 +394,12 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getEngineTorque() {
         return getBoolean(KEY_ENGINE_TORQUE);
     }
+    public void setEngineOilLife(Boolean engineOilLife) {
+        setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
+    }
+    public Boolean getEngineOilLife() {
+        return getBoolean(KEY_ENGINE_OIL_LIFE);
+    }
     public void setAccPedalPosition(Boolean accPedalPosition) {
         setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
     }
@@ -417,5 +444,52 @@ public class GetVehicleData extends RPCRequest {
     }
     public Boolean getMyKey() {
         return getBoolean(KEY_MY_KEY);
-    }        
+    }
+
+    /**
+     * Sets a boolean value. If true, gets fuelRange data
+     * @param fuelRange
+      *            a boolean value
+     */
+    public void setFuelRange(Boolean fuelRange) {
+        setParameters(KEY_FUEL_RANGE, fuelRange);
+    }
+
+    /**
+     * Gets a boolean value.
+     *
+     * @return Boolean -a Boolean value.
+     *
+     */
+    public Boolean getFuelRange() {
+        return getBoolean(KEY_FUEL_RANGE);
+    }
+
+    /**
+     * Sets a boolean value. If true, subscribes turnSignal data
+     * @param turnSignal a boolean value
+     */
+    public void setTurnSignal(Boolean turnSignal) { setParameters(KEY_TURN_SIGNAL, turnSignal); }
+
+    /**
+     * Gets a boolean value. If true, means the turnSignal data has been subscribed.
+     * @return a Boolean value.
+     */
+    public Boolean getTurnSignal() { return getBoolean(KEY_TURN_SIGNAL); }
+
+    /**
+     * Sets a boolean value. If true, subscribes electronicParkBrakeStatus data
+     * @param electronicParkBrakeStatus a boolean value
+     */
+    public void setElectronicParkBrakeStatus(Boolean electronicParkBrakeStatus){
+        setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+    }
+
+    /**
+     * Gets a boolean value. If true, means the electronicParkBrakeStatus data has been subscribed.
+     * @return a Boolean value.
+     */
+    public Boolean getElectronicParkBrakeStatus(){
+        return getBoolean(KEY_ELECTRONIC_PARK_BRAKE_STATUS);
+    }
 }

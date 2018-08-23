@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
@@ -112,14 +114,27 @@ public class PerformAudioPassThru extends RPCRequest {
 	/**
 	 * <p>Constructs a new PerformAudioPassThru object indicated by the Hashtable
 	 * parameter</p>
-	 * 
-	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 *
+	 * @param hash The Hashtable to use
 	 */
     public PerformAudioPassThru(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new PerformAudioPassThru object
+	 * @param samplingRate a SamplingRate value representing a 8 or 16 or 22 or 24 khz
+	 * @param maxDuration an Integer value representing the maximum duration of audio recording in millisecond <b>Notes: </b>Minvalue:1; Maxvalue:1000000
+	 * @param bitsPerSample a BitsPerSample value representing 8 bit or 16 bit
+	 * @param audioType an audioType
+	 */
+	public PerformAudioPassThru(@NonNull SamplingRate samplingRate, @NonNull Integer maxDuration, @NonNull BitsPerSample bitsPerSample, @NonNull AudioType audioType) {
+		this();
+		setSamplingRate(samplingRate);
+		setMaxDuration(maxDuration);
+		setBitsPerSample(bitsPerSample);
+		setAudioType(audioType);
+	}
 
 	/**
 	 * Sets initial prompt which will be spoken before opening the audio pass
@@ -208,7 +223,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * @param samplingRate
 	 *            a SamplingRate value representing a 8 or 16 or 22 or 24 khz
 	 */
-    public void setSamplingRate(SamplingRate samplingRate) {
+    public void setSamplingRate(@NonNull SamplingRate samplingRate) {
 		setParameters(KEY_SAMPLING_RATE, samplingRate);
     }
 
@@ -230,7 +245,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 *            <p></p>
 	 *            <b>Notes: </b>Minvalue:1; Maxvalue:1000000
 	 */
-    public void setMaxDuration(Integer maxDuration) {
+    public void setMaxDuration(@NonNull Integer maxDuration) {
 		setParameters(KEY_MAX_DURATION, maxDuration);
     }
 
@@ -250,7 +265,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * @param audioQuality
 	 *            a BitsPerSample value representing 8 bit or 16 bit
 	 */
-    public void setBitsPerSample(BitsPerSample audioQuality) {
+    public void setBitsPerSample(@NonNull BitsPerSample audioQuality) {
 		setParameters(KEY_BITS_PER_SAMPLE, audioQuality);
     }
 
@@ -269,7 +284,7 @@ public class PerformAudioPassThru extends RPCRequest {
 	 * @param audioType
 	 *            an audioType
 	 */
-    public void setAudioType(AudioType audioType) {
+    public void setAudioType(@NonNull AudioType audioType) {
 		setParameters(KEY_AUDIO_TYPE, audioType);
     }
 

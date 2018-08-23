@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
@@ -27,7 +29,14 @@ import java.util.List;
  *                 <td></td>
  * 			<td>SmartDeviceLink 3.0 </td>
  * 		</tr>
- * 		
+ * 		<tr>
+ * 			<td>requestSubType</td>
+ * 			<td>String</td>
+ * 			<td>This parameter is filled for supporting OEM proprietary data exchanges.</td>
+ *                 <td>N</td>
+ *                 <td>Max Length: 255</td>
+ * 			<td>SmartDeviceLink 4.6</td>
+ * 		</tr>
  * 		<tr>
  * 			<td>fileName</td>
  * 			<td>String</td>
@@ -46,6 +55,7 @@ import java.util.List;
 public class SystemRequest extends RPCRequest {
 	public static final String KEY_FILE_NAME = "fileName";
 	public static final String KEY_REQUEST_TYPE = "requestType";
+	public static final String KEY_REQUEST_SUB_TYPE = "requestSubType";
 	public static final String KEY_DATA = "data";
 	/**
 	 * Constructs a new SystemRequest object
@@ -62,6 +72,15 @@ public class SystemRequest extends RPCRequest {
     public SystemRequest(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+	/**
+	 * Constructs a new SystemRequest object
+	 * @param requestType The type of system request.
+	 */
+	public SystemRequest(@NonNull RequestType requestType){
+		this();
+		setRequestType(requestType);
+	}
 
     @SuppressWarnings("unchecked")    
     public List<String> getLegacyData() {
@@ -84,7 +103,15 @@ public class SystemRequest extends RPCRequest {
         return (RequestType) getObject(RequestType.class, KEY_REQUEST_TYPE);
     }
 
-    public void setRequestType(RequestType requestType) {
+    public void setRequestType(@NonNull RequestType requestType) {
         setParameters(KEY_REQUEST_TYPE, requestType);
+    }
+
+    public String getRequestSubType() {
+        return getString(KEY_REQUEST_SUB_TYPE);
+    }
+
+    public void setRequestSubType(String requestSubType) {
+        setParameters(KEY_REQUEST_SUB_TYPE, requestSubType);
     }
 }

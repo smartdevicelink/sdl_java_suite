@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -62,7 +64,27 @@ public class SdlMsgVersion extends RPCStruct {
      * 				    <li>maxvalue="10"</li>
      *					</ul>
      * @return the major version
-     */	
+     */
+    /**
+     * Constructs a newly allocated SdlMsgVersion object
+     * @param majorVersion minvalue="1" and maxvalue="10"
+     * @param minorVersion min: 0; max: 1000
+     */
+    public SdlMsgVersion(@NonNull Integer majorVersion, @NonNull Integer minorVersion) {
+        this();
+        setMajorVersion(majorVersion);
+        setMinorVersion(minorVersion);
+
+    }
+
+    @Override
+    public void format(com.smartdevicelink.util.Version rpcVersion, boolean formatParams) {
+        if(getPatchVersion() == null){
+            setPatchVersion(0);
+        }
+        super.format(rpcVersion,formatParams);
+    }
+
     public Integer getMajorVersion() {
         return getInteger( KEY_MAJOR_VERSION );
     }
@@ -74,7 +96,7 @@ public class SdlMsgVersion extends RPCStruct {
      *					</ul>
      * @param majorVersion minvalue="1" and maxvalue="10" 
      */    
-    public void setMajorVersion( Integer majorVersion ) {
+    public void setMajorVersion( @NonNull Integer majorVersion ) {
         setValue(KEY_MAJOR_VERSION, majorVersion);
     }
     /**
@@ -96,7 +118,7 @@ public class SdlMsgVersion extends RPCStruct {
      *					</ul>
      * @param minorVersion min: 0; max: 1000
      */
-    public void setMinorVersion( Integer minorVersion ) {
+    public void setMinorVersion( @NonNull Integer minorVersion ) {
         setValue(KEY_MINOR_VERSION, minorVersion);
     }
 

@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -59,7 +61,7 @@ import java.util.List;
  *                 <td>Y</td>
  * 			<td></td>
  * 			<td>SmartDeviceLink 1.0</td>
- * 		<tr/>
+ * 		</tr>
  * 		<tr>
  * 			<td>vrCommands</td>
  * 			<td>String</td>
@@ -111,6 +113,14 @@ public class AddCommand extends RPCRequest {
         super(hash);
     }
 	/**
+	 * Constructs a new AddCommand object
+	 * @param cmdID an integer object representing a Command ID <p><b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
+	 */
+	public AddCommand(@NonNull Integer cmdID) {
+		this();
+		setCmdID(cmdID);
+	}
+	/**
 	 * <p>
 	 * Returns an <i>Integer</i> object representing the Command ID that you want to add
 	 * </p>
@@ -131,7 +141,7 @@ public class AddCommand extends RPCRequest {
 	 *            <p>
 	 *            <b>Notes:</b> Min Value: 0; Max Value: 2000000000</p>
 	 */
-    public void setCmdID(Integer cmdID) {
+    public void setCmdID(@NonNull Integer cmdID) {
 		setParameters(KEY_CMD_ID, cmdID);
     }
 	/**

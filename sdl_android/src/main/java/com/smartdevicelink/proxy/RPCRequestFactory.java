@@ -56,6 +56,10 @@ import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 
+/**
+ * @deprecated Use RPC constructors directly instead
+ */
+@Deprecated
 public class RPCRequestFactory {
 
 	public static final int SDL_MSG_MAJOR_VERSION = 1;
@@ -498,6 +502,7 @@ public class RPCRequestFactory {
 		putFile.setFileType(fileType);
 		putFile.setPersistentFile(persistentFile);
 		putFile.setBulkData(fileData);
+		putFile.setCRC(fileData);
 		return putFile;
 	}
 	

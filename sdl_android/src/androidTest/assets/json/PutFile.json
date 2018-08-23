@@ -9,6 +9,7 @@
       "syncFileName":"filename.txt",
       "offset":2,
       "length":456,
+      "crc":2020,
       "bulkData":[
         0,
         1,

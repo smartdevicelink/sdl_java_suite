@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -28,6 +30,23 @@ import java.util.Hashtable;
  * 			<td>maxlength: 500</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>dayColorScheme</td>
+ * 			<td>TemplateColorScheme</td>
+ * 			<td>The color scheme that is used for day.</td>
+ *                 <td>N</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 4.6</td>
+ * 		</tr>
+ *
+ * 		<tr>
+ * 			<td>nightColorScheme</td>
+ * 			<td>TemplateColorScheme</td>
+ * 			<td>The color scheme that is used for night.</td>
+ *                 <td>N</td>
+ *                 <td></td>
+ * 			<td>SmartDeviceLink 4.6</td>
+ * 		</tr>
  *
  *  </table>
  *<p><b>Response </b></p>
@@ -44,6 +63,8 @@ import java.util.Hashtable;
  */
 public class SetDisplayLayout extends RPCRequest {
 	public static final String KEY_DISPLAY_LAYOUT = "displayLayout";
+	public static final String KEY_DAY_COLOR_SCHEME = "dayColorScheme";
+	public static final String KEY_NIGHT_COLOR_SCHEME = "nightColorScheme";
 	/**
 	 * Constructs a new SetDisplayLayout object
 	 */
@@ -64,15 +85,25 @@ public class SetDisplayLayout extends RPCRequest {
     }
 
 	/**
+	 * Constructs a new SetDisplayLayout object
+	 * @param displayLayout
+	 *            a String value representing a display layout
+	 */
+	public SetDisplayLayout(@NonNull String displayLayout) {
+		this();
+		setDisplayLayout(displayLayout);
+	}
+
+	/**
 	 * Sets a display layout. Predefined or dynamically created screen layout.
 	 * Currently only predefined screen layouts are defined. Predefined layouts
 	 * include: "ONSCREEN_PRESETS" Custom screen containing app-defined onscreen
 	 * presets. Currently defined for GEN2
 	 * 
 	 * @param displayLayout
-	 *            a String value representing a diaply layout
+	 *            a String value representing a display layout
 	 */
-    public void setDisplayLayout(String displayLayout) {
+    public void setDisplayLayout(@NonNull String displayLayout) {
 		setParameters(KEY_DISPLAY_LAYOUT, displayLayout);
     }
 
@@ -82,4 +113,48 @@ public class SetDisplayLayout extends RPCRequest {
     public String getDisplayLayout() {
     	return getString(KEY_DISPLAY_LAYOUT);
     }
+
+	/**
+	 * Gets the color scheme that is currently used for day
+	 *
+	 * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
+	 * for day color scheme
+	 * @since SmartDeviceLink 4.6
+	 */
+	public TemplateColorScheme getDayColorScheme(){
+		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_DAY_COLOR_SCHEME);
+	}
+
+	/**
+	 * Sets the color scheme that is intended to be used for day
+	 *
+	 * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
+	 * used for day color scheme
+	 * @since SmartDeviceLink 4.6
+	 */
+	public void setDayColorScheme(TemplateColorScheme templateColorScheme){
+		setParameters(KEY_DAY_COLOR_SCHEME, templateColorScheme);
+	}
+
+	/**
+	 * Gets the color scheme that is currently used for night
+	 *
+	 * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
+	 * for night color scheme
+	 * @since SmartDeviceLink 4.6
+	 */
+	public TemplateColorScheme getNightColorScheme(){
+		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_NIGHT_COLOR_SCHEME);
+	}
+
+	/**
+	 * Sets the color scheme that is intended to be used for night
+	 *
+	 * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
+	 * used for night color scheme
+	 * @since SmartDeviceLink 4.6
+	 */
+	public void setNightColorScheme(TemplateColorScheme templateColorScheme){
+		setParameters(KEY_NIGHT_COLOR_SCHEME, templateColorScheme);
+	}
 }

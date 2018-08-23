@@ -31,6 +31,40 @@
       "appName":"Dumb app",
       "ngnMediaScreenAppName":"DA",
       "isMediaApplication":true,
+      "dayColorScheme": {
+        "backgroundColor": {
+          "blue": 9,
+          "green": 8,
+          "red": 7
+        },
+        "secondaryColor": {
+          "blue": 6,
+          "green": 5,
+          "red": 4
+        },
+        "primaryColor": {
+          "blue": 3,
+          "green": 2,
+          "red": 1
+        }
+      },
+      "nightColorScheme": {
+        "backgroundColor": {
+          "blue": 18,
+          "green": 17,
+          "red": 16
+        },
+        "secondaryColor": {
+          "blue": 15,
+          "green": 14,
+          "red": 13
+        },
+        "primaryColor": {
+          "blue": 12,
+          "green": 11,
+          "red": 10
+        }
+      },
       "vrSynonyms":[
         "dumb",
         "really dumb app"
@@ -192,7 +226,8 @@
         0,
         1,
         2
-      ]
+      ],
+      "iconResumed":true
     }
   }
 }

@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.VehicleData}
+ * {@link com.smartdevicelink.proxy.rpc.enums.VehicleDataType}
  */
 public class VehicleDataTypeTests extends TestCase {
 
@@ -56,6 +56,8 @@ public class VehicleDataTypeTests extends TestCase {
 		VehicleDataType enumVehicleDataBattVoltage = VehicleDataType.valueForString(example);
 		example = "VEHICLEDATA_ENGINETORQUE";
 		VehicleDataType enumVehicleDataEngineTorque = VehicleDataType.valueForString(example);
+		example = "VEHICLEDATA_ENGINEOILLIFE";
+		VehicleDataType enumVehicleDataEngineOilLife = VehicleDataType.valueForString(example);
 		example = "VEHICLEDATA_ACCPEDAL";
 		VehicleDataType enumVehicleDataAccPedal = VehicleDataType.valueForString(example);
 		example = "VEHICLEDATA_STEERINGWHEEL";
@@ -70,6 +72,12 @@ public class VehicleDataTypeTests extends TestCase {
 		VehicleDataType enumVehicleDataClusterModeStatus = VehicleDataType.valueForString(example);
 		example = "VEHICLEDATA_MYKEY";
 		VehicleDataType enumVehicleDataMyKey = VehicleDataType.valueForString(example);
+		example = "VEHICLEDATA_FUELRANGE";
+		VehicleDataType enumVehicleDataFuelRange = VehicleDataType.valueForString(example);
+		example = "VEHICLEDATA_TURNSIGNAL";
+		VehicleDataType enumVehicleDataTurnSignal = VehicleDataType.valueForString(example);
+		example = "VEHICLEDATA_ELECTRONICPARKBRAKESTATUS";
+		VehicleDataType enumVehicleDataElectronicParkBrakeStatus = VehicleDataType.valueForString(example);
 		
 		assertNotNull("VEHICLEDATA_GPS returned null", enumVehicleDataGps);
 		assertNotNull("VEHICLEDATA_SPEED returned null", enumVehicleDataSpeed);
@@ -90,6 +98,7 @@ public class VehicleDataTypeTests extends TestCase {
 		assertNotNull("VEHICLEDATA_HEADLAMPSTATUS returned null", enumVehicleDataHeadlampStatus);
 		assertNotNull("VEHICLEDATA_BATTVOLTAGE returned null", enumVehicleDataBattVoltage);
 		assertNotNull("VEHICLEDATA_ENGINETORQUE returned null", enumVehicleDataEngineTorque);
+		assertNotNull("VEHICLEDATA_ENGINEOILLIFE returned null", enumVehicleDataEngineOilLife);
 		assertNotNull("VEHICLEDATA_ACCPEDAL returned null", enumVehicleDataAccPedal);
 		assertNotNull("VEHICLEDATA_STEERINGWHEEL returned null", enumVehicleDataSteeringWheel);
 		assertNotNull("VEHICLEDATA_ECALLINFO returned null", enumVehicleDataECallInfo);
@@ -97,6 +106,9 @@ public class VehicleDataTypeTests extends TestCase {
 		assertNotNull("VEHICLEDATA_EMERGENCYEVENT returned null", enumVehicleDataEmergencyEvent);
 		assertNotNull("VEHICLEDATA_CLUSTERMODESTATUS returned null", enumVehicleDataClusterModeStatus);
 		assertNotNull("VEHICLEDATA_MYKEY returned null", enumVehicleDataMyKey);
+		assertNotNull("VEHICLEDATA_FUELRANGE returned null", enumVehicleDataFuelRange);
+		assertNotNull("VEHICLEDATA_TURNSIGNAL returned null", enumVehicleDataTurnSignal);
+		assertNotNull("VEHICLEDATA_ELECTRONICPARKBRAKESTATUS returned null", enumVehicleDataElectronicParkBrakeStatus);
 	}
 	
 	/**
@@ -153,13 +165,17 @@ public class VehicleDataTypeTests extends TestCase {
 		enumTestList.add(VehicleDataType.VEHICLEDATA_HEADLAMPSTATUS);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_BATTVOLTAGE);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_ENGINETORQUE);
+		enumTestList.add(VehicleDataType.VEHICLEDATA_ENGINEOILLIFE);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_ACCPEDAL);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_STEERINGWHEEL);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_ECALLINFO);		
 		enumTestList.add(VehicleDataType.VEHICLEDATA_AIRBAGSTATUS);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_EMERGENCYEVENT);	
 		enumTestList.add(VehicleDataType.VEHICLEDATA_CLUSTERMODESTATUS);
-		enumTestList.add(VehicleDataType.VEHICLEDATA_MYKEY);	
+		enumTestList.add(VehicleDataType.VEHICLEDATA_MYKEY);
+		enumTestList.add(VehicleDataType.VEHICLEDATA_FUELRANGE);
+		enumTestList.add(VehicleDataType.VEHICLEDATA_TURNSIGNAL);
+		enumTestList.add(VehicleDataType.VEHICLEDATA_ELECTRONICPARKBRAKESTATUS);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
