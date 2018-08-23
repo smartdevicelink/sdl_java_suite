@@ -66,10 +66,12 @@ public class Choice extends RPCStruct {
 	public static final String KEY_VR_COMMANDS = "vrCommands";
 	public static final String KEY_CHOICE_ID = "choiceID";
 	public static final String KEY_IMAGE = "image";
+
 	/**
 	 * Constructs a newly allocated Choice object
 	 */
     public Choice() { }
+
     /**
      * Constructs a newly allocated Choice object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
@@ -77,6 +79,7 @@ public class Choice extends RPCStruct {
     public Choice(Hashtable<String, Object> hash) {
         super(hash);
     }
+
     /**
      * Constructs a newly allocated Choice object
      * @param choiceID Min: 0  Max: 65535
@@ -86,6 +89,22 @@ public class Choice extends RPCStruct {
         this();
         setChoiceID(choiceID);
         setMenuName(menuName);
+    }
+    
+    /**
+     * Constructs a newly allocated Choice object
+     * @param choiceID Min: 0  Max: 65535
+     * @param menuName the menu name
+     * @param vrCommands the List of  vrCommands
+     *
+     * Deprecated - use {@link #Choice(Integer, String)}
+     */
+    @Deprecated
+    public Choice(@NonNull Integer choiceID, @NonNull String menuName, @NonNull List<String> vrCommands) {
+        this();
+        setChoiceID(choiceID);
+        setMenuName(menuName);
+        setVrCommands(vrCommands);
     }
 
     /**
@@ -118,22 +137,6 @@ public class Choice extends RPCStruct {
         super.format(rpcVersion, formatParams);
     }
 
-
-    /**
-     * Constructs a newly allocated Choice object
-     * @param choiceID Min: 0  Max: 65535
-     * @param menuName the menu name
-     * @param vrCommands the List of  vrCommands
-     *
-     * Deprecated - use {@link #Choice(Integer, String)}
-     */
-    @Deprecated
-    public Choice(@NonNull Integer choiceID, @NonNull String menuName, @NonNull List<String> vrCommands) {
-        this();
-        setChoiceID(choiceID);
-        setMenuName(menuName);
-        setVrCommands(vrCommands);
-    }
     /**
      * Get the application-scoped identifier that uniquely identifies this choice.
      * @return choiceID Min: 0;  Max: 65535
