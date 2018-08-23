@@ -6,6 +6,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.util.Version;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -186,9 +187,9 @@ import java.util.List;
  * 			<td>fullAppID</td>
  * 			<td>String</td>
  * 			<td>ID used to validate app with policy table entries</td>
- *                 <td>Y</td>
+ *                 <td>N</td>
  *                 <td>Maxlength: 100</td>
- * 			<td>SmartDeviceLink 4.6 </td>
+ * 			<td>SmartDeviceLink 4.6</td>
  * 		</tr>
  * 		<tr>
  * 			<td>hmiCapabilities</td>
@@ -606,7 +607,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
 	public void setAppID(@NonNull String appID) {
-		setParameters(KEY_APP_ID, appID);
+		setParameters(KEY_APP_ID, appID.toLowerCase());
 	}
 
 	/**
@@ -628,10 +629,11 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            given when approved
 	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength = 100
-	 * @since SmartDeviceLink 2.0
+	 * @since SmartDeviceLink 4.6
 	 */
-	public void setFullAppID(@NonNull String fullAppID) {
+	public void setFullAppID(String fullAppID) {
 		if (fullAppID != null) {
+			fullAppID = fullAppID.toLowerCase();
 			setParameters(KEY_FULL_APP_ID, fullAppID);
 			String appID;
 			if (fullAppID.length() <= APP_ID_MAX_LENGTH) {
@@ -640,7 +642,17 @@ public class RegisterAppInterface extends RPCRequest {
 				appID = fullAppID.replace("-", "").substring(0, APP_ID_MAX_LENGTH);
 			}
 			setAppID(appID);
+		} else {
+			setParameters(KEY_FULL_APP_ID, null);
 		}
+	}
+
+	@Override
+	public void format(Version rpcVersion, boolean formatParams) {
+		if (getFullAppID() == null){
+			setFullAppID(getAppID());
+		}
+		super.format(rpcVersion, formatParams);
 	}
 
 	/**
