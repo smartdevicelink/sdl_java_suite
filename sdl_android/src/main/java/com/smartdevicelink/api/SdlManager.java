@@ -33,6 +33,7 @@ import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.util.Version;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,9 +75,9 @@ public class SdlManager{
 	// Managers
 
 	private PermissionManager permissionManager;
+	private VideoStreamingManager videoStreamingManager;
 	private FileManager fileManager;
     /*
-    private VideoStreamingManager videoStreamingManager;
     private AudioStreamManager audioStreamManager;
     private LockscreenManager lockscreenManager;
     private ScreenManager screenManager;
@@ -120,9 +121,9 @@ public class SdlManager{
 			}
 			if(
 					permissionManager != null && permissionManager.getState() != BaseSubManager.SETTING_UP &&
-							fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP
+					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
+					(videoStreamingManager == null || (videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP))
 					/*
-					videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
 					audioStreamManager != null && audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
 					lockscreenManager != null &&  lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
 					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
@@ -142,6 +143,11 @@ public class SdlManager{
 		this.permissionManager = new PermissionManager(_internalInterface);
 		this.permissionManager.start(subManagerListener);
 
+		if(getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)){
+			this.videoStreamingManager = new VideoStreamingManager(_internalInterface);
+			this.videoStreamingManager.start(subManagerListener);
+		}
+
 		this.fileManager = new FileManager(_internalInterface, context);
 		this.fileManager.start(subManagerListener);
 		/*
@@ -149,8 +155,6 @@ public class SdlManager{
 		this.lockscreenManager.start(subManagerListener);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
 		this.screenManager.start(subManagerListener);
-		this.videoStreamingManager = new VideoStreamingManager(context, _internalInterface);
-		this.videoStreamingManager.start(subManagerListener);
 		this.audioStreamManager = new AudioStreamManager(_internalInterface);
 		this.audioStreamManager.start(subManagerListener);
 		*/
@@ -158,12 +162,14 @@ public class SdlManager{
 
 	private void dispose() {
 		this.permissionManager.dispose();
+		if(this.videoStreamingManager != null) {
+			this.videoStreamingManager.dispose();
+		}
 		this.fileManager.dispose();
 		/*
 		this.lockscreenManager.dispose();
 		this.audioStreamManager.dispose();
 		this.screenManager.dispose();
-		this.videoStreamingManager.dispose();
 		this.audioStreamManager.dispose();
 		*/
 		if(managerListener != null){
@@ -358,6 +364,7 @@ public class SdlManager{
 			throw new IllegalStateException("SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
 		}
 	}
+
 	// MANAGER GETTERS
 
 	/**
@@ -381,17 +388,17 @@ public class SdlManager{
 	}
 
 
-	/**
-	 * Gets the VideoStreamingManager. <br>
-	 * <strong>Note: VideoStreamingManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-	 * @return a VideoStreamingManager object
-	 */
-	/*
+    /**
+     * Gets the VideoStreamingManager. <br>
+     * <strong>Note: VideoStreamingManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     * @return a VideoStreamingManager object
+     */
+    
 	public VideoStreamingManager getVideoStreamingManager() {
 		checkSdlManagerState();
 		return videoStreamingManager;
 	}
-	*/
+	
 
 	/**
 	 * Gets the AudioStreamManager. <br>
@@ -717,6 +724,12 @@ public class SdlManager{
 			}
 			return null;
 		}
+
+		@Override
+		public Version getProtocolVersion() {
+			return proxy.getProtocolVersion();
+		}
+
 	};
 
 }
