@@ -83,9 +83,14 @@ public class SdlProtocol {
     private HashMap<SessionType, TransportType> activeTransports = new HashMap<>();
     private List<TransportType> availableTransports = new ArrayList<>();
 
+    /**
+     * Requested transports for primary and secondary
+     */
+    List<TransportType> requestedPrimaryTransports, requestedSecondaryTransports;
 
-
-    List<TransportType> requestedPrimaryTransports;
+    /**
+     * List of secondary transports supported by the module
+     */
     List<TransportType> supportedSecondaryTransports;
 
     /**
@@ -110,6 +115,7 @@ public class SdlProtocol {
         this.iSdlProtocol = iSdlProtocol;
         this.transportConfig = config;
         this.requestedPrimaryTransports = this.transportConfig.getPrimaryTransports();
+        this.requestedSecondaryTransports = this.transportConfig.getSecondaryTransports();
         this.requiresHighBandwidth = this.transportConfig.requiresHighBandwidth();
         this.transportManager = new TransportManager(transportConfig, transportEventListener);
 
@@ -296,7 +302,7 @@ public class SdlProtocol {
         }else if(requiresHighBandwidth){
             //If this app has a primary transport already but requires a high bandwidth transport
             //to properly function, it is now time to register over that transport to be used
-            TransportType preferredSecondaryTransport = getPreferredTransport(supportedSecondaryTransports,transports);
+            TransportType preferredSecondaryTransport = getPreferredTransport(requestedPrimaryTransports,transports);
             if(preferredSecondaryTransport != null) {
 
                 if(iSdlProtocol != null) {
@@ -630,11 +636,17 @@ public class SdlProtocol {
             header.setTransportType(connectedPrimaryTransport);
             handlePacketToSend(header);
         }else if(transportPriority == SECONDARY_TRANSPORT_ID) {
+            // Secondary is favored
             for(TransportType secondaryTransportType : supportedSecondaryTransports) {
-                // Secondary is favored
+
+                if(!requestedSecondaryTransports.contains(secondaryTransportType)){
+                    // Secondary transport is not accepted by the client
+                    continue;
+                }
+
                 Log.d(TAG, "Starting service over secondary.");
                 if(activeTransports.get(serviceType).equals(secondaryTransportType)){
-                    // Transport is already active
+                    // Transport is already active and accepted
                     header.setTransportType(secondaryTransportType);
                     handlePacketToSend(header);
                     return;
@@ -1045,11 +1057,10 @@ public class SdlProtocol {
 
             Log.d(TAG, "rpc transport? - " + getTransportForSession(SessionType.RPC));
             if(type.equals(getTransportForSession(SessionType.RPC))){
-                List<TransportType> transportTypes = transportConfig.getPrimaryTransports();
                 //transportTypes.remove(type);
                 boolean primaryTransportAvailable = false;
-                if(transportTypes.size() > 1){
-                    for (TransportType transportType: transportTypes){ Log.d(TAG, "Checking " + transportType.name());
+                if(requestedPrimaryTransports != null && requestedPrimaryTransports.size() > 1){
+                    for (TransportType transportType: requestedPrimaryTransports){ Log.d(TAG, "Checking " + transportType.name());
                         if( type != null && !type.equals(transportType)
                                 && transportManager != null
                                 && transportManager.isConnected(transportType,null)){
@@ -1082,7 +1093,7 @@ public class SdlProtocol {
         public boolean onLegacyModeEnabled(String info) {
             //Clear our wiproprotocol and await a connection from the legacy transport
             Log.d(TAG, info);
-            if(transportConfig.getPrimaryTransports().contains(TransportType.BLUETOOTH)
+            if(requestedPrimaryTransports!= null && requestedPrimaryTransports.contains(TransportType.BLUETOOTH)
                     && !transportConfig.requiresHighBandwidth()){
                 Log.d(TAG, "Entering legacy mode; creating new protocol instance");
                 //TODO resent the protocol

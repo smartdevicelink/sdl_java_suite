@@ -49,7 +49,7 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 		this.appId = appId;
 		this.securityLevel = FLAG_MULTI_SECURITY_MED;
 		this.primaryTransports = Arrays.asList(new TransportType[]{TransportType.USB, TransportType.BLUETOOTH});
-		//this.secondaryTransports = Arrays.asList(new TransportType[]{TransportType.TCP, TransportType.USB, TransportType.BLUETOOTH});
+		this.secondaryTransports = Arrays.asList(new TransportType[]{TransportType.TCP, TransportType.USB, TransportType.BLUETOOTH});
 
 	}
 
@@ -58,7 +58,7 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 		this.appId = appId;
 		this.securityLevel = securityLevel;
 		this.primaryTransports = Arrays.asList(new TransportType[]{TransportType.USB, TransportType.BLUETOOTH});
-		//this.secondaryTransports = Arrays.asList(new TransportType[]{TransportType.TCP, TransportType.USB, TransportType.BLUETOOTH});
+		this.secondaryTransports = Arrays.asList(new TransportType[]{TransportType.TCP, TransportType.USB, TransportType.BLUETOOTH});
 
 
 	}	
@@ -125,7 +125,7 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 	 * This will set the order in which a primary transport is determined to be accepted or not.
 	 * In the case of previous protocol versions ( < 5.1)
 	 * @param transports
-	 *
+	 **/
 	public void setSecondaryTransports(List<TransportType> transports){
 		if(transports != null){
 			//Sanitize
@@ -137,6 +137,6 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 	public List<TransportType> getSecondaryTransports(){
 		return this.secondaryTransports;
 	}
-	*/
+
 
 }
