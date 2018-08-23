@@ -1691,7 +1691,6 @@ public class SdlRouterService extends Service{
                             service.onTransportDisconnected(transportRecord);
 	            			break;
 	            		case MultiplexBaseTransport.STATE_ERROR:
-                            Log.d(TAG, "Bluetooth serial server error received, setting state to none, and clearing local copy");
                             service.onTransportError(transportRecord);
 	            			break;
 	            		}
