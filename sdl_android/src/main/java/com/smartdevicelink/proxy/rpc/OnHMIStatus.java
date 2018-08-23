@@ -104,6 +104,18 @@ public class OnHMIStatus extends RPCNotification {
         setAudioStreamingState(audioStreamingState);
         setSystemContext(systemContext);
     }
+
+    @Override
+    public void format(com.smartdevicelink.util.Version rpcVersion, boolean formatParams){
+        if(rpcVersion.getMajor() < 5){
+            if(getVideoStreamingState() == null){
+                setVideoStreamingState(VideoStreamingState.STREAMABLE);
+            }
+        }
+
+        super.format(rpcVersion,formatParams);
+    }
+
     /**
      * <p>Get HMILevel in effect for the application</p>
      * @return {@linkplain HMILevel} the current HMI Level in effect for the application
@@ -137,11 +149,7 @@ public class OnHMIStatus extends RPCNotification {
      * @return {@linkplain VideoStreamingState} Returns current state of video streaming for the application
      */
     public VideoStreamingState getVideoStreamingState() {
-        VideoStreamingState videoStreamingState =  (VideoStreamingState) getObject(VideoStreamingState.class, KEY_VIDEO_STREAMING_STATE);
-        if (videoStreamingState == null){
-            videoStreamingState = VideoStreamingState.STREAMABLE;
-        }
-        return videoStreamingState;
+        return (VideoStreamingState) getObject(VideoStreamingState.class, KEY_VIDEO_STREAMING_STATE);
     }
     /**
      * <p>Set the video streaming state</p>

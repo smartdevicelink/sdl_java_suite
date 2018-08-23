@@ -13,7 +13,8 @@
         "seconds":19,
         "hours":12
       },
-      "updateMode":"COUNTDOWN"
+      "updateMode":"COUNTDOWN",
+      "audioStreamingIndicator":"PLAY"
     }
   },
   "response":{

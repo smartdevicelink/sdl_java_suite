@@ -226,6 +226,14 @@ import java.util.Hashtable;
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0 </td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>turnSignal</td>
+ * 			<td>Boolean</td>
+ * 			<td>@see TurnSignal</td>
+ *				<td>N</td>
+ *				<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 4.6 </td>
+ * 		</tr>
  *  </table>
  *  
  * <p> <b>Response</b></p>
@@ -272,6 +280,8 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_MY_KEY = "myKey";
 	public static final String KEY_SPEED = "speed";
 	public static final String KEY_FUEL_RANGE = "fuelRange";
+	public static final String KEY_TURN_SIGNAL = "turnSignal";
+	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
 
 	/**
 	 * Constructs a new SubscribeVehicleData object
@@ -769,5 +779,33 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
 	public Boolean getFuelRange() {
 		return getBoolean(KEY_FUEL_RANGE);
+	}
+
+	/**
+	 * Sets a boolean value. If true, subscribes turnSignal data
+	 * @param turnSignal a boolean value
+	 */
+	public void setTurnSignal(Boolean turnSignal) { setParameters(KEY_TURN_SIGNAL, turnSignal); }
+
+	/**
+	 * Gets a boolean value. If true, means the turnSignal data has been subscribed.
+	 * @return a Boolean value.
+	 */
+	public Boolean getTurnSignal() { return getBoolean(KEY_TURN_SIGNAL); }
+
+	/**
+	 * Sets a boolean value. If true, subscribes electronicParkBrakeStatus data
+	 * @param electronicParkBrakeStatus a boolean value
+	 */
+	public void setElectronicParkBrakeStatus(boolean electronicParkBrakeStatus){
+		setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+	}
+
+	/**
+	 * Gets a boolean value. If true, means the electronicParkBrakeStatus data has been subscribed.
+	 * @return a Boolean value.
+	 */
+	public Boolean getElectronicParkBrakeStatus(){
+		return getBoolean(KEY_ELECTRONIC_PARK_BRAKE_STATUS);
 	}
 }

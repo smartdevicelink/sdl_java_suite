@@ -6,8 +6,10 @@ import android.support.annotation.NonNull;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
+import com.smartdevicelink.proxy.rpc.enums.ElectronicParkBrakeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.enums.TurnSignal;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.WiperStatus;
 import com.smartdevicelink.util.SdlDataTypeConverter;
@@ -48,6 +50,8 @@ public class GetVehicleDataResponse extends RPCResponse {
 	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
 	public static final String KEY_MY_KEY = "myKey";
 	public static final String KEY_FUEL_RANGE = "fuelRange";
+	public static final String KEY_TURN_SIGNAL = "turnSignal";
+	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
 
 	/** 
 	 * Constructs a new GetVehicleDataResponse object
@@ -275,5 +279,38 @@ public class GetVehicleDataResponse extends RPCResponse {
     @SuppressWarnings("unchecked")
     public List<FuelRange> getFuelRange() {
         return (List<FuelRange>) getObject(FuelRange.class, KEY_FUEL_RANGE);
+    }
+
+    /**
+     * Sets turnSignal
+     * @param turnSignal
+     */
+    public void setTurnSignal(TurnSignal turnSignal) {
+        setParameters(KEY_TURN_SIGNAL, turnSignal);
+    }
+
+    /**
+     * Gets turnSignal
+     * @return TurnSignal
+     */
+    @SuppressWarnings("unchecked")
+    public TurnSignal getTurnSignal() {
+        return (TurnSignal) getObject(TurnSignal.class, KEY_TURN_SIGNAL);
+    }
+
+    /**
+     * Sets electronicParkBrakeStatus
+     * @param electronicParkBrakeStatus
+     */
+    public void setElectronicParkBrakeStatus(ElectronicParkBrakeStatus electronicParkBrakeStatus){
+        setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+    }
+
+    /**
+     * Gets electronicParkBrakeStatus
+     * @return ElectronicParkBrakeStatus
+     */
+    public ElectronicParkBrakeStatus getElectronicParkBrakeStatus(){
+        return (ElectronicParkBrakeStatus) getObject(ElectronicParkBrakeStatus.class, KEY_ELECTRONIC_PARK_BRAKE_STATUS);
     }
 }
