@@ -622,8 +622,8 @@ public class RegisterAppInterface extends RPCRequest {
 	}
 
 	/**
-	 * Sets a unique ID, which an app will be given when approved
-	 *
+	 * Sets a unique ID, which an app will be given when approved <br>
+	 * Note: this will automatically parse the fullAppID into the smaller appId and set the appId value as well
 	 * @param fullAppID
 	 *            a String value representing a unique ID, which an app will be
 	 *            given when approved
@@ -649,8 +649,10 @@ public class RegisterAppInterface extends RPCRequest {
 
 	@Override
 	public void format(Version rpcVersion, boolean formatParams) {
-		if (getFullAppID() == null){
-			setFullAppID(getAppID());
+		if(rpcVersion == null || rpcVersion.getMajor() >= 5) {
+			if (getFullAppID() == null) {
+				setFullAppID(getAppID());
+			}
 		}
 		super.format(rpcVersion, formatParams);
 	}
