@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
+import android.os.RemoteException;
 import android.util.Log;
 
 import com.smartdevicelink.R;
@@ -201,7 +202,11 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 								context.startService(serviceIntent);
 							}else {
 								serviceIntent.putExtra(FOREGROUND_EXTRA, true);
-								context.startForegroundService(serviceIntent);
+								try{
+									context.startForegroundService(serviceIntent);
+								}catch (Exception e){
+									Log.e(TAG, "Issue starting router service - " + e.getMessage());
+								}
 
 							}
 							//Make sure to send this out for old apps to close down
@@ -296,7 +301,11 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
 			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
 				intent.putExtra(FOREGROUND_EXTRA, true);
-				context.startForegroundService(intent);
+				try{
+					context.startForegroundService(intent);
+				}catch (Exception e){
+					Log.e(TAG, "Issue pinging router service - " + e.getMessage());
+				}
 			}else {
 				context.startService(intent);
 			}

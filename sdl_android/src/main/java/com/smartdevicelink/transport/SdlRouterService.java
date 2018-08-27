@@ -1053,7 +1053,7 @@ public class SdlRouterService extends Service{
 
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
-	private void enterForeground(String content, long chronometerLength, boolean ongoing) {
+	private synchronized void enterForeground(String content, long chronometerLength, boolean ongoing) {
 		if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB){
 			Log.w(TAG, "Unable to start service as foreground due to OS SDK version being lower than 11");
 			isForeground = false;
@@ -1071,7 +1071,13 @@ public class SdlRouterService extends Service{
 		}
        // Bitmap icon = BitmapFactory.decodeByteArray(SdlLogo.SDL_LOGO_STRING, 0, SdlLogo.SDL_LOGO_STRING.length);
 
-        Notification.Builder builder = new Notification.Builder(this);
+		Notification.Builder builder;
+		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
+			builder = new Notification.Builder(this);
+		}else{
+			builder = new Notification.Builder(this, SDL_NOTIFICATION_CHANNEL_ID);
+		}
+
         if(0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)){ //If we are in debug mode, include what app has the router service open
         	ComponentName name = new ComponentName(this, this.getClass());
         	builder.setContentTitle("SDL: " + name.getPackageName());
@@ -1113,13 +1119,10 @@ public class SdlRouterService extends Service{
 				//Now we need to add a notification channel
 				NotificationManager notificationManager =	(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 				if(notificationManager != null) {
-					String channelId = SDL_NOTIFICATION_CHANNEL_ID;
-					int importance = NotificationManager.IMPORTANCE_DEFAULT;
-					NotificationChannel notificationChannel = new NotificationChannel(channelId, SDL_NOTIFICATION_CHANNEL_NAME, importance);
+					NotificationChannel notificationChannel = new NotificationChannel(SDL_NOTIFICATION_CHANNEL_ID, SDL_NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
 					notificationChannel.enableLights(false);
 					notificationChannel.enableVibration(false);
 					notificationManager.createNotificationChannel(notificationChannel);
-					builder.setChannelId(channelId);
 				}else{
 					Log.e(TAG, "Unable to retrieve notification Manager service");
 				}
@@ -1131,17 +1134,23 @@ public class SdlRouterService extends Service{
         	Log.e(TAG, "Notification was null");
 			return;
         }
-        startForeground(FOREGROUND_SERVICE_ID, notification);
-        isForeground = true;
+
+		try {
+			startForeground(FOREGROUND_SERVICE_ID, notification);
+			isForeground = true;
+        }catch (Exception e){
+			Log.e(TAG, "Issue starting router service in foreground");
+        }
  
     }
 
-	private void exitForeground(){
+	private synchronized void exitForeground(){
 		if(isForeground){
 			if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
 				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				if(notificationManager!=null){
-					notificationManager.deleteNotificationChannel(TransportConstants.SDL_NOTIFICATION_CHANNEL_ID);
+				if(notificationManager!=null
+						&& notificationManager.getNotificationChannel(SDL_NOTIFICATION_CHANNEL_ID) != null){
+					notificationManager.deleteNotificationChannel(SDL_NOTIFICATION_CHANNEL_ID);
 				}
 			}
 
