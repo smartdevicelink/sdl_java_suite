@@ -607,7 +607,11 @@ public class RegisterAppInterface extends RPCRequest {
 	 * @since SmartDeviceLink 2.0
 	 */
 	public void setAppID(@NonNull String appID) {
-		setParameters(KEY_APP_ID, appID.toLowerCase());
+		if (appID != null) {
+			setParameters(KEY_APP_ID, appID.toLowerCase());
+		} else {
+			setParameters(KEY_APP_ID, appID);
+		}
 	}
 
 	/**
