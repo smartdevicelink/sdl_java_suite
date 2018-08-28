@@ -72,6 +72,12 @@ public class SDLLockScreenActivity extends Activity {
 	public void onBackPressed() {
 	}
 
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		setIntent(intent);
+	}
+
 	public void initializeActivity(Intent intent){
 		if (intent != null){
 			boolean deviceLogoEnabled = intent.getBooleanExtra(LOCKSCREEN_DEVICE_LOGO_EXTRA, true);

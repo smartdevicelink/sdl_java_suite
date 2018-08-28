@@ -241,7 +241,9 @@ public class LockScreenManager extends BaseSubManager {
 					Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_DOWNLOADED);
 					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
 					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);
-					context.get().sendBroadcast(intent);
+					if (context.get() != null) {
+						context.get().sendBroadcast(intent);
+					}
 				}catch(IOException e){
 					Log.e(TAG, "device Icon Error Downloading");
 				}
