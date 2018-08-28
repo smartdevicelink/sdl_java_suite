@@ -5,8 +5,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.api.PermissionManager.PermissionManager;
-import com.smartdevicelink.api.lockscreen.LockScreenConfig;
-import com.smartdevicelink.api.lockscreen.LockScreenManager;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -35,6 +33,7 @@ import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.util.Version;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,17 +69,17 @@ public class SdlManager{
 
 	private SdlManagerListener managerListener;
 	private int state = -1;
-	private LockScreenConfig lockScreenConfig;
+	//public LockScreenConfig lockScreenConfig;
 
 
 	// Managers
 
 	private PermissionManager permissionManager;
+	private VideoStreamingManager videoStreamingManager;
 	private FileManager fileManager;
-	private LockScreenManager lockscreenManager;
     /*
-    private VideoStreamingManager videoStreamingManager;
     private AudioStreamManager audioStreamManager;
+    private LockscreenManager lockscreenManager;
     private ScreenManager screenManager;
     */
 
@@ -122,10 +121,9 @@ public class SdlManager{
 			}
 			if(
 					permissionManager != null && permissionManager.getState() != BaseSubManager.SETTING_UP &&
-							fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
-							lockscreenManager != null &&  lockscreenManager.getState() != BaseSubManager.SETTING_UP
+					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
+					(videoStreamingManager == null || (videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP))
 					/*
-					videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP &&
 					audioStreamManager != null && audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
 					lockscreenManager != null &&  lockscreenManager.getState() != BaseSubManager.SETTING_UP &&
 					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
@@ -145,18 +143,18 @@ public class SdlManager{
 		this.permissionManager = new PermissionManager(_internalInterface);
 		this.permissionManager.start(subManagerListener);
 
+		if(getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)){
+			this.videoStreamingManager = new VideoStreamingManager(_internalInterface);
+			this.videoStreamingManager.start(subManagerListener);
+		}
+
 		this.fileManager = new FileManager(_internalInterface, context);
 		this.fileManager.start(subManagerListener);
-
-		if (lockScreenConfig.isEnabled()) {
-			this.lockscreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
-			this.lockscreenManager.start(subManagerListener);
-		}
 		/*
+		this.lockscreenManager = new LockscreenManager(lockScreenConfig, context, _internalInterface);
+		this.lockscreenManager.start(subManagerListener);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
 		this.screenManager.start(subManagerListener);
-		this.videoStreamingManager = new VideoStreamingManager(context, _internalInterface);
-		this.videoStreamingManager.start(subManagerListener);
 		this.audioStreamManager = new AudioStreamManager(_internalInterface);
 		this.audioStreamManager.start(subManagerListener);
 		*/
@@ -164,15 +162,14 @@ public class SdlManager{
 
 	private void dispose() {
 		this.permissionManager.dispose();
-		this.fileManager.dispose();
-		if (this.lockscreenManager != null) {
-			this.lockscreenManager.dispose();
+		if(this.videoStreamingManager != null) {
+			this.videoStreamingManager.dispose();
 		}
+		this.fileManager.dispose();
 		/*
 		this.lockscreenManager.dispose();
 		this.audioStreamManager.dispose();
 		this.screenManager.dispose();
-		this.videoStreamingManager.dispose();
 		this.audioStreamManager.dispose();
 		*/
 		if(managerListener != null){
@@ -263,15 +260,11 @@ public class SdlManager{
 			return this;
 		}
 
-		/**
-		 * Sets the LockScreenConfig for the session. <br>
-		 * <strong>Note: If not set, the default configuration will be used.</strong>
-		 * @param lockScreenConfig - configuration options
-		 */
+		/*
 		public Builder setLockScreenConfig (final LockScreenConfig lockScreenConfig){
 			sdlManager.lockScreenConfig = lockScreenConfig;
 			return this;
-		}
+		}*/
 
 		/**
 		 * Sets the vector of AppHMIType <br>
@@ -356,11 +349,6 @@ public class SdlManager{
 				sdlManager.isMediaApp = false;
 			}
 
-			if (sdlManager.lockScreenConfig == null){
-				// if lock screen params are not set, use default
-				sdlManager.lockScreenConfig = new LockScreenConfig();
-			}
-
 			if (sdlManager.hmiLanguage == null){
 				sdlManager.hmiLanguage = Language.EN_US;
 			}
@@ -376,6 +364,7 @@ public class SdlManager{
 			throw new IllegalStateException("SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
 		}
 	}
+
 	// MANAGER GETTERS
 
 	/**
@@ -399,17 +388,17 @@ public class SdlManager{
 	}
 
 
-	/**
-	 * Gets the VideoStreamingManager. <br>
-	 * <strong>Note: VideoStreamingManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-	 * @return a VideoStreamingManager object
-	 */
-	/*
+    /**
+     * Gets the VideoStreamingManager. <br>
+     * <strong>Note: VideoStreamingManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     * @return a VideoStreamingManager object
+     */
+    
 	public VideoStreamingManager getVideoStreamingManager() {
 		checkSdlManagerState();
 		return videoStreamingManager;
 	}
-	*/
+	
 
 	/**
 	 * Gets the AudioStreamManager. <br>
@@ -440,10 +429,12 @@ public class SdlManager{
 	 * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
 	 * @return a LockScreenManager object
 	 */
-	public LockScreenManager getLockscreenManager() {
+    /*
+	public LockscreenManager getLockscreenManager() {
 		checkSdlManagerState();
 		return lockscreenManager;
 	}
+	*/
 
 
 	// PROTECTED GETTERS
@@ -467,8 +458,6 @@ public class SdlManager{
 	protected Vector<TTSChunk> getTtsChunks() { return ttsChunks; }
 
 	protected BaseTransportConfig getTransport() { return transport; }
-
-	protected LockScreenConfig getLockScreenConfig() { return lockScreenConfig; }
 
 	// SENDING REQUESTS
 
@@ -735,6 +724,12 @@ public class SdlManager{
 			}
 			return null;
 		}
+
+		@Override
+		public Version getProtocolVersion() {
+			return proxy.getProtocolVersion();
+		}
+
 	};
 
 }

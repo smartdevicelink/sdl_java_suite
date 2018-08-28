@@ -34,6 +34,7 @@ import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.util.CorrelationIdGenerator;
+import com.smartdevicelink.util.Version;
 
 import java.util.List;
 
@@ -193,6 +194,12 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		public SdlMsgVersion getSdlMsgVersion(){
 			return null;
 		}
+
+		@Override
+		public Version getProtocolVersion() {
+			return null;
+		}
+
 
 		@Override
 		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
