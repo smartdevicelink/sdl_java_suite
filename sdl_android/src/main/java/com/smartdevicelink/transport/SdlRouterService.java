@@ -1023,7 +1023,7 @@ public class SdlRouterService extends Service{
 		return FOREGROUND_TIMEOUT/1000;
 	}
 
-	public void resetForegroundTimeOut(long delay){
+	public synchronized void resetForegroundTimeOut(long delay){
 		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2){
 			return;
 		}
@@ -1034,7 +1034,9 @@ public class SdlRouterService extends Service{
 			foregroundTimeoutRunnable = new Runnable() {
 				@Override
 				public void run() {
-					exitForeground();
+					if(!isTransportConnected){
+						exitForeground();
+					}
 				}
 			};
 		}else{
@@ -1044,7 +1046,7 @@ public class SdlRouterService extends Service{
 		foregroundTimeoutHandler.postDelayed(foregroundTimeoutRunnable,delay);
 	}
 
-	public void cancelForegroundTimeOut(){
+	public synchronized void cancelForegroundTimeOut(){
 		if(foregroundTimeoutHandler != null && foregroundTimeoutRunnable != null){
 			foregroundTimeoutHandler.removeCallbacks(foregroundTimeoutRunnable);
 		}
