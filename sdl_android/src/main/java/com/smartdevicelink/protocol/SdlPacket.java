@@ -6,6 +6,7 @@ import java.util.HashMap;
 import com.livio.BSON.BsonEncoder;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -75,7 +76,7 @@ public class SdlPacket implements Parcelable{
 	HashMap<String, Object> bsonPayload;
 
 	int messagingVersion = 1;
-	TransportType transportType;
+	TransportRecord transportRecord;
 
 	public SdlPacket(int version, boolean encryption, int frameType,
 			int serviceType, int frameInfo, int sessionId,
@@ -220,12 +221,12 @@ public class SdlPacket implements Parcelable{
 		return this.priorityCoefficient;
 	}
 
-	public void setTransportType(TransportType transportType){
-		this.transportType = transportType;
+	public void setTransportRecord(TransportRecord transportRecord){
+		this.transportRecord = transportRecord;
 	}
 
-	public TransportType getTransportType() {
-		return this.transportType;
+	public TransportRecord getTransportRecord() {
+		return this.transportRecord;
 	}
 
 	/**
@@ -343,10 +344,7 @@ public class SdlPacket implements Parcelable{
 			messagingVersion = p.readInt();
 			if(messagingVersion >= 2) {
 				if (p.readInt() == 1) { //We should have a transport type attached
-					String transportName = p.readString();
-					if(transportName != null){
-						this.transportType = TransportType.valueOf(transportName);
-					}
+					this.transportRecord = p.readParcelable(TransportRecord.class.getClassLoader());
 				}
 			}
 		}
@@ -379,9 +377,9 @@ public class SdlPacket implements Parcelable{
 		if(messagingVersion > 1){
 			dest.writeInt(messagingVersion);
 
-			dest.writeInt(transportType!=null? 1 : 0);
-			if(transportType != null){
-				dest.writeString(transportType.name());
+			dest.writeInt(transportRecord!=null? 1 : 0);
+			if(transportRecord != null){
+				dest.writeParcelable(transportRecord,0);
 			}
 		}
 

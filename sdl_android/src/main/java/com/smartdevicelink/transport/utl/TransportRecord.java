@@ -24,6 +24,18 @@ public class TransportRecord implements Parcelable{
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if(obj !=null && obj instanceof TransportRecord){
+            TransportRecord record = (TransportRecord)obj;
+            return record.type != null && record.type.equals(type)  //Transport type is the same
+                    && ((record.address == null && address == null) //Both addresses are null
+                    || (record.address != null && record.address.equals(address))); //Or they match
+        }
+
+        return super.equals(obj);
+    }
+
+    @Override
     public String toString(){
         StringBuilder builder = new StringBuilder();
         builder.append("Transport Type: ");

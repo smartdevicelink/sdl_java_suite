@@ -80,8 +80,18 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                 //Fill in info
                 connectedDeviceAddress = bundle.getString(SERIAL);
                 if(connectedDeviceAddress == null){
-                    connectedDeviceAddress = bundle.getString(DESCRIPTION);
+                    connectedDeviceAddress = bundle.getString(URI);
+                    if(connectedDeviceAddress == null) {
+                        connectedDeviceAddress = bundle.getString(DESCRIPTION);
+                        if (connectedDeviceAddress == null) {
+                            connectedDeviceAddress = bundle.getString(MODEL);
+                            if (connectedDeviceAddress == null) {
+                                connectedDeviceAddress = bundle.getString(MANUFACTURER);
+                            }
+                        }
+                    }
                 }
+
             }else{
                 connectedDeviceAddress = "USB";
             }
@@ -227,7 +237,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                             synchronized (MultiplexUsbTransport.this) {
                                 //Log.d(TAG, "Packet formed, sending off");
                                 SdlPacket packet = psm.getFormedPacket();
-                                packet.setTransportType(TransportType.USB);
+                                packet.setTransportRecord(getTransportRecord());
                                 handler.obtainMessage(SdlRouterService.MESSAGE_READ, packet).sendToTarget();
                             }
                             //We put a trace statement in the message read so we can avoid all the extra bytes

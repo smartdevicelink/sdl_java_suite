@@ -26,7 +26,7 @@ public class ByteArrayMessageSpliter {
 	int orginalSize;
 	int priorityCoef;
 	int routerServiceVersion = 1;
-	TransportType transportType;
+	TransportRecord transportRecord;
 	
 	public ByteArrayMessageSpliter(String appId,int what, byte[] bytes, int priorityCoef){
 		this.appId = appId;
@@ -53,8 +53,8 @@ public class ByteArrayMessageSpliter {
 		this.routerServiceVersion = version;
 	}
 	
-	public void setTransportType(TransportType transportType){
-		this.transportType = transportType;
+	public void setTransportRecord(TransportRecord transportRecord){
+		this.transportRecord = transportRecord;
 	}
 
 	public boolean isActive(){
@@ -100,8 +100,9 @@ public class ByteArrayMessageSpliter {
 		bundle.putByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME, buffer); //Do we just change this to the args and objs
 		bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0);
 		bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytesRead);
-		if(transportType != null){
-			bundle.putString(TransportConstants.TRANSPORT, transportType.name());
+		if(transportRecord != null){
+			bundle.putString(TransportConstants.TRANSPORT_TYPE, transportRecord.getType().name());
+			bundle.putString(TransportConstants.TRANSPORT_ADDRESS, transportRecord.getAddress());
 		}
 
 		//Determine which flag should be sent for this division of the packet

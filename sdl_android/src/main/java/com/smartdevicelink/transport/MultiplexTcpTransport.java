@@ -278,7 +278,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 							synchronized (MultiplexTcpTransport.this) {
 								Log.d(TAG, "Packet formed, sending off");
 								SdlPacket packet = psm.getFormedPacket();
-								packet.setTransportType(TransportType.TCP);
+								packet.setTransportRecord(getTransportRecord());
 								handler.obtainMessage(SdlRouterService.MESSAGE_READ, packet).sendToTarget();
 							}
 							//We put a trace statement in the message read so we can avoid all the extra bytes

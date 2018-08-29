@@ -115,7 +115,6 @@ import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.SdlAppInfo;
-import com.smartdevicelink.util.Version;
 
 import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 import static com.smartdevicelink.transport.TransportConstants.SDL_NOTIFICATION_CHANNEL_ID;
@@ -496,7 +495,7 @@ public class SdlRouterService extends Service{
                                         buffApp.handleIncommingClientMessage(receivedBundle);
                                     }else{
 										//Log.d(TAG, "Write bytes to transport");
-										TransportType transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT));
+										TransportType transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT_TYPE));
 										if(transportType == null){
 
 											/* We check bluetooth first because we assume if this value
@@ -511,7 +510,7 @@ public class SdlRouterService extends Service{
 												transportType = TransportType.TCP;
 											}
 											//Log.d(TAG, "Transport type was null, so router set it to " + transportType.name());
-											receivedBundle.putString(TransportConstants.TRANSPORT, transportType.name());
+											receivedBundle.putString(TransportConstants.TRANSPORT_TYPE, transportType.name());
 										}
                                         service.writeBytesToTransport(receivedBundle);
                                     }
@@ -535,7 +534,7 @@ public class SdlRouterService extends Service{
 									RegisteredApp appRequesting = registeredApps.get(appIdRequesting);
 									if(appRequesting!=null){
 										//Retrieve the transport the app is requesting a new session
-										String transport = receivedBundle.getString(TransportConstants.ROUTER_REQUEST_NEW_SESSION_TRANSPORT_TYPE);
+										String transport = receivedBundle.getString(TransportConstants.TRANSPORT_TYPE);
 										TransportType requestingTransport = null;
 										if(transport != null){
 											try{
@@ -1760,7 +1759,7 @@ public class SdlRouterService extends Service{
 			}
 			int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
 			int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
-			TransportType transportType = TransportType.valueForString(bundle.getString(TransportConstants.TRANSPORT));
+			TransportType transportType = TransportType.valueForString(bundle.getString(TransportConstants.TRANSPORT_TYPE));
 			switch ((transportType)){
 				case BLUETOOTH:
 					if(bluetoothTransport !=null && bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
@@ -1885,7 +1884,7 @@ public class SdlRouterService extends Service{
 				}
 
 				//Find where this packet should go
-	    		String appid = getAppIDForSession(session, isNewSessionRequest, isNewTransportRequest, packet.getTransportType());
+	    		String appid = getAppIDForSession(session, isNewSessionRequest, isNewTransportRequest, packet.getTransportRecord().getType());
 
 				if(appid != null && appid.length() > 0){
 
@@ -1898,14 +1897,14 @@ public class SdlRouterService extends Service{
 	    				Log.e(TAG, "No app found for app id " + appid + " Removing session mapping and sending unregisterAI to head unit.");
 
 	    				//We have no app to match the app id tied to this session
-	    				removeSessionFromMap(session, Arrays.asList(packet.getTransportType()));
+	    				removeSessionFromMap(session, Arrays.asList(packet.getTransportRecord().getType()));
 
 						final int serviceType = packet.getServiceType();
 	    				if(serviceType == SdlPacket.SERVICE_TYPE_RPC || serviceType == SdlPacket.SERVICE_TYPE_BULK_DATA) {
 	    					//This is a primary transport packet as it is an RPC packet
 							//Create an unregister app interface to remove the app as it doesn't appear to exist anymore
 							byte[] uai = createForceUnregisterApp((byte) session, (byte) packet.getVersion());
-							manuallyWriteBytes(packet.getTransportType(),uai, 0, uai.length);
+							manuallyWriteBytes(packet.getTransportRecord().getType(),uai, 0, uai.length);
 
 							int hashId = 0;
 							synchronized(this.SESSION_LOCK){
@@ -1918,7 +1917,7 @@ public class SdlRouterService extends Service{
 							//TODO stop other services on that transport for the session with no app
 							SdlPacket endService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion(),BitConverter.intToByteArray(hashId));
 							byte[] stopService = endService.constructPacket();
-							manuallyWriteBytes(packet.getTransportType(), stopService,0,stopService.length);
+							manuallyWriteBytes(packet.getTransportRecord().getType(), stopService,0,stopService.length);
 						}else{
 	    					Log.w(TAG, "No where to send a packet from what appears to be a non primary transport");
 						}
@@ -2004,7 +2003,7 @@ public class SdlRouterService extends Service{
 	    			
     		}else{	//If we can't find a session for this packet we just drop the packet
 	    			Log.e(TAG, "App Id was NULL for session! " + session);
-	    			TransportType transportType = packet.getTransportType();
+	    			TransportType transportType = packet.getTransportRecord().getType();
 	    			if(removeSessionFromMap(session, Arrays.asList(transportType))){ //If we found the session id still tied to an app in our map we need to remove it and send the proper shutdown sequence.
 	    				Log.i(TAG, "Removed session from map.  Sending unregister request to module.");
 	    				attemptToCleanUpModule(session, packet.getVersion(), transportType);
@@ -3011,10 +3010,10 @@ public class SdlRouterService extends Service{
 		@SuppressWarnings("SameReturnValue")
 		public boolean handleIncommingClientMessage(final Bundle receivedBundle){
 			int flags = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
-			TransportType transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT));
+			TransportType transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT_TYPE));
 			if(transportType == null){
 				transportType = getCompatPrimaryTransport();
-				receivedBundle.putString(TransportConstants.TRANSPORT, transportType.name());
+				receivedBundle.putString(TransportConstants.TRANSPORT_TYPE, transportType.name());
 				Log.d(TAG, "Setting transport as: " + transportType);
 			}
 
@@ -3223,7 +3222,7 @@ public class SdlRouterService extends Service{
 			offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
 			size = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytesToWrite.length);  //In case there isn't anything just send the whole packet.
 			this.priorityCoefficient = bundle.getInt(TransportConstants.PACKET_PRIORITY_COEFFICIENT,0);
-			this.transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT));
+			this.transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT_TYPE));
 
 		}
 

@@ -80,8 +80,8 @@ public class SdlProtocol {
     Hashtable<Byte, Hashtable<Integer, MessageFrameAssembler>> _assemblerForSessionID = new Hashtable<>();
     Hashtable<Byte, Object> _messageLocks = new Hashtable<>();
     private HashMap<SessionType, Long> mtus = new HashMap<>();
-    private HashMap<SessionType, TransportType> activeTransports = new HashMap<>();
-    private List<TransportType> availableTransports = new ArrayList<>();
+    private HashMap<SessionType, TransportRecord> activeTransports = new HashMap<>();
+    private List<TransportRecord> availableTransports = new ArrayList<>();
 
     /**
      * Requested transports for primary and secondary
@@ -100,7 +100,7 @@ public class SdlProtocol {
     Map<SessionType, List<Integer>> transportPriorityForServiceMap;
     boolean requiresHighBandwidth = false;
     Map<TransportType, Bundle> secondaryTransportParams;
-    TransportType connectedPrimaryTransport;
+    TransportRecord connectedPrimaryTransport;
     Map<TransportType, List<ISecondaryTransportListener>> secondaryTransportListeners = new HashMap<>();
 
 
@@ -148,7 +148,7 @@ public class SdlProtocol {
         return transportManager != null && transportManager.isConnected(null,null);
     }
 
-    public TransportType getTransportForSession(SessionType type){
+    public TransportRecord getTransportForSession(SessionType type){
         return activeTransports.get(type);
     }
 
@@ -223,14 +223,14 @@ public class SdlProtocol {
 
     /**
      * Handles when a secondary transport can be used to start services on or when the request as failed.
-     * @param transportType the transport type that the event has taken place on
+     * @param transportRecord the transport type that the event has taken place on
      * @param registered if the transport was successfully registered on
      */
-    private void handleSecondaryTransportRegistration(TransportType transportType, boolean registered){
+    private void handleSecondaryTransportRegistration(TransportRecord transportRecord, boolean registered){
         if(registered) {
             //Session has been registered on secondary transport
-            Log.d(TAG, transportType.toString() + " transport was registered!");
-            if (supportedSecondaryTransports.contains(transportType)) {
+            Log.d(TAG, transportRecord.getType().toString() + " transport was registered!");
+            if (supportedSecondaryTransports.contains(transportRecord)) {
                 // If the transport type that is now available to be used it should be checked
                 // against the list of services that might be able to be started on it
 
@@ -244,7 +244,7 @@ public class SdlProtocol {
                                 break; // Primary is favored for this service type, break out...
                             }else if(transportNum == SECONDARY_TRANSPORT_ID){
                                 // The secondary transport can be used to start this service
-                                activeTransports.put(secondaryService, transportType);
+                                activeTransports.put(secondaryService, transportRecord);
                                 break;
                             }
                         }
@@ -252,10 +252,10 @@ public class SdlProtocol {
                 }
             }
         }else{
-            Log.d(TAG, transportType.toString() + " transport was NOT registered!");
+            Log.d(TAG, transportRecord.toString() + " transport was NOT registered!");
         }
         //Notify any listeners for this secondary transport
-        List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.remove(transportType);
+        List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.remove(transportRecord);
         if(listenerList != null){
             for(ISecondaryTransportListener listener : listenerList){
                 if(registered) {
@@ -290,9 +290,9 @@ public class SdlProtocol {
 
         if(activeTransports.get(SessionType.RPC) == null){
             //There is no currently active transport for the RPC service meaning no primary transport
-            TransportType preferredPrimaryTransport = getPreferredTransport(requestedPrimaryTransports,transports);
+            TransportRecord preferredPrimaryTransport = getPreferredTransport(requestedPrimaryTransports,transports);
             if(preferredPrimaryTransport != null) {
-                Log.d(TAG, "Sending start service RPC - " + preferredPrimaryTransport.name());
+                Log.d(TAG, "Sending start service RPC - " + preferredPrimaryTransport.getType().name());
                 connectedPrimaryTransport = preferredPrimaryTransport;
                 startService(SessionType.RPC, (byte) 0x00, false);
             }else{
@@ -302,7 +302,7 @@ public class SdlProtocol {
         }else if(requiresHighBandwidth){
             //If this app has a primary transport already but requires a high bandwidth transport
             //to properly function, it is now time to register over that transport to be used
-            TransportType preferredSecondaryTransport = getPreferredTransport(requestedPrimaryTransports,transports);
+            TransportRecord preferredSecondaryTransport = getPreferredTransport(requestedPrimaryTransports,transports);
             if(preferredSecondaryTransport != null) {
 
                 if(iSdlProtocol != null) {
@@ -325,23 +325,23 @@ public class SdlProtocol {
      * @param connectedTransports the current list of connected transports
      * @return the preferred connected transport
      */
-    private TransportType getPreferredTransport(List<TransportType> preferredList, List<TransportRecord> connectedTransports) {
+    private TransportRecord getPreferredTransport(List<TransportType> preferredList, List<TransportRecord> connectedTransports) {
         for (TransportType transportType : preferredList) {
             for(TransportRecord record: connectedTransports) {
                 if (record.getType().equals(transportType)) {
-                    return transportType;
+                    return record;
                 }
             }
         }
         return null;
     }
 
-    public TransportType getPreferredPrimaryTransport(List<TransportRecord> transports){
+    public TransportRecord getPreferredPrimaryTransport(List<TransportRecord> transports){
         return getPreferredTransport(requestedPrimaryTransports, transports);
 
     }
 
-    public TransportType getConnectedPrimaryTransport(){
+    public TransportRecord getConnectedPrimaryTransport(){
         return connectedPrimaryTransport;
     }
 
@@ -512,7 +512,7 @@ public class SdlProtocol {
 
                 SdlPacket firstHeader = SdlPacketFactory.createMultiSendDataFirst(sessionType, sessionID, messageID, getMajorVersionByte(),firstFrameData,protocolMsg.getPayloadProtected());
                 firstHeader.setPriorityCoefficient(1+protocolMsg.priorityCoefficient);
-                firstHeader.setTransportType(activeTransports.get(sessionType));
+                firstHeader.setTransportRecord(activeTransports.get(sessionType));
                 //Send the first frame
                 handlePacketToSend(firstHeader);
 
@@ -537,7 +537,7 @@ public class SdlProtocol {
                         bytesToWrite = mtu.intValue();
                     }
                     SdlPacket consecHeader = SdlPacketFactory.createMultiSendDataRest(sessionType, sessionID, bytesToWrite, frameSequenceNumber , messageID, getMajorVersionByte(),data, currentOffset, bytesToWrite, protocolMsg.getPayloadProtected());
-                    consecHeader.setTransportType(activeTransports.get(sessionType));
+                    consecHeader.setTransportRecord(activeTransports.get(sessionType));
                     consecHeader.setPriorityCoefficient(i+2+protocolMsg.priorityCoefficient);
                     handlePacketToSend(consecHeader);
                     currentOffset += bytesToWrite;
@@ -546,7 +546,7 @@ public class SdlProtocol {
                 messageID++;
                 SdlPacket header = SdlPacketFactory.createSingleSendData(sessionType, sessionID, data.length, messageID, getMajorVersionByte(),data, protocolMsg.getPayloadProtected());
                 header.setPriorityCoefficient(protocolMsg.priorityCoefficient);
-                header.setTransportType(activeTransports.get(sessionType));
+                header.setTransportRecord(activeTransports.get(sessionType));
                 handlePacketToSend(header);
             }
         }
@@ -587,9 +587,9 @@ public class SdlProtocol {
 
 
 
-    public void registerSecondaryTransport(byte sessionId, TransportType transportType) {
+    public void registerSecondaryTransport(byte sessionId, TransportRecord transportRecord) {
         SdlPacket header = SdlPacketFactory.createRegisterSecondaryTransport(sessionId, getMajorVersionByte());
-        header.setTransportType(transportType);
+        header.setTransportRecord(transportRecord);
         handlePacketToSend(header);
     }
 
@@ -598,7 +598,7 @@ public class SdlProtocol {
         final SdlPacket header = SdlPacketFactory.createStartSession(serviceType, 0x00, getMajorVersionByte(), sessionID, isEncrypted);
         if(SessionType.RPC.equals(serviceType)){
             if(connectedPrimaryTransport != null) {
-                header.setTransportType(connectedPrimaryTransport);
+                header.setTransportRecord(connectedPrimaryTransport);
             }
             //This is going to be our primary transport
             header.putTag(ControlFrameTags.RPC.StartService.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
@@ -625,7 +625,7 @@ public class SdlProtocol {
                 || transportPriorityForServiceMap.get(serviceType) == null
                 || transportPriorityForServiceMap.get(serviceType).isEmpty()){
             //If there is no transport priority for this service it can be assumed it's primary
-            header.setTransportType(connectedPrimaryTransport);
+            header.setTransportRecord(connectedPrimaryTransport);
             handlePacketToSend(header);
             return;
         }
@@ -633,7 +633,7 @@ public class SdlProtocol {
         if(transportPriority == PRIMARY_TRANSPORT_ID){
             // Primary is favored, and we're already connected...
             Log.d(TAG, "Starting service over primary.");
-            header.setTransportType(connectedPrimaryTransport);
+            header.setTransportRecord(connectedPrimaryTransport);
             handlePacketToSend(header);
         }else if(transportPriority == SECONDARY_TRANSPORT_ID) {
             // Secondary is favored
@@ -645,9 +645,9 @@ public class SdlProtocol {
                 }
 
                 Log.d(TAG, "Starting service over secondary.");
-                if(activeTransports.get(serviceType).equals(secondaryTransportType)){
+                if(activeTransports.get(serviceType).getType().equals(secondaryTransportType)){
                     // Transport is already active and accepted
-                    header.setTransportType(secondaryTransportType);
+                    header.setTransportRecord(activeTransports.get(serviceType));
                     handlePacketToSend(header);
                     return;
                 }
@@ -666,6 +666,7 @@ public class SdlProtocol {
                 listenerList.add(new ISecondaryTransportListener() {
                     @Override
                     public void onConnectionSuccess() {
+                        //FIXME see if we should pass the transport record here
                         handlePacketToSend(header);
                     }
 
@@ -673,7 +674,7 @@ public class SdlProtocol {
                     public void onConnectionFailure() {
                         if(primaryTransportBackup) {
                             // Primary is also supported as backup
-                            header.setTransportType(connectedPrimaryTransport);
+                            header.setTransportRecord(connectedPrimaryTransport);
                             handlePacketToSend(header);
                         }else{
                             Log.d(TAG, "Failed to connect secondary transport, threw away StartService");
@@ -682,7 +683,7 @@ public class SdlProtocol {
                 });
 
                 if(secondaryTransportParams.containsKey(secondaryTransportType)) {
-                    header.setTransportType(secondaryTransportType);
+                    header.setTransportRecord(new TransportRecord(secondaryTransportType,""));
                     transportManager.requestSecondaryTransportConnection(sessionID,secondaryTransportParams.get(secondaryTransportType));
                     //connectSecondaryTransport(sessionID, secondaryTransportType, secondaryTransportParams.get(secondaryTransportType));
                 }else{
@@ -705,13 +706,13 @@ public class SdlProtocol {
 
     private void sendHeartBeat(byte sessionID) {
         final SdlPacket heartbeat = SdlPacketFactory.createHeartbeat(SessionType.CONTROL, sessionID, getMajorVersionByte());
-        heartbeat.setTransportType(activeTransports.get(sessionID));
+        heartbeat.setTransportRecord(activeTransports.get(sessionID));
         handlePacketToSend(heartbeat);
     }
 
     private void sendHeartBeatACK(byte sessionID) {
         final SdlPacket heartbeat = SdlPacketFactory.createHeartbeatACK(SessionType.CONTROL, sessionID, getMajorVersionByte());
-        heartbeat.setTransportType(activeTransports.get(sessionID));
+        heartbeat.setTransportRecord(activeTransports.get(sessionID));
         handlePacketToSend(heartbeat);
     }
 
@@ -721,9 +722,9 @@ public class SdlProtocol {
             endSession(sessionID,hashID);
         }else {
             SdlPacket header = SdlPacketFactory.createEndSession(serviceType, sessionID, hashID, getMajorVersionByte(), new byte[0]);
-            TransportType transportType = activeTransports.get(sessionID);
-            if(transportType != null){
-                header.setTransportType(transportType);
+            TransportRecord transportRecord = activeTransports.get(sessionID);
+            if(transportRecord != null){
+                header.setTransportRecord(transportRecord);
                 handlePacketToSend(header);
             }else{
                 Log.w(TAG, "Not sending end session packet because there is no session on that transport");
@@ -831,8 +832,9 @@ public class SdlProtocol {
                 }
 
                 //Check to make sure this is a transport we are willing to accept
-                TransportType transportType = packet.getTransportType();
-                if(transportType == null || !requestedPrimaryTransports.contains(transportType)){
+                TransportRecord transportRecord = packet.getTransportRecord();
+
+                if(transportRecord == null || !requestedPrimaryTransports.contains(transportRecord.getType())){
                     onTransportNotAccepted("Transport is not in requested primary transports");
                     return;
                 }
@@ -845,7 +847,7 @@ public class SdlProtocol {
                     if (activeTransports.get(SessionType.RPC) == null) {    //Might be a better way to handle this
 
                         // Add this transport to the available transport list
-                        availableTransports.add(transportType);
+                        availableTransports.add(transportRecord);
 
                         ArrayList<String> secondary = (ArrayList<String>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.SECONDARY_TRANSPORTS);
                         ArrayList<Integer> audio = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.AUDIO_SERVICE_TRANSPORTS);
@@ -871,22 +873,22 @@ public class SdlProtocol {
                         setTransportPriorityForService(SessionType.PCM, audio);
                         setTransportPriorityForService(SessionType.NAV, video);
 
-                        activeTransports.put(SessionType.RPC, transportType);
-                        activeTransports.put(SessionType.BULK_DATA, transportType);
-                        activeTransports.put(SessionType.CONTROL, transportType);
+                        activeTransports.put(SessionType.RPC, transportRecord);
+                        activeTransports.put(SessionType.BULK_DATA, transportRecord);
+                        activeTransports.put(SessionType.CONTROL, transportRecord);
 
                         if (secondary == null) {
                             // If no secondary transports were attached we should assume
                             // the Video and Audio services can be used on primary
                             if (requiresHighBandwidth
-                                    && TransportType.BLUETOOTH.equals(transportType)) {
+                                    && TransportType.BLUETOOTH.equals(transportRecord.getType())) {
                                 //transport can't support high bandwidth
-                                onTransportNotAccepted(transportType + " can't support high bandwidth requirement, and secondary transport not supported.");
+                                onTransportNotAccepted(transportRecord.getType() + " can't support high bandwidth requirement, and secondary transport not supported.");
                                 return;
                             }
 
-                            activeTransports.put(SessionType.NAV, transportType);
-                            activeTransports.put(SessionType.PCM, transportType);
+                            activeTransports.put(SessionType.NAV, transportRecord);
+                            activeTransports.put(SessionType.PCM, transportRecord);
                         }
 
                         activeTransportsHandled = true;
@@ -899,19 +901,19 @@ public class SdlProtocol {
 
                 //Version is either not included or lower than 5.1.0
                 if(requiresHighBandwidth
-                        && TransportType.BLUETOOTH.equals(transportType)){
+                        && TransportType.BLUETOOTH.equals(transportRecord.getType())){
                     //transport can't support high bandwidth
-                    onTransportNotAccepted(transportType + " can't support high bandwidth requirement, and secondary transport not supported in this protocol version: " + version.toString());
+                    onTransportNotAccepted(transportRecord.getType() + " can't support high bandwidth requirement, and secondary transport not supported in this protocol version: " + version.toString());
                     return;
                 }
                 if(!activeTransportsHandled) {
-                    availableTransports.add(transportType);
+                    availableTransports.add(transportRecord);
 
-                    activeTransports.put(SessionType.RPC, transportType);
-                    activeTransports.put(SessionType.BULK_DATA, transportType);
-                    activeTransports.put(SessionType.CONTROL, transportType);
-                    activeTransports.put(SessionType.NAV, transportType);
-                    activeTransports.put(SessionType.PCM, transportType);
+                    activeTransports.put(SessionType.RPC, transportRecord);
+                    activeTransports.put(SessionType.BULK_DATA, transportRecord);
+                    activeTransports.put(SessionType.CONTROL, transportRecord);
+                    activeTransports.put(SessionType.NAV, transportRecord);
+                    activeTransports.put(SessionType.PCM, transportRecord);
                 }
 
 
@@ -930,20 +932,20 @@ public class SdlProtocol {
                 }
             }
         }else{ //TODO check if we should set protocol version here
-            TransportType transportType = packet.getTransportType();
-            if(requiresHighBandwidth
-                    && TransportType.BLUETOOTH.equals(transportType)){
+            TransportRecord transportRecord = packet.getTransportRecord();
+            if(transportRecord == null || (requiresHighBandwidth
+                    && TransportType.BLUETOOTH.equals(transportRecord.getType()))){
                 //transport can't support high bandwidth
-                onTransportNotAccepted(transportType + "can't support high bandwidth requirement, and secondary transport not supported in this protocol version");
+                onTransportNotAccepted(transportRecord.getType() + "can't support high bandwidth requirement, and secondary transport not supported in this protocol version");
                 return;
             }
             //If version < 5 and transport is acceptable we need to just add these
-            availableTransports.add(transportType);
-            activeTransports.put(SessionType.RPC, transportType);
-            activeTransports.put(SessionType.BULK_DATA, transportType);
-            activeTransports.put(SessionType.CONTROL, transportType);
-            activeTransports.put(SessionType.NAV, transportType);
-            activeTransports.put(SessionType.PCM, transportType);
+            availableTransports.add(transportRecord);
+            activeTransports.put(SessionType.RPC, transportRecord);
+            activeTransports.put(SessionType.BULK_DATA, transportRecord);
+            activeTransports.put(SessionType.CONTROL, transportRecord);
+            activeTransports.put(SessionType.NAV, transportRecord);
+            activeTransports.put(SessionType.PCM, transportRecord);
 
             if (protocolVersion.getMajor() > 1){
                 if (packet.payload!= null && packet.dataSize == 4){ //hashid will be 4 bytes in length
@@ -1006,7 +1008,7 @@ public class SdlProtocol {
 
 
     /* --------------------------------------------------------------------------------------------
-       -----------------------------------   TRANSPORT LISTENER   ---------------------------------
+       -----------------------------------   TRANSPORT_TYPE LISTENER   ---------------------------------
        -------------------------------------------------------------------------------------------*/
 
     private TransportManager.TransportEventListener transportEventListener = new TransportManager.TransportEventListener() {
@@ -1021,8 +1023,8 @@ public class SdlProtocol {
         public void onTransportConnected(List<TransportRecord> connectedTransports) {
             Log.d(TAG, "onTransportConnected - " + connectedTransports.size());
             //In the future we should move this logic into the Protocol Layer
-            TransportType type = getTransportForSession(SessionType.RPC);
-            if(type == null && !requestedSession){ //There is currently no transport registered
+            TransportRecord transportRecord = getTransportForSession(SessionType.RPC);
+            if(transportRecord == null && !requestedSession){ //There is currently no transport registered
                 requestedSession = true;
                 transportManager.requestNewSession(getPreferredPrimaryTransport(connectedTransports));
             }
@@ -1043,25 +1045,25 @@ public class SdlProtocol {
 
             //In the future we will actually compare the record but at this point we can assume only
             //a single transport record per transport.
-            TransportType type = disconnectedTransport.getType();
-            if(type.equals(getTransportForSession(SessionType.NAV))){
+            //TransportType type = disconnectedTransport.getType();
+            if(disconnectedTransport.equals(getTransportForSession(SessionType.NAV))){
                 //stopVideoStream();
                 iSdlProtocol.stopStream(SessionType.NAV);
                 Log.d(TAG, "Stopping video stream.");
             }
-            if(type.equals(getTransportForSession(SessionType.PCM))){
+            if(disconnectedTransport.equals(getTransportForSession(SessionType.PCM))){
                 //stopAudioStream();
                 iSdlProtocol.stopStream(SessionType.PCM);
                 Log.d(TAG, "Stopping audio stream.");
             }
 
             Log.d(TAG, "rpc transport? - " + getTransportForSession(SessionType.RPC));
-            if(type.equals(getTransportForSession(SessionType.RPC))){
+            if(disconnectedTransport.equals(getTransportForSession(SessionType.RPC))){
                 //transportTypes.remove(type);
                 boolean primaryTransportAvailable = false;
                 if(requestedPrimaryTransports != null && requestedPrimaryTransports.size() > 1){
                     for (TransportType transportType: requestedPrimaryTransports){ Log.d(TAG, "Checking " + transportType.name());
-                        if( type != null && !type.equals(transportType)
+                        if( disconnectedTransport != null && !disconnectedTransport.getType().equals(transportType)
                                 && transportManager != null
                                 && transportManager.isConnected(transportType,null)){
                             Log.d(TAG, "Found a suitable transport");
@@ -1268,12 +1270,12 @@ public class SdlProtocol {
 
             } else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportACK.getValue()) {
 
-                handleSecondaryTransportRegistration(packet.getTransportType(),true);
+                handleSecondaryTransportRegistration(packet.getTransportRecord(),true);
 
             } else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportNACK.getValue()) {
 
                 String reason = (String) packet.getTag(ControlFrameTags.RPC.RegisterSecondaryTransportNAK.REASON);
-                handleSecondaryTransportRegistration(packet.getTransportType(),false);
+                handleSecondaryTransportRegistration(packet.getTransportRecord(),false);
 
             } else if (frameInfo == FrameDataControlFrameType.TransportEventUpdate.getValue()) {
 
@@ -1289,7 +1291,7 @@ public class SdlProtocol {
                     Bundle bundle = new Bundle();
                     bundle.putString(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS, ipAddr);
                     bundle.putInt(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT, port);
-                    bundle.putString(TransportConstants.TRANSPORT, TransportType.TCP.name());
+                    bundle.putString(TransportConstants.TRANSPORT_TYPE, TransportType.TCP.name());
                     secondaryTransportParams.put(TransportType.TCP, bundle);
                 }
 

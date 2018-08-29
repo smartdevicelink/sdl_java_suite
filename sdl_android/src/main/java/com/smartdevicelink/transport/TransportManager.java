@@ -139,10 +139,10 @@ public class TransportManager {
         }
     }
 
-    public void requestNewSession(TransportType transportType){
-        if(transport!=null){
-            transport.requestNewSession(transportType);
-        }else if(legacyBluetoothTransport != null && !TransportType.BLUETOOTH.equals(transportType)){
+    public void requestNewSession(TransportRecord transportRecord){
+        if(transport != null){
+            transport.requestNewSession(transportRecord);
+        }else if(legacyBluetoothTransport != null){
             Log.w(TAG, "Session requested for non-bluetooth transport while in legacy mode");
         }
     }

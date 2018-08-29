@@ -54,7 +54,7 @@ public abstract class MultiplexBaseTransport {
     protected final Handler handler;
     protected final TransportType transportType;
 
-    private TransportRecord transportRecord;
+    protected TransportRecord transportRecord;
     public static String currentlyConnectedDevice = null;
     public String connectedDeviceAddress = null;
 
