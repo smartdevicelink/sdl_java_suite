@@ -137,20 +137,20 @@ public class SdlManager{
 
 				// Set the app icon
 				if (SdlManager.this.appIcon != null && SdlManager.this.appIcon.getName() != null) {
-				    if (!fileManager.hasUploadedFile(SdlManager.this.appIcon)) {
-                        fileManager.uploadArtwork(SdlManager.this.appIcon, new CompletionListener() {
-                            @Override
-                            public void onComplete(boolean success) {
-                                if (success) {
-                                    SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
-                                    _internalInterface.sendRPCRequest(msg);
-                                }
-                            }
-                        });
-                    } else {
-                        SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
-                        _internalInterface.sendRPCRequest(msg);
-                    }
+					if (!fileManager.hasUploadedFile(SdlManager.this.appIcon)) {
+						fileManager.uploadArtwork(SdlManager.this.appIcon, new CompletionListener() {
+							@Override
+							public void onComplete(boolean success) {
+								if (success) {
+									SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
+									_internalInterface.sendRPCRequest(msg);
+								}
+							}
+						});
+					} else {
+						SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
+						_internalInterface.sendRPCRequest(msg);
+					}
 				}
 			}
 		}
