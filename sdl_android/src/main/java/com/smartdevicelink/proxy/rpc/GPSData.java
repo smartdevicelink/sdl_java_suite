@@ -79,21 +79,21 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>pdop</td>
  * 			<td>Integer</td>
- * 			<td>Positional Dilution of Precision<b>Minvalue: 0<b>Maxvalue: 31
+ * 			<td>Positional Dilution of Precision. If undefined or unavailable, then value shall be set to 0.<b>Minvalue: 0<b>Maxvalue: 1000
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr> 
  * 		<tr>
  * 			<td>hdop</td>
  * 			<td>Integer</td>
- * 			<td>Horizontal Dilution of Precision<b>Minvalue: 0<b>Maxvalue: 31
+ * 			<td>Horizontal Dilution of Precision. If value is unknown, value shall be set to 0.<b>Minvalue: 0<b>Maxvalue: 1000
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr> 
  * 		<tr>
  * 			<td>vdop</td>
  * 			<td>Integer</td>
- * 			<td>Vertical  Dilution of Precision<b>Minvalue: 0<b>Maxvalue: 31
+ * 			<td>Vertical  Dilution of Precision. If value is unknown, value shall be set to 0.<b>Minvalue: 0<b>Maxvalue: 1000
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr> 
@@ -138,7 +138,7 @@ import java.util.Hashtable;
  * 			<td>Integer</td>
  * 			<td>The speed in KPH
  *					<b>Minvalue: 0
- *					<b>Maxvalue: 400
+ *					<b>Maxvalue: 500
  * 			</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr> 
@@ -169,7 +169,7 @@ public class GPSData extends RPCStruct {
 	 * Constructs a newly allocated GPSData object
 	 */
     public GPSData() { }
-    
+
     /**
      * Constructs a newly allocated GPSData object indicated by the Hashtable parameter 
      * @param hash The Hashtable to use
@@ -180,7 +180,9 @@ public class GPSData extends RPCStruct {
 
     /**
      * Constructs a newly allocated GPSData object
+     * @deprecated Use {@link #GPSData(@NonNull Double, @NonNull Double)()} instead
      */
+    @Deprecated
     public GPSData(@NonNull Double longitudeDegrees, @NonNull Double latitudeDegrees, @NonNull Integer utcYear,
                    @NonNull Integer utcMonth, @NonNull Integer utcDay, @NonNull Integer utcHours,
                    @NonNull Integer utcMinutes, @NonNull Integer utcSeconds, @NonNull CompassDirection compassDirection,
@@ -205,6 +207,15 @@ public class GPSData extends RPCStruct {
         setAltitude(altitude);
         setHeading(heading);
         setSpeed(speed);
+    }
+
+    /**
+     * Constructs a newly allocated GPSData object
+     */
+    public GPSData(@NonNull Double longitudeDegrees, @NonNull Double latitudeDegrees) {
+        this();
+        setLongitudeDegrees(longitudeDegrees);
+        setLatitudeDegrees(latitudeDegrees);
     }
     /**
      * set longitude degrees
@@ -244,7 +255,7 @@ public class GPSData extends RPCStruct {
      * set utc year
      * @param utcYear utc year
      */
-    public void setUtcYear(@NonNull Integer utcYear) {
+    public void setUtcYear(Integer utcYear) {
     	setValue(KEY_UTC_YEAR, utcYear);
     }
     
@@ -260,7 +271,7 @@ public class GPSData extends RPCStruct {
      * set utc month
      * @param utcMonth utc month
      */
-    public void setUtcMonth(@NonNull Integer utcMonth) {
+    public void setUtcMonth(Integer utcMonth) {
     	setValue(KEY_UTC_MONTH, utcMonth);
     }
     
@@ -276,7 +287,7 @@ public class GPSData extends RPCStruct {
      * set utc day
      * @param utcDay utc day
      */
-    public void setUtcDay(@NonNull Integer utcDay) {
+    public void setUtcDay(Integer utcDay) {
     	setValue(KEY_UTC_DAY, utcDay);
     }
     
@@ -292,7 +303,7 @@ public class GPSData extends RPCStruct {
      * set utc hours
      * @param utcHours utc hours
      */
-    public void setUtcHours(@NonNull Integer utcHours) {
+    public void setUtcHours(Integer utcHours) {
     	setValue(KEY_UTC_HOURS, utcHours);
     }
     
@@ -308,7 +319,7 @@ public class GPSData extends RPCStruct {
      * set utc minutes
      * @param utcMinutes utc minutes
      */
-    public void setUtcMinutes(@NonNull Integer utcMinutes) {
+    public void setUtcMinutes(Integer utcMinutes) {
     	setValue(KEY_UTC_MINUTES, utcMinutes);
     }
     
@@ -324,7 +335,7 @@ public class GPSData extends RPCStruct {
      * set utc seconds
      * @param utcSeconds utc seconds
      */
-    public void setUtcSeconds(@NonNull Integer utcSeconds) {
+    public void setUtcSeconds(Integer utcSeconds) {
     	setValue(KEY_UTC_SECONDS, utcSeconds);
     }
     
@@ -335,7 +346,7 @@ public class GPSData extends RPCStruct {
     public Integer getUtcSeconds() {
     	return getInteger(KEY_UTC_SECONDS);
     }
-    public void setCompassDirection(@NonNull CompassDirection compassDirection) {
+    public void setCompassDirection(CompassDirection compassDirection) {
     	setValue(KEY_COMPASS_DIRECTION, compassDirection);
     }
     public CompassDirection getCompassDirection() {
@@ -346,7 +357,7 @@ public class GPSData extends RPCStruct {
      * set the positional dilution of precision
      * @param pdop the positional dilution of precision
      */
-    public void setPdop(@NonNull Double pdop) {
+    public void setPdop(Double pdop) {
     	setValue(KEY_PDOP, pdop);
     }
     
@@ -362,7 +373,7 @@ public class GPSData extends RPCStruct {
      * set the horizontal dilution of precision
      * @param hdop the horizontal dilution of precision
      */
-    public void setHdop(@NonNull Double hdop) {
+    public void setHdop(Double hdop) {
     	setValue(KEY_HDOP, hdop);
     }
     
@@ -379,7 +390,7 @@ public class GPSData extends RPCStruct {
      * set the vertical dilution of precision
      * @param vdop the vertical dilution of precision
      */
-    public void setVdop(@NonNull Double vdop) {
+    public void setVdop(Double vdop) {
     	setValue(KEY_VDOP, vdop);
     }
     
@@ -396,7 +407,7 @@ public class GPSData extends RPCStruct {
      * set what coordinates based on 
      * @param actual True, if coordinates are based on satellites.False, if based on dead reckoning
      */
-    public void setActual(@NonNull Boolean actual) {
+    public void setActual(Boolean actual) {
     	setValue(KEY_ACTUAL, actual);
     }
     
@@ -412,7 +423,7 @@ public class GPSData extends RPCStruct {
      * set the number of satellites in view
      * @param satellites the number of satellites in view
      */
-    public void setSatellites(@NonNull Integer satellites) {
+    public void setSatellites(Integer satellites) {
     	setValue(KEY_SATELLITES, satellites);
     }
     
@@ -423,7 +434,7 @@ public class GPSData extends RPCStruct {
     public Integer getSatellites() {
     	return getInteger(KEY_SATELLITES);
     }
-    public void setDimension(@NonNull Dimension dimension) {
+    public void setDimension(Dimension dimension) {
     	setValue(KEY_DIMENSION, dimension);
     }
     public Dimension getDimension() {
@@ -434,7 +445,7 @@ public class GPSData extends RPCStruct {
      * set altitude in meters
      * @param altitude altitude in meters
      */
-    public void setAltitude(@NonNull Double altitude) {
+    public void setAltitude(Double altitude) {
     	setValue(KEY_ALTITUDE, altitude);
     }
     
@@ -451,7 +462,7 @@ public class GPSData extends RPCStruct {
      * set the heading.North is 0, East is 90, etc.
      * @param heading the heading. 
      */
-    public void setHeading(@NonNull Double heading) {
+    public void setHeading(Double heading) {
     	setValue(KEY_HEADING, heading);
     }
     
@@ -467,7 +478,7 @@ public class GPSData extends RPCStruct {
      * set speed in KPH
      * @param speed the speed
      */
-    public void setSpeed(@NonNull Double speed) {
+    public void setSpeed(Double speed) {
     	setValue(KEY_SPEED, speed);
     }
     
