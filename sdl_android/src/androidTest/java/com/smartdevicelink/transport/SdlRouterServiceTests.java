@@ -20,6 +20,7 @@ import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 
 import junit.framework.Assert;
 
@@ -228,7 +229,7 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 
 			// create packet and invoke sendPacketToRegisteredApp
 			SdlPacket packet = new SdlPacket(4, false, SdlPacket.FRAME_TYPE_SINGLE, SdlPacket.SERVICE_TYPE_RPC, 0, sessionId, data.length, 123, data);
-			packet.setTransportType(TransportType.BLUETOOTH);
+			packet.setTransportRecord(new TransportRecord(TransportType.BLUETOOTH,null));
 			method = sdlRouterService.getClass().getDeclaredMethod("sendPacketToRegisteredApp", SdlPacket.class);
 			Boolean success = (Boolean) method.invoke(sdlRouterService, packet);
 
@@ -320,7 +321,7 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 
 			// create packet and invoke sendPacketToRegisteredApp
 			SdlPacket packet = new SdlPacket(4, false, SdlPacket.FRAME_TYPE_SINGLE, SdlPacket.SERVICE_TYPE_RPC, 0, sessionId, data.length, 123, data);
-			packet.setTransportType(TransportType.BLUETOOTH);
+			packet.setTransportRecord(new TransportRecord(TransportType.BLUETOOTH,null));
 			method = sdlRouterService.getClass().getDeclaredMethod("sendPacketToRegisteredApp", SdlPacket.class);
 			Boolean success = (Boolean) method.invoke(sdlRouterService, packet);
 
