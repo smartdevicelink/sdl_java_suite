@@ -3,6 +3,8 @@ package com.smartdevicelink.test;
 import android.util.Log;
 
 import com.smartdevicelink.proxy.TTSChunkFactory;
+import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
+import com.smartdevicelink.proxy.rpc.AudioControlData;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.Choice;
@@ -12,13 +14,20 @@ import com.smartdevicelink.proxy.rpc.Coordinate;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.EqualizerSettings;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
+import com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities;
+import com.smartdevicelink.proxy.rpc.HMISettingsControlData;
 import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.LightCapabilities;
+import com.smartdevicelink.proxy.rpc.LightControlCapabilities;
+import com.smartdevicelink.proxy.rpc.LightControlData;
+import com.smartdevicelink.proxy.rpc.LightState;
 import com.smartdevicelink.proxy.rpc.LocationDetails;
 import com.smartdevicelink.proxy.rpc.MassageCushionFirmness;
 import com.smartdevicelink.proxy.rpc.MassageModeData;
@@ -43,9 +52,11 @@ import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
 import com.smartdevicelink.proxy.rpc.SeatControlData;
 import com.smartdevicelink.proxy.rpc.SeatMemoryAction;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
+import com.smartdevicelink.proxy.rpc.SisData;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.StartTime;
+import com.smartdevicelink.proxy.rpc.StationIDNumber;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.Temperature;
@@ -77,7 +88,9 @@ import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
+import com.smartdevicelink.proxy.rpc.enums.DisplayMode;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
+import com.smartdevicelink.proxy.rpc.enums.DistanceUnit;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
@@ -97,6 +110,8 @@ import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
+import com.smartdevicelink.proxy.rpc.enums.LightName;
+import com.smartdevicelink.proxy.rpc.enums.LightStatus;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.MassageCushion;
 import com.smartdevicelink.proxy.rpc.enums.MassageMode;
@@ -280,23 +295,39 @@ public class Test {
 	public static final DriverDistractionState         GENERAL_DRIVERDISTRACTIONSTATE         = DriverDistractionState.DD_ON;
 	public static final List<LocationDetails>          GENERAL_LOCATIONDETAILS_LIST           = Arrays.asList(new LocationDetails[] { Test.GENERAL_LOCATIONDETAILS, Test.GENERAL_LOCATIONDETAILS});
 	public static final AudioStreamingIndicator        GENERAL_AUDIO_STREAMING_INDICATOR      = AudioStreamingIndicator.PLAY;
-
+	public static final String                         GENERAL_APP_ID                         = "123e4567e8";
+	public static final String                         GENERAL_FULL_APP_ID                    = "123e4567-e89b-12d3-a456-426655440000";
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
 	public static final TemperatureUnit 			   GENERAL_TEMPERATUREUNIT                = TemperatureUnit.CELSIUS;
 	public static final DefrostZone 				   GENERAL_DEFROSTZONE               	  = DefrostZone.ALL;
 	public static final VentilationMode 			   GENERAL_VENTILATIONMODE                = VentilationMode.BOTH;
+	public static final LightName                      GENERAL_LIGHTNAME            		  = LightName.AMBIENT_LIGHTS;
+	public static final DisplayMode                    GENERAL_DISPLAYMODE            		  = DisplayMode.AUTO;
+	public static final DistanceUnit                   GENERAL_DISTANCEUNIT           		  = DistanceUnit.KILOMETERS;
+	public static final LightStatus                    GENERAL_LIGHTSTATUS           		  = LightStatus.OFF;
 	public static final RadioBand 				       GENERAL_RADIOBAND               	      = RadioBand.AM;
 	public static final ClimateControlData             GENERAL_CLIMATECONTROLDATA             = new ClimateControlData();
 	public static final SeatControlData                GENERAL_SEATCONTROLDATA                = new SeatControlData();
 	public static final RdsData                        GENERAL_RDSDATA                        = new RdsData();
+	public static final StationIDNumber                GENERAL_STATIONIDNUMBER                = new StationIDNumber();
+	public static final SisData                        GENERAL_SISDATA                        = new SisData();
 	public static final RadioState                     GENERAL_RADIOSTATE              	      = RadioState.ACQUIRED;
 	public static final RadioControlData               GENERAL_RADIOCONTROLDATA               = new RadioControlData();
 	public static final ModuleData 					   GENERAL_MODULEDATA                     = new ModuleData();
 	public static final ClimateControlCapabilities     GENERAL_CLIMATECONTROLCAPABILITIES     = new ClimateControlCapabilities();
 	public static final RadioControlCapabilities       GENERAL_RADIOCONTROLCAPABILITIES       = new RadioControlCapabilities();
 	public static final SeatControlCapabilities        GENERAL_SEATCONTROLCAPABILITIES        = new SeatControlCapabilities();
+	public static final EqualizerSettings              GENERAL_EQUALIZERSETTINGS              = new EqualizerSettings();
+	public static final LightCapabilities              GENERAL_LIGHTCAPABILITIES              = new LightCapabilities();
+	public static final LightState                     GENERAL_LIGHTSTATE                     = new LightState();
+	public static final AudioControlCapabilities       GENERAL_AUDIOCONTROLCAPABILITIES       = new AudioControlCapabilities();
+	public static final HMISettingsControlCapabilities GENERAL_HMISETTINGSCONTROLCAPABILITIES = new HMISettingsControlCapabilities();
+	public static final LightControlCapabilities       GENERAL_LIGHTCONTROLCAPABILITIES       = new LightControlCapabilities();
+	public static final AudioControlData               GENERAL_AUDIOCONTROLDATA               = new AudioControlData();
+	public static final LightControlData               GENERAL_LIGHTCONTROLDATA               = new LightControlData();
+	public static final HMISettingsControlData         GENERAL_HMISETTINGSCONTROLDATA         = new HMISettingsControlData();
 
 	public static final HMICapabilities                GENERAL_HMICAPABILITIES                = new HMICapabilities();
 
@@ -340,6 +371,10 @@ public class Test {
 	public static final List<ClimateControlCapabilities> GENERAL_CLIMATECONTROLCAPABILITIES_LIST = new ArrayList<ClimateControlCapabilities>(1);
 	public static final List<RadioControlCapabilities>   GENERAL_RADIOCONTROLCAPABILITIES_LIST   = new ArrayList<RadioControlCapabilities>(1);
 	public static final List<SeatControlCapabilities>   GENERAL_SEATCONTROLCAPABILITIES_LIST   = new ArrayList<SeatControlCapabilities>(1);
+	public static final List<EqualizerSettings>         GENERAL_EQUALIZERSETTINGS_LIST         = new ArrayList<EqualizerSettings>(1);
+	public static final List<LightCapabilities>         GENERAL_LIGHTCAPABILITIES_LIST         = new ArrayList<LightCapabilities>(1);
+	public static final List<LightState>                GENERAL_LIGHTSTATE_LIST                = new ArrayList<LightState>(1);
+	public static final List<AudioControlCapabilities>  GENERAL_AUDIOCONTROLCAPABILITIES_LIST  = new ArrayList<AudioControlCapabilities>(1);
 
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();
@@ -429,6 +464,27 @@ public class Test {
 		GENERAL_SEATCONTROLDATA.setHeatingEnabled(GENERAL_BOOLEAN);
 		GENERAL_SEATCONTROLDATA.setCoolingEnabled(GENERAL_BOOLEAN);
 		GENERAL_SEATCONTROLDATA.setId(GENERAL_SUPPORTEDSEAT);
+
+		GENERAL_AUDIOCONTROLDATA.setSource(GENERAL_PRIMARYAUDIOSOURCE);
+		GENERAL_AUDIOCONTROLDATA.setVolume(GENERAL_INT);
+		GENERAL_AUDIOCONTROLDATA.setKeepContext(GENERAL_BOOLEAN);
+		GENERAL_AUDIOCONTROLDATA.setEqualizerSettings(GENERAL_EQUALIZERSETTINGS_LIST);
+
+		GENERAL_HMISETTINGSCONTROLDATA.setDistanceUnit(GENERAL_DISTANCEUNIT);
+		GENERAL_HMISETTINGSCONTROLDATA.setTemperatureUnit(GENERAL_TEMPERATUREUNIT);
+		GENERAL_HMISETTINGSCONTROLDATA.setDisplayMode(GENERAL_DISPLAYMODE);
+
+		GENERAL_LIGHTCONTROLDATA.setLightState(GENERAL_LIGHTSTATE_LIST);
+
+		GENERAL_STATIONIDNUMBER.setCountryCode(GENERAL_INT);
+		GENERAL_STATIONIDNUMBER.setFccFacilityId(GENERAL_INT);
+
+		GENERAL_SISDATA.setStationMessage(GENERAL_STRING);
+		GENERAL_SISDATA.setStationLocation(VehicleDataHelper.GPS);
+
+		GENERAL_SISDATA.setStationLongName(GENERAL_STRING);
+		GENERAL_SISDATA.setStationIDNumber(GENERAL_STATIONIDNUMBER);
+		GENERAL_SISDATA.setStationShortName(GENERAL_STRING);
 
 		GENERAL_RDSDATA.setProgramService(GENERAL_STRING);
 		GENERAL_RDSDATA.setRadioText(GENERAL_STRING);
@@ -702,6 +758,37 @@ public class Test {
 		GENERAL_SEATCONTROLCAPABILITIES.setHeatingEnabledAvailable(GENERAL_BOOLEAN);
 		GENERAL_SEATCONTROLCAPABILITIES.setModuleName(GENERAL_STRING);
 		GENERAL_SEATCONTROLCAPABILITIES_LIST.add(GENERAL_SEATCONTROLCAPABILITIES);
+
+		GENERAL_AUDIOCONTROLCAPABILITIES.setEqualizerMaxChannelId(GENERAL_INT);
+		GENERAL_AUDIOCONTROLCAPABILITIES.setEqualizerAvailable(GENERAL_BOOLEAN);
+		GENERAL_AUDIOCONTROLCAPABILITIES.setVolumeAvailable(GENERAL_BOOLEAN);
+		GENERAL_AUDIOCONTROLCAPABILITIES.setSourceAvailable(GENERAL_BOOLEAN);
+		GENERAL_AUDIOCONTROLCAPABILITIES.setModuleName(GENERAL_STRING);
+		GENERAL_AUDIOCONTROLCAPABILITIES_LIST.add(GENERAL_AUDIOCONTROLCAPABILITIES);
+
+		GENERAL_HMISETTINGSCONTROLCAPABILITIES.setDisplayModeUnitAvailable(GENERAL_BOOLEAN);
+		GENERAL_HMISETTINGSCONTROLCAPABILITIES.setDistanceUnitAvailable(GENERAL_BOOLEAN);
+		GENERAL_HMISETTINGSCONTROLCAPABILITIES.setTemperatureUnitAvailable(GENERAL_BOOLEAN);
+		GENERAL_HMISETTINGSCONTROLCAPABILITIES.setModuleName(GENERAL_STRING);
+
+		GENERAL_LIGHTCONTROLCAPABILITIES.setSupportedLights(GENERAL_LIGHTCAPABILITIES_LIST);
+		GENERAL_LIGHTCONTROLCAPABILITIES.setModuleName(GENERAL_STRING);
+
+		GENERAL_EQUALIZERSETTINGS.setChannelSetting(GENERAL_INT);
+		GENERAL_EQUALIZERSETTINGS.setChannelName(GENERAL_STRING);
+		GENERAL_EQUALIZERSETTINGS.setChannelId(GENERAL_INT);
+		GENERAL_EQUALIZERSETTINGS_LIST.add(GENERAL_EQUALIZERSETTINGS);
+
+		GENERAL_LIGHTCAPABILITIES.setName(GENERAL_LIGHTNAME);
+		GENERAL_LIGHTCAPABILITIES.setDensityAvailable(GENERAL_BOOLEAN);
+		GENERAL_LIGHTCAPABILITIES.setRGBColorSpaceAvailable(GENERAL_BOOLEAN);
+		GENERAL_LIGHTCAPABILITIES_LIST.add(GENERAL_LIGHTCAPABILITIES);
+
+		GENERAL_LIGHTSTATE.setId(GENERAL_LIGHTNAME);
+		GENERAL_LIGHTSTATE.setDensity(GENERAL_FLOAT);
+		GENERAL_LIGHTSTATE.setStatus(GENERAL_LIGHTSTATUS);
+		GENERAL_LIGHTSTATE.setColor(GENERAL_RGBCOLOR);
+		GENERAL_LIGHTSTATE_LIST.add(GENERAL_LIGHTSTATE);
 
 		GENERAL_REMOTECONTROLCAPABILITIES.setButtonCapabilities(GENERAL_BUTTONCAPABILITIES_LIST);
 		GENERAL_REMOTECONTROLCAPABILITIES.setClimateControlCapabilities(GENERAL_CLIMATECONTROLCAPABILITIES_LIST);

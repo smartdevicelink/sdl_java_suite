@@ -25,6 +25,10 @@ public class ClimateControlCapabilities extends RPCStruct{
     public static final String KEY_DEFROST_ZONE= "defrostZone";
     public static final String KEY_VENTILATION_MODE_AVAILABLE= "ventilationModeAvailable";
     public static final String KEY_VENTILATION_MODE= "ventilationMode";
+    public static final String KEY_HEATED_STEERING_WHEEL_AVAILABLE = "heatedSteeringWheelAvailable";
+    public static final String KEY_HEATED_WIND_SHIELD_AVAILABLE = "heatedWindshieldAvailable";
+    public static final String KEY_HEATED_REAR_WINDOW_AVAILABLE = "heatedRearWindowAvailable";
+    public static final String KEY_HEATED_MIRRORS_AVAILABLE = "heatedMirrorsAvailable";
 
     public ClimateControlCapabilities() {
     }
@@ -286,5 +290,85 @@ public class ClimateControlCapabilities extends RPCStruct{
      */
     public void setVentilationMode(List<VentilationMode> ventilationMode) {
         setValue(KEY_VENTILATION_MODE, ventilationMode);
+    }
+
+    /**
+     * Sets the heatedSteeringWheelAvailable portion of the ClimateControlCapabilities class
+     *
+     * @param heatedSteeringWheelAvailable Availability of the control (enable/disable) of heated Steering Wheel.
+     *                                     True: Available, False: Not Available, Not present: Not Available.
+     */
+    public void setHeatedSteeringWheelAvailable(Boolean heatedSteeringWheelAvailable) {
+        setValue(KEY_HEATED_STEERING_WHEEL_AVAILABLE, heatedSteeringWheelAvailable);
+    }
+
+    /**
+     * Gets the heatedSteeringWheelAvailable portion of the ClimateControlCapabilities class
+     *
+     * @return Boolean - Availability of the control (enable/disable) of heated Steering Wheel.
+     * True: Available, False: Not Available, Not present: Not Available.
+     */
+    public Boolean getHeatedSteeringWheelAvailable() {
+        return getBoolean(KEY_HEATED_STEERING_WHEEL_AVAILABLE);
+    }
+
+    /**
+     * Sets the heatedWindshieldAvailable portion of the ClimateControlCapabilities class
+     *
+     * @param heatedWindshieldAvailable Availability of the control (enable/disable) of heated Windshield.
+     *                                  True: Available, False: Not Available, Not present: Not Available.
+     */
+    public void setHeatedWindshieldAvailable(Boolean heatedWindshieldAvailable) {
+        setValue(KEY_HEATED_WIND_SHIELD_AVAILABLE, heatedWindshieldAvailable);
+    }
+
+    /**
+     * Gets the heatedWindshieldAvailable portion of the ClimateControlCapabilities class
+     *
+     * @return Boolean - Availability of the control (enable/disable) of heated Windshield.
+     * True: Available, False: Not Available, Not present: Not Available.
+     */
+    public Boolean getHeatedWindshieldAvailable() {
+        return getBoolean(KEY_HEATED_WIND_SHIELD_AVAILABLE);
+    }
+
+    /**
+     * Sets the heatedRearWindowAvailable portion of the ClimateControlCapabilities class
+     *
+     * @param heatedRearWindowAvailable Availability of the control (enable/disable) of heated Rear Window.
+     *                                  True: Available, False: Not Available, Not present: Not Available.
+     */
+    public void setHeatedRearWindowAvailable(Boolean heatedRearWindowAvailable) {
+        setValue(KEY_HEATED_REAR_WINDOW_AVAILABLE, heatedRearWindowAvailable);
+    }
+
+    /**
+     * Gets the heatedRearWindowAvailable portion of the ClimateControlCapabilities class
+     *
+     * @return Boolean - Availability of the control (enable/disable) of heated Rear Window.
+     * True: Available, False: Not Available, Not present: Not Available.
+     */
+    public Boolean getHeatedRearWindowAvailable() {
+        return getBoolean(KEY_HEATED_REAR_WINDOW_AVAILABLE);
+    }
+
+    /**
+     * Sets the heatedMirrorsAvailable portion of the ClimateControlCapabilities class
+     *
+     * @param heatedMirrorsAvailable Availability of the control (enable/disable) of heated Mirrors.
+     *                               True: Available, False: Not Available, Not present: Not Available.
+     */
+    public void setHeatedMirrorsAvailable(Boolean heatedMirrorsAvailable) {
+        setValue(KEY_HEATED_MIRRORS_AVAILABLE, heatedMirrorsAvailable);
+    }
+
+    /**
+     * Gets the heatedMirrorsAvailable portion of the ClimateControlCapabilities class
+     *
+     * @return Boolean - Availability of the control (enable/disable) of heated Mirrors.
+     * True: Available, False: Not Available, Not present: Not Available.
+     */
+    public Boolean getHeatedMirrorsAvailable() {
+	    return getBoolean(KEY_HEATED_MIRRORS_AVAILABLE);
     }
 }

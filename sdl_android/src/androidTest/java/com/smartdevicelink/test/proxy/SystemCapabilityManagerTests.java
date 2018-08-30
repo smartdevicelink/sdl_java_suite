@@ -131,6 +131,12 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 
 	}
 
+	public void testFalsePositive(){
+		SystemCapabilityManager systemCapabilityManager = createSampleManager();
+		systemCapabilityManager.setCapability(SystemCapabilityType.AUDIO_PASSTHROUGH, null);
+		assertFalse(systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.AUDIO_PASSTHROUGH));
+	}
+
 	private class InternalSDLInterface implements ISdl{
 		@Override
 		public void start(){}

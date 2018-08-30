@@ -5,10 +5,14 @@ package com.smartdevicelink.proxy.rpc.enums;
  * @since SmartDeviceLink 2.0
  */
 public enum PrimaryAudioSource {
-	/**
-	 * Currently no source selected
-	 */
+    /**
+     * Currently no source selected
+     */
     NO_SOURCE_SELECTED,
+    /**
+     * CD is current source
+     */
+    CD,
     /**
      * USB is current source
      */
@@ -32,18 +36,23 @@ public enum PrimaryAudioSource {
     /**
      * Mobile app is current source
      */
-    MOBILE_APP;
+    MOBILE_APP,
+    AM,
+    FM,
+    XM,
+    DAB,
+    ;
 
     /**
      * Convert String to PrimaryAudioSource
      * @param value String
      * @return PrimaryAudioSource
-     */	
+     */
     public static PrimaryAudioSource valueForString(String value) {
-        try{
-            return valueOf(value);
-        }catch(Exception e){
-            return null;
-        }
+		try{
+			return valueOf(value);
+		}catch(Exception e){
+			return null;
+		}
     }
 }
