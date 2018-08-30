@@ -186,7 +186,6 @@ public class SdlRouterService extends Service{
 
 	private static boolean connectAsClient = false;
 	private static boolean closing = false;
-	private boolean isTransportConnected = false;
 
     private Handler  altTransportTimerHandler, foregroundTimeoutHandler;
     private Runnable  altTransportTimerRunnable, foregroundTimeoutRunnable;
@@ -204,8 +203,7 @@ public class SdlRouterService extends Service{
 	
 	private static Messenger altTransportService = null;
 	
-	private String  connectedDeviceName = "";			//The name of the connected Device
-	private boolean startSequenceComplete = false;	
+	private boolean startSequenceComplete = false;
 	
 	private ExecutorService packetExecutor = null;
 	HashMap<TransportType, PacketWriteTaskMaster>  packetWriteTaskMasterMap = null;
@@ -421,7 +419,7 @@ public class SdlRouterService extends Service{
 
 	            		returnBundle = new Bundle();
 	            		//Add params if connected
-	            		if(service.isTransportConnected){
+	            		if(service.isPrimaryTransportConnected()){
                             ArrayList<TransportRecord> records = service.getConnectedTransports();
 	            			returnBundle.putString(TransportConstants.HARDWARE_CONNECTED, records.get(records.size()-1).getType().name());
 							if(app.routerMessagingVersion > 1) {
@@ -759,14 +757,14 @@ public class SdlRouterService extends Service{
 	        		if(msg.replyTo!=null){
 	        			Message message = Message.obtain();
 	        			message.what = TransportConstants.ROUTER_STATUS_CONNECTED_STATE_RESPONSE;
-	        			message.arg1 = (service.isTransportConnected) ? 1 : 0;
+	        			message.arg1 = (service.isPrimaryTransportConnected()) ? 1 : 0;
 	        			try {
 	        				msg.replyTo.send(message);
 	        			} catch (RemoteException e) {
 	        				e.printStackTrace();
 	        			}
 	        		}
-	        		if(service.isTransportConnected && ((TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING  & flags) == TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING)){
+	        		if(service.isPrimaryTransportConnected() && ((TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING  & flags) == TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING)){
 	        			if(service.pingIntent == null){
 	        				service.initPingIntent();
 	        			}
@@ -822,7 +820,7 @@ public class SdlRouterService extends Service{
 	        				e.printStackTrace();
 	        			}
 	        		}
-	        		if(service.isTransportConnected && ((TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING  & flags) == TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING)){
+	        		if(service.isPrimaryTransportConnected() && ((TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING  & flags) == TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING)){
 	        			if(service.pingIntent == null){
 	        				service.initPingIntent();
 	        			}
@@ -1137,16 +1135,18 @@ public class SdlRouterService extends Service{
 		}
 		if(intent != null ){
 			if(intent.getBooleanExtra(FOREGROUND_EXTRA, false)){
-				String address = null;
-				if(intent.hasExtra(BluetoothDevice.EXTRA_DEVICE)){
-					BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-					if(device != null){
-						address = device.getAddress();
+				if(!this.isPrimaryTransportConnected()) {	//If there is no transport connected we need to ensure the service is moved to the foreground
+					String address = null;
+					if(intent.hasExtra(BluetoothDevice.EXTRA_DEVICE)){
+						BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+						if(device != null){
+							address = device.getAddress();
+						}
 					}
+					int timeout = getNotificationTimeout(address);
+					enterForeground("Waiting for connection...", timeout, false);
+					resetForegroundTimeOut(timeout);
 				}
-				int timeout = getNotificationTimeout(address);
-				enterForeground("Waiting for connection...", timeout, false);
-				resetForegroundTimeOut(timeout);
 			}
 			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
 				//Make sure we are listening on RFCOMM
@@ -1399,7 +1399,7 @@ public class SdlRouterService extends Service{
 
 	private void exitForeground(){
 		synchronized (NOTIFICATION_LOCK) {
-			if (isForeground && !isTransportConnected) {	//Ensure that the service is in the foreground and no longer connected to a transport
+			if (isForeground && !isPrimaryTransportConnected()) {	//Ensure that the service is in the foreground and no longer connected to a transport
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 					NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 					if (notificationManager != null
@@ -1413,14 +1413,34 @@ public class SdlRouterService extends Service{
 			}
 		}
 	}
+
+
+	private String createConnectedNotificationText(){
+		StringBuilder builder = new StringBuilder();
+		builder.append("Connected to ");
+
+		if(bluetoothTransport!= null && bluetoothTransport.isConnected()){
+			builder.append(TransportType.BLUETOOTH.name().toLowerCase());
+		}
+
+		if(usbTransport != null && usbTransport.isConnected()){
+			if(builder.length() > 0){
+				builder.append(" & ");
+			}
+			builder.append(TransportType.USB.name());
+		}
+
+		return builder.toString();
+	}
 	
 	
 	/* **************************************************************************************************************************************
 	***********************************************  Helper Methods **************************************************************
 	****************************************************************************************************************************************/
-	
+
+	@Deprecated
 	public  String getConnectedDeviceName(){
-		return connectedDeviceName;
+		return null;
 	}
 
 	private ArrayList<TransportRecord> getConnectedTransports(){
@@ -1441,6 +1461,9 @@ public class SdlRouterService extends Service{
 		return connected;
 	}
 
+	private boolean isPrimaryTransportConnected(){
+		return isTransportConnected(TransportType.BLUETOOTH) || isTransportConnected(TransportType.USB);
+	}
 
 	private boolean isTransportConnected(TransportType transportType){
 		if(bluetoothTransport != null && transportType.equals(TransportType.BLUETOOTH)){
@@ -1539,9 +1562,8 @@ public class SdlRouterService extends Service{
 //TODO
    // }
 	public void onTransportConnected(final TransportRecord record){
-		isTransportConnected = true;
 		cancelForegroundTimeOut();
-		enterForeground("Connected to " + this.getConnectedDeviceName(),0,true);
+		enterForeground(createConnectedNotificationText(),0,true);
 
 		if(packetWriteTaskMasterMap == null){
 			packetWriteTaskMasterMap = new HashMap<>();
@@ -1618,9 +1640,8 @@ public class SdlRouterService extends Service{
 			notifyClients(message);
 		}
 		if(!getConnectedTransports().isEmpty()){
-			ArrayList<TransportRecord> transports = getConnectedTransports();
 			// Updates notification to one of still connected transport
-			enterForeground("Connected to " + transports.get(transports.size() - 1),0,true);
+			enterForeground(createConnectedNotificationText(),0,true);
 			return;
 		}else{
 			exitForeground();//Leave our foreground state as we don't have a connection anymore
@@ -1649,7 +1670,6 @@ public class SdlRouterService extends Service{
 
 		//TODO fix this part. We need to make sure there are no curerntly connected transports
 
-		isTransportConnected = false;
 		stopClientPings();
 
 
@@ -1732,7 +1752,6 @@ public class SdlRouterService extends Service{
 	            	case MESSAGE_DEVICE_NAME:
 						Bundle bundle = msg.getData();
 						if(bundle !=null) {
-							service.connectedDeviceName = bundle.getString(MultiplexBaseTransport.DEVICE_NAME);
 							service.setSDLConnectedStatus(bundle.getString(MultiplexBaseTransport.DEVICE_ADDRESS),true);
 						}
 	            		break;
@@ -2581,7 +2600,7 @@ public class SdlRouterService extends Service{
 	
 	private void startClientPings(){
 		synchronized(this){
-			if(!isTransportConnected){ //If we aren't connected, bail
+			if(!isPrimaryTransportConnected()){ //If we aren't connected, bail
 				return;
 			}
 		if(isPingingClients){
