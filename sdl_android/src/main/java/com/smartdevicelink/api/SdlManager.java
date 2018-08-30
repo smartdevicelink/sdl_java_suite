@@ -166,7 +166,7 @@ public class SdlManager{
 		*/
 	}
 
-	private void dispose() {
+	public void dispose() {
 		this.permissionManager.dispose();
 		if(this.videoStreamingManager != null) {
 			this.videoStreamingManager.dispose();
