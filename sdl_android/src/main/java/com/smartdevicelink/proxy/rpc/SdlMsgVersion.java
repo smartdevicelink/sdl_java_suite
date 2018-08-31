@@ -74,7 +74,17 @@ public class SdlMsgVersion extends RPCStruct {
         this();
         setMajorVersion(majorVersion);
         setMinorVersion(minorVersion);
+
     }
+
+    @Override
+    public void format(com.smartdevicelink.util.Version rpcVersion, boolean formatParams) {
+        if(getPatchVersion() == null){
+            setPatchVersion(0);
+        }
+        super.format(rpcVersion,formatParams);
+    }
+
     public Integer getMajorVersion() {
         return getInteger( KEY_MAJOR_VERSION );
     }

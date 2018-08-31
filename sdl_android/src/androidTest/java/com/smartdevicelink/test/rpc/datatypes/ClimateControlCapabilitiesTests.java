@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.ClimateControlCapabilities}
  */
 public class ClimateControlCapabilitiesTests extends TestCase{
@@ -40,6 +40,10 @@ public class ClimateControlCapabilitiesTests extends TestCase{
         msg.setDefrostZone(Test.GENERAL_DEFROSTZONE_LIST);
         msg.setVentilationModeAvailable(Test.GENERAL_BOOLEAN);
         msg.setVentilationMode(Test.GENERAL_VENTILATIONMODE_LIST);
+        msg.setHeatedSteeringWheelAvailable(Test.GENERAL_BOOLEAN);
+        msg.setHeatedWindshieldAvailable(Test.GENERAL_BOOLEAN);
+        msg.setHeatedRearWindowAvailable(Test.GENERAL_BOOLEAN);
+        msg.setHeatedMirrorsAvailable(Test.GENERAL_BOOLEAN);
     }
 
     /**
@@ -59,6 +63,10 @@ public class ClimateControlCapabilitiesTests extends TestCase{
         List<DefrostZone> defrostZone = msg.getDefrostZone();
         boolean ventilationModeAvailable = msg.getVentilationModeAvailable();
         List<VentilationMode> ventilationMode = msg.getVentilationMode();
+        boolean heatedSteeringWheelAvailable = msg.getHeatedSteeringWheelAvailable();
+        boolean heatedWindshieldAvailable = msg.getHeatedWindshieldAvailable();
+        boolean heatedRearWindowAvailable = msg.getHeatedRearWindowAvailable();
+        boolean heatedMirrorsAvailable = msg.getHeatedMirrorsAvailable();
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_STRING, moduleName);
@@ -82,6 +90,10 @@ public class ClimateControlCapabilitiesTests extends TestCase{
             assertEquals(Test.MATCH, Test.GENERAL_VENTILATIONMODE_LIST.get(i), ventilationMode.get(i));
         }
 
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedSteeringWheelAvailable);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedWindshieldAvailable);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedRearWindowAvailable);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedMirrorsAvailable);
         // Invalid/Null Tests
         ClimateControlCapabilities msg = new ClimateControlCapabilities();
         assertNotNull(Test.NOT_NULL, msg);
@@ -97,6 +109,10 @@ public class ClimateControlCapabilitiesTests extends TestCase{
         assertNull(Test.NULL, msg.getDefrostZone());
         assertNull(Test.NULL, msg.getVentilationModeAvailable());
         assertNull(Test.NULL, msg.getVentilationMode());
+        assertNull(Test.NULL, msg.getHeatedSteeringWheelAvailable());
+        assertNull(Test.NULL, msg.getHeatedWindshieldAvailable());
+        assertNull(Test.NULL, msg.getHeatedRearWindowAvailable());
+        assertNull(Test.NULL, msg.getHeatedMirrorsAvailable());
     }
 
     public void testJson(){
@@ -115,6 +131,10 @@ public class ClimateControlCapabilitiesTests extends TestCase{
             reference.put(ClimateControlCapabilities.KEY_VENTILATION_MODE_AVAILABLE, Test.GENERAL_BOOLEAN);
             reference.put(ClimateControlCapabilities.KEY_DEFROST_ZONE, JsonUtils.createJsonArray(Test.GENERAL_DEFROSTZONE_LIST));
             reference.put(ClimateControlCapabilities.KEY_VENTILATION_MODE, JsonUtils.createJsonArray(Test.GENERAL_VENTILATIONMODE_LIST));
+            reference.put(ClimateControlCapabilities.KEY_HEATED_STEERING_WHEEL_AVAILABLE, Test.GENERAL_BOOLEAN);
+            reference.put(ClimateControlCapabilities.KEY_HEATED_WIND_SHIELD_AVAILABLE, Test.GENERAL_BOOLEAN);
+            reference.put(ClimateControlCapabilities.KEY_HEATED_REAR_WINDOW_AVAILABLE, Test.GENERAL_BOOLEAN);
+            reference.put(ClimateControlCapabilities.KEY_HEATED_MIRRORS_AVAILABLE, Test.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());

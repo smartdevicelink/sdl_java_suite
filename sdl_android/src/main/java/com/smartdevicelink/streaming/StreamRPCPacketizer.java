@@ -22,6 +22,7 @@ import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
+import com.smartdevicelink.util.Version;
 
 public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileResponseListener, Runnable{
 
@@ -36,7 +37,9 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
     private Object mPauseLock;
     private boolean mPaused;
     private boolean isRPCProtected = false;
-	private OnPutFileUpdateListener callBack; 
+	private OnPutFileUpdateListener callBack;
+
+	private Version rpcSpecVersion;
 
 	public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion, long lLength, SdlSession session) throws IOException {
 		super(streamListener, is, request, sType, rpcSessionID, wiproVersion, session);
@@ -47,6 +50,24 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
         isRPCProtected = request.isPayloadProtected();
 		if (proxy != null)
 		{
+			_proxy = proxy;
+			_proxyListener = _proxy.getProxyListener();
+			_proxy.addPutFileResponseListener(this);
+		}
+		if(_request.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.toString())){
+			callBack = ((PutFile)_request).getOnPutFileUpdateListener();
+		}
+	}
+
+	public StreamRPCPacketizer(SdlProxyBase<IProxyListenerBase> proxy, IStreamListener streamListener, InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, Version wiproVersion, Version rpcSpecVersion, long lLength, SdlSession session) throws IOException {
+		super(streamListener, is, request, sType, rpcSessionID, wiproVersion, session);
+		this.rpcSpecVersion = rpcSpecVersion;
+		lFileSize = lLength;
+		iInitialCorrID = request.getCorrelationID();
+		mPauseLock = new Object();
+		mPaused = false;
+		isRPCProtected = request.isPayloadProtected();
+		if (proxy != null) {
 			_proxy = proxy;
 			_proxyListener = _proxy.getProxyListener();
 			_proxy.addPutFileResponseListener(this);
@@ -201,7 +222,8 @@ public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileR
 					if (msg.getOffset() != 0)
 			        	msg.setLength((Long)null); //only need to send length when offset 0
 
-					msgBytes = JsonRPCMarshaller.marshall(msg, _wiproVersion);					
+					msg.format(rpcSpecVersion,true);
+					msgBytes = JsonRPCMarshaller.marshall(msg, (byte)_wiproVersion.getMajor());
 					pm = new ProtocolMessage();
 					pm.setData(msgBytes);
 

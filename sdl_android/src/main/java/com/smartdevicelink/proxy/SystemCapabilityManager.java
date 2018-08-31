@@ -57,7 +57,8 @@ public class SystemCapabilityManager {
 	 * @return if that capability is supported with the current, connected module
 	 */
 	public boolean isCapabilitySupported(SystemCapabilityType type){
-		if(cachedSystemCapabilities.containsKey(type)){
+		if(cachedSystemCapabilities.get(type) != null){
+			//The capability exists in the map and is not null
 			return true;
 		}else if(cachedSystemCapabilities.containsKey(SystemCapabilityType.HMI)){
 			HMICapabilities hmiCapabilities = ((HMICapabilities)cachedSystemCapabilities.get(SystemCapabilityType.HMI));
