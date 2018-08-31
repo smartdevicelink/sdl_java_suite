@@ -122,7 +122,7 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 	public void testHMILevelNotFull(){
 		ISdl internalInterface = mock(ISdl.class);
 
-		when(internalInterface.getProtocolVersion()).thenReturn(new Version("5.0.0"));
+		when(internalInterface.getWiProVersion()).thenReturn((byte)5);
 		when(internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(true);
 
 		final VideoStreamingManager videoStreamingManager = new VideoStreamingManager(internalInterface);
@@ -140,7 +140,7 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 
 		final Set<Object> listenerSet = new HashSet<>();
 
-		when(internalInterface.getProtocolVersion()).thenReturn(new Version("5.0.0"));
+		when(internalInterface.getWiProVersion()).thenReturn((byte)5);
 		when(internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(true);
 
 		Answer<Void> onGetCapability = new Answer<Void>() {

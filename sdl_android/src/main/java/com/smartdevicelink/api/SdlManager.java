@@ -745,8 +745,8 @@ public class SdlManager{
 		}
 
 		@Override
-		public Version getProtocolVersion() {
-			return proxy.getProtocolVersion();
+		public byte getWiProVersion() {
+			return proxy.getWiProVersion();
 		}
 
 	};

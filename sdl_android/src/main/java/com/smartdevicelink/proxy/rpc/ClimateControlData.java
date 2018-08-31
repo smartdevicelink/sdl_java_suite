@@ -3,6 +3,7 @@ package com.smartdevicelink.proxy.rpc;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
+
 import java.util.Hashtable;
 
 public class ClimateControlData extends RPCStruct{
@@ -16,6 +17,10 @@ public class ClimateControlData extends RPCStruct{
     public static final String KEY_DUAL_MODE_ENABLE= "dualModeEnable";
     public static final String KEY_AC_MAX_ENABLE= "acMaxEnable";
     public static final String KEY_VENTILATION_MODE= "ventilationMode";
+    public static final String KEY_HEATED_STEERING_WHEEL_ENABLE = "heatedSteeringWheelEnable";
+    public static final String KEY_HEATED_WIND_SHIELD_ENABLE = "heatedWindshieldEnable";
+    public static final String KEY_HEATED_REAR_WINDOW_ENABLE = "heatedRearWindowEnable";
+    public static final String KEY_HEATED_MIRRORS_ENABLE = "heatedMirrorsEnable";
 
     public ClimateControlData() {
     }
@@ -102,5 +107,77 @@ public class ClimateControlData extends RPCStruct{
 
     public VentilationMode getVentilationMode() {
         return (VentilationMode) getObject(VentilationMode.class, KEY_VENTILATION_MODE);
+    }
+
+    /**
+     * Sets the heatedSteeringWheelEnable portion of the ClimateControlCapabilities class
+     *
+     * @param heatedSteeringWheelEnable Value false means disabled/turn off, value true means enabled/turn on.
+     */
+    public void setHeatedSteeringWheelEnable(Boolean heatedSteeringWheelEnable) {
+        setValue(KEY_HEATED_STEERING_WHEEL_ENABLE, heatedSteeringWheelEnable);
+    }
+
+    /**
+     * Gets the heatedSteeringWheelEnable portion of the ClimateControlCapabilities class
+     *
+     * @return Boolean - Value false means disabled/turn off, value true means enabled/turn on.
+     */
+    public Boolean getHeatedSteeringWheelEnable() {
+        return getBoolean(KEY_HEATED_STEERING_WHEEL_ENABLE);
+    }
+
+    /**
+     * Sets the heatedWindshieldEnable portion of the ClimateControlCapabilities class
+     *
+     * @param heatedWindshieldEnable Value false means disabled, value true means enabled.
+     */
+    public void setHeatedWindshieldEnable(Boolean heatedWindshieldEnable) {
+        setValue(KEY_HEATED_WIND_SHIELD_ENABLE, heatedWindshieldEnable);
+    }
+
+    /**
+     * Gets the heatedWindshieldEnable portion of the ClimateControlCapabilities class
+     *
+     * @return Boolean - Value false means disabled, value true means enabled.
+     */
+    public Boolean getHeatedWindshieldEnable() {
+        return getBoolean(KEY_HEATED_WIND_SHIELD_ENABLE);
+    }
+
+    /**
+     * Sets the heatedRearWindowEnable portion of the ClimateControlCapabilities class
+     *
+     * @param heatedRearWindowEnable Value false means disabled, value true means enabled.
+     */
+    public void setHeatedRearWindowEnable(Boolean heatedRearWindowEnable) {
+        setValue(KEY_HEATED_REAR_WINDOW_ENABLE, heatedRearWindowEnable);
+    }
+
+    /**
+     * Gets the heatedRearWindowEnable portion of the ClimateControlCapabilities class
+     *
+     * @return Boolean - Value false means disabled, value true means enabled.
+     */
+    public Boolean getHeatedRearWindowEnable() {
+        return getBoolean(KEY_HEATED_REAR_WINDOW_ENABLE);
+    }
+
+    /**
+     * Sets the heatedMirrorsEnable portion of the ClimateControlCapabilities class
+     *
+     * @param heatedMirrorsEnable Value false means disabled, value true means enabled.
+     */
+    public void setHeatedMirrorsEnable(Boolean heatedMirrorsEnable) {
+        setValue(KEY_HEATED_MIRRORS_ENABLE, heatedMirrorsEnable);
+    }
+
+    /**
+     * Gets the heatedMirrorsEnable portion of the ClimateControlCapabilities class
+     *
+     * @return Boolean - Value false means disabled, value true means enabled.
+     */
+    public Boolean getHeatedMirrorsEnable() {
+        return getBoolean(KEY_HEATED_MIRRORS_ENABLE);
     }
 }

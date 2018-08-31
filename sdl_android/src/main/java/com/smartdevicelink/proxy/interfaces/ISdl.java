@@ -207,9 +207,9 @@ public interface ISdl {
     SdlMsgVersion getSdlMsgVersion();
 
     /**
-     * Get protocol version
-     * @return Version object representing protocol version
+     * Get WiPro version
+     * @return byte value representing WiPro version
      */
-    Version getProtocolVersion();
+    byte getWiProVersion();
 
 }

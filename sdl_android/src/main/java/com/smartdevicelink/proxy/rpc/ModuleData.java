@@ -12,6 +12,9 @@ public class ModuleData extends RPCStruct {
 	public static final String KEY_RADIO_CONTROL_DATA = "radioControlData";
 	public static final String KEY_CLIMATE_CONTROL_DATA = "climateControlData";
 	public static final String KEY_SEAT_CONTROL_DATA = "seatControlData";
+	public static final String KEY_AUDIO_CONTROL_DATA = "audioControlData";
+	public static final String KEY_LIGHT_CONTROL_DATA = "lightControlData";
+	public static final String KEY_HMI_SETTINGS_CONTROL_DATA = "hmiSettingsControlData";
 
 	public ModuleData() {
 	}
@@ -97,5 +100,59 @@ public class ModuleData extends RPCStruct {
 	 */
 	public SeatControlData getSeatControlData() {
 		return (SeatControlData) getObject(SeatControlData.class, KEY_SEAT_CONTROL_DATA);
+	}
+
+	/**
+	 * Sets the audioControlData portion of the ModuleData class
+	 *
+	 * @param audioControlData
+	 */
+	public void setAudioControlData(AudioControlData audioControlData) {
+		setValue(KEY_AUDIO_CONTROL_DATA, audioControlData);
+	}
+
+	/**
+	 * Gets the audioControlData portion of the ModuleData class
+	 *
+	 * @return AudioControlData
+	 */
+	public AudioControlData getAudioControlData() {
+		return (AudioControlData) getObject(AudioControlData.class, KEY_AUDIO_CONTROL_DATA);
+	}
+
+	/**
+	 * Sets the lightControlData portion of the ModuleData class
+	 *
+	 * @param lightControlData
+	 */
+	public void setLightControlData(LightControlData lightControlData) {
+		setValue(KEY_LIGHT_CONTROL_DATA, lightControlData);
+	}
+
+	/**
+	 * Gets the lightControlData portion of the ModuleData class
+	 *
+	 * @return LightControlData
+	 */
+	public LightControlData getLightControlData() {
+		return (LightControlData) getObject(LightControlData.class, KEY_LIGHT_CONTROL_DATA);
+	}
+
+	/**
+	 * Sets the hmiSettingsControlData portion of the ModuleData class
+	 *
+	 * @param hmiSettingsControlData
+	 */
+	public void setHmiSettingsControlData(HMISettingsControlData hmiSettingsControlData) {
+		setValue(KEY_HMI_SETTINGS_CONTROL_DATA, hmiSettingsControlData);
+	}
+
+	/**
+	 * Gets the hmiSettingsControlData portion of the ModuleData class
+	 *
+	 * @return HMISettingsControlData
+	 */
+	public HMISettingsControlData getHmiSettingsControlData() {
+		return (HMISettingsControlData) getObject(HMISettingsControlData.class, KEY_HMI_SETTINGS_CONTROL_DATA);
 	}
 }

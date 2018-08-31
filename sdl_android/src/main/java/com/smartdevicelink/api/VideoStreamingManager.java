@@ -136,13 +136,13 @@ public class VideoStreamingManager extends BaseSubManager{
 	public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted){
 		this.context = new WeakReference<>(context);
 		this.remoteDisplayClass = remoteDisplayClass;
-		if(internalInterface.getProtocolVersion().getMajor() >= 5 && !internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
+		if(internalInterface.getWiProVersion() >= 5 && !internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			Log.e(TAG, "Video streaming not supported on this module");
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			return;
 		}
 		if(parameters == null){
-			if(internalInterface.getProtocolVersion().getMajor() >= 5) {
+			if(internalInterface.getWiProVersion() >= 5) {
 				internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
 					@Override
 					public void onCapabilityRetrieved(Object capability) {
@@ -351,7 +351,7 @@ public class VideoStreamingManager extends BaseSubManager{
 					}
 					//Get touch scalars
 					ImageResolution resolution = null;
-					if(internalInterface.getProtocolVersion().getMajor()>=5){ //At this point we should already have the capability
+					if(internalInterface.getWiProVersion() >=5){ //At this point we should already have the capability
 						VideoStreamingCapability capability = (VideoStreamingCapability) internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING);
 						resolution = capability.getPreferredResolution();
 					}else {
