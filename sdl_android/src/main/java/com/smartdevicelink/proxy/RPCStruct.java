@@ -1,6 +1,9 @@
 package com.smartdevicelink.proxy;
 
+import android.util.Log;
+
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
+import com.smartdevicelink.util.Version;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +22,10 @@ public class RPCStruct {
     
 	private byte[] _bulkData = null;
 	private Boolean protectedPayload = false;
+
+	private boolean formatRequested = false;
+	private Version rpcSpecVersion = null;
+
 
 	protected Hashtable<String, Object> store = null;
 	
@@ -45,6 +52,7 @@ public class RPCStruct {
 	
 	public void deserializeJSON(JSONObject jsonObject) throws JSONException {
 		store = JsonRPCMarshaller.deserializeJSONObject(jsonObject);
+
 	}
 	
 	// deserializeJSONObject method moved to JsonRPCMarshaller for consistency
@@ -54,20 +62,71 @@ public class RPCStruct {
 			throws JSONException {
 		return JsonRPCMarshaller.deserializeJSONObject(jsonObject);
 	}
-	
+
 	public JSONObject serializeJSON() throws JSONException {
 		return JsonRPCMarshaller.serializeHashtable(store);
 	}
 	
 	@SuppressWarnings("unchecked")
-    public JSONObject serializeJSON(byte version) throws JSONException {
-		if (version > 1) {
+    public JSONObject serializeJSON(byte protocolVersion) throws JSONException {
+		if (protocolVersion > 1) {
 			String messageType = getMessageTypeName(store.keySet());
 			Hashtable<String, Object> function = (Hashtable<String, Object>) store.get(messageType);
 			Hashtable<String, Object> parameters = (Hashtable<String, Object>) function.get(RPCMessage.KEY_PARAMETERS);
 			return JsonRPCMarshaller.serializeHashtable(parameters);
 		} else return JsonRPCMarshaller.serializeHashtable(store);
 	}
+
+	/**
+	 * This method should clean the the RPC to make sure it is compliant with the spec.
+	 * <br><br><b> NOTE:</b> Super needs to be called at the END of the method
+	 *
+	 * @param rpcVersion the rpc spec version that has been negotiated. If value is null the
+	 *                   the max value of RPC spec version this library supports should be used.
+	 *  @param formatParams if true, the format method will be called on subsequent params
+	 */
+	public void format(Version rpcVersion, boolean formatParams){
+		formatRequested = true;
+		rpcSpecVersion = rpcVersion;
+		//Should override this method when breaking changes are made to the RPC spec
+		if(formatParams && store != null){
+			Hashtable<String, Object> parameters;
+
+			if(this instanceof RPCMessage) {
+				//If this is a message (request, response, notification) the parameters have to be
+				//retrieved from the store object.
+				String messageType = getMessageTypeName(store.keySet());
+				Hashtable<String, Object> function = (Hashtable<String, Object>) store.get(messageType);
+				parameters = (Hashtable<String, Object>) function.get(RPCMessage.KEY_PARAMETERS);
+			} else {
+				//If this is just an RPC struct the store itself should be used
+				parameters = store;
+			}
+
+			for(Object value:parameters.values()){
+				internalFormat(rpcVersion, value);
+			}
+		}
+	}
+
+	/**
+	 * Cycles through parameters in this RPC to ensure they all get formated
+	 * @param rpcVersion version of the rpc spec that should be used to format this rpc
+	 * @param value the object to investigate if it needs to be formated
+	 */
+	private void internalFormat(Version rpcVersion, Object value) {
+		if(value instanceof RPCStruct) {
+			((RPCStruct)value).format(rpcVersion,true);
+		} else if(value instanceof List<?>) {
+			List<?> list = (List<?>)value;
+			if(list != null && list.size() > 0) {
+				for(Object listItem: list){
+					internalFormat(rpcVersion, listItem);
+				}
+			}
+		}
+	}
+
 
 	public byte[] getBulkData() {
 		return this._bulkData;
@@ -156,7 +215,12 @@ public class RPCStruct {
 		} else if (obj instanceof Hashtable) {
 			try {
 				Constructor constructor = tClass.getConstructor(Hashtable.class);
-				return constructor.newInstance((Hashtable<String, Object>) obj);
+				Object customObject = constructor.newInstance((Hashtable<String, Object>) obj);
+				if(formatRequested && customObject instanceof RPCStruct){
+					((RPCStruct)customObject).format(rpcSpecVersion,true);
+				}
+
+				return customObject;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -168,10 +232,17 @@ public class RPCStruct {
 					return list;
 				} else if (item instanceof Hashtable) {
 					List<Object> newList = new ArrayList<Object>();
+					Object customObject;
 					for (Object hashObj : list) {
 						try {
 							Constructor constructor = tClass.getConstructor(Hashtable.class);
-							newList.add(constructor.newInstance((Hashtable<String, Object>)hashObj));
+							customObject = constructor.newInstance((Hashtable<String, Object>) hashObj);
+							if(formatRequested
+									&& customObject != null
+									&& customObject instanceof RPCStruct){
+								((RPCStruct)customObject).format(rpcSpecVersion,true);
+							}
+							newList.add(customObject);
 						} catch (Exception e) {
 							e.printStackTrace();
 							return null;

@@ -12,6 +12,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingState;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.Test;
+import com.smartdevicelink.util.Version;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -80,6 +81,9 @@ public class OnHMIStatusTests extends BaseRpcTests{
         testNullBase(msg);
 
         assertNull(Test.NULL, msg.getAudioStreamingState());
+
+        assertNull(Test.NULL, msg.getVideoStreamingState());
+        msg.format(new Version(4,5,0),true);
         assertEquals(Test.MATCH, VideoStreamingState.STREAMABLE, msg.getVideoStreamingState());
         assertNull(Test.NULL, msg.getHmiLevel());
         assertNull(Test.NULL, msg.getSystemContext());

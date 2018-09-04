@@ -112,6 +112,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		builder.setNightColorScheme(templateColorScheme);
 		builder.setVrSynonyms(Test.GENERAL_VECTOR_STRING);
 		builder.setTtsName(Test.GENERAL_VECTOR_TTS_CHUNKS);
+		builder.setLockScreenConfig(Test.GENERAL_LOCKSCREENCONFIG);
 		manager = builder.build();
 
 		// mock SdlProxyBase and set it manually
@@ -154,6 +155,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		assertEquals(templateColorScheme, sdlManager.getNightColorScheme());
 		assertEquals(Test.GENERAL_VECTOR_STRING, sdlManager.getVrSynonyms());
 		assertEquals(Test.GENERAL_VECTOR_TTS_CHUNKS, sdlManager.getTtsChunks());
+		assertEquals(Test.GENERAL_LOCKSCREENCONFIG, sdlManager.getLockScreenConfig());
 	}
 
 	public void testStartingManager(){

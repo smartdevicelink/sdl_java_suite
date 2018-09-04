@@ -3,7 +3,9 @@ package com.smartdevicelink.proxy.rpc;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.util.Version;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -64,10 +66,12 @@ public class Choice extends RPCStruct {
 	public static final String KEY_VR_COMMANDS = "vrCommands";
 	public static final String KEY_CHOICE_ID = "choiceID";
 	public static final String KEY_IMAGE = "image";
+
 	/**
 	 * Constructs a newly allocated Choice object
 	 */
     public Choice() { }
+
     /**
      * Constructs a newly allocated Choice object indicated by the Hashtable parameter
      * @param hash The Hashtable to use
@@ -75,18 +79,64 @@ public class Choice extends RPCStruct {
     public Choice(Hashtable<String, Object> hash) {
         super(hash);
     }
+
+    /**
+     * Constructs a newly allocated Choice object
+     * @param choiceID Min: 0  Max: 65535
+     * @param menuName the menu name
+     */
+    public Choice(@NonNull Integer choiceID, @NonNull String menuName) {
+        this();
+        setChoiceID(choiceID);
+        setMenuName(menuName);
+    }
+    
     /**
      * Constructs a newly allocated Choice object
      * @param choiceID Min: 0  Max: 65535
      * @param menuName the menu name
      * @param vrCommands the List of  vrCommands
+     *
+     * Deprecated - use {@link #Choice(Integer, String)}
      */
+    @Deprecated
     public Choice(@NonNull Integer choiceID, @NonNull String menuName, @NonNull List<String> vrCommands) {
         this();
         setChoiceID(choiceID);
         setMenuName(menuName);
         setVrCommands(vrCommands);
     }
+
+    /**
+     * VrCommands became optional as of RPC Spec 5.0. On legacy systems, we must still set VrCommands, as
+     * they are expected, even though the developer may not specify them. <br>
+     *
+     * Additionally, VrCommands must be unique, therefore we will use the string value of the command's ID
+     *
+     * @param rpcVersion the rpc spec version that has been negotiated. If value is null the
+     *                   the max value of RPC spec version this library supports should be used.
+     * @param formatParams if true, the format method will be called on subsequent params
+     */
+    @Override
+    public void format(Version rpcVersion, boolean formatParams){
+
+        if (rpcVersion == null || rpcVersion.getMajor() < 5){
+
+            // make sure there is at least one vr param
+            List<String> existingVrCommands = getVrCommands();
+
+            if (existingVrCommands == null || existingVrCommands.size() == 0) {
+                // if no commands set, set one due to a legacy head unit requirement
+                Integer choiceID = getChoiceID();
+                List<String> vrCommands = new ArrayList<>();
+                vrCommands.add(String.valueOf(choiceID));
+                setVrCommands(vrCommands);
+            }
+        }
+
+        super.format(rpcVersion, formatParams);
+    }
+
     /**
      * Get the application-scoped identifier that uniquely identifies this choice.
      * @return choiceID Min: 0;  Max: 65535
@@ -133,7 +183,7 @@ public class Choice extends RPCStruct {
      * @param vrCommands the List of  vrCommands
      * @since SmartDeviceLink 2.0
      */    
-    public void setVrCommands(@NonNull List<String> vrCommands) {
+    public void setVrCommands(List<String> vrCommands) {
         setValue(KEY_VR_COMMANDS, vrCommands);
     }
     /**

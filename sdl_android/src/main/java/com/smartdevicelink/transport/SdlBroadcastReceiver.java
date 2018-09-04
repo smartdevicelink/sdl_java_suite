@@ -294,7 +294,12 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			Intent intent = new Intent();
 			intent.setClassName(packageName, className);
 			intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
-			context.startService(intent);
+			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+				intent.putExtra(FOREGROUND_EXTRA, true);
+				context.startForegroundService(intent);
+			}else {
+				context.startService(intent);
+			}
 		}catch(SecurityException e){
 			Log.e(TAG, "Security exception, process is bad");
 			// This service could not be started

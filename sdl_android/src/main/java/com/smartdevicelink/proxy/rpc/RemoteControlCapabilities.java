@@ -10,6 +10,9 @@ public class RemoteControlCapabilities extends RPCStruct {
 	public static final String KEY_RADIO_CONTROL_CAPABILITIES = "radioControlCapabilities";
 	public static final String KEY_BUTTON_CAPABILITIES = "buttonCapabilities";
 	public static final String KEY_SEAT_CONTROL_CAPABILITIES = "seatControlCapabilities";
+	public static final String KEY_AUDIO_CONTROL_CAPABILITIES = "audioControlCapabilities";
+	public static final String KEY_HMI_SETTINGS_CONTROL_CAPABILITIES = "hmiSettingsControlCapabilities";
+	public static final String KEY_LIGHT_CONTROL_CAPABILITIES = "lightControlCapabilities";
 
 	public RemoteControlCapabilities() {
 	}
@@ -96,5 +99,60 @@ public class RemoteControlCapabilities extends RPCStruct {
 	 */
 	public List<SeatControlCapabilities> getSeatControlCapabilities() {
 		return (List<SeatControlCapabilities>) getObject(SeatControlCapabilities.class, KEY_SEAT_CONTROL_CAPABILITIES);
+	}
+
+	/**
+	 * Sets the audioControlCapabilities portion of the RemoteControlCapabilities class
+	 *
+	 * @param audioControlCapabilities If included, the platform supports audio controls.
+	 */
+	public void setAudioControlCapabilities(List<AudioControlCapabilities> audioControlCapabilities) {
+		setValue(KEY_AUDIO_CONTROL_CAPABILITIES, audioControlCapabilities);
+	}
+
+	/**
+	 * Gets the audioControlCapabilities portion of the RemoteControlCapabilities class
+	 *
+	 * @return List<AudioControlCapabilities>
+	 * If included, the platform supports audio controls.
+	 */
+	public List<AudioControlCapabilities> getAudioControlCapabilities() {
+		return (List<AudioControlCapabilities>) getObject(AudioControlCapabilities.class, KEY_AUDIO_CONTROL_CAPABILITIES);
+	}
+
+	/**
+	 * Sets the hmiSettingsControlCapabilities portion of the RemoteControlCapabilities class
+	 *
+	 * @param hmiSettingsControlCapabilities If included, the platform supports hmi setting controls.
+	 */
+	public void setHmiSettingsControlCapabilities(HMISettingsControlCapabilities hmiSettingsControlCapabilities) {
+		setValue(KEY_HMI_SETTINGS_CONTROL_CAPABILITIES, hmiSettingsControlCapabilities);
+	}
+
+	/**
+	 * Gets the hmiSettingsControlCapabilities portion of the RemoteControlCapabilities class
+	 *
+	 * @return HMISettingsControlCapabilities - If included, the platform supports hmi setting controls.
+	 */
+	public HMISettingsControlCapabilities getHmiSettingsControlCapabilities() {
+		return (HMISettingsControlCapabilities) getObject(HMISettingsControlCapabilities.class, KEY_HMI_SETTINGS_CONTROL_CAPABILITIES);
+	}
+
+	/**
+	 * Sets the lightControlCapabilities portion of the RemoteControlCapabilities class
+	 *
+	 * @param lightControlCapabilities If included, the platform supports light controls.
+	 */
+	public void setLightControlCapabilities(LightControlCapabilities lightControlCapabilities) {
+		setValue(KEY_LIGHT_CONTROL_CAPABILITIES, lightControlCapabilities);
+	}
+
+	/**
+	 * Gets the lightControlCapabilities portion of the RemoteControlCapabilities class
+	 *
+	 * @return LightControlCapabilities - If included, the platform supports light controls.
+	 */
+	public LightControlCapabilities getLightControlCapabilities() {
+		return (LightControlCapabilities) getObject(LightControlCapabilities.class, KEY_LIGHT_CONTROL_CAPABILITIES);
 	}
 }

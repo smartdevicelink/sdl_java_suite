@@ -34,6 +34,7 @@ import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.util.CorrelationIdGenerator;
+import com.smartdevicelink.util.Version;
 
 import java.util.List;
 
@@ -138,6 +139,12 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 
 	}
 
+	public void testFalsePositive(){
+		SystemCapabilityManager systemCapabilityManager = createSampleManager();
+		systemCapabilityManager.setCapability(SystemCapabilityType.AUDIO_PASSTHROUGH, null);
+		assertFalse(systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.AUDIO_PASSTHROUGH));
+	}
+
 	private class InternalSDLInterface implements ISdl{
 		@Override
 		public void start(){}
@@ -193,6 +200,12 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		public SdlMsgVersion getSdlMsgVersion(){
 			return null;
 		}
+
+		@Override
+		public byte getWiProVersion() {
+			return 0;
+		}
+
 
 		@Override
 		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
