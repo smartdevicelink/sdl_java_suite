@@ -24,6 +24,10 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
+/**
+ * @see SdlProtocol
+ */
+@Deprecated
 public class WiProProtocol extends AbstractProtocol {
 	private final static String FailurePropagating_Msg = "Failure propagating ";
 	//If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
@@ -56,6 +60,7 @@ public class WiProProtocol extends AbstractProtocol {
 	private WiProProtocol() {
 		super(null);
 	} // end-ctor
+
 
 	public WiProProtocol(IProtocolListener protocolListener) {
 		super(protocolListener);

@@ -28,6 +28,7 @@ public class TransportConstants {
 	public static final String START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE = "package_name";
 	public static final String START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME    = "component_name";
 	public static final String START_ROUTER_SERVICE_SDL_ENABLED_PING		= "ping";
+	@Deprecated
 	public static final String FORCE_TRANSPORT_CONNECTED					= "force_connect"; //This is legacy, do not refactor this. 
 	public static final String ROUTER_SERVICE_VALIDATED						= "router_service_validated"; 
 

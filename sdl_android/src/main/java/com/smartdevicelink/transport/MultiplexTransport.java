@@ -16,6 +16,7 @@ import com.smartdevicelink.transport.utl.TransportRecord;
 
 import java.util.List;
 
+@Deprecated
 public class MultiplexTransport extends SdlTransport{
 	private final static String TAG = "Multiplex Transport";
 	private String sComment = "Multiplexing";
