@@ -426,8 +426,8 @@ public class SdlRouterService extends Service{
 								returnBundle.putParcelableArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED, records);
 							}
 
-	                		if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
-	                			returnBundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
+	                		if(service.bluetoothTransport != null){
+	                			returnBundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, service.bluetoothTransport.getDeviceName());
 	                		}
 	            		}
 	            		//Add the version of this router service
@@ -1031,6 +1031,12 @@ public class SdlRouterService extends Service{
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		//This must be done regardless of if this service shuts down or not
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			enterForeground("Waiting for connection...", FOREGROUND_TIMEOUT/1000, false);
+			resetForegroundTimeOut(FOREGROUND_TIMEOUT/1000);
+		}
+
 
 		if(!initCheck()){ // Run checks on process and permissions
 			deployNextRouterService();
@@ -1038,6 +1044,7 @@ public class SdlRouterService extends Service{
 			return;
 		}
 		initPassed = true;
+
 
 		synchronized(REGISTERED_APPS_LOCK){
 			registeredApps = new HashMap<String,RegisteredApp>();
@@ -1146,6 +1153,8 @@ public class SdlRouterService extends Service{
 					int timeout = getNotificationTimeout(address);
 					enterForeground("Waiting for connection...", timeout, false);
 					resetForegroundTimeOut(timeout);
+				}else{
+					enterForeground(createConnectedNotificationText(),0,true);
 				}
 			}
 			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
@@ -1415,16 +1424,29 @@ public class SdlRouterService extends Service{
 	}
 
 
+	/**
+	 * Creates a notification message to attach to the foreground service notification.
+	 *
+	 * @return string to be used as the message
+	 */
 	private String createConnectedNotificationText(){
 		StringBuilder builder = new StringBuilder();
 		builder.append("Connected to ");
 
 		if(bluetoothTransport!= null && bluetoothTransport.isConnected()){
-			builder.append(TransportType.BLUETOOTH.name().toLowerCase());
+			if(bluetoothTransport.getDeviceName() != null){
+				builder.append(bluetoothTransport.getDeviceName());
+				if(0 == (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
+					//If this is production, just the device name is fine
+					return builder.toString();
+				}
+			}else{
+				builder.append(TransportType.BLUETOOTH.name().toLowerCase());
+			}
 		}
 
 		if(usbTransport != null && usbTransport.isConnected()){
-			if(builder.length() > 0){
+			if(builder.length() > 13){ //13 characters for initial Connected to string
 				builder.append(" & ");
 			}
 			builder.append(TransportType.USB.name());
@@ -1557,7 +1579,7 @@ public class SdlRouterService extends Service{
 
 		}
 	}
-	
+
 	//public void onTransportConnected(final TransportType type){
 //TODO
    // }
@@ -1608,8 +1630,8 @@ public class SdlRouterService extends Service{
 			bundle.putString(TransportConstants.HARDWARE_CONNECTED, record.getType().name());
 			bundle.putParcelableArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED, getConnectedTransports());
 
-			if(MultiplexBluetoothTransport.currentlyConnectedDevice!=null){
-    			bundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, MultiplexBluetoothTransport.currentlyConnectedDevice);
+			if(bluetoothTransport != null){
+    			bundle.putString(CONNECTED_DEVICE_STRING_EXTRA_NAME, bluetoothTransport.getDeviceName());
     		}
 
 			message.setData(bundle);

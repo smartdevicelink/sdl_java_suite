@@ -55,7 +55,9 @@ public abstract class MultiplexBaseTransport {
     protected final TransportType transportType;
 
     protected TransportRecord transportRecord;
+    @Deprecated
     public static String currentlyConnectedDevice = null;
+    protected String connectedDeviceName = null;
     public String connectedDeviceAddress = null;
 
 
@@ -81,6 +83,10 @@ public abstract class MultiplexBaseTransport {
         return connectedDeviceAddress;
     }
 
+    public String getDeviceName(){
+        return connectedDeviceName;
+    }
+
     /**
      * Should only be called after a connection has been established
      * @return
@@ -100,7 +106,7 @@ public abstract class MultiplexBaseTransport {
 
     public boolean isConnected()
     {
-        return !(mState == STATE_NONE);
+        return (mState == STATE_CONNECTED);
     }
 
     public synchronized void stop() {
