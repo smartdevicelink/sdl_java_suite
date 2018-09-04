@@ -8,7 +8,9 @@ import com.smartdevicelink.api.CompletionListener;
 import com.smartdevicelink.api.FileManager;
 import com.smartdevicelink.api.datatypes.SdlArtwork;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedLayout;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 
 import java.util.List;
@@ -294,6 +296,12 @@ public class ScreenManager extends BaseSubManager {
 	 */
 	public SoftButtonObject getSoftButtonObjectById(int buttonId){
 		return softButtonManager.getSoftButtonObjectById(buttonId);
+	}
+
+	public void setDisplayLayout(PredefinedLayout layout){
+		SetDisplayLayout setDisplayLayoutRequest = new SetDisplayLayout();
+		setDisplayLayoutRequest.setDisplayLayout(layout.toString());
+		internalInterface.sendRPCRequest(setDisplayLayoutRequest);
 	}
 
 	/**
