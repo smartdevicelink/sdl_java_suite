@@ -5,10 +5,10 @@ import com.smartdevicelink.transport.enums.TransportType;
 import android.content.ComponentName;
 import android.content.Context;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("WeakerAccess")
 public class MultiplexTransportConfig extends BaseTransportConfig{
 
     /**
@@ -48,8 +48,8 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 		this.context = context;
 		this.appId = appId;
 		this.securityLevel = FLAG_MULTI_SECURITY_MED;
-		this.primaryTransports = Arrays.asList(new TransportType[]{TransportType.USB, TransportType.BLUETOOTH});
-		this.secondaryTransports = Arrays.asList(new TransportType[]{TransportType.TCP, TransportType.USB, TransportType.BLUETOOTH});
+		this.primaryTransports = Arrays.asList(TransportType.USB, TransportType.BLUETOOTH);
+		this.secondaryTransports = Arrays.asList(TransportType.TCP, TransportType.USB, TransportType.BLUETOOTH);
 
 	}
 
@@ -57,8 +57,8 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 		this.context = context;
 		this.appId = appId;
 		this.securityLevel = securityLevel;
-		this.primaryTransports = Arrays.asList(new TransportType[]{TransportType.USB, TransportType.BLUETOOTH});
-		this.secondaryTransports = Arrays.asList(new TransportType[]{TransportType.TCP, TransportType.USB, TransportType.BLUETOOTH});
+		this.primaryTransports = Arrays.asList(TransportType.USB, TransportType.BLUETOOTH);
+		this.secondaryTransports = Arrays.asList(TransportType.TCP, TransportType.USB, TransportType.BLUETOOTH);
 
 
 	}	
@@ -107,7 +107,7 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 	/**
 	 * This will set the order in which a primary transport is determined to be accepted or not.
 	 * In the case of previous protocol versions ( < 5.1)
-	 * @param transports
+	 * @param transports list of transports that can be used as primary
 	 */
 	public void setPrimaryTransports(List<TransportType> transports){
 		if(transports != null){
@@ -124,7 +124,7 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 	/**
 	 * This will set the order in which a primary transport is determined to be accepted or not.
 	 * In the case of previous protocol versions ( < 5.1)
-	 * @param transports
+	 * @param transports list of transports that can be used as secondary
 	 **/
 	public void setSecondaryTransports(List<TransportType> transports){
 		if(transports != null){
