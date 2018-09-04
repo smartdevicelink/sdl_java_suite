@@ -164,14 +164,10 @@ public class TransportManager {
 
         @Override
         public boolean onHardwareConnected(List<TransportRecord> transports) {
-            Log.d(TAG, "onHardwareConnected - " +transports.size());
             super.onHardwareConnected(transports);
             synchronized (TRANSPORT_STATUS_LOCK){
                 transportStatus.clear();
                 transportStatus.addAll(transports);
-                for(TransportRecord record: transportStatus){
-                    Log.d(TAG, "Transport connected: " + record.getType().name());
-                }
             }
             transportListener.onTransportConnected(transports);
             return true;

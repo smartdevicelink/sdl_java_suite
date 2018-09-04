@@ -2,7 +2,6 @@
 
 package com.smartdevicelink.SdlConnection;
 
-import android.os.Bundle;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
@@ -33,10 +32,8 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
     }
 
     public SdlSession2(ISdlConnectionListener listener, MultiplexTransportConfig config){
-        Log.d(TAG, "SdlSession created");
         this.transportConfig = config;
         this.sessionListener = listener;
-
         this.sdlProtocol = new SdlProtocol(this,config);
 
     }
@@ -157,7 +154,6 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
 
     @Override
     public void sendHeartbeat(IHeartbeatMonitor monitor) {
-        Log.d(TAG, "Asked to send heartbeat");
         if (sdlProtocol != null) {
             //FIXME sdlProtocol.sendHeartBeat(sessionId);
         }

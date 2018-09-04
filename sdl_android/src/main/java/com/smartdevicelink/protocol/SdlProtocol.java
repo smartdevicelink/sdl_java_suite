@@ -10,6 +10,7 @@ import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
@@ -155,7 +156,7 @@ public class SdlProtocol {
     /**
      * For logging purposes, prints active services on each connected transport
      */
-    public void printActiveTransports(){
+    protected void printActiveTransports(){
         StringBuilder activeTransportString = new StringBuilder();
         for(Map.Entry entry : activeTransports.entrySet()){
             String sessionString = null;
@@ -174,7 +175,7 @@ public class SdlProtocol {
         Log.d(TAG, "Active transports --- \n" + activeTransportString.toString());
     }
 
-    private void printSecondaryTransportDetails(List<String> secondary, List<Integer> audio, List<Integer> video){
+    protected void printSecondaryTransportDetails(List<String> secondary, List<Integer> audio, List<Integer> video){
         StringBuilder secondaryDetailsBldr = new StringBuilder();
         secondaryDetailsBldr.append("Checking secondary transport details \n");
 
@@ -265,15 +266,15 @@ public class SdlProtocol {
                 }
             }
         }
-        printActiveTransports();
+
+        if(DebugTool.isDebugEnabled()){
+            printActiveTransports();
+        }
     }
 
     public void onTransportsConnectedUpdate(List<TransportRecord> transports){
         //TODO error checking for no longer connected transports
         Log.d(TAG, "onTransportsConnectedUpdate: ");
-        for(TransportRecord t : transports) {
-            Log.d(TAG, t.toString());
-        }
 
         //Temporary: this logic should all be changed to handle multiple transports of the same type
         ArrayList<TransportType> connectedTransports = new ArrayList<>();
@@ -292,7 +293,6 @@ public class SdlProtocol {
             //There is no currently active transport for the RPC service meaning no primary transport
             TransportRecord preferredPrimaryTransport = getPreferredTransport(requestedPrimaryTransports,transports);
             if(preferredPrimaryTransport != null) {
-                Log.d(TAG, "Sending start service RPC - " + preferredPrimaryTransport.getType().name());
                 connectedPrimaryTransport = preferredPrimaryTransport;
                 startService(SessionType.RPC, (byte) 0x00, false);
             }else{
@@ -308,8 +308,6 @@ public class SdlProtocol {
                 if(iSdlProtocol != null) {
                     Log.d(TAG, "Registering secondary transport!");
                     registerSecondaryTransport(iSdlProtocol.getSessionId(), preferredSecondaryTransport);
-                }else{
-                    Log.e(TAG, "Session was null");
                 }
                 return; // For now, only support registering one secondary transport
             }else{
@@ -413,7 +411,6 @@ public class SdlProtocol {
     } // end-method
 */
     public void endSession(byte sessionID, int hashId) {
-        Log.d(TAG, "EndProtocolSession");
         SdlPacket header;
         if(_version < 5){
             header = SdlPacketFactory.createEndSession(SessionType.RPC, sessionID, hashID, getMajorVersionByte(), BitConverter.intToByteArray(hashID));
@@ -594,7 +591,6 @@ public class SdlProtocol {
     }
 
     public void startService(SessionType serviceType, byte sessionID, boolean isEncrypted) {
-        Log.d(TAG, "startService");
         final SdlPacket header = SdlPacketFactory.createStartSession(serviceType, 0x00, getMajorVersionByte(), sessionID, isEncrypted);
         if(SessionType.RPC.equals(serviceType)){
             if(connectedPrimaryTransport != null) {
@@ -632,7 +628,6 @@ public class SdlProtocol {
         int transportPriority = transportPriorityForServiceMap.get(serviceType).get(0);
         if(transportPriority == PRIMARY_TRANSPORT_ID){
             // Primary is favored, and we're already connected...
-            Log.d(TAG, "Starting service over primary.");
             header.setTransportRecord(connectedPrimaryTransport);
             handlePacketToSend(header);
         }else if(transportPriority == SECONDARY_TRANSPORT_ID) {
@@ -644,7 +639,6 @@ public class SdlProtocol {
                     continue;
                 }
 
-                Log.d(TAG, "Starting service over secondary.");
                 if(activeTransports.get(serviceType).getType().equals(secondaryTransportType)){
                     // Transport is already active and accepted
                     header.setTransportRecord(activeTransports.get(serviceType));
@@ -717,7 +711,6 @@ public class SdlProtocol {
     }
 
     public void endService(SessionType serviceType, byte sessionID) {
-        Log.d(TAG, "End protocol service called: " + serviceType.getName());
         if(serviceType.equals(SessionType.RPC)){ //RPC session will close all other sessions so we want to make sure we use the correct EndProtocolSession method
             endSession(sessionID,hashID);
         }else {
@@ -726,8 +719,6 @@ public class SdlProtocol {
             if(transportRecord != null){
                 header.setTransportRecord(transportRecord);
                 handlePacketToSend(header);
-            }else{
-                Log.w(TAG, "Not sending end session packet because there is no session on that transport");
             }
         }
     }
@@ -761,7 +752,7 @@ public class SdlProtocol {
 
             if(header!=null){
                 iSdlProtocol.onProtocolMessageBytesToSend(header);
-            }//TODO else log out error
+            }
 
         }
     }
@@ -853,14 +844,15 @@ public class SdlProtocol {
                         ArrayList<Integer> audio = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.AUDIO_SERVICE_TRANSPORTS);
                         ArrayList<Integer> video = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.VIDEO_SERVICE_TRANSPORTS);
 
-                        printSecondaryTransportDetails(secondary,audio,video);
+                        if(DebugTool.isDebugEnabled()){
+                            printSecondaryTransportDetails(secondary,audio,video);
+                        }
 
                         //Build out the supported secondary transports received from the
                         // RPC start service ACK.
                         supportedSecondaryTransports = new ArrayList<>();
 
                         for (String s : secondary) {
-                            Log.d(TAG, "Secondary transports allowed by core: " + s);
                             if(s.equals(TransportConstants.TCP_WIFI)){
                                 supportedSecondaryTransports.add(TransportType.TCP);
                             }else if(s.equals(TransportConstants.AOA_USB)){
@@ -1021,7 +1013,7 @@ public class SdlProtocol {
 
         @Override
         public void onTransportConnected(List<TransportRecord> connectedTransports) {
-            Log.d(TAG, "onTransportConnected - " + connectedTransports.size());
+            Log.d(TAG, "onTransportConnected");
             //In the future we should move this logic into the Protocol Layer
             TransportRecord transportRecord = getTransportForSession(SessionType.RPC);
             if(transportRecord == null && !requestedSession){ //There is currently no transport registered
@@ -1029,7 +1021,9 @@ public class SdlProtocol {
                 transportManager.requestNewSession(getPreferredPrimaryTransport(connectedTransports));
             }
             onTransportsConnectedUpdate(connectedTransports);
-            printActiveTransports();
+            if(DebugTool.isDebugEnabled()){
+                printActiveTransports();
+            }
         }
 
         @Override
@@ -1049,15 +1043,12 @@ public class SdlProtocol {
             if(disconnectedTransport.equals(getTransportForSession(SessionType.NAV))){
                 //stopVideoStream();
                 iSdlProtocol.stopStream(SessionType.NAV);
-                Log.d(TAG, "Stopping video stream.");
             }
             if(disconnectedTransport.equals(getTransportForSession(SessionType.PCM))){
                 //stopAudioStream();
                 iSdlProtocol.stopStream(SessionType.PCM);
-                Log.d(TAG, "Stopping audio stream.");
             }
 
-            Log.d(TAG, "rpc transport? - " + getTransportForSession(SessionType.RPC));
             if(disconnectedTransport.equals(getTransportForSession(SessionType.RPC))){
                 //transportTypes.remove(type);
                 boolean primaryTransportAvailable = false;
@@ -1066,7 +1057,6 @@ public class SdlProtocol {
                         if( disconnectedTransport != null && !disconnectedTransport.getType().equals(transportType)
                                 && transportManager != null
                                 && transportManager.isConnected(transportType,null)){
-                            Log.d(TAG, "Found a suitable transport");
                             primaryTransportAvailable = true;
                             ( transportConfig).setService(transportManager.getRouterService());
                             break;
@@ -1079,9 +1069,7 @@ public class SdlProtocol {
 
                 iSdlProtocol.onTransportDisconnected(info, primaryTransportAvailable, transportConfig);
 
-            }else{
-                Log.d(TAG, "Transport was not primary, continuing to stay connected");
-            }
+            } //else Transport was not primary, continuing to stay connected
 
         }
 
@@ -1093,14 +1081,11 @@ public class SdlProtocol {
 
         @Override
         public boolean onLegacyModeEnabled(String info) {
-            //Clear our wiproprotocol and await a connection from the legacy transport
-            Log.d(TAG, info);
+            //Await a connection from the legacy transport
             if(requestedPrimaryTransports!= null && requestedPrimaryTransports.contains(TransportType.BLUETOOTH)
                     && !transportConfig.requiresHighBandwidth()){
                 Log.d(TAG, "Entering legacy mode; creating new protocol instance");
                 //TODO resent the protocol
-                //wiProProtocol = new WiProProtocol(this);
-               // wiProProtocol.setPrimaryTransports(((MultiplexTransportConfig)transportConfig).getPrimaryTransports());
                 return true;
             }else{
                 Log.d(TAG, "Bluetooth is not an acceptable transport; not moving to legacy mode");
@@ -1233,7 +1218,6 @@ public class SdlProtocol {
          * @param packet
          */
         private void handleControlFrame(SdlPacket packet) {
-            Log.d(TAG, "Control frame received: /n" + packet.toString());
             Integer frameTemp = Integer.valueOf(packet.getFrameInfo());
             Byte frameInfo = frameTemp.byteValue();
 

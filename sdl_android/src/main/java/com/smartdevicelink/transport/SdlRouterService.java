@@ -489,10 +489,8 @@ public class SdlRouterService extends Service{
                                     }
 
 									if(buffApp !=null){
-										//Log.d(TAG, "handling incomming client message");
                                         buffApp.handleIncommingClientMessage(receivedBundle);
                                     }else{
-										//Log.d(TAG, "Write bytes to transport");
 										TransportType transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT_TYPE));
 										if(transportType == null){
 
@@ -536,14 +534,10 @@ public class SdlRouterService extends Service{
 										TransportType requestingTransport = null;
 										if(transport != null){
 											try{
-												Log.w(TAG, "Requesting transport: " + transport);
-
 												requestingTransport = TransportType.valueOf(transport);
 											}catch (IllegalArgumentException e){}
 										}
 										if(requestingTransport == null){
-											Log.w(TAG, "Requesting transport was null");
-
 											/* We check bluetooth first because we assume if this value
 											 * isn't included it is an older version of the proxy and
 											 * therefore will be expecting this to be bluetooth.
@@ -557,7 +551,6 @@ public class SdlRouterService extends Service{
 											}
 										}
 										appRequesting.getSessionIds().add((long)-1); //Adding an extra session
-										Log.w(TAG, "Requesting transport adding to app: " + requestingTransport.name());
 										appRequesting.getAwaitingSession().add(requestingTransport);
 										extraSessionResponse.arg1 = TransportConstants.ROUTER_REQUEST_NEW_SESSION_RESPONSE_SUCESS;
 									}else{
@@ -629,7 +622,6 @@ public class SdlRouterService extends Service{
 			                }
 		                }else{
 			                service.tcpTransport = new MultiplexTcpTransport(port, ipAddr, true, service.tcpHandler);
-			                Log.i(TAG, "Starting TCP transport");
 			                service.tcpTransport.start();
 		                }
 	                	break;
@@ -858,7 +850,6 @@ public class SdlRouterService extends Service{
 			}else if(TransportConstants.BIND_REQUEST_TYPE_STATUS.equals(requestType)){
 				return this.routerStatusMessenger.getBinder();
 			}else if(TransportConstants.BIND_REQUEST_TYPE_USB_PROVIDER.equals(requestType)){
-				Log.d(TAG, "Received bind request for USB");
 			    return this.usbTransferMessenger.getBinder();
 			}else{
 				Log.w(TAG, "Unknown bind request type");
@@ -1051,9 +1042,6 @@ public class SdlRouterService extends Service{
 		}
 		closing = false;
 
-		Log.i(TAG, "SDL Router Service has been created");
-		
-		
 		synchronized(SESSION_LOCK){
 			this.bluetoothSessionMap = new SparseArray<String>();
 			this.sessionHashIdMap = new SparseIntArray();
@@ -1394,7 +1382,6 @@ public class SdlRouterService extends Service{
 				notification = builder.build();
 			}
 			if (notification == null) {
-				Log.e(TAG, "Notification was null");
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
 					stopSelf(); //A valid notification must be supplied for SDK 27+
 				}
@@ -1479,7 +1466,6 @@ public class SdlRouterService extends Service{
             connected.add(usbTransport.getTransportRecord());
         }
 
-        Log.d(TAG, "Returning connected transport size: " + connected.size());
 		return connected;
 	}
 
@@ -1519,7 +1505,6 @@ public class SdlRouterService extends Service{
 	 * 4. Anything else					
 	 */
 	public boolean shouldServiceRemainOpen(Intent intent){
-		//Log.d(TAG, "Determining if this service should remain open");
 		ArrayList<TransportRecord> connectedTransports = getConnectedTransports();
 
 		if(connectedTransports != null && !connectedTransports.isEmpty()){ // stay open if we have any transports connected
@@ -1566,7 +1551,6 @@ public class SdlRouterService extends Service{
 		}
 		//init serial service
 		if(bluetoothTransport == null || bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_ERROR){
-			Log.i(TAG, "Initializing bluetooth transport");
 			bluetoothTransport = new MultiplexBluetoothTransport(bluetoothHandler);
 		}
 		if (bluetoothTransport != null) {
@@ -1936,9 +1920,6 @@ public class SdlRouterService extends Service{
 							&& packet.getServiceType() == SdlPacket.SERVICE_TYPE_RPC;
 					isNewTransportRequest = (frameInfo == SdlPacket.FRAME_INFO_REGISTER_SECONDARY_TRANSPORT_ACK
 							|| frameInfo == SdlPacket.FRAME_INFO_REGISTER_SECONDARY_TRANSPORT_NAK); // && packet.getServiceType() != SdlPacket.SERVICE_TYPE_RPC;
-					if(isNewTransportRequest){
-						Log.d(TAG, "New transport request!");
-					}
 				}
 
 				//Find where this packet should go
@@ -2389,21 +2370,18 @@ public class SdlRouterService extends Service{
 			switch(transportType){
 				case BLUETOOTH:
 					if(bluetoothSessionMap == null){
-						Log.w(TAG, "Bluetooth session map was null during look up. Creating one on the fly");
 						bluetoothSessionMap = new SparseArray<String>();
 					}
 					sessionMap = bluetoothSessionMap;
 					break;
 				case USB:
 					if(usbSessionMap == null){
-						Log.w(TAG, "USB session map was null during look up. Creating one on the fly");
 						usbSessionMap = new SparseArray<String>();
 					}
 					sessionMap = usbSessionMap;
 					break;
 				case TCP:
 					if(tcpSessionMap == null){
-						Log.w(TAG, "TCP map was null during look up. Creating one on the fly");
 						tcpSessionMap = new SparseArray<String>();
 					}
 					sessionMap = tcpSessionMap;
@@ -2949,7 +2927,6 @@ public class SdlRouterService extends Service{
 		}
 
 		protected void registerTransport(int sessionId, TransportType transportType){
-			Log.d(TAG, appId + " app id " + sessionId + " session regisistering transport: " + transportType);
 			synchronized (TRANSPORT_LOCK){
 				ArrayList<TransportType> transportTypes = this.registeredTransports.get(sessionId);
 				if(transportTypes!= null){
@@ -3072,7 +3049,6 @@ public class SdlRouterService extends Service{
 			if(transportType == null){
 				transportType = getCompatPrimaryTransport();
 				receivedBundle.putString(TransportConstants.TRANSPORT_TYPE, transportType.name());
-				Log.d(TAG, "Setting transport as: " + transportType);
 			}
 
 			if(flags!=TransportConstants.BYTES_TO_SEND_FLAG_NONE){
