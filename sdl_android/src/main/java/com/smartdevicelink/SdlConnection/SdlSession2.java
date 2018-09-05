@@ -20,14 +20,16 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+@SuppressWarnings({"WeakerAccess", "deprecation"})
 public class SdlSession2 extends SdlSession implements ISdlProtocol{
     private static final String TAG = "SdlSession2";
 
 
-    protected SdlProtocol sdlProtocol;
+    final protected SdlProtocol sdlProtocol;
 
+    @SuppressWarnings("SameReturnValue")
     @Deprecated
-    public static SdlSession2 createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
+    public static SdlSession2 createSession(byte protocolVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
         return null;
     }
 
@@ -76,6 +78,7 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
     }
 
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void startService (SessionType serviceType, byte sessionID, boolean isEncrypted) {
         if (isEncrypted){
@@ -105,6 +108,7 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
     }
 
 
+    @SuppressWarnings("RedundantThrows")
     @Override
     public void startSession() throws SdlException {
         sdlProtocol.start();
@@ -154,9 +158,7 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
 
     @Override
     public void sendHeartbeat(IHeartbeatMonitor monitor) {
-        if (sdlProtocol != null) {
-            //FIXME sdlProtocol.sendHeartBeat(sessionId);
-        }
+       //SdlProtocol does not support heartbeat sending
     }
 
     @Override
@@ -179,7 +181,7 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
         if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
             for(ISdlServiceListener listener:listeners){
-                listener.onServiceError(this, sessionType, "Start "+ sessionType.toString() +" Service NACK'ed");
+                listener.onServiceError(this, sessionType, "Start "+ sessionType.toString() +" Service NAKed");
             }
         }
     }
@@ -238,6 +240,7 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
         //TODO reset SdlProtocol
     }
 
+    @SuppressWarnings("SameReturnValue")
     @Deprecated
     public static boolean removeConnection(SdlConnection connection){
         return false;

@@ -247,9 +247,9 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                     }
                 } catch (IOException e) {
                     if (isInterrupted()) {
-                        Log.w(TAG,"Can't read data, and thread is interrupted", e);
+                        Log.w(TAG,"Can't read data, and thread is interrupted");
                     } else {
-                        Log.w(TAG,"Can't read data, disconnecting!", e);
+                        Log.w(TAG,"Can't read data, disconnecting!");
                         connectionLost();
                     }
                     return;

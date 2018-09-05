@@ -1,6 +1,7 @@
 package com.smartdevicelink.protocol;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
@@ -10,7 +11,6 @@ import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
@@ -34,55 +34,47 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("WeakerAccess")
 public class SdlProtocol {
     private static final String TAG ="SdlProtocol";
     private final static String FailurePropagating_Msg = "Failure propagating ";
-
-    //If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
-    public static final Version MAX_PROTOCOL_VERSION = new Version("5.1.0");
-
-
-
-    public static final int V1_V2_MTU_SIZE = 1500;
-    public static final int V3_V4_MTU_SIZE = 131072;
-
-    public static final int V1_HEADER_SIZE = 8;
-    public static final int V2_HEADER_SIZE = 12;
 
     private static final int TLS_MAX_RECORD_SIZE = 16384;
 
     private static final int PRIMARY_TRANSPORT_ID    = 1;
     private static final int SECONDARY_TRANSPORT_ID  = 2;
 
+
+    protected static final int V1_HEADER_SIZE = 8;
+    protected static final int V2_HEADER_SIZE = 12;
+
+    //If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
+    public static final Version MAX_PROTOCOL_VERSION = new Version("5.1.0");
+
+    public static final int V1_V2_MTU_SIZE = 1500;
+    public static final int V3_V4_MTU_SIZE = 131072;
+
     public static final List<SessionType> HIGH_BANDWIDTH_SERVICES
             = Arrays.asList(SessionType.NAV, SessionType.PCM);
 
-    // Lock to ensure all frames are sent uninterupted
+    // Lock to ensure all frames are sent uninterrupted
     private final Object FRAME_LOCK = new Object();
 
-    private Version protocolVersion = new Version("1.0.0");
-    byte _version = 1;
-
-    int hashID = 0;
-    int messageID = 0;
-    private int headerSize = 8;
-
-    //WeakReference<SdlSession> sessionWeakReference;
     private final ISdlProtocol iSdlProtocol;
     private final MultiplexTransportConfig transportConfig;
+    private final Hashtable<Integer, MessageFrameAssembler> _assemblerForMessageID = new Hashtable<>();
+    private final Hashtable<Byte, Hashtable<Integer, MessageFrameAssembler>> _assemblerForSessionID = new Hashtable<>();
+    private final Hashtable<Byte, Object> _messageLocks = new Hashtable<>();
+    private final HashMap<SessionType, Long> mtus = new HashMap<>();
+    private final HashMap<SessionType, TransportRecord> activeTransports = new HashMap<>();
+    private final Map<TransportType, List<ISecondaryTransportListener>> secondaryTransportListeners = new HashMap<>();
+
+
     private TransportManager transportManager;
-
-    @SuppressWarnings("unused")
-    private int _heartbeatSendInterval_ms = 0;
-    @SuppressWarnings("unused")
-    private int _heartbeatReceiveInterval_ms = 0;
-
-    Hashtable<Integer, MessageFrameAssembler> _assemblerForMessageID = new Hashtable<>();
-    Hashtable<Byte, Hashtable<Integer, MessageFrameAssembler>> _assemblerForSessionID = new Hashtable<>();
-    Hashtable<Byte, Object> _messageLocks = new Hashtable<>();
-    private HashMap<SessionType, Long> mtus = new HashMap<>();
-    private HashMap<SessionType, TransportRecord> activeTransports = new HashMap<>();
-    private List<TransportRecord> availableTransports = new ArrayList<>();
+    private Version protocolVersion = new Version("1.0.0");
+    private int hashID = 0;
+    private int messageID = 0;
+    private int headerSize = 8;
 
     /**
      * Requested transports for primary and secondary
@@ -99,17 +91,14 @@ public class SdlProtocol {
      * on a primary or secondary transport.
      */
     Map<SessionType, List<Integer>> transportPriorityForServiceMap;
-    boolean requiresHighBandwidth = false;
+    boolean requiresHighBandwidth;
     Map<TransportType, Bundle> secondaryTransportParams;
     TransportRecord connectedPrimaryTransport;
-    Map<TransportType, List<ISecondaryTransportListener>> secondaryTransportListeners = new HashMap<>();
 
 
-
-
-
-    public SdlProtocol(ISdlProtocol iSdlProtocol, MultiplexTransportConfig config) {
-        if (iSdlProtocol == null) {
+    @SuppressWarnings("ConstantConditions")
+    public SdlProtocol(@NonNull ISdlProtocol iSdlProtocol, @NonNull MultiplexTransportConfig config) {
+        if (iSdlProtocol == null ) {
             throw new IllegalArgumentException("Provided protocol listener interface reference is null");
         } // end-if
 
@@ -121,7 +110,7 @@ public class SdlProtocol {
         this.transportManager = new TransportManager(transportConfig, transportEventListener);
 
 
-        mtus.put(SessionType.RPC, Long.valueOf(V1_V2_MTU_SIZE  - headerSize));
+        mtus.put(SessionType.RPC, (long) (V1_V2_MTU_SIZE - headerSize));
     } // end-ctor
 
 
@@ -154,10 +143,29 @@ public class SdlProtocol {
     }
 
     /**
+     * Resets the protocol to init status
+     */
+    protected void reset(){
+        protocolVersion = new Version("1.0.0");
+        hashID = 0;
+        messageID = 0;
+        headerSize = 8;
+        this.activeTransports.clear();
+        this.mtus.clear();
+        mtus.put(SessionType.RPC, (long) (V1_V2_MTU_SIZE - headerSize));
+        this.secondaryTransportParams.clear();
+        this._assemblerForMessageID.clear();
+        this._assemblerForSessionID.clear();
+        this._messageLocks.clear();
+    }
+
+    /**
      * For logging purposes, prints active services on each connected transport
      */
     protected void printActiveTransports(){
         StringBuilder activeTransportString = new StringBuilder();
+        activeTransportString.append("Active transports --- \n");
+
         for(Map.Entry entry : activeTransports.entrySet()){
             String sessionString = null;
             if(entry.getKey().equals(SessionType.NAV)) {
@@ -168,11 +176,15 @@ public class SdlProtocol {
                 sessionString = "RPC";
             }
             if(sessionString != null){
-                activeTransportString.append("Session: " + sessionString
-                        + " Transport: " + entry.getValue().toString() + "\n");
+                activeTransportString.append("Session: ");
+
+                activeTransportString.append(sessionString);
+                activeTransportString.append(" Transport: ");
+                activeTransportString.append(entry.getValue().toString());
+                activeTransportString.append("\n");
             }
         }
-        Log.d(TAG, "Active transports --- \n" + activeTransportString.toString());
+        Log.d(TAG, activeTransportString.toString());
     }
 
     protected void printSecondaryTransportDetails(List<String> secondary, List<Integer> audio, List<Integer> video){
@@ -231,7 +243,7 @@ public class SdlProtocol {
         if(registered) {
             //Session has been registered on secondary transport
             Log.d(TAG, transportRecord.getType().toString() + " transport was registered!");
-            if (supportedSecondaryTransports.contains(transportRecord)) {
+            if (supportedSecondaryTransports.contains(transportRecord.getType())) {
                 // If the transport type that is now available to be used it should be checked
                 // against the list of services that might be able to be started on it
 
@@ -256,11 +268,11 @@ public class SdlProtocol {
             Log.d(TAG, transportRecord.toString() + " transport was NOT registered!");
         }
         //Notify any listeners for this secondary transport
-        List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.remove(transportRecord);
+        List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.remove(transportRecord.getType());
         if(listenerList != null){
             for(ISecondaryTransportListener listener : listenerList){
                 if(registered) {
-                    listener.onConnectionSuccess();
+                    listener.onConnectionSuccess(transportRecord);
                 }else{
                     listener.onConnectionFailure();
                 }
@@ -273,8 +285,7 @@ public class SdlProtocol {
     }
 
     public void onTransportsConnectedUpdate(List<TransportRecord> transports){
-        //TODO error checking for no longer connected transports
-        Log.d(TAG, "onTransportsConnectedUpdate: ");
+        Log.d(TAG, "Connected transport update");
 
         //Temporary: this logic should all be changed to handle multiple transports of the same type
         ArrayList<TransportType> connectedTransports = new ArrayList<>();
@@ -282,9 +293,9 @@ public class SdlProtocol {
             connectedTransports.add(record.getType());
         }
 
-        if(connectedPrimaryTransport != null && !connectedTransports.contains(connectedPrimaryTransport)){
+        if(connectedPrimaryTransport != null && !connectedTransports.contains(connectedPrimaryTransport.getType())){
             //The primary transport being used is no longer part of the connected transports
-            //TODO Should we perform a callback to SdlSession to inform of disconnect?
+            //The transport manager callbacks should hadle the disconnect code
             connectedPrimaryTransport = null;
             return;
         }
@@ -298,7 +309,7 @@ public class SdlProtocol {
             }else{
                 onTransportNotAccepted("No transports match requested primary transport");
             }
-            return;
+            // return;
         }else if(requiresHighBandwidth){
             //If this app has a primary transport already but requires a high bandwidth transport
             //to properly function, it is now time to register over that transport to be used
@@ -309,7 +320,7 @@ public class SdlProtocol {
                     Log.d(TAG, "Registering secondary transport!");
                     registerSecondaryTransport(iSdlProtocol.getSessionId(), preferredSecondaryTransport);
                 }
-                return; // For now, only support registering one secondary transport
+                //return; // For now, only support registering one secondary transport
             }else{
                 Log.d(TAG, "No supported secondary transport");
             }
@@ -318,8 +329,8 @@ public class SdlProtocol {
     }
 
     /**
-     * Retrieves the perferred transport for the given connected transport
-     * @param preferredList the list of perferred transports (primary or secondary)
+     * Retrieves the preferred transport for the given connected transport
+     * @param preferredList the list of preferred transports (primary or secondary)
      * @param connectedTransports the current list of connected transports
      * @return the preferred connected transport
      */
@@ -339,65 +350,51 @@ public class SdlProtocol {
 
     }
 
-    public TransportRecord getConnectedPrimaryTransport(){
-        return connectedPrimaryTransport;
-    }
-
     private void onTransportNotAccepted(String info){
         if(iSdlProtocol != null) {
             iSdlProtocol.shutdown(info);
         }
     }
 
-    /**
-     * Use getProtocolVersion() or getMajorVersionByte instead.<br>
-     * Returns the Major version of the currently used protocol version
-     */
-    @Deprecated
-    public byte getVersion() {
-        return getMajorVersionByte();
-    }
 
     public Version getProtocolVersion(){
         return this.protocolVersion;
     }
-    public byte getMajorVersionByte(){
-        if(_version == 1){
-            _version = new Integer(this.protocolVersion.getMajor()).byteValue();
-        }
-        return _version;
+
+    public int getMajorVersionByte(){
+        return this.protocolVersion.getMajor();
 
     }
 
     /**
      * This method will set the major protocol version that we should use. It will also set the default MTU based on version.
-     * @param version
+     * @param version major version to use
      */
-    public void setVersion(byte version) {
+    protected void setVersion(byte version) {
         if (version > 5) {
             this.protocolVersion = new Version("5.0.0"); //protect for future, proxy only supports v5 or lower
             headerSize = 12;
-            mtus.put(SessionType.RPC,Long.valueOf(V3_V4_MTU_SIZE) );
+            mtus.put(SessionType.RPC, (long) V3_V4_MTU_SIZE);
         } else if (version == 5) {
             this.protocolVersion = new Version("5.0.0");
             headerSize = 12;
-            mtus.put(SessionType.RPC, Long.valueOf(V3_V4_MTU_SIZE) );
+            mtus.put(SessionType.RPC, (long) V3_V4_MTU_SIZE);
         }else if (version == 4) {
             this.protocolVersion = new Version("4.0.0");
             headerSize = 12;
-            mtus.put(SessionType.RPC, Long.valueOf(V3_V4_MTU_SIZE) ); //versions 4 supports 128k MTU
+            mtus.put(SessionType.RPC, (long) V3_V4_MTU_SIZE); //versions 4 supports 128k MTU
         } else if (version == 3) {
             this.protocolVersion = new Version("3.0.0");
             headerSize = 12;
-            mtus.put(SessionType.RPC, Long.valueOf(V3_V4_MTU_SIZE) ); //versions 3 supports 128k MTU
+            mtus.put(SessionType.RPC, (long) V3_V4_MTU_SIZE); //versions 3 supports 128k MTU
         } else if (version == 2) {
             this.protocolVersion = new Version("2.0.0");
             headerSize = 12;
-            mtus.put(SessionType.RPC, Long.valueOf(V1_V2_MTU_SIZE - headerSize) );
+            mtus.put(SessionType.RPC, (long) (V1_V2_MTU_SIZE - headerSize));
         } else if (version == 1){
             this.protocolVersion = new Version("1.0.0");
             headerSize = 8;
-            mtus.put(SessionType.RPC, Long.valueOf(V1_V2_MTU_SIZE - headerSize) );
+            mtus.put(SessionType.RPC, (long) (V1_V2_MTU_SIZE - headerSize));
         }
     }
 
@@ -412,11 +409,11 @@ public class SdlProtocol {
 */
     public void endSession(byte sessionID, int hashId) {
         SdlPacket header;
-        if(_version < 5){
-            header = SdlPacketFactory.createEndSession(SessionType.RPC, sessionID, hashID, getMajorVersionByte(), BitConverter.intToByteArray(hashID));
+        if(protocolVersion.getMajor() < 5){
+            header = SdlPacketFactory.createEndSession(SessionType.RPC, sessionID, hashId, (byte)protocolVersion.getMajor(), BitConverter.intToByteArray(hashId));
         }else{
-            header = SdlPacketFactory.createEndSession(SessionType.RPC, sessionID, hashID, getMajorVersionByte(), new byte[0]);
-            header.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashID);
+            header = SdlPacketFactory.createEndSession(SessionType.RPC, sessionID, hashId, (byte)protocolVersion.getMajor(), new byte[0]);
+            header.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashId);
         }
 
         handlePacketToSend(header);
@@ -434,7 +431,7 @@ public class SdlProtocol {
         SessionType sessionType = protocolMsg.getSessionType();
         byte sessionID = protocolMsg.getSessionID();
 
-        byte[] data = null;
+        byte[] data;
         if (protocolVersion.getMajor() > 1 && sessionType != SessionType.NAV && sessionType != SessionType.PCM) {
             if (sessionType.eq(SessionType.CONTROL)) {
                 final byte[] secureData = protocolMsg.getData().clone();
@@ -496,7 +493,7 @@ public class SdlProtocol {
 
                 // Assemble first frame.
                 Long mtu = getMtu(sessionType);
-                int frameCount = new Long(data.length / mtu).intValue();
+                int frameCount = Long.valueOf(data.length / mtu).intValue();
                 if (data.length % mtu > 0) {
                     frameCount++;
                 }
@@ -507,7 +504,7 @@ public class SdlProtocol {
                 // Second four bytes are frame count.
                 System.arraycopy(BitConverter.intToByteArray(frameCount), 0, firstFrameData, 4, 4);
 
-                SdlPacket firstHeader = SdlPacketFactory.createMultiSendDataFirst(sessionType, sessionID, messageID, getMajorVersionByte(),firstFrameData,protocolMsg.getPayloadProtected());
+                SdlPacket firstHeader = SdlPacketFactory.createMultiSendDataFirst(sessionType, sessionID, messageID, (byte)protocolVersion.getMajor(),firstFrameData,protocolMsg.getPayloadProtected());
                 firstHeader.setPriorityCoefficient(1+protocolMsg.priorityCoefficient);
                 firstHeader.setTransportRecord(activeTransports.get(sessionType));
                 //Send the first frame
@@ -533,7 +530,7 @@ public class SdlProtocol {
                     if (bytesToWrite > mtu) {
                         bytesToWrite = mtu.intValue();
                     }
-                    SdlPacket consecHeader = SdlPacketFactory.createMultiSendDataRest(sessionType, sessionID, bytesToWrite, frameSequenceNumber , messageID, getMajorVersionByte(),data, currentOffset, bytesToWrite, protocolMsg.getPayloadProtected());
+                    SdlPacket consecHeader = SdlPacketFactory.createMultiSendDataRest(sessionType, sessionID, bytesToWrite, frameSequenceNumber , messageID, (byte)protocolVersion.getMajor(),data, currentOffset, bytesToWrite, protocolMsg.getPayloadProtected());
                     consecHeader.setTransportRecord(activeTransports.get(sessionType));
                     consecHeader.setPriorityCoefficient(i+2+protocolMsg.priorityCoefficient);
                     handlePacketToSend(consecHeader);
@@ -541,7 +538,7 @@ public class SdlProtocol {
                 }
             } else {
                 messageID++;
-                SdlPacket header = SdlPacketFactory.createSingleSendData(sessionType, sessionID, data.length, messageID, getMajorVersionByte(),data, protocolMsg.getPayloadProtected());
+                SdlPacket header = SdlPacketFactory.createSingleSendData(sessionType, sessionID, data.length, messageID, (byte)protocolVersion.getMajor(),data, protocolMsg.getPayloadProtected());
                 header.setPriorityCoefficient(protocolMsg.priorityCoefficient);
                 header.setTransportRecord(activeTransports.get(sessionType));
                 handlePacketToSend(header);
@@ -558,13 +555,11 @@ public class SdlProtocol {
         MessageFrameAssembler assembler = getFrameAssemblerForFrame(packet);
         assembler.handleFrame(packet);
 
-        onResetIncomingHeartbeat(SessionType.valueOf((byte)packet.getServiceType()), (byte)packet.getSessionId());
-
     }
 
 
     protected MessageFrameAssembler getFrameAssemblerForFrame(SdlPacket packet) {
-        Integer iSessionId = Integer.valueOf(packet.getSessionId());
+        Integer iSessionId = packet.getSessionId();
         Byte bySessionId = iSessionId.byteValue();
 
         Hashtable<Integer, MessageFrameAssembler> hashSessionID = _assemblerForSessionID.get(bySessionId);
@@ -573,10 +568,10 @@ public class SdlProtocol {
             _assemblerForSessionID.put(bySessionId, hashSessionID);
         } // end-if
 
-        MessageFrameAssembler ret = _assemblerForMessageID.get(Integer.valueOf(packet.getMessageId()));
+        MessageFrameAssembler ret = _assemblerForMessageID.get(packet.getMessageId());
         if (ret == null) {
             ret = new MessageFrameAssembler();
-            _assemblerForMessageID.put(Integer.valueOf(packet.getMessageId()), ret);
+            _assemblerForMessageID.put(packet.getMessageId(), ret);
         } // end-if
 
         return ret;
@@ -585,13 +580,13 @@ public class SdlProtocol {
 
 
     public void registerSecondaryTransport(byte sessionId, TransportRecord transportRecord) {
-        SdlPacket header = SdlPacketFactory.createRegisterSecondaryTransport(sessionId, getMajorVersionByte());
+        SdlPacket header = SdlPacketFactory.createRegisterSecondaryTransport(sessionId, (byte)protocolVersion.getMajor());
         header.setTransportRecord(transportRecord);
         handlePacketToSend(header);
     }
 
     public void startService(SessionType serviceType, byte sessionID, boolean isEncrypted) {
-        final SdlPacket header = SdlPacketFactory.createStartSession(serviceType, 0x00, getMajorVersionByte(), sessionID, isEncrypted);
+        final SdlPacket header = SdlPacketFactory.createStartSession(serviceType, 0x00, (byte)protocolVersion.getMajor(), sessionID, isEncrypted);
         if(SessionType.RPC.equals(serviceType)){
             if(connectedPrimaryTransport != null) {
                 header.setTransportRecord(connectedPrimaryTransport);
@@ -646,6 +641,8 @@ public class SdlProtocol {
                     return;
                 }
 
+
+
                 //If the secondary transport isn't connected yet that will have to be performed first
 
                 List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.get(secondaryTransportType);
@@ -659,8 +656,8 @@ public class SdlProtocol {
 
                 listenerList.add(new ISecondaryTransportListener() {
                     @Override
-                    public void onConnectionSuccess() {
-                        //FIXME see if we should pass the transport record here
+                    public void onConnectionSuccess(TransportRecord transportRecord) {
+                        header.setTransportRecord(transportRecord);
                         handlePacketToSend(header);
                     }
 
@@ -676,10 +673,13 @@ public class SdlProtocol {
                     }
                 });
 
-                if(secondaryTransportParams.containsKey(secondaryTransportType)) {
+                if(transportManager.isConnected(secondaryTransportType,null)){
+                    //The transport is actually connected, however no service has been registered
+                    registerSecondaryTransport(sessionID,transportManager.getTransportRecord(secondaryTransportType,null));
+                }else if(secondaryTransportParams.containsKey(secondaryTransportType)) {
+                    //No acceptable secondary transport is connected, so first one must be connected
                     header.setTransportRecord(new TransportRecord(secondaryTransportType,""));
                     transportManager.requestSecondaryTransportConnection(sessionID,secondaryTransportParams.get(secondaryTransportType));
-                    //connectSecondaryTransport(sessionID, secondaryTransportType, secondaryTransportParams.get(secondaryTransportType));
                 }else{
                     Log.w(TAG, "No params to connect to secondary transport");
                 }
@@ -688,25 +688,9 @@ public class SdlProtocol {
         }
     }
 
-    public void setHeartbeatSendInterval(int heartbeatSendInterval_ms) {
-        _heartbeatSendInterval_ms = heartbeatSendInterval_ms;
-
-    }
-
-    public void setHeartbeatReceiveInterval(int heartbeatReceiveInterval_ms) {
-        _heartbeatReceiveInterval_ms = heartbeatReceiveInterval_ms;
-
-    }
-
-    private void sendHeartBeat(byte sessionID) {
-        final SdlPacket heartbeat = SdlPacketFactory.createHeartbeat(SessionType.CONTROL, sessionID, getMajorVersionByte());
-        heartbeat.setTransportRecord(activeTransports.get(sessionID));
-        handlePacketToSend(heartbeat);
-    }
-
-    private void sendHeartBeatACK(byte sessionID) {
-        final SdlPacket heartbeat = SdlPacketFactory.createHeartbeatACK(SessionType.CONTROL, sessionID, getMajorVersionByte());
-        heartbeat.setTransportRecord(activeTransports.get(sessionID));
+    private void sendHeartBeatACK(SessionType sessionType, byte sessionID) {
+        final SdlPacket heartbeat = SdlPacketFactory.createHeartbeatACK(SessionType.CONTROL, sessionID, (byte)protocolVersion.getMajor());
+        heartbeat.setTransportRecord(activeTransports.get(sessionType));
         handlePacketToSend(heartbeat);
     }
 
@@ -714,8 +698,8 @@ public class SdlProtocol {
         if(serviceType.equals(SessionType.RPC)){ //RPC session will close all other sessions so we want to make sure we use the correct EndProtocolSession method
             endSession(sessionID,hashID);
         }else {
-            SdlPacket header = SdlPacketFactory.createEndSession(serviceType, sessionID, hashID, getMajorVersionByte(), new byte[0]);
-            TransportRecord transportRecord = activeTransports.get(sessionID);
+            SdlPacket header = SdlPacketFactory.createEndSession(serviceType, sessionID, hashID, (byte)protocolVersion.getMajor(), new byte[0]);
+            TransportRecord transportRecord = activeTransports.get(serviceType);
             if(transportRecord != null){
                 header.setTransportRecord(transportRecord);
                 handlePacketToSend(header);
@@ -726,32 +710,18 @@ public class SdlProtocol {
     /* --------------------------------------------------------------------------------------------
        -----------------------------------   OLD ABSTRACT PROTOCOL   ---------------------------------
        -------------------------------------------------------------------------------------------*/
-    // This method is called whenever the protocol receives a complete frame
-    /*protected void handleProtocolFrameReceived(SdlPacket packet, MessageFrameAssembler assembler) {
-        assembler.handleFrame(packet);
-    }*/
 
-    private synchronized void resetOutgoingHeartbeat(SessionType sessionType, byte sessionID) {
-        //TODO
-
-    }
-
-    private synchronized void resetIncomingHeartbeat(SessionType sessionType, byte sessionID) {
-        //TODO
-    }
 
     // This method is called whenever a protocol has an entire frame to send
     /**
      * SdlPacket should have included payload at this point.
-     * @param header
+     * @param packet packet that will be sent to the router service
      */
-    protected void handlePacketToSend(SdlPacket header) {
-        resetOutgoingHeartbeat(SessionType.valueOf((byte)header.getServiceType()), (byte)header.getSessionId());
-
+    protected void handlePacketToSend(SdlPacket packet) {
         synchronized(FRAME_LOCK) {
 
-            if(header!=null){
-                iSdlProtocol.onProtocolMessageBytesToSend(header);
+            if(packet!=null){
+                iSdlProtocol.onProtocolMessageBytesToSend(packet);
             }
 
         }
@@ -762,16 +732,31 @@ public class SdlProtocol {
      **/
     protected void handleServiceEndedNAK(SdlPacket packet, SessionType serviceType) {
         if(packet.version >= 5){
-            String rejectedTag = null;
-            if(serviceType.equals(SessionType.RPC)){
-                rejectedTag = ControlFrameTags.RPC.EndServiceNAK.REJECTED_PARAMS;
-            }else if(serviceType.equals(SessionType.PCM)){
-                rejectedTag = ControlFrameTags.Audio.EndServiceNAK.REJECTED_PARAMS;
-            }else if(serviceType.equals(SessionType.NAV)){
-                rejectedTag = ControlFrameTags.Video.EndServiceNAK.REJECTED_PARAMS;
+            if(DebugTool.isDebugEnabled()) {
+                //Currently this is only during a debugging session. Might pass back in the future
+                String rejectedTag = null;
+                if (serviceType.equals(SessionType.RPC)) {
+                    rejectedTag = ControlFrameTags.RPC.EndServiceNAK.REJECTED_PARAMS;
+                } else if (serviceType.equals(SessionType.PCM)) {
+                    rejectedTag = ControlFrameTags.Audio.EndServiceNAK.REJECTED_PARAMS;
+                } else if (serviceType.equals(SessionType.NAV)) {
+                    rejectedTag = ControlFrameTags.Video.EndServiceNAK.REJECTED_PARAMS;
+                }
+
+                List<String> rejectedParams = (List<String>) packet.getTag(rejectedTag);
+                if(rejectedParams != null && rejectedParams.size() > 0){
+                    StringBuilder builder = new StringBuilder();
+                    builder.append("Rejected params for service type ");
+                    builder.append(serviceType.getName());
+                    builder.append(" :");
+                    for(String rejectedParam : rejectedParams){
+                        builder.append(rejectedParam);
+                        builder.append(" ");
+                    }
+                    DebugTool.logWarning(builder.toString());
+                }
+
             }
-            List<String> rejectedParams = (List<String>) packet.getTag(rejectedTag);
-            // TODO: Pass these back
         }
 
         iSdlProtocol.onProtocolSessionEndedNACKed(serviceType, (byte)packet.getSessionId(), "");
@@ -788,12 +773,12 @@ public class SdlProtocol {
     /**
      * This method handles the startup of a protocol session. A callback is sent
      * to the protocol listener.
-     * @param packet
-     * @param serviceType
+     * @param packet StarServiceACK packet
+     * @param serviceType the service type that has just been started
      */
     protected void handleProtocolSessionStarted(SdlPacket packet, SessionType serviceType) {
         // Use this sessionID to create a message lock
-        Object messageLock = _messageLocks.get(packet.getSessionId());
+        Object messageLock = _messageLocks.get((byte)packet.getSessionId());
         if (messageLock == null) {
             messageLock = new Object();
             _messageLocks.put((byte)packet.getSessionId(), messageLock);
@@ -837,38 +822,17 @@ public class SdlProtocol {
 
                     if (activeTransports.get(SessionType.RPC) == null) {    //Might be a better way to handle this
 
-                        // Add this transport to the available transport list
-                        availableTransports.add(transportRecord);
-
                         ArrayList<String> secondary = (ArrayList<String>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.SECONDARY_TRANSPORTS);
                         ArrayList<Integer> audio = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.AUDIO_SERVICE_TRANSPORTS);
                         ArrayList<Integer> video = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.VIDEO_SERVICE_TRANSPORTS);
-
-                        if(DebugTool.isDebugEnabled()){
-                            printSecondaryTransportDetails(secondary,audio,video);
-                        }
-
-                        //Build out the supported secondary transports received from the
-                        // RPC start service ACK.
-                        supportedSecondaryTransports = new ArrayList<>();
-
-                        for (String s : secondary) {
-                            if(s.equals(TransportConstants.TCP_WIFI)){
-                                supportedSecondaryTransports.add(TransportType.TCP);
-                            }else if(s.equals(TransportConstants.AOA_USB)){
-                                supportedSecondaryTransports.add(TransportType.USB);
-                            }else if(s.equals(TransportConstants.SPP_BLUETOOTH)){
-                                supportedSecondaryTransports.add(TransportType.BLUETOOTH);
-                            }
-                        }
-
-                        setTransportPriorityForService(SessionType.PCM, audio);
-                        setTransportPriorityForService(SessionType.NAV, video);
 
                         activeTransports.put(SessionType.RPC, transportRecord);
                         activeTransports.put(SessionType.BULK_DATA, transportRecord);
                         activeTransports.put(SessionType.CONTROL, transportRecord);
 
+                        //Build out the supported secondary transports received from the
+                        // RPC start service ACK.
+                        supportedSecondaryTransports = new ArrayList<>();
                         if (secondary == null) {
                             // If no secondary transports were attached we should assume
                             // the Video and Audio services can be used on primary
@@ -881,7 +845,28 @@ public class SdlProtocol {
 
                             activeTransports.put(SessionType.NAV, transportRecord);
                             activeTransports.put(SessionType.PCM, transportRecord);
+                        }else{
+
+                            if(DebugTool.isDebugEnabled()){
+                                printSecondaryTransportDetails(secondary,audio,video);
+                            }
+                            for (String s : secondary) {
+                                switch (s) {
+                                    case TransportConstants.TCP_WIFI:
+                                        supportedSecondaryTransports.add(TransportType.TCP);
+                                        break;
+                                    case TransportConstants.AOA_USB:
+                                        supportedSecondaryTransports.add(TransportType.USB);
+                                        break;
+                                    case TransportConstants.SPP_BLUETOOTH:
+                                        supportedSecondaryTransports.add(TransportType.BLUETOOTH);
+                                        break;
+                                }
+                            }
                         }
+
+                        setTransportPriorityForService(SessionType.PCM, audio);
+                        setTransportPriorityForService(SessionType.NAV, video);
 
                         activeTransportsHandled = true;
 
@@ -895,11 +880,10 @@ public class SdlProtocol {
                 if(requiresHighBandwidth
                         && TransportType.BLUETOOTH.equals(transportRecord.getType())){
                     //transport can't support high bandwidth
-                    onTransportNotAccepted(transportRecord.getType() + " can't support high bandwidth requirement, and secondary transport not supported in this protocol version: " + version.toString());
+                    onTransportNotAccepted(transportRecord.getType() + " can't support high bandwidth requirement, and secondary transport not supported in this protocol version: " + version);
                     return;
                 }
                 if(!activeTransportsHandled) {
-                    availableTransports.add(transportRecord);
 
                     activeTransports.put(SessionType.RPC, transportRecord);
                     activeTransports.put(SessionType.BULK_DATA, transportRecord);
@@ -923,16 +907,15 @@ public class SdlProtocol {
                     iSdlProtocol.setAcceptedVideoParams(agreedVideoParams);
                 }
             }
-        }else{ //TODO check if we should set protocol version here
+        } else {
             TransportRecord transportRecord = packet.getTransportRecord();
             if(transportRecord == null || (requiresHighBandwidth
                     && TransportType.BLUETOOTH.equals(transportRecord.getType()))){
                 //transport can't support high bandwidth
-                onTransportNotAccepted(transportRecord.getType() + "can't support high bandwidth requirement, and secondary transport not supported in this protocol version");
+                onTransportNotAccepted((transportRecord != null ? transportRecord.getType().toString() : "Transport") + "can't support high bandwidth requirement, and secondary transport not supported in this protocol version");
                 return;
             }
             //If version < 5 and transport is acceptable we need to just add these
-            availableTransports.add(transportRecord);
             activeTransports.put(SessionType.RPC, transportRecord);
             activeTransports.put(SessionType.BULK_DATA, transportRecord);
             activeTransports.put(SessionType.CONTROL, transportRecord);
@@ -946,26 +929,41 @@ public class SdlProtocol {
             }
         }
 
-        iSdlProtocol.onProtocolSessionStarted(serviceType, (byte) packet.getSessionId(), getMajorVersionByte(), "", hashID, packet.isEncrypted());
+        iSdlProtocol.onProtocolSessionStarted(serviceType, (byte) packet.getSessionId(), (byte)protocolVersion.getMajor(), "", hashID, packet.isEncrypted());
     }
 
     protected void handleProtocolSessionNAKed(SdlPacket packet, SessionType serviceType) {
-
         List<String> rejectedParams = null;
         if(packet.version >= 5){
-            String rejectedTag = null;
-            if(serviceType.equals(SessionType.RPC)){
-                rejectedTag = ControlFrameTags.RPC.StartServiceNAK.REJECTED_PARAMS;
-            }else if(serviceType.equals(SessionType.PCM)){
-                rejectedTag = ControlFrameTags.Audio.StartServiceNAK.REJECTED_PARAMS;
-            }else if(serviceType.equals(SessionType.NAV)){
-                rejectedTag = ControlFrameTags.Video.StartServiceNAK.REJECTED_PARAMS;
+            if(DebugTool.isDebugEnabled()) {
+                //Currently this is only during a debugging session. Might pass back in the future
+                String rejectedTag = null;
+                if (serviceType.equals(SessionType.RPC)) {
+                    rejectedTag = ControlFrameTags.RPC.StartServiceNAK.REJECTED_PARAMS;
+                } else if (serviceType.equals(SessionType.PCM)) {
+                    rejectedTag = ControlFrameTags.Audio.StartServiceNAK.REJECTED_PARAMS;
+                } else if (serviceType.equals(SessionType.NAV)) {
+                    rejectedTag = ControlFrameTags.Video.StartServiceNAK.REJECTED_PARAMS;
+                }
+
+                rejectedParams = (List<String>) packet.getTag(rejectedTag);
+                if(rejectedParams != null && rejectedParams.size() > 0){
+                    StringBuilder builder = new StringBuilder();
+                    builder.append("Rejected params for service type ");
+                    builder.append(serviceType.getName());
+                    builder.append(" :");
+                    for(String rejectedParam : rejectedParams){
+                        builder.append(rejectedParam);
+                        builder.append(" ");
+                    }
+                    DebugTool.logWarning(builder.toString());
+                }
+
             }
-            rejectedParams = (List<String>) packet.getTag(rejectedTag);
         }
         if (serviceType.eq(SessionType.NAV) || serviceType.eq(SessionType.PCM)) {
             //handleProtocolSessionNACKed(serviceType, (byte)packet.getSessionId(), getMajorVersionByte(), "", rejectedParams);
-            iSdlProtocol.onProtocolSessionNACKed(serviceType, (byte)packet.sessionId, getMajorVersionByte(), "", rejectedParams);
+            iSdlProtocol.onProtocolSessionNACKed(serviceType, (byte)packet.sessionId, (byte)protocolVersion.getMajor(), "", rejectedParams);
 
         } else {
             handleProtocolError("Got StartSessionNACK for protocol sessionID = " + packet.getSessionId(), null);
@@ -975,16 +973,13 @@ public class SdlProtocol {
     // This method handles protocol errors. A callback is sent to the protocol
     // listener.
     protected void handleProtocolError(String string, Exception ex) {
-        //TODO check on this
         iSdlProtocol.onProtocolError(string, ex);
     }
+
     protected void handleProtocolHeartbeat(SessionType sessionType, byte sessionID) {
-        sendHeartBeatACK(sessionID);
-       //TODO
+        sendHeartBeatACK(sessionType,sessionID);
     }
-    protected void handleProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {
-       //TODO
-    }
+
     protected void handleServiceDataACK(SdlPacket packet, SessionType sessionType) {
 
         if (packet.getPayload() != null && packet.getDataSize() == 4){ //service data ack will be 4 bytes in length
@@ -994,16 +989,12 @@ public class SdlProtocol {
         }
     }
 
-    protected void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID) {
-        resetIncomingHeartbeat(sessionType, sessionID);
-    }
-
-
     /* --------------------------------------------------------------------------------------------
        -----------------------------------   TRANSPORT_TYPE LISTENER   ---------------------------------
        -------------------------------------------------------------------------------------------*/
 
-    private TransportManager.TransportEventListener transportEventListener = new TransportManager.TransportEventListener() {
+    @SuppressWarnings("FieldCanBeLocal")
+    private final TransportManager.TransportEventListener transportEventListener = new TransportManager.TransportEventListener() {
         private boolean requestedSession = false;
 
         @Override
@@ -1054,7 +1045,7 @@ public class SdlProtocol {
                 boolean primaryTransportAvailable = false;
                 if(requestedPrimaryTransports != null && requestedPrimaryTransports.size() > 1){
                     for (TransportType transportType: requestedPrimaryTransports){ Log.d(TAG, "Checking " + transportType.name());
-                        if( disconnectedTransport != null && !disconnectedTransport.getType().equals(transportType)
+                        if(!disconnectedTransport.getType().equals(transportType)
                                 && transportManager != null
                                 && transportManager.isConnected(transportType,null)){
                             primaryTransportAvailable = true;
@@ -1085,7 +1076,7 @@ public class SdlProtocol {
             if(requestedPrimaryTransports!= null && requestedPrimaryTransports.contains(TransportType.BLUETOOTH)
                     && !transportConfig.requiresHighBandwidth()){
                 Log.d(TAG, "Entering legacy mode; creating new protocol instance");
-                //TODO resent the protocol
+                reset();
                 return true;
             }else{
                 Log.d(TAG, "Bluetooth is not an acceptable transport; not moving to legacy mode");
@@ -1100,16 +1091,12 @@ public class SdlProtocol {
 
 
     protected class MessageFrameAssembler {
-        protected boolean hasFirstFrame = false;
         protected ByteArrayOutputStream accumulator = null;
         protected int totalSize = 0;
-        protected int framesRemaining = 0;
 
         protected void handleFirstDataFrame(SdlPacket packet) {
             //The message is new, so let's figure out how big it is.
-            hasFirstFrame = true;
             totalSize = BitConverter.intFromByteArray(packet.payload, 0) - headerSize;
-            framesRemaining = BitConverter.intFromByteArray(packet.payload, 4);
             try {
                 accumulator = new ByteArrayOutputStream(totalSize);
             }catch(OutOfMemoryError e){
@@ -1124,9 +1111,7 @@ public class SdlProtocol {
         }
 
         protected void notifyIfFinished(SdlPacket packet) {
-            //if (framesRemaining == 0) {
-            if (packet.getFrameType() == FrameType.Consecutive && packet.getFrameInfo() == 0x0)
-            {
+            if (packet.getFrameType() == FrameType.Consecutive && packet.getFrameInfo() == 0x0) {
                 ProtocolMessage message = new ProtocolMessage();
                 message.setPayloadProtected(packet.isEncrypted());
                 message.setSessionType(SessionType.valueOf((byte)packet.getServiceType()));
@@ -1138,7 +1123,7 @@ public class SdlProtocol {
                     if(binFrameHeader == null) {
                         return;
                     }
-                    message.setVersion(getMajorVersionByte());
+                    message.setVersion((byte)protocolVersion.getMajor());
                     message.setRPCType(binFrameHeader.getRPCType());
                     message.setFunctionID(binFrameHeader.getFunctionID());
                     message.setCorrID(binFrameHeader.getCorrID());
@@ -1156,36 +1141,33 @@ public class SdlProtocol {
                     DebugTool.logError(FailurePropagating_Msg + "onProtocolMessageReceived: " + excp.toString(), excp);
                 } // end-catch
 
-                hasFirstFrame = false;
                 accumulator = null;
             } // end-if
         } // end-method
 
         protected void handleMultiFrameMessageFrame(SdlPacket packet) {
-            if (packet.getFrameType() == FrameType.First){
+            if (packet.getFrameType() == FrameType.First) {
                 handleFirstDataFrame(packet);
             }
             else{
-                if(accumulator != null)
+                if(accumulator != null){
                     handleRemainingFrame(packet);
+                }
             }
 
         } // end-method
 
         protected void handleFrame(SdlPacket packet) {
 
-            if (packet.getPayload() != null && packet.getDataSize() > 0 && packet.isEncrypted()  )
-            {
-                if(iSdlProtocol == null){
-                    return;
-                }
+            if (packet.getPayload() != null && packet.getDataSize() > 0 && packet.isEncrypted() ) {
 
                 SdlSecurityBase sdlSec = iSdlProtocol.getSdlSecurity();
                 byte[] dataToRead = new byte[4096];
 
                 Integer iNumBytes = sdlSec.decryptData(packet.getPayload(), dataToRead);
-                if ((iNumBytes == null) || (iNumBytes <= 0))
+                if ((iNumBytes == null) || (iNumBytes <= 0)){
                     return;
+                }
 
                 byte[] decryptedData = new byte[iNumBytes];
                 System.arraycopy(dataToRead, 0, decryptedData, 0, iNumBytes);
@@ -1203,22 +1185,25 @@ public class SdlProtocol {
                 } else {
                     handleSingleFrameMessageFrame(packet);
                 }
-            } // end-if
-        } // end-method
+            }
+        }
 
         private void handleProtocolHeartbeatACK(SdlPacket packet) {
-            SdlProtocol.this.handleProtocolHeartbeatACK(SessionType.valueOf((byte)packet.getServiceType()),(byte)packet.getSessionId());
-        } // end-method
+            //Heartbeat is not supported in the SdlProtocol class beyond responding with ACKs to
+            //heartbeat messages. Receiving this ACK is suspicious and should be logged
+            DebugTool.logInfo("Received HeartbeatACK - " + packet.toString());
+        }
+
         private void handleProtocolHeartbeat(SdlPacket packet) {
             SdlProtocol.this.handleProtocolHeartbeat(SessionType.valueOf((byte)packet.getServiceType()),(byte)packet.getSessionId());
-        } // end-method
+        }
 
         /**
          * Directing method that will push the packet to the method that can handle it best
-         * @param packet
+         * @param packet a control frame packet
          */
         private void handleControlFrame(SdlPacket packet) {
-            Integer frameTemp = Integer.valueOf(packet.getFrameInfo());
+            Integer frameTemp = packet.getFrameInfo();
             Byte frameInfo = frameTemp.byteValue();
 
             SessionType serviceType = SessionType.valueOf((byte)packet.getServiceType());
@@ -1259,6 +1244,7 @@ public class SdlProtocol {
             } else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportNACK.getValue()) {
 
                 String reason = (String) packet.getTag(ControlFrameTags.RPC.RegisterSecondaryTransportNAK.REASON);
+                DebugTool.logWarning(reason);
                 handleSecondaryTransportRegistration(packet.getTransportRecord(),false);
 
             } else if (frameInfo == FrameDataControlFrameType.TransportEventUpdate.getValue()) {
@@ -1304,7 +1290,7 @@ public class SdlProtocol {
                 if(binFrameHeader == null) {
                     return;
                 }
-                message.setVersion(getMajorVersionByte());
+                message.setVersion((byte)protocolVersion.getMajor());
                 message.setRPCType(binFrameHeader.getRPCType());
                 message.setFunctionID(binFrameHeader.getFunctionID());
                 message.setCorrID(binFrameHeader.getCorrID());
