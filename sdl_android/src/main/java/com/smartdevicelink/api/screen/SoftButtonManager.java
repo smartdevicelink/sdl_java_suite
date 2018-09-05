@@ -19,6 +19,7 @@ import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
@@ -134,12 +135,14 @@ class SoftButtonManager extends BaseSubManager {
             @Override
             public void onNotified(RPCNotification notification) {
                 OnButtonPress onButtonPress = (OnButtonPress) notification;
-                Integer buttonId = onButtonPress.getCustomButtonName();
-                if (getSoftButtonObjects() != null) {
-                    for (SoftButtonObject softButtonObject : getSoftButtonObjects()) {
-                        if (softButtonObject.getButtonId() == buttonId && softButtonObject.getOnEventListener() != null){
-                            softButtonObject.getOnEventListener().onPress(getSoftButtonObjectById(buttonId), onButtonPress);
-                            break;
+                if (onButtonPress!= null && onButtonPress.getButtonName() == ButtonName.CUSTOM_BUTTON) {
+                    Integer buttonId = onButtonPress.getCustomButtonName();
+                    if (getSoftButtonObjects() != null) {
+                        for (SoftButtonObject softButtonObject : getSoftButtonObjects()) {
+                            if (softButtonObject.getButtonId() == buttonId && softButtonObject.getOnEventListener() != null) {
+                                softButtonObject.getOnEventListener().onPress(getSoftButtonObjectById(buttonId), onButtonPress);
+                                break;
+                            }
                         }
                     }
                 }
@@ -153,12 +156,14 @@ class SoftButtonManager extends BaseSubManager {
             @Override
             public void onNotified(RPCNotification notification) {
                 OnButtonEvent onButtonEvent = (OnButtonEvent) notification;
-                Integer buttonId = onButtonEvent.getCustomButtonID();
-                if (getSoftButtonObjects() != null) {
-                    for (SoftButtonObject softButtonObject : getSoftButtonObjects()) {
-                        if (softButtonObject.getButtonId() == buttonId && softButtonObject.getOnEventListener() != null){
-                            softButtonObject.getOnEventListener().onEvent(getSoftButtonObjectById(buttonId), onButtonEvent);
-                            break;
+                if (onButtonEvent!= null && onButtonEvent.getButtonName() == ButtonName.CUSTOM_BUTTON) {
+                    Integer buttonId = onButtonEvent.getCustomButtonID();
+                    if (getSoftButtonObjects() != null) {
+                        for (SoftButtonObject softButtonObject : getSoftButtonObjects()) {
+                            if (softButtonObject.getButtonId() == buttonId && softButtonObject.getOnEventListener() != null) {
+                                softButtonObject.getOnEventListener().onEvent(getSoftButtonObjectById(buttonId), onButtonEvent);
+                                break;
+                            }
                         }
                     }
                 }
