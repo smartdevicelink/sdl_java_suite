@@ -3,7 +3,7 @@ package com.smartdevicelink.util;
 
 public class Version {
 
-    int major,minor,patch;
+    final int major,minor,patch;
 
     public Version(){
         major = 0;
