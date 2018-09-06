@@ -1,5 +1,3 @@
-// New version
-
 package com.smartdevicelink.SdlConnection;
 
 import android.util.Log;
@@ -72,8 +70,6 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
         }
         if(sdlProtocol != null){
             sdlProtocol.endSession(sessionId, sessionHashId);
-            //FIXME add a shutdown to sdlProtocol.
-            //transportManager.close(sessionId);
         }
     }
 
@@ -156,19 +152,6 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
         sdlProtocol.sendPacket(packet);
     }
 
-    @Override
-    public void sendHeartbeat(IHeartbeatMonitor monitor) {
-       //SdlProtocol does not support heartbeat sending
-    }
-
-    @Override
-    public void heartbeatTimedOut(IHeartbeatMonitor monitor) {
-        close();
-    }
-
-    public void onHeartbeatTimedOut(byte sessionId){
-        //TODO
-    }
 
     public void onProtocolSessionStartedNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams){
         onProtocolSessionNACKed(sessionType,sessionID,version,correlationID,rejectedParams);
@@ -186,28 +169,21 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
         }
     }
 
-
-
+    /* Not supported methods from IProtocolListener */
     @Override
-    public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {
-        //TODO
-    }
-
+    public void sendHeartbeat(IHeartbeatMonitor monitor) {/* Not supported */ }
     @Override
-    public void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {
-        //TODO
-    }
-
-
+    public void heartbeatTimedOut(IHeartbeatMonitor monitor) {/* Not supported */}
     @Override
-    public void onResetOutgoingHeartbeat(SessionType sessionType, byte sessionID) {
-        //TODO
-    }
-
+    public void onHeartbeatTimedOut(byte sessionId){ /* Not supported */}
     @Override
-    public void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID) {
-        //TODO
-    }
+    public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) { /* Not supported */}
+    @Override
+    public void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {/* Not supported */}
+    @Override
+    public void onResetOutgoingHeartbeat(SessionType sessionType, byte sessionID) {/* Not supported */}
+    @Override
+    public void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID) {/* Not supported */}
 
     /* ***********************************************************************************************************************************************************************
      * *****************************************************************  Security Listener  *********************************************************************************
@@ -235,22 +211,6 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
         }
     }
 
-    @Deprecated
-    public void clearConnection(){
-        //TODO reset SdlProtocol
-    }
-
-    @SuppressWarnings("SameReturnValue")
-    @Deprecated
-    public static boolean removeConnection(SdlConnection connection){
-        return false;
-    }
-
-    @Deprecated
-    @Override
-    public void checkForOpenMultiplexConnection(SdlConnection connection){
-    }
-
     @Override
     public void stopStream(SessionType serviceType) {
         if(SessionType.NAV.equals(serviceType)){
@@ -260,5 +220,18 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
         }
 
     }
+
+    @Override
+    @Deprecated
+    public void clearConnection(){/* Not supported */}
+
+    @SuppressWarnings("SameReturnValue")
+    @Deprecated
+    public static boolean removeConnection(SdlConnection connection){/* Not supported */ return false;}
+
+    @Deprecated
+    @Override
+    public void checkForOpenMultiplexConnection(SdlConnection connection){/* Not supported */}
+
 
 }
