@@ -13,6 +13,7 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SdlProxyBase;
+import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
@@ -451,6 +452,16 @@ public class SdlManager{
 	public LockScreenManager getLockscreenManager() {
 		checkSdlManagerState();
 		return lockscreenManager;
+	}
+
+
+	/**
+	 * Gets the SystemCapabilityManager. <br>
+	 * <strong>Note: SystemCapabilityManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * @return a SystemCapabilityManager object
+	 */
+	public SystemCapabilityManager getSystemCapabilityManager(){
+		return proxy.getSystemCapabilityManager();
 	}
 
 
