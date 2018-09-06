@@ -18,9 +18,9 @@ public class DeleteFileResponse extends RPCResponse {
 	public static final String KEY_SPACE_AVAILABLE = "spaceAvailable";
 	private static final Integer MAX_VALUE = 2000000000;
 
-	/**
+    /**
      * Constructs a new DeleteFileResponse object
-	 */
+     */
     public DeleteFileResponse() {
         super(FunctionID.DELETE_FILE.toString());
     }
