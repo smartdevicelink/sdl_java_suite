@@ -40,6 +40,8 @@ import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
@@ -65,12 +67,37 @@ public class VirtualDisplayEncoder {
     private IVideoStreamListener mOutputListener;
     private Boolean initPassed = false;
     private final Object STREAMING_LOCK = new Object();
+    private static final long KEEPALIVE_INTERVAL_MSEC = 100;
+    protected Handler handler = new Handler(Looper.getMainLooper());
+    private long mLastEmittedFrameTimestamp;
 
     // Codec-specific data (SPS and PPS)
     private byte[] mH264CodecSpecificData = null;
 
     //For older (<21) OS versions
     private Thread encoderThread;
+
+    private void startRefreshTask() {
+        handler.postDelayed(mStartRefreshTaskCallback, KEEPALIVE_INTERVAL_MSEC);
+    }
+
+    private void stopRefreshTask() {
+        handler.removeCallbacks(mStartRefreshTaskCallback);
+    }
+
+    private Runnable mStartRefreshTaskCallback = new Runnable() {
+        public void run() {
+
+            if (mOutputListener != null && mH264CodecSpecificData != null && mVideoBufferInfo != null) {
+                long timeSinceLastEmitted = System.currentTimeMillis() - mLastEmittedFrameTimestamp;
+                if (timeSinceLastEmitted >= KEEPALIVE_INTERVAL_MSEC) {
+                    mOutputListener.sendFrame(mH264CodecSpecificData, 0, mH264CodecSpecificData.length, mVideoBufferInfo.presentationTimeUs);
+                    mLastEmittedFrameTimestamp = System.currentTimeMillis();
+                }
+            }
+            handler.postDelayed(this, KEEPALIVE_INTERVAL_MSEC);
+        }
+    };
 
 
     /**
@@ -120,7 +147,7 @@ public class VirtualDisplayEncoder {
      * NOTE: Must call init() without error before calling this method.
      * Prepares the encoder and virtual display.
      */
-    public void start() throws Exception {
+    public void start() {
         if (!initPassed) {
             Log.e(TAG, "VirtualDisplayEncoder was not properly initialized with the init() method.");
             return;
@@ -141,6 +168,10 @@ public class VirtualDisplayEncoder {
 
                 startEncoder();
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    startRefreshTask();
+                }
+
             } catch (Exception ex) {
                 Log.e(TAG, "Unable to create Virtual Display.");
                 throw new RuntimeException(ex);
@@ -153,30 +184,52 @@ public class VirtualDisplayEncoder {
             Log.e(TAG, "VirtualDisplayEncoder was not properly initialized with the init() method.");
             return;
         }
+
+        Log.i(TAG, "SHUTDOWN CALLED");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            stopRefreshTask();
+        }
+
         try {
             if (encoderThread != null) {
                 encoderThread.interrupt();
                 encoderThread = null;
             }
+        } catch (Exception ex) {
+            Log.e(TAG, "interrupting encoderThread failed");
+        }
 
+        try {
             if (mVideoEncoder != null) {
+                mVideoEncoder.flush();
                 mVideoEncoder.stop();
                 mVideoEncoder.release();
                 mVideoEncoder = null;
             }
+        } catch (Exception ex) {
+            Log.e(TAG, "stopping mVideoEncoder failed");
+        }
 
+        try {
             if (virtualDisplay != null) {
                 virtualDisplay.release();
                 virtualDisplay = null;
             }
+        } catch (Exception ex) {
+            Log.e(TAG, "interrupting virtualDisplay failed");
+        }
 
+        try {
             if (inputSurface != null) {
                 inputSurface.release();
                 inputSurface = null;
             }
         } catch (Exception ex) {
-            Log.e(TAG, "shutDown() failed");
+            Log.e(TAG, "interrupting inputSurface failed");
         }
+
+            Log.i(TAG, "SHUTDOWN FINISHED");
     }
 
     private Surface prepareVideoEncoder() {
@@ -220,9 +273,9 @@ public class VirtualDisplayEncoder {
                             ByteBuffer encodedData = codec.getOutputBuffer(index);
                             if (encodedData != null) {
                                 if (info.size != 0) {
-                                    byte[] dataToWrite;// = new byte[info.size];
                                     int dataOffset = 0;
-
+                                    byte[] dataToWrite;
+                                    mVideoBufferInfo = info;
                                     // append SPS and PPS in front of every IDR NAL unit
                                     if ((info.flags & MediaCodec.BUFFER_FLAG_KEY_FRAME) != 0 && mH264CodecSpecificData != null) {
                                         dataToWrite = new byte[mH264CodecSpecificData.length + info.size];
@@ -238,11 +291,12 @@ public class VirtualDisplayEncoder {
                                     encodedData.get(dataToWrite, dataOffset, info.size);
                                     if (mOutputListener != null) {
                                         mOutputListener.sendFrame(dataToWrite, 0, dataToWrite.length, info.presentationTimeUs);
+                                        mLastEmittedFrameTimestamp = System.currentTimeMillis();
                                     }
                                 }
-
                                 codec.releaseOutputBuffer(index, false);
                             }
+
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }

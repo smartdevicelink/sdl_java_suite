@@ -7073,7 +7073,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public VideoStreamingManager(Context context,ISdl iSdl){
 			this.context = context;
 			this.internalInterface = iSdl;
-			encoder = new VirtualDisplayEncoder();
+			if (encoder == null) {
+				encoder = new VirtualDisplayEncoder();
+			}
 			internalInterface.addServiceListener(SessionType.NAV,this);
 			//Take care of the touch events
 			internalInterface.addOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, new OnRPCNotificationListener() {

@@ -58,7 +58,6 @@ import java.util.concurrent.Callable;
 @TargetApi(17)
 public abstract class SdlRemoteDisplay extends Presentation {
     private static final String TAG = "SdlRemoteDisplay";
-    private static final int REFRESH_RATE_MS = 50;
 
     protected Window w;
     protected View mainView;
@@ -78,31 +77,14 @@ public abstract class SdlRemoteDisplay extends Presentation {
 
         w  = getWindow();
 
-        startRefreshTask();
+        getMainView();
+
+        if (mainView != null) {
+            mainView.invalidate();
+        }
 
         w.setType(WindowManager.LayoutParams.TYPE_PRIVATE_PRESENTATION);
     }
-
-    protected void startRefreshTask() {
-        handler.postDelayed(mStartRefreshTaskCallback, REFRESH_RATE_MS);
-    }
-
-    protected void stopRefreshTask() {
-        handler.removeCallbacks(mStartRefreshTaskCallback);
-    }
-
-    protected Runnable mStartRefreshTaskCallback = new Runnable() {
-        public void run() {
-            if(mainView == null){
-                mainView = w.getDecorView().findViewById(android.R.id.content);
-            }
-            if (mainView != null) {
-                mainView.invalidate();
-            }
-
-            handler.postDelayed(this, REFRESH_RATE_MS);
-        }
-    };
 
     @SuppressWarnings("unused")
     public View getMainView(){
@@ -130,11 +112,11 @@ public abstract class SdlRemoteDisplay extends Presentation {
     }
 
     public void stop(){
-        stopRefreshTask();
         dismissPresentation();
     }
 
     public void dismissPresentation() {
+        Log.i(TAG, "DISMISS PRESENTATION CALLED");
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -186,6 +168,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
                         }
 
                         try {
+                            Log.i(TAG, "CALLING REMOTE DISPLAY SHOW");
                             remoteDisplay.show();
                             remoteDisplay.callback = callback;
                             if(callback!=null){
