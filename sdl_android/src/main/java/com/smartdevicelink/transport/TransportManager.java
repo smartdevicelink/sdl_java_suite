@@ -24,7 +24,6 @@ public class TransportManager {
     private final Object TRANSPORT_STATUS_LOCK;
 
     TransportBrokerImpl transport;
-    //final HashMap<TransportType, Boolean> transportStatus;
     final List<TransportRecord> transportStatus;
     final TransportEventListener transportListener;
 
@@ -56,7 +55,6 @@ public class TransportManager {
             transport = new TransportBrokerImpl(config.context, config.appId,config.service);
         }else{
             enterLegacyMode("Router service is not trusted. Entering legacy mode");
-            //throw new SecurityException("Unable to trust router service");
         }
     }
 
@@ -175,7 +173,7 @@ public class TransportManager {
     	transport.requestSecondaryTransportConnection(sessionId, params);
     }
 
-    private class TransportBrokerImpl extends TransportBroker{
+    protected class TransportBrokerImpl extends TransportBroker{
 
         public TransportBrokerImpl(Context context, String appId, ComponentName routerService){
             super(context,appId,routerService);
@@ -183,6 +181,7 @@ public class TransportManager {
 
         @SuppressWarnings("deprecation")
         @Override
+        @Deprecated
         public boolean onHardwareConnected(TransportType transportType){
             return false;
         }
@@ -207,10 +206,6 @@ public class TransportManager {
                 Log.d(TAG, "Transport disconnected");
 
             }
-//            if(connectedTransports == null || connectedTransports.isEmpty()){
-//                //There are no more transports to use so we can unbind
-//                super.onHardwareDisconnected(record,connectedTransports);
-//            }
 
             synchronized (TRANSPORT_STATUS_LOCK){
                 TransportManager.this.transportStatus.remove(record);
@@ -259,7 +254,7 @@ public class TransportManager {
         }
     }
 
-    private synchronized void exitLegacyMode(String info ){
+    protected synchronized void exitLegacyMode(String info ){
         if(legacyBluetoothTransport != null){
             legacyBluetoothTransport.stop();
             legacyBluetoothTransport = null;
@@ -294,7 +289,7 @@ public class TransportManager {
 
 
 
-    private static class LegacyBluetoothHandler extends Handler{
+    protected static class LegacyBluetoothHandler extends Handler{
 
         final WeakReference<TransportManager> provider;
 

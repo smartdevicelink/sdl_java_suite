@@ -153,7 +153,7 @@ public class SdlProtocol {
         this.activeTransports.clear();
         this.mtus.clear();
         mtus.put(SessionType.RPC, (long) (V1_V2_MTU_SIZE - headerSize));
-        this.secondaryTransportParams.clear();
+        this.secondaryTransportParams = null;
         this._assemblerForMessageID.clear();
         this._assemblerForSessionID.clear();
         this._messageLocks.clear();
