@@ -547,7 +547,7 @@ public class SdlManager{
 
 	/**
 	 * Add an OnRPCNotificationListener
-	 * @param listener listener that will be called when a notifications is received
+	 * @param listener listener that will be called when a notification is received
 	 */
 	public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
 		proxy.addOnRPCNotificationListener(notificationId,listener);
