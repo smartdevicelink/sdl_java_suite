@@ -546,19 +546,19 @@ public class SdlManager{
 	}
 
 	/**
-	 * Add an OnRPCNotificationListener for HMI status notifications
-	 * @param listener listener that will be called when the HMI status changes
+	 * Add an OnRPCNotificationListener
+	 * @param listener listener that will be called when a notification is received
 	 */
-	public void addOnHmiStatusListener(OnRPCNotificationListener listener){
-		proxy.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS,listener);
+	public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
+		proxy.addOnRPCNotificationListener(notificationId,listener);
 	}
 
 	/**
-	 * Remove an OnRPCNotificationListener for HMI status notifications
-	 * @param listener listener that was previously added for the HMI status notifications
+	 * Remove an OnRPCNotificationListener
+	 * @param listener listener that was previously added
 	 */
-	public void removeOnHmiStatusListener(OnRPCNotificationListener listener){
-		proxy.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, listener);
+	public void removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
+		proxy.removeOnRPCNotificationListener(notificationId, listener);
 	}
 
 	// LIFECYCLE / OTHER
