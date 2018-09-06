@@ -7019,6 +7019,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		sendRPCRequest(msg);
 	}
 
+    /**
+     * Gets the SystemCapabilityManager. <br>
+     * @return a SystemCapabilityManager object
+     */
+	public SystemCapabilityManager getSystemCapabilityManager() {
+		return _systemCapabilityManager;
+	}
+
 	@SuppressWarnings("unused")
 	public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType) {
 		return _systemCapabilityManager != null && _systemCapabilityManager.isCapabilitySupported(systemCapabilityType);
