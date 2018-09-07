@@ -40,6 +40,7 @@ public class RadioControlDataTests extends TestCase{
         msg.setSignalChangeThreshold(Test.GENERAL_INT);
         msg.setRadioEnable(Test.GENERAL_BOOLEAN);
         msg.setState(Test.GENERAL_RADIOSTATE);
+        msg.setHdRadioEnable(Test.GENERAL_BOOLEAN);
         msg.setSisData(Test.GENERAL_SISDATA);
     }
 
@@ -58,6 +59,7 @@ public class RadioControlDataTests extends TestCase{
         int signalChangeThreshold = msg.getSignalChangeThreshold();
         boolean radioEnable = msg.getRadioEnable();
         RadioState state = msg.getState();
+        boolean hdRadioEnable = msg.getHdRadioEnable();
         SisData sisData = msg.getSisData();
 
         // Valid Tests
@@ -71,6 +73,7 @@ public class RadioControlDataTests extends TestCase{
         assertEquals(Test.MATCH, Test.GENERAL_INT, signalChangeThreshold);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, radioEnable);
         assertEquals(Test.MATCH, Test.GENERAL_RADIOSTATE, state);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, hdRadioEnable);
         assertTrue(Test.TRUE, Validator.validateSisData(Test.GENERAL_SISDATA, sisData));
 
         // Invalid/Null Tests
@@ -87,6 +90,7 @@ public class RadioControlDataTests extends TestCase{
         assertNull(Test.NULL, msg.getSignalChangeThreshold());
         assertNull(Test.NULL, msg.getRadioEnable());
         assertNull(Test.NULL, msg.getState());
+        assertNull(Test.NULL, msg.getHdRadioEnable());
         assertNull(Test.NULL, msg.getSisData());
     }
 
@@ -104,6 +108,7 @@ public class RadioControlDataTests extends TestCase{
             reference.put(RadioControlData.KEY_SIGNAL_CHANGE_THRESHOLD, Test.GENERAL_INT);
             reference.put(RadioControlData.KEY_RADIO_ENABLE, Test.GENERAL_BOOLEAN);
             reference.put(RadioControlData.KEY_STATE, Test.GENERAL_RADIOSTATE);
+            reference.put(RadioControlData.KEY_HD_RADIO_ENABLE, Test.GENERAL_BOOLEAN);
             reference.put(RadioControlData.KEY_SIS_DATA, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_SISDATA.getStore()));
 
             JSONObject underTest = msg.serializeJSON();
