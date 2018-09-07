@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.content.ComponentName;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
@@ -36,8 +38,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	SdlTransport _transport = null;
 	AbstractProtocol _protocol = null;
 	ISdlConnectionListener _connectionListener = null;
-	
-
 
 	// Thread safety locks
 	static Object TRANSPORT_REFERENCE_LOCK = new Object();
@@ -48,6 +48,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	private static TransportType legacyTransportRequest = null;
 	private final static int BUFF_READ_SIZE = 1000000;
 	protected static MultiplexTransportConfig cachedMultiConfig = null;
+
+	private Handler WOKEN_RS_HANDLER;
+	public final static int RSERVICE_WAIT_MS = 2500;
 	
 	/**
 	 * Constructor.
@@ -76,8 +79,14 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		constructor(transportConfig,rsvp);
 	}
 	
-	private void constructor(BaseTransportConfig transportConfig,RouterServiceValidator rsvp){
+	private void constructor(BaseTransportConfig transportConfig,final RouterServiceValidator rsvp){
 		_connectionListener = new InternalMsgDispatcher();
+
+		// Set up the handler
+		if (Looper.myLooper() == null) {
+			Looper.prepare();
+		}
+		WOKEN_RS_HANDLER = new Handler(Looper.myLooper());
 		
 		// Initialize the transport
 		synchronized(TRANSPORT_REFERENCE_LOCK) {
@@ -88,10 +97,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 				}
 				_transport = null;
 			}
-			
+
 			//Let's check if we can even do multiplexing
 			if(!isLegacyModeEnabled() &&
-					rsvp!= null && 
+					rsvp!= null &&
 					transportConfig.getTransportType() == TransportType.MULTIPLEX){
 				//rsvp = new RouterServiceValidator(((MultiplexTransportConfig)transportConfig).getContext());
 				//vlad.setFlags(RouterServiceValidator.FLAG_DEBUG_VERSION_CHECK);
@@ -99,12 +108,28 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 					Log.w(TAG, "SDL Router service is valid; attempting to connect");
 					((MultiplexTransportConfig)transportConfig).setService(rsvp.getService());//Let thes the transport broker know which service to connect to
 				}else{
-					Log.w(TAG, "SDL Router service isn't trusted. Enabling legacy bluetooth connection.");	
 					if(cachedMultiConfig == null){
 						cachedMultiConfig = (MultiplexTransportConfig) transportConfig;
 						cachedMultiConfig.setService(null);
 					}
-					enableLegacyMode(true,TransportType.BLUETOOTH); //We will use legacy bluetooth connection for this attempt
+
+					if(!rsvp.isAdditionalSdlBroadcastReceiver()) { // If there are no other Router Services to wake up
+						Log.w(TAG, "Other SDL Router services aren't trusted. Enabling legacy bluetooth connection.");
+						enableLegacyMode(true, TransportType.BLUETOOTH); //We will use legacy bluetooth connection for this attempt
+					}else{
+						Log.w(TAG, "Other SDL Router services exist on device.");
+						WOKEN_RS_HANDLER.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if(!rsvp.validate()){ // A router service was not woken
+									Log.w(TAG, "SDL Router service was not woken in time.");
+									enableLegacyMode(true, TransportType.BLUETOOTH); //We will use legacy bluetooth connection
+								}else {
+									Log.w(TAG, "SDL Router service awoke - " + rsvp.getService().getPackageName());
+								}
+							}
+						}, RSERVICE_WAIT_MS); // Wait for a certain amount of time
+					}
 				}
 			}
 			
@@ -112,7 +137,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 					(transportConfig.getTransportType() == TransportType.MULTIPLEX)){
 				_transport = new MultiplexTransport((MultiplexTransportConfig)transportConfig,this);
 			}else if(isLegacyModeEnabled() && legacyTransportRequest == TransportType.BLUETOOTH){
-				_transport = new BTTransport(this, true); 
+				_transport = new BTTransport(this, true);
 			}else if(transportConfig.getTransportType() == TransportType.BLUETOOTH){
 				_transport = new BTTransport(this,((BTTransportConfig)transportConfig).getKeepSocketActive());
 			}

@@ -86,6 +86,7 @@ public class RouterServiceValidator {
 	private static boolean pendingListRefresh = false;
 	
 	private ComponentName service;//This is how we can save different routers over another in a waterfall method if we choose to.
+	private ComponentName lastClosedService = null;
 
 	private static int securityLevel = -1;
 	
@@ -121,6 +122,7 @@ public class RouterServiceValidator {
 			Log.d(TAG, "Supplied service name of " + this.service.getClassName());
 			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O && !isServiceRunning(context,this.service)){
 				//This means our service isn't actually running, so set to null. Hopefully we can find a real router service after this.
+				lastClosedService = service;
 				service = null;
 				Log.w(TAG, "Supplied service is not actually running.");
 			} else {
@@ -501,7 +503,29 @@ public class RouterServiceValidator {
 		    }
 		return false;
 	}
-	
+
+	/**
+	 * This method determines whether is an additional trusted Sdl Broadcast Receiver (and therefore Sdl Router Service) on this device, distinct from the last one that was closed.
+	 * @return
+	 */
+	public boolean isAdditionalSdlBroadcastReceiver(){
+		PackageManager manager = context.getPackageManager();
+		for(ResolveInfo resolveInfo : manager.queryBroadcastReceivers(new Intent(TransportConstants.START_ROUTER_SERVICE_ACTION), PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)){
+			String packageName = resolveInfo.activityInfo.packageName;
+			if(packageName != null){
+				if(lastClosedService != null){
+					if(isTrustedPackage(packageName, manager) && !lastClosedService.toString().equals(packageName)){
+						return true;
+					}
+				}else{
+					if(isTrustedPackage(packageName, manager)){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 	
 	/**
 	 * Parses a string into a JSON array

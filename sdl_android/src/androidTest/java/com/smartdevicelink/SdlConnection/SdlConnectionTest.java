@@ -1,5 +1,7 @@
 package com.smartdevicelink.SdlConnection;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.test.AndroidTestCase;
 
 import com.smartdevicelink.test.SdlUnitTestContants;
@@ -11,6 +13,8 @@ import com.smartdevicelink.transport.RouterServiceValidator;
 import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 
+import static com.smartdevicelink.SdlConnection.SdlConnection.RSERVICE_WAIT_MS;
+
 public class SdlConnectionTest extends AndroidTestCase {
 	
 	private static final String TAG = "SdlConnection Tests";
@@ -18,7 +22,6 @@ public class SdlConnectionTest extends AndroidTestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		
 	}
 
 	@Override
@@ -79,18 +82,27 @@ public class SdlConnectionTest extends AndroidTestCase {
 		}
 	}
 	
-	public void testMultiplexConstructorInsalledFrom(){
+	public void testMultiplexConstructorInstalledFrom(){
 		SdlConnection.enableLegacyMode(false, null);
 		RouterServiceValidator rsvp = new RouterServiceValidator(this.mContext);
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_INSTALLED_FROM_CHECK);
 		MultiplexTransportConfig config = new MultiplexTransportConfig(this.mContext,SdlUnitTestContants.TEST_APP_ID);
-		SdlConnection connection = new SdlConnection(config,rsvp);
+		final SdlConnection connection = new SdlConnection(config,rsvp);
 		boolean didValidate = rsvp.validate();
 		if(didValidate){
 			assertEquals(TransportType.MULTIPLEX, connection.getCurrentTransportType());
 		}else{
-			assertEquals(TransportType.BLUETOOTH, connection.getCurrentTransportType());
-
+			if(Looper.myLooper() == null){
+				Looper.prepare();
+			}
+			final Handler handler = new Handler();
+			final Runnable task = new Runnable() {
+				@Override
+				public void run() {
+					assertEquals(TransportType.BLUETOOTH, connection.getCurrentTransportType());
+				}
+			};
+			handler.postDelayed(task, RSERVICE_WAIT_MS);
 		}
 	}
 	
