@@ -2093,8 +2093,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlSecurityBase sec;
 		Service svc = getService();
 		SdlSecurityBase.setAppService(svc);
-		SdlSecurityBase.setContext(_appContext);
-		
+		if (svc != null && svc.getApplicationContext() != null){
+			SdlSecurityBase.setContext(svc.getApplicationContext());
+		} else {
+			SdlSecurityBase.setContext(_appContext);
+		}
+
 		for (Class<? extends SdlSecurityBase> cls : _secList)
 		{
 			try
