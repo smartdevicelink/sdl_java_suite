@@ -14,6 +14,7 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SdlProxyBase;
+import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
@@ -455,6 +456,16 @@ public class SdlManager{
 	}
 
 
+	/**
+	 * Gets the SystemCapabilityManager. <br>
+	 * <strong>Note: SystemCapabilityManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * @return a SystemCapabilityManager object
+	 */
+	public SystemCapabilityManager getSystemCapabilityManager(){
+		return proxy.getSystemCapabilityManager();
+	}
+
+
 	// PROTECTED GETTERS
 
 	protected String getAppName() { return appName; }
@@ -547,19 +558,19 @@ public class SdlManager{
 	}
 
 	/**
-	 * Add an OnRPCNotificationListener for HMI status notifications
-	 * @param listener listener that will be called when the HMI status changes
+	 * Add an OnRPCNotificationListener
+	 * @param listener listener that will be called when a notification is received
 	 */
-	public void addOnHmiStatusListener(OnRPCNotificationListener listener){
-		proxy.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS,listener);
+	public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
+		proxy.addOnRPCNotificationListener(notificationId,listener);
 	}
 
 	/**
-	 * Remove an OnRPCNotificationListener for HMI status notifications
-	 * @param listener listener that was previously added for the HMI status notifications
+	 * Remove an OnRPCNotificationListener
+	 * @param listener listener that was previously added
 	 */
-	public void removeOnHmiStatusListener(OnRPCNotificationListener listener){
-		proxy.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, listener);
+	public void removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
+		proxy.removeOnRPCNotificationListener(notificationId, listener);
 	}
 
 	// LIFECYCLE / OTHER
