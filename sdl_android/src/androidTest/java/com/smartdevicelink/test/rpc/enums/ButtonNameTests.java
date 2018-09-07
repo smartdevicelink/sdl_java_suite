@@ -199,6 +199,8 @@ public class ButtonNameTests extends TestCase {
 		enumTestList.add(ButtonName.SOURCE);
 		enumTestList.add(ButtonName.SHUFFLE);
 		enumTestList.add(ButtonName.REPEAT);
+		enumTestList.add(ButtonName.PLAY_PAUSE);
+		enumTestList.add(ButtonName.OKAY);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

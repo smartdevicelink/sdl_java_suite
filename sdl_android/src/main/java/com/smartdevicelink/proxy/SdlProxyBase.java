@@ -12,6 +12,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -45,6 +47,7 @@ import android.view.Display;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.Surface;
+import android.widget.Button;
 
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
@@ -3299,6 +3302,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				
 				final OnButtonPress msg = new OnButtonPress(hash);
 				msg.format(rpcSpecVersion, true);
+				final List<OnButtonPress> extras = (List<OnButtonPress>)handleButtonNotificationFormatting(msg);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3306,17 +3310,29 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						public void run() {
 							_proxyListener.onOnButtonPress(msg);
 							onRPCNotificationReceived(msg);
+							if(extras != null){
+								for(OnButtonPress press: extras){
+									_proxyListener.onOnButtonPress(press);
+								}
+							}
 						}
 					});
 				} else {
 					_proxyListener.onOnButtonPress(msg);
 					onRPCNotificationReceived(msg);
+					if(extras != null){
+						for(OnButtonPress press: extras){
+							_proxyListener.onOnButtonPress(press);
+						}
+					}
 				}
 			} else if (functionName.equals(FunctionID.ON_BUTTON_EVENT.toString())) {
 				// OnButtonEvent
 				
 				final OnButtonEvent msg = new OnButtonEvent(hash);
 				msg.format(rpcSpecVersion, true);
+				final List<OnButtonEvent> extras = (List<OnButtonEvent>)handleButtonNotificationFormatting(msg);
+
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3324,11 +3340,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						public void run() {
 							_proxyListener.onOnButtonEvent(msg);
 							onRPCNotificationReceived(msg);
+							if(extras != null){
+								for(OnButtonEvent event: extras){
+									_proxyListener.onOnButtonEvent(event);
+								}
+							}
 						}
 					});
 				} else {
 					_proxyListener.onOnButtonEvent(msg);
 					onRPCNotificationReceived(msg);
+					if(extras != null){
+						for(OnButtonEvent event: extras){
+							_proxyListener.onOnButtonEvent(event);
+						}
+					}
 				}
 			} else if (functionName.equals(FunctionID.ON_LANGUAGE_CHANGE.toString())) {
 				// OnLanguageChange
@@ -3582,6 +3608,47 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlTrace.logProxyEvent("Proxy received RPC Message: " + functionName, SDL_LIB_TRACE_KEY);
 	}
 
+	//FIXME
+	/**
+	 * Temporary method to bridge the new PLAY_PAUSE and OKAY button funcitonliaty with the old
+	 * OK button name. This should be removed during the next major release
+	 * @param notification
+	 */
+	private List<? extends RPCNotification> handleButtonNotificationFormatting(RPCNotification notification){
+		if(FunctionID.ON_BUTTON_EVENT.toString().equals(notification.getFunctionName())
+				|| FunctionID.ON_BUTTON_PRESS.toString().equals(notification.getFunctionName())){
+
+			ButtonName buttonName = (ButtonName)notification.getObject(ButtonName.class, OnButtonEvent.KEY_BUTTON_NAME);
+			if(rpcSpecVersion != null && rpcSpecVersion.getMajor() >= 5){
+				if(ButtonName.PLAY_PAUSE.equals(buttonName)){
+					RPCNotification notification2 = new RPCNotification(notification);
+					notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, ButtonName.OK);
+					return Collections.singletonList(notification2);
+				}else if(ButtonName.OK.equals(buttonName)){
+					RPCNotification notification2 = new RPCNotification(notification);
+					notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, ButtonName.OKAY);
+					return Collections.singletonList(notification2);
+				}
+			}else{
+				if(ButtonName.OK.equals(buttonName)){
+					List<RPCNotification> retList = new ArrayList<>();
+
+					RPCNotification notification2 = new RPCNotification(notification);
+					notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, ButtonName.OKAY);
+					retList.add(notification2);
+
+					RPCNotification notification3 = new RPCNotification(notification);
+					notification3.setParameters(OnButtonEvent.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
+					retList.add(notification3);
+
+					return retList;
+				}
+			}
+
+		}
+		return null;
+	}
+
 	/**
 	 * Takes a list of RPCRequests and sends it to SDL in a synchronous fashion. Responses are captured through callback on OnMultipleRequestListener.
 	 * For sending requests asynchronously, use sendRequests <br>
@@ -3753,6 +3820,29 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				SdlTrace.logProxyEvent("Application attempted to send a RegisterAppInterface or UnregisterAppInterface while using ALM.", SDL_LIB_TRACE_KEY);
 				throw new SdlException("The RPCRequest, " + request.getFunctionName() + 
 						", is un-allowed using the Advanced Lifecycle Management Model.", SdlExceptionCause.INCORRECT_LIFECYCLE_MODEL);
+			}
+		}
+
+		//FIXME this is temporary until the next major release of the library where OK is removed
+
+		if(FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+				|| FunctionID.UNSUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+				|| FunctionID.BUTTON_PRESS.toString().equals(request.getFunctionName())){
+
+			ButtonName buttonName = (ButtonName)request.getObject(ButtonName.class, SubscribeButton.KEY_BUTTON_NAME);
+
+			if(rpcSpecVersion != null && rpcSpecVersion.getMajor() < 5) {
+
+				if (ButtonName.PLAY_PAUSE.equals(buttonName)
+						|| ButtonName.OKAY.equals(buttonName)) {
+					request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
+				}
+			} else { //Newer than version 5.0.0
+				if(ButtonName.OK.equals(buttonName)){
+					RPCRequest request2 = new RPCRequest(request);
+					request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
+					sendRPCRequestPrivate(request2);
+				}
 			}
 		}
 		

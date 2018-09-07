@@ -23,11 +23,20 @@ package com.smartdevicelink.proxy.rpc.enums;
  */
 public enum ButtonName{
 	/**
-	 * Represents the button usually labeled "OK". A typical use of this button
-	 * is for the user to press it to make a selection.
-	 * 
+	 * <br><b>THIS ENUM VALUE HAS BEEN DEPRECATED AND SHOULD NO LONGER BE USED!</b>
+	 * <br><br>
+	 * This ButtonName value originally was used for both the OK button and PLAY_PAUSE button. As of
+	 * SmartDeviceLink 5.0.0, the functionality was broken out into the OKAY and PLAY_PAUSE buttons.
+	 * <br><br>
+	 * <s>Represents the button usually labeled "OK". A typical use of this button
+	 * is for the user to press it to make a selection or toggle between play and pause.</s>
+	 *
 	 * @since SmartDeviceLink 1.0
+	 * @deprecated SmartDeviceLink 5.0. See #OKAY
+	 * @see #OKAY
+	 * @see #PLAY_PAUSE
 	 */
+	@Deprecated
 	OK,
 	/**
 	 * Represents the seek-left button. A typical use of this button is for the
@@ -136,6 +145,28 @@ public enum ButtonName{
 	SOURCE,
 	SHUFFLE,
 	REPEAT,
+	/**
+	 * Represents the play/pause button. A typical use of this button
+	 * is for the user to press it to toggle between media playing and pausing.
+	 *
+	 * <br><br><b>NOTE:</b> This functionality used to be represented by the OK button.
+	 *
+	 * @since SmartDeviceLink 5.0
+	 * @see #OKAY
+	 * @see #OK
+	 */
+	PLAY_PAUSE,
+	/**
+	 * Represents the button usually labeled "OKAY" or "OK". A typical use of this button
+	 * is for the user to press it to make a selection.
+	 *
+	 * <br><br><b>NOTE:</b> This functionality used to be represented by the OK button.
+	 *
+	 * @since SmartDeviceLink 5.0
+	 * @see #PLAY_PAUSE
+	 * @see #OK
+	 */
+	OKAY,
 	;
 
     public static ButtonName valueForString(String value) {
