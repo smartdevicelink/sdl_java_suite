@@ -18,7 +18,7 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.ListFilesResponse}
+ * {@link com.smartdevicelink.proxy.rpc.ListFilesResponse}
  */
 public class ListFilesResponseTests extends BaseRpcTests{
 
