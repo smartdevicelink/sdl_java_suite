@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.api.PermissionManager.PermissionManager;
+import com.smartdevicelink.api.datatypes.SdlArtwork;
 import com.smartdevicelink.api.lockscreen.LockScreenConfig;
 import com.smartdevicelink.api.lockscreen.LockScreenManager;
 import com.smartdevicelink.exception.SdlException;
@@ -22,6 +23,7 @@ import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SetAppIcon;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -31,7 +33,6 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -58,18 +59,16 @@ public class SdlManager{
 
 	private static String TAG = "Sdl Manager";
 	private SdlProxyBase proxy;
-
-	// Required parameters for builder
 	private String appId, appName, shortAppName;
 	private boolean isMediaApp;
 	private Language hmiLanguage;
+	private SdlArtwork appIcon;
 	private Vector<AppHMIType> hmiTypes;
 	private BaseTransportConfig transport;
 	private Context context;
 	private Vector<String> vrSynonyms;
 	private Vector<TTSChunk> ttsChunks;
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
-
 	private SdlManagerListener managerListener;
 	private int state = -1;
 	public LockScreenConfig lockScreenConfig;
@@ -80,7 +79,7 @@ public class SdlManager{
 	private PermissionManager permissionManager;
 	private VideoStreamingManager videoStreamingManager;
 	private FileManager fileManager;
-	private LockScreenManager lockscreenManager;
+	private LockScreenManager lockScreenManager;
     /*
     private AudioStreamManager audioStreamManager;
     private ScreenManager screenManager;
@@ -126,7 +125,7 @@ public class SdlManager{
 					permissionManager != null && permissionManager.getState() != BaseSubManager.SETTING_UP &&
 					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
 					(videoStreamingManager == null || (videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP)) &&
-							lockscreenManager != null &&  lockscreenManager.getState() != BaseSubManager.SETTING_UP
+							lockScreenManager != null &&  lockScreenManager.getState() != BaseSubManager.SETTING_UP
 					/*
 					audioStreamManager != null && audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
 					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
@@ -135,6 +134,24 @@ public class SdlManager{
 				state = BaseSubManager.READY;
 				if(managerListener != null){
 					managerListener.onStart();
+				}
+
+				// Set the app icon
+				if (SdlManager.this.appIcon != null && SdlManager.this.appIcon.getName() != null) {
+					if (!fileManager.hasUploadedFile(SdlManager.this.appIcon)) {
+						fileManager.uploadArtwork(SdlManager.this.appIcon, new CompletionListener() {
+							@Override
+							public void onComplete(boolean success) {
+								if (success) {
+									SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
+									_internalInterface.sendRPCRequest(msg);
+								}
+							}
+						});
+					} else {
+						SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
+						_internalInterface.sendRPCRequest(msg);
+					}
 				}
 			}
 		}
@@ -155,8 +172,8 @@ public class SdlManager{
 		this.fileManager.start(subManagerListener);
 
 		if (lockScreenConfig.isEnabled()) {
-			this.lockscreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
-			this.lockscreenManager.start(subManagerListener);
+			this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
+			this.lockScreenManager.start(subManagerListener);
 		}
 
 		/*
@@ -167,15 +184,15 @@ public class SdlManager{
 		*/
 	}
 
-	private void dispose() {
+	public void dispose() {
 		this.permissionManager.dispose();
 		if(this.videoStreamingManager != null) {
 			this.videoStreamingManager.dispose();
 		}
 		this.fileManager.dispose();
 
-		if (this.lockscreenManager != null) {
-			this.lockscreenManager.dispose();
+		if (this.lockScreenManager != null) {
+			this.lockScreenManager.dispose();
 		}
 
 		/*
@@ -280,6 +297,15 @@ public class SdlManager{
 			sdlManager.lockScreenConfig = lockScreenConfig;
 			return this;
 		}
+
+        /**
+         * Sets the icon for the app on HU <br>
+         * @param sdlArtwork
+         */
+        public Builder setAppIcon(final SdlArtwork sdlArtwork){
+			sdlManager.appIcon = sdlArtwork;
+            return this;
+        }
 
 		/**
 		 * Sets the vector of AppHMIType <br>
@@ -449,9 +475,9 @@ public class SdlManager{
 	 * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
 	 * @return a LockScreenManager object
 	 */
-	public LockScreenManager getLockscreenManager() {
+	public LockScreenManager getLockScreenManager() {
 		checkSdlManagerState();
-		return lockscreenManager;
+		return lockScreenManager;
 	}
 
 
