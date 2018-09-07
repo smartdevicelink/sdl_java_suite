@@ -132,6 +132,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private proxyListenerType _proxyListener = null;
 	
 	protected Service _appService = null;
+	private Context _appContext;
 	private String sPoliciesURL = ""; //for testing only
 
 	// Protected Correlation IDs
@@ -649,6 +650,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * Used by the SdlManager
 	 *
 	 * @param listener Type of listener for this proxy base.
+	 * @param context Application context.
 	 * @param appName Client application name.
 	 * @param shortAppName Client short application name.
 	 * @param isMediaApp Flag that indicates that client application if media application or not.
@@ -663,10 +665,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param ttsName TTS name.
 	 * @throws SdlException
 	 */
-	public SdlProxyBase(proxyListenerType listener, String appName,String shortAppName, Boolean isMediaApp, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
+	public SdlProxyBase(proxyListenerType listener, Context context, String appName,String shortAppName, Boolean isMediaApp, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType, String appID,
 						BaseTransportConfig transportConfig, Vector<String> vrSynonyms, Vector<TTSChunk> ttsName, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme) throws SdlException {
 		performBaseCommon(listener, null, true, appName, ttsName, shortAppName, vrSynonyms, isMediaApp,
 				null, languageDesired, hmiDisplayLanguageDesired, appType, appID, null, dayColorScheme,nightColorScheme, false, false, null, null,  transportConfig);
+		_appContext = context;
 	}
 	
 	/**
@@ -1039,7 +1042,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	private void sendBroadcastIntent(Intent sendIntent)
 	{
-		Service myService;
+		Service myService = null;
 		if (_proxyListener != null && _proxyListener instanceof Service)
 		{
 			myService = (Service) _proxyListener;				
@@ -1048,13 +1051,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		{
 			myService = _appService;
 		}
+		Context myContext;
+		if (myService != null){
+			myContext = myService.getApplicationContext();
+		} else if (_appContext != null){
+			myContext = _appContext;
+		}
 		else
 		{
 			return;
 		}
 		try
 		{
-			Context myContext = myService.getApplicationContext();
 			if (myContext != null) myContext.sendBroadcast(sendIntent);
 		}
 		catch(Exception ex)
@@ -2085,6 +2093,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlSecurityBase sec;
 		Service svc = getService();
 		SdlSecurityBase.setAppService(svc);
+		SdlSecurityBase.setContext(_appContext);
 		
 		for (Class<? extends SdlSecurityBase> cls : _secList)
 		{

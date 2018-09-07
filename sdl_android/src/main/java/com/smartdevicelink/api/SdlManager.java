@@ -609,7 +609,7 @@ public class SdlManager{
 	public void start(){
 		if (proxy == null) {
 			try {
-				proxy = new SdlProxyBase(proxyBridge, appName, shortAppName, isMediaApp, hmiLanguage,
+				proxy = new SdlProxyBase(proxyBridge, context, appName, shortAppName, isMediaApp, hmiLanguage,
 						hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
 						nightColorScheme) {
 				};
