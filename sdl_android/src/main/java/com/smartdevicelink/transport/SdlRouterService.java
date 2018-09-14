@@ -900,7 +900,7 @@ public class SdlRouterService extends Service{
 			}
 		}
 		if(intent != null ){
-			if(intent.getBooleanExtra(FOREGROUND_EXTRA, false)){
+			if(intent.getBooleanExtra(FOREGROUND_EXTRA, false) && !isTransportConnected){
 				String address = null;
 				if(intent.hasExtra(BluetoothDevice.EXTRA_DEVICE)){
 					BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -909,7 +909,8 @@ public class SdlRouterService extends Service{
 					}
 				}
 				int timeout = getNotificationTimeout(address);
-				enterForeground("Waiting for connection...", timeout, false);
+				int timeOutInSeconds = timeout/1000;
+				enterForeground("Waiting for connection...", timeOutInSeconds, false);
 				resetForegroundTimeOut(timeout);
 			}
 			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
@@ -1021,7 +1022,7 @@ public class SdlRouterService extends Service{
 		}
 		// If this is a new device or hasn't connected through SDL we want to limit the exposure
 		// of the SDL service in the foreground
-		return FOREGROUND_TIMEOUT/1000;
+		return FOREGROUND_TIMEOUT;
 	}
 
 	public void resetForegroundTimeOut(long delay){
