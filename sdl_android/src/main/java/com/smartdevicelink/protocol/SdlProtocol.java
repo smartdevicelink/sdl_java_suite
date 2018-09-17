@@ -632,7 +632,9 @@ public class SdlProtocol {
                     continue;
                 }
 
-                if(activeTransports.get(serviceType).getType().equals(secondaryTransportType)){
+                if(activeTransports.get(serviceType) != null
+                        && activeTransports.get(serviceType).getType() !=null
+                        && activeTransports.get(serviceType).getType().equals(secondaryTransportType)){
                     // Transport is already active and accepted
                     header.setTransportRecord(activeTransports.get(serviceType));
                     handlePacketToSend(header);
