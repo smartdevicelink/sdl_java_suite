@@ -289,13 +289,15 @@ public class SdlProtocol {
 
         //Temporary: this logic should all be changed to handle multiple transports of the same type
         ArrayList<TransportType> connectedTransports = new ArrayList<>();
-        for(TransportRecord record: transports){
-            connectedTransports.add(record.getType());
+        if(transports != null) {
+            for (TransportRecord record : transports) {
+                connectedTransports.add(record.getType());
+            }
         }
 
         if(connectedPrimaryTransport != null && !connectedTransports.contains(connectedPrimaryTransport.getType())){
             //The primary transport being used is no longer part of the connected transports
-            //The transport manager callbacks should hadle the disconnect code
+            //The transport manager callbacks should handle the disconnect code
             connectedPrimaryTransport = null;
             return;
         }
@@ -310,21 +312,17 @@ public class SdlProtocol {
                 onTransportNotAccepted("No transports match requested primary transport");
             }
             // return;
-        }else if(requiresHighBandwidth){
-            //If this app has a primary transport already but requires a high bandwidth transport
-            //to properly function, it is now time to register over that transport to be used
-            TransportRecord preferredSecondaryTransport = getPreferredTransport(requestedPrimaryTransports,transports);
-            if(preferredSecondaryTransport != null) {
-
-                if(iSdlProtocol != null) {
-                    Log.d(TAG, "Registering secondary transport!");
-                    registerSecondaryTransport(iSdlProtocol.getSessionId(), preferredSecondaryTransport);
+        }else if(secondaryTransportListeners != null
+                && transports != null
+                && iSdlProtocol!= null){
+            // Check to see if there is a listener for a given transport.
+            // If a listener exists, it can be assumed that the transport should be registered on
+            for(TransportRecord record: transports){
+                if(secondaryTransportListeners.get(record.getType()) != null
+                        && !secondaryTransportListeners.get(record.getType()).isEmpty()){
+                    registerSecondaryTransport(iSdlProtocol.getSessionId(), record);
                 }
-                //return; // For now, only support registering one secondary transport
-            }else{
-                Log.d(TAG, "No supported secondary transport");
             }
-
         }
     }
 
