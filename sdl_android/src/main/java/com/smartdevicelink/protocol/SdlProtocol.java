@@ -815,7 +815,6 @@ public class SdlProtocol {
                     return;
                 }
 
-                boolean activeTransportsHandled = false;
 
                 // This enables custom behavior based on protocol version specifics
                 if (protocolVersion.isNewerThan(new Version("5.1.0")) >= 0) {
@@ -868,22 +867,19 @@ public class SdlProtocol {
                         setTransportPriorityForService(SessionType.PCM, audio);
                         setTransportPriorityForService(SessionType.NAV, video);
 
-                        activeTransportsHandled = true;
-
                     } else {
                         Log.w(TAG, "Received a start service ack for RPC service while already active on a different transport.");
                         return;
                     }
-                }
+                }else {
 
-                //Version is either not included or lower than 5.1.0
-                if(requiresHighBandwidth
-                        && TransportType.BLUETOOTH.equals(transportRecord.getType())){
-                    //transport can't support high bandwidth
-                    onTransportNotAccepted(transportRecord.getType() + " can't support high bandwidth requirement, and secondary transport not supported in this protocol version: " + version);
-                    return;
-                }
-                if(!activeTransportsHandled) {
+                    //Version is either not included or lower than 5.1.0
+                    if (requiresHighBandwidth
+                            && TransportType.BLUETOOTH.equals(transportRecord.getType())) {
+                        //transport can't support high bandwidth
+                        onTransportNotAccepted(transportRecord.getType() + " can't support high bandwidth requirement, and secondary transport not supported in this protocol version: " + version);
+                        return;
+                    }
 
                     activeTransports.put(SessionType.RPC, transportRecord);
                     activeTransports.put(SessionType.BULK_DATA, transportRecord);
