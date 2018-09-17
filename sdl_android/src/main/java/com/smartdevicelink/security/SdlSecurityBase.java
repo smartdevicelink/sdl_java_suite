@@ -94,6 +94,9 @@ public abstract class SdlSecurityBase {
     @Deprecated
     public static void setAppService(Service val) {
         appService = val;
+        if (val != null && val.getApplicationContext() != null){
+        	setContext(val.getApplicationContext());
+        }
     }
 
     public static Context getContext() {
