@@ -3302,7 +3302,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				
 				final OnButtonPress msg = new OnButtonPress(hash);
 				msg.format(rpcSpecVersion, true);
-				final List<OnButtonPress> extras = (List<OnButtonPress>)handleButtonNotificationFormatting(msg);
+				final OnButtonPress onButtonPressCompat = (OnButtonPress)handleButtonNotificationFormatting(msg);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3310,20 +3310,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						public void run() {
 							_proxyListener.onOnButtonPress(msg);
 							onRPCNotificationReceived(msg);
-							if(extras != null){
-								for(OnButtonPress press: extras){
-									_proxyListener.onOnButtonPress(press);
-								}
+							if(onButtonPressCompat != null){
+								_proxyListener.onOnButtonPress(onButtonPressCompat);
 							}
 						}
 					});
 				} else {
 					_proxyListener.onOnButtonPress(msg);
 					onRPCNotificationReceived(msg);
-					if(extras != null){
-						for(OnButtonPress press: extras){
-							_proxyListener.onOnButtonPress(press);
-						}
+					if(onButtonPressCompat != null){
+						_proxyListener.onOnButtonPress(onButtonPressCompat);
 					}
 				}
 			} else if (functionName.equals(FunctionID.ON_BUTTON_EVENT.toString())) {
@@ -3331,7 +3327,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				
 				final OnButtonEvent msg = new OnButtonEvent(hash);
 				msg.format(rpcSpecVersion, true);
-				final List<OnButtonEvent> extras = (List<OnButtonEvent>)handleButtonNotificationFormatting(msg);
+				final OnButtonEvent onButtonEventCompat = (OnButtonEvent)handleButtonNotificationFormatting(msg);
 
 				if (_callbackToUIThread) {
 					// Run in UI thread
@@ -3340,20 +3336,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						public void run() {
 							_proxyListener.onOnButtonEvent(msg);
 							onRPCNotificationReceived(msg);
-							if(extras != null){
-								for(OnButtonEvent event: extras){
-									_proxyListener.onOnButtonEvent(event);
-								}
+							if(onButtonEventCompat != null){
+								_proxyListener.onOnButtonEvent(onButtonEventCompat);
 							}
 						}
 					});
 				} else {
 					_proxyListener.onOnButtonEvent(msg);
 					onRPCNotificationReceived(msg);
-					if(extras != null){
-						for(OnButtonEvent event: extras){
-							_proxyListener.onOnButtonEvent(event);
-						}
+					if(onButtonEventCompat != null){
+						_proxyListener.onOnButtonEvent(onButtonEventCompat);
 					}
 				}
 			} else if (functionName.equals(FunctionID.ON_LANGUAGE_CHANGE.toString())) {
@@ -3614,7 +3606,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * OK button name. This should be removed during the next major release
 	 * @param notification
 	 */
-	private List<? extends RPCNotification> handleButtonNotificationFormatting(RPCNotification notification){
+	private RPCNotification handleButtonNotificationFormatting(RPCNotification notification){
 		if(FunctionID.ON_BUTTON_EVENT.toString().equals(notification.getFunctionName())
 				|| FunctionID.ON_BUTTON_PRESS.toString().equals(notification.getFunctionName())){
 
@@ -3623,25 +3615,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				if(ButtonName.PLAY_PAUSE.equals(buttonName)){
 					RPCNotification notification2 = new RPCNotification(notification);
 					notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, ButtonName.OK);
-					return Collections.singletonList(notification2);
-				}else if(ButtonName.OK.equals(buttonName)){
-					RPCNotification notification2 = new RPCNotification(notification);
-					notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, ButtonName.OKAY);
-					return Collections.singletonList(notification2);
+					return notification2;
 				}
 			}else{
 				if(ButtonName.OK.equals(buttonName)){
-					List<RPCNotification> retList = new ArrayList<>();
-
 					RPCNotification notification2 = new RPCNotification(notification);
-					notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, ButtonName.OKAY);
-					retList.add(notification2);
-
-					RPCNotification notification3 = new RPCNotification(notification);
-					notification3.setParameters(OnButtonEvent.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
-					retList.add(notification3);
-
-					return retList;
+					notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
+					return notification2;
 				}
 			}
 
@@ -3805,8 +3785,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			throw new SdlException("Invalid correlation ID. The correlation ID, " + request.getCorrelationID()
 					+ " , is a reserved correlation ID.", SdlExceptionCause.RESERVED_CORRELATION_ID);
 		}
-		
-		// Throw exception if RPCRequest is sent when SDL is unavailable 
+		// Throw exception if RPCRequest is sent when SDL is unavailable
 		if (!_appInterfaceRegisterd && !request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString())) {
 			
 			SdlTrace.logProxyEvent("Application attempted to send an RPCRequest (non-registerAppInterface), before the interface was registerd.", SDL_LIB_TRACE_KEY);
@@ -3833,8 +3812,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 			if(rpcSpecVersion != null && rpcSpecVersion.getMajor() < 5) {
 
-				if (ButtonName.PLAY_PAUSE.equals(buttonName)
-						|| ButtonName.OKAY.equals(buttonName)) {
+				if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
 					request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
 				}
 			} else { //Newer than version 5.0.0

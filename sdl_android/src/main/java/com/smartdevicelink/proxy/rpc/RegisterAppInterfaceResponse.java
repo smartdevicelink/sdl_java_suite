@@ -91,9 +91,6 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 			List<ButtonCapabilities> additions = new ArrayList<>();
 			for(ButtonCapabilities capability : capabilities){
 				if(ButtonName.OK.equals(capability.getName())){
-					//Regardless of version this needs to be added
-					additions.add(new ButtonCapabilities(ButtonName.OKAY, capability.getShortPressAvailable(), capability.getLongPressAvailable(), capability.getUpDownAvailable()));
-
 					if(rpcVersion == null || rpcVersion.getMajor() < 5){
 						//If version is < 5, the play pause button must also be added
 						additions.add(new ButtonCapabilities(ButtonName.PLAY_PAUSE, capability.getShortPressAvailable(), capability.getLongPressAvailable(), capability.getUpDownAvailable()));
