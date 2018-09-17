@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Service;
+import android.content.Context;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -16,6 +17,7 @@ public abstract class SdlSecurityBase {
 	protected boolean isInitSuccess = false;
 	protected byte sessionId = 0;
 	protected static Service appService = null;
+	protected static Context context;
 	protected List<SessionType> startServiceList = new ArrayList<SessionType>();	
 	
     public SdlSecurityBase() {
@@ -84,12 +86,25 @@ public abstract class SdlSecurityBase {
     	appId = val;
     }
 
+    @Deprecated
     public static Service getAppService() {
-    	return appService;
+        return appService;
     }
-    
+
+    @Deprecated
     public static void setAppService(Service val) {
-    	appService = val;
+        appService = val;
+        if (val != null && val.getApplicationContext() != null){
+        	setContext(val.getApplicationContext());
+        }
+    }
+
+    public static Context getContext() {
+        return context;
+    }
+
+    public static void setContext(Context val) {
+        context = val;
     }
     
     public List<String> getMakeList() {
