@@ -14,10 +14,10 @@ public class SampleBuffer {
     private static final String TAG = SampleBuffer.class.getSimpleName();
 
     @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private @SampleType int sampleType;
-    private ByteBuffer byteBuffer;
-    private int channelCount;
-    private long presentationTimeUs;
+    private @SampleType final int sampleType;
+    private final ByteBuffer byteBuffer;
+    private final int channelCount;
+    private final long presentationTimeUs;
 
     /**
      * Wraps a raw (mono) byte buffer to a new sample buffer.

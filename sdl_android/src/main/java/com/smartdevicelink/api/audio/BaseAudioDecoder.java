@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import com.smartdevicelink.api.audio.AudioStreamManager.SampleType;
+import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -20,8 +21,8 @@ import java.nio.ByteOrder;
 public abstract class BaseAudioDecoder {
     private static final String TAG = AudioDecoder.class.getSimpleName();
 
-    protected int targetSampleRate;
-    protected @SampleType int targetSampleType;
+    protected final int targetSampleRate;
+    protected @SampleType final int targetSampleType;
 
     private int outputChannelCount;
     private int outputSampleRate;
@@ -37,9 +38,19 @@ public abstract class BaseAudioDecoder {
 
     protected Uri audioSource;
     protected Context context;
-    protected AudioDecoderListener listener;
+    protected final AudioDecoderListener listener;
 
-    public BaseAudioDecoder(Uri audioSource, Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
+    /**
+     *
+     * @param audioSource Uri of the audio source to be converted
+     * @param context the context
+     * @param sampleRate can be either 8000, 16000, 22050 or 44100
+     * @see AudioPassThruCapabilities#getSamplingRate()
+     * @param sampleType can be either UNSIGNED_8_BIT, SIGNED_16_BIT, FLOAT
+     * @see SampleType
+     * @param listener listener for event callbacks
+     */
+    public BaseAudioDecoder(@NonNull Uri audioSource, @NonNull Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
         this.audioSource = audioSource;
         this.context = context;
         this.listener = listener;

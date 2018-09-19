@@ -6,6 +6,7 @@ import android.media.MediaFormat;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
@@ -31,7 +32,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
      * @param sampleType The desired sample type (8bit, 16bit, float).
      * @param listener A listener who receives the decoded audio.
      */
-    AudioDecoderCompat(Uri audioSource, Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
+    AudioDecoderCompat(@NonNull Uri audioSource, @NonNull Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
         super(audioSource, context, sampleRate, sampleType, listener);
     }
 
