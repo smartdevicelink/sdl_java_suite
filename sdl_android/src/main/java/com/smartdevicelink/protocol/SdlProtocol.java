@@ -69,6 +69,9 @@ public class SdlProtocol {
     private final HashMap<SessionType, TransportRecord> activeTransports = new HashMap<>();
     private final Map<TransportType, List<ISecondaryTransportListener>> secondaryTransportListeners = new HashMap<>();
 
+    private List<Integer> audio;
+    private List<Integer> video;
+    private List<TransportRecord> connectedTransports;
 
     private TransportManager transportManager;
     private Version protocolVersion = new Version("1.0.0");
@@ -822,8 +825,8 @@ public class SdlProtocol {
                     if (activeTransports.get(SessionType.RPC) == null) {    //Might be a better way to handle this
 
                         ArrayList<String> secondary = (ArrayList<String>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.SECONDARY_TRANSPORTS);
-                        ArrayList<Integer> audio = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.AUDIO_SERVICE_TRANSPORTS);
-                        ArrayList<Integer> video = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.VIDEO_SERVICE_TRANSPORTS);
+                        audio = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.AUDIO_SERVICE_TRANSPORTS);
+                        video = (ArrayList<Integer>) packet.getTag(ControlFrameTags.RPC.StartServiceACK.VIDEO_SERVICE_TRANSPORTS);
 
                         activeTransports.put(SessionType.RPC, transportRecord);
                         activeTransports.put(SessionType.BULK_DATA, transportRecord);
@@ -862,6 +865,10 @@ public class SdlProtocol {
                                         break;
                                 }
                             }
+
+
+                            sendTransportNotification();
+
                         }
 
                         setTransportPriorityForService(SessionType.PCM, audio);
@@ -985,6 +992,43 @@ public class SdlProtocol {
         }
     }
 
+    private void sendTransportNotification (){
+        boolean isMediaSupported = false;
+        List<TransportType> connectedPrimaryTransports = new ArrayList<>();
+        List<TransportType> connectedSecondaryTransports = new ArrayList<>();
+
+        if (connectedTransports != null && audio != null && video != null){
+
+            // Get a list of connected primary transports and list of connected secondary transports
+            for (TransportRecord transportRecord : connectedTransports){
+                if(supportedSecondaryTransports != null && supportedSecondaryTransports.contains(transportRecord.getType())){
+                    connectedSecondaryTransports.add(transportRecord.getType());
+                } else {
+                    connectedPrimaryTransports.add(transportRecord.getType());
+                }
+            }
+
+            // Check if there is at least on transport that supports media
+            if ( (audio.contains(PRIMARY_TRANSPORT_ID) && video.contains(PRIMARY_TRANSPORT_ID) && !connectedPrimaryTransports.isEmpty())
+                    || (audio.contains(SECONDARY_TRANSPORT_ID) && video.contains(SECONDARY_TRANSPORT_ID) && !connectedSecondaryTransports.isEmpty()) ){
+                isMediaSupported = true;
+            }
+
+
+            // send notifactin
+            Log.i("Bilalo89", "connectedTransports: " + connectedTransports);
+            Log.i("Bilalo89", "supportedSecondaryTransports: " + supportedSecondaryTransports);
+            Log.i("Bilalo89", "audio: " + audio);
+            Log.i("Bilalo89", "video: " + video);
+
+
+            Log.i("Bilalo89", "connectedPrimaryTransports: " + connectedPrimaryTransports);
+            Log.i("Bilalo89", "connectedSecondaryTransports: " + connectedSecondaryTransports);
+            Log.i("Bilalo89", "isMediaSupported: " + isMediaSupported);
+        }
+
+    }
+
     /* --------------------------------------------------------------------------------------------
        -----------------------------------   TRANSPORT_TYPE LISTENER   ---------------------------------
        -------------------------------------------------------------------------------------------*/
@@ -1001,6 +1045,10 @@ public class SdlProtocol {
         @Override
         public void onTransportConnected(List<TransportRecord> connectedTransports) {
             Log.d(TAG, "onTransportConnected");
+
+            SdlProtocol.this.connectedTransports = connectedTransports;
+            sendTransportNotification();
+
             //In the future we should move this logic into the Protocol Layer
             TransportRecord transportRecord = getTransportForSession(SessionType.RPC);
             if(transportRecord == null && !requestedSession){ //There is currently no transport registered
@@ -1015,6 +1063,11 @@ public class SdlProtocol {
 
         @Override
         public void onTransportDisconnected(String info, TransportRecord disconnectedTransport, List<TransportRecord> connectedTransports) {
+
+            SdlProtocol.this.connectedTransports = connectedTransports;
+            sendTransportNotification();
+
+
             if (disconnectedTransport == null) {
                 Log.d(TAG, "onTransportDisconnected");
                 transportManager.close(iSdlProtocol.getSessionId());
