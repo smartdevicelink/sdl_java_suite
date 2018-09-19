@@ -13,6 +13,7 @@ import android.util.Log;
 import com.smartdevicelink.api.audio.AudioStreamManager.SampleType;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 
+import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -61,7 +62,9 @@ public abstract class BaseAudioDecoder {
 
     protected void initMediaComponents() throws Exception {
         extractor = new MediaExtractor();
-        extractor.setDataSource(context, audioSource, null);
+        WeakReference<Context> weakRef = new WeakReference<>(context);
+        Context contextRef = weakRef.get();
+        extractor.setDataSource(contextRef, audioSource, null);
         MediaFormat format = null;
         String mime = null;
 
