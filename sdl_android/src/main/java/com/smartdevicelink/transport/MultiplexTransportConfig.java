@@ -1,6 +1,7 @@
 package com.smartdevicelink.transport;
 
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -41,9 +42,9 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 
 	List<TransportType> primaryTransports, secondaryTransports;
 	boolean requiresHighBandwidth = false;
+	private ITransportListener transportListener;
 
 
-	
 	public MultiplexTransportConfig(Context context, String appId) {
 		this.context = context;
 		this.appId = appId;
@@ -138,5 +139,23 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 		return this.secondaryTransports;
 	}
 
+	/**
+	 * Set a callback interface that will be triggered when a transport connects or disconnects
+	 * @param listener ITransportListener represents the callback interface
+	 */
+	public void setOnTransportChangedListener(ITransportListener listener){
+		transportListener = listener;
+	}
 
+	/**
+	 * Get the callback interface that will be triggered when a transport connects or disconnects
+	 * @return ITransportListener represents the callback interface
+	 */
+	public ITransportListener getTransportListener() {
+		return transportListener;
+	}
+
+	public interface ITransportListener {
+		void onTransportChanged(boolean isHighBandwidthAvailable, List<TransportRecord> connectedTransports);
+	}
 }
