@@ -993,7 +993,7 @@ public class SdlProtocol {
     }
 
     private void sendTransportNotification (){
-        boolean isMediaSupported = false;
+        boolean isHighBandwidthAvailable = false;
         List<TransportType> connectedPrimaryTransports = new ArrayList<>();
         List<TransportType> connectedSecondaryTransports = new ArrayList<>();
 
@@ -1008,23 +1008,14 @@ public class SdlProtocol {
                 }
             }
 
-            // Check if there is at least on transport that supports media
+            // Check if there is at least on transport that supports audio & video
             if ( (audio.contains(PRIMARY_TRANSPORT_ID) && video.contains(PRIMARY_TRANSPORT_ID) && !connectedPrimaryTransports.isEmpty())
                     || (audio.contains(SECONDARY_TRANSPORT_ID) && video.contains(SECONDARY_TRANSPORT_ID) && !connectedSecondaryTransports.isEmpty()) ){
-                isMediaSupported = true;
+                isHighBandwidthAvailable = true;
             }
 
 
-            // send notifactin
-            Log.i("Bilalo89", "connectedTransports: " + connectedTransports);
-            Log.i("Bilalo89", "supportedSecondaryTransports: " + supportedSecondaryTransports);
-            Log.i("Bilalo89", "audio: " + audio);
-            Log.i("Bilalo89", "video: " + video);
-
-
-            Log.i("Bilalo89", "connectedPrimaryTransports: " + connectedPrimaryTransports);
-            Log.i("Bilalo89", "connectedSecondaryTransports: " + connectedSecondaryTransports);
-            Log.i("Bilalo89", "isMediaSupported: " + isMediaSupported);
+            // Send notification
         }
 
     }
