@@ -1454,9 +1454,37 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean isDebugEnabled() {
 		return DebugTool.isDebugEnabled();
-	}	
-	
-	
+	}
+
+
+	/**
+	 * Check to see if it a transport is available to perform audio streaming.
+	 * <br><strong>NOTE:</strong> This is only for the audio streaming service, not regular
+	 * streaming of media playback.
+	 * @return true if there is either an audio streaming supported
+	 *         transport currently connected or a transport is
+	 *         available to connect with. false if there is no
+	 *         transport connected to support audio streaming and
+	 *          no possibility in the foreseeable future.
+	 */
+	public boolean isAudioStreamTransportAvailable(){
+		return sdlSession!= null && sdlSession.isTransportForServiceAvailable(SessionType.PCM);
+	}
+
+	/**
+	 * Check to see if it a transport is available to perform video streaming.
+
+	 * @return true if there is either an video streaming supported
+	 *         transport currently connected or a transport is
+	 *         available to connect with. false if there is no
+	 *         transport connected to support video streaming and
+	 *          no possibility in the foreseeable future.
+	 */
+	public boolean isVideoStreamTransportAvailable(){
+		return sdlSession!= null && sdlSession.isTransportForServiceAvailable(SessionType.NAV);
+	}
+
+
 	@SuppressWarnings("unused")
 	@Deprecated
 	public void close() throws SdlException {

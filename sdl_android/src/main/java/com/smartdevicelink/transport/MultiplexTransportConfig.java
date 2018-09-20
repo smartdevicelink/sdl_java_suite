@@ -1,6 +1,7 @@
 package com.smartdevicelink.transport;
 
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -41,7 +42,7 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 
 	List<TransportType> primaryTransports, secondaryTransports;
 	boolean requiresHighBandwidth = false;
-
+	TransportListener transportListener;
 
 	
 	public MultiplexTransportConfig(Context context, String appId) {
@@ -59,8 +60,6 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 		this.securityLevel = securityLevel;
 		this.primaryTransports = Arrays.asList(TransportType.USB, TransportType.BLUETOOTH);
 		this.secondaryTransports = Arrays.asList(TransportType.TCP, TransportType.USB, TransportType.BLUETOOTH);
-
-
 	}	
 
 	/**
@@ -136,6 +135,44 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 
 	public List<TransportType> getSecondaryTransports(){
 		return this.secondaryTransports;
+	}
+
+	/**
+	 * Set a lister for transport events. Useful when connected high bandwidth services like audio
+	 * or video streaming
+	 * @param listener the TransportListener that will be called back when transport events happen
+	 */
+	public void setTransportListener(TransportListener listener){
+		this.transportListener = listener;
+	}
+
+	/**
+	 * Getter for the supplied transport listener
+	 * @return the transport listener if any
+	 */
+	public TransportListener getTransportListener(){
+		return this.transportListener;
+	}
+
+	/**
+	 * Callback to be used if the state of the transports needs to be monitored for any reason.
+	 */
+	public interface TransportListener{
+		/**
+		 * Gets called whenever there is a change in the available transports for use
+		 * @param connectedTransports the currently connected transports
+		 * @param audioStreamTransportAvail true if there is either an audio streaming supported
+		 *                                        transport currently connected or a transport is
+		 *                                        available to connect with. false if there is no
+		 *                                        transport connected to support audio streaming and
+		 *                                        no possibility in the foreseeable future.
+		 * @param videoStreamTransportAvail true if there is either an audio streaming supported
+		 *                                        transport currently connected or a transport is
+		 *                                        available to connect with. false if there is no
+		 *                                        transport connected to support audio streaming and
+		 *                                        no possibility in the foreseeable future.
+		 */
+		void onTransportEvent(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail,boolean videoStreamTransportAvail);
 	}
 
 

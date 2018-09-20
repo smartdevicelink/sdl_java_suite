@@ -760,4 +760,23 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         return protocol;
     }
 
+    /**
+     * Check to see if a transport is available to start/use the supplied service.
+     * @param sessionType the session that should be checked for transport availability
+     * @return true if there is either a supported
+     *         transport currently connected or a transport is
+     *         available to connect with for the supplied service type.
+     *         <br>false if there is no
+     *         transport connected to support the service type in question and
+     *          no possibility in the foreseeable future.
+     */
+    public boolean isTransportForServiceAvailable(SessionType sessionType){
+        return _sdlConnection!= null
+                && _sdlConnection._transport!= null
+                && _sdlConnection._transport.getIsConnected()
+                && ((sessionType == SessionType.RPC || sessionType == SessionType.CONTROL || sessionType == SessionType.BULK_DATA ) //If this is a service that can run on any transport just return true
+                    || (_sdlConnection._transport.getTransportType() == TransportType.USB || _sdlConnection._transport.getTransportType() == TransportType.TCP));
+    }
+
+
 }

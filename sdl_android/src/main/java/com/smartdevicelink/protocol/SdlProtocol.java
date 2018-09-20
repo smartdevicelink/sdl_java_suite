@@ -299,6 +299,7 @@ public class SdlProtocol {
             //The primary transport being used is no longer part of the connected transports
             //The transport manager callbacks should handle the disconnect code
             connectedPrimaryTransport = null;
+            notifyDevTransportListener();
             return;
         }
 
@@ -311,7 +312,10 @@ public class SdlProtocol {
             }else{
                 onTransportNotAccepted("No transports match requested primary transport");
             }
-            // return;
+            //Return to that the developer does not receive the transport callback at this time
+            // as it is better to wait until the RPC service is registered and secondary transport
+            //information is available
+             return;
         }else if(secondaryTransportListeners != null
                 && transports != null
                 && iSdlProtocol!= null){
@@ -323,6 +327,89 @@ public class SdlProtocol {
                     registerSecondaryTransport(iSdlProtocol.getSessionId(), record);
                 }
             }
+        }
+        //Update the developer that a new transport has become available
+        notifyDevTransportListener();
+    }
+
+
+    /**
+     * Check to see if a transport is available to start/use the supplied service.
+     * @param serviceType the session that should be checked for transport availability
+     * @return true if there is either a supported
+     *         transport currently connected or a transport is
+     *         available to connect with for the supplied service type.
+     *         <br>false if there is no
+     *         transport connected to support the service type in question and
+     *          no possibility in the foreseeable future.
+     */
+    public boolean isTransportForServiceAvailable(@NonNull SessionType serviceType){
+        if(connectedPrimaryTransport == null){
+            //If there is no connected primary then there is no transport available for any service
+            return false;
+        }else if(activeTransports.containsKey(serviceType)){
+            //There is an active transport that this service can be used on
+            //This should catch RPC, Bulk, and Control service types
+            return true;
+        }
+
+        List<Integer> transportPriority = transportPriorityForServiceMap.get(serviceType);
+
+        if(transportPriority != null && !transportPriority.isEmpty()) {
+            if (transportPriority.contains(PRIMARY_TRANSPORT_ID)) {
+                //If the transport priority for this service type contains primary then
+                // the service can be used/started
+                return true;
+            }else if(transportPriority.contains(SECONDARY_TRANSPORT_ID)) {
+                //This would mean only secondary transport is supported for this service
+                return isSecondaryTransportAvailable(false);
+            }
+        }
+
+        //No transport priority for this service type
+        if(connectedPrimaryTransport.getType() == TransportType.USB || connectedPrimaryTransport.getType() == TransportType.TCP){
+            //Since the only service type that should reach this point are ones that require a high
+            //bandwidth, true can be returned if the primary transport is a high bandwidth transport
+            return true;
+        }else{
+            //Since the only service type that should reach this point are ones that require a high
+            //bandwidth, true can be returned if a secondary transport is a high bandwidth transport
+            return isSecondaryTransportAvailable(true);
+        }
+    }
+
+    /**
+     * Checks to see if a secondary transport is available for this session
+     * @param onlyHighBandwidth if only high bandwidth transports should be included in this check
+     * @return true if any connected or potential transport meets the criteria to be a secondary
+     *         transport
+     */
+    private boolean isSecondaryTransportAvailable(boolean onlyHighBandwidth){
+        if (supportedSecondaryTransports != null) {
+            for (TransportType supportedSecondary : supportedSecondaryTransports) {
+                if(!onlyHighBandwidth || supportedSecondary == TransportType.USB || supportedSecondary == TransportType.TCP) {
+                    if (transportManager.isConnected(supportedSecondary, null)) {
+                        //A supported secondary transport is already connected
+                        return true;
+                    } else if (secondaryTransportParams.containsKey(supportedSecondary)) {
+                        //A secondary transport is available to connect to
+                        return true;
+                    }
+                }
+            }
+        }
+        // No supported secondary transports
+        return false;
+    }
+
+
+    /**
+     * If there was a TransportListener attached to the supplied multiplex config, this method will
+     * call the onTransportEvent method.
+     */
+    private void notifyDevTransportListener (){
+        if(transportConfig.getTransportListener() != null && transportManager != null) {
+            transportConfig.getTransportListener().onTransportEvent(transportManager.getConnectedTransports(), isTransportForServiceAvailable(SessionType.PCM),isTransportForServiceAvailable(SessionType.NAV));
         }
     }
 
@@ -867,6 +954,9 @@ public class SdlProtocol {
                         setTransportPriorityForService(SessionType.PCM, audio);
                         setTransportPriorityForService(SessionType.NAV, video);
 
+                        //Update the developer on the transport status
+                        notifyDevTransportListener();
+
                     } else {
                         Log.w(TAG, "Received a start service ack for RPC service while already active on a different transport.");
                         return;
@@ -886,6 +976,9 @@ public class SdlProtocol {
                     activeTransports.put(SessionType.CONTROL, transportRecord);
                     activeTransports.put(SessionType.NAV, transportRecord);
                     activeTransports.put(SessionType.PCM, transportRecord);
+
+                    //Inform the developer of the initial transport connection
+                    notifyDevTransportListener();
                 }
 
 
@@ -1057,6 +1150,9 @@ public class SdlProtocol {
                 iSdlProtocol.onTransportDisconnected(info, primaryTransportAvailable, transportConfig);
 
             } //else Transport was not primary, continuing to stay connected
+
+            //Update the developer since a transport just disconnected
+            notifyDevTransportListener();
 
         }
 

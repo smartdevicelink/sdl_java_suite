@@ -133,6 +133,14 @@ public class TransportManager {
         }
     }
 
+    /**
+     * Retrieves the currently connected transports
+     * @return the currently connected transports
+     */
+    public List<TransportRecord> getConnectedTransports(){
+        return this.transportStatus;
+    }
+
     public boolean isHighBandwidthAvailable(){
         synchronized (TRANSPORT_STATUS_LOCK) {
             for (TransportRecord record : transportStatus) {

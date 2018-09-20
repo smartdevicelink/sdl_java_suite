@@ -221,6 +221,22 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
 
     }
 
+    /**
+     * Check to see if a transport is available to start/use the supplied service.
+     * @param sessionType the session that should be checked for transport availability
+     * @return true if there is either a supported
+     *         transport currently connected or a transport is
+     *         available to connect with for the supplied service type.
+     *         <br>false if there is no
+     *         transport connected to support the service type in question and
+     *          no possibility in the foreseeable future.
+     */
+    @Override
+    public boolean isTransportForServiceAvailable(SessionType sessionType){
+        return sdlProtocol!=null && sdlProtocol.isTransportForServiceAvailable(sessionType);
+    }
+
+
     @Override
     @Deprecated
     public void clearConnection(){/* Not supported */}
