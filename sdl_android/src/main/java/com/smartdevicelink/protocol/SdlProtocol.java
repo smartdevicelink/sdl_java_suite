@@ -1014,8 +1014,8 @@ public class SdlProtocol {
                 isHighBandwidthAvailable = true;
             }
 
-
             // Send notification
+            transportConfig.getTransportListener().onTransportChanged(isHighBandwidthAvailable, connectedTransports);
         }
 
     }
