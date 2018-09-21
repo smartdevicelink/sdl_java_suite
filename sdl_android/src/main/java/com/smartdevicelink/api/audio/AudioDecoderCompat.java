@@ -26,7 +26,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
     private static final String TAG = AudioDecoderCompat.class.getSimpleName();
     private static final int DEQUEUE_TIMEOUT = 3000;
     private static Runnable sRunnable;
-    private final Handler mHandler;
+    private Thread mThread;
 
     /**
      * Creates a new object of AudioDecoder.
@@ -38,7 +38,6 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
      */
     AudioDecoderCompat(@NonNull Uri audioSource, @NonNull Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
         super(audioSource, context, sampleRate, sampleType, listener);
-        mHandler = new Handler(Looper.getMainLooper());
     }
 
     /**
@@ -48,15 +47,14 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         try {
             initMediaComponents();
             decoder.start();
-            WeakReference<AudioDecoderCompat> weakReference = new WeakReference<>(this);
-            final AudioDecoderCompat reference = weakReference.get();
-            sRunnable = new Runnable() {
+            mThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    decodeAudio(reference);
+                    decodeAudio(AudioDecoderCompat.this);
                 }
-            };
-            mHandler.post(sRunnable);
+            });
+            mThread.start();
+
         } catch (Exception e) {
             e.printStackTrace();
             this.listener.onDecoderError(e);
@@ -67,18 +65,21 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
 
     /**
      * Decodes all audio data from source
-     * @param reference the weak reference of this class
+     * @param ref instance of this class
      */
-    private void decodeAudio(AudioDecoderCompat reference) {
+    private void decodeAudio(AudioDecoderCompat ref) {
+        WeakReference<AudioDecoderCompat> weakReference = new WeakReference<>(ref);
+        final AudioDecoderCompat reference = weakReference.get();
         if (reference == null) {
             listener.onDecoderFinish(false);
+            Log.w(TAG, "AudioDecoderCompat reference was null");
             return;
         }
         ByteBuffer[] inputBuffersArray = reference.decoder.getInputBuffers();
         ByteBuffer[] outputBuffersArray = reference.decoder.getOutputBuffers();
         MediaCodec.BufferInfo outputBufferInfo = new MediaCodec.BufferInfo();
-        ByteBuffer inputBuffer;
-        ByteBuffer outputBuffer;
+        MediaCodec.BufferInfo inputBufferInfo;
+        ByteBuffer inputBuffer, outputBuffer;
         SampleBuffer sampleBuffer;
 
         while (true) {
@@ -87,7 +88,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
                 inputBuffersArrayIndex = reference.decoder.dequeueInputBuffer(DEQUEUE_TIMEOUT);
                 if (inputBuffersArrayIndex >= 0) {
                     inputBuffer = inputBuffersArray[inputBuffersArrayIndex];
-                    MediaCodec.BufferInfo inputBufferInfo = onInputBufferAvailable(extractor, inputBuffer);
+                    inputBufferInfo = onInputBufferAvailable(extractor, inputBuffer);
                     reference.decoder.queueInputBuffer(inputBuffersArrayIndex, inputBufferInfo.offset, inputBufferInfo.size, inputBufferInfo.presentationTimeUs, inputBufferInfo.flags);
                 }
             }
@@ -115,7 +116,14 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
                     listener.onDecoderFinish(true);
                 }
                 stop();
-                break;
+                try {
+                    mThread.interrupt();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    mThread = null;
+                    break;
+                }
             }
         }
     }
