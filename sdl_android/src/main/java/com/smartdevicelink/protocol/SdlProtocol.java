@@ -775,7 +775,7 @@ public class SdlProtocol {
                 //Check to see if the primary transport can also be used as a backup
                 final boolean primaryTransportBackup = transportPriorityForServiceMap.get(serviceType).contains(PRIMARY_TRANSPORT_ID);
 
-                listenerList.add(new ISecondaryTransportListener() {
+                ISecondaryTransportListener secondaryListener = new ISecondaryTransportListener() {
                     @Override
                     public void onConnectionSuccess(TransportRecord transportRecord) {
                         header.setTransportRecord(transportRecord);
@@ -792,17 +792,22 @@ public class SdlProtocol {
                             Log.d(TAG, "Failed to connect secondary transport, threw away StartService");
                         }
                     }
-                });
+                };
 
                 if(transportManager.isConnected(secondaryTransportType,null)){
                     //The transport is actually connected, however no service has been registered
+                    listenerList.add(secondaryListener);
                     registerSecondaryTransport(sessionID,transportManager.getTransportRecord(secondaryTransportType,null));
                 }else if(secondaryTransportParams != null && secondaryTransportParams.containsKey(secondaryTransportType)) {
                     //No acceptable secondary transport is connected, so first one must be connected
                     header.setTransportRecord(new TransportRecord(secondaryTransportType,""));
+                    listenerList.add(secondaryListener);
                     transportManager.requestSecondaryTransportConnection(sessionID,secondaryTransportParams.get(secondaryTransportType));
                 }else{
                     Log.w(TAG, "No params to connect to secondary transport");
+                    //Unable to register or start a secondary connection. Use the callback in case
+                    //there is a chance to use the primary transport for this service.
+                    secondaryListener.onConnectionFailure();
                 }
 
             }
@@ -1393,6 +1398,9 @@ public class SdlProtocol {
                     bundle.putInt(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT, port);
                     bundle.putString(TransportConstants.TRANSPORT_TYPE, TransportType.TCP.name());
                     secondaryTransportParams.put(TransportType.TCP, bundle);
+
+                    //A new secondary transport just became available. Notify the developer.
+                    notifyDevTransportListener();
                 }
 
             }
