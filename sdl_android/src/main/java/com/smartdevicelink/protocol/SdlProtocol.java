@@ -765,7 +765,7 @@ public class SdlProtocol {
                 if(transportManager.isConnected(secondaryTransportType,null)){
                     //The transport is actually connected, however no service has been registered
                     registerSecondaryTransport(sessionID,transportManager.getTransportRecord(secondaryTransportType,null));
-                }else if(secondaryTransportParams.containsKey(secondaryTransportType)) {
+                }else if(secondaryTransportParams != null && secondaryTransportParams.containsKey(secondaryTransportType)) {
                     //No acceptable secondary transport is connected, so first one must be connected
                     header.setTransportRecord(new TransportRecord(secondaryTransportType,""));
                     transportManager.requestSecondaryTransportConnection(sessionID,secondaryTransportParams.get(secondaryTransportType));
