@@ -347,22 +347,24 @@ public class SdlProtocol {
         if(connectedPrimaryTransport == null){
             //If there is no connected primary then there is no transport available for any service
             return false;
-        }else if(activeTransports.containsKey(serviceType)){
+        }else if(activeTransports!= null && activeTransports.containsKey(serviceType)){
             //There is an active transport that this service can be used on
             //This should catch RPC, Bulk, and Control service types
             return true;
         }
 
-        List<Integer> transportPriority = transportPriorityForServiceMap.get(serviceType);
+        if(transportPriorityForServiceMap != null) {
+            List<Integer> transportPriority = transportPriorityForServiceMap.get(serviceType);
 
-        if(transportPriority != null && !transportPriority.isEmpty()) {
-            if (transportPriority.contains(PRIMARY_TRANSPORT_ID)) {
-                //If the transport priority for this service type contains primary then
-                // the service can be used/started
-                return true;
-            }else if(transportPriority.contains(SECONDARY_TRANSPORT_ID)) {
-                //This would mean only secondary transport is supported for this service
-                return isSecondaryTransportAvailable(false);
+            if (transportPriority != null && !transportPriority.isEmpty()) {
+                if (transportPriority.contains(PRIMARY_TRANSPORT_ID)) {
+                    //If the transport priority for this service type contains primary then
+                    // the service can be used/started
+                    return true;
+                } else if (transportPriority.contains(SECONDARY_TRANSPORT_ID)) {
+                    //This would mean only secondary transport is supported for this service
+                    return isSecondaryTransportAvailable(false);
+                }
             }
         }
 
@@ -391,7 +393,7 @@ public class SdlProtocol {
                     if (transportManager.isConnected(supportedSecondary, null)) {
                         //A supported secondary transport is already connected
                         return true;
-                    } else if (secondaryTransportParams.containsKey(supportedSecondary)) {
+                    } else if (secondaryTransportParams != null && secondaryTransportParams.containsKey(supportedSecondary)) {
                         //A secondary transport is available to connect to
                         return true;
                     }
