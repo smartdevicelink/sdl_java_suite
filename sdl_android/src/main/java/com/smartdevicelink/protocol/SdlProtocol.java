@@ -1157,10 +1157,12 @@ public class SdlProtocol {
             if(disconnectedTransport.equals(getTransportForSession(SessionType.NAV))){
                 //stopVideoStream();
                 iSdlProtocol.stopStream(SessionType.NAV);
+                activeTransports.remove(SessionType.NAV);
             }
             if(disconnectedTransport.equals(getTransportForSession(SessionType.PCM))){
                 //stopAudioStream();
                 iSdlProtocol.stopStream(SessionType.PCM);
+                activeTransports.remove(SessionType.PCM);
             }
 
             if(disconnectedTransport.equals(getTransportForSession(SessionType.RPC))){
@@ -1180,6 +1182,8 @@ public class SdlProtocol {
                 transportManager.close(iSdlProtocol.getSessionId());
                 transportManager = null;
                 requestedSession = false;
+                
+                activeTransports.clear();
 
                 iSdlProtocol.onTransportDisconnected(info, primaryTransportAvailable, transportConfig);
 
