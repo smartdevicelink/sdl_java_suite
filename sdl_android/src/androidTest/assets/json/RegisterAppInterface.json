@@ -18,7 +18,8 @@
         "SOCIAL",
         "MEDIA"
       ],
-      "appID":"t4weGRSWY",
+      "appID":"123e4567e8",
+      "fullAppID":"123e4567-e89b-12d3-a456-426655440000",
       "languageDesired":"PT-BR",
       "deviceInfo":{
         "hardware":"My Hardware",

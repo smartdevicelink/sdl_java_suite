@@ -78,6 +78,7 @@ import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.SdlAppInfo;
+import com.smartdevicelink.util.Version;
 
 import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 import static com.smartdevicelink.transport.TransportConstants.SDL_NOTIFICATION_CHANNEL_ID;
@@ -97,7 +98,7 @@ public class SdlRouterService extends Service{
 	/**
 	 * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
 	 */
-	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 6;
+	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 7;
 	
 	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 	
@@ -150,7 +151,8 @@ public class SdlRouterService extends Service{
 	private SparseArray<String> sessionMap;
 	private SparseIntArray sessionHashIdMap;
 	private SparseIntArray cleanedSessionMap;
-	private final Object SESSION_LOCK = new Object(), REGISTERED_APPS_LOCK = new Object(), PING_COUNT_LOCK = new Object();
+	private final Object SESSION_LOCK = new Object(), REGISTERED_APPS_LOCK = new Object(),
+			PING_COUNT_LOCK = new Object(), NOTIFICATION_LOCK = new Object();
 	
 	private static Messenger altTransportService = null;
 	
@@ -1026,26 +1028,30 @@ public class SdlRouterService extends Service{
 		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2){
 			return;
 		}
-		if(foregroundTimeoutHandler == null){
-			foregroundTimeoutHandler = new Handler();
+		synchronized (NOTIFICATION_LOCK) {
+			if (foregroundTimeoutHandler == null) {
+				foregroundTimeoutHandler = new Handler();
+			}
+			if (foregroundTimeoutRunnable == null) {
+				foregroundTimeoutRunnable = new Runnable() {
+					@Override
+					public void run() {
+						exitForeground();
+					}
+				};
+			} else {
+				//This instance likely means there is a callback in the queue so we should remove it
+				foregroundTimeoutHandler.removeCallbacks(foregroundTimeoutRunnable);
+			}
+			foregroundTimeoutHandler.postDelayed(foregroundTimeoutRunnable, delay);
 		}
-		if(foregroundTimeoutRunnable == null) {
-			foregroundTimeoutRunnable = new Runnable() {
-				@Override
-				public void run() {
-					exitForeground();
-				}
-			};
-		}else{
-			//This instance likely means there is a callback in the queue so we should remove it
-			foregroundTimeoutHandler.removeCallbacks(foregroundTimeoutRunnable);
-		}
-		foregroundTimeoutHandler.postDelayed(foregroundTimeoutRunnable,delay);
 	}
 
 	public void cancelForegroundTimeOut(){
-		if(foregroundTimeoutHandler != null && foregroundTimeoutRunnable != null){
-			foregroundTimeoutHandler.removeCallbacks(foregroundTimeoutRunnable);
+		synchronized (NOTIFICATION_LOCK) {
+			if (foregroundTimeoutHandler != null && foregroundTimeoutRunnable != null) {
+				foregroundTimeoutHandler.removeCallbacks(foregroundTimeoutRunnable);
+			}
 		}
 
 	}
@@ -1070,8 +1076,14 @@ public class SdlRouterService extends Service{
 		}
        // Bitmap icon = BitmapFactory.decodeByteArray(SdlLogo.SDL_LOGO_STRING, 0, SdlLogo.SDL_LOGO_STRING.length);
 
-        Notification.Builder builder = new Notification.Builder(this);
-        if(0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)){ //If we are in debug mode, include what app has the router service open
+        Notification.Builder builder;
+		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
+			builder = new Notification.Builder(this);
+		} else {
+			builder = new Notification.Builder(this, SDL_NOTIFICATION_CHANNEL_ID);
+		}
+
+		if(0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)){ //If we are in debug mode, include what app has the router service open
         	ComponentName name = new ComponentName(this, this.getClass());
         	builder.setContentTitle("SDL: " + name.getPackageName());
         }else{
@@ -1102,50 +1114,57 @@ public class SdlRouterService extends Service{
         	builder.setUsesChronometer(true);
         	builder.setChronometerCountDown(true);
         }
-        
-        Notification notification;
-        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN){
-        	notification = builder.getNotification();
-        	
-        }else{
-			if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) {
-				//Now we need to add a notification channel
-				NotificationManager notificationManager =	(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				if(notificationManager != null) {
-					String channelId = SDL_NOTIFICATION_CHANNEL_ID;
-					int importance = NotificationManager.IMPORTANCE_DEFAULT;
-					NotificationChannel notificationChannel = new NotificationChannel(channelId, SDL_NOTIFICATION_CHANNEL_NAME, importance);
-					notificationChannel.enableLights(false);
-					notificationChannel.enableVibration(false);
-					notificationManager.createNotificationChannel(notificationChannel);
-					builder.setChannelId(channelId);
-				}else{
-					Log.e(TAG, "Unable to retrieve notification Manager service");
-				}
+        synchronized (NOTIFICATION_LOCK) {
+			Notification notification;
+			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+				notification = builder.getNotification();
 
+			} else {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+					//Now we need to add a notification channel
+					NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+					if (notificationManager != null) {
+						NotificationChannel notificationChannel = new NotificationChannel(SDL_NOTIFICATION_CHANNEL_ID, SDL_NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
+						notificationChannel.enableLights(false);
+						notificationChannel.enableVibration(false);
+						notificationManager.createNotificationChannel(notificationChannel);
+					} else {
+						Log.e(TAG, "Unable to retrieve notification Manager service");
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+							stopSelf();	//A valid notification channel must be supplied for SDK 27+
+						}
+					}
+
+				}
+				notification = builder.build();
 			}
-        	notification = builder.build();
-        }
-        if(notification == null){
-        	Log.e(TAG, "Notification was null");
-			return;
-        }
-        startForeground(FOREGROUND_SERVICE_ID, notification);
-        isForeground = true;
+			if (notification == null) {
+				Log.e(TAG, "Notification was null");
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+					stopSelf(); //A valid notification must be supplied for SDK 27+
+				}
+				return;
+			}
+			startForeground(FOREGROUND_SERVICE_ID, notification);
+			isForeground = true;
+		}
  
     }
 
 	private void exitForeground(){
-		if(isForeground){
-			if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				if(notificationManager!=null){
-					notificationManager.deleteNotificationChannel(TransportConstants.SDL_NOTIFICATION_CHANNEL_ID);
+		synchronized (NOTIFICATION_LOCK) {
+			if (isForeground && !isTransportConnected) {	//Ensure that the service is in the foreground and no longer connected to a transport
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+					NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+					if (notificationManager != null
+							&& notificationManager.getNotificationChannel(SDL_NOTIFICATION_CHANNEL_ID) != null ) {
+						notificationManager.deleteNotificationChannel(TransportConstants.SDL_NOTIFICATION_CHANNEL_ID);
+					}
 				}
-			}
 
-			this.stopForeground(true);
-			isForeground = false;
+				this.stopForeground(true);
+				isForeground = false;
+			}
 		}
 	}
 	
@@ -1977,6 +1996,7 @@ public class SdlRouterService extends Service{
 	private byte[] createForceUnregisterApp(byte sessionId,byte version){
 		UnregisterAppInterface request = new UnregisterAppInterface();
 		request.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
+		request.format(null,true);
 		byte[] msgBytes = JsonRPCMarshaller.marshall(request, version);
 		ProtocolMessage pm = new ProtocolMessage();
 		pm.setData(msgBytes);

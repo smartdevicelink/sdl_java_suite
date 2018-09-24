@@ -85,19 +85,34 @@ public class SdlManagerTests extends AndroidTestCase {
 	private SdlManager createSampleManager(String appName, String appId){
 		SdlManager manager;
 
+		SdlManagerListener listener = new SdlManagerListener() {
+			@Override
+			public void onStart() {
+				listenerCalledCounter++;
+			}
+
+			@Override
+			public void onDestroy() {
+
+			}
+
+			@Override
+			public void onError(String info, Exception e) {
+
+			}
+		};
+
 		// build manager object - use all setters, will test using getters below
-		SdlManager.Builder builder = new SdlManager.Builder();
-		builder.setAppId(appId);
-		builder.setAppName(appName);
+		SdlManager.Builder builder = new SdlManager.Builder(getTestContext(),appId,appName,listener);
 		builder.setShortAppName(appName);
 		builder.setAppTypes(appType);
 		builder.setTransportType(transport);
-		builder.setContext(getTestContext());
 		builder.setLanguage(Language.EN_US);
 		builder.setDayColorScheme(templateColorScheme);
 		builder.setNightColorScheme(templateColorScheme);
 		builder.setVrSynonyms(Test.GENERAL_VECTOR_STRING);
 		builder.setTtsName(Test.GENERAL_VECTOR_TTS_CHUNKS);
+		builder.setLockScreenConfig(Test.GENERAL_LOCKSCREENCONFIG);
 		manager = builder.build();
 
 		// mock SdlProxyBase and set it manually
@@ -140,18 +155,13 @@ public class SdlManagerTests extends AndroidTestCase {
 		assertEquals(templateColorScheme, sdlManager.getNightColorScheme());
 		assertEquals(Test.GENERAL_VECTOR_STRING, sdlManager.getVrSynonyms());
 		assertEquals(Test.GENERAL_VECTOR_TTS_CHUNKS, sdlManager.getTtsChunks());
+		assertEquals(Test.GENERAL_LOCKSCREENCONFIG, sdlManager.getLockScreenConfig());
 	}
 
 	public void testStartingManager(){
 		listenerCalledCounter = 0;
 
-		sdlManager.start(new CompletionListener() {
-			@Override
-			public void onComplete(boolean success) {
-				assertTrue(success);
-				listenerCalledCounter++;
-			}
-		});
+		sdlManager.start();
 
 		// Create and force all sub managers to be ready manually. Because SdlManager will not start until all sub managers are ready.
 		// Note : SdlManager.initialize() will not be called automatically by proxy as in real life because we have mock proxy not a real one

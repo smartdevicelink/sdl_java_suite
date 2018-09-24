@@ -26,6 +26,7 @@ import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
@@ -33,6 +34,7 @@ import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.util.CorrelationIdGenerator;
+import com.smartdevicelink.util.Version;
 
 import java.util.List;
 
@@ -137,6 +139,12 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 
 	}
 
+	public void testFalsePositive(){
+		SystemCapabilityManager systemCapabilityManager = createSampleManager();
+		systemCapabilityManager.setCapability(SystemCapabilityType.AUDIO_PASSTHROUGH, null);
+		assertFalse(systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.AUDIO_PASSTHROUGH));
+	}
+
 	private class InternalSDLInterface implements ISdl{
 		@Override
 		public void start(){}
@@ -177,6 +185,12 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {return false;}
 
 		@Override
+		public void addOnRPCListener(FunctionID responseId, OnRPCListener listener) { }
+
+		@Override
+		public boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener) { return false; }
+
+		@Override
 		public Object getCapability(SystemCapabilityType systemCapabilityType){return null;}
 
 		@Override
@@ -188,9 +202,21 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		}
 
 		@Override
+		public byte getWiProVersion() {
+			return 0;
+		}
+
+
+		@Override
 		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
 			return false;
 		}
+
+		@Override
+		public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { }
+
+		@Override
+		public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { return false; }
 
 		@Override
 		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,

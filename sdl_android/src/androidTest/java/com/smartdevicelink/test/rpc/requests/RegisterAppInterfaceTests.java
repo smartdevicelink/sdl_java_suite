@@ -26,7 +26,7 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.RegisterAppInterface}
+ * {@link com.smartdevicelink.proxy.rpc.RegisterAppInterface}
  */
 public class RegisterAppInterfaceTests extends BaseRpcTests {
 
@@ -37,7 +37,7 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 		msg.setSdlMsgVersion(Test.GENERAL_SDLMSGVERSION);
 		msg.setAppName(Test.GENERAL_STRING);
 		msg.setNgnMediaScreenAppName(Test.GENERAL_STRING);
-		msg.setAppID(Test.GENERAL_STRING);
+		msg.setFullAppID(Test.GENERAL_FULL_APP_ID);
 		msg.setLanguageDesired(Test.GENERAL_LANGUAGE);
 		msg.setHmiDisplayLanguageDesired(Test.GENERAL_LANGUAGE);
 		msg.setHashID(Test.GENERAL_STRING);
@@ -70,7 +70,8 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 			result.put(RegisterAppInterface.KEY_SDL_MSG_VERSION, Test.JSON_SDLMSGVERSION);
 			result.put(RegisterAppInterface.KEY_APP_NAME, Test.GENERAL_STRING);
 			result.put(RegisterAppInterface.KEY_NGN_MEDIA_SCREEN_APP_NAME, Test.GENERAL_STRING);
-			result.put(RegisterAppInterface.KEY_APP_ID, Test.GENERAL_STRING);
+			result.put(RegisterAppInterface.KEY_APP_ID, Test.GENERAL_APP_ID);
+			result.put(RegisterAppInterface.KEY_FULL_APP_ID, Test.GENERAL_FULL_APP_ID);
 			result.put(RegisterAppInterface.KEY_LANGUAGE_DESIRED, Test.GENERAL_LANGUAGE);
 			result.put(RegisterAppInterface.KEY_HMI_DISPLAY_LANGUAGE_DESIRED, Test.GENERAL_LANGUAGE);
 			result.put(RegisterAppInterface.KEY_HASH_ID, Test.GENERAL_STRING);
@@ -97,6 +98,7 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 		String testName = ( (RegisterAppInterface) msg).getAppName();
 		String testNgnName = ( (RegisterAppInterface) msg).getNgnMediaScreenAppName();
 		String testAppId = ( (RegisterAppInterface) msg).getAppID();
+		String testFullAppId = ( (RegisterAppInterface) msg).getFullAppID();
 		Language testLang = ( (RegisterAppInterface) msg).getLanguageDesired();
 		Language testHmiLang = ( (RegisterAppInterface) msg).getHmiDisplayLanguageDesired();
 		String testHashId = ( (RegisterAppInterface) msg).getHashID();
@@ -112,7 +114,8 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 		assertTrue(Test.TRUE, Validator.validateSdlMsgVersion(Test.GENERAL_SDLMSGVERSION, testVersion));
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testName);
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testNgnName);
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testAppId);
+		assertEquals(Test.MATCH, Test.GENERAL_APP_ID, testAppId);
+		assertEquals(Test.MATCH, Test.GENERAL_FULL_APP_ID, testFullAppId);
 		assertEquals(Test.MATCH, Test.GENERAL_LANGUAGE, testLang);
 		assertEquals(Test.MATCH, Test.GENERAL_LANGUAGE, testHmiLang);
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testHashId);
@@ -133,6 +136,7 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getAppName());
 		assertNull(Test.NULL, msg.getNgnMediaScreenAppName());
 		assertNull(Test.NULL, msg.getAppID());
+		assertNull(Test.NULL, msg.getFullAppID());
 		assertNull(Test.NULL, msg.getLanguageDesired());
 		assertNull(Test.NULL, msg.getHmiDisplayLanguageDesired());
 		assertNull(Test.NULL, msg.getHashID());
@@ -179,6 +183,7 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 				assertEquals(Test.MATCH, appHmiTypeItem, cmd.getAppHMIType().get(index) );
 			}
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, RegisterAppInterface.KEY_APP_ID), cmd.getAppID());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, RegisterAppInterface.KEY_FULL_APP_ID), cmd.getFullAppID());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, RegisterAppInterface.KEY_LANGUAGE_DESIRED), cmd.getLanguageDesired().toString());
 
 			JSONObject deviceInfoObj = JsonUtils.readJsonObjectFromJsonObject(parameters, RegisterAppInterface.KEY_DEVICE_INFO);

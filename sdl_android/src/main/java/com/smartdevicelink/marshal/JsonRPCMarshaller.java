@@ -23,7 +23,12 @@ import com.smartdevicelink.util.DebugTool;
 public class JsonRPCMarshaller {
 	
 	private static final String SDL_LIB_PRIVATE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
-	
+
+	/**
+	 * @param msg RPC message to be marshaled
+	 * @param version protocol version
+	 * @return byte array of the marshalled message
+	 */
 	public static byte[] marshall(RPCMessage msg, byte version) {
 		byte[] jsonBytes = null;
 		try {
@@ -81,7 +86,7 @@ public class JsonRPCMarshaller {
 		return ret;
 	}
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked" )
 	private static JSONArray serializeList(List<?> list) throws JSONException{
 		JSONArray toPut = new JSONArray();
 		Iterator<Object> valueIterator = (Iterator<Object>) list.iterator();

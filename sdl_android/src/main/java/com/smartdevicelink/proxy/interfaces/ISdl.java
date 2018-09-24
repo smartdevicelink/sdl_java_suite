@@ -3,9 +3,11 @@ package com.smartdevicelink.proxy.interfaces;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.Version;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
@@ -150,6 +152,20 @@ public interface ISdl {
     boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener);
 
     /**
+     * Add an OnRPCResponseListener for specified response
+     * @param responseId FunctionID of the response that is to be listened for
+     * @param listener listener that should be added for the response ID
+     */
+    void addOnRPCListener(FunctionID responseId, OnRPCListener listener);
+
+    /**
+     * Removes an OnRPCResponseListener for specified response
+     * @param responseId FunctionID of the response that was to be listened for
+     * @param listener listener that was previously added for the response ID
+     */
+    boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener);
+
+    /**
      * Get SystemCapability Object
      * @param systemCapabilityType
      * @return Object
@@ -171,9 +187,29 @@ public interface ISdl {
     boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType);
 
     /**
+     * Add a listener to be called whenever a new capability is retrieved
+     * @param systemCapabilityType Type of capability desired
+     * @param listener callback to execute upon retrieving capability
+     */
+    void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
+
+    /**
+     * Remove an OnSystemCapabilityListener that was previously added
+     * @param systemCapabilityType Type of capability
+     * @param listener the listener that should be removed
+     */
+    boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
+
+    /**
      * Get SdlMsgVersion
      * @return SdlMsgVersion
      */
     SdlMsgVersion getSdlMsgVersion();
+
+    /**
+     * Get WiPro version
+     * @return byte value representing WiPro version
+     */
+    byte getWiProVersion();
 
 }
