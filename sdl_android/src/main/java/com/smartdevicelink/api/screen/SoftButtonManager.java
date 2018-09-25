@@ -382,27 +382,12 @@ class SoftButtonManager extends BaseSubManager {
             inProgressShowRPC.setSoftButtons(createSoftButtonsForCurrentState());
         }
 
+
         inProgressShowRPC.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 Log.i(TAG, "Soft button update completed");
-
-                inProgressShowRPC = null;
-                CompletionListener currentListener;
-                if (inProgressListener != null) {
-                    currentListener = inProgressListener;
-                    inProgressListener = null;
-                    currentListener.onComplete(true);
-                }
-
-
-                if (hasQueuedUpdate) {
-                    Log.d(TAG, "Queued update exists, sending another update");
-                    currentListener = queuedUpdateListener;
-                    queuedUpdateListener = null;
-                    hasQueuedUpdate = false;
-                    update(currentListener);
-                }
+                handleResponse(true);
             }
 
             @Override
@@ -410,13 +395,18 @@ class SoftButtonManager extends BaseSubManager {
                 super.onError(correlationId, resultCode, info);
 
                 Log.e(TAG, "Soft button update error");
+                handleResponse(false);
+
+            }
+
+            private void handleResponse(boolean success){
 
                 inProgressShowRPC = null;
                 CompletionListener currentListener;
                 if (inProgressListener != null) {
                     currentListener = inProgressListener;
                     inProgressListener = null;
-                    currentListener.onComplete(false);
+                    currentListener.onComplete(success);
                 }
 
 
@@ -429,6 +419,8 @@ class SoftButtonManager extends BaseSubManager {
                 }
             }
         });
+
+
         internalInterface.sendRPCRequest(inProgressShowRPC);
     }
 
