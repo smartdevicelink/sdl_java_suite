@@ -51,6 +51,7 @@ class SoftButtonManager extends BaseSubManager {
     private boolean hasQueuedUpdate, batchUpdates, waitingOnHMILevelUpdateToSetButtons;
     private final OnSystemCapabilityListener onSoftButtonCapabilitiesListener, onDisplayCapabilitiesListener;
     private final OnRPCNotificationListener onHMIStatusListener, onButtonPressListener, onButtonEventListener;
+    private final UpdateListener updateListener;
 
     /**
      * HAX: This is necessary due to a Ford Sync 3 bug that doesn't like Show requests without a main field being set (it will accept them, but with a GENERIC_ERROR, and 10-15 seconds late...)
@@ -70,6 +71,12 @@ class SoftButtonManager extends BaseSubManager {
         this.softButtonObjects = new CopyOnWriteArrayList<>();
         this.currentHMILevel = HMILevel.HMI_NONE;  // Assume NONE until we get something else
         this.waitingOnHMILevelUpdateToSetButtons = false;
+        this.updateListener = new UpdateListener() {
+            @Override
+            public void onUpdate(CompletionListener completionListener) {
+                update(completionListener);
+            }
+        };
 
 
         // Add OnSoftButtonCapabilitiesListener to keep softButtonCapabilities updated
@@ -224,10 +231,10 @@ class SoftButtonManager extends BaseSubManager {
             return;
         }
 
-        // Set ids and managers for soft button objects
+        // Set ids and updateListeners for soft button objects
         for (int i = 0; i < softButtonObjects.size(); i++) {
             softButtonObjects.get(i).setButtonId(i * 100);
-            softButtonObjects.get(i).setSoftButtonManager(this);
+            softButtonObjects.get(i).setSoftButtonManagerUpdateListener(updateListener);
         }
         this.softButtonObjects = softButtonObjects;
 
@@ -553,5 +560,9 @@ class SoftButtonManager extends BaseSubManager {
             softButtons.add(softButtonObject.getCurrentStateSoftButton());
         }
         return softButtons;
+    }
+
+    interface UpdateListener{
+        void onUpdate(CompletionListener completionListener);
     }
 }
