@@ -243,7 +243,7 @@ class SoftButtonManager extends BaseSubManager {
         // Set ids and updateListeners for soft button objects
         for (int i = 0; i < softButtonObjects.size(); i++) {
             softButtonObjects.get(i).setButtonId(i * 100);
-            softButtonObjects.get(i).setSoftButtonManagerUpdateListener(updateListener);
+            softButtonObjects.get(i).setUpdateListener(updateListener);
         }
         this.softButtonObjects = softButtonObjects;
 
