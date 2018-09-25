@@ -104,33 +104,72 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 	public TransportType getTransportType() {
 		return TransportType.MULTIPLEX;
 	}
-	
+
+	/**
+	 * Gets the context attached to this config
+	 * @return context supplied during creation
+	 */
 	public Context getContext(){
 		return this.context;
 	}
 
-
+	/**
+	 * Gets the ComponentName of the router service attached to this config
+	 * @return ComponentName of the router service that will be bound to
+	 */
 	public ComponentName getService() {
 		return service;
 	}
 
-
+	/**
+	 * Supplies the config with the router service that should be bound to
+	 * @param service the router service that should be bound to
+	 */
 	public void setService(ComponentName service) {
 		this.service = service;
 	}
-	
+
+	/**
+	 * Sets the security level that should be used to verify a router service that is to be bound
+	 * @param securityLevel the security level that will be used to perform certain tests
+	 * @see #FLAG_MULTI_SECURITY_OFF
+	 * @see #FLAG_MULTI_SECURITY_LOW
+	 * @see #FLAG_MULTI_SECURITY_MED
+	 * @see #FLAG_MULTI_SECURITY_HIGH
+	 */
 	public void setSecurityLevel(int securityLevel){
 		this.securityLevel = securityLevel;
 	}
-	
+
+	/**
+	 * Get the securitly level that will be used to verify a router service before binding
+	 * @return the set security level
+	 * @see #FLAG_MULTI_SECURITY_OFF
+	 * @see #FLAG_MULTI_SECURITY_LOW
+	 * @see #FLAG_MULTI_SECURITY_MED
+	 * @see #FLAG_MULTI_SECURITY_HIGH
+	 */
 	public int getSecurityLevel(){
 		return securityLevel;
 	}
 
+	/**
+	 * Set whether or not this app requires the use of a transport that supports high bandwidth
+	 * services. Common use is when an app uses the video/audio streaming services and there is no
+	 * other integration that could be useful to the user.
+	 * @param requiresHighBandwidth whether the app should be treated as requiring a high
+	 *                                 bandwidth transport.
+	 */
 	public void setRequiresHighBandwidth(boolean requiresHighBandwidth){
 		this.requiresHighBandwidth = requiresHighBandwidth;
 	}
 
+	/**
+	 * Get the setting from this config to see whether the app should be treated as requiring a high
+	 * bandwidth transport.
+	 * @return whether the app should be treated as requiring a high
+	 * bandwidth transport.
+	 */
 	public boolean requiresHighBandwidth(){
 		return this.requiresHighBandwidth;
 	}
@@ -148,6 +187,10 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 		}
 	}
 
+	/**
+	 * Get the list of primary transports that are set to be accepted by this config
+	 * @return  acceptable primary transports
+	 */
 	public List<TransportType> getPrimaryTransports(){
 		return this.primaryTransports;
 	}
@@ -165,6 +208,10 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 		}
 	}
 
+	/**
+	 * Get the list of secondary transports that are set to be accepted by this config
+	 * @return  acceptable secondary transports
+	 */
 	public List<TransportType> getSecondaryTransports(){
 		return this.secondaryTransports;
 	}
