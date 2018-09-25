@@ -259,7 +259,7 @@ class SoftButtonManager extends BaseSubManager {
         // so we can upload the initial state images first, then the other states images.
         List<SdlArtwork> initialStatesToBeUploaded = new ArrayList<>();
         List<SdlArtwork> otherStatesToBeUploaded = new ArrayList<>();
-        if (displayCapabilities == null || displayCapabilities.getGraphicSupported()) {
+        if (softButtonImagesSupported()) {
             for (SoftButtonObject softButtonObject : softButtonObjects) {
                 SoftButtonState initialState = null;
                 if (softButtonObject != null) {
@@ -363,7 +363,8 @@ class SoftButtonManager extends BaseSubManager {
         if (softButtonObjects == null) {
             Log.d(TAG, "Soft button objects are null, sending an empty array");
             inProgressShowRPC.setSoftButtons(new ArrayList<SoftButton>());
-        } else if ((currentStateHasImages() && !allCurrentStateImagesAreUploaded()) && (softButtonCapabilities == null || !softButtonCapabilities.getImageSupported())) {
+            Log.i(TAG, "update: ");
+        } else if ((currentStateHasImages() && !allCurrentStateImagesAreUploaded()) || !softButtonImagesSupported()) {
             // The images don't yet exist on the head unit, or we cannot use images, send a text update if possible, otherwise, don't send anything yet
             List<SoftButton> textOnlySoftButtons = createTextSoftButtonsForCurrentState();
             if (textOnlySoftButtons != null) {
@@ -429,6 +430,18 @@ class SoftButtonManager extends BaseSubManager {
             }
         });
         internalInterface.sendRPCRequest(inProgressShowRPC);
+    }
+
+    private boolean softButtonImagesSupported(){
+        boolean graphicSupported = false;
+        if (displayCapabilities == null || displayCapabilities.getGraphicSupported()){
+            graphicSupported = true;
+        }
+        boolean imageSupported = false;
+        if (softButtonCapabilities == null || softButtonCapabilities.getImageSupported()){
+            imageSupported = true;
+        }
+        return graphicSupported && imageSupported;
     }
 
     /**
@@ -530,9 +543,10 @@ class SoftButtonManager extends BaseSubManager {
             if (softButton.getText() == null) {
                 return null;
             }
-            softButton.setImage(null);
-            softButton.setType(SoftButtonType.SBT_TEXT);
-            textButtons.add(softButton);
+            // We should create a new softButtonObject rather than modifying the original one
+            SoftButton textOnlySoftButton = new SoftButton(SoftButtonType.SBT_TEXT, softButton.getSoftButtonID());
+            textOnlySoftButton.setText(softButton.getText());
+            textButtons.add(textOnlySoftButton);
         }
         return textButtons;
     }
