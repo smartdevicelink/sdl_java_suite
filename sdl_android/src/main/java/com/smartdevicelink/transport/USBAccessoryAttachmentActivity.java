@@ -32,16 +32,15 @@
 
 package com.smartdevicelink.transport;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.smartdevicelink.util.AndroidTools;
@@ -53,27 +52,27 @@ import java.util.Vector;
 
 import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 
-@TargetApi(12)
 /**
  * The USBAccessoryAttachmentActivity is a proxy to listen for
  * USB_ACCESSORY_ATTACHED intents.
- *
+ * <br><br>
  * Unfortunately, the USB_ACCESSORY_ATTACHED intent can only be sent to an
  * activity. So this class is a workaround to get that intent.
- *
+ * <br><br>
  * Some reference: http://stackoverflow.com/questions/6981736/android-3-1-usb-host-broadcastreceiver-does-not-receive-usb-device-attached/9814826#9814826
- *
+ * <br><br>
  * Inspired by OpenXC-Android: https://github.com/openxc/openxc-android
- *
- * <strong>NOTA BENE:</strong> An application that wants to use USB transport
+ * <br><br>
+ * <strong>NOTE:</strong> An application that wants to use USB transport
  * must make the following changes to AndroidManifest.xml:
- *
- * 1. add these lines to <manifest>…</manifest>:
+ * <br><br>
+ * <b>1.</b> Add these lines to the {@literal <manifest>…</manifest>} scope:<br>
+ * <pre>{@code
  * <!-- Required to use the USB Accessory mode -->
  * <uses-feature android:name="android.hardware.usb.accessory"/>
- *
- * 2. add these lines to <application>…</application>:
- * <activity android:name="com.smartdevicelink.transport.USBAccessoryAttachmentActivity">
+ * }</pre>
+ * <b>2.</b> Add these lines to the {@literal <application>…</application>} scope:
+ * <pre>{@code <activity android:name="com.smartdevicelink.transport.USBAccessoryAttachmentActivity">
  *     <intent-filter>
  *         <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"/>
  *     </intent-filter>
@@ -81,10 +80,11 @@ import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
  *         android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
  *         android:resource="@xml/accessory_filter"/>
  * </activity>
- *
- * 3. set minimum SDK version to 12:
- * <uses-sdk android:minSdkVersion="12"/>
+ * }</pre>
+ * <b>3.</b> Set minimum SDK version to 12:
+ * <pre>{@code <uses-sdk android:minSdkVersion="12"/>}</pre>
  */
+@RequiresApi(12)
 public class USBAccessoryAttachmentActivity extends Activity {
     private static final String TAG =            USBAccessoryAttachmentActivity.class.getSimpleName();
 
@@ -114,20 +114,18 @@ public class USBAccessoryAttachmentActivity extends Activity {
 
             usbAccessory = intent.getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
 
-
-           // AndroidTools.sendExplicitBroadcast(getApplicationContext(),usbAccessoryAttachedIntent,null);
-            wakeUpRouterService(getApplicationContext(),false, true);
+            wakeUpRouterService(getApplicationContext());
 
         }
 
     }
 
-    private boolean wakeUpRouterService(final Context context, final boolean ping, final boolean altTransportWake){
+    @SuppressWarnings("deprecation")
+    private void wakeUpRouterService(final Context context){
         new ServiceFinder(context, context.getPackageName(), new ServiceFinder.ServiceFinderCallback() {
             @Override
             public void onComplete(Vector<ComponentName> routerServices) {
-                Vector<ComponentName> runningBluetoothServicePackage = new Vector<ComponentName>();
-                runningBluetoothServicePackage.addAll(routerServices);
+                Vector<ComponentName> runningBluetoothServicePackage = new Vector<>(routerServices);
                 if (runningBluetoothServicePackage.isEmpty()) {
                     //If there isn't a service running we should try to start one
                     //We will try to sort the SDL enabled apps and find the one that's been installed the longest
@@ -141,9 +139,8 @@ public class USBAccessoryAttachmentActivity extends Activity {
                         Log.d(TAG, "WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
                         return;
                     }
-                    if (altTransportWake) {
-                        serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
-                    }
+                    serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
+
                     try {
                         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                             context.startService(serviceIntent);
@@ -159,7 +156,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
                         restart.putExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_DID_START_OWN, true);
                         context.sendBroadcast(restart);
 
-                        if (altTransportWake && usbAccessory!=null) {
+                        if (usbAccessory!=null) {
                             new UsbTransferProvider(context, serviceIntent.getComponent(), usbAccessory, new UsbTransferProvider.UsbTransferCallback() {
                                 @Override
                                 public void onUsbTransferUpdate(boolean success) {
@@ -167,14 +164,13 @@ public class USBAccessoryAttachmentActivity extends Activity {
                                 }
                             });
 
-                            return;
                         }
 
                     } catch (SecurityException e) {
                         Log.e(TAG, "Security exception, process is bad");
                     }
                 } else {
-                    if (altTransportWake && usbAccessory!=null) {
+                    if (usbAccessory!=null) {
                         new UsbTransferProvider(context,runningBluetoothServicePackage.get(0),usbAccessory, new UsbTransferProvider.UsbTransferCallback(){
                             @Override
                             public void onUsbTransferUpdate(boolean success) {
@@ -182,12 +178,9 @@ public class USBAccessoryAttachmentActivity extends Activity {
                             }
                         });
 
-                        return;
                     }
-                    return;
                 }
             }
         });
-        return true;
     }
 }
