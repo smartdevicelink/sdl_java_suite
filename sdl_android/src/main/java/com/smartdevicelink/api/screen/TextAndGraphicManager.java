@@ -266,7 +266,9 @@ class TextAndGraphicManager extends BaseSubManager {
 			}
 		});
 
-		this.softButtonManager.get().setCurrentMainField1(inProgressUpdate.getMainField1());
+		if (this.softButtonManager.get() != null) {
+			this.softButtonManager.get().setCurrentMainField1(inProgressUpdate.getMainField1());
+		}
 		internalInterface.sendRPCRequest(inProgressUpdate);
 	}
 
@@ -287,17 +289,19 @@ class TextAndGraphicManager extends BaseSubManager {
 		}
 
 		// use file manager to upload art
-		fileManager.get().uploadArtworks(artworksToUpload, new MultipleFileCompletionListener() {
-			@Override
-			public void onComplete(Map<String, String> errors) {
-				if (errors != null) {
-					Log.e(TAG, "Error Uploading Artworks. Error: " + errors.toString());
-					listener.onComplete(false);
-				}else{
-					listener.onComplete(true);
+		if (fileManager.get() != null) {
+			fileManager.get().uploadArtworks(artworksToUpload, new MultipleFileCompletionListener() {
+				@Override
+				public void onComplete(Map<String, String> errors) {
+					if (errors != null) {
+						Log.e(TAG, "Error Uploading Artworks. Error: " + errors.toString());
+						listener.onComplete(false);
+					} else {
+						listener.onComplete(true);
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 
 	private Show assembleShowImages(Show show){
@@ -340,13 +344,13 @@ class TextAndGraphicManager extends BaseSubManager {
 
 		switch (numberOfLines) {
 			case 1: show = assembleOneLineShowText(show, nonNullFields);
-					break;
+				break;
 			case 2: show = assembleTwoLineShowText(show);
-					break;
+				break;
 			case 3: show = assembleThreeLineShowText(show);
-					break;
+				break;
 			case 4: show = assembleFourLineShowText(show);
-					break;
+				break;
 		}
 
 		return show;
@@ -665,7 +669,12 @@ class TextAndGraphicManager extends BaseSubManager {
 	}
 
 	private boolean isArtworkUploadedOrDoesntExist(SdlArtwork artwork){
-		return artwork != null && fileManager.get().hasUploadedFile(artwork);
+
+		if (fileManager.get() != null){
+			return artwork != null && fileManager.get().hasUploadedFile(artwork);
+		}
+
+		return false;
 	}
 
 	private boolean shouldUpdatePrimaryImage() {
