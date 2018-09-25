@@ -319,8 +319,8 @@ public class SdlProtocol {
         }
     }
 
-    public void onTransportsConnectedUpdate(List<TransportRecord> transports){
-        Log.d(TAG, "Connected transport update");
+    private void onTransportsConnectedUpdate(List<TransportRecord> transports){
+        //Log.d(TAG, "Connected transport update");
 
         //Temporary: this logic should all be changed to handle multiple transports of the same type
         ArrayList<TransportType> connectedTransports = new ArrayList<>();
