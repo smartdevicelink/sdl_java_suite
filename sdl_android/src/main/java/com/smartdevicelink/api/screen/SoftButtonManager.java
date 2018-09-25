@@ -49,8 +49,8 @@ class SoftButtonManager extends BaseSubManager {
     private Show inProgressShowRPC;
     private CompletionListener inProgressListener, queuedUpdateListener, cachedListener;
     private boolean hasQueuedUpdate, batchUpdates, waitingOnHMILevelUpdateToSetButtons;
-    private OnSystemCapabilityListener onSoftButtonCapabilitiesListener, onDisplayCapabilitiesListener;
-    private OnRPCNotificationListener onHMIStatusListener, onButtonPressListener, onButtonEventListener;
+    private final OnSystemCapabilityListener onSoftButtonCapabilitiesListener, onDisplayCapabilitiesListener;
+    private final OnRPCNotificationListener onHMIStatusListener, onButtonPressListener, onButtonEventListener;
 
     /**
      * HAX: This is necessary due to a Ford Sync 3 bug that doesn't like Show requests without a main field being set (it will accept them, but with a GENERIC_ERROR, and 10-15 seconds late...)
