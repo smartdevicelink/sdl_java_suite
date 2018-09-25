@@ -24,7 +24,6 @@ import org.mockito.stubbing.Answer;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -130,10 +129,8 @@ public class SoftButtonManagerTests extends AndroidTestCase {
 
         // Test batch update
         softButtonManager.setBatchUpdates(true);
-        CopyOnWriteArrayList<SoftButtonObject> softButtonObjects = new CopyOnWriteArrayList<>();
-        softButtonObjects.add(softButtonObject1);
-        softButtonObjects.add(softButtonObject2);
-        softButtonManager.setSoftButtonObjects(softButtonObjects);
+        List<SoftButtonObject> softButtonObjects = Arrays.asList(softButtonObject1, softButtonObject2);
+        softButtonManager.setSoftButtonObjects(Arrays.asList(softButtonObject1, softButtonObject2));
         softButtonManager.setBatchUpdates(false);
         softButtonManager.update(new CompletionListener() {
             @Override
@@ -159,10 +156,7 @@ public class SoftButtonManagerTests extends AndroidTestCase {
     }
 
     public void testSoftButtonManagerGetSoftButtonObject() {
-        CopyOnWriteArrayList<SoftButtonObject> softButtonObjects = new CopyOnWriteArrayList<>();
-        softButtonObjects.add(softButtonObject1);
-        softButtonObjects.add(softButtonObject2);
-        softButtonManager.setSoftButtonObjects(softButtonObjects);
+        softButtonManager.setSoftButtonObjects(Arrays.asList(softButtonObject1, softButtonObject2));
 
 
         // Test get by valid name

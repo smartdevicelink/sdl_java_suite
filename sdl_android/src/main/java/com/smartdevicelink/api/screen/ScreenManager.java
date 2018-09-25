@@ -270,7 +270,7 @@ public class ScreenManager extends BaseSubManager {
 	 * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
 	 */
 	public void setSoftButtonObjects(@NonNull List<SoftButtonObject> softButtonObjects) {
-		softButtonManager.setSoftButtonObjects(new CopyOnWriteArrayList<>(softButtonObjects));
+		softButtonManager.setSoftButtonObjects(softButtonObjects);
 	}
 
 	/**

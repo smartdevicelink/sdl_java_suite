@@ -222,9 +222,18 @@ class SoftButtonManager extends BaseSubManager {
 
     /**
      * Set softButtonObjects list and upload the images to the head unit
-     * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
+     * @param list the list of the SoftButtonObject values that should be displayed on the head unit
      */
-    protected void setSoftButtonObjects(@NonNull CopyOnWriteArrayList<SoftButtonObject> softButtonObjects) {
+    protected void setSoftButtonObjects(@NonNull List<SoftButtonObject> list) {
+        // Convert the List to CopyOnWriteArrayList
+        CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
+        if(list instanceof CopyOnWriteArrayList){
+            softButtonObjects = (CopyOnWriteArrayList<SoftButtonObject>) list;
+        }else{
+            softButtonObjects = new CopyOnWriteArrayList<>(list);
+        }
+
+
         if (hasTwoSoftButtonObjectsOfSameName(softButtonObjects)) {
             this.softButtonObjects = new CopyOnWriteArrayList<>();
             Log.e(TAG, "Attempted to set soft button objects, but two buttons had the same name");
