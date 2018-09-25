@@ -304,9 +304,9 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
      */
     private void connectionFailed() {
     	// Send a failure message back to the Activity
-        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_TOAST);
+        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_LOG);
         Bundle bundle = new Bundle();
-        bundle.putString(TOAST, "Unable to connect device");
+        bundle.putString(LOG, "Unable to connect device");
         msg.setData(bundle);
         handler.sendMessage(msg);
 
@@ -319,9 +319,9 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
      */
     private void connectionLost() {
         // Send a failure message back to the Activity
-        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_TOAST);
+        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_LOG);
         Bundle bundle = new Bundle();
-        bundle.putString(TOAST, "Device connection was lost");
+        bundle.putString(LOG, "Device connection was lost");
         msg.setData(bundle);
         handler.sendMessage(msg);
         stop();

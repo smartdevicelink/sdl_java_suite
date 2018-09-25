@@ -160,8 +160,8 @@ public class SdlRouterService extends Service{
     @SuppressWarnings("unused")
 	public static final int MESSAGE_WRITE = 3;
     public static final int MESSAGE_DEVICE_NAME = 4;
-    public static final int MESSAGE_TOAST = 5;
-	
+    public static final int MESSAGE_LOG = 5;
+
     @SuppressWarnings("FieldCanBeLocal")
 	private final int UNREGISTER_APP_INTERFACE_CORRELATION_ID = 65530;
 

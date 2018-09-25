@@ -44,9 +44,9 @@ public abstract class MultiplexBaseTransport {
     public static final int STATE_LISTEN 		= 1;    // now listening for incoming connections
     public static final int STATE_CONNECTING	= 2; 	// now initiating an outgoing connection
     public static final int STATE_CONNECTED 	= 3;  	// now connected to a remote device
-    public static final int STATE_ERROR 		= 4;  	// Something bad happend, we wil not try to restart the thread
+    public static final int STATE_ERROR 		= 4;  	// Something bad happened, we wil not try to restart the thread
 
-    public static final String TOAST = "toast";
+    public static final String LOG = "log";
     public static final String DEVICE_NAME = "device_name";
     public static final String DEVICE_ADDRESS = "device_address";
 
@@ -61,7 +61,7 @@ public abstract class MultiplexBaseTransport {
     public String connectedDeviceAddress = null;
 
 
-    public MultiplexBaseTransport(Handler handler, TransportType transportType){
+    protected MultiplexBaseTransport(Handler handler, TransportType transportType){
         this.handler = handler;
         this.transportType = transportType;
     }

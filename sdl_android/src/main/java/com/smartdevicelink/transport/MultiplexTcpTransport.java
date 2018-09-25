@@ -57,10 +57,9 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 	private static final int RECONNECT_DELAY = 5000;
 	private static final int RECONNECT_RETRY_COUNT = 30;
 
-    final String ipAddress;
-    final int port;
-    final boolean autoReconnect;
-
+    private final String ipAddress;
+	private final int port;
+	private final boolean autoReconnect;
 	private Socket mSocket = null;
 	private InputStream mInputStream = null;
 	private OutputStream mOutputStream = null;
