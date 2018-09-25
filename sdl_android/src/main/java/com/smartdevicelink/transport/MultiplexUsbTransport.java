@@ -59,10 +59,10 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
     public static final String SERIAL           = "serial";
     public static final String DESCRIPTION      = "description";
 
-    final Bundle deviceInfo;
-    ReaderThread readerThread;
-    WriterThread writerThread;
-    final ParcelFileDescriptor parcelFileDescriptor;
+    private final Bundle deviceInfo;
+    private ReaderThread readerThread;
+    private WriterThread writerThread;
+    private final ParcelFileDescriptor parcelFileDescriptor;
 
     MultiplexUsbTransport(ParcelFileDescriptor parcelFileDescriptor, Handler handler, Bundle bundle){
         super(handler, TransportType.USB);
