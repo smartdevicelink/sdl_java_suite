@@ -1,5 +1,6 @@
 package com.smartdevicelink.api.screen;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.api.BaseSubManager;
@@ -30,6 +31,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * <strong>SoftButtonManager</strong> <br>
@@ -42,7 +44,7 @@ class SoftButtonManager extends BaseSubManager {
     private FileManager fileManager;
     private DisplayCapabilities displayCapabilities;
     private SoftButtonCapabilities softButtonCapabilities;
-    private List<SoftButtonObject> softButtonObjects;
+    private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     private HMILevel currentHMILevel;
     private Show inProgressShowRPC;
     private CompletionListener inProgressListener, queuedUpdateListener, cachedListener;
@@ -65,7 +67,7 @@ class SoftButtonManager extends BaseSubManager {
         super(internalInterface);
         transitionToState(BaseSubManager.SETTING_UP);
         this.fileManager = fileManager;
-        this.softButtonObjects = new ArrayList<>();
+        this.softButtonObjects = new CopyOnWriteArrayList<>();
         this.currentHMILevel = HMILevel.HMI_NONE;  // Assume NONE until we get something else
         this.waitingOnHMILevelUpdateToSetButtons = false;
 
@@ -215,9 +217,9 @@ class SoftButtonManager extends BaseSubManager {
      * Set softButtonObjects list and upload the images to the head unit
      * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
      */
-    protected void setSoftButtonObjects(List<SoftButtonObject> softButtonObjects) {
+    protected void setSoftButtonObjects(@NonNull CopyOnWriteArrayList<SoftButtonObject> softButtonObjects) {
         if (hasTwoSoftButtonObjectsOfSameName(softButtonObjects)) {
-            this.softButtonObjects = new ArrayList<>();
+            this.softButtonObjects = new CopyOnWriteArrayList<>();
             Log.e(TAG, "Attempted to set soft button objects, but two buttons had the same name");
             return;
         }

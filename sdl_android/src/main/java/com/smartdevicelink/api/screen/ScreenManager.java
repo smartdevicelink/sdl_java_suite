@@ -14,6 +14,7 @@ import com.smartdevicelink.proxy.rpc.enums.PredefinedLayout;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * <strong>ScreenManager</strong> <br>
@@ -268,7 +269,7 @@ public class ScreenManager extends BaseSubManager {
 	 * Set softButtonObjects list and upload the images to the head unit
 	 * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
 	 */
-	public void setSoftButtonObjects(@NonNull List<SoftButtonObject> softButtonObjects) {
+	public void setSoftButtonObjects(@NonNull CopyOnWriteArrayList<SoftButtonObject> softButtonObjects) {
 		softButtonManager.setSoftButtonObjects(softButtonObjects);
 	}
 
