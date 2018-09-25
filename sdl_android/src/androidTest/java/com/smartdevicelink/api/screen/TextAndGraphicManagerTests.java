@@ -108,10 +108,10 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		assertNotNull(textAndGraphicManager.currentScreenData);
 		assertNull(textAndGraphicManager.inProgressUpdate);
 		assertNull(textAndGraphicManager.queuedImageUpdate);
-		assertEquals(textAndGraphicManager.hasQueuedUpdate, false);
+		assertFalse(textAndGraphicManager.hasQueuedUpdate);
 		assertNull(textAndGraphicManager.displayCapabilities);
 		assertEquals(textAndGraphicManager.currentHMILevel, HMILevel.HMI_NONE);
-		assertEquals(textAndGraphicManager.isDirty, false);
+		assertFalse(textAndGraphicManager.isDirty);
 		assertEquals(textAndGraphicManager.getState(), BaseSubManager.READY);
 	}
 
@@ -537,9 +537,9 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		assertNull(textAndGraphicManager.currentScreenData);
 		assertNull(textAndGraphicManager.inProgressUpdate);
 		assertNull(textAndGraphicManager.queuedImageUpdate);
-		assertEquals(textAndGraphicManager.hasQueuedUpdate, false);
+		assertFalse(textAndGraphicManager.hasQueuedUpdate);
 		assertNull(textAndGraphicManager.displayCapabilities);
-		assertEquals(textAndGraphicManager.isDirty, false);
+		assertFalse(textAndGraphicManager.isDirty);
 		assertEquals(textAndGraphicManager.getState(), BaseSubManager.SHUTDOWN);
 	}
 }
