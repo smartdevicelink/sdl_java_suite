@@ -28,4 +28,22 @@ public class VersionTest extends AndroidTestCase {
         Version version = new Version(TEST_VERSION);
         assertEquals(version.toString(), TEST_VERSION);
     }
+
+    public void testisNewerThan(){
+        Version version1 = new Version(5,0,0);
+
+        //Supplied version is newer
+        assertEquals(-1,version1.isNewerThan(new Version(6,0,0)));
+        assertEquals(-1,version1.isNewerThan( new Version(5,1,0)));
+        assertEquals(-1,version1.isNewerThan( new Version(5,0,1)));
+
+        //Supplied version is older
+        assertEquals(1,version1.isNewerThan( new Version(4,0,0)));
+        assertEquals(1,version1.isNewerThan( new Version(4,1,0)));
+        assertEquals(1,version1.isNewerThan( new Version(4,0,1)));
+
+        //Supplied  version is equal
+        assertEquals(0,version1.isNewerThan( new Version(5,0,0)));
+
+    }
 }

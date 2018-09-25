@@ -46,8 +46,12 @@ public class Version {
      * @return 1 if this instance is newer, -1 if supplied version is newer, and 0 if they are equal
      */
     public int isNewerThan(Version version){
-        if(this.major >= version.major){
-            if(this.minor >= version.minor){
+        if(this.major > version.major){
+            return 1;
+        }else if(this.major == version.major){
+            if(this.minor > version.minor){
+                return 1;
+            } else if(this.minor == version.minor){
                 if(this.patch > version.patch){
                     return 1;
                 }else if(this.patch == version.patch){
