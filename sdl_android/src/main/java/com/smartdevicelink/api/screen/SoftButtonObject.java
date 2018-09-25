@@ -170,7 +170,7 @@ public class SoftButtonObject {
      * Set the SoftButtonManager's update listener
      * @param updateListener the SoftButtonManager.UpdateListener object
      */
-    protected void setSoftButtonManagerUpdateListener(UpdateListener updateListener) {
+    protected void setUpdateListener(UpdateListener updateListener) {
         this.updateListener = updateListener;
     }
 
@@ -259,7 +259,13 @@ public class SoftButtonObject {
         void onEvent(SoftButtonObject softButtonObject, OnButtonEvent onButtonEvent);
     }
 
+    /**
+     * A listener interface that is used by SoftButtonObject to request an update from SoftButtonManager
+     */
     interface UpdateListener{
+        /**
+         * Requests an update from SoftButtonManager
+         */
         void onUpdate();
     }
 }
