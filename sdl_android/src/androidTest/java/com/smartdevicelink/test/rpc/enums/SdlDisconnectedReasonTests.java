@@ -146,6 +146,7 @@ public class SdlDisconnectedReasonTests extends TestCase {
 		enumTestList.add(SdlDisconnectedReason.GENERIC_ERROR);
 		enumTestList.add(SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED);
 		enumTestList.add(SdlDisconnectedReason.RPC_SESSION_ENDED);
+		enumTestList.add(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
@@ -153,7 +154,7 @@ public class SdlDisconnectedReasonTests extends TestCase {
 	
 	/**
 	 * Verifies the valid returns of the conversion method,
-	 * {@link com.smartdevicelink.rpc.enums.SdlDisconnectedReason#convertAppInterfaceunregisteredReason(AppInterfaceUnregisteredReason)}
+	 * {@link com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason#convertAppInterfaceunregisteredReason(AppInterfaceUnregisteredReason)}
 	 */
 	public void testConvertMethod () {		
 		assertEquals(Test.MATCH, SdlDisconnectedReason.DEFAULT, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.APP_UNAUTHORIZED));

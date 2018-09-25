@@ -219,7 +219,6 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStrea
 	 * The thread routine.
 	 */
 	public void run() {
-		SdlConnection connection = _session.getSdlConnection();
 
 		while (mThread != null && !mThread.isInterrupted()) {
 			ByteBuffer frame;
@@ -249,8 +248,8 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStrea
 
 		// XXX: This is added to sync with StreamPacketizer. Actually it shouldn't be here since
 		// it's confusing that a packetizer takes care of End Service request.
-		if (connection != null) {
-			connection.endService(_serviceType, _rpcSessionID);
+		if (_session != null) {
+			_session.endService(_serviceType, _rpcSessionID);
 		}
 	}
 

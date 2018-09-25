@@ -12,6 +12,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -19,6 +20,8 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 import android.os.Looper;
+
+import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 
 public class SdlRouterStatusProvider {
 
@@ -99,7 +102,13 @@ public class SdlRouterStatusProvider {
 		Intent bindingIntent = new Intent();
 		bindingIntent.setClassName(this.routerService.getPackageName(), this.routerService.getClassName());//This sets an explicit intent
 		//Quickly make sure it's just up and running
-		context.startService(bindingIntent);
+		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+			context.startService(bindingIntent);
+		}else {
+			bindingIntent.putExtra(FOREGROUND_EXTRA, true);
+			context.startForegroundService(bindingIntent);
+
+		}
 		bindingIntent.setAction( TransportConstants.BIND_REQUEST_TYPE_STATUS);
 		return context.bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
 	}

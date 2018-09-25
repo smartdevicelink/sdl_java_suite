@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import com.livio.BSON.BsonEncoder;
 import com.smartdevicelink.protocol.enums.FrameType;
+import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -47,7 +49,11 @@ public class SdlPacket implements Parcelable{
 	public static final int FRAME_INFO_END_SERVICE 				= 0x04;
 	public static final int FRAME_INFO_END_SERVICE_ACK			= 0x05;
 	public static final int FRAME_INFO_END_SERVICE_NAK			= 0x06;
-	//0x07-0xFD are reserved	
+	public static final int FRAME_INFO_REGISTER_SECONDARY_TRANSPORT     = 0x07;
+	public static final int FRAME_INFO_REGISTER_SECONDARY_TRANSPORT_ACK = 0x08;
+	public static final int FRAME_INFO_REGISTER_SECONDARY_TRANSPORT_NAK = 0x09;
+	//0x0A-0xFC are reserved
+	public static final int FRAME_INFO_TRANSPORT_EVENT_UPDATE           = 0xFD;
 	public static final int FRAME_INFO_SERVICE_DATA_ACK			= 0xFE;
 	public static final int FRAME_INFO_HEART_BEAT_ACK			= 0xFF;
 	
@@ -68,6 +74,9 @@ public class SdlPacket implements Parcelable{
 	int priorityCoefficient;
 	byte[] payload = null;
 	HashMap<String, Object> bsonPayload;
+
+	int messagingVersion = 1;
+	TransportRecord transportRecord;
 
 	public SdlPacket(int version, boolean encryption, int frameType,
 			int serviceType, int frameInfo, int sessionId,
@@ -211,6 +220,15 @@ public class SdlPacket implements Parcelable{
 	public int getPrioirtyCoefficient(){
 		return this.priorityCoefficient;
 	}
+
+	public void setTransportRecord(TransportRecord transportRecord){
+		this.transportRecord = transportRecord;
+	}
+
+	public TransportRecord getTransportRecord() {
+		return this.transportRecord;
+	}
+
 	/**
 	 * This method takes in the various components to the SDL packet structure and creates a new byte array that can be sent via the transport
 	 * @param version
@@ -292,12 +310,17 @@ public class SdlPacket implements Parcelable{
 
 		return builder.toString();
 	}
+
+	public void setMessagingVersion(int version){
+		this.messagingVersion = version;
+	}
 	
 	
 	
 	/* ***************************************************************************************************************************************************
 	 * ***********************************************************  Parceable Overrides  *****************************************************************
 	 *****************************************************************************************************************************************************/
+
 
 
 	//I think this is FIFO...right?
@@ -314,7 +337,17 @@ public class SdlPacket implements Parcelable{
 			payload = new byte[dataSize];
 			p.readByteArray(payload);
 		}
+
 		this.priorityCoefficient = p.readInt();
+
+		if(p.dataAvail() > 0) {
+			messagingVersion = p.readInt();
+			if(messagingVersion >= 2) {
+				if (p.readInt() == 1) { //We should have a transport type attached
+					this.transportRecord = p.readParcelable(TransportRecord.class.getClassLoader());
+				}
+			}
+		}
 	}
 	
 	
@@ -339,6 +372,16 @@ public class SdlPacket implements Parcelable{
 			dest.writeByteArray(payload);
 		}
 		dest.writeInt(priorityCoefficient);
+
+		///Additions after initial creation
+		if(messagingVersion > 1){
+			dest.writeInt(messagingVersion);
+
+			dest.writeInt(transportRecord!=null? 1 : 0);
+			if(transportRecord != null){
+				dest.writeParcelable(transportRecord,0);
+			}
+		}
 
 	}
 	
