@@ -648,7 +648,7 @@ public class SdlProtocol {
         }
     }
 
-    private void handlePacketReceived(SdlPacket packet){
+    protected void handlePacketReceived(SdlPacket packet){
         //Check for a version difference
         if (protocolVersion == null || protocolVersion.getMajor() == 1) {
             setVersion((byte)packet.version);
