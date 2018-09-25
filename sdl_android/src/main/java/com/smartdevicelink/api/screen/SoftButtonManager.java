@@ -51,7 +51,7 @@ class SoftButtonManager extends BaseSubManager {
     private boolean hasQueuedUpdate, batchUpdates, waitingOnHMILevelUpdateToSetButtons;
     private final OnSystemCapabilityListener onSoftButtonCapabilitiesListener, onDisplayCapabilitiesListener;
     private final OnRPCNotificationListener onHMIStatusListener, onButtonPressListener, onButtonEventListener;
-    private final UpdateListener updateListener;
+    private final SoftButtonObject.UpdateListener updateListener;
 
     /**
      * HAX: This is necessary due to a Ford Sync 3 bug that doesn't like Show requests without a main field being set (it will accept them, but with a GENERIC_ERROR, and 10-15 seconds late...)
@@ -71,10 +71,10 @@ class SoftButtonManager extends BaseSubManager {
         this.softButtonObjects = new CopyOnWriteArrayList<>();
         this.currentHMILevel = HMILevel.HMI_NONE;  // Assume NONE until we get something else
         this.waitingOnHMILevelUpdateToSetButtons = false;
-        this.updateListener = new UpdateListener() {
+        this.updateListener = new SoftButtonObject.UpdateListener() {
             @Override
-            public void onUpdate(CompletionListener completionListener) {
-                update(completionListener);
+            public void onUpdate() {
+                update(null);
             }
         };
 
@@ -559,9 +559,5 @@ class SoftButtonManager extends BaseSubManager {
             softButtons.add(softButtonObject.getCurrentStateSoftButton());
         }
         return softButtons;
-    }
-
-    interface UpdateListener{
-        void onUpdate(CompletionListener completionListener);
     }
 }

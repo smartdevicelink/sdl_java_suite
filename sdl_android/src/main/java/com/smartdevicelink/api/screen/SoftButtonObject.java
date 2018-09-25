@@ -25,7 +25,7 @@ public class SoftButtonObject {
     private String currentStateName;
     private int buttonId;
     private OnEventListener onEventListener;
-    private SoftButtonManager.UpdateListener updateListener;
+    private UpdateListener updateListener;
 
     /**
      * Create a new instance of the SoftButtonObject with multiple states
@@ -76,7 +76,7 @@ public class SoftButtonObject {
 
         // Send a new Show RPC because the state has changed which means the actual SoftButton has changed
         if (updateListener != null) {
-            updateListener.onUpdate(null);
+            updateListener.onUpdate();
         } else {
             Log.e(TAG, String.format("SoftButtonManager is not set for soft button object: %s. Update cannot be triggered", this.name));
         }
@@ -170,7 +170,7 @@ public class SoftButtonObject {
      * Set the SoftButtonManager's update listener
      * @param updateListener the SoftButtonManager.UpdateListener object
      */
-    protected void setSoftButtonManagerUpdateListener(SoftButtonManager.UpdateListener updateListener) {
+    protected void setSoftButtonManagerUpdateListener(UpdateListener updateListener) {
         this.updateListener = updateListener;
     }
 
@@ -257,5 +257,9 @@ public class SoftButtonObject {
     public interface OnEventListener{
         void onPress(SoftButtonObject softButtonObject, OnButtonPress onButtonPress);
         void onEvent(SoftButtonObject softButtonObject, OnButtonEvent onButtonEvent);
+    }
+
+    interface UpdateListener{
+        void onUpdate();
     }
 }
