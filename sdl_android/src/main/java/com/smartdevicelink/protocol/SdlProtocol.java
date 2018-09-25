@@ -76,17 +76,22 @@ public class SdlProtocol {
     private static final int PRIMARY_TRANSPORT_ID    = 1;
     private static final int SECONDARY_TRANSPORT_ID  = 2;
 
-
-    protected static final int V1_HEADER_SIZE = 8;
-    protected static final int V2_HEADER_SIZE = 12;
+    /**
+     * Original header size based on version 1.0.0 only
+     */
+    public static final int V1_HEADER_SIZE = 8;
+    /**
+     * Larger header size that is used by versions 2.0.0 and up
+     */
+    public static final int V2_HEADER_SIZE = 12;
 
     //If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
-    public static final Version MAX_PROTOCOL_VERSION = new Version("5.1.0");
+    private static final Version MAX_PROTOCOL_VERSION = new Version("5.1.0");
 
     public static final int V1_V2_MTU_SIZE = 1500;
     public static final int V3_V4_MTU_SIZE = 131072;
 
-    public static final List<SessionType> HIGH_BANDWIDTH_SERVICES
+    private static final List<SessionType> HIGH_BANDWIDTH_SERVICES
             = Arrays.asList(SessionType.NAV, SessionType.PCM);
 
     // Lock to ensure all frames are sent uninterrupted
@@ -95,7 +100,6 @@ public class SdlProtocol {
     private final ISdlProtocol iSdlProtocol;
     private final MultiplexTransportConfig transportConfig;
     private final Hashtable<Integer, MessageFrameAssembler> _assemblerForMessageID = new Hashtable<>();
-    private final Hashtable<Byte, Hashtable<Integer, MessageFrameAssembler>> _assemblerForSessionID = new Hashtable<>();
     private final Hashtable<Byte, Object> _messageLocks = new Hashtable<>();
     private final HashMap<SessionType, Long> mtus = new HashMap<>();
     private final HashMap<SessionType, TransportRecord> activeTransports = new HashMap<>();
@@ -106,7 +110,7 @@ public class SdlProtocol {
     private Version protocolVersion = new Version("1.0.0");
     private int hashID = 0;
     private int messageID = 0;
-    private int headerSize = 8;
+    private int headerSize = V1_HEADER_SIZE;
 
     /**
      * Requested transports for primary and secondary
@@ -170,10 +174,6 @@ public class SdlProtocol {
         return transportManager != null && transportManager.isConnected(null,null);
     }
 
-    public TransportRecord getTransportForSession(SessionType type){
-        return activeTransports.get(type);
-    }
-
     /**
      * Resets the protocol to init status
      */
@@ -181,13 +181,12 @@ public class SdlProtocol {
         protocolVersion = new Version("1.0.0");
         hashID = 0;
         messageID = 0;
-        headerSize = 8;
+        headerSize = V1_HEADER_SIZE;
         this.activeTransports.clear();
         this.mtus.clear();
         mtus.put(SessionType.RPC, (long) (V1_V2_MTU_SIZE - headerSize));
         this.secondaryTransportParams = null;
         this._assemblerForMessageID.clear();
-        this._assemblerForSessionID.clear();
         this._messageLocks.clear();
     }
 
@@ -250,6 +249,10 @@ public class SdlProtocol {
         Log.d(TAG, secondaryDetailsBldr.toString());
     }
 
+
+    private TransportRecord getTransportForSession(SessionType type){
+        return activeTransports.get(type);
+    }
 
     private void setTransportPriorityForService(SessionType serviceType, List<Integer> order){
         if(transportPriorityForServiceMap == null){
@@ -464,11 +467,6 @@ public class SdlProtocol {
         return null;
     }
 
-    public TransportRecord getPreferredPrimaryTransport(List<TransportRecord> transports){
-        return getPreferredTransport(requestedPrimaryTransports, transports);
-
-    }
-
     private void onTransportNotAccepted(String info){
         if(iSdlProtocol != null) {
             iSdlProtocol.shutdown(info);
@@ -480,11 +478,6 @@ public class SdlProtocol {
         return this.protocolVersion;
     }
 
-    public int getMajorVersionByte(){
-        return this.protocolVersion.getMajor();
-
-    }
-
     /**
      * This method will set the major protocol version that we should use. It will also set the default MTU based on version.
      * @param version major version to use
@@ -492,40 +485,31 @@ public class SdlProtocol {
     protected void setVersion(byte version) {
         if (version > 5) {
             this.protocolVersion = new Version("5.0.0"); //protect for future, proxy only supports v5 or lower
-            headerSize = 12;
+            headerSize = V2_HEADER_SIZE;
             mtus.put(SessionType.RPC, (long) V3_V4_MTU_SIZE);
         } else if (version == 5) {
             this.protocolVersion = new Version("5.0.0");
-            headerSize = 12;
+            headerSize = V2_HEADER_SIZE;
             mtus.put(SessionType.RPC, (long) V3_V4_MTU_SIZE);
         }else if (version == 4) {
             this.protocolVersion = new Version("4.0.0");
-            headerSize = 12;
+            headerSize = V2_HEADER_SIZE;
             mtus.put(SessionType.RPC, (long) V3_V4_MTU_SIZE); //versions 4 supports 128k MTU
         } else if (version == 3) {
             this.protocolVersion = new Version("3.0.0");
-            headerSize = 12;
+            headerSize = V2_HEADER_SIZE;
             mtus.put(SessionType.RPC, (long) V3_V4_MTU_SIZE); //versions 3 supports 128k MTU
         } else if (version == 2) {
             this.protocolVersion = new Version("2.0.0");
-            headerSize = 12;
+            headerSize = V2_HEADER_SIZE;
             mtus.put(SessionType.RPC, (long) (V1_V2_MTU_SIZE - headerSize));
         } else if (version == 1){
             this.protocolVersion = new Version("1.0.0");
-            headerSize = 8;
+            headerSize = V1_HEADER_SIZE;
             mtus.put(SessionType.RPC, (long) (V1_V2_MTU_SIZE - headerSize));
         }
     }
 
-  /*  @Deprecated
-    public void StartProtocolSession(SessionType sessionType) {
-        SdlPacket header = SdlPacketFactory.createStartSession(sessionType, 0x00, getMajorVersionByte(), (byte) 0x00, false);
-        if(sessionType.equals(SessionType.RPC)){ // check for RPC session
-            header.putTag(ControlFrameTags.RPC.StartService.PROTOCOL_VERSION, MAX_PROTOCOL_VERSION.toString());
-        }
-        handlePacketToSend(header);
-    } // end-method
-*/
     public void endSession(byte sessionID, int hashId) {
         SdlPacket header;
         if(protocolVersion.getMajor() < 5){
@@ -616,7 +600,6 @@ public class SdlProtocol {
                 if (data.length % mtu > 0) {
                     frameCount++;
                 }
-                //byte[] firstFrameData = new byte[headerSize];
                 byte[] firstFrameData = new byte[8];
                 // First four bytes are data size.
                 System.arraycopy(BitConverter.intToByteArray(data.length), 0, firstFrameData, 0, 4);
@@ -665,9 +648,9 @@ public class SdlProtocol {
         }
     }
 
-    public void handlePacketReceived(SdlPacket packet){
+    private void handlePacketReceived(SdlPacket packet){
         //Check for a version difference
-        if (getMajorVersionByte() == 1) {
+        if (protocolVersion == null || protocolVersion.getMajor() == 1) {
             setVersion((byte)packet.version);
         }
 
@@ -681,12 +664,6 @@ public class SdlProtocol {
         Integer iSessionId = packet.getSessionId();
         Byte bySessionId = iSessionId.byteValue();
 
-        Hashtable<Integer, MessageFrameAssembler> hashSessionID = _assemblerForSessionID.get(bySessionId);
-        if (hashSessionID == null) {
-            hashSessionID = new Hashtable<>();
-            _assemblerForSessionID.put(bySessionId, hashSessionID);
-        } // end-if
-
         MessageFrameAssembler ret = _assemblerForMessageID.get(packet.getMessageId());
         if (ret == null) {
             ret = new MessageFrameAssembler();
@@ -698,7 +675,7 @@ public class SdlProtocol {
 
 
 
-    public void registerSecondaryTransport(byte sessionId, TransportRecord transportRecord) {
+    private void registerSecondaryTransport(byte sessionId, TransportRecord transportRecord) {
         SdlPacket header = SdlPacketFactory.createRegisterSecondaryTransport(sessionId, (byte)protocolVersion.getMajor());
         header.setTransportRecord(transportRecord);
         handlePacketToSend(header);
@@ -968,8 +945,12 @@ public class SdlProtocol {
                                 return;
                             }
 
-                            activeTransports.put(SessionType.NAV, transportRecord);
-                            activeTransports.put(SessionType.PCM, transportRecord);
+                            if (video == null || video.contains(PRIMARY_TRANSPORT_ID)) {
+                                activeTransports.put(SessionType.NAV, transportRecord);
+                            }
+                            if (audio == null || audio.contains(PRIMARY_TRANSPORT_ID)) {
+                                activeTransports.put(SessionType.PCM, transportRecord);
+                            }
                         }else{
 
                             if(DebugTool.isDebugEnabled()){
@@ -1090,7 +1071,6 @@ public class SdlProtocol {
             }
         }
         if (serviceType.eq(SessionType.NAV) || serviceType.eq(SessionType.PCM)) {
-            //handleProtocolSessionNACKed(serviceType, (byte)packet.getSessionId(), getMajorVersionByte(), "", rejectedParams);
             iSdlProtocol.onProtocolSessionNACKed(serviceType, (byte)packet.sessionId, (byte)protocolVersion.getMajor(), "", rejectedParams);
 
         } else {
@@ -1137,7 +1117,7 @@ public class SdlProtocol {
             TransportRecord transportRecord = getTransportForSession(SessionType.RPC);
             if(transportRecord == null && !requestedSession){ //There is currently no transport registered
                 requestedSession = true;
-                transportManager.requestNewSession(getPreferredPrimaryTransport(connectedTransports));
+                transportManager.requestNewSession(getPreferredTransport(requestedPrimaryTransports,connectedTransports));
             }
             onTransportsConnectedUpdate(connectedTransports);
             if(DebugTool.isDebugEnabled()){
@@ -1187,7 +1167,7 @@ public class SdlProtocol {
                 transportManager.close(iSdlProtocol.getSessionId());
                 transportManager = null;
                 requestedSession = false;
-                
+
                 activeTransports.clear();
 
                 iSdlProtocol.onTransportDisconnected(info, primaryTransportAvailable, transportConfig);
