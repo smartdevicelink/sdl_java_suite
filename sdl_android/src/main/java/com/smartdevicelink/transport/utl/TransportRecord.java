@@ -39,8 +39,8 @@ import com.smartdevicelink.transport.enums.TransportType;
 
 public class TransportRecord implements Parcelable{
 
-    TransportType type;
-    String address;
+    private TransportType type;
+    private String address;
 
     public TransportRecord(TransportType transportType, String address){
         this.type = transportType;
