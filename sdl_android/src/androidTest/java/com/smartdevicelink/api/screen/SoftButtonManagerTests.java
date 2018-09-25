@@ -99,7 +99,7 @@ public class SoftButtonManagerTests extends AndroidTestCase {
                 show.getOnRPCResponseListener().onResponse(0, null);
 
                 assertEquals(show.getMainField1(), softButtonManager.getCurrentMainField1());
-                assertTrue(Validator.validateSoftButtons(show.getSoftButtons(), softButtonManager.createSoftButtonsForCurrentState()));
+                assertEquals(show.getSoftButtons().size(), softButtonManager.createSoftButtonsForCurrentState().size());
 
                 return null;
             }
