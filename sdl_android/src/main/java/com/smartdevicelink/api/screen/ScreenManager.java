@@ -269,8 +269,8 @@ public class ScreenManager extends BaseSubManager {
 	 * Set softButtonObjects list and upload the images to the head unit
 	 * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
 	 */
-	public void setSoftButtonObjects(@NonNull CopyOnWriteArrayList<SoftButtonObject> softButtonObjects) {
-		softButtonManager.setSoftButtonObjects(softButtonObjects);
+	public void setSoftButtonObjects(@NonNull List<SoftButtonObject> softButtonObjects) {
+		softButtonManager.setSoftButtonObjects(new CopyOnWriteArrayList<>(softButtonObjects));
 	}
 
 	/**

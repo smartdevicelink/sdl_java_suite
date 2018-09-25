@@ -370,7 +370,6 @@ class SoftButtonManager extends BaseSubManager {
         if (softButtonObjects == null) {
             Log.d(TAG, "Soft button objects are null, sending an empty array");
             inProgressShowRPC.setSoftButtons(new ArrayList<SoftButton>());
-            Log.i(TAG, "update: ");
         } else if ((currentStateHasImages() && !allCurrentStateImagesAreUploaded()) || !softButtonImagesSupported()) {
             // The images don't yet exist on the head unit, or we cannot use images, send a text update if possible, otherwise, don't send anything yet
             List<SoftButton> textOnlySoftButtons = createTextSoftButtonsForCurrentState();

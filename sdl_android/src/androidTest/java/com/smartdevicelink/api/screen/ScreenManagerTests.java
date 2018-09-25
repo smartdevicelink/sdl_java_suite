@@ -11,7 +11,6 @@ import com.smartdevicelink.test.utl.AndroidToolsTests;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.mockito.Mockito.mock;
 
@@ -113,10 +112,8 @@ public class ScreenManagerTests extends AndroidToolsTests{
 		SoftButtonState softButtonState4 = new SoftButtonState("object2-state2", "dudes!", null);
 		SoftButtonObject softButtonObject2 = new SoftButtonObject("object2", Arrays.asList(softButtonState3, softButtonState4), softButtonState3.getName(), null);
 
-		CopyOnWriteArrayList<SoftButtonObject> softButtonObjects = new CopyOnWriteArrayList<>();
-		softButtonObjects.add(softButtonObject1);
-		softButtonObjects.add(softButtonObject2);
-		screenManager.setSoftButtonObjects(softButtonObjects);
+		List<SoftButtonObject> softButtonObjects = Arrays.asList(softButtonObject1, softButtonObject2);
+		screenManager.setSoftButtonObjects(Arrays.asList(softButtonObject1, softButtonObject2));
 		assertEquals(screenManager.getSoftButtonObjects(), softButtonObjects);
 		assertEquals(screenManager.getSoftButtonObjectByName("object2"), softButtonObject2);
 		assertEquals(screenManager.getSoftButtonObjectById(100), softButtonObject2);
