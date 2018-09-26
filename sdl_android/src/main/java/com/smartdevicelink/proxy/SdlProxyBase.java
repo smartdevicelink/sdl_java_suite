@@ -13,6 +13,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -46,6 +48,7 @@ import android.view.Display;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.Surface;
+import android.widget.Button;
 
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
@@ -3354,6 +3357,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				
 				final OnButtonPress msg = new OnButtonPress(hash);
 				msg.format(rpcSpecVersion, true);
+				final OnButtonPress onButtonPressCompat = (OnButtonPress)handleButtonNotificationFormatting(msg);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3361,17 +3365,25 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						public void run() {
 							_proxyListener.onOnButtonPress(msg);
 							onRPCNotificationReceived(msg);
+							if(onButtonPressCompat != null){
+								_proxyListener.onOnButtonPress(onButtonPressCompat);
+							}
 						}
 					});
 				} else {
 					_proxyListener.onOnButtonPress(msg);
 					onRPCNotificationReceived(msg);
+					if(onButtonPressCompat != null){
+						_proxyListener.onOnButtonPress(onButtonPressCompat);
+					}
 				}
 			} else if (functionName.equals(FunctionID.ON_BUTTON_EVENT.toString())) {
 				// OnButtonEvent
 				
 				final OnButtonEvent msg = new OnButtonEvent(hash);
 				msg.format(rpcSpecVersion, true);
+				final OnButtonEvent onButtonEventCompat = (OnButtonEvent)handleButtonNotificationFormatting(msg);
+
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3379,11 +3391,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						public void run() {
 							_proxyListener.onOnButtonEvent(msg);
 							onRPCNotificationReceived(msg);
+							if(onButtonEventCompat != null){
+								_proxyListener.onOnButtonEvent(onButtonEventCompat);
+							}
 						}
 					});
 				} else {
 					_proxyListener.onOnButtonEvent(msg);
 					onRPCNotificationReceived(msg);
+					if(onButtonEventCompat != null){
+						_proxyListener.onOnButtonEvent(onButtonEventCompat);
+					}
 				}
 			} else if (functionName.equals(FunctionID.ON_LANGUAGE_CHANGE.toString())) {
 				// OnLanguageChange
@@ -3637,6 +3655,58 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlTrace.logProxyEvent("Proxy received RPC Message: " + functionName, SDL_LIB_TRACE_KEY);
 	}
 
+	//FIXME
+	/**
+	 * Temporary method to bridge the new PLAY_PAUSE and OKAY button functionality with the old
+	 * OK button name. This should be removed during the next major release
+	 * @param notification
+	 */
+	private RPCNotification handleButtonNotificationFormatting(RPCNotification notification){
+		if(FunctionID.ON_BUTTON_EVENT.toString().equals(notification.getFunctionName())
+				|| FunctionID.ON_BUTTON_PRESS.toString().equals(notification.getFunctionName())){
+
+			ButtonName buttonName = (ButtonName)notification.getObject(ButtonName.class, OnButtonEvent.KEY_BUTTON_NAME);
+			ButtonName compatBtnName = null;
+
+			if(rpcSpecVersion != null && rpcSpecVersion.getMajor() >= 5){
+				if(ButtonName.PLAY_PAUSE.equals(buttonName)){
+					compatBtnName =  ButtonName.OK;
+				}
+			}else{ // rpc spec version is either null or less than 5
+				if(ButtonName.OK.equals(buttonName)){
+					compatBtnName = ButtonName.PLAY_PAUSE;
+				}
+			}
+
+			try {
+				if (compatBtnName != null) { //There is a button name that needs to be swapped out
+					RPCNotification notification2;
+					//The following is done because there is currently no way to make a deep copy
+					//of an RPC. Since this code will be removed, it's ugliness is borderline acceptable.
+					if (notification instanceof OnButtonEvent) {
+						OnButtonEvent onButtonEvent = new OnButtonEvent();
+						onButtonEvent.setButtonEventMode(((OnButtonEvent) notification).getButtonEventMode());
+						onButtonEvent.setCustomButtonID(((OnButtonEvent) notification).getCustomButtonID());
+						notification2 = onButtonEvent;
+					} else if (notification instanceof OnButtonPress) {
+						OnButtonPress onButtonPress = new OnButtonPress();
+						onButtonPress.setButtonPressMode(((OnButtonPress) notification).getButtonPressMode());
+						onButtonPress.setCustomButtonName(((OnButtonPress) notification).getCustomButtonName());
+						notification2 = onButtonPress;
+					} else {
+						return null;
+					}
+
+					notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, compatBtnName);
+					return notification2;
+				}
+			}catch (Exception e){
+				//Should never get here
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Takes a list of RPCRequests and sends it to SDL in a synchronous fashion. Responses are captured through callback on OnMultipleRequestListener.
 	 * For sending requests asynchronously, use sendRequests <br>
@@ -3793,8 +3863,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			throw new SdlException("Invalid correlation ID. The correlation ID, " + request.getCorrelationID()
 					+ " , is a reserved correlation ID.", SdlExceptionCause.RESERVED_CORRELATION_ID);
 		}
-		
-		// Throw exception if RPCRequest is sent when SDL is unavailable 
+		// Throw exception if RPCRequest is sent when SDL is unavailable
 		if (!_appInterfaceRegisterd && !request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString())) {
 			
 			SdlTrace.logProxyEvent("Application attempted to send an RPCRequest (non-registerAppInterface), before the interface was registerd.", SDL_LIB_TRACE_KEY);
@@ -3808,6 +3877,28 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				SdlTrace.logProxyEvent("Application attempted to send a RegisterAppInterface or UnregisterAppInterface while using ALM.", SDL_LIB_TRACE_KEY);
 				throw new SdlException("The RPCRequest, " + request.getFunctionName() + 
 						", is un-allowed using the Advanced Lifecycle Management Model.", SdlExceptionCause.INCORRECT_LIFECYCLE_MODEL);
+			}
+		}
+
+		//FIXME this is temporary until the next major release of the library where OK is removed
+
+		if(FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+				|| FunctionID.UNSUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+				|| FunctionID.BUTTON_PRESS.toString().equals(request.getFunctionName())){
+
+			ButtonName buttonName = (ButtonName)request.getObject(ButtonName.class, SubscribeButton.KEY_BUTTON_NAME);
+
+			if(rpcSpecVersion != null && rpcSpecVersion.getMajor() < 5) {
+
+				if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
+					request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
+				}
+			} else { //Newer than version 5.0.0
+				if(ButtonName.OK.equals(buttonName)){
+					RPCRequest request2 = new RPCRequest(request);
+					request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
+					sendRPCRequestPrivate(request2);
+				}
 			}
 		}
 		
