@@ -21,7 +21,7 @@ public class SoftButtonState {
     private static final String TAG = "SoftButtonState";
     private String name;
     private SdlArtwork artwork;
-    private SoftButton softButton;
+    private final SoftButton softButton;
 
     /**
      * Creates a new instance of SoftButtonState
@@ -33,6 +33,7 @@ public class SoftButtonState {
     public SoftButtonState(@NonNull String name, String text, SdlArtwork artwork) {
         if (text == null && artwork == null) {
             Log.e(TAG, "Attempted to create an invalid soft button state: text and artwork are both null");
+            softButton = null;
             return;
         }
         this.name = name;

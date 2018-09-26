@@ -1,5 +1,6 @@
 package com.smartdevicelink.api.screen;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.api.BaseSubManager;
@@ -30,6 +31,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * <strong>SoftButtonManager</strong> <br>
@@ -42,13 +44,14 @@ class SoftButtonManager extends BaseSubManager {
     private FileManager fileManager;
     private DisplayCapabilities displayCapabilities;
     private SoftButtonCapabilities softButtonCapabilities;
-    private List<SoftButtonObject> softButtonObjects;
+    private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     private HMILevel currentHMILevel;
     private Show inProgressShowRPC;
     private CompletionListener inProgressListener, queuedUpdateListener, cachedListener;
     private boolean hasQueuedUpdate, batchUpdates, waitingOnHMILevelUpdateToSetButtons;
-    private OnSystemCapabilityListener onSoftButtonCapabilitiesListener, onDisplayCapabilitiesListener;
-    private OnRPCNotificationListener onHMIStatusListener, onButtonPressListener, onButtonEventListener;
+    private final OnSystemCapabilityListener onSoftButtonCapabilitiesListener, onDisplayCapabilitiesListener;
+    private final OnRPCNotificationListener onHMIStatusListener, onButtonPressListener, onButtonEventListener;
+    private final SoftButtonObject.UpdateListener updateListener;
 
     /**
      * HAX: This is necessary due to a Ford Sync 3 bug that doesn't like Show requests without a main field being set (it will accept them, but with a GENERIC_ERROR, and 10-15 seconds late...)
@@ -65,9 +68,15 @@ class SoftButtonManager extends BaseSubManager {
         super(internalInterface);
         transitionToState(BaseSubManager.SETTING_UP);
         this.fileManager = fileManager;
-        this.softButtonObjects = new ArrayList<>();
+        this.softButtonObjects = new CopyOnWriteArrayList<>();
         this.currentHMILevel = HMILevel.HMI_NONE;  // Assume NONE until we get something else
         this.waitingOnHMILevelUpdateToSetButtons = false;
+        this.updateListener = new SoftButtonObject.UpdateListener() {
+            @Override
+            public void onUpdate() {
+                update(null);
+            }
+        };
 
 
         // Add OnSoftButtonCapabilitiesListener to keep softButtonCapabilities updated
@@ -213,19 +222,28 @@ class SoftButtonManager extends BaseSubManager {
 
     /**
      * Set softButtonObjects list and upload the images to the head unit
-     * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
+     * @param list the list of the SoftButtonObject values that should be displayed on the head unit
      */
-    protected void setSoftButtonObjects(List<SoftButtonObject> softButtonObjects) {
+    protected void setSoftButtonObjects(@NonNull List<SoftButtonObject> list) {
+        // Convert the List to CopyOnWriteArrayList
+        CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
+        if(list instanceof CopyOnWriteArrayList){
+            softButtonObjects = (CopyOnWriteArrayList<SoftButtonObject>) list;
+        }else{
+            softButtonObjects = new CopyOnWriteArrayList<>(list);
+        }
+
+
         if (hasTwoSoftButtonObjectsOfSameName(softButtonObjects)) {
-            this.softButtonObjects = new ArrayList<>();
+            this.softButtonObjects = new CopyOnWriteArrayList<>();
             Log.e(TAG, "Attempted to set soft button objects, but two buttons had the same name");
             return;
         }
 
-        // Set ids and managers for soft button objects
+        // Set ids and updateListeners for soft button objects
         for (int i = 0; i < softButtonObjects.size(); i++) {
             softButtonObjects.get(i).setButtonId(i * 100);
-            softButtonObjects.get(i).setSoftButtonManager(this);
+            softButtonObjects.get(i).setUpdateListener(updateListener);
         }
         this.softButtonObjects = softButtonObjects;
 
@@ -257,7 +275,7 @@ class SoftButtonManager extends BaseSubManager {
         // so we can upload the initial state images first, then the other states images.
         List<SdlArtwork> initialStatesToBeUploaded = new ArrayList<>();
         List<SdlArtwork> otherStatesToBeUploaded = new ArrayList<>();
-        if (displayCapabilities == null || displayCapabilities.getGraphicSupported()) {
+        if (softButtonImagesSupported()) {
             for (SoftButtonObject softButtonObject : softButtonObjects) {
                 SoftButtonState initialState = null;
                 if (softButtonObject != null) {
@@ -361,7 +379,7 @@ class SoftButtonManager extends BaseSubManager {
         if (softButtonObjects == null) {
             Log.d(TAG, "Soft button objects are null, sending an empty array");
             inProgressShowRPC.setSoftButtons(new ArrayList<SoftButton>());
-        } else if ((currentStateHasImages() && !allCurrentStateImagesAreUploaded()) && (softButtonCapabilities == null || !softButtonCapabilities.getImageSupported())) {
+        } else if ((currentStateHasImages() && !allCurrentStateImagesAreUploaded()) || !softButtonImagesSupported()) {
             // The images don't yet exist on the head unit, or we cannot use images, send a text update if possible, otherwise, don't send anything yet
             List<SoftButton> textOnlySoftButtons = createTextSoftButtonsForCurrentState();
             if (textOnlySoftButtons != null) {
@@ -379,27 +397,12 @@ class SoftButtonManager extends BaseSubManager {
             inProgressShowRPC.setSoftButtons(createSoftButtonsForCurrentState());
         }
 
+
         inProgressShowRPC.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 Log.i(TAG, "Soft button update completed");
-
-                inProgressShowRPC = null;
-                CompletionListener currentListener;
-                if (inProgressListener != null) {
-                    currentListener = inProgressListener;
-                    inProgressListener = null;
-                    currentListener.onComplete(true);
-                }
-
-
-                if (hasQueuedUpdate) {
-                    Log.d(TAG, "Queued update exists, sending another update");
-                    currentListener = queuedUpdateListener;
-                    queuedUpdateListener = null;
-                    hasQueuedUpdate = false;
-                    update(currentListener);
-                }
+                handleResponse(true);
             }
 
             @Override
@@ -407,13 +410,18 @@ class SoftButtonManager extends BaseSubManager {
                 super.onError(correlationId, resultCode, info);
 
                 Log.e(TAG, "Soft button update error");
+                handleResponse(false);
+
+            }
+
+            private void handleResponse(boolean success){
 
                 inProgressShowRPC = null;
                 CompletionListener currentListener;
                 if (inProgressListener != null) {
                     currentListener = inProgressListener;
                     inProgressListener = null;
-                    currentListener.onComplete(false);
+                    currentListener.onComplete(success);
                 }
 
 
@@ -426,7 +434,13 @@ class SoftButtonManager extends BaseSubManager {
                 }
             }
         });
+
+
         internalInterface.sendRPCRequest(inProgressShowRPC);
+    }
+
+    private boolean softButtonImagesSupported(){
+        return (displayCapabilities == null || displayCapabilities.getGraphicSupported()) && (softButtonCapabilities == null || softButtonCapabilities.getImageSupported());
     }
 
     /**
@@ -528,9 +542,10 @@ class SoftButtonManager extends BaseSubManager {
             if (softButton.getText() == null) {
                 return null;
             }
-            softButton.setImage(null);
-            softButton.setType(SoftButtonType.SBT_TEXT);
-            textButtons.add(softButton);
+            // We should create a new softButtonObject rather than modifying the original one
+            SoftButton textOnlySoftButton = new SoftButton(SoftButtonType.SBT_TEXT, softButton.getSoftButtonID());
+            textOnlySoftButton.setText(softButton.getText());
+            textButtons.add(textOnlySoftButton);
         }
         return textButtons;
     }

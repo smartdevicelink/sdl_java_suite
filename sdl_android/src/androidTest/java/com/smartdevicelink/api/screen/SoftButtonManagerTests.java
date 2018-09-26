@@ -98,7 +98,7 @@ public class SoftButtonManagerTests extends AndroidTestCase {
                 show.getOnRPCResponseListener().onResponse(0, null);
 
                 assertEquals(show.getMainField1(), softButtonManager.getCurrentMainField1());
-                assertTrue(Validator.validateSoftButtons(show.getSoftButtons(), softButtonManager.createSoftButtonsForCurrentState()));
+                assertEquals(show.getSoftButtons().size(), softButtonManager.createSoftButtonsForCurrentState().size());
 
                 return null;
             }
@@ -130,7 +130,7 @@ public class SoftButtonManagerTests extends AndroidTestCase {
         // Test batch update
         softButtonManager.setBatchUpdates(true);
         List<SoftButtonObject> softButtonObjects = Arrays.asList(softButtonObject1, softButtonObject2);
-        softButtonManager.setSoftButtonObjects(softButtonObjects);
+        softButtonManager.setSoftButtonObjects(Arrays.asList(softButtonObject1, softButtonObject2));
         softButtonManager.setBatchUpdates(false);
         softButtonManager.update(new CompletionListener() {
             @Override
