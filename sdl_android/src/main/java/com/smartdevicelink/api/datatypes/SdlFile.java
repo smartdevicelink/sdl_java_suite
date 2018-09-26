@@ -19,24 +19,24 @@ public class SdlFile{
     public SdlFile(){}
 
     public SdlFile(@NonNull String fileName, @NonNull FileType fileType, int id, boolean persistentFile){
-        setName(fileName);
-        setType(fileType);
-        setResourceId(id);
-        setPersistent(persistentFile);
+        this.fileName = fileName;
+        this.fileType = fileType;
+        this.id = id;
+        this.persistentFile = persistentFile;
     }
 
     public SdlFile(@NonNull String fileName, @NonNull FileType fileType, Uri uri, boolean persistentFile){
-        setName(fileName);
-        setType(fileType);
-        setUri(uri);
-        setPersistent(persistentFile);
+        this.fileName = fileName;
+        this.fileType = fileType;
+        this.uri = uri;
+        this.persistentFile = persistentFile;
     }
 
     public SdlFile(@NonNull String fileName, @NonNull FileType fileType, byte[] data, boolean persistentFile){
-        setName(fileName);
-        setType(fileType);
-        setFileData(data);
-        setPersistent(persistentFile);
+        this.fileName = fileName;
+        this.fileType = fileType;
+        this.fileData = data;
+        this.persistentFile = persistentFile;
     }
 
     public void setName(@NonNull String fileName){

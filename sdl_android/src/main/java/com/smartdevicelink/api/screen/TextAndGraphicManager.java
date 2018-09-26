@@ -1,5 +1,6 @@
 package com.smartdevicelink.api.screen;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.R;
@@ -65,7 +66,7 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	//Constructors
 
-	TextAndGraphicManager(ISdl internalInterface, FileManager fileManager, SoftButtonManager softButtonManager) {
+	TextAndGraphicManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, @NonNull SoftButtonManager softButtonManager) {
 		// set class vars
 		super(internalInterface);
 		this.fileManager = new WeakReference<>(fileManager);
@@ -331,8 +332,6 @@ class TextAndGraphicManager extends BaseSubManager {
 
 		if (mediaTrackTextField != null){
 			show.setMediaTrack(mediaTrackTextField);
-		} else {
-			show.setMediaTrack("");
 		}
 
 		List<String> nonNullFields = findValidMainTextFields();
@@ -711,10 +710,10 @@ class TextAndGraphicManager extends BaseSubManager {
 		int linesFound = 0;
 
 		List<TextField> textFields = displayCapabilities.getTextFields();
-
+		TextFieldName name;
 		for (TextField field : textFields) {
 			if (field.getName() != null) {
-				TextFieldName name = field.getName();
+				name = field.getName();
 				if (name == TextFieldName.mainField1 || name == TextFieldName.mainField2 || name == TextFieldName.mainField3 || name == TextFieldName.mainField4) {
 					linesFound += 1;
 				}

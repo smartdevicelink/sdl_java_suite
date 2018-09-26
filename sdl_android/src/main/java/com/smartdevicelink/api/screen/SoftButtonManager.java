@@ -64,7 +64,7 @@ class SoftButtonManager extends BaseSubManager {
      * @param internalInterface
      * @param fileManager
      */
-    SoftButtonManager(ISdl internalInterface, FileManager fileManager) {
+    SoftButtonManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
         transitionToState(BaseSubManager.SETTING_UP);
         this.fileManager = fileManager;

@@ -13,6 +13,7 @@ import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedLayout;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -23,10 +24,9 @@ import java.util.List;
 public class ScreenManager extends BaseSubManager {
 
 	private static String TAG = "ScreenManager";
-	private FileManager fileManager;
+	private final WeakReference<FileManager> fileManager;
 	private SoftButtonManager softButtonManager;
 	private TextAndGraphicManager textAndGraphicManager;
-	private boolean allSubManagersFinishedUpdatingSuccesslly;
 
 	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
@@ -34,42 +34,45 @@ public class ScreenManager extends BaseSubManager {
 		public synchronized void onComplete(boolean success) {
 			if(!success){
 				Log.d(TAG, "Sub manager failed to initialize");
+				transitionToState(ERROR);
 			}
-			if(
-					softButtonManager != null && softButtonManager.getState() != BaseSubManager.SETTING_UP &&
-					textAndGraphicManager != null && textAndGraphicManager.getState() != BaseSubManager.SETTING_UP
-					){
+			if(softButtonManager != null && softButtonManager.getState() != BaseSubManager.SETTING_UP && textAndGraphicManager != null && textAndGraphicManager.getState() != BaseSubManager.SETTING_UP){
 				transitionToState(READY);
 			}
 		}
 	};
 
-	public ScreenManager(ISdl internalInterface, FileManager fileManager) {
+	public ScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
 		super(internalInterface);
 		transitionToState(SETTING_UP);
-		this.fileManager = fileManager;
+		this.fileManager = new WeakReference<>(fileManager);
 		initialize();
 	}
 
 	private void initialize(){
-		this.softButtonManager = new SoftButtonManager(internalInterface, fileManager);
-		this.softButtonManager.start(subManagerListener);
-		this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager, softButtonManager);
-		this.textAndGraphicManager.start(subManagerListener);
+		if (fileManager.get() != null) {
+			this.softButtonManager = new SoftButtonManager(internalInterface, fileManager.get());
+			this.softButtonManager.start(subManagerListener);
+			this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get(), softButtonManager);
+			this.textAndGraphicManager.start(subManagerListener);
+		}
 	}
 
 	/**
 	 * <p>Called when manager is being torn down</p>
 	 */
 	public void dispose(){
-		transitionToState(SHUTDOWN);
+		softButtonManager.dispose();
+		textAndGraphicManager.dispose();
+		super.dispose();
 	}
 
 	/**
 	 * Set the textField1 on the head unit screen
+	 * Sending an empty String "" will clear the field
 	 * @param textField1 String value represents the textField1
 	 */
-	public void setTextField1(@NonNull String textField1) {
+	public void setTextField1(String textField1) {
 		this.softButtonManager.setCurrentMainField1(textField1);
 		this.textAndGraphicManager.setTextField1(textField1);
 	}
@@ -84,6 +87,7 @@ public class ScreenManager extends BaseSubManager {
 
 	/**
 	 * Set the textField2 on the head unit screen
+	 * Sending an empty String "" will clear the field
 	 * @param textField2 String value represents the textField1
 	 */
 	public void setTextField2(String textField2) {
@@ -100,6 +104,7 @@ public class ScreenManager extends BaseSubManager {
 
 	/**
 	 * Set the textField3 on the head unit screen
+	 * Sending an empty String "" will clear the field
 	 * @param textField3 String value represents the textField1
 	 */
 	public void setTextField3(String textField3) {
@@ -116,6 +121,7 @@ public class ScreenManager extends BaseSubManager {
 
 	/**
 	 * Set the textField4 on the head unit screen
+	 * Sending an empty String "" will clear the field
 	 * @param textField4 String value represents the textField1
 	 */
 	public void setTextField4(String textField4) {
@@ -318,22 +324,22 @@ public class ScreenManager extends BaseSubManager {
 	 * @param listener a CompletionListener that has a callback that will be called when the updates are finished
 	 */
 	public void commit(final CompletionListener listener){
-		allSubManagersFinishedUpdatingSuccesslly = true;
 		softButtonManager.setBatchUpdates(false);
 		softButtonManager.update(new CompletionListener() {
+			boolean updateSuccessful = true;
 			@Override
 			public void onComplete(boolean success) {
 				if (!success){
-					allSubManagersFinishedUpdatingSuccesslly = false;
+					updateSuccessful = false;
 				}
 				textAndGraphicManager.setBatchUpdates(false);
 				textAndGraphicManager.update(new CompletionListener() {
 					@Override
 					public void onComplete(boolean success) {
 						if (!success){
-							allSubManagersFinishedUpdatingSuccesslly = false;
+							updateSuccessful = false;
 						}
-						listener.onComplete(allSubManagersFinishedUpdatingSuccesslly);
+						listener.onComplete(updateSuccessful);
 					}
 				});
 			}
