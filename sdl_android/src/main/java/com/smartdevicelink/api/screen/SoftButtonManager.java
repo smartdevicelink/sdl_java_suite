@@ -28,6 +28,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 class SoftButtonManager extends BaseSubManager {
 
     private static final String TAG = "SoftButtonManager";
-    private FileManager fileManager;
+    private WeakReference<FileManager> fileManager;
     private DisplayCapabilities displayCapabilities;
     private SoftButtonCapabilities softButtonCapabilities;
     private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
@@ -67,7 +68,7 @@ class SoftButtonManager extends BaseSubManager {
     SoftButtonManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
         transitionToState(BaseSubManager.SETTING_UP);
-        this.fileManager = fileManager;
+        this.fileManager = new WeakReference<>(fileManager);
         this.softButtonObjects = new CopyOnWriteArrayList<>();
         this.currentHMILevel = HMILevel.HMI_NONE;  // Assume NONE until we get something else
         this.waitingOnHMILevelUpdateToSetButtons = false;
@@ -275,7 +276,7 @@ class SoftButtonManager extends BaseSubManager {
         // so we can upload the initial state images first, then the other states images.
         List<SdlArtwork> initialStatesToBeUploaded = new ArrayList<>();
         List<SdlArtwork> otherStatesToBeUploaded = new ArrayList<>();
-        if (softButtonImagesSupported()) {
+        if (softButtonImagesSupported() && fileManager.get() != null) {
             for (SoftButtonObject softButtonObject : softButtonObjects) {
                 SoftButtonState initialState = null;
                 if (softButtonObject != null) {
@@ -283,7 +284,7 @@ class SoftButtonManager extends BaseSubManager {
                 }
                 if (initialState != null && softButtonObject.getStates() != null) {
                     for (SoftButtonState softButtonState : softButtonObject.getStates()) {
-                        if (softButtonState != null && softButtonState.getName() != null && softButtonState.getArtwork() != null && !fileManager.hasUploadedFile(softButtonState.getArtwork())) {
+                        if (softButtonState != null && softButtonState.getName() != null && softButtonState.getArtwork() != null && !fileManager.get().hasUploadedFile(softButtonState.getArtwork())) {
                             if (softButtonState.getName().equals(initialState.getName())) {
                                 initialStatesToBeUploaded.add(softButtonObject.getCurrentState().getArtwork());
                             } else{
@@ -297,9 +298,9 @@ class SoftButtonManager extends BaseSubManager {
 
 
         // Upload initial state images
-        if (initialStatesToBeUploaded.size() > 0) {
+        if (initialStatesToBeUploaded.size() > 0 && fileManager.get() != null) {
             Log.v(TAG, "Uploading soft button initial state artworks");
-            fileManager.uploadArtworks(initialStatesToBeUploaded, new MultipleFileCompletionListener() {
+            fileManager.get().uploadArtworks(initialStatesToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null && errors.size() > 0) {
@@ -313,9 +314,9 @@ class SoftButtonManager extends BaseSubManager {
 
 
         // Upload other state images
-        if (otherStatesToBeUploaded.size() > 0) {
+        if (otherStatesToBeUploaded.size() > 0 && fileManager.get() != null) {
             Log.v(TAG, "Uploading soft button other state artworks");
-            fileManager.uploadArtworks(otherStatesToBeUploaded, new MultipleFileCompletionListener() {
+            fileManager.get().uploadArtworks(otherStatesToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null && errors.size() > 0) {
@@ -522,10 +523,12 @@ class SoftButtonManager extends BaseSubManager {
      * @return a boolean value
      */
     private boolean allCurrentStateImagesAreUploaded() {
-        for (SoftButtonObject softButtonObject : softButtonObjects) {
-            SoftButtonState currentState = softButtonObject.getCurrentState();
-            if (currentState != null && currentState.getArtwork() != null && !fileManager.hasUploadedFile(currentState.getArtwork())) {
-                return false;
+        if (fileManager.get() != null) {
+            for (SoftButtonObject softButtonObject : softButtonObjects) {
+                SoftButtonState currentState = softButtonObject.getCurrentState();
+                if (currentState != null && currentState.getArtwork() != null && !fileManager.get().hasUploadedFile(currentState.getArtwork())) {
+                    return false;
+                }
             }
         }
         return true;
