@@ -440,15 +440,7 @@ class SoftButtonManager extends BaseSubManager {
     }
 
     private boolean softButtonImagesSupported(){
-        boolean graphicSupported = false;
-        if (displayCapabilities == null || displayCapabilities.getGraphicSupported()){
-            graphicSupported = true;
-        }
-        boolean imageSupported = false;
-        if (softButtonCapabilities == null || softButtonCapabilities.getImageSupported()){
-            imageSupported = true;
-        }
-        return graphicSupported && imageSupported;
+        return (displayCapabilities == null || displayCapabilities.getGraphicSupported()) && (softButtonCapabilities == null || softButtonCapabilities.getImageSupported());
     }
 
     /**

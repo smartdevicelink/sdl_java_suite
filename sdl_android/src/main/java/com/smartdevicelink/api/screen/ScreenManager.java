@@ -14,7 +14,6 @@ import com.smartdevicelink.proxy.rpc.enums.PredefinedLayout;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * <strong>ScreenManager</strong> <br>
