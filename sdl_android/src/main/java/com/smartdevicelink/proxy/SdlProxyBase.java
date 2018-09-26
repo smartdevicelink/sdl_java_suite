@@ -3602,7 +3602,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	//FIXME
 	/**
-	 * Temporary method to bridge the new PLAY_PAUSE and OKAY button funcitonliaty with the old
+	 * Temporary method to bridge the new PLAY_PAUSE and OKAY button functionality with the old
 	 * OK button name. This should be removed during the next major release
 	 * @param notification
 	 */
@@ -3611,20 +3611,43 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				|| FunctionID.ON_BUTTON_PRESS.toString().equals(notification.getFunctionName())){
 
 			ButtonName buttonName = (ButtonName)notification.getObject(ButtonName.class, OnButtonEvent.KEY_BUTTON_NAME);
+			ButtonName compatBtnName = null;
+
 			if(rpcSpecVersion != null && rpcSpecVersion.getMajor() >= 5){
 				if(ButtonName.PLAY_PAUSE.equals(buttonName)){
-					RPCNotification notification2 = new RPCNotification(notification);
-					notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, ButtonName.OK);
-					return notification2;
+					compatBtnName =  ButtonName.OK;
 				}
-			}else{
+			}else{ // rpc spec version is either null or less than 5
 				if(ButtonName.OK.equals(buttonName)){
-					RPCNotification notification2 = new RPCNotification(notification);
-					notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
-					return notification2;
+					compatBtnName = ButtonName.PLAY_PAUSE;
 				}
 			}
 
+			try {
+				if (compatBtnName != null) { //There is a button name that needs to be swapped out
+					RPCNotification notification2;
+					//The following is done because there is currently no way to make a deep copy
+					//of an RPC. Since this code will be removed, it's ugliness is borderline acceptable.
+					if (notification instanceof OnButtonEvent) {
+						OnButtonEvent onButtonEvent = new OnButtonEvent();
+						onButtonEvent.setButtonEventMode(((OnButtonEvent) notification).getButtonEventMode());
+						onButtonEvent.setCustomButtonID(((OnButtonEvent) notification).getCustomButtonID());
+						notification2 = onButtonEvent;
+					} else if (notification instanceof OnButtonPress) {
+						OnButtonPress onButtonPress = new OnButtonPress();
+						onButtonPress.setButtonPressMode(((OnButtonPress) notification).getButtonPressMode());
+						onButtonPress.setCustomButtonName(((OnButtonPress) notification).getCustomButtonName());
+						notification2 = onButtonPress;
+					} else {
+						return null;
+					}
+
+					notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, compatBtnName);
+					return notification2;
+				}
+			}catch (Exception e){
+				//Should never get here
+			}
 		}
 		return null;
 	}
