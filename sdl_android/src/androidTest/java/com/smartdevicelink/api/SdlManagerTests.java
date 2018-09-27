@@ -170,7 +170,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		sdlManager.getAudioStreamManager().transitionToState(BaseSubManager.READY);
 		// manager.getVideoStreamingManager().transitionToState(BaseSubManager.READY);
 		// manager.getLockScreenManager().transitionToState(BaseSubManager.READY);
-		// manager.getScreenManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getScreenManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
 
