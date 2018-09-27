@@ -79,7 +79,12 @@ class TextAndGraphicManager extends BaseSubManager {
 		currentScreenData = new Show();
 		addListeners();
 		getBlankArtwork();
+	}
+
+	@Override
+	public void start(CompletionListener listener) {
 		transitionToState(READY);
+		super.start(listener);
 	}
 
 	@Override

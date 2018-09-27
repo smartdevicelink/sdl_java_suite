@@ -32,12 +32,24 @@ public class ScreenManager extends BaseSubManager {
 	private final CompletionListener subManagerListener = new CompletionListener() {
 		@Override
 		public synchronized void onComplete(boolean success) {
-			if(!success){
-				Log.d(TAG, "Sub manager failed to initialize");
+			if (softButtonManager != null && textAndGraphicManager != null) {
+				if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY) {
+					transitionToState(READY);
+				}else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR){
+					Log.e(TAG, "ERROR starting screen manager, both sub managers in error state");
+					transitionToState(ERROR);
+				} else if (softButtonManager.getState() == BaseSubManager.ERROR || textAndGraphicManager.getState() == BaseSubManager.ERROR) {
+					Log.e(TAG, "ERROR starting screen manager, one sub manager in error state");
+					transitionToState(LIMITED);
+				}
+			} else if (softButtonManager == null || textAndGraphicManager == null) {
+				// We should never be here, but somehow one of the sub-sub managers is null
+				Log.e(TAG, "ERROR one of the screen sub managers is null");
+				transitionToState(LIMITED);
+			} else {
+				Log.e(TAG, "ERROR both of the screen sub managers are null");
+				// We should never be here, but somehow both of the sub-sub managers is null
 				transitionToState(ERROR);
-			}
-			if(softButtonManager != null && softButtonManager.getState() != BaseSubManager.SETTING_UP && textAndGraphicManager != null && textAndGraphicManager.getState() != BaseSubManager.SETTING_UP){
-				transitionToState(READY);
 			}
 		}
 	};
@@ -52,8 +64,8 @@ public class ScreenManager extends BaseSubManager {
 	private void initialize(){
 		if (fileManager.get() != null) {
 			this.softButtonManager = new SoftButtonManager(internalInterface, fileManager.get());
-			this.softButtonManager.start(subManagerListener);
 			this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get(), softButtonManager);
+			this.softButtonManager.start(subManagerListener);
 			this.textAndGraphicManager.start(subManagerListener);
 		}
 	}

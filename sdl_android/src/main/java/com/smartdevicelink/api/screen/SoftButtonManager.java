@@ -180,9 +180,12 @@ class SoftButtonManager extends BaseSubManager {
             }
         };
         this.internalInterface.addOnRPCNotificationListener(FunctionID.ON_BUTTON_EVENT, onButtonEventListener);
+    }
 
-        // Transition to ready state
+    @Override
+    public void start(CompletionListener listener) {
         transitionToState(READY);
+        super.start(listener);
     }
 
     /**
