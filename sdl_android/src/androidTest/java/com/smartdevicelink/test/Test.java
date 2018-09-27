@@ -3,7 +3,7 @@ package com.smartdevicelink.test;
 import android.graphics.Color;
 import android.util.Log;
 
-import com.smartdevicelink.api.lockscreen.LockScreenConfig;
+import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioControlData;
