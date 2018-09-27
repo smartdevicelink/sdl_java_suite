@@ -18,7 +18,7 @@ public abstract class BaseSubManager {
 	// states - if this gets more complicated we can move elsewhere
 	private int state;
 	private final Object STATE_LOCK = new Object();
-	public static final int SETTING_UP = 0x00, READY = 0x30, SHUTDOWN = 0x60, ERROR = 0x90;
+	public static final int SETTING_UP = 0x00, READY = 0x30, LIMITED = 0x50, SHUTDOWN = 0x80, ERROR = 0xC0;
 	protected final ISdl internalInterface;
 	private CompletionListener completionListener;
 

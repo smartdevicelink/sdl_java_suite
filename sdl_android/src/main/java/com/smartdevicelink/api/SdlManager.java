@@ -8,6 +8,7 @@ import com.smartdevicelink.api.PermissionManager.PermissionManager;
 import com.smartdevicelink.api.datatypes.SdlArtwork;
 import com.smartdevicelink.api.lockscreen.LockScreenConfig;
 import com.smartdevicelink.api.lockscreen.LockScreenManager;
+import com.smartdevicelink.api.screen.ScreenManager;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -37,7 +38,6 @@ import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.util.Version;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,9 +80,9 @@ public class SdlManager{
 	private VideoStreamingManager videoStreamingManager;
 	private FileManager fileManager;
 	private LockScreenManager lockScreenManager;
+	private ScreenManager screenManager;
     /*
     private AudioStreamManager audioStreamManager;
-    private ScreenManager screenManager;
     */
 
 	// Initialize proxyBridge with anonymous lifecycleListener
@@ -125,10 +125,10 @@ public class SdlManager{
 					permissionManager != null && permissionManager.getState() != BaseSubManager.SETTING_UP &&
 					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
 					(videoStreamingManager == null || (videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP)) &&
-							lockScreenManager != null &&  lockScreenManager.getState() != BaseSubManager.SETTING_UP
+					lockScreenManager != null &&  lockScreenManager.getState() != BaseSubManager.SETTING_UP	&&
+					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
 					/*
 					audioStreamManager != null && audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
-					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
 					*/
 					){
 				state = BaseSubManager.READY;
@@ -176,9 +176,10 @@ public class SdlManager{
 			this.lockScreenManager.start(subManagerListener);
 		}
 
-		/*
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
 		this.screenManager.start(subManagerListener);
+
+		/*
 		this.audioStreamManager = new AudioStreamManager(_internalInterface);
 		this.audioStreamManager.start(subManagerListener);
 		*/
@@ -195,9 +196,10 @@ public class SdlManager{
 			this.lockScreenManager.dispose();
 		}
 
+		this.screenManager.dispose();
+
 		/*
 		this.audioStreamManager.dispose();
-		this.screenManager.dispose();
 		this.audioStreamManager.dispose();
 		*/
 		if(managerListener != null){
@@ -463,12 +465,10 @@ public class SdlManager{
 	 * <strong>Note: ScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
 	 * @return a ScreenManager object
 	 */
-    /*
 	public ScreenManager getScreenManager() {
 		checkSdlManagerState();
 		return screenManager;
 	}
-	*/
 
 	/**
 	 * Gets the LockScreenManager. <br>
