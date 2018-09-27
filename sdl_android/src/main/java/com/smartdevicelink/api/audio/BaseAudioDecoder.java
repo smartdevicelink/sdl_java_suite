@@ -38,7 +38,7 @@ public abstract class BaseAudioDecoder {
     protected MediaCodec decoder;
 
     protected Uri audioSource;
-    protected Context context;
+    protected final WeakReference<Context> contextWeakReference;
     protected final AudioDecoderListener listener;
 
     /**
@@ -53,7 +53,7 @@ public abstract class BaseAudioDecoder {
      */
     public BaseAudioDecoder(@NonNull Uri audioSource, @NonNull Context context, int sampleRate, @SampleType int sampleType, AudioDecoderListener listener) {
         this.audioSource = audioSource;
-        this.context = context;
+        this.contextWeakReference = new WeakReference<>(context);
         this.listener = listener;
 
         targetSampleRate = sampleRate;
@@ -61,9 +61,15 @@ public abstract class BaseAudioDecoder {
     }
 
     protected void initMediaComponents() throws Exception {
+        if(targetSampleRate <= 0){
+            throw new InstantiationException("Target sample rate of " + targetSampleRate + " is unsupported");
+        }
+
         extractor = new MediaExtractor();
-        WeakReference<Context> weakRef = new WeakReference<>(context);
-        Context contextRef = weakRef.get();
+        Context contextRef = contextWeakReference.get();
+        if(contextRef == null){
+            throw new InstantiationException("Context reference was null");
+        }
         extractor.setDataSource(contextRef, audioSource, null);
         MediaFormat format = null;
         String mime = null;
