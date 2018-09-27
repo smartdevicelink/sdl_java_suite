@@ -37,7 +37,7 @@ public abstract class BaseAudioDecoder {
     protected MediaExtractor extractor;
     protected MediaCodec decoder;
 
-    protected Uri audioSource;
+    protected final Uri audioSource;
     protected final WeakReference<Context> contextWeakReference;
     protected final AudioDecoderListener listener;
 
