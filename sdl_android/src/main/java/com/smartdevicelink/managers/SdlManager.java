@@ -37,6 +37,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -74,6 +75,7 @@ public class SdlManager{
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
 	private SdlManagerListener managerListener;
 	private int state = -1;
+	private List<Class<? extends SdlSecurityBase>> sdlSecList;
 	public LockScreenConfig lockScreenConfig;
 
 
@@ -373,6 +375,15 @@ public class SdlManager{
 		}
 
 		/**
+		 * Sets the Security library
+		 * @param secList The list of security class(es)
+		 */
+		public Builder setSdlSecurity(List<Class<? extends SdlSecurityBase>> secList) {
+			sdlManager.sdlSecList = secList;
+			return this;
+		}
+
+		/**
 		 * Set the SdlManager Listener
 		 * @param listener the listener
 		 */
@@ -619,8 +630,10 @@ public class SdlManager{
 			try {
 				proxy = new SdlProxyBase(proxyBridge, context, appName, shortAppName, isMediaApp, hmiLanguage,
 						hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
-						nightColorScheme) {
-				};
+						nightColorScheme) {};
+				if (sdlSecList != null && !sdlSecList.isEmpty()) {
+					proxy.setSdlSecurityClassList(sdlSecList);
+				}
 			} catch (SdlException e) {
 				if (managerListener != null) {
 					managerListener.onError("Unable to start manager", e);
