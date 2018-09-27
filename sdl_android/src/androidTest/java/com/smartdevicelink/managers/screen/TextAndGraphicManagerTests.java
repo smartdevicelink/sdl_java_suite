@@ -4,8 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.smartdevicelink.managers.BaseSubManager;
-import com.smartdevicelink.managers.FileManager;
-import com.smartdevicelink.managers.datatypes.SdlArtwork;
+import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.MetadataTags;

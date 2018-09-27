@@ -8,7 +8,7 @@ public class DeviceUtil {
                 || Build.FINGERPRINT.startsWith("unknown")
                 || Build.MODEL.contains("google_sdk")
                 || Build.MODEL.contains("Emulator")
-                || Build.MODEL.contains("Android SDL built for")
+                || Build.MODEL.contains("Android SDK built for")
                 || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
                 || (Build.BRAND.startsWith("Android") && Build.DEVICE.startsWith("generic"))
                 || (Build.PRODUCT != null && Build.PRODUCT.startsWith("sdk_google_phone"))

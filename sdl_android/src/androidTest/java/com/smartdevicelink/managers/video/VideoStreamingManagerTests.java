@@ -1,4 +1,4 @@
-package com.smartdevicelink.managers;
+package com.smartdevicelink.managers.video;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -42,7 +43,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * This is a unit test class for the SmartDeviceLink video streaming manager class :
- * {@link com.smartdevicelink.managers.VideoStreamingManager}
+ * {@link VideoStreamingManager}
  */
 public class VideoStreamingManagerTests extends AndroidTestCase {
 	public static final String TAG = "VideoStreamingManagerTests";

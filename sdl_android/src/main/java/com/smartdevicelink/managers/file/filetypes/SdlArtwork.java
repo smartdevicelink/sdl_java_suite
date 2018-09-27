@@ -1,4 +1,4 @@
-package com.smartdevicelink.managers.datatypes;
+package com.smartdevicelink.managers.file.filetypes;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;

@@ -1,11 +1,14 @@
-package com.smartdevicelink.managers;
+package com.smartdevicelink.managers.file;
 
 import android.content.Context;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
-import com.smartdevicelink.managers.datatypes.SdlArtwork;
-import com.smartdevicelink.managers.datatypes.SdlFile;
+import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.MultipleFileCompletionListener;
+import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.ListFiles;
@@ -16,6 +19,8 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.test.Test;
+
+import junit.framework.Assert;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -30,7 +35,7 @@ import static org.mockito.Mockito.mock;
 
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
- * {@link com.smartdevicelink.managers.FileManager}
+ * {@link FileManager}
  */
 public class FileManagerTests extends AndroidTestCase {
 	public static final String TAG = "FileManagerTests";
@@ -148,7 +153,7 @@ public class FileManagerTests extends AndroidTestCase {
 			@Override
 			public void onComplete(boolean success) {
 				assertTrue(success);
-				assertEquals(fileManager.getState(), BaseSubManager.READY);
+				Assert.assertEquals(fileManager.getState(), BaseSubManager.READY);
 				assertEquals(fileManager.getRemoteFileNames(), Test.GENERAL_STRING_LIST);
 			}
 		});

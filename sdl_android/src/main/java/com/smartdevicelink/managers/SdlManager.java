@@ -6,13 +6,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.audio.AudioStreamManager;
-import com.smartdevicelink.managers.datatypes.SdlArtwork;
+import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.managers.lockscreen.LockScreenManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.managers.video.VideoStreamingManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;

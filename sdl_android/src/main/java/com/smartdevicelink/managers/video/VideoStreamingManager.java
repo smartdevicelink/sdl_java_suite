@@ -1,4 +1,4 @@
-package com.smartdevicelink.managers;
+package com.smartdevicelink.managers.video;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -13,6 +13,9 @@ import android.view.MotionEvent;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.haptic.HapticInterfaceManager;
+import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.StreamingStateMachine;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -39,7 +42,7 @@ import java.util.List;
 import java.util.concurrent.FutureTask;
 
 @TargetApi(19)
-public class VideoStreamingManager extends BaseSubManager{
+public class VideoStreamingManager extends BaseSubManager {
 	private static String TAG = "VideoStreamingManager";
 
 	private WeakReference<Context> context;

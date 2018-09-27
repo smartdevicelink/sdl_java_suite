@@ -1,4 +1,4 @@
-package com.smartdevicelink.managers;
+package com.smartdevicelink.managers.permission;
 
 import android.support.annotation.NonNull;
 import android.test.AndroidTestCase;

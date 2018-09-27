@@ -1,4 +1,4 @@
-package com.smartdevicelink.managers;
+package com.smartdevicelink.managers.file;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -7,8 +7,11 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.smartdevicelink.managers.datatypes.SdlArtwork;
-import com.smartdevicelink.managers.datatypes.SdlFile;
+import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.MultipleFileCompletionListener;
+import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -50,7 +53,7 @@ public class FileManager extends BaseSubManager {
 	private List<String> remoteFiles, uploadedEphemeralFileNames;
 	private final WeakReference<Context> context;
 
-	FileManager(ISdl internalInterface, Context context) {
+	public FileManager(ISdl internalInterface, Context context) {
 
 		// setup
 		super(internalInterface);
@@ -336,9 +339,9 @@ public class FileManager extends BaseSubManager {
 	 * @return boolean that tells whether file has been uploaded to core (true) or not (false)
 	 */
 	public boolean hasUploadedFile(@NonNull SdlFile file){
-		if(file.isPersistent() && remoteFiles.contains(file.getName())){
+		if(file.isPersistent() && remoteFiles != null && remoteFiles.contains(file.getName())){
 			return true;
-		}else if(!file.isPersistent() && remoteFiles.contains(file.getName())
+		}else if(!file.isPersistent() && remoteFiles != null && remoteFiles.contains(file.getName())
 				&& uploadedEphemeralFileNames.contains(file.getName())){
 			return true;
 		}

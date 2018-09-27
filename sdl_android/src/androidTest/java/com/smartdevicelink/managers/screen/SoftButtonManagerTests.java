@@ -3,9 +3,9 @@ package com.smartdevicelink.managers.screen;
 import android.test.AndroidTestCase;
 
 import com.smartdevicelink.managers.CompletionListener;
-import com.smartdevicelink.managers.FileManager;
+import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.MultipleFileCompletionListener;
-import com.smartdevicelink.managers.datatypes.SdlArtwork;
+import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Image;
