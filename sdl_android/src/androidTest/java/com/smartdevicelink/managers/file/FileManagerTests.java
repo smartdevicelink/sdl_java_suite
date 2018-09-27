@@ -471,11 +471,16 @@ public class FileManagerTests extends AndroidTestCase {
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPCRequest(any(ListFiles.class));
 
-		SdlFile file = new SdlFile();
+		final SdlFile file = new SdlFile();
 		file.setName(Test.GENERAL_STRING_LIST.get(0));
 		file.setPersistent(true);
 
 		final FileManager fileManager = new FileManager(internalInterface, mTestContext);
-		assertTrue(fileManager.hasUploadedFile(file));
+		fileManager.start(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				assertTrue(fileManager.hasUploadedFile(file));
+			}
+		});
 	}
 }
