@@ -56,9 +56,14 @@ public class FileManager extends BaseSubManager {
 		super(internalInterface);
 		this.context = new WeakReference<>(context);
 
+		uploadedEphemeralFileNames = new ArrayList<>();
+	}
+
+	@Override
+	public void start(CompletionListener listener) {
 		// prepare manager - don't set state to ready until we have list of files
 		retrieveRemoteFiles();
-		uploadedEphemeralFileNames = new ArrayList<>();
+		super.start(listener);
 	}
 
 	// GETTERS

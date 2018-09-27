@@ -118,7 +118,12 @@ public class VideoStreamingManager extends BaseSubManager{
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 
 		stateMachine = new StreamingStateMachine();
-		transitionToState(BaseSubManager.READY);
+	}
+
+	@Override
+	public void start(CompletionListener listener) {
+		transitionToState(READY);
+		super.start(listener);
 	}
 
 	/**

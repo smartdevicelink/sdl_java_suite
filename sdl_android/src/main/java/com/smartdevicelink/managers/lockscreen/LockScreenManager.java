@@ -8,6 +8,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -61,9 +62,12 @@ public class LockScreenManager extends BaseSubManager {
 		deviceLogoEnabled = lockScreenConfig.isDeviceLogoEnabled();
 
 		setupListeners();
+	}
 
-		// transition state
+	@Override
+	public void start(CompletionListener listener) {
 		transitionToState(READY);
+		super.start(listener);
 	}
 
 	@Override

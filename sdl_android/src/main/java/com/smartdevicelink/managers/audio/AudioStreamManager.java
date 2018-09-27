@@ -127,7 +127,12 @@ public class AudioStreamManager extends BaseSubManager {
         internalInterface.addServiceListener(SessionType.PCM, serviceListener);
 
         streamingStateMachine = new StreamingStateMachine();
-        transitionToState(BaseSubManager.READY);
+    }
+
+    @Override
+    public void start(CompletionListener listener) {
+        transitionToState(READY);
+        super.start(listener);
     }
 
     @Override

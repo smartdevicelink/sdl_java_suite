@@ -4,6 +4,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -91,6 +92,11 @@ import java.util.UUID;
             }
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE, onPermissionsChangeListener);
+    }
+
+    @Override
+    public void start(CompletionListener listener) {
+        super.start(listener);
     }
 
     /**
