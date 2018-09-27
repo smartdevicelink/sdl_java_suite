@@ -112,7 +112,7 @@ public class TextAndGraphicManagerTests extends AndroidToolsTests{
 		assertNull(textAndGraphicManager.displayCapabilities);
 		assertEquals(textAndGraphicManager.currentHMILevel, HMILevel.HMI_NONE);
 		assertFalse(textAndGraphicManager.isDirty);
-		assertEquals(textAndGraphicManager.getState(), BaseSubManager.READY);
+		assertEquals(textAndGraphicManager.getState(), BaseSubManager.SETTING_UP);
 	}
 
 	public void testGetMainLines(){
