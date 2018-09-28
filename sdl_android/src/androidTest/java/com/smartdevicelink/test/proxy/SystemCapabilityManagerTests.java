@@ -202,8 +202,8 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		}
 
 		@Override
-		public byte getWiProVersion() {
-			return 0;
+		public Version getProtocolVersion() {
+			return new Version(1,0,0);
 		}
 
 

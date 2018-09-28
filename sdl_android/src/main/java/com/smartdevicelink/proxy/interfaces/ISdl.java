@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.interfaces;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -201,15 +203,15 @@ public interface ISdl {
     boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
 
     /**
-     * Get SdlMsgVersion
-     * @return SdlMsgVersion
+     * Get the RPC specification version currently being used for the SDL messages
+     * @return SdlMsgVersion the current RPC specification version
      */
-    SdlMsgVersion getSdlMsgVersion();
+    @NonNull SdlMsgVersion getSdlMsgVersion();
 
     /**
-     * Get WiPro version
+     * Get the protocol version of this session
      * @return byte value representing WiPro version
      */
-    byte getWiProVersion();
+    @NonNull Version getProtocolVersion();
 
 }

@@ -805,8 +805,8 @@ public class SdlManager{
 		}
 
 		@Override
-		public byte getWiProVersion() {
-			return proxy.getWiProVersion();
+		public com.smartdevicelink.util.Version getProtocolVersion() {
+			return proxy.getProtocolVersion();
 		}
 
 	};
