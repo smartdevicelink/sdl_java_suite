@@ -20,6 +20,8 @@ import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import static org.mockito.Mockito.mock;
+
 public class SdlProtocolTests  extends AndroidTestCase {
 
     int max_int = 2147483647;
@@ -27,102 +29,7 @@ public class SdlProtocolTests  extends AndroidTestCase {
     MultiplexTransportConfig config;
     SdlProtocol protocol;
 
-    ISdlProtocol defaultListener = new ISdlProtocol() {
-        @Override
-        public byte getSessionId() {
-            return 0;
-        }
-
-        @Override
-        public void shutdown(String info) {
-
-        }
-
-        @Override
-        public void onTransportDisconnected(String info, boolean altTransportAvailable, MultiplexTransportConfig transportConfig) {
-
-        }
-
-        @Override
-        public SdlSecurityBase getSdlSecurity() {
-            return null;
-        }
-
-        @Override
-        public VideoStreamingParameters getDesiredVideoParams() {
-            return null;
-        }
-
-        @Override
-        public void setAcceptedVideoParams(VideoStreamingParameters acceptedVideoParams) {
-
-        }
-
-        @Override
-        public void stopStream(SessionType serviceType) {
-
-        }
-
-        @Override
-        public void onProtocolMessageBytesToSend(SdlPacket packet) {
-
-        }
-
-        @Override
-        public void onProtocolMessageReceived(ProtocolMessage msg) {
-
-        }
-
-        @Override
-        public void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
-
-        }
-
-        @Override
-        public void onProtocolSessionNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-
-        }
-
-        @Override
-        public void onProtocolSessionEnded(SessionType sessionType, byte sessionID, String correlationID) {
-
-        }
-
-        @Override
-        public void onProtocolSessionEndedNACKed(SessionType sessionType, byte sessionID, String correlationID) {
-
-        }
-
-        @Override
-        public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) {
-
-        }
-
-        @Override
-        public void onProtocolHeartbeatACK(SessionType sessionType, byte sessionID) {
-
-        }
-
-        @Override
-        public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID) {
-
-        }
-
-        @Override
-        public void onResetOutgoingHeartbeat(SessionType sessionType, byte sessionID) {
-
-        }
-
-        @Override
-        public void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID) {
-
-        }
-
-        @Override
-        public void onProtocolError(String info, Exception e) {
-
-        }
-    };
+    ISdlProtocol defaultListener = mock(ISdlProtocol.class);
 
     public static class DidReceiveListener implements ISdlProtocol{
         boolean didReceive = false;
