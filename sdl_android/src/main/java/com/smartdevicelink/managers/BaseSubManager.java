@@ -3,6 +3,9 @@ package com.smartdevicelink.managers;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.transport.utl.TransportRecord;
+
+import java.util.List;
 
 /**
  * <strong>BaseSubManager</strong> <br>
@@ -64,4 +67,19 @@ public abstract class BaseSubManager {
 			return state;
 		}
 	}
+
+	//This allows the method to not be exposed to developers
+	protected void handleTransportUpdated(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail){
+		this.onTransportUpdate(connectedTransports,audioStreamTransportAvail,videoStreamTransportAvail);
+	}
+
+	/**
+	 * Transport status has been updated
+	 * @param connectedTransports currently connected transports
+	 * @param audioStreamTransportAvail if there is a transport that could be used to carry the
+	 *                                     audio service
+	 * @param videoStreamTransportAvail if there is a transport that could be used to carry the
+	 *                                     video service
+	 */
+	protected void onTransportUpdate(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail){}
 }

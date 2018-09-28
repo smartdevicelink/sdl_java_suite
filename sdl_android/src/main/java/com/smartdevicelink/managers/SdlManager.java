@@ -44,6 +44,9 @@ import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
+import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -630,6 +633,30 @@ public class SdlManager{
 	public void start(){
 		if (proxy == null) {
 			try {
+				if(transport!= null  && transport.getTransportType() == TransportType.MULTIPLEX){
+					//Do the thing
+					MultiplexTransportConfig multiplexTransportConfig = (MultiplexTransportConfig)(transport);
+					final MultiplexTransportConfig.TransportListener devListener = multiplexTransportConfig.getTransportListener();
+					multiplexTransportConfig.setTransportListener(new MultiplexTransportConfig.TransportListener() {
+						@Override
+						public void onTransportEvent(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail) {
+
+							//Pass to submanagers that need it
+							if(videoStreamingManager != null){
+								videoStreamingManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
+							}
+
+							if(audioStreamManager != null){
+								audioStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
+							}
+							//If the developer supplied a listener to start, it is time to call that
+							if(devListener != null){
+								devListener.onTransportEvent(connectedTransports,audioStreamTransportAvail,videoStreamTransportAvail);
+							}
+						}
+					});
+				}
+
 				proxy = new SdlProxyBase(proxyBridge, context, appName, shortAppName, isMediaApp, hmiLanguage,
 						hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
 						nightColorScheme) {};

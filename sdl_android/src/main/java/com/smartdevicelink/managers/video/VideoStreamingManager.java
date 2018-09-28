@@ -36,6 +36,8 @@ import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
+import com.smartdevicelink.transport.utl.TransportRecord;
+import com.smartdevicelink.util.Version;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -56,6 +58,7 @@ public class VideoStreamingManager extends BaseSubManager {
 	private StreamingStateMachine stateMachine;
 	private VideoStreamingParameters parameters;
 	private IVideoStreamListener streamListener;
+	private boolean isTransportAvailable = false;
 
 	// INTERNAL INTERFACES
 
@@ -89,6 +92,9 @@ public class VideoStreamingManager extends BaseSubManager {
 		public void onNotified(RPCNotification notification) {
 			if(notification != null){
 				hmiLevel = ((OnHMIStatus)notification).getHmiLevel();
+				if(hmiLevel.equals(HMILevel.HMI_FULL)){
+					checkState();
+				}
 			}
 		}
 	};
@@ -125,8 +131,50 @@ public class VideoStreamingManager extends BaseSubManager {
 
 	@Override
 	public void start(CompletionListener listener) {
-		transitionToState(READY);
+		getVideoStreamingParams();
 		super.start(listener);
+	}
+
+	private synchronized void checkState(){
+		if(isTransportAvailable
+				&& hmiLevel != null
+				&& hmiLevel.equals(HMILevel.HMI_FULL)
+				&& parameters != null){
+			transitionToState(READY);
+		}
+	}
+
+	private void getVideoStreamingParams(){
+		if(internalInterface.getProtocolVersion().getMajor() >= 5) {
+			internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
+				@Override
+				public void onCapabilityRetrieved(Object capability) {
+					VideoStreamingParameters params = new VideoStreamingParameters();
+					params.update((VideoStreamingCapability)capability);	//Streaming parameters are ready time to stream
+					VideoStreamingManager.this.parameters = params;
+
+					checkState();
+
+				}
+
+				@Override
+				public void onError(String info) {
+					Log.e(TAG, "Error retrieving video streaming capability: " + info);
+					stateMachine.transitionToState(StreamingStateMachine.ERROR);
+					transitionToState(ERROR);
+				}
+			});
+		}else{
+			//We just use default video streaming params
+			VideoStreamingParameters params = new VideoStreamingParameters();
+			DisplayCapabilities dispCap = (DisplayCapabilities)internalInterface.getCapability(SystemCapabilityType.DISPLAY);
+			if(dispCap !=null){
+				params.setResolution(dispCap.getScreenParams().getImageResolution());
+			}
+
+			this.parameters = params;
+			checkState();
+		}
 	}
 
 	/**
@@ -536,6 +584,26 @@ public class VideoStreamingManager extends BaseSubManager {
 					}
 
 				}
+			}
+		}
+	}
+
+	@Override
+	protected void onTransportUpdate(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail){
+
+		isTransportAvailable = videoStreamTransportAvail;
+
+		if(internalInterface.getProtocolVersion().isNewerThan(new Version(5,1,0)) >= 0){
+			if(videoStreamTransportAvail){
+				checkState();
+			}
+		}else{
+			//The protocol version doesn't support simultaneous transports.
+			if(!videoStreamTransportAvail){
+				//If video streaming isn't available on primary transport then it is not possible to
+				//use the video streaming manager until a complete register on a transport that
+				//supports video
+				transitionToState(ERROR);
 			}
 		}
 	}
