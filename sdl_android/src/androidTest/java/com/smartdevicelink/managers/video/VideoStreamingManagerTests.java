@@ -90,6 +90,7 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 
 	public void testInitialization(){
 		ISdl internalInterface = mock(ISdl.class);
+		when(internalInterface.getProtocolVersion()).thenReturn(new Version(5,1,0));
 
 		Answer<Void> onAddServiceListener = new Answer<Void>() {
 			@Override
@@ -242,6 +243,7 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 
 	public void testConvertTouchEvent(){
 		ISdl internalInterface = mock(ISdl.class);
+		when(internalInterface.getProtocolVersion()).thenReturn(new Version(5,1,0));
 
 		final VideoStreamingManager videoStreamingManager = new VideoStreamingManager(internalInterface);
 		videoStreamingManager.start(new CompletionListener() {
