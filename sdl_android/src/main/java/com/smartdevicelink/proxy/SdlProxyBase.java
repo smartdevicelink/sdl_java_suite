@@ -93,6 +93,7 @@ import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.Version;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -243,7 +244,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	private final CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
 
-	protected byte _wiproVersion = 1;
+	protected com.smartdevicelink.util.Version protocolVersion = new com.smartdevicelink.util.Version(1,0,0);
 	protected com.smartdevicelink.util.Version rpcSpecVersion;
 	
 	protected SparseArray<OnRPCResponseListener> rpcResponseListeners = null;
@@ -371,8 +372,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public byte getWiProVersion() {
-			return getWiProVersion();
+		public com.smartdevicelink.util.Version getProtocolVersion() {
+			return SdlProxyBase.this.protocolVersion;
 		}
 
 		@Override
@@ -512,8 +513,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			updateBroadcastIntent(sendIntent, "COMMENT2", " ServiceType: " + sessionType.getName());
 			updateBroadcastIntent(sendIntent, "COMMENT3", " Encrypted: " + isEncrypted);
 			sendBroadcastIntent(sendIntent);
-			
-			setWiProVersion(version);	
+
+			if(sdlSession!= null){
+				setProtocolVersion(sdlSession.getProtocolVersion());
+			}else{
+				setProtocolVersion(new com.smartdevicelink.util.Version(version,0,0));
+			}
 			
 			if (sessionType.eq(SessionType.RPC)) {	
 
@@ -543,7 +548,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (sessionType.eq(SessionType.RPC)){
 				cycleProxy(SdlDisconnectedReason.RPC_SESSION_ENDED);
 			}
-			else if (_wiproVersion > 1) {
+			else if (protocolVersion!= null && protocolVersion.getMajor() > 1) {
 				//If version is 2 or above then don't need to specify a Session Type
 				startRPCProtocolSession();
 			}  //else{} Handle other protocol session types here
@@ -731,8 +736,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								   boolean callbackToUIThread, Boolean preRegister, String sHashID, Boolean bAppResumeEnab,
 								   BaseTransportConfig transportConfig) throws SdlException
 	{
-		Log.i(TAG, "SDL_LIB_VERSION: " + Version.VERSION);
-		setWiProVersion((byte)PROX_PROT_VER_ONE);
+		Log.i(TAG, "SDL_LIB_VERSION: " + com.smartdevicelink.proxy.Version.VERSION);
+		setProtocolVersion(new Version(PROX_PROT_VER_ONE,0,0));
 		
 		if (preRegister != null && preRegister)
 		{
@@ -1463,8 +1468,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if(_transportConfig.getTransportType().equals(TransportType.MULTIPLEX)){
 				this.sdlSession = new SdlSession2(_interfaceBroker,(MultiplexTransportConfig)_transportConfig);
 			}else{
-				//FIXME this won't actually work
-				this.sdlSession = SdlSession.createSession(_wiproVersion,_interfaceBroker, _transportConfig);
+				this.sdlSession = SdlSession.createSession((byte)getProtocolVersion().getMajor(),_interfaceBroker, _transportConfig);
 			}
 		}
 		
@@ -1753,12 +1757,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if (message.getSessionType().equals(SessionType.RPC)
 					||message.getSessionType().equals(SessionType.BULK_DATA) ) {
 				try {
-					if (_wiproVersion == 1) {
-						if (message.getVersion() > 1) setWiProVersion(message.getVersion());
+					if (protocolVersion!= null && protocolVersion.getMajor() == 1 && message.getVersion() > 1) {
+						if(sdlSession != null
+								&& sdlSession.getProtocolVersion()!= null
+								&& sdlSession.getProtocolVersion().getMajor() > 1){
+							setProtocolVersion(sdlSession.getProtocolVersion());
+						}else{
+							setProtocolVersion(new Version(message.getVersion(),0,0));
+						}
 					}
 					
 					Hashtable<String, Object> hash = new Hashtable<String, Object>();
-					if (_wiproVersion > 1) {
+					if (protocolVersion!= null && protocolVersion.getMajor() > 1) {
 						Hashtable<String, Object> hashTemp = new Hashtable<String, Object>();
 						hashTemp.put(RPCMessage.KEY_CORRELATION_ID, message.getCorrID());
 						if (message.getJsonSize() > 0) {
@@ -1800,20 +1810,27 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			passErrorToProxyListener("Error handing incoming protocol message.", e);
 		}
 	}
-	
-	public byte getWiProVersion() {
-		return this._wiproVersion;
+
+	/**
+	 * Get the SDL protocol spec version being used
+	 * @return Version of the protocol spec
+	 */
+	public @NonNull Version getProtocolVersion(){
+	    if(this.protocolVersion == null){
+	        this.protocolVersion = new Version(1,0,0);
+        }
+		return this.protocolVersion;
 	}
-	
-	private void setWiProVersion(byte version) {
-		this._wiproVersion = version;
+
+	private void setProtocolVersion(@NonNull Version version) {
+	    this.protocolVersion = version;
 	}
-	
+
 	public String serializeJSON(RPCMessage msg)
 	{
 		try
 		{
-			return msg.serializeJSON(getWiProVersion()).toString(2);
+			return msg.serializeJSON((byte)this.getProtocolVersion().getMajor()).toString(2);
 		}
 		catch (final Exception e) 
 		{
@@ -1966,7 +1983,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, request, SDL_LIB_TRACE_KEY);
 						
 			request.format(rpcSpecVersion,true);
-			byte[] msgBytes = JsonRPCMarshaller.marshall(request, _wiproVersion);
+			byte[] msgBytes = JsonRPCMarshaller.marshall(request, (byte)getProtocolVersion().getMajor());
 	
 			ProtocolMessage pm = new ProtocolMessage();
 			pm.setData(msgBytes);
@@ -4128,7 +4145,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 	@SuppressWarnings("unchecked")
-	private RPCStreamController startRPCStream(String sLocalFile, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
+	private RPCStreamController startRPCStream(String sLocalFile, PutFile request, SessionType sType, byte rpcSessionID, Version protocolVersion)
 	{		
 		if (sdlSession == null) return null;		
 					
@@ -4143,7 +4160,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		try {
-			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlSession, is, request, sType, rpcSessionID, wiproVersion, lSize, sdlSession);
+			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlSession, is, request, sType, rpcSessionID, protocolVersion, rpcSpecVersion, lSize, sdlSession);
 			rpcPacketizer.start();
 			return new RPCStreamController(rpcPacketizer, request.getCorrelationID());
 		} catch (Exception e) {
@@ -4153,7 +4170,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 	@SuppressWarnings({"unchecked", "UnusedReturnValue"})
-	private RPCStreamController startRPCStream(InputStream is, PutFile request, SessionType sType, byte rpcSessionID, byte wiproVersion)
+	private RPCStreamController startRPCStream(InputStream is, PutFile request, SessionType sType, byte rpcSessionID, Version protocolVersion)
 	{		
 		if (sdlSession == null) return null;
 		Long lSize = request.getLength();
@@ -4164,7 +4181,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}		
 		
 		try {
-			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlSession, is, request, sType, rpcSessionID, wiproVersion, lSize, sdlSession);
+			StreamRPCPacketizer rpcPacketizer = new StreamRPCPacketizer((SdlProxyBase<IProxyListenerBase>) this, sdlSession, is, request, sType, rpcSessionID, protocolVersion, rpcSpecVersion, lSize, sdlSession);
 			rpcPacketizer.start();
 			return new RPCStreamController(rpcPacketizer, request.getCorrelationID());
 		} catch (Exception e) {
@@ -4175,25 +4192,25 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	private RPCStreamController startPutFileStream(String sPath, PutFile msg) {
 		if (sdlSession == null) return null;		
-		return startRPCStream(sPath, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);		
+		return startRPCStream(sPath, msg, SessionType.RPC, sdlSession.getSessionId(), protocolVersion);
 	}
 
 	private RPCStreamController startPutFileStream(InputStream is, PutFile msg) {
 		if (sdlSession == null) return null;		
 		if (is == null) return null;
-		return startRPCStream(is, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);
+		return startRPCStream(is, msg, SessionType.RPC, sdlSession.getSessionId(), protocolVersion);
 	}
 
 	@SuppressWarnings("UnusedReturnValue")
 	public boolean startRPCStream(InputStream is, RPCRequest msg) {
-		if (sdlSession == null) return false;		
-		sdlSession.startRPCStream(is, msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);
+		if (sdlSession == null) return false;
+		sdlSession.startRPCStream(is, msg, SessionType.RPC, sdlSession.getSessionId(), (byte)getProtocolVersion().getMajor());
 		return true;
 	}
 	
 	public OutputStream startRPCStream(RPCRequest msg) {
 		if (sdlSession == null) return null;		
-		return sdlSession.startRPCStream(msg, SessionType.RPC, sdlSession.getSessionId(), _wiproVersion);	
+		return sdlSession.startRPCStream(msg, SessionType.RPC, sdlSession.getSessionId(), (byte)getProtocolVersion().getMajor());
 	}
 	
 	public void endRPCStream() {
@@ -4593,7 +4610,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	@TargetApi(19)
 	public void startRemoteDisplayStream(Context context, final Class<? extends SdlRemoteDisplay> remoteDisplay, final VideoStreamingParameters parameters, final boolean encrypted){
-		if(getWiProVersion() >= 5 && !_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
+		if(protocolVersion!= null && protocolVersion.getMajor() >= 5 && !_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			Log.e(TAG, "Video streaming not supported on this module");
 			return;
 		}
@@ -4603,7 +4620,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		if(parameters == null){
-			if(getWiProVersion() >= 5) {
+			if(protocolVersion!= null && protocolVersion.getMajor() >= 5) {
 				_systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
 					@Override
 					public void onCapabilityRetrieved(Object capability) {
@@ -4664,7 +4681,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             DebugTool.logWarning("SdlSession is not created yet.");
             return null;
         }
-        if(getWiProVersion() >= 5 && !_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
+        if(protocolVersion!= null && protocolVersion.getMajor() >= 5 && !_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			DebugTool.logWarning("Module doesn't support video streaming.");
 			return null;
 		}
@@ -4690,7 +4707,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         scheduler.shutdown();
 
         if (navServiceStartResponse) {
-			if(getWiProVersion() < 5){ //Versions 1-4 do not support streaming parameter negotiations
+			if(protocolVersion!= null && protocolVersion.getMajor() < 5){ //Versions 1-4 do not support streaming parameter negotiations
 				sdlSession.setAcceptedVideoParams(parameters);
 			}
 			return sdlSession.getAcceptedVideoParams();
@@ -7436,7 +7453,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					public void onCreated(final SdlRemoteDisplay remoteDisplay) {
 						//Remote display has been created.
 						//Now is a good time to do parsing for spatial data
-						VideoStreamingManager.this.remoteDisplay = remoteDisplay;
+						SdlProxyBase.VideoStreamingManager.this.remoteDisplay = remoteDisplay;
 						if(hapticManager != null) {
 							remoteDisplay.getMainView().post(new Runnable() {
 								@Override
@@ -7447,7 +7464,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						}
 						//Get touch scalars
 						ImageResolution resolution = null;
-						if(getWiProVersion()>=5){ //At this point we should already have the capability
+						if(protocolVersion!= null && protocolVersion.getMajor()>=5){ //At this point we should already have the capability
 							VideoStreamingCapability capability = (VideoStreamingCapability)_systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING);
 							resolution = capability.getPreferredResolution();
 						}else {

@@ -45,6 +45,7 @@ import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.util.Version;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -173,8 +174,20 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
         this.sessionListener.onTransportDisconnected(info, altTransportAvailable, (MultiplexTransportConfig)this.transportConfig);
     }
 
+    /**
+     * Get the current protocol version used by this session
+     * @return Version that represents the Protocol version being used
+     */
+    @Override
+    public Version getProtocolVersion(){
+        if(sdlProtocol!=null){
+            return sdlProtocol.getProtocolVersion();
+        }
+        return new Version(1,0,0);
+    }
 
-    /* ***********************************************************************************************************************************************************************
+
+     /* ***********************************************************************************************************************************************************************
      * *****************************************************************  IProtocol Listener  ********************************************************************************
      *************************************************************************************************************************************************************************/
 
