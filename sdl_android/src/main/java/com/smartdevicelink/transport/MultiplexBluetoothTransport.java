@@ -32,12 +32,15 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+
+import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 
 /**
  * This class does all the work for setting up and managing Bluetooth
@@ -48,58 +51,38 @@ import android.util.Log;
  * @author Joey Grover
  * 
  */
-public class MultiplexBluetoothTransport {
+public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     //finals
 	private static final String TAG = "Bluetooth Transport";
     private static final UUID SERVER_UUID= new UUID(0x936DA01F9ABD4D9DL, 0x80C702AF85C822A8L);
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE =" SdlRouterService";
     // Key names received from the BluetoothSerialServer Handler
-    public static final String DEVICE_NAME = "device_name";
-    public static final String DEVICE_ADDRESS = "device_address";
-    public static final String TOAST = "toast";
     private static final long MS_TILL_TIMEOUT = 2500;
     private static final int READ_BUFFER_SIZE = 4096;
-    private static final Object THREAD_LOCK =  new Object();;
+    private final Object THREAD_LOCK =  new Object();;
 
     protected static final String SHARED_PREFS = "sdl.bluetoothprefs";
 
-    // Constants that indicate the current connection state
-    public static final int STATE_NONE 			= 0;    // we're doing nothing
-    public static final int STATE_LISTEN 		= 1;    // now listening for incoming connections
-    public static final int STATE_CONNECTING	= 2; 	// now initiating an outgoing connection
-    public static final int STATE_CONNECTED 	= 3;  	// now connected to a remote device
-    public static final int STATE_ERROR 		= 4;  	// Something bad happend, we wil not try to restart the thread
 
-    
     // Member fields
     private final BluetoothAdapter mAdapter = BluetoothAdapter.getDefaultAdapter();
-    private final Handler mHandler;
-    private AcceptThread mSecureAcceptThread; 
+    private AcceptThread mSecureAcceptThread;
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
     private ConnectedWriteThread mConnectedWriteThread;
-    private int mState;
     private int mBluetoothLevel = 0;
     Handler timeOutHandler;
     Runnable socketRunable;
     boolean keepSocketAlive = true;
-
-    public static String currentlyConnectedDevice = null;
-    public static String currentlyConnectedDeviceAddress = null;
-
 
     /**
      * Constructor. Prepares a new BluetoothChat session.
      * @param handler  A Handler to send messages back to the UI Activity
      */
     public MultiplexBluetoothTransport(Handler handler) {
-    	//Log.w(TAG, "Creating Bluetooth Serial Adapter");
-       // mAdapter = BluetoothAdapter.getDefaultAdapter();
-        mState = STATE_NONE;
-        mHandler = handler;
-          
-        //This will keep track of which method worked last night
+        super(handler, TransportType.BLUETOOTH);
+         //This will keep track of which method worked last night
         mBluetoothLevel = SdlRouterService.getBluetoothPrefs(SHARED_PREFS);
     }
 
@@ -148,19 +131,6 @@ public class MultiplexBluetoothTransport {
     protected synchronized void setStateManually(int state){
         //Log.d(TAG, "Setting state from: " +mState + " to: " +state);
         mState = state;
-    }
-    /**
-     * Set the current state of the chat connection
-     * @param state  An integer defining the current connection state
-     */
-    private synchronized void setState(int state) {
-        //Log.d(TAG, "Setting state from: " +mState + " to: " +state);
-    	int previousState = mState;
-        mState = state;
-
-        // Give the new state to the Handler so the UI Activity can update
-        //Also sending the previous state so we know if we lost a connection
-        mHandler.obtainMessage(SdlRouterService.MESSAGE_STATE_CHANGE, state, previousState).sendToTarget();
     }
 
     /**
@@ -261,19 +231,25 @@ public class MultiplexBluetoothTransport {
         mConnectedWriteThread = new ConnectedWriteThread(socket);
         mConnectedWriteThread.start();
 
-
+        //Store a static name of the device that is connected.
+        if(device != null){
+        	connectedDeviceName = device.getName();
+            connectedDeviceAddress = device.getAddress();
+            if(connectedDeviceAddress!=null){
+                //Update the transport record with the address
+                transportRecord = new TransportRecord(transportType, connectedDeviceAddress);
+            }
+        }
         
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
+        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
-        //Store a static name of the device that is connected.
-        currentlyConnectedDevice = device.getName();
-        if(currentlyConnectedDevice != null){
-            bundle.putString(DEVICE_NAME, currentlyConnectedDevice);
-            bundle.putString(DEVICE_ADDRESS, device.getAddress());
+        if(connectedDeviceName != null) {
+            bundle.putString(DEVICE_NAME, connectedDeviceName);
+            bundle.putString(DEVICE_ADDRESS, connectedDeviceAddress);
         }
         msg.setData(bundle);
-        mHandler.sendMessage(msg);
+        handler.sendMessage(msg);
         setState(STATE_CONNECTED);
     }
 
@@ -328,11 +304,11 @@ public class MultiplexBluetoothTransport {
      */
     private void connectionFailed() {
     	// Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(SdlRouterService.MESSAGE_TOAST);
+        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_LOG);
         Bundle bundle = new Bundle();
-        bundle.putString(TOAST, "Unable to connect device");
+        bundle.putString(LOG, "Unable to connect device");
         msg.setData(bundle);
-        mHandler.sendMessage(msg);
+        handler.sendMessage(msg);
 
         // Start the service over to restart listening mode
        // BluetoothSerialServer.this.start();
@@ -343,11 +319,11 @@ public class MultiplexBluetoothTransport {
      */
     private void connectionLost() {
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(SdlRouterService.MESSAGE_TOAST);
+        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_LOG);
         Bundle bundle = new Bundle();
-        bundle.putString(TOAST, "Device connection was lost");
+        bundle.putString(LOG, "Device connection was lost");
         msg.setData(bundle);
-        mHandler.sendMessage(msg);
+        handler.sendMessage(msg);
         stop();
 
     }
@@ -778,8 +754,6 @@ public class MultiplexBluetoothTransport {
             byte input = 0;
             int bytesRead = 0;
             byte[] buffer = new byte[READ_BUFFER_SIZE];
-            MultiplexBluetoothTransport.currentlyConnectedDevice = mmSocket.getRemoteDevice().getName();
-            MultiplexBluetoothTransport.currentlyConnectedDeviceAddress = mmSocket.getRemoteDevice().getAddress();
             // Keep listening to the InputStream while connected
             boolean stateProgress;
             
@@ -788,7 +762,7 @@ public class MultiplexBluetoothTransport {
             while (true) {
                 try {
                     bytesRead = mmInStream.read(buffer);
-                    //Log.i(getClass().getName(), "Received " + bytesRead + " bytes from Bluetooth");
+                   // Log.i(getClass().getName(), "Received " + bytesRead + " bytes from Bluetooth");
                     for (int i = 0; i < bytesRead; i++) {
                         input = buffer[i];
 
@@ -802,7 +776,9 @@ public class MultiplexBluetoothTransport {
 
                         if (psm.getState() == SdlPsm.FINISHED_STATE) {
                             //Log.d(TAG, "Packet formed, sending off");
-                            mHandler.obtainMessage(SdlRouterService.MESSAGE_READ, psm.getFormedPacket()).sendToTarget();
+                            SdlPacket packet = psm.getFormedPacket();
+                            packet.setTransportRecord(getTransportRecord());
+                            handler.obtainMessage(SdlRouterService.MESSAGE_READ, packet).sendToTarget();
                             psm.reset();
                         }
                     }
@@ -833,14 +809,10 @@ public class MultiplexBluetoothTransport {
         }
     }
     
-	public boolean isConnected() 
-	{
-		return !(mState == STATE_NONE);
-	}
 
-	@Deprecated
+	
 	public BluetoothSocket getBTSocket(BluetoothServerSocket bsSocket){
-	    if(bsSocket == null || Build.VERSION.SDK_INT > Build.VERSION_CODES.O){ //Reflection is no longer allowed on SDK classes
+	    if(bsSocket == null){
 	    	return null;
 	    }
 		Field[] f = bsSocket.getClass().getDeclaredFields();
@@ -866,12 +838,11 @@ public class MultiplexBluetoothTransport {
 
 	    return null;
 	}
-
-	@Deprecated
+	
 	public int getChannel(BluetoothSocket bsSocket){
 
 		int channel = -1;
-		if (bsSocket == null || Build.VERSION.SDK_INT > Build.VERSION_CODES.O){ //Reflection is no longer allowed on SDK classes
+		if (bsSocket == null){
 			return channel;
 		}
 	    

@@ -8,7 +8,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.protocol.AbstractProtocol;
 import com.smartdevicelink.protocol.ProtocolMessage;
+import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
@@ -33,7 +35,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 	// a limit of the buffer size, we avoid buffer overflows when underlying transport is too slow.
 	private static final int MAX_QUEUE_SIZE = 256 * 1024;
 
-	public SdlConnection sdlConnection = null;
+	public SdlConnection sdlConnection = null;	//TODO remove completely
     private Object mPauseLock;
     private boolean mPaused;
     private boolean isServiceProtected = false;
@@ -140,10 +142,14 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 		}
 		finally
 		{
-			 if (sdlConnection != null)
-			 {
-				 sdlConnection.endService(_serviceType, _rpcSessionID);
-			 }
+			if(_session == null) {
+				if (sdlConnection != null) {
+					sdlConnection.endService(_serviceType, _rpcSessionID);
+				}
+			}else{
+				_session.endService(_serviceType,_rpcSessionID);
+			}
+
 
 		}
 	}

@@ -5,6 +5,7 @@ import com.smartdevicelink.transport.enums.TransportType;
 import android.content.Context;
 import android.hardware.usb.UsbAccessory;
 
+@Deprecated
 public class USBTransportConfig extends BaseTransportConfig {
 	
 	private Context mainActivity = null;

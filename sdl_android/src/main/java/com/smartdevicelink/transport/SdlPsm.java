@@ -2,8 +2,8 @@ package com.smartdevicelink.transport;
 
 import com.smartdevicelink.protocol.SdlPacket;
 
-import static com.smartdevicelink.protocol.WiProProtocol.V1_HEADER_SIZE;
-import static com.smartdevicelink.protocol.WiProProtocol.V1_V2_MTU_SIZE;
+import static com.smartdevicelink.protocol.SdlProtocol.V1_HEADER_SIZE;
+import static com.smartdevicelink.protocol.SdlProtocol.V1_V2_MTU_SIZE;
 
 
 public class SdlPsm{

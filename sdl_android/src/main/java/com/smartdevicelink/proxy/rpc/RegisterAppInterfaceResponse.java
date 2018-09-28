@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.Version;
+import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
@@ -84,6 +85,22 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 		if(getIconResumed() == null){
 			setIconResumed(Boolean.FALSE);
 		}
+
+		List<ButtonCapabilities> capabilities = getButtonCapabilities();
+		if(capabilities != null){
+			List<ButtonCapabilities> additions = new ArrayList<>();
+			for(ButtonCapabilities capability : capabilities){
+				if(ButtonName.OK.equals(capability.getName())){
+					if(rpcVersion == null || rpcVersion.getMajor() < 5){
+						//If version is < 5, the play pause button must also be added
+						additions.add(new ButtonCapabilities(ButtonName.PLAY_PAUSE, capability.getShortPressAvailable(), capability.getLongPressAvailable(), capability.getUpDownAvailable()));
+					}
+				}
+			}
+			capabilities.addAll(additions);
+			setButtonCapabilities(capabilities);
+		}
+
 
 		super.format(rpcVersion,formatParams);
 	}

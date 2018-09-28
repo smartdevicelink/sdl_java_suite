@@ -28,23 +28,28 @@ public class TransportConstants {
 	public static final String START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE = "package_name";
 	public static final String START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME    = "component_name";
 	public static final String START_ROUTER_SERVICE_SDL_ENABLED_PING		= "ping";
+	@Deprecated
 	public static final String FORCE_TRANSPORT_CONNECTED					= "force_connect"; //This is legacy, do not refactor this. 
 	public static final String ROUTER_SERVICE_VALIDATED						= "router_service_validated"; 
 
-	
+	@Deprecated
 	public static final String REPLY_TO_INTENT_EXTRA 						= "ReplyAddress";
 	public static final String CONNECT_AS_CLIENT_BOOLEAN_EXTRA				= "connectAsClient";
 	public static final String PACKAGE_NAME_STRING							= "package.name";
 	public static final String APP_ID_EXTRA									= "app.id";//Sent as a Long. This is no longer used
 	public static final String APP_ID_EXTRA_STRING							= "app.id.string";
+	public static final String ROUTER_MESSAGING_VERSION						= "router.messaging.version";
 
 	public static final String SESSION_ID_EXTRA								= "session.id";
 
 	public static final String ENABLE_LEGACY_MODE_EXTRA 					= "ENABLE_LEGACY_MODE_EXTRA";
-	
+
+	@Deprecated
 	public static final String HARDWARE_DISCONNECTED						= "hardware.disconect";
-	public static final String HARDWARE_CONNECTED							= "hardware.connected";	
-	
+	public static final String TRANSPORT_DISCONNECTED						= "transport.disconect";
+	public static final String HARDWARE_CONNECTED							= "hardware.connected";
+	public static final String CURRENT_HARDWARE_CONNECTED					= "current.hardware.connected";
+
 	public static final String SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME 		= "senderintent";
 	public static final String SEND_PACKET_TO_ROUTER_LOCATION_EXTRA_NAME 	= "routerintent";
 
@@ -52,6 +57,7 @@ public class TransportConstants {
 	public static final String	BIND_REQUEST_TYPE_CLIENT						= "BIND_REQUEST_TYPE_CLIENT";
 	public static final String	BIND_REQUEST_TYPE_ALT_TRANSPORT					= "BIND_REQUEST_TYPE_ALT_TRANSPORT";
 	public static final String	BIND_REQUEST_TYPE_STATUS						= "BIND_REQUEST_TYPE_STATUS";
+	public static final String	BIND_REQUEST_TYPE_USB_PROVIDER					= "BIND_REQUEST_TYPE_USB_PROVIDER";
 
 
 	public static final String PING_ROUTER_SERVICE_EXTRA 						= "ping.router.service";
@@ -73,10 +79,11 @@ public class TransportConstants {
 	}
 	
 	
-	/**
+	/*
 	 * Alt transport
 	 * 
 	 */
+
 	/**
 	 * This will be the response when a hardware connect event comes through from an alt transport. 
 	 * This is because it only makes sense to register an alt transport when a connection is established with that
@@ -99,7 +106,7 @@ public class TransportConstants {
 	 */
 	public static final int ROUTER_SHUTTING_DOWN_REASON_NEWER_SERVICE					= 0x00;
 	
-	/**
+	/*
 	 * Router to Client binding service
 	 * 
 	 */
@@ -141,7 +148,9 @@ public class TransportConstants {
 	 * attached to the message
 	 */
 	public static final int HARDWARE_CONNECTION_EVENT										= 0x05;
-	
+	public static final int HARDWARE_CONNECTION_EVENT_CONNECTED								= 0x10;
+	public static final int HARDWARE_CONNECTION_EVENT_DISCONNECTED							= 0x30;
+
 
 	public static final int ROUTER_REQUEST_BT_CLIENT_CONNECT 								= 0x10;
 	public static final int ROUTER_REQUEST_BT_CLIENT_CONNECT_RESPONSE						= 0x11;
@@ -151,6 +160,10 @@ public class TransportConstants {
 	 * A replyTo must be provided or else there won't be a response
 	 */
 	public static final int ROUTER_REQUEST_NEW_SESSION 									= 0x12;
+	//Request arguments
+	//See TRANSPORT_TYPE & TRANSPORT_ADDRESS
+
+
 	public static final int ROUTER_REQUEST_NEW_SESSION_RESPONSE							= 0x13;
 	//Response arguments
 	public static final int ROUTER_REQUEST_NEW_SESSION_RESPONSE_SUCESS 					= 0x00;
@@ -173,15 +186,18 @@ public class TransportConstants {
      * Command to have router service to send a packet
      */
 	public static final int ROUTER_SEND_PACKET 											= 0x20;
-	
 
-	
 	//response
 	/**
 	 * Router has received a packet and sent it to the client
 	 */
 	public  static final int ROUTER_RECEIVED_PACKET 									= 0x26;
 	//response
+
+	/**
+	 * Command to tell router service details of secondary transport
+	 */
+	public static final int ROUTER_REQUEST_SECONDARY_TRANSPORT_CONNECTION 				= 0x30;
 
 	//BUNDLE EXTRAS
 	
@@ -193,7 +209,10 @@ public class TransportConstants {
 	public static final String BYTES_TO_SEND_FLAGS							= "flags";
 	
 	public static final String PACKET_PRIORITY_COEFFICIENT					= "priority_coefficient";
-	
+
+	public static final String TRANSPORT_TYPE 								= "transport_type";
+	public static final String TRANSPORT_ADDRESS							= "transport_address";
+
 	public static final int BYTES_TO_SEND_FLAG_NONE								= 0x00;
 	public static final int BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED				= 0x01;
 	public static final int BYTES_TO_SEND_FLAG_LARGE_PACKET_START				= 0x02;
@@ -201,7 +220,7 @@ public class TransportConstants {
 	public static final int BYTES_TO_SEND_FLAG_LARGE_PACKET_END					= 0x08;
 	
 	public static final String CONNECTED_DEVICE_STRING_EXTRA_NAME			= "devicestring";
-	
+
 	public static final int PACKET_SENDING_ERROR_NOT_REGISTERED_APP 		= 0x00;
 	public static final int PACKET_SENDING_ERROR_NOT_CONNECTED 				= 0x01;
 	public static final int PACKET_SENDING_ERROR_UKNOWN 					= 0xFF;
@@ -220,7 +239,24 @@ public class TransportConstants {
 	public static final int ROUTER_STATUS_FLAG_TRIGGER_PING					= 0x02;
  
 
+	/**
+	 * Usb Transfer binder
+	 */
 
-	
+	public static final int USB_CONNECTED_WITH_DEVICE						= 0x55;
+	public static final int ROUTER_USB_ACC_RECEIVED							= 0x56;
+
+
+	/**
+	 * Multiple-transports related constants
+	 *
+	 */
+	public static final String IAP_BLUETOOTH                                = "IAP_BLUETOOTH";
+	public static final String IAP_USB                                      = "IAP_USB";
+	public static final String IAP_USB_HOST_MODE                            = "TCP_WIFI";
+	public static final String IAP_CARPLAY                                  = "IAP_CARPLAY";
+	public static final String SPP_BLUETOOTH                                = "SPP_BLUETOOTH";
+	public static final String AOA_USB                                      = "AOA_USB";
+	public static final String TCP_WIFI                                     = "TCP_WIFI";
 
 }

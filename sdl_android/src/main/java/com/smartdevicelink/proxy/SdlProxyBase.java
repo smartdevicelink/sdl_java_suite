@@ -25,6 +25,7 @@ import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.SdlConnection.SdlSession2;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
@@ -87,6 +88,7 @@ import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.TraceDeviceInfo;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.CorrelationIdGenerator;
@@ -116,6 +118,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledExecutorService;
+
 
 
 @SuppressWarnings({"WeakerAccess", "Convert2Diamond"})
@@ -248,6 +251,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	protected VideoStreamingManager manager; //Will move to SdlSession once the class becomes public
 
+
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
 	//We create an easily passable anonymous class of the interface so that we don't expose the internal interface to developers
@@ -300,8 +304,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		}
 
-		@Override
-		public void stopAudioService() {
+		@Override		public void stopAudioService() {
 			if(isConnected()){
 				sdlSession.endService(SessionType.PCM,sdlSession.getSessionId());
 			}
@@ -447,11 +450,26 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			// disconnect has completed
 			notifyPutFileStreamError(null, info);
 			
-			if (!_advancedLifecycleManagementEnabled) {
+			//if (!_advancedLifecycleManagementEnabled) {
 				// If original model, notify app the proxy is closed so it will delete and reinstanciate 
-				notifyProxyClosed(info, new SdlException("Transport disconnected.", SdlExceptionCause.SDL_UNAVAILABLE), SdlDisconnectedReason.TRANSPORT_DISCONNECT);
-			}// else If ALM, nothing is required to be done here
+			Log.d(TAG, "notifying proxy of closed");
+			notifyProxyClosed(info, new SdlException("Transport disconnected.", SdlExceptionCause.SDL_UNAVAILABLE), SdlDisconnectedReason.TRANSPORT_DISCONNECT);
+			//}// else If ALM, nothing is required to be done here
 
+		}
+
+		@Override
+		public void onTransportDisconnected(String info, boolean altTransportAvailable, MultiplexTransportConfig transportConfig) {
+			notifyPutFileStreamError(null, info);
+
+			if( altTransportAvailable){
+				SdlProxyBase.this._transportConfig = transportConfig;
+				Log.d(TAG, "notifying RPC session ended, but potential primary transport available");
+				cycleProxy(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
+
+			}else{
+				notifyProxyClosed(info, new SdlException("Transport disconnected.", SdlExceptionCause.SDL_UNAVAILABLE), SdlDisconnectedReason.TRANSPORT_DISCONNECT);
+			}
 		}
 
 		@Override
@@ -462,7 +480,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			if (_advancedLifecycleManagementEnabled) {			
 				// Cycle the proxy
-				if(SdlConnection.isLegacyModeEnabled()){
+				if(SdlConnection.isLegacyModeEnabled()){	//FIXME
 					cycleProxy(SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED);
 
 				}else{
@@ -1438,11 +1456,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		_sdlIntefaceAvailablity = SdlInterfaceAvailability.SDL_INTERFACE_UNAVAILABLE;
 
-		//Initialize _systemCapabilityManager here.
+	//Initialize _systemCapabilityManager here.
 		_systemCapabilityManager = new SystemCapabilityManager(_internalInterface);
 		// Setup SdlConnection
 		synchronized(CONNECTION_REFERENCE_LOCK) {
-			this.sdlSession = SdlSession.createSession(_wiproVersion,_interfaceBroker, _transportConfig);
+			if(_transportConfig.getTransportType().equals(TransportType.MULTIPLEX)){
+				this.sdlSession = new SdlSession2(_interfaceBroker,(MultiplexTransportConfig)_transportConfig);
+			}else{
+				//FIXME this won't actually work
+				this.sdlSession = SdlSession.createSession(_wiproVersion,_interfaceBroker, _transportConfig);
+			}
 		}
 		
 		synchronized(CONNECTION_REFERENCE_LOCK) {
@@ -1457,7 +1480,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void forceOnConnected(){
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 			if (sdlSession != null) {
-				if(sdlSession.getSdlConnection()==null){ //There is an issue when switching from v1 to v2+ where the connection is closed. So we restart the session during this call.
+				Log.d(TAG, "Forcing on connected.... might actually need this"); //FIXME
+				/*if(sdlSession.getSdlConnection()==null){ //There is an issue when switching from v1 to v2+ where the connection is closed. So we restart the session during this call.
 					try {
 						sdlSession.startSession();
 					} catch (SdlException e) {
@@ -1465,7 +1489,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 				}
 				sdlSession.getSdlConnection().forceHardwareConnectEvent(TransportType.BLUETOOTH);
-				
+				*/
 			}
 		}
 	}
@@ -1539,9 +1563,37 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean isDebugEnabled() {
 		return DebugTool.isDebugEnabled();
-	}	
-	
-	
+	}
+
+
+	/**
+	 * Check to see if it a transport is available to perform audio streaming.
+	 * <br><strong>NOTE:</strong> This is only for the audio streaming service, not regular
+	 * streaming of media playback.
+	 * @return true if there is either an audio streaming supported
+	 *         transport currently connected or a transport is
+	 *         available to connect with. false if there is no
+	 *         transport connected to support audio streaming and
+	 *          no possibility in the foreseeable future.
+	 */
+	public boolean isAudioStreamTransportAvailable(){
+		return sdlSession!= null && sdlSession.isTransportForServiceAvailable(SessionType.PCM);
+	}
+
+	/**
+	 * Check to see if it a transport is available to perform video streaming.
+
+	 * @return true if there is either an video streaming supported
+	 *         transport currently connected or a transport is
+	 *         available to connect with. false if there is no
+	 *         transport connected to support video streaming and
+	 *          no possibility in the foreseeable future.
+	 */
+	public boolean isVideoStreamTransportAvailable(){
+		return sdlSession!= null && sdlSession.isTransportForServiceAvailable(SessionType.NAV);
+	}
+
+
 	@SuppressWarnings("unused")
 	@Deprecated
 	public void close() throws SdlException {
@@ -1661,7 +1713,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_cycling = true;
 				cleanProxy(disconnectedReason);
 				initializeProxy();
-				if(!SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED.equals(disconnectedReason)){//We don't want to alert higher if we are just cycling for legacy bluetooth
+				if(!SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED.equals(disconnectedReason)
+						&& !SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST.equals(disconnectedReason)){//We don't want to alert higher if we are just cycling for legacy bluetooth
 					notifyProxyClosed("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED), disconnectedReason);							
 				}
 			}
@@ -3415,6 +3468,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				
 				final OnButtonPress msg = new OnButtonPress(hash);
 				msg.format(rpcSpecVersion, true);
+				final OnButtonPress onButtonPressCompat = (OnButtonPress)handleButtonNotificationFormatting(msg);
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3422,17 +3476,25 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						public void run() {
 							_proxyListener.onOnButtonPress(msg);
 							onRPCNotificationReceived(msg);
+							if(onButtonPressCompat != null){
+								_proxyListener.onOnButtonPress(onButtonPressCompat);
+							}
 						}
 					});
 				} else {
 					_proxyListener.onOnButtonPress(msg);
 					onRPCNotificationReceived(msg);
+					if(onButtonPressCompat != null){
+						_proxyListener.onOnButtonPress(onButtonPressCompat);
+					}
 				}
 			} else if (functionName.equals(FunctionID.ON_BUTTON_EVENT.toString())) {
 				// OnButtonEvent
 				
 				final OnButtonEvent msg = new OnButtonEvent(hash);
 				msg.format(rpcSpecVersion, true);
+				final OnButtonEvent onButtonEventCompat = (OnButtonEvent)handleButtonNotificationFormatting(msg);
+
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -3440,11 +3502,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						public void run() {
 							_proxyListener.onOnButtonEvent(msg);
 							onRPCNotificationReceived(msg);
+							if(onButtonEventCompat != null){
+								_proxyListener.onOnButtonEvent(onButtonEventCompat);
+							}
 						}
 					});
 				} else {
 					_proxyListener.onOnButtonEvent(msg);
 					onRPCNotificationReceived(msg);
+					if(onButtonEventCompat != null){
+						_proxyListener.onOnButtonEvent(onButtonEventCompat);
+					}
 				}
 			} else if (functionName.equals(FunctionID.ON_LANGUAGE_CHANGE.toString())) {
 				// OnLanguageChange
@@ -3698,6 +3766,58 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		SdlTrace.logProxyEvent("Proxy received RPC Message: " + functionName, SDL_LIB_TRACE_KEY);
 	}
 
+	//FIXME
+	/**
+	 * Temporary method to bridge the new PLAY_PAUSE and OKAY button functionality with the old
+	 * OK button name. This should be removed during the next major release
+	 * @param notification
+	 */
+	private RPCNotification handleButtonNotificationFormatting(RPCNotification notification){
+		if(FunctionID.ON_BUTTON_EVENT.toString().equals(notification.getFunctionName())
+				|| FunctionID.ON_BUTTON_PRESS.toString().equals(notification.getFunctionName())){
+
+			ButtonName buttonName = (ButtonName)notification.getObject(ButtonName.class, OnButtonEvent.KEY_BUTTON_NAME);
+			ButtonName compatBtnName = null;
+
+			if(rpcSpecVersion != null && rpcSpecVersion.getMajor() >= 5){
+				if(ButtonName.PLAY_PAUSE.equals(buttonName)){
+					compatBtnName =  ButtonName.OK;
+				}
+			}else{ // rpc spec version is either null or less than 5
+				if(ButtonName.OK.equals(buttonName)){
+					compatBtnName = ButtonName.PLAY_PAUSE;
+				}
+			}
+
+			try {
+				if (compatBtnName != null) { //There is a button name that needs to be swapped out
+					RPCNotification notification2;
+					//The following is done because there is currently no way to make a deep copy
+					//of an RPC. Since this code will be removed, it's ugliness is borderline acceptable.
+					if (notification instanceof OnButtonEvent) {
+						OnButtonEvent onButtonEvent = new OnButtonEvent();
+						onButtonEvent.setButtonEventMode(((OnButtonEvent) notification).getButtonEventMode());
+						onButtonEvent.setCustomButtonID(((OnButtonEvent) notification).getCustomButtonID());
+						notification2 = onButtonEvent;
+					} else if (notification instanceof OnButtonPress) {
+						OnButtonPress onButtonPress = new OnButtonPress();
+						onButtonPress.setButtonPressMode(((OnButtonPress) notification).getButtonPressMode());
+						onButtonPress.setCustomButtonName(((OnButtonPress) notification).getCustomButtonName());
+						notification2 = onButtonPress;
+					} else {
+						return null;
+					}
+
+					notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, compatBtnName);
+					return notification2;
+				}
+			}catch (Exception e){
+				//Should never get here
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Get SDL Message Version
 	 * @return SdlMsgVersion
@@ -3863,8 +3983,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			throw new SdlException("Invalid correlation ID. The correlation ID, " + request.getCorrelationID()
 					+ " , is a reserved correlation ID.", SdlExceptionCause.RESERVED_CORRELATION_ID);
 		}
-		
-		// Throw exception if RPCRequest is sent when SDL is unavailable 
+		// Throw exception if RPCRequest is sent when SDL is unavailable
 		if (!_appInterfaceRegisterd && !request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString())) {
 			
 			SdlTrace.logProxyEvent("Application attempted to send an RPCRequest (non-registerAppInterface), before the interface was registerd.", SDL_LIB_TRACE_KEY);
@@ -3880,12 +3999,35 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						", is un-allowed using the Advanced Lifecycle Management Model.", SdlExceptionCause.INCORRECT_LIFECYCLE_MODEL);
 			}
 		}
+
+		//FIXME this is temporary until the next major release of the library where OK is removed
+
+		if(FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+				|| FunctionID.UNSUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+				|| FunctionID.BUTTON_PRESS.toString().equals(request.getFunctionName())){
+
+			ButtonName buttonName = (ButtonName)request.getObject(ButtonName.class, SubscribeButton.KEY_BUTTON_NAME);
+
+			if(rpcSpecVersion != null && rpcSpecVersion.getMajor() < 5) {
+
+				if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
+					request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
+				}
+			} else { //Newer than version 5.0.0
+				if(ButtonName.OK.equals(buttonName)){
+					RPCRequest request2 = new RPCRequest(request);
+					request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
+					sendRPCRequestPrivate(request2);
+				}
+			}
+		}
 		
 		sendRPCRequestPrivate(request);
 	} // end-method
 	
 	protected void notifyProxyClosed(final String info, final Exception e, final SdlDisconnectedReason reason) {		
 		SdlTrace.logProxyEvent("NotifyProxyClose", SDL_LIB_TRACE_KEY);
+		Log.d(TAG, "notifyProxyClosed: " + info);
 		OnProxyClosed message = new OnProxyClosed(info, e, reason);
 		queueInternalMessage(message);
 	}
@@ -4348,8 +4490,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             DebugTool.logWarning("SdlSession is not created yet.");
             return null;
         }
-        if (sdlSession.getSdlConnection() == null) {
-            DebugTool.logWarning("SdlConnection is not available.");
+        if (!sdlSession.getIsConnected()) {
+            DebugTool.logWarning("Connection is not available.");
             return null;
         }
 
@@ -4417,7 +4559,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
 											int height, int bitrate, boolean isEncrypted) {
         
-        if (sdlSession == null || sdlSession.getSdlConnection() == null){
+        if (sdlSession == null || !sdlSession.getIsConnected()){
 			return null;
         }
 
@@ -4577,10 +4719,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
     @SuppressWarnings("unused")
 	public void startEncoder () {
-        if (sdlSession == null) return;
-        SdlConnection sdlConn = sdlSession.getSdlConnection();
-        if (sdlConn == null) return;
-        
+        if (sdlSession == null  || !sdlSession.getIsConnected()) return;
+
         sdlSession.startEncoder();
     }
     
@@ -4589,10 +4729,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
     @SuppressWarnings("unused")
 	public void releaseEncoder() {
-        if (sdlSession == null) return;
-        SdlConnection sdlConn = sdlSession.getSdlConnection();
-        if (sdlConn == null) return;
-        
+		if (sdlSession == null  || !sdlSession.getIsConnected()) return;
+
         sdlSession.releaseEncoder();
     }
     
@@ -4601,10 +4739,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
     @SuppressWarnings("unused")
 	public void drainEncoder(boolean endOfStream) {
-        if (sdlSession == null) return;		
-        SdlConnection sdlConn = sdlSession.getSdlConnection();		
-        if (sdlConn == null) return;
-        
+		if (sdlSession == null  || !sdlSession.getIsConnected()) return;
+
         sdlSession.drainEncoder(endOfStream);
     }
 
@@ -4634,8 +4770,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             DebugTool.logWarning("SdlSession is not created yet.");
             return null;
         }
-        if (sdlSession.getSdlConnection() == null) {
-            DebugTool.logWarning("SdlConnection is not available.");
+        if (!sdlSession.getIsConnected()) {
+            DebugTool.logWarning("Connection is not available.");
             return null;
         }
         if (codec != AudioStreamingCodec.LPCM) {
@@ -4681,9 +4817,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
      */
     @SuppressWarnings("unused")
     public boolean endAudioStream() {
-        if (sdlSession == null) return false;
-        SdlConnection sdlConn = sdlSession.getSdlConnection();
-        if (sdlConn == null) return false;
+		if (sdlSession == null  || !sdlSession.getIsConnected()) return false;
 
         pcmServiceEndResponseReceived = false;
         pcmServiceEndResponse = false;

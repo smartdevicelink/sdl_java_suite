@@ -21,6 +21,8 @@ public class SdlEncoder {
 
 	// parameters for the encoder
 	private static final String _MIME_TYPE = "video/avc"; // H.264/AVC video
+	private static final long KEEPALIVE_INTERVAL_MSEC = 100;
+
 	// private static final String MIME_TYPE = "video/mp4v-es"; //MPEG4 video
 	private int frameRate = 30;
 	private int frameInterval = 5;
@@ -32,7 +34,8 @@ public class SdlEncoder {
 	private MediaCodec mEncoder;
 	private PipedOutputStream mOutputStream;
 	private IVideoStreamListener mOutputListener;
-	
+	private long mLastEmittedFrameTimestamp;
+
 	// allocate one of these up front so we don't need to do it every time
 	private MediaCodec.BufferInfo mBufferInfo;
 
@@ -48,13 +51,13 @@ public class SdlEncoder {
 		frameInterval = iVal;
 	}
 	public void setFrameWidth(int iVal){
-		frameWidth = iVal;	
+		frameWidth = iVal;
 	}
 	public void setFrameHeight(int iVal){
 		frameHeight = iVal;
 	}
 	public void setBitrate(int iVal){
-		bitrate = iVal;	
+		bitrate = iVal;
 	}
 	public void setOutputStream(PipedOutputStream mStream){
 		mOutputStream = mStream;
@@ -101,13 +104,13 @@ public class SdlEncoder {
 			return null;
 		}
 	}
-	
+
 	public void startEncoder () {
 		if(mEncoder != null) {
 		  mEncoder.start();
 		}
 	}
-	
+
 	/**
 	 * Releases encoder resources.
 	 */
@@ -140,7 +143,7 @@ public class SdlEncoder {
 		final int TIMEOUT_USEC = 10000;
 
 		if(mEncoder == null || (mOutputStream == null && mOutputListener == null)) {
-		   return;			
+		   return;
 		}
 		if (endOfStream) {
 			  mEncoder.signalEndOfInputStream();
@@ -153,6 +156,7 @@ public class SdlEncoder {
 			if (encoderStatus == MediaCodec.INFO_TRY_AGAIN_LATER) {
 				// no output available yet
 				if (!endOfStream) {
+					trySendVideoKeepalive();
 					break; // out of while
 				}
 			} else if (encoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
@@ -199,13 +203,8 @@ public class SdlEncoder {
 
 						encoderOutputBuffer.get(dataToWrite, dataOffset, mBufferInfo.size);
 
-						if (mOutputStream != null) {
-							mOutputStream.write(dataToWrite, 0, mBufferInfo.size);
-						} else if (mOutputListener != null) {
-							mOutputListener.sendFrame(
-									dataToWrite, 0, dataToWrite.length, mBufferInfo.presentationTimeUs);
-						}
-					} catch (Exception e) {}
+                        emitFrame(dataToWrite);
+                    } catch (Exception e) {}
 				}
 
 				mEncoder.releaseOutputBuffer(encoderStatus, false);
@@ -216,4 +215,27 @@ public class SdlEncoder {
 			}
 		}
 	}
+
+	private void trySendVideoKeepalive() {
+		if (mH264CodecSpecificData == null) {
+			return;
+		}
+
+        try {
+		    long timeSinceLastEmitted = System.currentTimeMillis() - mLastEmittedFrameTimestamp;
+		    if (timeSinceLastEmitted >= KEEPALIVE_INTERVAL_MSEC) {
+				emitFrame(mH264CodecSpecificData);
+			}
+        } catch (IOException e) {}
+	}
+
+    private void emitFrame(final byte[] dataToWrite) throws IOException {
+        if (mOutputStream != null) {
+            mOutputStream.write(dataToWrite, 0, mBufferInfo.size);
+        } else if (mOutputListener != null) {
+            mOutputListener.sendFrame(
+                    dataToWrite, 0, dataToWrite.length, mBufferInfo.presentationTimeUs);
+        }
+        mLastEmittedFrameTimestamp = System.currentTimeMillis();
+    }
 }

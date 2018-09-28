@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import com.smartdevicelink.transport.TransportBroker;
 import com.smartdevicelink.transport.TransportConstants;
+import com.smartdevicelink.transport.enums.TransportType;
 
 import android.os.Bundle;
 import android.os.Message;
@@ -25,6 +26,7 @@ public class ByteArrayMessageSpliter {
 	int orginalSize;
 	int priorityCoef;
 	int routerServiceVersion = 1;
+	TransportRecord transportRecord;
 	
 	public ByteArrayMessageSpliter(String appId,int what, byte[] bytes, int priorityCoef){
 		this.appId = appId;
@@ -51,6 +53,10 @@ public class ByteArrayMessageSpliter {
 		this.routerServiceVersion = version;
 	}
 	
+	public void setTransportRecord(TransportRecord transportRecord){
+		this.transportRecord = transportRecord;
+	}
+
 	public boolean isActive(){
 		if(stream!=null){
 			return stream.available()>0;
@@ -94,7 +100,11 @@ public class ByteArrayMessageSpliter {
 		bundle.putByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME, buffer); //Do we just change this to the args and objs
 		bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0);
 		bundle.putInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, bytesRead);
-		
+		if(transportRecord != null){
+			bundle.putString(TransportConstants.TRANSPORT_TYPE, transportRecord.getType().name());
+			bundle.putString(TransportConstants.TRANSPORT_ADDRESS, transportRecord.getAddress());
+		}
+
 		//Determine which flag should be sent for this division of the packet
 		if(firstPacket){
 			bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START);
