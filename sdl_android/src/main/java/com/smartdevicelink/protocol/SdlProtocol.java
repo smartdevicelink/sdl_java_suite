@@ -1036,6 +1036,8 @@ public class SdlProtocol {
                     hashID = BitConverter.intFromByteArray(packet.payload, 0);
                 }
             }
+
+            notifyDevTransportListener();
         }
 
         iSdlProtocol.onProtocolSessionStarted(serviceType, (byte) packet.getSessionId(), (byte)protocolVersion.getMajor(), "", hashID, packet.isEncrypted());

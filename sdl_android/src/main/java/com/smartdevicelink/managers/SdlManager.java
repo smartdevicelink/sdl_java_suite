@@ -184,7 +184,9 @@ public class SdlManager{
 
 
 		if(getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)){
-			this.videoStreamingManager = new VideoStreamingManager(_internalInterface);
+			if (videoStreamingManager == null) {
+				this.videoStreamingManager = new VideoStreamingManager(_internalInterface);
+			}
 			this.videoStreamingManager.start(subManagerListener);
 		}
 
@@ -641,6 +643,9 @@ public class SdlManager{
 						@Override
 						public void onTransportEvent(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail) {
 
+							if (videoStreamingManager == null){
+								videoStreamingManager = new VideoStreamingManager(_internalInterface);
+							}
 							//Pass to submanagers that need it
 							if(videoStreamingManager != null){
 								videoStreamingManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
