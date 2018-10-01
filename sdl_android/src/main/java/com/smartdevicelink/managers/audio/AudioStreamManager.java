@@ -20,13 +20,17 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.transport.utl.TransportRecord;
+import com.smartdevicelink.util.Version;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -45,7 +49,8 @@ public class AudioStreamManager extends BaseSubManager {
     private final Queue<BaseAudioDecoder> queue;
     private final WeakReference<Context> context;
     private final StreamingStateMachine streamingStateMachine;
-
+    private AudioPassThruCapabilities audioStreamingCapabilities;
+    private boolean isTransportAvailable = false;
     // This completion listener is used as a callback to the app developer when starting/stopping audio service
     private CompletionListener serviceCompletionListener;
     // As the internal interface does not provide timeout we need to use a future task
@@ -120,6 +125,14 @@ public class AudioStreamManager extends BaseSubManager {
      */
     public AudioStreamManager(@NonNull ISdl internalInterface, @NonNull Context context) {
         super(internalInterface);
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN){
+            this.queue = null;
+            this.context = null;
+            this.serviceCompletionHandler = null;
+            this.streamingStateMachine = null;
+            transitionToState(ERROR);
+            return;
+        }
         this.queue = new LinkedList<>();
         this.context = new WeakReference<>(context);
         this.serviceCompletionHandler = new Handler(Looper.getMainLooper());
@@ -127,12 +140,41 @@ public class AudioStreamManager extends BaseSubManager {
         internalInterface.addServiceListener(SessionType.PCM, serviceListener);
 
         streamingStateMachine = new StreamingStateMachine();
+
     }
 
     @Override
     public void start(CompletionListener listener) {
-        transitionToState(READY);
+        isTransportAvailable = internalInterface.isTransportForServiceAvailable(SessionType.PCM);
+        getAudioStreamingCapabilities();
+        checkState();
         super.start(listener);
+    }
+
+    private void checkState(){
+        if(audioStreamingCapabilities != null
+                && isTransportAvailable){
+            transitionToState(READY);
+        }
+    }
+
+    private void getAudioStreamingCapabilities(){
+        internalInterface.getCapability(SystemCapabilityType.PCM_STREAMING, new OnSystemCapabilityListener() {
+            @Override
+            public void onCapabilityRetrieved(Object capability) {
+                if(capability != null && capability instanceof AudioPassThruCapabilities){
+                    audioStreamingCapabilities = (AudioPassThruCapabilities) capability;
+                    checkState();
+                }
+            }
+
+            @Override
+            public void onError(String info) {
+                Log.e(TAG, "Error retrieving audio streaming capability: " + info);
+                streamingStateMachine.transitionToState(StreamingStateMachine.ERROR);
+                transitionToState(ERROR);
+            }
+        });
     }
 
     @Override
@@ -327,6 +369,27 @@ public class AudioStreamManager extends BaseSubManager {
 
             if (queue.size() == 1) {
                 decoder.start();
+            }
+        }
+    }
+
+
+    @Override
+    protected void onTransportUpdate(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail){
+
+        isTransportAvailable = audioStreamTransportAvail;
+
+        if(internalInterface.getProtocolVersion().isNewerThan(new Version(5,1,0)) >= 0){
+            if(audioStreamTransportAvail){
+                checkState();
+            }
+        }else{
+            //The protocol version doesn't support simultaneous transports.
+            if(!audioStreamTransportAvail){
+                //If video streaming isn't available on primary transport then it is not possible to
+                //use the video streaming manager until a complete register on a transport that
+                //supports video
+                transitionToState(ERROR);
             }
         }
     }
