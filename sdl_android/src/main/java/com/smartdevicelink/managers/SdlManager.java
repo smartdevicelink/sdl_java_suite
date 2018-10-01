@@ -83,6 +83,7 @@ public class SdlManager{
 	private int state = -1;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
 	public LockScreenConfig lockScreenConfig;
+	private final Object STATE_LOCK = new Object();
 
 
 	// Managers
@@ -134,27 +135,27 @@ public class SdlManager{
 			if (permissionManager != null && fileManager != null && screenManager != null && lockScreenManager != null){
 				if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && lockScreenManager.getState() == BaseSubManager.READY){
 					Log.i(TAG, "Starting sdl manager, all sub managers are in ready state");
-					state = BaseSubManager.READY;
+					transitionToState(BaseSubManager.READY);
 					notifyDevListener(null);
 				} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && lockScreenManager.getState() == BaseSubManager.ERROR){
 					String info = "ERROR starting sdl manager, all sub managers are in error state";
 					Log.e(TAG, info);
-					state = BaseSubManager.ERROR;
+					transitionToState(BaseSubManager.ERROR);
 					notifyDevListener(info);
 				} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP || lockScreenManager.getState() == BaseSubManager.SETTING_UP){
 					Log.i(TAG, "SETTING UP sdl manager, some sub managers are still setting up");
-					state = BaseSubManager.SETTING_UP;
+					transitionToState(BaseSubManager.SETTING_UP);
 					// No need to notify developer here!
 				} else {
 					Log.w(TAG, "LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
-					state = BaseSubManager.LIMITED;
+					transitionToState(BaseSubManager.LIMITED);
 					notifyDevListener(null);
 				}
 			} else {
 				// We should never be here, but somehow one of the sub-sub managers is null
 				String info = "ERROR one of the sdl sub managers is null";
 				Log.e(TAG, info);
-				state = BaseSubManager.ERROR;
+				transitionToState(BaseSubManager.ERROR);
 				notifyDevListener(info);
 			}
 
@@ -230,7 +231,15 @@ public class SdlManager{
 	}
 
 	public int getState() {
-		return state;
+		synchronized (STATE_LOCK) {
+			return state;
+		}
+	}
+
+	private void transitionToState(int state) {
+		synchronized (STATE_LOCK) {
+			this.state = state;
+		}
 	}
 
 	public void dispose() {
@@ -462,7 +471,7 @@ public class SdlManager{
 				sdlManager.hmiLanguage = Language.EN_US;
 			}
 
-			sdlManager.state = BaseSubManager.SETTING_UP;
+			sdlManager.transitionToState(BaseSubManager.SETTING_UP);
 
 			return sdlManager;
 		}
