@@ -84,9 +84,7 @@ public class LockScreenManager extends BaseSubManager {
 		}
 		deviceLogo = null;
 		deviceIconUrl = null;
-
-		// transition state
-		transitionToState(SHUTDOWN);
+		super.dispose();
 	}
 
 	////

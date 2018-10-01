@@ -67,7 +67,6 @@ class SoftButtonManager extends BaseSubManager {
      */
     SoftButtonManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
-        transitionToState(BaseSubManager.SETTING_UP);
         this.fileManager = new WeakReference<>(fileManager);
         this.softButtonObjects = new CopyOnWriteArrayList<>();
         this.currentHMILevel = HMILevel.HMI_NONE;  // Assume NONE until we get something else
@@ -497,8 +496,6 @@ class SoftButtonManager extends BaseSubManager {
     @Override
     public void dispose() {
         super.dispose();
-
-        transitionToState(SHUTDOWN);
 
         // Remove listeners
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, onHMIStatusListener);

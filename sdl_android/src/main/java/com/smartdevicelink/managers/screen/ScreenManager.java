@@ -35,11 +35,16 @@ public class ScreenManager extends BaseSubManager {
 			if (softButtonManager != null && textAndGraphicManager != null) {
 				if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY) {
 					transitionToState(READY);
-				}else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR){
+				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR){
 					Log.e(TAG, "ERROR starting screen manager, both sub managers in error state");
 					transitionToState(ERROR);
-				} else if (softButtonManager.getState() == BaseSubManager.ERROR || textAndGraphicManager.getState() == BaseSubManager.ERROR) {
-					Log.e(TAG, "ERROR starting screen manager, one sub manager in error state");
+				} else if ( (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.SETTING_UP)
+						|| (textAndGraphicManager.getState() == BaseSubManager.ERROR && softButtonManager.getState() == BaseSubManager.SETTING_UP) ) {
+					Log.e(TAG, "SETTING UP screen manager, one sub manager in error state and the other is setting up");
+					transitionToState(SETTING_UP);
+				} else if ( (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.READY)
+						|| (textAndGraphicManager.getState() == BaseSubManager.ERROR && softButtonManager.getState() == BaseSubManager.READY) ) {
+					Log.e(TAG, "LIMITED starting screen manager, one sub manager in error state and the other is ready");
 					transitionToState(LIMITED);
 				}
 			} else if (softButtonManager == null || textAndGraphicManager == null) {
@@ -56,9 +61,13 @@ public class ScreenManager extends BaseSubManager {
 
 	public ScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
 		super(internalInterface);
-		transitionToState(SETTING_UP);
 		this.fileManager = new WeakReference<>(fileManager);
 		initialize();
+	}
+
+	@Override
+	public void start(CompletionListener listener) {
+		super.start(listener);
 	}
 
 	private void initialize(){
@@ -73,7 +82,8 @@ public class ScreenManager extends BaseSubManager {
 	/**
 	 * <p>Called when manager is being torn down</p>
 	 */
-	public void dispose(){
+	@Override
+	public void dispose() {
 		softButtonManager.dispose();
 		textAndGraphicManager.dispose();
 		super.dispose();
