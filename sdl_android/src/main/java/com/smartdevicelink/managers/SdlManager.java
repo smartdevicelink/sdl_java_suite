@@ -236,7 +236,7 @@ public class SdlManager{
 		}
 	}
 
-	private void transitionToState(int state) {
+	protected void transitionToState(int state) {
 		synchronized (STATE_LOCK) {
 			this.state = state;
 		}
@@ -267,14 +267,6 @@ public class SdlManager{
 			managerListener.onDestroy();
 			managerListener = null;
 		}
-	}
-
-	/**
-	 * Sets the state of SdlManager to one of those defined in BaseSubManager
-	 * @param state int representing desired state of SdlManager
-	 */
-	protected void setState(int state){
-		this.state = state;
 	}
 
 	// BUILDER
