@@ -17,12 +17,16 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.StreamingStateMachine;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.Version;
 
@@ -50,6 +54,7 @@ public class AudioStreamManager extends BaseSubManager {
     private final WeakReference<Context> context;
     private final StreamingStateMachine streamingStateMachine;
     private AudioPassThruCapabilities audioStreamingCapabilities;
+    private HMILevel hmiLevel;
     private boolean isTransportAvailable = false;
     // This completion listener is used as a callback to the app developer when starting/stopping audio service
     private CompletionListener serviceCompletionListener;
@@ -119,6 +124,18 @@ public class AudioStreamManager extends BaseSubManager {
         }
     };
 
+    private final OnRPCNotificationListener hmiListener = new OnRPCNotificationListener() {
+        @Override
+        public void onNotified(RPCNotification notification) {
+            if(notification != null){
+                hmiLevel = ((OnHMIStatus)notification).getHmiLevel();
+                if(hmiLevel.equals(HMILevel.HMI_FULL) || hmiLevel.equals(HMILevel.HMI_LIMITED)){
+                    checkState();
+                }
+            }
+        }
+    };
+
     /**
      * Creates a new object of AudioStreamManager
      * @param internalInterface The internal interface to the connected device.
@@ -153,7 +170,9 @@ public class AudioStreamManager extends BaseSubManager {
 
     private void checkState(){
         if(audioStreamingCapabilities != null
-                && isTransportAvailable){
+                && isTransportAvailable
+                && hmiLevel != null
+                && (hmiLevel.equals(HMILevel.HMI_LIMITED) || hmiLevel.equals(HMILevel.HMI_FULL))){
             transitionToState(READY);
         }
     }
