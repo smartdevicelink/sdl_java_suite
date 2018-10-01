@@ -229,6 +229,10 @@ public class SdlManager{
 		this.screenManager.start(subManagerListener);
 	}
 
+	public int getState() {
+		return state;
+	}
+
 	public void dispose() {
 		this.permissionManager.dispose();
 
