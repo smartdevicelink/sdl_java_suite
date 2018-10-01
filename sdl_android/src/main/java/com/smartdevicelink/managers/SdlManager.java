@@ -134,8 +134,6 @@ public class SdlManager{
 			if(
 					permissionManager != null && permissionManager.getState() != BaseSubManager.SETTING_UP &&
 					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
-					audioStreamManager != null && audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
-					(videoStreamingManager == null || (videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP)) &&
 					lockScreenManager != null &&  lockScreenManager.getState() != BaseSubManager.SETTING_UP	&&
 					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
 
@@ -186,13 +184,14 @@ public class SdlManager{
 
 		if(getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)){
 			this.videoStreamingManager = new VideoStreamingManager(_internalInterface);
-			this.videoStreamingManager.start(subManagerListener);
+		}else{
+			this.videoStreamingManager = null;
 		}
 
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+				&& (getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)) ) {
 			this.audioStreamManager = new AudioStreamManager(_internalInterface, context);
-			this.audioStreamManager.start(subManagerListener);
 		} else {
 			this.audioStreamManager = null;
 		}
