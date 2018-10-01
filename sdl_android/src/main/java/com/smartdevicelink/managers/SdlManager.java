@@ -132,17 +132,17 @@ public class SdlManager{
 			if(!success){
 				Log.d(TAG, "Sub manager failed to initialize");
 			}
-			if (permissionManager != null && fileManager != null && screenManager != null && lockScreenManager != null){
-				if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && lockScreenManager.getState() == BaseSubManager.READY){
+			if (permissionManager != null && fileManager != null && screenManager != null && (!lockScreenConfig.isEnabled() || lockScreenManager != null)){
+				if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.READY)){
 					Log.i(TAG, "Starting sdl manager, all sub managers are in ready state");
 					transitionToState(BaseSubManager.READY);
 					notifyDevListener(null);
-				} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && lockScreenManager.getState() == BaseSubManager.ERROR){
+				} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && (lockScreenConfig.isEnabled() && lockScreenManager.getState() == BaseSubManager.ERROR)){
 					String info = "ERROR starting sdl manager, all sub managers are in error state";
 					Log.e(TAG, info);
 					transitionToState(BaseSubManager.ERROR);
 					notifyDevListener(info);
-				} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP || lockScreenManager.getState() == BaseSubManager.SETTING_UP){
+				} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP || (lockScreenConfig.isEnabled() && lockScreenManager.getState() == BaseSubManager.SETTING_UP)){
 					Log.i(TAG, "SETTING UP sdl manager, some sub managers are still setting up");
 					transitionToState(BaseSubManager.SETTING_UP);
 					// No need to notify developer here!
