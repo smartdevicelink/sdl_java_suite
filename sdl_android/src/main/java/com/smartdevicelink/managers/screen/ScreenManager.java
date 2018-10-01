@@ -38,9 +38,8 @@ public class ScreenManager extends BaseSubManager {
 				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR){
 					Log.e(TAG, "ERROR starting screen manager, both sub managers in error state");
 					transitionToState(ERROR);
-				} else if ( (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.SETTING_UP)
-						|| (textAndGraphicManager.getState() == BaseSubManager.ERROR && softButtonManager.getState() == BaseSubManager.SETTING_UP) ) {
-					Log.e(TAG, "SETTING UP screen manager, one sub manager in error state and the other is setting up");
+				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP) {
+					Log.e(TAG, "SETTING UP screen manager, one sub manager is still setting up");
 					transitionToState(SETTING_UP);
 				} else if ( (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.READY)
 						|| (textAndGraphicManager.getState() == BaseSubManager.ERROR && softButtonManager.getState() == BaseSubManager.READY) ) {
