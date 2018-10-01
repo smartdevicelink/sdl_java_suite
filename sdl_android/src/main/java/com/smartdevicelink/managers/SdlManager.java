@@ -482,6 +482,9 @@ public class SdlManager{
 	 * @return a PermissionManager object
 	 */
 	public PermissionManager getPermissionManager() {
+		if (permissionManager.getState() != BaseSubManager.READY && permissionManager.getState() != BaseSubManager.LIMITED){
+			Log.e(TAG, "PermissionManager should not be accessed because it is not in READY/LIMITED state");
+		}
 		checkSdlManagerState();
 		return permissionManager;
 	}
@@ -492,6 +495,9 @@ public class SdlManager{
 	 * @return a FileManager object
 	 */
 	public FileManager getFileManager() {
+		if (fileManager.getState() != BaseSubManager.READY && fileManager.getState() != BaseSubManager.LIMITED){
+			Log.e(TAG, "FileManager should not be accessed because it is not in READY/LIMITED state");
+		}
 		checkSdlManagerState();
 		return fileManager;
 	}
@@ -531,6 +537,9 @@ public class SdlManager{
 	 * @return a ScreenManager object
 	 */
 	public ScreenManager getScreenManager() {
+		if (screenManager.getState() != BaseSubManager.READY && screenManager.getState() != BaseSubManager.LIMITED){
+			Log.e(TAG, "ScreenManager should not be accessed because it is not in READY/LIMITED state");
+		}
 		checkSdlManagerState();
 		return screenManager;
 	}
@@ -541,6 +550,9 @@ public class SdlManager{
 	 * @return a LockScreenManager object
 	 */
 	public LockScreenManager getLockScreenManager() {
+		if (lockScreenManager.getState() != BaseSubManager.READY && lockScreenManager.getState() != BaseSubManager.LIMITED){
+			Log.e(TAG, "LockScreenManager should not be accessed because it is not in READY/LIMITED state");
+		}
 		checkSdlManagerState();
 		return lockScreenManager;
 	}
