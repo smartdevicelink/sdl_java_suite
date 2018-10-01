@@ -464,11 +464,14 @@ public class SdlManager{
 
     /**
      * Gets the VideoStreamingManager. <br>
-     * <strong>Note: VideoStreamingManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-     * @return a VideoStreamingManager object
+	 * The VideoStreamingManager returned will only be not null if the registered app type is
+	 * either NAVIGATION or PROJECTION. Once the VideoStreamingManager is retrieved, its start()
+	 * method will need to be called before use.
+     * <br><br><strong>Note: VideoStreamingManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     * @return a VideoStreamingManager object attached to shit SdlManager instance
      */
     
-	public VideoStreamingManager getVideoStreamingManager() {
+	public @Nullable VideoStreamingManager getVideoStreamingManager() {
 		checkSdlManagerState();
 		return videoStreamingManager;
 	}
@@ -476,7 +479,10 @@ public class SdlManager{
 
     /**
      * Gets the AudioStreamManager. <br>
-     * <strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * The AudioStreamManager returned will only be not null if the registered app type is
+	 * either NAVIGATION or PROJECTION. Once the AudioStreamManager is retrieved, its start()
+	 * method will need to be called before use.
+     * <br><strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
      * @return a AudioStreamManager object
      */
 	public @Nullable AudioStreamManager getAudioStreamManager() {
