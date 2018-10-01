@@ -67,7 +67,7 @@ import java.util.Vector;
  */
 public class SdlManager{
 
-	private static String TAG = "Sdl Manager";
+	private static String TAG = "SdlManager";
 	private SdlProxyBase proxy;
 	private String appId, appName, shortAppName;
 	private boolean isMediaApp;
@@ -131,64 +131,88 @@ public class SdlManager{
 			if(!success){
 				Log.d(TAG, "Sub manager failed to initialize");
 			}
-			if(
-					permissionManager != null && permissionManager.getState() != BaseSubManager.SETTING_UP &&
-					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
-					lockScreenManager != null &&  lockScreenManager.getState() != BaseSubManager.SETTING_UP	&&
-					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
-
-					){
-				state = BaseSubManager.READY;
-				if(managerListener != null){
-					managerListener.onStart();
+			if (permissionManager != null && fileManager != null && screenManager != null && lockScreenManager != null){
+				if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && lockScreenManager.getState() == BaseSubManager.READY){
+					Log.i(TAG, "Starting sdl manager, all sub managers are in ready state");
+					state = BaseSubManager.READY;
+					notifyDevListener(null);
+				} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && lockScreenManager.getState() == BaseSubManager.ERROR){
+					String info = "ERROR starting sdl manager, all sub managers are in error state";
+					Log.e(TAG, info);
+					state = BaseSubManager.ERROR;
+					notifyDevListener(info);
+				} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP || lockScreenManager.getState() == BaseSubManager.SETTING_UP){
+					Log.i(TAG, "SETTING UP sdl manager, some sub managers are still setting up");
+					state = BaseSubManager.SETTING_UP;
+					// No need to notify developer here!
+				} else {
+					Log.w(TAG, "LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
+					state = BaseSubManager.LIMITED;
+					notifyDevListener(null);
 				}
-
-				// Set the app icon
-				if (SdlManager.this.appIcon != null && SdlManager.this.appIcon.getName() != null) {
-					if (!fileManager.hasUploadedFile(SdlManager.this.appIcon)) {
-						fileManager.uploadArtwork(SdlManager.this.appIcon, new CompletionListener() {
-							@Override
-							public void onComplete(boolean success) {
-								if (success) {
-									SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
-									_internalInterface.sendRPCRequest(msg);
-								}
-							}
-						});
-					} else {
-						SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
-						_internalInterface.sendRPCRequest(msg);
-					}
-				}
+			} else {
+				// We should never be here, but somehow one of the sub-sub managers is null
+				String info = "ERROR one of the sdl sub managers is null";
+				Log.e(TAG, info);
+				state = BaseSubManager.ERROR;
+				notifyDevListener(info);
 			}
+
+
+
 		}
 	};
 
+
+	private void notifyDevListener(String info) {
+		if (managerListener != null) {
+			if (state == BaseSubManager.ERROR){
+				managerListener.onError(info, null);
+			} else {
+				managerListener.onStart();
+			}
+		}
+
+		// Set the app icon
+		if (state == BaseSubManager.READY || state == BaseSubManager.LIMITED) {
+			setAppIcon();
+		}
+	}
+
+
+	private void setAppIcon(){
+		if (SdlManager.this.appIcon != null && SdlManager.this.appIcon.getName() != null) {
+			if (!fileManager.hasUploadedFile(SdlManager.this.appIcon)) {
+				fileManager.uploadArtwork(SdlManager.this.appIcon, new CompletionListener() {
+					@Override
+					public void onComplete(boolean success) {
+						if (success) {
+							SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
+							_internalInterface.sendRPCRequest(msg);
+						}
+					}
+				});
+			} else {
+				SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
+				_internalInterface.sendRPCRequest(msg);
+			}
+		}
+	}
+
+
 	protected void initialize(){
-		// instantiate managers
-
+		// Instantiate sub managers
 		this.permissionManager = new PermissionManager(_internalInterface);
-		this.permissionManager.start(subManagerListener);
-
 		this.fileManager = new FileManager(_internalInterface, context);
-		this.fileManager.start(subManagerListener);
-
 		if (lockScreenConfig.isEnabled()) {
 			this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
-			this.lockScreenManager.start(subManagerListener);
 		}
-
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-		this.screenManager.start(subManagerListener);
-
-
 		if(getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)){
 			this.videoStreamingManager = new VideoStreamingManager(_internalInterface);
-		}else{
+		} else {
 			this.videoStreamingManager = null;
 		}
-
-
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
 				&& (getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)) ) {
 			this.audioStreamManager = new AudioStreamManager(_internalInterface, context);
@@ -196,6 +220,13 @@ public class SdlManager{
 			this.audioStreamManager = null;
 		}
 
+		// Start sub managers
+		this.permissionManager.start(subManagerListener);
+		this.fileManager.start(subManagerListener);
+		if (lockScreenConfig.isEnabled()){
+			this.lockScreenManager.start(subManagerListener);
+		}
+		this.screenManager.start(subManagerListener);
 	}
 
 	public void dispose() {
@@ -434,7 +465,7 @@ public class SdlManager{
 	}
 
 	private void checkSdlManagerState(){
-		if (state != BaseSubManager.READY){
+		if (state != BaseSubManager.READY && state != BaseSubManager.LIMITED){
 			throw new IllegalStateException("SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
 		}
 	}
