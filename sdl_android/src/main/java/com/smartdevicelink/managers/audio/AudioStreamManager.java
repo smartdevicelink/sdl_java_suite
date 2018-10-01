@@ -16,6 +16,7 @@ import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.StreamingStateMachine;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
@@ -155,6 +156,9 @@ public class AudioStreamManager extends BaseSubManager {
         this.serviceCompletionHandler = new Handler(Looper.getMainLooper());
 
         internalInterface.addServiceListener(SessionType.PCM, serviceListener);
+
+        // Listen for HMILevel changes
+        internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 
         streamingStateMachine = new StreamingStateMachine();
 
