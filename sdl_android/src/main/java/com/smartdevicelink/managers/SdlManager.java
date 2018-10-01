@@ -82,7 +82,7 @@ public class SdlManager{
 	private SdlManagerListener managerListener;
 	private int state = -1;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
-	public LockScreenConfig lockScreenConfig;
+	private LockScreenConfig lockScreenConfig;
 	private final Object STATE_LOCK = new Object();
 
 
