@@ -47,6 +47,7 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
+import com.smartdevicelink.util.Version;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -822,6 +823,16 @@ public class SdlManager{
 		}
 
 		@Override
+		public boolean isTransportForServiceAvailable(SessionType serviceType) {
+			if(SessionType.NAV.equals(serviceType)){
+				return proxy.isVideoStreamTransportAvailable();
+			}else if(SessionType.PCM.equals(serviceType)){
+				return proxy.isAudioStreamTransportAvailable();
+			}
+			return false;
+		}
+
+		@Override
 		public SdlMsgVersion getSdlMsgVersion(){
 			try {
 				return proxy.getSdlMsgVersion();
@@ -832,8 +843,12 @@ public class SdlManager{
 		}
 
 		@Override
-		public com.smartdevicelink.util.Version getProtocolVersion() {
-			return proxy.getProtocolVersion();
+		public @NonNull Version getProtocolVersion() {
+			if(proxy.getProtocolVersion() != null){
+				return proxy.getProtocolVersion();
+			}else{
+				return new Version(1,0,0);
+			}
 		}
 
 	};

@@ -131,12 +131,15 @@ public class VideoStreamingManager extends BaseSubManager {
 
 	@Override
 	public void start(CompletionListener listener) {
+		isTransportAvailable = internalInterface.isTransportForServiceAvailable(SessionType.NAV);
 		getVideoStreamingParams();
+		checkState();
 		super.start(listener);
 	}
 
 	private synchronized void checkState(){
-		if(isTransportAvailable
+		if(this.getState() == SETTING_UP
+				&& isTransportAvailable
 				&& hmiLevel != null
 				&& hmiLevel.equals(HMILevel.HMI_FULL)
 				&& parameters != null){
