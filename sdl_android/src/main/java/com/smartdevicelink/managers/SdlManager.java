@@ -138,6 +138,7 @@ public class SdlManager{
 			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.READY)) {
 				transitionToState(BaseSubManager.READY);
 				notifyDevListener(null);
+				onReady();
 			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.ERROR)) {
 				String info = "ERROR starting sdl manager, all sub managers are in error state";
 				DebugTool.logError(info);
@@ -150,6 +151,7 @@ public class SdlManager{
 				DebugTool.logWarning("LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
 				transitionToState(BaseSubManager.LIMITED);
 				notifyDevListener(null);
+				onReady();
 			}
 		} else {
 			// We should never be here, but somehow one of the sub-sub managers is null
@@ -168,14 +170,10 @@ public class SdlManager{
 				managerListener.onStart();
 			}
 		}
-
-		// Set the app icon
-		if (state == BaseSubManager.READY || state == BaseSubManager.LIMITED) {
-			setAppIcon();
-		}
 	}
 
-	private void setAppIcon(){
+	private void onReady(){
+		// Set the app icon
 		if (SdlManager.this.appIcon != null && SdlManager.this.appIcon.getName() != null) {
 			if (fileManager != null && (fileManager.getState() == BaseSubManager.READY || fileManager.getState() == BaseSubManager.LIMITED) && !fileManager.hasUploadedFile(SdlManager.this.appIcon)) {
 				fileManager.uploadArtwork(SdlManager.this.appIcon, new CompletionListener() {
