@@ -57,7 +57,6 @@ public class SdlService extends Service {
 	private static final int TEST_COMMAND_ID 			= 1;
 
 	private static final int FOREGROUND_SERVICE_ID = 111;
-	private boolean firstShow;
 
 	// TCP/IP transport config
 	// The default port is 12345
@@ -67,9 +66,6 @@ public class SdlService extends Service {
 
 	// variable to create and call functions of the SyncProxy
 	private SdlManager sdlManager = null;
-
-	@SuppressWarnings("unused")
-	private boolean isVehicleDataSubscribed = false;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -165,13 +161,10 @@ public class SdlService extends Service {
 						@Override
 						public void onNotified(RPCNotification notification) {
 							OnHMIStatus status = (OnHMIStatus) notification;
-							if (status.getHmiLevel() == HMILevel.HMI_FULL) {
-								if (!firstShow) {
-									sendCommands();
-									performWelcomeSpeak();
-									performWelcomeShow();
-									firstShow = true;
-								}
+							if (status.getHmiLevel() == HMILevel.HMI_FULL && ((OnHMIStatus) notification).getFirstRun()) {
+								sendCommands();
+								performWelcomeSpeak();
+								performWelcomeShow();
 							}
 						}
 					});
@@ -204,11 +197,7 @@ public class SdlService extends Service {
 			};
 
 			// Create App Icon, this is set in the SdlManager builder
-			SdlArtwork appIcon = new SdlArtwork();
-			appIcon.setType(FileType.GRAPHIC_PNG);
-			appIcon.setName(ICON_FILENAME);
-			appIcon.setResourceId(R.mipmap.ic_launcher);
-			appIcon.setPersistent(true);
+			SdlArtwork appIcon = new SdlArtwork(ICON_FILENAME, FileType.GRAPHIC_PNG, R.mipmap.ic_launcher, true);
 
 			// The manager builder sets options for your session
 			SdlManager.Builder builder = new SdlManager.Builder(this, APP_ID, APP_NAME, listener);
