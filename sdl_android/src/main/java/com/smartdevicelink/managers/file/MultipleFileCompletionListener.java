@@ -1,4 +1,4 @@
-package com.smartdevicelink.managers;
+package com.smartdevicelink.managers.file;
 
 import java.util.Map;
 

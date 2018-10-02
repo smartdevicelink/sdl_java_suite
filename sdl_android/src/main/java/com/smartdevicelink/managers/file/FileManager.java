@@ -9,7 +9,6 @@ import android.util.SparseArray;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
-import com.smartdevicelink.managers.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.RPCRequest;
