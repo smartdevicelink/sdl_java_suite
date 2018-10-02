@@ -90,7 +90,7 @@ public class SdlService extends Service {
 	@SuppressLint("NewApi")
 	public void enterForeground() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			NotificationChannel channel = new NotificationChannel("MyApp", "SdlService", NotificationManager.IMPORTANCE_DEFAULT);
+			NotificationChannel channel = new NotificationChannel(APP_ID, "SdlService", NotificationManager.IMPORTANCE_DEFAULT);
 			NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			if (notificationManager != null) {
 				notificationManager.createNotificationChannel(channel);
