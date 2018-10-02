@@ -45,7 +45,7 @@ public class SdlService extends Service {
 	private static final String TAG 					= "SDL Service";
 
 	private static final String APP_NAME 				= "Hello Sdl";
-	private static final String APP_ID 					= "8677309";
+	private static final String APP_ID 					= "8678309";
 
 	private static final String ICON_FILENAME 			= "hello_sdl_icon.png";
 	private static final String SDL_IMAGE_FILENAME  	= "sdl_full_image.png";
@@ -101,7 +101,7 @@ public class SdlService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		startProxy(intent);
+		startProxy();
 		return START_STICKY;
 	}
 
@@ -118,12 +118,12 @@ public class SdlService extends Service {
 		super.onDestroy();
 	}
 
-	private void startProxy(Intent intent) {
+	private void startProxy() {
 		// This logic is to select the correct transport and security levels defined in the selected build flavor
 		if (sdlManager == null) {
 			Log.i(TAG, "Starting SDL Proxy");
 			BaseTransportConfig transport = null;
-			if (BuildConfig.TRANSPORT.equals("MBT")) {
+			if (BuildConfig.TRANSPORT.equals("MULTI")) {
 				int securityLevel;
 				if (BuildConfig.SECURITY.equals("HIGH")) {
 					securityLevel = MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH;
@@ -135,21 +135,8 @@ public class SdlService extends Service {
 					securityLevel = MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF;
 				}
 				transport = new MultiplexTransportConfig(this, APP_ID, securityLevel);
-			} else if (BuildConfig.TRANSPORT.equals("LBT")) {
-				transport = new BTTransportConfig();
 			} else if (BuildConfig.TRANSPORT.equals("TCP")) {
 				transport = new TCPTransportConfig(TCP_PORT, DEV_MACHINE_IP_ADDRESS, true);
-			} else if (BuildConfig.TRANSPORT.equals("USB")) {
-				if (intent != null && intent.hasExtra(UsbManager.EXTRA_ACCESSORY)) { //If we want to support USB transport
-					if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.HONEYCOMB) {
-						Log.e(TAG, "Unable to start proxy. Android OS version is too low");
-						return;
-					} else {
-						//We have a usb transport
-						transport = new USBTransportConfig(getBaseContext(), (UsbAccessory) intent.getParcelableExtra(UsbManager.EXTRA_ACCESSORY));
-						Log.d(TAG, "USB created.");
-					}
-				}
 			}
 
 			// The app type to be used

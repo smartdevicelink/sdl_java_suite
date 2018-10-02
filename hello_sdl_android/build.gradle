@@ -18,32 +18,24 @@ android {
     }
     flavorDimensions "default"
     productFlavors{
-        mbt_high {
-            buildConfigField 'String', 'TRANSPORT', '"MBT"'
+        multi_high {
+            buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"HIGH"'
         }
-        mbt_med {
-            buildConfigField 'String', 'TRANSPORT', '"MBT"'
+        multi_med {
+            buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"MED"'
         }
-        mbt_low {
-            buildConfigField 'String', 'TRANSPORT', '"MBT"'
+        multi_low {
+            buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"LOW"'
         }
-        mbt_off {
-            buildConfigField 'String', 'TRANSPORT', '"MBT"'
-            buildConfigField 'String', 'SECURITY', '"OFF"'
-        }
-        lbt {
-            buildConfigField 'String', 'TRANSPORT', '"LBT"'
+        multi_off {
+            buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"OFF"'
         }
         tcp {
             buildConfigField 'String', 'TRANSPORT', '"TCP"'
-            buildConfigField 'String', 'SECURITY', '"OFF"'
-        }
-        usb {
-            buildConfigField 'String', 'TRANSPORT', '"USB"'
             buildConfigField 'String', 'SECURITY', '"OFF"'
         }
     }
