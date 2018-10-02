@@ -53,11 +53,8 @@ public abstract class BaseSubManager {
 		synchronized (STATE_LOCK) {
 			this.state = state;
 		}
-		if( (state == READY || state == LIMITED) && completionListener != null ){
-			completionListener.onComplete(true);
-			completionListener = null;
-		}else if(state == ERROR && completionListener != null){
-			completionListener.onComplete(false);
+		if((state == READY || state == LIMITED || state == ERROR) && completionListener != null ){
+			completionListener.onComplete(state == READY || state == LIMITED);
 			completionListener = null;
 		}
 	}
