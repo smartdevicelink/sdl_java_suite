@@ -9,8 +9,6 @@ public class SdlApplication extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-
-        LockScreenActivity.registerActivityLifecycle(this);
     }
 
 }

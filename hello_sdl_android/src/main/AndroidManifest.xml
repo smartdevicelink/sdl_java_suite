@@ -28,9 +28,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".LockScreenActivity"/>
-
         <activity android:name="com.smartdevicelink.transport.USBAccessoryAttachmentActivity"
                   android:launchMode="singleTop">
             <intent-filter>
@@ -64,6 +61,8 @@
                 <action android:name="sdl.router.startservice" />
             </intent-filter>
         </receiver>
+        <activity android:name="com.smartdevicelink.managers.lockscreen.SDLLockScreenActivity"
+                  android:launchMode="singleInstance"/>
     </application>
 
 </manifest>
