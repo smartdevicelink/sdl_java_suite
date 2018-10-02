@@ -177,7 +177,7 @@ public class SdlManager{
 
 	private void setAppIcon(){
 		if (SdlManager.this.appIcon != null && SdlManager.this.appIcon.getName() != null) {
-			if (!fileManager.hasUploadedFile(SdlManager.this.appIcon)) {
+			if (fileManager != null && (fileManager.getState() == BaseSubManager.READY || fileManager.getState() == BaseSubManager.LIMITED) && !fileManager.hasUploadedFile(SdlManager.this.appIcon)) {
 				fileManager.uploadArtwork(SdlManager.this.appIcon, new CompletionListener() {
 					@Override
 					public void onComplete(boolean success) {
