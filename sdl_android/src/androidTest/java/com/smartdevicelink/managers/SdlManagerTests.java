@@ -4,6 +4,7 @@ import android.content.Context;
 import android.test.AndroidTestCase;
 
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -68,7 +69,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		templateColorScheme.setPrimaryColor(Test.GENERAL_RGBCOLOR);
 		templateColorScheme.setSecondaryColor(Test.GENERAL_RGBCOLOR);
 
-		sdlManager = createSampleManager("heyApp", "123456");
+		sdlManager = createSampleManager("heyApp", "123456", Test.GENERAL_LOCKSCREENCONFIG);
 	}
 
 	@Override
@@ -82,7 +83,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		return mTestContext;
 	}
 
-	private SdlManager createSampleManager(String appName, String appId){
+	private SdlManager createSampleManager(String appName, String appId, LockScreenConfig lockScreenConfig){
 		SdlManager manager;
 
 		SdlManagerListener listener = new SdlManagerListener() {
@@ -112,7 +113,7 @@ public class SdlManagerTests extends AndroidTestCase {
 		builder.setNightColorScheme(templateColorScheme);
 		builder.setVrSynonyms(Test.GENERAL_VECTOR_STRING);
 		builder.setTtsName(Test.GENERAL_VECTOR_TTS_CHUNKS);
-		builder.setLockScreenConfig(Test.GENERAL_LOCKSCREENCONFIG);
+		builder.setLockScreenConfig(lockScreenConfig);
 		manager = builder.build();
 
 		// mock SdlProxyBase and set it manually
@@ -125,12 +126,12 @@ public class SdlManagerTests extends AndroidTestCase {
 	// TESTS
 
 	public void testNotNull(){
-		assertNotNull(createSampleManager("app","123456"));
+		assertNotNull(createSampleManager("app","123456", Test.GENERAL_LOCKSCREENCONFIG));
 	}
 
 	public void testMissingAppName() {
 		try {
-			createSampleManager(null,"123456");
+			createSampleManager(null,"123456", Test.GENERAL_LOCKSCREENCONFIG);
 		} catch (IllegalArgumentException ex) {
 			assertSame(ex.getMessage(), "You must specify an app name by calling setAppName");
 		}
@@ -138,7 +139,7 @@ public class SdlManagerTests extends AndroidTestCase {
 
 	public void testMissingAppId() {
 		try {
-			createSampleManager("app",null);
+			createSampleManager("app",null, Test.GENERAL_LOCKSCREENCONFIG);
 		} catch (IllegalArgumentException ex) {
 			assertSame(ex.getMessage(), "You must specify an app ID by calling setAppId");
 		}
@@ -166,13 +167,120 @@ public class SdlManagerTests extends AndroidTestCase {
 		// Create and force all sub managers to be ready manually. Because SdlManager will not start until all sub managers are ready.
 		// Note: SdlManager.initialize() will not be called automatically by proxy as in real life because we have mock proxy not a real one
 		sdlManager.initialize();
-		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.READY);
-		sdlManager.getScreenManager().transitionToState(BaseSubManager.READY);
+
+		// Set all sub managers' states to ready
 		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getScreenManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.READY);
 
 		// Make sure the listener is called exactly once
 		assertEquals("Listener was not called or called more/less frequently than expected", listenerCalledCounter, 1);
+	}
+
+	public void testManagerStates() {
+		SdlManager sdlManager = createSampleManager("test", "00000", new LockScreenConfig());
+		sdlManager.initialize();
+
+
+		// Case 1-A:
+		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getScreenManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getLockScreenConfig().setEnabled(true);
+		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.READY);
+		sdlManager.checkState();
+		assertEquals(BaseSubManager.READY, sdlManager.getState());
+
+
+		// Case 1-B:
+		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getScreenManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getLockScreenConfig().setEnabled(false);
+		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
+		sdlManager.checkState();
+		assertEquals(BaseSubManager.READY, sdlManager.getState());
+
+
+		// Case 2-A:
+        sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
+        sdlManager.getFileManager().transitionToState(BaseSubManager.ERROR);
+        sdlManager.getScreenManager().transitionToState(BaseSubManager.ERROR);
+        sdlManager.getLockScreenConfig().setEnabled(true);
+        sdlManager.getLockScreenManager().transitionToState(BaseSubManager.ERROR);
+        sdlManager.checkState();
+        assertEquals(BaseSubManager.ERROR, sdlManager.getState());
+
+
+		// Case 1-B:
+        sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
+        sdlManager.getFileManager().transitionToState(BaseSubManager.ERROR);
+        sdlManager.getScreenManager().transitionToState(BaseSubManager.ERROR);
+        sdlManager.getLockScreenConfig().setEnabled(false);
+        sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
+        sdlManager.checkState();
+        assertEquals(BaseSubManager.ERROR, sdlManager.getState());
+
+
+		// Case 3-A:
+        sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
+        sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getScreenManager().transitionToState(BaseSubManager.SETTING_UP);
+		sdlManager.getLockScreenConfig().setEnabled(true);
+		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.LIMITED);
+        sdlManager.checkState();
+        assertEquals(BaseSubManager.SETTING_UP, sdlManager.getState());
+
+
+        // Case 3-B:
+        sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
+        sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
+        sdlManager.getScreenManager().transitionToState(BaseSubManager.SETTING_UP);
+        sdlManager.getLockScreenConfig().setEnabled(false);
+        sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
+        sdlManager.checkState();
+        assertEquals(BaseSubManager.SETTING_UP, sdlManager.getState());
+
+
+        // Case 4-A:
+        sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
+        sdlManager.getFileManager().transitionToState(BaseSubManager.ERROR);
+        sdlManager.getScreenManager().transitionToState(BaseSubManager.READY);
+        sdlManager.getLockScreenConfig().setEnabled(true);
+        sdlManager.getLockScreenManager().transitionToState(BaseSubManager.READY);
+        sdlManager.checkState();
+        assertEquals(BaseSubManager.LIMITED, sdlManager.getState());
+
+
+		// Case 4-B:
+		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getFileManager().transitionToState(BaseSubManager.ERROR);
+		sdlManager.getScreenManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getLockScreenConfig().setEnabled(false);
+		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
+		sdlManager.checkState();
+		assertEquals(BaseSubManager.LIMITED, sdlManager.getState());
+
+
+		// Case 5-A:
+		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getFileManager().transitionToState(BaseSubManager.LIMITED);
+		sdlManager.getScreenManager().transitionToState(BaseSubManager.ERROR);
+		sdlManager.getLockScreenConfig().setEnabled(true);
+		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.READY);
+		sdlManager.checkState();
+		assertEquals(BaseSubManager.LIMITED, sdlManager.getState());
+
+
+		// Case 5-B:
+		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getFileManager().transitionToState(BaseSubManager.LIMITED);
+		sdlManager.getScreenManager().transitionToState(BaseSubManager.ERROR);
+		sdlManager.getLockScreenConfig().setEnabled(false);
+		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
+		sdlManager.checkState();
+		assertEquals(BaseSubManager.LIMITED, sdlManager.getState());
 	}
 
 	public void testSendRPC(){
