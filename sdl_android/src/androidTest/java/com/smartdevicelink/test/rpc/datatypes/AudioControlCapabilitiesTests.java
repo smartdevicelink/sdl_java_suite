@@ -13,7 +13,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.AudioControlCapabilities}
+ * {@link com.smartdevicelink.proxy.rpc.AudioControlCapabilities}
  */
 public class AudioControlCapabilitiesTests extends TestCase {
 
@@ -25,6 +25,7 @@ public class AudioControlCapabilitiesTests extends TestCase {
 
 		msg.setModuleName(Test.GENERAL_STRING);
 		msg.setSourceAvailable(Test.GENERAL_BOOLEAN);
+		msg.setKeepContextAvailable(Test.GENERAL_BOOLEAN);
 		msg.setVolumeAvailable(Test.GENERAL_BOOLEAN);
 		msg.setEqualizerAvailable(Test.GENERAL_BOOLEAN);
 		msg.setVolumeAvailable(Test.GENERAL_BOOLEAN);
@@ -39,6 +40,7 @@ public class AudioControlCapabilitiesTests extends TestCase {
 
 		String moduleName = msg.getModuleName();
 		Boolean sourceAvailable = msg.getSourceAvailable();
+		Boolean keepContextAvailable = msg.getKeepContextAvailable();
 		Boolean volumeAvailable = msg.getVolumeAvailable();
 		Boolean equalizerAvailable = msg.getEqualizerAvailable();
 		int equalizerMaxChannelId = msg.getEqualizerMaxChannelId();
@@ -46,6 +48,7 @@ public class AudioControlCapabilitiesTests extends TestCase {
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, moduleName);
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) sourceAvailable);
+		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) keepContextAvailable);
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) volumeAvailable);
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) equalizerAvailable);
 		assertEquals(Test.MATCH, Test.GENERAL_INT, equalizerMaxChannelId);
@@ -56,6 +59,7 @@ public class AudioControlCapabilitiesTests extends TestCase {
 
 		assertNull(Test.NULL, msg.getModuleName());
 		assertNull(Test.NULL, msg.getSourceAvailable());
+		assertNull(Test.NULL, msg.getKeepContextAvailable());
 		assertNull(Test.NULL, msg.getVolumeAvailable());
 		assertNull(Test.NULL, msg.getEqualizerAvailable());
 		assertNull(Test.NULL, msg.getEqualizerMaxChannelId());
@@ -68,6 +72,7 @@ public class AudioControlCapabilitiesTests extends TestCase {
 
 			reference.put(AudioControlCapabilities.KEY_MODULE_NAME, Test.GENERAL_STRING);
 			reference.put(AudioControlCapabilities.KEY_SOURCE_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(AudioControlCapabilities.KEY_KEEP_CONTEXT_AVAILABLE, Test.GENERAL_BOOLEAN);
 			reference.put(AudioControlCapabilities.KEY_VOLUME_AVAILABLE, Test.GENERAL_BOOLEAN);
 			reference.put(AudioControlCapabilities.KEY_EQUALIZER_AVAILABLE, Test.GENERAL_BOOLEAN);
 			reference.put(AudioControlCapabilities.KEY_EQUALIZER_MAX_CHANNEL_ID, Test.GENERAL_INT);
