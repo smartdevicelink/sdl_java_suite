@@ -36,8 +36,8 @@ public abstract class BaseSubManager {
 	 */
 	public void start(CompletionListener listener){
 		this.completionListener = listener;
-		if((state == READY || state == LIMITED || state == ERROR) && completionListener != null){
-			completionListener.onComplete(state == READY || state == LIMITED);
+		if((getState() == READY || getState() == LIMITED || getState() == ERROR) && completionListener != null){
+			completionListener.onComplete(getState() == READY || getState() == LIMITED);
 			completionListener = null;
 		}
 	}
@@ -53,8 +53,8 @@ public abstract class BaseSubManager {
 		synchronized (STATE_LOCK) {
 			this.state = state;
 		}
-		if((state == READY || state == LIMITED || state == ERROR) && completionListener != null ){
-			completionListener.onComplete(state == READY || state == LIMITED);
+		if((getState() == READY || getState() == LIMITED || getState() == ERROR) && completionListener != null ){
+			completionListener.onComplete(getState() == READY || getState() == LIMITED);
 			completionListener = null;
 		}
 	}
