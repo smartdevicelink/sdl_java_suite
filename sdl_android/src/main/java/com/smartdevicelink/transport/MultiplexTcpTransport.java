@@ -32,6 +32,7 @@
 
 package com.smartdevicelink.transport;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,6 +40,7 @@ import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.WiFiSocketFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,14 +67,16 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 	private OutputStream mOutputStream = null;
 	private MultiplexTcpTransport.TcpTransportThread mThread = null;
 	private WriterThread writerThread;
+	private Context mContext;
 
 
-	public MultiplexTcpTransport(int port, String ipAddress, boolean autoReconnect, Handler handler) {
+	public MultiplexTcpTransport(int port, String ipAddress, boolean autoReconnect, Handler handler, Context context) {
 		super(handler, TransportType.TCP);
 		this.ipAddress = ipAddress;
 		this.port = port;
         connectedDeviceAddress = ipAddress + ":" + port;
 		this.autoReconnect = autoReconnect;
+		mContext = context;
 		setState(STATE_NONE);
 	}
 
@@ -214,7 +218,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 						}
 
 						logInfo(String.format("TCPTransport.connect: Socket is closed. Trying to connect to %s", getAddress()));
-						mSocket = new Socket();
+						mSocket = WiFiSocketFactory.createSocket(mContext);
 						mSocket.connect(new InetSocketAddress(ipAddress, port));
 						mOutputStream = mSocket.getOutputStream();
 						mInputStream = mSocket.getInputStream();

@@ -650,7 +650,7 @@ public class SdlRouterService extends Service{
 							}//else { TCP transport does not exists.}
 
 							//TCP transport either doesn't exist or is not connected. Start one up.
-							service.tcpTransport = new MultiplexTcpTransport(port, ipAddress, true, service.tcpHandler);
+							service.tcpTransport = new MultiplexTcpTransport(port, ipAddress, true, service.tcpHandler, service);
 							service.tcpTransport.start();
 
 		                }
