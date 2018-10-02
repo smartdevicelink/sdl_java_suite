@@ -169,7 +169,7 @@ public class SdlManager{
 
 	private void notifyDevListener(String info) {
 		if (managerListener != null) {
-			if (state == BaseSubManager.ERROR){
+			if (getState() == BaseSubManager.ERROR){
 				managerListener.onError(info, null);
 			} else {
 				managerListener.onStart();
@@ -265,6 +265,7 @@ public class SdlManager{
 			this.videoStreamingManager.dispose();
 		}
 
+		// SuppressLint("NewApi") is used because audioStreamManager is only available on android >= jelly bean
 		if (this.audioStreamManager != null) {
 			this.audioStreamManager.dispose();
 		}
@@ -475,7 +476,7 @@ public class SdlManager{
 	}
 
 	private void checkSdlManagerState(){
-		if (state != BaseSubManager.READY && state != BaseSubManager.LIMITED){
+		if (getState() != BaseSubManager.READY && getState() != BaseSubManager.LIMITED){
 			Log.e(TAG, "SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
 		}
 	}
