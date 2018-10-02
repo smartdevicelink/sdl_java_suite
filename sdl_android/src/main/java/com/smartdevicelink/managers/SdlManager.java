@@ -15,7 +15,7 @@ import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.managers.lockscreen.LockScreenManager;
 import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
-import com.smartdevicelink.managers.video.VideoStreamingManager;
+import com.smartdevicelink.managers.video.VideoStreamManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
@@ -92,7 +92,7 @@ public class SdlManager{
 	private FileManager fileManager;
 	private LockScreenManager lockScreenManager;
     private ScreenManager screenManager;
-	private VideoStreamingManager videoStreamingManager;
+	private VideoStreamManager videoStreamManager;
 	private AudioStreamManager audioStreamManager;
 
 
@@ -206,9 +206,9 @@ public class SdlManager{
 		}
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
 		if(getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)){
-			this.videoStreamingManager = new VideoStreamingManager(_internalInterface);
+			this.videoStreamManager = new VideoStreamManager(_internalInterface);
 		} else {
-			this.videoStreamingManager = null;
+			this.videoStreamManager = null;
 		}
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
 				&& (getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)) ) {
@@ -261,8 +261,8 @@ public class SdlManager{
 			this.screenManager.dispose();
 		}
 
-		if(this.videoStreamingManager != null) {
-			this.videoStreamingManager.dispose();
+		if(this.videoStreamManager != null) {
+			this.videoStreamManager.dispose();
 		}
 
 		// SuppressLint("NewApi") is used because audioStreamManager is only available on android >= jelly bean
@@ -510,17 +510,18 @@ public class SdlManager{
 	}
 
     /**
-     * Gets the VideoStreamingManager. <br>
-	 * The VideoStreamingManager returned will only be not null if the registered app type is
-	 * either NAVIGATION or PROJECTION. Once the VideoStreamingManager is retrieved, its start()
+     * Gets the VideoStreamManager. <br>
+	 * The VideoStreamManager returned will only be not null if the registered app type is
+	 * either NAVIGATION or PROJECTION. Once the VideoStreamManager is retrieved, its start()
 	 * method will need to be called before use.
-     * <br><br><strong>Note: VideoStreamingManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-     * @return a VideoStreamingManager object attached to shit SdlManager instance
+     * <br><br><strong>Note: VideoStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     * @return a VideoStreamManager object attached to shit SdlManager instance
      */
     
-	public @Nullable VideoStreamingManager getVideoStreamingManager() {
+	public @Nullable
+    VideoStreamManager getVideoStreamManager() {
 		checkSdlManagerState();
-		return videoStreamingManager;
+		return videoStreamManager;
 	}
 
     /**
@@ -697,8 +698,8 @@ public class SdlManager{
 						public void onTransportEvent(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail) {
 
 							//Pass to submanagers that need it
-							if(videoStreamingManager != null){
-								videoStreamingManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
+							if(videoStreamManager != null){
+								videoStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
 							}
 
 							if(audioStreamManager != null){

@@ -44,8 +44,8 @@ import java.util.List;
 import java.util.concurrent.FutureTask;
 
 @TargetApi(19)
-public class VideoStreamingManager extends BaseSubManager {
-	private static String TAG = "VideoStreamingManager";
+public class VideoStreamManager extends BaseSubManager {
+	private static String TAG = "VideoStreamManager";
 
 	private WeakReference<Context> context;
 	private volatile VirtualDisplayEncoder virtualDisplayEncoder;
@@ -113,7 +113,7 @@ public class VideoStreamingManager extends BaseSubManager {
 
 	// MANAGER APIs
 
-	public VideoStreamingManager(ISdl internalInterface){
+	public VideoStreamManager(ISdl internalInterface){
 		super(internalInterface);
 
 		virtualDisplayEncoder = new VirtualDisplayEncoder();
@@ -154,7 +154,7 @@ public class VideoStreamingManager extends BaseSubManager {
 				public void onCapabilityRetrieved(Object capability) {
 					VideoStreamingParameters params = new VideoStreamingParameters();
 					params.update((VideoStreamingCapability)capability);	//Streaming parameters are ready time to stream
-					VideoStreamingManager.this.parameters = params;
+					VideoStreamManager.this.parameters = params;
 
 					checkState();
 
@@ -400,7 +400,7 @@ public class VideoStreamingManager extends BaseSubManager {
 				public void onCreated(final SdlRemoteDisplay remoteDisplay) {
 					//Remote display has been created.
 					//Now is a good time to do parsing for spatial data
-					VideoStreamingManager.this.remoteDisplay = remoteDisplay;
+					VideoStreamManager.this.remoteDisplay = remoteDisplay;
 					if(hapticManager != null) {
 						remoteDisplay.getMainView().post(new Runnable() {
 							@Override

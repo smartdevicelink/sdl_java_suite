@@ -44,10 +44,10 @@ import static org.mockito.Mockito.when;
 
 /**
  * This is a unit test class for the SmartDeviceLink video streaming manager class :
- * {@link VideoStreamingManager}
+ * {@link VideoStreamManager}
  */
-public class VideoStreamingManagerTests extends AndroidTestCase {
-	public static final String TAG = "VideoStreamingManagerTests";
+public class VideoStreamManagerTests extends AndroidTestCase {
+	public static final String TAG = "VideoStreamManagerTests";
 	private Context mTestContext;
 	private static boolean touchEventOccured = false;
 
@@ -106,8 +106,8 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 
 		doAnswer(onAddServiceListener).when(internalInterface).addServiceListener(any(SessionType.class), any(ISdlServiceListener.class));
 
-		VideoStreamingManager videoStreamingManager = new VideoStreamingManager(internalInterface);
-		videoStreamingManager.start(new CompletionListener() {
+		VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
+		videoStreamManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
 				assertTrue(success);
@@ -121,11 +121,11 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 		when(internalInterface.getProtocolVersion()).thenReturn((new Version(5,0,0)));
 		when(internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(true);
 
-		final VideoStreamingManager videoStreamingManager = new VideoStreamingManager(internalInterface);
-		videoStreamingManager.start(new CompletionListener() {
+		final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
+		videoStreamManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
-				assertNull(videoStreamingManager.startVideoService(
+				assertNull(videoStreamManager.startVideoService(
 						new VideoStreamingParameters(), false));
 			}
 		});
@@ -219,8 +219,8 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 
 		when(internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(Test.GENERAL_VIDEOSTREAMINGCAPABILITY);
 
-		final VideoStreamingManager videoStreamingManager = new VideoStreamingManager(internalInterface);
-		videoStreamingManager.start(new CompletionListener() {
+		final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
+		videoStreamManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
 				assertTrue(success);
@@ -230,11 +230,11 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 				fullNotification.setHmiLevel(HMILevel.HMI_FULL);
 				hmiListener[0].onNotified(fullNotification);
 
-				videoStreamingManager.startRemoteDisplayStream(mTestContext, TestPresentation.class, null, false);
+				videoStreamManager.startRemoteDisplayStream(mTestContext, TestPresentation.class, null, false);
 
 				//assertTrue(touchEventOccured);
 
-				videoStreamingManager.dispose();
+				videoStreamManager.dispose();
 				assertTrue(listenerSet.isEmpty());
 			}
 		});
@@ -245,8 +245,8 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 		ISdl internalInterface = mock(ISdl.class);
 		when(internalInterface.getProtocolVersion()).thenReturn(new Version(5,1,0));
 
-		final VideoStreamingManager videoStreamingManager = new VideoStreamingManager(internalInterface);
-		videoStreamingManager.start(new CompletionListener() {
+		final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
+		videoStreamManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
 				assertTrue(success);
@@ -257,24 +257,24 @@ public class VideoStreamingManagerTests extends AndroidTestCase {
 				MotionEvent motionEvent;
 
 				// Touch one pointer (100)
-				motionEvent = videoStreamingManager.convertTouchEvent(testOnTouchEvent);
+				motionEvent = videoStreamManager.convertTouchEvent(testOnTouchEvent);
 				assertEquals(motionEvent.getAction(), MotionEvent.ACTION_DOWN);
 
 				// Touch another pointer (101) without release
 				touchEvent.setId(Test.GENERAL_INT + 1);
 				testOnTouchEvent.setEvent(Collections.singletonList(touchEvent));
-				motionEvent = videoStreamingManager.convertTouchEvent(testOnTouchEvent);
+				motionEvent = videoStreamManager.convertTouchEvent(testOnTouchEvent);
 				assertEquals(motionEvent.getAction(), MotionEvent.ACTION_POINTER_DOWN);
 
 				// Release one of the pointers (101)
 				testOnTouchEvent.setType(TouchType.END);
-				motionEvent = videoStreamingManager.convertTouchEvent(testOnTouchEvent);
+				motionEvent = videoStreamManager.convertTouchEvent(testOnTouchEvent);
 				assertEquals(motionEvent.getAction(), MotionEvent.ACTION_POINTER_UP);
 
 				// Release the other pointer (100)
 				touchEvent.setId(Test.GENERAL_INT);
 				testOnTouchEvent.setEvent(Collections.singletonList(touchEvent));
-				motionEvent = videoStreamingManager.convertTouchEvent(testOnTouchEvent);
+				motionEvent = videoStreamManager.convertTouchEvent(testOnTouchEvent);
 				assertEquals(motionEvent.getAction(), MotionEvent.ACTION_UP);
 			}
 		});
