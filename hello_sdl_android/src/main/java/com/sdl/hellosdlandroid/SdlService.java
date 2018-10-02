@@ -2,7 +2,10 @@ package com.sdl.hellosdlandroid;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
@@ -83,15 +86,21 @@ public class SdlService extends Service {
 		}
 	}
 
+	// Helper method to let the service enter foreground mode
 	@SuppressLint("NewApi")
 	public void enterForeground() {
-		Notification notification = new Notification.Builder(this)
-				.setContentTitle(getString(R.string.app_name))
-				.setContentText("Connected through SDL")
-				.setSmallIcon(R.drawable.ic_sdl)
-				.setPriority(Notification.PRIORITY_DEFAULT)
-				.build();
-		startForeground(FOREGROUND_SERVICE_ID, notification);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationChannel channel = new NotificationChannel("MyApp", "SdlService", NotificationManager.IMPORTANCE_DEFAULT);
+			NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			if (notificationManager != null) {
+				notificationManager.createNotificationChannel(channel);
+				Notification serviceNotification = new Notification.Builder(this, channel.getId())
+						.setContentTitle("Connected through SDL")
+						.setSmallIcon(R.drawable.ic_sdl)
+						.build();
+				startForeground(FOREGROUND_SERVICE_ID, serviceNotification);
+			}
+		}
 	}
 
 	@Override
