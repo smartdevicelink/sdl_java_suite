@@ -16,7 +16,7 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.PutFileResponse}
+ * {@link com.smartdevicelink.proxy.rpc.PutFileResponse}
  */
 public class PutFileResponseTest extends BaseRpcTests {
 	
@@ -44,7 +44,7 @@ public class PutFileResponseTest extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(PutFileResponse.KEY_SPACE_AVAILABLE, Test.GENERAL_INT);			
+			result.put(PutFileResponse.KEY_SPACE_AVAILABLE, Test.GENERAL_INT);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}

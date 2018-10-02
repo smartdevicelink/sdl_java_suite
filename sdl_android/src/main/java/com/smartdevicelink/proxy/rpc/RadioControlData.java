@@ -20,6 +20,8 @@ public class RadioControlData extends RPCStruct{
     public static final String KEY_SIGNAL_CHANGE_THRESHOLD= "signalChangeThreshold";
     public static final String KEY_RADIO_ENABLE= "radioEnable";
     public static final String KEY_STATE= "state";
+    public static final String KEY_HD_RADIO_ENABLE = "hdRadioEnable";
+    public static final String KEY_SIS_DATA = "sisData";
 
     public RadioControlData() {
     }
@@ -219,5 +221,41 @@ public class RadioControlData extends RPCStruct{
      */
     public RadioState getState() {
         return (RadioState) getObject(RadioState.class, KEY_STATE);
+    }
+
+    /**
+     * Sets the hdRadioEnable portion of the RadioControlData class
+     *
+     * @param hdRadioEnable True if the hd radio is on, false if the radio is off.
+     */
+    public void setHdRadioEnable(Boolean hdRadioEnable) {
+        setValue(KEY_HD_RADIO_ENABLE, hdRadioEnable);
+    }
+
+    /**
+     * Gets the hdRadioEnable portion of the RadioControlData class
+     *
+     * @return Boolean - True if the hd radio is on, false if the radio is off.
+     */
+    public Boolean getHdRadioEnable() {
+        return getBoolean(KEY_HD_RADIO_ENABLE);
+    }
+
+    /**
+     * Sets the sisData portion of the RadioControlData class
+     *
+     * @param sisData Read-only Station Information Service (SIS) data provides basic information about the station such as call sign, as well as information not displayable to the consumer such as the station identification number.
+     */
+    public void setSisData(SisData sisData) {
+        setValue(KEY_SIS_DATA, sisData);
+    }
+
+    /**
+     * Gets the sisData portion of the RadioControlData class
+     *
+     * @return SisData - Read-only Station Information Service (SIS) data provides basic information about the station such as call sign, as well as information not displayable to the consumer such as the station identification number.
+     */
+    public SisData getSisData() {
+        return (SisData) getObject(SisData.class, KEY_SIS_DATA);
     }
 }

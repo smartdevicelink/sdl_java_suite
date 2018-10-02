@@ -26,6 +26,7 @@ import com.smartdevicelink.util.DebugTool;
  * Bluetooth Transport Implementation. This transport advertises its existence to SDL by publishing an SDP record and waiting for an incoming connection from SDL. Connection is verified by checking for the SDL UUID. For more detailed information please refer to the <a href="#bluetoothTransport">Bluetooth Transport Guide</a>.
  *
  */
+@Deprecated
 public class BTTransport extends SdlTransport {	
 	//936DA01F9ABD4D9D80C702AF85C822A8
 	private final static UUID SDL_V4_MOBILE_APPLICATION_SVC_CLASS = new UUID(0x936DA01F9ABD4D9DL, 0x80C702AF85C822A8L);

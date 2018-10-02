@@ -5,6 +5,7 @@ import com.smartdevicelink.transport.enums.TransportType;
 /**
  * Container of Bluetooth transport specific configuration.
  */
+@Deprecated
 public final class BTTransportConfig extends BaseTransportConfig {
 
 	private boolean bKeepSocketActive = true;

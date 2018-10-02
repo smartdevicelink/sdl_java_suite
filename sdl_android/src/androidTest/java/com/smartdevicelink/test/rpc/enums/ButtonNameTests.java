@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.ButtonName}
+ * {@link com.smartdevicelink.proxy.rpc.enums.ButtonName}
  */
 public class ButtonNameTests extends TestCase {
 
@@ -199,6 +199,7 @@ public class ButtonNameTests extends TestCase {
 		enumTestList.add(ButtonName.SOURCE);
 		enumTestList.add(ButtonName.SHUFFLE);
 		enumTestList.add(ButtonName.REPEAT);
+		enumTestList.add(ButtonName.PLAY_PAUSE);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

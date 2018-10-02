@@ -2,9 +2,11 @@ package com.smartdevicelink.SdlConnection;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.content.ComponentName;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
@@ -29,6 +31,7 @@ import com.smartdevicelink.transport.USBTransport;
 import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 
+@Deprecated
 public class SdlConnection implements IProtocolListener, ITransportListener {
 
 	private static final String TAG = "SdlConnection";
@@ -279,7 +282,8 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	public void onProtocolError(String info, Exception e) {
 		_connectionListener.onProtocolError(info, e);
 	}
-	
+
+
 	/**
 	 * Gets type of transport currently used by this connection.
 	 * 
@@ -374,6 +378,11 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		}
 
 		@Override
+		public void onTransportDisconnected(String info, boolean availablePrimary, MultiplexTransportConfig transportConfig) {
+			onTransportDisconnected(info);
+		}
+
+		@Override
 		public void onTransportError(String info, Exception e) {
 			//If there's an error with the transport we want to make sure we clear out any reference to it held by the static list in sessions
 			SdlSession.removeConnection(SdlConnection.this);
@@ -465,7 +474,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			if (session != null) {
 				session.onProtocolServiceDataACK(serviceType, dataSize, sessionID);
 			}
-		}			
+		}
 	}
 		
 	public int getRegisterCount() {

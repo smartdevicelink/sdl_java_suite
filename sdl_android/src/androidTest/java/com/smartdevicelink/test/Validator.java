@@ -1,10 +1,16 @@
 package com.smartdevicelink.test;
 
+import java.util.Iterator;
+import java.util.List;
+
+import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.AirbagStatus;
+import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
+import com.smartdevicelink.proxy.rpc.AudioControlData;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.BeltStatus;
 import com.smartdevicelink.proxy.rpc.BodyInformation;
@@ -20,16 +26,23 @@ import com.smartdevicelink.proxy.rpc.DeviceStatus;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.EmergencyEvent;
+import com.smartdevicelink.proxy.rpc.EqualizerSettings;
 import com.smartdevicelink.proxy.rpc.FuelRange;
 import com.smartdevicelink.proxy.rpc.GPSData;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
+import com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities;
+import com.smartdevicelink.proxy.rpc.HMISettingsControlData;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.Headers;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.LightCapabilities;
+import com.smartdevicelink.proxy.rpc.LightControlCapabilities;
+import com.smartdevicelink.proxy.rpc.LightControlData;
+import com.smartdevicelink.proxy.rpc.LightState;
 import com.smartdevicelink.proxy.rpc.MassageCushionFirmness;
 import com.smartdevicelink.proxy.rpc.MassageModeData;
 import com.smartdevicelink.proxy.rpc.MenuParams;
@@ -53,9 +66,11 @@ import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
 import com.smartdevicelink.proxy.rpc.SeatControlData;
 import com.smartdevicelink.proxy.rpc.SeatMemoryAction;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
+import com.smartdevicelink.proxy.rpc.SisData;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.StartTime;
+import com.smartdevicelink.proxy.rpc.StationIDNumber;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.Temperature;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
@@ -76,9 +91,6 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
-
-import java.util.Iterator;
-import java.util.List;
 
 public class Validator{
 
@@ -248,6 +260,42 @@ public class Validator{
         return true;
     }
 
+    public static boolean validateSdlFile(SdlFile sdlFile1, SdlFile sdlFile2){
+        if(sdlFile1 == null){
+            return ( sdlFile2 == null );
+        }
+        if(sdlFile2 == null){
+            return ( sdlFile1 == null );
+        }
+
+        if(!( sdlFile1.getName().equals(sdlFile2.getName()) )){
+            log("validateSdlFile",
+                    "sdlFile1 name \"" + sdlFile1.getName() + "\" didn't match sdlFile2 name \"" + sdlFile2.getName() + "\".");
+            return false;
+        }
+
+        if(sdlFile1.getResourceId() != sdlFile2.getResourceId() ){
+            log("validateSdlFile",
+                    "sdlFile1 resourceId \"" + sdlFile1.getName() + "\" didn't match sdlFile2 resourceId \"" + sdlFile2.getName() + "\".");
+            return false;
+        }
+
+        if(!( sdlFile1.getType().equals(sdlFile2.getType()) )){
+            log("validateSdlFile",
+                    "sdlFile1 type \"" + sdlFile1.getType() + "\" didn't match sdlFile2 type \"" + sdlFile2.getType() + "\".");
+            return false;
+        }
+
+        if( (sdlFile1.getUri() != sdlFile2.getUri()) && !( sdlFile1.getUri().equals(sdlFile2.getUri()) )){
+            log("validateSdlFile",
+                    "sdlFile1 uri \"" + sdlFile1.getUri() + "\" didn't match sdlFile2 uri \"" + sdlFile2.getUri() + "\".");
+            return false;
+        }
+
+
+        return true;
+    }
+
     public static boolean validateStringList(List<String> vrCommands1, List<String> vrCommands2){
         if(vrCommands1 == null){
             return ( vrCommands2 == null );
@@ -299,6 +347,15 @@ public class Validator{
         return true;
     }
 
+    public static boolean validateSoftButton(SoftButton button1, SoftButton button2){
+        return validateImage(button1.getImage(), button2.getImage())
+                && validateText(button1.getText(), button2.getText())
+                && button1.getIsHighlighted() == button2.getIsHighlighted()
+                && button1.getSoftButtonID() == button2.getSoftButtonID()
+                && button1.getSystemAction() == button2.getSystemAction()
+                && button1.getType() == button2.getType();
+    }
+
     public static boolean validateSoftButtons(List<SoftButton> list1, List<SoftButton> list2){
         if(list1 == null){
             return ( list2 == null );
@@ -314,11 +371,7 @@ public class Validator{
             SoftButton button1 = iterator1.next();
             SoftButton button2 = iterator2.next();
 
-            if(!validateImage(button1.getImage(), button2.getImage())
-                    || !validateText(button1.getText(), button2.getText())
-                    || button1.getIsHighlighted() != button2.getIsHighlighted()
-                    || button1.getSoftButtonID() != button2.getSoftButtonID()
-                    || button1.getSystemAction() != button2.getSystemAction() || button1.getType() != button2.getType()){
+            if(!validateSoftButton(button1, button2)){
                 return false;
             }
         }
@@ -637,6 +690,52 @@ public class Validator{
         return true;
     }
 
+    public static boolean validateHMISettingsControlCapabilities(HMISettingsControlCapabilities hmiSettingsControlCapabilities1, HMISettingsControlCapabilities hmiSettingsControlCapabilities2){
+        if(hmiSettingsControlCapabilities1 == null){
+            return ( hmiSettingsControlCapabilities2 == null );
+        }
+        if(hmiSettingsControlCapabilities2 == null){
+            return ( hmiSettingsControlCapabilities1 == null );
+        }
+
+        if(hmiSettingsControlCapabilities1.getModuleName() != hmiSettingsControlCapabilities2.getModuleName()){
+            return false;
+        }
+
+        if(hmiSettingsControlCapabilities1.getDisplayModeUnitAvailable() != hmiSettingsControlCapabilities2.getDisplayModeUnitAvailable()){
+            return false;
+        }
+
+        if(hmiSettingsControlCapabilities1.getDistanceUnitAvailable() != hmiSettingsControlCapabilities2.getDistanceUnitAvailable()){
+            return false;
+        }
+
+        if(hmiSettingsControlCapabilities1.getTemperatureUnitAvailable() != hmiSettingsControlCapabilities2.getTemperatureUnitAvailable()){
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateLightControlCapabilities(LightControlCapabilities lightControlCapabilities1, LightControlCapabilities lightControlCapabilities2){
+        if(lightControlCapabilities1 == null){
+            return ( lightControlCapabilities2 == null );
+        }
+        if(lightControlCapabilities2 == null){
+            return ( lightControlCapabilities1 == null );
+        }
+
+        if(lightControlCapabilities1.getModuleName() != lightControlCapabilities2.getModuleName()){
+            return false;
+        }
+
+        if(!( validateLightCapabilitiesList(lightControlCapabilities1.getSupportedLights(), lightControlCapabilities2.getSupportedLights()) )){
+            return false;
+        }
+
+        return true;
+    }
+
     public static boolean validateClimateControlData(ClimateControlData climateControlData1, ClimateControlData climateControlData2){
         if(climateControlData1 == null){
             return ( climateControlData2 == null );
@@ -769,6 +868,72 @@ public class Validator{
 		return true;
 	}
 
+	public static boolean validateAudioControlData(AudioControlData audioControlData1, AudioControlData audioControlData2) {
+		if (audioControlData1 == null) {
+			return (audioControlData2 == null);
+		}
+		if (audioControlData2 == null) {
+			return (audioControlData1 == null);
+		}
+
+		if (audioControlData1.getKeepContext() != audioControlData2.getKeepContext()) {
+			return false;
+		}
+
+		if (audioControlData1.getSource() != audioControlData2.getSource()) {
+			return false;
+		}
+
+		if (audioControlData1.getVolume() != audioControlData2.getVolume()) {
+			return false;
+		}
+
+		if (!(validateEqualizerSettingsList(audioControlData1.getEqualizerSettings(), audioControlData2.getEqualizerSettings()))) {
+			return false;
+		}
+
+
+		return true;
+	}
+
+	public static boolean validateHMISettingsControlData(HMISettingsControlData hmiSettingsControlData1, HMISettingsControlData hmiSettingsControlData2) {
+		if (hmiSettingsControlData1 == null) {
+			return (hmiSettingsControlData2 == null);
+		}
+		if (hmiSettingsControlData2 == null) {
+			return (hmiSettingsControlData1 == null);
+		}
+
+		if (hmiSettingsControlData1.getDisplayMode() != hmiSettingsControlData2.getDisplayMode()) {
+			return false;
+		}
+
+		if (hmiSettingsControlData1.getDistanceUnit() != hmiSettingsControlData2.getDistanceUnit()) {
+			return false;
+		}
+
+		if (hmiSettingsControlData1.getTemperatureUnit() != hmiSettingsControlData2.getTemperatureUnit()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public static boolean validateLightControlData(LightControlData lightControlData1, LightControlData lightControlData2) {
+		if (lightControlData1 == null) {
+			return (lightControlData2 == null);
+		}
+		if (lightControlData2 == null) {
+			return (lightControlData1 == null);
+		}
+
+		if (!(validateLightStateList(lightControlData1.getLightState(), lightControlData2.getLightState()))) {
+			return false;
+		}
+
+		return true;
+	}
+
     public static boolean validateModuleData(ModuleData moduleData1, ModuleData moduleData2){
         if(moduleData1 == null){
             return ( moduleData2 == null );
@@ -789,6 +954,56 @@ public class Validator{
         }
 
         if(!( validateClimateControlData(moduleData1.getClimateControlData(), moduleData2.getClimateControlData()) )){
+            return false;
+        }
+
+        return true;
+    }
+
+	public static boolean validateSisData(SisData sisData1, SisData sisData2) {
+		if (sisData1 == null) {
+			return (sisData2 == null);
+		}
+		if (sisData2 == null) {
+			return (sisData1 == null);
+		}
+
+		if (sisData1.getStationShortName() != sisData2.getStationShortName()) {
+			return false;
+		}
+
+		if (!(validateStationIDNumber(sisData1.getStationIDNumber(), sisData2.getStationIDNumber()))) {
+			return false;
+		}
+
+		if (sisData1.getStationLongName() != sisData2.getStationLongName()) {
+			return false;
+		}
+
+		if (!(validateGpsData(sisData1.getStationLocation(), sisData2.getStationLocation()))) {
+			return false;
+		}
+
+		if (sisData1.getStationMessage() != sisData2.getStationMessage()) {
+			return false;
+		}
+
+		return true;
+	}
+
+    public static boolean validateStationIDNumber(StationIDNumber stationIDNumber1, StationIDNumber stationIDNumber2){
+        if(stationIDNumber1 == null){
+            return ( stationIDNumber2 == null );
+        }
+        if(stationIDNumber2 == null){
+            return ( stationIDNumber1 == null );
+        }
+
+        if(stationIDNumber1.getCountryCode() != stationIDNumber2.getCountryCode()){
+            return false;
+        }
+
+        if(stationIDNumber1.getFccFacilityId() != stationIDNumber2.getFccFacilityId()){
             return false;
         }
 
@@ -2138,6 +2353,190 @@ public class Validator{
 
 		for (int i = 0; i < item1.size(); i++) {
 			if (!validateSeatControlCapabilities(item1.get(i), item2.get(i))) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean validateAudioControlCapabilities(AudioControlCapabilities item1, AudioControlCapabilities item2) {
+		if (item1 == null) {
+			return (item2 == null);
+		}
+		if (item2 == null) {
+			return (item1 == null);
+		}
+
+		if (item1.getModuleName() != item2.getModuleName()) {
+			return false;
+		}
+		if (item1.getSourceAvailable() != item2.getSourceAvailable()) {
+			return false;
+		}
+		if (item1.getVolumeAvailable() != item2.getVolumeAvailable()) {
+			return false;
+		}
+		if (item1.getEqualizerAvailable() != item2.getEqualizerAvailable()) {
+			return false;
+		}
+		if (item1.getEqualizerMaxChannelId() != item2.getEqualizerMaxChannelId()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public static boolean validateEqualizerSettingsList(List<EqualizerSettings> item1, List<EqualizerSettings> item2) {
+		if (item1 == null) {
+			return (item2 == null);
+		}
+		if (item2 == null) {
+			return (item1 == null);
+		}
+
+		if (item1.size() != item2.size()) {
+			return false;
+		}
+
+		for (int i = 0; i < item1.size(); i++) {
+			if (!validateEqualizerSettings(item1.get(i), item2.get(i))) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean validateEqualizerSettings(EqualizerSettings item1, EqualizerSettings item2) {
+		if (item1 == null) {
+			return (item2 == null);
+		}
+		if (item2 == null) {
+			return (item1 == null);
+		}
+
+		if (item1.getChannelId() != item2.getChannelId()) {
+			return false;
+		}
+
+		if (item1.getChannelName() != item2.getChannelName()) {
+			return false;
+		}
+
+		if (item1.getChannelSetting() != item2.getChannelSetting()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public static boolean validateLightStateList(List<LightState> item1, List<LightState> item2) {
+		if (item1 == null) {
+			return (item2 == null);
+		}
+		if (item2 == null) {
+			return (item1 == null);
+		}
+
+		if (item1.size() != item2.size()) {
+			return false;
+		}
+
+		for (int i = 0; i < item1.size(); i++) {
+			if (!validateLightState(item1.get(i), item2.get(i))) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean validateLightState(LightState item1, LightState item2) {
+		if (item1 == null) {
+			return (item2 == null);
+		}
+		if (item2 == null) {
+			return (item1 == null);
+		}
+
+		if (item1.getId() != item2.getId()) {
+			return false;
+		}
+
+		if (item1.getStatus() != item2.getStatus()) {
+			return false;
+		}
+
+		if (item1.getDensity() != item2.getDensity()) {
+			return false;
+		}
+
+		if (!(validateRGBColor(item1.getColor(), item2.getColor()))) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public static boolean validateLightCapabilitiesList(List<LightCapabilities> item1, List<LightCapabilities> item2) {
+		if (item1 == null) {
+			return (item2 == null);
+		}
+		if (item2 == null) {
+			return (item1 == null);
+		}
+
+		if (item1.size() != item2.size()) {
+			return false;
+		}
+
+		for (int i = 0; i < item1.size(); i++) {
+			if (!validateLightCapabilities(item1.get(i), item2.get(i))) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean validateLightCapabilities(LightCapabilities item1, LightCapabilities item2) {
+		if (item1 == null) {
+			return (item2 == null);
+		}
+		if (item2 == null) {
+			return (item1 == null);
+		}
+
+		if (item1.getName() != item2.getName()) {
+			return false;
+		}
+
+		if (item1.getDensityAvailable() != item2.getDensityAvailable()) {
+			return false;
+		}
+
+		if (item1.getRGBColorSpaceAvailable() != item2.getRGBColorSpaceAvailable()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public static boolean validateAudioControlCapabilitiesList(List<AudioControlCapabilities> item1, List<AudioControlCapabilities> item2) {
+		if (item1 == null) {
+			return (item2 == null);
+		}
+		if (item2 == null) {
+			return (item1 == null);
+		}
+
+		if (item1.size() != item2.size()) {
+			return false;
+		}
+
+		for (int i = 0; i < item1.size(); i++) {
+			if (!validateAudioControlCapabilities(item1.get(i), item2.get(i))) {
 				return false;
 			}
 		}

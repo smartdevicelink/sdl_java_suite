@@ -3,6 +3,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.RadioControlData;
 import com.smartdevicelink.proxy.rpc.RdsData;
+import com.smartdevicelink.proxy.rpc.SisData;
 import com.smartdevicelink.proxy.rpc.enums.RadioBand;
 import com.smartdevicelink.proxy.rpc.enums.RadioState;
 import com.smartdevicelink.test.JsonUtils;
@@ -18,7 +19,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.RadioControlData}
  */
 public class RadioControlDataTests extends TestCase{
@@ -39,6 +40,8 @@ public class RadioControlDataTests extends TestCase{
         msg.setSignalChangeThreshold(Test.GENERAL_INT);
         msg.setRadioEnable(Test.GENERAL_BOOLEAN);
         msg.setState(Test.GENERAL_RADIOSTATE);
+        msg.setHdRadioEnable(Test.GENERAL_BOOLEAN);
+        msg.setSisData(Test.GENERAL_SISDATA);
     }
 
     /**
@@ -56,6 +59,8 @@ public class RadioControlDataTests extends TestCase{
         int signalChangeThreshold = msg.getSignalChangeThreshold();
         boolean radioEnable = msg.getRadioEnable();
         RadioState state = msg.getState();
+        boolean hdRadioEnable = msg.getHdRadioEnable();
+        SisData sisData = msg.getSisData();
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_INT, frequencyInteger);
@@ -68,6 +73,8 @@ public class RadioControlDataTests extends TestCase{
         assertEquals(Test.MATCH, Test.GENERAL_INT, signalChangeThreshold);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, radioEnable);
         assertEquals(Test.MATCH, Test.GENERAL_RADIOSTATE, state);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, hdRadioEnable);
+        assertTrue(Test.TRUE, Validator.validateSisData(Test.GENERAL_SISDATA, sisData));
 
         // Invalid/Null Tests
         RadioControlData msg = new RadioControlData();
@@ -83,6 +90,8 @@ public class RadioControlDataTests extends TestCase{
         assertNull(Test.NULL, msg.getSignalChangeThreshold());
         assertNull(Test.NULL, msg.getRadioEnable());
         assertNull(Test.NULL, msg.getState());
+        assertNull(Test.NULL, msg.getHdRadioEnable());
+        assertNull(Test.NULL, msg.getSisData());
     }
 
     public void testJson(){
@@ -99,6 +108,8 @@ public class RadioControlDataTests extends TestCase{
             reference.put(RadioControlData.KEY_SIGNAL_CHANGE_THRESHOLD, Test.GENERAL_INT);
             reference.put(RadioControlData.KEY_RADIO_ENABLE, Test.GENERAL_BOOLEAN);
             reference.put(RadioControlData.KEY_STATE, Test.GENERAL_RADIOSTATE);
+            reference.put(RadioControlData.KEY_HD_RADIO_ENABLE, Test.GENERAL_BOOLEAN);
+            reference.put(RadioControlData.KEY_SIS_DATA, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_SISDATA.getStore()));
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -112,7 +123,13 @@ public class RadioControlDataTests extends TestCase{
                     JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
                     Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
                     Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-                    assertTrue(Test.TRUE, Validator.validateRadioControlData( new RadioControlData(hashReference), new RadioControlData(hashTest)));
+                    assertTrue(Test.TRUE, Validator.validateRdsData(new RdsData(hashReference), new RdsData(hashTest)));
+                } else if (key.equals(RadioControlData.KEY_SIS_DATA)) {
+	                JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
+	                JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
+	                Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
+	                Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
+	                assertTrue(Test.TRUE, Validator.validateSisData(new SisData(hashReference), new SisData(hashTest)));
                 } else{
                     assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }

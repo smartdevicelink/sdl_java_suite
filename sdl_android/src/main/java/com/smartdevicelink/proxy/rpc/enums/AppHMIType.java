@@ -56,7 +56,7 @@ public enum AppHMIType {
      * Convert String to AppHMIType
      * @param value String
      * @return AppHMIType
-     */      
+     */
     public static AppHMIType valueForString(String value) {
         try{
             return valueOf(value);

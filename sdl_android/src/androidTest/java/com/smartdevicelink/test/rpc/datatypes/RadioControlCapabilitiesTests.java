@@ -12,7 +12,7 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 /**
- * This is a unit test class for the SmartDeviceLink library project class : 
+ * This is a unit test class for the SmartDeviceLink library project class :
  * {@link com.smartdevicelink.rpc.RadioControlCapabilities}
  */
 public class RadioControlCapabilitiesTests extends TestCase{
@@ -33,6 +33,9 @@ public class RadioControlCapabilitiesTests extends TestCase{
         msg.setStateAvailable(Test.GENERAL_BOOLEAN);
         msg.setSignalStrengthAvailable(Test.GENERAL_BOOLEAN);
         msg.setSignalChangeThresholdAvailable(Test.GENERAL_BOOLEAN);
+        msg.setHdRadioEnableAvailable(Test.GENERAL_BOOLEAN);
+        msg.setSiriusXMRadioAvailable(Test.GENERAL_BOOLEAN);
+        msg.setSisDataAvailable(Test.GENERAL_BOOLEAN);
     }
 
     /**
@@ -50,6 +53,9 @@ public class RadioControlCapabilitiesTests extends TestCase{
         boolean stateAvailable = msg.getStateAvailable();
         boolean signalStrengthAvailable = msg.getSignalStrengthAvailable();
         boolean signalChangeThresholdAvailable = msg.getSignalChangeThresholdAvailable();
+        boolean hdRadioEnableAvailable = msg.getHdRadioEnableAvailable();
+        boolean siriusXMRadioAvailable = msg.getSiriusXMRadioAvailable();
+        boolean sisDataAvailable = msg.getSisDataAvailable();
 
 
         // Valid Tests
@@ -63,6 +69,9 @@ public class RadioControlCapabilitiesTests extends TestCase{
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, stateAvailable);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, signalStrengthAvailable);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, signalChangeThresholdAvailable);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, hdRadioEnableAvailable);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, siriusXMRadioAvailable);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, sisDataAvailable);
 
         // Invalid/Null Tests
         RadioControlCapabilities msg = new RadioControlCapabilities();
@@ -78,6 +87,9 @@ public class RadioControlCapabilitiesTests extends TestCase{
         assertNull(Test.NULL, msg.getStateAvailable());
         assertNull(Test.NULL, msg.getSignalStrengthAvailable());
         assertNull(Test.NULL, msg.getSignalChangeThresholdAvailable());
+        assertNull(Test.NULL, msg.getHdRadioEnableAvailable());
+        assertNull(Test.NULL, msg.getSiriusXMRadioAvailable());
+        assertNull(Test.NULL, msg.getSisDataAvailable());
     }
 
     public void testJson(){
@@ -94,6 +106,9 @@ public class RadioControlCapabilitiesTests extends TestCase{
             reference.put(RadioControlCapabilities.KEY_STATE_AVAILABLE, Test.GENERAL_BOOLEAN);
             reference.put(RadioControlCapabilities.KEY_SIGNAL_STRENGTH_AVAILABLE, Test.GENERAL_BOOLEAN);
             reference.put(RadioControlCapabilities.KEY_SIGNAL_CHANGE_THRESHOLD_AVAILABLE, Test.GENERAL_BOOLEAN);
+            reference.put(RadioControlCapabilities.KEY_HD_RADIO_ENABLE_AVAILABLE, Test.GENERAL_BOOLEAN);
+            reference.put(RadioControlCapabilities.KEY_SIRIUS_XM_RADIO_AVAILABLE, Test.GENERAL_BOOLEAN);
+            reference.put(RadioControlCapabilities.KEY_SIS_DATA_AVAILABLE, Test.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());

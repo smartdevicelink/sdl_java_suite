@@ -1,10 +1,15 @@
 package com.smartdevicelink.protocol;
 
+
 import com.smartdevicelink.protocol.WiProProtocol.MessageFrameAssembler;
 import com.smartdevicelink.protocol.enums.SessionType;
 
 import java.util.List;
 
+/**
+ * @see SdlProtocol
+ */
+@Deprecated
 public abstract class AbstractProtocol {
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 	
@@ -153,4 +158,5 @@ public abstract class AbstractProtocol {
     protected void onResetIncomingHeartbeat(SessionType sessionType, byte sessionID) {
 		resetIncomingHeartbeat(sessionType, sessionID);
     }
+
 } // end-class

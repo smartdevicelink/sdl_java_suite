@@ -33,6 +33,7 @@ import com.smartdevicelink.util.DebugTool;
  * some data is sent again or the USB is physically disconnected.
  */
 @SuppressLint("NewApi")
+@Deprecated
 public class USBTransport extends SdlTransport {
 
 	// Boolean to monitor if the transport is in a disconnecting state
