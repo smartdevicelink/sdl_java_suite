@@ -156,7 +156,6 @@ public class SdlManager{
 		}
 	};
 
-
 	private void notifyDevListener(String info) {
 		if (managerListener != null) {
 			if (state == BaseSubManager.ERROR){
@@ -171,7 +170,6 @@ public class SdlManager{
 			setAppIcon();
 		}
 	}
-
 
 	private void setAppIcon(){
 		if (SdlManager.this.appIcon != null && SdlManager.this.appIcon.getName() != null) {
@@ -191,7 +189,6 @@ public class SdlManager{
 			}
 		}
 	}
-
 
 	protected void initialize(){
 		// Instantiate sub managers
@@ -266,7 +263,6 @@ public class SdlManager{
 	}
 
 	// BUILDER
-
 	public static class Builder {
 		SdlManager sdlManager;
 
@@ -500,7 +496,6 @@ public class SdlManager{
 		return fileManager;
 	}
 
-
     /**
      * Gets the VideoStreamingManager. <br>
 	 * The VideoStreamingManager returned will only be not null if the registered app type is
@@ -514,7 +509,6 @@ public class SdlManager{
 		checkSdlManagerState();
 		return videoStreamingManager;
 	}
-	
 
     /**
      * Gets the AudioStreamManager. <br>
@@ -555,7 +549,6 @@ public class SdlManager{
 		return lockScreenManager;
 	}
 
-
 	/**
 	 * Gets the SystemCapabilityManager. <br>
 	 * <strong>Note: SystemCapabilityManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
@@ -565,9 +558,7 @@ public class SdlManager{
 		return proxy.getSystemCapabilityManager();
 	}
 
-
 	// PROTECTED GETTERS
-
 	protected String getAppName() { return appName; }
 
 	protected String getAppId() { return appId; }
@@ -727,7 +718,6 @@ public class SdlManager{
 	}
 
 	// INTERNAL INTERFACE
-
 	private ISdl _internalInterface = new ISdl() {
 		@Override
 		public void start() {
@@ -902,5 +892,4 @@ public class SdlManager{
 		}
 
 	};
-
 }
