@@ -323,6 +323,7 @@ public class VideoStreamingManager extends BaseSubManager {
 	/**
 	 * Stops streaming, ends video streaming service and removes service listeners.
 	 */
+	@Override
 	public void dispose(){
 		stopStreaming();
 
@@ -340,6 +341,7 @@ public class VideoStreamingManager extends BaseSubManager {
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 
 		stateMachine.transitionToState(StreamingStateMachine.NONE);
+		super.dispose();
 	}
 
 	// PUBLIC METHODS FOR CHECKING STATE

@@ -32,12 +32,13 @@ public abstract class BaseSubManager {
 
 	/**
 	 * Starts up a BaseSubManager, and calls provided callback once BaseSubManager is done setting up or failed setup.
-	 * @param listener CompletionListener that is called once the BaseSubManager's state is READY or ERROR
+	 * @param listener CompletionListener that is called once the BaseSubManager's state is READY, LIMITED, or ERROR
 	 */
 	public void start(CompletionListener listener){
 		this.completionListener = listener;
-		if((state == READY || state == ERROR) && completionListener != null){
-			completionListener.onComplete(state == READY);
+		int state = getState();
+		if((state == READY || state == LIMITED || state == ERROR) && completionListener != null){
+			completionListener.onComplete(state == READY || state == LIMITED);
 			completionListener = null;
 		}
 	}
@@ -53,11 +54,8 @@ public abstract class BaseSubManager {
 		synchronized (STATE_LOCK) {
 			this.state = state;
 		}
-		if(state == READY && completionListener != null){
-			completionListener.onComplete(true);
-			completionListener = null;
-		}else if(state == ERROR && completionListener != null){
-			completionListener.onComplete(false);
+		if((state == READY || state == LIMITED || state == ERROR) && completionListener != null ){
+			completionListener.onComplete(state == READY || state == LIMITED);
 			completionListener = null;
 		}
 	}
