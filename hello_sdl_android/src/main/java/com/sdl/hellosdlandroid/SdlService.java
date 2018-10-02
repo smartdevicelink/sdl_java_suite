@@ -110,6 +110,11 @@ public class SdlService extends Service {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			stopForeground(true);
 		}
+
+		if (sdlManager != null) {
+			sdlManager.dispose();
+		}
+
 		super.onDestroy();
 	}
 
