@@ -133,7 +133,7 @@ public class SdlManager{
 		}
 	};
 
-	protected void checkState() {
+	void checkState() {
 		if (permissionManager != null && fileManager != null && screenManager != null && (!lockScreenConfig.isEnabled() || lockScreenManager != null)) {
 			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.READY)) {
 				transitionToState(BaseSubManager.READY);
