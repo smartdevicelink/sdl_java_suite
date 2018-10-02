@@ -1,5 +1,6 @@
 package com.smartdevicelink.managers;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -225,6 +226,11 @@ public class SdlManager{
 		this.screenManager.start(subManagerListener);
 	}
 
+	/**
+	 * Get the current state for the SdlManager
+	 * @return int value that represents the current state
+	 * @see BaseSubManager
+	 */
 	public int getState() {
 		synchronized (STATE_LOCK) {
 			return state;
@@ -237,6 +243,7 @@ public class SdlManager{
 		}
 	}
 
+	@SuppressLint("NewApi")
 	public void dispose() {
 		if (this.permissionManager != null) {
 			this.permissionManager.dispose();
@@ -258,7 +265,7 @@ public class SdlManager{
 			this.videoStreamingManager.dispose();
 		}
 
-		if (this.audioStreamManager != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+		if (this.audioStreamManager != null) {
 			this.audioStreamManager.dispose();
 		}
 
