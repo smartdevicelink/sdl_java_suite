@@ -1,6 +1,5 @@
 package com.smartdevicelink.proxy;
 
-import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
@@ -12,31 +11,36 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SystemCapabilityManager {
-	HashMap<SystemCapabilityType, Object> cachedSystemCapabilities = new HashMap<>();
-	ISdl callback;
+	private final HashMap<SystemCapabilityType, Object> cachedSystemCapabilities;
+	private final HashMap<SystemCapabilityType, CopyOnWriteArrayList<OnSystemCapabilityListener>> onSystemCapabilityListeners;
+	private final Object LISTENER_LOCK;
+	private final ISdl callback;
 
 	public SystemCapabilityManager(ISdl callback){
 		this.callback = callback;
+		this.LISTENER_LOCK = new Object();
+		this.onSystemCapabilityListeners = new HashMap<>();
+		this.cachedSystemCapabilities = new HashMap<>();
 	}
 
 	public void parseRAIResponse(RegisterAppInterfaceResponse response){
 		if(response!=null && response.getSuccess()) {
-			cachedSystemCapabilities.put(SystemCapabilityType.HMI, response.getHmiCapabilities());
-			cachedSystemCapabilities.put(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
-			cachedSystemCapabilities.put(SystemCapabilityType.AUDIO_PASSTHROUGH, response.getAudioPassThruCapabilities());
-			cachedSystemCapabilities.put(SystemCapabilityType.PCM_STREAMING, response.getPcmStreamingCapabilities());
-			cachedSystemCapabilities.put(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
-			cachedSystemCapabilities.put(SystemCapabilityType.HMI_ZONE, response.getHmiZoneCapabilities());
-			cachedSystemCapabilities.put(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
-			cachedSystemCapabilities.put(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
-			cachedSystemCapabilities.put(SystemCapabilityType.SPEECH, response.getSpeechCapabilities());
-			cachedSystemCapabilities.put(SystemCapabilityType.VOICE_RECOGNITION, response.getVrCapabilities());
+			setCapability(SystemCapabilityType.HMI, response.getHmiCapabilities());
+			setCapability(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
+			setCapability(SystemCapabilityType.AUDIO_PASSTHROUGH, response.getAudioPassThruCapabilities());
+			setCapability(SystemCapabilityType.PCM_STREAMING, response.getPcmStreamingCapabilities());
+			setCapability(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
+			setCapability(SystemCapabilityType.HMI_ZONE, response.getHmiZoneCapabilities());
+			setCapability(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
+			setCapability(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
+			setCapability(SystemCapabilityType.SPEECH, response.getSpeechCapabilities());
+			setCapability(SystemCapabilityType.VOICE_RECOGNITION, response.getVrCapabilities());
 		}
 	}
 
@@ -46,8 +50,25 @@ public class SystemCapabilityManager {
 	 * @param systemCapabilityType
 	 * @param capability
 	 */
-	public void setCapability(SystemCapabilityType systemCapabilityType, Object capability){
-		cachedSystemCapabilities.put(systemCapabilityType,capability);
+	public synchronized void setCapability(SystemCapabilityType systemCapabilityType, Object capability){
+			cachedSystemCapabilities.put(systemCapabilityType, capability);
+			notifyListeners(systemCapabilityType, capability);
+	}
+
+	/**
+	 * Notify listners in the list about the new retrieved capability
+	 * @param systemCapabilityType
+	 * @param capability
+	 */
+	private void notifyListeners(SystemCapabilityType systemCapabilityType, Object capability) {
+		synchronized(LISTENER_LOCK){
+			CopyOnWriteArrayList<OnSystemCapabilityListener> listeners = onSystemCapabilityListeners.get(systemCapabilityType);
+			if(listeners != null && listeners.size() > 0) {
+				for (OnSystemCapabilityListener listener : listeners) {
+					listener.onCapabilityRetrieved(capability);
+				}
+			}
+		}
 	}
 
 	/**
@@ -107,6 +128,40 @@ public class SystemCapabilityManager {
 
 		retrieveCapability(systemCapabilityType, null);
 		return null;
+	}
+
+	/**
+	 * Add a listener to be called whenever a new capability is retrieved
+	 * @param systemCapabilityType Type of capability desired
+	 * @param listener callback to execute upon retrieving capability
+	 */
+	public void addOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener){
+		getCapability(systemCapabilityType, listener);
+		synchronized(LISTENER_LOCK){
+			if (systemCapabilityType != null && listener != null) {
+				if (onSystemCapabilityListeners.get(systemCapabilityType) == null) {
+					onSystemCapabilityListeners.put(systemCapabilityType, new CopyOnWriteArrayList<OnSystemCapabilityListener>());
+				}
+				onSystemCapabilityListeners.get(systemCapabilityType).add(listener);
+			}
+		}
+	}
+
+	/**
+	 * Remove an OnSystemCapabilityListener that was previously added
+	 * @param systemCapabilityType Type of capability
+	 * @param listener the listener that should be removed
+	 */
+	public boolean removeOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener){
+		synchronized(LISTENER_LOCK){
+			if(onSystemCapabilityListeners!= null
+					&& systemCapabilityType != null
+					&& listener != null
+					&& onSystemCapabilityListeners.get(systemCapabilityType) != null){
+				return onSystemCapabilityListeners.get(systemCapabilityType).remove(listener);
+			}
+		}
+		return false;
 	}
 
 	/**

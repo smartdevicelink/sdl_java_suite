@@ -1,10 +1,21 @@
 package com.smartdevicelink.proxy.interfaces;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.util.Version;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
+import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
+
+import java.util.List;
 
 /*
  * Copyright (c) 2017 Livio, Inc.
@@ -83,6 +94,19 @@ public interface ISdl {
     void stopVideoService();
 
     /**
+     * Starts the video streaming service
+     * @param isEncrypted flag to start this service with encryption or not
+     * @param parameters desired video streaming params for this sevice to be started with
+     */
+    IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters);
+
+    /**
+     * Starts the Audio streaming service
+     * @param encrypted flag to start this service with encryption or not
+     */
+    void startAudioService(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params);
+
+    /**
      * Starts the Audio streaming service
      * @param encrypted flag to start this service with encryption or not
      */
@@ -94,10 +118,26 @@ public interface ISdl {
     void stopAudioService();
 
     /**
+     * Start Audio Stream and return IAudioStreamListener
+     * @param isEncrypted
+     * @param codec
+     * @param params
+     * @return IAudioStreamListener
+     */
+    IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params);
+
+    /**
      * Pass an RPC message through the proxy to be sent to the connected module
      * @param message RPCRequest that should be sent to the module
      */
     void sendRPCRequest(RPCRequest message);
+
+    /**
+     * Pass a list of RPC requests through the proxy to be sent to core
+     * @param rpcs List of RPC requests
+     * @param listener OnMultipleRequestListener that is called between requests and after all are processed
+     */
+    void sendRequests(List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener);
 
     /**
      * Add an OnRPCNotificationListener for specified notification
@@ -112,5 +152,78 @@ public interface ISdl {
      * @param listener listener that was previously added for the notification ID
      */
     boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener);
+
+    /**
+     * Add an OnRPCResponseListener for specified response
+     * @param responseId FunctionID of the response that is to be listened for
+     * @param listener listener that should be added for the response ID
+     */
+    void addOnRPCListener(FunctionID responseId, OnRPCListener listener);
+
+    /**
+     * Removes an OnRPCResponseListener for specified response
+     * @param responseId FunctionID of the response that was to be listened for
+     * @param listener listener that was previously added for the response ID
+     */
+    boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener);
+
+    /**
+     * Get SystemCapability Object
+     * @param systemCapabilityType
+     * @return Object
+     */
+    Object getCapability(SystemCapabilityType systemCapabilityType);
+
+    /**
+     * Get Capability
+     * @param systemCapabilityType
+     * @param scListener
+     */
+    void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener);
+
+    /**
+     * Check if capability is supported
+     * @param systemCapabilityType
+     * @return Boolean
+     */
+    boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType);
+
+    /**
+     * Add a listener to be called whenever a new capability is retrieved
+     * @param systemCapabilityType Type of capability desired
+     * @param listener callback to execute upon retrieving capability
+     */
+    void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
+
+    /**
+     * Remove an OnSystemCapabilityListener that was previously added
+     * @param systemCapabilityType Type of capability
+     * @param listener the listener that should be removed
+     */
+    boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
+
+    /**
+     * Check to see if a transport is available to start/use the supplied service.
+     * @param serviceType the session that should be checked for transport availability
+     * @return true if there is either a supported
+     *         transport currently connected or a transport is
+     *         available to connect with for the supplied service type.
+     *         <br>false if there is no
+     *         transport connected to support the service type in question and
+     *          no possibility in the foreseeable future.
+     */
+    boolean isTransportForServiceAvailable(SessionType serviceType);
+
+    /**
+     * Get the RPC specification version currently being used for the SDL messages
+     * @return SdlMsgVersion the current RPC specification version
+     */
+    @NonNull SdlMsgVersion getSdlMsgVersion();
+
+    /**
+     * Get the protocol version of this session
+     * @return byte value representing WiPro version
+     */
+    @NonNull Version getProtocolVersion();
 
 }

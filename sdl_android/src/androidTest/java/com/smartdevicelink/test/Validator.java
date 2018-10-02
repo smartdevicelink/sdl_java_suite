@@ -1,5 +1,9 @@
 package com.smartdevicelink.test;
 
+import java.util.Iterator;
+import java.util.List;
+
+import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
@@ -87,9 +91,6 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
-
-import java.util.Iterator;
-import java.util.List;
 
 public class Validator{
 
@@ -259,6 +260,42 @@ public class Validator{
         return true;
     }
 
+    public static boolean validateSdlFile(SdlFile sdlFile1, SdlFile sdlFile2){
+        if(sdlFile1 == null){
+            return ( sdlFile2 == null );
+        }
+        if(sdlFile2 == null){
+            return ( sdlFile1 == null );
+        }
+
+        if(!( sdlFile1.getName().equals(sdlFile2.getName()) )){
+            log("validateSdlFile",
+                    "sdlFile1 name \"" + sdlFile1.getName() + "\" didn't match sdlFile2 name \"" + sdlFile2.getName() + "\".");
+            return false;
+        }
+
+        if(sdlFile1.getResourceId() != sdlFile2.getResourceId() ){
+            log("validateSdlFile",
+                    "sdlFile1 resourceId \"" + sdlFile1.getName() + "\" didn't match sdlFile2 resourceId \"" + sdlFile2.getName() + "\".");
+            return false;
+        }
+
+        if(!( sdlFile1.getType().equals(sdlFile2.getType()) )){
+            log("validateSdlFile",
+                    "sdlFile1 type \"" + sdlFile1.getType() + "\" didn't match sdlFile2 type \"" + sdlFile2.getType() + "\".");
+            return false;
+        }
+
+        if( (sdlFile1.getUri() != sdlFile2.getUri()) && !( sdlFile1.getUri().equals(sdlFile2.getUri()) )){
+            log("validateSdlFile",
+                    "sdlFile1 uri \"" + sdlFile1.getUri() + "\" didn't match sdlFile2 uri \"" + sdlFile2.getUri() + "\".");
+            return false;
+        }
+
+
+        return true;
+    }
+
     public static boolean validateStringList(List<String> vrCommands1, List<String> vrCommands2){
         if(vrCommands1 == null){
             return ( vrCommands2 == null );
@@ -310,6 +347,15 @@ public class Validator{
         return true;
     }
 
+    public static boolean validateSoftButton(SoftButton button1, SoftButton button2){
+        return validateImage(button1.getImage(), button2.getImage())
+                && validateText(button1.getText(), button2.getText())
+                && button1.getIsHighlighted() == button2.getIsHighlighted()
+                && button1.getSoftButtonID() == button2.getSoftButtonID()
+                && button1.getSystemAction() == button2.getSystemAction()
+                && button1.getType() == button2.getType();
+    }
+
     public static boolean validateSoftButtons(List<SoftButton> list1, List<SoftButton> list2){
         if(list1 == null){
             return ( list2 == null );
@@ -325,11 +371,7 @@ public class Validator{
             SoftButton button1 = iterator1.next();
             SoftButton button2 = iterator2.next();
 
-            if(!validateImage(button1.getImage(), button2.getImage())
-                    || !validateText(button1.getText(), button2.getText())
-                    || button1.getIsHighlighted() != button2.getIsHighlighted()
-                    || button1.getSoftButtonID() != button2.getSoftButtonID()
-                    || button1.getSystemAction() != button2.getSystemAction() || button1.getType() != button2.getType()){
+            if(!validateSoftButton(button1, button2)){
                 return false;
             }
         }

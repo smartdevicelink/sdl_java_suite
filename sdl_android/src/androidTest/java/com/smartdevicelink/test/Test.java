@@ -1,7 +1,9 @@
 package com.smartdevicelink.test;
 
+import android.graphics.Color;
 import android.util.Log;
 
+import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioControlData;
@@ -163,6 +165,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 
 public class Test {
 
@@ -335,6 +338,7 @@ public class Test {
 	public static final Rectangle                      GENERAL_RECTANGLE                      = new Rectangle();
 	public static final HapticRect                     GENERAL_HAPTIC_RECT                    = new HapticRect();
 	public static final FuelType                       GENERAL_FUELTYPE                       = FuelType.GASOLINE;
+	public static final LockScreenConfig               GENERAL_LOCKSCREENCONFIG               = new LockScreenConfig();
 
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
@@ -370,6 +374,8 @@ public class Test {
 	public static final List<VentilationMode>           GENERAL_VENTILATIONMODE_LIST           = Arrays.asList(new VentilationMode[]{VentilationMode.LOWER, VentilationMode.UPPER});
 	public static final List<ClimateControlCapabilities> GENERAL_CLIMATECONTROLCAPABILITIES_LIST = new ArrayList<ClimateControlCapabilities>(1);
 	public static final List<RadioControlCapabilities>   GENERAL_RADIOCONTROLCAPABILITIES_LIST   = new ArrayList<RadioControlCapabilities>(1);
+	public static final Vector<String>                   GENERAL_VECTOR_STRING                   = new Vector<>(Arrays.asList(new String[] { "a", "b"}));
+	public static final Vector<TTSChunk>                 GENERAL_VECTOR_TTS_CHUNKS               = new Vector<>(Arrays.asList(TTSChunkFactory.createChunk(SpeechCapabilities.TEXT, "Welcome to the jungle")));
 	public static final List<SeatControlCapabilities>   GENERAL_SEATCONTROLCAPABILITIES_LIST   = new ArrayList<SeatControlCapabilities>(1);
 	public static final List<EqualizerSettings>         GENERAL_EQUALIZERSETTINGS_LIST         = new ArrayList<EqualizerSettings>(1);
 	public static final List<LightCapabilities>         GENERAL_LIGHTCAPABILITIES_LIST         = new ArrayList<LightCapabilities>(1);
@@ -714,6 +720,7 @@ public class Test {
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setMaxBitrate(GENERAL_INT);
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setPreferredResolution(GENERAL_IMAGERESOLUTION);
 		GENERAL_VIDEOSTREAMINGCAPABILITY.setSupportedFormats(GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+		GENERAL_VIDEOSTREAMINGCAPABILITY.setIsHapticSpatialDataSupported(GENERAL_BOOLEAN);
 
 		GENERAL_CLIMATECONTROLCAPABILITIES.setModuleName(GENERAL_STRING);
 		GENERAL_CLIMATECONTROLCAPABILITIES.setFanSpeedAvailable(GENERAL_BOOLEAN);
@@ -827,6 +834,11 @@ public class Test {
 		GENERAL_DAYCOLORSCHEME.setPrimaryColor(GENERAL_RGBCOLOR);
 		GENERAL_DAYCOLORSCHEME.setSecondaryColor(GENERAL_RGBCOLOR);
 		GENERAL_DAYCOLORSCHEME.setBackgroundColor(GENERAL_RGBCOLOR);
+
+		GENERAL_LOCKSCREENCONFIG.setAppIcon(R.drawable.sdl_lockscreen_icon);
+		GENERAL_LOCKSCREENCONFIG.setBackgroundColor(Color.BLUE);
+		GENERAL_LOCKSCREENCONFIG.setEnabled(true);
+		GENERAL_LOCKSCREENCONFIG.setCustomView(R.layout.activity_sdllock_screen);
 
 
 		try {
