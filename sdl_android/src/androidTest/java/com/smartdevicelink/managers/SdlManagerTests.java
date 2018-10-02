@@ -204,53 +204,53 @@ public class SdlManagerTests extends AndroidTestCase {
 
 
 		// Case 2-A:
-        sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
-        sdlManager.getFileManager().transitionToState(BaseSubManager.ERROR);
-        sdlManager.getScreenManager().transitionToState(BaseSubManager.ERROR);
-        sdlManager.getLockScreenConfig().setEnabled(true);
-        sdlManager.getLockScreenManager().transitionToState(BaseSubManager.ERROR);
-        sdlManager.checkState();
-        assertEquals(BaseSubManager.ERROR, sdlManager.getState());
+		sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
+		sdlManager.getFileManager().transitionToState(BaseSubManager.ERROR);
+		sdlManager.getScreenManager().transitionToState(BaseSubManager.ERROR);
+		sdlManager.getLockScreenConfig().setEnabled(true);
+		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.ERROR);
+		sdlManager.checkState();
+		assertEquals(BaseSubManager.ERROR, sdlManager.getState());
 
 
 		// Case 1-B:
-        sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
-        sdlManager.getFileManager().transitionToState(BaseSubManager.ERROR);
-        sdlManager.getScreenManager().transitionToState(BaseSubManager.ERROR);
-        sdlManager.getLockScreenConfig().setEnabled(false);
-        sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
-        sdlManager.checkState();
-        assertEquals(BaseSubManager.ERROR, sdlManager.getState());
+		sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
+		sdlManager.getFileManager().transitionToState(BaseSubManager.ERROR);
+		sdlManager.getScreenManager().transitionToState(BaseSubManager.ERROR);
+		sdlManager.getLockScreenConfig().setEnabled(false);
+		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
+		sdlManager.checkState();
+		assertEquals(BaseSubManager.ERROR, sdlManager.getState());
 
 
 		// Case 3-A:
-        sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
-        sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
+		sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
 		sdlManager.getScreenManager().transitionToState(BaseSubManager.SETTING_UP);
 		sdlManager.getLockScreenConfig().setEnabled(true);
 		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.LIMITED);
-        sdlManager.checkState();
-        assertEquals(BaseSubManager.SETTING_UP, sdlManager.getState());
+		sdlManager.checkState();
+		assertEquals(BaseSubManager.SETTING_UP, sdlManager.getState());
 
 
-        // Case 3-B:
-        sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
-        sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
-        sdlManager.getScreenManager().transitionToState(BaseSubManager.SETTING_UP);
-        sdlManager.getLockScreenConfig().setEnabled(false);
-        sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
-        sdlManager.checkState();
-        assertEquals(BaseSubManager.SETTING_UP, sdlManager.getState());
+		// Case 3-B:
+		sdlManager.getPermissionManager().transitionToState(BaseSubManager.ERROR);
+		sdlManager.getFileManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getScreenManager().transitionToState(BaseSubManager.SETTING_UP);
+		sdlManager.getLockScreenConfig().setEnabled(false);
+		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
+		sdlManager.checkState();
+		assertEquals(BaseSubManager.SETTING_UP, sdlManager.getState());
 
 
-        // Case 4-A:
-        sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
-        sdlManager.getFileManager().transitionToState(BaseSubManager.ERROR);
-        sdlManager.getScreenManager().transitionToState(BaseSubManager.READY);
-        sdlManager.getLockScreenConfig().setEnabled(true);
-        sdlManager.getLockScreenManager().transitionToState(BaseSubManager.READY);
-        sdlManager.checkState();
-        assertEquals(BaseSubManager.LIMITED, sdlManager.getState());
+		// Case 4-A:
+		sdlManager.getPermissionManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getFileManager().transitionToState(BaseSubManager.ERROR);
+		sdlManager.getScreenManager().transitionToState(BaseSubManager.READY);
+		sdlManager.getLockScreenConfig().setEnabled(true);
+		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.READY);
+		sdlManager.checkState();
+		assertEquals(BaseSubManager.LIMITED, sdlManager.getState());
 
 
 		// Case 4-B:

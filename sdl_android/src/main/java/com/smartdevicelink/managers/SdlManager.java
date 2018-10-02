@@ -133,17 +133,17 @@ public class SdlManager{
 		}
 	};
 
-	protected void checkState(){
-		if (permissionManager != null && fileManager != null && screenManager != null && (!lockScreenConfig.isEnabled() || lockScreenManager != null)){
-			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && ( !lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.READY)){
+	protected void checkState() {
+		if (permissionManager != null && fileManager != null && screenManager != null && (!lockScreenConfig.isEnabled() || lockScreenManager != null)) {
+			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.READY)) {
 				transitionToState(BaseSubManager.READY);
 				notifyDevListener(null);
-			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.ERROR)){
+			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.ERROR)) {
 				String info = "ERROR starting sdl manager, all sub managers are in error state";
 				DebugTool.logError(info);
 				transitionToState(BaseSubManager.ERROR);
 				notifyDevListener(info);
-			} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP || (lockScreenConfig.isEnabled() && lockScreenManager != null && lockScreenManager.getState() == BaseSubManager.SETTING_UP)){
+			} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP || (lockScreenConfig.isEnabled() && lockScreenManager != null && lockScreenManager.getState() == BaseSubManager.SETTING_UP)) {
 				transitionToState(BaseSubManager.SETTING_UP);
 				// No need to notify developer here!
 			} else {
