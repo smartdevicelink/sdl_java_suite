@@ -29,6 +29,7 @@ import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
+import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -129,7 +130,7 @@ class TextAndGraphicManager extends BaseSubManager {
 				currentHMILevel = ((OnHMIStatus)notification).getHmiLevel();
 				if (currentHMILevel == HMILevel.HMI_FULL){
 					if (pendingHMIFull){
-						Log.v(TAG, "Acquired HMI_FULL with pending update. Sending now");
+						DebugTool.logInfo( "Acquired HMI_FULL with pending update. Sending now");
 						pendingHMIFull = false;
 						sdlUpdate(pendingHMIListener);
 						pendingHMIListener = null;

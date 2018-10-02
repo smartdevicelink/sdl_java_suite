@@ -12,6 +12,7 @@ import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedLayout;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
+import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -34,13 +35,13 @@ public class ScreenManager extends BaseSubManager {
 		public synchronized void onComplete(boolean success) {
 			if (softButtonManager != null && textAndGraphicManager != null) {
 				if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY) {
-					Log.i(TAG, "Starting screen manager, all sub managers are in ready state");
+					DebugTool.logInfo("Starting screen manager, all sub managers are in ready state");
 					transitionToState(READY);
 				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR) {
 					Log.e(TAG, "ERROR starting screen manager, both sub managers in error state");
 					transitionToState(ERROR);
 				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP) {
-					Log.i(TAG, "SETTING UP screen manager, one sub manager is still setting up");
+					DebugTool.logInfo("SETTING UP screen manager, one sub manager is still setting up");
 					transitionToState(SETTING_UP);
 				} else {
 					Log.w(TAG, "LIMITED starting screen manager, one sub manager in error state and the other is ready");
