@@ -3,6 +3,9 @@ package com.smartdevicelink.managers;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.transport.utl.TransportRecord;
+
+import java.util.List;
 
 /**
  * <strong>BaseSubManager</strong> <br>
@@ -29,12 +32,13 @@ public abstract class BaseSubManager {
 
 	/**
 	 * Starts up a BaseSubManager, and calls provided callback once BaseSubManager is done setting up or failed setup.
-	 * @param listener CompletionListener that is called once the BaseSubManager's state is READY or ERROR
+	 * @param listener CompletionListener that is called once the BaseSubManager's state is READY, LIMITED, or ERROR
 	 */
 	public void start(CompletionListener listener){
 		this.completionListener = listener;
-		if((state == READY || state == ERROR) && completionListener != null){
-			completionListener.onComplete(state == READY);
+		int state = getState();
+		if((state == READY || state == LIMITED || state == ERROR) && completionListener != null){
+			completionListener.onComplete(state == READY || state == LIMITED);
 			completionListener = null;
 		}
 	}
@@ -50,11 +54,8 @@ public abstract class BaseSubManager {
 		synchronized (STATE_LOCK) {
 			this.state = state;
 		}
-		if(state == READY && completionListener != null){
-			completionListener.onComplete(true);
-			completionListener = null;
-		}else if(state == ERROR && completionListener != null){
-			completionListener.onComplete(false);
+		if((state == READY || state == LIMITED || state == ERROR) && completionListener != null ){
+			completionListener.onComplete(state == READY || state == LIMITED);
 			completionListener = null;
 		}
 	}
@@ -64,4 +65,19 @@ public abstract class BaseSubManager {
 			return state;
 		}
 	}
+
+	//This allows the method to not be exposed to developers
+	protected void handleTransportUpdated(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail){
+		this.onTransportUpdate(connectedTransports,audioStreamTransportAvail,videoStreamTransportAvail);
+	}
+
+	/**
+	 * Transport status has been updated
+	 * @param connectedTransports currently connected transports
+	 * @param audioStreamTransportAvail if there is a transport that could be used to carry the
+	 *                                     audio service
+	 * @param videoStreamTransportAvail if there is a transport that could be used to carry the
+	 *                                     video service
+	 */
+	protected void onTransportUpdate(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail){}
 }

@@ -203,6 +203,18 @@ public interface ISdl {
     boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener);
 
     /**
+     * Check to see if a transport is available to start/use the supplied service.
+     * @param serviceType the session that should be checked for transport availability
+     * @return true if there is either a supported
+     *         transport currently connected or a transport is
+     *         available to connect with for the supplied service type.
+     *         <br>false if there is no
+     *         transport connected to support the service type in question and
+     *          no possibility in the foreseeable future.
+     */
+    boolean isTransportForServiceAvailable(SessionType serviceType);
+
+    /**
      * Get the RPC specification version currently being used for the SDL messages
      * @return SdlMsgVersion the current RPC specification version
      */

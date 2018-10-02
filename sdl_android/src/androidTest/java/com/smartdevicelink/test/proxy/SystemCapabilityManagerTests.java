@@ -219,6 +219,11 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { return false; }
 
 		@Override
+		public boolean isTransportForServiceAvailable(SessionType serviceType) {
+			return false;
+		}
+
+		@Override
 		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,
 									  AudioStreamingParams params) {}
 

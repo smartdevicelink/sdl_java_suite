@@ -1,19 +1,20 @@
 package com.smartdevicelink.managers;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.managers.permission.PermissionManager;
+import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.audio.AudioStreamManager;
+import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.managers.lockscreen.LockScreenManager;
+import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
-import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.video.VideoStreamingManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -44,6 +45,11 @@ import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
+import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
+import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.Version;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +68,7 @@ import java.util.Vector;
  * 4. Helper methods
  */
 public class SdlManager{
-
-	private static String TAG = "Sdl Manager";
+	private static final String TAG = "SdlManager";
 	private SdlProxyBase proxy;
 	private String appId, appName, shortAppName;
 	private boolean isMediaApp;
@@ -78,11 +83,11 @@ public class SdlManager{
 	private SdlManagerListener managerListener;
 	private int state = -1;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
-	public LockScreenConfig lockScreenConfig;
+	private LockScreenConfig lockScreenConfig;
+	private final Object STATE_LOCK = new Object();
 
 
 	// Managers
-
 	private PermissionManager permissionManager;
 	private FileManager fileManager;
 	private LockScreenManager lockScreenManager;
@@ -95,7 +100,7 @@ public class SdlManager{
 	private final ProxyBridge proxyBridge= new ProxyBridge(new ProxyBridge.LifecycleListener() {
 		@Override
 		public void onProxyConnected() {
-			Log.d(TAG, "Proxy is connected. Now initializing.");
+			DebugTool.logInfo("Proxy is connected. Now initializing.");
 			initialize();
 		}
 
@@ -125,95 +130,144 @@ public class SdlManager{
 		@Override
 		public synchronized void onComplete(boolean success) {
 			if(!success){
-				Log.d(TAG, "Sub manager failed to initialize");
+				Log.e(TAG, "Sub manager failed to initialize");
 			}
-			if(
-					permissionManager != null && permissionManager.getState() != BaseSubManager.SETTING_UP &&
-					fileManager != null && fileManager.getState() != BaseSubManager.SETTING_UP &&
-					audioStreamManager != null && audioStreamManager.getState() != BaseSubManager.SETTING_UP &&
-					(videoStreamingManager == null || (videoStreamingManager != null && videoStreamingManager.getState() != BaseSubManager.SETTING_UP)) &&
-					lockScreenManager != null &&  lockScreenManager.getState() != BaseSubManager.SETTING_UP	&&
-					screenManager != null && screenManager.getState() != BaseSubManager.SETTING_UP
-
-					){
-				state = BaseSubManager.READY;
-				if(managerListener != null){
-					managerListener.onStart();
-				}
-
-				// Set the app icon
-				if (SdlManager.this.appIcon != null && SdlManager.this.appIcon.getName() != null) {
-					if (!fileManager.hasUploadedFile(SdlManager.this.appIcon)) {
-						fileManager.uploadArtwork(SdlManager.this.appIcon, new CompletionListener() {
-							@Override
-							public void onComplete(boolean success) {
-								if (success) {
-									SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
-									_internalInterface.sendRPCRequest(msg);
-								}
-							}
-						});
-					} else {
-						SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
-						_internalInterface.sendRPCRequest(msg);
-					}
-				}
-			}
+			checkState();
 		}
 	};
 
+	void checkState() {
+		if (permissionManager != null && fileManager != null && screenManager != null && (!lockScreenConfig.isEnabled() || lockScreenManager != null)) {
+			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.READY)) {
+				DebugTool.logInfo("Starting sdl manager, all sub managers are in ready state");
+				transitionToState(BaseSubManager.READY);
+				notifyDevListener(null);
+				onReady();
+			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.ERROR)) {
+				String info = "ERROR starting sdl manager, all sub managers are in error state";
+				Log.e(TAG, info);
+				transitionToState(BaseSubManager.ERROR);
+				notifyDevListener(info);
+			} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP || (lockScreenConfig.isEnabled() && lockScreenManager != null && lockScreenManager.getState() == BaseSubManager.SETTING_UP)) {
+				DebugTool.logInfo("SETTING UP sdl manager, some sub managers are still setting up");
+				transitionToState(BaseSubManager.SETTING_UP);
+				// No need to notify developer here!
+			} else {
+				Log.w(TAG, "LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
+				transitionToState(BaseSubManager.LIMITED);
+				notifyDevListener(null);
+				onReady();
+			}
+		} else {
+			// We should never be here, but somehow one of the sub-sub managers is null
+			String info = "ERROR one of the sdl sub managers is null";
+			Log.e(TAG, info);
+			transitionToState(BaseSubManager.ERROR);
+			notifyDevListener(info);
+		}
+	}
+
+	private void notifyDevListener(String info) {
+		if (managerListener != null) {
+			if (getState() == BaseSubManager.ERROR){
+				managerListener.onError(info, null);
+			} else {
+				managerListener.onStart();
+			}
+		}
+	}
+
+	private void onReady(){
+		// Set the app icon
+		if (SdlManager.this.appIcon != null && SdlManager.this.appIcon.getName() != null) {
+			if (fileManager != null && fileManager.getState() == BaseSubManager.READY && !fileManager.hasUploadedFile(SdlManager.this.appIcon)) {
+				fileManager.uploadArtwork(SdlManager.this.appIcon, new CompletionListener() {
+					@Override
+					public void onComplete(boolean success) {
+						if (success) {
+							SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
+							_internalInterface.sendRPCRequest(msg);
+						}
+					}
+				});
+			} else {
+				SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
+				_internalInterface.sendRPCRequest(msg);
+			}
+		}
+	}
+
 	protected void initialize(){
-		// instantiate managers
-
+		// Instantiate sub managers
 		this.permissionManager = new PermissionManager(_internalInterface);
-		this.permissionManager.start(subManagerListener);
-
 		this.fileManager = new FileManager(_internalInterface, context);
-		this.fileManager.start(subManagerListener);
-
 		if (lockScreenConfig.isEnabled()) {
 			this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
-			this.lockScreenManager.start(subManagerListener);
 		}
-
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-		this.screenManager.start(subManagerListener);
-
-
 		if(getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)){
 			this.videoStreamingManager = new VideoStreamingManager(_internalInterface);
-			this.videoStreamingManager.start(subManagerListener);
+		} else {
+			this.videoStreamingManager = null;
 		}
-
-
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+				&& (getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)) ) {
 			this.audioStreamManager = new AudioStreamManager(_internalInterface, context);
-			this.audioStreamManager.start(subManagerListener);
 		} else {
 			this.audioStreamManager = null;
 		}
 
+		// Start sub managers
+		this.permissionManager.start(subManagerListener);
+		this.fileManager.start(subManagerListener);
+		if (lockScreenConfig.isEnabled()){
+			this.lockScreenManager.start(subManagerListener);
+		}
+		this.screenManager.start(subManagerListener);
 	}
 
-	public void dispose() {
-		this.permissionManager.dispose();
+	/**
+	 * Get the current state for the SdlManager
+	 * @return int value that represents the current state
+	 * @see BaseSubManager
+	 */
+	public int getState() {
+		synchronized (STATE_LOCK) {
+			return state;
+		}
+	}
 
-		this.fileManager.dispose();
+	protected void transitionToState(int state) {
+		synchronized (STATE_LOCK) {
+			this.state = state;
+		}
+	}
+
+	@SuppressLint("NewApi")
+	public void dispose() {
+		if (this.permissionManager != null) {
+			this.permissionManager.dispose();
+		}
+
+		if (this.fileManager != null) {
+			this.fileManager.dispose();
+		}
 
 		if (this.lockScreenManager != null) {
 			this.lockScreenManager.dispose();
 		}
 
-		this.screenManager.dispose();
+		if (this.screenManager != null) {
+			this.screenManager.dispose();
+		}
 
 		if(this.videoStreamingManager != null) {
 			this.videoStreamingManager.dispose();
 		}
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			if (this.audioStreamManager != null) {
-				this.audioStreamManager.dispose();
-			}
+		// SuppressLint("NewApi") is used because audioStreamManager is only available on android >= jelly bean
+		if (this.audioStreamManager != null) {
+			this.audioStreamManager.dispose();
 		}
 
 		if(managerListener != null){
@@ -222,16 +276,7 @@ public class SdlManager{
 		}
 	}
 
-	/**
-	 * Sets the state of SdlManager to one of those defined in BaseSubManager
-	 * @param state int representing desired state of SdlManager
-	 */
-	protected void setState(int state){
-		this.state = state;
-	}
-
 	// BUILDER
-
 	public static class Builder {
 		SdlManager sdlManager;
 
@@ -424,15 +469,15 @@ public class SdlManager{
 				sdlManager.hmiLanguage = Language.EN_US;
 			}
 
-			sdlManager.state = BaseSubManager.SETTING_UP;
+			sdlManager.transitionToState(BaseSubManager.SETTING_UP);
 
 			return sdlManager;
 		}
 	}
 
 	private void checkSdlManagerState(){
-		if (state != BaseSubManager.READY){
-			throw new IllegalStateException("SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
+		if (getState() != BaseSubManager.READY && getState() != BaseSubManager.LIMITED){
+			Log.e(TAG, "SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
 		}
 	}
 
@@ -444,6 +489,9 @@ public class SdlManager{
 	 * @return a PermissionManager object
 	 */
 	public PermissionManager getPermissionManager() {
+		if (permissionManager.getState() != BaseSubManager.READY && permissionManager.getState() != BaseSubManager.LIMITED){
+			Log.e(TAG,"PermissionManager should not be accessed because it is not in READY/LIMITED state");
+		}
 		checkSdlManagerState();
 		return permissionManager;
 	}
@@ -454,26 +502,33 @@ public class SdlManager{
 	 * @return a FileManager object
 	 */
 	public FileManager getFileManager() {
+		if (fileManager.getState() != BaseSubManager.READY && fileManager.getState() != BaseSubManager.LIMITED){
+			Log.e(TAG, "FileManager should not be accessed because it is not in READY/LIMITED state");
+		}
 		checkSdlManagerState();
 		return fileManager;
 	}
 
-
     /**
      * Gets the VideoStreamingManager. <br>
-     * <strong>Note: VideoStreamingManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-     * @return a VideoStreamingManager object
+	 * The VideoStreamingManager returned will only be not null if the registered app type is
+	 * either NAVIGATION or PROJECTION. Once the VideoStreamingManager is retrieved, its start()
+	 * method will need to be called before use.
+     * <br><br><strong>Note: VideoStreamingManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     * @return a VideoStreamingManager object attached to shit SdlManager instance
      */
     
-	public VideoStreamingManager getVideoStreamingManager() {
+	public @Nullable VideoStreamingManager getVideoStreamingManager() {
 		checkSdlManagerState();
 		return videoStreamingManager;
 	}
-	
 
     /**
      * Gets the AudioStreamManager. <br>
-     * <strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * The AudioStreamManager returned will only be not null if the registered app type is
+	 * either NAVIGATION or PROJECTION. Once the AudioStreamManager is retrieved, its start()
+	 * method will need to be called before use.
+     * <br><strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
      * @return a AudioStreamManager object
      */
 	public @Nullable AudioStreamManager getAudioStreamManager() {
@@ -487,6 +542,9 @@ public class SdlManager{
 	 * @return a ScreenManager object
 	 */
 	public ScreenManager getScreenManager() {
+		if (screenManager.getState() != BaseSubManager.READY && screenManager.getState() != BaseSubManager.LIMITED){
+			Log.e(TAG, "ScreenManager should not be accessed because it is not in READY/LIMITED state");
+		}
 		checkSdlManagerState();
 		return screenManager;
 	}
@@ -497,10 +555,12 @@ public class SdlManager{
 	 * @return a LockScreenManager object
 	 */
 	public LockScreenManager getLockScreenManager() {
+		if (lockScreenManager.getState() != BaseSubManager.READY && lockScreenManager.getState() != BaseSubManager.LIMITED){
+			Log.e(TAG, "LockScreenManager should not be accessed because it is not in READY/LIMITED state");
+		}
 		checkSdlManagerState();
 		return lockScreenManager;
 	}
-
 
 	/**
 	 * Gets the SystemCapabilityManager. <br>
@@ -511,9 +571,7 @@ public class SdlManager{
 		return proxy.getSystemCapabilityManager();
 	}
 
-
 	// PROTECTED GETTERS
-
 	protected String getAppName() { return appName; }
 
 	protected String getAppId() { return appId; }
@@ -630,6 +688,30 @@ public class SdlManager{
 	public void start(){
 		if (proxy == null) {
 			try {
+				if(transport!= null  && transport.getTransportType() == TransportType.MULTIPLEX){
+					//Do the thing
+					MultiplexTransportConfig multiplexTransportConfig = (MultiplexTransportConfig)(transport);
+					final MultiplexTransportConfig.TransportListener devListener = multiplexTransportConfig.getTransportListener();
+					multiplexTransportConfig.setTransportListener(new MultiplexTransportConfig.TransportListener() {
+						@Override
+						public void onTransportEvent(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail) {
+
+							//Pass to submanagers that need it
+							if(videoStreamingManager != null){
+								videoStreamingManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
+							}
+
+							if(audioStreamManager != null){
+								audioStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
+							}
+							//If the developer supplied a listener to start, it is time to call that
+							if(devListener != null){
+								devListener.onTransportEvent(connectedTransports,audioStreamTransportAvail,videoStreamTransportAvail);
+							}
+						}
+					});
+				}
+
 				proxy = new SdlProxyBase(proxyBridge, context, appName, shortAppName, isMediaApp, hmiLanguage,
 						hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
 						nightColorScheme) {};
@@ -649,7 +731,6 @@ public class SdlManager{
 	}
 
 	// INTERNAL INTERFACE
-
 	private ISdl _internalInterface = new ISdl() {
 		@Override
 		public void start() {
@@ -795,6 +876,16 @@ public class SdlManager{
 		}
 
 		@Override
+		public boolean isTransportForServiceAvailable(SessionType serviceType) {
+			if(SessionType.NAV.equals(serviceType)){
+				return proxy.isVideoStreamTransportAvailable();
+			}else if(SessionType.PCM.equals(serviceType)){
+				return proxy.isAudioStreamTransportAvailable();
+			}
+			return false;
+		}
+
+		@Override
 		public SdlMsgVersion getSdlMsgVersion(){
 			try {
 				return proxy.getSdlMsgVersion();
@@ -805,10 +896,13 @@ public class SdlManager{
 		}
 
 		@Override
-		public com.smartdevicelink.util.Version getProtocolVersion() {
-			return proxy.getProtocolVersion();
+		public @NonNull Version getProtocolVersion() {
+			if(proxy.getProtocolVersion() != null){
+				return proxy.getProtocolVersion();
+			}else{
+				return new Version(1,0,0);
+			}
 		}
 
 	};
-
 }

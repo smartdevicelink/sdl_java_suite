@@ -392,6 +392,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
+		public boolean isTransportForServiceAvailable(SessionType serviceType) {
+			return SdlProxyBase.this.sdlSession != null
+					&& SdlProxyBase.this.sdlSession.isTransportForServiceAvailable(serviceType);
+		}
+
+		@Override
 		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,
 									  AudioStreamingParams params) {
 			if(getIsConnected()){
