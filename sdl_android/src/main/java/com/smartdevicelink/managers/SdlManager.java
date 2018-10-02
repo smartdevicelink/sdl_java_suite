@@ -466,7 +466,8 @@ public class SdlManager{
 
 	private void checkSdlManagerState(){
 		if (state != BaseSubManager.READY && state != BaseSubManager.LIMITED){
-			throw new IllegalStateException("SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
+			String msg = "SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback";
+			DebugTool.logError(msg, new IllegalStateException(msg));
 		}
 	}
 
