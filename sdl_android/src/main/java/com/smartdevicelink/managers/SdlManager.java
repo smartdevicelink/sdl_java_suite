@@ -66,8 +66,6 @@ import java.util.Vector;
  * 4. Helper methods
  */
 public class SdlManager{
-
-	private static String TAG = "SdlManager";
 	private SdlProxyBase proxy;
 	private String appId, appName, shortAppName;
 	private boolean isMediaApp;
@@ -87,7 +85,6 @@ public class SdlManager{
 
 
 	// Managers
-
 	private PermissionManager permissionManager;
 	private FileManager fileManager;
 	private LockScreenManager lockScreenManager;
@@ -238,24 +235,28 @@ public class SdlManager{
 	}
 
 	public void dispose() {
-		this.permissionManager.dispose();
+		if (this.permissionManager != null) {
+			this.permissionManager.dispose();
+		}
 
-		this.fileManager.dispose();
+		if (this.fileManager != null) {
+			this.fileManager.dispose();
+		}
 
 		if (this.lockScreenManager != null) {
 			this.lockScreenManager.dispose();
 		}
 
-		this.screenManager.dispose();
+		if (this.screenManager != null) {
+			this.screenManager.dispose();
+		}
 
 		if(this.videoStreamingManager != null) {
 			this.videoStreamingManager.dispose();
 		}
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			if (this.audioStreamManager != null) {
-				this.audioStreamManager.dispose();
-			}
+		if (this.audioStreamManager != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			this.audioStreamManager.dispose();
 		}
 
 		if(managerListener != null){
