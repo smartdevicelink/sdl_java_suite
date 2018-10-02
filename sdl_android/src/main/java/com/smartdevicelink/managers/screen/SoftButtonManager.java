@@ -27,6 +27,7 @@ import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
+import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -301,14 +302,14 @@ class SoftButtonManager extends BaseSubManager {
 
         // Upload initial state images
         if (initialStatesToBeUploaded.size() > 0 && fileManager.get() != null) {
-            Log.v(TAG, "Uploading soft button initial state artworks");
+            DebugTool.logInfo( "Uploading soft button initial state artworks");
             fileManager.get().uploadArtworks(initialStatesToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null && errors.size() > 0) {
                         Log.e(TAG, "Error uploading soft button artworks");
                     }
-                    Log.d(TAG, "Soft button initial artworks uploaded");
+                    DebugTool.logInfo( "Soft button initial artworks uploaded");
                     update(cachedListener);
                 }
             });
@@ -317,14 +318,14 @@ class SoftButtonManager extends BaseSubManager {
 
         // Upload other state images
         if (otherStatesToBeUploaded.size() > 0 && fileManager.get() != null) {
-            Log.v(TAG, "Uploading soft button other state artworks");
+            DebugTool.logInfo("Uploading soft button other state artworks");
             fileManager.get().uploadArtworks(otherStatesToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null && errors.size() > 0) {
                         Log.e(TAG, "Error uploading soft button artworks");
                     }
-                    Log.d(TAG, "Soft button other state artworks uploaded");
+                    DebugTool.logInfo("Soft button other state artworks uploaded");
                     // In case our soft button states have changed in the meantime
                     update(cachedListener);
                 }
@@ -351,17 +352,17 @@ class SoftButtonManager extends BaseSubManager {
             return;
         }
 
-        Log.v(TAG, "Updating soft buttons");
+        DebugTool.logInfo("Updating soft buttons");
 
         cachedListener = null;
 
 
         // Check if we have update already in progress
         if (inProgressShowRPC != null) {
-            Log.d(TAG, "In progress update exists, queueing update");
+            DebugTool.logInfo("In progress update exists, queueing update");
             // If we already have a pending update, we're going to tell the old listener that it was superseded by a new update and then return
             if (queuedUpdateListener != null) {
-                Log.d(TAG, "Queued update already exists, superseding previous queued update");
+                DebugTool.logInfo("Queued update already exists, superseding previous queued update");
                 queuedUpdateListener.onComplete(false);
                 queuedUpdateListener = null;
             }
@@ -380,23 +381,23 @@ class SoftButtonManager extends BaseSubManager {
         inProgressShowRPC = new Show();
         inProgressShowRPC.setMainField1(getCurrentMainField1());
         if (softButtonObjects == null) {
-            Log.d(TAG, "Soft button objects are null, sending an empty array");
+            DebugTool.logInfo("Soft button objects are null, sending an empty array");
             inProgressShowRPC.setSoftButtons(new ArrayList<SoftButton>());
         } else if ((currentStateHasImages() && !allCurrentStateImagesAreUploaded()) || !softButtonImagesSupported()) {
             // The images don't yet exist on the head unit, or we cannot use images, send a text update if possible, otherwise, don't send anything yet
             List<SoftButton> textOnlySoftButtons = createTextSoftButtonsForCurrentState();
             if (textOnlySoftButtons != null) {
-                Log.d(TAG, "Soft button images unavailable, sending text buttons");
+                DebugTool.logInfo( "Soft button images unavailable, sending text buttons");
                 inProgressShowRPC.setSoftButtons(textOnlySoftButtons);
 
             } else {
-                Log.d(TAG, "Soft button images unavailable, text buttons unavailable");
+                DebugTool.logInfo( "Soft button images unavailable, text buttons unavailable");
                 inProgressShowRPC = null;
                 return;
             }
 
         } else {
-            Log.d(TAG, "Sending soft buttons with images");
+            DebugTool.logInfo( "Sending soft buttons with images");
             inProgressShowRPC.setSoftButtons(createSoftButtonsForCurrentState());
         }
 
@@ -404,7 +405,7 @@ class SoftButtonManager extends BaseSubManager {
         inProgressShowRPC.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
-                Log.i(TAG, "Soft button update completed");
+                DebugTool.logInfo("Soft button update completed");
                 handleResponse(true);
             }
 
@@ -429,7 +430,7 @@ class SoftButtonManager extends BaseSubManager {
 
 
                 if (hasQueuedUpdate) {
-                    Log.d(TAG, "Queued update exists, sending another update");
+                    DebugTool.logInfo("Queued update exists, sending another update");
                     currentListener = queuedUpdateListener;
                     queuedUpdateListener = null;
                     hasQueuedUpdate = false;

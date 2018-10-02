@@ -6,6 +6,7 @@ import android.util.Log;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.SoftButton;
+import com.smartdevicelink.util.DebugTool;
 
 import java.util.Collections;
 import java.util.List;
@@ -71,7 +72,7 @@ public class SoftButtonObject {
             Log.e(TAG, String.format("Attempted to transition to state: %s on soft button object: %s but no state with that name was found", newStateName, this.name));
             return false;
         }
-        Log.i(TAG, String.format("Transitioning soft button object %s to state %s", this.name, newStateName));
+        DebugTool.logInfo(String.format("Transitioning soft button object %s to state %s", this.name, newStateName));
         currentStateName = newStateName;
 
         // Send a new Show RPC because the state has changed which means the actual SoftButton has changed
