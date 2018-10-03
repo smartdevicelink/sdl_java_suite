@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     defaultConfig {
         minSdkVersion 8
-        targetSdkVersion 19
-        versionCode 7
-        versionName "4.6.3"
+        targetSdkVersion 26
+        versionCode 8
+        versionName "RC1-4.7.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resValue "string", "SDL_LIB_VERSION", '\"' + versionName + '\"'
     }
@@ -41,7 +41,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.9.0'
     androidTestImplementation 'org.mockito:mockito-android:2.9.0'
-    api 'com.android.support:support-annotations:27.1.1'
+    api 'com.android.support:support-annotations:28.0.0'
 }
 
 buildscript {
