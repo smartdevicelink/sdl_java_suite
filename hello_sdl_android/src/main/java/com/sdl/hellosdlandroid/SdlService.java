@@ -120,6 +120,8 @@ public class SdlService extends Service {
 
 	private void startProxy() {
 		// This logic is to select the correct transport and security levels defined in the selected build flavor
+		// Build flavors are selected by the "build variants" tab typically located in the bottom left of Android Studio
+		// Typically in your app, you will only set one of these.
 		if (sdlManager == null) {
 			Log.i(TAG, "Starting SDL Proxy");
 			BaseTransportConfig transport = null;
@@ -137,8 +139,7 @@ public class SdlService extends Service {
 				transport = new MultiplexTransportConfig(this, APP_ID, securityLevel);
 			} else if (BuildConfig.TRANSPORT.equals("TCP")) {
 				transport = new TCPTransportConfig(TCP_PORT, DEV_MACHINE_IP_ADDRESS, true);
-			}
-			else if (BuildConfig.TRANSPORT.equals("MULTI_HB")) {
+			} else if (BuildConfig.TRANSPORT.equals("MULTI_HB")) {
 				MultiplexTransportConfig mtc = new MultiplexTransportConfig(this, APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
 				mtc.setRequiresHighBandwidth(true);
 				transport = mtc;
