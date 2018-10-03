@@ -18,19 +18,19 @@ android {
     }
     flavorDimensions "default"
     productFlavors{
-        multi_high {
+        multi_sec_high {
             buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"HIGH"'
         }
-        multi_med {
+        multi_sec_med {
             buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"MED"'
         }
-        multi_low {
+        multi_sec_low {
             buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"LOW"'
         }
-        multi_off {
+        multi_sec_off {
             buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"OFF"'
         }
