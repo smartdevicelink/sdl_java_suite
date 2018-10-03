@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Hello Sdl Android</string>
+    <string name="hello_world">Hello SDL!</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
