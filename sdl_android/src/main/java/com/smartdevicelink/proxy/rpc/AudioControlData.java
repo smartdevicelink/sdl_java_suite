@@ -53,9 +53,10 @@ public class AudioControlData extends RPCStruct {
 	 * Sets the keepContext portion of the AudioControlData class
 	 *
 	 * @param keepContext This parameter shall not be present in any getter responses or notifications.
-	 *                    This parameter is optional in a setter request. The default value is false.
-	 *                    If it is true, the system not only changes the audio source but also brings the default infotainment system UI associated with the audio source to foreground and set the application to background.
-	 *                    If it is false, the system changes the audio source, but keeps the current application's context.
+	 *       This parameter is optional in a setter request. The default value is false if it is not included.
+	 *       If it is false, the system not only changes the audio source but also brings the default application or
+	 *       system UI associated with the audio source to foreground.
+	 *       If it is true, the system only changes the audio source, but keeps the current application in foreground.
 	 */
 	public void setKeepContext(Boolean keepContext) {
 		setValue(KEY_KEEP_CONTEXT, keepContext);
@@ -65,9 +66,10 @@ public class AudioControlData extends RPCStruct {
 	 * Gets the keepContext portion of the AudioControlData class
 	 *
 	 * @return Boolean - This parameter shall not be present in any getter responses or notifications.
-	 * This parameter is optional in a setter request. The default value is false.
-	 * If it is true, the system not only changes the audio source but also brings the default infotainment system UI associated with the audio source to foreground and set the application to background.
-	 * If it is false, the system changes the audio source, but keeps the current application's context.
+	 *       This parameter is optional in a setter request. The default value is false if it is not included.
+	 *       If it is false, the system not only changes the audio source but also brings the default application or
+	 *       system UI associated with the audio source to foreground.
+	 *       If it is true, the system only changes the audio source, but keeps the current application in foreground.
 	 */
 	public Boolean getKeepContext() {
 		return getBoolean(KEY_KEEP_CONTEXT);

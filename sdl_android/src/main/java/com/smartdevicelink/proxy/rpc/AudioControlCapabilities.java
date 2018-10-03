@@ -9,6 +9,7 @@ import java.util.Hashtable;
 public class AudioControlCapabilities extends RPCStruct {
 	public static final String KEY_MODULE_NAME = "moduleName";
 	public static final String KEY_SOURCE_AVAILABLE = "sourceAvailable";
+	public static final String KEY_KEEP_CONTEXT_AVAILABLE = "keepContextAvailable";
 	public static final String KEY_VOLUME_AVAILABLE = "volumeAvailable";
 	public static final String KEY_EQUALIZER_AVAILABLE = "equalizerAvailable";
 	public static final String KEY_EQUALIZER_MAX_CHANNEL_ID = "equalizerMaxChannelId";
@@ -54,6 +55,24 @@ public class AudioControlCapabilities extends RPCStruct {
 	 */
 	public String getModuleName() {
 		return getString(KEY_MODULE_NAME);
+	}
+
+	/**
+	 * Sets the keepContextAvailable portion of the AudioControlCapabilities class
+	 *
+	 * @param keepContextAvailable Availability of the keepContext parameter.
+	 */
+	public void setKeepContextAvailable(Boolean keepContextAvailable) {
+		setValue(KEY_KEEP_CONTEXT_AVAILABLE, keepContextAvailable);
+	}
+
+	/**
+	 * Gets the keepContextAvailable portion of the AudioControlCapabilities class
+	 *
+	 * @return Boolean - Availability of the keepContext parameter.
+	 */
+	public Boolean getKeepContextAvailable() {
+		return getBoolean(KEY_KEEP_CONTEXT_AVAILABLE);
 	}
 
 	/**

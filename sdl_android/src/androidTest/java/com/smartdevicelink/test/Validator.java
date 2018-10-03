@@ -2374,6 +2374,9 @@ public class Validator{
 		if (item1.getSourceAvailable() != item2.getSourceAvailable()) {
 			return false;
 		}
+		if (item1.getKeepContextAvailable() != item2.getKeepContextAvailable()) {
+			return false;
+		}
 		if (item1.getVolumeAvailable() != item2.getVolumeAvailable()) {
 			return false;
 		}
