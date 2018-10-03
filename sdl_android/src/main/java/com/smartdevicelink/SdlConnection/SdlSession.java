@@ -557,6 +557,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
                                          byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
         this.sessionId = sessionID;
         lockScreenMan.setSessionID(sessionID);
+        if (sessionType.eq(SessionType.RPC)){
+            sessionHashId = hashID;
+            wiproProcolVer = version;
+        }
         if (isEncrypted)
             encryptedServices.addIfAbsent(sessionType);
         this.sessionListener.onProtocolSessionStarted(sessionType, sessionID, version, correlationID, hashID, isEncrypted);
@@ -568,9 +572,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         }
         //if (version == 3)
         initialiseSession();
-        if (sessionType.eq(SessionType.RPC)){
-            sessionHashId = hashID;
-        }
+
     }
 
     @Override
