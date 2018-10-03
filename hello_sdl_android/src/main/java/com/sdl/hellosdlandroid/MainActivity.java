@@ -14,9 +14,9 @@ public class MainActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		//If we are connected to a module we want to start our SdlService
-		if(BuildConfig.TRANSPORT.equals("MBT")) {
+		if(BuildConfig.TRANSPORT.equals("MULTI") || BuildConfig.TRANSPORT.equals("MULTI_HB")) {
 			SdlReceiver.queryForConnectedService(this);
-		}else if(BuildConfig.TRANSPORT.equals("TCP") || BuildConfig.TRANSPORT.equals("LBT")) {
+		}else if(BuildConfig.TRANSPORT.equals("TCP")) {
 			Intent proxyIntent = new Intent(this, SdlService.class);
 			startService(proxyIntent);
 		}
