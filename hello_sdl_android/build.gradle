@@ -34,6 +34,10 @@ android {
             buildConfigField 'String', 'TRANSPORT', '"MULTI"'
             buildConfigField 'String', 'SECURITY', '"OFF"'
         }
+        multi_high_bandwidth {
+            buildConfigField 'String', 'TRANSPORT', '"MULTI_HB"'
+            buildConfigField 'String', 'SECURITY', '"OFF"'
+        }
         tcp {
             buildConfigField 'String', 'TRANSPORT', '"TCP"'
             buildConfigField 'String', 'SECURITY', '"OFF"'

@@ -138,6 +138,11 @@ public class SdlService extends Service {
 			} else if (BuildConfig.TRANSPORT.equals("TCP")) {
 				transport = new TCPTransportConfig(TCP_PORT, DEV_MACHINE_IP_ADDRESS, true);
 			}
+			else if (BuildConfig.TRANSPORT.equals("MULTI_HB")) {
+				MultiplexTransportConfig mtc = new MultiplexTransportConfig(this, APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
+				mtc.setRequiresHighBandwidth(true);
+				transport = mtc;
+			}
 
 			// The app type to be used
 			Vector<AppHMIType> appType = new Vector<>();
