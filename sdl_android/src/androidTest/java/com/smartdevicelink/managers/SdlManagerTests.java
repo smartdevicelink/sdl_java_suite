@@ -1,8 +1,8 @@
 package com.smartdevicelink.managers;
 
 import android.content.Context;
-import android.test.AndroidTestCase;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.mock;
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link com.smartdevicelink.managers.SdlManager}
  */
-public class SdlManagerTests extends AndroidTestCase {
+public class SdlManagerTests extends AndroidTestCase2 {
 
 	public static BaseTransportConfig transport = null;
 	private Context mTestContext;

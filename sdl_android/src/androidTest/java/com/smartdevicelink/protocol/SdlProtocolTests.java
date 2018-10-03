@@ -1,8 +1,8 @@
 package com.smartdevicelink.protocol;
 
-import android.test.AndroidTestCase;
 import android.util.Log;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.protocol.SdlProtocol.MessageFrameAssembler;
@@ -22,7 +22,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.mock;
 
-public class SdlProtocolTests  extends AndroidTestCase {
+public class SdlProtocolTests  extends AndroidTestCase2 {
 
     int max_int = 2147483647;
     byte[] payload;

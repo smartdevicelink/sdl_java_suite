@@ -3,9 +3,10 @@ package com.smartdevicelink.transport;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Parcel;
-import android.test.AndroidTestCase;
 
-public class LocalRouterServiceTests extends AndroidTestCase {
+import com.smartdevicelink.AndroidTestCase2;
+
+public class LocalRouterServiceTests extends AndroidTestCase2 {
 
 	private static final int TEST_WITH_CONSTRUCTOR 	= 0;
 	private static final int TEST_WITH_CREATOR 		= 1;

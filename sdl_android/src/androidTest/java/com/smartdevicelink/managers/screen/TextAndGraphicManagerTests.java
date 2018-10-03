@@ -3,6 +3,7 @@ package com.smartdevicelink.managers.screen;
 import android.content.Context;
 import android.net.Uri;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -16,7 +17,6 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
-import com.smartdevicelink.test.utl.AndroidToolsTests;
 
 import org.json.JSONException;
 
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.mock;
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link com.smartdevicelink.managers.screen.TextAndGraphicManager}
  */
-public class TextAndGraphicManagerTests extends AndroidToolsTests{
+public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 
 	// SETUP / HELPERS
 	private TextAndGraphicManager textAndGraphicManager;

@@ -1,9 +1,8 @@
 package com.smartdevicelink.managers.lockscreen;
 
 import android.content.Context;
-import android.test.AndroidTestCase;
-import android.test.mock.MockContext;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.test.Test;
@@ -14,7 +13,7 @@ import static org.mockito.Mockito.mock;
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link com.smartdevicelink.managers.lockscreen.LockScreenManager}
  */
-public class LockScreenManagerTests extends AndroidTestCase {
+public class LockScreenManagerTests extends AndroidTestCase2 {
 
 	private LockScreenManager lockScreenManager;
 
@@ -24,7 +23,7 @@ public class LockScreenManagerTests extends AndroidTestCase {
 
 		ISdl internalInterface = mock(ISdl.class);
 
-		Context context = new MockContext();
+		Context context =  getContext();
 		// create config
 		LockScreenConfig lockScreenConfig = new LockScreenConfig();
 		lockScreenConfig.setCustomView(Test.GENERAL_INT);

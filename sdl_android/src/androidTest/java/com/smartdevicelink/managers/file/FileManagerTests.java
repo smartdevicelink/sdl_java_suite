@@ -2,8 +2,8 @@ package com.smartdevicelink.managers.file;
 
 import android.content.Context;
 import android.net.Uri;
-import android.test.AndroidTestCase;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.mock;
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link FileManager}
  */
-public class FileManagerTests extends AndroidTestCase {
+public class FileManagerTests extends AndroidTestCase2 {
 	public static final String TAG = "FileManagerTests";
 	private FileManager fileManager;
 	private Context mTestContext;

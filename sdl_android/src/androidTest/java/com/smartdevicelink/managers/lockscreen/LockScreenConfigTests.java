@@ -1,7 +1,6 @@
 package com.smartdevicelink.managers.lockscreen;
 
-import android.test.AndroidTestCase;
-
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.test.Test;
 
 
@@ -11,7 +10,7 @@ import com.smartdevicelink.test.Test;
  *
  * We currently do not need to test null values, as each currently is a primitive
  */
-public class LockScreenConfigTests extends AndroidTestCase {
+public class LockScreenConfigTests extends AndroidTestCase2 {
 
 	private LockScreenConfig lockScreenConfig;
 

@@ -1,5 +1,6 @@
 package com.smartdevicelink.managers.screen;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -7,7 +8,6 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
-import com.smartdevicelink.test.utl.AndroidToolsTests;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.mock;
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link ScreenManager}
  */
-public class ScreenManagerTests extends AndroidToolsTests{
+public class ScreenManagerTests extends AndroidTestCase2 {
 	private ScreenManager screenManager;
 	private SdlArtwork testArtwork;
 

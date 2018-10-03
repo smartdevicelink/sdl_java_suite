@@ -3,11 +3,11 @@ package com.smartdevicelink.managers.video;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.test.AndroidTestCase;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -46,7 +46,7 @@ import static org.mockito.Mockito.when;
  * This is a unit test class for the SmartDeviceLink video streaming manager class :
  * {@link VideoStreamManager}
  */
-public class VideoStreamManagerTests extends AndroidTestCase {
+public class VideoStreamManagerTests extends AndroidTestCase2 {
 	public static final String TAG = "VideoStreamManagerTests";
 	private Context mTestContext;
 	private static boolean touchEventOccured = false;

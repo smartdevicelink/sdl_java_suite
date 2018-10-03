@@ -5,9 +5,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.test.AndroidTestCase;
 import android.util.Log;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedAppStore;
 import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;
 
@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-public class RSVTestCase extends AndroidTestCase {
+public class RSVTestCase extends AndroidTestCase2 {
 	private static final String TAG = "RSVTestCase";
 	
 	private static final long REFRESH_TRUSTED_APP_LIST_TIME_DAY 	= 3600000 * 24; // A day in ms

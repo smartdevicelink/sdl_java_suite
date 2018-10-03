@@ -1,7 +1,6 @@
 package com.smartdevicelink.test.proxy;
 
-import android.test.AndroidTestCase;
-
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -38,7 +37,7 @@ import com.smartdevicelink.util.Version;
 
 import java.util.List;
 
-public class SystemCapabilityManagerTests extends AndroidTestCase {
+public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 	public static final String TAG = "SystemCapabilityManagerTests";
 	public static SystemCapabilityManager systemCapabilityManager;
 

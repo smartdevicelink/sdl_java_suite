@@ -462,7 +462,9 @@ public class AudioStreamManagerTest extends TestCase {
         final int sampleRate = 16000;
 
         final File outputFile = new File(mContext.getCacheDir(), "test_audio_file.wav");
+        assertNotNull((outputFile));
         final FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+        assertNotNull(fileOutputStream);
         writeWaveHeader(fileOutputStream, sampleRate, sampleType << 3);
 
         IAudioStreamListener audioStreamListener = new IAudioStreamListener() {

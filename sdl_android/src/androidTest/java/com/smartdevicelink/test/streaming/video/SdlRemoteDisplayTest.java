@@ -4,11 +4,11 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Looper;
-import android.test.AndroidTestCase;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.R;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.FutureTask;
 
 
-public class SdlRemoteDisplayTest extends AndroidTestCase {
+public class SdlRemoteDisplayTest extends AndroidTestCase2 {
 
     MockRemoteDisplayCallback rdCallback = new MockRemoteDisplayCallback();
 

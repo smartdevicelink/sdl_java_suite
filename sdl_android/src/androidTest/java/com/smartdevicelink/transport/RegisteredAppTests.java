@@ -1,16 +1,16 @@
 package com.smartdevicelink.transport;
 
-import android.os.Handler;
 import android.os.Looper;
 import android.os.Messenger;
-import android.test.AndroidTestCase;
+
+import com.smartdevicelink.AndroidTestCase2;
 
 
 /**
  * Created by brettywhite on 4/4/17.
  */
 
-public class RegisteredAppTests extends AndroidTestCase {
+public class RegisteredAppTests extends AndroidTestCase2 {
 
     private static final String APP_ID = "123451123";
     private static final Messenger messenger = null;

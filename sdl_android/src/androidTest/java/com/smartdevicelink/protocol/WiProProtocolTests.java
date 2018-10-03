@@ -1,9 +1,9 @@
 package com.smartdevicelink.protocol;
 
 import android.os.Bundle;
-import android.test.AndroidTestCase;
 import android.util.Log;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.protocol.WiProProtocol.MessageFrameAssembler;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -26,7 +26,7 @@ import java.util.Map;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.protocol.BinaryFrameHeader}
  */
-public class WiProProtocolTests extends AndroidTestCase {
+public class WiProProtocolTests extends AndroidTestCase2 {
 	
 	int max_int = 2147483647;
 	byte[] payload;
