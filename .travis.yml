@@ -44,6 +44,7 @@ before_script:
 
 script:
   - android list target
+  - cd sdl_android
   - ./gradlew connectedCheck
 
 before_install:
