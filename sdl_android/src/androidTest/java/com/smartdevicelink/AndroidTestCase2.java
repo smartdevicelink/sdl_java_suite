@@ -13,11 +13,6 @@ public class AndroidTestCase2 extends TestCase {
 
     public AndroidTestCase2(){
         mContext = InstrumentationRegistry.getTargetContext();
-        try {
-            setUp();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public Context getContext(){
