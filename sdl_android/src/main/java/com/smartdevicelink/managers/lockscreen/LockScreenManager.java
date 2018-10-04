@@ -102,6 +102,8 @@ public class LockScreenManager extends BaseSubManager {
 			lifecycleObserver = null;
 		}
 
+		isApplicationForegrounded = false;
+
 		super.dispose();
 	}
 
@@ -193,6 +195,8 @@ public class LockScreenManager extends BaseSubManager {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else{
+			isApplicationForegrounded = true;
 		}
 	}
 
