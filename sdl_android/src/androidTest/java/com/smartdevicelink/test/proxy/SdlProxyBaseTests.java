@@ -2,9 +2,9 @@ package com.smartdevicelink.test.proxy;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
-import android.test.AndroidTestCase;
 import android.util.Log;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -97,7 +97,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SdlProxyBaseTests extends AndroidTestCase{
+public class SdlProxyBaseTests extends AndroidTestCase2 {
     public static final String TAG = "SdlProxyBaseTests";
 
     @Override

@@ -2,14 +2,12 @@ package com.smartdevicelink.test.protocol;
 
 import junit.framework.Assert;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.BinaryFrameHeader;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.test.SampleRpc;
 
-import android.test.AndroidTestCase;
-import android.util.Log;
-
-public class BinaryFrameHeaderTests extends AndroidTestCase {
+public class BinaryFrameHeaderTests extends AndroidTestCase2 {
 	
 	public static final byte RPC_TYPE_REQUEST 		= 0x00;
 	public static final byte RPC_TYPE_RESPONSE 		= 0x01;

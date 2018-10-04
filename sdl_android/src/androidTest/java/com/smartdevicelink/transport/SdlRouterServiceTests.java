@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.test.AndroidTestCase;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.BinaryFrameHeader;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -29,7 +29,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-public class SdlRouterServiceTests extends AndroidTestCase {
+public class SdlRouterServiceTests extends AndroidTestCase2 {
 
     public static final String TAG = "SdlRouterServiceTests";
     private final int SAMPLE_RPC_CORRELATION_ID = 630;

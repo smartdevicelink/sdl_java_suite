@@ -1,10 +1,9 @@
 package com.smartdevicelink.test.util;
 
-import android.test.AndroidTestCase;
-
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.util.Version;
 
-public class VersionTest extends AndroidTestCase {
+public class VersionTest extends AndroidTestCase2 {
 
     private static final String TEST_VERSION = "1.2.3";
 

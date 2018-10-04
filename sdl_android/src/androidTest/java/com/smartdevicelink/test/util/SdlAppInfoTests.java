@@ -38,8 +38,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import android.os.Bundle;
-import android.test.AndroidTestCase;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.R;
 import com.smartdevicelink.util.SdlAppInfo;
 
@@ -51,7 +51,7 @@ import java.util.List;
  * Created by Joey Grover on 2/20/18.
  */
 
-public class SdlAppInfoTests extends AndroidTestCase {
+public class SdlAppInfoTests extends AndroidTestCase2 {
 
     Context context;
     ResolveInfo defaultResolveInfo;

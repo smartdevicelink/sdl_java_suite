@@ -1,22 +1,15 @@
 package com.smartdevicelink.test.proxy;
 
-import android.test.AndroidTestCase;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.test.Config;
-import com.smartdevicelink.test.JsonUtils;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import junit.framework.TestCase;
 
-import java.util.Iterator;
 
-public class RPCRequestTest extends AndroidTestCase {
+public class RPCRequestTest extends AndroidTestCase2 {
 
     public static final int  SDL_VERSION_UNDER_TEST = Config.SDL_VERSION_UNDER_TEST;
 

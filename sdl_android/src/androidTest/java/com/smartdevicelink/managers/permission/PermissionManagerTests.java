@@ -1,12 +1,8 @@
 package com.smartdevicelink.managers.permission;
 
 import android.support.annotation.NonNull;
-import android.test.AndroidTestCase;
 
-import com.smartdevicelink.managers.permission.OnPermissionChangeListener;
-import com.smartdevicelink.managers.permission.PermissionElement;
-import com.smartdevicelink.managers.permission.PermissionManager;
-import com.smartdevicelink.managers.permission.PermissionStatus;
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
@@ -32,7 +28,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
-public class PermissionManagerTests extends AndroidTestCase {
+public class PermissionManagerTests extends AndroidTestCase2 {
 
     private OnRPCNotificationListener onHMIStatusListener, onPermissionsChangeListener;
     private PermissionManager permissionManager;

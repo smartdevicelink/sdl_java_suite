@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
-import android.test.AndroidTestCase;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlPacketFactory;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TransportManagerTests extends AndroidTestCase {
+public class TransportManagerTests extends AndroidTestCase2 {
 
     MultiplexTransportConfig config;
     final TransportRecord defaultBtRecord = new TransportRecord(TransportType.BLUETOOTH, "12:34:56:78:90");

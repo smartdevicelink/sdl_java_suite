@@ -1,7 +1,7 @@
 package com.smartdevicelink.managers.screen;
 
-import android.test.AndroidTestCase;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.mock;
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link SoftButtonManager}
  */
-public class SoftButtonManagerTests extends AndroidTestCase {
+public class SoftButtonManagerTests extends AndroidTestCase2 {
 
     private SoftButtonManager softButtonManager;
     private boolean fileManagerUploadArtworksGotCalled;
