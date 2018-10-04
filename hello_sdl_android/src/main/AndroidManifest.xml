@@ -62,7 +62,7 @@
             </intent-filter>
         </receiver>
         <activity android:name="com.smartdevicelink.managers.lockscreen.SDLLockScreenActivity"
-                  android:launchMode="singleInstance"/>
+                  android:launchMode="singleTop"/>
     </application>
 
 </manifest>

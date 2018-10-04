@@ -1,6 +1,9 @@
 package com.smartdevicelink.managers.lockscreen;
 
-import android.app.ActivityManager;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.OnLifecycleEvent;
+import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -41,6 +44,8 @@ public class LockScreenManager extends BaseSubManager {
 	private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
 	private String deviceIconUrl;
 	private boolean driverDistStatus;
+	private volatile boolean isApplicationForegrounded;
+	private LifecycleObserver lifecycleObserver;
 	protected boolean lockScreenEnabled, deviceLogoEnabled;
 	protected int lockScreenIcon, lockScreenColor, customView;
 	protected Bitmap deviceLogo;
@@ -84,6 +89,19 @@ public class LockScreenManager extends BaseSubManager {
 		}
 		deviceLogo = null;
 		deviceIconUrl = null;
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			try {
+				if (ProcessLifecycleOwner.get() != null && lifecycleObserver != null) {
+					ProcessLifecycleOwner.get().getLifecycle().removeObserver(lifecycleObserver);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lifecycleObserver = null;
+		}
+
 		super.dispose();
 	}
 
@@ -152,6 +170,30 @@ public class LockScreenManager extends BaseSubManager {
 			};
 			internalInterface.addOnRPCNotificationListener(FunctionID.ON_SYSTEM_REQUEST, systemRequestListener);
 		}
+
+		// Set up listener for Application Foreground / Background events
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			try {
+				lifecycleObserver = new LifecycleObserver() {
+					@OnLifecycleEvent(Lifecycle.Event.ON_START)
+					public void onMoveToForeground() {
+						isApplicationForegrounded = true;
+						launchLockScreenActivity();
+					}
+
+					@OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+					public void onMoveToBackground() {
+						isApplicationForegrounded = false;
+					}
+				};
+
+				if (ProcessLifecycleOwner.get() != null) {
+					ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleObserver);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	////
@@ -168,7 +210,7 @@ public class LockScreenManager extends BaseSubManager {
 	private void launchLockScreenActivity(){
 		// intent to open SDLLockScreenActivity
 		// pass in icon, background color, and custom view
-		if (lockScreenEnabled && isForegrounded() && context.get() != null) {
+		if (lockScreenEnabled && isApplicationForegrounded && context.get() != null) {
 			LockScreenStatus status = getLockScreenStatus();
 			if (status == LockScreenStatus.REQUIRED) {
 				Intent showLockScreenIntent = new Intent(context.get(), SDLLockScreenActivity.class);
@@ -185,15 +227,6 @@ public class LockScreenManager extends BaseSubManager {
 				context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
 			}
 		}
-	}
-
-	private boolean isForegrounded() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
-			ActivityManager.getMyMemoryState(myProcess);
-			return myProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
-		}
-		return true;
 	}
 
 	////
