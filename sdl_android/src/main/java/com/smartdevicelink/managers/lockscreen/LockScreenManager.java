@@ -7,6 +7,7 @@ import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
@@ -89,15 +90,17 @@ public class LockScreenManager extends BaseSubManager {
 		deviceLogo = null;
 		deviceIconUrl = null;
 
-		try {
-			if (ProcessLifecycleOwner.get() != null && lifecycleObserver != null) {
-				ProcessLifecycleOwner.get().getLifecycle().removeObserver(lifecycleObserver);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			try {
+				if (ProcessLifecycleOwner.get() != null && lifecycleObserver != null) {
+					ProcessLifecycleOwner.get().getLifecycle().removeObserver(lifecycleObserver);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
-		lifecycleObserver = null;
+			lifecycleObserver = null;
+		}
 
 		super.dispose();
 	}
@@ -169,25 +172,27 @@ public class LockScreenManager extends BaseSubManager {
 		}
 
 		// Set up listener for Application Foreground / Background events
-		try {
-			lifecycleObserver = new LifecycleObserver() {
-				@OnLifecycleEvent(Lifecycle.Event.ON_START)
-				public void onMoveToForeground() {
-					isApplicationForegrounded = true;
-					launchLockScreenActivity();
-				}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			try {
+				lifecycleObserver = new LifecycleObserver() {
+					@OnLifecycleEvent(Lifecycle.Event.ON_START)
+					public void onMoveToForeground() {
+						isApplicationForegrounded = true;
+						launchLockScreenActivity();
+					}
 
-				@OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-				public void onMoveToBackground() {
-					isApplicationForegrounded = false;
-				}
-			};
+					@OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+					public void onMoveToBackground() {
+						isApplicationForegrounded = false;
+					}
+				};
 
-			if (ProcessLifecycleOwner.get() != null) {
-				ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleObserver);
+				if (ProcessLifecycleOwner.get() != null) {
+					ProcessLifecycleOwner.get().getLifecycle().addObserver(lifecycleObserver);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
