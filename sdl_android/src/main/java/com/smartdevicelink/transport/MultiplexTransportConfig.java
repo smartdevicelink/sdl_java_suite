@@ -157,6 +157,13 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 	 * Set whether or not this app requires the use of a transport that supports high bandwidth
 	 * services. Common use is when an app uses the video/audio streaming services and there is no
 	 * other integration that could be useful to the user.
+	 * <br><br> <b>For example:</b>
+	 * <br><b>1. </b>If an app intends to perform audio or video streaming and does not wish
+	 * to appear on the module when that isn't possible, a value of true should be sent.
+	 * <br><b>2. </b>If the same app wishes to appear on the module even when those services aren't available
+	 * a value of true should be sent. In this case, the app could display a message prompting the
+	 * user to "Please connect USB or Wifi" or it could have a separate integration like giving turn
+	 * by turn directions in place of streaming the full navigation map.
 	 * @param requiresHighBandwidth whether the app should be treated as requiring a high
 	 *                                 bandwidth transport.
 	 */
@@ -242,13 +249,13 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 		 * @param connectedTransports the currently connected transports
 		 * @param audioStreamTransportAvail true if there is either an audio streaming supported
 		 *                                        transport currently connected or a transport is
-		 *                                        available to connect with. false if there is no
+		 *                                        available to connect with. False if there is no
 		 *                                        transport connected to support audio streaming and
 		 *                                        no possibility in the foreseeable future.
-		 * @param videoStreamTransportAvail true if there is either an audio streaming supported
+		 * @param videoStreamTransportAvail true if there is either a video streaming supported
 		 *                                        transport currently connected or a transport is
-		 *                                        available to connect with. false if there is no
-		 *                                        transport connected to support audio streaming and
+		 *                                        available to connect with. False if there is no
+		 *                                        transport connected to support video streaming and
 		 *                                        no possibility in the foreseeable future.
 		 */
 		void onTransportEvent(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail,boolean videoStreamTransportAvail);

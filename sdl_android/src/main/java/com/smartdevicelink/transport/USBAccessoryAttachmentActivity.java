@@ -40,10 +40,12 @@ import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.smartdevicelink.util.AndroidTools;
+import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.ServiceFinder;
 
@@ -86,9 +88,12 @@ import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
  */
 @RequiresApi(12)
 public class USBAccessoryAttachmentActivity extends Activity {
-    private static final String TAG =            USBAccessoryAttachmentActivity.class.getSimpleName();
-
+    
+    private static final String TAG = USBAccessoryAttachmentActivity.class.getSimpleName();
+    private static final int USB_SUPPORTED_ROUTER_SERVICE_VERSION = 8;
+    
     UsbAccessory usbAccessory;
+    Parcelable permissionGranted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,11 +113,8 @@ public class USBAccessoryAttachmentActivity extends Activity {
         Log.d(TAG, sourceAction + " with action: " + action);
 
         if (UsbManager.ACTION_USB_ACCESSORY_ATTACHED.equals(action)) {
-            Intent usbAccessoryAttachedIntent =  new Intent(USBTransport.ACTION_USB_ACCESSORY_ATTACHED);
-            usbAccessoryAttachedIntent.putExtra(UsbManager.EXTRA_ACCESSORY,intent.getParcelableExtra(UsbManager.EXTRA_ACCESSORY));
-            usbAccessoryAttachedIntent.putExtra(UsbManager.EXTRA_PERMISSION_GRANTED,intent.getParcelableExtra(UsbManager.EXTRA_PERMISSION_GRANTED));
-
             usbAccessory = intent.getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
+            permissionGranted = intent.getParcelableExtra(UsbManager.EXTRA_PERMISSION_GRANTED);
 
             wakeUpRouterService(getApplicationContext());
 
@@ -131,24 +133,46 @@ public class USBAccessoryAttachmentActivity extends Activity {
                     //We will try to sort the SDL enabled apps and find the one that's been installed the longest
                     Intent serviceIntent;
                     List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator());
+
                     if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
+                        SdlAppInfo optimalRouterService = sdlAppInfoList.get(0);
+                        
+                        if(optimalRouterService.getRouterServiceVersion() < USB_SUPPORTED_ROUTER_SERVICE_VERSION){
+                            // The most optimal router service doesn't support the USB connection
+                            // At this point to ensure that USB connection is still possible it might be
+                            // worth trying to use the legacy USB transport scheme
+                            attemptLegacyUsbConnection();
+                            return;
+                        }
+                        
                         serviceIntent = new Intent();
-                        serviceIntent.setComponent(sdlAppInfoList.get(0).getRouterServiceComponentName());
+                        serviceIntent.setComponent(optimalRouterService.getRouterServiceComponentName());
                     } else{
                         Log.d(TAG, "No SDL Router Services found");
                         Log.d(TAG, "WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
+                        // At this point to ensure that USB connection is still possible it might be
+                        // worth trying to use the legacy USB transport scheme
+                        attemptLegacyUsbConnection();
                         return;
                     }
                     serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
 
+                    ComponentName startedService;
                     try {
                         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                            context.startService(serviceIntent);
+                            startedService = context.startService(serviceIntent);
                         }else {
                             serviceIntent.putExtra(FOREGROUND_EXTRA, true);
-                            context.startForegroundService(serviceIntent);
-
+                            startedService = context.startForegroundService(serviceIntent);
                         }
+
+                        if(startedService == null){
+                            // A router service was not started or is not running.
+                            DebugTool.logError(TAG + " - Error starting router service. Attempting legacy connection ");
+                            attemptLegacyUsbConnection();
+                            return;
+                        }
+
                         //Make sure to send this out for old apps to close down
                         SdlRouterService.LocalRouterService self = SdlRouterService.getLocalRouterService(serviceIntent, serviceIntent.getComponent());
                         Intent restart = new Intent(SdlRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION);
@@ -182,5 +206,14 @@ public class USBAccessoryAttachmentActivity extends Activity {
                 }
             }
         });
+    }
+    
+    private void attemptLegacyUsbConnection(){
+        DebugTool.logInfo("Attempting to send USB connection intent using legacy method");
+        Intent usbAccessoryAttachedIntent = new Intent(USBTransport.ACTION_USB_ACCESSORY_ATTACHED);
+        usbAccessoryAttachedIntent.putExtra(UsbManager.EXTRA_ACCESSORY, usbAccessory);
+        usbAccessoryAttachedIntent.putExtra(UsbManager.EXTRA_PERMISSION_GRANTED, permissionGranted);
+        AndroidTools.sendExplicitBroadcast(getApplicationContext(),usbAccessoryAttachedIntent,null);
+        finish();
     }
 }

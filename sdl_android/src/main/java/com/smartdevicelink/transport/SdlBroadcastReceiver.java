@@ -44,11 +44,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.hardware.usb.UsbManager;
 import android.os.Build;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedListCallback;
+import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.ServiceFinder;
@@ -164,6 +167,12 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 								//List obtained. Let's start our service
 								queuedService = componentName;
 								finalIntent.setAction("com.sdl.noaction"); //Replace what's there so we do go into some unintended loop
+								String  transportType = finalIntent.getStringExtra(TransportConstants.START_ROUTER_SERVICE_TRANSPORT_CONNECTED);
+								if(transportType!= null ){
+									if(TransportType.USB.toString().equals(transportType)){
+										finalIntent.putExtra(UsbManager.EXTRA_ACCESSORY, (Parcelable)null);
+									}
+								}
 								onSdlEnabled(finalContext, finalIntent);
 							}
 							
