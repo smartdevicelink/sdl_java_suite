@@ -23,6 +23,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.util.AndroidTools;
@@ -98,6 +99,13 @@ public class RouterServiceValidator {
 		this.context = context;
 		inDebugMode = inDebugMode();
 		this.service = service;
+	}
+
+	public RouterServiceValidator(@NonNull MultiplexTransportConfig config){
+		inDebugMode = inDebugMode();
+		this.context = config.context;
+		this.service = config.service;
+		setSecurityLevel(config.securityLevel);
 	}
 	/**
 	 * Main function to call to ensure we are connecting to a validated router service
