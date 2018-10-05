@@ -102,11 +102,12 @@ public class RouterServiceValidator {
 	}
 
 	public RouterServiceValidator(@NonNull MultiplexTransportConfig config){
-		inDebugMode = inDebugMode();
 		this.context = config.context;
 		this.service = config.service;
 		setSecurityLevel(config.securityLevel);
+		inDebugMode = inDebugMode();
 	}
+	
 	/**
 	 * Main function to call to ensure we are connecting to a validated router service
 	 * @return whether or not the currently running router service can be trusted.
