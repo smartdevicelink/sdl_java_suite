@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc.enums;
 /**
  * Enumeration that describes the status of the turn light indicator.
  *
- * @since SmartDeviceLink 4.6
+ * @since SmartDeviceLink 5.0
  */
 public enum TurnSignal {
 

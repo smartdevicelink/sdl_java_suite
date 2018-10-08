@@ -56,7 +56,7 @@ import java.util.Hashtable;
  * 			<td>Image to be be shown along with the submenu item</td>
  *                 <td>N</td>
  * 			<td></td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  *  </table>
  *  <b>Response</b>

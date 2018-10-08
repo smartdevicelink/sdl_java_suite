@@ -69,7 +69,7 @@ public enum ImageFieldName {
 	/**
 	 * The secondary graphic image field
 	 *
-	 * @since SmartDeviceLink 4.6
+	 * @since SmartDeviceLink 5.0
 	 */
 	secondaryGraphic,
 	;

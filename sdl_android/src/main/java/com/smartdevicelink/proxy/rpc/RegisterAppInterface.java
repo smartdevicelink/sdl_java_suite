@@ -189,7 +189,7 @@ import java.util.List;
  * 			<td>ID used to validate app with policy table entries</td>
  *                 <td>N</td>
  *                 <td>Maxlength: 100</td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>hmiCapabilities</td>
@@ -224,7 +224,7 @@ import java.util.List;
  * 			<td>The color scheme that is used for day.</td>
  *                 <td>N</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  *
  * 		<tr>
@@ -233,7 +233,7 @@ import java.util.List;
  * 			<td>The color scheme that is used for night.</td>
  *                 <td>N</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  *  </table>
  *  <p></p>
@@ -619,7 +619,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *
 	 * @return String - a String value representing the unique ID, which an app
 	 *         will be given when approved
-	 * @since SmartDeviceLink 4.6
+	 * @since SmartDeviceLink 5.0
 	 */
 	public String getFullAppID() {
 		return getString(KEY_FULL_APP_ID);
@@ -633,7 +633,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            given when approved
 	 *            <p></p>
 	 *            <b>Notes: </b>Maxlength = 100
-	 * @since SmartDeviceLink 4.6
+	 * @since SmartDeviceLink 5.0
 	 */
 	public void setFullAppID(String fullAppID) {
 		if (fullAppID != null) {
@@ -666,7 +666,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *
 	 * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
 	 * for day color scheme
-	 * @since SmartDeviceLink 4.6
+	 * @since SmartDeviceLink 5.0
 	 */
     public TemplateColorScheme getDayColorScheme(){
 		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_DAY_COLOR_SCHEME);
@@ -677,7 +677,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *
 	 * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
 	 * used for day color scheme
-	 * @since SmartDeviceLink 4.6
+	 * @since SmartDeviceLink 5.0
 	 */
     public void setDayColorScheme(TemplateColorScheme templateColorScheme){
 		setParameters(KEY_DAY_COLOR_SCHEME, templateColorScheme);
@@ -688,7 +688,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *
 	 * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
 	 * for night color scheme
-	 * @since SmartDeviceLink 4.6
+	 * @since SmartDeviceLink 5.0
 	 */
 	public TemplateColorScheme getNightColorScheme(){
 		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_NIGHT_COLOR_SCHEME);
@@ -699,7 +699,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *
 	 * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
 	 * used for night color scheme
-	 * @since SmartDeviceLink 4.6
+	 * @since SmartDeviceLink 5.0
 	 */
 	public void setNightColorScheme(TemplateColorScheme templateColorScheme){
 		setParameters(KEY_NIGHT_COLOR_SCHEME, templateColorScheme);

@@ -176,7 +176,7 @@ import static com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet.KEY_CHOIC
  * 			<td>The estimated percentage of remaining oil life of the engine</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>accPedalPosition</td>
@@ -200,7 +200,7 @@ import static com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet.KEY_CHOIC
  * 			<td>@see TurnSignal</td>
  * 			<td>N</td>
  * 			<td>Subscribable</td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  *  </table>
  *  

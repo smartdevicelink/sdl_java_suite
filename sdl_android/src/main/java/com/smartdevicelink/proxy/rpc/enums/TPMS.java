@@ -3,7 +3,7 @@ package com.smartdevicelink.proxy.rpc.enums;
 /**
  * Enums for Tire Pressure Monitoring Systems
  *
- * @since SmartDeviceLink 4.6
+ * @since SmartDeviceLink 5.0
  */
 public enum TPMS {
 

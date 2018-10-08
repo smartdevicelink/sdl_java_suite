@@ -37,7 +37,7 @@ import static com.smartdevicelink.proxy.constants.Names.displayType;
  * 			<td>String</td>
  * 			<td>The name of the display
  *			</td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>textField</td>

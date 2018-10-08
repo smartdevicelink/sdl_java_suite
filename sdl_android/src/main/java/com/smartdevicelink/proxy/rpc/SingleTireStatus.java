@@ -32,13 +32,13 @@ import java.util.Hashtable;
  * 			<td>The status of TPMS according to the particular tire.
  * 					See {@linkplain com.smartdevicelink.proxy.rpc.enums.TPMS}
  * 			</td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>pressure</td>
  * 			<td>Float</td>
  * 			<td>The pressure value of the particular tire in kilo pascal.</td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  *  </table>
  * @since SmartDeviceLink 2.0
