@@ -36,7 +36,7 @@ import java.util.Hashtable;
  * 			<td>The color scheme that is used for day.</td>
  *                 <td>N</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  *
  * 		<tr>
@@ -45,7 +45,7 @@ import java.util.Hashtable;
  * 			<td>The color scheme that is used for night.</td>
  *                 <td>N</td>
  *                 <td></td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  *
  *  </table>
@@ -119,7 +119,7 @@ public class SetDisplayLayout extends RPCRequest {
 	 *
 	 * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
 	 * for day color scheme
-	 * @since SmartDeviceLink 4.6
+	 * @since SmartDeviceLink 5.0
 	 */
 	public TemplateColorScheme getDayColorScheme(){
 		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_DAY_COLOR_SCHEME);
@@ -130,7 +130,7 @@ public class SetDisplayLayout extends RPCRequest {
 	 *
 	 * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
 	 * used for day color scheme
-	 * @since SmartDeviceLink 4.6
+	 * @since SmartDeviceLink 5.0
 	 */
 	public void setDayColorScheme(TemplateColorScheme templateColorScheme){
 		setParameters(KEY_DAY_COLOR_SCHEME, templateColorScheme);
@@ -141,7 +141,7 @@ public class SetDisplayLayout extends RPCRequest {
 	 *
 	 * @return TemplateColorScheme - a TemplateColorScheme object representing the colors that are used
 	 * for night color scheme
-	 * @since SmartDeviceLink 4.6
+	 * @since SmartDeviceLink 5.0
 	 */
 	public TemplateColorScheme getNightColorScheme(){
 		return (TemplateColorScheme) getObject(TemplateColorScheme.class, KEY_NIGHT_COLOR_SCHEME);
@@ -152,7 +152,7 @@ public class SetDisplayLayout extends RPCRequest {
 	 *
 	 * @param templateColorScheme a TemplateColorScheme object representing the colors that will be
 	 * used for night color scheme
-	 * @since SmartDeviceLink 4.6
+	 * @since SmartDeviceLink 5.0
 	 */
 	public void setNightColorScheme(TemplateColorScheme templateColorScheme){
 		setParameters(KEY_NIGHT_COLOR_SCHEME, templateColorScheme);

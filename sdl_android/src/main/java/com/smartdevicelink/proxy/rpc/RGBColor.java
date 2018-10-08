@@ -19,24 +19,24 @@ import java.util.Hashtable;
  * 			<td>Integer</td>
  * 			<td>Y</td>
  * 			<td><ul><li>minvalue="0"</li><li>maxvalue="255"</li></ul></td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>green</td>
  * 			<td>Integer</td>
  * 			<td>Y</td>
  * 			<td><ul><li>minvalue="0"</li><li>maxvalue="255"</li></ul></td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>blue</td>
  * 			<td>Integer</td>
  * 			<td>Y</td>
  * 			<td><ul><li>minvalue="0"</li><li>maxvalue="255"</li></ul></td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  * </table>
- * @since SmartDeviceLink 4.6
+ * @since SmartDeviceLink 5.0
  */
 public class RGBColor extends RPCStruct{
     public static final String KEY_RED = "red";

@@ -168,7 +168,7 @@ import java.util.Hashtable;
  * 			<td>The estimated percentage of remaining oil life of the engine</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
- * 			<td>SmartDeviceLink 4.6 </td>
+ * 			<td>SmartDeviceLink 5.0 </td>
  * 		</tr>
  * 		<tr>
  * 			<td>accPedalPosition</td>
@@ -232,7 +232,7 @@ import java.util.Hashtable;
  * 			<td>@see TurnSignal</td>
  *				<td>N</td>
  *				<td>Subscribable</td>
- * 			<td>SmartDeviceLink 4.6 </td>
+ * 			<td>SmartDeviceLink 5.0 </td>
  * 		</tr>
  *  </table>
  *  

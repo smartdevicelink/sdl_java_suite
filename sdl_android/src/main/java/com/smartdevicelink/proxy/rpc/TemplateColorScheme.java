@@ -19,24 +19,24 @@ import java.util.Hashtable;
  * 			<td>RGBColor</td>
  * 			<td>The primary "accent" color</td>
  * 			<td>N</td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>secondaryColor</td>
  * 			<td>RGBColor</td>
  * 			<td>The secondary "accent" color</td>
  * 			<td>N</td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>backgroundColor</td>
  * 			<td>RGBColor</td>
  * 			<td>The color of the background</td>
  * 			<td>N</td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  * </table>
- * @since SmartDeviceLink 4.6
+ * @since SmartDeviceLink 5.0
  */
 public class TemplateColorScheme extends RPCStruct {
 

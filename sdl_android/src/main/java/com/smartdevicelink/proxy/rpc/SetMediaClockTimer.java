@@ -60,7 +60,7 @@ import java.util.Hashtable;
  * 			<td></td>
  *                 <td>N</td>
  * 			<td></td>
- * 			<td>SmartDeviceLink 4.6</td>
+ * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
  *
  *  </table>

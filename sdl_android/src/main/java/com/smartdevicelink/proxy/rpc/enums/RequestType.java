@@ -69,7 +69,7 @@ public enum RequestType {
      */
     FOTA,
     /**
-     * @since SmartDeviceLink 4.6
+     * @since SmartDeviceLink 5.0
      */
     OEM_SPECIFIC,
 	;

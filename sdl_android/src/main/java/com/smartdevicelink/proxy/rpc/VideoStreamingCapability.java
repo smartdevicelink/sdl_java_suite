@@ -26,10 +26,22 @@ public class VideoStreamingCapability extends RPCStruct {
 		return (ImageResolution) getObject(ImageResolution.class, KEY_PREFERRED_RESOLUTION);
 	}
 
+	/**
+	 * Set the max bitrate supported by this module.
+	 *
+	 * <b>NOTE: </b> Unit is in kbps.
+	 * @param maxBitrate in kbps
+	 */
 	public void setMaxBitrate(Integer maxBitrate){
 		setValue(KEY_MAX_BITRATE, maxBitrate);
 	}
 
+	/**
+	 * Retrieves the max bitrate supported by this module.
+	 *
+	 * <b>NOTE: </b> Unit is in kbps.
+	 * @return max bitrate in kbps
+	 */
 	public Integer getMaxBitrate(){
 		return getInteger(KEY_MAX_BITRATE);
 	}
