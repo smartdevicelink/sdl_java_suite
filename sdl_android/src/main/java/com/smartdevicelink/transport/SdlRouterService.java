@@ -614,17 +614,45 @@ public class SdlRouterService extends Service{
 	                	break;
 	                case TransportConstants.ROUTER_REQUEST_SECONDARY_TRANSPORT_CONNECTION:
 	                	// Currently this only handles one TCP connection
+
 		                String ipAddress = receivedBundle.getString(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS);
 		                int port = receivedBundle.getInt(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT);
-		                if(ipAddress == null){ // double check if null or empty
-		                	// Handle TCP disconnection
-			                if(service.tcpTransport != null){
-			                	service.tcpTransport.stop(MultiplexBaseTransport.STATE_NONE);
-			                	service.tcpTransport = null;
-			                }
-		                }else{
-			                service.tcpTransport = new MultiplexTcpTransport(port, ipAddress, true, service.tcpHandler);
-			                service.tcpTransport.start();
+
+		                if(ipAddress != null){
+		                	if(service.tcpTransport != null){
+		                		switch (service.tcpTransport.getState()){
+									case MultiplexBaseTransport.STATE_CONNECTED:
+									case MultiplexBaseTransport.STATE_CONNECTING:
+										// A TCP connection is currently active. This version of the
+										// router service can't handle multiple TCP transports so just
+										// return a connected message to requester.
+										if(msg.replyTo != null){
+											// Send a transport connect message to the app that requested
+											// the tcp transport
+											try {
+												msg.replyTo.send(service.createHardwareConnectedMessage(service.tcpTransport.transportRecord));
+											} catch (RemoteException e) {
+												e.printStackTrace();
+											}
+										}
+										//Nothing else to do, so return out of this method
+										return;
+
+									case MultiplexBaseTransport.STATE_NONE:
+									case MultiplexBaseTransport.STATE_LISTEN:
+									case MultiplexBaseTransport.STATE_ERROR:
+										//Clear out tcp transport
+										service.tcpTransport.stop(MultiplexBaseTransport.STATE_NONE);
+										service.tcpTransport = null;
+										//Do not return, need to create a new TCP connection
+								}
+
+							}//else { TCP transport does not exists.}
+
+							//TCP transport either doesn't exist or is not connected. Start one up.
+							service.tcpTransport = new MultiplexTcpTransport(port, ipAddress, true, service.tcpHandler);
+							service.tcpTransport.start();
+
 		                }
 	                	break;
 	                default:
