@@ -10,8 +10,6 @@ import android.os.Build;
 import java.io.IOException;
 import java.net.Socket;
 
-import javax.net.SocketFactory;
-
 import static com.smartdevicelink.util.NativeLogTool.logInfo;
 
 public class WiFiSocketFactory {
@@ -26,28 +24,36 @@ public class WiFiSocketFactory {
      */
     public static Socket createSocket(Context context) throws IOException {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            SocketFactory factory = retrieveSocketFactory(context);
-            if (factory == null) {
+            Socket socket = createWiFiSocket(context);
+            if (socket == null) {
                 logInfo("Cannot find Wi-Fi network, aborting socket creation.");
                 throw new IOException("The phone is not connected to Wi-Fi network");
             }
-            return factory.createSocket();
+            return socket;
         } else {
             return new Socket();
         }
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private static SocketFactory retrieveSocketFactory(Context context) {
+    private static Socket createWiFiSocket(Context context) {
         ConnectivityManager connMan = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         // requires ACCESS_NETWORK_STATE permission
         Network[] allNetworks = connMan.getAllNetworks();
 
+        // Samsung Galaxy S9 (with Android 8.0.0) provides two `Network` instances which have
+        // TRANSPORT_WIFI capability. The first one throws an IOException upon creating a Socket,
+        // and the second one actually works. To support such case, here we iterate over all
+        // `Network` instances until we can create a Socket.
         for (Network network : allNetworks) {
             // requires ACCESS_NETWORK_STATE permission
             NetworkCapabilities capabilities = connMan.getNetworkCapabilities(network);
             if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                return network.getSocketFactory();
+                try {
+                    return network.getSocketFactory().createSocket();
+                } catch (IOException e) {
+                    logInfo("IOException during socket creation (ignored): " + e.getMessage());
+                }
             }
         }
 
