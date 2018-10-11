@@ -71,7 +71,7 @@ public class ScreenManager extends BaseSubManager {
 		super.start(listener);
 	}
 
-	private void onReady(){
+	private void onReady() {
 		// Send a DEFAULT SetDisplayLayout
 		// This is necessary due to a Ford Sync 3 bug. Sync 3 sends wrong supported text fields info in DisplayCapability in the RegisterAppInterfaceResponse
 		// Sending SetDisplayLayout will allow the SystemCapabilityManager to get the correct supported text fields from DisplayCapability in SetDisplayLayoutResponse
@@ -95,6 +95,7 @@ public class ScreenManager extends BaseSubManager {
 		internalInterface.sendRPCRequest(setDisplayLayoutRequest);
 
 	}
+
 	private void initialize(){
 		if (fileManager.get() != null) {
 			this.softButtonManager = new SoftButtonManager(internalInterface, fileManager.get());
