@@ -4,14 +4,22 @@ import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -26,10 +34,25 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 	public void setUp() throws Exception{
 		super.setUp();
 
-		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
-		screenManager = new ScreenManager(internalInterface, fileManager);
+		ISdl internalInterface = mock(ISdl.class);
 
+		// When internalInterface.sendRPCRequest() is called, create a fake success response
+		Answer<Void> answer = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				RPCRequest request = (RPCRequest) args[0];
+				RPCResponse response = new RPCResponse(FunctionID.SET_DISPLAY_LAYOUT.toString());
+				response.setSuccess(true);
+				request.getOnRPCResponseListener().onResponse(0, response);
+				return null;
+			}
+		};
+		doAnswer(answer).when(internalInterface).sendRPCRequest(any(RPCRequest.class));
+
+		screenManager = new ScreenManager(internalInterface, fileManager);
+		screenManager.start(null);
 
 		testArtwork = new SdlArtwork("testFile", FileType.GRAPHIC_PNG, 1, false);
 	}
