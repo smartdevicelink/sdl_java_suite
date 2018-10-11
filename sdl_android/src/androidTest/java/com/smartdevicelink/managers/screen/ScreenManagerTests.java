@@ -28,28 +28,18 @@ import static org.mockito.Mockito.mock;
  */
 public class ScreenManagerTests extends AndroidTestCase2 {
 	private ScreenManager screenManager;
+	private FileManager fileManager;
 	private SdlArtwork testArtwork;
 
 	@Override
 	public void setUp() throws Exception{
 		super.setUp();
 
-		FileManager fileManager = mock(FileManager.class);
-		ISdl internalInterface = mock(ISdl.class);
+		fileManager = mock(FileManager.class);
 
 		// When internalInterface.sendRPCRequest() is called, create a fake success response
-		Answer<Void> answer = new Answer<Void>() {
-			@Override
-			public Void answer(InvocationOnMock invocation) {
-				Object[] args = invocation.getArguments();
-				RPCRequest request = (RPCRequest) args[0];
-				RPCResponse response = new RPCResponse(FunctionID.SET_DISPLAY_LAYOUT.toString());
-				response.setSuccess(true);
-				request.getOnRPCResponseListener().onResponse(0, response);
-				return null;
-			}
-		};
-		doAnswer(answer).when(internalInterface).sendRPCRequest(any(RPCRequest.class));
+		ISdl internalInterface = mock(ISdl.class);
+		sendFakeSetDisplayLayoutResponse(internalInterface, true);
 
 		screenManager = new ScreenManager(internalInterface, fileManager);
 		screenManager.start(null);
@@ -60,6 +50,22 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
+	}
+
+	// When internalInterface.sendRPCRequest() is called, create a fake response
+	private void sendFakeSetDisplayLayoutResponse(ISdl internalInterface, final boolean success){
+		Answer<Void> answer = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				RPCRequest request = (RPCRequest) args[0];
+				RPCResponse response = new RPCResponse(FunctionID.SET_DISPLAY_LAYOUT.toString());
+				response.setSuccess(success);
+				request.getOnRPCResponseListener().onResponse(0, response);
+				return null;
+			}
+		};
+		doAnswer(answer).when(internalInterface).sendRPCRequest(any(RPCRequest.class));
 	}
 
 	public void testInstantiation(){
@@ -79,6 +85,51 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertNull(screenManager.getSoftButtonObjectByName("test"));
 		assertNull(screenManager.getSoftButtonObjectById(1));
 		assertEquals(screenManager.getState(), BaseSubManager.READY);
+	}
+
+	public void testManagerStates() {
+		ISdl tempInternalInterface = mock(ISdl.class);
+		ScreenManager tempScreenManager = new ScreenManager(tempInternalInterface, fileManager);
+
+		// Case 1
+		sendFakeSetDisplayLayoutResponse(tempInternalInterface, true);
+		tempScreenManager.start(null);
+		tempScreenManager.getSoftButtonManager().transitionToState(BaseSubManager.READY);
+		tempScreenManager.getTextAndGraphicManager().transitionToState(BaseSubManager.READY);
+		tempScreenManager.checkState();
+		assertEquals(BaseSubManager.READY, tempScreenManager.getState());
+
+		// Case 2
+		sendFakeSetDisplayLayoutResponse(tempInternalInterface, true);
+		tempScreenManager.start(null);
+		tempScreenManager.getSoftButtonManager().transitionToState(BaseSubManager.ERROR);
+		tempScreenManager.getTextAndGraphicManager().transitionToState(BaseSubManager.ERROR);
+		tempScreenManager.checkState();
+		assertEquals(BaseSubManager.ERROR, tempScreenManager.getState());
+
+		// Case 3
+		sendFakeSetDisplayLayoutResponse(tempInternalInterface, false);
+		tempScreenManager.start(null);
+		tempScreenManager.getSoftButtonManager().transitionToState(BaseSubManager.SETTING_UP);
+		tempScreenManager.getTextAndGraphicManager().transitionToState(BaseSubManager.READY);
+		tempScreenManager.checkState();
+		assertEquals(BaseSubManager.SETTING_UP, tempScreenManager.getState());
+
+		// Case 4
+		sendFakeSetDisplayLayoutResponse(tempInternalInterface, true);
+		tempScreenManager.start(null);
+		tempScreenManager.getSoftButtonManager().transitionToState(BaseSubManager.READY);
+		tempScreenManager.getTextAndGraphicManager().transitionToState(BaseSubManager.ERROR);
+		tempScreenManager.checkState();
+		assertEquals(BaseSubManager.LIMITED, tempScreenManager.getState());
+
+		// Case 5
+		sendFakeSetDisplayLayoutResponse(tempInternalInterface, false);
+		tempScreenManager.start(null);
+		tempScreenManager.getSoftButtonManager().transitionToState(BaseSubManager.READY);
+		tempScreenManager.getTextAndGraphicManager().transitionToState(BaseSubManager.READY);
+		tempScreenManager.checkState();
+		assertEquals(BaseSubManager.LIMITED, tempScreenManager.getState());
 	}
 	
 	public void testSetTextField() {

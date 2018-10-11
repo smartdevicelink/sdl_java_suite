@@ -50,7 +50,7 @@ public abstract class BaseSubManager {
 		transitionToState(SHUTDOWN);
 	}
 
-	protected void transitionToState(int state) {
+	public void transitionToState(int state) {
 		synchronized (STATE_LOCK) {
 			this.state = state;
 		}

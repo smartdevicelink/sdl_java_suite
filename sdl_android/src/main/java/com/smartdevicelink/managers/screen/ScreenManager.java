@@ -41,7 +41,7 @@ public class ScreenManager extends BaseSubManager {
 		}
 	};
 
-	private void checkState() {
+	void checkState() {
 		if (softButtonManager != null && textAndGraphicManager != null) {
 			if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY && setDisplayLayoutSuccess != null && setDisplayLayoutSuccess) {
 				DebugTool.logInfo("Starting screen manager, all sub managers are in ready state");
@@ -120,6 +120,14 @@ public class ScreenManager extends BaseSubManager {
 		softButtonManager.dispose();
 		textAndGraphicManager.dispose();
 		super.dispose();
+	}
+
+	SoftButtonManager getSoftButtonManager(){
+		return this.softButtonManager;
+	}
+
+	TextAndGraphicManager getTextAndGraphicManager(){
+		return this.textAndGraphicManager;
 	}
 
 	/**
