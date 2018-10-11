@@ -7,11 +7,14 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedLayout;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
@@ -37,6 +40,7 @@ public class ScreenManager extends BaseSubManager {
 				if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY) {
 					DebugTool.logInfo("Starting screen manager, all sub managers are in ready state");
 					transitionToState(READY);
+					onReady();
 				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR) {
 					Log.e(TAG, "ERROR starting screen manager, both sub managers in error state");
 					transitionToState(ERROR);
@@ -46,6 +50,7 @@ public class ScreenManager extends BaseSubManager {
 				} else {
 					Log.w(TAG, "LIMITED starting screen manager, one sub manager in error state and the other is ready");
 					transitionToState(LIMITED);
+					onReady();
 				}
 			} else {
 				// We should never be here, but somehow one of the sub-sub managers is null
@@ -66,6 +71,30 @@ public class ScreenManager extends BaseSubManager {
 		super.start(listener);
 	}
 
+	private void onReady(){
+		// Send a DEFAULT SetDisplayLayout
+		// This is necessary due to a Ford Sync 3 bug. Sync 3 sends wrong supported text fields info in DisplayCapability in the RegisterAppInterfaceResponse
+		// Sending SetDisplayLayout will allow the SystemCapabilityManager to get the correct supported text fields from DisplayCapability in SetDisplayLayoutResponse
+		SetDisplayLayout setDisplayLayoutRequest = new SetDisplayLayout();
+		setDisplayLayoutRequest.setDisplayLayout(PredefinedLayout.DEFAULT.toString());
+		setDisplayLayoutRequest.setOnRPCResponseListener(new OnRPCResponseListener() {
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				if (response.getSuccess()) {
+					DebugTool.logInfo("Setting DisplayLayout to DEFAULT succeeded");
+				} else {
+					Log.e(TAG, "Setting DisplayLayout to DEFAULT failed");
+				}
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				Log.e(TAG, "Setting DisplayLayout to DEFAULT failed");
+			}
+		});
+		internalInterface.sendRPCRequest(setDisplayLayoutRequest);
+
+	}
 	private void initialize(){
 		if (fileManager.get() != null) {
 			this.softButtonManager = new SoftButtonManager(internalInterface, fileManager.get());
