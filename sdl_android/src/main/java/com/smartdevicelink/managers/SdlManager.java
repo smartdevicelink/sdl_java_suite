@@ -143,8 +143,8 @@ public class SdlManager{
 			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.READY)) {
 				DebugTool.logInfo("Starting sdl manager, all sub managers are in ready state");
 				transitionToState(BaseSubManager.READY);
-				notifyDevListener(null);
 				onReady();
+				notifyDevListener(null);
 			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.ERROR)) {
 				String info = "ERROR starting sdl manager, all sub managers are in error state";
 				Log.e(TAG, info);
@@ -157,8 +157,8 @@ public class SdlManager{
 			} else {
 				Log.w(TAG, "LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
 				transitionToState(BaseSubManager.LIMITED);
-				notifyDevListener(null);
 				onReady();
+				notifyDevListener(null);
 			}
 		} else {
 			// We should never be here, but somehow one of the sub-sub managers is null
