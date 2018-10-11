@@ -31,34 +31,41 @@ public class ScreenManager extends BaseSubManager {
 	private final WeakReference<FileManager> fileManager;
 	private SoftButtonManager softButtonManager;
 	private TextAndGraphicManager textAndGraphicManager;
+	private Boolean setDisplayLayoutSuccess;
 
 	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
 		@Override
 		public synchronized void onComplete(boolean success) {
-			if (softButtonManager != null && textAndGraphicManager != null) {
-				if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY) {
-					DebugTool.logInfo("Starting screen manager, all sub managers are in ready state");
-					transitionToState(READY);
-					onReady();
-				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR) {
-					Log.e(TAG, "ERROR starting screen manager, both sub managers in error state");
-					transitionToState(ERROR);
-				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP) {
-					DebugTool.logInfo("SETTING UP screen manager, one sub manager is still setting up");
-					transitionToState(SETTING_UP);
-				} else {
-					Log.w(TAG, "LIMITED starting screen manager, one sub manager in error state and the other is ready");
-					transitionToState(LIMITED);
-					onReady();
-				}
-			} else {
-				// We should never be here, but somehow one of the sub-sub managers is null
-				Log.e(TAG, "ERROR one of the screen sub managers is null");
-				transitionToState(ERROR);
-			}
+			checkState();
 		}
 	};
+
+	private void checkState() {
+		if (softButtonManager != null && textAndGraphicManager != null) {
+			if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY && setDisplayLayoutSuccess != null && setDisplayLayoutSuccess) {
+				DebugTool.logInfo("Starting screen manager, all sub managers are in ready state");
+				transitionToState(READY);
+			} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR) {
+				Log.e(TAG, "ERROR starting screen manager, both sub managers in error state");
+				transitionToState(ERROR);
+			} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP) {
+				DebugTool.logInfo("SETTING UP screen manager, one sub manager is still setting up");
+				transitionToState(SETTING_UP);
+			} else if (setDisplayLayoutSuccess != null){
+				// This condition will be executed in one of the following cases:
+				// All sub managers finished setting but not all are in READY and not all are in ERROR
+				// All sub managers are in READY but setDisplayLayout = false
+				Log.w(TAG, "LIMITED starting screen manager, one sub manager in error state and the other is ready");
+				transitionToState(LIMITED);
+			}
+			// else we cannot decide until the setDisplayLayout status is known
+		} else {
+			// We should never be here, but somehow one of the sub-sub managers is null
+			Log.e(TAG, "ERROR one of the screen sub managers is null");
+			transitionToState(ERROR);
+		}
+	}
 
 	public ScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
 		super(internalInterface);
@@ -68,32 +75,32 @@ public class ScreenManager extends BaseSubManager {
 
 	@Override
 	public void start(CompletionListener listener) {
+		sendSetDisplayLayout();
 		super.start(listener);
 	}
 
-	private void onReady() {
-		// Send a DEFAULT SetDisplayLayout
-		// This is necessary due to a Ford Sync 3 bug. Sync 3 sends wrong supported text fields info in DisplayCapability in the RegisterAppInterfaceResponse
-		// Sending SetDisplayLayout will allow the SystemCapabilityManager to get the correct supported text fields from DisplayCapability in SetDisplayLayoutResponse
-		SetDisplayLayout setDisplayLayoutRequest = new SetDisplayLayout();
+	/**
+	 * Send a DEFAULT SetDisplayLayout
+	 * This is necessary due to a Ford Sync 3 bug. Sync 3 sends wrong supported text fields info in DisplayCapability in the RegisterAppInterfaceResponse
+	 * Sending SetDisplayLayout will allow the SystemCapabilityManager to get the correct supported text fields from DisplayCapability in SetDisplayLayoutResponse
+	 */
+	private void sendSetDisplayLayout() {
+		final SetDisplayLayout setDisplayLayoutRequest = new SetDisplayLayout();
 		setDisplayLayoutRequest.setDisplayLayout(PredefinedLayout.DEFAULT.toString());
 		setDisplayLayoutRequest.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				if (response.getSuccess()) {
-					DebugTool.logInfo("Setting DisplayLayout to DEFAULT succeeded");
-				} else {
-					Log.e(TAG, "Setting DisplayLayout to DEFAULT failed");
-				}
+				setDisplayLayoutSuccess = response.getSuccess();
+				checkState();
 			}
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				Log.e(TAG, "Setting DisplayLayout to DEFAULT failed");
+				setDisplayLayoutSuccess = false;
+				checkState();
 			}
 		});
 		internalInterface.sendRPCRequest(setDisplayLayoutRequest);
-
 	}
 
 	private void initialize(){
