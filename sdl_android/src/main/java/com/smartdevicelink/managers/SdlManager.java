@@ -31,10 +31,12 @@ import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetAppIcon;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedLayout;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
@@ -195,6 +197,15 @@ public class SdlManager{
 				_internalInterface.sendRPCRequest(msg);
 			}
 		}
+
+
+		// Send a setDisplayLayout
+		// This is necessary due to a Ford Sync 3 bug. Sync 3 sends wrong supported text fields info in DisplayCapability in the RegisterAppInterfaceResponse
+		// Sending SetDisplayLayout will allow the SystemCapabilityManager to get the correct supported text fields from DisplayCapability in SetDisplayLayoutResponse
+		SetDisplayLayout setDisplayLayoutRequest = new SetDisplayLayout();
+		setDisplayLayoutRequest.setDisplayLayout(PredefinedLayout.DEFAULT.toString());
+		_internalInterface.sendRPCRequest(setDisplayLayoutRequest);
+
 	}
 
 	protected void initialize(){
