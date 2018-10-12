@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class RPCConstructorsTests extends AndroidTestCase2 {
 
-    private final String XML_FILE_NAME = "xml/MOBILE_API_4.5.0.xml";
+    private final String XML_FILE_NAME = "xml/MOBILE_API.xml";
     private final String RPC_PACKAGE_PREFIX = "com.smartdevicelink.proxy.rpc.";
     private Map<String, List<Parameter>> rpcMandatoryParamsMapFromXml;
 
