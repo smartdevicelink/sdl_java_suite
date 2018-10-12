@@ -20,8 +20,7 @@ public class OnRCStatusTests extends BaseRpcTests {
 	protected RPCMessage createMessage() {
 		OnRCStatus msg = new OnRCStatus();
 
-		List<ModuleData> listAllocatedModules = new ArrayList<>();
-		listAllocatedModules.add(Test.GENERAL_MODULEDATA);
+		List<ModuleData> listAllocatedModules = Test.GENERAL_MODULEDATA_LIST;
 
 		msg.setAllocatedModules(listAllocatedModules);
 

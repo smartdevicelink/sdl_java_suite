@@ -164,6 +164,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -381,6 +382,7 @@ public class Test {
 	public static final List<LightCapabilities>         GENERAL_LIGHTCAPABILITIES_LIST         = new ArrayList<LightCapabilities>(1);
 	public static final List<LightState>                GENERAL_LIGHTSTATE_LIST                = new ArrayList<LightState>(1);
 	public static final List<AudioControlCapabilities>  GENERAL_AUDIOCONTROLCAPABILITIES_LIST  = new ArrayList<AudioControlCapabilities>(1);
+	public static final List<ModuleData>                GENERAL_MODULEDATA_LIST  = Collections.singletonList(GENERAL_MODULEDATA);
 
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();

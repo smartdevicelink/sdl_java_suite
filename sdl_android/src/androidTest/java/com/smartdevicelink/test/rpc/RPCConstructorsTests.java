@@ -98,7 +98,7 @@ public class RPCConstructorsTests extends AndroidTestCase2 {
                             }
                         }
                         // Store the mandatory params for the current RPC in the map
-                        if(name.equals("param") && !ignoreRPC){
+                        if(name.equals("param") && myParser.getAttributeValue(null, "until") == null && !ignoreRPC){
                             boolean mandatory = Boolean.valueOf(myParser.getAttributeValue(null,"mandatory"));
                             if (mandatory) {
                                 String paramName = myParser.getAttributeValue(null, "name");
