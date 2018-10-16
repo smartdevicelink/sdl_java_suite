@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class RPCConstructorsTests extends AndroidTestCase2 {
 
-    private final String XML_FILE_NAME = "xml/MOBILE_API_4.5.0.xml";
+    private final String XML_FILE_NAME = "xml/MOBILE_API.xml";
     private final String RPC_PACKAGE_PREFIX = "com.smartdevicelink.proxy.rpc.";
     private Map<String, List<Parameter>> rpcMandatoryParamsMapFromXml;
 
@@ -98,7 +98,7 @@ public class RPCConstructorsTests extends AndroidTestCase2 {
                             }
                         }
                         // Store the mandatory params for the current RPC in the map
-                        if(name.equals("param") && !ignoreRPC){
+                        if(name.equals("param") && myParser.getAttributeValue(null, "until") == null && !ignoreRPC){
                             boolean mandatory = Boolean.valueOf(myParser.getAttributeValue(null,"mandatory"));
                             if (mandatory) {
                                 String paramName = myParser.getAttributeValue(null, "name");
