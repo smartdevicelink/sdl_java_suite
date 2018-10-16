@@ -322,12 +322,6 @@ public class ScreenManager extends BaseSubManager {
 		return softButtonManager.getSoftButtonObjectById(buttonId);
 	}
 
-	public void setDisplayLayout(PredefinedLayout layout){
-		SetDisplayLayout setDisplayLayoutRequest = new SetDisplayLayout();
-		setDisplayLayoutRequest.setDisplayLayout(layout.toString());
-		internalInterface.sendRPCRequest(setDisplayLayoutRequest);
-	}
-
 	/**
 	 * Begin a multiple updates transaction. The updates will be applied when commit() is called<br>
 	 * Note: if we don't use beginTransaction & commit, every update will be sent individually.
