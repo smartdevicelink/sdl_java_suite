@@ -103,8 +103,10 @@ public class RPCStruct {
 				parameters = store;
 			}
 
-			for(Object value:parameters.values()){
-				internalFormat(rpcVersion, value);
+			if (parameters != null) {
+				for(Object value:parameters.values()){
+					internalFormat(rpcVersion, value);
+				}
 			}
 		}
 	}
