@@ -69,11 +69,11 @@ public class SdlAppInfo {
 
             Bundle metadata = resolveInfo.serviceInfo.metaData;
 
-            if(metadata.containsKey(SDL_ROUTER_VERSION_METADATA)){
+            if(metadata != null && metadata.containsKey(SDL_ROUTER_VERSION_METADATA)){
                 this.routerServiceVersion = metadata.getInt(SDL_ROUTER_VERSION_METADATA);
             }
 
-            if(metadata.containsKey(SDL_CUSTOM_ROUTER_METADATA)){
+            if(metadata != null && metadata.containsKey(SDL_CUSTOM_ROUTER_METADATA)){
                 this.isCustomRouterService = metadata.getBoolean(SDL_CUSTOM_ROUTER_METADATA);
             }
         }
