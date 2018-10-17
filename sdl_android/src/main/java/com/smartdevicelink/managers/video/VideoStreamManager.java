@@ -413,13 +413,18 @@ public class VideoStreamManager extends BaseSubManager {
 					ImageResolution resolution = null;
 					if(internalInterface.getProtocolVersion().getMajor() >= 5){ //At this point we should already have the capability
 						VideoStreamingCapability capability = (VideoStreamingCapability) internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING);
-						resolution = capability.getPreferredResolution();
-					}else {
+						if(capability != null){
+							resolution = capability.getPreferredResolution();
+						}
+					}
+
+					if(resolution == null){ //Either the protocol version is too low to access video streaming caps, or they were null
 						DisplayCapabilities dispCap = (DisplayCapabilities) internalInterface.getCapability(SystemCapabilityType.DISPLAY);
 						if (dispCap != null) {
 							resolution = (dispCap.getScreenParams().getImageResolution());
 						}
 					}
+
 					if(resolution != null){
 						DisplayMetrics displayMetrics = new DisplayMetrics();
 						disp.getMetrics(displayMetrics);
