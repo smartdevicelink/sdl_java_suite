@@ -1139,18 +1139,18 @@ public class SdlProtocol {
             //In the future we will actually compare the record but at this point we can assume only
             //a single transport record per transport.
             //TransportType type = disconnectedTransport.getType();
-            if(getTransportForSession(SessionType.NAV) != null && disconnectedTransport.equals(getTransportForSession(SessionType.NAV))){
+            if(disconnectedTransport.equals(getTransportForSession(SessionType.NAV))){
                 //stopVideoStream();
                 iSdlProtocol.stopStream(SessionType.NAV);
                 activeTransports.remove(SessionType.NAV);
             }
-            if(getTransportForSession(SessionType.PCM) != null && disconnectedTransport.equals(getTransportForSession(SessionType.PCM))){
+            if(disconnectedTransport.equals(getTransportForSession(SessionType.PCM))){
                 //stopAudioStream();
                 iSdlProtocol.stopStream(SessionType.PCM);
                 activeTransports.remove(SessionType.PCM);
             }
 
-            if(getTransportForSession(SessionType.RPC) != null && disconnectedTransport.equals(getTransportForSession(SessionType.RPC))){
+            if(disconnectedTransport.equals(getTransportForSession(SessionType.RPC))){
                 //transportTypes.remove(type);
                 boolean primaryTransportAvailable = false;
                 if(requestedPrimaryTransports != null && requestedPrimaryTransports.size() > 1){
