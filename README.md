@@ -54,4 +54,6 @@ Developers using Proguard to shrink and obfuscate their code should be sure to i
 ```
 -keep class com.smartdevicelink.** { *; }
 -keep class com.livio.** { *; }
+# Video streaming apps must add the following line
+-keep class ** extends com.smartdevicelink.streaming.video.SdlRemoteDisplay { *; }
 ```
