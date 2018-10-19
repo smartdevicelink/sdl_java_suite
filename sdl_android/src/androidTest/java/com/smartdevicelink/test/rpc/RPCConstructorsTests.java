@@ -1,6 +1,7 @@
 package com.smartdevicelink.test.rpc;
 
-import android.test.AndroidTestCase;
+
+import com.smartdevicelink.AndroidTestCase2;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -23,9 +24,9 @@ import java.util.Map;
  * It makes sure that for each RPC, all mandatory parameters are set in a constructor
  */
 
-public class RPCConstructorsTests extends AndroidTestCase {
+public class RPCConstructorsTests extends AndroidTestCase2 {
 
-    private final String XML_FILE_NAME = "xml/MOBILE_API_4.5.0.xml";
+    private final String XML_FILE_NAME = "xml/MOBILE_API.xml";
     private final String RPC_PACKAGE_PREFIX = "com.smartdevicelink.proxy.rpc.";
     private Map<String, List<Parameter>> rpcMandatoryParamsMapFromXml;
 
@@ -97,7 +98,7 @@ public class RPCConstructorsTests extends AndroidTestCase {
                             }
                         }
                         // Store the mandatory params for the current RPC in the map
-                        if(name.equals("param") && !ignoreRPC){
+                        if(name.equals("param") && myParser.getAttributeValue(null, "until") == null && !ignoreRPC){
                             boolean mandatory = Boolean.valueOf(myParser.getAttributeValue(null,"mandatory"));
                             if (mandatory) {
                                 String paramName = myParser.getAttributeValue(null, "name");

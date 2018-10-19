@@ -1,14 +1,13 @@
 package com.smartdevicelink.protocol;
 
-import android.test.AndroidTestCase;
-
 import com.livio.BSON.BsonEncoder;
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class SdlPacketTests extends AndroidTestCase {
+public class SdlPacketTests extends AndroidTestCase2 {
 	//TODO: Add tests to cover other parts of SdlPacket class
 
 	// Test variables

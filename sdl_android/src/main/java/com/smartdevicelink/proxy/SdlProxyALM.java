@@ -6,6 +6,7 @@ import java.util.Vector;
 import android.app.Service;
 import android.content.Context;
 
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
@@ -16,7 +17,6 @@ import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -1022,6 +1022,32 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 				"appName, isMediaApp, appID", SDL_LIB_TRACE_KEY);
 	}
 
+	public SdlProxyALM(IProxyListenerALM listener, String appName, Boolean isMediaApp, String appID,
+                       TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme, BaseTransportConfig transportConfig) throws SdlException {
+		super(  listener,
+				/*sdlProxyConfigurationResources*/null,
+				/*enable advanced lifecycle management*/true,
+				appName,
+				/*ttsName*/null,
+				/*ngnMediaScreenAppName*/null,
+				/*vrSynonyms*/null,
+				isMediaApp,
+				/*sdlMsgVersion*/null,
+				/*languageDesired*/null,
+				/*hmiDisplayLanguageDesired*/null,
+				/*App Type*/null,
+				/*App ID*/appID,
+				/*autoActivateID*/null,
+				dayColorScheme,
+				nightColorScheme,
+				false,
+				false,
+				transportConfig);
+
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using legacy constructor for BT transport) instance passing in: IProxyListener, " +
+				"appName, isMediaApp, appID, dayColorScheme, nightColorScheme", SDL_LIB_TRACE_KEY);
+	}
+
 	/**
 	 * @deprecated
 	 * Constructor for the SdlProxy object, the proxy for communicating between the App and SDL via specified transport.
@@ -1568,6 +1594,8 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
                 /*App Type*/appType,
                 /*App ID*/appID,
 				autoActivateID,
+				null,
+				null,
 				callbackToUIThread,
 				preRegister,
                 /*sHashID*/sHashID,
@@ -1597,6 +1625,8 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
                 /*App Type*/appType,
                 /*App ID*/appID,
 				autoActivateID,
+				null,
+				null,
 				callbackToUIThread,
 				preRegister,
                 /*sHashID*/sHashID,
@@ -1608,6 +1638,40 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 
 		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using new constructor with specified transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
 				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, appType, appID, autoActivateID, " +
+				"callbackToUIThread and version", SDL_LIB_TRACE_KEY);
+	}
+	public SdlProxyALM(Service appService, IProxyListenerALM listener, SdlProxyConfigurationResources sdlProxyConfigurationResources,
+					   String appName, Vector<TTSChunk> ttsName, String ngnMediaScreenAppName, Vector<String> vrSynonyms, Boolean isMediaApp,
+					   SdlMsgVersion sdlMsgVersion, Language languageDesired, Language hmiDisplayLanguageDesired, Vector<AppHMIType> appType,
+					   String appID, String autoActivateID, TemplateColorScheme dayColorScheme, TemplateColorScheme nightColorScheme, boolean callbackToUIThread, boolean preRegister, String sHashID,
+					   BaseTransportConfig transportConfig) throws SdlException {
+		super(  listener,
+				sdlProxyConfigurationResources,
+				/*enable advanced lifecycle management*/true,
+				appName,
+				ttsName,
+				ngnMediaScreenAppName,
+				vrSynonyms,
+				isMediaApp,
+				sdlMsgVersion,
+				languageDesired,
+				/*HMI Display Language Desired*/hmiDisplayLanguageDesired,
+				/*App Type*/appType,
+				/*App ID*/appID,
+				autoActivateID,
+				dayColorScheme,
+				nightColorScheme,
+				callbackToUIThread,
+				preRegister,
+				/*sHashID*/sHashID,
+				/*bEnableResume*/true,
+				transportConfig);
+
+		this.setAppService(appService);
+		this.sendTransportBroadcast();
+
+		SdlTrace.logProxyEvent("Application constructed SdlProxyALM (using new constructor with specified transport) instance passing in: IProxyListener, sdlProxyConfigurationResources, " +
+				"appName, ngnMediaScreenAppName, vrSynonyms, isMediaApp, sdlMsgVersion, languageDesired, appType, appID, autoActivateID, dayColorScheme, nightColorScheme" +
 				"callbackToUIThread and version", SDL_LIB_TRACE_KEY);
 	}
 	/***************************************** END OF TRANSPORT SWITCHING SUPPORT ***************************************/

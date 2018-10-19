@@ -68,13 +68,17 @@ public class SdlAppInfo {
             this.routerServiceComponentName = new ComponentName(resolveInfo.serviceInfo.packageName, resolveInfo.serviceInfo.name);
 
             Bundle metadata = resolveInfo.serviceInfo.metaData;
+            if(metadata != null) {
 
-            if(metadata.containsKey(SDL_ROUTER_VERSION_METADATA)){
-                this.routerServiceVersion = metadata.getInt(SDL_ROUTER_VERSION_METADATA);
-            }
+                if (metadata.containsKey(SDL_ROUTER_VERSION_METADATA)){
+                    this.routerServiceVersion = metadata.getInt(SDL_ROUTER_VERSION_METADATA);
+                }
 
-            if(metadata.containsKey(SDL_CUSTOM_ROUTER_METADATA)){
-                this.isCustomRouterService = metadata.getBoolean(SDL_CUSTOM_ROUTER_METADATA);
+                if (metadata.containsKey(SDL_CUSTOM_ROUTER_METADATA)) {
+                    this.isCustomRouterService = metadata.getBoolean(SDL_CUSTOM_ROUTER_METADATA);
+                }
+            } else {
+                Log.w(TAG, packageName + " has not supplied metadata with their router service!");
             }
         }
 

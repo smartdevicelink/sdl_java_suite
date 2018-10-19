@@ -1,11 +1,10 @@
 package com.smartdevicelink.test.proxy;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.telephony.TelephonyManager;
-import android.test.AndroidTestCase;
 import android.util.Log;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -50,6 +49,7 @@ import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
+import com.smartdevicelink.proxy.rpc.OnRCStatus;
 import com.smartdevicelink.proxy.rpc.OnStreamRPC;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.OnTBTClientState;
@@ -97,7 +97,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SdlProxyBaseTests extends AndroidTestCase{
+public class SdlProxyBaseTests extends AndroidTestCase2 {
     public static final String TAG = "SdlProxyBaseTests";
 
     @Override
@@ -117,7 +117,7 @@ public class SdlProxyBaseTests extends AndroidTestCase{
     public void testNullSdlProxyConfigurationResources() {
         SdlProxyALM proxy = null;
         SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(new ProxyListenerTest(), "appId", "appName", true, getContext());
-        SdlProxyConfigurationResources config = new SdlProxyConfigurationResources("path", (TelephonyManager)getContext().getSystemService(Context.TELEPHONY_SERVICE));
+        SdlProxyConfigurationResources config = new SdlProxyConfigurationResources("path", (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE));
         //Construct with a non-null SdlProxyConfigurationResources
         builder.setSdlProxyConfigurationResources(config);
         try {
@@ -125,7 +125,17 @@ public class SdlProxyBaseTests extends AndroidTestCase{
         } catch (Exception e) {
             Log.v(TAG, "Exception in testNullSdlProxyConfigurationResources, testing non null SdlProxyConfigurationResources");
             if (!(e instanceof SdlException) || !((SdlException) e).getSdlExceptionCause().equals(SdlExceptionCause.BLUETOOTH_ADAPTER_NULL)) {
-                Assert.fail("Exception in testNullSdlProxyConfigurationResources");
+                e.printStackTrace();
+                Assert.fail("Exception in testNullSdlProxyConfigurationResources - \n" + e.toString());
+            }
+        }
+
+        if (proxy != null) {
+            try {
+                proxy.dispose();
+                proxy = null;
+            }catch(SdlException e){
+                e.printStackTrace();
             }
         }
 
@@ -136,7 +146,16 @@ public class SdlProxyBaseTests extends AndroidTestCase{
         } catch (Exception e) {
             Log.v(TAG, "Exception in testNullSdlProxyConfigurationResources, testing null SdlProxyConfigurationResources");
             if (!(e instanceof SdlException) || !((SdlException) e).getSdlExceptionCause().equals(SdlExceptionCause.BLUETOOTH_ADAPTER_NULL)) {
+                e.printStackTrace();
                 Assert.fail("Exception in testNullSdlProxyConfigurationResources, testing null SdlProxyConfigurationResources");
+            }
+        }
+        if (proxy != null) {
+            try {
+                proxy.dispose();
+                proxy = null;
+            }catch(SdlException e){
+                e.printStackTrace();
             }
         }
 
@@ -149,6 +168,14 @@ public class SdlProxyBaseTests extends AndroidTestCase{
             Log.v(TAG, "Exception in testNullSdlProxyConfigurationResources, testing null TelephonyManager");
             if (!(e instanceof SdlException) || !((SdlException) e).getSdlExceptionCause().equals(SdlExceptionCause.BLUETOOTH_ADAPTER_NULL)) {
                 Assert.fail("Exception in testNullSdlProxyConfigurationResources, testing null TelephonyManager");
+            }
+        }
+        if (proxy != null) {
+            try {
+                proxy.dispose();
+                proxy = null;
+            }catch(SdlException e){
+                e.printStackTrace();
             }
         }
     }
@@ -619,5 +646,9 @@ public class SdlProxyBaseTests extends AndroidTestCase{
 		public void onSendHapticDataResponse(SendHapticDataResponse response) {
 			Log.i(TAG, "SendHapticDataResponse response from SDL: " + response);
 		}
-    }
+
+		@Override
+		public void onOnRCStatus(OnRCStatus notification) {
+		}
+	}
 }

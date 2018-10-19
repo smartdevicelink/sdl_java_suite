@@ -1,7 +1,6 @@
 package com.smartdevicelink.SdlConnection;
 
-import android.test.AndroidTestCase;
-
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.test.util.DeviceUtil;
 import com.smartdevicelink.transport.BTTransportConfig;
@@ -11,7 +10,7 @@ import com.smartdevicelink.transport.RouterServiceValidator;
 import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 
-public class SdlConnectionTest extends AndroidTestCase {
+public class SdlConnectionTest extends AndroidTestCase2 {
 	
 	private static final String TAG = "SdlConnection Tests";
 	

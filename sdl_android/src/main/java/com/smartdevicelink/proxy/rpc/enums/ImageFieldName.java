@@ -66,6 +66,12 @@ public enum ImageFieldName {
      * @since SmartDeviceLink 4.0
      */
 	locationImage,
+	/**
+	 * The secondary graphic image field
+	 *
+	 * @since SmartDeviceLink 5.0
+	 */
+	secondaryGraphic,
 	;
     
 	/**

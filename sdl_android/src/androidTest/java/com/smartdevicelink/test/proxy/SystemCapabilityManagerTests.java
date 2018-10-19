@@ -1,13 +1,14 @@
 package com.smartdevicelink.test.proxy;
 
-import android.test.AndroidTestCase;
-
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
+import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
@@ -16,21 +17,27 @@ import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
+import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.util.CorrelationIdGenerator;
+import com.smartdevicelink.util.Version;
 
 import java.util.List;
 
-public class SystemCapabilityManagerTests extends AndroidTestCase {
+public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 	public static final String TAG = "SystemCapabilityManagerTests";
 	public static SystemCapabilityManager systemCapabilityManager;
 
@@ -131,6 +138,12 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 
 	}
 
+	public void testFalsePositive(){
+		SystemCapabilityManager systemCapabilityManager = createSampleManager();
+		systemCapabilityManager.setCapability(SystemCapabilityType.AUDIO_PASSTHROUGH, null);
+		assertFalse(systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.AUDIO_PASSTHROUGH));
+	}
+
 	private class InternalSDLInterface implements ISdl{
 		@Override
 		public void start(){}
@@ -154,19 +167,79 @@ public class SystemCapabilityManagerTests extends AndroidTestCase {
 		public void stopVideoService() {}
 
 		@Override
-		public void startAudioService(boolean encrypted) {}
-
-		@Override
 		public void stopAudioService() {}
 
 		@Override
 		public void sendRPCRequest(RPCRequest message) {}
 
 		@Override
+		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+
+		}
+
+		@Override
 		public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {}
 
 		@Override
 		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {return false;}
+
+		@Override
+		public void addOnRPCListener(FunctionID responseId, OnRPCListener listener) { }
+
+		@Override
+		public boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener) { return false; }
+
+		@Override
+		public Object getCapability(SystemCapabilityType systemCapabilityType){return null;}
+
+		@Override
+		public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) { }
+
+		@Override
+		public SdlMsgVersion getSdlMsgVersion(){
+			return null;
+		}
+
+		@Override
+		public Version getProtocolVersion() {
+			return new Version(1,0,0);
+		}
+
+
+		@Override
+		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
+			return false;
+		}
+
+		@Override
+		public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { }
+
+		@Override
+		public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { return false; }
+
+		@Override
+		public boolean isTransportForServiceAvailable(SessionType serviceType) {
+			return false;
+		}
+
+		@Override
+		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,
+									  AudioStreamingParams params) {}
+
+		@Override
+		public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters){
+			return null;
+		}
+
+		@Override
+		public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec,
+													 AudioStreamingParams params) {
+			return null;
+		}
+
+		@Override
+		public void startAudioService(boolean encrypted){}
+
 	}
 
 

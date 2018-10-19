@@ -2,9 +2,9 @@ package com.smartdevicelink.test.security;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import android.test.AndroidTestCase;
-
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -13,8 +13,10 @@ import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.MultiplexTransportConfig;
+import com.smartdevicelink.transport.enums.TransportType;
 
-public class SdlSecurityBaseTest extends AndroidTestCase {
+public class SdlSecurityBaseTest extends AndroidTestCase2 {
 		
 	@Override
 	protected void setUp() throws Exception {
@@ -64,6 +66,12 @@ public class SdlSecurityBaseTest extends AndroidTestCase {
 		public void onTransportDisconnected(String info) {
 			
 		}
+
+		@Override
+		public void onTransportDisconnected(String info, boolean availablePrimary, MultiplexTransportConfig transportConfig) {
+
+		}
+
 		@Override
 		public void onTransportError(String info, Exception e) {
 			
@@ -104,9 +112,9 @@ public class SdlSecurityBaseTest extends AndroidTestCase {
 		@Override
 		public void onProtocolServiceDataACK(SessionType sessionType, int dataSize,
 				byte sessionID) {
-			
+
 		}
-		
+
 	}
 	
 	public void testMakeListSetAndGet(){

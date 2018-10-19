@@ -5,12 +5,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
-import android.test.AndroidTestCase;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.test.util.DeviceUtil;
 
-public class TransportBrokerTest extends AndroidTestCase {
+public class TransportBrokerTest extends AndroidTestCase2 {
 	RouterServiceValidator rsvp;
 	//		public TransportBrokerThread(Context context, String appId, ComponentName service){
 

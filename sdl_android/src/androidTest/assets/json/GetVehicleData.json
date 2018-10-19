@@ -1,6 +1,6 @@
 {
   "request":{
-    "name":"AddCommand",
+    "name":"GetVehicleData",
     "correlationID":129,
     "parameters":{
       "speed":true,
@@ -11,6 +11,7 @@
       "prndl":true,
       "tirePressure":true,
       "engineTorque":false,
+      "engineOilLife":true,
       "odometer":true,
       "gps":false,
       "fuelLevel_State":true,
@@ -27,11 +28,14 @@
       "airbagStatus":true,
       "emergencyEvent":false,
       "clusterModeStatus":true,
-      "myKey":true
+      "myKey":true,
+      "fuelRange":true,
+      "turnSignal":true,
+      "electronicParkBrakeStatus":true
     }
   },
   "response":{
-    "name":"AddCommandResponse",
+    "name":"GetVehicleDataResponse",
     "correlationID":130,
     "parameters":{
       "speed":35.6,
@@ -50,6 +54,7 @@
         "rightRear":"ALERT"
       },
       "engineTorque":518.3,
+      "engineOilLife":19.3,
       "odometer":140000,
       "gps":{
         "longitudeDegrees":104.2,
@@ -72,6 +77,7 @@
         "speed":30.5
       },
       "fuelLevel_State":"ALERT",
+      "turnSignal":"OFF",
       "instantFuelConsumption":2.76,
       "beltStatus":{
         "driverBeltDeployed":"NO",
@@ -151,7 +157,18 @@
       },
       "myKey":{
         "e911Override":"NO_DATA_EXISTS"
-      }
+      },
+      "electronicParkBrakeStatus":"CLOSED",
+      "fuelRange":[
+        {
+          "type":"GASOLINE",
+          "range":100.0
+        },
+        {
+          "type":"DIESEL",
+          "range":10.0
+        }
+      ]
     }
   }
 }

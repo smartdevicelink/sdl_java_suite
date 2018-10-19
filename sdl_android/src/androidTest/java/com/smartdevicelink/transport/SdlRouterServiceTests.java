@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.test.AndroidTestCase;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.BinaryFrameHeader;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -19,6 +19,8 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
+import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 
 import junit.framework.Assert;
 
@@ -27,7 +29,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-public class SdlRouterServiceTests extends AndroidTestCase {
+public class SdlRouterServiceTests extends AndroidTestCase2 {
 
     public static final String TAG = "SdlRouterServiceTests";
     private final int SAMPLE_RPC_CORRELATION_ID = 630;
@@ -126,7 +128,7 @@ public class SdlRouterServiceTests extends AndroidTestCase {
             //First, set mSerialService to the correct state so we get to test packet being null
             MultiplexBluetoothTransport transport = new MultiplexBluetoothTransport(null);
             transport.setStateManually(MultiplexBluetoothTransport.STATE_CONNECTED);
-            field = SdlRouterService.class.getDeclaredField("mSerialService");
+            field = SdlRouterService.class.getDeclaredField("bluetoothTransport");
             field.setAccessible(true);
             field.set(sdlRouterService, transport);
             bundle = new Bundle();
@@ -177,7 +179,7 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 			// need a session map too
 			SparseArray<String> sessionMap = new SparseArray<String>();
 			sessionMap.put(1, "12345");
-			Field sessionMapField = sdlRouterService.getClass().getDeclaredField("sessionMap");
+			Field sessionMapField = sdlRouterService.getClass().getDeclaredField("bluetoothSessionMap");
 			sessionMapField.setAccessible(true);
 			sessionMapField.set(sdlRouterService, sessionMap);
 
@@ -227,6 +229,7 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 
 			// create packet and invoke sendPacketToRegisteredApp
 			SdlPacket packet = new SdlPacket(4, false, SdlPacket.FRAME_TYPE_SINGLE, SdlPacket.SERVICE_TYPE_RPC, 0, sessionId, data.length, 123, data);
+			packet.setTransportRecord(new TransportRecord(TransportType.BLUETOOTH,null));
 			method = sdlRouterService.getClass().getDeclaredMethod("sendPacketToRegisteredApp", SdlPacket.class);
 			Boolean success = (Boolean) method.invoke(sdlRouterService, packet);
 
@@ -268,7 +271,7 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 			// need a session map too
 			SparseArray<String> sessionMap = new SparseArray<String>();
 			sessionMap.put(1, "12345");
-			Field sessionMapField = sdlRouterService.getClass().getDeclaredField("sessionMap");
+			Field sessionMapField = sdlRouterService.getClass().getDeclaredField("bluetoothSessionMap");
 			sessionMapField.setAccessible(true);
 			sessionMapField.set(sdlRouterService, sessionMap);
 
@@ -318,6 +321,7 @@ public class SdlRouterServiceTests extends AndroidTestCase {
 
 			// create packet and invoke sendPacketToRegisteredApp
 			SdlPacket packet = new SdlPacket(4, false, SdlPacket.FRAME_TYPE_SINGLE, SdlPacket.SERVICE_TYPE_RPC, 0, sessionId, data.length, 123, data);
+			packet.setTransportRecord(new TransportRecord(TransportType.BLUETOOTH,null));
 			method = sdlRouterService.getClass().getDeclaredMethod("sendPacketToRegisteredApp", SdlPacket.class);
 			Boolean success = (Boolean) method.invoke(sdlRouterService, packet);
 

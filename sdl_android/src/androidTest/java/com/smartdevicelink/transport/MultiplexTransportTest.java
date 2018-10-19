@@ -1,14 +1,13 @@
 package com.smartdevicelink.transport;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.enums.TransportType;
 
-import android.test.AndroidTestCase;
-
 import junit.framework.Assert;
 
-public class MultiplexTransportTest extends AndroidTestCase {
+public class MultiplexTransportTest extends AndroidTestCase2 {
 
 	private static final int TIMEOUT = 2000;
 	

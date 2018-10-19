@@ -6,18 +6,29 @@ import java.io.IOException;
 import android.util.Log;
 
 import com.smartdevicelink.transport.TransportConstants;
+import com.smartdevicelink.transport.enums.TransportType;
 
 public class ByteAraryMessageAssembler {
 	private static final String TAG = "ByteAraryMessageAssembler";
 	ByteArrayOutputStream buffer;
 	boolean isFinished;
-	
+	TransportType transportType;
+
+
 	public void init(){
 		close();
 		this.isFinished = false;
 		buffer = new ByteArrayOutputStream();
 	}
-	
+
+	public void setTransportType(TransportType transportType){
+		this.transportType = transportType;
+	}
+
+	public TransportType getTransportType() {
+		return transportType;
+	}
+
 	public boolean close(){
 		if(buffer!=null){
 			try {

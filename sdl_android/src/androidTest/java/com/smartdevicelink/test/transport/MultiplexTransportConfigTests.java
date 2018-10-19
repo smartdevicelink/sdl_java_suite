@@ -1,10 +1,10 @@
 package com.smartdevicelink.test.transport;
 
+import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 
-import android.test.AndroidTestCase;
 
-public class MultiplexTransportConfigTests extends AndroidTestCase {
+public class MultiplexTransportConfigTests extends AndroidTestCase2 {
 
 	
 	public void testDefaultSecurity(){

@@ -4,12 +4,11 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Looper;
-import android.test.AndroidTestCase;
+import android.support.test.InstrumentationRegistry;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
-import com.smartdevicelink.R;
 import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
@@ -21,7 +20,7 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.FutureTask;
 
 
-public class SdlRemoteDisplayTest extends AndroidTestCase {
+public class SdlRemoteDisplayTest extends TestCase {
 
     MockRemoteDisplayCallback rdCallback = new MockRemoteDisplayCallback();
 
@@ -38,7 +37,7 @@ public class SdlRemoteDisplayTest extends AndroidTestCase {
         assertNotNull(encoder);
 
 
-        SdlRemoteDisplay.Creator creator = new SdlRemoteDisplay.Creator(this.getContext(), encoder.getVirtualDisplay(), null, MockRemoteDisplay.class, rdCallback);
+        SdlRemoteDisplay.Creator creator = new SdlRemoteDisplay.Creator(InstrumentationRegistry.getContext(), encoder.getVirtualDisplay(), null, MockRemoteDisplay.class, rdCallback);
         assertNotNull(creator);
         FutureTask<Boolean> fTask = new FutureTask<Boolean>(creator);
         Thread showPresentation = new Thread(fTask);
@@ -49,7 +48,7 @@ public class SdlRemoteDisplayTest extends AndroidTestCase {
     public void testConstructor(){
         VirtualDisplayEncoder encoder = createVDE();
         assertNotNull(encoder);
-        MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(getContext(), encoder.getVirtualDisplay());
+        MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getContext(), encoder.getVirtualDisplay());
         assertNotNull(remoteDisplay);
 
         encoder.shutDown();
@@ -60,7 +59,7 @@ public class SdlRemoteDisplayTest extends AndroidTestCase {
     public void testTouchEvents(){
         VirtualDisplayEncoder encoder = createVDE();
         assertNotNull(encoder);
-        MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(getContext(), encoder.getVirtualDisplay());
+        MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getContext(), encoder.getVirtualDisplay());
         assertNotNull(remoteDisplay);
         remoteDisplay.show();
 
@@ -80,7 +79,7 @@ public class SdlRemoteDisplayTest extends AndroidTestCase {
     public VirtualDisplayEncoder createVDE(){
         try{
             VirtualDisplayEncoder displayEncoder = new VirtualDisplayEncoder();
-            displayEncoder.init(getContext(), new MockVideoStreamListener(), new VideoStreamingParameters());
+            displayEncoder.init(InstrumentationRegistry.getContext(), new MockVideoStreamListener(), new VideoStreamingParameters());
             displayEncoder.start();
             return displayEncoder;
         }catch (Exception e ){
