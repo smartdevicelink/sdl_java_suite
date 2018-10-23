@@ -601,12 +601,15 @@ public class SdlManager{
 	 * Send RPC Message <br>
 	 * <strong>Note: Only takes type of RPCRequest for now, notifications and responses will be thrown out</strong>
 	 * @param message RPCMessage
-	 * @throws SdlException
 	 */
-	public void sendRPC(RPCMessage message) throws SdlException {
+	public void sendRPC(RPCMessage message) {
 
 		if (message instanceof RPCRequest){
-			proxy.sendRPCRequest((RPCRequest)message);
+			try{
+				proxy.sendRPCRequest((RPCRequest)message);
+			}catch (SdlException exception){
+				handleSdlException(exception);
+			}
 		}
 	}
 
@@ -620,9 +623,8 @@ public class SdlManager{
 	 *
 	 * @param rpcs is the list of RPCMessages being sent
 	 * @param listener listener for updates and completions
-	 * @throws SdlException if an unrecoverable error is encountered
 	 */
-	public void sendSequentialRPCs(final List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+	public void sendSequentialRPCs(final List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener){
 
 		List<RPCRequest> rpcRequestList = new ArrayList<>();
 		for (int i = 0; i < rpcs.size(); i++) {
@@ -632,7 +634,11 @@ public class SdlManager{
 		}
 
 		if (rpcRequestList.size() > 0) {
-			proxy.sendSequentialRequests(rpcRequestList, listener);
+			try{
+				proxy.sendSequentialRequests(rpcRequestList, listener);
+			}catch (SdlException exception){
+				handleSdlException(exception);
+			}
 		}
 	}
 
@@ -646,9 +652,8 @@ public class SdlManager{
 	 *
 	 * @param rpcs is the list of RPCMessages being sent
 	 * @param listener listener for updates and completions
-	 * @throws SdlException if an unrecoverable error is encountered
 	 */
-	public void sendRPCs(List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+	public void sendRPCs(List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) {
 
 		List<RPCRequest> rpcRequestList = new ArrayList<>();
 		for (int i = 0; i < rpcs.size(); i++) {
@@ -658,7 +663,33 @@ public class SdlManager{
 		}
 
 		if (rpcRequestList.size() > 0) {
-			proxy.sendRequests(rpcRequestList, listener);
+			try{
+				proxy.sendRequests(rpcRequestList, listener);
+			}catch (SdlException exception){
+				handleSdlException(exception);
+			}
+		}
+	}
+
+	private void handleSdlException(SdlException exception){
+		if(exception != null){
+			switch(exception.getSdlExceptionCause()){
+				case SDL_UNAVAILABLE:
+				case SDL_PROXY_CYCLED:
+				case SDL_PROXY_DISPOSED:
+				case SDL_CONNECTION_FAILED:
+				case SDL_PROXY_OBSOLETE:
+				case SDL_REGISTRATION_ERROR:
+				case SDL_USB_DETACHED:
+				case BLUETOOTH_SOCKET_UNAVAILABLE:
+				case BLUETOOTH_DISABLED:
+				case BLUETOOTH_ADAPTER_NULL:
+					transitionToState(BaseSubManager.ERROR);
+					this.dispose();
+					break;
+				default:
+					DebugTool.logError("Caught SdlException: " + exception.getSdlExceptionCause());
+			}
 		}
 	}
 
