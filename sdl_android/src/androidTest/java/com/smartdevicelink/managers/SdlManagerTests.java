@@ -315,11 +315,8 @@ public class SdlManagerTests extends AndroidTestCase2 {
 				listenerCalledCounter++;
 			}
 		});
-		try {
-			sdlManager.sendRPC(request);
-		} catch (SdlException e) {
-			e.printStackTrace();
-		}
+
+		sdlManager.sendRPC(request);
 
 		// Make sure the listener is called exactly once
 		assertEquals("Listener was not called or called more/less frequently than expected", listenerCalledCounter, 1);
@@ -375,15 +372,12 @@ public class SdlManagerTests extends AndroidTestCase2 {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {}
 		};
-		try {
-			if (sequentialSend) {
-				sdlManager.sendSequentialRPCs(rpcsList, onMultipleRequestListener);
-			} else {
-				sdlManager.sendRPCs(rpcsList, onMultipleRequestListener);
-			}
-		} catch (SdlException e) {
-			e.printStackTrace();
+		if (sequentialSend) {
+			sdlManager.sendSequentialRPCs(rpcsList, onMultipleRequestListener);
+		} else {
+			sdlManager.sendRPCs(rpcsList, onMultipleRequestListener);
 		}
+
 
 		// Make sure the listener is called exactly once
 		assertEquals("Listener was not called or called more/less frequently than expected", listenerCalledCounter, 1);
