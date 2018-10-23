@@ -5,8 +5,8 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 26
-        versionCode 8
-        versionName "4.7.0"
+        versionCode 9
+        versionName "4.7.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resValue "string", "SDL_LIB_VERSION", '\"' + versionName + '\"'
     }
