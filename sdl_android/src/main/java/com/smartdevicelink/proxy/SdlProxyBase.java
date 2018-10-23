@@ -1057,6 +1057,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		{
 			myService = _appService;
 		}
+		else if(_appContext != null && _appContext instanceof Service){
+			myService = (Service)_appContext;
+		}
 		if (myService != null)
 		{
 			try
