@@ -673,23 +673,10 @@ public class SdlManager{
 
 	private void handleSdlException(SdlException exception){
 		if(exception != null){
-			switch(exception.getSdlExceptionCause()){
-				case SDL_UNAVAILABLE:
-				case SDL_PROXY_CYCLED:
-				case SDL_PROXY_DISPOSED:
-				case SDL_CONNECTION_FAILED:
-				case SDL_PROXY_OBSOLETE:
-				case SDL_REGISTRATION_ERROR:
-				case SDL_USB_DETACHED:
-				case BLUETOOTH_SOCKET_UNAVAILABLE:
-				case BLUETOOTH_DISABLED:
-				case BLUETOOTH_ADAPTER_NULL:
-					transitionToState(BaseSubManager.ERROR);
-					this.dispose();
-					break;
-				default:
-					DebugTool.logError("Caught SdlException: " + exception.getSdlExceptionCause());
-			}
+			DebugTool.logError("Caught SdlException: " + exception.getSdlExceptionCause());
+			// In the future this should handle logic to dispose the manager if it is an unrecoverable error
+		}else{
+			DebugTool.logError("Caught SdlException" );
 		}
 	}
 
