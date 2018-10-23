@@ -1048,28 +1048,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	private Service getService()
 	{
-		Service myService = null;		
-		if (_proxyListener != null && _proxyListener instanceof Service)
-		{
-			myService = (Service) _proxyListener;				
-		}
-		else if (_appService != null)
-		{
-			myService = _appService;
-		}
-		if (myService != null)
-		{
-			try
-			{
-				return myService;
+		try {
+			Service myService = null;
+			if (_proxyListener != null && _proxyListener instanceof Service) {
+				myService = (Service) _proxyListener;
+			} else if (_appService != null) {
+				myService = _appService;
+			} else if (_appContext != null && _appContext instanceof Service) {
+				myService = (Service) _appContext;
 			}
-			catch(Exception ex)
-			{
-				return null;
-			}
-			
+			return myService;
+		} catch (Exception ex){
+			return null;
 		}
-		return null;
 	}
 	
 	private void sendBroadcastIntent(Intent sendIntent)
