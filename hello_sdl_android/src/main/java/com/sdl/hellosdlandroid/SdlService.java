@@ -13,14 +13,12 @@ import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.MenuParams;
@@ -31,11 +29,9 @@ import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
-import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
-import com.smartdevicelink.transport.USBTransportConfig;
 
 import java.util.Collections;
 import java.util.Vector;
@@ -217,14 +213,14 @@ public class SdlService extends Service {
 		command.setCmdID(TEST_COMMAND_ID);
 		command.setMenuParams(params);
 		command.setVrCommands(Collections.singletonList(TEST_COMMAND_NAME));
-		sendRpcRequest(command);
+		sdlManager.sendRPC(command);
 	}
 
 	/**
 	 * Will speak a sample welcome message
 	 */
 	private void performWelcomeSpeak(){
-		sendRpcRequest(new Speak(TTSChunkFactory.createSimpleTTSChunks(WELCOME_SPEAK)));
+		sdlManager.sendRPC(new Speak(TTSChunkFactory.createSimpleTTSChunks(WELCOME_SPEAK)));
 	}
 
 	/**
@@ -256,19 +252,8 @@ public class SdlService extends Service {
 		sdlManager.getScreenManager().setTextField2("");
 		sdlManager.getScreenManager().commit(null);
 
-		sendRpcRequest(new Speak(TTSChunkFactory.createSimpleTTSChunks(TEST_COMMAND_NAME)));
+		sdlManager.sendRPC(new Speak(TTSChunkFactory.createSimpleTTSChunks(TEST_COMMAND_NAME)));
 	}
 
-	/**
-	 * Sends an RPC Request to the connected head unit. Automatically adds a correlation id.
-	 * @param request the rpc request that is to be sent to the module
-	 */
-	private void sendRpcRequest(RPCRequest request){
-		try {
-			sdlManager.sendRPC(request);
-		} catch (SdlException e) {
-			e.printStackTrace();
-		}
-	}
 
 }
