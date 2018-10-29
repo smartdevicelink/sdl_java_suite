@@ -29,7 +29,7 @@ public class SdlArtwork extends SdlFile {
      * Set whether this SdlArtwork is a template image whose coloring should be decided by the HMI
      * @param isTemplate boolean that tells whether this SdlArtwork is a template image
      */
-    public void setIsTemplate(@NonNull Boolean isTemplate){
+    public void setIsTemplate(boolean isTemplate){
         this.isTemplate = isTemplate;
     }
 
@@ -37,7 +37,7 @@ public class SdlArtwork extends SdlFile {
      * Get whether this SdlArtwork is a template image whose coloring should be decided by the HMI
      * @return boolean that tells whether this SdlArtwork is a template image
      */
-    public Boolean getIsTemplate(){
+    public boolean getIsTemplate(){
         return isTemplate;
     }
 
