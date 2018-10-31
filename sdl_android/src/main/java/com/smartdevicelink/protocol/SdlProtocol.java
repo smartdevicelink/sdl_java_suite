@@ -1379,6 +1379,25 @@ public class SdlProtocol {
                     bundle.putString(TransportConstants.TRANSPORT_TYPE, TransportType.TCP.name());
                     secondaryTransportParams.put(TransportType.TCP, bundle);
 
+                    DebugTool.logInfo("Initiating TCP secondary transport after receiving IP address and port number");
+
+                    // add a dummy listener so that secondary transport registration is initiated
+                    // in onTransportsConnectedUpdate() once the connection sets up
+                    List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.get(TransportType.TCP);
+                    if(listenerList == null){
+                        listenerList = new ArrayList<>();
+                        secondaryTransportListeners.put(TransportType.TCP, listenerList);
+                    }
+
+                    listenerList.add(new ISecondaryTransportListener() {
+                        @Override
+                        public void onConnectionSuccess(TransportRecord transportRecord) {}
+                        @Override
+                        public void onConnectionFailure() {}
+                    });
+
+                    transportManager.requestSecondaryTransportConnection((byte)-1, bundle);
+
                     //A new secondary transport just became available. Notify the developer.
                     notifyDevTransportListener();
                 }
