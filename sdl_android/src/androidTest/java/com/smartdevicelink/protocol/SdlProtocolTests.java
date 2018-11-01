@@ -1,9 +1,12 @@
 package com.smartdevicelink.protocol;
 
+import android.os.Bundle;
 import android.util.Log;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.SdlConnection.SdlConnection;
+import com.smartdevicelink.protocol.enums.ControlFrameTags;
+import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.protocol.SdlProtocol.MessageFrameAssembler;
 import com.smartdevicelink.security.SdlSecurityBase;
@@ -13,14 +16,26 @@ import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.RouterServiceValidator;
+import com.smartdevicelink.transport.TransportManager;
+import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 
 import junit.framework.Assert;
 
+import org.mockito.ArgumentCaptor;
+import org.mockito.internal.util.reflection.FieldReader;
+import org.mockito.internal.util.reflection.FieldSetter;
+
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class SdlProtocolTests  extends AndroidTestCase2 {
 
@@ -30,6 +45,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
     SdlProtocol protocol;
 
     ISdlProtocol defaultListener = mock(ISdlProtocol.class);
+    TransportManager mockTransportManager = mock(TransportManager.class);
 
     public static class DidReceiveListener implements ISdlProtocol{
         boolean didReceive = false;
@@ -93,6 +109,29 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
         protocol = new SdlProtocol(defaultListener,config);
     }
 
+    private void substituteTransportManager() {
+        try {
+            FieldSetter.setField(protocol, protocol.getClass().getDeclaredField("transportManager"), mockTransportManager);
+        } catch (NoSuchFieldException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    private TransportManager.TransportEventListener retrieveTransportEventListenerField() {
+        TransportManager.TransportEventListener listener = null;
+        try {
+            FieldReader reader = new FieldReader(protocol, protocol.getClass().getDeclaredField("transportEventListener"));
+            if (!reader.isNull()) {
+                listener = (TransportManager.TransportEventListener)reader.read();
+            }
+        } catch (NoSuchFieldException e) {
+            fail(e.getMessage());
+        }
+        if (listener == null) {
+            fail("Cannot access to 'transportEventListener' private field in SdlProtocol");
+        }
+        return listener;
+    }
 
     public void testBase(){
         SdlProtocol sdlProtocol = new SdlProtocol(defaultListener,config);
@@ -334,6 +373,104 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
         assertNull(np_exception);
         assertNull(oom_error);
 
+    }
+
+    private void runStartRpcServiceSequence(TransportManager.TransportEventListener transportEventListener,
+                                            List<TransportRecord> connectedTransports, TransportRecord transport,
+                                            int version, String versionString, int sessionId, int messageId) {
+        // simulate primary transport connection
+        connectedTransports.add(transport);
+        transportEventListener.onTransportConnected(connectedTransports);
+
+        // SdlProtocol should have sent StartService. Reply with dummy StartServiceACK.
+        final int hashId = 12345;
+        final long mtu = 131072;
+        final ArrayList<String> secondaryTransports = new ArrayList<>(Arrays.asList("TCP_WIFI"));
+        final ArrayList<Integer> audioServiceTransports = new ArrayList<>(Arrays.asList(2));
+        final ArrayList<Integer> videoServiceTransports = new ArrayList<>(Arrays.asList(2));
+
+        SdlPacket rpcStartServiceAck = new SdlPacket(
+                version, false, SdlPacket.FRAME_TYPE_CONTROL, SdlPacket.SERVICE_TYPE_RPC,
+                FrameDataControlFrameType.StartSessionACK.getValue(), sessionId, 0, messageId, null);
+        rpcStartServiceAck.putTag(ControlFrameTags.RPC.StartServiceACK.PROTOCOL_VERSION, versionString);
+        rpcStartServiceAck.putTag(ControlFrameTags.RPC.StartServiceACK.HASH_ID, hashId);
+        rpcStartServiceAck.putTag(ControlFrameTags.RPC.StartServiceACK.MTU, mtu);
+        rpcStartServiceAck.putTag(ControlFrameTags.RPC.StartServiceACK.SECONDARY_TRANSPORTS, secondaryTransports);
+        rpcStartServiceAck.putTag(ControlFrameTags.RPC.StartServiceACK.AUDIO_SERVICE_TRANSPORTS, audioServiceTransports);
+        rpcStartServiceAck.putTag(ControlFrameTags.RPC.StartServiceACK.VIDEO_SERVICE_TRANSPORTS, videoServiceTransports);
+        rpcStartServiceAck.constructPacket();
+        rpcStartServiceAck.setTransportRecord(transport);
+
+        protocol.handlePacketReceived(rpcStartServiceAck);
+
+        // caller should verify ISdlProtocol.onProtocolMessageBytesToSend()
+    }
+
+    public void testTransportEventUpdateWithTCPConfig() {
+        substituteTransportManager();
+        TransportManager.TransportEventListener transportEventListener = retrieveTransportEventListenerField();
+
+        List<TransportRecord> connectedTransports = new ArrayList<>(2);
+
+        // Bluetooth transport for primary
+        TransportRecord bluetoothRecord = new TransportRecord(TransportType.BLUETOOTH, "00:11:22:AA:BB:CC");
+        // TCP transport for secondary
+        final String ipAddress = "127.0.0.1";
+        final int tcpPort = 12345;
+        TransportRecord tcpRecord = new TransportRecord(TransportType.TCP, ipAddress + ":" + tcpPort);
+
+        final int version = 5;
+        final String versionString = "5.1.0";
+        final int sessionId = 1;
+        int messageId = 0;
+
+        // simulate Bluetooth connection, Start Service and Start Service ACK sequence
+        runStartRpcServiceSequence(transportEventListener, connectedTransports, bluetoothRecord,
+                version, versionString, sessionId, messageId);
+        messageId++;
+
+        // simulate a TransportEventUpdate frame from Core
+        SdlPacket transportEventUpdate = new SdlPacket(
+                version, false, SdlPacket.FRAME_TYPE_CONTROL, SdlPacket.SERVICE_TYPE_CONTROL,
+                FrameDataControlFrameType.TransportEventUpdate.getValue(), sessionId, 0, messageId, null);
+        transportEventUpdate.putTag(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS, ipAddress);
+        transportEventUpdate.putTag(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT, tcpPort);
+        transportEventUpdate.constructPacket();
+        messageId++;
+
+        protocol.handlePacketReceived(transportEventUpdate);
+
+        // verify that SdlProtocol initiates a TCP connection
+        ArgumentCaptor<Bundle> bundleCaptor = ArgumentCaptor.forClass(Bundle.class);
+        verify(mockTransportManager).requestSecondaryTransportConnection(eq((byte)-1), bundleCaptor.capture());
+        Bundle b = bundleCaptor.getValue();
+        assertNotNull(b);
+        assertEquals(ipAddress, b.getString(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS));
+        assertEquals(tcpPort, b.getInt(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT));
+
+        // Simulate TCP connection establishment. SdlProtocol should trigger RegisterSecondaryTransport frame.
+        connectedTransports.add(tcpRecord);
+        transportEventListener.onTransportConnected(connectedTransports);
+
+        // Finally, verify that SdlProtocol has sent out StartService frame (for RPC service) then
+        // RegisterSecondaryTransport frame.
+        ArgumentCaptor<SdlPacket> rpcStartServiceCaptor = ArgumentCaptor.forClass(SdlPacket.class);
+        verify(defaultListener, times(2)).onProtocolMessageBytesToSend(rpcStartServiceCaptor.capture());
+
+        List<SdlPacket> packetList = rpcStartServiceCaptor.getAllValues();
+        assertEquals(2, packetList.size());
+
+        // StartService frame
+        SdlPacket rpcStartService = packetList.get(0);
+        assertEquals(SdlPacket.FRAME_TYPE_CONTROL, rpcStartService.frameType);
+        assertEquals(SdlPacket.SERVICE_TYPE_RPC, rpcStartService.serviceType);
+        assertEquals(SdlPacket.FRAME_INFO_START_SERVICE, rpcStartService.frameInfo);
+
+        // RegisterSecondaryTransport frame
+        SdlPacket registerSecondaryTransport = packetList.get(1);
+        assertEquals(SdlPacket.FRAME_TYPE_CONTROL, registerSecondaryTransport.frameType);
+        assertEquals(SdlPacket.SERVICE_TYPE_CONTROL, registerSecondaryTransport.serviceType);
+        assertEquals(SdlPacket.FRAME_INFO_REGISTER_SECONDARY_TRANSPORT, registerSecondaryTransport.frameInfo);
     }
 
     protected class SdlConnectionTestClass extends SdlConnection {
