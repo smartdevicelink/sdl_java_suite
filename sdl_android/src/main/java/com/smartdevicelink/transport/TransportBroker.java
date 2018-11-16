@@ -59,6 +59,7 @@ import com.smartdevicelink.transport.utl.TransportRecord;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -215,21 +216,34 @@ public class TransportBroker {
                     switch (msg.arg1) {
                         case TransportConstants.REGISTRATION_RESPONSE_SUCESS:
                             // yay! we have been registered. Now what?
+                            Log.i(TAG, "Clienthandler got REGISTRATION_RESPONSE_SUCESS");
                             broker.registeredWithRouterService = true;
                             if (bundle != null) {
+                                Boolean requiresHardwareConnected = false;
+                                String connectedDevice = "";
                                 if (bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)) {
                                     if (bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)) {
                                         //Keep track if we actually get this
+                                        connectedDevice = bundle.getString(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME);
                                     }
+                                    requiresHardwareConnected = true;
                                     //broker.onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
                                 }
 
                                 if (bundle.containsKey(TransportConstants.CURRENT_HARDWARE_CONNECTED)) {
                                     ArrayList<TransportRecord> transports = bundle.getParcelableArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED);
                                     broker.onHardwareConnected(transports);
+                                    Log.i(TAG, "onHardwareConnected for " + transports);
+                                    requiresHardwareConnected = false; // because we did already.
                                 }
                                 if (bundle.containsKey(TransportConstants.ROUTER_SERVICE_VERSION)) {
                                     broker.routerServiceVersion = bundle.getInt(TransportConstants.ROUTER_SERVICE_VERSION);
+                                }
+                                if (requiresHardwareConnected) {
+                                    // requires for backward compatibility (i.e. if connected with older RouterService.
+                                    Log.i(TAG, "onHardwareConnected for " + bundle.getString(TransportConstants.HARDWARE_CONNECTED));
+                                    TransportRecord record = new TransportRecord(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)), connectedDevice);
+                                    broker.onHardwareConnected(Arrays.asList(record));
                                 }
                             }
                             break;
@@ -614,9 +628,15 @@ public class TransportBroker {
             Intent bindingIntent = new Intent();
             bindingIntent.setClassName(this.routerPackage, this.routerClassName);//This sets an explicit intent
             //Quickly make sure it's just up and running
-            getContext().startService(bindingIntent);
-            bindingIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_CLIENT);
-            return getContext().bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
+            // On Android O+, startServie may cause IllegalStateException. Get around for now
+            try {
+                getContext().startService(bindingIntent);
+                bindingIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_CLIENT);
+                return getContext().bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
+            } catch(IllegalStateException e) {
+                e.printStackTrace();
+                return false;
+            }
         } else {
             return false;
         }

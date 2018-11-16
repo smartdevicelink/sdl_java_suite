@@ -61,6 +61,7 @@ import com.smartdevicelink.util.Version;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -458,9 +459,11 @@ public class SdlProtocol {
      */
     private TransportRecord getPreferredTransport(List<TransportType> preferredList, List<TransportRecord> connectedTransports) {
         for (TransportType transportType : preferredList) {
-            for(TransportRecord record: connectedTransports) {
-                if (record.getType().equals(transportType)) {
-                    return record;
+            if (connectedTransports instanceof List) {
+                for(TransportRecord record: connectedTransports) {
+                    if (record.getType().equals(transportType)) {
+                        return record;
+                    }
                 }
             }
         }
@@ -918,7 +921,6 @@ public class SdlProtocol {
                     return;
                 }
 
-
                 // This enables custom behavior based on protocol version specifics
                 if (protocolVersion.isNewerThan(new Version("5.1.0")) >= 0) {
 
@@ -1017,9 +1019,14 @@ public class SdlProtocol {
                 }
             }
         } else {
+            Log.d(TAG, "handleProtocolSessionStarted: packet version=" + packet.version);
+            // Even if packet version is 4 or lower, we should still make protocolsession to work.
             TransportRecord transportRecord = packet.getTransportRecord();
-            if(transportRecord == null || (requiresHighBandwidth
-                    && TransportType.BLUETOOTH.equals(transportRecord.getType()))){
+            if(transportRecord == null){
+                // This is older packet, and should have no such requiresHighBandwidth.
+                // Let's assuming we'are on BT, in this case.
+                transportRecord = new TransportRecord(TransportType.BLUETOOTH, "");
+            } else if (requiresHighBandwidth && TransportType.BLUETOOTH.equals(transportRecord.getType())) {
                 //transport can't support high bandwidth
                 onTransportNotAccepted((transportRecord != null ? transportRecord.getType().toString() : "Transport") + "can't support high bandwidth requirement, and secondary transport not supported in this protocol version");
                 return;
@@ -1139,18 +1146,18 @@ public class SdlProtocol {
             //In the future we will actually compare the record but at this point we can assume only
             //a single transport record per transport.
             //TransportType type = disconnectedTransport.getType();
-            if(disconnectedTransport.equals(getTransportForSession(SessionType.NAV))){
+            if(getTransportForSession(SessionType.NAV) != null && disconnectedTransport.getType().equals(getTransportForSession(SessionType.NAV).getType())){
                 //stopVideoStream();
                 iSdlProtocol.stopStream(SessionType.NAV);
                 activeTransports.remove(SessionType.NAV);
             }
-            if(disconnectedTransport.equals(getTransportForSession(SessionType.PCM))){
+            if(getTransportForSession(SessionType.PCM) != null && disconnectedTransport.getType().equals(getTransportForSession(SessionType.PCM).getType())){
                 //stopAudioStream();
                 iSdlProtocol.stopStream(SessionType.PCM);
                 activeTransports.remove(SessionType.PCM);
             }
 
-            if(disconnectedTransport.equals(getTransportForSession(SessionType.RPC))){
+            if(getTransportForSession(SessionType.RPC) != null && disconnectedTransport.getType().equals(getTransportForSession(SessionType.RPC).getType())){
                 //transportTypes.remove(type);
                 boolean primaryTransportAvailable = false;
                 if(requestedPrimaryTransports != null && requestedPrimaryTransports.size() > 1){

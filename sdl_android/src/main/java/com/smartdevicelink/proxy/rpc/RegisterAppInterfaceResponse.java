@@ -220,7 +220,11 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 */
     @SuppressWarnings("unchecked")
     public List<SoftButtonCapabilities> getSoftButtonCapabilities() {
-		return (List<SoftButtonCapabilities>) getObject(SoftButtonCapabilities.class, KEY_SOFT_BUTTON_CAPABILITIES);
+		if (getObject(SoftButtonCapabilities.class, KEY_SOFT_BUTTON_CAPABILITIES) instanceof List) {
+			return (List<SoftButtonCapabilities>) getObject(SoftButtonCapabilities.class, KEY_SOFT_BUTTON_CAPABILITIES);
+		} else {
+			return null;
+		}
     }
     /**
      * Sets softButtonCapabilities
