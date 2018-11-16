@@ -266,10 +266,18 @@ public class TransportBroker {
                     int flags = bundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
 
                     if (bundle.containsKey(TransportConstants.FORMED_PACKET_EXTRA_NAME)) {
-                        Parcelable packet = bundle.getParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME);
+                        SdlPacket packet = bundle.getParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME);
 
                         if (flags == TransportConstants.BYTES_TO_SEND_FLAG_NONE) {
                             if (packet != null) { //Log.i(TAG, "received packet to process "+  packet.toString());
+
+                                if(packet.getTransportRecord() == null){
+                                    // If the transport record is null, one must be added
+                                    // This is likely due to an older router service being used
+                                    // in which only a bluetooth transport is available
+                                    packet.setTransportRecord(new TransportRecord(TransportType.BLUETOOTH,""));
+                                }
+
                                 broker.onPacketReceived(packet);
                             } else {
                                 Log.w(TAG, "Received null packet from router service, not passing along");
