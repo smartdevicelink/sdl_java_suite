@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import com.livio.BSON.BsonEncoder;
 import com.smartdevicelink.protocol.enums.FrameType;
-import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 
 import android.os.Parcel;
@@ -13,6 +12,7 @@ import android.os.Parcelable;
 
 public class SdlPacket implements Parcelable{
 
+	private static final int EXTRA_PARCEL_DATA_LENGTH 			= 24;
 	
 	public static final int HEADER_SIZE 						= 12;
 	public static final int HEADER_SIZE_V1 						= 8;//Backwards
@@ -62,7 +62,7 @@ public class SdlPacket implements Parcelable{
 	//Most others
 	public static final int FRAME_INFO_RESERVED 				= 0x00;
 
-	
+
 	int version;
 	boolean encryption;
 	int frameType;
@@ -340,7 +340,7 @@ public class SdlPacket implements Parcelable{
 
 		this.priorityCoefficient = p.readInt();
 
-		if(p.dataAvail() > 0) {
+		if(p.dataAvail() > EXTRA_PARCEL_DATA_LENGTH) {
 			messagingVersion = p.readInt();
 			if(messagingVersion >= 2) {
 				if (p.readInt() == 1) { //We should have a transport type attached
