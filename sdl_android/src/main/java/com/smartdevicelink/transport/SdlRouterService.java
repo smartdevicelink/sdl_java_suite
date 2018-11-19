@@ -2037,10 +2037,16 @@ public class SdlRouterService extends Service{
 	    			if(packetSize < ByteArrayMessageSpliter.MAX_BINDER_SIZE){ //This is a small enough packet just send on through
 	    				//Log.w(TAG, " Packet size is just right " + packetSize  + " is smaller than " + ByteArrayMessageSpliter.MAX_BINDER_SIZE + " = " + (packetSize<ByteArrayMessageSpliter.MAX_BINDER_SIZE));
 		    			message.what = TransportConstants.ROUTER_RECEIVED_PACKET;
-		    			packet.setMessagingVersion(app.routerMessagingVersion);
+
+						// !!!! ADD ADDITIONAL ITEMS TO BUNDLE HERE !!!
+
+						packet.setMessagingVersion(app.routerMessagingVersion);
 		    			bundle.putParcelable(FORMED_PACKET_EXTRA_NAME, packet);
-	    				bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
-		    			message.setData(bundle);
+						/* !!!!!! DO NOT ADD ANY ADDITIONAL ITEMS TO THE BUNDLE AFTER PACKET. ONLY BYTES_TO_SEND_FLAG !!!!!!!*/
+						bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
+						/* !!!!!! DO NOT ADD ANY ADDITIONAL ITEMS TO THE BUNDLE AFTER PACKET. ONLY BYTES_TO_SEND_FLAG !!!!!!!*/
+
+	    				message.setData(bundle);
 		    			return sendPacketMessageToClient(app,message, version);
 	    			}else{
 	    				//Log.w(TAG, "Packet too big for IPC buffer. Breaking apart and then sending to client.");
@@ -2051,9 +2057,14 @@ public class SdlRouterService extends Service{
 	    													packet.getServiceType(),packet.getFrameInfo(), session,
 	    													(int)packet.getDataSize(),packet.getMessageId(),null);
 	    				message.what = TransportConstants.ROUTER_RECEIVED_PACKET;
-		    			bundle.putParcelable(FORMED_PACKET_EXTRA_NAME, copyPacket);
-		    			bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED);
-		    			message.setData(bundle);
+						// !!!! ADD ADDITIONAL ITEMS TO BUNDLE HERE !!!
+
+						bundle.putParcelable(FORMED_PACKET_EXTRA_NAME, copyPacket);
+						/* !!!!!! DO NOT ADD ANY ADDITIONAL ITEMS TO THE BUNDLE AFTER PACKET. ONLY BYTES_TO_SEND_FLAG !!!!!!!*/
+						bundle.putInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED);
+						/* !!!!!! DO NOT ADD ANY ADDITIONAL ITEMS TO THE BUNDLE AFTER PACKET. ONLY BYTES_TO_SEND_FLAG !!!!!!!*/
+
+						message.setData(bundle);
 		    			//Log.d(TAG, "First packet before sending: " + message.getData().toString());
 		    			if(!sendPacketMessageToClient(app, message, version)){
 		    				Log.w(TAG, "Error sending first message of split packet to client " + app.appId);

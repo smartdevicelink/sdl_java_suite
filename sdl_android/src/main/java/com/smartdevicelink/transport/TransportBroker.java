@@ -59,6 +59,7 @@ import com.smartdevicelink.transport.utl.TransportRecord;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -73,6 +74,9 @@ public class TransportBroker {
      */
     private static final int MAX_MESSAGING_VERSION = 2;
     private static final int MIN_MESSAGING_VERSION = 1;
+
+    /** Version of the router service that supports the new additional transports (USB and TCP) */
+    private static final int RS_MULTI_TRANSPORT_SUPPORT = 8;
 
     private final String WHERE_TO_REPLY_PREFIX = "com.sdl.android.";
     private String appId = null;
@@ -217,20 +221,16 @@ public class TransportBroker {
                             // yay! we have been registered. Now what?
                             broker.registeredWithRouterService = true;
                             if (bundle != null) {
-                                if (bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)) {
-                                    if (bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)) {
-                                        //Keep track if we actually get this
-                                    }
-                                    //broker.onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
-                                }
 
-                                if (bundle.containsKey(TransportConstants.CURRENT_HARDWARE_CONNECTED)) {
-                                    ArrayList<TransportRecord> transports = bundle.getParcelableArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED);
-                                    broker.onHardwareConnected(transports);
-                                }
                                 if (bundle.containsKey(TransportConstants.ROUTER_SERVICE_VERSION)) {
                                     broker.routerServiceVersion = bundle.getInt(TransportConstants.ROUTER_SERVICE_VERSION);
                                 }
+
+                                if (bundle.containsKey(TransportConstants.HARDWARE_CONNECTED) || bundle.containsKey(TransportConstants.CURRENT_HARDWARE_CONNECTED)) {
+                                    //A connection is already available
+                                    handleConnectionEvent(bundle, broker);
+                                }
+
                             }
                             break;
                         case TransportConstants.REGISTRATION_RESPONSE_DENIED_LEGACY_MODE_ENABLED:
@@ -266,10 +266,18 @@ public class TransportBroker {
                     int flags = bundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
 
                     if (bundle.containsKey(TransportConstants.FORMED_PACKET_EXTRA_NAME)) {
-                        Parcelable packet = bundle.getParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME);
+                        SdlPacket packet = bundle.getParcelable(TransportConstants.FORMED_PACKET_EXTRA_NAME);
 
                         if (flags == TransportConstants.BYTES_TO_SEND_FLAG_NONE) {
                             if (packet != null) { //Log.i(TAG, "received packet to process "+  packet.toString());
+
+                                if(packet.getTransportRecord() == null){
+                                    // If the transport record is null, one must be added
+                                    // This is likely due to an older router service being used
+                                    // in which only a bluetooth transport is available
+                                    packet.setTransportRecord(new TransportRecord(TransportType.BLUETOOTH,""));
+                                }
+
                                 broker.onPacketReceived(packet);
                             } else {
                                 Log.w(TAG, "Received null packet from router service, not passing along");
@@ -330,12 +338,8 @@ public class TransportBroker {
                     }
 
                     if (bundle.containsKey(TransportConstants.HARDWARE_CONNECTED) || bundle.containsKey(TransportConstants.CURRENT_HARDWARE_CONNECTED)) {
-                        //broker.onHardwareConnected(TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED)));
-
-                        if (bundle.containsKey(TransportConstants.CURRENT_HARDWARE_CONNECTED)) {
-                            ArrayList<TransportRecord> transports = bundle.getParcelableArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED);
-                            broker.onHardwareConnected(transports);
-                        }
+                        //This is a connection event
+                        handleConnectionEvent(bundle,broker);
                         break;
                     }
                     break;
@@ -344,6 +348,45 @@ public class TransportBroker {
             }
 
         }
+
+        /**
+         * Handle a potential connection event. This will adapt legacy router service implementaions
+         * into the new multiple transport scheme.
+         * @param bundle the received bundle from the router service
+         * @param broker reference to the transport broker that this handler exists
+         * @return if a connection event was triggered in the supplied broker
+         */
+        private boolean handleConnectionEvent(Bundle bundle, TransportBroker broker){
+            if (broker.routerServiceVersion < RS_MULTI_TRANSPORT_SUPPORT) {
+                //Previous versions of the router service only supports a single
+                //transport, so this will be the only extra received
+                if (bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)) {
+                    String transportName = "";
+                    if (bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)) {
+                        //Keep track if we actually get this
+                        transportName = bundle.getString(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME);
+                    }
+                    TransportType transportType = TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED));
+                    if(transportType == null){
+                        transportType = TransportType.BLUETOOTH;
+                    }
+                    TransportRecord record = new TransportRecord(transportType,transportName);
+
+                    broker.onHardwareConnected(Collections.singletonList(record));
+                    return true;
+                }
+            } else{
+                //Router service supports multiple transport
+
+                if (bundle.containsKey(TransportConstants.CURRENT_HARDWARE_CONNECTED)) {
+                    ArrayList<TransportRecord> transports = bundle.getParcelableArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED);
+                    broker.onHardwareConnected(transports);
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 
 
