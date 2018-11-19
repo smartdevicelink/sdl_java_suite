@@ -8,10 +8,23 @@ import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 
 import android.os.Parcel;
+import android.os.ParcelFormatException;
 import android.os.Parcelable;
 
+/**
+ * This class is only intended to be parcelable from the transport broker to the SDL Router Service.
+ * Any other binder transactions must include an additional int flag into their bundle or the parsing
+ * of this object will fail.
+ */
 public class SdlPacket implements Parcelable{
 
+	/**
+	 * This is the amount of bytes added to the bundle from the router service for a specific int
+	 * flag; this data will always and must be included. This flag is the
+	 * TransportConstants.BYTES_TO_SEND_FLAGS.
+	 *
+	 *	@see com.smartdevicelink.transport.TransportConstants#BYTES_TO_SEND_FLAGS
+	 */
 	private static final int EXTRA_PARCEL_DATA_LENGTH 			= 24;
 	
 	public static final int HEADER_SIZE 						= 12;
@@ -340,12 +353,16 @@ public class SdlPacket implements Parcelable{
 
 		this.priorityCoefficient = p.readInt();
 
-		if(p.dataAvail() > EXTRA_PARCEL_DATA_LENGTH) {
-			messagingVersion = p.readInt();
-			if(messagingVersion >= 2) {
-				if (p.readInt() == 1) { //We should have a transport type attached
-					this.transportRecord = p.readParcelable(TransportRecord.class.getClassLoader());
+		if(p.dataAvail() > EXTRA_PARCEL_DATA_LENGTH) {	//See note on constant for why not 0
+			try {
+				messagingVersion = p.readInt();
+				if (messagingVersion >= 2) {
+					if (p.readInt() == 1) { //We should have a transport type attached
+						this.transportRecord = p.readParcelable(TransportRecord.class.getClassLoader());
+					}
 				}
+			}catch (ParcelFormatException e){
+
 			}
 		}
 	}
