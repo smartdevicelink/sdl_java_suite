@@ -33,6 +33,7 @@ import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetAppIcon;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
@@ -744,6 +745,16 @@ public class SdlManager{
 			}
 		}
 	}
+
+	public VehicleType getVehicleType() {
+        VehicleType vt = new VehicleType();
+        try {
+            vt = proxy.getVehicleType();
+        }catch (SdlException e){
+            handleSdlException(e);
+        }
+        return vt;
+    }
 
 	protected void setProxy(SdlProxyBase proxy){
 		this.proxy = proxy;
