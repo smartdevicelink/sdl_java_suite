@@ -103,12 +103,13 @@ public class UsbTransferProvider {
         if(context == null || service == null || usbAccessory == null){
             throw new IllegalStateException("Supplied params are not correct. Context == null? "+ (context==null) + " ComponentName == null? " + (service == null) + " Usb Accessory == null? " + usbAccessory);
         }
-        this.context = context;
-        this.routerService = service;
-        this.callback = callback;
-        this.clientMessenger = new Messenger(new ClientHandler(this));
         usbPfd = getFileDescriptor(usbAccessory);
         if(usbPfd != null){
+            this.context = context;
+            this.routerService = service;
+            this.callback = callback;
+            this.clientMessenger = new Messenger(new ClientHandler(this));
+
             usbInfoBundle = new Bundle();
             usbInfoBundle.putString(MultiplexUsbTransport.MANUFACTURER, usbAccessory.getManufacturer());
             usbInfoBundle.putString(MultiplexUsbTransport.MODEL, usbAccessory.getModel());
@@ -119,6 +120,7 @@ public class UsbTransferProvider {
             checkIsConnected();
         }else{
             Log.e(TAG, "Unable to open accessory");
+            clientMessenger = null;
             if(callback != null){
                 callback.onUsbTransferUpdate(false);
             }
