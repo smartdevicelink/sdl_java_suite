@@ -199,7 +199,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         @Override
         public void run() {             //FIXME probably check to see what the BT does
             super.run();
-            final int READ_BUFFER_SIZE = 4096;
+            final int READ_BUFFER_SIZE = 16384;
             byte[] buffer = new byte[READ_BUFFER_SIZE];
             int bytesRead;
             boolean stateProgress;
