@@ -117,6 +117,11 @@ public class UsbTransferProvider {
             usbInfoBundle.putString(MultiplexUsbTransport.SERIAL, usbAccessory.getSerial());
             usbInfoBundle.putString(MultiplexUsbTransport.DESCRIPTION, usbAccessory.getDescription());
             checkIsConnected();
+        }else{
+            Log.e(TAG, "Unable to open accessory");
+            if(callback != null){
+                callback.onUsbTransferUpdate(false);
+            }
         }
 
     }
