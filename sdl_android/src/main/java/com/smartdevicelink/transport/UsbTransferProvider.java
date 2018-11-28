@@ -103,7 +103,7 @@ public class UsbTransferProvider {
         if(context == null || service == null || usbAccessory == null){
             throw new IllegalStateException("Supplied params are not correct. Context == null? "+ (context==null) + " ComponentName == null? " + (service == null) + " Usb Accessory == null? " + usbAccessory);
         }
-        usbPfd = getFileDescriptor(usbAccessory);
+        usbPfd = getFileDescriptor(usbAccessory, context);
         if(usbPfd != null){
             this.context = context;
             this.routerService = service;
@@ -129,7 +129,7 @@ public class UsbTransferProvider {
     }
 
     @SuppressLint("NewApi")
-    private ParcelFileDescriptor getFileDescriptor(UsbAccessory accessory) {
+    private ParcelFileDescriptor getFileDescriptor(UsbAccessory accessory, Context context) {
         try {
             UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
 
