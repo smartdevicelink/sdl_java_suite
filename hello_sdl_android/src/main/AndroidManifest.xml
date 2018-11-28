@@ -29,7 +29,8 @@
         </activity>
 
         <activity android:name="com.smartdevicelink.transport.USBAccessoryAttachmentActivity"
-                  android:launchMode="singleTop">
+                  android:launchMode="singleTop"
+                  android:process="com.smartdevicelink.router">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
             </intent-filter>
