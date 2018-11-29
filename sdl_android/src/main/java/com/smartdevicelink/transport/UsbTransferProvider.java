@@ -40,6 +40,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -51,6 +52,8 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.smartdevicelink.util.AndroidTools;
+
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 @TargetApi(12)
@@ -188,11 +191,19 @@ public class UsbTransferProvider {
     }
 
     private void finish(){
+       try {
+            usbPfd.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        usbPfd = null;
+        unBindFromService();
+        routerServiceMessenger =null;
+        context = null;
+        System.gc();
         if(callback != null){
             callback.onUsbTransferUpdate(true);
         }
-        unBindFromService();
-        routerServiceMessenger =null;
     }
 
     static class ClientHandler extends Handler {

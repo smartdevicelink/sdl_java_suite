@@ -126,8 +126,16 @@ public class USBAccessoryAttachmentActivity extends Activity {
 
             wakeUpRouterService(getApplicationContext());
 
+        }else{
+            finish();
         }
+    }
 
+    @Override
+    protected void onDestroy() {
+        usbAccessory = null;
+        permissionGranted = null;
+        super.onDestroy();
     }
 
     @SuppressWarnings("deprecation")

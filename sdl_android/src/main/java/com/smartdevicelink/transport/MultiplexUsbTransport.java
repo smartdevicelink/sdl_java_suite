@@ -62,7 +62,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
     private final Bundle deviceInfo;
     private ReaderThread readerThread;
     private WriterThread writerThread;
-    private final ParcelFileDescriptor parcelFileDescriptor;
+    private ParcelFileDescriptor parcelFileDescriptor;
 
     MultiplexUsbTransport(ParcelFileDescriptor parcelFileDescriptor, Handler handler, Bundle bundle){
         super(handler, TransportType.USB);
@@ -102,6 +102,8 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         readerThread = new ReaderThread(fileDescriptor);
         writerThread = new WriterThread(fileDescriptor);
 
+        readerThread.start();
+        writerThread.start();
 
         // Send the name of the connected device back to the UI Activity
         Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
@@ -112,8 +114,6 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         handler.sendMessage(msg);
 
         setState(STATE_CONNECTED);
-        readerThread.start();
-        writerThread.start();
     }
 
     protected synchronized void stop(int stateToTransitionTo) {
@@ -135,6 +135,9 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                 e.printStackTrace();
             }
         }
+        parcelFileDescriptor = null;
+
+        System.gc();
 
         setState(stateToTransitionTo);
     }
@@ -284,12 +287,11 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         public WriterThread(FileDescriptor fileDescriptor) {
             //Log.d(TAG, "Creating a Connected - Write Thread");
             OutputStream tmpOut = null;
-            setName("SDL Router BT Write Thread");
+            setName("SDL USB Write Thread");
             // Get the Usb output streams
             mmOutStream = new FileOutputStream(fileDescriptor);
-
-
         }
+
         /**
          * Write to the connected OutStream.
          * @param buffer  The bytes to write

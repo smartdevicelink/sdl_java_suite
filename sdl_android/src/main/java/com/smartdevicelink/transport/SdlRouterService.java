@@ -37,6 +37,7 @@ import static com.smartdevicelink.transport.TransportConstants.FORMED_PACKET_EXT
 import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNECTED;
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -135,7 +136,7 @@ public class SdlRouterService extends Service{
 	/**
 	 * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
 	 */
-	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 8;
+	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 9;
 
 	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 	
@@ -817,7 +818,7 @@ public class SdlRouterService extends Service{
 				 this.provider = new WeakReference<SdlRouterService>(provider);
 	    	 }
 
-	        @Override
+			@Override
 	        public void handleMessage(Message msg) {
 	        	if(this.provider.get() == null){
 	        		return;
@@ -826,13 +827,15 @@ public class SdlRouterService extends Service{
 	        	switch(msg.what){
 					case TransportConstants.USB_CONNECTED_WITH_DEVICE:
         			int flags = msg.arg1;
-						ParcelFileDescriptor parcelFileDescriptor = (ParcelFileDescriptor)msg.obj;
-						if(parcelFileDescriptor != null){
-							//New USB constructor with PFD
-							service.usbTransport = new MultiplexUsbTransport(parcelFileDescriptor,service.usbHandler,msg.getData());
-							service.usbTransport.start();
 
-						}
+					ParcelFileDescriptor parcelFileDescriptor = (ParcelFileDescriptor)msg.obj;
+
+					if(parcelFileDescriptor != null) {
+						//New USB constructor with PFD
+						service.usbTransport = new MultiplexUsbTransport(parcelFileDescriptor, service.usbHandler, msg.getData());
+						service.usbTransport.start();
+					}
+
 	        		if(msg.replyTo!=null){
 	        			Message message = Message.obtain();
 	        			message.what = TransportConstants.ROUTER_USB_ACC_RECEIVED;
@@ -1663,6 +1666,40 @@ public class SdlRouterService extends Service{
 
 	public void onTransportDisconnected(TransportRecord record){
 		cachedModuleVersion = -1; //Reset our cached version
+		switch (record.getType()){
+			case BLUETOOTH:
+				synchronized(SESSION_LOCK){
+					if(bluetoothSessionMap!= null){
+						bluetoothSessionMap.clear();
+					}
+				}
+				if(!connectAsClient ){
+					if(!legacyModeEnabled && !closing){
+						initBluetoothSerialService();
+					}
+				}
+				break;
+			case USB:
+				if(usbTransport != null){
+					usbTransport = null;
+				}
+				synchronized(SESSION_LOCK){
+					if(usbSessionMap!= null){
+						usbSessionMap.clear();
+					}
+				}
+				break;
+			case TCP:
+				if(tcpTransport != null){
+					tcpTransport = null;
+				}
+				synchronized(SESSION_LOCK){
+					if(tcpSessionMap!=null){
+						tcpSessionMap.clear();
+					}
+				}
+				break;
+		}
 		if(registeredApps != null && !registeredApps.isEmpty()){
 			Message message = Message.obtain();
 			message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
@@ -1679,6 +1716,14 @@ public class SdlRouterService extends Service{
 
 			message.setData(bundle);
 			notifyClients(message);
+
+			synchronized (REGISTERED_APPS_LOCK) {
+				Collection<RegisteredApp> apps = registeredApps.values();
+				for (RegisteredApp app : apps) {
+					app.unregisterTransport(-1,record.getType());
+
+				}
+			}
 		}
 		if(!getConnectedTransports().isEmpty()){
 			// Updates notification to one of still connected transport
@@ -1694,19 +1739,7 @@ public class SdlRouterService extends Service{
 		if(altTransportService!=null){  //If we still have an alt transport open, then we don't need to tell the clients to close
 			return;
 		}
-		switch (record.getType()){
-            case BLUETOOTH:
-                if(!connectAsClient ){
-                    if(!legacyModeEnabled && !closing){
-                        initBluetoothSerialService();
-                    }
-                }
-                break;
-            case USB:
-                break;
-            case TCP:
-                break;
-        }
+
 		Log.e(TAG, "Notifying client service of hardware disconnect.");
 
 		stopClientPings();
@@ -1719,7 +1752,6 @@ public class SdlRouterService extends Service{
 
 		//We've notified our clients, less clean up the mess now.
 		synchronized(SESSION_LOCK){
-			this.bluetoothSessionMap.clear();
 			this.sessionHashIdMap.clear();
 		}
 		synchronized(REGISTERED_APPS_LOCK){
@@ -3034,7 +3066,13 @@ public class SdlRouterService extends Service{
 
 		protected boolean unregisterTransport(int sessionId, TransportType transportType){
 			synchronized (TRANSPORT_LOCK){
-				if(this.registeredTransports.indexOfKey(sessionId) >= 0){
+				if(sessionId == -1){
+					int size = this.registeredTransports.size();
+					for(int i = 0; i <size; i++){
+						this.registeredTransports.valueAt(i).remove(transportType);
+					}
+					return true;
+				}else if(this.registeredTransports.indexOfKey(sessionId) >= 0){
 					return this.registeredTransports.get(sessionId).remove(transportType);
 				}else{
 					return false;
@@ -3049,7 +3087,7 @@ public class SdlRouterService extends Service{
 				}else if(sessionId == -1){
 					int size = this.registeredTransports.size();
 					for(int i = 0; i <size; i++){
-						this.registeredTransports.get(i).clear();
+						this.registeredTransports.valueAt(i).clear();
 					}
 				}
 			}
