@@ -69,6 +69,7 @@ public class UsbTransferProvider {
 
     UsbTransferCallback callback;
     Messenger routerServiceMessenger = null;
+    UsbAccessory usbAccessory;
     ParcelFileDescriptor usbPfd;
     Bundle usbInfoBundle;
 
@@ -78,9 +79,10 @@ public class UsbTransferProvider {
             Log.d(TAG, "Bound to service " + className.toString());
             routerServiceMessenger = new Messenger(service);
             isBound = true;
+            attemptUsbOpen();
             //So we just established our connection
             //Register with router service
-            Message msg = Message.obtain();
+           /* Message msg = Message.obtain();
             msg.what = TransportConstants.USB_CONNECTED_WITH_DEVICE;
             msg.arg1 = flags;
             msg.replyTo = clientMessenger;
@@ -92,7 +94,7 @@ public class UsbTransferProvider {
                 routerServiceMessenger.send(msg);
             } catch (RemoteException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -102,32 +104,63 @@ public class UsbTransferProvider {
         }
     };
 
-    public UsbTransferProvider(Context context, ComponentName service, UsbAccessory usbAccessory, UsbTransferCallback callback){
+    private void attemptUsbOpen(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "run: in the runner");
+                usbPfd = getFileDescriptor(usbAccessory, UsbTransferProvider.this.context);
+                if(usbPfd != null){
+
+                    usbInfoBundle = new Bundle();
+                    usbInfoBundle.putString(MultiplexUsbTransport.MANUFACTURER, usbAccessory.getManufacturer());
+                    usbInfoBundle.putString(MultiplexUsbTransport.MODEL, usbAccessory.getModel());
+                    usbInfoBundle.putString(MultiplexUsbTransport.VERSION, usbAccessory.getVersion());
+                    usbInfoBundle.putString(MultiplexUsbTransport.URI, usbAccessory.getUri());
+                    usbInfoBundle.putString(MultiplexUsbTransport.SERIAL, usbAccessory.getSerial());
+                    usbInfoBundle.putString(MultiplexUsbTransport.DESCRIPTION, usbAccessory.getDescription());
+
+                    Message msg = Message.obtain();
+                    msg.what = TransportConstants.USB_CONNECTED_WITH_DEVICE;
+                    msg.arg1 = flags;
+                    msg.replyTo = clientMessenger;
+                    msg.obj = usbPfd;
+                    if(usbInfoBundle != null){
+                        msg.setData(usbInfoBundle);
+                    }
+                    try {
+                        routerServiceMessenger.send(msg);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }catch (NullPointerException nullE){
+                        nullE.printStackTrace();
+                        finish(false);
+                    }
+
+                }else{
+                    Log.e(TAG, "Unable to open accessory");
+                    if(UsbTransferProvider.this.callback != null){
+                        finish(false);
+                    }
+                }
+            }
+        }, 5000);
+
+    }
+
+    public UsbTransferProvider(Context context, ComponentName service, final UsbAccessory usbAccessory, UsbTransferCallback callback){
         if(context == null || service == null || usbAccessory == null){
             throw new IllegalStateException("Supplied params are not correct. Context == null? "+ (context==null) + " ComponentName == null? " + (service == null) + " Usb Accessory == null? " + usbAccessory);
         }
-        usbPfd = getFileDescriptor(usbAccessory, context);
-        if(usbPfd != null){
-            this.context = context;
-            this.routerService = service;
-            this.callback = callback;
-            this.clientMessenger = new Messenger(new ClientHandler(this));
 
-            usbInfoBundle = new Bundle();
-            usbInfoBundle.putString(MultiplexUsbTransport.MANUFACTURER, usbAccessory.getManufacturer());
-            usbInfoBundle.putString(MultiplexUsbTransport.MODEL, usbAccessory.getModel());
-            usbInfoBundle.putString(MultiplexUsbTransport.VERSION, usbAccessory.getVersion());
-            usbInfoBundle.putString(MultiplexUsbTransport.URI, usbAccessory.getUri());
-            usbInfoBundle.putString(MultiplexUsbTransport.SERIAL, usbAccessory.getSerial());
-            usbInfoBundle.putString(MultiplexUsbTransport.DESCRIPTION, usbAccessory.getDescription());
-            checkIsConnected();
-        }else{
-            Log.e(TAG, "Unable to open accessory");
-            clientMessenger = null;
-            if(callback != null){
-                callback.onUsbTransferUpdate(false);
-            }
-        }
+        this.context = context;
+        this.routerService = service;
+        this.callback = callback;
+        this.clientMessenger = new Messenger(new ClientHandler(this));
+        this.usbAccessory = usbAccessory;
+
+        checkIsConnected();
+
 
     }
 
@@ -139,7 +172,7 @@ public class UsbTransferProvider {
             if (manager != null) {
                 return manager.openAccessory(accessory);
             }
-        }catch (Exception e){}
+        }catch (Exception e){e.printStackTrace();}
 
         return  null;
     }
@@ -190,19 +223,21 @@ public class UsbTransferProvider {
         }
     }
 
-    private void finish(){
-       try {
-            usbPfd.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void finish(boolean success){
+       if(usbPfd != null) {
+           try {
+               usbPfd.close();
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+       }
         usbPfd = null;
         unBindFromService();
         routerServiceMessenger =null;
         context = null;
         System.gc();
         if(callback != null){
-            callback.onUsbTransferUpdate(true);
+            callback.onUsbTransferUpdate(success);
         }
     }
 
@@ -222,7 +257,7 @@ public class UsbTransferProvider {
             switch (msg.what) {
                 case TransportConstants.ROUTER_USB_ACC_RECEIVED:
                     Log.d(TAG, "Successful USB transfer");
-                    provider.get().finish();
+                    provider.get().finish(true);
                     break;
                 default:
                     break;

@@ -835,6 +835,9 @@ public class SdlRouterService extends Service{
 						service.usbTransport = new MultiplexUsbTransport(parcelFileDescriptor, service.usbHandler, msg.getData());
 						service.usbTransport.start();
 					}
+					if(service.altTransportTimerHandler != null && service.altTransportTimerRunnable != null){
+						service.altTransportTimerHandler.removeCallbacks(service.altTransportTimerRunnable);
+					}
 
 	        		if(msg.replyTo!=null){
 	        			Message message = Message.obtain();

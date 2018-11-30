@@ -44,6 +44,7 @@ import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import com.smartdevicelink.R;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlAppInfo;
@@ -98,6 +99,9 @@ public class USBAccessoryAttachmentActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.usbDialogTheme);
+        setContentView(R.layout.activity_usb);
+
     }
 
     @Override

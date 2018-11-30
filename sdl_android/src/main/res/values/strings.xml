@@ -3,4 +3,5 @@
     <string name="lockscreen_text">Locked for your safety</string>
     <string name="lockscreen_image_description">SDL Icon</string>
     <string name="lockscreen_device_image_description">Device Icon</string>
+    <string name="usb_title">SDL over USB</string>
 </resources>

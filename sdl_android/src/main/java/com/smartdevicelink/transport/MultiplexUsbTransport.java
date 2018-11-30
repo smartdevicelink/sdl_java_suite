@@ -119,11 +119,13 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
     protected synchronized void stop(int stateToTransitionTo) {
         //Log.d(TAG, "Attempting to close the Usb transports");
         if (writerThread != null) {
+            writerThread.interrupt();
             writerThread.cancel();
             writerThread = null;
         }
 
         if (readerThread != null) {
+            readerThread.interrupt();
             readerThread.cancel();
             readerThread = null;
         }
@@ -192,7 +194,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
     private class ReaderThread extends Thread{
         SdlPsm psm;
 
-        final InputStream inputStream;
+        InputStream inputStream;
 
         public ReaderThread(final FileDescriptor fileDescriptor){
             psm = new SdlPsm();
@@ -218,11 +220,11 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                             Log.i(TAG,"EOF reached, disconnecting!");
                             connectionLost();
                         }
-                        return;
+                        break;
                     }
                     if (isInterrupted()) {
                         Log.w(TAG,"Read some data, but thread is interrupted");
-                        return;
+                        break;
                     }
                     byte input;
                     for(int i=0;i<bytesRead; i++){
@@ -272,6 +274,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                 // Log.trace(TAG, "Read Thread: " + e.getMessage());
                 // Socket or stream is already closed
             }
+            inputStream = null;
         }
 
     }
@@ -282,7 +285,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
      * It handles all incoming and outgoing transmissions.
      */
     private class WriterThread extends Thread {
-        private final OutputStream mmOutStream;
+        private OutputStream mmOutStream;
 
         public WriterThread(FileDescriptor fileDescriptor) {
             //Log.d(TAG, "Creating a Connected - Write Thread");
@@ -324,6 +327,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                 // close() of connect socket failed
                 Log.d(TAG,  "Write Thread: " + e.getMessage());
             }
+            mmOutStream = null;
         }
     }
 }
