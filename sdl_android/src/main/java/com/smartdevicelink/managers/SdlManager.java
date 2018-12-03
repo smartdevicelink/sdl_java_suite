@@ -29,6 +29,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetAppIcon;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
@@ -372,6 +373,21 @@ public class SdlManager{
 	 */
 	public SystemCapabilityManager getSystemCapabilityManager(){
 		return proxy.getSystemCapabilityManager();
+	}
+
+	/**
+	 * Method to retrieve the RegisterAppInterface Response message that was sent back from the
+	 * module. It contains various attributes about the connected module and can be used to adapt
+	 * to different module types and their supported features.
+	 *
+	 * @return RegisterAppInterfaceResponse received from the module or null if the app has not yet
+	 * registered with the module.
+	 */
+	public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse(){
+		if(proxy != null){
+			return proxy.getRegisterAppInterfaceResponse();
+		}
+		return null;
 	}
 
 	// PROTECTED GETTERS
