@@ -3383,6 +3383,7 @@ public class SdlRouterService extends Service{
 
 		public PacketWriteTaskMaster(){
 			this.setName("PacketWriteTaskMaster");
+			this.setDaemon(true);
 		}
 		protected void setTransportType(TransportType transportType){
 			this.transportType = transportType;

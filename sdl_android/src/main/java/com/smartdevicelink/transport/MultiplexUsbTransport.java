@@ -100,7 +100,9 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         setState(STATE_CONNECTING);
         FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
         readerThread = new ReaderThread(fileDescriptor);
+        readerThread.setDaemon(true);
         writerThread = new WriterThread(fileDescriptor);
+        writerThread.setDaemon(true);
 
         readerThread.start();
         writerThread.start();
