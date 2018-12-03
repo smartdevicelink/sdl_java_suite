@@ -46,8 +46,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -93,6 +95,7 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
@@ -207,7 +210,7 @@ public class SdlRouterService extends Service{
 	private boolean startSequenceComplete = false;
 	
 	private ExecutorService packetExecutor = null;
-	HashMap<TransportType, PacketWriteTaskMaster>  packetWriteTaskMasterMap = null;
+	ConcurrentHashMap<TransportType, PacketWriteTaskMaster>  packetWriteTaskMasterMap = null;
 
 
 	/**
@@ -1603,7 +1606,7 @@ public class SdlRouterService extends Service{
 		enterForeground(createConnectedNotificationText(),0,true);
 
 		if(packetWriteTaskMasterMap == null){
-			packetWriteTaskMasterMap = new HashMap<>();
+			packetWriteTaskMasterMap = new ConcurrentHashMap<>();
 		}
 
 		TransportType type = record.getType();
@@ -1611,6 +1614,7 @@ public class SdlRouterService extends Service{
 
 		if(packetWriteTaskMaster!=null){
 			packetWriteTaskMaster.close();
+			packetWriteTaskMaster.alert();
 		}
 		packetWriteTaskMaster = new PacketWriteTaskMaster();
 		packetWriteTaskMaster.setTransportType(type);
@@ -1666,6 +1670,45 @@ public class SdlRouterService extends Service{
 
 	public void onTransportDisconnected(TransportRecord record){
 		cachedModuleVersion = -1; //Reset our cached version
+		//Stop any current pings being sent before the proper state can be determined.
+		stopClientPings();
+
+		if(registeredApps != null && !registeredApps.isEmpty()){
+			Message message = Message.obtain();
+			message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
+			message.arg1 = TransportConstants.HARDWARE_CONNECTION_EVENT_DISCONNECTED;
+
+			Bundle bundle = new Bundle();
+            bundle.putParcelable(TRANSPORT_DISCONNECTED, record);
+            //For legacy
+            bundle.putString(HARDWARE_DISCONNECTED, record.getType().name());
+			bundle.putBoolean(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
+
+			//Still connected transports
+			bundle.putParcelableArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED,getConnectedTransports());
+
+			message.setData(bundle);
+			notifyClients(message);
+
+			synchronized (REGISTERED_APPS_LOCK) {
+				Collection<RegisteredApp> apps = registeredApps.values();
+				for (RegisteredApp app : apps) {
+					app.unregisterTransport(-1,record.getType());
+
+				}
+			}
+		}
+		//Remove and close the packet task master assigned to this transport
+		if(packetWriteTaskMasterMap != null
+				&& record != null
+				&& packetWriteTaskMasterMap.containsKey(record.getType())){
+			PacketWriteTaskMaster master = packetWriteTaskMasterMap.remove(record.getType());
+			if(master != null){
+				master.close();
+				master.alert();
+			}
+		}
+		//Ensure the associated transport is dealt with
 		switch (record.getType()){
 			case BLUETOOTH:
 				synchronized(SESSION_LOCK){
@@ -1700,31 +1743,7 @@ public class SdlRouterService extends Service{
 				}
 				break;
 		}
-		if(registeredApps != null && !registeredApps.isEmpty()){
-			Message message = Message.obtain();
-			message.what = TransportConstants.HARDWARE_CONNECTION_EVENT;
-			message.arg1 = TransportConstants.HARDWARE_CONNECTION_EVENT_DISCONNECTED;
 
-			Bundle bundle = new Bundle();
-            bundle.putParcelable(TRANSPORT_DISCONNECTED, record);
-            //For legacy
-            bundle.putString(HARDWARE_DISCONNECTED, record.getType().name());
-			bundle.putBoolean(TransportConstants.ENABLE_LEGACY_MODE_EXTRA, legacyModeEnabled);
-
-			//Still connected transports
-			bundle.putParcelableArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED,getConnectedTransports());
-
-			message.setData(bundle);
-			notifyClients(message);
-
-			synchronized (REGISTERED_APPS_LOCK) {
-				Collection<RegisteredApp> apps = registeredApps.values();
-				for (RegisteredApp app : apps) {
-					app.unregisterTransport(-1,record.getType());
-
-				}
-			}
-		}
 		if(!getConnectedTransports().isEmpty()){
 			// Updates notification to one of still connected transport
 			enterForeground(createConnectedNotificationText(),0,true);
@@ -1742,13 +1761,6 @@ public class SdlRouterService extends Service{
 
 		Log.e(TAG, "Notifying client service of hardware disconnect.");
 
-		stopClientPings();
-
-
-		PacketWriteTaskMaster packetWriteTaskMaster = packetWriteTaskMasterMap.remove(record.getType());
-		if(packetWriteTaskMaster!=null){
-			packetWriteTaskMaster.close();
-		}
 
 		//We've notified our clients, less clean up the mess now.
 		synchronized(SESSION_LOCK){
@@ -2870,7 +2882,7 @@ public class SdlRouterService extends Service{
 		int priorityForBuffingMessage;
 		DeathRecipient deathNote = null;
 		//Packet queue vars
-		final HashMap<TransportType, PacketWriteTaskBlockingQueue> queues;
+		final ConcurrentHashMap<TransportType, PacketWriteTaskBlockingQueue> queues;
 		Handler queueWaitHandler;
 		Runnable queueWaitRunnable = null;
 		boolean queuePaused = false;
@@ -2888,7 +2900,7 @@ public class SdlRouterService extends Service{
 			this.appId = appId;
 			this.messenger = messenger;
 			this.sessionIds = new Vector<Long>();
-			this.queues = new HashMap<>();
+			this.queues = new ConcurrentHashMap<>();
 			queueWaitHandler = new Handler();
 			registeredTransports = new SparseArray<ArrayList<TransportType>>();
 			awaitingSession = new Vector<>();
@@ -2906,7 +2918,7 @@ public class SdlRouterService extends Service{
 			this.appId = appId;
 			this.messenger = messenger;
 			this.sessionIds = new Vector<Long>();
-			this.queues = new HashMap<>();
+			this.queues = new ConcurrentHashMap<>();
 			queueWaitHandler = new Handler();
 			registeredTransports = new SparseArray<ArrayList<TransportType>>();
 			awaitingSession = new Vector<>();
@@ -3064,7 +3076,11 @@ public class SdlRouterService extends Service{
 			}
 		}
 
-		protected boolean unregisterTransport(int sessionId, TransportType transportType){
+		protected boolean unregisterTransport(int sessionId, @NonNull TransportType transportType){
+			if(queues != null && queues.containsValue(transportType)){
+				PacketWriteTaskBlockingQueue queue = queues.remove(transportType);
+				queue.clear();
+			}
 			synchronized (TRANSPORT_LOCK){
 				if(sessionId == -1){
 					int size = this.registeredTransports.size();
@@ -3078,6 +3094,7 @@ public class SdlRouterService extends Service{
 					return false;
 				}
 			}
+
 		}
 
 		protected void unregisterAllTransports(int sessionId){
