@@ -276,204 +276,6 @@ public class SdlManager{
 		}
 	}
 
-	// BUILDER
-	public static class Builder {
-		SdlManager sdlManager;
-
-		/**
-		 * Builder for the SdlManager. Parameters in the constructor are required.
-		 * @param context the current context
-		 * @param appId the app's ID
-		 * @param appName the app's name
-		 * @param listener a SdlManagerListener object
-		 */
-		public Builder(@NonNull Context context, @NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener){
-			sdlManager = new SdlManager();
-			setContext(context);
-			setAppId(appId);
-			setAppName(appName);
-			setManagerListener(listener);
-		}
-
-		/**
-		 * Sets the App ID
-		 * @param appId
-		 */
-		public Builder setAppId(@NonNull final String appId){
-			sdlManager.appId = appId;
-			return this;
-		}
-
-		/**
-		 * Sets the Application Name
-		 * @param appName
-		 */
-		public Builder setAppName(@NonNull final String appName){
-			sdlManager.appName = appName;
-			return this;
-		}
-
-		/**
-		 * Sets the Short Application Name
-		 * @param shortAppName
-		 */
-		public Builder setShortAppName(final String shortAppName) {
-			sdlManager.shortAppName = shortAppName;
-			return this;
-		}
-
-		/**
-		 * Sets the Language of the App
-		 * @param hmiLanguage
-		 */
-		public Builder setLanguage(final Language hmiLanguage){
-			sdlManager.hmiLanguage = hmiLanguage;
-			return this;
-		}
-
-		/**
-		 * Sets the TemplateColorScheme for daytime
-		 * @param dayColorScheme
-		 */
-		public Builder setDayColorScheme(final TemplateColorScheme dayColorScheme){
-			sdlManager.dayColorScheme = dayColorScheme;
-			return this;
-		}
-
-		/**
-		 * Sets the TemplateColorScheme for nighttime
-		 * @param nightColorScheme
-		 */
-		public Builder setNightColorScheme(final TemplateColorScheme nightColorScheme){
-			sdlManager.nightColorScheme = nightColorScheme;
-			return this;
-		}
-
-		/**
-		 * Sets the LockScreenConfig for the session. <br>
-		 * <strong>Note: If not set, the default configuration will be used.</strong>
-		 * @param lockScreenConfig - configuration options
-		 */
-		public Builder setLockScreenConfig (final LockScreenConfig lockScreenConfig){
-			sdlManager.lockScreenConfig = lockScreenConfig;
-			return this;
-		}
-
-        /**
-         * Sets the icon for the app on HU <br>
-         * @param sdlArtwork
-         */
-        public Builder setAppIcon(final SdlArtwork sdlArtwork){
-			sdlManager.appIcon = sdlArtwork;
-            return this;
-        }
-
-		/**
-		 * Sets the vector of AppHMIType <br>
-		 * <strong>Note: This should be an ordered list from most -> least relevant</strong>
-		 * @param hmiTypes
-		 */
-		public Builder setAppTypes(final Vector<AppHMIType> hmiTypes){
-
-			sdlManager.hmiTypes = hmiTypes;
-
-			if (hmiTypes != null) {
-				sdlManager.isMediaApp = hmiTypes.contains(AppHMIType.MEDIA);
-			}
-
-			return this;
-		}
-
-		/**
-		 * Sets the vector of vrSynonyms
-		 * @param vrSynonyms
-		 */
-		public Builder setVrSynonyms(final Vector<String> vrSynonyms) {
-			sdlManager.vrSynonyms = vrSynonyms;
-			return this;
-		}
-
-		/**
-		 * Sets the TTS Name
-		 * @param ttsChunks
-		 */
-		public Builder setTtsName(final Vector<TTSChunk> ttsChunks) {
-			sdlManager.ttsChunks = ttsChunks;
-			return this;
-		}
-
-		/**
-		 * This Object type may change with the transport refactor
-		 * Sets the BaseTransportConfig
-		 * @param transport
-		 */
-		public Builder setTransportType(BaseTransportConfig transport){
-			sdlManager.transport = transport;
-			return this;
-		}
-
-		/**
-		 * Sets the Context
-		 * @param context
-		 */
-		public Builder setContext(Context context){
-			sdlManager.context = context;
-			return this;
-		}
-
-		/**
-		 * Sets the Security library
-		 * @param secList The list of security class(es)
-		 */
-		public Builder setSdlSecurity(List<Class<? extends SdlSecurityBase>> secList) {
-			sdlManager.sdlSecList = secList;
-			return this;
-		}
-
-		/**
-		 * Set the SdlManager Listener
-		 * @param listener the listener
-		 */
-		public Builder setManagerListener(@NonNull final SdlManagerListener listener){
-			sdlManager.managerListener = listener;
-			return this;
-		}
-
-		public SdlManager build() {
-
-			if (sdlManager.appName == null) {
-				throw new IllegalArgumentException("You must specify an app name by calling setAppName");
-			}
-
-			if (sdlManager.appId == null) {
-				throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
-			}
-
-			if (sdlManager.managerListener == null) {
-				throw new IllegalArgumentException("You must set a SdlManagerListener object");
-			}
-
-			if (sdlManager.hmiTypes == null) {
-				Vector<AppHMIType> hmiTypesDefault = new Vector<>();
-				hmiTypesDefault.add(AppHMIType.DEFAULT);
-				sdlManager.hmiTypes = hmiTypesDefault;
-				sdlManager.isMediaApp = false;
-			}
-
-			if (sdlManager.lockScreenConfig == null){
-				// if lock screen params are not set, use default
-				sdlManager.lockScreenConfig = new LockScreenConfig();
-			}
-
-			if (sdlManager.hmiLanguage == null){
-				sdlManager.hmiLanguage = Language.EN_US;
-			}
-
-			sdlManager.transitionToState(BaseSubManager.SETTING_UP);
-
-			return sdlManager;
-		}
-	}
 
 	private void checkSdlManagerState(){
 		if (getState() != BaseSubManager.READY && getState() != BaseSubManager.LIMITED){
@@ -924,4 +726,204 @@ public class SdlManager{
 		}
 
 	};
+
+
+	// BUILDER
+	public static class Builder {
+		SdlManager sdlManager;
+
+		/**
+		 * Builder for the SdlManager. Parameters in the constructor are required.
+		 * @param context the current context
+		 * @param appId the app's ID
+		 * @param appName the app's name
+		 * @param listener a SdlManagerListener object
+		 */
+		public Builder(@NonNull Context context, @NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener){
+			sdlManager = new SdlManager();
+			setContext(context);
+			setAppId(appId);
+			setAppName(appName);
+			setManagerListener(listener);
+		}
+
+		/**
+		 * Sets the App ID
+		 * @param appId
+		 */
+		public Builder setAppId(@NonNull final String appId){
+			sdlManager.appId = appId;
+			return this;
+		}
+
+		/**
+		 * Sets the Application Name
+		 * @param appName
+		 */
+		public Builder setAppName(@NonNull final String appName){
+			sdlManager.appName = appName;
+			return this;
+		}
+
+		/**
+		 * Sets the Short Application Name
+		 * @param shortAppName
+		 */
+		public Builder setShortAppName(final String shortAppName) {
+			sdlManager.shortAppName = shortAppName;
+			return this;
+		}
+
+		/**
+		 * Sets the Language of the App
+		 * @param hmiLanguage
+		 */
+		public Builder setLanguage(final Language hmiLanguage){
+			sdlManager.hmiLanguage = hmiLanguage;
+			return this;
+		}
+
+		/**
+		 * Sets the TemplateColorScheme for daytime
+		 * @param dayColorScheme
+		 */
+		public Builder setDayColorScheme(final TemplateColorScheme dayColorScheme){
+			sdlManager.dayColorScheme = dayColorScheme;
+			return this;
+		}
+
+		/**
+		 * Sets the TemplateColorScheme for nighttime
+		 * @param nightColorScheme
+		 */
+		public Builder setNightColorScheme(final TemplateColorScheme nightColorScheme){
+			sdlManager.nightColorScheme = nightColorScheme;
+			return this;
+		}
+
+		/**
+		 * Sets the LockScreenConfig for the session. <br>
+		 * <strong>Note: If not set, the default configuration will be used.</strong>
+		 * @param lockScreenConfig - configuration options
+		 */
+		public Builder setLockScreenConfig (final LockScreenConfig lockScreenConfig){
+			sdlManager.lockScreenConfig = lockScreenConfig;
+			return this;
+		}
+
+		/**
+		 * Sets the icon for the app on HU <br>
+		 * @param sdlArtwork
+		 */
+		public Builder setAppIcon(final SdlArtwork sdlArtwork){
+			sdlManager.appIcon = sdlArtwork;
+			return this;
+		}
+
+		/**
+		 * Sets the vector of AppHMIType <br>
+		 * <strong>Note: This should be an ordered list from most -> least relevant</strong>
+		 * @param hmiTypes
+		 */
+		public Builder setAppTypes(final Vector<AppHMIType> hmiTypes){
+
+			sdlManager.hmiTypes = hmiTypes;
+
+			if (hmiTypes != null) {
+				sdlManager.isMediaApp = hmiTypes.contains(AppHMIType.MEDIA);
+			}
+
+			return this;
+		}
+
+		/**
+		 * Sets the vector of vrSynonyms
+		 * @param vrSynonyms
+		 */
+		public Builder setVrSynonyms(final Vector<String> vrSynonyms) {
+			sdlManager.vrSynonyms = vrSynonyms;
+			return this;
+		}
+
+		/**
+		 * Sets the TTS Name
+		 * @param ttsChunks
+		 */
+		public Builder setTtsName(final Vector<TTSChunk> ttsChunks) {
+			sdlManager.ttsChunks = ttsChunks;
+			return this;
+		}
+
+		/**
+		 * This Object type may change with the transport refactor
+		 * Sets the BaseTransportConfig
+		 * @param transport
+		 */
+		public Builder setTransportType(BaseTransportConfig transport){
+			sdlManager.transport = transport;
+			return this;
+		}
+
+		/**
+		 * Sets the Context
+		 * @param context
+		 */
+		public Builder setContext(Context context){
+			sdlManager.context = context;
+			return this;
+		}
+
+		/**
+		 * Sets the Security library
+		 * @param secList The list of security class(es)
+		 */
+		public Builder setSdlSecurity(List<Class<? extends SdlSecurityBase>> secList) {
+			sdlManager.sdlSecList = secList;
+			return this;
+		}
+
+		/**
+		 * Set the SdlManager Listener
+		 * @param listener the listener
+		 */
+		public Builder setManagerListener(@NonNull final SdlManagerListener listener){
+			sdlManager.managerListener = listener;
+			return this;
+		}
+
+		public SdlManager build() {
+
+			if (sdlManager.appName == null) {
+				throw new IllegalArgumentException("You must specify an app name by calling setAppName");
+			}
+
+			if (sdlManager.appId == null) {
+				throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
+			}
+
+			if (sdlManager.managerListener == null) {
+				throw new IllegalArgumentException("You must set a SdlManagerListener object");
+			}
+
+			if (sdlManager.hmiTypes == null) {
+				Vector<AppHMIType> hmiTypesDefault = new Vector<>();
+				hmiTypesDefault.add(AppHMIType.DEFAULT);
+				sdlManager.hmiTypes = hmiTypesDefault;
+				sdlManager.isMediaApp = false;
+			}
+
+			if (sdlManager.lockScreenConfig == null){
+				// if lock screen params are not set, use default
+				sdlManager.lockScreenConfig = new LockScreenConfig();
+			}
+
+			if (sdlManager.hmiLanguage == null){
+				sdlManager.hmiLanguage = Language.EN_US;
+			}
+
+			sdlManager.transitionToState(BaseSubManager.SETTING_UP);
+
+			return sdlManager;
+		}
+	}
 }
