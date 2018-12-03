@@ -107,7 +107,7 @@ public class UsbTransferProvider {
             throw new IllegalStateException("Supplied params are not correct. Context == null? "+ (context==null) + " ComponentName == null? " + (service == null) + " Usb Accessory == null? " + usbAccessory);
         }
         usbPfd = getFileDescriptor(usbAccessory, context);
-        if(usbPfd != null){
+        if(usbPfd != null && usbPfd.getFileDescriptor() != null && usbPfd.getFileDescriptor().valid()){
             this.context = context;
             this.routerService = service;
             this.callback = callback;
