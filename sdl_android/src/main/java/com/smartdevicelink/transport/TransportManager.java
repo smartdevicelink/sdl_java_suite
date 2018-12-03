@@ -32,8 +32,12 @@
 
 package com.smartdevicelink.transport;
 
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -63,6 +67,8 @@ public class TransportManager {
     MultiplexBluetoothTransport legacyBluetoothTransport;
     LegacyBluetoothHandler legacyBluetoothHandler;
 
+    final WeakReference<Context> contextWeakReference;
+
 
     /**
      * Managing transports
@@ -81,6 +87,8 @@ public class TransportManager {
         if(config.service == null) {
             config.service = SdlBroadcastReceiver.consumeQueuedRouterService();
         }
+
+        contextWeakReference = new WeakReference<>(config.context);
 
         RouterServiceValidator validator = new RouterServiceValidator(config);
         if(validator.validate()){
@@ -210,7 +218,7 @@ public class TransportManager {
     }
 
     public void requestSecondaryTransportConnection(byte sessionId, Bundle params){
-    	transport.requestSecondaryTransportConnection(sessionId, params);
+        transport.requestSecondaryTransportConnection(sessionId, params);
     }
 
     protected class TransportBrokerImpl extends TransportBroker{
@@ -283,6 +291,9 @@ public class TransportManager {
             }
             legacyBluetoothHandler = new LegacyBluetoothHandler(this);
             legacyBluetoothTransport = new MultiplexBluetoothTransport(legacyBluetoothHandler);
+            if(contextWeakReference.get() != null){
+                contextWeakReference.get().registerReceiver(legacyDisconnectReceiver,new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED) );
+            }
         }else{
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -295,7 +306,9 @@ public class TransportManager {
     }
 
     protected synchronized void exitLegacyMode(String info ){
+        TransportRecord legacyTransportRecord = null;
         if(legacyBluetoothTransport != null){
+            legacyTransportRecord = legacyBluetoothTransport.getTransportRecord();
             legacyBluetoothTransport.stop();
             legacyBluetoothTransport = null;
         }
@@ -303,7 +316,12 @@ public class TransportManager {
         synchronized (TRANSPORT_STATUS_LOCK){
             TransportManager.this.transportStatus.clear();
         }
-        transportListener.onTransportDisconnected(info, new TransportRecord(TransportType.BLUETOOTH,null),null);
+        if(contextWeakReference !=null){
+            try{
+                contextWeakReference.get().unregisterReceiver(legacyDisconnectReceiver);
+            }catch (Exception e){}
+        }
+        transportListener.onTransportDisconnected(info, legacyTransportRecord,null);
     }
 
     public interface TransportEventListener{
@@ -328,6 +346,16 @@ public class TransportManager {
     }
 
 
+    private BroadcastReceiver legacyDisconnectReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent != null){
+                if(BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(intent.getAction())){
+                    exitLegacyMode("Bluetooth disconnected");
+                }
+            }
+        }
+    };
 
     protected static class LegacyBluetoothHandler extends Handler{
 
