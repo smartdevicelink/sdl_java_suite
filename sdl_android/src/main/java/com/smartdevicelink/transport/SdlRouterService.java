@@ -829,6 +829,8 @@ public class SdlRouterService extends Service{
 	        	SdlRouterService service = this.provider.get();
 	        	switch(msg.what){
 					case TransportConstants.USB_CONNECTED_WITH_DEVICE:
+						service.enterForeground("Opening USB connection",FOREGROUND_TIMEOUT,false);
+						service.resetForegroundTimeOut(FOREGROUND_TIMEOUT);
         			int flags = msg.arg1;
 
 					ParcelFileDescriptor parcelFileDescriptor = (ParcelFileDescriptor)msg.obj;
@@ -836,7 +838,15 @@ public class SdlRouterService extends Service{
 					if(parcelFileDescriptor != null) {
 						//New USB constructor with PFD
 						service.usbTransport = new MultiplexUsbTransport(parcelFileDescriptor, service.usbHandler, msg.getData());
-						service.usbTransport.start();
+
+						postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								if(provider.get() != null){
+									provider.get().usbTransport.start();
+								}
+							}
+						}, 4000);
 					}
 
 	        		if(msg.replyTo!=null){
@@ -848,12 +858,7 @@ public class SdlRouterService extends Service{
 	        				e.printStackTrace();
 	        			}
 	        		}
-	        		if(service.isPrimaryTransportConnected() && ((TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING  & flags) == TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING)){
-	        			if(service.pingIntent == null){
-	        				service.initPingIntent();
-	        			}
-	        			AndroidTools.sendExplicitBroadcast(service.getApplicationContext(),service.pingIntent, null);
-	        		}
+
 	        		break;
 			        case TransportConstants.ALT_TRANSPORT_CONNECTED:
 			        	break;
@@ -1318,7 +1323,14 @@ public class SdlRouterService extends Service{
 				foregroundTimeoutRunnable = new Runnable() {
 					@Override
 					public void run() {
-						exitForeground();
+						if(!getConnectedTransports().isEmpty()){
+							// Updates notification to one of still connected transport
+							enterForeground(createConnectedNotificationText(),0,true);
+							return;
+						}else{
+							exitForeground();//Leave our foreground state as we don't have a connection
+
+						}
 					}
 				};
 			} else {
