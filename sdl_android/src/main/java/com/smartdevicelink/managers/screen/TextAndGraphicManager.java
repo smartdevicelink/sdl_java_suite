@@ -315,13 +315,13 @@ class TextAndGraphicManager extends BaseSubManager {
 
 		if (shouldUpdatePrimaryImage()){
 			Image primaryImage = new Image(primaryGraphic.getName(), ImageType.DYNAMIC);
-			primaryImage.setIsTemplate(primaryGraphic.getIsTemplate());
+			primaryImage.setIsTemplate(primaryGraphic.isTemplateImage());
 			show.setGraphic(primaryImage);
 		}
 
 		if (shouldUpdateSecondaryImage()){
 			Image secondaryImage = new Image(secondaryGraphic.getName(), ImageType.DYNAMIC);
-			secondaryImage.setIsTemplate(secondaryGraphic.getIsTemplate());
+			secondaryImage.setIsTemplate(secondaryGraphic.isTemplateImage());
 			show.setSecondaryGraphic(secondaryImage);
 		}
 
