@@ -3330,6 +3330,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onSendHapticDataResponse( msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.SET_CLOUD_APP_PROPERTIES.toString())) {
+				final SetCloudAppPropertiesResponse msg = new SetCloudAppPropertiesResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onSetCloudAppProperties( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onSetCloudAppProperties( msg);
+					onRPCResponseReceived(msg);
+				}
 			}
 			else {
 				if (_sdlMsgVersion != null) {

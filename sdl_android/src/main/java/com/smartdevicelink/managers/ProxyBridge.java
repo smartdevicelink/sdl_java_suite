@@ -58,6 +58,7 @@ import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
 import com.smartdevicelink.proxy.rpc.SendHapticDataResponse;
 import com.smartdevicelink.proxy.rpc.SendLocationResponse;
 import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
+import com.smartdevicelink.proxy.rpc.SetCloudAppPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetInteriorVehicleDataResponse;
@@ -556,5 +557,10 @@ public class ProxyBridge implements IProxyListener{
 	@Override
 	public void onOnRCStatus(OnRCStatus notification) {
 		onRPCReceived(notification);
+	}
+
+	@Override
+	public void onSetCloudAppProperties(SetCloudAppPropertiesResponse response) {
+		onRPCReceived(response);
 	}
 }

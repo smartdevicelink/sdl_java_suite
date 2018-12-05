@@ -51,6 +51,7 @@ import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
 import com.smartdevicelink.proxy.rpc.SendHapticDataResponse;
 import com.smartdevicelink.proxy.rpc.SendLocationResponse;
 import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
+import com.smartdevicelink.proxy.rpc.SetCloudAppPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetInteriorVehicleDataResponse;
@@ -356,4 +357,6 @@ public interface IProxyListenerBase  {
 	public void onSendHapticDataResponse(SendHapticDataResponse response);
 
 	public void onOnRCStatus(OnRCStatus notification);
+
+	public void onSetCloudAppProperties(SetCloudAppPropertiesResponse response);
 }
