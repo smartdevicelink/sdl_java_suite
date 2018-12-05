@@ -54,7 +54,9 @@ public class SoftButtonState {
 
         // Set the SoftButton's image
         if (artwork != null) {
-            softButton.setImage(new Image(artwork.getName(), ImageType.DYNAMIC));
+            Image image = new Image(artwork.getName(), ImageType.DYNAMIC);
+            image.setIsTemplate(artwork.isTemplateImage());
+            softButton.setImage(image);
         }
 
         // Set the SoftButton's text

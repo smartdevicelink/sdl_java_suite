@@ -9,6 +9,8 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
  * A class that extends SdlFile, representing artwork (JPEG, PNG, or BMP) to be uploaded to core
  */
 public class SdlArtwork extends SdlFile {
+    private boolean isTemplate;
+
     public SdlArtwork(){}
 
     public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, int id, boolean persistentFile) {
@@ -21,6 +23,22 @@ public class SdlArtwork extends SdlFile {
 
     public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, byte[] data, boolean persistentFile) {
         super(fileName, fileType, data, persistentFile);
+    }
+
+    /**
+     * Set whether this SdlArtwork is a template image whose coloring should be decided by the HMI
+     * @param isTemplate boolean that tells whether this SdlArtwork is a template image
+     */
+    public void setTemplateImage(boolean isTemplate){
+        this.isTemplate = isTemplate;
+    }
+
+    /**
+     * Get whether this SdlArtwork is a template image whose coloring should be decided by the HMI
+     * @return boolean that tells whether this SdlArtwork is a template image
+     */
+    public boolean isTemplateImage(){
+        return isTemplate;
     }
 
     @Override
