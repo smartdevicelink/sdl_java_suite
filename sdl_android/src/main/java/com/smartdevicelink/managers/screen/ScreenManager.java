@@ -64,14 +64,14 @@ public class ScreenManager extends BaseSubManager {
 	@Override
 	public void start(CompletionListener listener) {
 		super.start(listener);
+		this.softButtonManager.start(subManagerListener);
+		this.textAndGraphicManager.start(subManagerListener);
 	}
 
 	private void initialize(){
 		if (fileManager.get() != null) {
 			this.softButtonManager = new SoftButtonManager(internalInterface, fileManager.get());
 			this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get(), softButtonManager);
-			this.softButtonManager.start(subManagerListener);
-			this.textAndGraphicManager.start(subManagerListener);
 		}
 	}
 
