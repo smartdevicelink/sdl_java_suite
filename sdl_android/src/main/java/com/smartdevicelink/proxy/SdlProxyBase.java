@@ -244,6 +244,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected List<Class<? extends SdlSecurityBase>> _secList = null;
 	protected SystemCapabilityManager _systemCapabilityManager;
 	protected Boolean _iconResumed = false;
+	protected RegisterAppInterfaceResponse raiResponse = null;
 	
 	private final CopyOnWriteArrayList<IPutFileResponseListener> _putFileListenerList = new CopyOnWriteArrayList<IPutFileResponseListener>();
 
@@ -2169,6 +2170,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private void processRaiResponse(RegisterAppInterfaceResponse rai)
 	{
 		if (rai == null) return;
+
+		this.raiResponse = rai;
 		
 		VehicleType vt = rai.getVehicleType();
 		if (vt == null) return;
@@ -7376,6 +7379,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			throw new SdlException("SDL is not connected. Unable to determine if app icon was resumed.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
 		return _iconResumed;
+	}
+
+	/**
+	 * Method to retrieve the RegisterAppInterface Response message that was sent back from the
+	 * module. It contains various attributes about the connected module and can be used to adapt
+	 * to different module types and their supported features.
+	 *
+	 * @return RegisterAppInterfaceResponse received from the module or null if the app has not yet
+	 * registered with the module.
+	 */
+	public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse(){
+		return this.raiResponse;
 	}
 
 
