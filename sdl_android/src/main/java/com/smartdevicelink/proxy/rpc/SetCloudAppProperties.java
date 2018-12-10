@@ -9,7 +9,7 @@ import java.util.Hashtable;
 public class SetCloudAppProperties extends RPCRequest {
 
     public static final String KEY_APP_NAME                 = "appName";
-    public static final String KEY_APP_ID                   = "appId";
+    public static final String KEY_APP_ID                   = "appID";
     public static final String KEY_ENABLED                  = "enabled";
     public static final String KEY_CLOUD_APP_AUTH_TOKEN     = "cloudAppAuthToken";
     public static final String KEY_CLOUD_TRANSPORT_TYPE     = "cloudTransportType";
