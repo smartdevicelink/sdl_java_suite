@@ -1,0 +1,61 @@
+{
+ "request":{
+    "name":"CreateInteractionChoiceSet",
+    "correlationID":113,
+    "parameters":{
+      "interactionChoiceSetID":56,
+      "choiceSet":[
+        {
+          "secondaryText":"Secondary Text",
+          "tertiaryText":"Tertiary Text",
+          "secondaryImage":{
+            "value":"lessImportantImage.png",
+            "imageType":"STATIC"
+          },
+          "menuName":"Menu Name",
+          "vrCommands":[
+            "vr1",
+            "vr2",
+            "vr3",
+            "vr4",
+            "vr5",
+            "vr6",
+            "vr7"
+          ],
+          "choiceID":1,
+          "image":{
+            "value":"image.png",
+            "imageType":"DYNAMIC"
+          }
+        },
+        {
+          "secondaryText":"Secondary Text 2",
+          "tertiaryText":"Tertiary Text 2",
+          "secondaryImage":{
+            "value":"evenLessImportantImage.png",
+            "imageType":"STATIC"
+          },
+          "menuName":"Menu Name 2",
+          "vrCommands":[
+            "vr1",
+            "vr2",
+            "vr3",
+            "vr4",
+            "vr5",
+            "vr6",
+            "vr7"
+          ],
+          "choiceID":2,
+          "image":{
+            "value":"image.png",
+            "imageType":"DYNAMIC"
+          }
+        }
+      ]
+    }
+  },
+  "response":{
+    "name":"CreateInteractionChoiceSetResponse",
+    "correlationID":114
+  }
+}

@@ -59,3 +59,11 @@ proguard/
 *.ipr
 *.iws
 .idea/
+build/
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+/captures
+.externalNativeBuild
+

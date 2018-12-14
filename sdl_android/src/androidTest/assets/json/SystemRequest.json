@@ -1,0 +1,21 @@
+{
+  "request":{
+    "name":"SystemRequest",
+    "correlationID":165,
+    "parameters":{
+      "fileName":"fileName.txt",
+      "requestType":"OEM_SPECIFIC",
+      "requestSubType":"TEST",
+      "data":[
+        "data1",
+        "data2",
+        "data3",
+        "data4"
+      ]
+    }
+  },
+  "response":{
+    "name":"SystemRequestResponse",
+    "correlationID":166
+  }
+}

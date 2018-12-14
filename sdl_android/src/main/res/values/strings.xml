@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lockscreen_text">Locked for your safety</string>
+    <string name="lockscreen_image_description">SDL Icon</string>
+    <string name="lockscreen_device_image_description">Device Icon</string>
+</resources>

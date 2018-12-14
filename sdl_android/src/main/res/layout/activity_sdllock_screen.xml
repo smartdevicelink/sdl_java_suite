@@ -1,0 +1,44 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/lockscreen_relative_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="#2c3d4d">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:id="@+id/lockscreen_linear_layout"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical"
+                  android:gravity="center_horizontal|center_vertical">
+
+        <ImageView
+            android:id="@+id/lockscreen_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:scaleType="fitXY"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/lockscreen_image_description"
+            android:background="@drawable/sdl_lockscreen_icon"/>
+
+        <ImageView
+            android:id="@+id/device_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="30dp"
+            android:scaleType="fitXY"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/lockscreen_device_image_description"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/lockscreen_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/lockscreen_text"
+        android:textSize="18sp"
+        android:gravity="center|bottom"
+        android:textColor="#FFFFFF"
+        android:paddingBottom="10dp"/>
+
+</RelativeLayout>
