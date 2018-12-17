@@ -1985,7 +1985,13 @@ public class SdlRouterService extends Service{
 							}
 
 							//TODO stop other services on that transport for the session with no app
-							SdlPacket endService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion(),BitConverter.intToByteArray(hashId));
+							SdlPacket endService;
+							if (packet.getVersion() < 5) {
+								endService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion(), BitConverter.intToByteArray(hashId));
+							} else {
+								endService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion(), new byte[0]);
+								endService.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashId);
+							}
 							byte[] stopService = endService.constructPacket();
 							manuallyWriteBytes(packet.getTransportRecord().getType(), stopService,0,stopService.length);
 						}else{
@@ -1999,9 +2005,20 @@ public class SdlRouterService extends Service{
 	    			byte version = (byte)packet.getVersion();
 	    			
 	    			if(isNewSessionRequest && version > 1 && packet.getFrameInfo() == SdlPacket.FRAME_INFO_START_SERVICE_ACK){ //we know this was a start session response
-	    				if (packet.getPayload() != null && packet.getDataSize() == 4){ //hashid will be 4 bytes in length
-	    					synchronized(SESSION_LOCK){
-	    						this.sessionHashIdMap.put(session, (BitConverter.intFromByteArray(packet.getPayload(), 0)));
+						if (version >= 5) {
+							Integer hashId = (Integer) packet.getTag(ControlFrameTags.RPC.StartServiceACK.HASH_ID);
+							if (hashId != null) {
+								synchronized(SESSION_LOCK) {
+									this.sessionHashIdMap.put(session, hashId);
+								}
+							} else {
+								Log.w(TAG, "Hash ID not found in V5 start service ACK frame for session " + session);
+							}
+						} else {
+	    					if (packet.getPayload() != null && packet.getDataSize() == 4){ //hashid will be 4 bytes in length
+	    						synchronized(SESSION_LOCK){
+	    							this.sessionHashIdMap.put(session, (BitConverter.intFromByteArray(packet.getPayload(), 0)));
+								}
 	    					}
 	    				}
 	    			}
@@ -2128,7 +2145,14 @@ public class SdlRouterService extends Service{
 					this.cleanedSessionMap.put(session,hashId);
 				}
 			}
-			byte[] stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version,BitConverter.intToByteArray(hashId))).constructPacket();
+			SdlPacket packet;
+			if (version < 5) {
+				packet = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version, BitConverter.intToByteArray(hashId));
+			} else {
+				packet = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version, new byte[0]);
+				packet.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashId);
+			}
+			byte[] stopService = packet.constructPacket();
 			manuallyWriteBytes(primaryTransport,stopService,0,stopService.length);
 		}
 		
@@ -2154,7 +2178,14 @@ public class SdlRouterService extends Service{
 								hashId = this.sessionHashIdMap.get(sessionId);
 							}
 						}
-						stopService = (SdlPacketFactory.createEndSession(SessionType.RPC, (byte) sessionId, 0, version, BitConverter.intToByteArray(hashId))).constructPacket();
+						SdlPacket packet;
+						if (version < 5) {
+							packet = SdlPacketFactory.createEndSession(SessionType.RPC, (byte) sessionId, 0, version, BitConverter.intToByteArray(hashId));
+						} else {
+							packet = SdlPacketFactory.createEndSession(SessionType.RPC, (byte) sessionId, 0, version, new byte[0]);
+							packet.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashId);
+						}
+						stopService = packet.constructPacket();
 
 						manuallyWriteBytes(transportTypes.get(0),stopService, 0, stopService.length);
 						synchronized (SESSION_LOCK) {
