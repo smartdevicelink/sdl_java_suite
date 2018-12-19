@@ -169,8 +169,8 @@ class TextAndGraphicManager extends BaseSubManager {
 			isDirty = false;
 			sdlUpdate(listener);
 		} else if (listener != null) {
-            listener.onComplete(true);
-        }
+			listener.onComplete(true);
+		}
 	}
 	
 	private synchronized void sdlUpdate(CompletionListener listener){
