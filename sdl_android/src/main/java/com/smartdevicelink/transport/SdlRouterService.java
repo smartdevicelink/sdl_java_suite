@@ -1985,14 +1985,7 @@ public class SdlRouterService extends Service{
 							}
 
 							//TODO stop other services on that transport for the session with no app
-							SdlPacket endService;
-							if (packet.getVersion() < 5) {
-								endService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion(), BitConverter.intToByteArray(hashId));
-							} else {
-								endService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion(), new byte[0]);
-								endService.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashId);
-							}
-							byte[] stopService = endService.constructPacket();
+							byte[] stopService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)packet.getVersion(), hashId).constructPacket();
 							manuallyWriteBytes(packet.getTransportRecord().getType(), stopService,0,stopService.length);
 						}else{
 	    					Log.w(TAG, "No where to send a packet from what appears to be a non primary transport");
@@ -2145,14 +2138,7 @@ public class SdlRouterService extends Service{
 					this.cleanedSessionMap.put(session,hashId);
 				}
 			}
-			SdlPacket packet;
-			if (version < 5) {
-				packet = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version, BitConverter.intToByteArray(hashId));
-			} else {
-				packet = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version, new byte[0]);
-				packet.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashId);
-			}
-			byte[] stopService = packet.constructPacket();
+			byte[] stopService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte)session, 0, (byte)version, hashId).constructPacket();
 			manuallyWriteBytes(primaryTransport,stopService,0,stopService.length);
 		}
 		
@@ -2178,14 +2164,7 @@ public class SdlRouterService extends Service{
 								hashId = this.sessionHashIdMap.get(sessionId);
 							}
 						}
-						SdlPacket packet;
-						if (version < 5) {
-							packet = SdlPacketFactory.createEndSession(SessionType.RPC, (byte) sessionId, 0, version, BitConverter.intToByteArray(hashId));
-						} else {
-							packet = SdlPacketFactory.createEndSession(SessionType.RPC, (byte) sessionId, 0, version, new byte[0]);
-							packet.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashId);
-						}
-						stopService = packet.constructPacket();
+						stopService = SdlPacketFactory.createEndSession(SessionType.RPC, (byte) sessionId, 0, version, hashId).constructPacket();
 
 						manuallyWriteBytes(transportTypes.get(0),stopService, 0, stopService.length);
 						synchronized (SESSION_LOCK) {
