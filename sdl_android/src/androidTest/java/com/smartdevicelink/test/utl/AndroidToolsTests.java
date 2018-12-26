@@ -2,8 +2,10 @@ package com.smartdevicelink.test.utl;
 
 import junit.framework.Assert;
 import android.content.ComponentName;
+import android.content.Intent;
 
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.transport.TransportConstants;
 import com.smartdevicelink.util.AndroidTools;
 
 public class AndroidToolsTests extends AndroidTestCase2 {
