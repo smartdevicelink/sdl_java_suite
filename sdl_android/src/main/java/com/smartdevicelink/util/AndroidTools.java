@@ -129,13 +129,14 @@ public class AndroidTools {
 	 * the AndroidManifest. If no apps are found to receive the intent, this method will send the
 	 * broadcast implicitly if no list of apps is provided.
 	 *
-	 * @param intent - the intent to send explicitly
+	 * @param intent - the intent used for populating target apps when apps is null.
+	 *                 this intent is copied and used also for sending broadcast.
 	 * @param apps - the list of apps that this broadcast will be sent to. If null is passed in
 	 *                the intent will be sent to all apps that match the provided intent via a query
 	 *                to the package manager; it will also be sent implicitly to mimic
 	 *                sendBroadcast()'s original functionality.
 	 */
-	public static void sendExplicitBroadcast(Context context, Intent intent, List<ResolveInfo> apps) {
+	public static void sendExplicitBroadcast(final Context context, final Intent intent, List<ResolveInfo> apps) {
 
 		if(context == null || intent == null){
 			return;
@@ -148,8 +149,9 @@ public class AndroidTools {
 		if (apps != null && apps.size()>0) {
 			for(ResolveInfo app: apps){
 				try {
-					intent.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
-					context.sendBroadcast(intent);
+					Intent broadcastIntent = new Intent(intent);
+					broadcastIntent.setClassName(app.activityInfo.applicationInfo.packageName, app.activityInfo.name);
+					context.sendBroadcast(broadcastIntent);
 				}catch(Exception e){
 					//In case there is missing info in the app reference we want to keep moving
 				}
