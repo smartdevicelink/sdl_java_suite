@@ -1,6 +1,7 @@
 package com.smartdevicelink.util;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -12,8 +13,8 @@ import java.util.Locale;
 
 /**
  * {@code Localization} is a class to create Resources objects for
- * a specific language and/or region if resources of a language/region
- * other than the default language/region is required.
+ * a specific locale (language, region, script) if resources of a locale
+ * other than the default locale is required.
  */
 public class Localization {
     private Locale locale;
@@ -22,7 +23,7 @@ public class Localization {
     /**
      * Return the locale object used by the Resource object of this instance.
      */
-    private Locale getLocale() {
+    public Locale getLocale() {
         return this.locale;
     }
 
@@ -30,7 +31,7 @@ public class Localization {
      * Return the resource object created by this instance.
      */
     public Resources getResources() {
-        return this.resources;
+        return this.context.getResources();
     }
 
     /**
@@ -55,7 +56,7 @@ public class Localization {
             ContextWrapper wrapper = new ContextWrapper(context);
             this.context = wrapper.createConfigurationContext(config);
         } else {
-            this.context = context.getAppllicationContext();
+            this.context = context.getApplicationContext();
         }
         this.locale = locale;
     }
