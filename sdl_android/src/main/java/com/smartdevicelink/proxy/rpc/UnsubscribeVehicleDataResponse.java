@@ -2,14 +2,11 @@ package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
-import com.smartdevicelink.util.DebugTool;
 
-import static android.provider.Contacts.SettingsColumns.KEY;
+import java.util.Hashtable;
 
 /**
  * Unsubscribe Vehicle Data Response is sent, when UnsubscribeVehicleData has been called.
