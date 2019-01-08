@@ -4,9 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.rpc.enums.Language;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 

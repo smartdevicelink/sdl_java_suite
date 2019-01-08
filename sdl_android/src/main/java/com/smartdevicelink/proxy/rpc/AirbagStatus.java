@@ -7,9 +7,6 @@ import java.util.Hashtable;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 
-import static com.smartdevicelink.proxy.constants.Names.driverCurtainAirbagDeployed;
-import static com.smartdevicelink.proxy.constants.Names.driverSideAirbagDeployed;
-
 /**
  * <p>The status of the air bags.</p>
  *

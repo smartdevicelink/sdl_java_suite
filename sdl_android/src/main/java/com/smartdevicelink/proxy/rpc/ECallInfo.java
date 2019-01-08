@@ -4,9 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ECallConfirmationStatus;
-import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
-import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 
 import java.util.Hashtable;
 

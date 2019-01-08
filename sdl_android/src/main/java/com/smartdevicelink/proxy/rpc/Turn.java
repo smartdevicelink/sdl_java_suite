@@ -1,7 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
 
 import java.util.Hashtable;
 

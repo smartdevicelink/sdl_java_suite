@@ -6,11 +6,8 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
-import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 
 import java.util.Hashtable;
-
-import static com.smartdevicelink.proxy.rpc.AirbagStatus.KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED;
 
 /**
  *<p> Describes different audio type configurations for PerformAudioPassThru, e.g. {8kHz,8-bit,PCM}

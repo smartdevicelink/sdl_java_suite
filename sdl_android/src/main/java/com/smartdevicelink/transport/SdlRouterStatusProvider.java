@@ -1,25 +1,21 @@
 package com.smartdevicelink.transport;
 
-import java.lang.ref.WeakReference;
-
-import com.smartdevicelink.util.AndroidTools;
-
-import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
-import android.content.pm.ServiceInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
-import android.os.Looper;
+
+import com.smartdevicelink.util.AndroidTools;
+
+import java.lang.ref.WeakReference;
 
 import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 

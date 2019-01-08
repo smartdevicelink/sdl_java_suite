@@ -5,14 +5,9 @@ import android.support.annotation.NonNull;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
-import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
-import com.smartdevicelink.util.DebugTool;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-
-import static com.smartdevicelink.proxy.constants.Names.displayType;
 
 /**
  * Contains information about the display for the SDL system to which the application is currently connected.

@@ -5,11 +5,8 @@ import android.support.annotation.NonNull;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
-import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 
 import java.util.Hashtable;
-
-import static com.smartdevicelink.proxy.rpc.AirbagStatus.KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED;
 
 /** The body information including power modes.
  * 
