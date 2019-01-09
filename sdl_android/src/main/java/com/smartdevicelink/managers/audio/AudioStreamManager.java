@@ -353,7 +353,9 @@ public class AudioStreamManager extends BaseSubManager {
         AudioDecoderListener decoderListener = new AudioDecoderListener() {
             @Override
             public void onAudioDataAvailable(SampleBuffer buffer) {
-                sdlAudioStream.sendAudio(buffer.getByteBuffer(), buffer.getPresentationTimeUs());
+                if (sdlAudioStream != null) {
+                    sdlAudioStream.sendAudio(buffer.getByteBuffer(), buffer.getPresentationTimeUs());
+                }
             }
 
             @Override
