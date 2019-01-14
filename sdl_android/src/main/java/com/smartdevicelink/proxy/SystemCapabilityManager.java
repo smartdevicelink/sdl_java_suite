@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy;
 
+import android.util.Log;
+
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SystemCapabilityManager {
+	private static final String TAG = "SystemCapabilityManager";
 	private final HashMap<SystemCapabilityType, Object> cachedSystemCapabilities;
 	private final HashMap<SystemCapabilityType, CopyOnWriteArrayList<OnSystemCapabilityListener>> onSystemCapabilityListeners;
 	private final Object LISTENER_LOCK;
@@ -169,6 +172,10 @@ public class SystemCapabilityManager {
 	 * passes GetSystemCapabilityType request to  `callback` to be sent by proxy
 	 */
 	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener){
+		if (!systemCapabilityType.getIsAsync()){
+			Log.e(TAG, "This systemCapabilityType cannot be queried for");
+			return;
+		}
 		final GetSystemCapability request = new GetSystemCapability();
 		request.setSystemCapabilityType(systemCapabilityType);
 		request.setOnRPCResponseListener(new OnRPCResponseListener() {
