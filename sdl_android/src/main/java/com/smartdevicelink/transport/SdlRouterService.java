@@ -3168,9 +3168,11 @@ public class SdlRouterService extends Service{
 					PacketWriteTaskBlockingQueue queue = queues.get(transportType);
 					if (queue != null) {
 						queue.add(new PacketWriteTask(bytes, 0, bytes.length, this.priorityForBuffingMessage,transportType));
-						PacketWriteTaskMaster packetWriteTaskMaster = packetWriteTaskMasterMap.get(transportType);
-						if (packetWriteTaskMaster != null) {
-							packetWriteTaskMaster.alert();
+						if(packetWriteTaskMasterMap != null) {
+							PacketWriteTaskMaster packetWriteTaskMaster = packetWriteTaskMasterMap.get(transportType);
+							if (packetWriteTaskMaster != null) {
+								packetWriteTaskMaster.alert();
+							}
 						}
 					}
 					buffer.close();
