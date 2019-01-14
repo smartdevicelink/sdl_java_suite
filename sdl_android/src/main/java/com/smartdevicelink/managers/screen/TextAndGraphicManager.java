@@ -168,6 +168,8 @@ class TextAndGraphicManager extends BaseSubManager {
 		if (isDirty){
 			isDirty = false;
 			sdlUpdate(listener);
+		} else if (listener != null) {
+			listener.onComplete(true);
 		}
 	}
 	
