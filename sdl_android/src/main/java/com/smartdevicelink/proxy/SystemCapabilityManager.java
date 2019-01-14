@@ -169,10 +169,11 @@ public class SystemCapabilityManager {
 
 	/**
 	 * @param systemCapabilityType Type of capability desired
-	 * passes GetSystemCapabilityType request to  `callback` to be sent by proxy
+	 * passes GetSystemCapabilityType request to `callback` to be sent by proxy.
+	 * this method will send RPC and call the listener's callback only if the systemCapabilityType is queryable
 	 */
 	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener){
-		if (!systemCapabilityType.getIsAsync()){
+		if (!systemCapabilityType.isQueryable()){
 			Log.e(TAG, "This systemCapabilityType cannot be queried for");
 			return;
 		}

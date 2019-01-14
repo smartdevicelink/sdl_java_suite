@@ -419,15 +419,15 @@ public enum SystemCapabilityType {
 
 	;
 
-    boolean IS_ASYNC;
+    boolean IS_QUERYABLE;
 
-    SystemCapabilityType (boolean isAsync){
-    	this.IS_ASYNC = isAsync;
-	}
+    SystemCapabilityType(boolean isQueryable) {
+        this.IS_QUERYABLE = isQueryable;
+    }
 
-	public boolean getIsAsync(){
-    	return IS_ASYNC;
-	}
+    public boolean isQueryable() {
+        return IS_QUERYABLE;
+    }
 
     public static SystemCapabilityType valueForString(String value) {
         try{
