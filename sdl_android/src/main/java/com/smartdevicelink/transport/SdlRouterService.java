@@ -114,6 +114,7 @@ import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.BitConverter;
+import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlAppInfo;
 
 import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
@@ -504,6 +505,12 @@ public class SdlRouterService extends Service{
 												transportType = TransportType.USB;
 											} else if(service.tcpTransport != null && service.tcpTransport.isConnected()){
 												transportType = TransportType.TCP;
+											}else{
+												// This means no transport is connected. Likely the
+												// router service has already disconnected and this
+												// is now just executing.
+												DebugTool.logError("Can't send packet, no transport specified and none are connected.");
+												return;
 											}
 											//Log.d(TAG, "Transport type was null, so router set it to " + transportType.name());
 											if(transportType != null){
