@@ -219,6 +219,9 @@ public class VirtualDisplayEncoder {
                         try {
                             ByteBuffer encodedData = codec.getOutputBuffer(index);
                             if (encodedData != null) {
+                                if ((info.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {
+                                    info.size = 0;
+                                }
                                 if (info.size != 0) {
                                     byte[] dataToWrite;// = new byte[info.size];
                                     int dataOffset = 0;
