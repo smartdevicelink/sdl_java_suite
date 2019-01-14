@@ -1,16 +1,12 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 
 import java.util.Hashtable;
 import java.util.List;
-
-import static android.provider.Contacts.SettingsColumns.KEY;
-import static com.smartdevicelink.proxy.rpc.HeadLampStatus.KEY_AMBIENT_LIGHT_SENSOR_STATUS;
 
 /** This mode causes the interaction to immediately display a keyboard entry through the HMI.
  * 

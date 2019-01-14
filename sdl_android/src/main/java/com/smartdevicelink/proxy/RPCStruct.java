@@ -1,7 +1,5 @@
 package com.smartdevicelink.proxy;
 
-import android.util.Log;
-
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.util.Version;
 

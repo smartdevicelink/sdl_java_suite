@@ -318,9 +318,8 @@ public class SdlManager{
 	 * either NAVIGATION or PROJECTION. Once the VideoStreamManager is retrieved, its start()
 	 * method will need to be called before use.
      * <br><br><strong>Note: VideoStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-     * @return a VideoStreamManager object attached to shit SdlManager instance
+     * @return a VideoStreamManager object attached to this SdlManager instance
      */
-    
 	public @Nullable
     VideoStreamManager getVideoStreamManager() {
 		checkSdlManagerState();

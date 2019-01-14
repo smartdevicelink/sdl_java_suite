@@ -2,13 +2,10 @@ package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 
-import static com.smartdevicelink.proxy.rpc.AirbagStatus.KEY_DRIVER_AIRBAG_DEPLOYED;
-import static com.smartdevicelink.proxy.rpc.AirbagStatus.KEY_DRIVER_CURTAIN_AIRBAG_DEPLOYED;
+import java.util.Hashtable;
 
 /** The status of the seat belts.
  *

@@ -8,9 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
-import com.smartdevicelink.protocol.AbstractProtocol;
 import com.smartdevicelink.protocol.ProtocolMessage;
-import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;

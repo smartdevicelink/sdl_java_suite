@@ -3,16 +3,11 @@ package com.smartdevicelink.proxy.rpc;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
-import com.smartdevicelink.util.DebugTool;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-
-import static com.smartdevicelink.proxy.rpc.HeadLampStatus.KEY_AMBIENT_LIGHT_SENSOR_STATUS;
 
 /** <p>The name that identifies the field.For example AppIcon,SoftButton, LocationImage, etc.</p>
  * 
