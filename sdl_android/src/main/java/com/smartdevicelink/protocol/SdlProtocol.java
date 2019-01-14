@@ -511,14 +511,7 @@ public class SdlProtocol {
     }
 
     public void endSession(byte sessionID, int hashId) {
-        SdlPacket header;
-        if(protocolVersion.getMajor() < 5){
-            header = SdlPacketFactory.createEndSession(SessionType.RPC, sessionID, hashId, (byte)protocolVersion.getMajor(), BitConverter.intToByteArray(hashId));
-        }else{
-            header = SdlPacketFactory.createEndSession(SessionType.RPC, sessionID, hashId, (byte)protocolVersion.getMajor(), new byte[0]);
-            header.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashId);
-        }
-
+        SdlPacket header = SdlPacketFactory.createEndSession(SessionType.RPC, sessionID, hashId, (byte)protocolVersion.getMajor(), hashId);
         handlePacketToSend(header);
 
     } // end-method
