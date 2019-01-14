@@ -24,6 +24,7 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -255,13 +256,22 @@ class TextAndGraphicManager extends BaseSubManager {
 		inProgressUpdate.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				if (response.getSuccess()){
+				handleResponse(response.getSuccess());
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				handleResponse(false);
+			}
+
+			private void handleResponse(boolean success){
+				if (success){
 					updateCurrentScreenDataState(inProgressUpdate);
 				}
 
 				inProgressUpdate = null;
 				if (inProgressListener != null){
-					inProgressListener.onComplete(true);
+					inProgressListener.onComplete(success);
 					inProgressListener = null;
 				}
 
