@@ -37,7 +37,6 @@ import static com.smartdevicelink.transport.TransportConstants.FORMED_PACKET_EXT
 import static com.smartdevicelink.transport.TransportConstants.HARDWARE_DISCONNECTED;
 import static com.smartdevicelink.transport.TransportConstants.SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,7 +45,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
@@ -83,6 +81,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
@@ -816,6 +815,8 @@ public class SdlRouterService extends Service{
 	    @SuppressWarnings("Convert2Diamond")
 		static class UsbTransferHandler extends Handler {
 	    	 final WeakReference<SdlRouterService> provider;
+	    	 Runnable usbCableDisconnectRunnable;
+	    	 BroadcastReceiver usbCableDisconnectBroadcastReceiver;
 
 	    	 public UsbTransferHandler(SdlRouterService provider){
 				 this.provider = new WeakReference<SdlRouterService>(provider);
@@ -839,14 +840,39 @@ public class SdlRouterService extends Service{
 						//New USB constructor with PFD
 						service.usbTransport = new MultiplexUsbTransport(parcelFileDescriptor, service.usbHandler, msg.getData());
 
-						postDelayed(new Runnable() {
+
+						usbCableDisconnectRunnable = new Runnable() {
 							@Override
 							public void run() {
-								if(provider.get() != null){
+								if(provider.get() != null && AndroidTools.isUSBCableConnected(provider.get().getApplicationContext())) {
 									provider.get().usbTransport.start();
 								}
 							}
-						}, 4000);
+						};
+						postDelayed(usbCableDisconnectRunnable, 4000);
+
+
+						// Register a BroadcastReceiver to stop USB transport if USB cable got disconnected
+						if (provider.get() != null) {
+							usbCableDisconnectBroadcastReceiver = new BroadcastReceiver() {
+								@Override
+								public void onReceive(Context context, Intent intent) {
+									int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+									if (provider.get()!= null && plugged != BatteryManager.BATTERY_PLUGGED_AC && plugged != BatteryManager.BATTERY_PLUGGED_USB) {
+										removeCallbacks(usbCableDisconnectRunnable);
+										if (provider.get().usbTransport != null) {
+											provider.get().usbTransport.stop();
+										}
+										try {
+											provider.get().unregisterReceiver(usbCableDisconnectBroadcastReceiver);
+										} catch (Exception e){}
+									}
+								}
+							};
+							provider.get().getApplicationContext().registerReceiver(usbCableDisconnectBroadcastReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+						}
+
+
 					}
 
 	        		if(msg.replyTo!=null){
