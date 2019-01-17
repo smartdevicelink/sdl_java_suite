@@ -859,13 +859,13 @@ public class SdlRouterService extends Service{
 								public void onReceive(Context context, Intent intent) {
 									int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
 									if (provider.get()!= null && plugged != BatteryManager.BATTERY_PLUGGED_AC && plugged != BatteryManager.BATTERY_PLUGGED_USB) {
+										try {
+											provider.get().getApplicationContext().unregisterReceiver(usbCableDisconnectBroadcastReceiver);
+										} catch (Exception e){ }
 										removeCallbacks(usbCableDisconnectRunnable);
 										if (provider.get().usbTransport != null) {
 											provider.get().usbTransport.stop();
 										}
-										try {
-											provider.get().unregisterReceiver(usbCableDisconnectBroadcastReceiver);
-										} catch (Exception e){}
 									}
 								}
 							};
