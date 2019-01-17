@@ -172,7 +172,9 @@ public class SystemCapabilityManager {
 	 */
 	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener){
 		if (!systemCapabilityType.isQueryable()){
-			DebugTool.logError("This systemCapabilityType cannot be queried for");
+			String message = "This systemCapabilityType cannot be queried for";
+			DebugTool.logError(message);
+			scListener.onError(message);
 			return;
 		}
 		final GetSystemCapability request = new GetSystemCapability();
