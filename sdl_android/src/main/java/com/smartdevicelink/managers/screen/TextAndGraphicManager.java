@@ -674,7 +674,7 @@ class TextAndGraphicManager extends BaseSubManager {
 
 	SdlArtwork getBlankArtwork(){
 
-		if (blankArtwork != null){
+		if (blankArtwork == null){
 			blankArtwork = new SdlArtwork();
 			blankArtwork.setType(FileType.GRAPHIC_PNG);
 			blankArtwork.setName("blankArtwork");
