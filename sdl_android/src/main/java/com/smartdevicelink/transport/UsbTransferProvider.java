@@ -133,14 +133,16 @@ public class UsbTransferProvider {
 
     @SuppressLint("NewApi")
     private ParcelFileDescriptor getFileDescriptor(UsbAccessory accessory, Context context) {
-        try {
-            UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+        if (AndroidTools.isUSBCableConnected(context)) {
+            try {
+                UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
 
-            if (manager != null) {
-                return manager.openAccessory(accessory);
+                if (manager != null) {
+                    return manager.openAccessory(accessory);
+                }
+            } catch (Exception e) {
             }
-        }catch (Exception e){}
-
+        }
         return  null;
     }
 
