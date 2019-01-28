@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCStruct;
 
 
@@ -113,6 +114,24 @@ public final class JsonUtils {
 			return result;
 		}
 		
+		return null;
+	}
+
+	public static List<FunctionID> readFunctionIDListFromJsonObject(JSONObject json, String key){
+		JSONArray jsonArray = readJsonArrayFromJsonObject(json, key);
+
+		if(jsonArray != null){
+			int len = jsonArray.length();
+			List<FunctionID> result = new ArrayList<>(len);
+			for(int i=0; i<len; i++){
+				try {
+					FunctionID functionID = (FunctionID) jsonArray.get(i);
+					result.add(functionID);
+				} catch (JSONException e) {}
+			}
+			return result;
+		}
+
 		return null;
 	}
 	

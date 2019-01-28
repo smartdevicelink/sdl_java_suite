@@ -7,6 +7,7 @@ import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.AirbagStatus;
 import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
@@ -45,6 +46,7 @@ import com.smartdevicelink.proxy.rpc.LightControlData;
 import com.smartdevicelink.proxy.rpc.LightState;
 import com.smartdevicelink.proxy.rpc.MassageCushionFirmness;
 import com.smartdevicelink.proxy.rpc.MassageModeData;
+import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.ModuleData;
 import com.smartdevicelink.proxy.rpc.MyKey;
@@ -85,6 +87,7 @@ import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
+import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
 import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
@@ -494,6 +497,71 @@ public class Validator{
 
         return true;
     }
+
+	public static boolean validateFunctionIDList(List<FunctionID> list1, List<FunctionID> list2){
+		if(list1 == null){
+			return ( list2 == null );
+		}
+		if(list2 == null){
+			return ( list1 == null );
+		}
+
+		Iterator<FunctionID> iterator1 = list1.iterator();
+		Iterator<FunctionID> iterator2 = list2.iterator();
+
+		while(iterator1.hasNext() && iterator2.hasNext()){
+			FunctionID chunk1 = iterator1.next();
+			FunctionID chunk2 = iterator2.next();
+
+			if(chunk1 != chunk2){
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean validateMediaServiceManifest(MediaServiceManifest params1, MediaServiceManifest params2){
+		if(params1 == null){
+			return ( params2 == null );
+		}
+		if(params2 == null){
+			return ( params1 == null );
+		}
+
+		return true;
+	}
+
+	public static boolean validateWeatherServiceManifest(WeatherServiceManifest params1, WeatherServiceManifest params2){
+		if(params1 == null){
+			return ( params2 == null );
+		}
+		if(params2 == null){
+			return ( params1 == null );
+		}
+
+		if (!params1.getMaxHourlyForecastAmount().equals(params2.getMaxHourlyForecastAmount())){
+			return false;
+		}
+
+		if (!params1.getMaxMinutelyForecastAmount().equals(params2.getMaxMinutelyForecastAmount())){
+			return false;
+		}
+
+		if (!params1.getMaxMultidayForecastAmount().equals(params2.getMaxMultidayForecastAmount())){
+			return false;
+		}
+
+		if (params1.getCurrentForecastSupported()!=params2.getCurrentForecastSupported()){
+			return false;
+		}
+
+		if (params1.getWeatherForLocationSupported()!=params2.getWeatherForLocationSupported()){
+			return false;
+		}
+
+		return true;
+	}
 
     public static boolean validateChoice(Choice choice1, Choice choice2){
         if(choice1 == null){
