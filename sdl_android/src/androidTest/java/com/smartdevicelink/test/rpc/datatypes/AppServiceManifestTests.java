@@ -91,6 +91,12 @@ public class AppServiceManifestTests extends TestCase {
 		assertNull(Test.NULL, msg.getMediaServiceManifest());
 	}
 
+	public void testRequiredParamsConstructor(){
+		msg = new AppServiceManifest(AppServiceType.GENERIC);
+		AppServiceType appServiceType = msg.getServiceType();
+		assertEquals(Test.GENERAL_APP_SERVICE_TYPE, appServiceType);
+	}
+
 	public void testJson(){
 		JSONObject reference = new JSONObject();
 

@@ -61,6 +61,21 @@ public class AppServiceRecordTests extends TestCase {
 		assertNull(Test.NULL, msg.getServiceId());
 	}
 
+	public void testRequiredParamsConstructor(){
+		msg = new AppServiceRecord(Test.GENERAL_STRING, Test.GENERAL_APP_SERVICE_MANIFEST, Test.GENERAL_BOOLEAN, Test.GENERAL_BOOLEAN);
+
+		boolean isServicePublished = msg.getServicePublished();
+		boolean isServiceActive = msg.getServiceActive();
+		AppServiceManifest serviceManifest = msg.getServiceManifest();
+		String serviceID = msg.getServiceId();
+
+		// Valid Tests
+		assertEquals(Test.GENERAL_BOOLEAN, isServicePublished);
+		assertEquals(Test.GENERAL_BOOLEAN, isServiceActive);
+		assertEquals(Test.GENERAL_APP_SERVICE_MANIFEST, serviceManifest);
+		assertEquals(Test.GENERAL_STRING, serviceID);
+	}
+
 	public void testJson(){
 		JSONObject reference = new JSONObject();
 
