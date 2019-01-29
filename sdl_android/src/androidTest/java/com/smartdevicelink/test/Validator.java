@@ -10,6 +10,7 @@ import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.AirbagStatus;
+import com.smartdevicelink.proxy.rpc.AppServiceManifest;
 import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioControlData;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
@@ -527,6 +528,53 @@ public class Validator{
 		}
 		if(params2 == null){
 			return ( params1 == null );
+		}
+
+		return true;
+	}
+
+	public static boolean validateAppServiceManifest(AppServiceManifest params1, AppServiceManifest params2){
+		if(params1 == null){
+			return ( params2 == null );
+		}
+		if(params2 == null){
+			return ( params1 == null );
+		}
+
+		if (!params1.getAllowAppConsumers().equals(params2.getAllowAppConsumers())){
+			return false;
+		}
+
+		if (!params1.getServiceIcon().equals(params2.getServiceIcon())){
+			return false;
+		}
+
+		if (!params1.getServiceName().equals(params2.getServiceName())){
+			return false;
+		}
+
+		if (!params1.getServiceType().equals(params2.getServiceType())){
+			return false;
+		}
+
+		if (!params1.getUriPrefix().equals(params2.getUriPrefix())){
+			return false;
+		}
+
+		if (!validateSdlMsgVersion(params1.getRpcSpecVersion(),params2.getRpcSpecVersion())){
+			return false;
+		}
+
+		if (!validateMediaServiceManifest(params1.getMediaServiceManifest(), params2.getMediaServiceManifest())) {
+			return false;
+		}
+
+		if (!validateWeatherServiceManifest(params1.getWeatherServiceManifest(), params2.getWeatherServiceManifest())){
+			return false;
+		}
+
+		if (!validateFunctionIDList(params1.getHandledRpcs(), params2.getHandledRpcs())){
+			return false;
 		}
 
 		return true;

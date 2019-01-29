@@ -6,6 +6,7 @@ import android.util.Log;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.TTSChunkFactory;
+import com.smartdevicelink.proxy.rpc.AppServiceManifest;
 import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioControlData;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
@@ -34,6 +35,7 @@ import com.smartdevicelink.proxy.rpc.LightState;
 import com.smartdevicelink.proxy.rpc.LocationDetails;
 import com.smartdevicelink.proxy.rpc.MassageCushionFirmness;
 import com.smartdevicelink.proxy.rpc.MassageModeData;
+import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.ModuleData;
@@ -74,6 +76,7 @@ import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
+import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
@@ -305,6 +308,9 @@ public class Test {
 	public static final String                         GENERAL_FULL_APP_ID                    = "123e4567-e89b-12d3-a456-426655440000";
 	public static final AppServiceType                 GENERAL_APP_SERVICE_TYPE               = AppServiceType.GENERIC;
 	public static final List<FunctionID>               GENERAL_FUNCTION_ID_LIST               = Arrays.asList(FunctionID.GET_VEHICLE_DATA, FunctionID.SEND_HAPTIC_DATA);
+	public static final AppServiceManifest             GENERAL_APP_SERVICE_MANIFEST           = new AppServiceManifest();
+	public static final MediaServiceManifest           GENERAL_MEDIA_SERVICE_MANIFEST         = new MediaServiceManifest();
+	public static final WeatherServiceManifest         GENERAL_WEATHER_SERVICE_MANIFEST       = new WeatherServiceManifest();
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
@@ -847,6 +853,23 @@ public class Test {
 		GENERAL_LOCKSCREENCONFIG.setEnabled(true);
 		GENERAL_LOCKSCREENCONFIG.setCustomView(R.layout.activity_sdllock_screen);
 
+		GENERAL_WEATHER_SERVICE_MANIFEST.setWeatherForLocationSupported(GENERAL_BOOLEAN);
+		GENERAL_WEATHER_SERVICE_MANIFEST.setCurrentForecastSupported(GENERAL_BOOLEAN);
+		GENERAL_WEATHER_SERVICE_MANIFEST.setMaxMultidayForecastAmount(GENERAL_INTEGER);
+		GENERAL_WEATHER_SERVICE_MANIFEST.setMaxMinutelyForecastAmount(GENERAL_INTEGER);
+		GENERAL_WEATHER_SERVICE_MANIFEST.setMaxHourlyForecastAmount(GENERAL_INTEGER);
+
+		JSONObject uriScheme = new JSONObject();
+		GENERAL_APP_SERVICE_MANIFEST.setWeatherServiceManifest(GENERAL_WEATHER_SERVICE_MANIFEST);
+		GENERAL_APP_SERVICE_MANIFEST.setUriScheme(uriScheme);
+		GENERAL_APP_SERVICE_MANIFEST.setUriPrefix(GENERAL_STRING);
+		GENERAL_APP_SERVICE_MANIFEST.setServiceName(GENERAL_STRING);
+		GENERAL_APP_SERVICE_MANIFEST.setServiceIcon(GENERAL_STRING);
+		GENERAL_APP_SERVICE_MANIFEST.setRpcSpecVersion(GENERAL_SDLMSGVERSION);
+		GENERAL_APP_SERVICE_MANIFEST.setMediaServiceManifest(GENERAL_MEDIA_SERVICE_MANIFEST);
+		GENERAL_APP_SERVICE_MANIFEST.setHandledRpcs(GENERAL_FUNCTION_ID_LIST);
+		GENERAL_APP_SERVICE_MANIFEST.setAllowAppConsumers(GENERAL_BOOLEAN);
+		GENERAL_APP_SERVICE_MANIFEST.setServiceType(GENERAL_APP_SERVICE_TYPE);
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

@@ -27,21 +27,10 @@ import java.util.List;
 public class AppServiceManifestTests extends TestCase {
 
 	private AppServiceManifest msg;
-	MediaServiceManifest mediaServiceManifest;
-	WeatherServiceManifest weatherServiceManifest;
 	JSONObject uriScheme;
 
 	@Override
 	public void setUp(){
-
-		mediaServiceManifest = new MediaServiceManifest();
-
-		weatherServiceManifest = new WeatherServiceManifest();
-		weatherServiceManifest.setWeatherForLocationSupported(Test.GENERAL_BOOLEAN);
-		weatherServiceManifest.setCurrentForecastSupported(Test.GENERAL_BOOLEAN);
-		weatherServiceManifest.setMaxMultidayForecastAmount(Test.GENERAL_INTEGER);
-		weatherServiceManifest.setMaxMinutelyForecastAmount(Test.GENERAL_INTEGER);
-		weatherServiceManifest.setMaxHourlyForecastAmount(Test.GENERAL_INTEGER);
 
 		uriScheme = new JSONObject();
 
@@ -49,14 +38,13 @@ public class AppServiceManifestTests extends TestCase {
 		msg.setServiceType(Test.GENERAL_APP_SERVICE_TYPE);
 		msg.setAllowAppConsumers(Test.GENERAL_BOOLEAN);
 		msg.setHandledRpcs(Test.GENERAL_FUNCTION_ID_LIST);
-		msg.setMediaServiceManifest(mediaServiceManifest);
+		msg.setMediaServiceManifest(Test.GENERAL_MEDIA_SERVICE_MANIFEST);
 		msg.setRpcSpecVersion(Test.GENERAL_SDLMSGVERSION);
 		msg.setServiceIcon(Test.GENERAL_STRING);
 		msg.setServiceName(Test.GENERAL_STRING);
 		msg.setUriPrefix(Test.GENERAL_STRING);
 		msg.setUriScheme(uriScheme);
-		msg.setWeatherServiceManifest(weatherServiceManifest);
-
+		msg.setWeatherServiceManifest(Test.GENERAL_WEATHER_SERVICE_MANIFEST);
 	}
 
 	/**
@@ -84,8 +72,8 @@ public class AppServiceManifestTests extends TestCase {
 		assertEquals(uriScheme, uriSchemeObject);
 		assertEquals(Test.GENERAL_SDLMSGVERSION, version);
 		assertEquals(Test.MATCH, Test.GENERAL_FUNCTION_ID_LIST, handledRPCs);
-		assertEquals(weatherServiceManifest, weatherServiceManifestTest);
-		assertEquals(mediaServiceManifest, mediaServiceManifestTest);
+		assertEquals(Test.GENERAL_WEATHER_SERVICE_MANIFEST, weatherServiceManifestTest);
+		assertEquals(Test.GENERAL_MEDIA_SERVICE_MANIFEST, mediaServiceManifestTest);
 
 		// Invalid/Null Tests
 		AppServiceManifest msg = new AppServiceManifest();
@@ -115,8 +103,8 @@ public class AppServiceManifestTests extends TestCase {
 			reference.put(AppServiceManifest.KEY_RPC_SPEC_VERSION, Test.GENERAL_SDLMSGVERSION.serializeJSON());
 			reference.put(AppServiceManifest.KEY_HANDLED_RPCS, Test.GENERAL_FUNCTION_ID_LIST);
 			reference.put(AppServiceManifest.KEY_URI_SCHEME, uriScheme);
-			reference.put(AppServiceManifest.KEY_WEATHER_SERVICE_MANIFEST, weatherServiceManifest);
-			reference.put(AppServiceManifest.KEY_MEDIA_SERVICE_MANIFEST, mediaServiceManifest);
+			reference.put(AppServiceManifest.KEY_WEATHER_SERVICE_MANIFEST, Test.GENERAL_WEATHER_SERVICE_MANIFEST);
+			reference.put(AppServiceManifest.KEY_MEDIA_SERVICE_MANIFEST, Test.GENERAL_MEDIA_SERVICE_MANIFEST);
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -138,11 +126,11 @@ public class AppServiceManifestTests extends TestCase {
 				}else if(key.equals(AppServiceManifest.KEY_WEATHER_SERVICE_MANIFEST)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateWeatherServiceManifest( weatherServiceManifest, new WeatherServiceManifest(hashTest)));
+					assertTrue(Test.TRUE, Validator.validateWeatherServiceManifest( Test.GENERAL_WEATHER_SERVICE_MANIFEST, new WeatherServiceManifest(hashTest)));
 				}else if(key.equals(AppServiceManifest.KEY_MEDIA_SERVICE_MANIFEST)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateMediaServiceManifest( mediaServiceManifest, new MediaServiceManifest()));
+					assertTrue(Test.TRUE, Validator.validateMediaServiceManifest( Test.GENERAL_MEDIA_SERVICE_MANIFEST, new MediaServiceManifest()));
 				}else {
 					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}
