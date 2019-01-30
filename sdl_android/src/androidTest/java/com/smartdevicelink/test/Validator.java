@@ -11,6 +11,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.AirbagStatus;
 import com.smartdevicelink.proxy.rpc.AppServiceManifest;
+import com.smartdevicelink.proxy.rpc.AppServiceRecord;
 import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioControlData;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
@@ -528,6 +529,33 @@ public class Validator{
 		}
 		if(params2 == null){
 			return ( params1 == null );
+		}
+
+		return true;
+	}
+
+	public static boolean validateAppServiceRecord(AppServiceRecord params1, AppServiceRecord params2) {
+		if (params1 == null) {
+			return (params2 == null);
+		}
+		if (params2 == null) {
+			return (params1 == null);
+		}
+
+		if (!params1.getServiceActive().equals(params2.getServiceActive())){
+			return false;
+		}
+
+		if (!params1.getServicePublished().equals(params2.getServicePublished())){
+			return false;
+		}
+
+		if (!params1.getServiceId().equals(params2.getServiceId())){
+			return false;
+		}
+
+		if (!validateAppServiceManifest(params1.getServiceManifest(), params2.getServiceManifest())){
+			return false;
 		}
 
 		return true;

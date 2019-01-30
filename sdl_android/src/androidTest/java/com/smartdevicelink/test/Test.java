@@ -7,6 +7,7 @@ import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AppServiceManifest;
+import com.smartdevicelink.proxy.rpc.AppServiceRecord;
 import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioControlData;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
@@ -312,6 +313,7 @@ public class Test {
 	public static final AppServiceManifest             GENERAL_APP_SERVICE_MANIFEST           = new AppServiceManifest();
 	public static final MediaServiceManifest           GENERAL_MEDIA_SERVICE_MANIFEST         = new MediaServiceManifest();
 	public static final WeatherServiceManifest         GENERAL_WEATHER_SERVICE_MANIFEST       = new WeatherServiceManifest();
+	public static final AppServiceRecord               GENERAL_APP_SERVICE_RECORD             = new AppServiceRecord();
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
@@ -871,6 +873,11 @@ public class Test {
 		GENERAL_APP_SERVICE_MANIFEST.setHandledRpcs(GENERAL_FUNCTION_ID_LIST);
 		GENERAL_APP_SERVICE_MANIFEST.setAllowAppConsumers(GENERAL_BOOLEAN);
 		GENERAL_APP_SERVICE_MANIFEST.setServiceType(GENERAL_APP_SERVICE_TYPE);
+
+		GENERAL_APP_SERVICE_RECORD.setServiceId(GENERAL_STRING);
+		GENERAL_APP_SERVICE_RECORD.setServiceManifest(GENERAL_APP_SERVICE_MANIFEST);
+		GENERAL_APP_SERVICE_RECORD.setServiceActive(GENERAL_BOOLEAN);
+		GENERAL_APP_SERVICE_RECORD.setServicePublished(GENERAL_BOOLEAN);
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

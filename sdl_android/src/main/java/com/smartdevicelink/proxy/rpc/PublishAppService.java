@@ -36,7 +36,7 @@ public class PublishAppService extends RPCRequest {
 	 * @param serviceManifest - the App Service Manifest
 	 */
 	public void setServiceManifest(AppServiceManifest serviceManifest){
-		setValue(KEY_APP_SERVICE_MANIFEST, serviceManifest);
+		setParameters(KEY_APP_SERVICE_MANIFEST, serviceManifest);
 	}
 
 	/**

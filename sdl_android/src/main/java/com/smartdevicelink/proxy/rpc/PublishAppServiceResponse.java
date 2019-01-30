@@ -40,7 +40,7 @@ public class PublishAppServiceResponse extends RPCResponse {
 	 * @param appServiceRecord - the App Service Record
 	 */
 	public void setServiceRecord(AppServiceRecord appServiceRecord){
-		setValue(KEY_APP_SERVICE_RECORD, appServiceRecord);
+		setParameters(KEY_APP_SERVICE_RECORD, appServiceRecord);
 	}
 
 	/**
