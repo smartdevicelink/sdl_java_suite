@@ -27,8 +27,6 @@ public class AppServiceManifest extends RPCStruct {
 	public static final String KEY_HANDLED_RPCS = "handledRPCs";
 	public static final String KEY_MEDIA_SERVICE_MANIFEST = "mediaServiceManifest";
 	public static final String KEY_WEATHER_SERVICE_MANIFEST = "weatherServiceManifest";
-	public static final String KEY_NAVIGATION_SERVICE_MANIFEST = "navigationServiceManifest";
-	public static final String KEY_VOICE_ASSISTANT_SERVICE_MANIFEST = "voiceAssistantServiceManifest";
 
 	// Constructors
 	public AppServiceManifest() { }
@@ -213,36 +211,4 @@ public class AppServiceManifest extends RPCStruct {
 	public WeatherServiceManifest getWeatherServiceManifest(){
 		return (WeatherServiceManifest) getObject(WeatherServiceManifest.class,KEY_WEATHER_SERVICE_MANIFEST);
 	}
-
-	/**
-	 * The NavigationServiceManifest
-	 * @param navigationServiceManifest - The navigationServiceManifest
-	 */
-	/*public void setNavigationServiceManifest(NavigationServiceManifest navigationServiceManifest){
-		setValue(KEY_NAVIGATION_SERVICE_MANIFEST, navigationServiceManifest);
-	}*/
-
-	/**
-	 * The NavigationServiceManifest
-	 * @return navigationServiceManifest - The navigationServiceManifest
-	 */
-	/*public NavigationServiceManifest getNavigationServiceManifest(){
-		return (NavigationServiceManifest) getObject(NavigationServiceManifest.class,KEY_NAVIGATION_SERVICE_MANIFEST);
-	}*/
-
-	/**
-	 * The VoiceAssistantServiceManifest
-	 * @param voiceAssistantServiceManifest - The voiceAssistantServiceManifest
-	 */
-	/*public void setVoiceAssistantServiceManifest(VoiceAssistantServiceManifest voiceAssistantServiceManifest){
-		setValue(KEY_VOICE_ASSISTANT_SERVICE_MANIFEST, voiceAssistantServiceManifest);
-	}*/
-
-	/**
-	 * The VoiceAssistantServiceManifest
-	 * @return voiceAssistantServiceManifest - The voiceAssistantServiceManifest
-	 */
-	/*public VoiceAssistantServiceManifest getVoiceAssistantServiceManifest(){
-		return (VoiceAssistantServiceManifest) getObject(VoiceAssistantServiceManifest.class,KEY_VOICE_ASSISTANT_SERVICE_MANIFEST);
-	}*/
 }

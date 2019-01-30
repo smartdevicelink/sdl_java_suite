@@ -63,6 +63,7 @@ public enum FunctionID{
     UNSUBSCRIBE_WAY_POINTS(47, "UnsubscribeWayPoints"),
     GET_SYSTEM_CAPABILITY(48, "GetSystemCapability"),
 	SEND_HAPTIC_DATA(49, "SendHapticData"),
+    PUBLISH_APP_SERVICE(52, "PublishAppService"),
 
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
