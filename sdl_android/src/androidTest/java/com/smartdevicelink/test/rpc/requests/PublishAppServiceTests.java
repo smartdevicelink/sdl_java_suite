@@ -67,6 +67,17 @@ public class PublishAppServiceTests extends BaseRpcTests {
 	}
 
 	/**
+	 * Tests constructor with required params
+	 */
+	public void testRequiredParamsConstructor () {
+
+		PublishAppService msg = new PublishAppService(Test.GENERAL_APP_SERVICE_MANIFEST);
+		assertNotNull(Test.NOT_NULL, msg);
+		// Valid Tests
+		assertTrue(Validator.validateAppServiceManifest(Test.GENERAL_APP_SERVICE_MANIFEST, msg.getServiceManifest()));
+	}
+
+	/**
 	 * Tests a valid JSON construction of this RPC message.
 	 */
 	public void testJsonConstructor () {

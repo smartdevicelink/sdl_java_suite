@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
@@ -27,6 +29,15 @@ public class PublishAppService extends RPCRequest {
 	 */
 	public PublishAppService(Hashtable<String, Object> hash) {
 		super(hash);
+	}
+
+	/**
+	 * Constructs a new PublishAppService object
+	 * @param appServiceManifest - The appServiceManifest
+	 */
+	public PublishAppService(@NonNull AppServiceManifest appServiceManifest) {
+			this();
+			setServiceManifest(appServiceManifest);
 	}
 
 	// Getters / Setters
