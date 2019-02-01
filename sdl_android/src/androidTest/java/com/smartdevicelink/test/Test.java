@@ -6,6 +6,7 @@ import android.util.Log;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.TTSChunkFactory;
+import com.smartdevicelink.proxy.rpc.AppServiceCapability;
 import com.smartdevicelink.proxy.rpc.AppServiceManifest;
 import com.smartdevicelink.proxy.rpc.AppServiceRecord;
 import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
@@ -138,6 +139,7 @@ import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.SeatMemoryActionType;
+import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SupportedSeat;
@@ -314,6 +316,8 @@ public class Test {
 	public static final MediaServiceManifest           GENERAL_MEDIA_SERVICE_MANIFEST         = new MediaServiceManifest();
 	public static final WeatherServiceManifest         GENERAL_WEATHER_SERVICE_MANIFEST       = new WeatherServiceManifest();
 	public static final AppServiceRecord               GENERAL_APP_SERVICE_RECORD             = new AppServiceRecord();
+	public static final AppServiceCapability           GENERAL_APP_SERVICE_CAPABILITY         = new AppServiceCapability();
+	public static final ServiceUpdateReason            GENERAL_SERVICE_UPDATE_REASON          = ServiceUpdateReason.MANIFEST_UPDATE;
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
@@ -396,6 +400,8 @@ public class Test {
 	public static final List<LightState>                GENERAL_LIGHTSTATE_LIST                = new ArrayList<LightState>(1);
 	public static final List<AudioControlCapabilities>  GENERAL_AUDIOCONTROLCAPABILITIES_LIST  = new ArrayList<AudioControlCapabilities>(1);
 	public static final List<ModuleData>                GENERAL_MODULEDATA_LIST  = Collections.singletonList(GENERAL_MODULEDATA);
+	public static final List<AppServiceType>            GENERAL_APPSERVICETYPE_LIST = Collections.singletonList(GENERAL_APP_SERVICE_TYPE);
+	public static final List<AppServiceCapability>      GENERAL_APPSERVICECAPABILITY_LIST = Collections.singletonList(GENERAL_APP_SERVICE_CAPABILITY);
 
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();
@@ -878,6 +884,9 @@ public class Test {
 		GENERAL_APP_SERVICE_RECORD.setServiceManifest(GENERAL_APP_SERVICE_MANIFEST);
 		GENERAL_APP_SERVICE_RECORD.setServiceActive(GENERAL_BOOLEAN);
 		GENERAL_APP_SERVICE_RECORD.setServicePublished(GENERAL_BOOLEAN);
+
+		GENERAL_APP_SERVICE_CAPABILITY.setUpdatedAppServiceRecord(GENERAL_APP_SERVICE_RECORD);
+		GENERAL_APP_SERVICE_CAPABILITY.setUpdateReason(GENERAL_SERVICE_UPDATE_REASON);
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
