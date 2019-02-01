@@ -9,6 +9,8 @@ import org.json.JSONObject;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.AppServiceCapability;
+import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 
 
 public final class JsonUtils {
@@ -114,6 +116,41 @@ public final class JsonUtils {
 			return result;
 		}
 		
+		return null;
+	}
+
+	public static List<AppServiceType> readAppServiceTypeListFromJsonObject(JSONObject json, String key){
+		JSONArray jsonArray = readJsonArrayFromJsonObject(json, key);
+
+		if(jsonArray != null){
+			int len = jsonArray.length();
+			List<AppServiceType> result = new ArrayList<>(len);
+			for(int i=0; i<len; i++){
+				try {
+					AppServiceType serviceType = (AppServiceType) jsonArray.get(i);
+					result.add(serviceType);
+				} catch (JSONException e) {}
+			}
+			return result;
+		}
+
+		return null;
+	}
+
+	public static List<AppServiceCapability> readAppServiceCapabilityListFromJsonObject(JSONObject json, String key){
+		JSONArray jsonArray = readJsonArrayFromJsonObject(json, key);
+		if(jsonArray != null){
+			int len = jsonArray.length();
+			List<AppServiceCapability> result = new ArrayList<>(len);
+			for(int i=0; i<len; i++){
+				try {
+					AppServiceCapability serviceCapability = (AppServiceCapability) jsonArray.getJSONArray(0).get(i);
+					result.add(serviceCapability);
+				} catch (JSONException e) {}
+			}
+			return result;
+		}
+
 		return null;
 	}
 

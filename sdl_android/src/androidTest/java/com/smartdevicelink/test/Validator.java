@@ -10,6 +10,7 @@ import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.AirbagStatus;
+import com.smartdevicelink.proxy.rpc.AppServiceCapability;
 import com.smartdevicelink.proxy.rpc.AppServiceManifest;
 import com.smartdevicelink.proxy.rpc.AppServiceRecord;
 import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
@@ -90,6 +91,7 @@ import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
+import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
@@ -514,6 +516,52 @@ public class Validator{
 		while(iterator1.hasNext() && iterator2.hasNext()){
 			FunctionID chunk1 = iterator1.next();
 			FunctionID chunk2 = iterator2.next();
+
+			if(chunk1 != chunk2){
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean validateAppServiceTypeList(List<AppServiceType> list1, List<AppServiceType> list2){
+		if(list1 == null){
+			return ( list2 == null );
+		}
+		if(list2 == null){
+			return ( list1 == null );
+		}
+
+		Iterator<AppServiceType> iterator1 = list1.iterator();
+		Iterator<AppServiceType> iterator2 = list2.iterator();
+
+		while(iterator1.hasNext() && iterator2.hasNext()){
+			AppServiceType chunk1 = iterator1.next();
+			AppServiceType chunk2 = iterator2.next();
+
+			if(chunk1 != chunk2){
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public static boolean validateAppServiceCapabilityList(List<AppServiceCapability> list1, List<AppServiceCapability> list2){
+		if(list1 == null){
+			return ( list2 == null );
+		}
+		if(list2 == null){
+			return ( list1 == null );
+		}
+
+		Iterator<AppServiceCapability> iterator1 = list1.iterator();
+		Iterator<AppServiceCapability> iterator2 = list2.iterator();
+
+		while(iterator1.hasNext() && iterator2.hasNext()){
+			AppServiceCapability chunk1 = iterator1.next();
+			AppServiceCapability chunk2 = iterator2.next();
 
 			if(chunk1 != chunk2){
 				return false;

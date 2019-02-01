@@ -400,8 +400,8 @@ public class Test {
 	public static final List<LightState>                GENERAL_LIGHTSTATE_LIST                = new ArrayList<LightState>(1);
 	public static final List<AudioControlCapabilities>  GENERAL_AUDIOCONTROLCAPABILITIES_LIST  = new ArrayList<AudioControlCapabilities>(1);
 	public static final List<ModuleData>                GENERAL_MODULEDATA_LIST  = Collections.singletonList(GENERAL_MODULEDATA);
-	public static final List<AppServiceType>            GENERAL_APPSERVICETYPE_LIST = Collections.singletonList(GENERAL_APP_SERVICE_TYPE);
-	public static final List<AppServiceCapability>      GENERAL_APPSERVICECAPABILITY_LIST = Collections.singletonList(GENERAL_APP_SERVICE_CAPABILITY);
+	public static final List<AppServiceType>            GENERAL_APPSERVICETYPE_LIST            = Arrays.asList(AppServiceType.MEDIA, AppServiceType.GENERIC);
+	public static final List<AppServiceCapability>      GENERAL_APPSERVICECAPABILITY_LIST      = Arrays.asList(GENERAL_APP_SERVICE_CAPABILITY);
 
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();
