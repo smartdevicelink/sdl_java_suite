@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.proxy.rpc.AppServiceManifest}
+ * {@link com.smartdevicelink.proxy.rpc.AppServicesCapabilities}
  */
 public class AppServicesCapabilitiesTests extends TestCase {
 
