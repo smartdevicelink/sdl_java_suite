@@ -3,6 +3,7 @@ package com.smartdevicelink.test.proxy;
 import android.content.Context;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.exception.SdlException;
@@ -86,16 +87,35 @@ import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.streaming.video.SdlRemoteDisplayTest;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
+import com.smartdevicelink.streaming.audio.AudioStreamingParams;
+import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
+import com.smartdevicelink.test.Test;
+import com.smartdevicelink.proxy.rpc.TouchEvent;
+import com.smartdevicelink.proxy.rpc.enums.TouchType;
+import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 
 import junit.framework.Assert;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Arrays;
+import java.util.Collections;
+import java.lang.reflect.Constructor;
 
 public class SdlProxyBaseTests extends AndroidTestCase2 {
     public static final String TAG = "SdlProxyBaseTests";
@@ -304,6 +324,231 @@ public class SdlProxyBaseTests extends AndroidTestCase2 {
 			assert false;
 		}
 	}
+
+	public void testMultiTouchUpDown() {
+        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(new ProxyListenerTest(), "appId", "appName", true, getContext());
+        try{
+            ClassLoader loader = this.getContext().getClassLoader();
+            Class videoStreamingManagerClass = loader.loadClass("com.smartdevicelink.proxy.SdlProxyBase$VideoStreamingManager");
+
+            Class[] parameterTypes = new Class[]{SdlProxyBase.class, Context.class, ISdl.class};
+            Constructor constructor = videoStreamingManagerClass.getDeclaredConstructor(parameterTypes);
+            constructor.setAccessible(true);
+
+            // Get VideoStreamingManager Instance
+            Object target = constructor.newInstance((SdlProxyBase)builder.build(), null, _internalInterface);
+
+            // Enable call convertTouchEvent
+            Method method = videoStreamingManagerClass.getDeclaredMethod("convertTouchEvent", OnTouchEvent.class);
+            method.setAccessible(true);
+
+            // Initialize touch event (Touch ID:100)
+            TouchEvent touchEvent = Test.GENERAL_TOUCHEVENT;
+
+            // Initialize touch event (Touch ID:101)
+            TouchEvent touchEvent2 = new TouchEvent();
+            touchEvent2.setId(touchEvent.getId() + 1);
+            touchEvent2.setTimestamps(Test.GENERAL_LONG_LIST);
+            touchEvent2.setTouchCoordinates(new ArrayList<TouchCoord>(Arrays.asList(new TouchCoord(Test.GENERAL_TOUCHCOORD.getX() + 1, Test.GENERAL_TOUCHCOORD.getY() + 1))));
+
+            // Touch one pointer (Touch ID:100)
+            OnTouchEvent testOnTouchEvent = new OnTouchEvent();
+            testOnTouchEvent.setEvent(Collections.singletonList(touchEvent));
+            testOnTouchEvent.setType(Test.GENERAL_TOUCHTYPE);
+            List<MotionEvent> events = (List<MotionEvent>)method.invoke(target, testOnTouchEvent);
+            assertEquals(MotionEvent.ACTION_DOWN, events.get(0).getAction());
+
+            // Touch another pointer (Touch ID:101)
+            testOnTouchEvent.setEvent(Collections.singletonList(touchEvent2));
+            testOnTouchEvent.setType(Test.GENERAL_TOUCHTYPE);
+            events = (List<MotionEvent>)method.invoke(target, testOnTouchEvent);
+            assertEquals(MotionEvent.ACTION_POINTER_DOWN | 1 << MotionEvent.ACTION_POINTER_INDEX_SHIFT, events.get(0).getAction());
+
+            // Release one of the pointers (Touch ID:101)
+            testOnTouchEvent.setEvent(Collections.singletonList(touchEvent2));
+            testOnTouchEvent.setType(TouchType.END);
+            events = (List<MotionEvent>)method.invoke(target, testOnTouchEvent);
+            assertEquals(MotionEvent.ACTION_POINTER_UP | 1 << MotionEvent.ACTION_POINTER_INDEX_SHIFT, events.get(0).getAction());
+
+            // Release the other pointer (Touch ID:100)
+            testOnTouchEvent.setEvent(Collections.singletonList(touchEvent));
+            testOnTouchEvent.setType(TouchType.END);
+            events = (List<MotionEvent>)method.invoke(target, testOnTouchEvent);
+            assertEquals(MotionEvent.ACTION_UP, events.get(0).getAction());
+
+            assert true;
+
+        }catch (Exception e){
+            assert false;
+        }
+    }
+
+    public void testMultiBeginTouch() {
+        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(new ProxyListenerTest(), "appId", "appName", true, getContext());
+        try{
+            ClassLoader loader = this.getContext().getClassLoader();
+            Class videoStreamingManagerClass = loader.loadClass("com.smartdevicelink.proxy.SdlProxyBase$VideoStreamingManager");
+
+            Class[] parameterTypes = new Class[]{SdlProxyBase.class, Context.class, ISdl.class};
+            Constructor constructor = videoStreamingManagerClass.getDeclaredConstructor(parameterTypes);
+            constructor.setAccessible(true);
+
+            // Get VideoStreamingManager Instance
+            Object target = constructor.newInstance((SdlProxyBase)builder.build(), null, _internalInterface);
+
+            // Enable call convertTouchEvent
+            Method method = videoStreamingManagerClass.getDeclaredMethod("convertTouchEvent", OnTouchEvent.class);
+            method.setAccessible(true);
+
+            // Initialize touch event (Touch ID:100)
+            TouchEvent touchEvent = Test.GENERAL_TOUCHEVENT;
+
+            // Initialize touch event (Touch ID:101)
+            TouchEvent touchEvent2 = new TouchEvent();
+            touchEvent2.setId(touchEvent.getId() + 1);
+            touchEvent2.setTimestamps(Test.GENERAL_LONG_LIST);
+            touchEvent2.setTouchCoordinates(new ArrayList<TouchCoord>(Arrays.asList(new TouchCoord(Test.GENERAL_TOUCHCOORD.getX() + 1, Test.GENERAL_TOUCHCOORD.getY() + 1))));
+
+            // Touch multi pointer (Touch ID:100, 101)
+            OnTouchEvent testOnTouchEvent = new OnTouchEvent();
+            testOnTouchEvent.setType(Test.GENERAL_TOUCHTYPE);
+            testOnTouchEvent.setEvent(Arrays.asList(touchEvent, touchEvent2));
+            List<MotionEvent> events = (List<MotionEvent>)method.invoke(target, testOnTouchEvent);
+            assertEquals(MotionEvent.ACTION_DOWN, events.get(0).getAction());
+            assertEquals(MotionEvent.ACTION_POINTER_DOWN | 1 << MotionEvent.ACTION_POINTER_INDEX_SHIFT, events.get(1).getAction());
+
+            assert true;
+
+        }catch (Exception e){
+            assert false;
+        }
+    }
+
+    public void testMultiTouchOneFingerMove() {
+        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(new ProxyListenerTest(), "appId", "appName", true, getContext());
+        try{
+            ClassLoader loader = this.getContext().getClassLoader();
+            Class videoStreamingManagerClass = loader.loadClass("com.smartdevicelink.proxy.SdlProxyBase$VideoStreamingManager");
+
+            Class[] parameterTypes = new Class[]{SdlProxyBase.class, Context.class, ISdl.class};
+            Constructor constructor = videoStreamingManagerClass.getDeclaredConstructor(parameterTypes);
+            constructor.setAccessible(true);
+
+            // Get VideoStreamingManager Instance
+            Object target = constructor.newInstance((SdlProxyBase)builder.build(), null, _internalInterface);
+
+            // Enable call convertTouchEvent
+            Method method = videoStreamingManagerClass.getDeclaredMethod("convertTouchEvent", OnTouchEvent.class);
+            method.setAccessible(true);
+
+            // Initialize touch event (Touch ID:100)
+            TouchEvent touchEvent = Test.GENERAL_TOUCHEVENT;
+
+            // Initialize touch event (Touch ID:101)
+            TouchEvent touchEvent2 = new TouchEvent();
+            touchEvent2.setId(touchEvent.getId() + 1);
+            touchEvent2.setTimestamps(Test.GENERAL_LONG_LIST);
+            touchEvent2.setTouchCoordinates(new ArrayList<TouchCoord>(Arrays.asList(new TouchCoord(Test.GENERAL_TOUCHCOORD.getX() + 1, Test.GENERAL_TOUCHCOORD.getY() + 1))));
+
+            // Touch multi pointer (Touch ID:100, 101)
+            OnTouchEvent testOnTouchEvent = new OnTouchEvent();
+            testOnTouchEvent.setType(Test.GENERAL_TOUCHTYPE);
+            testOnTouchEvent.setEvent(Arrays.asList(touchEvent, touchEvent2));
+            method.invoke(target, testOnTouchEvent);
+
+            // Move pointer (Touch ID:101)
+            testOnTouchEvent.setType(TouchType.MOVE);
+            testOnTouchEvent.setEvent(Arrays.asList(touchEvent2));
+            List<MotionEvent> events = (List<MotionEvent>)method.invoke(target, testOnTouchEvent);
+            assertEquals(MotionEvent.ACTION_MOVE, events.get(0).getAction());
+            assertEquals(2, events.get(0).getPointerCount());
+
+            assert true;
+
+        }catch (Exception e){
+            assert false;
+        }
+    }
+
+    private ISdl _internalInterface = new ISdl() {
+        @Override
+        public void start() { }
+
+        @Override
+        public void stop() { }
+
+        @Override
+        public boolean isConnected() { return false; }
+
+        @Override
+        public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) { }
+
+        @Override
+        public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) { }
+
+        @Override
+        public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) { }
+
+        @Override
+        public void stopVideoService() { }
+
+        @Override
+        public void stopAudioService() { }
+
+        @Override
+        public void sendRPCRequest(RPCRequest message){ }
+
+        @Override
+        public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) { }
+
+        @Override
+        public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {}
+
+        @Override
+        public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) { return false; }
+
+        @Override
+        public void addOnRPCListener(FunctionID responseId, OnRPCListener listener) { }
+
+        @Override
+        public boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener) { return false; }
+
+        @Override
+        public Object getCapability(SystemCapabilityType systemCapabilityType){ return null; }
+
+        @Override
+        public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) { }
+
+        @Override
+        public SdlMsgVersion getSdlMsgVersion(){ return null; }
+
+        @Override
+        public com.smartdevicelink.util.Version getProtocolVersion() { return null; }
+
+        @Override
+        public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){ return false; }
+
+        @Override
+        public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { }
+
+        @Override
+        public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) { return false; }
+
+        @Override
+        public boolean isTransportForServiceAvailable(SessionType serviceType) { return false; }
+
+        @Override
+        public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params) { }
+
+        @Override
+        public void startAudioService(boolean encrypted) { }
+
+        @Override
+        public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters){ return null; }
+
+        @Override
+        public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params) { return null; }
+    };
 
     public class ProxyListenerTest implements IProxyListenerALM {
 

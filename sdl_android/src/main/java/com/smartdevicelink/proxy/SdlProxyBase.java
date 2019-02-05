@@ -7419,10 +7419,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			internalInterface.addOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, new OnRPCNotificationListener() {
 				@Override
 				public void onNotified(RPCNotification notification) {
-					if(notification !=null && remoteDisplay != null){
-						MotionEvent event = convertTouchEvent((OnTouchEvent)notification);
-						if(event!=null){
-							remoteDisplay.handleMotionEvent(event);
+					if(notification != null && remoteDisplay != null){
+						List<MotionEvent> events = convertTouchEvent((OnTouchEvent)notification);
+						for (MotionEvent ev : events) {
+							remoteDisplay.handleMotionEvent(ev);
 						}
 					}
 				}
@@ -7562,76 +7562,77 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		}
 
-		private MotionEvent convertTouchEvent(OnTouchEvent touchEvent){
+		private List<MotionEvent> convertTouchEvent(OnTouchEvent touchEvent){
 			List<TouchEvent> eventList = touchEvent.getEvent();
 			if (eventList == null || eventList.size() == 0) return null;
 
 			TouchType touchType = touchEvent.getType();
-			if (touchType == null){ return null;}
+			if (touchType == null) { return null; }
 
 			int eventListSize = eventList.size();
-
-			MotionEvent.PointerProperties[] pointerProperties = new MotionEvent.PointerProperties[eventListSize];
-			MotionEvent.PointerCoords[] pointerCoords = new MotionEvent.PointerCoords[eventListSize];
-
-			TouchEvent event;
-			MotionEvent.PointerProperties properties;
-			MotionEvent.PointerCoords coords;
-			TouchCoord touchCoord;
-
-			for(int i = 0; i < eventListSize; i++){
-				event = eventList.get(i);
-				if(event == null || event.getId() == null || event.getTouchCoordinates() == null){
-					continue;
-				}
-
-				properties = new MotionEvent.PointerProperties();
-				properties.id = event.getId();
-				properties.toolType = MotionEvent.TOOL_TYPE_FINGER;
-
-
-				List<TouchCoord> coordList = event.getTouchCoordinates();
-				if (coordList == null || coordList.size() == 0){ continue; }
-
-				touchCoord = coordList.get(coordList.size() -1);
-				if(touchCoord == null){ continue; }
-
-				coords = new MotionEvent.PointerCoords();
-				coords.x = touchCoord.getX() * touchScalar[0];
-				coords.y = touchCoord.getY() * touchScalar[1];
-				coords.orientation = 0;
-				coords.pressure = 1.0f;
-				coords.size = 1;
-
-				//Add the info to lists only after we are sure we have all available info
-				pointerProperties[i] = properties;
-				pointerCoords[i] = coords;
-
-			}
-
-
+			List<MotionEvent> motionEventList = new ArrayList<MotionEvent>();
 			if(sdlMotionEvent == null) {
 				if (touchType == TouchType.BEGIN) {
 					sdlMotionEvent = new SdlMotionEvent();
 				}else{
-					return  null;
+					return motionEventList;
 				}
 			}
 
-			int eventAction = sdlMotionEvent.getMotionEvent(touchType, pointerProperties);
-			long startTime = sdlMotionEvent.startOfEvent;
+			for (int i = 0; i < eventListSize; i++) {
+				TouchEvent event = eventList.get(i);
+				if (event == null || event.getId() == null) {
+					continue;
+				}
 
-			//If the motion event should be finished we should clear our reference
-			if(eventAction == MotionEvent.ACTION_UP || eventAction == MotionEvent.ACTION_CANCEL){
-				sdlMotionEvent = null;
+				List<TouchCoord> coordList = event.getTouchCoordinates();
+				if (coordList == null || coordList.size() == 0) {
+					continue;
+				}
+
+				TouchCoord touchCoord = coordList.get(coordList.size() - 1);
+				if (touchCoord == null) {
+					continue;
+				}
+
+				int eventAction = sdlMotionEvent.getMotionEvent(touchType, event);
+				long startTime = sdlMotionEvent.startOfEvent;
+				long eventTime = sdlMotionEvent.eventTime;
+				sdlMotionEvent.getTouch(event.getId()).set(touchCoord.getX() * touchScalar[0], touchCoord.getY() * touchScalar[1]);
+
+				MotionEvent.PointerProperties[] properties;
+				MotionEvent.PointerCoords[] coords;
+				properties = new MotionEvent.PointerProperties[sdlMotionEvent.touches.size()];
+				coords = new MotionEvent.PointerCoords[sdlMotionEvent.touches.size()];
+
+				for (int j = 0; j < sdlMotionEvent.touches.size(); j++) {
+					properties[j] = new MotionEvent.PointerProperties();
+					properties[j].id = sdlMotionEvent.getTouchId(j);
+					properties[j].toolType = MotionEvent.TOOL_TYPE_FINGER;
+
+					coords[j] = new MotionEvent.PointerCoords();
+					coords[j].x = sdlMotionEvent.getTouchX(j);
+					coords[j].y = sdlMotionEvent.getTouchY(j);
+					coords[j].orientation = 0;
+					coords[j].pressure = 1.0f;
+					coords[j].size = 1;
+				}
+
+				motionEventList.add(MotionEvent.obtain(startTime, eventTime, eventAction,
+						sdlMotionEvent.touches.size(), properties, coords, 0, 0, 1,
+						1, 0, 0, InputDevice.SOURCE_TOUCHSCREEN, 0));
+
+				if(eventAction == MotionEvent.ACTION_UP || eventAction == MotionEvent.ACTION_CANCEL){
+					//If the motion event should be finished we should clear our reference
+					sdlMotionEvent = null;
+					break;
+				}else if((eventAction & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_POINTER_UP){
+					sdlMotionEvent.removeTouch(event.getId());
+				}
 			}
 
-			return MotionEvent.obtain(startTime, SystemClock.uptimeMillis(), eventAction, eventListSize, pointerProperties, pointerCoords, 0, 0,1,1,0,0, InputDevice.SOURCE_TOUCHSCREEN,0);
-
+			return motionEventList;
 		}
-
-
-
 	}
 
 	/**
@@ -7639,51 +7640,69 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	private static class SdlMotionEvent{
 		long startOfEvent;
-		SparseIntArray pointerStatuses = new SparseIntArray();
+		class Touch {
+			Touch () {
+				this.id = -1;
+			}
+			Touch (int id, float x, float y) {
+				this.id = id; this.x = x; this.y = y;
+			}
+			int id;
+			float x;
+			float y;
+			void set(float x, float y) {this.x = x; this.y = y;}
+		}
+
+		private List<Touch> touches = new ArrayList<Touch>();
+		long timestampFromHMI;
+		long eventTime;
 
 		SdlMotionEvent(){
-			startOfEvent = SystemClock.uptimeMillis();
+			timestampFromHMI = 0;
 		}
 
 		/**
 		 * Handles the SDL Touch Event to keep track of pointer status and returns the appropirate
 		 * Android MotionEvent according to this events status
 		 * @param touchType The SDL TouchType that was received from the module
-		 * @param pointerProperties the parsed pointer properties built from the OnTouchEvent RPC
+		 * @param touchEvent The SDL TouchEvent that was received from the module
 		 * @return the correct native Andorid MotionEvent action to dispatch
 		 */
-		synchronized int  getMotionEvent(TouchType touchType, MotionEvent.PointerProperties[] pointerProperties){
+		synchronized int getMotionEvent(TouchType touchType, TouchEvent touchEvent){
+			eventTime = 0;
 			int motionEvent = MotionEvent.ACTION_DOWN;
 			switch (touchType){
 				case BEGIN:
-					if(pointerStatuses.size() == 0){
+					if(touches.size() == 0){
 						//The motion event has just begun
 						motionEvent = MotionEvent.ACTION_DOWN;
+						startOfEvent = SystemClock.uptimeMillis();
+						timestampFromHMI = touchEvent.getTimestamps().get(0);
+						eventTime = startOfEvent;
 					}else{
-						motionEvent = MotionEvent.ACTION_POINTER_DOWN;
+						motionEvent = MotionEvent.ACTION_POINTER_DOWN | touches.size() << MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+						eventTime = startOfEvent + touchEvent.getTimestamps().get(0) - timestampFromHMI;
 					}
-					setPointerStatuses(motionEvent, pointerProperties);
+					touches.add(new Touch(touchEvent.getId(), 0.0f, 0.0f));
 					break;
 				case MOVE:
 					motionEvent = MotionEvent.ACTION_MOVE;
-					setPointerStatuses(motionEvent, pointerProperties);
-
+					eventTime = startOfEvent + touchEvent.getTimestamps().get(0) - timestampFromHMI;
 					break;
 				case END:
-					//Clears out pointers that have ended
-					setPointerStatuses(MotionEvent.ACTION_UP, pointerProperties);
-
-					if(pointerStatuses.size() == 0){
+					if(touches.size() > 1){
+						motionEvent = MotionEvent.ACTION_POINTER_UP |
+								touches.indexOf(getTouch(touchEvent.getId())) << MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+					}else{
 						//The motion event has just ended
 						motionEvent = MotionEvent.ACTION_UP;
-					}else{
-						motionEvent = MotionEvent.ACTION_POINTER_UP;
 					}
+					eventTime = startOfEvent + touchEvent.getTimestamps().get(0) - timestampFromHMI;
 					break;
 				case CANCEL:
 					//Assuming this cancels the entire event
 					motionEvent = MotionEvent.ACTION_CANCEL;
-					pointerStatuses.clear();
+					eventTime = startOfEvent + touchEvent.getTimestamps().get(0) - timestampFromHMI;
 					break;
 				default:
 					break;
@@ -7691,21 +7710,29 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			return motionEvent;
 		}
 
-		private void setPointerStatuses(int motionEvent, MotionEvent.PointerProperties[] pointerProperties){
-
-					for(int i = 0; i < pointerProperties.length; i ++){
-						MotionEvent.PointerProperties properties = pointerProperties[i];
-						if(properties != null){
-							if(motionEvent == MotionEvent.ACTION_UP || motionEvent == MotionEvent.ACTION_POINTER_UP){
-								pointerStatuses.delete(properties.id);
-							}else if(motionEvent == MotionEvent.ACTION_DOWN && properties.id == 0){
-								pointerStatuses.put(properties.id, MotionEvent.ACTION_DOWN);
-							}else{
-								pointerStatuses.put(properties.id, motionEvent);
-							}
-
-					}
+		Touch getTouch(int id){
+			for (Touch touch : touches){
+				if (touch.id == id){
+					return touch;
+				}
 			}
+			return new Touch();
+		}
+
+		int getTouchId(int index) {
+			return touches.get(index).id;
+		}
+
+		float getTouchX(int index){
+			return touches.get(index).x;
+		}
+
+		float getTouchY(int index){
+			return touches.get(index).y;
+		}
+
+		void removeTouch(int id){
+			touches.remove(touches.indexOf(getTouch(id)));
 		}
 	}
 } // end-class
