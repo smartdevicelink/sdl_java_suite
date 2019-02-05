@@ -64,6 +64,7 @@ public enum FunctionID{
     GET_SYSTEM_CAPABILITY(48, "GetSystemCapability"),
 	SEND_HAPTIC_DATA(49, "SendHapticData"),
     PUBLISH_APP_SERVICE(52, "PublishAppService"),
+    GET_APP_SERVICE_DATA(53, "GetAppServiceData"),
 
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
