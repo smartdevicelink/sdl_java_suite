@@ -25,6 +25,7 @@ import com.smartdevicelink.proxy.rpc.ClimateControlData;
 import com.smartdevicelink.proxy.rpc.ClusterModeStatus;
 import com.smartdevicelink.proxy.rpc.Coordinate;
 import com.smartdevicelink.proxy.rpc.DIDResult;
+import com.smartdevicelink.proxy.rpc.DateTime;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DeviceStatus;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
@@ -1465,6 +1466,54 @@ public class Validator{
     	
     	return true;
     }
+
+	public static boolean validateDateTime(DateTime item1, DateTime item2) {
+		if (item1 == null) {
+			return (item2 == null);
+		}
+
+		if (item2 == null) {
+			return (item1 == null);
+		}
+
+		if(item1.getDay() != item2.getDay()){
+			return false;
+		}
+
+		if(item1.getHour() != item2.getHour()){
+			return false;
+		}
+
+		if(item1.getMilliSecond() != item2.getMilliSecond()){
+			return false;
+		}
+
+		if(item1.getMinute() != item2.getMinute()){
+			return false;
+		}
+
+		if(item1.getMonth() != item2.getMonth()){
+			return false;
+		}
+
+		if(item1.getSecond() != item2.getSecond()){
+			return false;
+		}
+
+		if(item1.getTzHour() != item2.getTzHour()){
+			return false;
+		}
+
+		if(item1.getTzMinute() != item2.getTzMinute()){
+			return false;
+		}
+
+		if(item1.getYear() != item2.getYear()){
+			return false;
+		}
+
+		return true;
+	}
 
     public static boolean validateGpsData(GPSData item1, GPSData item2){
         if(item1 == null){

@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.rpc.ButtonPress;
 import com.smartdevicelink.proxy.rpc.GetAppServiceData;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.test.BaseRpcTests;

@@ -18,6 +18,7 @@ import com.smartdevicelink.proxy.rpc.ClimateControlCapabilities;
 import com.smartdevicelink.proxy.rpc.ClimateControlData;
 import com.smartdevicelink.proxy.rpc.Coordinate;
 import com.smartdevicelink.proxy.rpc.DIDResult;
+import com.smartdevicelink.proxy.rpc.DateTime;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
@@ -174,6 +175,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -318,6 +320,7 @@ public class Test {
 	public static final AppServiceRecord               GENERAL_APP_SERVICE_RECORD             = new AppServiceRecord();
 	public static final AppServiceCapability           GENERAL_APP_SERVICE_CAPABILITY         = new AppServiceCapability();
 	public static final ServiceUpdateReason            GENERAL_SERVICE_UPDATE_REASON          = ServiceUpdateReason.MANIFEST_UPDATE;
+	public static final DateTime					   GENERAL_DATETIME                       = new DateTime();
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
@@ -887,6 +890,16 @@ public class Test {
 
 		GENERAL_APP_SERVICE_CAPABILITY.setUpdatedAppServiceRecord(GENERAL_APP_SERVICE_RECORD);
 		GENERAL_APP_SERVICE_CAPABILITY.setUpdateReason(GENERAL_SERVICE_UPDATE_REASON);
+
+		GENERAL_DATETIME.setDay(Test.GENERAL_INT);
+		GENERAL_DATETIME.setHour(Test.GENERAL_INT);
+		GENERAL_DATETIME.setMilliSecond(Test.GENERAL_INT);
+		GENERAL_DATETIME.setMinute(Test.GENERAL_INT);
+		GENERAL_DATETIME.setMonth(Test.GENERAL_INT);
+		GENERAL_DATETIME.setSecond(Test.GENERAL_INT);
+		GENERAL_DATETIME.setTzHour(Test.GENERAL_INT);
+		GENERAL_DATETIME.setTzMinute(Test.GENERAL_INT);
+		GENERAL_DATETIME.setYear(Test.GENERAL_INT);
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);
