@@ -80,6 +80,8 @@ import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
+import com.smartdevicelink.proxy.rpc.WeatherAlert;
+import com.smartdevicelink.proxy.rpc.WeatherData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -321,6 +323,8 @@ public class Test {
 	public static final AppServiceCapability           GENERAL_APP_SERVICE_CAPABILITY         = new AppServiceCapability();
 	public static final ServiceUpdateReason            GENERAL_SERVICE_UPDATE_REASON          = ServiceUpdateReason.MANIFEST_UPDATE;
 	public static final DateTime					   GENERAL_DATETIME                       = new DateTime();
+	public static final WeatherData 				   GENERAL_WEATHERDATA                    = new WeatherData();
+	public static final WeatherAlert                   GENERAL_WEATHERALERT                   = new WeatherAlert();
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
@@ -405,6 +409,8 @@ public class Test {
 	public static final List<ModuleData>                GENERAL_MODULEDATA_LIST  = Collections.singletonList(GENERAL_MODULEDATA);
 	public static final List<AppServiceType>            GENERAL_APPSERVICETYPE_LIST            = Arrays.asList(AppServiceType.MEDIA, AppServiceType.GENERIC);
 	public static final List<AppServiceCapability>      GENERAL_APPSERVICECAPABILITY_LIST      = Arrays.asList(GENERAL_APP_SERVICE_CAPABILITY);
+	public static final List<WeatherData>               GENERAL_WEATHERDATA_LIST               = Arrays.asList(GENERAL_WEATHERDATA);
+	public static final List<WeatherAlert>              GENERAL_WEATHERALERT_LIST              = Arrays.asList(GENERAL_WEATHERALERT);
 
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();
@@ -900,6 +906,34 @@ public class Test {
 		GENERAL_DATETIME.setTzHour(Test.GENERAL_INT);
 		GENERAL_DATETIME.setTzMinute(Test.GENERAL_INT);
 		GENERAL_DATETIME.setYear(Test.GENERAL_INT);
+
+		GENERAL_WEATHERDATA.setCurrentTemperature(GENERAL_TEMPERATURE);
+		GENERAL_WEATHERDATA.setTemperatureHigh(GENERAL_TEMPERATURE);
+		GENERAL_WEATHERDATA.setTemperatureLow(GENERAL_TEMPERATURE);
+		GENERAL_WEATHERDATA.setApparentTemperature(GENERAL_TEMPERATURE);
+		GENERAL_WEATHERDATA.setWeatherSummary(GENERAL_STRING);
+		GENERAL_WEATHERDATA.setTime(GENERAL_DATETIME);
+		GENERAL_WEATHERDATA.setHumidity(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setCloudCover(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setMoonPhase(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setWindBearing(GENERAL_INTEGER);
+		GENERAL_WEATHERDATA.setWindGust(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setWindSpeed(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setNearestStormBearing(GENERAL_INTEGER);
+		GENERAL_WEATHERDATA.setNearestStormDistance(GENERAL_INTEGER);
+		GENERAL_WEATHERDATA.setPrecipAccumulation(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setPrecipIntensity(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setPrecipProbability(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setPrecipType(GENERAL_STRING);
+		GENERAL_WEATHERDATA.setVisibility(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setWeatherIconImageName(GENERAL_STRING);
+
+		GENERAL_WEATHERALERT.setTitle(GENERAL_STRING);
+		GENERAL_WEATHERALERT.setSummary(GENERAL_STRING);
+		GENERAL_WEATHERALERT.setExpires(GENERAL_DATETIME);
+		GENERAL_WEATHERALERT.setRegions(GENERAL_STRING_LIST);
+		GENERAL_WEATHERALERT.setSeverity(GENERAL_STRING);
+		GENERAL_WEATHERALERT.setTimeIssued(GENERAL_DATETIME);
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

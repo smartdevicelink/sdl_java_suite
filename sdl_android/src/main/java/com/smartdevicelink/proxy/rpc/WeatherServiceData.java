@@ -51,15 +51,15 @@ public class WeatherServiceData extends RPCStruct {
 	/**
 	 * @param currentForecast -
 	 */
-	public void setCurrentForecast(LocationDetails currentForecast) {
+	public void setCurrentForecast(WeatherData currentForecast) {
 		setValue(KEY_CURRENT_FORECAST, currentForecast);
 	}
 
 	/**
 	 * @return currentForecast
 	 */
-	public LocationDetails getCurrentForecast() {
-		return (LocationDetails) getObject(LocationDetails.class,KEY_CURRENT_FORECAST);
+	public WeatherData getCurrentForecast() {
+		return (WeatherData) getObject(WeatherData.class,KEY_CURRENT_FORECAST);
 	}
 
 	/**

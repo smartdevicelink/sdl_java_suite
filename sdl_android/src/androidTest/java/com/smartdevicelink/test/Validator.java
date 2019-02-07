@@ -48,6 +48,7 @@ import com.smartdevicelink.proxy.rpc.LightCapabilities;
 import com.smartdevicelink.proxy.rpc.LightControlCapabilities;
 import com.smartdevicelink.proxy.rpc.LightControlData;
 import com.smartdevicelink.proxy.rpc.LightState;
+import com.smartdevicelink.proxy.rpc.LocationDetails;
 import com.smartdevicelink.proxy.rpc.MassageCushionFirmness;
 import com.smartdevicelink.proxy.rpc.MassageModeData;
 import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
@@ -91,6 +92,7 @@ import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
+import com.smartdevicelink.proxy.rpc.WeatherAlert;
 import com.smartdevicelink.proxy.rpc.WeatherData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
@@ -686,6 +688,44 @@ public class Validator{
 			return false;
 		}
 
+		return true;
+	}
+
+	public static boolean validateLocationDetails(LocationDetails params1, LocationDetails params2) {
+		if (params1 == null) {
+			return (params2 == null);
+		}
+		if (params2 == null) {
+			return (params1 == null);
+		}
+
+		if (!params1.getAddressLines().equals(params2.getAddressLines())) {
+			return false;
+		}
+
+		if (!validateCoordinate(params1.getCoordinate(), params2.getCoordinate())) {
+			return false;
+		}
+
+		if (!params1.getLocationDescription().equals(params2.getLocationDescription())) {
+			return false;
+		}
+
+		if (!params1.getPhoneNumber().equals(params2.getPhoneNumber())) {
+			return false;
+		}
+
+		if (!validateImage(params1.getLocationImage(), params2.getLocationImage())) {
+			return false;
+		}
+
+		if (!params1.getLocationName().equals(params2.getLocationName())) {
+			return false;
+		}
+
+		if (!validateOasisAddress(params1.getSearchAddress(), params2.getSearchAddress())) {
+			return false;
+		}
 		return true;
 	}
 
@@ -1468,6 +1508,19 @@ public class Validator{
     	return true;
     }
 
+	public static boolean validateWeatherDataList(List<WeatherData> item1Array, List<WeatherData> item2Array) {
+		if(item1Array.size() != item2Array.size()){
+			return false;
+		}
+
+		for(int i = 0; i < item1Array.size(); i++){
+			if(!validateWeatherData(item1Array.get(i), item2Array.get(i))){
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public static boolean validateWeatherData(WeatherData item1, WeatherData item2) {
 		if (item1 == null) {
 			return (item2 == null);
@@ -1477,31 +1530,31 @@ public class Validator{
 			return (item1 == null);
 		}
 
-		if (item1.getCurrentTemperature() != item2.getCurrentTemperature()) {
+		if (!validateTemperature(item1.getCurrentTemperature(), item2.getCurrentTemperature())) {
 			return false;
 		}
 
-		if (item1.getTemperatureHigh() != item2.getTemperatureHigh()) {
+		if (!validateTemperature(item1.getTemperatureHigh(), item2.getTemperatureHigh())) {
 			return false;
 		}
 
-		if (item1.getTemperatureLow() != item2.getTemperatureLow()) {
+		if (!validateTemperature(item1.getTemperatureLow(), item2.getTemperatureLow())) {
 			return false;
 		}
 
-		if (item1.getApparentTemperature() != item2.getApparentTemperature()) {
+		if (!validateTemperature(item1.getApparentTemperature(), item2.getApparentTemperature())) {
 			return false;
 		}
 
-		if (item1.getApparentTemperatureHigh() != item2.getApparentTemperatureHigh()) {
+		if (!validateTemperature(item1.getApparentTemperatureHigh(), item2.getApparentTemperatureHigh())) {
 			return false;
 		}
 
-		if (item1.getApparentTemperatureLow() != item2.getApparentTemperatureLow()) {
+		if (!validateTemperature(item1.getApparentTemperatureLow(), item2.getApparentTemperatureLow())) {
 			return false;
 		}
 
-		if (item1.getWeatherSummary() != item2.getWeatherSummary()) {
+		if (!item1.getWeatherSummary().equals(item2.getWeatherSummary())) {
 			return false;
 		}
 
@@ -1509,59 +1562,108 @@ public class Validator{
 			return false;
 		}
 
-		if (item1.getHumidity() != item2.getHumidity()) {
+		if (!item1.getHumidity().equals(item2.getHumidity())) {
 			return false;
 		}
 
-		if (item1.getCloudCover() != item2.getCloudCover()) {
+		if (!item1.getCloudCover().equals(item2.getCloudCover())) {
 			return false;
 		}
 
-		if (item1.getMoonPhase() != item2.getMoonPhase()) {
+		if (!item1.getMoonPhase().equals(item2.getMoonPhase())) {
 			return false;
 		}
 
-		if (item1.getWindBearing() != item2.getWindBearing()) {
+		if (!item1.getWindBearing().equals(item2.getWindBearing())) {
 			return false;
 		}
 
-		if (item1.getWindGust() != item2.getWindGust()) {
+		if (!item1.getWindGust().equals(item2.getWindGust())) {
 			return false;
 		}
 
-		if (item1.getWindSpeed() != item2.getWindSpeed()) {
+		if (!item1.getWindSpeed().equals(item2.getWindSpeed())) {
 			return false;
 		}
 
-		if (item1.getNearestStormBearing() != item2.getNearestStormBearing()) {
+		if (!item1.getNearestStormBearing().equals(item2.getNearestStormBearing())) {
 			return false;
 		}
 
-		if (item1.getNearestStormDistance() != item2.getNearestStormDistance()) {
+		if (!item1.getNearestStormDistance().equals(item2.getNearestStormDistance())) {
 			return false;
 		}
 
-		if (item1.getPrecipAccumulation() != item2.getPrecipAccumulation()) {
+		if (!item1.getPrecipAccumulation().equals(item2.getPrecipAccumulation())) {
 			return false;
 		}
 
-		if (item1.getPrecipIntensity() != item2.getPrecipIntensity()) {
+		if (!item1.getPrecipIntensity().equals(item2.getPrecipIntensity())) {
 			return false;
 		}
 
-		if (item1.getPrecipProbability() != item2.getPrecipProbability()) {
+		if (!item1.getPrecipProbability().equals(item2.getPrecipProbability())) {
 			return false;
 		}
 
-		if (item1.getPrecipType() != item2.getPrecipType()) {
+		if (!item1.getPrecipType().equals(item2.getPrecipType())) {
 			return false;
 		}
 
-		if (item1.getVisibility() != item2.getVisibility()) {
+		if (!item1.getVisibility().equals(item2.getVisibility())) {
 			return false;
 		}
 
-		if (item1.getWeatherIconImageName() != item2.getWeatherIconImageName()) {
+		if (!item1.getWeatherIconImageName().equals(item2.getWeatherIconImageName())) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public static boolean validateWeatherAlertList(List<WeatherAlert> item1Array, List<WeatherAlert> item2Array) {
+		if(item1Array.size() != item2Array.size()){
+			return false;
+		}
+
+		for(int i = 0; i < item1Array.size(); i++){
+			if(!validateWeatherAlert(item1Array.get(i), item2Array.get(i))){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean validateWeatherAlert(WeatherAlert item1, WeatherAlert item2) {
+		if (item1 == null) {
+			return (item2 == null);
+		}
+
+		if (item2 == null) {
+			return (item1 == null);
+		}
+
+		if (!validateDateTime(item1.getExpires(), item2.getExpires())) {
+			return false;
+		}
+
+		if (!validateDateTime(item1.getTimeIssued(), item2.getTimeIssued())) {
+			return false;
+		}
+
+		if (!item1.getTitle().equals(item2.getTitle())) {
+			return false;
+		}
+
+		if (!item1.getSummary().equals(item2.getSummary())) {
+			return false;
+		}
+
+		if (!item1.getSeverity().equals(item2.getSeverity())) {
+			return false;
+		}
+
+		if (!validateStringList(item1.getRegions(), item2.getRegions())) {
 			return false;
 		}
 
