@@ -130,6 +130,7 @@ import com.smartdevicelink.proxy.rpc.enums.MassageCushion;
 import com.smartdevicelink.proxy.rpc.enums.MassageMode;
 import com.smartdevicelink.proxy.rpc.enums.MassageZone;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
+import com.smartdevicelink.proxy.rpc.enums.MediaType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
@@ -325,6 +326,7 @@ public class Test {
 	public static final DateTime					   GENERAL_DATETIME                       = new DateTime();
 	public static final WeatherData 				   GENERAL_WEATHERDATA                    = new WeatherData();
 	public static final WeatherAlert                   GENERAL_WEATHERALERT                   = new WeatherAlert();
+	public static final MediaType                      GENERAL_MEDIATYPE                      = MediaType.MUSIC;
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
