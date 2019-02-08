@@ -3,28 +3,28 @@ package com.smartdevicelink.proxy.rpc;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.RPCNotification;
 
 import java.util.Hashtable;
 
 /**
- * This response includes the data that is requested from the specific service
+ * This notification includes the data that is updated from the specific service
  */
-public class GetAppServiceDataResponse extends RPCResponse {
+public class OnAppServiceData extends RPCNotification {
 
 	public static final String KEY_SERVICE_DATA = "serviceData";
 
 	// Constructors
 
-	public GetAppServiceDataResponse(){
-		super(FunctionID.GET_APP_SERVICE_DATA.toString());
+	public OnAppServiceData() {
+		super(FunctionID.ON_APP_SERVICE_DATA.toString());
 	}
 
-	public GetAppServiceDataResponse(Hashtable<String, Object> hash){
+	public OnAppServiceData(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 
-	public GetAppServiceDataResponse(@NonNull AppServiceData serviceData){
+	public OnAppServiceData(@NonNull AppServiceData serviceData) {
 		this();
 		setServiceData(serviceData);
 	}

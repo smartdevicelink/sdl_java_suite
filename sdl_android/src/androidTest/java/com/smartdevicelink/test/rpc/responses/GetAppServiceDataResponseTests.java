@@ -1,9 +1,5 @@
 package com.smartdevicelink.test.rpc.responses;
 
-/**
- * Created by brettywhite on 2/8/19.
- */
-
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
