@@ -38,6 +38,7 @@ import com.smartdevicelink.proxy.rpc.LightState;
 import com.smartdevicelink.proxy.rpc.LocationDetails;
 import com.smartdevicelink.proxy.rpc.MassageCushionFirmness;
 import com.smartdevicelink.proxy.rpc.MassageModeData;
+import com.smartdevicelink.proxy.rpc.MediaServiceData;
 import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
@@ -82,6 +83,7 @@ import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.WeatherAlert;
 import com.smartdevicelink.proxy.rpc.WeatherData;
+import com.smartdevicelink.proxy.rpc.WeatherServiceData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -327,6 +329,8 @@ public class Test {
 	public static final WeatherData 				   GENERAL_WEATHERDATA                    = new WeatherData();
 	public static final WeatherAlert                   GENERAL_WEATHERALERT                   = new WeatherAlert();
 	public static final MediaType                      GENERAL_MEDIATYPE                      = MediaType.MUSIC;
+	public static final MediaServiceData               GENERAL_MEDIASERVICE_DATA              = new MediaServiceData();
+	public static final WeatherServiceData             GENERAL_WEATHERSERVICE_DATA            = new WeatherServiceData();
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
@@ -936,6 +940,26 @@ public class Test {
 		GENERAL_WEATHERALERT.setRegions(GENERAL_STRING_LIST);
 		GENERAL_WEATHERALERT.setSeverity(GENERAL_STRING);
 		GENERAL_WEATHERALERT.setTimeIssued(GENERAL_DATETIME);
+
+		GENERAL_WEATHERSERVICE_DATA.setLocation(GENERAL_LOCATIONDETAILS);
+		GENERAL_WEATHERSERVICE_DATA.setCurrentForecast(GENERAL_WEATHERDATA);
+		GENERAL_WEATHERSERVICE_DATA.setMinuteForecast(GENERAL_WEATHERDATA_LIST);
+		GENERAL_WEATHERSERVICE_DATA.setHourlyForecast(GENERAL_WEATHERDATA_LIST);
+		GENERAL_WEATHERSERVICE_DATA.setMultidayForecast(GENERAL_WEATHERDATA_LIST);
+		GENERAL_WEATHERSERVICE_DATA.setAlerts(GENERAL_WEATHERALERT_LIST);
+
+		GENERAL_MEDIASERVICE_DATA.setMediaType(GENERAL_MEDIATYPE);
+		GENERAL_MEDIASERVICE_DATA.setMediaTitle(GENERAL_STRING);
+		GENERAL_MEDIASERVICE_DATA.setMediaArtist(GENERAL_STRING);
+		GENERAL_MEDIASERVICE_DATA.setMediaAlbum(GENERAL_STRING);
+		GENERAL_MEDIASERVICE_DATA.setPlaylistName(GENERAL_STRING);
+		GENERAL_MEDIASERVICE_DATA.setIsExplicit(GENERAL_BOOLEAN);
+		GENERAL_MEDIASERVICE_DATA.setTrackPlaybackProgress(GENERAL_INTEGER);
+		GENERAL_MEDIASERVICE_DATA.setTrackPlaybackDuration(GENERAL_INTEGER);
+		GENERAL_MEDIASERVICE_DATA.setQueuePlaybackProgress(GENERAL_INTEGER);
+		GENERAL_MEDIASERVICE_DATA.setQueuePlaybackDuration(GENERAL_INTEGER);
+		GENERAL_MEDIASERVICE_DATA.setQueueCurrentTrackNumber(GENERAL_INTEGER);
+		GENERAL_MEDIASERVICE_DATA.setQueueTotalTrackCount(GENERAL_INTEGER);
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

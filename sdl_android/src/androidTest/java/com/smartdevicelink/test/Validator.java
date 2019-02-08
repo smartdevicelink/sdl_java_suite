@@ -51,6 +51,7 @@ import com.smartdevicelink.proxy.rpc.LightState;
 import com.smartdevicelink.proxy.rpc.LocationDetails;
 import com.smartdevicelink.proxy.rpc.MassageCushionFirmness;
 import com.smartdevicelink.proxy.rpc.MassageModeData;
+import com.smartdevicelink.proxy.rpc.MediaServiceData;
 import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.ModuleData;
@@ -94,6 +95,7 @@ import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.WeatherAlert;
 import com.smartdevicelink.proxy.rpc.WeatherData;
+import com.smartdevicelink.proxy.rpc.WeatherServiceData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
@@ -1451,6 +1453,7 @@ public class Validator{
             return ( item1 == null );
         }
 
+
         if(item1.getCharacterSet() != item2.getCharacterSet()){
             return false;
         }
@@ -1631,6 +1634,102 @@ public class Validator{
 				return false;
 			}
 		}
+		return true;
+	}
+
+	public static boolean validateMediaServiceData(MediaServiceData item1, MediaServiceData item2) {
+		if (item1 == null) {
+			return (item2 == null);
+		}
+
+		if (item2 == null) {
+			return (item1 == null);
+		}
+
+		if (!item1.getMediaType().equals(item2.getMediaType())) {
+			return false;
+		}
+
+		if (!item1.getMediaTitle().equals(item2.getMediaTitle())) {
+			return false;
+		}
+
+		if (!item1.getMediaArtist().equals(item2.getMediaArtist())) {
+			return false;
+		}
+
+		if (!item1.getMediaAlbum().equals(item2.getMediaAlbum())) {
+			return false;
+		}
+
+		if (!item1.getPlaylistName().equals(item2.getPlaylistName())) {
+			return false;
+		}
+
+		if (!item1.getIsExplicit().equals(item2.getIsExplicit())) {
+			return false;
+		}
+
+		if (!item1.getTrackPlaybackProgress().equals(item2.getTrackPlaybackProgress())) {
+			return false;
+		}
+
+		if (!item1.getTrackPlaybackDuration().equals(item2.getTrackPlaybackDuration())) {
+			return false;
+		}
+
+		if (!item1.getQueuePlaybackProgress().equals(item2.getQueuePlaybackProgress())) {
+			return false;
+		}
+
+		if (!item1.getQueueCurrentTrackNumber().equals(item2.getQueueCurrentTrackNumber())) {
+			return false;
+		}
+
+		if (!item1.getQueuePlaybackDuration().equals(item2.getQueuePlaybackDuration())) {
+			return false;
+		}
+
+		if (!item1.getQueueTotalTrackCount().equals(item2.getQueueTotalTrackCount())) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public static boolean validateWeatherServiceData(WeatherServiceData item1, WeatherServiceData item2) {
+		if (item1 == null) {
+			return (item2 == null);
+		}
+
+		if (item2 == null) {
+			return (item1 == null);
+		}
+
+		if (!validateLocationDetails(item1.getLocation(), item2.getLocation())) {
+			return false;
+		}
+
+		if (!validateWeatherData(item1.getCurrentForecast(), item2.getCurrentForecast())) {
+			return false;
+		}
+
+		if (!validateWeatherDataList(item1.getHourlyForecast(), item2.getHourlyForecast())) {
+			return false;
+		}
+
+		if (!validateWeatherDataList(item1.getMinuteForecast(), item2.getMinuteForecast())) {
+			return false;
+		}
+
+		if (!validateWeatherDataList(item1.getMultidayForecast(), item2.getMultidayForecast())) {
+			return false;
+		}
+
+		if (!validateWeatherAlertList(item1.getAlerts(), item2.getAlerts())) {
+			return false;
+		}
+
 		return true;
 	}
 
