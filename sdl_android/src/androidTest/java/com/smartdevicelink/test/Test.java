@@ -7,6 +7,7 @@ import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AppServiceCapability;
+import com.smartdevicelink.proxy.rpc.AppServiceData;
 import com.smartdevicelink.proxy.rpc.AppServiceManifest;
 import com.smartdevicelink.proxy.rpc.AppServiceRecord;
 import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
@@ -331,6 +332,7 @@ public class Test {
 	public static final MediaType                      GENERAL_MEDIATYPE                      = MediaType.MUSIC;
 	public static final MediaServiceData               GENERAL_MEDIASERVICE_DATA              = new MediaServiceData();
 	public static final WeatherServiceData             GENERAL_WEATHERSERVICE_DATA            = new WeatherServiceData();
+	public static final AppServiceData                 GENERAL_APPSERVICE_DATA                = new AppServiceData();
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
@@ -960,6 +962,11 @@ public class Test {
 		GENERAL_MEDIASERVICE_DATA.setQueuePlaybackDuration(GENERAL_INTEGER);
 		GENERAL_MEDIASERVICE_DATA.setQueueCurrentTrackNumber(GENERAL_INTEGER);
 		GENERAL_MEDIASERVICE_DATA.setQueueTotalTrackCount(GENERAL_INTEGER);
+
+		GENERAL_APPSERVICE_DATA.setServiceType(AppServiceType.GENERIC);
+		GENERAL_APPSERVICE_DATA.setServiceId(GENERAL_STRING);
+		GENERAL_APPSERVICE_DATA.setWeatherServiceData(GENERAL_WEATHERSERVICE_DATA);
+		GENERAL_APPSERVICE_DATA.setMediaServiceData(GENERAL_MEDIASERVICE_DATA);
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

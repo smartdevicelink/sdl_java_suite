@@ -12,7 +12,8 @@
     "correlationID":53,
     "parameters":{
       "serviceData": {
-        "serviceId": "test" // NEEDS TO BE FIXED WHEN APPSERVICE DATA IS ADDED
+        "serviceId": "test",
+        "serviceType": "MEDIA"
       }
     }
   }
