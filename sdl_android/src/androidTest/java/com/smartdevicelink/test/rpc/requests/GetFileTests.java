@@ -86,11 +86,6 @@ public class GetFileTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getFileType());
 		assertNull(Test.NULL, msg.getOffset());
 		assertNull(Test.NULL, msg.getLength());
-
-		// test with param in constructor
-		msg = new GetFile(Test.GENERAL_STRING);
-		fileName = msg.getFileName();
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, fileName);
 	}
 
 	/**
