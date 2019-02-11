@@ -66,6 +66,7 @@ public enum FunctionID{
     PUBLISH_APP_SERVICE(52, "PublishAppService"),
     GET_APP_SERVICE_DATA(53, "GetAppServiceData"),
     GET_FILE(54, "GetFile"),
+    PERFORM_APP_SERVICES_INTERACTION(55, "PerformAppServiceInteraction"),
 
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
