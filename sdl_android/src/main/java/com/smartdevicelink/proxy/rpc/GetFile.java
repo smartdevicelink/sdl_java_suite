@@ -42,7 +42,7 @@ public class GetFile extends RPCRequest {
 	 * @param fileName -
 	 */
 	public void setFileName(String fileName){
-		setValue(KEY_FILE_NAME, fileName);
+		setParameters(KEY_FILE_NAME, fileName);
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class GetFile extends RPCRequest {
 	 * @param appServiceId -
 	 */
 	public void setAppServiceId(String appServiceId){
-		setValue(KEY_APP_SERVICE_ID, appServiceId);
+		setParameters(KEY_APP_SERVICE_ID, appServiceId);
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class GetFile extends RPCRequest {
 	 * @param fileType -
 	 */
 	public void setFileType(FileType fileType){
-		setValue(KEY_FILE_TYPE, fileType);
+		setParameters(KEY_FILE_TYPE, fileType);
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class GetFile extends RPCRequest {
 	 * @param offset -
 	 */
 	public void setOffset(Integer offset){
-		setValue(KEY_OFFSET, offset);
+		setParameters(KEY_OFFSET, offset);
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class GetFile extends RPCRequest {
 	 * @param length -
 	 */
 	public void setLength(Integer length){
-		setValue(KEY_LENGTH, length);
+		setParameters(KEY_LENGTH, length);
 	}
 
 	/**
