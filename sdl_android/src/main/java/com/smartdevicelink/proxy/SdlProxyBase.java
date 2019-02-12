@@ -3362,6 +3362,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onGetAppServiceDataResponse( msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.GET_FILE.toString())) {
+				final GetFileResponse msg = new GetFileResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onGetFileResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onGetFileResponse( msg);
+					onRPCResponseReceived(msg);
+				}
 			} else if (functionName.equals(FunctionID.PERFORM_APP_SERVICES_INTERACTION.toString())) {
 				final PerformAppServiceInteractionResponse msg = new PerformAppServiceInteractionResponse(hash);
 				msg.format(rpcSpecVersion, true);

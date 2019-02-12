@@ -367,6 +367,8 @@ public interface IProxyListenerBase  {
 
 	public void onGetAppServiceDataResponse(GetAppServiceDataResponse response);
 
+	public void onGetFileResponse(GetFileResponse response);
+
 	public void onPerformAppServiceInteractionResponse(PerformAppServiceInteractionResponse response);
 
 	public void onOnAppServiceData(OnAppServiceData notification);
