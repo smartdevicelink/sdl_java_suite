@@ -665,10 +665,6 @@ public class SdlProxyBaseTests extends AndroidTestCase2 {
 		}
 
 		@Override
-		public void onGetFileResponse(GetFileResponse response){
-		}
-
-		@Override
 		public void onPerformAppServiceInteractionResponse(PerformAppServiceInteractionResponse response){
 		}
 

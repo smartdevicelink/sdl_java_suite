@@ -574,11 +574,6 @@ public class ProxyBridge implements IProxyListener{
 	}
 
 	@Override
-	public void onGetFileResponse(GetFileResponse response){
-		onRPCReceived(response);
-	}
-
-	@Override
 	public void onPerformAppServiceInteractionResponse(PerformAppServiceInteractionResponse response){
 		onRPCReceived(response);
 	}
