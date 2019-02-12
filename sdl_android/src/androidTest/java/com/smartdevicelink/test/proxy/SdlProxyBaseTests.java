@@ -31,12 +31,15 @@ import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
 import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
+import com.smartdevicelink.proxy.rpc.GetAppServiceDataResponse;
 import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
+import com.smartdevicelink.proxy.rpc.GetFileResponse;
 import com.smartdevicelink.proxy.rpc.GetInteriorVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.GetWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
+import com.smartdevicelink.proxy.rpc.OnAppServiceData;
 import com.smartdevicelink.proxy.rpc.OnAudioPassThru;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
@@ -56,8 +59,10 @@ import com.smartdevicelink.proxy.rpc.OnTBTClientState;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.OnWayPointChange;
+import com.smartdevicelink.proxy.rpc.PerformAppServiceInteractionResponse;
 import com.smartdevicelink.proxy.rpc.PerformAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
+import com.smartdevicelink.proxy.rpc.PublishAppServiceResponse;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
@@ -649,6 +654,26 @@ public class SdlProxyBaseTests extends AndroidTestCase2 {
 
 		@Override
 		public void onOnRCStatus(OnRCStatus notification) {
+		}
+
+		@Override
+		public void onPublishAppServiceResponse(PublishAppServiceResponse response){
+		}
+
+		@Override
+		public void onGetAppServiceDataResponse(GetAppServiceDataResponse response){
+		}
+
+		@Override
+		public void onGetFileResponse(GetFileResponse response){
+		}
+
+		@Override
+		public void onPerformAppServiceInteractionResponse(PerformAppServiceInteractionResponse response){
+		}
+
+		@Override
+		public void onOnAppServiceData(OnAppServiceData notification){
 		}
 	}
 }
