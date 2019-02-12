@@ -17,12 +17,15 @@ import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
 import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
+import com.smartdevicelink.proxy.rpc.GetAppServiceDataResponse;
 import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
+import com.smartdevicelink.proxy.rpc.GetFileResponse;
 import com.smartdevicelink.proxy.rpc.GetInteriorVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.GetWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
+import com.smartdevicelink.proxy.rpc.OnAppServiceData;
 import com.smartdevicelink.proxy.rpc.OnAudioPassThru;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
@@ -42,8 +45,11 @@ import com.smartdevicelink.proxy.rpc.OnTBTClientState;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.OnWayPointChange;
+import com.smartdevicelink.proxy.rpc.PerformAppServiceInteractionResponse;
 import com.smartdevicelink.proxy.rpc.PerformAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
+import com.smartdevicelink.proxy.rpc.PublishAppService;
+import com.smartdevicelink.proxy.rpc.PublishAppServiceResponse;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
@@ -356,4 +362,14 @@ public interface IProxyListenerBase  {
 	public void onSendHapticDataResponse(SendHapticDataResponse response);
 
 	public void onOnRCStatus(OnRCStatus notification);
+
+	public void onPublishAppServiceResponse(PublishAppServiceResponse response);
+
+	public void onGetAppServiceDataResponse(GetAppServiceDataResponse response);
+
+	public void onGetFileResponse(GetFileResponse response);
+
+	public void onPerformAppServiceInteractionResponse(PerformAppServiceInteractionResponse response);
+
+	public void onOnAppServiceData(OnAppServiceData notification);
 }

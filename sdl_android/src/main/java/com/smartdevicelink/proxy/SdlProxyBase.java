@@ -3330,8 +3330,71 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onSendHapticDataResponse( msg);
 					onRPCResponseReceived(msg);
 				}
-			}
-			else {
+			} else if (functionName.equals(FunctionID.PUBLISH_APP_SERVICE.toString())) {
+				final PublishAppServiceResponse msg = new PublishAppServiceResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onPublishAppServiceResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onPublishAppServiceResponse( msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.GET_APP_SERVICE_DATA.toString())) {
+				final GetAppServiceDataResponse msg = new GetAppServiceDataResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onGetAppServiceDataResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onGetAppServiceDataResponse( msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.GET_FILE.toString())) {
+				final GetFileResponse msg = new GetFileResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onGetFileResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onGetFileResponse( msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.PERFORM_APP_SERVICES_INTERACTION.toString())) {
+				final PerformAppServiceInteractionResponse msg = new PerformAppServiceInteractionResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onPerformAppServiceInteractionResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onPerformAppServiceInteractionResponse( msg);
+					onRPCResponseReceived(msg);
+				}
+			} else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logError("Unrecognized response Message: " + functionName +
 							" SDL Message Version = " + _sdlMsgVersion);
@@ -3790,8 +3853,23 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onOnRCStatus(msg);
 					onRPCNotificationReceived(msg);
 				}
-			}
-			else {
+			} else if (functionName.equals(FunctionID.ON_APP_SERVICE_DATA.toString())) {
+				final OnAppServiceData msg = new OnAppServiceData(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onOnAppServiceData(msg);
+							onRPCNotificationReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onOnAppServiceData(msg);
+					onRPCNotificationReceived(msg);
+				}
+			} else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logInfo("Unrecognized notification Message: " + functionName +
 							" connected to SDL using message version: " + _sdlMsgVersion.getMajorVersion() + "." + _sdlMsgVersion.getMinorVersion());
