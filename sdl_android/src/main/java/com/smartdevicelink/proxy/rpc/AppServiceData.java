@@ -15,7 +15,7 @@ import java.util.Hashtable;
 public class AppServiceData extends RPCStruct {
 
 	public static final String KEY_SERVICE_TYPE = "serviceType";
-	public static final String KEY_SERVICE_ID   = "serviceId";
+	public static final String KEY_SERVICE_ID   = "serviceID";
 	public static final String KEY_MEDIA_SERVICE_DATA = "mediaServiceData";
 	public static final String KEY_WEATHER_SERVICE_DATA = "weatherServiceData";
 

@@ -523,7 +523,6 @@ public class SdlProtocol {
     }
 
     public void sendMessage(ProtocolMessage protocolMsg) {
-        protocolMsg.setRPCType((byte) 0x00); //always sending a request
         SessionType sessionType = protocolMsg.getSessionType();
         byte sessionID = protocolMsg.getSessionID();
 

@@ -415,18 +415,14 @@ public class SdlManager{
 	// SENDING REQUESTS
 
 	/**
-	 * Send RPC Message <br>
-	 * <strong>Note: Only takes type of RPCRequest for now, notifications and responses will be thrown out</strong>
+	 * Send RPC Message
 	 * @param message RPCMessage
 	 */
 	public void sendRPC(RPCMessage message) {
-
-		if (message instanceof RPCRequest){
-			try{
-				proxy.sendRPCRequest((RPCRequest)message);
-			}catch (SdlException exception){
-				handleSdlException(exception);
-			}
+		try{
+			proxy.sendRPCMessage(message);
+		}catch (SdlException exception){
+			handleSdlException(exception);
 		}
 	}
 
