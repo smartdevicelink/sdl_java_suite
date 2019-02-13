@@ -23,7 +23,7 @@
     "correlationID":52,
     "parameters":{
       "appServiceRecord": {
-        "serviceId": "test",
+        "serviceID": "test",
         "serviceManifest": {
           "allowAppConsumers": true,
           "rpcSpecVersion": {
