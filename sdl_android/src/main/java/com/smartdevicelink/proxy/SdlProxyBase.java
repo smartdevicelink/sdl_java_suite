@@ -2156,7 +2156,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			CopyOnWriteArrayList<OnRPCRequestListener> listeners = rpcRequestListeners.get(FunctionID.getFunctionId(request.getFunctionName()));
 			if(listeners!=null && listeners.size()>0) {
 				for (OnRPCRequestListener listener : listeners) {
-					listener.onRequestReceived(request);
+					listener.onRequest(request);
 				}
 				return true;
 			}
