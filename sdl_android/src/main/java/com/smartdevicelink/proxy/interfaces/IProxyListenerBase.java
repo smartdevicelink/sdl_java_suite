@@ -17,6 +17,7 @@ import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
 import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
+import com.smartdevicelink.proxy.rpc.GetAppServiceData;
 import com.smartdevicelink.proxy.rpc.GetAppServiceDataResponse;
 import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
 import com.smartdevicelink.proxy.rpc.GetFileResponse;
@@ -45,6 +46,7 @@ import com.smartdevicelink.proxy.rpc.OnTBTClientState;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.OnWayPointChange;
+import com.smartdevicelink.proxy.rpc.PerformAppServiceInteraction;
 import com.smartdevicelink.proxy.rpc.PerformAppServiceInteractionResponse;
 import com.smartdevicelink.proxy.rpc.PerformAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
@@ -372,4 +374,8 @@ public interface IProxyListenerBase  {
 	public void onPerformAppServiceInteractionResponse(PerformAppServiceInteractionResponse response);
 
 	public void onOnAppServiceData(OnAppServiceData notification);
+
+	public void onGetAppServiceData(GetAppServiceData request);
+
+	public void onPerformAppServiceInteraction(PerformAppServiceInteraction request);
 }

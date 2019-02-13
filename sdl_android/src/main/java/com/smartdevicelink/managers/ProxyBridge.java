@@ -22,6 +22,7 @@ import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
 import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
+import com.smartdevicelink.proxy.rpc.GetAppServiceData;
 import com.smartdevicelink.proxy.rpc.GetAppServiceDataResponse;
 import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
 import com.smartdevicelink.proxy.rpc.GetFileResponse;
@@ -51,6 +52,7 @@ import com.smartdevicelink.proxy.rpc.OnTBTClientState;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.OnWayPointChange;
+import com.smartdevicelink.proxy.rpc.PerformAppServiceInteraction;
 import com.smartdevicelink.proxy.rpc.PerformAppServiceInteractionResponse;
 import com.smartdevicelink.proxy.rpc.PerformAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
@@ -586,5 +588,15 @@ public class ProxyBridge implements IProxyListener{
 	@Override
 	public void onOnAppServiceData(OnAppServiceData notification){
 		onRPCReceived(notification);
+	}
+
+	@Override
+	public void onGetAppServiceData(GetAppServiceData request){
+		onRPCReceived(request);
+	}
+
+	@Override
+	public void onPerformAppServiceInteraction(PerformAppServiceInteraction request){
+		onRPCReceived(request);
 	}
 }

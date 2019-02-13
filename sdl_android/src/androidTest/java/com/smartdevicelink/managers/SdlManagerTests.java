@@ -6,6 +6,7 @@ import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyBase;
@@ -299,7 +300,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 			}
 		};
 		try {
-			doAnswer(answer).when(sdlProxyBase).sendRPCRequest(any(RPCRequest.class));
+			doAnswer(answer).when(sdlProxyBase).sendRPCMessage(any(RPCMessage.class));
 		} catch (SdlException e) {
 			e.printStackTrace();
 		}

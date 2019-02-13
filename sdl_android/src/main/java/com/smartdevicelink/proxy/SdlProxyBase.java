@@ -77,6 +77,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
@@ -253,6 +254,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	protected SparseArray<OnRPCResponseListener> rpcResponseListeners = null;
 	protected SparseArray<CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners = null;
+	protected SparseArray<CopyOnWriteArrayList<OnRPCRequestListener>> rpcRequestListeners = null;
 
 	protected VideoStreamingManager manager; //Will move to SdlSession once the class becomes public
 
@@ -900,6 +902,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		rpcResponseListeners = new SparseArray<OnRPCResponseListener>();
 		rpcNotificationListeners = new SparseArray<CopyOnWriteArrayList<OnRPCNotificationListener>>();
+		rpcRequestListeners = new SparseArray<CopyOnWriteArrayList<OnRPCRequestListener>>();
 
 		// Initialize the proxy
 		try {
@@ -2146,6 +2149,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			return false;
 		}
 	}
+
+	@SuppressWarnings("UnusedReturnValue")
+	public boolean onRPCRequestReceived(RPCRequest request){
+		synchronized(ON_NOTIFICATION_LISTENER_LOCK){
+			CopyOnWriteArrayList<OnRPCRequestListener> listeners = rpcRequestListeners.get(FunctionID.getFunctionId(request.getFunctionName()));
+			if(listeners!=null && listeners.size()>0) {
+				for (OnRPCRequestListener listener : listeners) {
+					listener.onRequestReceived(request);
+				}
+				return true;
+			}
+			return false;
+		}
+	}
 	
 	/**
 	 * This will ad a listener for the specific type of notification. As of now it will only allow
@@ -2161,6 +2178,24 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					rpcNotificationListeners.put(notificationId.getId(),new CopyOnWriteArrayList<OnRPCNotificationListener>());
 				}
 				rpcNotificationListeners.get(notificationId.getId()).add(listener);
+			}
+		}
+	}
+
+	/**
+	 * This will ad a listener for the specific type of request. As of now it will only allow
+	 * a single listener per request function id
+	 * @param requestId The request type that this listener is designated for
+	 * @param listener The listener that will be called when a request of the provided type is received
+	 */
+	@SuppressWarnings("unused")
+	public void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
+		synchronized(ON_NOTIFICATION_LISTENER_LOCK){
+			if(requestId != null && listener != null){
+				if(rpcRequestListeners.indexOfKey(requestId.getId()) < 0 ){
+					rpcRequestListeners.put(requestId.getId(),new CopyOnWriteArrayList<OnRPCRequestListener>());
+				}
+				rpcRequestListeners.get(requestId.getId()).add(listener);
 			}
 		}
 	}
@@ -2185,6 +2220,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					&& listener != null
 					&& rpcNotificationListeners.indexOfKey(notificationId.getId()) >= 0){
 				return rpcNotificationListeners.get(notificationId.getId()).remove(listener);
+			}
+		}
+		return false;
+	}
+
+	public boolean removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
+		synchronized(ON_NOTIFICATION_LISTENER_LOCK){
+			if(rpcRequestListeners!= null
+					&& requestId != null
+					&& listener != null
+					&& rpcRequestListeners.indexOfKey(requestId.getId()) >= 0){
+				return rpcRequestListeners.get(requestId.getId()).remove(listener);
 			}
 		}
 		return false;
@@ -2245,7 +2292,54 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		String functionName = rpcMsg.getFunctionName();
 		String messageType = rpcMsg.getMessageType();
 
-		if (messageType.equals(RPCMessage.KEY_RESPONSE)) {
+		if (messageType.equals(RPCMessage.KEY_REQUEST)) {
+			Log.i("REQUESTRECEIVED", "PROXYBASE");
+			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCRequest(rpcMsg), SDL_LIB_TRACE_KEY);
+
+			if (functionName.equals(FunctionID.GET_APP_SERVICE_DATA.toString())) {
+				// GetAppServiceData Request
+				final GetAppServiceData msg = new GetAppServiceData(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onGetAppServiceData(msg);
+							onRPCRequestReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onGetAppServiceData(msg);
+					onRPCRequestReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.PERFORM_APP_SERVICES_INTERACTION.toString())) {
+				// PerformAppServicesInteraction Request
+				final PerformAppServiceInteraction msg = new PerformAppServiceInteraction(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onPerformAppServiceInteraction(msg);
+							onRPCRequestReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onPerformAppServiceInteraction(msg);
+					onRPCRequestReceived(msg);
+				}
+			} else {
+				if (_sdlMsgVersion != null) {
+					DebugTool.logInfo("Unrecognized Request Message: " + functionName +
+							" connected to SDL using message version: " + _sdlMsgVersion.getMajorVersion() + "." + _sdlMsgVersion.getMinorVersion());
+				} else {
+					DebugTool.logInfo("Unrecognized Request Message: " + functionName);
+				}
+			} // END REQUEST IF
+
+		} else if (messageType.equals(RPCMessage.KEY_RESPONSE)) {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCResponse(rpcMsg), SDL_LIB_TRACE_KEY);
 			
 			// Check to ensure response is not from an internal message (reserved correlation ID)

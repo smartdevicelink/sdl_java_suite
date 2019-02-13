@@ -17,6 +17,14 @@ public class RPCRequest extends RPCMessage {
 		messageType = RPCMessage.KEY_REQUEST;
 	}
 
+	/**
+	 *<p>Constructs a newly allocated RPCRequest object using a RPCRequest object</p>
+	 *@param rpcMsg The {@linkplain RPCMessage} to use
+	 */
+	public RPCRequest(RPCMessage rpcMsg) {
+		super(preprocessMsg(rpcMsg));
+	}
+
 	public RPCRequest(Hashtable<String, Object> hash) {
 		super(hash);
 	}
@@ -25,6 +33,15 @@ public class RPCRequest extends RPCMessage {
 		super(request);
 		setCorrelationID(CorrelationIdGenerator.generateId());
 	}
+
+	static RPCMessage preprocessMsg (RPCMessage rpcMsg) {
+		if (rpcMsg.getMessageType() != RPCMessage.KEY_REQUEST) {
+			rpcMsg.messageType = RPCMessage.KEY_REQUEST;
+		}
+
+		return rpcMsg;
+	}
+
 	public Integer getCorrelationID() {
 		//First we check to see if a correlation ID is set. If not, create one.
 		if(!function.containsKey(RPCMessage.KEY_CORRELATION_ID)){

@@ -12,7 +12,7 @@ import java.util.Hashtable;
  */
 public class AppServiceRecord extends RPCStruct {
 
-	public static final String KEY_SERVICE_ID = "serviceId";
+	public static final String KEY_SERVICE_ID = "serviceID";
 	public static final String KEY_SERVICE_MANIFEST = "serviceManifest";
 	public static final String KEY_SERVICE_PUBLISHED = "servicePublished";
 	public static final String KEY_SERVICE_ACTIVE = "serviceActive";
