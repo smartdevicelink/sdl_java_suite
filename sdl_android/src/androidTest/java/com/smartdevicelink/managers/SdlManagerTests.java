@@ -10,7 +10,9 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyBase;
+import com.smartdevicelink.proxy.rpc.GetAppServiceDataResponse;
 import com.smartdevicelink.proxy.rpc.GetVehicleData;
+import com.smartdevicelink.proxy.rpc.OnAppServiceData;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -357,7 +359,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 
 
 		// Test send RPC requests
-		List<RPCRequest> rpcsList = Arrays.asList(new GetVehicleData(), new Show());
+		List<RPCMessage> rpcsList = Arrays.asList(new GetVehicleData(), new Show(), new OnAppServiceData(), new GetAppServiceDataResponse());
 		OnMultipleRequestListener onMultipleRequestListener = new OnMultipleRequestListener() {
 			@Override
 			public void onUpdate(int remainingRequests) { }

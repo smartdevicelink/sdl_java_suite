@@ -440,11 +440,9 @@ public class SdlManager{
 	 */
 	public void sendSequentialRPCs(final List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener){
 
-		List<RPCRequest> rpcRequestList = new ArrayList<>();
+		List<RPCMessage> rpcRequestList = new ArrayList<>();
 		for (int i = 0; i < rpcs.size(); i++) {
-			if (rpcs.get(i) instanceof RPCRequest){
-				rpcRequestList.add((RPCRequest)rpcs.get(i));
-			}
+			rpcRequestList.add(rpcs.get(i));
 		}
 
 		if (rpcRequestList.size() > 0) {
@@ -469,11 +467,9 @@ public class SdlManager{
 	 */
 	public void sendRPCs(List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) {
 
-		List<RPCRequest> rpcRequestList = new ArrayList<>();
+		List<RPCMessage> rpcRequestList = new ArrayList<>();
 		for (int i = 0; i < rpcs.size(); i++) {
-			if (rpcs.get(i) instanceof RPCRequest){
-				rpcRequestList.add((RPCRequest)rpcs.get(i));
-			}
+			rpcRequestList.add(rpcs.get(i));
 		}
 
 		if (rpcRequestList.size() > 0) {
@@ -664,7 +660,7 @@ public class SdlManager{
 		@Override
 		public void sendRPCRequest(RPCRequest message){
 			try {
-				proxy.sendRPCRequest(message);
+				proxy.sendRPCMessage(message);
 			} catch (SdlException e) {
 				e.printStackTrace();
 			}

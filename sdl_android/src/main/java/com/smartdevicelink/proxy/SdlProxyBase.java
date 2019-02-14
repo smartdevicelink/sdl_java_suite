@@ -4061,17 +4061,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 	/**
-	 * Takes a list of RPCRequests and sends it to SDL in a synchronous fashion. Responses are captured through callback on OnMultipleRequestListener.
+	 * Takes a list of RPCMessages and sends it to SDL in a synchronous fashion. Responses are captured through callback on OnMultipleRequestListener.
 	 * For sending requests asynchronously, use sendRequests <br>
 	 *
 	 * <strong>NOTE: This will override any listeners on individual RPCs</strong>
 	 *
-	 * @param rpcs is the list of RPCRequests being sent
+	 * @param rpcs is the list of RPCMessages being sent
 	 * @param listener listener for updates and completions
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void sendSequentialRequests(final List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+	public void sendSequentialRequests(final List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) throws SdlException {
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
 		}
@@ -4100,52 +4100,61 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			return;
 		}
 
-		RPCRequest rpc = rpcs.remove(0);
-		rpc.setCorrelationID(CorrelationIdGenerator.generateId());
+		RPCMessage rpc = rpcs.remove(0);
 
-		rpc.setOnRPCResponseListener(new OnRPCResponseListener() {
-			@Override
-			public void onResponse(int correlationId, RPCResponse response) {
-				if (response.getSuccess()) {
-					// success
-					if(listener!=null){
-						listener.onUpdate(rpcs.size());
-					}
-					try {
-						// recurse after successful response of RPC
-						sendSequentialRequests(rpcs, listener);
-					} catch (SdlException e) {
-						e.printStackTrace();
-						if(listener != null){
-							listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
+		// Request Specifics
+		if (rpc.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+			RPCRequest request = (RPCRequest) rpc;
+			request.setCorrelationID(CorrelationIdGenerator.generateId());
+
+			request.setOnRPCResponseListener(new OnRPCResponseListener() {
+				@Override
+				public void onResponse(int correlationId, RPCResponse response) {
+					if (response.getSuccess()) {
+						// success
+						if (listener != null) {
+							listener.onUpdate(rpcs.size());
+						}
+						try {
+							// recurse after successful response of RPC
+							sendSequentialRequests(rpcs, listener);
+						} catch (SdlException e) {
+							e.printStackTrace();
+							if (listener != null) {
+								listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
+							}
 						}
 					}
 				}
-			}
 
-			@Override
-			public void onError(int correlationId, Result resultCode, String info){
-				if(listener != null){
-					listener.onError(correlationId, resultCode, info);
+				@Override
+				public void onError(int correlationId, Result resultCode, String info) {
+					if (listener != null) {
+						listener.onError(correlationId, resultCode, info);
+					}
 				}
-			}
-		});
+			});
+			sendRPCMessagePrivate(request);
+		} else {
+			// Notifications and Responses
+			sendRPCMessagePrivate(rpc);
+		}
 
-		sendRPCMessagePrivate(rpc);
+
 	}
 
 	/**
-	 * Takes a list of RPCRequests and sends it to SDL. Responses are captured through callback on OnMultipleRequestListener.
+	 * Takes a list of RPCMessages and sends it to SDL. Responses are captured through callback on OnMultipleRequestListener.
 	 * For sending requests synchronously, use sendSequentialRequests <br>
 	 *
 	 * <strong>NOTE: This will override any listeners on individual RPCs</strong>
 	 *
-	 * @param rpcs is the list of RPCRequests being sent
+	 * @param rpcs is the list of RPCMessages being sent
 	 * @param listener listener for updates and completions
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void sendRequests(List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+	public void sendRequests(List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) throws SdlException {
 
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
@@ -4172,13 +4181,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		for (int i = 0; i < arraySize; i++) {
-			RPCRequest rpc = rpcs.get(i);
-			rpc.setCorrelationID(CorrelationIdGenerator.generateId());
-			if(listener != null) {
-				listener.addCorrelationId(rpc.getCorrelationID());
-				rpc.setOnRPCResponseListener(listener.getSingleRpcResponseListener());
+			RPCMessage rpc = rpcs.get(i);
+			// Request Specifics
+			if (rpc.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+				RPCRequest request = (RPCRequest) rpc;
+				request.setCorrelationID(CorrelationIdGenerator.generateId());
+				if (listener != null) {
+					listener.addCorrelationId(request.getCorrelationID());
+					request.setOnRPCResponseListener(listener.getSingleRpcResponseListener());
+				}
+				sendRPCMessagePrivate(request);
+			}else {
+				// Notifications and Responses
+				sendRPCMessagePrivate(rpc);
 			}
-			sendRPCMessagePrivate(rpc);
 		}
 	}
 
