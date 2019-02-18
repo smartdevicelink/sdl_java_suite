@@ -149,7 +149,11 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 				}
 			}
 		}
-        
+
+		if(localRouterClass != null && localRouterClass.getName().equalsIgnoreCase(com.smartdevicelink.transport.SdlRouterService.class.getName())){
+			Log.e(TAG, "Can't use default SdlRouterService class, must be extended in your project. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
+		}
+
 		//This will only be true if we are being told to reopen our SDL service because SDL is enabled
 		if(action.equalsIgnoreCase(TransportConstants.START_ROUTER_SERVICE_ACTION)){ 
 			if(intent.hasExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA)){	
