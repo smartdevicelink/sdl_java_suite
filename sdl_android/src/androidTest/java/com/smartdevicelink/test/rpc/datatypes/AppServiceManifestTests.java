@@ -135,7 +135,7 @@ public class AppServiceManifestTests extends TestCase {
 				}else if(key.equals(AppServiceManifest.KEY_MEDIA_SERVICE_MANIFEST)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateMediaServiceManifest( Test.GENERAL_MEDIA_SERVICE_MANIFEST, new MediaServiceManifest()));
+					assertTrue(Test.TRUE, Validator.validateMediaServiceManifest( Test.GENERAL_MEDIA_SERVICE_MANIFEST, new MediaServiceManifest(hashTest)));
 				}else if(key.equals(AppServiceManifest.KEY_SERVICE_ICON)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Image refIcon1 = new Image(JsonRPCMarshaller.deserializeJSONObject(testEquals));
