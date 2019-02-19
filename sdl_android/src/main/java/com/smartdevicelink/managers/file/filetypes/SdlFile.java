@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.rpc.enums.FileType;
+import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 
 /**
  * A class representing data to be uploaded to core
@@ -15,6 +16,8 @@ public class SdlFile{
     private byte[]      fileData;
     private FileType    fileType;
     private boolean     persistentFile;
+    private boolean     isStaticIcon;
+
 
     public SdlFile(){}
 
@@ -37,6 +40,13 @@ public class SdlFile{
         this.fileType = fileType;
         this.fileData = data;
         this.persistentFile = persistentFile;
+    }
+
+    public SdlFile(@NonNull StaticIconName staticIconName){
+        this.fileName = staticIconName.toString();
+        this.fileData = staticIconName.toString().getBytes();
+        this.persistentFile = false;
+        this.isStaticIcon = true;
     }
 
     public void setName(@NonNull String fileName){
@@ -79,5 +89,12 @@ public class SdlFile{
     }
     public boolean isPersistent(){
         return this.persistentFile;
+    }
+
+    public void setStaticIcon(boolean staticIcon) {
+        isStaticIcon = staticIcon;
+    }
+    public boolean isStaticIcon() {
+        return isStaticIcon;
     }
 }

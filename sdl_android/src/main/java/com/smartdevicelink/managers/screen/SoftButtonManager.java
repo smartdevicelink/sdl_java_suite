@@ -287,7 +287,7 @@ class SoftButtonManager extends BaseSubManager {
                 }
                 if (initialState != null && softButtonObject.getStates() != null) {
                     for (SoftButtonState softButtonState : softButtonObject.getStates()) {
-                        if (softButtonState != null && softButtonState.getName() != null && softButtonState.getArtwork() != null && !fileManager.get().hasUploadedFile(softButtonState.getArtwork())) {
+                        if (softButtonState != null && softButtonState.getName() != null && sdlArtworkNeedsUpload(softButtonState.getArtwork())) {
                             if (softButtonState.getName().equals(initialState.getName())) {
                                 initialStatesToBeUploaded.add(softButtonObject.getCurrentState().getArtwork());
                             } else{
@@ -527,12 +527,19 @@ class SoftButtonManager extends BaseSubManager {
         if (fileManager.get() != null) {
             for (SoftButtonObject softButtonObject : softButtonObjects) {
                 SoftButtonState currentState = softButtonObject.getCurrentState();
-                if (currentState != null && currentState.getArtwork() != null && !fileManager.get().hasUploadedFile(currentState.getArtwork())) {
+                if (currentState != null && sdlArtworkNeedsUpload(currentState.getArtwork())) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    private boolean sdlArtworkNeedsUpload(SdlArtwork artwork){
+        if (fileManager.get() != null) {
+            return artwork != null && !fileManager.get().hasUploadedFile(artwork) && !artwork.isStaticIcon();
+        }
+        return false;
     }
 
     /**
