@@ -24,26 +24,10 @@ public class AppServiceTypeTests extends TestCase {
 		AppServiceType enumWeather = AppServiceType.valueForString(example);
 		example = "NAVIGATION";
 		AppServiceType enumNavigation = AppServiceType.valueForString(example);
-		example = "VOICE_ASSISTANT";
-		AppServiceType enumVoiceAssistant = AppServiceType.valueForString(example);
-		example = "GENERIC";
-		AppServiceType enumGeneric = AppServiceType.valueForString(example);
-		example = "COMMUNICATION_VOIP";
-		AppServiceType enumCommunicationVOIP = AppServiceType.valueForString(example);
-		example = "MESSAGING";
-		AppServiceType enumMessaging = AppServiceType.valueForString(example);
-		example = "TTS";
-		AppServiceType enumTTS = AppServiceType.valueForString(example);
-
 
 		assertNotNull("MEDIA returned null", enumMedia);
 		assertNotNull("WEATHER returned null", enumWeather);
 		assertNotNull("NAVIGATION returned null", enumNavigation);
-		assertNotNull("VOICE_ASSISTANT returned null", enumVoiceAssistant);
-		assertNotNull("GENERIC returned null", enumGeneric);
-		assertNotNull("COMMUNICATION_VOIP returned null", enumCommunicationVOIP);
-		assertNotNull("MESSAGING returned null", enumMessaging);
-		assertNotNull("TTS returned null", enumTTS);
 	}
 
 	/**
@@ -81,13 +65,8 @@ public class AppServiceTypeTests extends TestCase {
 		List<AppServiceType> enumValueList = Arrays.asList(AppServiceType.values());
 
 		List<AppServiceType> enumTestList = new ArrayList<>();
-		enumTestList.add(AppServiceType.COMMUNICATION_VOIP);
-		enumTestList.add(AppServiceType.GENERIC);
 		enumTestList.add(AppServiceType.MEDIA);
-		enumTestList.add(AppServiceType.MESSAGING);
 		enumTestList.add(AppServiceType.NAVIGATION);
-		enumTestList.add(AppServiceType.TTS);
-		enumTestList.add(AppServiceType.VOICE_ASSISTANT);
 		enumTestList.add(AppServiceType.WEATHER);
 
 		assertTrue("Enum value list does not match enum class list",

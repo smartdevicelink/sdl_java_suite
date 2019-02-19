@@ -318,7 +318,7 @@ public class Test {
 	public static final AudioStreamingIndicator        GENERAL_AUDIO_STREAMING_INDICATOR      = AudioStreamingIndicator.PLAY;
 	public static final String                         GENERAL_APP_ID                         = "123e4567e8";
 	public static final String                         GENERAL_FULL_APP_ID                    = "123e4567-e89b-12d3-a456-426655440000";
-	public static final AppServiceType                 GENERAL_APP_SERVICE_TYPE               = AppServiceType.GENERIC;
+	public static final AppServiceType                 GENERAL_APP_SERVICE_TYPE               = AppServiceType.MEDIA;
 	public static final List<FunctionID>               GENERAL_FUNCTION_ID_LIST               = Arrays.asList(FunctionID.GET_VEHICLE_DATA, FunctionID.SEND_HAPTIC_DATA);
 	public static final AppServiceManifest             GENERAL_APP_SERVICE_MANIFEST           = new AppServiceManifest();
 	public static final MediaServiceManifest           GENERAL_MEDIA_SERVICE_MANIFEST         = new MediaServiceManifest();
@@ -415,7 +415,7 @@ public class Test {
 	public static final List<LightState>                GENERAL_LIGHTSTATE_LIST                = new ArrayList<LightState>(1);
 	public static final List<AudioControlCapabilities>  GENERAL_AUDIOCONTROLCAPABILITIES_LIST  = new ArrayList<AudioControlCapabilities>(1);
 	public static final List<ModuleData>                GENERAL_MODULEDATA_LIST  = Collections.singletonList(GENERAL_MODULEDATA);
-	public static final List<AppServiceType>            GENERAL_APPSERVICETYPE_LIST            = Arrays.asList(AppServiceType.MEDIA, AppServiceType.GENERIC);
+	public static final List<AppServiceType>            GENERAL_APPSERVICETYPE_LIST            = Arrays.asList(AppServiceType.MEDIA, AppServiceType.NAVIGATION);
 	public static final List<AppServiceCapability>      GENERAL_APPSERVICECAPABILITY_LIST      = Arrays.asList(GENERAL_APP_SERVICE_CAPABILITY);
 	public static final List<WeatherData>               GENERAL_WEATHERDATA_LIST               = Arrays.asList(GENERAL_WEATHERDATA);
 	public static final List<WeatherAlert>              GENERAL_WEATHERALERT_LIST              = Arrays.asList(GENERAL_WEATHERALERT);
@@ -963,7 +963,7 @@ public class Test {
 		GENERAL_MEDIASERVICE_DATA.setQueueCurrentTrackNumber(GENERAL_INTEGER);
 		GENERAL_MEDIASERVICE_DATA.setQueueTotalTrackCount(GENERAL_INTEGER);
 
-		GENERAL_APPSERVICE_DATA.setServiceType(AppServiceType.GENERIC);
+		GENERAL_APPSERVICE_DATA.setServiceType(AppServiceType.MEDIA);
 		GENERAL_APPSERVICE_DATA.setServiceId(GENERAL_STRING);
 		GENERAL_APPSERVICE_DATA.setWeatherServiceData(GENERAL_WEATHERSERVICE_DATA);
 		GENERAL_APPSERVICE_DATA.setMediaServiceData(GENERAL_MEDIASERVICE_DATA);

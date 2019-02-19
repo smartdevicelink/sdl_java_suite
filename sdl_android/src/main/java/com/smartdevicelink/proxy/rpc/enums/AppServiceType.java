@@ -11,16 +11,6 @@ public enum AppServiceType {
 
 	NAVIGATION,
 
-	VOICE_ASSISTANT,
-
-	GENERIC,
-
-	COMMUNICATION_VOIP,
-
-	MESSAGING,
-
-	TTS,
-
 	;
 
 	/**

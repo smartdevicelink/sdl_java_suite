@@ -92,7 +92,7 @@ public class AppServiceManifestTests extends TestCase {
 	}
 
 	public void testRequiredParamsConstructor(){
-		msg = new AppServiceManifest(AppServiceType.GENERIC);
+		msg = new AppServiceManifest(AppServiceType.MEDIA);
 		AppServiceType appServiceType = msg.getServiceType();
 		assertEquals(Test.GENERAL_APP_SERVICE_TYPE, appServiceType);
 	}

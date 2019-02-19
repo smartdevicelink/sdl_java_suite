@@ -2293,7 +2293,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		String messageType = rpcMsg.getMessageType();
 
 		if (messageType.equals(RPCMessage.KEY_REQUEST)) {
-			Log.i("REQUESTRECEIVED", "PROXYBASE");
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCRequest(rpcMsg), SDL_LIB_TRACE_KEY);
 
 			if (functionName.equals(FunctionID.GET_APP_SERVICE_DATA.toString())) {
