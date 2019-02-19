@@ -63,7 +63,7 @@ public class WeatherServiceData extends RPCStruct {
 	}
 
 	/**
-	 * MinSize: 15, MaxSize: 60
+	 * minsize: 15, maxsize: 60
 	 * @param minuteForecast -
 	 */
 	public void setMinuteForecast(List<WeatherData> minuteForecast){
@@ -71,7 +71,7 @@ public class WeatherServiceData extends RPCStruct {
 	}
 
 	/**
-	 * MinSize: 15, MaxSize: 60
+	 * minsize: 15, maxsize: 60
 	 * @return minuteForecast
 	 */
 	@SuppressWarnings("unchecked")
@@ -80,7 +80,7 @@ public class WeatherServiceData extends RPCStruct {
 	}
 
 	/**
-	 * MinSize: 1, MaxSize: 96
+	 * minsize: 1, maxsize: 96
 	 * @param hourlyForecast -
 	 */
 	public void setHourlyForecast(List<WeatherData> hourlyForecast){
@@ -88,7 +88,7 @@ public class WeatherServiceData extends RPCStruct {
 	}
 
 	/**
-	 * MinSize: 1, MaxSize: 96
+	 * minsize: 1, maxsize: 96
 	 * @return hourlyForecast
 	 */
 	@SuppressWarnings("unchecked")
@@ -97,7 +97,7 @@ public class WeatherServiceData extends RPCStruct {
 	}
 
 	/**
-	 * MinSize: 1, MaxSize: 30
+	 * minsize: 1, maxsize: 30
 	 * @param multidayForecast -
 	 */
 	public void setMultidayForecast(List<WeatherData> multidayForecast){
@@ -105,7 +105,7 @@ public class WeatherServiceData extends RPCStruct {
 	}
 
 	/**
-	 * MinSize: 1, MaxSize: 30
+	 * minsize: 1, maxsize: 30
 	 * @return multidayForecast
 	 */
 	@SuppressWarnings("unchecked")
@@ -114,7 +114,7 @@ public class WeatherServiceData extends RPCStruct {
 	}
 
 	/**
-	 * MinSize: 1, MaxSize: 10
+	 * minsize: 1, maxsize: 10
 	 * @param alerts -
 	 */
 	public void setAlerts(List<WeatherAlert> alerts){
@@ -122,7 +122,7 @@ public class WeatherServiceData extends RPCStruct {
 	}
 
 	/**
-	 * MinSize: 1, MaxSize: 10
+	 * minsize: 1, maxsize: 10
 	 * @return alerts
 	 */
 	@SuppressWarnings("unchecked")
