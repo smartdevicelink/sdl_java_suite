@@ -3,8 +3,10 @@ package com.smartdevicelink.test.rpc.datatypes;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.rpc.AppServiceManifest;
+import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.ShowConstantTbt;
 import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.test.JsonUtils;
@@ -27,23 +29,20 @@ import java.util.List;
 public class AppServiceManifestTests extends TestCase {
 
 	private AppServiceManifest msg;
-	JSONObject uriScheme;
 
 	@Override
 	public void setUp(){
 
-		uriScheme = new JSONObject();
-
 		msg = new AppServiceManifest();
-		msg.setServiceType(Test.GENERAL_APP_SERVICE_TYPE);
+		msg.setServiceType(Test.GENERAL_STRING);
 		msg.setAllowAppConsumers(Test.GENERAL_BOOLEAN);
 		msg.setHandledRpcs(Test.GENERAL_FUNCTION_ID_LIST);
 		msg.setMediaServiceManifest(Test.GENERAL_MEDIA_SERVICE_MANIFEST);
 		msg.setRpcSpecVersion(Test.GENERAL_SDLMSGVERSION);
-		msg.setServiceIcon(Test.GENERAL_STRING);
+		msg.setServiceIcon(Test.GENERAL_IMAGE);
 		msg.setServiceName(Test.GENERAL_STRING);
 		msg.setUriPrefix(Test.GENERAL_STRING);
-		msg.setUriScheme(uriScheme);
+		msg.setUriScheme(Test.GENERAL_STRING);
 		msg.setWeatherServiceManifest(Test.GENERAL_WEATHER_SERVICE_MANIFEST);
 	}
 
@@ -52,24 +51,24 @@ public class AppServiceManifestTests extends TestCase {
 	 */
 	public void testRpcValues () {
 		// Test Values
-		String serviceIcon = msg.getServiceIcon();
+		Image serviceIcon = msg.getServiceIcon();
 		String serviceName = msg.getServiceName();
 		String uriPrefix = msg.getUriPrefix();
-		AppServiceType appServiceType = msg.getServiceType();
+		String appServiceType = msg.getServiceType();
 		boolean allowAppConsumers = msg.getAllowAppConsumers();
-		JSONObject uriSchemeObject = msg.getUriScheme();
+		String uriSchemeObject = msg.getUriScheme();
 		SdlMsgVersion version = msg.getRpcSpecVersion();
-		List<FunctionID> handledRPCs = msg.getHandledRpcs();
+		List<Integer> handledRPCs = msg.getHandledRpcs();
 		WeatherServiceManifest weatherServiceManifestTest = msg.getWeatherServiceManifest();
 		MediaServiceManifest mediaServiceManifestTest = msg.getMediaServiceManifest();
 
 		// Valid Tests
 		assertEquals(Test.GENERAL_BOOLEAN, allowAppConsumers);
-		assertEquals(Test.GENERAL_STRING, serviceIcon);
+		assertEquals(Test.GENERAL_IMAGE, serviceIcon);
 		assertEquals(Test.GENERAL_STRING, serviceName);
 		assertEquals(Test.GENERAL_STRING, uriPrefix);
-		assertEquals(Test.GENERAL_APP_SERVICE_TYPE, appServiceType);
-		assertEquals(uriScheme, uriSchemeObject);
+		assertEquals(Test.GENERAL_STRING, appServiceType);
+		assertEquals(Test.GENERAL_STRING, uriSchemeObject);
 		assertEquals(Test.GENERAL_SDLMSGVERSION, version);
 		assertEquals(Test.MATCH, Test.GENERAL_FUNCTION_ID_LIST, handledRPCs);
 		assertEquals(Test.GENERAL_WEATHER_SERVICE_MANIFEST, weatherServiceManifestTest);
@@ -92,9 +91,9 @@ public class AppServiceManifestTests extends TestCase {
 	}
 
 	public void testRequiredParamsConstructor(){
-		msg = new AppServiceManifest(AppServiceType.MEDIA);
-		AppServiceType appServiceType = msg.getServiceType();
-		assertEquals(Test.GENERAL_APP_SERVICE_TYPE, appServiceType);
+		msg = new AppServiceManifest(Test.GENERAL_STRING);
+		String appServiceType = msg.getServiceType();
+		assertEquals(Test.GENERAL_STRING, appServiceType);
 	}
 
 	public void testJson(){
@@ -102,13 +101,13 @@ public class AppServiceManifestTests extends TestCase {
 
 		try{
 			reference.put(AppServiceManifest.KEY_SERVICE_NAME, Test.GENERAL_STRING);
-			reference.put(AppServiceManifest.KEY_SERVICE_ICON, Test.GENERAL_STRING);
+			reference.put(AppServiceManifest.KEY_SERVICE_ICON, Test.GENERAL_IMAGE);
 			reference.put(AppServiceManifest.KEY_URI_PREFIX, Test.GENERAL_STRING);
-			reference.put(AppServiceManifest.KEY_SERVICE_TYPE, Test.GENERAL_APP_SERVICE_TYPE);
+			reference.put(AppServiceManifest.KEY_SERVICE_TYPE, Test.GENERAL_STRING);
 			reference.put(AppServiceManifest.KEY_ALLOW_APP_CONSUMERS, Test.GENERAL_BOOLEAN);
 			reference.put(AppServiceManifest.KEY_RPC_SPEC_VERSION, Test.GENERAL_SDLMSGVERSION.serializeJSON());
 			reference.put(AppServiceManifest.KEY_HANDLED_RPCS, Test.GENERAL_FUNCTION_ID_LIST);
-			reference.put(AppServiceManifest.KEY_URI_SCHEME, uriScheme);
+			reference.put(AppServiceManifest.KEY_URI_SCHEME, Test.GENERAL_STRING);
 			reference.put(AppServiceManifest.KEY_WEATHER_SERVICE_MANIFEST, Test.GENERAL_WEATHER_SERVICE_MANIFEST);
 			reference.put(AppServiceManifest.KEY_MEDIA_SERVICE_MANIFEST, Test.GENERAL_MEDIA_SERVICE_MANIFEST);
 
@@ -126,9 +125,9 @@ public class AppServiceManifestTests extends TestCase {
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
 					assertTrue(Test.TRUE, Validator.validateSdlMsgVersion( new SdlMsgVersion(hashReference), new SdlMsgVersion(hashTest)));
 				}else if(key.equals(AppServiceManifest.KEY_HANDLED_RPCS)){
-					List<FunctionID> list1 = Test.GENERAL_FUNCTION_ID_LIST;
-					List<FunctionID> list2 = JsonUtils.readFunctionIDListFromJsonObject(underTest, key);
-					assertTrue(Test.TRUE, Validator.validateFunctionIDList(list1,list2));
+					List<Integer> list1 = Test.GENERAL_FUNCTION_ID_LIST;
+					List<Integer> list2 = JsonUtils.readIntegerListFromJsonObject(underTest, key);
+					assertTrue(Test.TRUE, Validator.validateIntegerList(list1,list2));
 				}else if(key.equals(AppServiceManifest.KEY_WEATHER_SERVICE_MANIFEST)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
@@ -137,6 +136,10 @@ public class AppServiceManifestTests extends TestCase {
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
 					assertTrue(Test.TRUE, Validator.validateMediaServiceManifest( Test.GENERAL_MEDIA_SERVICE_MANIFEST, new MediaServiceManifest()));
+				}else if(key.equals(AppServiceManifest.KEY_SERVICE_ICON)){
+					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
+					Image refIcon1 = new Image(JsonRPCMarshaller.deserializeJSONObject(testEquals));
+					assertTrue(Test.TRUE, Validator.validateImage(refIcon1, msg.getServiceIcon()));
 				}else {
 					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}

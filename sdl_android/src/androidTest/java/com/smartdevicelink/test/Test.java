@@ -319,7 +319,7 @@ public class Test {
 	public static final String                         GENERAL_APP_ID                         = "123e4567e8";
 	public static final String                         GENERAL_FULL_APP_ID                    = "123e4567-e89b-12d3-a456-426655440000";
 	public static final AppServiceType                 GENERAL_APP_SERVICE_TYPE               = AppServiceType.MEDIA;
-	public static final List<FunctionID>               GENERAL_FUNCTION_ID_LIST               = Arrays.asList(FunctionID.GET_VEHICLE_DATA, FunctionID.SEND_HAPTIC_DATA);
+	public static final List<Integer>                  GENERAL_FUNCTION_ID_LIST               = Arrays.asList(FunctionID.GET_VEHICLE_DATA.getId(), FunctionID.SEND_HAPTIC_DATA.getId());
 	public static final AppServiceManifest             GENERAL_APP_SERVICE_MANIFEST           = new AppServiceManifest();
 	public static final MediaServiceManifest           GENERAL_MEDIA_SERVICE_MANIFEST         = new MediaServiceManifest();
 	public static final WeatherServiceManifest         GENERAL_WEATHER_SERVICE_MANIFEST       = new WeatherServiceManifest();
@@ -885,17 +885,16 @@ public class Test {
 		GENERAL_WEATHER_SERVICE_MANIFEST.setMaxMinutelyForecastAmount(GENERAL_INTEGER);
 		GENERAL_WEATHER_SERVICE_MANIFEST.setMaxHourlyForecastAmount(GENERAL_INTEGER);
 
-		JSONObject uriScheme = new JSONObject();
 		GENERAL_APP_SERVICE_MANIFEST.setWeatherServiceManifest(GENERAL_WEATHER_SERVICE_MANIFEST);
-		GENERAL_APP_SERVICE_MANIFEST.setUriScheme(uriScheme);
+		GENERAL_APP_SERVICE_MANIFEST.setUriScheme(GENERAL_STRING);
 		GENERAL_APP_SERVICE_MANIFEST.setUriPrefix(GENERAL_STRING);
 		GENERAL_APP_SERVICE_MANIFEST.setServiceName(GENERAL_STRING);
-		GENERAL_APP_SERVICE_MANIFEST.setServiceIcon(GENERAL_STRING);
+		GENERAL_APP_SERVICE_MANIFEST.setServiceIcon(GENERAL_IMAGE);
 		GENERAL_APP_SERVICE_MANIFEST.setRpcSpecVersion(GENERAL_SDLMSGVERSION);
 		GENERAL_APP_SERVICE_MANIFEST.setMediaServiceManifest(GENERAL_MEDIA_SERVICE_MANIFEST);
 		GENERAL_APP_SERVICE_MANIFEST.setHandledRpcs(GENERAL_FUNCTION_ID_LIST);
 		GENERAL_APP_SERVICE_MANIFEST.setAllowAppConsumers(GENERAL_BOOLEAN);
-		GENERAL_APP_SERVICE_MANIFEST.setServiceType(GENERAL_APP_SERVICE_TYPE);
+		GENERAL_APP_SERVICE_MANIFEST.setServiceType(GENERAL_STRING);
 
 		GENERAL_APP_SERVICE_RECORD.setServiceId(GENERAL_STRING);
 		GENERAL_APP_SERVICE_RECORD.setServiceManifest(GENERAL_APP_SERVICE_MANIFEST);

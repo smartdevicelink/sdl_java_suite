@@ -12,8 +12,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
- *  This manifest contains all the information necessary for the
- *  service to be published, activated, and consumers able to interact with it
+ *  This manifest contains all the information necessary for the service to be
+ *  published, activated, and allow consumers to interact with it
  */
 public class AppServiceManifest extends RPCStruct {
 
@@ -35,7 +35,7 @@ public class AppServiceManifest extends RPCStruct {
 		super(hash);
 	}
 
-	public AppServiceManifest(@NonNull AppServiceType serviceType) {
+	public AppServiceManifest(@NonNull String serviceType) {
 		this();
 		setServiceType(serviceType);
 	}
@@ -59,9 +59,9 @@ public class AppServiceManifest extends RPCStruct {
 
 	/**
 	 * The type of service that is to be offered by this app
-	 * @param serviceType - the AppServiceType
+	 * @param serviceType - the serviceType
 	 */
-	public void setServiceType(AppServiceType serviceType){
+	public void setServiceType(String serviceType){
 		setValue(KEY_SERVICE_TYPE, serviceType);
 	}
 
@@ -69,24 +69,24 @@ public class AppServiceManifest extends RPCStruct {
 	 * The type of service that is to be offered by this app
 	 * @return the AppServiceType
 	 */
-	public AppServiceType getServiceType(){
-		return (AppServiceType) getObject(AppServiceType.class, KEY_SERVICE_TYPE);
+	public String getServiceType(){
+		return getString(KEY_SERVICE_TYPE);
 	}
 
 	/**
-	 * The file name of the icon to be associated with this service. Most likely the same as the appIcon.
-	 * @param serviceIcon - The Service Icon Name
+	 * The icon to be associated with this service Most likely the same as the appIcon.
+	 * @param serviceIcon - The Service Icon Image
 	 */
-	public void setServiceIcon(String serviceIcon){
+	public void setServiceIcon(Image serviceIcon){
 		setValue(KEY_SERVICE_ICON, serviceIcon);
 	}
 
 	/**
-	 * The file name of the icon to be associated with this service. Most likely the same as the appIcon.
-	 * @return serviceIcon fileName
+	 * The icon to be associated with this service Most likely the same as the appIcon.
+	 * @return serviceIcon Image
 	 */
-	public String getServiceIcon(){
-		return getString(KEY_SERVICE_ICON);
+	public Image getServiceIcon(){
+		return (Image) getObject(Image.class, KEY_SERVICE_ICON);
 	}
 
 	/**
@@ -124,23 +124,23 @@ public class AppServiceManifest extends RPCStruct {
 	}
 
 	/**
-	 * This is a custom schema for this service. SDL will not do any verification on this param past that it has a correctly
-	 * formatted JSON Object as its base. The uriScheme should contain all available actions to be taken through a
-	 * PerformAppServiceInteraction request from an app service consumer.
+	 * This is a custom schema for this service. SDL will not do any verification on this param past
+	 * that it has a correctly formatted JSON Object as its base. The uriScheme should contain all
+	 * available actions to be taken through a PerformAppServiceInteraction request from an app service consumer.
 	 * @param uriScheme - The uriScheme
 	 */
-	public void setUriScheme(JSONObject uriScheme){
+	public void setUriScheme(String uriScheme){
 		setValue(KEY_URI_SCHEME, uriScheme);
 	}
 
 	/**
-	 * This is a custom schema for this service. SDL will not do any verification on this param past that it has a correctly
-	 * formatted JSON Object as its base. The uriScheme should contain all available actions to be taken through a
-	 * PerformAppServiceInteraction request from an app service consumer.
+	 * This is a custom schema for this service. SDL will not do any verification on this param past
+	 * that it has a correctly formatted JSON Object as its base. The uriScheme should contain all
+	 * available actions to be taken through a PerformAppServiceInteraction request from an app service consumer.
 	 * @return uriScheme - The uriScheme
 	 */
-	public JSONObject getUriScheme(){
-		return (JSONObject) getObject(JSONObject.class, KEY_URI_SCHEME);
+	public String getUriScheme(){
+		return getString(KEY_URI_SCHEME);
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class AppServiceManifest extends RPCStruct {
 	 * This means the service will provide meaningful responses.
 	 * @param handledRPCs - The List of Handled RPCs
 	 */
-	public void setHandledRpcs(List<FunctionID> handledRPCs){
+	public void setHandledRpcs(List<Integer> handledRPCs){
 		setValue(KEY_HANDLED_RPCS, handledRPCs);
 	}
 
@@ -176,8 +176,8 @@ public class AppServiceManifest extends RPCStruct {
 	 * @return handledRPCs - The List of Handled RPCs
 	 */
 	@SuppressWarnings("unchecked")
-	public List<FunctionID> getHandledRpcs(){
-		return (List<FunctionID>) getObject(FunctionID.class,KEY_HANDLED_RPCS);
+	public List<Integer> getHandledRpcs(){
+		return (List<Integer>) getObject(Integer.class,KEY_HANDLED_RPCS);
 	}
 
 	/**

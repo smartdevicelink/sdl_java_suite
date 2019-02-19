@@ -508,29 +508,6 @@ public class Validator{
         return true;
     }
 
-	public static boolean validateFunctionIDList(List<FunctionID> list1, List<FunctionID> list2){
-		if(list1 == null){
-			return ( list2 == null );
-		}
-		if(list2 == null){
-			return ( list1 == null );
-		}
-
-		Iterator<FunctionID> iterator1 = list1.iterator();
-		Iterator<FunctionID> iterator2 = list2.iterator();
-
-		while(iterator1.hasNext() && iterator2.hasNext()){
-			FunctionID chunk1 = iterator1.next();
-			FunctionID chunk2 = iterator2.next();
-
-			if(chunk1 != chunk2){
-				return false;
-			}
-		}
-
-		return true;
-	}
-
 	public static boolean validateAppServiceTypeList(List<AppServiceType> list1, List<AppServiceType> list2){
 		if(list1 == null){
 			return ( list2 == null );
@@ -655,7 +632,7 @@ public class Validator{
 			return false;
 		}
 
-		if (!validateFunctionIDList(params1.getHandledRpcs(), params2.getHandledRpcs())){
+		if (!validateIntegerList(params1.getHandledRpcs(), params2.getHandledRpcs())){
 			return false;
 		}
 
