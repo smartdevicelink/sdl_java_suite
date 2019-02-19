@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 
 import java.util.Hashtable;
 
@@ -38,7 +37,7 @@ public class GetAppServiceData extends RPCRequest {
 	 * Constructs a new GetAppServiceData object with the mandatory appServiceType parameter
 	 * @param appServiceType - The appServiceType
 	 */
-	public GetAppServiceData(@NonNull AppServiceType appServiceType) {
+	public GetAppServiceData(@NonNull String appServiceType) {
 		this();
 		setServiceType(appServiceType);
 	}
@@ -48,15 +47,15 @@ public class GetAppServiceData extends RPCRequest {
 	/**
 	 * @param appServiceType - the appServiceType
 	 */
-	public void setServiceType(AppServiceType appServiceType){
+	public void setServiceType(String appServiceType){
 		setParameters(KEY_SERVICE_TYPE, appServiceType);
 	}
 
 	/**
 	 * @return appServiceType
 	 */
-	public AppServiceType getServiceType(){
-		return (AppServiceType) getObject(AppServiceType.class,KEY_SERVICE_TYPE);
+	public String getServiceType(){
+		return getString(KEY_SERVICE_TYPE);
 	}
 
 	/**

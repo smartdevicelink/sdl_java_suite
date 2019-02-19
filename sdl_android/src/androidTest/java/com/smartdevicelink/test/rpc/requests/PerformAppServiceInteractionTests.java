@@ -45,7 +45,7 @@ public class PerformAppServiceInteractionTests extends BaseRpcTests {
 
 		try {
 			result.put(PerformAppServiceInteraction.KEY_SERVICE_URI, Test.GENERAL_STRING);
-			result.put(PerformAppServiceInteraction.KEY_APP_SERVICE_ID, Test.GENERAL_STRING);
+			result.put(PerformAppServiceInteraction.KEY_SERVICE_ID, Test.GENERAL_STRING);
 			result.put(PerformAppServiceInteraction.KEY_ORIGIN_APP, Test.GENERAL_STRING);
 			result.put(PerformAppServiceInteraction.KEY_REQUEST_SERVICE_ACTIVE, Test.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
@@ -116,7 +116,7 @@ public class PerformAppServiceInteractionTests extends BaseRpcTests {
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAppServiceInteraction.KEY_APP_SERVICE_ID), cmd.getAppServiceId());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAppServiceInteraction.KEY_SERVICE_ID), cmd.getAppServiceId());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAppServiceInteraction.KEY_SERVICE_URI), cmd.getServiceUri());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAppServiceInteraction.KEY_ORIGIN_APP), cmd.getOriginApp());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, PerformAppServiceInteraction.KEY_REQUEST_SERVICE_ACTIVE), cmd.getRequestServiceActive());

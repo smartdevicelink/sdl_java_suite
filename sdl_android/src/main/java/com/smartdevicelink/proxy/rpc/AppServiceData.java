@@ -3,7 +3,6 @@ package com.smartdevicelink.proxy.rpc;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 
 import java.util.Hashtable;
 
@@ -26,7 +25,7 @@ public class AppServiceData extends RPCStruct {
 		super(hash);
 	}
 
-	public AppServiceData(@NonNull AppServiceType serviceType, @NonNull String serviceId) {
+	public AppServiceData(@NonNull String serviceType, @NonNull String serviceId) {
 		this();
 		setServiceType(serviceType);
 		setServiceId(serviceId);
@@ -37,15 +36,15 @@ public class AppServiceData extends RPCStruct {
 	/**
 	 * @param serviceType -
 	 */
-	public void setServiceType(@NonNull AppServiceType serviceType) {
+	public void setServiceType(@NonNull String serviceType) {
 		setValue(KEY_SERVICE_TYPE, serviceType);
 	}
 
 	/**
 	 * @return serviceType -
 	 */
-	public AppServiceType getServiceType() {
-		return (AppServiceType) getObject(AppServiceType.class,KEY_SERVICE_TYPE);
+	public String getServiceType() {
+		return getString(KEY_SERVICE_TYPE);
 	}
 
 	/**

@@ -4,7 +4,6 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.AppServiceData;
 import com.smartdevicelink.proxy.rpc.MediaServiceData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceData;
-import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
@@ -29,7 +28,7 @@ public class AppServiceDataTests extends TestCase {
 	public void setUp() {
 
 		msg = new AppServiceData();
-		msg.setServiceType(Test.GENERAL_APP_SERVICE_TYPE);
+		msg.setServiceType(Test.GENERAL_STRING);
 		msg.setServiceId(Test.GENERAL_STRING);
 		msg.setMediaServiceData(Test.GENERAL_MEDIASERVICE_DATA);
 		msg.setWeatherServiceData(Test.GENERAL_WEATHERSERVICE_DATA);
@@ -41,13 +40,13 @@ public class AppServiceDataTests extends TestCase {
 	 */
 	public void testRpcValues () {
 		// Test Values
-		AppServiceType appServiceType = msg.getServiceType();
+		String appServiceType = msg.getServiceType();
 		String serviceId = msg.getServiceId();
 		MediaServiceData mediaServiceData = msg.getMediaServiceData();
 		WeatherServiceData weatherServiceData = msg.getWeatherServiceData();
 
 		// Valid Tests
-		assertEquals(Test.GENERAL_APP_SERVICE_TYPE, appServiceType);
+		assertEquals(Test.GENERAL_STRING, appServiceType);
 		assertEquals(Test.GENERAL_STRING, serviceId);
 		assertEquals(Test.GENERAL_MEDIASERVICE_DATA, mediaServiceData);
 		assertEquals(Test.GENERAL_WEATHERSERVICE_DATA, weatherServiceData);
@@ -65,10 +64,10 @@ public class AppServiceDataTests extends TestCase {
 
 	public void testRequiredParamsConstructor(){
 
-		msg = new AppServiceData(Test.GENERAL_APP_SERVICE_TYPE, Test.GENERAL_STRING);
-		AppServiceType appServiceType = msg.getServiceType();
+		msg = new AppServiceData(Test.GENERAL_STRING, Test.GENERAL_STRING);
+		String appServiceType = msg.getServiceType();
 		String serviceId = msg.getServiceId();
-		assertEquals(Test.GENERAL_APP_SERVICE_TYPE, appServiceType);
+		assertEquals(Test.GENERAL_STRING, appServiceType);
 		assertEquals(Test.GENERAL_STRING, serviceId);
 
 	}
@@ -77,7 +76,7 @@ public class AppServiceDataTests extends TestCase {
 		JSONObject reference = new JSONObject();
 
 		try{
-			reference.put(AppServiceData.KEY_SERVICE_TYPE, Test.GENERAL_APP_SERVICE_TYPE);
+			reference.put(AppServiceData.KEY_SERVICE_TYPE, Test.GENERAL_STRING);
 			reference.put(AppServiceData.KEY_SERVICE_ID, Test.GENERAL_STRING);
 			reference.put(AppServiceData.KEY_MEDIA_SERVICE_DATA, Test.GENERAL_MEDIASERVICE_DATA);
 			reference.put(AppServiceData.KEY_WEATHER_SERVICE_DATA, Test.GENERAL_WEATHERSERVICE_DATA);

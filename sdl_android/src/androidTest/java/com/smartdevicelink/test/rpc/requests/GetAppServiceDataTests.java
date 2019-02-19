@@ -9,7 +9,6 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.GetAppServiceData;
-import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
@@ -20,7 +19,7 @@ public class GetAppServiceDataTests extends BaseRpcTests {
 	@Override
 	protected RPCMessage createMessage() {
 		GetAppServiceData msg = new GetAppServiceData();
-		msg.setServiceType(Test.GENERAL_APP_SERVICE_TYPE);
+		msg.setServiceType(Test.GENERAL_STRING);
 		msg.setSubscribe(Test.GENERAL_BOOLEAN);
 		return msg;
 	}
@@ -40,7 +39,7 @@ public class GetAppServiceDataTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(GetAppServiceData.KEY_SERVICE_TYPE, Test.GENERAL_APP_SERVICE_TYPE);
+			result.put(GetAppServiceData.KEY_SERVICE_TYPE, Test.GENERAL_STRING);
 			result.put(GetAppServiceData.KEY_SUBSCRIBE, Test.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
@@ -53,11 +52,11 @@ public class GetAppServiceDataTests extends BaseRpcTests {
 	 */
 	public void testRpcValues () {
 		// Test Values
-		AppServiceType serviceType = ( (GetAppServiceData) msg ).getServiceType();
+		String serviceType = ( (GetAppServiceData) msg ).getServiceType();
 		boolean subscribe = ( (GetAppServiceData) msg ).getSubscribe();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_APP_SERVICE_TYPE, serviceType);
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, serviceType);
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, subscribe);
 
 		// Invalid/Null Tests
@@ -74,10 +73,10 @@ public class GetAppServiceDataTests extends BaseRpcTests {
 	 */
 	public void testRequiredParamsConstructor () {
 
-		GetAppServiceData msg = new GetAppServiceData(Test.GENERAL_APP_SERVICE_TYPE);
+		GetAppServiceData msg = new GetAppServiceData(Test.GENERAL_STRING);
 		assertNotNull(Test.NOT_NULL, msg);
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_APP_SERVICE_TYPE, msg.getServiceType());
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, msg.getServiceType());
 	}
 
 	/**

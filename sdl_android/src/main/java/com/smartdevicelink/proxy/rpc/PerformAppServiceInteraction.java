@@ -10,7 +10,7 @@ import java.util.Hashtable;
 public class PerformAppServiceInteraction extends RPCRequest {
 
 	public static final String KEY_SERVICE_URI = "serviceUri";
-	public static final String KEY_APP_SERVICE_ID = "appServiceId";
+	public static final String KEY_SERVICE_ID = "serviceID";
 	public static final String KEY_ORIGIN_APP = "originApp";
 	public static final String KEY_REQUEST_SERVICE_ACTIVE = "requestServiceActive";
 
@@ -54,7 +54,7 @@ public class PerformAppServiceInteraction extends RPCRequest {
 	 * @param appServiceId -
 	 */
 	public void setAppServiceId(String appServiceId){
-		setParameters(KEY_APP_SERVICE_ID, appServiceId);
+		setParameters(KEY_SERVICE_ID, appServiceId);
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class PerformAppServiceInteraction extends RPCRequest {
 	 * @return appServiceId
 	 */
 	public String getAppServiceId(){
-		return getString(KEY_APP_SERVICE_ID);
+		return getString(KEY_SERVICE_ID);
 	}
 
 	/**
