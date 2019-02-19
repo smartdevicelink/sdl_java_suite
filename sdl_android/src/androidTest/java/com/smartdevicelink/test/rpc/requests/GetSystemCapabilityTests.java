@@ -22,6 +22,7 @@ public class GetSystemCapabilityTests extends BaseRpcTests {
         GetSystemCapability msg = new GetSystemCapability();
 
         msg.setSystemCapabilityType(Test.GENERAL_SYSTEMCAPABILITYTYPE);
+        msg.setSubscribe(Test.GENERAL_BOOLEAN);
 
         return msg;
     }
@@ -42,6 +43,7 @@ public class GetSystemCapabilityTests extends BaseRpcTests {
 
         try{
             result.put(GetSystemCapability.KEY_SYSTEM_CAPABILITY_TYPE, Test.GENERAL_SYSTEMCAPABILITYTYPE);
+            result.put(GetSystemCapability.KEY_SUBSCRIBE, Test.GENERAL_BOOLEAN);
         }catch(JSONException e){
             fail(Test.JSON_FAIL);
         }
@@ -55,9 +57,11 @@ public class GetSystemCapabilityTests extends BaseRpcTests {
     public void testRpcValues () {
         // Test Values
         SystemCapabilityType testType = ( (GetSystemCapability) msg ).getSystemCapabilityType();
+        boolean testSubscribe = ( (GetSystemCapability) msg ).getSubscribe();
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_SYSTEMCAPABILITYTYPE, testType);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testSubscribe);
 
         // Invalid/Null Tests
         GetSystemCapability msg = new GetSystemCapability();
@@ -65,6 +69,7 @@ public class GetSystemCapabilityTests extends BaseRpcTests {
         testNullBase(msg);
 
         assertNull(Test.NULL, msg.getSystemCapabilityType());
+        assertNull(Test.NULL, msg.getSubscribe());
     }
 
     /**
@@ -88,6 +93,7 @@ public class GetSystemCapabilityTests extends BaseRpcTests {
             JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 
             assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetSystemCapability.KEY_SYSTEM_CAPABILITY_TYPE).toString(), cmd.getSystemCapabilityType().toString());
+            assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetSystemCapability.KEY_SUBSCRIBE), cmd.getSubscribe());
         }catch (JSONException e) {
             fail(Test.JSON_FAIL);
         }

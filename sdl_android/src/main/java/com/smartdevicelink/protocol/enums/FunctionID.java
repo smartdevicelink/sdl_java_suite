@@ -88,6 +88,7 @@ public enum FunctionID{
     ON_WAY_POINT_CHANGE(32784, "OnWayPointChange"),
     ON_RC_STATUS(32785, "OnRCStatus"),
     ON_APP_SERVICE_DATA(32786, "OnAppServiceData"),
+    ON_SYSTEM_CAPABILITY_UPDATED(32787, "OnSystemCapabilityUpdated"),
 
     // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)
     ON_LOCK_SCREEN_STATUS(-1, "OnLockScreenStatus"),
