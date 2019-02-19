@@ -16,6 +16,7 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
+import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.test.Validator;
 
@@ -108,7 +109,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
         // Create soft button objects
         softButtonState1 = new SoftButtonState("object1-state1", "o1s1", new SdlArtwork("image1", FileType.GRAPHIC_PNG, 1, true));
-        softButtonState2 = new SoftButtonState("object1-state2", "o1s2", new SdlArtwork("image2", FileType.GRAPHIC_PNG, 2, true));
+        softButtonState2 = new SoftButtonState("object1-state2", "o1s2", new SdlArtwork(StaticIconName.ALBUM));
         softButtonObject1 = new SoftButtonObject("object1", Arrays.asList(softButtonState1, softButtonState2), softButtonState1.getName(), null);
         softButtonState3 = new SoftButtonState("object2-state1", "o2s1", null);
         softButtonState4 = new SoftButtonState("object2-state2", "o2s2", new SdlArtwork("image3", FileType.GRAPHIC_PNG, 3, true));
@@ -184,6 +185,8 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         // Test SoftButtonState.getArtwork()
         SdlArtwork artworkExpectedValue = new SdlArtwork("image1", FileType.GRAPHIC_PNG, 1, true);
         assertTrue("Returned SdlArtwork doesn't match the expected value", Validator.validateSdlFile(artworkExpectedValue, softButtonState1.getArtwork()));
+        SdlArtwork artworkExpectedValue2 = new SdlArtwork(StaticIconName.ALBUM);
+        assertTrue("Returned SdlArtwork doesn't match the expected value", Validator.validateSdlFile(artworkExpectedValue2, softButtonState2.getArtwork()));
 
 
         // Test SoftButtonState.getSoftButton()
