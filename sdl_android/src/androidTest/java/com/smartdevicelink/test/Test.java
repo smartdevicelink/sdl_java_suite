@@ -10,6 +10,7 @@ import com.smartdevicelink.proxy.rpc.AppServiceCapability;
 import com.smartdevicelink.proxy.rpc.AppServiceData;
 import com.smartdevicelink.proxy.rpc.AppServiceManifest;
 import com.smartdevicelink.proxy.rpc.AppServiceRecord;
+import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioControlData;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
@@ -325,6 +326,7 @@ public class Test {
 	public static final WeatherServiceManifest         GENERAL_WEATHER_SERVICE_MANIFEST       = new WeatherServiceManifest();
 	public static final AppServiceRecord               GENERAL_APP_SERVICE_RECORD             = new AppServiceRecord();
 	public static final AppServiceCapability           GENERAL_APP_SERVICE_CAPABILITY         = new AppServiceCapability();
+	public static final AppServicesCapabilities        GENERAL_APP_SERVICE_CAPABILITIES       = new AppServicesCapabilities();
 	public static final ServiceUpdateReason            GENERAL_SERVICE_UPDATE_REASON          = ServiceUpdateReason.MANIFEST_UPDATE;
 	public static final DateTime					   GENERAL_DATETIME                       = new DateTime();
 	public static final WeatherData 				   GENERAL_WEATHERDATA                    = new WeatherData();
@@ -903,6 +905,8 @@ public class Test {
 
 		GENERAL_APP_SERVICE_CAPABILITY.setUpdatedAppServiceRecord(GENERAL_APP_SERVICE_RECORD);
 		GENERAL_APP_SERVICE_CAPABILITY.setUpdateReason(GENERAL_SERVICE_UPDATE_REASON);
+
+		GENERAL_APP_SERVICE_CAPABILITIES.setAppServices(GENERAL_APPSERVICECAPABILITY_LIST);
 
 		GENERAL_DATETIME.setDay(Test.GENERAL_INT);
 		GENERAL_DATETIME.setHour(Test.GENERAL_INT);

@@ -7,12 +7,12 @@ import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
-import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.rpc.AirbagStatus;
 import com.smartdevicelink.proxy.rpc.AppServiceCapability;
 import com.smartdevicelink.proxy.rpc.AppServiceManifest;
 import com.smartdevicelink.proxy.rpc.AppServiceRecord;
+import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioControlData;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
@@ -531,6 +531,21 @@ public class Validator{
 		return true;
 	}
 
+	public static boolean validateAppServiceCapabilities(AppServicesCapabilities params1, AppServicesCapabilities params2) {
+		if (params1 == null) {
+			return (params2 == null);
+		}
+		if (params2 == null) {
+			return (params1 == null);
+		}
+
+		if (!validateAppServiceCapabilityList(params1.getAppServices(), params2.getAppServices())){
+			return false;
+		}
+
+		return true;
+	}
+
 	public static boolean validateAppServiceCapabilityList(List<AppServiceCapability> list1, List<AppServiceCapability> list2){
 		if(list1 == null){
 			return ( list2 == null );
@@ -546,7 +561,11 @@ public class Validator{
 			AppServiceCapability chunk1 = iterator1.next();
 			AppServiceCapability chunk2 = iterator2.next();
 
-			if(chunk1 != chunk2){
+			if(!validateAppServiceRecord(chunk1.getUpdatedAppServiceRecord(), chunk2.getUpdatedAppServiceRecord())){
+				return false;
+			}
+
+			if (!chunk1.getUpdateReason().equals(chunk2.getUpdateReason())){
 				return false;
 			}
 		}
@@ -604,7 +623,7 @@ public class Validator{
 			return false;
 		}
 
-		if (!params1.getServiceIcon().equals(params2.getServiceIcon())){
+		if (!validateImage(params1.getServiceIcon(), params2.getServiceIcon())){
 			return false;
 		}
 

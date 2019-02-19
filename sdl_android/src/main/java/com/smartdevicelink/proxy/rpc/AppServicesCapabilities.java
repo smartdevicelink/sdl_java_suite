@@ -1,9 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
-
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -14,7 +11,6 @@ import java.util.List;
  */
 public class AppServicesCapabilities extends RPCStruct {
 
-	public static final String KEY_SERVICES_SUPPORTED = "servicesSupported";
 	public static final String KEY_APP_SERVICES = "appServices";
 
 	// Constructors
@@ -34,35 +30,7 @@ public class AppServicesCapabilities extends RPCStruct {
 		super(hash);
 	}
 
-	/**
-	 * Capabilities of app services including what service types are supported
-	 * and the current state of services.
-	 * @param servicesSupported - List<AppServiceType>
-	 */
-	public AppServicesCapabilities(@NonNull List<AppServiceType> servicesSupported){
-		this();
-		setServicesSupported(servicesSupported);
-
-	}
-
 	// Setters and Getters
-
-	/**
-	 * An array of supported app service types
-	 * @param servicesSupported -
-	 */
-	public void setServicesSupported(List<AppServiceType> servicesSupported){
-		setValue(KEY_SERVICES_SUPPORTED, servicesSupported);
-	}
-
-	/**
-	 * An array of supported app service types
-	 * @return servicesSupported
-	 */
-	@SuppressWarnings("unchecked")
-	public List<AppServiceType> getServicesSupported(){
-		return (List<AppServiceType>) getObject(AppServiceType.class,KEY_SERVICES_SUPPORTED);
-	}
 
 	/**
 	 * An array of currently available services. If this is an update to the

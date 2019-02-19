@@ -27,7 +27,6 @@ public class AppServicesCapabilitiesTests extends TestCase {
 	public void setUp(){
 
 		msg = new AppServicesCapabilities();
-		msg.setServicesSupported(Test.GENERAL_APPSERVICETYPE_LIST);
 		msg.setAppServices(Test.GENERAL_APPSERVICECAPABILITY_LIST);
 	}
 
@@ -36,11 +35,9 @@ public class AppServicesCapabilitiesTests extends TestCase {
 	 */
 	public void testRpcValues () {
 		// Test Values
-		List<AppServiceType> serviceTypeList = msg.getServicesSupported();
 		List<AppServiceCapability> serviceCapabilityList = msg.getAppServices();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, serviceTypeList, Test.GENERAL_APPSERVICETYPE_LIST);
 		assertEquals(Test.MATCH, serviceCapabilityList, Test.GENERAL_APPSERVICECAPABILITY_LIST);
 
 		// Invalid/Null Tests
@@ -48,13 +45,6 @@ public class AppServicesCapabilitiesTests extends TestCase {
 		assertNotNull(Test.NOT_NULL, msg);
 
 		assertNull(Test.NULL, msg.getAppServices());
-		assertNull(Test.NULL, msg.getServicesSupported());
-	}
-
-	public void testRequiredParamsConstructor(){
-		msg = new AppServicesCapabilities(Test.GENERAL_APPSERVICETYPE_LIST);
-		List<AppServiceType> serviceTypeList = msg.getServicesSupported();
-		assertEquals(Test.MATCH, serviceTypeList, Test.GENERAL_APPSERVICETYPE_LIST);
 	}
 
 	public void testJson(){
@@ -62,7 +52,6 @@ public class AppServicesCapabilitiesTests extends TestCase {
 
 		try{
 			reference.put(AppServicesCapabilities.KEY_APP_SERVICES, Test.GENERAL_APPSERVICETYPE_LIST);
-			reference.put(AppServicesCapabilities.KEY_SERVICES_SUPPORTED, Test.GENERAL_APPSERVICECAPABILITY_LIST);
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -74,11 +63,7 @@ public class AppServicesCapabilitiesTests extends TestCase {
 					List<AppServiceCapability> list1 = Test.GENERAL_APPSERVICECAPABILITY_LIST;
 					List<AppServiceCapability> list2 = JsonUtils.readAppServiceCapabilityListFromJsonObject(underTest, key);
 					assertTrue(Test.TRUE, Validator.validateAppServiceCapabilityList(list1,list2));
-				} else if (key.equals(AppServicesCapabilities.KEY_SERVICES_SUPPORTED)){
-					List<AppServiceType> list1 = Test.GENERAL_APPSERVICETYPE_LIST;
-					List<AppServiceType> list2 = JsonUtils.readAppServiceTypeListFromJsonObject(underTest, key);
-					assertTrue(Test.TRUE, Validator.validateAppServiceTypeList(list1,list2));
-				} else{
+				}else{
 					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}
 			}

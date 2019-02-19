@@ -1,6 +1,9 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
+import android.util.Log;
+
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
+import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
 import com.smartdevicelink.proxy.rpc.PhoneCapability;
 import com.smartdevicelink.proxy.rpc.RemoteControlCapabilities;
@@ -20,7 +23,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.SystemCapability}
+ * {@link com.smartdevicelink.proxy.rpc.SystemCapability}
  */
 public class SystemCapabilityTests extends TestCase {
 
@@ -34,6 +37,7 @@ public class SystemCapabilityTests extends TestCase {
         msg.setCapabilityForType(SystemCapabilityType.NAVIGATION, Test.GENERAL_NAVIGATIONCAPABILITY);
         msg.setCapabilityForType(SystemCapabilityType.PHONE_CALL, Test.GENERAL_PHONECAPABILITY);
         msg.setCapabilityForType(SystemCapabilityType.REMOTE_CONTROL, Test.GENERAL_REMOTECONTROLCAPABILITIES);
+        msg.setCapabilityForType(SystemCapabilityType.APP_SERVICES, Test.GENERAL_APP_SERVICE_CAPABILITIES);
 
     }
 
@@ -46,12 +50,14 @@ public class SystemCapabilityTests extends TestCase {
         NavigationCapability testNavigationCapability = (NavigationCapability) msg.getCapabilityForType(SystemCapabilityType.NAVIGATION);
         PhoneCapability testPhoneCapability = (PhoneCapability) msg.getCapabilityForType(SystemCapabilityType.PHONE_CALL);
         RemoteControlCapabilities testRemoteControlCapabilities = (RemoteControlCapabilities) msg.getCapabilityForType(SystemCapabilityType.REMOTE_CONTROL);
+        AppServicesCapabilities testAppServicesCapabilities = (AppServicesCapabilities) msg.getCapabilityForType(SystemCapabilityType.APP_SERVICES);
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_SYSTEMCAPABILITYTYPE, testType);
         assertTrue(Test.TRUE, Validator.validateNavigationCapability(Test.GENERAL_NAVIGATIONCAPABILITY, testNavigationCapability));
         assertTrue(Test.TRUE, Validator.validatePhoneCapability(Test.GENERAL_PHONECAPABILITY, testPhoneCapability));
         assertTrue(Test.TRUE, Validator.validateRemoteControlCapabilities(Test.GENERAL_REMOTECONTROLCAPABILITIES, testRemoteControlCapabilities));
+        assertTrue(Test.TRUE, Validator.validateAppServiceCapabilities(Test.GENERAL_APP_SERVICE_CAPABILITIES, testAppServicesCapabilities));
 
         // Invalid/Null Tests
         SystemCapability msg = new SystemCapability();
@@ -61,6 +67,7 @@ public class SystemCapabilityTests extends TestCase {
         assertNull(Test.NULL, msg.getCapabilityForType(SystemCapabilityType.NAVIGATION));
         assertNull(Test.NULL, msg.getCapabilityForType(SystemCapabilityType.PHONE_CALL));
         assertNull(Test.NULL, msg.getCapabilityForType(SystemCapabilityType.REMOTE_CONTROL));
+        assertNull(Test.NULL, msg.getCapabilityForType(SystemCapabilityType.APP_SERVICES));
     }
 
     public void testJson() {
@@ -71,6 +78,7 @@ public class SystemCapabilityTests extends TestCase {
             reference.put(SystemCapability.KEY_NAVIGATION_CAPABILITY, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_NAVIGATIONCAPABILITY.getStore()));
             reference.put(SystemCapability.KEY_PHONE_CAPABILITY, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_PHONECAPABILITY.getStore()));
             reference.put(SystemCapability.KEY_REMOTE_CONTROL_CAPABILITY, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_REMOTECONTROLCAPABILITIES.getStore()));
+            reference.put(SystemCapability.KEY_APP_SERVICES_CAPABILITIES, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_APP_SERVICE_CAPABILITIES.getStore()));
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -97,6 +105,14 @@ public class SystemCapabilityTests extends TestCase {
                     Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
                     Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
                     assertTrue(Test.TRUE, Validator.validateRemoteControlCapabilities( new RemoteControlCapabilities(hashReference), new RemoteControlCapabilities(hashTest)));
+                }else if(key.equals(SystemCapability.KEY_APP_SERVICES_CAPABILITIES)){
+                    JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
+                    JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
+                    Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
+                    Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
+                    Log.i("TEST REF", hashReference.toString());
+                    Log.i("TEST TEST", hashTest.toString());
+                    assertTrue(Test.TRUE, Validator.validateAppServiceCapabilities( new AppServicesCapabilities(hashReference), new AppServicesCapabilities(hashTest)));
                 } else{
                     assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
