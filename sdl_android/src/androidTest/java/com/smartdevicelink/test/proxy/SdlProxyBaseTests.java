@@ -55,6 +55,7 @@ import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.OnRCStatus;
 import com.smartdevicelink.proxy.rpc.OnStreamRPC;
+import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.OnTBTClientState;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
@@ -676,6 +677,10 @@ public class SdlProxyBaseTests extends AndroidTestCase2 {
 
 		@Override
 		public void onOnAppServiceData(OnAppServiceData notification){
+		}
+
+		@Override
+		public void onOnSystemCapabilityUpdated(OnSystemCapabilityUpdated notification){
 		}
 
 		@Override

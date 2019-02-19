@@ -41,6 +41,7 @@ import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.OnRCStatus;
 import com.smartdevicelink.proxy.rpc.OnStreamRPC;
+import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.OnTBTClientState;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
@@ -378,4 +379,6 @@ public interface IProxyListenerBase  {
 	public void onGetAppServiceData(GetAppServiceData request);
 
 	public void onPerformAppServiceInteraction(PerformAppServiceInteraction request);
+
+	public void onOnSystemCapabilityUpdated(OnSystemCapabilityUpdated notification);
 }

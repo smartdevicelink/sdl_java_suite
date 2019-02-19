@@ -47,6 +47,7 @@ import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.OnRCStatus;
 import com.smartdevicelink.proxy.rpc.OnStreamRPC;
+import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.OnTBTClientState;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
@@ -587,6 +588,11 @@ public class ProxyBridge implements IProxyListener{
 
 	@Override
 	public void onOnAppServiceData(OnAppServiceData notification){
+		onRPCReceived(notification);
+	}
+
+	@Override
+	public void onOnSystemCapabilityUpdated(OnSystemCapabilityUpdated notification){
 		onRPCReceived(notification);
 	}
 
