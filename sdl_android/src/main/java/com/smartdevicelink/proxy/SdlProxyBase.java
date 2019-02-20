@@ -535,9 +535,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 
 			if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1){
-				Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
+				String info = String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion());
+				Log.w(TAG, info);
 				endService(sessionType);
-				notifyProxyClosed("Disconnecting from head unit", null, SdlDisconnectedReason.APPLICATION_REQUESTED_DISCONNECT);
+				notifyProxyClosed(info, null, SdlDisconnectedReason.APPLICATION_REQUESTED_DISCONNECT);
 				try {
 					dispose();
 				} catch (SdlException e) {
@@ -2281,15 +2282,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
 					}
 
-
 					if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1){
-						Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+						String info = String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion);
+						Log.w(TAG, info);
 						try {
 							unregisterAppInterfacePrivate(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
 						} catch (SdlException e) {
 							e.printStackTrace();
 						}
-						notifyProxyClosed("Disconnecting from head unit", null, SdlDisconnectedReason.APPLICATION_REQUESTED_DISCONNECT);
+						notifyProxyClosed(info, null, SdlDisconnectedReason.APPLICATION_REQUESTED_DISCONNECT);
 						try {
 							dispose();
 						} catch (SdlException e) {
@@ -2297,7 +2298,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						}
 						return;
 					}
-
 
 					_vehicleType = msg.getVehicleType();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
