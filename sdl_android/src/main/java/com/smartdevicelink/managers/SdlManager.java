@@ -963,11 +963,11 @@ public class SdlManager{
 			}
 
 			if (sdlManager.minimumProtocolVersion == null){
-				sdlManager.minimumProtocolVersion = SdlProtocol.MAX_PROTOCOL_VERSION;
+				sdlManager.minimumProtocolVersion = new Version("1.0.0");
 			}
 
 			if (sdlManager.minimumRPCVersion == null){
-				sdlManager.minimumRPCVersion = SdlProxyBase.MAX_SUPPORTED_RPC_VERSION;
+				sdlManager.minimumRPCVersion = new Version("1.0.0");
 			}
 
 			sdlManager.transitionToState(BaseSubManager.SETTING_UP);
