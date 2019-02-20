@@ -4,9 +4,6 @@ import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
 
-/**
- * Created by brettywhite on 1/25/19.
- */
 public class WeatherServiceManifest extends RPCStruct {
 
 	public static final String KEY_CURRENT_FORECAST_SUPPORTED = "currentForecastSupported";
@@ -16,6 +13,7 @@ public class WeatherServiceManifest extends RPCStruct {
 	public static final String KEY_WEATHER_FOR_LOCATION_SUPPORTED = "weatherForLocationSupported";
 
 	// Constructors
+
 	public WeatherServiceManifest() { }
 
 	public WeatherServiceManifest(Hashtable<String, Object> hash) {
