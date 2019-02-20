@@ -16,6 +16,7 @@ import com.smartdevicelink.managers.lockscreen.LockScreenManager;
 import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
 import com.smartdevicelink.managers.video.VideoStreamManager;
+import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
@@ -86,6 +87,8 @@ public class SdlManager{
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
 	private LockScreenConfig lockScreenConfig;
 	private final Object STATE_LOCK = new Object();
+	private Version minimumProtocolVersion;
+	private Version minimumRPCVersion;
 
 
 	// Managers
@@ -551,6 +554,8 @@ public class SdlManager{
 				proxy = new SdlProxyBase(proxyBridge, context, appName, shortAppName, isMediaApp, hmiLanguage,
 						hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
 						nightColorScheme) {};
+				proxy.setMinimumProtocolVersion(minimumProtocolVersion);
+				proxy.setMinimumRPCVersion(minimumRPCVersion);
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
 					proxy.setSdlSecurityClassList(sdlSecList);
 				}
@@ -790,6 +795,27 @@ public class SdlManager{
 		}
 
 		/**
+		 * Sets the minimum protocol version that will be permitted to connect.
+		 * If the protocol version of the head unit connected is below this version,
+		 * the app will disconnect with an EndService protocol message and will not register.
+		 * @param minimumProtocolVersion
+		 */
+		public Builder setMinimumProtocolVersion(final Version minimumProtocolVersion) {
+			sdlManager.minimumProtocolVersion = minimumProtocolVersion;
+			return this;
+		}
+
+		/**
+		 * The minimum RPC version that will be permitted to connect.
+		 * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
+		 * @param minimumRPCVersion
+		 */
+		public Builder setMinimumRPClVersion(final Version minimumRPCVersion) {
+			sdlManager.minimumRPCVersion = minimumRPCVersion;
+			return this;
+		}
+
+		/**
 		 * Sets the Language of the App
 		 * @param hmiLanguage
 		 */
@@ -934,6 +960,14 @@ public class SdlManager{
 
 			if (sdlManager.hmiLanguage == null){
 				sdlManager.hmiLanguage = Language.EN_US;
+			}
+
+			if (sdlManager.minimumProtocolVersion == null){
+				sdlManager.minimumProtocolVersion = SdlProtocol.MAX_PROTOCOL_VERSION;
+			}
+
+			if (sdlManager.minimumRPCVersion == null){
+				sdlManager.minimumRPCVersion = SdlProxyBase.MAX_SUPPORTED_RPC_VERSION;
 			}
 
 			sdlManager.transitionToState(BaseSubManager.SETTING_UP);

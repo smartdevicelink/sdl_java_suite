@@ -86,7 +86,7 @@ public class SdlProtocol {
     public static final int V2_HEADER_SIZE = 12;
 
     //If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
-    private static final Version MAX_PROTOCOL_VERSION = new Version("5.1.0");
+    public static final Version MAX_PROTOCOL_VERSION = new Version("5.1.0");
 
     public static final int V1_V2_MTU_SIZE = 1500;
     public static final int V3_V4_MTU_SIZE = 131072;
