@@ -1,8 +1,5 @@
 package com.smartdevicelink.test;
 
-import java.util.Iterator;
-import java.util.List;
-
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
@@ -106,6 +103,9 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class Validator{
 
