@@ -47,6 +47,7 @@ import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.ModuleData;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
 import com.smartdevicelink.proxy.rpc.NavigationInstruction;
+import com.smartdevicelink.proxy.rpc.NavigationServiceManifest;
 import com.smartdevicelink.proxy.rpc.OasisAddress;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
@@ -328,6 +329,7 @@ public class Test {
 	public static final AppServiceManifest             GENERAL_APP_SERVICE_MANIFEST           = new AppServiceManifest();
 	public static final MediaServiceManifest           GENERAL_MEDIA_SERVICE_MANIFEST         = new MediaServiceManifest();
 	public static final WeatherServiceManifest         GENERAL_WEATHER_SERVICE_MANIFEST       = new WeatherServiceManifest();
+	public static final NavigationServiceManifest      GENERAL_NAVIGATION_SERVICE_MANIFEST    = new NavigationServiceManifest();
 	public static final AppServiceRecord               GENERAL_APP_SERVICE_RECORD             = new AppServiceRecord();
 	public static final AppServiceCapability           GENERAL_APP_SERVICE_CAPABILITY         = new AppServiceCapability();
 	public static final AppServicesCapabilities        GENERAL_APP_SERVICE_CAPABILITIES       = new AppServicesCapabilities();
@@ -904,6 +906,8 @@ public class Test {
 		GENERAL_APP_SERVICE_MANIFEST.setHandledRpcs(GENERAL_FUNCTION_ID_LIST);
 		GENERAL_APP_SERVICE_MANIFEST.setAllowAppConsumers(GENERAL_BOOLEAN);
 		GENERAL_APP_SERVICE_MANIFEST.setServiceType(GENERAL_STRING);
+
+		GENERAL_NAVIGATION_SERVICE_MANIFEST.setAcceptsWayPoints(GENERAL_BOOLEAN);
 
 		GENERAL_APP_SERVICE_RECORD.setServiceId(GENERAL_STRING);
 		GENERAL_APP_SERVICE_RECORD.setServiceManifest(GENERAL_APP_SERVICE_MANIFEST);

@@ -5,6 +5,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.rpc.AppServiceManifest;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
+import com.smartdevicelink.proxy.rpc.NavigationServiceManifest;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.ShowConstantTbt;
 import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
@@ -42,6 +43,7 @@ public class AppServiceManifestTests extends TestCase {
 		msg.setServiceIcon(Test.GENERAL_IMAGE);
 		msg.setServiceName(Test.GENERAL_STRING);
 		msg.setWeatherServiceManifest(Test.GENERAL_WEATHER_SERVICE_MANIFEST);
+		msg.setNavigationServiceManifest(Test.GENERAL_NAVIGATION_SERVICE_MANIFEST);
 	}
 
 	/**
@@ -57,6 +59,7 @@ public class AppServiceManifestTests extends TestCase {
 		List<Integer> handledRPCs = msg.getHandledRpcs();
 		WeatherServiceManifest weatherServiceManifestTest = msg.getWeatherServiceManifest();
 		MediaServiceManifest mediaServiceManifestTest = msg.getMediaServiceManifest();
+		NavigationServiceManifest navigationServiceManifest = msg.getNavigationServiceManifest();
 
 		// Valid Tests
 		assertEquals(Test.GENERAL_BOOLEAN, allowAppConsumers);
@@ -67,6 +70,7 @@ public class AppServiceManifestTests extends TestCase {
 		assertEquals(Test.MATCH, Test.GENERAL_FUNCTION_ID_LIST, handledRPCs);
 		assertEquals(Test.GENERAL_WEATHER_SERVICE_MANIFEST, weatherServiceManifestTest);
 		assertEquals(Test.GENERAL_MEDIA_SERVICE_MANIFEST, mediaServiceManifestTest);
+		assertEquals(Test.GENERAL_NAVIGATION_SERVICE_MANIFEST, navigationServiceManifest);
 
 		// Invalid/Null Tests
 		AppServiceManifest msg = new AppServiceManifest();
@@ -80,6 +84,7 @@ public class AppServiceManifestTests extends TestCase {
 		assertNull(Test.NULL, msg.getHandledRpcs());
 		assertNull(Test.NULL, msg.getWeatherServiceManifest());
 		assertNull(Test.NULL, msg.getMediaServiceManifest());
+		assertNull(Test.NULL, msg.getNavigationServiceManifest());
 	}
 
 	public void testRequiredParamsConstructor(){
@@ -100,6 +105,7 @@ public class AppServiceManifestTests extends TestCase {
 			reference.put(AppServiceManifest.KEY_HANDLED_RPCS, Test.GENERAL_FUNCTION_ID_LIST);
 			reference.put(AppServiceManifest.KEY_WEATHER_SERVICE_MANIFEST, Test.GENERAL_WEATHER_SERVICE_MANIFEST);
 			reference.put(AppServiceManifest.KEY_MEDIA_SERVICE_MANIFEST, Test.GENERAL_MEDIA_SERVICE_MANIFEST);
+			reference.put(AppServiceManifest.KEY_NAVIGATION_SERVICE_MANIFEST, Test.GENERAL_NAVIGATION_SERVICE_MANIFEST);
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -126,6 +132,10 @@ public class AppServiceManifestTests extends TestCase {
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
 					assertTrue(Test.TRUE, Validator.validateMediaServiceManifest( Test.GENERAL_MEDIA_SERVICE_MANIFEST, new MediaServiceManifest(hashTest)));
+				} else if(key.equals(AppServiceManifest.KEY_NAVIGATION_SERVICE_MANIFEST)){
+					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
+					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
+					assertTrue(Test.TRUE, Validator.validateNavigationServiceManifest( Test.GENERAL_NAVIGATION_SERVICE_MANIFEST, new NavigationServiceManifest(hashTest)));
 				}else if(key.equals(AppServiceManifest.KEY_SERVICE_ICON)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Image refIcon1 = new Image(JsonRPCMarshaller.deserializeJSONObject(testEquals));

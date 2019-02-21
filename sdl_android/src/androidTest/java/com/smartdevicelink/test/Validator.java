@@ -58,6 +58,7 @@ import com.smartdevicelink.proxy.rpc.ModuleData;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
 import com.smartdevicelink.proxy.rpc.NavigationInstruction;
+import com.smartdevicelink.proxy.rpc.NavigationServiceManifest;
 import com.smartdevicelink.proxy.rpc.OasisAddress;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
@@ -580,6 +581,21 @@ public class Validator{
 		}
 		if(params2 == null){
 			return ( params1 == null );
+		}
+
+		return true;
+	}
+
+	public static boolean validateNavigationServiceManifest(NavigationServiceManifest params1, NavigationServiceManifest params2){
+		if(params1 == null){
+			return ( params2 == null );
+		}
+		if(params2 == null){
+			return ( params1 == null );
+		}
+
+		if (!params1.getAcceptsWayPoints().equals(params2.getAcceptsWayPoints())){
+			return false;
 		}
 
 		return true;
