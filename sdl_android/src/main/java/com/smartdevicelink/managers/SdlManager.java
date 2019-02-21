@@ -16,7 +16,6 @@ import com.smartdevicelink.managers.lockscreen.LockScreenManager;
 import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
 import com.smartdevicelink.managers.video.VideoStreamManager;
-import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
