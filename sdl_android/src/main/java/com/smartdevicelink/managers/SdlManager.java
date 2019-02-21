@@ -399,6 +399,10 @@ public class SdlManager{
 
 	protected String getShortAppName() { return shortAppName; }
 
+	protected Version getMinimumProtocolVersion() { return minimumProtocolVersion; }
+
+	protected Version getMinimumRPCVersion() { return minimumRPCVersion; }
+
 	protected Language getHmiLanguage() { return hmiLanguage; }
 
 	protected TemplateColorScheme getDayColorScheme() { return dayColorScheme; }
