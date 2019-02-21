@@ -21,8 +21,6 @@ public class AppServiceManifest extends RPCStruct {
 	public static final String KEY_SERVICE_TYPE = "serviceType";
 	public static final String KEY_SERVICE_ICON = "serviceIcon";
 	public static final String KEY_ALLOW_APP_CONSUMERS = "allowAppConsumers";
-	public static final String KEY_URI_PREFIX = "uriPrefix";
-	public static final String KEY_URI_SCHEME = "uriScheme";
 	public static final String KEY_RPC_SPEC_VERSION = "rpcSpecVersion";
 	public static final String KEY_HANDLED_RPCS = "handledRPCs";
 	public static final String KEY_MEDIA_SERVICE_MANIFEST = "mediaServiceManifest";
@@ -105,42 +103,6 @@ public class AppServiceManifest extends RPCStruct {
 	 */
 	public Boolean getAllowAppConsumers(){
 		return getBoolean(KEY_ALLOW_APP_CONSUMERS);
-	}
-
-	/**
-	 * The file name of the icon to be associated with this service. Most likely the same as the appIcon.
-	 * @param uriPrefix - The URI prefix
-	 */
-	public void setUriPrefix(String uriPrefix){
-		setValue(KEY_URI_PREFIX, uriPrefix);
-	}
-
-	/**
-	 * The file name of the icon to be associated with this service. Most likely the same as the appIcon.
-	 * @return uriPrefix - The URI prefix
-	 */
-	public String getUriPrefix(){
-		return getString(KEY_URI_PREFIX);
-	}
-
-	/**
-	 * This is a custom schema for this service. SDL will not do any verification on this param past
-	 * that it has a correctly formatted JSON Object as its base. The uriScheme should contain all
-	 * available actions to be taken through a PerformAppServiceInteraction request from an app service consumer.
-	 * @param uriScheme - The uriScheme
-	 */
-	public void setUriScheme(String uriScheme){
-		setValue(KEY_URI_SCHEME, uriScheme);
-	}
-
-	/**
-	 * This is a custom schema for this service. SDL will not do any verification on this param past
-	 * that it has a correctly formatted JSON Object as its base. The uriScheme should contain all
-	 * available actions to be taken through a PerformAppServiceInteraction request from an app service consumer.
-	 * @return uriScheme - The uriScheme
-	 */
-	public String getUriScheme(){
-		return getString(KEY_URI_SCHEME);
 	}
 
 	/**

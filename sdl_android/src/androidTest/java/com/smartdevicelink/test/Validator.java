@@ -636,10 +636,6 @@ public class Validator{
 			return false;
 		}
 
-		if (!params1.getUriPrefix().equals(params2.getUriPrefix())){
-			return false;
-		}
-
 		if (!validateSdlMsgVersion(params1.getRpcSpecVersion(),params2.getRpcSpecVersion())){
 			return false;
 		}

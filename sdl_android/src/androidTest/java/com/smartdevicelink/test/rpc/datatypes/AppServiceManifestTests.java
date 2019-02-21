@@ -41,8 +41,6 @@ public class AppServiceManifestTests extends TestCase {
 		msg.setRpcSpecVersion(Test.GENERAL_SDLMSGVERSION);
 		msg.setServiceIcon(Test.GENERAL_IMAGE);
 		msg.setServiceName(Test.GENERAL_STRING);
-		msg.setUriPrefix(Test.GENERAL_STRING);
-		msg.setUriScheme(Test.GENERAL_STRING);
 		msg.setWeatherServiceManifest(Test.GENERAL_WEATHER_SERVICE_MANIFEST);
 	}
 
@@ -53,10 +51,8 @@ public class AppServiceManifestTests extends TestCase {
 		// Test Values
 		Image serviceIcon = msg.getServiceIcon();
 		String serviceName = msg.getServiceName();
-		String uriPrefix = msg.getUriPrefix();
 		String appServiceType = msg.getServiceType();
 		boolean allowAppConsumers = msg.getAllowAppConsumers();
-		String uriSchemeObject = msg.getUriScheme();
 		SdlMsgVersion version = msg.getRpcSpecVersion();
 		List<Integer> handledRPCs = msg.getHandledRpcs();
 		WeatherServiceManifest weatherServiceManifestTest = msg.getWeatherServiceManifest();
@@ -66,9 +62,7 @@ public class AppServiceManifestTests extends TestCase {
 		assertEquals(Test.GENERAL_BOOLEAN, allowAppConsumers);
 		assertEquals(Test.GENERAL_IMAGE, serviceIcon);
 		assertEquals(Test.GENERAL_STRING, serviceName);
-		assertEquals(Test.GENERAL_STRING, uriPrefix);
 		assertEquals(Test.GENERAL_STRING, appServiceType);
-		assertEquals(Test.GENERAL_STRING, uriSchemeObject);
 		assertEquals(Test.GENERAL_SDLMSGVERSION, version);
 		assertEquals(Test.MATCH, Test.GENERAL_FUNCTION_ID_LIST, handledRPCs);
 		assertEquals(Test.GENERAL_WEATHER_SERVICE_MANIFEST, weatherServiceManifestTest);
@@ -80,10 +74,8 @@ public class AppServiceManifestTests extends TestCase {
 
 		assertNull(Test.NULL, msg.getServiceIcon());
 		assertNull(Test.NULL, msg.getServiceName());
-		assertNull(Test.NULL, msg.getUriPrefix());
 		assertNull(Test.NULL, msg.getServiceType());
 		assertNull(Test.NULL, msg.getAllowAppConsumers());
-		assertNull(Test.NULL, msg.getUriScheme());
 		assertNull(Test.NULL, msg.getRpcSpecVersion());
 		assertNull(Test.NULL, msg.getHandledRpcs());
 		assertNull(Test.NULL, msg.getWeatherServiceManifest());
@@ -102,12 +94,10 @@ public class AppServiceManifestTests extends TestCase {
 		try{
 			reference.put(AppServiceManifest.KEY_SERVICE_NAME, Test.GENERAL_STRING);
 			reference.put(AppServiceManifest.KEY_SERVICE_ICON, Test.GENERAL_IMAGE);
-			reference.put(AppServiceManifest.KEY_URI_PREFIX, Test.GENERAL_STRING);
 			reference.put(AppServiceManifest.KEY_SERVICE_TYPE, Test.GENERAL_STRING);
 			reference.put(AppServiceManifest.KEY_ALLOW_APP_CONSUMERS, Test.GENERAL_BOOLEAN);
 			reference.put(AppServiceManifest.KEY_RPC_SPEC_VERSION, Test.GENERAL_SDLMSGVERSION.serializeJSON());
 			reference.put(AppServiceManifest.KEY_HANDLED_RPCS, Test.GENERAL_FUNCTION_ID_LIST);
-			reference.put(AppServiceManifest.KEY_URI_SCHEME, Test.GENERAL_STRING);
 			reference.put(AppServiceManifest.KEY_WEATHER_SERVICE_MANIFEST, Test.GENERAL_WEATHER_SERVICE_MANIFEST);
 			reference.put(AppServiceManifest.KEY_MEDIA_SERVICE_MANIFEST, Test.GENERAL_MEDIA_SERVICE_MANIFEST);
 
