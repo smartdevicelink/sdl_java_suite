@@ -57,6 +57,7 @@ import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.ModuleData;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
+import com.smartdevicelink.proxy.rpc.NavigationInstruction;
 import com.smartdevicelink.proxy.rpc.OasisAddress;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
@@ -1630,6 +1631,63 @@ public class Validator{
 				return false;
 			}
 		}
+		return true;
+	}
+
+	public static boolean validateNavigationInstructionList(List<NavigationInstruction> item1Array, List<NavigationInstruction> item2Array) {
+		if(item1Array.size() != item2Array.size()){
+			return false;
+		}
+
+		for(int i = 0; i < item1Array.size(); i++){
+			if(!validateNavigationInstruction(item1Array.get(i), item2Array.get(i))){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean validateNavigationInstruction(NavigationInstruction item1, NavigationInstruction item2) {
+		if (item1 == null) {
+			return (item2 == null);
+		}
+
+		if (item2 == null) {
+			return (item1 == null);
+		}
+
+		if (!validateLocationDetails(item1.getLocationDetails(),item2.getLocationDetails())) {
+			return false;
+		}
+
+		if (!item1.getAction().equals(item2.getAction())) {
+			return false;
+		}
+
+		if (!validateDateTime(item1.getEta(),item2.getEta())) {
+			return false;
+		}
+
+		if (!item1.getBearing().equals(item2.getBearing())) {
+			return false;
+		}
+
+		if (!item1.getJunctionType().equals(item2.getJunctionType())) {
+			return false;
+		}
+
+		if (!item1.getDrivingSide().equals(item2.getDrivingSide())) {
+			return false;
+		}
+
+		if (!item1.getDetails().equals(item2.getDetails())) {
+			return false;
+		}
+
+		if (!validateImage(item1.getImage(),item2.getImage())) {
+			return false;
+		}
+
 		return true;
 	}
 

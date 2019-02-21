@@ -46,6 +46,7 @@ import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.ModuleData;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
+import com.smartdevicelink.proxy.rpc.NavigationInstruction;
 import com.smartdevicelink.proxy.rpc.OasisAddress;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
@@ -341,6 +342,7 @@ public class Test {
 	public static final NavigationAction               GENERAL_NAVIGATION_ACTION              = NavigationAction.STAY;
 	public static final NavigationJunction             GENERAL_NAVIGATION_JUNCTION            = NavigationJunction.BIFURCATION;
 	public static final Direction                      GENERAL_DIRECTION                      = Direction.RIGHT;
+	public static final NavigationInstruction          GENERAL_NAVIGATION_INSTRUCTION         = new NavigationInstruction();
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
@@ -427,6 +429,7 @@ public class Test {
 	public static final List<AppServiceCapability>      GENERAL_APPSERVICECAPABILITY_LIST      = Arrays.asList(GENERAL_APP_SERVICE_CAPABILITY);
 	public static final List<WeatherData>               GENERAL_WEATHERDATA_LIST               = Arrays.asList(GENERAL_WEATHERDATA);
 	public static final List<WeatherAlert>              GENERAL_WEATHERALERT_LIST              = Arrays.asList(GENERAL_WEATHERALERT);
+	public static final List<NavigationInstruction>     GENERAL_NAVIGATION_INSTRUCTION_LIST    = Arrays.asList(GENERAL_NAVIGATION_INSTRUCTION);
 
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();
@@ -976,6 +979,15 @@ public class Test {
 		GENERAL_APPSERVICE_DATA.setServiceId(GENERAL_STRING);
 		GENERAL_APPSERVICE_DATA.setWeatherServiceData(GENERAL_WEATHERSERVICE_DATA);
 		GENERAL_APPSERVICE_DATA.setMediaServiceData(GENERAL_MEDIASERVICE_DATA);
+
+		GENERAL_NAVIGATION_INSTRUCTION.setLocationDetails(GENERAL_LOCATIONDETAILS);
+		GENERAL_NAVIGATION_INSTRUCTION.setAction(GENERAL_NAVIGATION_ACTION);
+		GENERAL_NAVIGATION_INSTRUCTION.setEta(GENERAL_DATETIME);
+		GENERAL_NAVIGATION_INSTRUCTION.setBearing(GENERAL_INTEGER);
+		GENERAL_NAVIGATION_INSTRUCTION.setJunctionType(GENERAL_NAVIGATION_JUNCTION);
+		GENERAL_NAVIGATION_INSTRUCTION.setDrivingSide(GENERAL_DIRECTION);
+		GENERAL_NAVIGATION_INSTRUCTION.setDetails(GENERAL_STRING);
+		GENERAL_NAVIGATION_INSTRUCTION.setImage(GENERAL_IMAGE);
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

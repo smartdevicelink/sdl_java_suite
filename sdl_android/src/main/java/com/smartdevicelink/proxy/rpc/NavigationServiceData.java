@@ -102,7 +102,7 @@ public class NavigationServiceData extends RPCStruct {
 	 * always contain the next instruction.
 	 * @param instructions -
 	 */
-	public void setMinuteForecast(List<NavigationInstruction> instructions){
+	public void setInstructions(List<NavigationInstruction> instructions){
 		setValue(KEY_INSTRUCTIONS, instructions);
 	}
 
@@ -112,7 +112,7 @@ public class NavigationServiceData extends RPCStruct {
 	 * @return instructions
 	 */
 	@SuppressWarnings("unchecked")
-	public List<NavigationInstruction> getMinuteForecast(){
+	public List<NavigationInstruction> getInstructions(){
 		return (List<NavigationInstruction>) getObject(NavigationInstruction.class,KEY_INSTRUCTIONS);
 	}
 
