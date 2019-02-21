@@ -170,6 +170,10 @@ public class SdlProtocol {
         return mtu;
     }
 
+    public void resetSession (){
+        transportManager.resetSession();
+    }
+
     public boolean isConnected(){
         return transportManager != null && transportManager.isConnected(null,null);
     }

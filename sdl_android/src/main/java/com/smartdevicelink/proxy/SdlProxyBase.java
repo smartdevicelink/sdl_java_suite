@@ -535,12 +535,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 
 			if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1){
-				String info = String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion());
-				Log.w(TAG, info);
+				Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
 				endService(sessionType);
-				notifyProxyClosed(info, null, SdlDisconnectedReason.APPLICATION_REQUESTED_DISCONNECT);
 				try {
-					dispose();
+					cleanProxy(SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED);
 				} catch (SdlException e) {
 					e.printStackTrace();
 				}
@@ -1643,6 +1641,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	@SuppressWarnings("UnusedParameters")
 	private void cleanProxy(SdlDisconnectedReason disconnectedReason) throws SdlException {
+		if (disconnectedReason == SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED || disconnectedReason == SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED){
+			notifyProxyClosed(disconnectedReason.toString(), null,  disconnectedReason);
+			sdlSession.resetSession();
+		}
 		try {
 			
 			// ALM Specific Cleanup
@@ -2283,20 +2285,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 
 					if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1){
-						String info = String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion);
-						Log.w(TAG, info);
+						Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
 						try {
 							unregisterAppInterfacePrivate(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
 						} catch (SdlException e) {
 							e.printStackTrace();
 						}
-						notifyProxyClosed(info, null, SdlDisconnectedReason.APPLICATION_REQUESTED_DISCONNECT);
-						try {
-							dispose();
-						} catch (SdlException e) {
-							e.printStackTrace();
-						}
-						return;
+                        try {
+                            cleanProxy(SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED);
+                        } catch (SdlException e) {
+                            e.printStackTrace();
+                        }
+                        return;
 					}
 
 					_vehicleType = msg.getVehicleType();
