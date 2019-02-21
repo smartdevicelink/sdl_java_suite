@@ -105,6 +105,7 @@ import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
+import com.smartdevicelink.proxy.rpc.enums.Direction;
 import com.smartdevicelink.proxy.rpc.enums.DisplayMode;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.DistanceUnit;
@@ -137,6 +138,8 @@ import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.proxy.rpc.enums.MediaType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
+import com.smartdevicelink.proxy.rpc.enums.NavigationAction;
+import com.smartdevicelink.proxy.rpc.enums.NavigationJunction;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
@@ -335,6 +338,9 @@ public class Test {
 	public static final MediaServiceData               GENERAL_MEDIASERVICE_DATA              = new MediaServiceData();
 	public static final WeatherServiceData             GENERAL_WEATHERSERVICE_DATA            = new WeatherServiceData();
 	public static final AppServiceData                 GENERAL_APPSERVICE_DATA                = new AppServiceData();
+	public static final NavigationAction               GENERAL_NAVIGATION_ACTION              = NavigationAction.STAY;
+	public static final NavigationJunction             GENERAL_NAVIGATION_JUNCTION            = NavigationJunction.BIFURCATION;
+	public static final Direction                      GENERAL_DIRECTION                      = Direction.RIGHT;
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
