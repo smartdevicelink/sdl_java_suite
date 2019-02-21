@@ -2,11 +2,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
-
-import org.json.JSONObject;
 
 import java.util.Hashtable;
 import java.util.List;

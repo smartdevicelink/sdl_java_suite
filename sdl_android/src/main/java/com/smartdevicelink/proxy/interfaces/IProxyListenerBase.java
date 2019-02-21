@@ -51,7 +51,6 @@ import com.smartdevicelink.proxy.rpc.PerformAppServiceInteraction;
 import com.smartdevicelink.proxy.rpc.PerformAppServiceInteractionResponse;
 import com.smartdevicelink.proxy.rpc.PerformAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
-import com.smartdevicelink.proxy.rpc.PublishAppService;
 import com.smartdevicelink.proxy.rpc.PublishAppServiceResponse;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
