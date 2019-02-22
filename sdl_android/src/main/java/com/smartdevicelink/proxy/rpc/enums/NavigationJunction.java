@@ -27,7 +27,7 @@ public enum NavigationJunction {
 	 * Similar to a roundabout, however the center of the roundabout is fully traversable. Also
 	 * known as a mini-roundabout.
 	 */
-	TRAVESABLE_ROUNDABOUT,
+	TRAVERSABLE_ROUNDABOUT,
 
 	/**
 	 * A junction where lefts diverge to the right, then curve to the left, converting a left turn

@@ -26,7 +26,7 @@ public class NavigationJunctionTests extends TestCase {
 		NavigationJunction enumMultiCarriageway = NavigationJunction.valueForString(example);
 		example = "ROUNDABOUT";
 		NavigationJunction enumRoundabout = NavigationJunction.valueForString(example);
-		example = "TRAVESABLE_ROUNDABOUT";
+		example = "TRAVERSABLE_ROUNDABOUT";
 		NavigationJunction enumTraversableRoundabout = NavigationJunction.valueForString(example);
 		example = "JUGHANDLE";
 		NavigationJunction enumJughandle = NavigationJunction.valueForString(example);
@@ -39,7 +39,7 @@ public class NavigationJunctionTests extends TestCase {
 		assertNotNull("BIFURCATION returned null", enumBifurcation);
 		assertNotNull("MULTI_CARRIAGEWAY returned null", enumMultiCarriageway);
 		assertNotNull("ROUNDABOUT returned null", enumRoundabout);
-		assertNotNull("TRAVESABLE_ROUNDABOUT returned null", enumTraversableRoundabout);
+		assertNotNull("TRAVERSABLE_ROUNDABOUT returned null", enumTraversableRoundabout);
 		assertNotNull("JUGHANDLE returned null", enumJughandle);
 		assertNotNull("ALL_WAY_YIELD returned null", enumAllWayYield);
 		assertNotNull("TURN_AROUND returned null", enumTurnAround);
@@ -84,7 +84,7 @@ public class NavigationJunctionTests extends TestCase {
 		enumTestList.add(NavigationJunction.BIFURCATION);
 		enumTestList.add(NavigationJunction.MULTI_CARRIAGEWAY);
 		enumTestList.add(NavigationJunction.ROUNDABOUT);
-		enumTestList.add(NavigationJunction.TRAVESABLE_ROUNDABOUT);
+		enumTestList.add(NavigationJunction.TRAVERSABLE_ROUNDABOUT);
 		enumTestList.add(NavigationJunction.JUGHANDLE);
 		enumTestList.add(NavigationJunction.ALL_WAY_YIELD);
 		enumTestList.add(NavigationJunction.TURN_AROUND);
