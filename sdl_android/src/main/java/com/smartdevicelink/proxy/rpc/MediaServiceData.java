@@ -18,7 +18,7 @@ public class MediaServiceData extends RPCStruct {
 	public static final String KEY_IS_EXPLICIT = "isExplicit";
 	public static final String KEY_TRACK_PLAYBACK_PROGRESS = "trackPlaybackProgress";
 	public static final String KEY_TRACK_PLAYBACK_DURATION = "trackPlaybackDuration";
-	public static final String KEY_QUEUE_PLAYBACK_PROGRESS = "queuePlaybackProgess";
+	public static final String KEY_QUEUE_PLAYBACK_PROGRESS = "queuePlaybackProgress";
 	public static final String KEY_QUEUE_PLAYBACK_DURATION = "queuePlaybackDuration";
 	public static final String KEY_QUEUE_CURRENT_TRACK_NUMBER = "queueCurrentTrackNumber";
 	public static final String KEY_QUEUE_TOTAL_TRACK_COUNT = "queueTotalTrackCount";
