@@ -32,7 +32,7 @@ public class NavigationServiceDataTests extends TestCase {
 	public void setUp(){
 		msg = new NavigationServiceData();
 
-		msg.setTimestamp(Test.GENERAL_DATETIME);
+		msg.setTimeStamp(Test.GENERAL_DATETIME);
 		msg.setOrigin(Test.GENERAL_LOCATIONDETAILS);
 		msg.setDestination(Test.GENERAL_LOCATIONDETAILS);
 		msg.setDestinationETA(Test.GENERAL_DATETIME);
@@ -48,7 +48,7 @@ public class NavigationServiceDataTests extends TestCase {
 	 */
 	public void testRpcValues () {
 		// Test Values
-		DateTime timestamp = msg.getTimestamp();
+		DateTime timestamp = msg.getTimeStamp();
 		LocationDetails origin = msg.getOrigin();
 		LocationDetails destination = msg.getDestination();
 		DateTime destinationETA = msg.getDestinationETA();
@@ -73,7 +73,7 @@ public class NavigationServiceDataTests extends TestCase {
 		NavigationServiceData msg = new NavigationServiceData();
 		assertNotNull(Test.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getTimestamp());
+		assertNull(Test.NULL, msg.getTimeStamp());
 		assertNull(Test.NULL, msg.getOrigin());
 		assertNull(Test.NULL, msg.getDestination());
 		assertNull(Test.NULL, msg.getDestinationETA());
@@ -88,7 +88,7 @@ public class NavigationServiceDataTests extends TestCase {
 		NavigationServiceData msg = new NavigationServiceData(Test.GENERAL_DATETIME);
 		assertNotNull(Test.NOT_NULL, msg);
 
-		DateTime locationDetails = msg.getTimestamp();
+		DateTime locationDetails = msg.getTimeStamp();
 
 		assertEquals(Test.GENERAL_DATETIME, locationDetails);
 	}

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class NavigationServiceData extends RPCStruct {
 
-	public static final String KEY_TIMESTAMP = "timestamp";
+	public static final String KEY_TIMESTAMP = "timeStamp";
 	public static final String KEY_ORIGIN= "origin";
 	public static final String KEY_DESTINATION = "destination";
 	public static final String KEY_DESTINATION_ETA = "destinationETA";
@@ -30,28 +30,28 @@ public class NavigationServiceData extends RPCStruct {
 		super(hash);
 	}
 
-	public NavigationServiceData(@NonNull DateTime timestamp){
+	public NavigationServiceData(@NonNull DateTime timeStamp){
 		this();
-		setTimestamp(timestamp);
+		setTimeStamp(timeStamp);
 	}
 
 	// Setters and Getters
 
 	/**
-	 * This is the timestamp of when the data was generated. This is to ensure any time or distance
+	 * This is the timeStamp of when the data was generated. This is to ensure any time or distance
 	 * given in the data can accurately be adjusted if necessary.
-	 * @param timestamp -
+	 * @param timeStamp -
 	 */
-	public void setTimestamp(@NonNull DateTime timestamp){
-		setValue(KEY_TIMESTAMP, timestamp);
+	public void setTimeStamp(@NonNull DateTime timeStamp){
+		setValue(KEY_TIMESTAMP, timeStamp);
 	}
 
 	/**
-	 * This is the timestamp of when the data was generated. This is to ensure any time or distance
+	 * This is the timeStamp of when the data was generated. This is to ensure any time or distance
 	 * given in the data can accurately be adjusted if necessary.
-	 * @return timestamp
+	 * @return timeStamp
 	 */
-	public DateTime getTimestamp(){
+	public DateTime getTimeStamp(){
 		return (DateTime) getObject(DateTime.class, KEY_TIMESTAMP);
 	}
 
