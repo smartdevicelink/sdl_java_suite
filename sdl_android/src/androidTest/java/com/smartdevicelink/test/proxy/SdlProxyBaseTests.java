@@ -682,15 +682,5 @@ public class SdlProxyBaseTests extends AndroidTestCase2 {
 		@Override
 		public void onOnSystemCapabilityUpdated(OnSystemCapabilityUpdated notification){
 		}
-
-		@Override
-		public void onGetAppServiceData(GetAppServiceData request){
-
-		}
-
-		@Override
-		public void onPerformAppServiceInteraction(PerformAppServiceInteraction request){
-
-		}
 	}
 }
