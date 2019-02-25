@@ -83,7 +83,7 @@ public class RpcConverter {
     }
 
 
-    static RPCMessage convertTableToRpc(Hashtable<String,Object> rpcHashTable){
+    public static RPCMessage convertTableToRpc(Hashtable<String,Object> rpcHashTable){
 
         Hashtable<String,Object> params;
         if(rpcHashTable.containsKey((RPCMessage.KEY_RESPONSE))){

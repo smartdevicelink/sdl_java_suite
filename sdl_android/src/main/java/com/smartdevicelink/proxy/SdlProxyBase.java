@@ -30,6 +30,7 @@ import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.haptic.HapticInterfaceManager;
+import com.smartdevicelink.managers.lifecycle.RpcConverter;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -2288,55 +2289,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private void handleRPCMessage(Hashtable<String, Object> hash) {
 		RPCMessage rpcMsg = new RPCMessage(hash);
 		//Call format to ensure the RPC is ready to be handled regardless of RPC spec version
-
 		String functionName = rpcMsg.getFunctionName();
 		String messageType = rpcMsg.getMessageType();
 
+		// Requests need to be listened for using the SDLManager's addOnRPCRequestListener method.
+		// Requests are not supported by IProxyListenerBase
 		if (messageType.equals(RPCMessage.KEY_REQUEST)) {
-			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCRequest(rpcMsg), SDL_LIB_TRACE_KEY);
 
-			if (functionName.equals(FunctionID.GET_APP_SERVICE_DATA.toString())) {
-				// GetAppServiceData Request
-				final GetAppServiceData msg = new GetAppServiceData(hash);
-				msg.format(rpcSpecVersion, true);
-				if (_callbackToUIThread) {
-					// Run in UI thread
-					_mainUIHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							_proxyListener.onGetAppServiceData(msg);
-							onRPCRequestReceived(msg);
-						}
-					});
-				} else {
-					_proxyListener.onGetAppServiceData(msg);
-					onRPCRequestReceived(msg);
-				}
-			} else if (functionName.equals(FunctionID.PERFORM_APP_SERVICES_INTERACTION.toString())) {
-				// PerformAppServicesInteraction Request
-				final PerformAppServiceInteraction msg = new PerformAppServiceInteraction(hash);
-				msg.format(rpcSpecVersion, true);
-				if (_callbackToUIThread) {
-					// Run in UI thread
-					_mainUIHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							_proxyListener.onPerformAppServiceInteraction(msg);
-							onRPCRequestReceived(msg);
-						}
-					});
-				} else {
-					_proxyListener.onPerformAppServiceInteraction(msg);
-					onRPCRequestReceived(msg);
-				}
-			} else {
-				if (_sdlMsgVersion != null) {
-					DebugTool.logInfo("Unrecognized Request Message: " + functionName +
-							" connected to SDL using message version: " + _sdlMsgVersion.getMajorVersion() + "." + _sdlMsgVersion.getMinorVersion());
-				} else {
-					DebugTool.logInfo("Unrecognized Request Message: " + functionName);
-				}
-			} // END REQUEST IF
+			RPCMessage convertedRPCMsg = RpcConverter.convertTableToRpc(hash);
+			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCRequest((RPCRequest)convertedRPCMsg), SDL_LIB_TRACE_KEY);
+
+			if (convertedRPCMsg != null) {
+				convertedRPCMsg.format(rpcSpecVersion, true);
+				onRPCRequestReceived((RPCRequest) convertedRPCMsg);
+			}else{
+				DebugTool.logError("Received a null RPC Request, discarding.");
+			}
 
 		} else if (messageType.equals(RPCMessage.KEY_RESPONSE)) {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCResponse(rpcMsg), SDL_LIB_TRACE_KEY);

@@ -596,13 +596,4 @@ public class ProxyBridge implements IProxyListener{
 		onRPCReceived(notification);
 	}
 
-	@Override
-	public void onGetAppServiceData(GetAppServiceData request){
-		onRPCReceived(request);
-	}
-
-	@Override
-	public void onPerformAppServiceInteraction(PerformAppServiceInteraction request){
-		onRPCReceived(request);
-	}
 }
