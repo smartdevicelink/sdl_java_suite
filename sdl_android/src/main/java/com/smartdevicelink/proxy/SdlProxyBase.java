@@ -3635,6 +3635,27 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					        msg.getUrl() != null){
 					    lockScreenIconRequest = msg;
 					}
+					if(msg.getRequestType() == RequestType.ICON_URL){
+						//Download file and send RPC request
+						Thread handleOffBoardTransmissionThread = new Thread(){
+							@Override
+							public void run() {
+								byte[] file = HttpUtils.downloadFile(msg.getUrl());
+								if(file !=null ){
+									SystemRequest systemRequest = new SystemRequest();
+									systemRequest.setFileName(msg.getUrl());
+									systemRequest.setBulkData(file);
+									systemRequest.setRequestType(RequestType.ICON_URL);
+									try {
+										sendRPCRequestPrivate(systemRequest);
+									} catch (SdlException e) {
+										e.printStackTrace();
+									}
+								}
+							}
+						};
+						handleOffBoardTransmissionThread.start();
+					}
 					
 					msg.format(rpcSpecVersion, true);
 					if (_callbackToUIThread) {
