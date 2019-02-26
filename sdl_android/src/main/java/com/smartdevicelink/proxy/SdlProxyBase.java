@@ -2022,33 +2022,33 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				pm.setBulkData(message.getBulkData());
 			}
 
-			// Request Specifics
-			if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+
+			if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {  // Request Specifics
 				pm.setRPCType((byte)0x00);
 				RPCRequest request = (RPCRequest) message;
 				if (request.getCorrelationID() == null) {
 					//Log error here
 					throw new SdlException("CorrelationID cannot be null. RPC: " + request.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
+				} else {
+					pm.setCorrID(request.getCorrelationID());
 				}
-				pm.setCorrID(request.getCorrelationID());
-
 				if (request.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.name())) {
 					pm.setPriorityCoefficient(1);
 				}
-			}
-
-			// Response Specifics
-			if (message.getMessageType().equals(RPCMessage.KEY_RESPONSE)) {
+			} else if (message.getMessageType().equals(RPCMessage.KEY_RESPONSE)) {  // Response Specifics
 				pm.setRPCType((byte)0x01);
 				RPCResponse response = (RPCResponse) message;
-				if (response.getCorrelationID() != null) {
+				if (response.getCorrelationID() == null) {
+					//Log error here
+					throw new SdlException("CorrelationID cannot be null. RPC: " + response.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
+				} else {
 					pm.setCorrID(response.getCorrelationID());
 				}
-			}
-
-			// Notification Specifics
-			if (message.getMessageType().equals(RPCMessage.KEY_NOTIFICATION)) {
+			} else if (message.getMessageType().equals(RPCMessage.KEY_NOTIFICATION)) { // Notification Specifics
 				pm.setRPCType((byte)0x02);
+			} else {
+				//Log error here
+				throw new SdlException("RPC message is not a valid type", SdlExceptionCause.INVALID_ARGUMENT);
 			}
 
 			// Queue this outgoing message
