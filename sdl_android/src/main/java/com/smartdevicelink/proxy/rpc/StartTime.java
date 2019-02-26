@@ -55,31 +55,32 @@ public class StartTime extends RPCStruct {
     public StartTime(Hashtable<String, Object> hash) {
         super(hash);
     }
+
 	/**
 	 * Constructs a newly allocated StartTime object
 	 * @param timeInterval time interval in seconds
 	 */
 	public StartTime(@NonNull Integer timeInterval){
-        this();
-        int hours = timeInterval / 3600;
-        int minutes = (timeInterval % 3600) / 60;
-        int seconds = timeInterval % 60;
-        setHours(hours);
-        setMinutes(minutes);
-        setSeconds(seconds);
+		this();
+		int hours = timeInterval / 3600;
+		int minutes = (timeInterval % 3600) / 60;
+		int seconds = timeInterval % 60;
+		setHours(hours);
+		setMinutes(minutes);
+		setSeconds(seconds);
 	}
-    /**
-     * Constructs a newly allocated StartTime object
-     * @param hours The hour
-     * @param minutes The minute
-     * @param seconds The second
-     */
-    public StartTime(@NonNull Integer hours, @NonNull Integer minutes, @NonNull Integer seconds){
-        this();
-        setHours(hours);
-        setMinutes(minutes);
-        setSeconds(seconds);
-    }
+	/**
+	 * Constructs a newly allocated StartTime object
+	 * @param hours The hour
+	 * @param minutes The minute
+	 * @param seconds The second
+	 */
+	public StartTime(@NonNull Integer hours, @NonNull Integer minutes, @NonNull Integer seconds){
+		this();
+		setHours(hours);
+		setMinutes(minutes);
+		setSeconds(seconds);
+	}
     /**
      * Get the hour. Minvalue="0", maxvalue="59"
  *					<p><b>Note:</b></p>Some display types only support a max value of 19. If out of range, it will be rejected.
