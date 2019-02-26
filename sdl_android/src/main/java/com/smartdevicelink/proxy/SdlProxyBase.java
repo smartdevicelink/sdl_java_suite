@@ -256,6 +256,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	protected VideoStreamingManager manager; //Will move to SdlSession once the class becomes public
 
+	private Version minimumProtocolVersion;
+	private Version minimumRPCVersion;
+
 
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
@@ -529,6 +532,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}else{
 				setProtocolVersion(new com.smartdevicelink.util.Version(version,0,0));
 			}
+
+
+			if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1){
+				Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
+				endService(sessionType);
+				try {
+					cleanProxy(SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED);
+				} catch (SdlException e) {
+					e.printStackTrace();
+				}
+				return;
+        	}
+
 			
 			if (sessionType.eq(SessionType.RPC)) {	
 
@@ -1625,6 +1641,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	@SuppressWarnings("UnusedParameters")
 	private void cleanProxy(SdlDisconnectedReason disconnectedReason) throws SdlException {
+		if (disconnectedReason == SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED || disconnectedReason == SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED){
+			notifyProxyClosed(disconnectedReason.toString(), null,  disconnectedReason);
+			sdlSession.resetSession();
+		}
 		try {
 			
 			// ALM Specific Cleanup
@@ -2263,6 +2283,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}else{
 						rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
 					}
+
+					if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1){
+						Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+						try {
+							unregisterAppInterfacePrivate(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
+						} catch (SdlException e) {
+							e.printStackTrace();
+						}
+                        try {
+                            cleanProxy(SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED);
+                        } catch (SdlException e) {
+                            e.printStackTrace();
+                        }
+                        return;
+					}
+
 					_vehicleType = msg.getVehicleType();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 					_proxyVersionInfo = msg.getProxyVersionInfo();
@@ -7283,6 +7319,25 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		{
 			sdlSession.setSdlSecurity(sec);
 		}
+	}
+
+	/**
+	 * Sets the minimum protocol version that will be permitted to connect.
+	 * If the protocol version of the head unit connected is below this version,
+	 * the app will disconnect with an EndService protocol message and will not register.
+	 * @param minimumProtocolVersion
+	 */
+	public void setMinimumProtocolVersion(Version minimumProtocolVersion){
+		this.minimumProtocolVersion = minimumProtocolVersion;
+	}
+
+	/**
+	 * The minimum RPC version that will be permitted to connect.
+	 * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
+	 * @param minimumRPCVersion
+	 */
+	public void setMinimumRPCVersion(Version minimumRPCVersion){
+		this.minimumRPCVersion = minimumRPCVersion;
 	}
 
 	@SuppressWarnings("unused")

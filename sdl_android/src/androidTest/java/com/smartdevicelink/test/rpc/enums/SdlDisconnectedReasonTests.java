@@ -147,6 +147,8 @@ public class SdlDisconnectedReasonTests extends TestCase {
 		enumTestList.add(SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED);
 		enumTestList.add(SdlDisconnectedReason.RPC_SESSION_ENDED);
 		enumTestList.add(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
+		enumTestList.add(SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED);
+		enumTestList.add(SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
