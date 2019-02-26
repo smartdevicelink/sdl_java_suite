@@ -88,6 +88,71 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getUpdateMode());
 		assertNull(Test.NULL, msg.getAudioStreamingIndicator());
 	}
+
+	/**
+	 * Test static initializers
+	 */
+	public void testInitializers(){
+		Integer timeInterval1 = 5000;
+		StartTime startTime1 = new StartTime(timeInterval1);
+		Integer timeInterval2 = 7000;
+		StartTime startTime2 = new StartTime(timeInterval2);
+		SetMediaClockTimer msg;
+
+		msg = SetMediaClockTimer.countUpFromStartTimeInterval(timeInterval1, timeInterval2, Test.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.COUNTUP);
+		assertTrue(Test.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
+		assertTrue(Test.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
+		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+
+		msg = SetMediaClockTimer.countUpFromStartTime(startTime1, startTime2, Test.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.COUNTUP);
+		assertTrue(Test.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
+		assertTrue(Test.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
+		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+
+		msg = SetMediaClockTimer.countDownFromStartTimeInterval(timeInterval1, timeInterval2, Test.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.COUNTDOWN);
+		assertTrue(Test.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
+		assertTrue(Test.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
+		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+
+		msg = SetMediaClockTimer.countDownFromStartTime(startTime1, startTime2, Test.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.COUNTDOWN);
+		assertTrue(Test.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
+		assertTrue(Test.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
+		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+
+		msg = SetMediaClockTimer.pauseWithPlayPauseIndicator(Test.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.PAUSE);
+		assertNull(Test.NULL, msg.getStartTime());
+		assertNull(Test.NULL, msg.getEndTime());
+		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+
+		msg = SetMediaClockTimer.updatePauseWithNewStartTimeInterval(timeInterval1, timeInterval2, Test.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.PAUSE);
+		assertTrue(Test.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
+		assertTrue(Test.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
+		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+
+		msg = SetMediaClockTimer.updatePauseWithNewStartTime(startTime1, startTime2, Test.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.PAUSE);
+		assertTrue(Test.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
+		assertTrue(Test.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
+		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+
+		msg = SetMediaClockTimer.resumeWithPlayPauseIndicator(Test.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.RESUME);
+		assertNull(Test.NULL, msg.getStartTime());
+		assertNull(Test.NULL, msg.getEndTime());
+		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+
+		msg = SetMediaClockTimer.clearWithPlayPauseIndicator(Test.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.CLEAR);
+		assertNull(Test.NULL, msg.getStartTime());
+		assertNull(Test.NULL, msg.getEndTime());
+		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+	}
 	
 	/**
      * Tests a valid JSON construction of this RPC message.
