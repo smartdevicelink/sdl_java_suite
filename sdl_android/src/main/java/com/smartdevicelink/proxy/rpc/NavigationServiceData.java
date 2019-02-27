@@ -58,7 +58,7 @@ public class NavigationServiceData extends RPCStruct {
 	/**
 	 * @param origin -
 	 */
-	public void setOrigin(@NonNull LocationDetails origin){
+	public void setOrigin(LocationDetails origin){
 		setValue(KEY_ORIGIN, origin);
 	}
 
@@ -72,7 +72,7 @@ public class NavigationServiceData extends RPCStruct {
 	/**
 	 * @param destination -
 	 */
-	public void setDestination(@NonNull LocationDetails destination){
+	public void setDestination(LocationDetails destination){
 		setValue(KEY_DESTINATION, destination);
 	}
 

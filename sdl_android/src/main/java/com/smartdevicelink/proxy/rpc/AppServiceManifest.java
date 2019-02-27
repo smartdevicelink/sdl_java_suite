@@ -56,7 +56,7 @@ public class AppServiceManifest extends RPCStruct {
 	 * The type of service that is to be offered by this app
 	 * @param serviceType - the serviceType
 	 */
-	public void setServiceType(String serviceType){
+	public void setServiceType(@NonNull String serviceType){
 		setValue(KEY_SERVICE_TYPE, serviceType);
 	}
 

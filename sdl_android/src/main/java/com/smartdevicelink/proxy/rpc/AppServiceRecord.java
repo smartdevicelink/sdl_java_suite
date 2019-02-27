@@ -39,7 +39,7 @@ public class AppServiceRecord extends RPCStruct {
 	 * ID of this service
 	 * @param serviceId - the service ID
 	 */
-	public void setServiceId(String serviceId){
+	public void setServiceId(@NonNull String serviceId){
 		setValue(KEY_SERVICE_ID, serviceId);
 	}
 
@@ -55,7 +55,7 @@ public class AppServiceRecord extends RPCStruct {
 	 * the App Service Manifest
 	 * @param serviceManifest - the App Service Manifest
 	 */
-	public void setServiceManifest(AppServiceManifest serviceManifest){
+	public void setServiceManifest(@NonNull AppServiceManifest serviceManifest){
 		setValue(KEY_SERVICE_MANIFEST, serviceManifest);
 	}
 
@@ -72,7 +72,7 @@ public class AppServiceRecord extends RPCStruct {
 	 * unpublished, and should be considered unavailable.
 	 * @param servicePublished - boolean
 	 */
-	public void setServicePublished(Boolean servicePublished){
+	public void setServicePublished(@NonNull Boolean servicePublished){
 		setValue(KEY_SERVICE_PUBLISHED, servicePublished);
 	}
 
@@ -91,7 +91,7 @@ public class AppServiceRecord extends RPCStruct {
 	 * service of the supplied type. See servicePublished for its availability.
 	 * @param serviceActive - boolean
 	 */
-	public void setServiceActive(Boolean serviceActive){
+	public void setServiceActive(@NonNull Boolean serviceActive){
 		setValue(KEY_SERVICE_ACTIVE, serviceActive);
 	}
 

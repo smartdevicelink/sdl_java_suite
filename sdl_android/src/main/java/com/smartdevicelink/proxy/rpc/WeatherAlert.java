@@ -78,7 +78,7 @@ public class WeatherAlert extends RPCStruct {
 	 * Min Size: 1, Max Size: 99
 	 * @param regions -
 	 */
-	public void setRegions(List<String> regions) {
+	public void setRegions(@NonNull List<String> regions) {
 		setValue(KEY_REGIONS, regions);
 	}
 

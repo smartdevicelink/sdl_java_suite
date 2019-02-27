@@ -37,7 +37,7 @@ public class WeatherServiceData extends RPCStruct {
 	/**
 	 * @param location -
 	 */
-	public void setLocation(LocationDetails location) {
+	public void setLocation(@NonNull LocationDetails location) {
 		setValue(KEY_LOCATION, location);
 	}
 

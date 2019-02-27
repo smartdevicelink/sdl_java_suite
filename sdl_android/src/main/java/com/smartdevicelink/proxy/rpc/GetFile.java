@@ -41,7 +41,7 @@ public class GetFile extends RPCRequest {
 	 * maxlength="255"
 	 * @param fileName -
 	 */
-	public void setFileName(String fileName){
+	public void setFileName(@NonNull String fileName){
 		setParameters(KEY_FILE_NAME, fileName);
 	}
 

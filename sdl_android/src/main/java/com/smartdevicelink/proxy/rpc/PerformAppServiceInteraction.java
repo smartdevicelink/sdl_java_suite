@@ -36,7 +36,7 @@ public class PerformAppServiceInteraction extends RPCRequest {
 	 * makes no guarantee that this URI is correct.
 	 * @param serviceUri -
 	 */
-	public void setServiceUri(String serviceUri){
+	public void setServiceUri(@NonNull String serviceUri){
 		setParameters(KEY_SERVICE_URI, serviceUri);
 	}
 
@@ -53,7 +53,7 @@ public class PerformAppServiceInteraction extends RPCRequest {
 	 * The service ID that the app consumer wishes to send this URI.
 	 * @param appServiceId -
 	 */
-	public void setAppServiceId(String appServiceId){
+	public void setAppServiceId(@NonNull String appServiceId){
 		setParameters(KEY_SERVICE_ID, appServiceId);
 	}
 
@@ -69,7 +69,7 @@ public class PerformAppServiceInteraction extends RPCRequest {
 	 * This string is the appID of the app requesting the app service provider take the specific action.
 	 * @param originApp -
 	 */
-	public void setOriginApp(String originApp){
+	public void setOriginApp(@NonNull String originApp){
 		setParameters(KEY_ORIGIN_APP, originApp);
 	}
 
