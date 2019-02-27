@@ -53,4 +53,6 @@ public interface ISdlProtocol extends IProtocolListener {
     void setAcceptedVideoParams(VideoStreamingParameters acceptedVideoParams);
 
     void stopStream(SessionType serviceType);
+
+    void onAuthTokenReceived(String authToken);
 }

@@ -257,6 +257,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	protected VideoStreamingManager manager; //Will move to SdlSession once the class becomes public
 
+	protected String authToken;
 
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
@@ -677,6 +678,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else {
 				_proxyListener.onServiceDataACK(dataSize);						
 			}
+		}
+
+		@Override
+		public void onAuthTokenReceived(String authToken, byte sessionID) {
+			SdlProxyBase.this.authToken = authToken;
 		}
 	}
 
@@ -7432,6 +7438,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 
+	/**
+	 * Retrieves the auth token, if any, that was attached to the StartServiceACK for the RPC
+	 * service from the module. For example, this should be used to login to a user account.
+	 * @return the string representation of the auth token
+	 */
+	public String getAuthToken(){
+		return this.authToken;
+	}
 	/**
 	 * VideoStreamingManager houses all the elements needed to create a scoped, streaming manager for video projection. It is only a private, instance
 	 * dependant class at the moment until it can become public. Once the class is public and API defined, it will be moved into the SdlSession class
