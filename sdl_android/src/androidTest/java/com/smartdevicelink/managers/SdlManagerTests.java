@@ -302,7 +302,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 			}
 		};
 		try {
-			doAnswer(answer).when(sdlProxyBase).sendRPCMessage(any(RPCMessage.class));
+			doAnswer(answer).when(sdlProxyBase).sendRPC(any(RPCMessage.class));
 		} catch (SdlException e) {
 			e.printStackTrace();
 		}

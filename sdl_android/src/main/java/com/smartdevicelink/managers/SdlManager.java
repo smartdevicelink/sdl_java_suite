@@ -421,7 +421,7 @@ public class SdlManager{
 	 */
 	public void sendRPC(RPCMessage message) {
 		try{
-			proxy.sendRPCMessage(message);
+			proxy.sendRPC(message);
 		}catch (SdlException exception){
 			handleSdlException(exception);
 		}
@@ -664,7 +664,7 @@ public class SdlManager{
 		@Override
 		public void sendRPCRequest(RPCRequest message){
 			try {
-				proxy.sendRPCMessage(message);
+				proxy.sendRPC(message);
 			} catch (SdlException e) {
 				e.printStackTrace();
 			}
