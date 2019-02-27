@@ -16,6 +16,7 @@ import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.test.Test;
 
@@ -213,6 +214,27 @@ public class FileManagerTests extends AndroidTestCase2 {
 						assertFalse(success);
 						assertFalse(fileManager.getRemoteFileNames().contains(validFile.getName()));
 						assertFalse(fileManager.hasUploadedFile(validFile));
+					}
+				});
+			}
+		});
+	}
+
+	public void testFileUploadForStaticIcon(){
+		ISdl internalInterface = mock(ISdl.class);
+
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPCRequest(any(ListFiles.class));
+
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext);
+		fileManager.start(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				assertTrue(success);
+				SdlArtwork artwork = new SdlArtwork(StaticIconName.ALBUM);
+				fileManager.uploadFile(artwork, new CompletionListener() {
+					@Override
+					public void onComplete(boolean success) {
+						assertTrue(success);
 					}
 				});
 			}

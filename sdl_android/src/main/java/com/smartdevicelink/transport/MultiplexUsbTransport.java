@@ -62,7 +62,8 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
     private final Bundle deviceInfo;
     private ReaderThread readerThread;
     private WriterThread writerThread;
-    private final ParcelFileDescriptor parcelFileDescriptor;
+    private ParcelFileDescriptor parcelFileDescriptor;
+    private Boolean connectionSuccessful = null;
 
     MultiplexUsbTransport(ParcelFileDescriptor parcelFileDescriptor, Handler handler, Bundle bundle){
         super(handler, TransportType.USB);
@@ -99,9 +100,18 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
     public synchronized void start(){
         setState(STATE_CONNECTING);
         FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        if(fileDescriptor == null || !fileDescriptor.valid()){
+            Log.e(TAG, "USB FD was null or not valid,");
+            setState(STATE_NONE);
+            return;
+        }
         readerThread = new ReaderThread(fileDescriptor);
+        readerThread.setDaemon(true);
         writerThread = new WriterThread(fileDescriptor);
+        writerThread.setDaemon(true);
 
+        readerThread.start();
+        writerThread.start();
 
         // Send the name of the connected device back to the UI Activity
         Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
@@ -112,29 +122,33 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         handler.sendMessage(msg);
 
         setState(STATE_CONNECTED);
-        readerThread.start();
-        writerThread.start();
     }
 
     protected synchronized void stop(int stateToTransitionTo) {
         //Log.d(TAG, "Attempting to close the Usb transports");
         if (writerThread != null) {
             writerThread.cancel();
+            writerThread.interrupt();
             writerThread = null;
         }
 
         if (readerThread != null) {
             readerThread.cancel();
+            readerThread.interrupt();
             readerThread = null;
         }
 
-        if(parcelFileDescriptor != null){
+        if( (connectionSuccessful== null || connectionSuccessful == true )      //else, the connection was bad. Not closing the PFD helps recover
+                && parcelFileDescriptor != null){
             try {
                 parcelFileDescriptor.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        parcelFileDescriptor = null;
+
+        System.gc();
 
         setState(stateToTransitionTo);
     }
@@ -182,8 +196,12 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         bundle.putString(LOG, "Device connection was lost");
         msg.setData(bundle);
         handler.sendMessage(msg);
-        stop();
-
+        handler.postDelayed(new Runnable() { //sends this stop back to the main thread to exit the reader thread
+            @Override
+            public void run() {
+                stop();
+            }
+        }, 250);
     }
 
     private class ReaderThread extends Thread{
@@ -199,7 +217,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         @Override
         public void run() {             //FIXME probably check to see what the BT does
             super.run();
-            final int READ_BUFFER_SIZE = 4096;
+            final int READ_BUFFER_SIZE = 16384;
             byte[] buffer = new byte[READ_BUFFER_SIZE];
             int bytesRead;
             boolean stateProgress;
@@ -220,6 +238,9 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                     if (isInterrupted()) {
                         Log.w(TAG,"Read some data, but thread is interrupted");
                         return;
+                    }
+                    if(connectionSuccessful != null && connectionSuccessful == false){
+                        connectionSuccessful = true;
                     }
                     byte input;
                     for(int i=0;i<bytesRead; i++){
@@ -284,12 +305,11 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         public WriterThread(FileDescriptor fileDescriptor) {
             //Log.d(TAG, "Creating a Connected - Write Thread");
             OutputStream tmpOut = null;
-            setName("SDL Router BT Write Thread");
+            setName("SDL USB Write Thread");
             // Get the Usb output streams
             mmOutStream = new FileOutputStream(fileDescriptor);
-
-
         }
+
         /**
          * Write to the connected OutStream.
          * @param buffer  The bytes to write
@@ -302,6 +322,9 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                 }
                 //This would be a good spot to log out all bytes received
                 mmOutStream.write(buffer, offset, count);
+                if(connectionSuccessful == null){
+                    connectionSuccessful = false;
+                }
                 //Log.w(TAG, "Wrote out to device: bytes = "+ count);
             } catch (IOException|NullPointerException e) { // STRICTLY to catch mmOutStream NPE
                 // Exception during write

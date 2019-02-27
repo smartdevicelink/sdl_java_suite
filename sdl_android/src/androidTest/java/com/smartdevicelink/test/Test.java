@@ -179,6 +179,7 @@ import com.smartdevicelink.proxy.rpc.enums.VideoStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.WayPointType;
+import com.smartdevicelink.util.Version;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -345,7 +346,7 @@ public class Test {
 	public static final NavigationJunction             GENERAL_NAVIGATION_JUNCTION            = NavigationJunction.BIFURCATION;
 	public static final Direction                      GENERAL_DIRECTION                      = Direction.RIGHT;
 	public static final NavigationInstruction          GENERAL_NAVIGATION_INSTRUCTION         = new NavigationInstruction();
-
+	public static final Version                        GENERAL_VERSION    	                  = new Version("4.0.0");
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
 	public static final TemperatureUnit 			   GENERAL_TEMPERATUREUNIT                = TemperatureUnit.CELSIUS;

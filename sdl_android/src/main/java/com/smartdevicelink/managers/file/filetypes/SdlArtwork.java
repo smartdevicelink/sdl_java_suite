@@ -3,13 +3,17 @@ package com.smartdevicelink.managers.file.filetypes;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
+import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 
 /**
  * A class that extends SdlFile, representing artwork (JPEG, PNG, or BMP) to be uploaded to core
  */
 public class SdlArtwork extends SdlFile {
     private boolean isTemplate;
+    private Image imageRPC;
 
     public SdlArtwork(){}
 
@@ -23,6 +27,10 @@ public class SdlArtwork extends SdlFile {
 
     public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, byte[] data, boolean persistentFile) {
         super(fileName, fileType, data, persistentFile);
+    }
+
+    public SdlArtwork(@NonNull StaticIconName staticIconName) {
+        super(staticIconName);
     }
 
     /**
@@ -49,5 +57,22 @@ public class SdlArtwork extends SdlFile {
         }else{
             throw new IllegalArgumentException("Only JPEG, PNG, and BMP image types are supported.");
         }
+    }
+
+    /**
+     * Get the Image RPC representing this artwork. Generally for use internally, you should instead pass an artwork to a Screen Manager method.
+     * @return The Image RPC representing this artwork.
+     */
+    public Image getImageRPC() {
+        if (imageRPC == null) {
+            if (isStaticIcon()) {
+                imageRPC = new Image(getName(), ImageType.STATIC);
+                imageRPC.setIsTemplate(true);
+            } else {
+                imageRPC = new Image(getName(), ImageType.DYNAMIC);
+                imageRPC.setIsTemplate(isTemplate);
+            }
+        }
+        return imageRPC;
     }
 }

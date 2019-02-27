@@ -40,6 +40,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -51,6 +52,8 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.smartdevicelink.util.AndroidTools;
+
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 @TargetApi(12)
@@ -103,12 +106,13 @@ public class UsbTransferProvider {
         if(context == null || service == null || usbAccessory == null){
             throw new IllegalStateException("Supplied params are not correct. Context == null? "+ (context==null) + " ComponentName == null? " + (service == null) + " Usb Accessory == null? " + usbAccessory);
         }
-        this.context = context;
-        this.routerService = service;
-        this.callback = callback;
-        this.clientMessenger = new Messenger(new ClientHandler(this));
-        usbPfd = getFileDescriptor(usbAccessory);
-        if(usbPfd != null){
+        usbPfd = getFileDescriptor(usbAccessory, context);
+        if(usbPfd != null && usbPfd.getFileDescriptor() != null && usbPfd.getFileDescriptor().valid()){
+            this.context = context;
+            this.routerService = service;
+            this.callback = callback;
+            this.clientMessenger = new Messenger(new ClientHandler(this));
+
             usbInfoBundle = new Bundle();
             usbInfoBundle.putString(MultiplexUsbTransport.MANUFACTURER, usbAccessory.getManufacturer());
             usbInfoBundle.putString(MultiplexUsbTransport.MODEL, usbAccessory.getModel());
@@ -117,20 +121,28 @@ public class UsbTransferProvider {
             usbInfoBundle.putString(MultiplexUsbTransport.SERIAL, usbAccessory.getSerial());
             usbInfoBundle.putString(MultiplexUsbTransport.DESCRIPTION, usbAccessory.getDescription());
             checkIsConnected();
+        }else{
+            Log.e(TAG, "Unable to open accessory");
+            clientMessenger = null;
+            if(callback != null){
+                callback.onUsbTransferUpdate(false);
+            }
         }
 
     }
 
     @SuppressLint("NewApi")
-    private ParcelFileDescriptor getFileDescriptor(UsbAccessory accessory) {
-        try {
-            UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+    private ParcelFileDescriptor getFileDescriptor(UsbAccessory accessory, Context context) {
+        if (AndroidTools.isUSBCableConnected(context)) {
+            try {
+                UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
 
-            if (manager != null) {
-                return manager.openAccessory(accessory);
+                if (manager != null) {
+                    return manager.openAccessory(accessory);
+                }
+            } catch (Exception e) {
             }
-        }catch (Exception e){}
-
+        }
         return  null;
     }
 
@@ -181,11 +193,19 @@ public class UsbTransferProvider {
     }
 
     private void finish(){
+       try {
+            usbPfd.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        usbPfd = null;
+        unBindFromService();
+        routerServiceMessenger =null;
+        context = null;
+        System.gc();
         if(callback != null){
             callback.onUsbTransferUpdate(true);
         }
-        unBindFromService();
-        routerServiceMessenger =null;
     }
 
     static class ClientHandler extends Handler {

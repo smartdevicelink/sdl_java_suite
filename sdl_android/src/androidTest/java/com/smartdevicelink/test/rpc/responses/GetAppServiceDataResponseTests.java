@@ -5,6 +5,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.AppServiceData;
 import com.smartdevicelink.proxy.rpc.GetAppServiceDataResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
@@ -56,7 +57,7 @@ public class GetAppServiceDataResponseTests extends BaseRpcTests {
 		assertEquals(Test.GENERAL_APPSERVICE_DATA, serviceData);
 
 		// test constructor
-		msg = new GetAppServiceDataResponse(Test.GENERAL_APPSERVICE_DATA);
+		msg = new GetAppServiceDataResponse(true, Result.SUCCESS, Test.GENERAL_APPSERVICE_DATA);
 		serviceData = msg.getServiceData();
 		assertEquals(Test.GENERAL_APPSERVICE_DATA, serviceData);
 	}

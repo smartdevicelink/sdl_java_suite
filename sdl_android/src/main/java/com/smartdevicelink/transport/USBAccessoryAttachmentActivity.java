@@ -98,7 +98,6 @@ public class USBAccessoryAttachmentActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkUsbAccessoryIntent("Create");
     }
 
     @Override
@@ -107,7 +106,16 @@ public class USBAccessoryAttachmentActivity extends Activity {
         checkUsbAccessoryIntent("Resume");
     }
 
-    private void checkUsbAccessoryIntent(String sourceAction) {
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        this.setIntent(intent);
+    }
+
+    private synchronized void checkUsbAccessoryIntent(String sourceAction) {
+        if(usbAccessory != null){
+            return;
+        }
         final Intent intent = getIntent();
         String action = intent.getAction();
         Log.d(TAG, sourceAction + " with action: " + action);
@@ -118,8 +126,16 @@ public class USBAccessoryAttachmentActivity extends Activity {
 
             wakeUpRouterService(getApplicationContext());
 
+        }else{
+            finish();
         }
+    }
 
+    @Override
+    protected void onDestroy() {
+        usbAccessory = null;
+        permissionGranted = null;
+        super.onDestroy();
     }
 
     @SuppressWarnings("deprecation")
