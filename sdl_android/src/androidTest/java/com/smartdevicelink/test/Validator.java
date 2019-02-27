@@ -55,6 +55,7 @@ import com.smartdevicelink.proxy.rpc.ModuleData;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
 import com.smartdevicelink.proxy.rpc.NavigationInstruction;
+import com.smartdevicelink.proxy.rpc.NavigationServiceData;
 import com.smartdevicelink.proxy.rpc.NavigationServiceManifest;
 import com.smartdevicelink.proxy.rpc.OasisAddress;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
@@ -1647,6 +1648,14 @@ public class Validator{
 	}
 
 	public static boolean validateNavigationInstructionList(List<NavigationInstruction> item1Array, List<NavigationInstruction> item2Array) {
+        if (item1Array == null && item2Array == null){
+            return true;
+        }
+
+        if (item1Array == null || item2Array == null){
+            return false;
+        }
+
 		if(item1Array.size() != item2Array.size()){
 			return false;
 		}
@@ -1798,6 +1807,54 @@ public class Validator{
 
 		return true;
 	}
+
+    public static boolean validateNavigationServiceData(NavigationServiceData item1, NavigationServiceData item2) {
+        if (item1 == null) {
+            return (item2 == null);
+        }
+
+        if (item2 == null) {
+            return (item1 == null);
+        }
+
+        if (!validateDateTime(item1.getTimeStamp(), item2.getTimeStamp())) {
+            return false;
+        }
+
+        if (!validateLocationDetails(item1.getOrigin(), item2.getOrigin())) {
+            return false;
+        }
+
+        if (!validateLocationDetails(item1.getDestination(), item2.getDestination())) {
+            return false;
+        }
+
+        if (!validateDateTime(item1.getDestinationETA(), item2.getDestinationETA())) {
+            return false;
+        }
+
+        if (!validateNavigationInstructionList(item1.getInstructions(), item2.getInstructions())) {
+            return false;
+        }
+
+        if (!validateDateTime(item1.getNextInstructionETA(), item2.getNextInstructionETA())) {
+            return false;
+        }
+
+        if (item1.getNextInstructionDistance() != null && item2.getNextInstructionDistance() != null && !item1.getNextInstructionDistance().equals(item2.getNextInstructionDistance())) {
+            return false;
+        }
+
+        if (item1.getNextInstructionDistanceScale() != null && item2.getNextInstructionDistanceScale() != null  && !item1.getNextInstructionDistanceScale().equals(item2.getNextInstructionDistanceScale())) {
+            return false;
+        }
+
+        if (item1.getPrompt() != null && item1.getPrompt() != null && !item1.getPrompt().equals(item2.getPrompt())) {
+            return false;
+        }
+
+        return true;
+    }
 
 	public static boolean validateWeatherAlert(WeatherAlert item1, WeatherAlert item2) {
 		if (item1 == null) {

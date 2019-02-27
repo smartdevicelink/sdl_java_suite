@@ -47,6 +47,7 @@ import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.ModuleData;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
 import com.smartdevicelink.proxy.rpc.NavigationInstruction;
+import com.smartdevicelink.proxy.rpc.NavigationServiceData;
 import com.smartdevicelink.proxy.rpc.NavigationServiceManifest;
 import com.smartdevicelink.proxy.rpc.OasisAddress;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
@@ -338,6 +339,7 @@ public class Test {
 	public static final MediaType                      GENERAL_MEDIATYPE                      = MediaType.MUSIC;
 	public static final MediaServiceData               GENERAL_MEDIASERVICE_DATA              = new MediaServiceData();
 	public static final WeatherServiceData             GENERAL_WEATHERSERVICE_DATA            = new WeatherServiceData();
+	public static final NavigationServiceData          GENERAL_NAVIGATIONSERVICE_DATA         = new NavigationServiceData();
 	public static final AppServiceData                 GENERAL_APPSERVICE_DATA                = new AppServiceData();
 	public static final NavigationAction               GENERAL_NAVIGATION_ACTION              = NavigationAction.STAY;
 	public static final NavigationJunction             GENERAL_NAVIGATION_JUNCTION            = NavigationJunction.BIFURCATION;

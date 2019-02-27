@@ -17,6 +17,8 @@ public class AppServiceData extends RPCStruct {
 	public static final String KEY_SERVICE_ID   = "serviceID";
 	public static final String KEY_MEDIA_SERVICE_DATA = "mediaServiceData";
 	public static final String KEY_WEATHER_SERVICE_DATA = "weatherServiceData";
+	public static final String KEY_NAVIGATION_SERVICE_DATA = "navigationServiceData";
+
 
 	// Constructors
 	public AppServiceData() { }
@@ -87,6 +89,20 @@ public class AppServiceData extends RPCStruct {
 	 */
 	public WeatherServiceData getWeatherServiceData() {
 		return (WeatherServiceData) getObject(WeatherServiceData.class,KEY_WEATHER_SERVICE_DATA);
+	}
+
+	/**
+	 * @param navigationServiceData -
+	 */
+	public void setNavigationServiceData(NavigationServiceData navigationServiceData) {
+		setValue(KEY_NAVIGATION_SERVICE_DATA, navigationServiceData);
+	}
+
+	/**
+	 * @return navigationServiceData -
+	 */
+	public NavigationServiceData getNavigationServiceData() {
+		return (NavigationServiceData) getObject(NavigationServiceData.class, KEY_NAVIGATION_SERVICE_DATA);
 	}
 
 }
