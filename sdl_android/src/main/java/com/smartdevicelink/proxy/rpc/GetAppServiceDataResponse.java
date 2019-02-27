@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Hashtable;
 
@@ -24,9 +25,11 @@ public class GetAppServiceDataResponse extends RPCResponse {
 		super(hash);
 	}
 
-	public GetAppServiceDataResponse(@NonNull AppServiceData serviceData){
+	public GetAppServiceDataResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull AppServiceData serviceData){
 		this();
 		setServiceData(serviceData);
+		setSuccess(success);
+		setResultCode(resultCode);
 	}
 
 	// Setters and Getters
