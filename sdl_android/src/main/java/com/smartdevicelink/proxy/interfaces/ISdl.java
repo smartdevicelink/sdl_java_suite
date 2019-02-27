@@ -130,7 +130,14 @@ public interface ISdl {
      * Pass an RPC message through the proxy to be sent to the connected module
      * @param message RPCRequest that should be sent to the module
      */
+    @Deprecated
     void sendRPCRequest(RPCRequest message);
+
+    /**
+     * Pass an RPC message through the proxy to be sent to the connected module
+     * @param message RPCRequest that should be sent to the module
+     */
+    void sendRPC(RPCRequest message);
 
     /**
      * Pass a list of RPC requests through the proxy to be sent to core

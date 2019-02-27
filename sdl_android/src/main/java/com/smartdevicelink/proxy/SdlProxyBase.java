@@ -312,7 +312,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		}
 
-		@Override		public void stopAudioService() {
+		@Override public void stopAudioService() {
 			if(isConnected()){
 				sdlSession.endService(SessionType.PCM,sdlSession.getSessionId());
 			}
@@ -320,6 +320,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void sendRPCRequest(RPCRequest message){
+			try {
+				SdlProxyBase.this.sendRPCRequest(message);
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void sendRPC(RPCRequest message) {
 			try {
 				SdlProxyBase.this.sendRPCRequest(message);
 			} catch (SdlException e) {

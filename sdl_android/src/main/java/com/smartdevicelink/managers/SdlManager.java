@@ -671,6 +671,15 @@ public class SdlManager{
 		}
 
 		@Override
+		public void sendRPC(RPCRequest message) {
+			try {
+				proxy.sendRPC(message);
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
 		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
 			try {
 				proxy.sendRequests(rpcs, listener);
