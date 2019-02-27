@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.ByteBuffer;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 
 public class HttpUtils{
 
@@ -22,7 +22,7 @@ public class HttpUtils{
         return result;
     }
 
-    public static byte[] downloadFile(String urlStr){
+    public static byte[] downloadFile(@NonNull String urlStr){
         try {
             URL url = new URL(urlStr);
             URLConnection connection = url.openConnection();
@@ -30,7 +30,7 @@ public class HttpUtils{
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
             int nRead;
-            byte[] data = new byte[4000];
+            byte[] data = new byte[4096];
 
             while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
                 buffer.write(data, 0, nRead);

@@ -94,6 +94,7 @@ import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.HttpUtils;
 import com.smartdevicelink.util.Version;
 
 import org.json.JSONArray;
@@ -1172,26 +1173,26 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		boolean bLegacy = false;
 		
 		String sURLString;
-		if (!getPoliciesURL().equals(""))
+		if (!getPoliciesURL().equals("")) {
 			sURLString = sPoliciesURL;
-		else
+		} else {
 			sURLString = msg.getUrl();
-
+		}
 		Integer iTimeout = msg.getTimeout();
 
 		if (iTimeout == null)
 			iTimeout = 2000;
 		
 		Headers myHeader = msg.getHeader();			
-		
+		RequestType requestType = msg.getRequestType();
 		updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "sendOnSystemRequestToUrl");
 		updateBroadcastIntent(sendIntent, "COMMENT5", "\r\nCloud URL: " + sURLString);	
 		
 		try 
 		{
-			if (myHeader == null)
+			if (myHeader == null) {
 				updateBroadcastIntent(sendIntent, "COMMENT7", "\r\nHTTPRequest Header is null");
-			
+			}
 			String sBodyString = msg.getBody();			
 			
 			JSONObject jsonObjectToSendToServer;
@@ -1199,7 +1200,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			int length;
 			if (sBodyString == null)
 			{		
-				if(RequestType.HTTP.equals(msg.getRequestType())){
+				if(requestType == RequestType.HTTP ){
 					length = msg.getBulkData().length;
 					Intent sendIntent3 = createBroadcastIntent();
 					updateBroadcastIntent(sendIntent3, "FUNCTION_NAME", "replace");
@@ -1237,7 +1238,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 
 			DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
-			if(RequestType.HTTP.equals(msg.getRequestType())){
+			if(requestType == RequestType.HTTP){
 				wr.write(msg.getBulkData());
 			}else{
 				wr.writeBytes(valid_json);
@@ -1274,7 +1275,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		    rd.close();
 		    //We've read the body
-		    if(RequestType.HTTP.equals(msg.getRequestType())){
+		    if(requestType == RequestType.HTTP){
 		    	// Create the SystemRequest RPC to send to module.
 		    	PutFile putFile = new PutFile();
 		    	putFile.setFileType(FileType.JSON);
@@ -3617,47 +3618,47 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					
 					final OnSystemRequest msg = new OnSystemRequest(hash);
 					msg.format(rpcSpecVersion,true);
-					if ((msg.getUrl() != null) &&
-							(((msg.getRequestType() == RequestType.PROPRIETARY) && (msg.getFileType() == FileType.JSON)) 
-									|| ((msg.getRequestType() == RequestType.HTTP) && (msg.getFileType() == FileType.BINARY)))){
-						Thread handleOffboardTransmissionThread = new Thread() {
-							@Override
-							public void run() {
-								sendOnSystemRequestToUrl(msg);
-							}
-						};
+					RequestType requestType = msg.getRequestType();
 
-						handleOffboardTransmissionThread.start();
-					}
-					
-					
-					if(msg.getRequestType() == RequestType.LOCK_SCREEN_ICON_URL &&
-					        msg.getUrl() != null){
-					    lockScreenIconRequest = msg;
-					}
-					if(msg.getRequestType() == RequestType.ICON_URL){
-						//Download file and send RPC request
-						Thread handleOffBoardTransmissionThread = new Thread(){
-							@Override
-							public void run() {
-								byte[] file = HttpUtils.downloadFile(msg.getUrl());
-								if(file !=null ){
-									SystemRequest systemRequest = new SystemRequest();
-									systemRequest.setFileName(msg.getUrl());
-									systemRequest.setBulkData(file);
-									systemRequest.setRequestType(RequestType.ICON_URL);
-									try {
-										sendRPCRequestPrivate(systemRequest);
-									} catch (SdlException e) {
-										e.printStackTrace();
+					if(msg.getUrl() != null) {
+						if (((requestType == RequestType.PROPRIETARY) && (msg.getFileType() == FileType.JSON))
+										|| ((requestType == RequestType.HTTP) && (msg.getFileType() == FileType.BINARY))) {
+							Thread handleOffboardTransmissionThread = new Thread() {
+								@Override
+								public void run() {
+									sendOnSystemRequestToUrl(msg);
+								}
+							};
+
+							handleOffboardTransmissionThread.start();
+						} else if (requestType == RequestType.LOCK_SCREEN_ICON_URL) {
+							//Cache this for when the lockscreen is displayed
+							lockScreenIconRequest = msg;
+						} else if (requestType == RequestType.ICON_URL) {
+							//Download the icon file and send SystemRequest RPC
+							Thread handleOffBoardTransmissionThread = new Thread() {
+								@Override
+								public void run() {
+									byte[] file = HttpUtils.downloadFile(msg.getUrl());
+									if (file != null) {
+										SystemRequest systemRequest = new SystemRequest();
+										systemRequest.setFileName(msg.getUrl());
+										systemRequest.setBulkData(file);
+										systemRequest.setRequestType(RequestType.ICON_URL);
+										try {
+											sendRPCRequestPrivate(systemRequest);
+										} catch (SdlException e) {
+											e.printStackTrace();
+										}
+									}else{
+										DebugTool.logError("File was null at: " + msg.getUrl());
 									}
 								}
-							}
-						};
-						handleOffBoardTransmissionThread.start();
+							};
+							handleOffBoardTransmissionThread.start();
+						}
 					}
 					
-					msg.format(rpcSpecVersion, true);
 					if (_callbackToUIThread) {
 						// Run in UI thread
 						_mainUIHandler.post(new Runnable() {
