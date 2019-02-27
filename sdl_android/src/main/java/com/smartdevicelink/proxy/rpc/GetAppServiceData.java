@@ -47,7 +47,7 @@ public class GetAppServiceData extends RPCRequest {
 	/**
 	 * @param appServiceType - the appServiceType
 	 */
-	public void setServiceType(String appServiceType){
+	public void setServiceType(@NonNull String appServiceType){
 		setParameters(KEY_SERVICE_TYPE, appServiceType);
 	}
 
