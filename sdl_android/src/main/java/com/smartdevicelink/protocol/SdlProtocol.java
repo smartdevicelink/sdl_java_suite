@@ -1147,7 +1147,7 @@ public class SdlProtocol {
                 activeTransports.remove(SessionType.PCM);
             }
 
-            if(disconnectedTransport.equals(getTransportForSession(SessionType.RPC))){
+            if(disconnectedTransport.equals(getTransportForSession(SessionType.RPC)) || disconnectedTransport.equals(connectedPrimaryTransport)){
                 //transportTypes.remove(type);
                 boolean primaryTransportAvailable = false;
                 if(requestedPrimaryTransports != null && requestedPrimaryTransports.size() > 1){
@@ -1161,6 +1161,7 @@ public class SdlProtocol {
                         }
                     }
                 }
+                connectedPrimaryTransport = null;
                 transportManager.close(iSdlProtocol.getSessionId());
                 transportManager = null;
                 requestedSession = false;

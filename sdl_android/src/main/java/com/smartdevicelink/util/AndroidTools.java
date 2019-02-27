@@ -35,11 +35,13 @@ package com.smartdevicelink.util;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
+import android.os.BatteryManager;
 
 import com.smartdevicelink.transport.TransportConstants;
 
@@ -160,4 +162,15 @@ public class AndroidTools {
 		}
 	}
 
+	/**
+	 * Checks if the usb cable is physically connected or not
+	 * Note: the intent here is a sticky intent so registerReceiver is actually a synchronous call and doesn't register a receiver on each call
+	 * @param context a context instance
+	 * @return boolean value that represents whether the usb cable is physically connected or not
+	 */
+	public static boolean isUSBCableConnected(Context context) {
+		Intent intent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+		int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+		return plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB;
+	}
 }
