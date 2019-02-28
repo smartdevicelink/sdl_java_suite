@@ -135,7 +135,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-    NAVIGATION,
+    NAVIGATION (true),
 
 	/**
 	 * <strong>Requires</strong> initial asynchronous call, then available synchronously after successful call. <br>
@@ -156,7 +156,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-    PHONE_CALL,
+    PHONE_CALL (true),
 
 	/**
 	 * <strong>Requires</strong> initial asynchronous call, then available synchronously after successful call. <br>
@@ -177,7 +177,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-    VIDEO_STREAMING,
+    VIDEO_STREAMING (true),
 
 	/**
 	 * <strong>Requires</strong> initial asynchronous call, then available synchronously after successful call. <br>
@@ -198,7 +198,7 @@ public enum SystemCapabilityType {
 	 * 	</table>
 	 *
 	 */
-    REMOTE_CONTROL,
+    REMOTE_CONTROL (true),
 
     /* These below are not part of the RPC spec. Only for Internal Proxy use */
 
@@ -221,7 +221,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-    HMI,
+    HMI (false),
 
 	/**
 	 * Available Synchronously after Register App Interface response <br>
@@ -243,7 +243,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-    DISPLAY,
+    DISPLAY (false),
 
 	/**
 	 * Available Synchronously after Register App Interface response <br>
@@ -265,7 +265,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-    AUDIO_PASSTHROUGH,
+    AUDIO_PASSTHROUGH (false),
 
 	/**
 	 * Available Synchronously after Register App Interface response <br>
@@ -287,7 +287,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-	PCM_STREAMING,
+	PCM_STREAMING (false),
 
 	/**
 	 * Available Synchronously after Register App Interface response <br>
@@ -309,7 +309,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-    BUTTON,
+    BUTTON (false),
 
 	/**
 	 * Available Synchronously after Register App Interface response <br>
@@ -330,7 +330,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-    HMI_ZONE,
+    HMI_ZONE (false),
 
 	/**
 	 * Available Synchronously after Register App Interface response <br>
@@ -351,7 +351,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-    PRESET_BANK,
+    PRESET_BANK (false),
 
 	/**
 	 * Available Synchronously after Register App Interface response <br>
@@ -374,7 +374,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-    SOFTBUTTON,
+    SOFTBUTTON (false),
 
 	/**
 	 * Available Synchronously after Register App Interface response <br>
@@ -395,7 +395,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-    SPEECH,
+    SPEECH (false),
 	/**
 	 * Available Synchronously after Register App Interface response <br>
 	 * <table border="1" rules="all">
@@ -415,9 +415,19 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-    VOICE_RECOGNITION,
+    VOICE_RECOGNITION (false),
 
 	;
+
+    boolean IS_QUERYABLE;
+
+    SystemCapabilityType(boolean isQueryable) {
+        this.IS_QUERYABLE = isQueryable;
+    }
+
+    public boolean isQueryable() {
+        return IS_QUERYABLE;
+    }
 
     public static SystemCapabilityType valueForString(String value) {
         try{

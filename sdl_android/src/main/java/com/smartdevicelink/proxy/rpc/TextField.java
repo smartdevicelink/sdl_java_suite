@@ -2,13 +2,11 @@ package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 
-import static com.smartdevicelink.proxy.rpc.TireStatus.KEY_INNER_RIGHT_REAR;
+import java.util.Hashtable;
 
 /**
  * Struct defining the characteristics of a displayed field on the HMI.

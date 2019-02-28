@@ -170,6 +170,10 @@ public class SdlProtocol {
         return mtu;
     }
 
+    public void resetSession (){
+        transportManager.resetSession();
+    }
+
     public boolean isConnected(){
         return transportManager != null && transportManager.isConnected(null,null);
     }
@@ -511,14 +515,7 @@ public class SdlProtocol {
     }
 
     public void endSession(byte sessionID, int hashId) {
-        SdlPacket header;
-        if(protocolVersion.getMajor() < 5){
-            header = SdlPacketFactory.createEndSession(SessionType.RPC, sessionID, hashId, (byte)protocolVersion.getMajor(), BitConverter.intToByteArray(hashId));
-        }else{
-            header = SdlPacketFactory.createEndSession(SessionType.RPC, sessionID, hashId, (byte)protocolVersion.getMajor(), new byte[0]);
-            header.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashId);
-        }
-
+        SdlPacket header = SdlPacketFactory.createEndSession(SessionType.RPC, sessionID, hashId, (byte)protocolVersion.getMajor(), hashId);
         handlePacketToSend(header);
 
     } // end-method
@@ -1157,7 +1154,7 @@ public class SdlProtocol {
                 activeTransports.remove(SessionType.PCM);
             }
 
-            if(disconnectedTransport.equals(getTransportForSession(SessionType.RPC))){
+            if(disconnectedTransport.equals(getTransportForSession(SessionType.RPC)) || disconnectedTransport.equals(connectedPrimaryTransport)){
                 //transportTypes.remove(type);
                 boolean primaryTransportAvailable = false;
                 if(requestedPrimaryTransports != null && requestedPrimaryTransports.size() > 1){
@@ -1171,6 +1168,7 @@ public class SdlProtocol {
                         }
                     }
                 }
+                connectedPrimaryTransport = null;
                 transportManager.close(iSdlProtocol.getSessionId());
                 transportManager = null;
                 requestedSession = false;

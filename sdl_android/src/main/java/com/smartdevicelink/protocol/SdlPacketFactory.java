@@ -1,7 +1,9 @@
 package com.smartdevicelink.protocol;
 
+import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.util.BitConverter;
 
 public class SdlPacketFactory {
 
@@ -51,6 +53,21 @@ public class SdlPacketFactory {
 		return new SdlPacket(version,false,SdlPacket.FRAME_TYPE_CONTROL,
 				serviceType.getValue(),SdlPacket.FRAME_INFO_END_SERVICE,sessionID,
 				payload.length,messageID,payload);
+	}
+
+	public static SdlPacket createEndSession(SessionType serviceType, byte sessionID, int messageID, byte version, int hashID) {
+		if (version < 5) {
+			byte[] payload = BitConverter.intToByteArray(hashID);
+			return new SdlPacket(version, false, SdlPacket.FRAME_TYPE_CONTROL,
+					serviceType.getValue(), SdlPacket.FRAME_INFO_END_SERVICE, sessionID,
+					payload.length, messageID, payload);
+		} else {
+			SdlPacket endSession = new SdlPacket(version, false, SdlPacket.FRAME_TYPE_CONTROL,
+					serviceType.getValue(), SdlPacket.FRAME_INFO_END_SERVICE, sessionID,
+					0, messageID, null);
+			endSession.putTag(ControlFrameTags.RPC.EndService.HASH_ID, hashID);
+			return endSession;
+		}
 	}
 
 	public static SdlPacket createSingleSendData(SessionType serviceType, byte sessionID,

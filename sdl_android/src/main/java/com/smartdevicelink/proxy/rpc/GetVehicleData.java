@@ -1,17 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 
-import static android.provider.Contacts.SettingsColumns.KEY;
-import static com.smartdevicelink.proxy.constants.Names.choiceSet;
-import static com.smartdevicelink.proxy.constants.Names.externalTemperature;
-import static com.smartdevicelink.proxy.constants.Names.instantFuelConsumption;
-import static com.smartdevicelink.proxy.constants.Names.prndl;
-import static com.smartdevicelink.proxy.constants.Names.vin;
-import static com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet.KEY_CHOICE_SET;
+import java.util.Hashtable;
 
 /**
  * Non periodic vehicle data read request.

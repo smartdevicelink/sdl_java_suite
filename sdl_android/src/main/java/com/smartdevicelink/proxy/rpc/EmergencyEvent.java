@@ -2,16 +2,12 @@ package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.EmergencyEventType;
 import com.smartdevicelink.proxy.rpc.enums.FuelCutoffStatus;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
 
-import static android.provider.Contacts.SettingsColumns.KEY;
-import static com.smartdevicelink.proxy.constants.Names.multipleEvents;
-import static com.smartdevicelink.proxy.rpc.TireStatus.KEY_INNER_RIGHT_REAR;
+import java.util.Hashtable;
 
 /** Information related to an emergency event (and if it occurred).
  * 

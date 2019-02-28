@@ -94,7 +94,6 @@ import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
-import com.smartdevicelink.util.HttpUtils;
 import com.smartdevicelink.util.Version;
 
 import org.json.JSONArray;
@@ -257,7 +256,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	protected VideoStreamingManager manager; //Will move to SdlSession once the class becomes public
 
-	protected String authToken;
+	private Version minimumProtocolVersion;
+	private Version minimumRPCVersion;
+
 
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
@@ -531,6 +532,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}else{
 				setProtocolVersion(new com.smartdevicelink.util.Version(version,0,0));
 			}
+
+
+			if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1){
+				Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
+				endService(sessionType);
+				try {
+					cleanProxy(SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED);
+				} catch (SdlException e) {
+					e.printStackTrace();
+				}
+				return;
+        	}
+
 			
 			if (sessionType.eq(SessionType.RPC)) {	
 
@@ -678,11 +692,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else {
 				_proxyListener.onServiceDataACK(dataSize);						
 			}
-		}
-
-		@Override
-		public void onAuthTokenReceived(String authToken, byte sessionID) {
-			SdlProxyBase.this.authToken = authToken;
 		}
 	}
 
@@ -1179,26 +1188,26 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		boolean bLegacy = false;
 		
 		String sURLString;
-		if (!getPoliciesURL().equals("")) {
+		if (!getPoliciesURL().equals(""))
 			sURLString = sPoliciesURL;
-		} else {
+		else
 			sURLString = msg.getUrl();
-		}
+
 		Integer iTimeout = msg.getTimeout();
 
 		if (iTimeout == null)
 			iTimeout = 2000;
 		
 		Headers myHeader = msg.getHeader();			
-		RequestType requestType = msg.getRequestType();
+		
 		updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "sendOnSystemRequestToUrl");
 		updateBroadcastIntent(sendIntent, "COMMENT5", "\r\nCloud URL: " + sURLString);	
 		
 		try 
 		{
-			if (myHeader == null) {
+			if (myHeader == null)
 				updateBroadcastIntent(sendIntent, "COMMENT7", "\r\nHTTPRequest Header is null");
-			}
+			
 			String sBodyString = msg.getBody();			
 			
 			JSONObject jsonObjectToSendToServer;
@@ -1206,7 +1215,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			int length;
 			if (sBodyString == null)
 			{		
-				if(requestType == RequestType.HTTP ){
+				if(RequestType.HTTP.equals(msg.getRequestType())){
 					length = msg.getBulkData().length;
 					Intent sendIntent3 = createBroadcastIntent();
 					updateBroadcastIntent(sendIntent3, "FUNCTION_NAME", "replace");
@@ -1244,7 +1253,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 
 			DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
-			if(requestType == RequestType.HTTP){
+			if(RequestType.HTTP.equals(msg.getRequestType())){
 				wr.write(msg.getBulkData());
 			}else{
 				wr.writeBytes(valid_json);
@@ -1281,7 +1290,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		    rd.close();
 		    //We've read the body
-		    if(requestType == RequestType.HTTP){
+		    if(RequestType.HTTP.equals(msg.getRequestType())){
 		    	// Create the SystemRequest RPC to send to module.
 		    	PutFile putFile = new PutFile();
 		    	putFile.setFileType(FileType.JSON);
@@ -1632,6 +1641,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	@SuppressWarnings("UnusedParameters")
 	private void cleanProxy(SdlDisconnectedReason disconnectedReason) throws SdlException {
+		if (disconnectedReason == SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED || disconnectedReason == SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED){
+			notifyProxyClosed(disconnectedReason.toString(), null,  disconnectedReason);
+			sdlSession.resetSession();
+		}
 		try {
 			
 			// ALM Specific Cleanup
@@ -2270,6 +2283,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}else{
 						rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
 					}
+
+					if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1){
+						Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+						try {
+							unregisterAppInterfacePrivate(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
+						} catch (SdlException e) {
+							e.printStackTrace();
+						}
+                        try {
+                            cleanProxy(SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED);
+                        } catch (SdlException e) {
+                            e.printStackTrace();
+                        }
+                        return;
+					}
+
 					_vehicleType = msg.getVehicleType();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 					_proxyVersionInfo = msg.getProxyVersionInfo();
@@ -3337,22 +3366,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onSendHapticDataResponse( msg);
 					onRPCResponseReceived(msg);
 				}
-			} else if (functionName.equals(FunctionID.SET_CLOUD_APP_PROPERTIES.toString())) {
-				final SetCloudAppPropertiesResponse msg = new SetCloudAppPropertiesResponse(hash);
-				msg.format(rpcSpecVersion, true);
-				if (_callbackToUIThread) {
-					// Run in UI thread
-					_mainUIHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							_proxyListener.onSetCloudAppProperties( msg);
-							onRPCResponseReceived(msg);
-						}
-					});
-				} else {
-					_proxyListener.onSetCloudAppProperties( msg);
-					onRPCResponseReceived(msg);
-				}
 			}
 			else {
 				if (_sdlMsgVersion != null) {
@@ -3624,47 +3637,26 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					
 					final OnSystemRequest msg = new OnSystemRequest(hash);
 					msg.format(rpcSpecVersion,true);
-					RequestType requestType = msg.getRequestType();
+					if ((msg.getUrl() != null) &&
+							(((msg.getRequestType() == RequestType.PROPRIETARY) && (msg.getFileType() == FileType.JSON)) 
+									|| ((msg.getRequestType() == RequestType.HTTP) && (msg.getFileType() == FileType.BINARY)))){
+						Thread handleOffboardTransmissionThread = new Thread() {
+							@Override
+							public void run() {
+								sendOnSystemRequestToUrl(msg);
+							}
+						};
 
-					if(msg.getUrl() != null) {
-						if (((requestType == RequestType.PROPRIETARY) && (msg.getFileType() == FileType.JSON))
-										|| ((requestType == RequestType.HTTP) && (msg.getFileType() == FileType.BINARY))) {
-							Thread handleOffboardTransmissionThread = new Thread() {
-								@Override
-								public void run() {
-									sendOnSystemRequestToUrl(msg);
-								}
-							};
-
-							handleOffboardTransmissionThread.start();
-						} else if (requestType == RequestType.LOCK_SCREEN_ICON_URL) {
-							//Cache this for when the lockscreen is displayed
-							lockScreenIconRequest = msg;
-						} else if (requestType == RequestType.ICON_URL) {
-							//Download the icon file and send SystemRequest RPC
-							Thread handleOffBoardTransmissionThread = new Thread() {
-								@Override
-								public void run() {
-									byte[] file = HttpUtils.downloadFile(msg.getUrl());
-									if (file != null) {
-										SystemRequest systemRequest = new SystemRequest();
-										systemRequest.setFileName(msg.getUrl());
-										systemRequest.setBulkData(file);
-										systemRequest.setRequestType(RequestType.ICON_URL);
-										try {
-											sendRPCRequestPrivate(systemRequest);
-										} catch (SdlException e) {
-											e.printStackTrace();
-										}
-									}else{
-										DebugTool.logError("File was null at: " + msg.getUrl());
-									}
-								}
-							};
-							handleOffBoardTransmissionThread.start();
-						}
+						handleOffboardTransmissionThread.start();
 					}
 					
+					
+					if(msg.getRequestType() == RequestType.LOCK_SCREEN_ICON_URL &&
+					        msg.getUrl() != null){
+					    lockScreenIconRequest = msg;
+					}
+					
+					msg.format(rpcSpecVersion, true);
 					if (_callbackToUIThread) {
 						// Run in UI thread
 						_mainUIHandler.post(new Runnable() {
@@ -7329,6 +7321,25 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 
+	/**
+	 * Sets the minimum protocol version that will be permitted to connect.
+	 * If the protocol version of the head unit connected is below this version,
+	 * the app will disconnect with an EndService protocol message and will not register.
+	 * @param minimumProtocolVersion
+	 */
+	public void setMinimumProtocolVersion(Version minimumProtocolVersion){
+		this.minimumProtocolVersion = minimumProtocolVersion;
+	}
+
+	/**
+	 * The minimum RPC version that will be permitted to connect.
+	 * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
+	 * @param minimumRPCVersion
+	 */
+	public void setMinimumRPCVersion(Version minimumRPCVersion){
+		this.minimumRPCVersion = minimumRPCVersion;
+	}
+
 	@SuppressWarnings("unused")
 	public boolean isServiceTypeProtected(SessionType sType) {
 		return sdlSession != null && sdlSession.isServiceProtected(sType);
@@ -7438,14 +7449,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 
-	/**
-	 * Retrieves the auth token, if any, that was attached to the StartServiceACK for the RPC
-	 * service from the module. For example, this should be used to login to a user account.
-	 * @return the string representation of the auth token
-	 */
-	public String getAuthToken(){
-		return this.authToken;
-	}
 	/**
 	 * VideoStreamingManager houses all the elements needed to create a scoped, streaming manager for video projection. It is only a private, instance
 	 * dependant class at the moment until it can become public. Once the class is public and API defined, it will be moved into the SdlSession class

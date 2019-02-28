@@ -280,7 +280,7 @@ public class Validator{
             return false;
         }
 
-        if(!( sdlFile1.getType().equals(sdlFile2.getType()) )){
+        if((sdlFile1.getType()!= null && sdlFile2.getType() != null) && !( sdlFile1.getType().equals(sdlFile2.getType()) )){
             log("validateSdlFile",
                     "sdlFile1 type \"" + sdlFile1.getType() + "\" didn't match sdlFile2 type \"" + sdlFile2.getType() + "\".");
             return false;

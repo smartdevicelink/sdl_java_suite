@@ -33,14 +33,12 @@
 package com.smartdevicelink.util;
 
 import android.content.ComponentName;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.util.Log;
 
 import java.util.Comparator;
-import java.util.Set;
 
 /**
  * Created by Joey Grover on 2/2/18.

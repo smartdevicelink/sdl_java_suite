@@ -106,6 +106,10 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
         }
     }
 
+    @Override
+    public void resetSession (){
+        sdlProtocol.resetSession();
+    }
 
     @SuppressWarnings("ConstantConditions")
     @Override

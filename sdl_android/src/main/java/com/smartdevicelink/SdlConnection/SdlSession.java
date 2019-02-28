@@ -161,6 +161,10 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         }
     }
 
+    public void resetSession(){
+
+    }
+
     public void startStream(InputStream is, SessionType sType, byte rpcSessionID) throws IOException {
         if (sType.equals(SessionType.NAV))
         {

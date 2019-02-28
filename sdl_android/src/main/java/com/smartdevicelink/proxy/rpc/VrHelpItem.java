@@ -2,10 +2,9 @@ package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.util.DebugTool;
+
+import java.util.Hashtable;
 /**
  * 
  * VR help items  i.e. the text strings to be displayed, and when pronounced by the user the recognition of any of which must trigger the corresponding VR command.

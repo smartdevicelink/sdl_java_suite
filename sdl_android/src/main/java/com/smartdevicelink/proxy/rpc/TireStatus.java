@@ -3,13 +3,9 @@ package com.smartdevicelink.proxy.rpc;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.enums.VehicleDataNotificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
-import com.smartdevicelink.util.DebugTool;
 
 import java.util.Hashtable;
-
-import static com.smartdevicelink.proxy.rpc.ECallInfo.KEY_E_CALL_NOTIFICATION_STATUS;
 
 /** <p>The status and pressure of the tires.</p>
  *   <p><b> Parameter List:</b></p>

@@ -1,7 +1,5 @@
 package com.smartdevicelink.proxy.rpc.listeners;
 
-import android.util.Log;
-
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 

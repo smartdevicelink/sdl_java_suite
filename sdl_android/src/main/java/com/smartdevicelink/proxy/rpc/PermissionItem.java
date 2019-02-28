@@ -3,11 +3,9 @@ package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
-import com.smartdevicelink.util.DebugTool;
+
+import java.util.Hashtable;
 /**
  * Change in permissions for a given set of RPCs
  * 

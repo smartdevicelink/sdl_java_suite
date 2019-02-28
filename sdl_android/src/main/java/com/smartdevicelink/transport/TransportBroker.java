@@ -118,6 +118,7 @@ public class TransportBroker {
                 Log.d(TAG, "Unbound from service " + className.getClassName());
                 routerServiceMessenger = null;
                 registeredWithRouterService = false;
+                unBindFromRouterService();
                 isBound = false;
                 onHardwareDisconnected(null, null);
             }
@@ -446,6 +447,7 @@ public class TransportBroker {
             routerServiceMessenger = null;
             queuedOnTransportConnect = null;
             unBindFromRouterService();
+            isBound = false;
         }
     }
 
@@ -464,12 +466,13 @@ public class TransportBroker {
         }
     }
 
-    private void unBindFromRouterService() {
+    private synchronized void unBindFromRouterService() {
         try {
-            if (getContext() != null && routerConnection != null) {
+            if (isBound && getContext() != null && routerConnection != null) {
                 getContext().unbindService(routerConnection);
+                isBound = false;
             } else {
-                Log.w(TAG, "Unable to unbind from router service, context was null");
+                Log.w(TAG, "Unable to unbind from router service. bound? " + isBound + " context? " + (getContext()!=null) + " router connection?" + (routerConnection != null));
             }
 
         } catch (IllegalArgumentException e) {
@@ -652,6 +655,10 @@ public class TransportBroker {
 
     @SuppressLint("InlinedApi")
     private boolean sendBindingIntent() {
+        if(this.isBound){
+            Log.e(TAG, "Already bound");
+            return false;
+        }
         if (this.routerPackage != null && this.routerClassName != null) {
             Log.d(TAG, "Sending bind request to " + this.routerPackage + " - " + this.routerClassName);
             Intent bindingIntent = new Intent();

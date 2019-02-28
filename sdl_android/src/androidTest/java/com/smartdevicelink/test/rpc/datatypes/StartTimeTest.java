@@ -13,7 +13,7 @@ import com.smartdevicelink.test.Test;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.StartTime}
+ * {@link com.smartdevicelink.proxy.rpc.StartTime}
  */
 public class StartTimeTest extends TestCase {
 	
@@ -41,11 +41,16 @@ public class StartTimeTest extends TestCase {
 		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, hours);
 		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, minutes);
 		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, seconds);
-		
+
+		// TimeInterval constructor test
+		StartTime startTime = new StartTime(7000);
+		assertEquals(Test.MATCH, (Integer) 1, startTime.getHours());
+		assertEquals(Test.MATCH, (Integer) 56, startTime.getMinutes());
+		assertEquals(Test.MATCH, (Integer) 40, startTime.getSeconds());
+
 		// Invalid/Null Tests
 		StartTime msg = new StartTime();
 		assertNotNull(Test.NOT_NULL, msg);
-
 		assertNull(Test.NULL, msg.getHours());
 		assertNull(Test.NULL, msg.getMinutes());
 		assertNull(Test.NULL, msg.getSeconds());
