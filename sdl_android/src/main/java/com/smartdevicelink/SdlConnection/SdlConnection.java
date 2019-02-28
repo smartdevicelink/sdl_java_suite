@@ -37,7 +37,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	SdlTransport _transport = null;
 	AbstractProtocol _protocol = null;
 	ISdlConnectionListener _connectionListener = null;
-	
+
 
 
 	// Thread safety locks
@@ -341,7 +341,13 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 				}
 			}
 		return null;
-	}	
+	}
+
+	public void onAuthTokenReceived(String authToken, byte sessionID) {
+		if(this._connectionListener != null){
+			this._connectionListener.onAuthTokenReceived(authToken,sessionID);
+		}
+	}
 	
 	private class InternalMsgDispatcher implements ISdlConnectionListener {
 
@@ -471,6 +477,14 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 			SdlSession session = findSessionById(sessionID);
 			if (session != null) {
 				session.onProtocolServiceDataACK(serviceType, dataSize, sessionID);
+			}
+		}
+
+		@Override
+		public void onAuthTokenReceived(String authToken, byte sessionID) {
+			SdlSession session = findSessionById(sessionID);
+			if (session != null) {
+				session.onAuthTokenReceived(authToken,sessionID);
 			}
 		}
 	}

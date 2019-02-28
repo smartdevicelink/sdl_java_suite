@@ -11,7 +11,7 @@ import com.smartdevicelink.test.Test;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.RequestType}
+ * {@link com.smartdevicelink.proxy.rpc.enums.RequestType}
  */
 public class RequestTypeTests extends TestCase {
 
@@ -60,6 +60,8 @@ public class RequestTypeTests extends TestCase {
 		RequestType enumMedia = RequestType.valueForString(example);
 		example = "FOTA";
 		RequestType enumFota = RequestType.valueForString(example);
+		example = "ICON_URL";
+		RequestType enumIconURL = RequestType.valueForString(example);
 		
 		assertNotNull("HTTP returned null", enumHttp);
 		assertNotNull("FILE_RESUME returned null", enumFileResume);
@@ -67,6 +69,7 @@ public class RequestTypeTests extends TestCase {
 		assertNotNull("AUTH_CHALLENGE returned null", enumAuthChallenge);
 		assertNotNull("AUTH_ACK returned null", enumAuthAck);
 		assertNotNull("PROPRIETARY returned null", enumProprietary);
+		assertNotNull("ICON_URL returned null", enumIconURL);
 		
 		assertNotNull(Test.NOT_NULL, enumQueryApps);
 		assertNotNull(Test.NOT_NULL, enumLaunchApp);
@@ -82,6 +85,7 @@ public class RequestTypeTests extends TestCase {
 		assertNotNull(Test.NOT_NULL, enumEmergency);
 		assertNotNull(Test.NOT_NULL, enumMedia);
 		assertNotNull(Test.NOT_NULL, enumFota);
+		assertNotNull(Test.NOT_NULL, enumIconURL);
 	}
 
 	/**
@@ -141,6 +145,7 @@ public class RequestTypeTests extends TestCase {
 		enumTestList.add(RequestType.MEDIA);
 		enumTestList.add(RequestType.FOTA);
 		enumTestList.add(RequestType.OEM_SPECIFIC);
+		enumTestList.add(RequestType.ICON_URL);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

@@ -42,6 +42,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_FUEL_RANGE = "fuelRange";
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
+    public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
 
 	/**
 	 * Constructs a new SubscribeVehicleDataResponse object
@@ -465,5 +466,21 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      */
     public VehicleDataResult getElectronicParkBrakeStatus(){
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ELECTRONIC_PARK_BRAKE_STATUS);
+    }
+
+    /**
+     * Sets cloudAppVehicleID
+     * @param cloudAppVehicleID a boolean value
+     */
+    public void setCloudAppVehicleID(VehicleDataResult cloudAppVehicleID){
+        setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
+    }
+
+    /**
+     * Gets a boolean value. If true, means the cloudAppVehicleDataID data has been subscribed.
+     * @return a Boolean value.
+     */
+    public VehicleDataResult getCloudAppVehicleID(){
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLOUD_APP_VEHICLE_ID);
     }
 }

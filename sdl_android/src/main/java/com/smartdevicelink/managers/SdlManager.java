@@ -391,6 +391,15 @@ public class SdlManager{
 		return null;
 	}
 
+	/**
+	 * Retrieves the auth token, if any, that was attached to the StartServiceACK for the RPC
+	 * service from the module. For example, this should be used to login to a user account.
+	 * @return the string representation of the auth token
+	 */
+	public String getAuthToken(){
+		return this.proxy.getAuthToken();
+	}
+
 	// PROTECTED GETTERS
 	protected String getAppName() { return appName; }
 

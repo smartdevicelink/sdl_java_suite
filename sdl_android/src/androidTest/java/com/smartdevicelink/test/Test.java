@@ -12,6 +12,7 @@ import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.ClimateControlCapabilities;
 import com.smartdevicelink.proxy.rpc.ClimateControlData;
+import com.smartdevicelink.proxy.rpc.CloudAppProperties;
 import com.smartdevicelink.proxy.rpc.Coordinate;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
@@ -102,6 +103,7 @@ import com.smartdevicelink.proxy.rpc.enums.FuelType;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.HybridAppPreference;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
@@ -303,6 +305,8 @@ public class Test {
 	public static final String                         GENERAL_APP_ID                         = "123e4567e8";
 	public static final String                         GENERAL_FULL_APP_ID                    = "123e4567-e89b-12d3-a456-426655440000";
 	public static final Version                        GENERAL_VERSION                        = new Version("4.0.0");
+	public static final HybridAppPreference            GENERAL_HYBRID_APP_PREFERENCE          = HybridAppPreference.CLOUD;
+	public static final CloudAppProperties             GENERAL_CLOUD_APP_PROPERTIES           = new CloudAppProperties();
 
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
@@ -844,6 +848,14 @@ public class Test {
 		GENERAL_LOCKSCREENCONFIG.setBackgroundColor(Color.BLUE);
 		GENERAL_LOCKSCREENCONFIG.setEnabled(true);
 		GENERAL_LOCKSCREENCONFIG.setCustomView(R.layout.activity_sdllock_screen);
+
+		GENERAL_CLOUD_APP_PROPERTIES.setAppName(GENERAL_STRING);
+		GENERAL_CLOUD_APP_PROPERTIES.setAppID(GENERAL_STRING);
+		GENERAL_CLOUD_APP_PROPERTIES.setEnabled(GENERAL_BOOLEAN);
+		GENERAL_CLOUD_APP_PROPERTIES.setAuthToken(GENERAL_STRING);
+		GENERAL_CLOUD_APP_PROPERTIES.setCloudTransportType(GENERAL_STRING);
+		GENERAL_CLOUD_APP_PROPERTIES.setHybridAppPreference(GENERAL_HYBRID_APP_PREFERENCE);
+		GENERAL_CLOUD_APP_PROPERTIES.setEndpoint(GENERAL_STRING);
 
 
 		try {

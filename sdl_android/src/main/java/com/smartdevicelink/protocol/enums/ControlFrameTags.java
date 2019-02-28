@@ -35,6 +35,9 @@ public class ControlFrameTags {
 			/** HU allowed transports for audio and video services (1 == Primary, 2 == Secondary) */
 			public static final String AUDIO_SERVICE_TRANSPORTS = "audioServiceTransports";
 			public static final String VIDEO_SERVICE_TRANSPORTS = "videoServiceTransports";
+			/** Auth token to be used for log in into services **/
+			public static final String AUTH_TOKEN = "authToken";
+
 		}
 		public static class StartServiceNAK extends NAKBase{}
 		public static class EndService {
