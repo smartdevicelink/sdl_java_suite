@@ -6,7 +6,7 @@ public enum HybridAppPreference {
     CLOUD,
     BOTH;
 
-    public HybridAppPreference valueForString(String value){
+    public static HybridAppPreference valueForString(String value){
         try{
             return valueOf(value);
         }catch(Exception e){
