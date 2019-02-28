@@ -24,11 +24,11 @@ public class SetCloudAppProperties extends RPCRequest {
         setParameters(KEY_PROPERTIES, cloudAppProperties);
     }
 
-    public void setCloudAppProperties(@NonNull CloudAppProperties cloudAppProperties){
+    public void setProperties(@NonNull CloudAppProperties cloudAppProperties){
         setParameters(KEY_PROPERTIES, cloudAppProperties);
     }
 
-    public CloudAppProperties getCloudAppProperties(){
+    public CloudAppProperties getProperties(){
         return (CloudAppProperties) getObject(CloudAppProperties.class, KEY_PROPERTIES);
     }
 

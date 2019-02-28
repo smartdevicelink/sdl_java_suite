@@ -15,11 +15,7 @@ public class SetCloudAppPropertiesTests extends BaseRpcTests {
     protected RPCMessage createMessage(){
         SetCloudAppProperties msg = new SetCloudAppProperties();
 
-        msg.setAppName(Test.GENERAL_STRING);
-        msg.setAppId(Test.GENERAL_FULL_APP_ID);
-        msg.setEnabled(Test.GENERAL_BOOLEAN);
-        msg.setCloudAppAuthToken(Test.GENERAL_STRING);
-        msg.setHybridAppPreference(Test.GENERAL_HYBRID_APP_PREFERENCE);
+        msg.setProperties(Test.GENERAL_CLOUD_APP_PROPERTIES);
 
         return msg;
     }
@@ -39,11 +35,7 @@ public class SetCloudAppPropertiesTests extends BaseRpcTests {
         JSONObject result = new JSONObject();
 
         try{
-            result.put(SetCloudAppProperties.KEY_APP_NAME, Test.GENERAL_STRING);
-            result.put(SetCloudAppProperties.KEY_APP_ID, Test.GENERAL_FULL_APP_ID);
-            result.put(SetCloudAppProperties.KEY_ENABLED, Test.GENERAL_BOOLEAN);
-            result.put(SetCloudAppProperties.KEY_CLOUD_APP_AUTH_TOKEN, Test.GENERAL_STRING);
-            result.put(SetCloudAppProperties.KEY_HYBRID_APP_PREFERENCE, Test.GENERAL_HYBRID_APP_PREFERENCE);
+            result.put(SetCloudAppProperties.KEY_PROPERTIES, Test.GENERAL_CLOUD_APP_PROPERTIES.serializeJSON());
         }catch(JSONException e){
             fail(Test.JSON_FAIL);
         }

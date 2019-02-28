@@ -12,7 +12,7 @@ public class GetCloudAppProperties extends RPCRequest {
     public static final String KEY_APP_ID                   = "appID";
 
     public GetCloudAppProperties() {
-        super(FunctionID.SET_CLOUD_APP_PROPERTIES.toString());
+        super(FunctionID.GET_CLOUD_APP_PROPERTIES.toString());
     }
 
     public GetCloudAppProperties(Hashtable<String, Object> hash) {
