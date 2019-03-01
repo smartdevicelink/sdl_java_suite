@@ -6,10 +6,13 @@ import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyBase;
+import com.smartdevicelink.proxy.rpc.GetAppServiceDataResponse;
 import com.smartdevicelink.proxy.rpc.GetVehicleData;
+import com.smartdevicelink.proxy.rpc.OnAppServiceData;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -303,7 +306,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 			}
 		};
 		try {
-			doAnswer(answer).when(sdlProxyBase).sendRPCRequest(any(RPCRequest.class));
+			doAnswer(answer).when(sdlProxyBase).sendRPC(any(RPCMessage.class));
 		} catch (SdlException e) {
 			e.printStackTrace();
 		}
@@ -360,7 +363,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 
 
 		// Test send RPC requests
-		List<RPCRequest> rpcsList = Arrays.asList(new GetVehicleData(), new Show());
+		List<RPCMessage> rpcsList = Arrays.asList(new GetVehicleData(), new Show(), new OnAppServiceData(), new GetAppServiceDataResponse());
 		OnMultipleRequestListener onMultipleRequestListener = new OnMultipleRequestListener() {
 			@Override
 			public void onUpdate(int remainingRequests) { }

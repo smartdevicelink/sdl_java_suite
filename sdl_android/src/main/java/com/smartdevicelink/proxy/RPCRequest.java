@@ -23,8 +23,11 @@ public class RPCRequest extends RPCMessage {
 
 	public RPCRequest(RPCRequest request){
 		super(request);
-		setCorrelationID(CorrelationIdGenerator.generateId());
+		if (request.getCorrelationID() == null) {
+			setCorrelationID(CorrelationIdGenerator.generateId());
+		}
 	}
+
 	public Integer getCorrelationID() {
 		//First we check to see if a correlation ID is set. If not, create one.
 		if(!function.containsKey(RPCMessage.KEY_CORRELATION_ID)){

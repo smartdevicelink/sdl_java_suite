@@ -63,8 +63,12 @@ public enum FunctionID{
     UNSUBSCRIBE_WAY_POINTS(47, "UnsubscribeWayPoints"),
     GET_SYSTEM_CAPABILITY(48, "GetSystemCapability"),
 	SEND_HAPTIC_DATA(49, "SendHapticData"),
-	SET_CLOUD_APP_PROPERTIES(50, "SetCloudAppProperties"),
+    SET_CLOUD_APP_PROPERTIES(50, "SetCloudAppProperties"),
 	GET_CLOUD_APP_PROPERTIES(51, "GetCloudAppProperties"),
+    PUBLISH_APP_SERVICE(52, "PublishAppService"),
+    GET_APP_SERVICE_DATA(53, "GetAppServiceData"),
+    GET_FILE(54, "GetFile"),
+    PERFORM_APP_SERVICES_INTERACTION(55, "PerformAppServiceInteraction"),
 
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
@@ -85,6 +89,8 @@ public enum FunctionID{
     ON_INTERIOR_VEHICLE_DATA(32783, "OnInteriorVehicleData"),
     ON_WAY_POINT_CHANGE(32784, "OnWayPointChange"),
     ON_RC_STATUS(32785, "OnRCStatus"),
+    ON_APP_SERVICE_DATA(32786, "OnAppServiceData"),
+    ON_SYSTEM_CAPABILITY_UPDATED(32787, "OnSystemCapabilityUpdated"),
 
     // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)
     ON_LOCK_SCREEN_STATUS(-1, "OnLockScreenStatus"),

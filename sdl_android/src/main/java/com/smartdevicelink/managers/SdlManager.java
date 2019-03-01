@@ -41,6 +41,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
@@ -430,18 +431,14 @@ public class SdlManager{
 	// SENDING REQUESTS
 
 	/**
-	 * Send RPC Message <br>
-	 * <strong>Note: Only takes type of RPCRequest for now, notifications and responses will be thrown out</strong>
+	 * Send RPC Message
 	 * @param message RPCMessage
 	 */
 	public void sendRPC(RPCMessage message) {
-
-		if (message instanceof RPCRequest){
-			try{
-				proxy.sendRPCRequest((RPCRequest)message);
-			}catch (SdlException exception){
-				handleSdlException(exception);
-			}
+		try{
+			proxy.sendRPC(message);
+		}catch (SdlException exception){
+			handleSdlException(exception);
 		}
 	}
 
@@ -526,6 +523,22 @@ public class SdlManager{
 	 */
 	public void removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
 		proxy.removeOnRPCNotificationListener(notificationId, listener);
+	}
+
+	/**
+	 * Add an OnRPCRequestListener
+	 * @param listener listener that will be called when a request is received
+	 */
+	public void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
+		proxy.addOnRPCRequestListener(requestId,listener);
+	}
+
+	/**
+	 * Remove an OnRPCRequestListener
+	 * @param listener listener that was previously added
+	 */
+	public void removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
+		proxy.removeOnRPCRequestListener(requestId, listener);
 	}
 
 	// LIFECYCLE / OTHER
@@ -668,7 +681,16 @@ public class SdlManager{
 		@Override
 		public void sendRPCRequest(RPCRequest message){
 			try {
-				proxy.sendRPCRequest(message);
+				proxy.sendRPC(message);
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void sendRPC(RPCRequest message) {
+			try {
+				proxy.sendRPC(message);
 			} catch (SdlException e) {
 				e.printStackTrace();
 			}

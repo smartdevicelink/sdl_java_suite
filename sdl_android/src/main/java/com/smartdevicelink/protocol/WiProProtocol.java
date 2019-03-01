@@ -166,7 +166,6 @@ public class WiProProtocol extends AbstractProtocol {
 	} // end-method
 
 	public void SendMessage(ProtocolMessage protocolMsg) {
-		protocolMsg.setRPCType((byte) 0x00); //always sending a request
 		SessionType sessionType = protocolMsg.getSessionType();
 		byte sessionID = protocolMsg.getSessionID();
 

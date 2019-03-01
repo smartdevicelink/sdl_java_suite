@@ -3,7 +3,8 @@
     "name":"GetSystemCapability",
     "correlationID":203,
     "parameters":{
-      "systemCapabilityType":"NAVIGATION"
+      "systemCapabilityType":"NAVIGATION",
+      "subscribe": true
     }
   },
   "response":{

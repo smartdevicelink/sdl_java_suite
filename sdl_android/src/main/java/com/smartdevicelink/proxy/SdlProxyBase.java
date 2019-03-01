@@ -30,6 +30,7 @@ import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.haptic.HapticInterfaceManager;
+import com.smartdevicelink.managers.lifecycle.RpcConverter;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -77,6 +78,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
@@ -134,7 +136,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private static final int PROX_PROT_VER_ONE = 1;
 	private static final int RESPONSE_WAIT_TIME = 2000;
 
-	public static final com.smartdevicelink.util.Version MAX_SUPPORTED_RPC_VERSION = new com.smartdevicelink.util.Version("5.0.0");
+	public static final com.smartdevicelink.util.Version MAX_SUPPORTED_RPC_VERSION = new com.smartdevicelink.util.Version("5.1.0");
 
 	private SdlSession sdlSession = null;
 	private proxyListenerType _proxyListener = null;
@@ -254,6 +256,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	protected SparseArray<OnRPCResponseListener> rpcResponseListeners = null;
 	protected SparseArray<CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners = null;
+	protected SparseArray<CopyOnWriteArrayList<OnRPCRequestListener>> rpcRequestListeners = null;
 
 	protected VideoStreamingManager manager; //Will move to SdlSession once the class becomes public
 
@@ -315,7 +318,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		}
 
-		@Override		public void stopAudioService() {
+		@Override public void stopAudioService() {
 			if(isConnected()){
 				sdlSession.endService(SessionType.PCM,sdlSession.getSessionId());
 			}
@@ -323,6 +326,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void sendRPCRequest(RPCRequest message){
+			try {
+				SdlProxyBase.this.sendRPCRequest(message);
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void sendRPC(RPCRequest message) {
 			try {
 				SdlProxyBase.this.sendRPCRequest(message);
 			} catch (SdlException e) {
@@ -925,6 +937,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		rpcResponseListeners = new SparseArray<OnRPCResponseListener>();
 		rpcNotificationListeners = new SparseArray<CopyOnWriteArrayList<OnRPCNotificationListener>>();
+		rpcRequestListeners = new SparseArray<CopyOnWriteArrayList<OnRPCRequestListener>>();
 
 		// Initialize the proxy
 		try {
@@ -1311,8 +1324,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	putFile.setFileData(response.toString().getBytes("UTF-8"));
 		    	putFile.setCRC(response.toString().getBytes());
 		    	updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + response.toString());
-
-		    	sendRPCRequestPrivate(putFile);
+		    	
+		    	sendRPCMessagePrivate(putFile);
 		    	Log.i("sendSystemRequestToUrl", "sent to sdl");
 
 	    		updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.PUT_FILE.toString());
@@ -1378,8 +1391,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	}
 
 		    	if (getIsConnected())
-		    	{
-		    		sendRPCRequestPrivate(mySystemRequest);
+		    	{			    	
+		    		sendRPCMessagePrivate(mySystemRequest);
 		    		Log.i("sendSystemRequestToUrl", "sent to sdl");
 
 		    		updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.SYSTEM_REQUEST.toString());
@@ -2027,50 +2040,73 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 	/************* END Functions used by the Message Dispatching Queues ****************/
 	
-	// Private sendPRCRequest method. All RPCRequests are funneled through this method after
-		// error checking. 
-	private void sendRPCRequestPrivate(RPCRequest request) throws SdlException {
-			try {
-			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, request, SDL_LIB_TRACE_KEY);
-						
-			request.format(rpcSpecVersion,true);
-			byte[] msgBytes = JsonRPCMarshaller.marshall(request, (byte)getProtocolVersion().getMajor());
-	
+	// Private sendRPCMessagePrivate method. All RPCMessages are funneled through this method after error checking.
+	private void sendRPCMessagePrivate(RPCMessage message) throws SdlException {
+		try {
+			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, message, SDL_LIB_TRACE_KEY);
+
+			message.format(rpcSpecVersion,true);
+			byte[] msgBytes = JsonRPCMarshaller.marshall(message, (byte)getProtocolVersion().getMajor());
+
 			ProtocolMessage pm = new ProtocolMessage();
 			pm.setData(msgBytes);
-			if (sdlSession != null)
-				pm.setSessionID(sdlSession.getSessionId());
 			pm.setMessageType(MessageType.RPC);
 			pm.setSessionType(SessionType.RPC);
-			pm.setFunctionID(FunctionID.getFunctionId(request.getFunctionName()));
-			pm.setPayloadProtected(request.isPayloadProtected());
-			if (request.getCorrelationID() == null)
-			{
-				//Log error here
-				throw new SdlException("CorrelationID cannot be null. RPC: " + request.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
-			}
-			pm.setCorrID(request.getCorrelationID());
-			if (request.getBulkData() != null){
-				pm.setBulkData(request.getBulkData());
-			}
-			if(request.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.name())){
-				pm.setPriorityCoefficient(1);
-			}
+			pm.setFunctionID(FunctionID.getFunctionId(message.getFunctionName()));
+			pm.setPayloadProtected(message.isPayloadProtected());
 			
+			if (sdlSession != null) {
+				pm.setSessionID(sdlSession.getSessionId());
+			}
+
+			if (message.getBulkData() != null) {
+				pm.setBulkData(message.getBulkData());
+			}
+
+
+			if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {  // Request Specifics
+				pm.setRPCType((byte)0x00);
+				RPCRequest request = (RPCRequest) message;
+				if (request.getCorrelationID() == null) {
+					//Log error here
+					throw new SdlException("CorrelationID cannot be null. RPC: " + request.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
+				} else {
+					pm.setCorrID(request.getCorrelationID());
+				}
+				if (request.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.name())) {
+					pm.setPriorityCoefficient(1);
+				}
+			} else if (message.getMessageType().equals(RPCMessage.KEY_RESPONSE)) {  // Response Specifics
+				pm.setRPCType((byte)0x01);
+				RPCResponse response = (RPCResponse) message;
+				if (response.getCorrelationID() == null) {
+					//Log error here
+					throw new SdlException("CorrelationID cannot be null. RPC: " + response.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
+				} else {
+					pm.setCorrID(response.getCorrelationID());
+				}
+			} else if (message.getMessageType().equals(RPCMessage.KEY_NOTIFICATION)) { // Notification Specifics
+				pm.setRPCType((byte)0x02);
+			} else {
+				//Log error here
+				throw new SdlException("RPC message is not a valid type", SdlExceptionCause.INVALID_ARGUMENT);
+			}
+
 			// Queue this outgoing message
 			synchronized(OUTGOING_MESSAGE_QUEUE_THREAD_LOCK) {
 				if (_outgoingProxyMessageDispatcher != null) {
 					_outgoingProxyMessageDispatcher.queueMessage(pm);
-					//Since the message is queued we can add it's listener to our list
-					OnRPCResponseListener listener = request.getOnRPCResponseListener();
-					if(request.getMessageType().equals(RPCMessage.KEY_REQUEST)){//We might want to include other message types in the future
+					//Since the message is queued we can add it's listener to our list, if it is a Request
+					if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+						RPCRequest request = (RPCRequest) message;
+						OnRPCResponseListener listener = request.getOnRPCResponseListener();
 						addOnRPCResponseListener(listener, request.getCorrelationID(), msgBytes.length);
 					}
 				}
 			}
 		} catch (OutOfMemoryError e) {
-			SdlTrace.logProxyEvent("OutOfMemory exception while sending request " + request.getFunctionName(), SDL_LIB_TRACE_KEY);
-			throw new SdlException("OutOfMemory exception while sending request " + request.getFunctionName(), e, SdlExceptionCause.INVALID_ARGUMENT);
+			SdlTrace.logProxyEvent("OutOfMemory exception while sending message " + message.getFunctionName(), SDL_LIB_TRACE_KEY);
+			throw new SdlException("OutOfMemory exception while sending message " + message.getFunctionName(), e, SdlExceptionCause.INVALID_ARGUMENT);
 		}
 	}
 	
@@ -2155,6 +2191,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			return false;
 		}
 	}
+
+	@SuppressWarnings("UnusedReturnValue")
+	public boolean onRPCRequestReceived(RPCRequest request){
+		synchronized(ON_NOTIFICATION_LISTENER_LOCK){
+			CopyOnWriteArrayList<OnRPCRequestListener> listeners = rpcRequestListeners.get(FunctionID.getFunctionId(request.getFunctionName()));
+			if(listeners!=null && listeners.size()>0) {
+				for (OnRPCRequestListener listener : listeners) {
+					listener.onRequest(request);
+				}
+				return true;
+			}
+			return false;
+		}
+	}
 	
 	/**
 	 * This will ad a listener for the specific type of notification. As of now it will only allow
@@ -2170,6 +2220,24 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					rpcNotificationListeners.put(notificationId.getId(),new CopyOnWriteArrayList<OnRPCNotificationListener>());
 				}
 				rpcNotificationListeners.get(notificationId.getId()).add(listener);
+			}
+		}
+	}
+
+	/**
+	 * This will ad a listener for the specific type of request. As of now it will only allow
+	 * a single listener per request function id
+	 * @param requestId The request type that this listener is designated for
+	 * @param listener The listener that will be called when a request of the provided type is received
+	 */
+	@SuppressWarnings("unused")
+	public void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
+		synchronized(ON_NOTIFICATION_LISTENER_LOCK){
+			if(requestId != null && listener != null){
+				if(rpcRequestListeners.indexOfKey(requestId.getId()) < 0 ){
+					rpcRequestListeners.put(requestId.getId(),new CopyOnWriteArrayList<OnRPCRequestListener>());
+				}
+				rpcRequestListeners.get(requestId.getId()).add(listener);
 			}
 		}
 	}
@@ -2194,6 +2262,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					&& listener != null
 					&& rpcNotificationListeners.indexOfKey(notificationId.getId()) >= 0){
 				return rpcNotificationListeners.get(notificationId.getId()).remove(listener);
+			}
+		}
+		return false;
+	}
+
+	public boolean removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
+		synchronized(ON_NOTIFICATION_LISTENER_LOCK){
+			if(rpcRequestListeners!= null
+					&& requestId != null
+					&& listener != null
+					&& rpcRequestListeners.indexOfKey(requestId.getId()) >= 0){
+				return rpcRequestListeners.get(requestId.getId()).remove(listener);
 			}
 		}
 		return false;
@@ -2250,11 +2330,24 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private void handleRPCMessage(Hashtable<String, Object> hash) {
 		RPCMessage rpcMsg = new RPCMessage(hash);
 		//Call format to ensure the RPC is ready to be handled regardless of RPC spec version
-
 		String functionName = rpcMsg.getFunctionName();
 		String messageType = rpcMsg.getMessageType();
-		
-		if (messageType.equals(RPCMessage.KEY_RESPONSE)) {			
+
+		// Requests need to be listened for using the SDLManager's addOnRPCRequestListener method.
+		// Requests are not supported by IProxyListenerBase
+		if (messageType.equals(RPCMessage.KEY_REQUEST)) {
+
+			RPCMessage convertedRPCMsg = RpcConverter.convertTableToRpc(hash);
+			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCRequest((RPCRequest)convertedRPCMsg), SDL_LIB_TRACE_KEY);
+
+			if (convertedRPCMsg != null) {
+				convertedRPCMsg.format(rpcSpecVersion, true);
+				onRPCRequestReceived((RPCRequest) convertedRPCMsg);
+			}else{
+				DebugTool.logError("Received a null RPC Request, discarding.");
+			}
+
+		} else if (messageType.equals(RPCMessage.KEY_RESPONSE)) {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCResponse(rpcMsg), SDL_LIB_TRACE_KEY);
 			
 			// Check to ensure response is not from an internal message (reserved correlation ID)
@@ -3410,6 +3503,70 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onGetCloudAppProperties(msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.PUBLISH_APP_SERVICE.toString())) {
+				final PublishAppServiceResponse msg = new PublishAppServiceResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onPublishAppServiceResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onPublishAppServiceResponse( msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.GET_APP_SERVICE_DATA.toString())) {
+				final GetAppServiceDataResponse msg = new GetAppServiceDataResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onGetAppServiceDataResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onGetAppServiceDataResponse( msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.GET_FILE.toString())) {
+				final GetFileResponse msg = new GetFileResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onGetFileResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onGetFileResponse( msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.PERFORM_APP_SERVICES_INTERACTION.toString())) {
+				final PerformAppServiceInteractionResponse msg = new PerformAppServiceInteractionResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onPerformAppServiceInteractionResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onPerformAppServiceInteractionResponse( msg);
+					onRPCResponseReceived(msg);
+				}
 			} else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logError("Unrecognized response Message: " + functionName +
@@ -3707,7 +3864,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 									systemRequest.setBulkData(file);
 									systemRequest.setRequestType(RequestType.ICON_URL);
 									try {
-										sendRPCRequestPrivate(systemRequest);
+										sendRPCMessagePrivate(systemRequest);
 									} catch (SdlException e) {
 										e.printStackTrace();
 									}
@@ -3889,8 +4046,39 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onOnRCStatus(msg);
 					onRPCNotificationReceived(msg);
 				}
-			}
-			else {
+			} else if (functionName.equals(FunctionID.ON_APP_SERVICE_DATA.toString())) {
+				final OnAppServiceData msg = new OnAppServiceData(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onOnAppServiceData(msg);
+							onRPCNotificationReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onOnAppServiceData(msg);
+					onRPCNotificationReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED.toString())) {
+				final OnSystemCapabilityUpdated msg = new OnSystemCapabilityUpdated(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onOnSystemCapabilityUpdated(msg);
+							onRPCNotificationReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onOnSystemCapabilityUpdated(msg);
+					onRPCNotificationReceived(msg);
+				}
+			} else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logInfo("Unrecognized notification Message: " + functionName +
 							" connected to SDL using message version: " + _sdlMsgVersion.getMajorVersion() + "." + _sdlMsgVersion.getMinorVersion());
@@ -3965,17 +4153,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 	/**
-	 * Takes a list of RPCRequests and sends it to SDL in a synchronous fashion. Responses are captured through callback on OnMultipleRequestListener.
+	 * Takes a list of RPCMessages and sends it to SDL in a synchronous fashion. Responses are captured through callback on OnMultipleRequestListener.
 	 * For sending requests asynchronously, use sendRequests <br>
 	 *
 	 * <strong>NOTE: This will override any listeners on individual RPCs</strong>
 	 *
-	 * @param rpcs is the list of RPCRequests being sent
+	 * @param rpcs is the list of RPCMessages being sent
 	 * @param listener listener for updates and completions
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void sendSequentialRequests(final List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+	public void sendSequentialRequests(final List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) throws SdlException {
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
 		}
@@ -4004,52 +4192,61 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			return;
 		}
 
-		RPCRequest rpc = rpcs.remove(0);
-		rpc.setCorrelationID(CorrelationIdGenerator.generateId());
+		RPCMessage rpc = rpcs.remove(0);
 
-		rpc.setOnRPCResponseListener(new OnRPCResponseListener() {
-			@Override
-			public void onResponse(int correlationId, RPCResponse response) {
-				if (response.getSuccess()) {
-					// success
-					if(listener!=null){
-						listener.onUpdate(rpcs.size());
-					}
-					try {
-						// recurse after successful response of RPC
-						sendSequentialRequests(rpcs, listener);
-					} catch (SdlException e) {
-						e.printStackTrace();
-						if(listener != null){
-							listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
+		// Request Specifics
+		if (rpc.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+			RPCRequest request = (RPCRequest) rpc;
+			request.setCorrelationID(CorrelationIdGenerator.generateId());
+
+			request.setOnRPCResponseListener(new OnRPCResponseListener() {
+				@Override
+				public void onResponse(int correlationId, RPCResponse response) {
+					if (response.getSuccess()) {
+						// success
+						if (listener != null) {
+							listener.onUpdate(rpcs.size());
+						}
+						try {
+							// recurse after successful response of RPC
+							sendSequentialRequests(rpcs, listener);
+						} catch (SdlException e) {
+							e.printStackTrace();
+							if (listener != null) {
+								listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
+							}
 						}
 					}
 				}
-			}
 
-			@Override
-			public void onError(int correlationId, Result resultCode, String info){
-				if(listener != null){
-					listener.onError(correlationId, resultCode, info);
+				@Override
+				public void onError(int correlationId, Result resultCode, String info) {
+					if (listener != null) {
+						listener.onError(correlationId, resultCode, info);
+					}
 				}
-			}
-		});
+			});
+			sendRPCMessagePrivate(request);
+		} else {
+			// Notifications and Responses
+			sendRPCMessagePrivate(rpc);
+		}
 
-		sendRPCRequestPrivate(rpc);
+
 	}
 
 	/**
-	 * Takes a list of RPCRequests and sends it to SDL. Responses are captured through callback on OnMultipleRequestListener.
+	 * Takes a list of RPCMessages and sends it to SDL. Responses are captured through callback on OnMultipleRequestListener.
 	 * For sending requests synchronously, use sendSequentialRequests <br>
 	 *
 	 * <strong>NOTE: This will override any listeners on individual RPCs</strong>
 	 *
-	 * @param rpcs is the list of RPCRequests being sent
+	 * @param rpcs is the list of RPCMessages being sent
 	 * @param listener listener for updates and completions
 	 * @throws SdlException if an unrecoverable error is encountered
 	 */
 	@SuppressWarnings("unused")
-	public void sendRequests(List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener) throws SdlException {
+	public void sendRequests(List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) throws SdlException {
 
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
@@ -4076,35 +4273,36 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		for (int i = 0; i < arraySize; i++) {
-			RPCRequest rpc = rpcs.get(i);
-			rpc.setCorrelationID(CorrelationIdGenerator.generateId());
-			if(listener != null) {
-				listener.addCorrelationId(rpc.getCorrelationID());
-				rpc.setOnRPCResponseListener(listener.getSingleRpcResponseListener());
+			RPCMessage rpc = rpcs.get(i);
+			// Request Specifics
+			if (rpc.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+				RPCRequest request = (RPCRequest) rpc;
+				request.setCorrelationID(CorrelationIdGenerator.generateId());
+				if (listener != null) {
+					listener.addCorrelationId(request.getCorrelationID());
+					request.setOnRPCResponseListener(listener.getSingleRpcResponseListener());
+				}
+				sendRPCMessagePrivate(request);
+			}else {
+				// Notifications and Responses
+				sendRPCMessagePrivate(rpc);
 			}
-			sendRPCRequestPrivate(rpc);
 		}
 	}
-	
-	/**
-	 * Takes an RPCRequest and sends it to SDL.  Responses are captured through callback on IProxyListener.  
-	 * 
-	 * @param request is the RPCRequest being sent
-	 * @throws SdlException if an unrecoverable error is encountered
-	 */
-	public void sendRPCRequest(RPCRequest request) throws SdlException {
+
+	public void sendRPC(RPCMessage message) throws SdlException {
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
 		}
-		
+
 		// Test if request is null
-		if (request == null) {
+		if (message == null) {
 			SdlTrace.logProxyEvent("Application called sendRPCRequest method with a null RPCRequest.", SDL_LIB_TRACE_KEY);
 			throw new IllegalArgumentException("sendRPCRequest cannot be called with a null request.");
 		}
-		
-		SdlTrace.logProxyEvent("Application called sendRPCRequest method for RPCRequest: ." + request.getFunctionName(), SDL_LIB_TRACE_KEY);
-			
+
+		SdlTrace.logProxyEvent("Application called sendRPCRequest method for RPCRequest: ." + message.getFunctionName(), SDL_LIB_TRACE_KEY);
+
 		// Test if SdlConnection is null
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 			if (!getIsConnected()) {
@@ -4112,55 +4310,73 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				throw new SdlException("There is no valid connection to SDL. sendRPCRequest cannot be called until SDL has been connected.", SdlExceptionCause.SDL_UNAVAILABLE);
 			}
 		}
-		
+
 		// Test for illegal correlation ID
-		if (isCorrelationIDProtected(request.getCorrelationID())) {
-			
-			SdlTrace.logProxyEvent("Application attempted to use the reserved correlation ID, " + request.getCorrelationID(), SDL_LIB_TRACE_KEY);
-			throw new SdlException("Invalid correlation ID. The correlation ID, " + request.getCorrelationID()
-					+ " , is a reserved correlation ID.", SdlExceptionCause.RESERVED_CORRELATION_ID);
+		if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+			RPCRequest request = (RPCRequest) message;
+			if (isCorrelationIDProtected(request.getCorrelationID())) {
+
+				SdlTrace.logProxyEvent("Application attempted to use the reserved correlation ID, " + request.getCorrelationID(), SDL_LIB_TRACE_KEY);
+				throw new SdlException("Invalid correlation ID. The correlation ID, " + request.getCorrelationID()
+						+ " , is a reserved correlation ID.", SdlExceptionCause.RESERVED_CORRELATION_ID);
+			}
 		}
 		// Throw exception if RPCRequest is sent when SDL is unavailable
-		if (!_appInterfaceRegisterd && !request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString())) {
-			
+		if (!_appInterfaceRegisterd && !message.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString())) {
+
 			SdlTrace.logProxyEvent("Application attempted to send an RPCRequest (non-registerAppInterface), before the interface was registerd.", SDL_LIB_TRACE_KEY);
 			throw new SdlException("SDL is currently unavailable. RPC Requests cannot be sent.", SdlExceptionCause.SDL_UNAVAILABLE);
 		}
-				
+
 		if (_advancedLifecycleManagementEnabled) {
-			if (request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString())
-					|| request.getFunctionName().equals(FunctionID.UNREGISTER_APP_INTERFACE.toString())) {
-				
+			if (message.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString())
+					|| message.getFunctionName().equals(FunctionID.UNREGISTER_APP_INTERFACE.toString())) {
+
 				SdlTrace.logProxyEvent("Application attempted to send a RegisterAppInterface or UnregisterAppInterface while using ALM.", SDL_LIB_TRACE_KEY);
-				throw new SdlException("The RPCRequest, " + request.getFunctionName() + 
+				throw new SdlException("The RPCRequest, " + message.getFunctionName() +
 						", is un-allowed using the Advanced Lifecycle Management Model.", SdlExceptionCause.INCORRECT_LIFECYCLE_MODEL);
 			}
 		}
 
 		//FIXME this is temporary until the next major release of the library where OK is removed
 
-		if(FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
-				|| FunctionID.UNSUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
-				|| FunctionID.BUTTON_PRESS.toString().equals(request.getFunctionName())){
+		if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+			RPCRequest request = (RPCRequest) message;
+			if(FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+					|| FunctionID.UNSUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+					|| FunctionID.BUTTON_PRESS.toString().equals(request.getFunctionName())) {
 
-			ButtonName buttonName = (ButtonName)request.getObject(ButtonName.class, SubscribeButton.KEY_BUTTON_NAME);
+				ButtonName buttonName = (ButtonName) request.getObject(ButtonName.class, SubscribeButton.KEY_BUTTON_NAME);
 
-			if(rpcSpecVersion != null && rpcSpecVersion.getMajor() < 5) {
+				if (rpcSpecVersion != null && rpcSpecVersion.getMajor() < 5) {
 
-				if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
-					request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
-				}
-			} else { //Newer than version 5.0.0
-				if(ButtonName.OK.equals(buttonName)){
-					RPCRequest request2 = new RPCRequest(request);
-					request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
-					sendRPCRequestPrivate(request2);
+					if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
+						request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
+					}
+				} else { //Newer than version 5.0.0
+					if (ButtonName.OK.equals(buttonName)) {
+						RPCRequest request2 = new RPCRequest(request);
+						request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
+						sendRPCMessagePrivate(request2);
+					}
 				}
 			}
 		}
-		
-		sendRPCRequestPrivate(request);
-	} // end-method
+
+		sendRPCMessagePrivate(message);
+	}
+	
+	/**
+	 * Takes an RPCRequest and sends it to SDL.  Responses are captured through callback on IProxyListener.  
+	 * 
+	 * @param request is the RPCRequest being sent
+	 * @throws SdlException if an unrecoverable error is encountered
+	 * @deprecated - use sendRPC instead
+	 */
+	@Deprecated
+	public void sendRPCRequest(RPCRequest request) throws SdlException {
+		sendRPC(request);
+	}
 	
 	protected void notifyProxyClosed(final String info, final Exception e, final SdlDisconnectedReason reason) {		
 		SdlTrace.logProxyEvent("NotifyProxyClose", SDL_LIB_TRACE_KEY);
@@ -6019,9 +6235,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		updateBroadcastIntent(sendIntent, "TYPE", RPCMessage.KEY_REQUEST);
 		updateBroadcastIntent(sendIntent, "CORRID", msg.getCorrelationID());
 		updateBroadcastIntent(sendIntent, "DATA",serializeJSON(msg));
-		sendBroadcastIntent(sendIntent);		
-		
-		sendRPCRequestPrivate(msg);
+		sendBroadcastIntent(sendIntent);
+
+		sendRPCMessagePrivate(msg);
 	}
 	
 	/*Begin V1 Enhanced helper function*/
@@ -6390,8 +6606,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		updateBroadcastIntent(sendIntent, "CORRID", msg.getCorrelationID());
 		updateBroadcastIntent(sendIntent, "DATA",serializeJSON(msg));
 		sendBroadcastIntent(sendIntent);
-		
-		sendRPCRequestPrivate(msg);
+
+		sendRPCMessagePrivate(msg);
 	}
 	
 	/**

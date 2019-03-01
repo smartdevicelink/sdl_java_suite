@@ -14,6 +14,7 @@ import java.util.Hashtable;
 
 public class GetSystemCapability extends RPCRequest {
     public static final String KEY_SYSTEM_CAPABILITY_TYPE = "systemCapabilityType";
+    public static final String KEY_SUBSCRIBE = "subscribe";
 
     /**
      * Constructs a new GetSystemCapability object
@@ -25,8 +26,7 @@ public class GetSystemCapability extends RPCRequest {
     /**
      * <p>Constructs a new GetSystemCapability object indicated by the Hashtable parameter</p>
      *
-     * @param hash
-     *            The Hashtable to use
+     * @param hash The Hashtable to use
      */
     public GetSystemCapability(Hashtable<String, Object> hash) {
         super(hash);
@@ -55,5 +55,25 @@ public class GetSystemCapability extends RPCRequest {
      */
     public void setSystemCapabilityType(@NonNull SystemCapabilityType value){
         setParameters(KEY_SYSTEM_CAPABILITY_TYPE, value);
+    }
+
+    /**
+     * Flag to subscribe to updates of the supplied service capability type. If true, the requester
+     * will be subscribed. If false, the requester will not be subscribed and be removed as a
+     * subscriber if it was previously subscribed.
+     * @return if the SystemCapabilityType is subscribed to
+     */
+    public Boolean getSubscribe(){
+        return getBoolean(KEY_SUBSCRIBE);
+    }
+
+    /**
+     * Flag to subscribe to updates of the supplied service capability type. If true, the requester
+     * will be subscribed. If false, the requester will not be subscribed and be removed as a
+     * subscriber if it was previously subscribed.
+     * @param subscribe to changes in the SystemCapabilityType
+     */
+    public void setSubscribe(Boolean subscribe){
+        setParameters(KEY_SUBSCRIBE, subscribe);
     }
 }

@@ -4,7 +4,13 @@ import android.graphics.Color;
 import android.util.Log;
 
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.TTSChunkFactory;
+import com.smartdevicelink.proxy.rpc.AppServiceCapability;
+import com.smartdevicelink.proxy.rpc.AppServiceData;
+import com.smartdevicelink.proxy.rpc.AppServiceManifest;
+import com.smartdevicelink.proxy.rpc.AppServiceRecord;
+import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioControlData;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
@@ -15,6 +21,7 @@ import com.smartdevicelink.proxy.rpc.ClimateControlData;
 import com.smartdevicelink.proxy.rpc.CloudAppProperties;
 import com.smartdevicelink.proxy.rpc.Coordinate;
 import com.smartdevicelink.proxy.rpc.DIDResult;
+import com.smartdevicelink.proxy.rpc.DateTime;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
@@ -34,10 +41,15 @@ import com.smartdevicelink.proxy.rpc.LightState;
 import com.smartdevicelink.proxy.rpc.LocationDetails;
 import com.smartdevicelink.proxy.rpc.MassageCushionFirmness;
 import com.smartdevicelink.proxy.rpc.MassageModeData;
+import com.smartdevicelink.proxy.rpc.MediaServiceData;
+import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.ModuleData;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
+import com.smartdevicelink.proxy.rpc.NavigationInstruction;
+import com.smartdevicelink.proxy.rpc.NavigationServiceData;
+import com.smartdevicelink.proxy.rpc.NavigationServiceManifest;
 import com.smartdevicelink.proxy.rpc.OasisAddress;
 import com.smartdevicelink.proxy.rpc.ParameterPermissions;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
@@ -74,9 +86,14 @@ import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
+import com.smartdevicelink.proxy.rpc.WeatherAlert;
+import com.smartdevicelink.proxy.rpc.WeatherData;
+import com.smartdevicelink.proxy.rpc.WeatherServiceData;
+import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
+import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingIndicator;
 import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.AudioType;
@@ -91,6 +108,7 @@ import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.DeviceLevelStatus;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
+import com.smartdevicelink.proxy.rpc.enums.Direction;
 import com.smartdevicelink.proxy.rpc.enums.DisplayMode;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.DistanceUnit;
@@ -121,8 +139,11 @@ import com.smartdevicelink.proxy.rpc.enums.MassageCushion;
 import com.smartdevicelink.proxy.rpc.enums.MassageMode;
 import com.smartdevicelink.proxy.rpc.enums.MassageZone;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
+import com.smartdevicelink.proxy.rpc.enums.MediaType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
+import com.smartdevicelink.proxy.rpc.enums.NavigationAction;
+import com.smartdevicelink.proxy.rpc.enums.NavigationJunction;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
@@ -133,6 +154,7 @@ import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.SeatMemoryActionType;
+import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SupportedSeat;
@@ -304,10 +326,31 @@ public class Test {
 	public static final AudioStreamingIndicator        GENERAL_AUDIO_STREAMING_INDICATOR      = AudioStreamingIndicator.PLAY;
 	public static final String                         GENERAL_APP_ID                         = "123e4567e8";
 	public static final String                         GENERAL_FULL_APP_ID                    = "123e4567-e89b-12d3-a456-426655440000";
-	public static final Version                        GENERAL_VERSION                        = new Version("4.0.0");
-	public static final HybridAppPreference            GENERAL_HYBRID_APP_PREFERENCE          = HybridAppPreference.CLOUD;
+	public static final HybridAppPreference 		   GENERAL_HYBRID_APP_PREFERENCE          = HybridAppPreference.CLOUD;
 	public static final CloudAppProperties             GENERAL_CLOUD_APP_PROPERTIES           = new CloudAppProperties();
-
+	public static final AppServiceType                 GENERAL_APP_SERVICE_TYPE               = AppServiceType.MEDIA;
+	public static final List<Integer>                  GENERAL_FUNCTION_ID_LIST               = Arrays.asList(FunctionID.GET_VEHICLE_DATA.getId(), FunctionID.SEND_HAPTIC_DATA.getId());
+	public static final AppServiceManifest             GENERAL_APP_SERVICE_MANIFEST           = new AppServiceManifest();
+	public static final MediaServiceManifest           GENERAL_MEDIA_SERVICE_MANIFEST         = new MediaServiceManifest();
+	public static final WeatherServiceManifest         GENERAL_WEATHER_SERVICE_MANIFEST       = new WeatherServiceManifest();
+	public static final NavigationServiceManifest      GENERAL_NAVIGATION_SERVICE_MANIFEST    = new NavigationServiceManifest();
+	public static final AppServiceRecord               GENERAL_APP_SERVICE_RECORD             = new AppServiceRecord();
+	public static final AppServiceCapability           GENERAL_APP_SERVICE_CAPABILITY         = new AppServiceCapability();
+	public static final AppServicesCapabilities        GENERAL_APP_SERVICE_CAPABILITIES       = new AppServicesCapabilities();
+	public static final ServiceUpdateReason            GENERAL_SERVICE_UPDATE_REASON          = ServiceUpdateReason.MANIFEST_UPDATE;
+	public static final DateTime					   GENERAL_DATETIME                       = new DateTime();
+	public static final WeatherData 				   GENERAL_WEATHERDATA                    = new WeatherData();
+	public static final WeatherAlert                   GENERAL_WEATHERALERT                   = new WeatherAlert();
+	public static final MediaType                      GENERAL_MEDIATYPE                      = MediaType.MUSIC;
+	public static final MediaServiceData               GENERAL_MEDIASERVICE_DATA              = new MediaServiceData();
+	public static final WeatherServiceData             GENERAL_WEATHERSERVICE_DATA            = new WeatherServiceData();
+	public static final NavigationServiceData          GENERAL_NAVIGATIONSERVICE_DATA         = new NavigationServiceData();
+	public static final AppServiceData                 GENERAL_APPSERVICE_DATA                = new AppServiceData();
+	public static final NavigationAction               GENERAL_NAVIGATION_ACTION              = NavigationAction.STAY;
+	public static final NavigationJunction             GENERAL_NAVIGATION_JUNCTION            = NavigationJunction.BIFURCATION;
+	public static final Direction                      GENERAL_DIRECTION                      = Direction.RIGHT;
+	public static final NavigationInstruction          GENERAL_NAVIGATION_INSTRUCTION         = new NavigationInstruction();
+	public static final Version                        GENERAL_VERSION                        = new Version("4.0.0");
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
 	public static final TemperatureUnit 			   GENERAL_TEMPERATUREUNIT                = TemperatureUnit.CELSIUS;
@@ -389,6 +432,12 @@ public class Test {
 	public static final List<LightState>                GENERAL_LIGHTSTATE_LIST                = new ArrayList<LightState>(1);
 	public static final List<AudioControlCapabilities>  GENERAL_AUDIOCONTROLCAPABILITIES_LIST  = new ArrayList<AudioControlCapabilities>(1);
 	public static final List<ModuleData>                GENERAL_MODULEDATA_LIST  = Collections.singletonList(GENERAL_MODULEDATA);
+	public static final List<AppServiceType>            GENERAL_APPSERVICETYPE_LIST            = Arrays.asList(AppServiceType.MEDIA, AppServiceType.NAVIGATION);
+	public static final List<AppServiceCapability>      GENERAL_APPSERVICECAPABILITY_LIST      = Arrays.asList(GENERAL_APP_SERVICE_CAPABILITY);
+	public static final List<WeatherData>               GENERAL_WEATHERDATA_LIST               = Arrays.asList(GENERAL_WEATHERDATA);
+	public static final List<WeatherAlert>              GENERAL_WEATHERALERT_LIST              = Arrays.asList(GENERAL_WEATHERALERT);
+	public static final List<NavigationInstruction>     GENERAL_NAVIGATION_INSTRUCTION_LIST    = Arrays.asList(GENERAL_NAVIGATION_INSTRUCTION);
+
 
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();
@@ -848,7 +897,6 @@ public class Test {
 		GENERAL_LOCKSCREENCONFIG.setBackgroundColor(Color.BLUE);
 		GENERAL_LOCKSCREENCONFIG.setEnabled(true);
 		GENERAL_LOCKSCREENCONFIG.setCustomView(R.layout.activity_sdllock_screen);
-
 		GENERAL_CLOUD_APP_PROPERTIES.setAppName(GENERAL_STRING);
 		GENERAL_CLOUD_APP_PROPERTIES.setAppID(GENERAL_STRING);
 		GENERAL_CLOUD_APP_PROPERTIES.setEnabled(GENERAL_BOOLEAN);
@@ -856,6 +904,104 @@ public class Test {
 		GENERAL_CLOUD_APP_PROPERTIES.setCloudTransportType(GENERAL_STRING);
 		GENERAL_CLOUD_APP_PROPERTIES.setHybridAppPreference(GENERAL_HYBRID_APP_PREFERENCE);
 		GENERAL_CLOUD_APP_PROPERTIES.setEndpoint(GENERAL_STRING);
+		GENERAL_WEATHER_SERVICE_MANIFEST.setWeatherForLocationSupported(GENERAL_BOOLEAN);
+		GENERAL_WEATHER_SERVICE_MANIFEST.setCurrentForecastSupported(GENERAL_BOOLEAN);
+		GENERAL_WEATHER_SERVICE_MANIFEST.setMaxMultidayForecastAmount(GENERAL_INTEGER);
+		GENERAL_WEATHER_SERVICE_MANIFEST.setMaxMinutelyForecastAmount(GENERAL_INTEGER);
+		GENERAL_WEATHER_SERVICE_MANIFEST.setMaxHourlyForecastAmount(GENERAL_INTEGER);
+
+		GENERAL_APP_SERVICE_MANIFEST.setWeatherServiceManifest(GENERAL_WEATHER_SERVICE_MANIFEST);
+		GENERAL_APP_SERVICE_MANIFEST.setServiceName(GENERAL_STRING);
+		GENERAL_APP_SERVICE_MANIFEST.setServiceIcon(GENERAL_IMAGE);
+		GENERAL_APP_SERVICE_MANIFEST.setRpcSpecVersion(GENERAL_SDLMSGVERSION);
+		GENERAL_APP_SERVICE_MANIFEST.setMediaServiceManifest(GENERAL_MEDIA_SERVICE_MANIFEST);
+		GENERAL_APP_SERVICE_MANIFEST.setHandledRpcs(GENERAL_FUNCTION_ID_LIST);
+		GENERAL_APP_SERVICE_MANIFEST.setAllowAppConsumers(GENERAL_BOOLEAN);
+		GENERAL_APP_SERVICE_MANIFEST.setServiceType(GENERAL_STRING);
+
+		GENERAL_NAVIGATION_SERVICE_MANIFEST.setAcceptsWayPoints(GENERAL_BOOLEAN);
+
+		GENERAL_APP_SERVICE_RECORD.setServiceId(GENERAL_STRING);
+		GENERAL_APP_SERVICE_RECORD.setServiceManifest(GENERAL_APP_SERVICE_MANIFEST);
+		GENERAL_APP_SERVICE_RECORD.setServiceActive(GENERAL_BOOLEAN);
+		GENERAL_APP_SERVICE_RECORD.setServicePublished(GENERAL_BOOLEAN);
+
+		GENERAL_APP_SERVICE_CAPABILITY.setUpdatedAppServiceRecord(GENERAL_APP_SERVICE_RECORD);
+		GENERAL_APP_SERVICE_CAPABILITY.setUpdateReason(GENERAL_SERVICE_UPDATE_REASON);
+
+		GENERAL_APP_SERVICE_CAPABILITIES.setAppServices(GENERAL_APPSERVICECAPABILITY_LIST);
+
+		GENERAL_DATETIME.setDay(Test.GENERAL_INT);
+		GENERAL_DATETIME.setHour(Test.GENERAL_INT);
+		GENERAL_DATETIME.setMilliSecond(Test.GENERAL_INT);
+		GENERAL_DATETIME.setMinute(Test.GENERAL_INT);
+		GENERAL_DATETIME.setMonth(Test.GENERAL_INT);
+		GENERAL_DATETIME.setSecond(Test.GENERAL_INT);
+		GENERAL_DATETIME.setTzHour(Test.GENERAL_INT);
+		GENERAL_DATETIME.setTzMinute(Test.GENERAL_INT);
+		GENERAL_DATETIME.setYear(Test.GENERAL_INT);
+
+		GENERAL_WEATHERDATA.setCurrentTemperature(GENERAL_TEMPERATURE);
+		GENERAL_WEATHERDATA.setTemperatureHigh(GENERAL_TEMPERATURE);
+		GENERAL_WEATHERDATA.setTemperatureLow(GENERAL_TEMPERATURE);
+		GENERAL_WEATHERDATA.setApparentTemperature(GENERAL_TEMPERATURE);
+		GENERAL_WEATHERDATA.setWeatherSummary(GENERAL_STRING);
+		GENERAL_WEATHERDATA.setTime(GENERAL_DATETIME);
+		GENERAL_WEATHERDATA.setHumidity(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setCloudCover(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setMoonPhase(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setWindBearing(GENERAL_INTEGER);
+		GENERAL_WEATHERDATA.setWindGust(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setWindSpeed(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setNearestStormBearing(GENERAL_INTEGER);
+		GENERAL_WEATHERDATA.setNearestStormDistance(GENERAL_INTEGER);
+		GENERAL_WEATHERDATA.setPrecipAccumulation(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setPrecipIntensity(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setPrecipProbability(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setPrecipType(GENERAL_STRING);
+		GENERAL_WEATHERDATA.setVisibility(GENERAL_FLOAT);
+		GENERAL_WEATHERDATA.setWeatherIconImageName(GENERAL_STRING);
+
+		GENERAL_WEATHERALERT.setTitle(GENERAL_STRING);
+		GENERAL_WEATHERALERT.setSummary(GENERAL_STRING);
+		GENERAL_WEATHERALERT.setExpires(GENERAL_DATETIME);
+		GENERAL_WEATHERALERT.setRegions(GENERAL_STRING_LIST);
+		GENERAL_WEATHERALERT.setSeverity(GENERAL_STRING);
+		GENERAL_WEATHERALERT.setTimeIssued(GENERAL_DATETIME);
+
+		GENERAL_WEATHERSERVICE_DATA.setLocation(GENERAL_LOCATIONDETAILS);
+		GENERAL_WEATHERSERVICE_DATA.setCurrentForecast(GENERAL_WEATHERDATA);
+		GENERAL_WEATHERSERVICE_DATA.setMinuteForecast(GENERAL_WEATHERDATA_LIST);
+		GENERAL_WEATHERSERVICE_DATA.setHourlyForecast(GENERAL_WEATHERDATA_LIST);
+		GENERAL_WEATHERSERVICE_DATA.setMultidayForecast(GENERAL_WEATHERDATA_LIST);
+		GENERAL_WEATHERSERVICE_DATA.setAlerts(GENERAL_WEATHERALERT_LIST);
+
+		GENERAL_MEDIASERVICE_DATA.setMediaType(GENERAL_MEDIATYPE);
+		GENERAL_MEDIASERVICE_DATA.setMediaTitle(GENERAL_STRING);
+		GENERAL_MEDIASERVICE_DATA.setMediaArtist(GENERAL_STRING);
+		GENERAL_MEDIASERVICE_DATA.setMediaAlbum(GENERAL_STRING);
+		GENERAL_MEDIASERVICE_DATA.setPlaylistName(GENERAL_STRING);
+		GENERAL_MEDIASERVICE_DATA.setIsExplicit(GENERAL_BOOLEAN);
+		GENERAL_MEDIASERVICE_DATA.setTrackPlaybackProgress(GENERAL_INTEGER);
+		GENERAL_MEDIASERVICE_DATA.setTrackPlaybackDuration(GENERAL_INTEGER);
+		GENERAL_MEDIASERVICE_DATA.setQueuePlaybackProgress(GENERAL_INTEGER);
+		GENERAL_MEDIASERVICE_DATA.setQueuePlaybackDuration(GENERAL_INTEGER);
+		GENERAL_MEDIASERVICE_DATA.setQueueCurrentTrackNumber(GENERAL_INTEGER);
+		GENERAL_MEDIASERVICE_DATA.setQueueTotalTrackCount(GENERAL_INTEGER);
+
+		GENERAL_APPSERVICE_DATA.setServiceType(GENERAL_STRING);
+		GENERAL_APPSERVICE_DATA.setServiceId(GENERAL_STRING);
+		GENERAL_APPSERVICE_DATA.setWeatherServiceData(GENERAL_WEATHERSERVICE_DATA);
+		GENERAL_APPSERVICE_DATA.setMediaServiceData(GENERAL_MEDIASERVICE_DATA);
+
+		GENERAL_NAVIGATION_INSTRUCTION.setLocationDetails(GENERAL_LOCATIONDETAILS);
+		GENERAL_NAVIGATION_INSTRUCTION.setAction(GENERAL_NAVIGATION_ACTION);
+		GENERAL_NAVIGATION_INSTRUCTION.setEta(GENERAL_DATETIME);
+		GENERAL_NAVIGATION_INSTRUCTION.setBearing(GENERAL_INTEGER);
+		GENERAL_NAVIGATION_INSTRUCTION.setJunctionType(GENERAL_NAVIGATION_JUNCTION);
+		GENERAL_NAVIGATION_INSTRUCTION.setDrivingSide(GENERAL_DIRECTION);
+		GENERAL_NAVIGATION_INSTRUCTION.setDetails(GENERAL_STRING);
+		GENERAL_NAVIGATION_INSTRUCTION.setImage(GENERAL_IMAGE);
 
 
 		try {
