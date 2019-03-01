@@ -18,6 +18,7 @@ import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.ClimateControlCapabilities;
 import com.smartdevicelink.proxy.rpc.ClimateControlData;
+import com.smartdevicelink.proxy.rpc.CloudAppProperties;
 import com.smartdevicelink.proxy.rpc.Coordinate;
 import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DateTime;
@@ -120,6 +121,7 @@ import com.smartdevicelink.proxy.rpc.enums.FuelType;
 import com.smartdevicelink.proxy.rpc.enums.GlobalProperty;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.HybridAppPreference;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
 import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
@@ -324,6 +326,8 @@ public class Test {
 	public static final AudioStreamingIndicator        GENERAL_AUDIO_STREAMING_INDICATOR      = AudioStreamingIndicator.PLAY;
 	public static final String                         GENERAL_APP_ID                         = "123e4567e8";
 	public static final String                         GENERAL_FULL_APP_ID                    = "123e4567-e89b-12d3-a456-426655440000";
+	public static final HybridAppPreference 		   GENERAL_HYBRID_APP_PREFERENCE          = HybridAppPreference.CLOUD;
+	public static final CloudAppProperties             GENERAL_CLOUD_APP_PROPERTIES           = new CloudAppProperties();
 	public static final AppServiceType                 GENERAL_APP_SERVICE_TYPE               = AppServiceType.MEDIA;
 	public static final List<Integer>                  GENERAL_FUNCTION_ID_LIST               = Arrays.asList(FunctionID.GET_VEHICLE_DATA.getId(), FunctionID.SEND_HAPTIC_DATA.getId());
 	public static final AppServiceManifest             GENERAL_APP_SERVICE_MANIFEST           = new AppServiceManifest();
@@ -346,7 +350,7 @@ public class Test {
 	public static final NavigationJunction             GENERAL_NAVIGATION_JUNCTION            = NavigationJunction.BIFURCATION;
 	public static final Direction                      GENERAL_DIRECTION                      = Direction.RIGHT;
 	public static final NavigationInstruction          GENERAL_NAVIGATION_INSTRUCTION         = new NavigationInstruction();
-	public static final Version                        GENERAL_VERSION    	                  = new Version("4.0.0");
+	public static final Version                        GENERAL_VERSION                        = new Version("4.0.0");
 	public static final ModuleType 					   GENERAL_MODULETYPE           		  = ModuleType.CLIMATE;
 	public static final Temperature 				   GENERAL_TEMPERATURE                	  = new Temperature();
 	public static final TemperatureUnit 			   GENERAL_TEMPERATUREUNIT                = TemperatureUnit.CELSIUS;
@@ -433,6 +437,7 @@ public class Test {
 	public static final List<WeatherData>               GENERAL_WEATHERDATA_LIST               = Arrays.asList(GENERAL_WEATHERDATA);
 	public static final List<WeatherAlert>              GENERAL_WEATHERALERT_LIST              = Arrays.asList(GENERAL_WEATHERALERT);
 	public static final List<NavigationInstruction>     GENERAL_NAVIGATION_INSTRUCTION_LIST    = Arrays.asList(GENERAL_NAVIGATION_INSTRUCTION);
+
 
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();
@@ -892,7 +897,13 @@ public class Test {
 		GENERAL_LOCKSCREENCONFIG.setBackgroundColor(Color.BLUE);
 		GENERAL_LOCKSCREENCONFIG.setEnabled(true);
 		GENERAL_LOCKSCREENCONFIG.setCustomView(R.layout.activity_sdllock_screen);
-
+		GENERAL_CLOUD_APP_PROPERTIES.setAppName(GENERAL_STRING);
+		GENERAL_CLOUD_APP_PROPERTIES.setAppID(GENERAL_STRING);
+		GENERAL_CLOUD_APP_PROPERTIES.setEnabled(GENERAL_BOOLEAN);
+		GENERAL_CLOUD_APP_PROPERTIES.setAuthToken(GENERAL_STRING);
+		GENERAL_CLOUD_APP_PROPERTIES.setCloudTransportType(GENERAL_STRING);
+		GENERAL_CLOUD_APP_PROPERTIES.setHybridAppPreference(GENERAL_HYBRID_APP_PREFERENCE);
+		GENERAL_CLOUD_APP_PROPERTIES.setEndpoint(GENERAL_STRING);
 		GENERAL_WEATHER_SERVICE_MANIFEST.setWeatherForLocationSupported(GENERAL_BOOLEAN);
 		GENERAL_WEATHER_SERVICE_MANIFEST.setCurrentForecastSupported(GENERAL_BOOLEAN);
 		GENERAL_WEATHER_SERVICE_MANIFEST.setMaxMultidayForecastAmount(GENERAL_INTEGER);
@@ -991,6 +1002,7 @@ public class Test {
 		GENERAL_NAVIGATION_INSTRUCTION.setDrivingSide(GENERAL_DIRECTION);
 		GENERAL_NAVIGATION_INSTRUCTION.setDetails(GENERAL_STRING);
 		GENERAL_NAVIGATION_INSTRUCTION.setImage(GENERAL_IMAGE);
+
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

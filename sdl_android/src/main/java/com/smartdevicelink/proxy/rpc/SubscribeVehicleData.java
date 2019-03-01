@@ -234,7 +234,15 @@ import java.util.Hashtable;
  *				<td>Subscribable</td>
  * 			<td>SmartDeviceLink 5.0 </td>
  * 		</tr>
- *  </table>
+ * 	     <tr>
+ * 			<td>cloudAppVehicleID</td>
+ * 			<td>Boolean</td>
+ * 			<td>ID for the vehicle when connecting to cloud applications</td>
+ *				<td>N</td>
+ *				<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 5.1 </td>
+ * 		</tr>
+ *   </table>
  *  
  * <p> <b>Response</b></p>
  *<p><b>Non-default Result Codes:</b></p>
@@ -282,6 +290,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_FUEL_RANGE = "fuelRange";
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
+	public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
 
 	/**
 	 * Constructs a new SubscribeVehicleData object
@@ -807,5 +816,21 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
 	public Boolean getElectronicParkBrakeStatus(){
 		return getBoolean(KEY_ELECTRONIC_PARK_BRAKE_STATUS);
+	}
+
+	/**
+	 * Sets a boolean value. If true, subscribes cloudAppVehicleID data
+	 * @param cloudAppVehicleID a boolean value
+	 */
+	public void setCloudAppVehicleID(boolean cloudAppVehicleID){
+		setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
+	}
+
+	/**
+	 * Gets a boolean value. If true, means the cloudAppVehicleDataID data has been subscribed.
+	 * @return a Boolean value.
+	 */
+	public Boolean getCloudAppVehicleID(){
+		return getBoolean(KEY_CLOUD_APP_VEHICLE_ID);
 	}
 }

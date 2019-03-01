@@ -977,6 +977,13 @@ public class SdlProtocol {
                         Log.w(TAG, "Received a start service ack for RPC service while already active on a different transport.");
                         return;
                     }
+
+                    if(protocolVersion.isNewerThan(new Version(5,2,0)) >= 0){
+                        String authToken = (String)packet.getTag(ControlFrameTags.RPC.StartServiceACK.AUTH_TOKEN);
+                        if(authToken != null){
+                            iSdlProtocol.onAuthTokenReceived(authToken);
+                        }
+                    }
                 }else {
 
                     //Version is either not included or lower than 5.1.0

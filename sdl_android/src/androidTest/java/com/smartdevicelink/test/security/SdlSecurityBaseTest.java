@@ -114,6 +114,8 @@ public class SdlSecurityBaseTest extends AndroidTestCase2 {
 				byte sessionID) {
 
 		}
+		@Override
+		public void onAuthTokenReceived(String token, byte bytes){}
 
 	}
 	

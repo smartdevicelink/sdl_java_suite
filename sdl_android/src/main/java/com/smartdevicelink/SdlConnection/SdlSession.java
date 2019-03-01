@@ -658,6 +658,11 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
     }
 
     @Override
+    public void onAuthTokenReceived(String authToken, byte sessionId) {
+        this.sessionListener.onAuthTokenReceived(authToken, sessionId);
+    }
+
+    @Override
     public void onSecurityInitialized() {
 
         if (_sdlConnection != null && sdlSecurity != null)

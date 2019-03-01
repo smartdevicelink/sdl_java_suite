@@ -63,6 +63,8 @@ public enum FunctionID{
     UNSUBSCRIBE_WAY_POINTS(47, "UnsubscribeWayPoints"),
     GET_SYSTEM_CAPABILITY(48, "GetSystemCapability"),
 	SEND_HAPTIC_DATA(49, "SendHapticData"),
+    SET_CLOUD_APP_PROPERTIES(50, "SetCloudAppProperties"),
+	GET_CLOUD_APP_PROPERTIES(51, "GetCloudAppProperties"),
     PUBLISH_APP_SERVICE(52, "PublishAppService"),
     GET_APP_SERVICE_DATA(53, "GetAppServiceData"),
     GET_FILE(54, "GetFile"),

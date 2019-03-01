@@ -31,8 +31,8 @@ import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
 import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
 import com.smartdevicelink.proxy.rpc.GenericResponse;
-import com.smartdevicelink.proxy.rpc.GetAppServiceData;
 import com.smartdevicelink.proxy.rpc.GetAppServiceDataResponse;
+import com.smartdevicelink.proxy.rpc.GetCloudAppPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
 import com.smartdevicelink.proxy.rpc.GetFileResponse;
 import com.smartdevicelink.proxy.rpc.GetInteriorVehicleDataResponse;
@@ -73,6 +73,7 @@ import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
 import com.smartdevicelink.proxy.rpc.SendHapticDataResponse;
 import com.smartdevicelink.proxy.rpc.SendLocationResponse;
 import com.smartdevicelink.proxy.rpc.SetAppIconResponse;
+import com.smartdevicelink.proxy.rpc.SetCloudAppPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetInteriorVehicleDataResponse;
@@ -659,28 +660,44 @@ public class SdlProxyBaseTests extends AndroidTestCase2 {
 		public void onOnRCStatus(OnRCStatus notification) {
 		}
 
-		@Override
-		public void onPublishAppServiceResponse(PublishAppServiceResponse response){
-		}
+        @Override
+        public void onSetCloudAppProperties(SetCloudAppPropertiesResponse response) {
 
-		@Override
-		public void onGetAppServiceDataResponse(GetAppServiceDataResponse response){
-		}
+        }
 
-		@Override
-		public void onGetFileResponse(GetFileResponse response){
-		}
+        @Override
+        public void onGetCloudAppProperties(GetCloudAppPropertiesResponse response) {
 
-		@Override
-		public void onPerformAppServiceInteractionResponse(PerformAppServiceInteractionResponse response){
-		}
+        }
 
-		@Override
-		public void onOnAppServiceData(OnAppServiceData notification){
-		}
+        @Override
+        public void onPublishAppServiceResponse(PublishAppServiceResponse response) {
 
-		@Override
-		public void onOnSystemCapabilityUpdated(OnSystemCapabilityUpdated notification){
-		}
-	}
+        }
+
+        @Override
+        public void onGetAppServiceDataResponse(GetAppServiceDataResponse response) {
+
+        }
+
+        @Override
+        public void onGetFileResponse(GetFileResponse response) {
+
+        }
+
+        @Override
+        public void onPerformAppServiceInteractionResponse(PerformAppServiceInteractionResponse response) {
+
+        }
+
+        @Override
+        public void onOnAppServiceData(OnAppServiceData notification) {
+
+        }
+
+        @Override
+        public void onOnSystemCapabilityUpdated(OnSystemCapabilityUpdated notification) {
+
+        }
+    }
 }

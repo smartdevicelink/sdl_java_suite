@@ -125,6 +125,11 @@ public enum VehicleDataType {
      * Notifies ELECTRONICPARKBRAKESTATUSData may be subscribed
      */
     VEHICLEDATA_ELECTRONICPARKBRAKESTATUS,
+
+    /**
+     * Notifies VEHICLEDATA_CLOUDAPPVEHICLEID may be subscribed
+     */
+    VEHICLEDATA_CLOUDAPPVEHICLEID,
     ;
 
      /**

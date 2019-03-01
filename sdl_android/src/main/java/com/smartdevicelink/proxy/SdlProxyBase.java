@@ -96,6 +96,7 @@ import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.HttpUtils;
 import com.smartdevicelink.util.Version;
 
 import org.json.JSONArray;
@@ -258,6 +259,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected SparseArray<CopyOnWriteArrayList<OnRPCRequestListener>> rpcRequestListeners = null;
 
 	protected VideoStreamingManager manager; //Will move to SdlSession once the class becomes public
+
+	protected String authToken;
 
 	private Version minimumProtocolVersion;
 	private Version minimumRPCVersion;
@@ -691,6 +694,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 			
 		}
+
 		public void onProtocolServiceDataACK(SessionType sessionType, final int dataSize,
 				byte sessionID) {
 			if (_callbackToUIThread) {
@@ -704,6 +708,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else {
 				_proxyListener.onServiceDataACK(dataSize);						
 			}
+		}
+
+		@Override
+		public void onAuthTokenReceived(String authToken, byte sessionID) {
+			SdlProxyBase.this.authToken = authToken;
 		}
 	}
 
@@ -1190,51 +1199,54 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			sendBroadcastIntent(sendIntent);
 		}
 	}
-	
-	
+
+
 	private void sendOnSystemRequestToUrl(OnSystemRequest msg)
-	{		
+	{
 		Intent sendIntent = createBroadcastIntent();
 		Intent sendIntent2 = createBroadcastIntent();
 
 		HttpURLConnection urlConnection = null;
 		boolean bLegacy = false;
-		
+
 		String sURLString;
-		if (!getPoliciesURL().equals(""))
+		if (!getPoliciesURL().equals("")) {
 			sURLString = sPoliciesURL;
-		else
+		} else {
 			sURLString = msg.getUrl();
+		}
 
 		Integer iTimeout = msg.getTimeout();
 
 		if (iTimeout == null)
 			iTimeout = 2000;
-		
-		Headers myHeader = msg.getHeader();			
-		
+
+		Headers myHeader = msg.getHeader();
+
+		RequestType requestType = msg.getRequestType();
 		updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "sendOnSystemRequestToUrl");
-		updateBroadcastIntent(sendIntent, "COMMENT5", "\r\nCloud URL: " + sURLString);	
-		
-		try 
+		updateBroadcastIntent(sendIntent, "COMMENT5", "\r\nCloud URL: " + sURLString);
+
+		try
 		{
-			if (myHeader == null)
+			if (myHeader == null) {
 				updateBroadcastIntent(sendIntent, "COMMENT7", "\r\nHTTPRequest Header is null");
-			
-			String sBodyString = msg.getBody();			
-			
+			}
+
+			String sBodyString = msg.getBody();
+
 			JSONObject jsonObjectToSendToServer;
 			String valid_json = "";
 			int length;
 			if (sBodyString == null)
-			{		
-				if(RequestType.HTTP.equals(msg.getRequestType())){
+			{
+				if(requestType == RequestType.HTTP ){
 					length = msg.getBulkData().length;
 					Intent sendIntent3 = createBroadcastIntent();
 					updateBroadcastIntent(sendIntent3, "FUNCTION_NAME", "replace");
-					updateBroadcastIntent(sendIntent3, "COMMENT1", "Valid Json length before replace: " + length);				
+					updateBroadcastIntent(sendIntent3, "COMMENT1", "Valid Json length before replace: " + length);
 					sendBroadcastIntent(sendIntent3);
-					
+
 				}else{
 					List<String> legacyData = msg.getLegacyData();
 					JSONArray jsonArrayOfSdlPPackets = new JSONArray(legacyData);
@@ -1247,17 +1259,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			}
  			else
- 			{		
+ 			{
 				Intent sendIntent3 = createBroadcastIntent();
 				updateBroadcastIntent(sendIntent3, "FUNCTION_NAME", "replace");
-				updateBroadcastIntent(sendIntent3, "COMMENT1", "Valid Json length before replace: " + sBodyString.getBytes("UTF-8").length);				
+				updateBroadcastIntent(sendIntent3, "COMMENT1", "Valid Json length before replace: " + sBodyString.getBytes("UTF-8").length);
 				sendBroadcastIntent(sendIntent3);
 				valid_json = sBodyString.replace("\\", "");
 				length = valid_json.getBytes("UTF-8").length;
  			}
-			
+
 			urlConnection = getURLConnection(myHeader, sURLString, iTimeout, length);
-			
+
 			if (urlConnection == null)
 			{
 	            Log.i(TAG, "urlConnection is null, check RPC input parameters");
@@ -1266,44 +1278,44 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 
 			DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
-			if(RequestType.HTTP.equals(msg.getRequestType())){
+			if(requestType == RequestType.HTTP){
 				wr.write(msg.getBulkData());
 			}else{
 				wr.writeBytes(valid_json);
 			}
-			
+
 			wr.flush();
 			wr.close();
-			
-			
+
+
 			long BeforeTime = System.currentTimeMillis();
 			long AfterTime = System.currentTimeMillis();
 			final long roundtriptime = AfterTime - BeforeTime;
-			
+
 			updateBroadcastIntent(sendIntent, "COMMENT4", " Round trip time: " + roundtriptime);
-			updateBroadcastIntent(sendIntent, "COMMENT1", "Received response from cloud, response code=" + urlConnection.getResponseCode() + " ");		
-			
+			updateBroadcastIntent(sendIntent, "COMMENT1", "Received response from cloud, response code=" + urlConnection.getResponseCode() + " ");
+
 			int iResponseCode = urlConnection.getResponseCode();
-			
+
 			if (iResponseCode != HttpURLConnection.HTTP_OK)
 			{
 	            Log.i(TAG, "Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
 	            updateBroadcastIntent(sendIntent, "COMMENT2", "Response code not HTTP_OK, aborting request. ");
 	            return;
 	        }
-			
+
 			InputStream is = urlConnection.getInputStream();
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 		    String line;
-		    StringBuilder response = new StringBuilder(); 
-		    while((line = rd.readLine()) != null) 
+		    StringBuilder response = new StringBuilder();
+		    while((line = rd.readLine()) != null)
 		    {
 		        response.append(line);
 		        response.append('\r');
 			}
 		    rd.close();
 		    //We've read the body
-		    if(RequestType.HTTP.equals(msg.getRequestType())){
+			if(requestType == RequestType.HTTP){
 		    	// Create the SystemRequest RPC to send to module.
 		    	PutFile putFile = new PutFile();
 		    	putFile.setFileType(FileType.JSON);
@@ -1319,32 +1331,32 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	    		updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.PUT_FILE.toString());
 	    		updateBroadcastIntent(sendIntent2, "TYPE", RPCMessage.KEY_REQUEST);
 	    		updateBroadcastIntent(sendIntent2, "CORRID", putFile.getCorrelationID());
-		    	
+
 		    }else{
-		    	Vector<String> cloudDataReceived = new Vector<String>();			
+		    	Vector<String> cloudDataReceived = new Vector<String>();
 		    	final String dataKey = "data";
 		    	// Convert the response to JSON
-		    	JSONObject jsonResponse = new JSONObject(response.toString());				
+		    	JSONObject jsonResponse = new JSONObject(response.toString());
 		    	if(jsonResponse.has(dataKey)){
-		    		if (jsonResponse.get(dataKey) instanceof JSONArray) 
+		    		if (jsonResponse.get(dataKey) instanceof JSONArray)
 		    		{
 		    			JSONArray jsonArray = jsonResponse.getJSONArray(dataKey);
-		    			for (int i=0; i<jsonArray.length(); i++) 
+		    			for (int i=0; i<jsonArray.length(); i++)
 		    			{
-		    				if (jsonArray.get(i) instanceof String) 
+		    				if (jsonArray.get(i) instanceof String)
 		    				{
 		    					cloudDataReceived.add(jsonArray.getString(i));
 		    					//Log.i("sendSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
 		    				}
 		    			}
-		    		} 
-		    		else if (jsonResponse.get(dataKey) instanceof String) 
+		    		}
+		    		else if (jsonResponse.get(dataKey) instanceof String)
 		    		{
 		    			cloudDataReceived.add(jsonResponse.getString(dataKey));
 		    			//Log.i("sendSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
-		    		} 
+		    		}
 		    	}
-		    	else 
+		    	else
 		    	{
 		    		DebugTool.logError("sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
 		    		//Log.i("sendSystemRequestToUrl", "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
@@ -1379,8 +1391,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	}
 
 		    	if (getIsConnected())
-		    	{
-					sendRPCMessagePrivate(mySystemRequest);
+		    	{			    	
+		    		sendRPCMessagePrivate(mySystemRequest);
 		    		Log.i("sendSystemRequestToUrl", "sent to sdl");
 
 		    		updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.SYSTEM_REQUEST.toString());
@@ -1389,43 +1401,43 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	}
 		    }
 		}
-		catch (SdlException e) 
+		catch (SdlException e)
 		{
 			DebugTool.logError("sendSystemRequestToUrl: Could not get data from JSONObject received.", e);
 			updateBroadcastIntent(sendIntent, "COMMENT3", " SdlException encountered sendOnSystemRequestToUrl: "+ e);
 			//Log.i("pt", "sendSystemRequestToUrl: Could not get data from JSONObject received."+ e);
-		} 
-		catch (JSONException e) 
+		}
+		catch (JSONException e)
 		{
 			DebugTool.logError("sendSystemRequestToUrl: JSONException: ", e);
 			updateBroadcastIntent(sendIntent, "COMMENT3", " JSONException encountered sendOnSystemRequestToUrl: "+ e);
 			//Log.i("pt", "sendSystemRequestToUrl: JSONException: "+ e);
-		} 
-		catch (UnsupportedEncodingException e) 
+		}
+		catch (UnsupportedEncodingException e)
 		{
 			DebugTool.logError("sendSystemRequestToUrl: Could not encode string.", e);
 			updateBroadcastIntent(sendIntent, "COMMENT3", " UnsupportedEncodingException encountered sendOnSystemRequestToUrl: "+ e);
 			//Log.i("pt", "sendSystemRequestToUrl: Could not encode string."+ e);
-		} 
-		catch (ProtocolException e) 
+		}
+		catch (ProtocolException e)
 		{
 			DebugTool.logError("sendSystemRequestToUrl: Could not set request method to post.", e);
 			updateBroadcastIntent(sendIntent, "COMMENT3", " ProtocolException encountered sendOnSystemRequestToUrl: "+ e);
 			//Log.i("pt", "sendSystemRequestToUrl: Could not set request method to post."+ e);
-		} 
-		catch (MalformedURLException e) 
+		}
+		catch (MalformedURLException e)
 		{
 			DebugTool.logError("sendSystemRequestToUrl: URL Exception when sending SystemRequest to an external server.", e);
 			updateBroadcastIntent(sendIntent, "COMMENT3", " MalformedURLException encountered sendOnSystemRequestToUrl: "+ e);
 			//Log.i("pt", "sendSystemRequestToUrl: URL Exception when sending SystemRequest to an external server."+ e);
-		} 
-		catch (IOException e) 
+		}
+		catch (IOException e)
 		{
 			DebugTool.logError("sendSystemRequestToUrl: IOException: ", e);
 			updateBroadcastIntent(sendIntent, "COMMENT3", " IOException while sending to cloud: IOException: "+ e);
 			//Log.i("pt", "sendSystemRequestToUrl: IOException: "+ e);
-		} 
-		catch (Exception e) 
+		}
+		catch (Exception e)
 		{
 			DebugTool.logError("sendSystemRequestToUrl: Unexpected Exception: ", e);
 			updateBroadcastIntent(sendIntent, "COMMENT3", " Exception encountered sendOnSystemRequestToUrl: "+ e);
@@ -1441,9 +1453,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			else
 				iFileCount = 0;
 
-			if(urlConnection != null) 
+			if(urlConnection != null)
 			{
-				urlConnection.disconnect(); 
+				urlConnection.disconnect();
 			}
 		}
 	}
@@ -3459,6 +3471,38 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onSendHapticDataResponse( msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.SET_CLOUD_APP_PROPERTIES.toString())) {
+				final SetCloudAppPropertiesResponse msg = new SetCloudAppPropertiesResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onSetCloudAppProperties(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onSetCloudAppProperties(msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.GET_CLOUD_APP_PROPERTIES.toString())) {
+				final GetCloudAppPropertiesResponse msg = new GetCloudAppPropertiesResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onGetCloudAppProperties(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onGetCloudAppProperties(msg);
+					onRPCResponseReceived(msg);
+				}
 			} else if (functionName.equals(FunctionID.PUBLISH_APP_SERVICE.toString())) {
 				final PublishAppServiceResponse msg = new PublishAppServiceResponse(hash);
 				msg.format(rpcSpecVersion, true);
@@ -3793,9 +3837,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					
 					final OnSystemRequest msg = new OnSystemRequest(hash);
 					msg.format(rpcSpecVersion,true);
-					if ((msg.getUrl() != null) &&
-							(((msg.getRequestType() == RequestType.PROPRIETARY) && (msg.getFileType() == FileType.JSON)) 
-									|| ((msg.getRequestType() == RequestType.HTTP) && (msg.getFileType() == FileType.BINARY)))){
+					RequestType requestType = msg.getRequestType();
+				if(msg.getUrl() != null) {
+					if (((requestType == RequestType.PROPRIETARY) && (msg.getFileType() == FileType.JSON))
+							|| ((requestType == RequestType.HTTP) && (msg.getFileType() == FileType.BINARY))) {
 						Thread handleOffboardTransmissionThread = new Thread() {
 							@Override
 							public void run() {
@@ -3804,15 +3849,34 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						};
 
 						handleOffboardTransmissionThread.start();
+					} else if (requestType == RequestType.LOCK_SCREEN_ICON_URL) {
+						//Cache this for when the lockscreen is displayed
+						lockScreenIconRequest = msg;
+					} else if (requestType == RequestType.ICON_URL) {
+						//Download the icon file and send SystemRequest RPC
+						Thread handleOffBoardTransmissionThread = new Thread() {
+							@Override
+							public void run() {
+								byte[] file = HttpUtils.downloadFile(msg.getUrl());
+								if (file != null) {
+									SystemRequest systemRequest = new SystemRequest();
+									systemRequest.setFileName(msg.getUrl());
+									systemRequest.setBulkData(file);
+									systemRequest.setRequestType(RequestType.ICON_URL);
+									try {
+										sendRPCMessagePrivate(systemRequest);
+									} catch (SdlException e) {
+										e.printStackTrace();
+									}
+								} else {
+									DebugTool.logError("File was null at: " + msg.getUrl());
+								}
+							}
+						};
+						handleOffBoardTransmissionThread.start();
 					}
-					
-					
-					if(msg.getRequestType() == RequestType.LOCK_SCREEN_ICON_URL &&
-					        msg.getUrl() != null){
-					    lockScreenIconRequest = msg;
-					}
-					
-					msg.format(rpcSpecVersion, true);
+				}
+
 					if (_callbackToUIThread) {
 						// Run in UI thread
 						_mainUIHandler.post(new Runnable() {
@@ -7663,6 +7727,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		return this.raiResponse;
 	}
 
+	/**
+	 * Retrieves the auth token, if any, that was attached to the StartServiceACK for the RPC
+	 * service from the module. For example, this should be used to login to a user account.
+	 * @return the string representation of the auth token
+	 */
+	public String getAuthToken(){
+		return this.authToken;
+	}
 
 	/**
 	 * VideoStreamingManager houses all the elements needed to create a scoped, streaming manager for video projection. It is only a private, instance

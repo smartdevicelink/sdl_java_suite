@@ -245,6 +245,14 @@ import java.util.List;
  * 			<td> minvalue: -2000; maxvalue:2000</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
+ * 	     <tr>
+ * 			<td>cloudAppVehicleID</td>
+ * 			<td>String</td>
+ * 			<td>ID for the vehicle when connecting to cloud applications</td>
+ *				<td>N</td>
+ *				<td></td>
+ * 			<td>SmartDeviceLink 5.1 </td>
+ * 		</tr>
  *  </table>
  *
  * @since SmartDeviceLink 1.0
@@ -284,6 +292,8 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_FUEL_RANGE = "fuelRange";
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
+    public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+
 
     public OnVehicleData() {
         super(FunctionID.ON_VEHICLE_DATA.toString());
@@ -524,5 +534,21 @@ public class OnVehicleData extends RPCNotification {
      */
     public ElectronicParkBrakeStatus getElectronicParkBrakeStatus(){
         return (ElectronicParkBrakeStatus) getObject(ElectronicParkBrakeStatus.class, KEY_ELECTRONIC_PARK_BRAKE_STATUS);
+    }
+
+    /**
+     * Sets a string value for the cloud app vehicle ID
+     * @param cloudAppVehicleID a string value
+     */
+    public void setCloudAppVehicleID(String cloudAppVehicleID){
+        setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
+    }
+
+    /**
+     * Gets a String value of the returned cloud app vehicle ID
+     * @return a String value.
+     */
+    public String getCloudAppVehicleID(){
+        return getString(KEY_CLOUD_APP_VEHICLE_ID);
     }
 }
