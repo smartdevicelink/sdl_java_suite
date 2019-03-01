@@ -23,7 +23,9 @@ public class RPCRequest extends RPCMessage {
 
 	public RPCRequest(RPCRequest request){
 		super(request);
-		setCorrelationID(CorrelationIdGenerator.generateId());
+		if (request.getCorrelationID() == null) {
+			setCorrelationID(CorrelationIdGenerator.generateId());
+		}
 	}
 
 	public Integer getCorrelationID() {

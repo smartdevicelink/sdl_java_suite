@@ -2326,6 +2326,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if (messageType.equals(RPCMessage.KEY_REQUEST)) {
 
 			RPCMessage convertedRPCMsg = RpcConverter.convertTableToRpc(hash);
+			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCRequest((RPCRequest)convertedRPCMsg), SDL_LIB_TRACE_KEY);
 
 			if (convertedRPCMsg != null) {
 				convertedRPCMsg.format(rpcSpecVersion, true);
