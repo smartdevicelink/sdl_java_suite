@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.Version;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.Language;
@@ -369,9 +368,9 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 		setParameters(KEY_PCM_STREAM_CAPABILITIES, pcmStreamingCapabilities);
 	}
     public String getProxyVersionInfo() {
-		if (Version.VERSION != null)
-			return  Version.VERSION;
-	
+		/*FIXME if (Version.VERSION != null)
+			return  Version.VERSION;*/
+
 		return null;
     }
     public void setSupportedDiagModes(List<Integer> supportedDiagModes) {
