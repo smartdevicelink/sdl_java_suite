@@ -2333,12 +2333,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		String functionName = rpcMsg.getFunctionName();
 		String messageType = rpcMsg.getMessageType();
 
+		SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, rpcMsg, SDL_LIB_TRACE_KEY);
+
 		// Requests need to be listened for using the SDLManager's addOnRPCRequestListener method.
 		// Requests are not supported by IProxyListenerBase
 		if (messageType.equals(RPCMessage.KEY_REQUEST)) {
 
 			RPCMessage convertedRPCMsg = RpcConverter.convertTableToRpc(hash);
-			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCRequest((RPCRequest)convertedRPCMsg), SDL_LIB_TRACE_KEY);
 
 			if (convertedRPCMsg != null) {
 				convertedRPCMsg.format(rpcSpecVersion, true);
@@ -2348,8 +2349,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 
 		} else if (messageType.equals(RPCMessage.KEY_RESPONSE)) {
-			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCResponse(rpcMsg), SDL_LIB_TRACE_KEY);
-			
 			// Check to ensure response is not from an internal message (reserved correlation ID)
 			if (isCorrelationIDProtected((new RPCResponse(hash)).getCorrelationID())) {
 				// This is a response generated from an internal message, it can be trapped here
@@ -3577,7 +3576,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} // end-if
 
 		} else if (messageType.equals(RPCMessage.KEY_NOTIFICATION)) {
-			SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, new RPCNotification(rpcMsg), SDL_LIB_TRACE_KEY);
 			if (functionName.equals(FunctionID.ON_HMI_STATUS.toString())) {
 				// OnHMIStatus
 				
