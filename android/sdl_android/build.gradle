@@ -32,6 +32,10 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
+    sourceSets {
+        main.java.srcDirs += '../../base_android/src/main/java'
+    }
 }
 
 dependencies {

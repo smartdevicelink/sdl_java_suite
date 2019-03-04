@@ -1,6 +1,6 @@
 package com.smartdevicelink.managers;
 
-public interface SdlManagerListener {
+public interface SdlManagerListener extends BaseSdlManagerListener{
 
 	/**
 	 * Called when a manager is ready for use

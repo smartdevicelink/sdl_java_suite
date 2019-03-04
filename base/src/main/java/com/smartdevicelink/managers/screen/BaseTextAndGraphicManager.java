@@ -19,8 +19,15 @@ import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TextField;
-import com.smartdevicelink.proxy.rpc.enums.*;
+import com.smartdevicelink.proxy.rpc.enums.FileType;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
+import com.smartdevicelink.proxy.rpc.enums.MetadataType;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
 
@@ -165,7 +172,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			listener.onComplete(true);
 		}
 	}
-	
+
 	private synchronized void sdlUpdate(CompletionListener listener){
 
 		// make sure hmi is not none
@@ -210,7 +217,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			inProgressUpdate = extractTextFromShow(fullShow);
 			sendShow();
 
-		}else if (isArtworkUploadedOrDoesntExist(primaryGraphic) && ( secondaryGraphic == blankArtwork || isArtworkUploadedOrDoesntExist(secondaryGraphic))){
+		}else if (!sdlArtworkNeedsUpload(primaryGraphic) && (secondaryGraphic == blankArtwork || !sdlArtworkNeedsUpload(secondaryGraphic))){
 
 			//Images already uploaded, sending full update
 			// The files to be updated are already uploaded, send the full show immediately
@@ -290,13 +297,18 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		List<SdlArtwork> artworksToUpload = new ArrayList<>();
 
 		// add primary image
-		if (shouldUpdatePrimaryImage()){
+		if (shouldUpdatePrimaryImage() && !primaryGraphic.isStaticIcon()){
 			artworksToUpload.add(primaryGraphic);
 		}
 
 		// add secondary image
-		if (shouldUpdateSecondaryImage()){
+		if (shouldUpdateSecondaryImage() && !secondaryGraphic.isStaticIcon()){
 			artworksToUpload.add(secondaryGraphic);
+		}
+
+		if (artworksToUpload.size() == 0 && (primaryGraphic.isStaticIcon() || secondaryGraphic.isStaticIcon())){
+			DebugTool.logInfo("Upload attempted on static icons, sending them without upload instead");
+			listener.onComplete(true);
 		}
 
 		// use file manager to upload art
@@ -318,15 +330,11 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private Show assembleShowImages(Show show){
 
 		if (shouldUpdatePrimaryImage()){
-			Image primaryImage = new Image(primaryGraphic.getName(), ImageType.DYNAMIC);
-			primaryImage.setIsTemplate(primaryGraphic.isTemplateImage());
-			show.setGraphic(primaryImage);
+			show.setGraphic(primaryGraphic.getImageRPC());
 		}
 
 		if (shouldUpdateSecondaryImage()){
-			Image secondaryImage = new Image(secondaryGraphic.getName(), ImageType.DYNAMIC);
-			secondaryImage.setIsTemplate(secondaryGraphic.isTemplateImage());
-			show.setSecondaryGraphic(secondaryImage);
+			show.setSecondaryGraphic(secondaryGraphic.getImageRPC());
 		}
 
 		return show;
@@ -666,12 +674,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	abstract SdlArtwork getBlankArtwork();
 
-	private boolean isArtworkUploadedOrDoesntExist(SdlArtwork artwork){
-
-		if (fileManager.get() != null){
-			return artwork != null && fileManager.get().hasUploadedFile(artwork);
+	private boolean sdlArtworkNeedsUpload(SdlArtwork artwork){
+		if (fileManager.get() != null) {
+			return artwork != null && !fileManager.get().hasUploadedFile(artwork) && !artwork.isStaticIcon();
 		}
-
 		return false;
 	}
 

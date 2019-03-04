@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.concurrent.FutureTask;
 
 @TargetApi(19)
-public class VideoStreamManager extends BaseSubManager {
+public class VideoStreamManager extends BaseVideoStreamManager {
 	private static String TAG = "VideoStreamManager";
 
 	private WeakReference<Context> context;

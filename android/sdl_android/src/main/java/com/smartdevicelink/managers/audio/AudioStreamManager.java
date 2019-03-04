@@ -44,7 +44,7 @@ import java.util.Queue;
  * play them on the connected device. The manager uses the Android built-in MediaCodec.
  */
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-public class AudioStreamManager extends BaseSubManager {
+public class AudioStreamManager extends BaseAudioStreamManager {
     private static final String TAG = AudioStreamManager.class.getSimpleName();
     private static final int COMPLETION_TIMEOUT = 2000;
 

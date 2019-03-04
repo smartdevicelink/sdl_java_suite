@@ -225,6 +225,11 @@ abstract class BaseFileManager extends BaseSubManager {
 	 * @param listener called when core responds to the attempt to upload the file
 	 */
 	public void uploadFile(@NonNull final SdlFile file, final CompletionListener listener){
+		if (file.isStaticIcon()){
+			Log.w(TAG, "Static icons don't need to be uploaded");
+			listener.onComplete(true);
+			return;
+		}
 		PutFile putFile = createPutFile(file);
 
 		putFile.setOnRPCResponseListener(new OnRPCResponseListener() {

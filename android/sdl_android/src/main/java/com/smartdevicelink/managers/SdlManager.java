@@ -69,7 +69,7 @@ import java.util.Vector;
  * 3. Sending Requests <br>
  * 4. Helper methods
  */
-public class SdlManager{
+public class SdlManager extends BaseSdlManager{
 	private static final String TAG = "SdlManager";
 	private SdlProxyBase proxy;
 	private String appId, appName, shortAppName;
