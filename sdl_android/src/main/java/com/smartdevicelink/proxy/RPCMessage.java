@@ -15,12 +15,12 @@ public class RPCMessage extends RPCStruct  {
 	}
 	
 	protected RPCMessage(RPCMessage rpcm) {
-		this(rpcm.store);
+		this(cloneStore(rpcm));
 	}
 	
 	protected RPCMessage(RPCStruct rpcs) {
 		this("", "");
-		this.parameters = rpcs.store;
+		this.parameters = cloneStore(rpcs);
 	}
 	
 	public RPCMessage(String functionName, String messageType) {
@@ -53,6 +53,14 @@ public class RPCMessage extends RPCStruct  {
 	protected String messageType;
 	protected Hashtable<String, Object> parameters;
 	protected Hashtable<String, Object> function;
+
+
+	private static Hashtable<String, Object> cloneStore(RPCStruct rpcStruct){
+		if(rpcStruct!= null && rpcStruct.store !=null){
+			return (Hashtable)rpcStruct.store.clone();
+		}
+		return null;
+	}
 
 	public String getFunctionName() {
 		return (String)function.get(KEY_FUNCTION_NAME);
