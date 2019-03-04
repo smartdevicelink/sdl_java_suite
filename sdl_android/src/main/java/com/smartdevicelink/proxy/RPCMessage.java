@@ -55,13 +55,6 @@ public class RPCMessage extends RPCStruct  {
 	protected Hashtable<String, Object> function;
 
 
-	private static Hashtable<String, Object> cloneStore(RPCStruct rpcStruct){
-		if(rpcStruct!= null && rpcStruct.store !=null){
-			return (Hashtable)rpcStruct.store.clone();
-		}
-		return null;
-	}
-
 	public String getFunctionName() {
 		return (String)function.get(KEY_FUNCTION_NAME);
 	}
