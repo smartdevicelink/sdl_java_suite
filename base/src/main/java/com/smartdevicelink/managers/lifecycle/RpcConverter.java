@@ -13,6 +13,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 import java.util.Set;
 
+/**
+ * Converts a protocol message into an RPC.
+ * Built to reduce boiler plate code for each RPC added.
+ */
 public class RpcConverter {
 
     private static final String TAG = "RpcConverter";
@@ -21,25 +25,25 @@ public class RpcConverter {
     private static final String RESPONSE_KEY            = "Response";
     private static final String GENERIC_RESPONSE_STRING = FunctionID.GENERIC_RESPONSE.toString();
 
+    /**
+     * Extracts the RPC out of the payload of a given protocol message
+     * @param message protocolMessage that has the RPC in the payload
+     * @param protocolVersion RPC spec version that should be used to create RPC
+     * @return the extracted RPC
+     */
     public static RPCMessage extractRpc(ProtocolMessage message, Version protocolVersion){
         Hashtable<String, Object> tempTable = convertProtocolMessage(message, protocolVersion);
         if(tempTable != null){
             try{
-                RPCMessage message1 =  convertTableToRpc(tempTable);
-                if(message1 != null){
-                    Log.v(TAG, "RPC type: " + message1.getClass().getCanonicalName());
-                }else{
-                    Log.i(TAG, "Message was null");
-                }
-                return message1;
+                return convertTableToRpc(tempTable);
             }catch (Exception e){
-                e.printStackTrace();
+                DebugTool.logError("Error converting RPC",e);
             }
         }
         return null;
     }
 
-    public static Hashtable<String, Object> convertProtocolMessage(ProtocolMessage message, Version protocolVersion){
+    static Hashtable<String, Object> convertProtocolMessage(ProtocolMessage message, Version protocolVersion){
         Hashtable<String, Object> hash = new Hashtable<>();
         if (protocolVersion!= null && protocolVersion.getMajor() > 1) {
 
@@ -47,16 +51,12 @@ public class RpcConverter {
             hashTemp.put(RPCMessage.KEY_CORRELATION_ID, message.getCorrID());
             if (message.getJsonSize() > 0) {
                 final Hashtable<String, Object> mhash = JsonRPCMarshaller.unmarshall(message.getData());
-                //hashTemp.put(Names.parameters, mhash.get(Names.parameters));
                 if (mhash != null) {
                     hashTemp.put(RPCMessage.KEY_PARAMETERS, mhash);
                 }
             }
 
-           // Log.d(TAG, "Function id: " + message.getFunctionID());
-
             String functionName = FunctionID.getFunctionName(message.getFunctionID());
-            Log.d(TAG, "Function NAME: " + functionName);
 
             if (functionName != null) {
                 hashTemp.put(RPCMessage.KEY_FUNCTION_NAME, functionName);
@@ -64,6 +64,7 @@ public class RpcConverter {
                 DebugTool.logWarning("Dispatch Incoming Message - function name is null unknown RPC.  FunctionId: " + message.getFunctionID());
                 return null;
             }
+
             if (message.getRPCType() == 0x00) {
                 hash.put(RPCMessage.KEY_REQUEST, hashTemp);
             } else if (message.getRPCType() == 0x01) {
@@ -71,6 +72,7 @@ public class RpcConverter {
             } else if (message.getRPCType() == 0x02) {
                 hash.put(RPCMessage.KEY_NOTIFICATION, hashTemp);
             }
+
             if (message.getBulkData() != null) hash.put(RPCStruct.KEY_BULK_DATA, message.getBulkData());
             if (message.getPayloadProtected()) hash.put(RPCStruct.KEY_PROTECTED, true);
 
@@ -91,15 +93,17 @@ public class RpcConverter {
         }else if(rpcHashTable.containsKey((RPCMessage.KEY_REQUEST))){
             params = (Hashtable)rpcHashTable.get((RPCMessage.KEY_REQUEST));
         }else{
-            Log.e(TAG, "Corrupted RPC table.");
+            DebugTool.logError(TAG + " Corrupted RPC table.");
             return null;
         }
 
-        if(params != null){
-           Set<String> keySet =  params.keySet();
-           for(String key: keySet){
-               Log.i(TAG, key + "  -  " + params.get(key) );
-           }
+        if(DebugTool.isDebugEnabled()) {
+            if (params != null) {
+                Set<String> keySet = params.keySet();
+                for (String key : keySet) {
+                    Log.i(TAG, key + "  -  " + params.get(key));
+                }
+            }
         }
 
         if(params.containsKey(RPCMessage.KEY_FUNCTION_NAME)){
@@ -113,7 +117,7 @@ public class RpcConverter {
                 rpcClassName.append(RESPONSE_KEY);
             }
 
-            Log.v(TAG, "Attempting to create " + rpcClassName.toString());
+            DebugTool.logInfo(TAG + " Attempting to create " + rpcClassName.toString());
             try {
                 Class rpcClass = Class.forName(rpcClassName.toString());
                 if(rpcClass != null){
@@ -123,20 +127,15 @@ public class RpcConverter {
                     }
                 }
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
             } catch (NoSuchMethodException e) {
-                e.printStackTrace();
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
             } catch (InstantiationException e) {
-                e.printStackTrace();
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
             } catch (ClassCastException e){
-                e.printStackTrace();
+
             }
         }else{
-            Log.w(TAG, "Unable to parse into RPC");
+            DebugTool.logError(TAG + " Unable to parse into RPC");
         }
 
         return null;
@@ -144,3 +143,4 @@ public class RpcConverter {
 
 
 }
+
