@@ -15,12 +15,12 @@ public class RPCMessage extends RPCStruct  {
 	}
 	
 	protected RPCMessage(RPCMessage rpcm) {
-		this(rpcm.store);
+		this(cloneStore(rpcm));
 	}
 	
 	protected RPCMessage(RPCStruct rpcs) {
 		this("", "");
-		this.parameters = rpcs.store;
+		this.parameters = cloneStore(rpcs);
 	}
 	
 	public RPCMessage(String functionName, String messageType) {

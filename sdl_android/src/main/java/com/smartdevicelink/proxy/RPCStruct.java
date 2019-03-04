@@ -40,14 +40,21 @@ public class RPCStruct {
 	}
 	
 	protected RPCStruct(RPCStruct rpcs) {
-		this.store = rpcs.store;
+		this.store = cloneStore(rpcs);
 	}
 	
 	public RPCStruct(Hashtable<String, Object> hashtable) {
 		store = hashtable;
 		//store = (Hashtable<String, Object>) ObjectCopier.copy(hashtable);
 	}
-	
+
+	static Hashtable<String, Object> cloneStore(RPCStruct rpcStruct){
+		if(rpcStruct!= null && rpcStruct.store !=null){
+			return (Hashtable)rpcStruct.store.clone();
+		}
+		return null;
+	}
+
 	public void deserializeJSON(JSONObject jsonObject) throws JSONException {
 		store = JsonRPCMarshaller.deserializeJSONObject(jsonObject);
 
