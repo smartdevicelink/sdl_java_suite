@@ -23,6 +23,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
+import com.smartdevicelink.util.Version;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -163,7 +164,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		assertEquals(Test.GENERAL_VECTOR_TTS_CHUNKS, sdlManager.getTtsChunks());
 		assertEquals(Test.GENERAL_LOCKSCREENCONFIG, sdlManager.getLockScreenConfig());
 		assertEquals(Test.GENERAL_VERSION, sdlManager.getMinimumProtocolVersion());
-		assertEquals(Test.GENERAL_VERSION, sdlManager.getMinimumRPCVersion());
+		assertEquals(Test.GENERAL_VERSION, new Version(25, 0, 0));
 	}
 
 	public void testStartingManager(){
