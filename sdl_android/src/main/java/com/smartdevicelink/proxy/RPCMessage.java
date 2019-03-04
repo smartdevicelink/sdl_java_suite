@@ -54,7 +54,6 @@ public class RPCMessage extends RPCStruct  {
 	protected Hashtable<String, Object> parameters;
 	protected Hashtable<String, Object> function;
 
-
 	public String getFunctionName() {
 		return (String)function.get(KEY_FUNCTION_NAME);
 	}
