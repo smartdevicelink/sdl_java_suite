@@ -38,7 +38,6 @@ env:
 
 # Emulator Management: Create, Start and Wait
 before_script:
-  - cd android
   - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
   - emulator -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
@@ -46,7 +45,7 @@ before_script:
 
 script:
   - android list target
-  - ./gradlew :sdl_android:connectedCheck
+  - ./android/gradlew -p ./android :sdl_android:connectedCheck
 
 before_install:
     - echo yes | sdkmanager "build-tools;27.0.3"
