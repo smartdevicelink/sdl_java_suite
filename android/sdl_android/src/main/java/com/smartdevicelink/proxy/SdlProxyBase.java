@@ -20,6 +20,7 @@ import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.Surface;
 
+import com.smartdevicelink.BuildConfig;
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
@@ -2405,7 +2406,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 					_vehicleType = msg.getVehicleType();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
-					_proxyVersionInfo = msg.getProxyVersionInfo();
+					_proxyVersionInfo = BuildConfig.VERSION_NAME;
 					_iconResumed = msg.getIconResumed();
 					
 					if (_iconResumed == null){
@@ -2556,7 +2557,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				rpcSpecVersion = new com.smartdevicelink.util.Version(_sdlMsgVersion.getMajorVersion(),_sdlMsgVersion.getMinorVersion(), _sdlMsgVersion.getPatchVersion());
 				_vehicleType = msg.getVehicleType();
 				_systemSoftwareVersion = msg.getSystemSoftwareVersion();
-				_proxyVersionInfo = msg.getProxyVersionInfo();
+				_proxyVersionInfo = BuildConfig.VERSION_NAME;
 				
 				if (_bAppResumeEnabled)
 				{
