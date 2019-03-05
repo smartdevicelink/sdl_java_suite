@@ -4,6 +4,9 @@
 javaSE/out/
 javaSE/build/
 javaSE/local.properties
+javaEE/out/
+javaEE/build/
+javaEE/local.properties
 
 
 ##############################
@@ -58,7 +61,6 @@ proguard/
 ##############################
 # Intellij project files
 ##############################
-*.iml
 *.ipr
 *.iws
 .idea/
