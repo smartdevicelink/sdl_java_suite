@@ -164,7 +164,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		assertEquals(Test.GENERAL_VECTOR_TTS_CHUNKS, sdlManager.getTtsChunks());
 		assertEquals(Test.GENERAL_LOCKSCREENCONFIG, sdlManager.getLockScreenConfig());
 		assertEquals(Test.GENERAL_VERSION, sdlManager.getMinimumProtocolVersion());
-		assertEquals(Test.GENERAL_VERSION, new Version(25, 0, 0));
+		assertEquals(Test.GENERAL_VERSION, sdlManager.getMinimumRPCVersion());
 	}
 
 	public void testStartingManager(){
