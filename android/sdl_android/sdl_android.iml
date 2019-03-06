@@ -136,8 +136,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
-    <content url="file://$MODULE_DIR$/../../base_android/src/main/java">
-      <sourceFolder url="file://$MODULE_DIR$/../../base_android/src/main/java" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/../../baseAndroid/src/main/java">
+      <sourceFolder url="file://$MODULE_DIR$/../../baseAndroid/src/main/java" isTestSource="false" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 28 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -34,7 +34,7 @@ android {
     }
 
     sourceSets {
-        main.java.srcDirs += '../../base_android/src/main/java'
+        main.java.srcDirs += '../../baseAndroid/src/main/java'
     }
 }
 
