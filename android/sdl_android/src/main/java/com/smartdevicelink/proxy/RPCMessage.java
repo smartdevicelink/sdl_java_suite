@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
+
 import java.util.Hashtable;
 
 public class RPCMessage extends RPCStruct  {
@@ -48,6 +50,13 @@ public class RPCMessage extends RPCStruct  {
         if (hasKey(hash.keySet(), RPCStruct.KEY_PROTECTED)) {
         	setPayloadProtected((Boolean) hash.get(RPCStruct.KEY_PROTECTED));
         }
+	}
+
+	public FunctionID getFunctionID(){
+		if(function.containsKey(KEY_FUNCTION_NAME)){
+			return FunctionID.getEnumForString((String)function.get(KEY_FUNCTION_NAME));
+		}
+		return null;
 	}
 
 	protected String messageType;

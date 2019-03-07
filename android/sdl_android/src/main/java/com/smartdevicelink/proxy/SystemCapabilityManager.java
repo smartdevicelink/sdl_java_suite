@@ -1,13 +1,12 @@
 package com.smartdevicelink.proxy;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
-import com.smartdevicelink.proxy.rpc.GetSystemCapability;
-import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
-import com.smartdevicelink.proxy.rpc.HMICapabilities;
-import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
@@ -17,17 +16,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static com.smartdevicelink.protocol.enums.FunctionID.SET_DISPLAY_LAYOUT;
+
 public class SystemCapabilityManager {
 	private final HashMap<SystemCapabilityType, Object> cachedSystemCapabilities;
 	private final HashMap<SystemCapabilityType, CopyOnWriteArrayList<OnSystemCapabilityListener>> onSystemCapabilityListeners;
 	private final Object LISTENER_LOCK;
 	private final ISdl callback;
+	private OnRPCListener rpcListener;
 
 	public SystemCapabilityManager(ISdl callback){
 		this.callback = callback;
 		this.LISTENER_LOCK = new Object();
 		this.onSystemCapabilityListeners = new HashMap<>();
 		this.cachedSystemCapabilities = new HashMap<>();
+
+		setupRpcListeners();
 	}
 
 	public void parseRAIResponse(RegisterAppInterfaceResponse response){
@@ -42,6 +46,29 @@ public class SystemCapabilityManager {
 			setCapability(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
 			setCapability(SystemCapabilityType.SPEECH, response.getSpeechCapabilities());
 			setCapability(SystemCapabilityType.VOICE_RECOGNITION, response.getVrCapabilities());
+		}
+	}
+
+	private void setupRpcListeners(){
+		rpcListener = new OnRPCListener() {
+			@Override
+			public void onReceived(RPCMessage message) {
+				if (message != null && RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) {
+					switch (message.getFunctionID()) {
+						case SET_DISPLAY_LAYOUT:
+							SetDisplayLayoutResponse response = (SetDisplayLayoutResponse)message;
+							setCapability(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
+							setCapability(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
+							setCapability(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
+							setCapability(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
+							break;
+					}
+				}
+			}
+		};
+
+		if(callback != null){
+			callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
 		}
 	}
 
