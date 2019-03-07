@@ -8,7 +8,6 @@ import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 
 import android.os.Parcel;
-import android.os.ParcelFormatException;
 import android.os.Parcelable;
 
 /**
@@ -360,10 +359,10 @@ public class SdlPacket implements Parcelable{
 				messagingVersion = p.readInt();
 				if (messagingVersion >= 2) {
 					if (p.readInt() == 1) { //We should have a transport type attached
-						this.transportRecord = p.readParcelable(TransportRecord.class.getClassLoader());
+						this.transportRecord = (TransportRecord) p.readParcelable(TransportRecord.class.getClassLoader());
 					}
 				}
-			}catch (ParcelFormatException e){
+			}catch (RuntimeException e){
 
 			}
 		}
