@@ -213,8 +213,10 @@ public class SdlPacket implements Parcelable{
 	public byte[] constructPacket() {
 		if (bsonPayload != null && !bsonPayload.isEmpty()) {
 			byte[] bsonBytes = BsonEncoder.encodeToBytes(bsonPayload);
-			payload = bsonBytes;
-			dataSize = bsonBytes.length;
+			if(bsonBytes != null) {
+				payload = bsonBytes;
+				dataSize = bsonBytes.length;
+			}
 		}
 		return constructPacket(version, encryption, frameType,
 				serviceType, frameInfo, sessionId,
