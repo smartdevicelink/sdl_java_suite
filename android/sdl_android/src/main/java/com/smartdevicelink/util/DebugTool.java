@@ -2,6 +2,7 @@ package com.smartdevicelink.util;
 
 import android.util.Log;
 
+import com.smartdevicelink.BuildConfig;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.BinaryFrameHeader;
@@ -47,8 +48,8 @@ public class DebugTool {
 	}
 	
 	private static String prependProxyVersionNumberToString(String string) {
-		if (Version.VERSION != null && string != null) {
-			string = Version.VERSION + ": " + string;
+		if (BuildConfig.VERSION_NAME != null && string != null) {
+			string = BuildConfig.VERSION_NAME + ": " + string;
 		}
 		
 		return string;

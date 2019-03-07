@@ -6,6 +6,7 @@ import java.util.Vector;
 import android.app.Service;
 import android.content.Context;
 
+import com.smartdevicelink.BuildConfig;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
@@ -1764,8 +1765,8 @@ public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
 		}
 
-		if (Version.VERSION != null)
-			return  Version.VERSION;
+		if (BuildConfig.VERSION_NAME != null)
+			return  BuildConfig.VERSION_NAME;
 
 		return null;
 	}
