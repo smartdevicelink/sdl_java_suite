@@ -17,7 +17,11 @@ public enum TransportType {
 	 * Transport type is TCP.
 	 */
 	TCP,
-	USB;
+	USB,
+	/**
+	 * Used for cloud and embedded
+	 */
+	WEB_SOCKET_SERVER;
 	
 	public static TransportType valueForString(String value) {
 		try{
