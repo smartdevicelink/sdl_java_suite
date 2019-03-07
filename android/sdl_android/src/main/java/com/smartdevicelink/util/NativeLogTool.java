@@ -2,10 +2,8 @@ package com.smartdevicelink.util;
 
 import android.util.Log;
 
-import com.smartdevicelink.proxy.SdlProxyBase;
-
 public class NativeLogTool {
-	
+	private static String TAG = "NativeLogTool";
 	static private boolean logToSystemEnabled = true;
 	private static final int ChunkSize = 4000;
 	
@@ -32,7 +30,7 @@ public class NativeLogTool {
 	} // end-method
 	
 	public static boolean logInfo(String message) {		
-		return logInfo(SdlProxyBase.TAG, message);
+		return logInfo(TAG, message);
 	}
 	
 	public static boolean logInfo(String tag, String message) {
@@ -43,7 +41,7 @@ public class NativeLogTool {
 	}
 	
 	public static boolean logWarning(String message) {
-		return logWarning(SdlProxyBase.TAG, message);
+		return logWarning(TAG, message);
 	}
 	
 	public static boolean logWarning(String tag, String message) {
@@ -54,7 +52,7 @@ public class NativeLogTool {
 	}
 	
 	public static boolean logError(String message) {
-		return logError(SdlProxyBase.TAG, message);
+		return logError(TAG, message);
 	}
 	
 	public static boolean logError(String tag, String message) {
@@ -65,7 +63,7 @@ public class NativeLogTool {
 	}
 	
 	public static boolean logError(String message, Throwable t) {
-		return logError(SdlProxyBase.TAG, message, t);
+		return logError(TAG, message, t);
 	}
 	
 	public static boolean logError(String tag, String message, Throwable t) {
@@ -102,11 +100,11 @@ public class NativeLogTool {
 						break;
 				}
 				if (bytesWritten < chunk.length()) {
-					Log.e(SdlProxyBase.TAG, "Calling Log.e: msg length=" + chunk.length() + ", bytesWritten=" + bytesWritten);
+					Log.e(TAG, "Calling Log.e: msg length=" + chunk.length() + ", bytesWritten=" + bytesWritten);
 				}
 			}			
 		} catch (Exception ex) {
-			Log.e(SdlProxyBase.TAG, "Failure writing " + ltarg.name() + " fragments to android log:" + ex.toString());
+			Log.e(TAG, "Failure writing " + ltarg.name() + " fragments to android log:" + ex.toString());
 			return false;
 		}		
 		return true;
