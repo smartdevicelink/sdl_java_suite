@@ -29,7 +29,6 @@ import com.smartdevicelink.streaming.video.RTPH264Packetizer;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransport;
-import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.Version;
 
@@ -530,7 +529,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
     }
 
     @Override
-    public void onTransportDisconnected(String info, boolean availablePrimary, MultiplexTransportConfig transportConfig) {
+    public void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
         this.sessionListener.onTransportDisconnected(info);
     }
 
