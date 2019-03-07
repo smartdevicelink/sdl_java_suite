@@ -726,6 +726,11 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
 
         @Override
+        public void sendRPC(RPCMessage message) {
+            LifecycleManager.this.sendRPCMessagePrivate(message);
+        }
+
+        @Override
         public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
             //FIXME
         }

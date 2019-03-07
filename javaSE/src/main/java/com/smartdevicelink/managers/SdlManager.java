@@ -826,6 +826,13 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		@Override
+		public void sendRPC(RPCMessage message) {
+			if(message != null){
+				proxy.sendRpc(message);
+			}
+		}
+
+		@Override
 		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
 			proxy.sendRpcs(rpcs, listener);
 		}

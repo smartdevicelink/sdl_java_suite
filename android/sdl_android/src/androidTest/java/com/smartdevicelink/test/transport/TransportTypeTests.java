@@ -11,13 +11,13 @@ import junit.framework.TestCase;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.transport.TransportType}
+ * {@link com.smartdevicelink.transport.enums.TransportType}
  */
 public class TransportTypeTests extends TestCase {
 	
 	/**
 	 * This is a unit test for the following enum : 
-	 * {@link com.smartdevicelink.transport.TransportType}
+	 * {@link com.smartdevicelink.transport.enums.TransportType}
 	 */
 	public void testTransportTypeEnum () {
 		
@@ -27,6 +27,7 @@ public class TransportTypeTests extends TestCase {
 		String testInvalid   	= "INVALID";
 		String testBluetooth 	= "BLUETOOTH";
 		String testMultiplexing = "MULTIPLEX";
+		String testWebSocketServer = "WEB_SOCKET_SERVER";
 		
 		try {
 			// Comparison Values
@@ -34,12 +35,14 @@ public class TransportTypeTests extends TestCase {
 			TransportType expectedUsbEnum        	= TransportType.USB;
 			TransportType expectedBluetoothEnum  	= TransportType.BLUETOOTH;
 			TransportType expectedMultiplexingEnum  = TransportType.MULTIPLEX;
+			TransportType expectedWebSocketServerEnum  = TransportType.WEB_SOCKET_SERVER;
 			
 			List<TransportType> expectedEnumList = new ArrayList<TransportType>();
 			expectedEnumList.add(TransportType.BLUETOOTH);
 			expectedEnumList.add(TransportType.TCP);
 			expectedEnumList.add(TransportType.USB);
 			expectedEnumList.add(TransportType.MULTIPLEX);
+			expectedEnumList.add(TransportType.WEB_SOCKET_SERVER);
 			
 			TransportType actualNullEnum       		= TransportType.valueForString(null);
 			TransportType actualTcpEnum        		= TransportType.valueForString(testTcp);
@@ -47,6 +50,7 @@ public class TransportTypeTests extends TestCase {
 			TransportType actualInvalidEnum    		= TransportType.valueForString(testInvalid);
 			TransportType actualBluetoothEnum  		= TransportType.valueForString(testBluetooth);
 			TransportType actualMultiplexingEnum 	= TransportType.valueForString(testMultiplexing);
+			TransportType actualWebSocketServerEnum 	= TransportType.valueForString(testWebSocketServer);
 
 			List<TransportType> actualEnumList = Arrays.asList(TransportType.values());
 			
@@ -55,6 +59,7 @@ public class TransportTypeTests extends TestCase {
 			assertEquals(Test.MATCH, expectedUsbEnum, actualUsbEnum);
 			assertEquals(Test.MATCH, expectedBluetoothEnum, actualBluetoothEnum);
 			assertEquals(Test.MATCH, expectedMultiplexingEnum, actualMultiplexingEnum);
+			assertEquals(Test.MATCH, expectedWebSocketServerEnum, actualWebSocketServerEnum);
 			assertTrue(Test.ARRAY, expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));
 			
 			// Invalid/Null Tests

@@ -335,9 +335,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void sendRPC(RPCRequest message) {
+		public void sendRPC(RPCMessage message) {
 			try {
-				SdlProxyBase.this.sendRPCRequest(message);
+				SdlProxyBase.this.sendRPC(message);
 			} catch (SdlException e) {
 				e.printStackTrace();
 			}
