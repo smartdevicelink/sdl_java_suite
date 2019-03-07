@@ -253,7 +253,7 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStrea
 	/**
 	 * Called by the app and encoder.
 	 *
-	 * @see com.smartdevicelink.proxy.interfaces.IVideoStreamListener#sendFrame(byte[], int, int, long)
+	 * @see IVideoStreamListener#sendFrame(byte[], int, int, long)
 	 */
 	@Override
 	public void sendFrame(byte[] data, int offset, int length, long presentationTimeUs)
@@ -265,7 +265,7 @@ public class RTPH264Packetizer extends AbstractPacketizer implements IVideoStrea
 	/**
 	 * Called by the app and encoder.
 	 *
-	 * @see com.smartdevicelink.proxy.interfaces.IVideoStreamListener#sendFrame(ByteBuffer, long)
+	 * @see IVideoStreamListener#sendFrame(ByteBuffer, long)
 	 */
 	@Override
 	public void sendFrame(ByteBuffer data, long presentationTimeUs) {
