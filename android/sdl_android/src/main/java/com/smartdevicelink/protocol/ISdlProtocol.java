@@ -36,7 +36,7 @@ package com.smartdevicelink.protocol;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
-import com.smartdevicelink.transport.MultiplexTransportConfig;
+import com.smartdevicelink.transport.BaseTransportConfig;
 
 public interface ISdlProtocol extends IProtocolListener {
 
@@ -44,7 +44,7 @@ public interface ISdlProtocol extends IProtocolListener {
 
     void shutdown(String info);
 
-    void onTransportDisconnected(String info, boolean altTransportAvailable, MultiplexTransportConfig transportConfig);
+    void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig);
 
     SdlSecurityBase getSdlSecurity();
 
