@@ -203,13 +203,4 @@ public class TransportManager extends TransportManagerBase{
         }
     }
 
-    @Override
-    public BaseTransportConfig updateTransportConfig(BaseTransportConfig config){
-        return config;
-    }
-
-
-
-
-
 }

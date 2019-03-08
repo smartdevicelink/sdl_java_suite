@@ -105,7 +105,9 @@ public abstract class TransportManagerBase {
         }
     }
 
-    public abstract BaseTransportConfig updateTransportConfig(BaseTransportConfig config);
+    public  BaseTransportConfig updateTransportConfig(BaseTransportConfig config){
+        return config;
+    }
 
     public abstract void sendPacket(SdlPacket packet);
 
