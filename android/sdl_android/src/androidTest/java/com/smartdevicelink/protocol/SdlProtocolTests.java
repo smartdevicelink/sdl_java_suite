@@ -5,7 +5,6 @@ import android.util.Log;
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.protocol.SdlProtocol.MessageFrameAssembler;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.SampleRpc;
@@ -74,7 +73,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
         @Override
         public void shutdown(String info) {}
         @Override
-        public void onTransportDisconnected(String info, boolean altTransportAvailable, MultiplexTransportConfig transportConfig) {}
+        public void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig) {}
         @Override
         public SdlSecurityBase getSdlSecurity() {return null;}
         @Override
@@ -171,7 +170,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
     public void testHandleFrame(){
         SampleRpc sampleRpc = new SampleRpc(4);
         SdlProtocol sdlProtocol = new SdlProtocol(defaultListener,config);
-        MessageFrameAssembler assembler = sdlProtocol.new MessageFrameAssembler();
+        SdlProtocolBase.MessageFrameAssembler assembler = sdlProtocol.new MessageFrameAssembler();
         try{
             assembler.handleFrame(sampleRpc.toSdlPacket());
         }catch(Exception e){
@@ -184,7 +183,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
         header.setJsonSize(Integer.MAX_VALUE);
         sampleRpc.setBinaryFrameHeader(header);
         SdlProtocol sdlProtocol = new SdlProtocol(defaultListener,config);
-        MessageFrameAssembler assembler = sdlProtocol.new MessageFrameAssembler();
+        SdlProtocolBase.MessageFrameAssembler assembler = sdlProtocol.new MessageFrameAssembler();
         try{
             assembler.handleFrame(sampleRpc.toSdlPacket());
         }catch(Exception e){
@@ -195,7 +194,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
     public void testHandleSingleFrameMessageFrame(){
         SampleRpc sampleRpc = new SampleRpc(4);
         SdlProtocol sdlProtocol = new SdlProtocol(defaultListener,config);
-        MessageFrameAssembler assembler = sdlProtocol.new MessageFrameAssembler();
+        SdlProtocolBase.MessageFrameAssembler assembler = sdlProtocol.new MessageFrameAssembler();
 
 
         try{
@@ -254,7 +253,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
         int messageID = 1;
         boolean encrypted = false;
         SdlPacket sdlPacket = SdlPacketFactory.createMultiSendDataFirst(SessionType.RPC, sessionID, messageID, version, payload, encrypted);
-        MessageFrameAssembler assembler = protocol.getFrameAssemblerForFrame(sdlPacket);
+        SdlProtocolBase.MessageFrameAssembler assembler = protocol.getFrameAssemblerForFrame(sdlPacket);
 
         assertNotNull(assembler);
 
@@ -302,7 +301,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
         int messageID = 1;
         boolean encrypted = false;
         SdlPacket sdlPacket = SdlPacketFactory.createMultiSendDataFirst(SessionType.RPC, sessionID, messageID, version, payload, encrypted);
-        MessageFrameAssembler assembler = protocol.getFrameAssemblerForFrame(sdlPacket);
+        SdlProtocolBase.MessageFrameAssembler assembler = protocol.getFrameAssemblerForFrame(sdlPacket);
 
         OutOfMemoryError oom_error = null;
         NullPointerException np_exception = null;

@@ -68,7 +68,7 @@ public class SdlSecurityBaseTest extends AndroidTestCase2 {
 		}
 
 		@Override
-		public void onTransportDisconnected(String info, boolean availablePrimary, MultiplexTransportConfig transportConfig) {
+		public void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
 
 		}
 
