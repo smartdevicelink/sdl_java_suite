@@ -725,6 +725,11 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
 
     }
 
+    @Override
+    public void onAuthTokenReceived(String authToken) {
+        //FIXME implements this
+    }
+
     /**
      * Check to see if a transport is available to start/use the supplied service.
      * @param sessionType the session that should be checked for transport availability
