@@ -895,7 +895,7 @@ public class SdlManager extends BaseSdlManager{
 		@Override
 		public SdlMsgVersion getSdlMsgVersion(){
 			//FIXME this should be a breaking change to support our version
-			 Version rpcSepcVersion =  proxy.getRpcSepcVersion();
+			 Version rpcSepcVersion =  proxy.getRpcSpecVersion();
 			 if(rpcSepcVersion != null){
 				 SdlMsgVersion sdlMsgVersion = new SdlMsgVersion();
 				 sdlMsgVersion.setMajorVersion(rpcSepcVersion.getMajor());

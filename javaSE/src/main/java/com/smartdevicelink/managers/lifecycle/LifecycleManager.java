@@ -112,7 +112,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
         return new Version(1,0,0);
     }
-    public Version getRpcSepcVersion(){
+    public Version getRpcSpecVersion(){
         return rpcSpecVersion;
     }
 
