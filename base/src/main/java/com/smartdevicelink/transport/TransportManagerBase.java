@@ -96,7 +96,8 @@ public abstract class TransportManagerBase {
         synchronized (TRANSPORT_STATUS_LOCK) {
             for (TransportRecord record : transportStatus) {
                 if (record.getType().equals(TransportType.USB)
-                        || record.getType().equals(TransportType.TCP)) {
+                        || record.getType().equals(TransportType.TCP)
+                        || record.getType().equals(TransportType.WEB_SOCKET_SERVER)) {
                     return true;
                 }
             }
@@ -123,11 +124,11 @@ public abstract class TransportManagerBase {
     }
 
     synchronized void enterLegacyMode(final String info){
-        //FIXME do nothing
+        //Base implementation does nothing
     }
 
     synchronized void exitLegacyMode(String info ){
-        //FIXME do nothing
+        //Base implementation does nothing
     }
 
     public interface TransportEventListener{

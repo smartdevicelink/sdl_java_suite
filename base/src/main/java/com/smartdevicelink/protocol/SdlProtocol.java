@@ -32,9 +32,9 @@
 
 package com.smartdevicelink.protocol;
 
-import android.util.Log;
 
 import com.smartdevicelink.transport.TransportManager;
+import com.smartdevicelink.transport.WebSocketServerConfig;
 
 
 @SuppressWarnings("WeakerAccess")
@@ -42,7 +42,7 @@ public class SdlProtocol extends SdlProtocolBase {
     private static final String TAG ="SdlProtocol";
 
     public SdlProtocol( ISdlProtocol iSdlProtocol,  WebSocketServerConfig config) {
-        super(iSdlProtocol config);
+        super(iSdlProtocol, config);
         this.setTransportManager(new TransportManager(config,transportEventListener));
     }
 

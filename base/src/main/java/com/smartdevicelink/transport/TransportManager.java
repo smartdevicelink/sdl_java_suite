@@ -44,16 +44,10 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class TransportManager {
+public class TransportManager extends TransportManagerBase{
     private static final String TAG = "TransportManager";
 
-    private final Object TRANSPORT_STATUS_LOCK;
-
     WebSocketServer2 transport;
-    final List<TransportRecord> transportStatus;
-    final TransportEventListener transportListener;
-
-
 
     /**
      * Managing transports
@@ -62,12 +56,8 @@ public class TransportManager {
      */
 
     public TransportManager(WebSocketServerConfig config, TransportEventListener listener){
+        super(config, listener);
 
-        this.transportListener = listener;
-        this.TRANSPORT_STATUS_LOCK = new Object();
-        synchronized (TRANSPORT_STATUS_LOCK){
-            this.transportStatus = new ArrayList<>();
-        }
         final TransportRecord record = new TransportRecord(TransportType.WEB_SOCKET_SERVER,"127.0.0.1:"+config.port);
         final List<TransportRecord> finalList = Collections.singletonList(record);
         //Start the new transport
@@ -122,6 +112,7 @@ public class TransportManager {
 
     }
 
+    @Override
     public void start(){
         if(transport != null){
             transport.start();
@@ -130,10 +121,17 @@ public class TransportManager {
         }
     }
 
+    @Override
     public void close(long sessionId){
         if(transport != null) {
             transport.stop();
         }
+    }
+
+    @Deprecated
+    @Override
+    public void resetSession(){
+
     }
 
     /**
@@ -145,6 +143,7 @@ public class TransportManager {
      *                of supplied type will be used to return if connected.
      * @return if a transport is connected based on included variables
      */
+    @Override
     public boolean isConnected(TransportType transportType, String address){
         synchronized (TRANSPORT_STATUS_LOCK) {
             if (transportType == null) {
@@ -172,6 +171,7 @@ public class TransportManager {
      *                of supplied type will be returned.
      * @return the transport record for the transport type and address if supplied
      */
+    @Override
     public TransportRecord getTransportRecord(TransportType transportType, String address){
         synchronized (TRANSPORT_STATUS_LOCK) {
             if (transportType == null) {
@@ -193,31 +193,8 @@ public class TransportManager {
         }
     }
 
-    /**
-     * Retrieves the currently connected transports
-     * @return the currently connected transports
-     */
-    public List<TransportRecord> getConnectedTransports(){
-        return this.transportStatus;
-    }
 
-    public boolean isHighBandwidthAvailable(){
-        synchronized (TRANSPORT_STATUS_LOCK) {
-            for (TransportRecord record : transportStatus) {
-                if (record.getType().equals(TransportType.USB)
-                        || record.getType().equals(TransportType.TCP)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    //FIXME
-    public Object getRouterService(){
-        return null;
-    }
-
+    @Override
     public void sendPacket(SdlPacket packet){
         if(transport !=null){
             transport.write(packet);
@@ -226,42 +203,11 @@ public class TransportManager {
         }
     }
 
-    public void requestNewSession(TransportRecord transportRecord){
-        //FIXME do nothing
+    @Override
+    public BaseTransportConfig updateTransportConfig(BaseTransportConfig config){
+        return config;
     }
 
-    public void requestSecondaryTransportConnection(byte sessionId, Object params){
-    	//FIXME do nothing
-    }
-
-    private synchronized void enterLegacyMode(final String info){
-        //FIXME do nothing
-    }
-
-    protected synchronized void exitLegacyMode(String info ){
-        //FIXME do nothing
-    }
-
-    public interface TransportEventListener{
-        /** Called to indicate and deliver a packet received from transport */
-        void onPacketReceived(SdlPacket packet);
-
-        /** Called to indicate that transport connection was established */
-        void onTransportConnected(List<TransportRecord> transports);
-
-        /** Called to indicate that transport was disconnected (by either side) */
-        void onTransportDisconnected(String info, TransportRecord type, List<TransportRecord> connectedTransports);
-
-        // Called when the transport manager experiences an unrecoverable failure
-        void onError(String info);
-        /**
-         * Called when the transport manager has determined it needs to move towards a legacy style
-         * transport connection. It will always be bluetooth.
-         * @param info simple info string about the situation
-         * @return if the listener is ok with entering legacy mode
-         */
-        boolean onLegacyModeEnabled(String info);
-    }
 
 
 
