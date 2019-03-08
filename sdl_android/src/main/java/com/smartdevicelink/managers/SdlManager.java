@@ -20,6 +20,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.SDLCheckChoiceVROptionalOperation;
 import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
@@ -29,6 +30,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetAppIcon;
@@ -228,6 +230,10 @@ public class SdlManager{
 			this.lockScreenManager.start(subManagerListener);
 		}
 		this.screenManager.start(subManagerListener);
+
+		//check optional VR
+		SDLCheckChoiceVROptionalOperation choiceOptionalVRCheck = SDLCheckChoiceVROptionalOperation.getInstance();
+		choiceOptionalVRCheck.SetRPCInterface(_internalInterface,permissionManager);
 	}
 
 	/**
