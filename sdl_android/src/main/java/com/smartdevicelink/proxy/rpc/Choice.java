@@ -1,7 +1,6 @@
 package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.SDLCheckChoiceVROptionalOperation;
@@ -130,8 +129,6 @@ public class Choice extends RPCStruct {
             boolean check = (null == existingVrCommands || 0 == existingVrCommands.size());
             check &= (vrCheck.isChoiceVRRequired());
             check &= (vrCheck.VR_TEST_CHOICE_ID != getChoiceID());
-
-            Log.d("CheckChoiceVROptional"," value: "+check);
 
             if (check) {
                 // if no commands set, set one due to a legacy head unit requirement
