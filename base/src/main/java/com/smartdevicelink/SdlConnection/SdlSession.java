@@ -437,6 +437,13 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
 
 
 
+    @Override
+    public void onAuthTokenReceived(String token, byte sessionID) {
+        //This is not used in the base library. Will only be used in the Android library while it has the SdlConnection class
+        //See onAuthTokenReceived(String token) in this class instead
+
+    }
+
     public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
         if(serviceListeners == null){
             serviceListeners = new HashMap<>();
@@ -636,6 +643,10 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
             }
         }
     }
+    @Override
+    public void onAuthTokenReceived(String authToken) {
+        this.sessionListener.onAuthTokenReceived(authToken, sessionId);
+    }
 
     /* Not supported methods from IProtocolListener */
     public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) { /* Not supported */}
@@ -679,10 +690,6 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
 
     }
 
-    @Override
-    public void onAuthTokenReceived(String authToken) {
-        //FIXME implements this
-    }
 
     /**
      * Check to see if a transport is available to start/use the supplied service.

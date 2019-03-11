@@ -648,6 +648,12 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     }
 
+
+    @Override
+    public void onAuthTokenReceived(String token, byte sessionID) {
+
+    }
+
     /* *******************************************************************************************************
      *************************************** ISdlConnectionListener END ************************************
      *********************************************************************************************************/
