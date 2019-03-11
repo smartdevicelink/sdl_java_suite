@@ -13,7 +13,6 @@ import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.Version;
 import com.smartdevicelink.transport.SiphonServer;
 
 import java.util.Hashtable;
