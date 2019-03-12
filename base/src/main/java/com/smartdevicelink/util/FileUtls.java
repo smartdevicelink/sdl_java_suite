@@ -1,7 +1,13 @@
 package com.smartdevicelink.util;
 
+import android.support.annotation.NonNull;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -37,5 +43,25 @@ public class FileUtls {
         }
 
         return null;
+    }
+
+    public static byte[] downloadFile(@NonNull String urlStr){
+        try {
+            URL url = new URL(urlStr);
+            URLConnection connection = url.openConnection();
+            InputStream inputStream = connection.getInputStream();
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+            int nRead;
+            byte[] data = new byte[4096];
+
+            while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            return buffer.toByteArray();
+        }catch (Exception e){
+            DebugTool.logError("Unable to download file - " + urlStr, e);
+            return null;
+        }
     }
 }

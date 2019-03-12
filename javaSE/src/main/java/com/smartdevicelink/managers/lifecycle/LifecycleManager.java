@@ -23,6 +23,7 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.WebSocketServerConfig;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.FileUtls;
 import com.smartdevicelink.util.Version;
 
 import java.util.HashMap;
@@ -241,6 +242,26 @@ public class LifecycleManager extends BaseLifecycleManager {
                                 }
                             };
                             handleOffboardTransmissionThread.start();
+                        }else if (onSystemRequest.getRequestType() == RequestType.ICON_URL) {
+                            //Download the icon file and send SystemRequest RPC
+                            Thread handleOffBoardTransmissionThread = new Thread() {
+                                @Override
+                                public void run() {
+                                    byte[] file = FileUtls.downloadFile(onSystemRequest.getUrl());
+                                    if (file != null) {
+                                        SystemRequest systemRequest = new SystemRequest();
+                                        systemRequest.setFileName(onSystemRequest.getUrl());
+                                        systemRequest.setBulkData(file);
+                                        systemRequest.setRequestType(RequestType.ICON_URL);
+                                        if (isConnected()) {
+                                            sendRPCMessagePrivate(systemRequest);
+                                        }
+                                    } else {
+                                        DebugTool.logError("File was null at: " + onSystemRequest.getUrl());
+                                    }
+                                }
+                            };
+                            handleOffBoardTransmissionThread.start();
                         }
                         break;
                     case ON_APP_INTERFACE_UNREGISTERED:
