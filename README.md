@@ -9,7 +9,8 @@ SmartDeviceLink (SDL) is a standard set of protocols and messages that connect a
   * The [Core](https://github.com/smartdevicelink/sdl_core) component is the software which Vehicle Manufacturers (OEMs)  implement in their vehicle head units. Integrating this component into their head unit and HMI based on a set of guidelines and templates enables access to various smartphone applications.
   * The optional [SDL Server](https://github.com/smartdevicelink/sdl_server) can be used by Vehicle OEMs to update application policies and gather usage information for connected applications.
   * The [iOS](https://github.com/smartdevicelink/sdl_ios) and [Android](https://github.com/smartdevicelink/sdl_android) libraries are implemented by app developers into their applications to enable command and control via the connected head unit.
-
+  * The JavaSE (Embedded) and JavaEE (Cloud) libraries, written in Java, are implemented by app developers into their applications to enable command and control of a connected head unit.
+  
 Pull Requests Welcome!
 
 To understand if a contribution should be entered as an Android Pull Request (or issue), or an SDL Evolution Proposal, please reference [this document](https://github.com/smartdevicelink/sdl_evolution/blob/master/proposals_versus_issues.md).
@@ -32,7 +33,7 @@ You can also find some branches that have yet to be merged into this GitHub proj
 
 To compile with the latest release of SDL Android, include the following in your app's `build.gradle` file,
 
-```
+```sh
 repositories {
     jcenter()
 }
@@ -51,9 +52,54 @@ If you prefer not to use any of the aforementioned dependency managers, you can 
 
 Developers using Proguard to shrink and obfuscate their code should be sure to include the following lines in their proguard-rules.pro file:
 
-```
+```sh
 -keep class com.smartdevicelink.** { *; }
 -keep class com.livio.** { *; }
 # Video streaming apps must add the following line
 -keep class ** extends com.smartdevicelink.streaming.video.SdlRemoteDisplay { *; }
 ```
+
+## SmartDeviceLink Java
+
+### JavaSE
+
+The JavaSE project is meant to allow SDL compatibility for embedded applications. 
+
+#### Dependency Managers
+
+To compile with the latest release of SDL JavaSE, include the following in your app's `build.gradle` file,
+
+```sh
+repositories {
+    jcenter()
+}
+dependencies {
+    implementation 'com.smartdevicelink:sdl_java_se:4.+'
+}
+```
+
+### JavaEE
+
+The JavaEE project is meant to allow SDL compatibility for web applications. 
+
+#### Dependency Managers
+
+To compile with the latest release of SDL JavaEE, include the following in your app's `build.gradle` file,
+
+```sh
+repositories {
+    jcenter()
+}
+dependencies {
+    implementation 'com.smartdevicelink:sdl_java_ee:4.+'
+}
+```
+
+#### Manually building a JAR
+
+If you prefer making a JAR, simply call:
+
+```sh
+gradle build
+```
+from within the project (JavaSE or JavaEE) and a JAR should be generated in the `build/libs` folder
