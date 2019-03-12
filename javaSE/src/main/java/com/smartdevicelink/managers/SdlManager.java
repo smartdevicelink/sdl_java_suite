@@ -34,10 +34,7 @@ import com.smartdevicelink.util.Version;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * <strong>SDLManager</strong> <br>
@@ -566,8 +563,13 @@ public class SdlManager extends BaseSdlManager{
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
 					proxy.setSdlSecurityClassList(sdlSecList);
 				}
-				for (FunctionID functionID: onRPCNotificationListeners.keySet()) {
-					proxy.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
+				if (onRPCNotificationListeners != null) {
+					Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
+					if (functionIDSet != null && !functionIDSet.isEmpty()) {
+						for (FunctionID functionID : functionIDSet) {
+							proxy.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
+						}
+					}
 				}
 
 			}else{
