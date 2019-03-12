@@ -5,7 +5,7 @@ This file is broken into three Parts: SDL Base, SDL Android, and SDL Java. SDL A
 ## SDL BASE
 
 #### License
-Copyright (c) 2019, SmartDeviceLink Consortium, Inc.
+Copyright (c) 2017-2019, SmartDeviceLink Consortium, Inc.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
