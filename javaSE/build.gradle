@@ -1,11 +1,19 @@
-plugins {
-    id 'java-library'
-}
+apply plugin: 'java-library'
 
 group 'com.smartdevicelink'
 version '4.7.2'
 
 sourceCompatibility = 1.8
+
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+    }
+}
 
 repositories {
     google()
@@ -49,4 +57,7 @@ public final class BuildConfig {
 }""")
     }
 }
+
 compileJava.dependsOn generateSources
+
+apply from: 'bintray.gradle'
