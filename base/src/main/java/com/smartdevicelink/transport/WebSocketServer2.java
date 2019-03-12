@@ -1,3 +1,35 @@
+/*
+ * Copyright (c) 2019 Livio, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.smartdevicelink.transport;
 
 import android.util.Log;
@@ -12,26 +44,31 @@ import org.java_websocket.server.WebSocketServer;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
-public class WebSocketServer2 extends WebSocketServer {
-    private static final String TAG = "WebSocketServer2";
-    com.smartdevicelink.transport.WebSocketServer2.Callback callback;
+public class WebSocketServer2 extends WebSocketServer implements TransportInterface{
+    private static final String TAG = "WebSocketServer";
+    TransportCallback callback;
     WebSocketServerConfig config;
     WebSocket webSocket;
     SdlPsm psm;
 
-    final TransportRecord record;
+    final TransportRecord transportRecord;
 
-    public WebSocketServer2(WebSocketServerConfig config, com.smartdevicelink.transport.WebSocketServer2.Callback callback){
+    public WebSocketServer2(WebSocketServerConfig config, TransportCallback callback){
         super((new InetSocketAddress(config.port)));
 
         this.config = config;
         this.callback = callback;
-        record = new TransportRecord(TransportType.WEB_SOCKET_SERVER,"127.0.0.1:" + config.port); //If changed, change in transport manager as well
+        transportRecord = new TransportRecord(TransportType.WEB_SOCKET_SERVER,"127.0.0.1:" + config.port); //If changed, change in transport manager as well
         //This will set the connection lost timeout to not occur. So we might ping, but not pong
         this.setConnectionLostTimeout(config.connectionLostTimeout);
 
     }
 
+    public TransportRecord getTransportRecord(){
+        return this.transportRecord;
+    }
+
+    @Override
     public void stop(){
         try {
             this.stop(500);
@@ -40,6 +77,7 @@ public class WebSocketServer2 extends WebSocketServer {
         }
     }
 
+    @Override
     public void write(SdlPacket packet){
         //Log.i(TAG, "Atttempt to write packet " + packet);
         if(packet != null
@@ -47,6 +85,11 @@ public class WebSocketServer2 extends WebSocketServer {
                 && this.webSocket.isOpen()) {
             this.webSocket.send(packet.constructPacket());
         }
+
+    }
+
+    @Override
+    public void setCallback(TransportCallback callback) {
 
     }
 
@@ -116,7 +159,7 @@ public class WebSocketServer2 extends WebSocketServer {
                             SdlPacket packet = psm.getFormedPacket();
                             if (callback != null && packet != null) {
                                /// Log.i(TAG, "Read a packet: " + packet);
-                                packet.setTransportRecord(record);
+                                packet.setTransportRecord(transportRecord);
                                 callback.onPacketReceived(packet);
                             }
                         }
@@ -147,11 +190,4 @@ public class WebSocketServer2 extends WebSocketServer {
 
     }
 
-    public interface Callback{
-        void onConnectionEstablished();
-        void onError();
-        void onConnectionTerminated();
-        void onStateChanged(int previousState, int newState); //TODO determine if this is needed
-        void onPacketReceived(SdlPacket packet);
-    }
 }

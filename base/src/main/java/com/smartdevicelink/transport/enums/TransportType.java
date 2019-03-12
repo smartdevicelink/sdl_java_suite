@@ -21,7 +21,15 @@ public enum TransportType {
 	/**
 	 * Used for cloud and embedded
 	 */
-	WEB_SOCKET_SERVER;
+	WEB_SOCKET_SERVER,
+
+	/**
+	 * This transport is setup to be essentially a proxy to a different transport. It allows a developer to create a
+	 * custom transport without much effort.
+	 */
+	GENERIC,
+
+	;
 	
 	public static TransportType valueForString(String value) {
 		try{
