@@ -33,7 +33,7 @@ You can also find some branches that have yet to be merged into this GitHub proj
 
 To compile with the latest release of SDL Android, include the following in your app's `build.gradle` file,
 
-```
+```sh
 repositories {
     jcenter()
 }
@@ -52,7 +52,7 @@ If you prefer not to use any of the aforementioned dependency managers, you can 
 
 Developers using Proguard to shrink and obfuscate their code should be sure to include the following lines in their proguard-rules.pro file:
 
-```
+```sh
 -keep class com.smartdevicelink.** { *; }
 -keep class com.livio.** { *; }
 # Video streaming apps must add the following line
@@ -69,7 +69,7 @@ The JavaSE project is meant to allow SDL compatibility for embedded applications
 
 To compile with the latest release of SDL JavaSE, include the following in your app's `build.gradle` file,
 
-```
+```sh
 repositories {
     jcenter()
 }
@@ -86,7 +86,7 @@ The JavaEE project is meant to allow SDL compatibility for web applications.
 
 To compile with the latest release of SDL JavaEE, include the following in your app's `build.gradle` file,
 
-```
+```sh
 repositories {
     jcenter()
 }
@@ -94,3 +94,12 @@ dependencies {
     implementation 'com.smartdevicelink:sdl_java_ee:4.+'
 }
 ```
+
+#### Manually building a JAR
+
+If you prefer making a JAR, simply call:
+
+```sh
+gradle build
+```
+from within the project (JavaSE or JavaEE) and a JAR should be generated in the `build/libs` folder

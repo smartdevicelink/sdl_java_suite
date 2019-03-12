@@ -6,7 +6,7 @@ The JavaSE project is meant to allow SDL compatibility for embedded applications
 
 To compile with the latest release of SDL JavaSE, include the following in your app's `build.gradle` file,
 
-```
+```sh
 repositories {
     jcenter()
 }
@@ -15,6 +15,11 @@ dependencies {
 }
 ```
 
-#### Manually
+#### Manually building a JAR
 
-Import the JAR file into your project.
+If you prefer making a JAR, simply call:
+
+```sh
+gradle build
+```
+from within the project and a JAR should be generated in the `build/libs` folder
