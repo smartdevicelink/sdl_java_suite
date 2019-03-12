@@ -1,6 +1,6 @@
 ### Introduction
 
-This file is broken into three Parts: SDL Base, SDL Android and SDL Java. SDL Android and SDL Java are sub projects of SDL Base. Additionally, SDL Java contains two sub-projects, SDL JavaSE and SDL JavaEE.
+This file is broken into three Parts: SDL Base, SDL Android, and SDL Java. SDL Android and SDL Java are sub projects of SDL Base. Additionally, SDL Java contains two sub-projects: SDL JavaSE and SDL JavaEE.
 
 ## SDL BASE
 
