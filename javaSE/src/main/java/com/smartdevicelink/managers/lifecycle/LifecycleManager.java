@@ -75,7 +75,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     private List<Class<? extends SdlSecurityBase>> _secList = null;
 
 
-    public LifecycleManager(AppConfig appConfig, WebSocketServerConfig config, LifecycleListener listener){
+    public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
 
         this.lifecycleListener = listener;
 

@@ -33,6 +33,7 @@
 package com.smartdevicelink.protocol;
 
 
+import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TransportManager;
 import com.smartdevicelink.transport.WebSocketServerConfig;
 
@@ -41,9 +42,9 @@ import com.smartdevicelink.transport.WebSocketServerConfig;
 public class SdlProtocol extends SdlProtocolBase {
     private static final String TAG ="SdlProtocol";
 
-    public SdlProtocol( ISdlProtocol iSdlProtocol,  WebSocketServerConfig config) {
+    public SdlProtocol( ISdlProtocol iSdlProtocol,  BaseTransportConfig config) {
         super(iSdlProtocol, config);
-        this.setTransportManager(new TransportManager(config,transportEventListener));
+        this.setTransportManager(new TransportManager(config, transportEventListener));
     }
 
 
