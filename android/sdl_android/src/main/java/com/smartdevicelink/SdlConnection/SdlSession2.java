@@ -174,8 +174,8 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
     }
 
     @Override
-    public void onTransportDisconnected(String info, boolean altTransportAvailable, MultiplexTransportConfig transportConfig) {
-        this.sessionListener.onTransportDisconnected(info, altTransportAvailable, (MultiplexTransportConfig)this.transportConfig);
+    public void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig) {
+        this.sessionListener.onTransportDisconnected(info, altTransportAvailable, this.transportConfig);
     }
 
     /**

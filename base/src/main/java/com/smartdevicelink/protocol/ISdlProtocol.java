@@ -44,7 +44,7 @@ public interface ISdlProtocol extends IProtocolListener {
 
     void shutdown(String info);
 
-    void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig);    //FIXME config
+    void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig);
 
     SdlSecurityBase getSdlSecurity();
 
@@ -53,4 +53,6 @@ public interface ISdlProtocol extends IProtocolListener {
     void setAcceptedVideoParams(VideoStreamingParameters acceptedVideoParams);
 
     void stopStream(SessionType serviceType);
+
+    void onAuthTokenReceived(String authToken);
 }

@@ -688,7 +688,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		@Override
-		public void sendRPC(RPCRequest message) {
+		public void sendRPC(RPCMessage message) {
 			try {
 				proxy.sendRPC(message);
 			} catch (SdlException e) {

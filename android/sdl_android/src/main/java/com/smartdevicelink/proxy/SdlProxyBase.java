@@ -335,9 +335,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void sendRPC(RPCRequest message) {
+		public void sendRPC(RPCMessage message) {
 			try {
-				SdlProxyBase.this.sendRPCRequest(message);
+				SdlProxyBase.this.sendRPC(message);
 			} catch (SdlException e) {
 				e.printStackTrace();
 			}
@@ -489,7 +489,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void onTransportDisconnected(String info, boolean altTransportAvailable, MultiplexTransportConfig transportConfig) {
+		public void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig) {
 			notifyPutFileStreamError(null, info);
 
 			if( altTransportAvailable){
@@ -784,7 +784,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								   boolean callbackToUIThread, Boolean preRegister, String sHashID, Boolean bAppResumeEnab,
 								   BaseTransportConfig transportConfig) throws SdlException
 	{
-		Log.i(TAG, "SDL_LIB_VERSION: " + com.smartdevicelink.proxy.Version.VERSION);
+		Log.i(TAG, "SDL_LIB_VERSION: " + BuildConfig.VERSION_NAME);
 		setProtocolVersion(new Version(PROX_PROT_VER_ONE,0,0));
 		
 		if (preRegister != null && preRegister)

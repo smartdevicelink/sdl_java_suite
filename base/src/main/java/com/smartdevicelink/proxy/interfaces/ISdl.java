@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.util.Version;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
@@ -130,7 +131,14 @@ public interface ISdl {
      * Pass an RPC message through the proxy to be sent to the connected module
      * @param message RPCRequest that should be sent to the module
      */
+    @Deprecated
     void sendRPCRequest(RPCRequest message);
+
+    /**
+     * Pass an RPC message through the proxy to be sent to the connected module
+     * @param message RPCMessage that should be sent to the module
+     */
+    void sendRPC(RPCMessage message);
 
     /**
      * Pass a list of RPC requests through the proxy to be sent to core

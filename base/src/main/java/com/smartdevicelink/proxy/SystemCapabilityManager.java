@@ -9,11 +9,14 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.CorrelationIdGenerator;
+import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static com.smartdevicelink.protocol.enums.FunctionID.SET_DISPLAY_LAYOUT;
 
 public class SystemCapabilityManager {
 	private final HashMap<SystemCapabilityType, Object> cachedSystemCapabilities;
@@ -191,9 +194,16 @@ public class SystemCapabilityManager {
 
 	/**
 	 * @param systemCapabilityType Type of capability desired
-	 * passes GetSystemCapabilityType request to  `callback` to be sent by proxy
+	 * passes GetSystemCapabilityType request to `callback` to be sent by proxy.
+	 * this method will send RPC and call the listener's callback only if the systemCapabilityType is queryable
 	 */
 	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener){
+		if (!systemCapabilityType.isQueryable()){
+			String message = "This systemCapabilityType cannot be queried for";
+			DebugTool.logError(message);
+			scListener.onError(message);
+			return;
+		}
 		final GetSystemCapability request = new GetSystemCapability();
 		request.setSystemCapabilityType(systemCapabilityType);
 		request.setOnRPCResponseListener(new OnRPCResponseListener() {

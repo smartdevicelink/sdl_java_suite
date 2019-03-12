@@ -46,22 +46,19 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class TransportManager {
+public class TransportManager extends TransportManagerBase{
     private static final String TAG = "TransportManager";
 
-    private final Object TRANSPORT_STATUS_LOCK;
 
     TransportBrokerImpl transport;
-    final List<TransportRecord> transportStatus;
-    final TransportEventListener transportListener;
 
     //Legacy Transport
     MultiplexBluetoothTransport legacyBluetoothTransport;
@@ -77,12 +74,7 @@ public class TransportManager {
      */
 
     public TransportManager(MultiplexTransportConfig config, TransportEventListener listener){
-
-        this.transportListener = listener;
-        this.TRANSPORT_STATUS_LOCK = new Object();
-        synchronized (TRANSPORT_STATUS_LOCK){
-            this.transportStatus = new ArrayList<>();
-        }
+        super(config,listener);
 
         if(config.service == null) {
             config.service = SdlBroadcastReceiver.consumeQueuedRouterService();
@@ -98,6 +90,7 @@ public class TransportManager {
         }
     }
 
+    @Override
     public void start(){
         if(transport != null){
             transport.start();
@@ -106,6 +99,7 @@ public class TransportManager {
         }
     }
 
+    @Override
     public void close(long sessionId){
         if(transport != null) {
             transport.removeSession(sessionId);
@@ -116,6 +110,8 @@ public class TransportManager {
         }
     }
 
+    @Override
+    @Deprecated
     public void resetSession(){
         transport.resetSession();
     }
@@ -129,6 +125,7 @@ public class TransportManager {
      *                of supplied type will be used to return if connected.
      * @return if a transport is connected based on included variables
      */
+    @Override
     public boolean isConnected(TransportType transportType, String address){
         synchronized (TRANSPORT_STATUS_LOCK) {
             if (transportType == null) {
@@ -156,6 +153,7 @@ public class TransportManager {
      *                of supplied type will be returned.
      * @return the transport record for the transport type and address if supplied
      */
+    @Override
     public TransportRecord getTransportRecord(TransportType transportType, String address){
         synchronized (TRANSPORT_STATUS_LOCK) {
             if (transportType == null) {
@@ -181,10 +179,12 @@ public class TransportManager {
      * Retrieves the currently connected transports
      * @return the currently connected transports
      */
+    @Override
     public List<TransportRecord> getConnectedTransports(){
         return this.transportStatus;
     }
 
+    @Override
     public boolean isHighBandwidthAvailable(){
         synchronized (TRANSPORT_STATUS_LOCK) {
             for (TransportRecord record : transportStatus) {
@@ -197,6 +197,15 @@ public class TransportManager {
         }
     }
 
+    @Override
+    public BaseTransportConfig updateTransportConfig(BaseTransportConfig config){
+        if(transport != null && TransportType.MULTIPLEX.equals(config.getTransportType())){
+            ((MultiplexTransportConfig)config).setService(transport.getRouterService());
+        }
+        return config;
+    }
+
+    @Deprecated
     public ComponentName getRouterService(){
         if(transport != null) {
             return transport.getRouterService();
@@ -204,6 +213,7 @@ public class TransportManager {
         return null;
     }
 
+    @Override
     public void sendPacket(SdlPacket packet){
         if(transport !=null){
             transport.sendPacketToRouterService(packet);
@@ -213,6 +223,7 @@ public class TransportManager {
         }
     }
 
+    @Override
     public void requestNewSession(TransportRecord transportRecord){
         if(transport != null){
             transport.requestNewSession(transportRecord);
@@ -221,8 +232,32 @@ public class TransportManager {
         }
     }
 
+    @Deprecated
     public void requestSecondaryTransportConnection(byte sessionId, Bundle params){
-        transport.requestSecondaryTransportConnection(sessionId, params);
+        transport.requestSecondaryTransportConnection(sessionId, (Bundle)params);
+    }
+
+    @Override
+    public void requestSecondaryTransportConnection(byte sessionId, TransportRecord transportRecord){
+        if(transportRecord != null){
+            Bundle bundle = new Bundle();
+            bundle.putString(TransportConstants.TRANSPORT_TYPE, transportRecord.getType().name());
+            if(transportRecord.getType().equals(TransportType.TCP)) {
+                String address =  transportRecord.getAddress();
+                if(address.contains(":")){
+                    String[] split = address.split(":");
+                    if(split.length == 2) {
+                        bundle.putString(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS, split[0]);
+                        bundle.putInt(ControlFrameTags.RPC.TransportEventUpdate.TCP_PORT, Integer.valueOf(split[1]));
+                    } //else {something went wrong;}
+                }else{
+                    bundle.putString(ControlFrameTags.RPC.TransportEventUpdate.TCP_IP_ADDRESS, address);
+                }
+
+
+            }
+            transport.requestSecondaryTransportConnection(sessionId, bundle);
+        }
     }
 
     protected class TransportBrokerImpl extends TransportBroker{
@@ -284,7 +319,8 @@ public class TransportManager {
         }
     }
 
-    private synchronized void enterLegacyMode(final String info){
+    @Override
+    synchronized void enterLegacyMode(final String info){
         if(legacyBluetoothTransport != null && legacyBluetoothHandler != null){
             return; //Already in legacy mode
         }
@@ -309,7 +345,8 @@ public class TransportManager {
         }
     }
 
-    protected synchronized void exitLegacyMode(String info ){
+    @Override
+    synchronized void exitLegacyMode(String info ){
         TransportRecord legacyTransportRecord = null;
         if(legacyBluetoothTransport != null){
             legacyTransportRecord = legacyBluetoothTransport.getTransportRecord();
@@ -326,27 +363,6 @@ public class TransportManager {
             }catch (Exception e){}
         }
         transportListener.onTransportDisconnected(info, legacyTransportRecord,null);
-    }
-
-    public interface TransportEventListener{
-        /** Called to indicate and deliver a packet received from transport */
-        void onPacketReceived(SdlPacket packet);
-
-        /** Called to indicate that transport connection was established */
-        void onTransportConnected(List<TransportRecord> transports);
-
-        /** Called to indicate that transport was disconnected (by either side) */
-        void onTransportDisconnected(String info, TransportRecord type, List<TransportRecord> connectedTransports);
-
-        // Called when the transport manager experiences an unrecoverable failure
-        void onError(String info);
-        /**
-         * Called when the transport manager has determined it needs to move towards a legacy style
-         * transport connection. It will always be bluetooth.
-         * @param info simple info string about the situation
-         * @return if the listener is ok with entering legacy mode
-         */
-        boolean onLegacyModeEnabled(String info);
     }
 
 

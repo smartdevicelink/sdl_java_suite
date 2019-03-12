@@ -19,7 +19,6 @@ import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.AbstractPacketizer;
 import com.smartdevicelink.streaming.IStreamListener;
 import com.smartdevicelink.streaming.StreamPacketizer;
-import com.smartdevicelink.streaming.StreamRPCPacketizer;
 import com.smartdevicelink.streaming.video.RTPH264Packetizer;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
@@ -62,7 +61,6 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
 	//FIXME IHeartbeatMonitor _outgoingHeartbeatMonitor = null;
 	//FIXME IHeartbeatMonitor _incomingHeartbeatMonitor = null;
 
-    StreamRPCPacketizer mRPCPacketizer = null;
     AbstractPacketizer mVideoPacketizer = null;
     StreamPacketizer mAudioPacketizer = null;
     //FIXME SdlEncoder mSdlEncoder = null;
@@ -190,51 +188,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
         }
     }
 
-    public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
-        try {
-            mRPCPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0, this);
-            mRPCPacketizer.start();
-        } catch (Exception e) {
-            Log.e(TAG, "Unable to start streaming:" + e.toString());
-        }
-    }
 
-    public OutputStream startRPCStream(RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
-        try {
-            OutputStream os = new PipedOutputStream();
-            InputStream is = new PipedInputStream((PipedOutputStream) os);
-            mRPCPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0, this);
-            mRPCPacketizer.start();
-            return os;
-        } catch (Exception e) {
-            Log.e(TAG, "Unable to start streaming:" + e.toString());
-        }
-        return null;
-    }
-
-    public void pauseRPCStream()
-    {
-        if (mRPCPacketizer != null)
-        {
-            mRPCPacketizer.pause();
-        }
-    }
-
-    public void resumeRPCStream()
-    {
-        if (mRPCPacketizer != null)
-        {
-            mRPCPacketizer.resume();
-        }
-    }
-
-    public void stopRPCStream()
-    {
-        if (mRPCPacketizer != null)
-        {
-            mRPCPacketizer.stop();
-        }
-    }
 
     public boolean stopAudioStream()
     {
@@ -483,6 +437,13 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
 
 
 
+    @Override
+    public void onAuthTokenReceived(String token, byte sessionID) {
+        //This is not used in the base library. Will only be used in the Android library while it has the SdlConnection class
+        //See onAuthTokenReceived(String token) in this class instead
+
+    }
+
     public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener){
         if(serviceListeners == null){
             serviceListeners = new HashMap<>();
@@ -682,6 +643,10 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
             }
         }
     }
+    @Override
+    public void onAuthTokenReceived(String authToken) {
+        this.sessionListener.onAuthTokenReceived(authToken, sessionId);
+    }
 
     /* Not supported methods from IProtocolListener */
     public void onProtocolHeartbeat(SessionType sessionType, byte sessionID) { /* Not supported */}
@@ -724,6 +689,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
         }
 
     }
+
 
     /**
      * Check to see if a transport is available to start/use the supplied service.

@@ -53,7 +53,6 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 	/**
 	 * Constructor.
 	 * 
-	 * @param listener Sdl connection listener.
 	 * @param transportConfig Transport configuration for this connection.
 	 */
 	public SdlConnection(BaseTransportConfig transportConfig) {
@@ -382,7 +381,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		}
 
 		@Override
-		public void onTransportDisconnected(String info, boolean availablePrimary, MultiplexTransportConfig transportConfig) {
+		public void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
 			onTransportDisconnected(info);
 		}
 

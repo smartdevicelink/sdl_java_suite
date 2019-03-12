@@ -3,6 +3,7 @@ package com.smartdevicelink.test.proxy;
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
@@ -173,7 +174,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		public void sendRPCRequest(RPCRequest message) {}
 
 		@Override
-		public void sendRPC(RPCRequest message) {}
+		public void sendRPC(RPCMessage message) {}
 
 		@Override
 		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {

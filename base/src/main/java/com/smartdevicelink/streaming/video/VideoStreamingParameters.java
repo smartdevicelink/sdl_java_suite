@@ -32,8 +32,6 @@
 
 package com.smartdevicelink.streaming.video;
 
-//import android.util.DisplayMetrics;
-
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
@@ -48,7 +46,7 @@ public class VideoStreamingParameters {
 	private final VideoStreamingCodec DEFAULT_CODEC = VideoStreamingCodec.H264;
 	private final int DEFAULT_WIDTH = 1024;
 	private final int DEFAULT_HEIGHT = 576;
-	private final int DEFAULT_DENSITY = 100; //FIXME DisplayMetrics.DENSITY_HIGH;
+	private final int DEFAULT_DENSITY = 240;
 	private final int DEFAULT_FRAMERATE = 30;
 	private final int DEFAULT_BITRATE = 512000;
 	private final int DEFAULT_INTERVAL = 5;

@@ -18,7 +18,7 @@ public interface IProtocolListener {
 	void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted);
 	
 	void onProtocolSessionNACKed(SessionType sessionType, byte sessionID, byte version,
-                                 String correlationID, List<String> rejectedParams);
+	                             String correlationID, List<String> rejectedParams);
 
 	// Called to indicate that a protocol session has ended (from either side)
 	void onProtocolSessionEnded(SessionType sessionType, byte sessionID, String correlationID /*, String info, Exception ex*/);
