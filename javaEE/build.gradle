@@ -1,11 +1,18 @@
-plugins {
-    id 'java-library'
-}
+apply plugin: 'java-library'
 
 group 'com.smartdevicelink'
 version '4.7.2'
 
 sourceCompatibility = 1.8
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+    }
+}
 
 repositories {
     google()
@@ -28,4 +35,13 @@ jar {
     from {
         configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
     }
+}
+
+apply from: 'bintray.gradle'
+
+// Excluded :javaSE:bintrayUpload from running when we run bintrayUpload in javaEE
+def taskRequests = gradle.startParameter.taskRequests
+def runTaskRequest = taskRequests.find { it.args.contains('bintrayUpload') }
+if (runTaskRequest) {
+    gradle.startParameter.excludedTaskNames = [':javaSE:bintrayUpload']
 }
