@@ -1,6 +1,5 @@
 package com.smartdevicelink.managers.lifecycle;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
@@ -26,10 +25,6 @@ import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -73,6 +68,8 @@ public class LifecycleManager extends BaseLifecycleManager {
     final LifecycleListener lifecycleListener;
 
     private List<Class<? extends SdlSecurityBase>> _secList = null;
+
+    private String authToken;
 
 
     public LifecycleManager(AppConfig appConfig, WebSocketServerConfig config, LifecycleListener listener){
@@ -382,6 +379,15 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
+    /**
+     * Retrieves the auth token, if any, that was attached to the StartServiceACK for the RPC
+     * service from the module. For example, this should be used to login to a user account.
+     * @return the string representation of the auth token
+     */
+    public String getAuthToken(){
+        return this.authToken;
+    }
+
     @SuppressWarnings("UnusedReturnValue")
     public boolean onRPCNotificationReceived(RPCNotification notification){
         if(notification == null){
@@ -651,7 +657,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     @Override
     public void onAuthTokenReceived(String token, byte sessionID) {
-
+        this.authToken = token;
     }
 
     /* *******************************************************************************************************
