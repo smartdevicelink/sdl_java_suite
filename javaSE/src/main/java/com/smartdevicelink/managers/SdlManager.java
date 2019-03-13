@@ -33,6 +33,9 @@ import com.smartdevicelink.util.Version;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.Set;
+import java.util.Map;
+
 
 /**
  * <strong>SDLManager</strong> <br>
@@ -61,10 +64,13 @@ public class SdlManager extends BaseSdlManager{
 	private Vector<TTSChunk> ttsChunks;
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
 	private SdlManagerListener managerListener;
+	private Map<FunctionID, OnRPCNotificationListener> onRPCNotificationListeners;
 	private int state = -1;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
 	//FIXME private LockScreenConfig lockScreenConfig;
 	private final Object STATE_LOCK = new Object();
+	private Version minimumProtocolVersion;
+	private Version minimumRPCVersion;
 
 
 	// Managers
@@ -393,11 +399,25 @@ public class SdlManager extends BaseSdlManager{
 	}
 
 	// PROTECTED GETTERS
+
+	/**
+	 * Retrieves the auth token, if any, that was attached to the StartServiceACK for the RPC
+	 * service from the module. For example, this should be used to login to a user account.
+	 * @return the string representation of the auth token
+	 */
+	protected String getAuthToken(){
+		return this.proxy.getAuthToken();
+	}
+
 	protected String getAppName() { return appName; }
 
 	protected String getAppId() { return appId; }
 
 	protected String getShortAppName() { return shortAppName; }
+
+	protected Version getMinimumProtocolVersion() { return minimumProtocolVersion; }
+
+	protected Version getMinimumRPCVersion() { return minimumRPCVersion; }
 
 	protected Language getHmiLanguage() { return hmiLanguage; }
 
@@ -535,8 +555,18 @@ public class SdlManager extends BaseSdlManager{
 
 				proxy = new LifecycleManager(appConfig, transport, lifecycleListener);
 				proxy.start();
+				proxy.setMinimumProtocolVersion(minimumProtocolVersion);
+				proxy.setMinimumRPCVersion(minimumRPCVersion);
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
 					proxy.setSdlSecurityClassList(sdlSecList);
+				}
+				if (onRPCNotificationListeners != null) {
+					Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
+					if (functionIDSet != null && !functionIDSet.isEmpty()) {
+						for (FunctionID functionID : functionIDSet) {
+							proxy.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
+						}
+					}
 				}
 
 			}else{
@@ -771,6 +801,27 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
+		 * Sets the minimum protocol version that will be permitted to connect.
+		 * If the protocol version of the head unit connected is below this version,
+		 * the app will disconnect with an EndService protocol message and will not register.
+		 * @param minimumProtocolVersion
+		 */
+		public Builder setMinimumProtocolVersion(final Version minimumProtocolVersion) {
+			sdlManager.minimumProtocolVersion = minimumProtocolVersion;
+			return this;
+		}
+
+		/**
+		 * The minimum RPC version that will be permitted to connect.
+		 * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
+		 * @param minimumRPCVersion
+		 */
+		public Builder setMinimumRPClVersion(final Version minimumRPCVersion) {
+			sdlManager.minimumRPCVersion = minimumRPCVersion;
+			return this;
+		}
+
+		/**
 		 * Sets the Language of the App
 		 * @param hmiLanguage
 		 */
@@ -887,6 +938,16 @@ public class SdlManager extends BaseSdlManager{
 			return this;
 		}
 
+		/**
+		 * Set RPCNotification listeners. SdlManager will preload these listeners before any RPCs are sent/received.
+		 * @param listeners a map of listeners that will be called when a notification is received.
+		 * Key represents the FunctionID of the notification and value represents the listener
+		 */
+		public Builder setRPCNotificationListeners(Map<FunctionID, OnRPCNotificationListener> listeners){
+			sdlManager.onRPCNotificationListeners = listeners;
+			return this;
+		}
+
 		public SdlManager build() {
 
 			if (sdlManager.appName == null) {
@@ -915,6 +976,14 @@ public class SdlManager extends BaseSdlManager{
 
 			if (sdlManager.hmiLanguage == null){
 				sdlManager.hmiLanguage = Language.EN_US;
+			}
+
+			if (sdlManager.minimumProtocolVersion == null){
+				sdlManager.minimumProtocolVersion = new Version("1.0.0");
+			}
+
+			if (sdlManager.minimumRPCVersion == null){
+				sdlManager.minimumRPCVersion = new Version("1.0.0");
 			}
 
 			sdlManager.transitionToState(BaseSubManager.SETTING_UP);

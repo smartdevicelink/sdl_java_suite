@@ -24,12 +24,9 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.WebSocketServerConfig;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.FileUtls;
 import com.smartdevicelink.util.Version;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -42,7 +39,8 @@ public class LifecycleManager extends BaseLifecycleManager {
     public static final Version MAX_SUPPORTED_RPC_VERSION = new Version("5.0.0");
 
     // Protected Correlation IDs
-    private final int 	REGISTER_APP_INTERFACE_CORRELATION_ID = 65529;
+    private final int 	REGISTER_APP_INTERFACE_CORRELATION_ID = 65529,
+                        UNREGISTER_APP_INTERFACE_CORRELATION_ID = 65530;
 
 
     // Sdl Synchronization Objects
@@ -73,7 +71,9 @@ public class LifecycleManager extends BaseLifecycleManager {
     final LifecycleListener lifecycleListener;
 
     private List<Class<? extends SdlSecurityBase>> _secList = null;
-
+    private String authToken;
+    private Version minimumProtocolVersion;
+    private Version minimumRPCVersion;
 
     public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
 
@@ -216,6 +216,14 @@ public class LifecycleManager extends BaseLifecycleManager {
                         } else {
                             LifecycleManager.this.rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
                         }
+                        if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1) {
+                            Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+                            UnregisterAppInterface msg = new UnregisterAppInterface();
+                            msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
+                            sendRPCMessagePrivate(msg);
+                            cleanProxy();
+                            return;
+                        }
                         processRaiResponse(raiResponse);
                         systemCapabilityManager.parseRAIResponse(raiResponse);
                         break;
@@ -244,6 +252,26 @@ public class LifecycleManager extends BaseLifecycleManager {
                                 }
                             };
                             handleOffboardTransmissionThread.start();
+                        }else if (onSystemRequest.getRequestType() == RequestType.ICON_URL) {
+                            //Download the icon file and send SystemRequest RPC
+                            Thread handleOffBoardTransmissionThread = new Thread() {
+                                @Override
+                                public void run() {
+                                    byte[] file = FileUtls.downloadFile(onSystemRequest.getUrl());
+                                    if (file != null) {
+                                        SystemRequest systemRequest = new SystemRequest();
+                                        systemRequest.setFileName(onSystemRequest.getUrl());
+                                        systemRequest.setBulkData(file);
+                                        systemRequest.setRequestType(RequestType.ICON_URL);
+                                        if (isConnected()) {
+                                            sendRPCMessagePrivate(systemRequest);
+                                        }
+                                    } else {
+                                        DebugTool.logError("File was null at: " + onSystemRequest.getUrl());
+                                    }
+                                }
+                            };
+                            handleOffBoardTransmissionThread.start();
                         }
                         break;
                     case ON_APP_INTERFACE_UNREGISTERED:
@@ -380,6 +408,15 @@ public class LifecycleManager extends BaseLifecycleManager {
         synchronized(ON_UPDATE_LISTENER_LOCK){
             return this.rpcResponseListeners;
         }
+    }
+
+    /**
+     * Retrieves the auth token, if any, that was attached to the StartServiceACK for the RPC
+     * service from the module. For example, this should be used to login to a user account.
+     * @return the string representation of the auth token
+     */
+    public String getAuthToken(){
+        return this.authToken;
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -583,6 +620,13 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         Log.i(TAG, "on protocol session started");
         if (sessionType != null) {
+            if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1){
+                Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
+                session.endService(sessionType, session.getSessionId());
+                cleanProxy();
+                return;
+            }
+
             if (sessionType.equals(SessionType.RPC)) {
                 if(appConfig != null){
 
@@ -651,7 +695,26 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     @Override
     public void onAuthTokenReceived(String token, byte sessionID) {
+        this.authToken = token;
+    }
 
+    /**
+     * Sets the minimum protocol version that will be permitted to connect.
+     * If the protocol version of the head unit connected is below this version,
+     * the app will disconnect with an EndService protocol message and will not register.
+     * @param minimumProtocolVersion
+     */
+    public void setMinimumProtocolVersion(Version minimumProtocolVersion){
+        this.minimumProtocolVersion = minimumProtocolVersion;
+    }
+
+    /**
+     * The minimum RPC version that will be permitted to connect.
+     * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
+     * @param minimumRPCVersion
+     */
+    public void setMinimumRPCVersion(Version minimumRPCVersion){
+        this.minimumRPCVersion = minimumRPCVersion;
     }
 
     /* *******************************************************************************************************

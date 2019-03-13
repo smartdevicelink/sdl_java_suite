@@ -97,6 +97,7 @@ import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.FileUtls;
 import com.smartdevicelink.util.HttpUtils;
 import com.smartdevicelink.util.Version;
 
@@ -3856,7 +3857,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						Thread handleOffBoardTransmissionThread = new Thread() {
 							@Override
 							public void run() {
-								byte[] file = HttpUtils.downloadFile(msg.getUrl());
+								byte[] file = FileUtls.downloadFile(msg.getUrl());
 								if (file != null) {
 									SystemRequest systemRequest = new SystemRequest();
 									systemRequest.setFileName(msg.getUrl());

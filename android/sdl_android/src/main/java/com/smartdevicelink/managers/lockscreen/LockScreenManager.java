@@ -19,6 +19,7 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.HttpUtils;
 
 import java.io.IOException;
@@ -272,7 +273,7 @@ public class LockScreenManager extends BaseSubManager {
 			@Override
 			public void run(){
 				try{
-					deviceLogo = HttpUtils.downloadImage(url);
+					deviceLogo = AndroidTools.downloadImage(url);
 					Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_DOWNLOADED);
 					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
 					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);

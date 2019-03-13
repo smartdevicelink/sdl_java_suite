@@ -55,6 +55,8 @@ import com.smartdevicelink.util.Version;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -83,6 +85,7 @@ public class SdlManager extends BaseSdlManager{
 	private Vector<TTSChunk> ttsChunks;
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
 	private SdlManagerListener managerListener;
+	private Map<FunctionID, OnRPCNotificationListener> onRPCNotificationListeners;
 	private int state = -1;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
 	private LockScreenConfig lockScreenConfig;
@@ -584,6 +587,14 @@ public class SdlManager extends BaseSdlManager{
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
 					proxy.setSdlSecurityClassList(sdlSecList);
 				}
+				if (onRPCNotificationListeners != null) {
+					Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
+					if (functionIDSet != null && !functionIDSet.isEmpty()) {
+						for (FunctionID functionID : functionIDSet) {
+							proxy.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
+						}
+					}
+				}
 			} catch (SdlException e) {
 				if (managerListener != null) {
 					managerListener.onError("Unable to start manager", e);
@@ -963,6 +974,16 @@ public class SdlManager extends BaseSdlManager{
 		 */
 		public Builder setManagerListener(@NonNull final SdlManagerListener listener){
 			sdlManager.managerListener = listener;
+			return this;
+		}
+
+		/**
+		 * Set RPCNotification listeners. SdlManager will preload these listeners before any RPCs are sent/received.
+		 * @param listeners a map of listeners that will be called when a notification is received.
+		 * Key represents the FunctionID of the notification and value represents the listener
+		 */
+		public Builder setRPCNotificationListeners(Map<FunctionID, OnRPCNotificationListener> listeners){
+			sdlManager.onRPCNotificationListeners = listeners;
 			return this;
 		}
 
