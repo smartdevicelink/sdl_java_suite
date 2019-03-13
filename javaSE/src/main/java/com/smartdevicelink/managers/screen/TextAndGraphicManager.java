@@ -25,7 +25,6 @@ class TextAndGraphicManager extends BaseTextAndGraphicManager {
 			blankArtwork.setType(FileType.GRAPHIC_PNG);
 			blankArtwork.setName("blankArtwork");
 			blankArtwork.setFileData(new byte[50]);
-			//FIXME blankArtwork.setResourceId(R.drawable.transparent);
 		}
 		return blankArtwork;
 	}
