@@ -588,7 +588,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
     }
 
     public TransportType getCurrentTransportType() {
-        return TransportType.WEB_SOCKET_SERVER;
+        return transportConfig.getTransportType();
     }
 
     public boolean getIsConnected() {
