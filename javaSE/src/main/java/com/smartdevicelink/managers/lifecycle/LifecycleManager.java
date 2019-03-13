@@ -27,10 +27,6 @@ import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
 import com.smartdevicelink.util.Version;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -76,8 +72,8 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     private List<Class<? extends SdlSecurityBase>> _secList = null;
 
-	private String authToken;
-	private Version minimumProtocolVersion;
+    private String authToken;
+    private Version minimumProtocolVersion;
     private Version minimumRPCVersion;
     public LifecycleManager(AppConfig appConfig, WebSocketServerConfig config, LifecycleListener listener){
 
@@ -699,7 +695,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     @Override
     public void onAuthTokenReceived(String token, byte sessionID) {
-
+        this.authToken = token;
     }
 
     /**
