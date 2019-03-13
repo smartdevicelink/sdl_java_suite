@@ -516,7 +516,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     /**
      * This will add a listener for the specific type of request. As of now it will only allow
-     * a single listener per notification function id
+     * a single listener per request function id
      * @param requestId The request type that this listener is designated for
      * @param listener The listener that will be called when a request of the provided type is received
      */
