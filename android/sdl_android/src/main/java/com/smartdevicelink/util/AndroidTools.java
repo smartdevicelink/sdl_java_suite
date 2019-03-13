@@ -41,10 +41,16 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.BatteryManager;
 
 import com.smartdevicelink.transport.TransportConstants;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -172,5 +178,14 @@ public class AndroidTools {
 		Intent intent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 		int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
 		return plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB;
+	}
+
+	public static Bitmap downloadImage(String urlStr) throws IOException {
+		URL url = new URL(urlStr);
+		URLConnection connection = url.openConnection();
+		BufferedInputStream bis = new BufferedInputStream(connection.getInputStream());
+		Bitmap result = BitmapFactory.decodeStream(bis);
+		bis.close();
+		return result;
 	}
 }
