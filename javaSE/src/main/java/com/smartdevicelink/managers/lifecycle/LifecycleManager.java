@@ -495,7 +495,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public boolean onRPCRequestReceived(RPCRequest request){
+    private boolean onRPCRequestReceived(RPCRequest request){
         if(request == null){
             DebugTool.logError("onRPCRequestReceived - request was null");
             return false;
@@ -532,6 +532,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public boolean removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
         synchronized(ON_REQUEST_LISTENER_LOCK){
             if(rpcRequestListeners!= null
