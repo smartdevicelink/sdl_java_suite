@@ -42,7 +42,8 @@ public class LifecycleManager extends BaseLifecycleManager {
     public static final Version MAX_SUPPORTED_RPC_VERSION = new Version("5.0.0");
 
     // Protected Correlation IDs
-    private final int 	REGISTER_APP_INTERFACE_CORRELATION_ID = 65529;
+    private final int 	REGISTER_APP_INTERFACE_CORRELATION_ID = 65529,
+                        UNREGISTER_APP_INTERFACE_CORRELATION_ID = 65530;
 
 
     // Sdl Synchronization Objects
@@ -73,6 +74,9 @@ public class LifecycleManager extends BaseLifecycleManager {
     final LifecycleListener lifecycleListener;
 
     private List<Class<? extends SdlSecurityBase>> _secList = null;
+
+    private Version minimumProtocolVersion;
+    private Version minimumRPCVersion;
 
 
     public LifecycleManager(AppConfig appConfig, WebSocketServerConfig config, LifecycleListener listener){
@@ -215,6 +219,14 @@ public class LifecycleManager extends BaseLifecycleManager {
                             LifecycleManager.this.rpcSpecVersion = new Version(rpcVersion.getMajorVersion(), rpcVersion.getMinorVersion(), rpcVersion.getPatchVersion());
                         } else {
                             LifecycleManager.this.rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
+                        }
+                        if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1) {
+                            Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+                            UnregisterAppInterface msg = new UnregisterAppInterface();
+                            msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
+                            sendRPCMessagePrivate(msg);
+                            cleanProxy();
+                            return;
                         }
                         processRaiResponse(raiResponse);
                         systemCapabilityManager.parseRAIResponse(raiResponse);
@@ -583,6 +595,13 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         Log.i(TAG, "on protocol session started");
         if (sessionType != null) {
+            if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1){
+                Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
+                session.endService(sessionType, session.getSessionId());
+                cleanProxy();
+                return;
+            }
+
             if (sessionType.equals(SessionType.RPC)) {
                 if(appConfig != null){
 
@@ -652,6 +671,25 @@ public class LifecycleManager extends BaseLifecycleManager {
     @Override
     public void onAuthTokenReceived(String token, byte sessionID) {
 
+    }
+
+    /**
+     * Sets the minimum protocol version that will be permitted to connect.
+     * If the protocol version of the head unit connected is below this version,
+     * the app will disconnect with an EndService protocol message and will not register.
+     * @param minimumProtocolVersion
+     */
+    public void setMinimumProtocolVersion(Version minimumProtocolVersion){
+        this.minimumProtocolVersion = minimumProtocolVersion;
+    }
+
+    /**
+     * The minimum RPC version that will be permitted to connect.
+     * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
+     * @param minimumRPCVersion
+     */
+    public void setMinimumRPCVersion(Version minimumRPCVersion){
+        this.minimumRPCVersion = minimumRPCVersion;
     }
 
     /* *******************************************************************************************************
