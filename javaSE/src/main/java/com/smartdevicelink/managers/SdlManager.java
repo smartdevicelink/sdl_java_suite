@@ -2,7 +2,6 @@ package com.smartdevicelink.managers;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleManager;
@@ -452,17 +451,17 @@ public class SdlManager extends BaseSdlManager{
 				//Do the thing
 
 				LifecycleManager.AppConfig appConfig = new LifecycleManager.AppConfig();
-				appConfig.appName = appName;
+				appConfig.setAppName(appName);
 				//short app name
-				appConfig.isMediaApp = isMediaApp;
-				appConfig.hmiDisplayLanguageDesired = hmiLanguage;
-				appConfig.languageDesired = hmiLanguage;
-				appConfig.appType = hmiTypes;
-				appConfig.vrSynonyms = vrSynonyms;
-				appConfig.ttsName = ttsChunks;
-				appConfig.dayColorScheme = dayColorScheme;
-				appConfig.nightColorScheme = nightColorScheme;
-				appConfig.appID = appId;
+				appConfig.setMediaApp(isMediaApp);
+				appConfig.setHmiDisplayLanguageDesired(hmiLanguage);
+				appConfig.setLanguageDesired(hmiLanguage);
+				appConfig.setAppType(hmiTypes);
+				appConfig.setVrSynonyms(vrSynonyms);
+				appConfig.setTtsName(ttsChunks);
+				appConfig.setDayColorScheme(dayColorScheme);
+				appConfig.setNightColorScheme(nightColorScheme);
+				appConfig.setAppID(appId);
 
 
 				proxy = new LifecycleManager(appConfig, transport, lifecycleListener);

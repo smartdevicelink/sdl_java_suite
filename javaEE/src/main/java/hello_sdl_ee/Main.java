@@ -118,8 +118,8 @@ public class Main {
             @Override
             public void run() {
         LifecycleManager.AppConfig config = new LifecycleManager.AppConfig();
-        config.appID = "234523452345234";
-        config.appName = "JavaChip";
+        config.setAppID("234523452345234");
+        config.setAppName("JavaChip");
 
         WebSocketServerConfig serverConfig = new WebSocketServerConfig(5679,0);
         LifecycleManager lifer = new LifecycleManager(config, serverConfig, new LifecycleManager.LifecycleListener() {

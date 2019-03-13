@@ -1,10 +1,8 @@
 package com.smartdevicelink.managers.lifecycle;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -22,7 +20,6 @@ import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.WebSocketServerConfig;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
@@ -677,16 +674,16 @@ public class LifecycleManager extends BaseLifecycleManager {
                     sdlMsgVersion.setPatchVersion(MAX_SUPPORTED_RPC_VERSION.getPatch());
 
                     RegisterAppInterface rai = new RegisterAppInterface(sdlMsgVersion,
-                            appConfig.appName,appConfig.isMediaApp, appConfig.languageDesired,
-                            appConfig.hmiDisplayLanguageDesired,appConfig.appID);
+                            appConfig.getAppName(), appConfig.isMediaApp(), appConfig.getLanguageDesired(),
+                            appConfig.getHmiDisplayLanguageDesired(), appConfig.getAppID());
                     rai.setCorrelationID(REGISTER_APP_INTERFACE_CORRELATION_ID);
 
-                    rai.setTtsName(appConfig.ttsName);
-                    rai.setNgnMediaScreenAppName(appConfig.ngnMediaScreenAppName);
-                    rai.setVrSynonyms(appConfig.vrSynonyms);
-                    rai.setAppHMIType(appConfig.appType);
-                    rai.setDayColorScheme(appConfig.dayColorScheme);
-                    rai.setNightColorScheme(appConfig.nightColorScheme);
+                    rai.setTtsName(appConfig.getTtsName());
+                    rai.setNgnMediaScreenAppName(appConfig.getNgnMediaScreenAppName());
+                    rai.setVrSynonyms(appConfig.getVrSynonyms());
+                    rai.setAppHMIType(appConfig.getAppType());
+                    rai.setDayColorScheme(appConfig.getDayColorScheme());
+                    rai.setNightColorScheme(appConfig.getNightColorScheme());
 
                     //TODO Previous versions have set device info
                     //TODO attach previous hash id
@@ -918,32 +915,119 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     public static class AppConfig{
-        //FIXME change these from public
-        public String appID, appName, ngnMediaScreenAppName;
-        public Vector<TTSChunk> ttsName;
-        public Vector<String> vrSynonyms;
-        public boolean isMediaApp = false;
-        public Language languageDesired,  hmiDisplayLanguageDesired;
-        public Vector<AppHMIType> appType;
-        public TemplateColorScheme dayColorScheme, nightColorScheme;
+        private String appID, appName, ngnMediaScreenAppName;
+        private Vector<TTSChunk> ttsName;
+        private Vector<String> vrSynonyms;
+        private boolean isMediaApp = false;
+        private Language languageDesired, hmiDisplayLanguageDesired;
+        private Vector<AppHMIType> appType;
+        private TemplateColorScheme dayColorScheme, nightColorScheme;
 
         private void prepare(){
-            if (ngnMediaScreenAppName == null) {
-                ngnMediaScreenAppName = appName;
+            if (getNgnMediaScreenAppName() == null) {
+                setNgnMediaScreenAppName(getAppName());
             }
 
-            if (languageDesired == null) {
-                languageDesired = Language.EN_US;
+            if (getLanguageDesired() == null) {
+                setLanguageDesired(Language.EN_US);
             }
 
-            if (hmiDisplayLanguageDesired == null) {
-                hmiDisplayLanguageDesired = Language.EN_US;
+            if (getHmiDisplayLanguageDesired() == null) {
+                setHmiDisplayLanguageDesired(Language.EN_US);
             }
 
-            if (vrSynonyms == null) {
-                vrSynonyms = new Vector<>();
-                vrSynonyms.add(appName);
+            if (getVrSynonyms() == null) {
+                setVrSynonyms(new Vector<>());
+                getVrSynonyms().add(getAppName());
             }
+        }
+
+        public String getAppID() {
+            return appID;
+        }
+
+        public void setAppID(String appID) {
+            this.appID = appID;
+        }
+
+        public String getAppName() {
+            return appName;
+        }
+
+        public void setAppName(String appName) {
+            this.appName = appName;
+        }
+
+        public String getNgnMediaScreenAppName() {
+            return ngnMediaScreenAppName;
+        }
+
+        public void setNgnMediaScreenAppName(String ngnMediaScreenAppName) {
+            this.ngnMediaScreenAppName = ngnMediaScreenAppName;
+        }
+
+        public Vector<TTSChunk> getTtsName() {
+            return ttsName;
+        }
+
+        public void setTtsName(Vector<TTSChunk> ttsName) {
+            this.ttsName = ttsName;
+        }
+
+        public Vector<String> getVrSynonyms() {
+            return vrSynonyms;
+        }
+
+        public void setVrSynonyms(Vector<String> vrSynonyms) {
+            this.vrSynonyms = vrSynonyms;
+        }
+
+        public boolean isMediaApp() {
+            return isMediaApp;
+        }
+
+        public void setMediaApp(boolean mediaApp) {
+            isMediaApp = mediaApp;
+        }
+
+        public Language getLanguageDesired() {
+            return languageDesired;
+        }
+
+        public void setLanguageDesired(Language languageDesired) {
+            this.languageDesired = languageDesired;
+        }
+
+        public Language getHmiDisplayLanguageDesired() {
+            return hmiDisplayLanguageDesired;
+        }
+
+        public void setHmiDisplayLanguageDesired(Language hmiDisplayLanguageDesired) {
+            this.hmiDisplayLanguageDesired = hmiDisplayLanguageDesired;
+        }
+
+        public Vector<AppHMIType> getAppType() {
+            return appType;
+        }
+
+        public void setAppType(Vector<AppHMIType> appType) {
+            this.appType = appType;
+        }
+
+        public TemplateColorScheme getDayColorScheme() {
+            return dayColorScheme;
+        }
+
+        public void setDayColorScheme(TemplateColorScheme dayColorScheme) {
+            this.dayColorScheme = dayColorScheme;
+        }
+
+        public TemplateColorScheme getNightColorScheme() {
+            return nightColorScheme;
+        }
+
+        public void setNightColorScheme(TemplateColorScheme nightColorScheme) {
+            this.nightColorScheme = nightColorScheme;
         }
     }
 
@@ -1043,7 +1127,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
             if ((sec != null) && (sec.getMakeList() != null)) {
                 if (sec.getMakeList().contains(make)) {
-                    sec.setAppId(appConfig.appID);
+                    sec.setAppId(appConfig.getAppID());
                     if (session != null) {
                         session.setSdlSecurity(sec);
                         sec.handleSdlSession(session);
