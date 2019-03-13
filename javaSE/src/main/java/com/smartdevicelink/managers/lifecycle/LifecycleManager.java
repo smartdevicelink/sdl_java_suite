@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -138,10 +139,51 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
-    //Sequentially
     public void sendRpcsSequentially(List<? extends RPCMessage> messages, OnMultipleRequestListener listener){
-       //FIXME yea
-        sendRpcs(messages, listener);
+       if (messages != null){
+           int requestCount = messages.size();
+
+           // Break out of recursion, we have finished the requests
+           if (requestCount == 0) {
+               if(listener != null){
+                   listener.onFinished();
+               }
+               return;
+           }
+
+           RPCMessage rpc = messages.remove(0);
+
+           // Request Specifics
+           if (rpc.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+               RPCRequest request = (RPCRequest) rpc;
+               request.setCorrelationID(CorrelationIdGenerator.generateId());
+
+               request.setOnRPCResponseListener(new OnRPCResponseListener() {
+                   @Override
+                   public void onResponse(int correlationId, RPCResponse response) {
+                       if (response.getSuccess()) {
+                           // success
+                           if (listener != null) {
+                               listener.onUpdate(messages.size());
+                           }
+                           // recurse after successful response of RPC
+                           sendRpcsSequentially(messages, listener);
+                       }
+                   }
+
+                   @Override
+                   public void onError(int correlationId, Result resultCode, String info) {
+                       if (listener != null) {
+                           listener.onError(correlationId, resultCode, info);
+                       }
+                   }
+               });
+               sendRPCMessagePrivate(request);
+           } else {
+               // Notifications and Responses
+               sendRPCMessagePrivate(rpc);
+           }
+       }
     }
 
     public SystemCapabilityManager getSystemCapabilityManager(){
@@ -519,10 +561,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             if(RPCMessage.KEY_REQUEST.equals(message.getMessageType())){
                 Integer corrId = ((RPCRequest)message).getCorrelationID();
                    if( corrId== null) {
-
-                       //FIXME Log error here
-                       //throw new SdlException("CorrelationID cannot be null. RPC: " + message.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
-                       Log.e(TAG, "No correlation ID attatched to request. Not sending");
+                       Log.e(TAG, "No correlation ID attached to request. Not sending");
                    }else{
                        pm.setCorrID(corrId);
 
