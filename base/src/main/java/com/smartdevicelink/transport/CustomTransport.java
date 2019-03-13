@@ -39,8 +39,8 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.nio.ByteBuffer;
 
-public abstract class GenericTransport implements TransportInterface{
-    private static final String TAG = "GenericTransport";
+public abstract class CustomTransport implements TransportInterface{
+    private static final String TAG = "CustomTransport";
 
     final TransportRecord transportRecord;
     final SdlPsm psm;
@@ -48,10 +48,10 @@ public abstract class GenericTransport implements TransportInterface{
 
 
 
-    public GenericTransport (String address) {
+    public CustomTransport(String address) {
         //Creates a callback for when packets
         psm = new SdlPsm();
-        transportRecord = new TransportRecord(TransportType.GENERIC,address);
+        transportRecord = new TransportRecord(TransportType.CUSTOM,address);
     }
 
     public TransportRecord getTransportRecord(){

@@ -34,20 +34,20 @@ package com.smartdevicelink.transport;
 
 import com.smartdevicelink.transport.enums.TransportType;
 
-public class GenericTransportConfig extends BaseTransportConfig {
+public class CustomTransportConfig extends BaseTransportConfig {
 
-    final GenericTransport genericTransport;
+    final CustomTransport customTransport;
 
-    public GenericTransportConfig(GenericTransport genericTransport){
-        this.genericTransport = genericTransport;
+    public CustomTransportConfig(CustomTransport customTransport){
+        this.customTransport = customTransport;
     }
 
     @Override
     public TransportType getTransportType() {
-        return TransportType.GENERIC;
+        return TransportType.CUSTOM;
     }
 
     public TransportInterface getTransportInterface(){
-        return this.genericTransport;
+        return this.customTransport;
     }
 }

@@ -27,7 +27,7 @@ public enum TransportType {
 	 * This transport is setup to be essentially a proxy to a different transport. It allows a developer to create a
 	 * custom transport without much effort.
 	 */
-	GENERIC,
+	CUSTOM,
 
 	;
 	

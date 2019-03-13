@@ -28,7 +28,7 @@ public class TransportTypeTests extends TestCase {
 		String testBluetooth 		= "BLUETOOTH";
 		String testMultiplexing 	= "MULTIPLEX";
 		String testWebSocketServer 	= "WEB_SOCKET_SERVER";
-		String testGeneric 			= "GENERIC";
+		String testCustom 			= "CUSTOM";
 
 		try {
 			// Comparison Values
@@ -37,7 +37,7 @@ public class TransportTypeTests extends TestCase {
 			TransportType expectedBluetoothEnum  		= TransportType.BLUETOOTH;
 			TransportType expectedMultiplexingEnum  	= TransportType.MULTIPLEX;
 			TransportType expectedWebSocketServerEnum  	= TransportType.WEB_SOCKET_SERVER;
-			TransportType expectedGenericEnum  			= TransportType.GENERIC;
+			TransportType expectedCustomEnum  			= TransportType.CUSTOM;
 
 			List<TransportType> expectedEnumList = new ArrayList<TransportType>();
 			expectedEnumList.add(TransportType.BLUETOOTH);
@@ -45,7 +45,7 @@ public class TransportTypeTests extends TestCase {
 			expectedEnumList.add(TransportType.USB);
 			expectedEnumList.add(TransportType.MULTIPLEX);
 			expectedEnumList.add(TransportType.WEB_SOCKET_SERVER);
-			expectedEnumList.add(TransportType.GENERIC);
+			expectedEnumList.add(TransportType.CUSTOM);
 
 			TransportType actualNullEnum       			= TransportType.valueForString(null);
 			TransportType actualTcpEnum        			= TransportType.valueForString(testTcp);
@@ -54,7 +54,7 @@ public class TransportTypeTests extends TestCase {
 			TransportType actualBluetoothEnum  			= TransportType.valueForString(testBluetooth);
 			TransportType actualMultiplexingEnum 		= TransportType.valueForString(testMultiplexing);
 			TransportType actualWebSocketServerEnum 	= TransportType.valueForString(testWebSocketServer);
-			TransportType actualGenericEnum			 	= TransportType.valueForString(testGeneric);
+			TransportType actualCustomEnum			 	= TransportType.valueForString(testCustom);
 
 			List<TransportType> actualEnumList = Arrays.asList(TransportType.values());
 			
@@ -64,7 +64,7 @@ public class TransportTypeTests extends TestCase {
 			assertEquals(Test.MATCH, expectedBluetoothEnum, actualBluetoothEnum);
 			assertEquals(Test.MATCH, expectedMultiplexingEnum, actualMultiplexingEnum);
 			assertEquals(Test.MATCH, expectedWebSocketServerEnum, actualWebSocketServerEnum);
-			assertEquals(Test.MATCH, expectedGenericEnum, actualGenericEnum);
+			assertEquals(Test.MATCH, expectedCustomEnum, actualCustomEnum);
 			assertTrue(Test.ARRAY, expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));
 			
 			// Invalid/Null Tests
