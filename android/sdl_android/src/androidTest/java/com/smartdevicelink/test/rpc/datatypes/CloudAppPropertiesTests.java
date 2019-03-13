@@ -1,6 +1,7 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
 import java.util.Iterator;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -11,6 +12,7 @@ import com.smartdevicelink.proxy.rpc.CloudAppProperties;
 import com.smartdevicelink.proxy.rpc.enums.HybridAppPreference;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.Validator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
@@ -24,7 +26,7 @@ public class CloudAppPropertiesTests extends TestCase{
 	public void setUp(){
 		msg = new CloudAppProperties();
 
-		msg.setAppName(Test.GENERAL_STRING);
+		msg.setNicknames(Test.GENERAL_STRING_LIST);
 		msg.setAppID(Test.GENERAL_STRING);
 		msg.setEnabled(Test.GENERAL_BOOLEAN);
 		msg.setAuthToken(Test.GENERAL_STRING);
@@ -38,7 +40,7 @@ public class CloudAppPropertiesTests extends TestCase{
 	 */
 	public void testRpcValues () {
 		// Test Values
-		String appName = msg.getAppName();
+		List<String> nicknames = msg.getNicknames();
 		String appID = msg.getAppID();
 		boolean enabled = msg.isEnabled();
 		String authToken = msg.getAuthToken();
@@ -47,7 +49,7 @@ public class CloudAppPropertiesTests extends TestCase{
 		String endpoint = msg.getEndpoint();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, appName);
+		assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST, nicknames);
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, appID);
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, enabled);
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, authToken);
@@ -59,7 +61,7 @@ public class CloudAppPropertiesTests extends TestCase{
 		CloudAppProperties msg = new CloudAppProperties();
 		assertNotNull(Test.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getAppName());
+		assertNull(Test.NULL, msg.getNicknames());
 		assertNull(Test.NULL, msg.getAppID());
 		assertNull(Test.NULL, msg.isEnabled());
 		assertNull(Test.NULL, msg.getAuthToken());
@@ -72,7 +74,7 @@ public class CloudAppPropertiesTests extends TestCase{
 		JSONObject reference = new JSONObject();
 
 		try{
-			reference.put(CloudAppProperties.KEY_APP_NAME, Test.GENERAL_STRING);
+			reference.put(CloudAppProperties.KEY_NICKNAMES, Test.GENERAL_STRING_LIST);
 			reference.put(CloudAppProperties.KEY_APP_ID, Test.GENERAL_STRING);
 			reference.put(CloudAppProperties.KEY_ENABLED, Test.GENERAL_BOOLEAN);
 			reference.put(CloudAppProperties.KEY_AUTH_TOKEN, Test.GENERAL_STRING);
@@ -87,7 +89,13 @@ public class CloudAppPropertiesTests extends TestCase{
 			Iterator<?> iterator = reference.keys();
 			while(iterator.hasNext()){
 				String key = (String) iterator.next();
-				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+
+				if (key.equals(CloudAppProperties.KEY_NICKNAMES)){
+					Validator.validateStringList(JsonUtils.readStringListFromJsonObject(reference, key),
+							JsonUtils.readStringListFromJsonObject(underTest, key));
+				}else {
+					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+				}
 			}
 		} catch(JSONException e){
 			fail(Test.JSON_FAIL);

@@ -6,12 +6,13 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.HybridAppPreference;
 
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Properties that relate to a a cloud app entry.
  */
 public class CloudAppProperties extends RPCStruct {
-    public static final String KEY_APP_NAME                 = "appName";
+    public static final String KEY_NICKNAMES                = "nicknames";
     public static final String KEY_APP_ID                   = "appID";
     public static final String KEY_ENABLED                  = "enabled";
     public static final String KEY_AUTH_TOKEN               = "authToken";
@@ -26,21 +27,21 @@ public class CloudAppProperties extends RPCStruct {
         super(hash);
     }
 
-    public CloudAppProperties(@NonNull String appName, @NonNull String appID){
+    public CloudAppProperties(@NonNull String appID){
         this();
-        setValue(KEY_APP_NAME, appName);
         setValue(KEY_APP_ID, appID);
     }
 
-    public void setAppName(String appName){
-        setValue(KEY_APP_NAME, appName);
+    public void setNicknames(List<String> nicknames){
+        setValue(KEY_NICKNAMES, nicknames);
     }
 
-    public String getAppName(){
-        return getString(KEY_APP_NAME);
+    @SuppressWarnings("unchecked")
+    public List<String> getNicknames(){
+        return (List<String>) getObject(String.class, KEY_NICKNAMES);
     }
 
-    public void setAppID(String appID){
+    public void setAppID(@NonNull String appID){
         setValue(KEY_APP_ID, appID);
     }
 
