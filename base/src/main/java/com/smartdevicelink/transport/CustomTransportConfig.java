@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Livio, Inc.
+ * Copyright (c) 2019 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,23 +30,24 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.protocol;
+package com.smartdevicelink.transport;
 
+import com.smartdevicelink.transport.enums.TransportType;
 
-import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.TransportManager;
-import com.smartdevicelink.transport.WebSocketServerConfig;
+public class CustomTransportConfig extends BaseTransportConfig {
 
+    final CustomTransport customTransport;
 
-@SuppressWarnings("WeakerAccess")
-public class SdlProtocol extends SdlProtocolBase {
-    private static final String TAG ="SdlProtocol";
-
-    public SdlProtocol( ISdlProtocol iSdlProtocol,  BaseTransportConfig config) {
-        super(iSdlProtocol, config);
-        this.setTransportManager(new TransportManager(config, transportEventListener));
+    public CustomTransportConfig(CustomTransport customTransport){
+        this.customTransport = customTransport;
     }
 
+    @Override
+    public TransportType getTransportType() {
+        return TransportType.CUSTOM;
+    }
 
-
+    public TransportInterface getTransportInterface(){
+        return this.customTransport;
+    }
 }

@@ -516,7 +516,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
 */
     final protected SdlProtocol sdlProtocol;
 
-    public SdlSession(ISdlConnectionListener listener, WebSocketServerConfig config){
+    public SdlSession(ISdlConnectionListener listener, BaseTransportConfig config){
     //FIXME public SdlSession2(ISdlConnectionListener listener, MultiplexTransportConfig config){
         this.transportConfig = config;
         this.sessionListener = listener;
@@ -588,7 +588,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
     }
 
     public TransportType getCurrentTransportType() {
-        return TransportType.WEB_SOCKET_SERVER;
+        return transportConfig.getTransportType();
     }
 
     public boolean getIsConnected() {

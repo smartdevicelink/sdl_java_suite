@@ -26,12 +26,16 @@ import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.WebSocketServerConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+import java.util.Set;
+import java.util.Map;
+
 
 /**
  * <strong>SDLManager</strong> <br>
@@ -531,31 +535,9 @@ public class SdlManager extends BaseSdlManager{
 	public void start(){
 		Log.i(TAG, "start");
 		if (proxy == null) {
-			//FIXME if(transport!= null  && transport.getTransportType() == TransportType.MULTIPLEX){
-			if (transport != null && transport.getTransportType().equals(TransportType.WEB_SOCKET_SERVER)) {
+			if (transport != null
+					&& (transport.getTransportType().equals(TransportType.WEB_SOCKET_SERVER) || transport.getTransportType().equals(TransportType.CUSTOM))) {
 				//Do the thing
-
-					/*FIXME MultiplexTransportConfig multiplexTransportConfig = (MultiplexTransportConfig)(transport);
-					final MultiplexTransportConfig.TransportListener devListener = multiplexTransportConfig.getTransportListener();
-					multiplexTransportConfig.setTransportListener(new MultiplexTransportConfig.TransportListener() {
-						@Override
-						public void onTransportEvent(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail) {
-
-							//Pass to submanagers that need it
-							if(videoStreamManager != null){
-								videoStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
-							}
-
-							if(audioStreamManager != null){
-								audioStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
-							}
-							//If the developer supplied a listener to start, it is time to call that
-							if(devListener != null){
-								devListener.onTransportEvent(connectedTransports,audioStreamTransportAvail,videoStreamTransportAvail);
-							}
-						}
-					});
-				}*/
 
 				LifecycleManager.AppConfig appConfig = new LifecycleManager.AppConfig();
 				appConfig.appName = appName;
@@ -571,7 +553,7 @@ public class SdlManager extends BaseSdlManager{
 				appConfig.appID = appId;
 
 
-				proxy = new LifecycleManager(appConfig, (WebSocketServerConfig)transport, lifecycleListener);
+				proxy = new LifecycleManager(appConfig, transport, lifecycleListener);
 				proxy.start();
 				proxy.setMinimumProtocolVersion(minimumProtocolVersion);
 				proxy.setMinimumRPCVersion(minimumRPCVersion);

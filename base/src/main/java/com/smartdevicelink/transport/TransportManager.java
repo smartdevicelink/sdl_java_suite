@@ -47,7 +47,7 @@ import java.util.List;
 public class TransportManager extends TransportManagerBase{
     private static final String TAG = "TransportManager";
 
-    WebSocketServer2 transport;
+    TransportInterface transport;
 
     /**
      * Managing transports
@@ -55,60 +55,19 @@ public class TransportManager extends TransportManagerBase{
      * If transport is not connected. Request Router service connect to it. Get connected message
      */
 
-    public TransportManager(WebSocketServerConfig config, TransportEventListener listener){
+    public TransportManager(BaseTransportConfig config, TransportEventListener listener){
         super(config, listener);
 
-        final TransportRecord record = new TransportRecord(TransportType.WEB_SOCKET_SERVER,"127.0.0.1:"+config.port);
-        final List<TransportRecord> finalList = Collections.singletonList(record);
         //Start the new transport
-        transport = new WebSocketServer2(config, new WebSocketServer2.Callback() {
-
-            @Override
-            public void onConnectionEstablished() {
-                synchronized (TRANSPORT_STATUS_LOCK){
-                    transportStatus.clear();
-                    transportStatus.addAll(finalList);
-                }
-                transportListener.onTransportConnected(finalList);
-            }
-
-            @Override
-            public void onError() {
-                Log.e(TAG, "Error in the transport manager from the web socket server");
-                if(transportListener != null){
-                    transportListener.onError("");
-                }
-            }
-
-            @Override
-            public void onConnectionTerminated() {
-                if(record != null){
-                    Log.d(TAG, "Transport disconnected - " + record);
-                }else{
-                    Log.d(TAG, "Transport disconnected");
-
-                }
-
-                synchronized (TRANSPORT_STATUS_LOCK){
-                    TransportManager.this.transportStatus.remove(record);
-                    //Might check connectedTransports vs transportStatus to ensure they are equal
-                }
-                //Inform the transport listener that a transport has disconnected
-                transportListener.onTransportDisconnected("", record, new ArrayList<>()); //FIXME
-            }
-
-            @Override
-            public void onStateChanged(int previousState, int newState) {
-
-            }
-
-            @Override
-            public void onPacketReceived(SdlPacket packet) {
-                if(packet!=null){
-                    transportListener.onPacketReceived(packet);
-                }
-            }
-        });
+        switch (config.getTransportType()){
+            case WEB_SOCKET_SERVER:
+                transport = new WebSocketServer2((WebSocketServerConfig)config, new SingleTransportCallbackImpl(new TransportRecord(TransportType.WEB_SOCKET_SERVER,"127.0.0.1:"+((WebSocketServerConfig)config).port)));
+                break;
+            case CUSTOM:
+                transport = ((CustomTransportConfig) config).getTransportInterface();
+                transport.setCallback(new SingleTransportCallbackImpl(transport.getTransportRecord()));
+                break;
+        }
 
     }
 
@@ -200,6 +159,57 @@ public class TransportManager extends TransportManagerBase{
             transport.write(packet);
         }else {
 
+        }
+    }
+
+    class  SingleTransportCallbackImpl implements TransportCallback {
+
+        final List<TransportRecord> finalList;
+        final TransportRecord record;
+        protected SingleTransportCallbackImpl(TransportRecord transportRecord){
+             record = transportRecord;
+             finalList = Collections.singletonList(record);
+        }
+
+        @Override
+        public void onConnectionEstablished() {
+            synchronized (TRANSPORT_STATUS_LOCK){
+                transportStatus.clear();
+                transportStatus.addAll(finalList);
+            }
+            transportListener.onTransportConnected(finalList);
+        }
+
+        @Override
+        public void onError() {
+            Log.e(TAG, "Error in the transport manager from the web socket server");
+            if(transportListener != null){
+                transportListener.onError("");
+            }
+        }
+
+        @Override
+        public void onConnectionTerminated() {
+            if(record != null){
+                Log.d(TAG, "Transport disconnected - " + record);
+            }else{
+                Log.d(TAG, "Transport disconnected");
+
+            }
+
+            synchronized (TRANSPORT_STATUS_LOCK){
+                TransportManager.this.transportStatus.remove(record);
+                //Might check connectedTransports vs transportStatus to ensure they are equal
+            }
+            //Inform the transport listener that a transport has disconnected
+            transportListener.onTransportDisconnected("", record, new ArrayList<>()); //FIXME
+        }
+
+        @Override
+        public void onPacketReceived(SdlPacket packet) {
+            if(packet!=null){
+                transportListener.onPacketReceived(packet);
+            }
         }
     }
 

@@ -71,11 +71,11 @@ public class LifecycleManager extends BaseLifecycleManager {
     final LifecycleListener lifecycleListener;
 
     private List<Class<? extends SdlSecurityBase>> _secList = null;
-
     private String authToken;
     private Version minimumProtocolVersion;
     private Version minimumRPCVersion;
-    public LifecycleManager(AppConfig appConfig, WebSocketServerConfig config, LifecycleListener listener){
+
+    public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
 
         this.lifecycleListener = listener;
 

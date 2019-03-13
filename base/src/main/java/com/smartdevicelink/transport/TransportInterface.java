@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Livio, Inc.
+ * Copyright (c) 2019 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,23 +30,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.protocol;
+package com.smartdevicelink.transport;
 
+import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.transport.utl.TransportRecord;
 
-import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.TransportManager;
-import com.smartdevicelink.transport.WebSocketServerConfig;
-
-
-@SuppressWarnings("WeakerAccess")
-public class SdlProtocol extends SdlProtocolBase {
-    private static final String TAG ="SdlProtocol";
-
-    public SdlProtocol( ISdlProtocol iSdlProtocol,  BaseTransportConfig config) {
-        super(iSdlProtocol, config);
-        this.setTransportManager(new TransportManager(config, transportEventListener));
-    }
-
-
-
+/**
+ * This interface defines the basic methods that a transport must implement
+ */
+public interface TransportInterface {
+    void start();
+    void stop();
+    void write(SdlPacket packet);
+    void setCallback(TransportCallback callback);
+    TransportRecord getTransportRecord();
 }
