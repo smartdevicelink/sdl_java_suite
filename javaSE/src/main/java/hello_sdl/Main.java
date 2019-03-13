@@ -91,7 +91,7 @@ public class Main {
                     }
                 });
 
-                manager.addOnRPCRequestListener(FunctionID.BUTTON_PRESS, new OnRPCRequestListener() {
+                manager.addOnRPCRequestListener(FunctionID.SEND_LOCATION, new OnRPCRequestListener() {
                     @Override
                     public void onRequest(RPCRequest request) {
                         try {
