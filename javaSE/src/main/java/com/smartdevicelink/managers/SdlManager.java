@@ -59,7 +59,6 @@ public class SdlManager extends BaseSdlManager{
 	private SdlArtwork appIcon;
 	private Vector<AppHMIType> hmiTypes;
 	private BaseTransportConfig transport;
-	//FIXME private Context context;
 	private Vector<String> vrSynonyms;
 	private Vector<TTSChunk> ttsChunks;
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
@@ -67,7 +66,6 @@ public class SdlManager extends BaseSdlManager{
 	private Map<FunctionID, OnRPCNotificationListener> onRPCNotificationListeners;
 	private int state = -1;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
-	//FIXME private LockScreenConfig lockScreenConfig;
 	private final Object STATE_LOCK = new Object();
 	private Version minimumProtocolVersion;
 	private Version minimumRPCVersion;
@@ -76,10 +74,7 @@ public class SdlManager extends BaseSdlManager{
 	// Managers
 	private PermissionManager permissionManager;
 	private FileManager fileManager;
-	//private LockScreenManager lockScreenManager;
     private ScreenManager screenManager;
-	//private VideoStreamManager videoStreamManager;
-	//private AudioStreamManager audioStreamManager;
 
 
 	// Initialize proxyBridge with anonymous lifecycleListener
@@ -134,18 +129,18 @@ public class SdlManager extends BaseSdlManager{
 	};
 
 	void checkState() {
-		if (permissionManager != null && fileManager != null && screenManager != null ){//FIXME && (!lockScreenConfig.isEnabled() || lockScreenManager != null)) {
-			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY){ //FIXME && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.READY)) {
+		if (permissionManager != null && fileManager != null && screenManager != null ){
+			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY){
 				DebugTool.logInfo("Starting sdl manager, all sub managers are in ready state");
 				transitionToState(BaseSubManager.READY);
 				notifyDevListener(null);
 				onReady();
-			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR){ //FIXME && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.ERROR)) {
+			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR){
 				String info = "ERROR starting sdl manager, all sub managers are in error state";
 				Log.e(TAG, info);
 				transitionToState(BaseSubManager.ERROR);
 				notifyDevListener(info);
-			} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP){//FIXME || (lockScreenConfig.isEnabled() && lockScreenManager != null && lockScreenManager.getState() == BaseSubManager.SETTING_UP)) {
+			} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP) {
 				DebugTool.logInfo("SETTING UP sdl manager, some sub managers are still setting up");
 				transitionToState(BaseSubManager.SETTING_UP);
 				// No need to notify developer here!
@@ -197,31 +192,14 @@ public class SdlManager extends BaseSdlManager{
 	protected void initialize(){
 		// Instantiate sub managers
 		this.permissionManager = new PermissionManager(_internalInterface);
-		this.fileManager = new FileManager(_internalInterface);		//FIXME ,context);
-		/* FIXME if (lockScreenConfig.isEnabled()) {
-			this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
-		}*/
+		this.fileManager = new FileManager(_internalInterface);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-		/* FIXME if(getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)){
-			this.videoStreamManager = new VideoStreamManager(_internalInterface);
-		} else {
-			this.videoStreamManager = null;
-		}
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-				&& (getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)) ) {
-			this.audioStreamManager = new AudioStreamManager(_internalInterface, context);
-		} else {
-			this.audioStreamManager = null;
-		}*/
+
 
 		// Start sub managers
 		this.permissionManager.start(subManagerListener);
 		this.fileManager.start(subManagerListener);
-		/*if (lockScreenConfig.isEnabled()){
-			this.lockScreenManager.start(subManagerListener);
-		}*/
 		this.screenManager.start(subManagerListener);
-
 	}
 
 	/**
@@ -241,7 +219,6 @@ public class SdlManager extends BaseSdlManager{
 		}
 	}
 
-	//FIXME @SuppressLint("NewApi")
 	public void dispose() {
 		if (this.permissionManager != null) {
 			this.permissionManager.dispose();
@@ -251,22 +228,9 @@ public class SdlManager extends BaseSdlManager{
 			this.fileManager.dispose();
 		}
 
-		/*FIXME if (this.lockScreenManager != null) {
-			this.lockScreenManager.dispose();
-		}*/
-
 		if (this.screenManager != null) {
 			this.screenManager.dispose();
 		}
-
-		/* FIXME if(this.videoStreamManager != null) {
-			this.videoStreamManager.dispose();
-		}
-
-		// SuppressLint("NewApi") is used because audioStreamManager is only available on android >= jelly bean
-		if (this.audioStreamManager != null) {
-			this.audioStreamManager.dispose();
-		}*/
 
 		if(managerListener != null){
 			managerListener.onDestroy(this);
@@ -309,34 +273,6 @@ public class SdlManager extends BaseSdlManager{
 		return fileManager;
 	}
 
-    /**
-     * Gets the VideoStreamManager. <br>
-	 * The VideoStreamManager returned will only be not null if the registered app type is
-	 * either NAVIGATION or PROJECTION. Once the VideoStreamManager is retrieved, its start()
-	 * method will need to be called before use.
-     * <br><br><strong>Note: VideoStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-     * @return a VideoStreamManager object attached to shit SdlManager instance
-     */
-    /* FIXME
-	public @Nullable
-    VideoStreamManager getVideoStreamManager() {
-		checkSdlManagerState();
-		return videoStreamManager;
-	}*/
-
-    /**
-     * Gets the AudioStreamManager. <br>
-	 * The AudioStreamManager returned will only be not null if the registered app type is
-	 * either NAVIGATION or PROJECTION. Once the AudioStreamManager is retrieved, its start()
-	 * method will need to be called before use.
-     * <br><strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-     * @return a AudioStreamManager object
-     */
-	/* FIXME public @Nullable AudioStreamManager getAudioStreamManager() {
-		checkSdlManagerState();
-		return audioStreamManager;
-	}*/
-
 	/**
 	 * Gets the ScreenManager. <br>
 	 * <strong>Note: ScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
@@ -349,19 +285,6 @@ public class SdlManager extends BaseSdlManager{
 		checkSdlManagerState();
 		return screenManager;
 	}
-
-	/**
-	 * Gets the LockScreenManager. <br>
-	 * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-	 * @return a LockScreenManager object
-	 */
-	/* FIXME public LockScreenManager getLockScreenManager() {
-		if (lockScreenManager.getState() != BaseSubManager.READY && lockScreenManager.getState() != BaseSubManager.LIMITED){
-			Log.e(TAG, "LockScreenManager should not be accessed because it is not in READY/LIMITED state");
-		}
-		checkSdlManagerState();
-		return lockScreenManager;
-	}*/
 
 	/**
 	 * Gets the SystemCapabilityManager. <br>
@@ -433,8 +356,6 @@ public class SdlManager extends BaseSdlManager{
 
 	protected BaseTransportConfig getTransport() { return transport; }
 
-	//FIXME protected LockScreenConfig getLockScreenConfig() { return lockScreenConfig; }
-
 	// SENDING REQUESTS
 
 	/**
@@ -496,15 +417,6 @@ public class SdlManager extends BaseSdlManager{
 
 		if (rpcRequestList.size() > 0) {
 			proxy.sendRpcs(rpcRequestList, listener);
-		}
-	}
-
-	private void handleSdlException(SdlException exception){
-		if(exception != null){
-			DebugTool.logError("Caught SdlException: " + exception.getSdlExceptionCause());
-			// In the future this should handle logic to dispose the manager if it is an unrecoverable error
-		}else{
-			DebugTool.logError("Caught SdlException" );
 		}
 	}
 
@@ -574,10 +486,6 @@ public class SdlManager extends BaseSdlManager{
 			}
 		}
 	}
-
-	/* FIXME protected void setProxy(SdlProxyBase proxy){
-		this.proxy = proxy;
-	}*/
 
 	// INTERNAL INTERFACE
 	private ISdl _internalInterface = new ISdl() {
@@ -764,10 +672,8 @@ public class SdlManager extends BaseSdlManager{
 		 * @param appName the app's name
 		 * @param listener a SdlManagerListener object
 		 */
-		//FIXME public Builder(@NonNull Context context, @NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener){
 		public Builder(@NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener){
 			sdlManager = new SdlManager();
-			//FIXME setContext(context);
 			setAppId(appId);
 			setAppName(appName);
 			setManagerListener(listener);
@@ -816,7 +722,7 @@ public class SdlManager extends BaseSdlManager{
 		 * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
 		 * @param minimumRPCVersion
 		 */
-		public Builder setMinimumRPClVersion(final Version minimumRPCVersion) {
+		public Builder setMinimumRPCVersion(final Version minimumRPCVersion) {
 			sdlManager.minimumRPCVersion = minimumRPCVersion;
 			return this;
 		}
@@ -847,16 +753,6 @@ public class SdlManager extends BaseSdlManager{
 			sdlManager.nightColorScheme = nightColorScheme;
 			return this;
 		}
-
-		/**
-		 * Sets the LockScreenConfig for the session. <br>
-		 * <strong>Note: If not set, the default configuration will be used.</strong>
-		 * @param lockScreenConfig - configuration options
-		 */
-		/*FIXME public Builder setLockScreenConfig (final LockScreenConfig lockScreenConfig){
-			sdlManager.lockScreenConfig = lockScreenConfig;
-			return this;
-		}*/
 
 		/**
 		 * Sets the icon for the app on HU <br>
@@ -912,15 +808,6 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
-		 * Sets the Context
-		 * @param context
-		 */
-		/* FIXME public Builder setContext(Context context){
-			sdlManager.context = context;
-			return this;
-		}*/
-
-		/**
 		 * Sets the Security library
 		 * @param secList The list of security class(es)
 		 */
@@ -968,11 +855,6 @@ public class SdlManager extends BaseSdlManager{
 				sdlManager.hmiTypes = hmiTypesDefault;
 				sdlManager.isMediaApp = false;
 			}
-
-			/* if (sdlManager.lockScreenConfig == null){
-				// if lock screen params are not set, use default
-				sdlManager.lockScreenConfig = new LockScreenConfig();
-			}*/
 
 			if (sdlManager.hmiLanguage == null){
 				sdlManager.hmiLanguage = Language.EN_US;

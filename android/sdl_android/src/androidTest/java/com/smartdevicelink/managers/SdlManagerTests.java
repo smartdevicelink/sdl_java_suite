@@ -118,7 +118,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		builder.setTtsName(Test.GENERAL_VECTOR_TTS_CHUNKS);
 		builder.setLockScreenConfig(lockScreenConfig);
 		builder.setMinimumProtocolVersion(Test.GENERAL_VERSION);
-		builder.setMinimumRPClVersion(Test.GENERAL_VERSION);
+		builder.setMinimumRPCVersion(Test.GENERAL_VERSION);
 		manager = builder.build();
 
 		// mock SdlProxyBase and set it manually
