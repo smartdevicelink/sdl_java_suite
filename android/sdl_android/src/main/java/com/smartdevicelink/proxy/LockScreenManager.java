@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
+import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.HttpUtils;
 
 public class LockScreenManager {
@@ -111,7 +112,7 @@ public class LockScreenManager {
             @Override
             public void run(){
                 try{
-                    lockScreenIcon = HttpUtils.downloadImage(url);
+                    lockScreenIcon = AndroidTools.downloadImage(url);
                     if(l != null){
                         l.onLockScreenIconDownloaded(lockScreenIcon);
                     }

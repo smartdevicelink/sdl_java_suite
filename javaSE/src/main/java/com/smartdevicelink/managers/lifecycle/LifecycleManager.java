@@ -24,12 +24,9 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.WebSocketServerConfig;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.FileUtls;
 import com.smartdevicelink.util.Version;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -75,10 +72,9 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     private List<Class<? extends SdlSecurityBase>> _secList = null;
 
+    private String authToken;
     private Version minimumProtocolVersion;
     private Version minimumRPCVersion;
-
-
     public LifecycleManager(AppConfig appConfig, WebSocketServerConfig config, LifecycleListener listener){
 
         this.lifecycleListener = listener;
@@ -256,6 +252,26 @@ public class LifecycleManager extends BaseLifecycleManager {
                                 }
                             };
                             handleOffboardTransmissionThread.start();
+                        }else if (onSystemRequest.getRequestType() == RequestType.ICON_URL) {
+                            //Download the icon file and send SystemRequest RPC
+                            Thread handleOffBoardTransmissionThread = new Thread() {
+                                @Override
+                                public void run() {
+                                    byte[] file = FileUtls.downloadFile(onSystemRequest.getUrl());
+                                    if (file != null) {
+                                        SystemRequest systemRequest = new SystemRequest();
+                                        systemRequest.setFileName(onSystemRequest.getUrl());
+                                        systemRequest.setBulkData(file);
+                                        systemRequest.setRequestType(RequestType.ICON_URL);
+                                        if (isConnected()) {
+                                            sendRPCMessagePrivate(systemRequest);
+                                        }
+                                    } else {
+                                        DebugTool.logError("File was null at: " + onSystemRequest.getUrl());
+                                    }
+                                }
+                            };
+                            handleOffBoardTransmissionThread.start();
                         }
                         break;
                     case ON_APP_INTERFACE_UNREGISTERED:
@@ -392,6 +408,15 @@ public class LifecycleManager extends BaseLifecycleManager {
         synchronized(ON_UPDATE_LISTENER_LOCK){
             return this.rpcResponseListeners;
         }
+    }
+
+    /**
+     * Retrieves the auth token, if any, that was attached to the StartServiceACK for the RPC
+     * service from the module. For example, this should be used to login to a user account.
+     * @return the string representation of the auth token
+     */
+    public String getAuthToken(){
+        return this.authToken;
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -670,7 +695,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     @Override
     public void onAuthTokenReceived(String token, byte sessionID) {
-
+        this.authToken = token;
     }
 
     /**

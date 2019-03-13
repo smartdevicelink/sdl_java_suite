@@ -19,7 +19,6 @@ import com.smartdevicelink.proxy.interfaces.*;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.*;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.security.SdlSecurityBase;
@@ -32,8 +31,6 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.*;
 
 /**
@@ -398,6 +395,16 @@ public class SdlManager extends BaseSdlManager{
 	}
 
 	// PROTECTED GETTERS
+
+	/**
+	 * Retrieves the auth token, if any, that was attached to the StartServiceACK for the RPC
+	 * service from the module. For example, this should be used to login to a user account.
+	 * @return the string representation of the auth token
+	 */
+	protected String getAuthToken(){
+		return this.proxy.getAuthToken();
+	}
+
 	protected String getAppName() { return appName; }
 
 	protected String getAppId() { return appId; }
