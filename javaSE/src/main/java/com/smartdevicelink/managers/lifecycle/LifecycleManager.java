@@ -99,7 +99,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     public void stop(){
-        //TODO stop
+        session.close();
     }
 
     public Version getProtocolVersion(){
@@ -537,7 +537,6 @@ public class LifecycleManager extends BaseLifecycleManager {
 
 
 
-    //FIXME move to SdlSession
     private void sendRPCMessagePrivate(RPCMessage message){
         try {
 
@@ -684,7 +683,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                     rai.setDayColorScheme(appConfig.getDayColorScheme());
                     rai.setNightColorScheme(appConfig.getNightColorScheme());
 
-                    //TODO Previous versions have set device info
+                    //Add device/system info in the future
                     //TODO attach previous hash id
 
                     sendRPCMessagePrivate(rai);
@@ -693,12 +692,9 @@ public class LifecycleManager extends BaseLifecycleManager {
                 }
 
 
-            } else if (sessionType.eq(SessionType.NAV)) {
-                //FIXME NavServiceStarted();
-            } else if (sessionType.eq(SessionType.PCM)) {
-               //FIXME  AudioServiceStarted();
+            } else {
+                lifecycleListener.onServiceStarted(sessionType);
             }
-
         }
     }
 
@@ -714,18 +710,14 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     @Override
     public void onProtocolError(String info, Exception e) {
-        //FIXME
+        DebugTool.logError("Protocol Error - " + info, e);
     }
 
     @Override
-    public void onHeartbeatTimedOut(byte sessionID) {
-        //FIXME
-    }
+    public void onHeartbeatTimedOut(byte sessionID) { /* Deprecated */ }
 
     @Override
-    public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID) {
-
-    }
+    public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID) {/* Unused */ }
 
 
     @Override
@@ -835,7 +827,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         @Override
         public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
-            //FIXME
+            LifecycleManager.this.sendRpcs(rpcs,listener);
         }
 
         @Override
@@ -892,7 +884,9 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         @Override
         public SdlMsgVersion getSdlMsgVersion() {
-            return null;    //FIXME should probably be rpc spec version
+            SdlMsgVersion msgVersion = new SdlMsgVersion(rpcSpecVersion.getMajor(), rpcSpecVersion.getMinor());
+            msgVersion.setPatchVersion(rpcSpecVersion.getPatch());
+            return msgVersion;
         }
 
         @Override
@@ -908,8 +902,8 @@ public class LifecycleManager extends BaseLifecycleManager {
     public interface LifecycleListener{
         void onProxyConnected(LifecycleManager lifeCycleManager);
         void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason);
-        void onServiceEnded(LifecycleManager lifeCycleManager, OnServiceEnded serviceEnded);
-        void onServiceNACKed(LifecycleManager lifeCycleManager, OnServiceNACKed serviceNACKed);
+        void onServiceStarted(SessionType sessionType);
+        void onServiceEnded(SessionType sessionType);
         void onError(LifecycleManager lifeCycleManager, String info, Exception e);
     }
 
@@ -1031,7 +1025,6 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
 
-    //FIXME
     /**
      * Temporary method to bridge the new PLAY_PAUSE and OKAY button functionality with the old
      * OK button name. This should be removed during the next major release
