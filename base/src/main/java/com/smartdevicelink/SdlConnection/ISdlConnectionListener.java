@@ -9,32 +9,33 @@ import java.util.List;
 
 public interface ISdlConnectionListener {
 	@Deprecated
-	public void onTransportDisconnected(String info);
+	void onTransportDisconnected(String info);
 
-	public void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig);
+	void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig);
 
 
-	public void onTransportError(String info, Exception e);
+	void onTransportError(String info, Exception e);
 	
-	public void onProtocolMessageReceived(ProtocolMessage msg);
+	void onProtocolMessageReceived(ProtocolMessage msg);
 	
-	public void onProtocolSessionStartedNACKed(SessionType sessionType,
+	void onProtocolSessionStartedNACKed(SessionType sessionType,
 			byte sessionID, byte version, String correlationID, List<String> rejectedParams);
 	
-	public void onProtocolSessionStarted(SessionType sessionType,
+	void onProtocolSessionStarted(SessionType sessionType,
 			byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted);
 	
-	public void onProtocolSessionEnded(SessionType sessionType,
+	void onProtocolSessionEnded(SessionType sessionType,
 			byte sessionID, String correlationID);
 	
-	public void onProtocolSessionEndedNACKed(SessionType sessionType,
+	void onProtocolSessionEndedNACKed(SessionType sessionType,
 	byte sessionID, String correlationID);
 	
-	public void onProtocolError(String info, Exception e);
+	void onProtocolError(String info, Exception e);
+
+	@Deprecated
+	void onHeartbeatTimedOut(byte sessionID);
 	
-	public void onHeartbeatTimedOut(byte sessionID);
-	
-	public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID);
+	void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID);
 
 	void onAuthTokenReceived(String authToken, byte sessionID);
 }
