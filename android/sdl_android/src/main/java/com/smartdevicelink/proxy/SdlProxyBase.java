@@ -98,7 +98,6 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
-import com.smartdevicelink.util.HttpUtils;
 import com.smartdevicelink.util.Version;
 
 import org.json.JSONArray;
