@@ -1,16 +1,48 @@
+/*
+ * Copyright (c) 2019 Livio, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.smartdevicelink.managers.lifecycle;
 
+import android.support.annotation.RestrictTo;
 import android.util.Log;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.*;
-import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
-import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.*;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.*;
@@ -20,7 +52,6 @@ import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.WebSocketServerConfig;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
@@ -31,6 +62,11 @@ import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * The lifecycle manager creates a centeral point for all SDL session logic to converge. It should only be used by
+ * the library itself. Usage outside the library is not permitted and will not be protected for in the future.
+ */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class LifecycleManager extends BaseLifecycleManager {
 
     private static final String TAG = "Lifecycle Manager";
@@ -56,7 +92,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     //protected Version protocolVersion = new Version(1,0,0);
     protected Version rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
 
-    //FIXME these were sparse arrays in android
+
     private final HashMap<Integer,CopyOnWriteArrayList<OnRPCListener>> rpcListeners;
     private final HashMap<Integer, OnRPCResponseListener> rpcResponseListeners;
     private final HashMap<Integer, CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners;
@@ -90,7 +126,6 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
 
-
     }
 
     public void start(){
@@ -104,7 +139,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     public void stop(){
-        //TODO stop
+        session.close();
     }
 
     public Version getProtocolVersion(){
@@ -117,11 +152,11 @@ public class LifecycleManager extends BaseLifecycleManager {
         return rpcSpecVersion;
     }
 
-    public void sendRpc(RPCMessage message){
+    public void sendRPC(RPCMessage message){
         this.sendRPCMessagePrivate(message);
     }
 
-    public void sendRpcs(List<? extends RPCMessage> messages, OnMultipleRequestListener listener){
+    public void sendRPCs(List<? extends RPCMessage> messages, OnMultipleRequestListener listener){
         if(messages != null ){
             for(RPCMessage message : messages){
                 if(message instanceof RPCRequest){
@@ -140,10 +175,51 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
-    //Sequentially
-    public void sendRpcsSequentially(List<? extends RPCMessage> messages, OnMultipleRequestListener listener){
-       //FIXME yea
-        sendRpcs(messages, listener);
+    public void sendSequentialRPCs(final List<? extends RPCMessage> messages, final OnMultipleRequestListener listener){
+       if (messages != null){
+           int requestCount = messages.size();
+
+           // Break out of recursion, we have finished the requests
+           if (requestCount == 0) {
+               if(listener != null){
+                   listener.onFinished();
+               }
+               return;
+           }
+
+           RPCMessage rpc = messages.remove(0);
+
+           // Request Specifics
+           if (rpc.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+               RPCRequest request = (RPCRequest) rpc;
+               request.setCorrelationID(CorrelationIdGenerator.generateId());
+
+               request.setOnRPCResponseListener(new OnRPCResponseListener() {
+                   @Override
+                   public void onResponse(int correlationId, RPCResponse response) {
+                       if (response.getSuccess()) {
+                           // success
+                           if (listener != null) {
+                               listener.onUpdate(messages.size());
+                           }
+                           // recurse after successful response of RPC
+                           sendSequentialRPCs(messages, listener);
+                       }
+                   }
+
+                   @Override
+                   public void onError(int correlationId, Result resultCode, String info) {
+                       if (listener != null) {
+                           listener.onError(correlationId, resultCode, info);
+                       }
+                   }
+               });
+               sendRPCMessagePrivate(request);
+           } else {
+               // Notifications and Responses
+               sendRPCMessagePrivate(rpc);
+           }
+       }
     }
 
     public SystemCapabilityManager getSystemCapabilityManager(){
@@ -550,7 +626,6 @@ public class LifecycleManager extends BaseLifecycleManager {
 
 
 
-    //FIXME move to SdlSession
     private void sendRPCMessagePrivate(RPCMessage message){
         try {
 
@@ -570,9 +645,6 @@ public class LifecycleManager extends BaseLifecycleManager {
             if(RPCMessage.KEY_REQUEST.equals(message.getMessageType())){
                 Integer corrId = ((RPCRequest)message).getCorrelationID();
                    if( corrId== null) {
-
-                       //FIXME Log error here
-                       //throw new SdlException("CorrelationID cannot be null. RPC: " + message.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
                        Log.e(TAG, "No correlation ID attached to request. Not sending");
                        return;
                    }else{
@@ -705,18 +777,18 @@ public class LifecycleManager extends BaseLifecycleManager {
                     sdlMsgVersion.setPatchVersion(MAX_SUPPORTED_RPC_VERSION.getPatch());
 
                     RegisterAppInterface rai = new RegisterAppInterface(sdlMsgVersion,
-                            appConfig.appName,appConfig.isMediaApp, appConfig.languageDesired,
-                            appConfig.hmiDisplayLanguageDesired,appConfig.appID);
+                            appConfig.getAppName(), appConfig.isMediaApp(), appConfig.getLanguageDesired(),
+                            appConfig.getHmiDisplayLanguageDesired(), appConfig.getAppID());
                     rai.setCorrelationID(REGISTER_APP_INTERFACE_CORRELATION_ID);
 
-                    rai.setTtsName(appConfig.ttsName);
-                    rai.setNgnMediaScreenAppName(appConfig.ngnMediaScreenAppName);
-                    rai.setVrSynonyms(appConfig.vrSynonyms);
-                    rai.setAppHMIType(appConfig.appType);
-                    rai.setDayColorScheme(appConfig.dayColorScheme);
-                    rai.setNightColorScheme(appConfig.nightColorScheme);
+                    rai.setTtsName(appConfig.getTtsName());
+                    rai.setNgnMediaScreenAppName(appConfig.getNgnMediaScreenAppName());
+                    rai.setVrSynonyms(appConfig.getVrSynonyms());
+                    rai.setAppHMIType(appConfig.getAppType());
+                    rai.setDayColorScheme(appConfig.getDayColorScheme());
+                    rai.setNightColorScheme(appConfig.getNightColorScheme());
 
-                    //TODO Previous versions have set device info
+                    //Add device/system info in the future
                     //TODO attach previous hash id
 
                     sendRPCMessagePrivate(rai);
@@ -725,12 +797,9 @@ public class LifecycleManager extends BaseLifecycleManager {
                 }
 
 
-            } else if (sessionType.eq(SessionType.NAV)) {
-                //FIXME NavServiceStarted();
-            } else if (sessionType.eq(SessionType.PCM)) {
-               //FIXME  AudioServiceStarted();
+            } else {
+                lifecycleListener.onServiceStarted(sessionType);
             }
-
         }
     }
 
@@ -746,18 +815,14 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     @Override
     public void onProtocolError(String info, Exception e) {
-        //FIXME
+        DebugTool.logError("Protocol Error - " + info, e);
     }
 
     @Override
-    public void onHeartbeatTimedOut(byte sessionID) {
-        //FIXME
-    }
+    public void onHeartbeatTimedOut(byte sessionID) { /* Deprecated */ }
 
     @Override
-    public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID) {
-
-    }
+    public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID) {/* Unused */ }
 
 
     @Override
@@ -782,6 +847,20 @@ public class LifecycleManager extends BaseLifecycleManager {
      */
     public void setMinimumRPCVersion(Version minimumRPCVersion){
         this.minimumRPCVersion = minimumRPCVersion;
+    }
+
+    /**
+     * This method is used to ensure all of the methods in this class can remain private and no grantees can be made
+     * to the developer what methods are availalbe or not.
+     * @param sdlManager this must be a working manager instance
+     * @return the internal interface that hooks into this manager
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    public ISdl getInternalInterface(SdlManager sdlManager){
+        if(sdlManager != null){
+            return internalInterface;
+        }
+        return null;
     }
 
     /* *******************************************************************************************************
@@ -811,46 +890,52 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         @Override
         public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
-
+            LifecycleManager.this.session.addServiceListener(serviceType,sdlServiceListener);
         }
 
         @Override
         public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
+            LifecycleManager.this.session.removeServiceListener(serviceType,sdlServiceListener);
 
         }
 
         @Override
         public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
+            DebugTool.logWarning("startVideoService is not currently implemented");
 
         }
 
         @Override
         public void stopVideoService() {
+            DebugTool.logWarning("stopVideoService is not currently implemented");
 
         }
 
         @Override
         public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
+            DebugTool.logWarning("startVideoStream is not currently implemented");
             return null;
         }
 
         @Override
         public void startAudioService(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params) {
-
+            DebugTool.logWarning("startAudioService is not currently implemented");
         }
 
         @Override
         public void startAudioService(boolean encrypted) {
+            DebugTool.logWarning("startAudioService is not currently implemented");
 
         }
 
         @Override
         public void stopAudioService() {
-
+            DebugTool.logWarning("stopAudioService is not currently implemented");
         }
 
         @Override
         public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params) {
+            DebugTool.logWarning("startAudioStream is not currently implemented");
             return null;
         }
 
@@ -862,12 +947,14 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         @Override
         public void sendRPC(RPCMessage message) {
-            LifecycleManager.this.sendRPCMessagePrivate(message);
+            if(isConnected()) {
+                LifecycleManager.this.sendRPCMessagePrivate(message);
+            }
         }
 
         @Override
         public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
-            //FIXME
+            LifecycleManager.this.sendRPCs(rpcs,listener);
         }
 
         @Override
@@ -924,7 +1011,9 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         @Override
         public SdlMsgVersion getSdlMsgVersion() {
-            return null;    //FIXME should probably be rpc spec version
+            SdlMsgVersion msgVersion = new SdlMsgVersion(rpcSpecVersion.getMajor(), rpcSpecVersion.getMinor());
+            msgVersion.setPatchVersion(rpcSpecVersion.getPatch());
+            return msgVersion;
         }
 
         @Override
@@ -940,43 +1029,129 @@ public class LifecycleManager extends BaseLifecycleManager {
     public interface LifecycleListener{
         void onProxyConnected(LifecycleManager lifeCycleManager);
         void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason);
-        void onServiceEnded(LifecycleManager lifeCycleManager, OnServiceEnded serviceEnded);
-        void onServiceNACKed(LifecycleManager lifeCycleManager, OnServiceNACKed serviceNACKed);
+        void onServiceStarted(SessionType sessionType);
+        void onServiceEnded(SessionType sessionType);
         void onError(LifecycleManager lifeCycleManager, String info, Exception e);
     }
 
     public static class AppConfig{
-        //FIXME change these from public
-        public String appID, appName, ngnMediaScreenAppName;
-        public Vector<TTSChunk> ttsName;
-        public Vector<String> vrSynonyms;
-        public boolean isMediaApp = false;
-        public Language languageDesired,  hmiDisplayLanguageDesired;
-        public Vector<AppHMIType> appType;
-        public TemplateColorScheme dayColorScheme, nightColorScheme;
+        private String appID, appName, ngnMediaScreenAppName;
+        private Vector<TTSChunk> ttsName;
+        private Vector<String> vrSynonyms;
+        private boolean isMediaApp = false;
+        private Language languageDesired, hmiDisplayLanguageDesired;
+        private Vector<AppHMIType> appType;
+        private TemplateColorScheme dayColorScheme, nightColorScheme;
 
         private void prepare(){
-            if (ngnMediaScreenAppName == null) {
-                ngnMediaScreenAppName = appName;
+            if (getNgnMediaScreenAppName() == null) {
+                setNgnMediaScreenAppName(getAppName());
             }
 
-            if (languageDesired == null) {
-                languageDesired = Language.EN_US;
+            if (getLanguageDesired() == null) {
+                setLanguageDesired(Language.EN_US);
             }
 
-            if (hmiDisplayLanguageDesired == null) {
-                hmiDisplayLanguageDesired = Language.EN_US;
+            if (getHmiDisplayLanguageDesired() == null) {
+                setHmiDisplayLanguageDesired(Language.EN_US);
             }
 
-            if (vrSynonyms == null) {
-                vrSynonyms = new Vector<>();
-                vrSynonyms.add(appName);
+            if (getVrSynonyms() == null) {
+                setVrSynonyms(new Vector<String>());
+                getVrSynonyms().add(getAppName());
             }
+        }
+
+        public String getAppID() {
+            return appID;
+        }
+
+        public void setAppID(String appID) {
+            this.appID = appID;
+        }
+
+        public String getAppName() {
+            return appName;
+        }
+
+        public void setAppName(String appName) {
+            this.appName = appName;
+        }
+
+        public String getNgnMediaScreenAppName() {
+            return ngnMediaScreenAppName;
+        }
+
+        public void setNgnMediaScreenAppName(String ngnMediaScreenAppName) {
+            this.ngnMediaScreenAppName = ngnMediaScreenAppName;
+        }
+
+        public Vector<TTSChunk> getTtsName() {
+            return ttsName;
+        }
+
+        public void setTtsName(Vector<TTSChunk> ttsName) {
+            this.ttsName = ttsName;
+        }
+
+        public Vector<String> getVrSynonyms() {
+            return vrSynonyms;
+        }
+
+        public void setVrSynonyms(Vector<String> vrSynonyms) {
+            this.vrSynonyms = vrSynonyms;
+        }
+
+        public boolean isMediaApp() {
+            return isMediaApp;
+        }
+
+        public void setMediaApp(boolean mediaApp) {
+            isMediaApp = mediaApp;
+        }
+
+        public Language getLanguageDesired() {
+            return languageDesired;
+        }
+
+        public void setLanguageDesired(Language languageDesired) {
+            this.languageDesired = languageDesired;
+        }
+
+        public Language getHmiDisplayLanguageDesired() {
+            return hmiDisplayLanguageDesired;
+        }
+
+        public void setHmiDisplayLanguageDesired(Language hmiDisplayLanguageDesired) {
+            this.hmiDisplayLanguageDesired = hmiDisplayLanguageDesired;
+        }
+
+        public Vector<AppHMIType> getAppType() {
+            return appType;
+        }
+
+        public void setAppType(Vector<AppHMIType> appType) {
+            this.appType = appType;
+        }
+
+        public TemplateColorScheme getDayColorScheme() {
+            return dayColorScheme;
+        }
+
+        public void setDayColorScheme(TemplateColorScheme dayColorScheme) {
+            this.dayColorScheme = dayColorScheme;
+        }
+
+        public TemplateColorScheme getNightColorScheme() {
+            return nightColorScheme;
+        }
+
+        public void setNightColorScheme(TemplateColorScheme nightColorScheme) {
+            this.nightColorScheme = nightColorScheme;
         }
     }
 
 
-    //FIXME
     /**
      * Temporary method to bridge the new PLAY_PAUSE and OKAY button functionality with the old
      * OK button name. This should be removed during the next major release
@@ -1074,7 +1249,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
             if ((sec != null) && (sec.getMakeList() != null)) {
                 if (sec.getMakeList().contains(make)) {
-                    sec.setAppId(appConfig.appID);
+                    sec.setAppId(appConfig.getAppID());
                     if (session != null) {
                         session.setSdlSecurity(sec);
                         sec.handleSdlSession(session);

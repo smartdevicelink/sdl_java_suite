@@ -39,7 +39,6 @@ import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -189,7 +188,7 @@ public class TransportManager extends TransportManagerBase{
         }
 
         @Override
-        public void onConnectionTerminated() {
+        public void onConnectionTerminated(String reason) {
             if(record != null){
                 Log.d(TAG, "Transport disconnected - " + record);
             }else{
@@ -202,7 +201,7 @@ public class TransportManager extends TransportManagerBase{
                 //Might check connectedTransports vs transportStatus to ensure they are equal
             }
             //Inform the transport listener that a transport has disconnected
-            transportListener.onTransportDisconnected("", record, new ArrayList<TransportRecord>()); //FIXME
+            transportListener.onTransportDisconnected(reason, record, Collections.EMPTY_LIST);
         }
 
         @Override

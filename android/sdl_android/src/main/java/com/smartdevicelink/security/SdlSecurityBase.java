@@ -3,7 +3,7 @@ package com.smartdevicelink.security;
 import android.app.Service;
 import android.content.Context;
 
-public abstract class SdlSecurityBase extends BaseSdlSecurityBase{
+public abstract class SdlSecurityBase extends AbstractSdlSecurityBase{
 
 	protected static Service appService = null;
 	protected static Context context;

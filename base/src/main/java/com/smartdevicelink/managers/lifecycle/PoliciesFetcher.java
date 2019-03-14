@@ -21,7 +21,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Vector;
 
-// FIXME find a better name
 class PoliciesFetcher {
 
     private static final String TAG = PoliciesFetcher.class.getSimpleName();

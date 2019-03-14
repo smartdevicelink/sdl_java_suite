@@ -128,7 +128,7 @@ public abstract class CustomTransport implements TransportInterface{
     @Override
     public void stop() {
         if (transportCallback != null) {
-            transportCallback.onConnectionTerminated();
+            transportCallback.onConnectionTerminated("Transport told to stop");
         }
     }
 

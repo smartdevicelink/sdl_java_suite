@@ -5,8 +5,7 @@ import java.util.List;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
 
-// FIXME find a better name :)
-abstract class BaseSdlSecurityBase {
+abstract class AbstractSdlSecurityBase {
 	
 	protected SdlSession session = null;	
 	protected String appId = null;
@@ -15,7 +14,7 @@ abstract class BaseSdlSecurityBase {
 	protected byte sessionId = 0;
 	protected List<SessionType> startServiceList = new ArrayList<SessionType>();	
 	
-    public BaseSdlSecurityBase() {
+    public AbstractSdlSecurityBase() {
 	}
 	
 	public abstract void initialize();

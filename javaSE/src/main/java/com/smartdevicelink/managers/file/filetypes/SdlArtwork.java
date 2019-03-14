@@ -24,11 +24,6 @@ public class SdlArtwork extends SdlFile {
         super(fileName, fileType, id, persistentFile);
     }
 
-    /* FIXME public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, Uri uri, boolean persistentFile) {
-        super(fileName, fileType, uri, persistentFile);
-    }*/
-
-
     public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, String filePath, boolean persistentFile) {
         super(fileName, fileType, filePath, persistentFile);
     }

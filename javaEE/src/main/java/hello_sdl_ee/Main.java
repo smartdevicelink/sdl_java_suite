@@ -24,7 +24,7 @@ public class Main {
 
     public static void main(String[] args) {
        // testRAIString();
-        startSdl();
+        attemptSdlManager();
     }
 
     public static void testRAI(){
@@ -103,84 +103,12 @@ public class Main {
             }
         });
         //FIXME have to add websocket setting
-       SdlManager manager =  builder.build();
-       manager.start();
-
-
-    }
-
-    public static void startSdl(){
-        System.out.println("Hello World!");
-
-        Thread thread = new Thread(new Runnable() {
-            boolean end = false;
-
-            @Override
-            public void run() {
-        LifecycleManager.AppConfig config = new LifecycleManager.AppConfig();
-        config.appID = "234523452345234";
-        config.appName = "JavaChip";
-
         WebSocketServerConfig serverConfig = new WebSocketServerConfig(5679,0);
-        LifecycleManager lifer = new LifecycleManager(config, serverConfig, new LifecycleManager.LifecycleListener() {
-            @Override
-            public void onProxyConnected(final LifecycleManager lifeCycleManager) {
-                System.out.print("On proxy CONNECTED");
+        builder.setTransportType(serverConfig);
+        SdlManager manager =  builder.build();
+        manager.start();
 
-                lifeCycleManager.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, new OnRPCNotificationListener() {
-                    @Override
-                    public void onNotified(RPCNotification notification) {
-                        Log.i(TAG, "on notified");
-                        OnHMIStatus hmiStatus = (OnHMIStatus)notification;
-
-                        if(HMILevel.HMI_FULL.equals(hmiStatus.getHmiLevel())) {
-                            if (true || hmiStatus.getFirstRun()) {
-                                //TOD DO a show
-                                Show show = new Show();
-                                show.setMainField1("There's snake in my boots");
-                                show.setMainField2("YEET THAT SUCKER!");
-                                lifeCycleManager.sendRpc(show);
-
-
-                            }
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason) {
-                System.out.print("On proxy CLOSED");
-                end = true;
-            }
-
-            @Override
-            public void onServiceEnded(LifecycleManager lifeCycleManager, OnServiceEnded serviceEnded) {
-                System.out.print("On service ENDED");
-
-            }
-
-            @Override
-            public void onServiceNACKed(LifecycleManager lifeCycleManager, OnServiceNACKed serviceNACKed) {
-                System.out.print("On service NAKed");
-
-            }
-
-            @Override
-            public void onError(LifecycleManager lifeCycleManager, String info, Exception e) {
-                System.out.print("OnError " + info);
-
-            }
-        });
-        lifer.start();
-        while(true || !end){
-
-        }
-            }
-
-        });
-
-        thread.start();
 
     }
+    
 }

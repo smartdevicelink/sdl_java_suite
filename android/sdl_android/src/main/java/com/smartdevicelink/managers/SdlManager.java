@@ -855,7 +855,7 @@ public class SdlManager extends BaseSdlManager{
 		 * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
 		 * @param minimumRPCVersion
 		 */
-		public Builder setMinimumRPClVersion(final Version minimumRPCVersion) {
+		public Builder setMinimumRPCVersion(final Version minimumRPCVersion) {
 			sdlManager.minimumRPCVersion = minimumRPCVersion;
 			return this;
 		}

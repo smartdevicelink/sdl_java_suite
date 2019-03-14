@@ -1,8 +1,39 @@
+/*
+ * Copyright (c) 2019 Livio, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.smartdevicelink.managers;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleManager;
@@ -13,19 +44,13 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
-import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
-import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.*;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.*;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
 import com.smartdevicelink.security.SdlSecurityBase;
-import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
-import com.smartdevicelink.streaming.audio.AudioStreamingParams;
-import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
@@ -53,14 +78,12 @@ import java.util.Map;
 public class SdlManager extends BaseSdlManager{
 
 	private static final String TAG = "SdlManager";
-	private LifecycleManager proxy;
 	private String appId, appName, shortAppName;
 	private boolean isMediaApp;
 	private Language hmiLanguage;
 	private SdlArtwork appIcon;
 	private Vector<AppHMIType> hmiTypes;
 	private BaseTransportConfig transport;
-	//FIXME private Context context;
 	private Vector<String> vrSynonyms;
 	private Vector<TTSChunk> ttsChunks;
 	private TemplateColorScheme dayColorScheme, nightColorScheme;
@@ -68,23 +91,27 @@ public class SdlManager extends BaseSdlManager{
 	private Map<FunctionID, OnRPCNotificationListener> onRPCNotificationListeners;
 	private int state = -1;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
-	//FIXME private LockScreenConfig lockScreenConfig;
 	private final Object STATE_LOCK = new Object();
 	private Version minimumProtocolVersion;
 	private Version minimumRPCVersion;
 
 
 	// Managers
+	private LifecycleManager lifecycleManager;
 	private PermissionManager permissionManager;
 	private FileManager fileManager;
-	//private LockScreenManager lockScreenManager;
     private ScreenManager screenManager;
-	//private VideoStreamManager videoStreamManager;
-	//private AudioStreamManager audioStreamManager;
+
+
+	// INTERNAL INTERFACE
+	/**
+	 * This is from the LifeCycleManager directly. In the future if there is a reason to be a man in the middle
+	 * the SdlManager could create it's own, however right now it was only a duplication of logic tied to the LCM.
+	 */
+	private ISdl _internalInterface;
 
 
 	// Initialize proxyBridge with anonymous lifecycleListener
-	//FIXME changed from proxy bridge
 	private final LifecycleManager.LifecycleListener lifecycleListener = new LifecycleManager.LifecycleListener() {
 		boolean initStarted = false;
 		@Override
@@ -97,6 +124,15 @@ public class SdlManager extends BaseSdlManager{
 				}
 			}
 		}
+		@Override
+		public void onServiceStarted(SessionType sessionType){
+
+		}
+
+		@Override
+		public void onServiceEnded(SessionType sessionType){
+
+		}
 
 		@Override
 		public void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason) {
@@ -107,15 +143,6 @@ public class SdlManager extends BaseSdlManager{
 
 		}
 
-		@Override
-		public void onServiceEnded(LifecycleManager lifeCycleManager, OnServiceEnded serviceEnded) {
-
-		}
-
-		@Override
-		public void onServiceNACKed(LifecycleManager lifeCycleManager, OnServiceNACKed serviceNACKed) {
-
-		}
 
 		@Override
 		public void onError(LifecycleManager lifeCycleManager, String info, Exception e) {
@@ -135,18 +162,18 @@ public class SdlManager extends BaseSdlManager{
 	};
 
 	void checkState() {
-		if (permissionManager != null && fileManager != null && screenManager != null ){//FIXME && (!lockScreenConfig.isEnabled() || lockScreenManager != null)) {
-			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY){ //FIXME && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.READY)) {
+		if (permissionManager != null && fileManager != null && screenManager != null ){
+			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY){
 				DebugTool.logInfo("Starting sdl manager, all sub managers are in ready state");
 				transitionToState(BaseSubManager.READY);
 				notifyDevListener(null);
 				onReady();
-			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR){ //FIXME && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.ERROR)) {
+			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR){
 				String info = "ERROR starting sdl manager, all sub managers are in error state";
 				Log.e(TAG, info);
 				transitionToState(BaseSubManager.ERROR);
 				notifyDevListener(info);
-			} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP){//FIXME || (lockScreenConfig.isEnabled() && lockScreenManager != null && lockScreenManager.getState() == BaseSubManager.SETTING_UP)) {
+			} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP) {
 				DebugTool.logInfo("SETTING UP sdl manager, some sub managers are still setting up");
 				transitionToState(BaseSubManager.SETTING_UP);
 				// No need to notify developer here!
@@ -198,31 +225,14 @@ public class SdlManager extends BaseSdlManager{
 	protected void initialize(){
 		// Instantiate sub managers
 		this.permissionManager = new PermissionManager(_internalInterface);
-		this.fileManager = new FileManager(_internalInterface);		//FIXME ,context);
-		/* FIXME if (lockScreenConfig.isEnabled()) {
-			this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
-		}*/
+		this.fileManager = new FileManager(_internalInterface);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-		/* FIXME if(getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)){
-			this.videoStreamManager = new VideoStreamManager(_internalInterface);
-		} else {
-			this.videoStreamManager = null;
-		}
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-				&& (getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)) ) {
-			this.audioStreamManager = new AudioStreamManager(_internalInterface, context);
-		} else {
-			this.audioStreamManager = null;
-		}*/
+
 
 		// Start sub managers
 		this.permissionManager.start(subManagerListener);
 		this.fileManager.start(subManagerListener);
-		/*if (lockScreenConfig.isEnabled()){
-			this.lockScreenManager.start(subManagerListener);
-		}*/
 		this.screenManager.start(subManagerListener);
-
 	}
 
 	/**
@@ -242,7 +252,6 @@ public class SdlManager extends BaseSdlManager{
 		}
 	}
 
-	//FIXME @SuppressLint("NewApi")
 	public void dispose() {
 		if (this.permissionManager != null) {
 			this.permissionManager.dispose();
@@ -252,22 +261,9 @@ public class SdlManager extends BaseSdlManager{
 			this.fileManager.dispose();
 		}
 
-		/*FIXME if (this.lockScreenManager != null) {
-			this.lockScreenManager.dispose();
-		}*/
-
 		if (this.screenManager != null) {
 			this.screenManager.dispose();
 		}
-
-		/* FIXME if(this.videoStreamManager != null) {
-			this.videoStreamManager.dispose();
-		}
-
-		// SuppressLint("NewApi") is used because audioStreamManager is only available on android >= jelly bean
-		if (this.audioStreamManager != null) {
-			this.audioStreamManager.dispose();
-		}*/
 
 		if(managerListener != null){
 			managerListener.onDestroy(this);
@@ -310,34 +306,6 @@ public class SdlManager extends BaseSdlManager{
 		return fileManager;
 	}
 
-    /**
-     * Gets the VideoStreamManager. <br>
-	 * The VideoStreamManager returned will only be not null if the registered app type is
-	 * either NAVIGATION or PROJECTION. Once the VideoStreamManager is retrieved, its start()
-	 * method will need to be called before use.
-     * <br><br><strong>Note: VideoStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-     * @return a VideoStreamManager object attached to shit SdlManager instance
-     */
-    /* FIXME
-	public @Nullable
-    VideoStreamManager getVideoStreamManager() {
-		checkSdlManagerState();
-		return videoStreamManager;
-	}*/
-
-    /**
-     * Gets the AudioStreamManager. <br>
-	 * The AudioStreamManager returned will only be not null if the registered app type is
-	 * either NAVIGATION or PROJECTION. Once the AudioStreamManager is retrieved, its start()
-	 * method will need to be called before use.
-     * <br><strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-     * @return a AudioStreamManager object
-     */
-	/* FIXME public @Nullable AudioStreamManager getAudioStreamManager() {
-		checkSdlManagerState();
-		return audioStreamManager;
-	}*/
-
 	/**
 	 * Gets the ScreenManager. <br>
 	 * <strong>Note: ScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
@@ -352,25 +320,12 @@ public class SdlManager extends BaseSdlManager{
 	}
 
 	/**
-	 * Gets the LockScreenManager. <br>
-	 * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-	 * @return a LockScreenManager object
-	 */
-	/* FIXME public LockScreenManager getLockScreenManager() {
-		if (lockScreenManager.getState() != BaseSubManager.READY && lockScreenManager.getState() != BaseSubManager.LIMITED){
-			Log.e(TAG, "LockScreenManager should not be accessed because it is not in READY/LIMITED state");
-		}
-		checkSdlManagerState();
-		return lockScreenManager;
-	}*/
-
-	/**
 	 * Gets the SystemCapabilityManager. <br>
 	 * <strong>Note: SystemCapabilityManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
 	 * @return a SystemCapabilityManager object
 	 */
 	public SystemCapabilityManager getSystemCapabilityManager(){
-		return proxy.getSystemCapabilityManager();
+		return lifecycleManager.getSystemCapabilityManager();
 	}
 
 	/**
@@ -382,8 +337,8 @@ public class SdlManager extends BaseSdlManager{
 	 * registered with the module.
 	 */
 	public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse(){
-		if(proxy != null){
-			return proxy.getRegisterAppInterfaceResponse();
+		if(lifecycleManager != null){
+			return lifecycleManager.getRegisterAppInterfaceResponse();
 		}
 		return null;
 	}
@@ -393,8 +348,8 @@ public class SdlManager extends BaseSdlManager{
 	 * @return OnHMIStatus object represents the current OnHMIStatus
 	 */
 	public OnHMIStatus getCurrentHMIStatus(){
-		if(this.proxy !=null ){
-			return proxy.getCurrentHMIStatus();
+		if(this.lifecycleManager !=null ){
+			return lifecycleManager.getCurrentHMIStatus();
 		}
 		return null;
 	}
@@ -407,7 +362,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @return the string representation of the auth token
 	 */
 	protected String getAuthToken(){
-		return this.proxy.getAuthToken();
+		return this.lifecycleManager.getAuthToken();
 	}
 
 	protected String getAppName() { return appName; }
@@ -434,8 +389,6 @@ public class SdlManager extends BaseSdlManager{
 
 	protected BaseTransportConfig getTransport() { return transport; }
 
-	//FIXME protected LockScreenConfig getLockScreenConfig() { return lockScreenConfig; }
-
 	// SENDING REQUESTS
 
 	/**
@@ -443,7 +396,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param message RPCMessage
 	 */
 	public void sendRPC(RPCMessage message) {
-		proxy.sendRpc(message);
+		lifecycleManager.sendRPC(message);
 	}
 
 	/**
@@ -467,7 +420,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		if (rpcRequestList.size() > 0) {
-			proxy.sendRpcsSequentially(rpcRequestList, listener);
+			lifecycleManager.sendSequentialRPCs(rpcRequestList, listener);
 		}
 	}
 
@@ -492,16 +445,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		if (rpcRequestList.size() > 0) {
-			proxy.sendRpcs(rpcRequestList, listener);
-		}
-	}
-
-	private void handleSdlException(SdlException exception){
-		if(exception != null){
-			DebugTool.logError("Caught SdlException: " + exception.getSdlExceptionCause());
-			// In the future this should handle logic to dispose the manager if it is an unrecoverable error
-		}else{
-			DebugTool.logError("Caught SdlException" );
+			lifecycleManager.sendRPCs(rpcRequestList, listener);
 		}
 	}
 
@@ -510,7 +454,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param listener listener that will be called when a notification is received
 	 */
 	public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
-		proxy.addOnRPCNotificationListener(notificationId,listener);
+		lifecycleManager.addOnRPCNotificationListener(notificationId,listener);
 	}
 
 	/**
@@ -518,7 +462,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param listener listener that was previously added
 	 */
 	public void removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
-		proxy.removeOnRPCNotificationListener(notificationId, listener);
+		lifecycleManager.removeOnRPCNotificationListener(notificationId, listener);
 	}
 
 	/**
@@ -526,7 +470,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param listener listener that will be called when a request is received
 	 */
 	public void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
-		proxy.addOnRPCRequestListener(requestId,listener);
+		lifecycleManager.addOnRPCRequestListener(requestId,listener);
 	}
 
 	/**
@@ -534,7 +478,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param listener listener that was previously added
 	 */
 	public void removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
-		proxy.removeOnRPCRequestListener(requestId, listener);
+		lifecycleManager.removeOnRPCRequestListener(requestId, listener);
 	}
 
 	// LIFECYCLE / OTHER
@@ -547,224 +491,50 @@ public class SdlManager extends BaseSdlManager{
 	@SuppressWarnings("unchecked")
 	public void start(){
 		Log.i(TAG, "start");
-		if (proxy == null) {
+		if (lifecycleManager == null) {
 			if (transport != null
 					&& (transport.getTransportType().equals(TransportType.WEB_SOCKET_SERVER) || transport.getTransportType().equals(TransportType.CUSTOM))) {
 				//Do the thing
 
 				LifecycleManager.AppConfig appConfig = new LifecycleManager.AppConfig();
-				appConfig.appName = appName;
+				appConfig.setAppName(appName);
 				//short app name
-				appConfig.isMediaApp = isMediaApp;
-				appConfig.hmiDisplayLanguageDesired = hmiLanguage;
-				appConfig.languageDesired = hmiLanguage;
-				appConfig.appType = hmiTypes;
-				appConfig.vrSynonyms = vrSynonyms;
-				appConfig.ttsName = ttsChunks;
-				appConfig.dayColorScheme = dayColorScheme;
-				appConfig.nightColorScheme = nightColorScheme;
-				appConfig.appID = appId;
+				appConfig.setMediaApp(isMediaApp);
+				appConfig.setHmiDisplayLanguageDesired(hmiLanguage);
+				appConfig.setLanguageDesired(hmiLanguage);
+				appConfig.setAppType(hmiTypes);
+				appConfig.setVrSynonyms(vrSynonyms);
+				appConfig.setTtsName(ttsChunks);
+				appConfig.setDayColorScheme(dayColorScheme);
+				appConfig.setNightColorScheme(nightColorScheme);
+				appConfig.setAppID(appId);
 
 
-				proxy = new LifecycleManager(appConfig, transport, lifecycleListener);
-				proxy.start();
-				proxy.setMinimumProtocolVersion(minimumProtocolVersion);
-				proxy.setMinimumRPCVersion(minimumRPCVersion);
+				lifecycleManager = new LifecycleManager(appConfig, transport, lifecycleListener);
+				lifecycleManager.setMinimumProtocolVersion(minimumProtocolVersion);
+				lifecycleManager.setMinimumRPCVersion(minimumRPCVersion);
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
-					proxy.setSdlSecurityClassList(sdlSecList);
+					lifecycleManager.setSdlSecurityClassList(sdlSecList);
 				}
 				if (onRPCNotificationListeners != null) {
 					Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
 					if (functionIDSet != null && !functionIDSet.isEmpty()) {
 						for (FunctionID functionID : functionIDSet) {
-							proxy.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
+							lifecycleManager.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
 						}
 					}
 				}
+
+				_internalInterface = lifecycleManager.getInternalInterface(SdlManager.this);
+
+				lifecycleManager.start();
+
 
 			}else{
 				throw new RuntimeException("No transport provided");
 			}
 		}
 	}
-
-	/* FIXME protected void setProxy(SdlProxyBase proxy){
-		this.proxy = proxy;
-	}*/
-
-	// INTERNAL INTERFACE
-	private ISdl _internalInterface = new ISdl() {
-		@Override
-		public void start() {
-			proxy.start();
-		}
-
-		@Override
-		public void stop() {
-			proxy.stop();
-		}
-
-		@Override
-		public boolean isConnected() {
-			return proxy.isConnected();
-		}
-
-		@Override
-		public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
-			//FIXME proxy.addServiceListener(serviceType,sdlServiceListener);
-		}
-
-		@Override
-		public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
-			//FIXME proxy.removeServiceListener(serviceType,sdlServiceListener);
-		}
-
-		@Override
-		public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
-			if(proxy.isConnected()){
-				//FIXME proxy.startVideoStream(encrypted,parameters);
-			}
-		}
-
-		@Override
-		public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters){
-			return null; //FIXME  proxy.startVideoStream(isEncrypted, parameters);
-		}
-
-		@Override
-		public void stopVideoService() {
-			if(proxy.isConnected()){
-				//FIXME proxy.endVideoStream();
-			}
-		}
-
-		@Override
-		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,
-		                              AudioStreamingParams params) {
-			if(proxy.isConnected()){
-				//FIXME proxy.startAudioStream(isEncrypted, codec, params);
-			}
-		}
-
-		@Override
-		public void startAudioService(boolean encrypted) {
-			if(proxy.isConnected()){
-				//FIXME proxy.startService(SessionType.PCM, encrypted);
-			}
-		}
-
-		@Override
-		public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec,
-		                                             AudioStreamingParams params) {
-			return null; //FIXME proxy.startAudioStream(isEncrypted, codec, params);
-		}
-
-		@Override
-		public void stopAudioService() {
-			if(proxy.isConnected()){
-				//FIXME proxy.endAudioStream();
-			}
-		}
-
-		@Override
-		public void sendRPCRequest(RPCRequest message){
-			if(message != null){
-				proxy.sendRpc(message);
-			}
-		}
-
-		@Override
-		public void sendRPC(RPCMessage message) {
-			if(message != null){
-				proxy.sendRpc(message);
-			}
-		}
-
-		@Override
-		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
-			proxy.sendRpcs(rpcs, listener);
-		}
-
-		@Override
-		public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
-			proxy.addOnRPCNotificationListener(notificationId,listener);
-		}
-
-		@Override
-		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
-			return proxy.removeOnRPCNotificationListener(notificationId,listener);
-		}
-
-		@Override
-		public void addOnRPCListener(final FunctionID responseId, final OnRPCListener listener) {
-			proxy.addRpcListener(responseId, listener);
-		}
-
-		@Override
-		public boolean removeOnRPCListener(final FunctionID responseId, final OnRPCListener listener) {
-			return proxy.removeOnRPCListener(responseId, listener);
-		}
-
-		@Override
-		public Object getCapability(SystemCapabilityType systemCapabilityType){
-			return proxy.getSystemCapabilityManager().getCapability(systemCapabilityType);
-		}
-
-		@Override
-		public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
-			proxy.getSystemCapabilityManager().getCapability(systemCapabilityType, scListener);
-		}
-
-		@Override
-		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
-			return proxy.getSystemCapabilityManager().isCapabilitySupported(systemCapabilityType);
-		}
-
-		@Override
-		public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
-			proxy.getSystemCapabilityManager().addOnSystemCapabilityListener(systemCapabilityType, listener);
-		}
-
-		@Override
-		public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
-			return proxy.getSystemCapabilityManager().removeOnSystemCapabilityListener(systemCapabilityType, listener);
-		}
-
-		@Override
-		public boolean isTransportForServiceAvailable(SessionType serviceType) {
-			/* FIXME if(SessionType.NAV.equals(serviceType)){
-				return proxy.isVideoStreamTransportAvailable();
-			}else if(SessionType.PCM.equals(serviceType)){
-				return proxy.isAudioStreamTransportAvailable();
-			} */
-			return false;
-		}
-
-		@Override
-		public SdlMsgVersion getSdlMsgVersion(){
-			//FIXME this should be a breaking change to support our version
-			 Version rpcSepcVersion =  proxy.getRpcSpecVersion();
-			 if(rpcSepcVersion != null){
-				 SdlMsgVersion sdlMsgVersion = new SdlMsgVersion();
-				 sdlMsgVersion.setMajorVersion(rpcSepcVersion.getMajor());
-				 sdlMsgVersion.setMinorVersion(rpcSepcVersion.getMinor());
-				 sdlMsgVersion.setPatchVersion(rpcSepcVersion.getPatch());
-				 return sdlMsgVersion;
-			 }
-
-			return null;
-		}
-
-		@Override
-		public @NonNull Version getProtocolVersion() {
-			if(proxy.getProtocolVersion() != null){
-				return proxy.getProtocolVersion();
-			}else{
-				return new Version(1,0,0);
-			}
-		}
-
-	};
 
 
 	// BUILDER
@@ -777,10 +547,8 @@ public class SdlManager extends BaseSdlManager{
 		 * @param appName the app's name
 		 * @param listener a SdlManagerListener object
 		 */
-		//FIXME public Builder(@NonNull Context context, @NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener){
 		public Builder(@NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener){
 			sdlManager = new SdlManager();
-			//FIXME setContext(context);
 			setAppId(appId);
 			setAppName(appName);
 			setManagerListener(listener);
@@ -829,7 +597,7 @@ public class SdlManager extends BaseSdlManager{
 		 * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
 		 * @param minimumRPCVersion
 		 */
-		public Builder setMinimumRPClVersion(final Version minimumRPCVersion) {
+		public Builder setMinimumRPCVersion(final Version minimumRPCVersion) {
 			sdlManager.minimumRPCVersion = minimumRPCVersion;
 			return this;
 		}
@@ -860,16 +628,6 @@ public class SdlManager extends BaseSdlManager{
 			sdlManager.nightColorScheme = nightColorScheme;
 			return this;
 		}
-
-		/**
-		 * Sets the LockScreenConfig for the session. <br>
-		 * <strong>Note: If not set, the default configuration will be used.</strong>
-		 * @param lockScreenConfig - configuration options
-		 */
-		/*FIXME public Builder setLockScreenConfig (final LockScreenConfig lockScreenConfig){
-			sdlManager.lockScreenConfig = lockScreenConfig;
-			return this;
-		}*/
 
 		/**
 		 * Sets the icon for the app on HU <br>
@@ -925,15 +683,6 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
-		 * Sets the Context
-		 * @param context
-		 */
-		/* FIXME public Builder setContext(Context context){
-			sdlManager.context = context;
-			return this;
-		}*/
-
-		/**
 		 * Sets the Security library
 		 * @param secList The list of security class(es)
 		 */
@@ -981,11 +730,6 @@ public class SdlManager extends BaseSdlManager{
 				sdlManager.hmiTypes = hmiTypesDefault;
 				sdlManager.isMediaApp = false;
 			}
-
-			/* if (sdlManager.lockScreenConfig == null){
-				// if lock screen params are not set, use default
-				sdlManager.lockScreenConfig = new LockScreenConfig();
-			}*/
 
 			if (sdlManager.hmiLanguage == null){
 				sdlManager.hmiLanguage = Language.EN_US;

@@ -86,11 +86,16 @@ public class SdlTrace {
 				DiagLevel.setLevel(Mod.tran, dt);
 	} // end-method
 
+	private static String getPid(){
+		//Default implementation is not able to get this information
+		return "UNKNOWN";
+	}
+
 	private static String encodeTraceMessage(long timestamp, Mod module, InterfaceActivityDirection msgDirection, String msgBodyXml) {
 		StringBuilder sb = new StringBuilder("<msg><dms>");
 		sb.append(timestamp);
 		sb.append("</dms><pid>");
-		//FIXME sb.append(Process.myPid());
+		sb.append(getPid());
 		sb.append("</pid><tid>");
 		sb.append(Thread.currentThread().getId());
 		sb.append("</tid><mod>");
@@ -312,19 +317,6 @@ public class SdlTrace {
 		return sb.toString();
 	} // end-method
 
-	public static String getBTDeviceInfo(Object btDevice) {	//FIXME
-		StringBuilder sb = new StringBuilder();
-		/* FIXME sb.append("<btp>");
-		String btdn = btDevice.getName();
-		sb.append("<btn>");
-		sb.append(SdlTrace.B64EncodeForXML(btdn));
-		sb.append("</btn>");
-		sb.append("<bta>" + btDevice.getAddress() + "</bta>");
-		sb.append("<bts>" + btDevice.getBondState() + "</bts>");
-		sb.append("</btp>");*/
-		return sb.toString();
-	} // end-method
-
 	public static boolean logTransportEvent(String preamble, String transportSpecificInfoXml, InterfaceActivityDirection msgDirection, byte buf[], int byteLength, String token) {
 		return logTransportEvent(preamble, transportSpecificInfoXml, msgDirection, buf, 0, byteLength, token);
 	} 
@@ -407,45 +399,10 @@ public class SdlTrace {
 		}
 		return true;
 	}
-	
-	// Package-scoped
-	@SuppressWarnings("deprecation")
-    public static String getLogHeader(String dumpReason, int seqNo) {
-		final String Sep = "-";
-		StringBuilder write = new StringBuilder("<?xml version=\"1.0\"?>" + "<logs>");
-		write.append("<info>");
-		StringBuilder infoBlock = new StringBuilder();
-		//FIXME
-		//String hostInfo = Build.BRAND + Sep + Build.MANUFACTURER + Sep + Build.MODEL + "(" + Build.HOST + ")";
-		//infoBlock.append("<host>" + SdlTrace.B64EncodeForXML(hostInfo) + "</host>");
-		//String osv = Build.VERSION.RELEASE + " (" + Build.VERSION.CODENAME + ")";
-		//infoBlock.append("<osv>" + SdlTrace.B64EncodeForXML(osv) + "</osv>");
-		//infoBlock.append(TraceDeviceInfo.getTelephonyHeader());
 
-		//long heapSize = Debug.getNativeHeapFreeSize() / 1024;
-		//long heapAllocated = Debug.getNativeHeapAllocatedSize() / 1024;
-		//infoBlock.append("<mem><hf>" + heapSize + "KB</hf><ha>" + heapAllocated + "KB</ha></mem>");
-		//infoBlock.append("<np>" + Runtime.getRuntime().availableProcessors() + "</np>");
-		//infoBlock.append("<pid>" + Process.myPid() + "</pid>");
-		//infoBlock.append("<tid>" + Thread.currentThread().getId() + "</tid>");
 
-		// String dateStamp = (String)
-		// DateFormat.format("yy-MM-dd hh:mm:ss SSS", new Timestamp(baseTics));
-		Timestamp stamp = new Timestamp(SdlTrace.getBaseTics());
-		String GMTtime = stamp.toGMTString().substring(0, 19);
-		long fracSec = stamp.getNanos() / 1000000; // divide by a million
-		String fracSecStr = String.format("%03d", fracSec);
-		infoBlock.append("<utc>" + GMTtime + "." + fracSecStr + "</utc>");
 
-		//infoBlock.append(TraceDeviceInfo.getLogHeaderBluetoothPairs());
-		infoBlock.append(getSmartDeviceLinkTraceRoot(dumpReason, seqNo));
 
-		write.append(infoBlock);
-
-		write.append("</info>" + "<msgs>");
-		return write.toString();
-	} // end-method
-	
 	private static String getSmartDeviceLinkTraceRoot(String dumpReason, int seqNo) {
 		StringBuilder write = new StringBuilder("<SmartDeviceLinktraceroot>" + "<sequencenum>" + seqNo
 				+ "</sequencenum>" + "<dumpreason>" + dumpReason

@@ -1,3 +1,35 @@
+/*
+ * Copyright (c) 2019 Livio, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.smartdevicelink.SdlConnection;
 
 import android.util.Log;
@@ -8,45 +40,29 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.protocol.SdlProtocol;
-import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.security.ISecurityInitializedListener;
 import com.smartdevicelink.security.SdlSecurityBase;
-import com.smartdevicelink.streaming.AbstractPacketizer;
-import com.smartdevicelink.streaming.IStreamListener;
-import com.smartdevicelink.streaming.StreamPacketizer;
-import com.smartdevicelink.streaming.video.RTPH264Packetizer;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.WebSocketServerConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.Version;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStreamListener, ISecurityInitializedListener {
+public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecurityInitializedListener {
 
-   private static final String TAG = "SdlSession";
+    private static final String TAG = "SdlSession";
 
-    protected final static int BUFF_READ_SIZE = 1024;
-
-
+    final protected SdlProtocol sdlProtocol;
 
     protected BaseTransportConfig transportConfig;
     protected ISdlConnectionListener sessionListener;
-	//FIXME protected LockScreenManager lockScreenMan  = new LockScreenManager();
 	protected SdlSecurityBase sdlSecurity = null;
 	protected VideoStreamingParameters desiredVideoParams = null;
 	protected VideoStreamingParameters acceptedVideoParams = null;
@@ -57,43 +73,111 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
 	protected CopyOnWriteArrayList<SessionType> encryptedServices = new CopyOnWriteArrayList<SessionType>();
 
 
+    public SdlSession(ISdlConnectionListener listener, BaseTransportConfig config){
+        this.transportConfig = config;
+        this.sessionListener = listener;
+        this.sdlProtocol = new SdlProtocol(this,config);
 
-	//FIXME IHeartbeatMonitor _outgoingHeartbeatMonitor = null;
-	//FIXME IHeartbeatMonitor _incomingHeartbeatMonitor = null;
+    }
 
-    AbstractPacketizer mVideoPacketizer = null;
-    StreamPacketizer mAudioPacketizer = null;
-    //FIXME SdlEncoder mSdlEncoder = null;
-    //FIXME VirtualDisplayEncoder virtualDisplayEncoder = null;
+
+    public int getMtu(){
+        if(this.sdlProtocol!=null){
+            return this.sdlProtocol.getMtu();
+        }else{
+            return 0;
+        }
+    }
+
+    public long getMtu(SessionType type) {
+        if (this.sdlProtocol != null) {
+            return this.sdlProtocol.getMtu(type);
+        } else {
+            return 0;
+        }
+    }
+
+    public void close() {
+        if (sdlSecurity != null)
+        {
+            sdlSecurity.resetParams();
+            sdlSecurity.shutDown();
+        }
+        if(sdlProtocol != null){
+            sdlProtocol.endSession(sessionId, sessionHashId);
+        }
+    }
+
+
+    public void startService (SessionType serviceType, byte sessionID, boolean isEncrypted) {
+        if (isEncrypted){
+            if (sdlSecurity != null){
+                List<SessionType> serviceList = sdlSecurity.getServiceList();
+                if (!serviceList.contains(serviceType))
+                    serviceList.add(serviceType);
+
+                sdlSecurity.initialize();
+            }
+            return;
+        }
+        sdlProtocol.startService(serviceType, sessionID, isEncrypted);
+    }
+
+    public void endService (SessionType serviceType, byte sessionID) {
+        if (sdlProtocol == null) {
+            return;
+        }
+        sdlProtocol.endService(serviceType,sessionID);
+    }
+
+
+    public void startSession() throws SdlException {
+        sdlProtocol.start();
+    }
+
+
+    public void sendMessage(ProtocolMessage msg) {
+        if (sdlProtocol == null){
+            return;
+        }
+        sdlProtocol.sendMessage(msg);
+    }
+
+    public TransportType getCurrentTransportType() {
+        return transportConfig.getTransportType();
+    }
+
+    public boolean getIsConnected() {
+        return sdlProtocol != null && sdlProtocol.isConnected();
+    }
+
+
+    public void shutdown(String info){
+        Log.d(TAG, "Shutdown - " + info);
+        this.sessionListener.onTransportDisconnected(info);
+
+    }
+
+    @Override
+    public void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig) {
+        this.sessionListener.onTransportDisconnected(info, altTransportAvailable, this.transportConfig);
+    }
+
+    /**
+     * Get the current protocol version used by this session
+     * @return Version that represents the Protocol version being used
+     */
+    public Version getProtocolVersion(){
+        if(sdlProtocol!=null){
+            return sdlProtocol.getProtocolVersion();
+        }
+        return new Version(1,0,0);
+    }
 
 
     public BaseTransportConfig getTransportConfig() {
         return this.transportConfig;
     }
-
-   /* FIXME  public LockScreenManager getLockScreenMan() {
-        return null; //FIXME lockScreenMan;
-    } */
-
-
-    //FIXME
-   /* public IHeartbeatMonitor getOutgoingHeartbeatMonitor() {
-        return _outgoingHeartbeatMonitor;
-    }
-
-    public IHeartbeatMonitor getIncomingHeartbeatMonitor() {
-        return _incomingHeartbeatMonitor;
-    }
-
-    public void setOutgoingHeartbeatMonitor(IHeartbeatMonitor outgoingHeartbeatMonitor) {
-        this._outgoingHeartbeatMonitor = outgoingHeartbeatMonitor;
-        _outgoingHeartbeatMonitor.setListener(this);
-    }
-
-    public void setIncomingHeartbeatMonitor(IHeartbeatMonitor incomingHeartbeatMonitor) {
-        this._incomingHeartbeatMonitor = incomingHeartbeatMonitor;
-        _incomingHeartbeatMonitor.setListener(this);
-    }*/
 
     public int getSessionHashId() {
         return this.sessionHashId;
@@ -103,194 +187,6 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
         return this.sessionId;
     }
 
-
-
-    public void startStream(InputStream is, SessionType sType, byte rpcSessionID) throws IOException {
-        if (sType.equals(SessionType.NAV))
-        {
-            // protocol is fixed to RAW
-            StreamPacketizer packetizer = new StreamPacketizer(this, is, sType, rpcSessionID, this);
-            mVideoPacketizer = packetizer;
-            mVideoPacketizer.start();
-        }
-        else if (sType.equals(SessionType.PCM))
-        {
-            mAudioPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID, this);
-            mAudioPacketizer.start();
-        }
-    }
-
-    public OutputStream startStream(SessionType sType, byte rpcSessionID) throws IOException {
-        OutputStream os = new PipedOutputStream();
-        InputStream is = new PipedInputStream((PipedOutputStream) os, BUFF_READ_SIZE);
-        /*InputStream is = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            is = new PipedInputStream((PipedOutputStream) os, BUFF_READ_SIZE);
-        } else {
-            is = new PipedInputStream((PipedOutputStream) os);
-        }*/
-        if (sType.equals(SessionType.NAV))
-        {
-            // protocol is fixed to RAW
-            StreamPacketizer packetizer = new StreamPacketizer(this, is, sType, rpcSessionID, this);
-            mVideoPacketizer = packetizer;
-            mVideoPacketizer.start();
-        }
-        else if (sType.equals(SessionType.PCM))
-        {
-            mAudioPacketizer = new StreamPacketizer(this, is, sType, rpcSessionID, this);
-            mAudioPacketizer.start();
-        }
-        else
-        {
-            os.close();
-            is.close();
-            return null;
-        }
-        return os;
-    }
-
-    public IVideoStreamListener startVideoStream() {
-        byte rpcSessionID = getSessionId();
-        VideoStreamingProtocol protocol = getAcceptedProtocol();
-        try {
-            switch (protocol) {
-                case RAW: {
-                    StreamPacketizer packetizer = new StreamPacketizer(this, null, SessionType.NAV, rpcSessionID, this);
-                    mVideoPacketizer = packetizer;
-                    mVideoPacketizer.start();
-                    return packetizer;
-                }
-                case RTP: {
-                    RTPH264Packetizer packetizer = new RTPH264Packetizer(this, SessionType.NAV, rpcSessionID, this);
-                    mVideoPacketizer = packetizer;
-                    mVideoPacketizer.start();
-                    return packetizer;
-                }
-                default:
-                    Log.e(TAG, "Protocol " + protocol + " is not supported.");
-                    return null;
-            }
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
-    public IAudioStreamListener startAudioStream() {
-        byte rpcSessionID = getSessionId();
-        try {
-            StreamPacketizer packetizer = new StreamPacketizer(this, null, SessionType.PCM, rpcSessionID, this);
-            mAudioPacketizer = packetizer;
-            mAudioPacketizer.start();
-            return packetizer;
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
-
-
-    public boolean stopAudioStream()
-    {
-        if (mAudioPacketizer != null)
-        {
-            mAudioPacketizer.stop();
-            return true;
-        }
-        return false;
-    }
-
-    public boolean stopVideoStream()
-    {
-        if (mVideoPacketizer != null)
-        {
-            mVideoPacketizer.stop();
-            return true;
-        }
-        return false;
-    }
-
-    public boolean pauseAudioStream()
-    {
-        if (mAudioPacketizer != null)
-        {
-            mAudioPacketizer.pause();
-            return true;
-        }
-        return false;
-    }
-
-    public boolean pauseVideoStream()
-    {
-        if (mVideoPacketizer != null)
-        {
-            mVideoPacketizer.pause();
-            return true;
-        }
-        return false;
-    }
-
-    public boolean resumeAudioStream()
-    {
-        if (mAudioPacketizer != null)
-        {
-            mAudioPacketizer.resume();
-            return true;
-        }
-        return false;
-    }
-
-    public boolean resumeVideoStream()
-    {
-        if (mVideoPacketizer != null)
-        {
-            mVideoPacketizer.resume();
-            return true;
-        }
-        return false;
-    }
-
-    //FIXME
-    /* public Surface createOpenGLInputSurface(int frameRate, int iFrameInterval, int width,
-                                            int height, int bitrate, SessionType sType, byte rpcSessionID) {
-        IVideoStreamListener encoderListener = startVideoStream();
-        if (encoderListener == null) {
-            return null;
-        }
-
-        mSdlEncoder = new SdlEncoder();
-        mSdlEncoder.setFrameRate(frameRate);
-        mSdlEncoder.setFrameInterval(iFrameInterval);
-        mSdlEncoder.setFrameWidth(width);
-        mSdlEncoder.setFrameHeight(height);
-        mSdlEncoder.setBitrate(bitrate);
-        mSdlEncoder.setOutputListener(encoderListener);
-        return mSdlEncoder.prepareEncoder();
-    }*/
-
-    public void startEncoder () {
-       /* if(mSdlEncoder != null) {
-            mSdlEncoder.startEncoder();
-        }*/
-    }
-
-    public void releaseEncoder() {
-       /* if(mSdlEncoder != null) {
-            mSdlEncoder.releaseEncoder();
-        }*/
-    }
-
-    public void drainEncoder(boolean endOfStream) {
-       /* if(mSdlEncoder != null) {
-            mSdlEncoder.drainEncoder(endOfStream);
-        }*/
-    }
-
-    @Override
-    public void sendStreamPacket(ProtocolMessage pm) {
-        sendMessage(pm);
-    }
-
     public void setSdlSecurity(SdlSecurityBase sec) {
         sdlSecurity = sec;
     }
@@ -298,7 +194,6 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
     public SdlSecurityBase getSdlSecurity() {
         return sdlSecurity;
     }
-
 
 
     protected void processControlService(ProtocolMessage msg) {
@@ -329,15 +224,6 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
         sendMessage(protocolMessage);
     }
 
-
-    protected void initialiseSession() {
-       /* FIXME if (_outgoingHeartbeatMonitor != null) {
-            _outgoingHeartbeatMonitor.start();
-        }
-        if (_incomingHeartbeatMonitor != null) {
-            _incomingHeartbeatMonitor.start();
-        }*/
-    }
 
     public boolean isServiceProtected(SessionType sType) {
         return encryptedServices.contains(sType);
@@ -378,7 +264,6 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
         Log.i(TAG, "Protocol session started");
 
         this.sessionId = sessionID;
-        //FIXME lockScreenMan.setSessionID(sessionID);
         if (sessionType.eq(SessionType.RPC)){
             sessionHashId = hashID;
         }
@@ -391,8 +276,6 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
                 listener.onServiceStarted(this, sessionType, isEncrypted);
             }
         }
-        //if (version == 3)
-        initialiseSession();
 
     }
 
@@ -507,116 +390,6 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
     }
 
 
-/*  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~`~
-     * SdlSession 2
-     *
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-*/
-    final protected SdlProtocol sdlProtocol;
-
-    public SdlSession(ISdlConnectionListener listener, BaseTransportConfig config){
-    //FIXME public SdlSession2(ISdlConnectionListener listener, MultiplexTransportConfig config){
-        this.transportConfig = config;
-        this.sessionListener = listener;
-        this.sdlProtocol = new SdlProtocol(this,config);
-
-    }
-
-
-    public int getMtu(){
-        if(this.sdlProtocol!=null){
-            return this.sdlProtocol.getMtu();
-        }else{
-            return 0;
-        }
-    }
-
-    public long getMtu(SessionType type) {
-        if (this.sdlProtocol != null) {
-            return this.sdlProtocol.getMtu(type);
-        } else {
-            return 0;
-        }
-    }
-
-    public void close() {
-        if (sdlSecurity != null)
-        {
-            sdlSecurity.resetParams();
-            sdlSecurity.shutDown();
-        }
-        if(sdlProtocol != null){
-            sdlProtocol.endSession(sessionId, sessionHashId);
-        }
-    }
-
-
-    public void startService (SessionType serviceType, byte sessionID, boolean isEncrypted) {
-        if (isEncrypted){
-            if (sdlSecurity != null){
-                List<SessionType> serviceList = sdlSecurity.getServiceList();
-                if (!serviceList.contains(serviceType))
-                    serviceList.add(serviceType);
-
-                sdlSecurity.initialize();
-            }
-            return;
-        }
-        sdlProtocol.startService(serviceType, sessionID, isEncrypted);
-    }
-
-    public void endService (SessionType serviceType, byte sessionID) {
-        if (sdlProtocol == null) {
-            return;
-        }
-        sdlProtocol.endService(serviceType,sessionID);
-    }
-
-
-    public void startSession() throws SdlException {
-        sdlProtocol.start();
-    }
-
-
-    public void sendMessage(ProtocolMessage msg) {
-        if (sdlProtocol == null){
-            return;
-        }
-        sdlProtocol.sendMessage(msg);
-    }
-
-    public TransportType getCurrentTransportType() {
-        return transportConfig.getTransportType();
-    }
-
-    public boolean getIsConnected() {
-        return sdlProtocol != null && sdlProtocol.isConnected();
-    }
-
-
-    public void shutdown(String info){
-        Log.d(TAG, "Shutdown - " + info);
-        this.sessionListener.onTransportDisconnected(info);
-
-    }
-
-    @Override
-    public void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig) {
-        this.sessionListener.onTransportDisconnected(info, altTransportAvailable, this.transportConfig);
-    }
-
-    /**
-     * Get the current protocol version used by this session
-     * @return Version that represents the Protocol version being used
-     */
-    public Version getProtocolVersion(){
-        if(sdlProtocol!=null){
-            return sdlProtocol.getProtocolVersion();
-        }
-        return new Version(1,0,0);
-    }
 
 
     /* ***********************************************************************************************************************************************************************
@@ -682,12 +455,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, IStream
 
     @Override
     public void stopStream(SessionType serviceType) {
-        if(SessionType.NAV.equals(serviceType)){
-            stopVideoStream();
-        }else if(SessionType.PCM.equals(serviceType)){
-            stopAudioStream();
-        }
-
+        //Currently does nothing as streaming is not available. Also should only be managed through managers
     }
 
 
