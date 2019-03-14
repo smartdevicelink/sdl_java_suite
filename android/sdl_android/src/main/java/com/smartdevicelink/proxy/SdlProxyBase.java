@@ -365,6 +365,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
+		public void addOnRPCRequestListener(FunctionID functionID, OnRPCRequestListener listener) {
+			SdlProxyBase.this.addOnRPCRequestListener(functionID,listener);
+		}
+
+		@Override
+		public boolean removeOnRPCRequestListener(FunctionID functionID, OnRPCRequestListener listener) {
+			return SdlProxyBase.this.removeOnRPCRequestListener(functionID,listener);
+		}
+
+		@Override
 		public void addOnRPCListener(FunctionID responseId, OnRPCListener listener) {
 			SdlProxyBase.this.addOnRPCListener(responseId, listener);
 		}

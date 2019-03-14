@@ -727,6 +727,16 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		@Override
+		public void addOnRPCRequestListener(FunctionID functionID, OnRPCRequestListener listener) {
+			proxy.addOnRPCRequestListener(functionID, listener);
+		}
+
+		@Override
+		public boolean removeOnRPCRequestListener(FunctionID functionID, OnRPCRequestListener listener) {
+			return proxy.removeOnRPCRequestListener(functionID, listener);
+		}
+
+		@Override
 		public void addOnRPCListener(final FunctionID responseId, final OnRPCListener listener) {
 			proxyBridge.addRpcListener(responseId, listener);
 		}

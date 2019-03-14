@@ -6,6 +6,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
 import com.smartdevicelink.util.Version;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -160,6 +161,20 @@ public interface ISdl {
      * @param listener listener that was previously added for the notification ID
      */
     boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener);
+
+    /**
+     * Add an OnRPCRequestListener for specified request
+     * @param functionID FunctionID of the request that is to be listened for
+     * @param listener listener that should be added for the request ID
+     */
+    void addOnRPCRequestListener(FunctionID functionID, OnRPCRequestListener listener);
+
+    /**
+     * Removes an OnRPCRequestListener for specified request
+     * @param functionID FunctionID of the request that was to be listened for
+     * @param listener listener that was previously added for the request ID
+     */
+    boolean removeOnRPCRequestListener(FunctionID functionID, OnRPCRequestListener listener);
 
     /**
      * Add an OnRPCResponseListener for specified response

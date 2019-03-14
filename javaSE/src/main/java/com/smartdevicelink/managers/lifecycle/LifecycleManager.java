@@ -34,6 +34,7 @@ package com.smartdevicelink.managers.lifecycle;
 
 import android.support.annotation.RestrictTo;
 import android.util.Log;
+import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.SdlManager;
@@ -122,7 +123,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         this.rpcRequestListeners = new HashMap<>();
 
         this.appConfig = appConfig;
-        this.session = new SdlSession(this, config);
+        this.session = new SdlSession(sdlConnectionListener, config);
 
         this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
 
@@ -142,17 +143,17 @@ public class LifecycleManager extends BaseLifecycleManager {
         session.close();
     }
 
-    public Version getProtocolVersion(){
+    private Version getProtocolVersion(){
         if (session != null){
             return session.getProtocolVersion();
         }
         return new Version(1,0,0);
     }
-    public Version getRpcSpecVersion(){
+    private Version getRpcSpecVersion(){
         return rpcSpecVersion;
     }
 
-    public void sendRPC(RPCMessage message){
+    private void sendRPC(RPCMessage message){
         this.sendRPCMessagePrivate(message);
     }
 
@@ -218,6 +219,11 @@ public class LifecycleManager extends BaseLifecycleManager {
            } else {
                // Notifications and Responses
                sendRPCMessagePrivate(rpc);
+               if (listener != null) {
+                   listener.onUpdate(messages.size());
+               }
+               // recurse after sending a notification or response as there is no response.
+               sendSequentialRPCs(messages, listener);
            }
        }
     }
@@ -226,7 +232,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         return systemCapabilityManager;
     }
 
-    public boolean isConnected(){
+    private boolean isConnected(){
         if(session != null){
             return session.getIsConnected();
         }else{
@@ -377,7 +383,7 @@ public class LifecycleManager extends BaseLifecycleManager {
      ********************************** METHODS - RPC LISTENERS !! START !! **********************************
      *********************************************************************************************************/
 
-    public boolean onRPCReceived(final RPCMessage message){
+    private boolean onRPCReceived(final RPCMessage message){
         synchronized(RPC_LISTENER_LOCK){
             if(message == null || message.getFunctionID() == null){
                 return false;
@@ -395,8 +401,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
-    //FIXME check if we need this to be public
-    public void addRpcListener(FunctionID id, OnRPCListener listener){
+    private void addRpcListener(FunctionID id, OnRPCListener listener){
         synchronized(RPC_LISTENER_LOCK){
             if (id != null && listener != null) {
                 if (!rpcListeners.containsKey(id.getId())) {
@@ -408,7 +413,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
-    public boolean removeOnRPCListener(FunctionID id, OnRPCListener listener){
+    private boolean removeOnRPCListener(FunctionID id, OnRPCListener listener){
         synchronized(RPC_LISTENER_LOCK){
             if(rpcListeners!= null
                     && id != null
@@ -427,7 +432,7 @@ public class LifecycleManager extends BaseLifecycleManager {
      * @param totalSize the total size in bytes
      */
     @SuppressWarnings("unused")
-    public void onPacketProgress(int correlationId, long bytesWritten, long totalSize){
+    private void onPacketProgress(int correlationId, long bytesWritten, long totalSize){
         synchronized(ON_UPDATE_LISTENER_LOCK){
             if(rpcResponseListeners !=null
                     && rpcResponseListeners.containsKey(correlationId)){
@@ -468,7 +473,7 @@ public class LifecycleManager extends BaseLifecycleManager {
      * @param correlationId of the RPCRequest that was sent
      * @param totalSize only include if this is an OnPutFileUpdateListener. Otherwise it will be ignored.
      */
-    public void addOnRPCResponseListener(OnRPCResponseListener listener,int correlationId, int totalSize){
+    private void addOnRPCResponseListener(OnRPCResponseListener listener,int correlationId, int totalSize){
         synchronized(ON_UPDATE_LISTENER_LOCK){
             if(rpcResponseListeners!=null
                     && listener !=null){
@@ -482,7 +487,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     @SuppressWarnings("unused")
-    public HashMap<Integer, OnRPCResponseListener> getResponseListeners(){
+    private HashMap<Integer, OnRPCResponseListener> getResponseListeners(){
         synchronized(ON_UPDATE_LISTENER_LOCK){
             return this.rpcResponseListeners;
         }
@@ -498,7 +503,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public boolean onRPCNotificationReceived(RPCNotification notification){
+    private boolean onRPCNotificationReceived(RPCNotification notification){
         if(notification == null){
             DebugTool.logError("onRPCNotificationReceived - Notification was null");
             return false;
@@ -533,7 +538,7 @@ public class LifecycleManager extends BaseLifecycleManager {
      * @param listener The listener that will be called when a notification of the provided type is received
      */
     @SuppressWarnings("unused")
-    public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
+    private void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
         synchronized(ON_NOTIFICATION_LISTENER_LOCK){
             if(notificationId != null && listener != null){
                 if(!rpcNotificationListeners.containsKey(notificationId.getId())){
@@ -544,20 +549,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
-    /**
-     * This method is no longer valid and will not remove the listener for the supplied notificaiton id
-     * @param notificationId n/a
-     * @see #removeOnRPCNotificationListener(FunctionID, OnRPCNotificationListener)
-     */
-    @SuppressWarnings("unused")
-    @Deprecated
-    public void removeOnRPCNotificationListener(FunctionID notificationId){
-        synchronized(ON_NOTIFICATION_LISTENER_LOCK){
-            //rpcNotificationListeners.delete(notificationId.getId());
-        }
-    }
-
-    public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
+    private boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
         synchronized(ON_NOTIFICATION_LISTENER_LOCK){
             if(rpcNotificationListeners!= null
                     && notificationId != null
@@ -596,7 +588,7 @@ public class LifecycleManager extends BaseLifecycleManager {
      * @param listener The listener that will be called when a request of the provided type is received
      */
     @SuppressWarnings("unused")
-    public void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
+    private void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
         synchronized(ON_REQUEST_LISTENER_LOCK){
             if(requestId != null && listener != null){
                 if(!rpcRequestListeners.containsKey(requestId.getId())){
@@ -608,7 +600,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public boolean removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
+    private boolean removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
         synchronized(ON_REQUEST_LISTENER_LOCK){
             if(rpcRequestListeners!= null
                     && requestId != null
@@ -688,181 +680,184 @@ public class LifecycleManager extends BaseLifecycleManager {
      *************************************** ISdlConnectionListener START ************************************
      *********************************************************************************************************/
 
-
-    @Override
-    public void onTransportDisconnected(String info) {
-        onClose(info,null);
-
-    }
-
-    @Override
-    public void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
-        if(!availablePrimary){
+    final ISdlConnectionListener sdlConnectionListener = new ISdlConnectionListener() {
+        @Override
+        public void onTransportDisconnected(String info) {
             onClose(info, null);
+
         }
 
-    }
+        @Override
+        public void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
+            if (!availablePrimary) {
+                onClose(info, null);
+            }
 
-    @Override
-    public void onTransportError(String info, Exception e) {
-        onClose(info,e);
+        }
 
-    }
+        @Override
+        public void onTransportError(String info, Exception e) {
+            onClose(info, e);
 
-    @Override
-    public void onProtocolMessageReceived(ProtocolMessage msg) {
-        //Incoming message
-        if(SessionType.RPC.equals(msg.getSessionType())
-                || SessionType.BULK_DATA.equals(msg.getSessionType()) ){
+        }
 
-                RPCMessage rpc = RpcConverter.extractRpc(msg,session.getProtocolVersion());
-                if(rpc != null){
+        @Override
+        public void onProtocolMessageReceived(ProtocolMessage msg) {
+            //Incoming message
+            if (SessionType.RPC.equals(msg.getSessionType())
+                    || SessionType.BULK_DATA.equals(msg.getSessionType())) {
+
+                RPCMessage rpc = RpcConverter.extractRpc(msg, session.getProtocolVersion());
+                if (rpc != null) {
                     String messageType = rpc.getMessageType();
                     Log.v(TAG, "RPC received - " + messageType);
 
-                    rpc.format(rpcSpecVersion,true);
+                    rpc.format(rpcSpecVersion, true);
 
                     FunctionID functionID = rpc.getFunctionID();
-                    if (functionID != null && (functionID.equals(FunctionID.ON_BUTTON_PRESS.toString()) || functionID.equals(FunctionID.ON_BUTTON_EVENT.toString())) ) {
+                    if (functionID != null && (functionID.equals(FunctionID.ON_BUTTON_PRESS.toString()) || functionID.equals(FunctionID.ON_BUTTON_EVENT.toString()))) {
                         rpc = handleButtonNotificationFormatting(rpc);
                     }
 
                     onRPCReceived(rpc);
 
-                    if(RPCMessage.KEY_RESPONSE.equals(messageType)){
+                    if (RPCMessage.KEY_RESPONSE.equals(messageType)) {
 
-                        onRPCResponseReceived((RPCResponse)rpc);
+                        onRPCResponseReceived((RPCResponse) rpc);
 
-                    }else if(RPCMessage.KEY_NOTIFICATION.equals(messageType)){
+                    } else if (RPCMessage.KEY_NOTIFICATION.equals(messageType)) {
 
-                        onRPCNotificationReceived((RPCNotification)rpc);
+                        onRPCNotificationReceived((RPCNotification) rpc);
 
-                    } else if (RPCMessage.KEY_REQUEST.equals(messageType)){
+                    } else if (RPCMessage.KEY_REQUEST.equals(messageType)) {
 
                         onRPCRequestReceived((RPCRequest) rpc);
 
                     }
-                }else{
+                } else {
                     Log.w(TAG, "Shouldn't be here");
                 }
-        }
-
-    }
-
-    @Override
-    public void onProtocolSessionStartedNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-        Log.w(TAG, "onProtocolSessionStartedNACKed " + sessionID);
-    }
-
-    @Override
-    public void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
-
-        Log.i(TAG, "on protocol session started");
-        if (sessionType != null) {
-            if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1){
-                Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
-                session.endService(sessionType, session.getSessionId());
-                cleanProxy();
-                return;
             }
 
-            if (sessionType.equals(SessionType.RPC)) {
-                if(appConfig != null){
+        }
 
-                    appConfig.prepare();
+        @Override
+        public void onProtocolSessionStartedNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
+            Log.w(TAG, "onProtocolSessionStartedNACKed " + sessionID);
+        }
 
-                    SdlMsgVersion sdlMsgVersion = new SdlMsgVersion();
-                    sdlMsgVersion.setMajorVersion(MAX_SUPPORTED_RPC_VERSION.getMajor());
-                    sdlMsgVersion.setMinorVersion(MAX_SUPPORTED_RPC_VERSION.getMinor());
-                    sdlMsgVersion.setPatchVersion(MAX_SUPPORTED_RPC_VERSION.getPatch());
+        @Override
+        public void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
 
-                    RegisterAppInterface rai = new RegisterAppInterface(sdlMsgVersion,
-                            appConfig.getAppName(), appConfig.isMediaApp(), appConfig.getLanguageDesired(),
-                            appConfig.getHmiDisplayLanguageDesired(), appConfig.getAppID());
-                    rai.setCorrelationID(REGISTER_APP_INTERFACE_CORRELATION_ID);
-
-                    rai.setTtsName(appConfig.getTtsName());
-                    rai.setNgnMediaScreenAppName(appConfig.getNgnMediaScreenAppName());
-                    rai.setVrSynonyms(appConfig.getVrSynonyms());
-                    rai.setAppHMIType(appConfig.getAppType());
-                    rai.setDayColorScheme(appConfig.getDayColorScheme());
-                    rai.setNightColorScheme(appConfig.getNightColorScheme());
-
-                    //Add device/system info in the future
-                    //TODO attach previous hash id
-
-                    sendRPCMessagePrivate(rai);
-                }else{
-                    Log.e(TAG, "App config was null, soo...");
+            Log.i(TAG, "on protocol session started");
+            if (sessionType != null) {
+                if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1) {
+                    Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
+                    session.endService(sessionType, session.getSessionId());
+                    cleanProxy();
+                    return;
                 }
 
+                if (sessionType.equals(SessionType.RPC)) {
+                    if (appConfig != null) {
 
-            } else {
-                lifecycleListener.onServiceStarted(sessionType);
+                        appConfig.prepare();
+
+                        SdlMsgVersion sdlMsgVersion = new SdlMsgVersion();
+                        sdlMsgVersion.setMajorVersion(MAX_SUPPORTED_RPC_VERSION.getMajor());
+                        sdlMsgVersion.setMinorVersion(MAX_SUPPORTED_RPC_VERSION.getMinor());
+                        sdlMsgVersion.setPatchVersion(MAX_SUPPORTED_RPC_VERSION.getPatch());
+
+                        RegisterAppInterface rai = new RegisterAppInterface(sdlMsgVersion,
+                                appConfig.getAppName(), appConfig.isMediaApp(), appConfig.getLanguageDesired(),
+                                appConfig.getHmiDisplayLanguageDesired(), appConfig.getAppID());
+                        rai.setCorrelationID(REGISTER_APP_INTERFACE_CORRELATION_ID);
+
+                        rai.setTtsName(appConfig.getTtsName());
+                        rai.setNgnMediaScreenAppName(appConfig.getNgnMediaScreenAppName());
+                        rai.setVrSynonyms(appConfig.getVrSynonyms());
+                        rai.setAppHMIType(appConfig.getAppType());
+                        rai.setDayColorScheme(appConfig.getDayColorScheme());
+                        rai.setNightColorScheme(appConfig.getNightColorScheme());
+
+                        //Add device/system info in the future
+                        //TODO attach previous hash id
+
+                        sendRPCMessagePrivate(rai);
+                    } else {
+                        Log.e(TAG, "App config was null, soo...");
+                    }
+
+
+                } else {
+                    lifecycleListener.onServiceStarted(sessionType);
+                }
             }
         }
-    }
 
-    @Override
-    public void onProtocolSessionEnded(SessionType sessionType, byte sessionID, String correlationID) {
+        @Override
+        public void onProtocolSessionEnded(SessionType sessionType, byte sessionID, String correlationID) {
 
-    }
-
-    @Override
-    public void onProtocolSessionEndedNACKed(SessionType sessionType, byte sessionID, String correlationID) {
-
-    }
-
-    @Override
-    public void onProtocolError(String info, Exception e) {
-        DebugTool.logError("Protocol Error - " + info, e);
-    }
-
-    @Override
-    public void onHeartbeatTimedOut(byte sessionID) { /* Deprecated */ }
-
-    @Override
-    public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID) {/* Unused */ }
-
-
-    @Override
-    public void onAuthTokenReceived(String token, byte sessionID) {
-        this.authToken = token;
-    }
-
-    /**
-     * Sets the minimum protocol version that will be permitted to connect.
-     * If the protocol version of the head unit connected is below this version,
-     * the app will disconnect with an EndService protocol message and will not register.
-     * @param minimumProtocolVersion
-     */
-    public void setMinimumProtocolVersion(Version minimumProtocolVersion){
-        this.minimumProtocolVersion = minimumProtocolVersion;
-    }
-
-    /**
-     * The minimum RPC version that will be permitted to connect.
-     * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
-     * @param minimumRPCVersion
-     */
-    public void setMinimumRPCVersion(Version minimumRPCVersion){
-        this.minimumRPCVersion = minimumRPCVersion;
-    }
-
-    /**
-     * This method is used to ensure all of the methods in this class can remain private and no grantees can be made
-     * to the developer what methods are availalbe or not.
-     * @param sdlManager this must be a working manager instance
-     * @return the internal interface that hooks into this manager
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY)
-    public ISdl getInternalInterface(SdlManager sdlManager){
-        if(sdlManager != null){
-            return internalInterface;
         }
-        return null;
-    }
 
+        @Override
+        public void onProtocolSessionEndedNACKed(SessionType sessionType, byte sessionID, String correlationID) {
+
+        }
+
+        @Override
+        public void onProtocolError(String info, Exception e) {
+            DebugTool.logError("Protocol Error - " + info, e);
+        }
+
+        @Override
+        public void onHeartbeatTimedOut(byte sessionID) { /* Deprecated */ }
+
+        @Override
+        public void onProtocolServiceDataACK(SessionType sessionType, int dataSize, byte sessionID) {/* Unused */ }
+
+
+        @Override
+        public void onAuthTokenReceived(String token, byte sessionID) {
+            LifecycleManager.this.authToken = token;
+        }
+
+        /**
+         * Sets the minimum protocol version that will be permitted to connect.
+         * If the protocol version of the head unit connected is below this version,
+         * the app will disconnect with an EndService protocol message and will not register.
+         *
+         * @param minimumProtocolVersion
+         */
+        public void setMinimumProtocolVersion(Version minimumProtocolVersion) {
+            LifecycleManager.this.minimumProtocolVersion = minimumProtocolVersion;
+        }
+
+        /**
+         * The minimum RPC version that will be permitted to connect.
+         * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
+         *
+         * @param minimumRPCVersion
+         */
+        public void setMinimumRPCVersion(Version minimumRPCVersion) {
+            LifecycleManager.this.minimumRPCVersion = minimumRPCVersion;
+        }
+
+        /**
+         * This method is used to ensure all of the methods in this class can remain private and no grantees can be made
+         * to the developer what methods are availalbe or not.
+         *
+         * @param sdlManager this must be a working manager instance
+         * @return the internal interface that hooks into this manager
+         */
+        @RestrictTo(RestrictTo.Scope.LIBRARY)
+        public ISdl getInternalInterface(SdlManager sdlManager) {
+            if (sdlManager != null) {
+                return internalInterface;
+            }
+            return null;
+        }
+    };
     /* *******************************************************************************************************
      *************************************** ISdlConnectionListener END ************************************
      *********************************************************************************************************/
@@ -965,6 +960,16 @@ public class LifecycleManager extends BaseLifecycleManager {
         @Override
         public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
             return LifecycleManager.this.removeOnRPCNotificationListener(notificationId,listener);
+        }
+
+        @Override
+        public void addOnRPCRequestListener(FunctionID notificationId, OnRPCRequestListener listener) {
+            LifecycleManager.this.addOnRPCRequestListener(notificationId, listener);
+        }
+
+        @Override
+        public boolean removeOnRPCRequestListener(FunctionID notificationId, OnRPCRequestListener listener) {
+            return LifecycleManager.this.removeOnRPCRequestListener(notificationId, listener);
         }
 
         @Override
