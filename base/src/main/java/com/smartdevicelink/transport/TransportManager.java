@@ -202,7 +202,7 @@ public class TransportManager extends TransportManagerBase{
                 //Might check connectedTransports vs transportStatus to ensure they are equal
             }
             //Inform the transport listener that a transport has disconnected
-            transportListener.onTransportDisconnected("", record, new ArrayList<>()); //FIXME
+            transportListener.onTransportDisconnected("", record, new ArrayList<TransportRecord>()); //FIXME
         }
 
         @Override
