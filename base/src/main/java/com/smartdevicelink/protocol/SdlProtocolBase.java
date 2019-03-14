@@ -1174,7 +1174,6 @@ public class SdlProtocolBase {
                                 && transportManager != null
                                 && transportManager.isConnected(transportType,null)){
                             primaryTransportAvailable = true;
-                            //TODO change to update the transport config
                             transportManager.updateTransportConfig(transportConfig);
                             break;
                         }

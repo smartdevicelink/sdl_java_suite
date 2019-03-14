@@ -136,7 +136,6 @@ public class SdlPacket implements Parcelable{
 	 */
 	protected SdlPacket(){
 		//Package only empty constructor
-		//TODO add defaults
 		this.version = 1;
 		this.encryption = false;
 		this.frameType = -1;	//This NEEDS to be set
