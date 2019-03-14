@@ -159,7 +159,7 @@ abstract class BaseFileManager extends BaseSubManager {
 	 */
 	private void sendMultipleFileOperations(final List<? extends RPCRequest> requests, final MultipleFileCompletionListener listener){
 		final Map<String, String> errors = new HashMap<>();
-		final HashMap<Integer,String> fileNameMap = new HashMap<>(); //FIXME changed from sparse array
+		final HashMap<Integer,String> fileNameMap = new HashMap<>();
 		final boolean deletionOperation;
 		if(requests.get(0) instanceof PutFile){
 			deletionOperation = false;

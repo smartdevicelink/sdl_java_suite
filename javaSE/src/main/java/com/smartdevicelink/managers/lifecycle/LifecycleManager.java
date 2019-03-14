@@ -54,7 +54,6 @@ public class LifecycleManager extends BaseLifecycleManager {
     //protected Version protocolVersion = new Version(1,0,0);
     protected Version rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
 
-    //FIXME these were sparse arrays in android
     protected final  HashMap<Integer,CopyOnWriteArrayList<OnRPCListener>> rpcListeners;
     protected final HashMap<Integer, OnRPCResponseListener> rpcResponseListeners;
     protected final HashMap<Integer, CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners;
