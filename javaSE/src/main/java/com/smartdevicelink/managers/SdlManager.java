@@ -77,7 +77,6 @@ public class SdlManager extends BaseSdlManager{
 
 
 	// Initialize proxyBridge with anonymous lifecycleListener
-	//FIXME changed from proxy bridge
 	private final LifecycleManager.LifecycleListener lifecycleListener = new LifecycleManager.LifecycleListener() {
 		boolean initStarted = false;
 		@Override
@@ -90,6 +89,15 @@ public class SdlManager extends BaseSdlManager{
 				}
 			}
 		}
+		@Override
+		public void onServiceStarted(SessionType sessionType){
+
+		}
+		
+		@Override
+		public void onServiceEnded(SessionType sessionType){
+
+		}
 
 		@Override
 		public void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason) {
@@ -100,15 +108,6 @@ public class SdlManager extends BaseSdlManager{
 
 		}
 
-		@Override
-		public void onServiceEnded(LifecycleManager lifeCycleManager, OnServiceEnded serviceEnded) {
-
-		}
-
-		@Override
-		public void onServiceNACKed(LifecycleManager lifeCycleManager, OnServiceNACKed serviceNACKed) {
-
-		}
 
 		@Override
 		public void onError(LifecycleManager lifeCycleManager, String info, Exception e) {
