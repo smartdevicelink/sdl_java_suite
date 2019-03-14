@@ -139,7 +139,7 @@ public class Main {
                                 Show show = new Show();
                                 show.setMainField1("There's snake in my boots");
                                 show.setMainField2("YEET THAT SUCKER!");
-                                lifeCycleManager.sendRpc(show);
+                                lifeCycleManager.sendRPC(show);
 
 
                             }

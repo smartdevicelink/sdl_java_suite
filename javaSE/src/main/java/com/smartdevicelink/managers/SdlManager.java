@@ -12,8 +12,6 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
-import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
-import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.*;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.*;
@@ -93,7 +91,7 @@ public class SdlManager extends BaseSdlManager{
 		public void onServiceStarted(SessionType sessionType){
 
 		}
-		
+
 		@Override
 		public void onServiceEnded(SessionType sessionType){
 
@@ -364,7 +362,7 @@ public class SdlManager extends BaseSdlManager{
 	public void sendRPC(RPCMessage message) {
 
 		if (message instanceof RPCRequest){
-			proxy.sendRpc(message);
+			proxy.sendRPC(message);
 		}
 	}
 
@@ -389,7 +387,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		if (rpcRequestList.size() > 0) {
-			proxy.sendRpcsSequentially(rpcRequestList, listener);
+			proxy.sendSequentialRPCs(rpcRequestList, listener);
 		}
 	}
 
@@ -414,7 +412,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		if (rpcRequestList.size() > 0) {
-			proxy.sendRpcs(rpcRequestList, listener);
+			proxy.sendRPCs(rpcRequestList, listener);
 		}
 	}
 
@@ -562,20 +560,20 @@ public class SdlManager extends BaseSdlManager{
 		@Override
 		public void sendRPCRequest(RPCRequest message){
 			if(message != null){
-				proxy.sendRpc(message);
+				proxy.sendRPC(message);
 			}
 		}
 
 		@Override
 		public void sendRPC(RPCMessage message) {
 			if(message != null){
-				proxy.sendRpc(message);
+				proxy.sendRPC(message);
 			}
 		}
 
 		@Override
 		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
-			proxy.sendRpcs(rpcs, listener);
+			proxy.sendRPCs(rpcs, listener);
 		}
 
 		@Override

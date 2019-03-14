@@ -9,8 +9,6 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.*;
-import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
-import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.interfaces.*;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.*;
@@ -112,11 +110,11 @@ public class LifecycleManager extends BaseLifecycleManager {
         return rpcSpecVersion;
     }
 
-    public void sendRpc(RPCMessage message){
+    public void sendRPC(RPCMessage message){
         this.sendRPCMessagePrivate(message);
     }
 
-    public void sendRpcs(List<? extends RPCMessage> messages, OnMultipleRequestListener listener){
+    public void sendRPCs(List<? extends RPCMessage> messages, OnMultipleRequestListener listener){
         if(messages != null ){
             for(RPCMessage message : messages){
                 if(message instanceof RPCRequest){
@@ -135,7 +133,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
-    public void sendRpcsSequentially(List<? extends RPCMessage> messages, OnMultipleRequestListener listener){
+    public void sendSequentialRPCs(List<? extends RPCMessage> messages, OnMultipleRequestListener listener){
        if (messages != null){
            int requestCount = messages.size();
 
@@ -163,7 +161,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                                listener.onUpdate(messages.size());
                            }
                            // recurse after successful response of RPC
-                           sendRpcsSequentially(messages, listener);
+                           sendSequentialRPCs(messages, listener);
                        }
                    }
 
@@ -827,7 +825,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         @Override
         public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
-            LifecycleManager.this.sendRpcs(rpcs,listener);
+            LifecycleManager.this.sendRPCs(rpcs,listener);
         }
 
         @Override
