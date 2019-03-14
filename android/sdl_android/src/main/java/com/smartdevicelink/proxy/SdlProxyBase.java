@@ -2376,27 +2376,32 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	private void handleRPCMessage(Hashtable<String, Object> hash) {
 
+		if (hash == null){
+			DebugTool.logError("handleRPCMessage: hash is null, returning.");
+			return;
+		}
+
 		RPCMessage rpcMsg = RpcConverter.convertTableToRpc(hash);
+
+		if (rpcMsg == null){
+			DebugTool.logError("handleRPCMessage: rpcMsg is null, returning.");
+			return;
+		}
 
 		SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, rpcMsg, SDL_LIB_TRACE_KEY);
 
 		String functionName = rpcMsg.getFunctionName();
 		String messageType = rpcMsg.getMessageType();
 
-		if (rpcMsg != null) {
-			rpcMsg.format(rpcSpecVersion, true);
-			onRPCReceived(rpcMsg);
-		}
+		rpcMsg.format(rpcSpecVersion, true);
+
+		onRPCReceived(rpcMsg); // Should only be called for internal use
 
 		// Requests need to be listened for using the SDLManager's addOnRPCRequestListener method.
 		// Requests are not supported by IProxyListenerBase
 		if (messageType.equals(RPCMessage.KEY_REQUEST)) {
 
-			if (rpcMsg != null) {
-				onRPCRequestReceived((RPCRequest) rpcMsg);
-			}else{
-				DebugTool.logError("Received a null RPC Request, discarding.");
-			}
+			onRPCRequestReceived((RPCRequest) rpcMsg);
 
 		} else if (messageType.equals(RPCMessage.KEY_RESPONSE)) {
 			// Check to ensure response is not from an internal message (reserved correlation ID)
