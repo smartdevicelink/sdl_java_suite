@@ -348,7 +348,9 @@ abstract public class BaseScreenManager extends BaseSubManager {
 						if (!success){
 							updateSuccessful = false;
 						}
-						listener.onComplete(updateSuccessful);
+						if (listener != null) {
+							listener.onComplete(updateSuccessful);
+						}
 					}
 				});
 			}

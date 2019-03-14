@@ -7,12 +7,14 @@ import com.smartdevicelink.managers.lifecycle.LifecycleManager;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
 import com.smartdevicelink.proxy.callbacks.OnServiceNACKed;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
 import com.smartdevicelink.transport.WebSocketServerConfig;
 import com.smartdevicelink.util.Version;
 import org.json.JSONException;
@@ -24,7 +26,8 @@ public class Main {
 
     public static void main(String[] args) {
        // testRAIString();
-        startSdl();
+        //startSdl();
+        attemptSdlManager();
     }
 
     public static void testRAI(){
@@ -83,9 +86,18 @@ public class Main {
                                 show.setMainField2("YEET THAT SUCKER!");
                                 manager.sendRPC(show);
                                 Log.i(TAG, "Attempting sending show");
-
-
                             }
+                        }
+                    }
+                });
+
+                manager.addOnRPCRequestListener(FunctionID.SEND_LOCATION, new OnRPCRequestListener() {
+                    @Override
+                    public void onRequest(RPCRequest request) {
+                        try {
+                            Log.i(TAG, request.serializeJSON().toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 });
@@ -103,10 +115,10 @@ public class Main {
             }
         });
         //FIXME have to add websocket setting
-       SdlManager manager =  builder.build();
-       manager.start();
-
-
+        WebSocketServerConfig serverConfig = new WebSocketServerConfig(5679,0);
+        builder.setTransportType(serverConfig);
+        SdlManager manager =  builder.build();
+        manager.start();
     }
 
     public static void startSdl(){
