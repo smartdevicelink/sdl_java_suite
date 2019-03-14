@@ -71,7 +71,7 @@ public class Main {
     public static void attemptSdlManager(){
         SdlManager.Builder builder = new SdlManager.Builder("234523452345234", "JavaChip", new SdlManagerListener() {
             @Override
-            public void onStart(SdlManager manager) {
+            public void onStart(final SdlManager manager) {
                 Log.i(TAG, "OnStart");
                 manager.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, new OnRPCNotificationListener() {
                     @Override
@@ -136,7 +136,7 @@ public class Main {
         WebSocketServerConfig serverConfig = new WebSocketServerConfig(5679,0);
         LifecycleManager lifer = new LifecycleManager(config, serverConfig, new LifecycleManager.LifecycleListener() {
             @Override
-            public void onProxyConnected(LifecycleManager lifeCycleManager) {
+            public void onProxyConnected(final LifecycleManager lifeCycleManager) {
                 System.out.print("On proxy CONNECTED");
 
                 lifeCycleManager.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, new OnRPCNotificationListener() {

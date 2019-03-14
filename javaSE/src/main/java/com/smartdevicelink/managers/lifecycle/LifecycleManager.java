@@ -240,7 +240,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                     case ON_HASH_CHANGE:
                         break;
                     case ON_SYSTEM_REQUEST:
-                        OnSystemRequest onSystemRequest = (OnSystemRequest) message;
+                        final OnSystemRequest onSystemRequest = (OnSystemRequest) message;
                         if ((onSystemRequest.getUrl() != null) &&
                                 (((onSystemRequest.getRequestType() == RequestType.PROPRIETARY) && (onSystemRequest.getFileType() == FileType.JSON))
                                         || ((onSystemRequest.getRequestType() == RequestType.HTTP) && (onSystemRequest.getFileType() == FileType.BINARY)))) {
