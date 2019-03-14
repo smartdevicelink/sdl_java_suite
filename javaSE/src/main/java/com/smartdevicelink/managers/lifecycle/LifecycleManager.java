@@ -175,7 +175,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
-    public void sendSequentialRPCs(List<? extends RPCMessage> messages, OnMultipleRequestListener listener){
+    public void sendSequentialRPCs(final List<? extends RPCMessage> messages, final OnMultipleRequestListener listener){
        if (messages != null){
            int requestCount = messages.size();
 
@@ -1057,7 +1057,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             }
 
             if (getVrSynonyms() == null) {
-                setVrSynonyms(new Vector<>());
+                setVrSynonyms(new Vector<String>());
                 getVrSynonyms().add(getAppName());
             }
         }

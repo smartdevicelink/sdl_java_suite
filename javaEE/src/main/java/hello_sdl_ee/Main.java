@@ -103,8 +103,10 @@ public class Main {
             }
         });
         //FIXME have to add websocket setting
-       SdlManager manager =  builder.build();
-       manager.start();
+        WebSocketServerConfig serverConfig = new WebSocketServerConfig(5679,0);
+        builder.setTransportType(serverConfig);
+        SdlManager manager =  builder.build();
+        manager.start();
 
 
     }
