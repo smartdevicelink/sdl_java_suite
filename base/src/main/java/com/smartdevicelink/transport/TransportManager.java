@@ -39,7 +39,6 @@ import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

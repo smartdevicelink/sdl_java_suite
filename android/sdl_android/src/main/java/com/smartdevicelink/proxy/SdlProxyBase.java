@@ -98,7 +98,6 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
-import com.smartdevicelink.util.HttpUtils;
 import com.smartdevicelink.util.Version;
 
 import org.json.JSONArray;
@@ -158,6 +157,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								OUTGOING_MESSAGE_QUEUE_THREAD_LOCK = new Object(),
 								INTERNAL_MESSAGE_QUEUE_THREAD_LOCK = new Object(),
 								ON_UPDATE_LISTENER_LOCK = new Object(),
+								RPC_LISTENER_LOCK = new Object(),
 								ON_NOTIFICATION_LISTENER_LOCK = new Object();
 	
 	private final Object APP_INTERFACE_REGISTERED_LOCK = new Object();
@@ -259,6 +259,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected SparseArray<OnRPCResponseListener> rpcResponseListeners = null;
 	protected SparseArray<CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners = null;
 	protected SparseArray<CopyOnWriteArrayList<OnRPCRequestListener>> rpcRequestListeners = null;
+	protected SparseArray<CopyOnWriteArrayList<OnRPCListener>> rpcListeners = null;
 
 	protected VideoStreamingManager manager; //Will move to SdlSession once the class becomes public
 
@@ -365,14 +366,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void addOnRPCListener(FunctionID responseId, OnRPCListener listener) {
-			DebugTool.logError("Proxy.addOnRPCResponseListener() is not implemented yet");
-
+			SdlProxyBase.this.addOnRPCListener(responseId, listener);
 		}
 
 		@Override
 		public boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener) {
-			DebugTool.logError("Proxy.removeOnRPCResponseListener() is not implemented yet");
-			return false;
+			return SdlProxyBase.this.removeOnRPCListener(responseId, listener);
 		}
 
 		@Override
@@ -940,6 +939,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		rpcResponseListeners = new SparseArray<OnRPCResponseListener>();
 		rpcNotificationListeners = new SparseArray<CopyOnWriteArrayList<OnRPCNotificationListener>>();
 		rpcRequestListeners = new SparseArray<CopyOnWriteArrayList<OnRPCRequestListener>>();
+		rpcListeners = new SparseArray<CopyOnWriteArrayList<OnRPCListener>>();
 
 		// Initialize the proxy
 		try {
@@ -2195,6 +2195,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 	@SuppressWarnings("UnusedReturnValue")
+	public boolean onRPCReceived(RPCMessage message){
+		synchronized(RPC_LISTENER_LOCK){
+			CopyOnWriteArrayList<OnRPCListener> listeners = rpcListeners.get(FunctionID.getFunctionId(message.getFunctionName()));
+			if(listeners!=null && listeners.size()>0) {
+				for (OnRPCListener listener : listeners) {
+					listener.onReceived(message);
+				}
+				return true;
+			}
+			return false;
+		}
+	}
+
+	@SuppressWarnings("UnusedReturnValue")
 	public boolean onRPCRequestReceived(RPCRequest request){
 		synchronized(ON_NOTIFICATION_LISTENER_LOCK){
 			CopyOnWriteArrayList<OnRPCRequestListener> listeners = rpcRequestListeners.get(FunctionID.getFunctionId(request.getFunctionName()));
@@ -2227,7 +2241,37 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 
 	/**
-	 * This will ad a listener for the specific type of request. As of now it will only allow
+	 * This will add a listener for the specific type of message. As of now it will only allow
+	 * a single listener per request function id
+	 * @param messageId The message type that this listener is designated for
+	 * @param listener The listener that will be called when a request of the provided type is received
+	 */
+	@SuppressWarnings("unused")
+	public void addOnRPCListener(FunctionID messageId, OnRPCListener listener){
+		synchronized(RPC_LISTENER_LOCK){
+			if(messageId != null && listener != null){
+				if(rpcListeners.indexOfKey(messageId.getId()) < 0 ){
+					rpcListeners.put(messageId.getId(),new CopyOnWriteArrayList<OnRPCListener>());
+				}
+				rpcListeners.get(messageId.getId()).add(listener);
+			}
+		}
+	}
+
+	public boolean removeOnRPCListener(FunctionID messageId, OnRPCListener listener){
+		synchronized(RPC_LISTENER_LOCK){
+			if(rpcListeners!= null
+					&& messageId != null
+					&& listener != null
+					&& rpcListeners.indexOfKey(messageId.getId()) >= 0){
+				return rpcListeners.get(messageId.getId()).remove(listener);
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * This will add a listener for the specific type of request. As of now it will only allow
 	 * a single listener per request function id
 	 * @param requestId The request type that this listener is designated for
 	 * @param listener The listener that will be called when a request of the provided type is received
@@ -2330,25 +2374,33 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 	
 	private void handleRPCMessage(Hashtable<String, Object> hash) {
-		RPCMessage rpcMsg = new RPCMessage(hash);
-		//Call format to ensure the RPC is ready to be handled regardless of RPC spec version
+
+		if (hash == null){
+			DebugTool.logError("handleRPCMessage: hash is null, returning.");
+			return;
+		}
+
+		RPCMessage rpcMsg = RpcConverter.convertTableToRpc(hash);
+
+		if (rpcMsg == null){
+			DebugTool.logError("handleRPCMessage: rpcMsg is null, returning.");
+			return;
+		}
+
+		SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, rpcMsg, SDL_LIB_TRACE_KEY);
+
 		String functionName = rpcMsg.getFunctionName();
 		String messageType = rpcMsg.getMessageType();
 
-		SdlTrace.logRPCEvent(InterfaceActivityDirection.Receive, rpcMsg, SDL_LIB_TRACE_KEY);
+		rpcMsg.format(rpcSpecVersion, true);
+
+		onRPCReceived(rpcMsg); // Should only be called for internal use
 
 		// Requests need to be listened for using the SDLManager's addOnRPCRequestListener method.
 		// Requests are not supported by IProxyListenerBase
 		if (messageType.equals(RPCMessage.KEY_REQUEST)) {
 
-			RPCMessage convertedRPCMsg = RpcConverter.convertTableToRpc(hash);
-
-			if (convertedRPCMsg != null) {
-				convertedRPCMsg.format(rpcSpecVersion, true);
-				onRPCRequestReceived((RPCRequest) convertedRPCMsg);
-			}else{
-				DebugTool.logError("Received a null RPC Request, discarding.");
-			}
+			onRPCRequestReceived((RPCRequest) rpcMsg);
 
 		} else if (messageType.equals(RPCMessage.KEY_RESPONSE)) {
 			// Check to ensure response is not from an internal message (reserved correlation ID)
@@ -3089,14 +3141,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                 // SetDisplayLayout
                 final SetDisplayLayoutResponse msg = new SetDisplayLayoutResponse(hash);
 				msg.format(rpcSpecVersion,true);
-                // successfully changed display layout - update layout capabilities
-                if(msg.getSuccess() && _systemCapabilityManager!=null){
-					_systemCapabilityManager.setCapability(SystemCapabilityType.DISPLAY, msg.getDisplayCapabilities());
-					_systemCapabilityManager.setCapability(SystemCapabilityType.BUTTON, msg.getButtonCapabilities());
-					_systemCapabilityManager.setCapability(SystemCapabilityType.PRESET_BANK, msg.getPresetBankCapabilities());
-					_systemCapabilityManager.setCapability(SystemCapabilityType.SOFTBUTTON, msg.getSoftButtonCapabilities());
-                }
-                
                 if (_callbackToUIThread) {
                     // Run in UI thread
                     _mainUIHandler.post(new Runnable() {

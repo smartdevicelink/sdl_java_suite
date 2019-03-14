@@ -81,6 +81,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     // Sdl Synchronization Objects
     private static final Object  RPC_LISTENER_LOCK = new Object(),
                                  ON_UPDATE_LISTENER_LOCK = new Object(),
+                                 ON_REQUEST_LISTENER_LOCK = new Object(),
                                  ON_NOTIFICATION_LISTENER_LOCK = new Object();
 
 
@@ -91,9 +92,11 @@ public class LifecycleManager extends BaseLifecycleManager {
     //protected Version protocolVersion = new Version(1,0,0);
     protected Version rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
 
-    protected final  HashMap<Integer,CopyOnWriteArrayList<OnRPCListener>> rpcListeners;
-    protected final HashMap<Integer, OnRPCResponseListener> rpcResponseListeners;
-    protected final HashMap<Integer, CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners;
+
+    private final HashMap<Integer,CopyOnWriteArrayList<OnRPCListener>> rpcListeners;
+    private final HashMap<Integer, OnRPCResponseListener> rpcResponseListeners;
+    private final HashMap<Integer, CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners;
+    private final HashMap<Integer, CopyOnWriteArrayList<OnRPCRequestListener>> rpcRequestListeners;
 
     protected final SystemCapabilityManager systemCapabilityManager;
 
@@ -116,6 +119,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         this.rpcListeners = new HashMap<>();
         this.rpcResponseListeners = new HashMap<>();
         this.rpcNotificationListeners = new HashMap<>();
+        this.rpcRequestListeners = new HashMap<>();
 
         this.appConfig = appConfig;
         this.session = new SdlSession(this, config);
@@ -312,7 +316,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                     case ON_HASH_CHANGE:
                         break;
                     case ON_SYSTEM_REQUEST:
-                        OnSystemRequest onSystemRequest = (OnSystemRequest) message;
+                        final OnSystemRequest onSystemRequest = (OnSystemRequest) message;
                         if ((onSystemRequest.getUrl() != null) &&
                                 (((onSystemRequest.getRequestType() == RequestType.PROPRIETARY) && (onSystemRequest.getFileType() == FileType.JSON))
                                         || ((onSystemRequest.getRequestType() == RequestType.HTTP) && (onSystemRequest.getFileType() == FileType.BINARY)))) {
@@ -523,7 +527,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     /**
-     * This will ad a listener for the specific type of notification. As of now it will only allow
+     * This will add a listener for the specific type of notification. As of now it will only allow
      * a single listener per notification function id
      * @param notificationId The notification type that this listener is designated for
      * @param listener The listener that will be called when a notification of the provided type is received
@@ -565,7 +569,56 @@ public class LifecycleManager extends BaseLifecycleManager {
         return false;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
+    private boolean onRPCRequestReceived(RPCRequest request){
+        if(request == null){
+            DebugTool.logError("onRPCRequestReceived - request was null");
+            return false;
+        }
+        DebugTool.logInfo("onRPCRequestReceived - " + request.getFunctionName() );
 
+        synchronized(ON_REQUEST_LISTENER_LOCK){
+            CopyOnWriteArrayList<OnRPCRequestListener> listeners = rpcRequestListeners.get(FunctionID.getFunctionId(request.getFunctionName()));
+            if(listeners!=null && listeners.size()>0) {
+                for (OnRPCRequestListener listener : listeners) {
+                    listener.onRequest(request);
+                }
+                return true;
+            }
+            return false;
+        }
+    }
+
+    /**
+     * This will add a listener for the specific type of request. As of now it will only allow
+     * a single listener per request function id
+     * @param requestId The request type that this listener is designated for
+     * @param listener The listener that will be called when a request of the provided type is received
+     */
+    @SuppressWarnings("unused")
+    public void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
+        synchronized(ON_REQUEST_LISTENER_LOCK){
+            if(requestId != null && listener != null){
+                if(!rpcRequestListeners.containsKey(requestId.getId())){
+                    rpcRequestListeners.put(requestId.getId(),new CopyOnWriteArrayList<OnRPCRequestListener>());
+                }
+                rpcRequestListeners.get(requestId.getId()).add(listener);
+            }
+        }
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    public boolean removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
+        synchronized(ON_REQUEST_LISTENER_LOCK){
+            if(rpcRequestListeners!= null
+                    && requestId != null
+                    && listener != null
+                    && rpcRequestListeners.containsKey(requestId.getId())){
+                return rpcRequestListeners.get(requestId.getId()).remove(listener);
+            }
+        }
+        return false;
+    }
 
     /* *******************************************************************************************************
      **************************************** RPC LISTENERS !! END !! ****************************************
@@ -593,6 +646,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                 Integer corrId = ((RPCRequest)message).getCorrelationID();
                    if( corrId== null) {
                        Log.e(TAG, "No correlation ID attached to request. Not sending");
+                       return;
                    }else{
                        pm.setCorrID(corrId);
 
@@ -601,6 +655,16 @@ public class LifecycleManager extends BaseLifecycleManager {
                            addOnRPCResponseListener(listener, corrId, msgBytes.length);
                        }
                    }
+            }else if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())){
+                RPCResponse response = (RPCResponse) message;
+                if (response.getCorrelationID() == null) {
+                    //Log error here
+                    //throw new SdlException("CorrelationID cannot be null. RPC: " + response.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
+                    Log.e(TAG, "No correlation ID attached to response. Not sending");
+                    return;
+                } else {
+                    pm.setCorrID(response.getCorrelationID());
+                }
             }
 
             if (message.getBulkData() != null){
@@ -672,6 +736,11 @@ public class LifecycleManager extends BaseLifecycleManager {
                     }else if(RPCMessage.KEY_NOTIFICATION.equals(messageType)){
 
                         onRPCNotificationReceived((RPCNotification)rpc);
+
+                    } else if (RPCMessage.KEY_REQUEST.equals(messageType)){
+
+                        onRPCRequestReceived((RPCRequest) rpc);
+
                     }
                 }else{
                     Log.w(TAG, "Shouldn't be here");
@@ -1143,6 +1212,9 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
         if (rpcNotificationListeners != null) {
             rpcNotificationListeners.clear();
+        }
+        if (rpcRequestListeners != null) {
+            rpcRequestListeners.clear();
         }
         if (session != null && session.getIsConnected()) {
             session.close();

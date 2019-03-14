@@ -16,8 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.smartdevicelink.protocol.enums.FunctionID.SET_DISPLAY_LAYOUT;
-
 public class SystemCapabilityManager {
 	private final HashMap<SystemCapabilityType, Object> cachedSystemCapabilities;
 	private final HashMap<SystemCapabilityType, CopyOnWriteArrayList<OnSystemCapabilityListener>> onSystemCapabilityListeners;
