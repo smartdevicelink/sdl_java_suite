@@ -130,10 +130,7 @@ public class WebSocketServer2 extends WebSocketServer implements TransportInterf
 
     @Override
     public void onMessage(WebSocket webSocket, String s) {
-        Log.i(TAG, "on Message - String");
-
-        //TODO
-
+        DebugTool.logError("Incorrect message type received, dropping. - String: " + s);
     }
 
     @Override
