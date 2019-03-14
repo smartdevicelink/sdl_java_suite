@@ -74,7 +74,6 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
 
 
     public SdlSession(ISdlConnectionListener listener, BaseTransportConfig config){
-        //FIXME public SdlSession2(ISdlConnectionListener listener, MultiplexTransportConfig config){
         this.transportConfig = config;
         this.sessionListener = listener;
         this.sdlProtocol = new SdlProtocol(this,config);
@@ -265,7 +264,6 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
         Log.i(TAG, "Protocol session started");
 
         this.sessionId = sessionID;
-        //FIXME lockScreenMan.setSessionID(sessionID);
         if (sessionType.eq(SessionType.RPC)){
             sessionHashId = hashID;
         }

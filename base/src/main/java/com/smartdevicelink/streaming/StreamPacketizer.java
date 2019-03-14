@@ -32,7 +32,6 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 	// a limit of the buffer size, we avoid buffer overflows when underlying transport is too slow.
 	private static final int MAX_QUEUE_SIZE = 256 * 1024;
 
-	//FIXME public SdlConnection sdlConnection = null;	//TODO remove completely
     private Object mPauseLock;
     private boolean mPaused;
     private boolean isServiceProtected = false;
@@ -139,11 +138,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 		}
 		finally
 		{
-			if(_session == null) {
-				/* FIXME if (sdlConnection != null) {
-					sdlConnection.endService(_serviceType, _rpcSessionID);
-				}*/
-			}else{
+			if(_session != null) {
 				_session.endService(_serviceType,_rpcSessionID);
 			}
 
