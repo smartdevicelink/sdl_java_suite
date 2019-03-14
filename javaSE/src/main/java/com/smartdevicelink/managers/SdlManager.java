@@ -16,12 +16,8 @@ import com.smartdevicelink.proxy.interfaces.*;
 import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.*;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.security.SdlSecurityBase;
-import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
-import com.smartdevicelink.streaming.audio.AudioStreamingParams;
-import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
@@ -49,7 +45,6 @@ import java.util.Map;
 public class SdlManager extends BaseSdlManager{
 
 	private static final String TAG = "SdlManager";
-	private LifecycleManager proxy;
 	private String appId, appName, shortAppName;
 	private boolean isMediaApp;
 	private Language hmiLanguage;
@@ -69,9 +64,18 @@ public class SdlManager extends BaseSdlManager{
 
 
 	// Managers
+	private LifecycleManager lifecycleManager;
 	private PermissionManager permissionManager;
 	private FileManager fileManager;
     private ScreenManager screenManager;
+
+
+	// INTERNAL INTERFACE
+	/**
+	 * This is from the LifeCycleManager directly. In the future if there is a reason to be a man in the middle
+	 * the SdlManager could create it's own, however right now it was only a duplication of logic tied to the LCM.
+	 */
+	private ISdl _internalInterface;
 
 
 	// Initialize proxyBridge with anonymous lifecycleListener
@@ -288,7 +292,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @return a SystemCapabilityManager object
 	 */
 	public SystemCapabilityManager getSystemCapabilityManager(){
-		return proxy.getSystemCapabilityManager();
+		return lifecycleManager.getSystemCapabilityManager();
 	}
 
 	/**
@@ -300,8 +304,8 @@ public class SdlManager extends BaseSdlManager{
 	 * registered with the module.
 	 */
 	public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse(){
-		if(proxy != null){
-			return proxy.getRegisterAppInterfaceResponse();
+		if(lifecycleManager != null){
+			return lifecycleManager.getRegisterAppInterfaceResponse();
 		}
 		return null;
 	}
@@ -311,8 +315,8 @@ public class SdlManager extends BaseSdlManager{
 	 * @return OnHMIStatus object represents the current OnHMIStatus
 	 */
 	public OnHMIStatus getCurrentHMIStatus(){
-		if(this.proxy !=null ){
-			return proxy.getCurrentHMIStatus();
+		if(this.lifecycleManager !=null ){
+			return lifecycleManager.getCurrentHMIStatus();
 		}
 		return null;
 	}
@@ -325,7 +329,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @return the string representation of the auth token
 	 */
 	protected String getAuthToken(){
-		return this.proxy.getAuthToken();
+		return this.lifecycleManager.getAuthToken();
 	}
 
 	protected String getAppName() { return appName; }
@@ -362,7 +366,7 @@ public class SdlManager extends BaseSdlManager{
 	public void sendRPC(RPCMessage message) {
 
 		if (message instanceof RPCRequest){
-			proxy.sendRPC(message);
+			lifecycleManager.sendRPC(message);
 		}
 	}
 
@@ -387,7 +391,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		if (rpcRequestList.size() > 0) {
-			proxy.sendSequentialRPCs(rpcRequestList, listener);
+			lifecycleManager.sendSequentialRPCs(rpcRequestList, listener);
 		}
 	}
 
@@ -412,7 +416,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		if (rpcRequestList.size() > 0) {
-			proxy.sendRPCs(rpcRequestList, listener);
+			lifecycleManager.sendRPCs(rpcRequestList, listener);
 		}
 	}
 
@@ -421,7 +425,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param listener listener that will be called when a notification is received
 	 */
 	public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
-		proxy.addOnRPCNotificationListener(notificationId,listener);
+		lifecycleManager.addOnRPCNotificationListener(notificationId,listener);
 	}
 
 	/**
@@ -429,7 +433,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param listener listener that was previously added
 	 */
 	public void removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
-		proxy.removeOnRPCNotificationListener(notificationId, listener);
+		lifecycleManager.removeOnRPCNotificationListener(notificationId, listener);
 	}
 
 	// LIFECYCLE / OTHER
@@ -442,7 +446,7 @@ public class SdlManager extends BaseSdlManager{
 	@SuppressWarnings("unchecked")
 	public void start(){
 		Log.i(TAG, "start");
-		if (proxy == null) {
+		if (lifecycleManager == null) {
 			if (transport != null
 					&& (transport.getTransportType().equals(TransportType.WEB_SOCKET_SERVER) || transport.getTransportType().equals(TransportType.CUSTOM))) {
 				//Do the thing
@@ -461,201 +465,31 @@ public class SdlManager extends BaseSdlManager{
 				appConfig.setAppID(appId);
 
 
-				proxy = new LifecycleManager(appConfig, transport, lifecycleListener);
-				proxy.start();
-				proxy.setMinimumProtocolVersion(minimumProtocolVersion);
-				proxy.setMinimumRPCVersion(minimumRPCVersion);
+				lifecycleManager = new LifecycleManager(appConfig, transport, lifecycleListener);
+				lifecycleManager.setMinimumProtocolVersion(minimumProtocolVersion);
+				lifecycleManager.setMinimumRPCVersion(minimumRPCVersion);
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
-					proxy.setSdlSecurityClassList(sdlSecList);
+					lifecycleManager.setSdlSecurityClassList(sdlSecList);
 				}
 				if (onRPCNotificationListeners != null) {
 					Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
 					if (functionIDSet != null && !functionIDSet.isEmpty()) {
 						for (FunctionID functionID : functionIDSet) {
-							proxy.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
+							lifecycleManager.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
 						}
 					}
 				}
+
+				_internalInterface = lifecycleManager.getInternalInterface(SdlManager.this);
+
+				lifecycleManager.start();
+
 
 			}else{
 				throw new RuntimeException("No transport provided");
 			}
 		}
 	}
-
-	// INTERNAL INTERFACE
-	private ISdl _internalInterface = new ISdl() {
-		@Override
-		public void start() {
-			proxy.start();
-		}
-
-		@Override
-		public void stop() {
-			proxy.stop();
-		}
-
-		@Override
-		public boolean isConnected() {
-			return proxy.isConnected();
-		}
-
-		@Override
-		public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
-			//FIXME proxy.addServiceListener(serviceType,sdlServiceListener);
-		}
-
-		@Override
-		public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
-			//FIXME proxy.removeServiceListener(serviceType,sdlServiceListener);
-		}
-
-		@Override
-		public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
-			if(proxy.isConnected()){
-				//FIXME proxy.startVideoStream(encrypted,parameters);
-			}
-		}
-
-		@Override
-		public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters){
-			return null; //FIXME  proxy.startVideoStream(isEncrypted, parameters);
-		}
-
-		@Override
-		public void stopVideoService() {
-			if(proxy.isConnected()){
-				//FIXME proxy.endVideoStream();
-			}
-		}
-
-		@Override
-		public void startAudioService(boolean isEncrypted, AudioStreamingCodec codec,
-		                              AudioStreamingParams params) {
-			if(proxy.isConnected()){
-				//FIXME proxy.startAudioStream(isEncrypted, codec, params);
-			}
-		}
-
-		@Override
-		public void startAudioService(boolean encrypted) {
-			if(proxy.isConnected()){
-				//FIXME proxy.startService(SessionType.PCM, encrypted);
-			}
-		}
-
-		@Override
-		public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec,
-		                                             AudioStreamingParams params) {
-			return null; //FIXME proxy.startAudioStream(isEncrypted, codec, params);
-		}
-
-		@Override
-		public void stopAudioService() {
-			if(proxy.isConnected()){
-				//FIXME proxy.endAudioStream();
-			}
-		}
-
-		@Override
-		public void sendRPCRequest(RPCRequest message){
-			if(message != null){
-				proxy.sendRPC(message);
-			}
-		}
-
-		@Override
-		public void sendRPC(RPCMessage message) {
-			if(message != null){
-				proxy.sendRPC(message);
-			}
-		}
-
-		@Override
-		public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
-			proxy.sendRPCs(rpcs, listener);
-		}
-
-		@Override
-		public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
-			proxy.addOnRPCNotificationListener(notificationId,listener);
-		}
-
-		@Override
-		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
-			return proxy.removeOnRPCNotificationListener(notificationId,listener);
-		}
-
-		@Override
-		public void addOnRPCListener(final FunctionID responseId, final OnRPCListener listener) {
-			proxy.addRpcListener(responseId, listener);
-		}
-
-		@Override
-		public boolean removeOnRPCListener(final FunctionID responseId, final OnRPCListener listener) {
-			return proxy.removeOnRPCListener(responseId, listener);
-		}
-
-		@Override
-		public Object getCapability(SystemCapabilityType systemCapabilityType){
-			return proxy.getSystemCapabilityManager().getCapability(systemCapabilityType);
-		}
-
-		@Override
-		public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
-			proxy.getSystemCapabilityManager().getCapability(systemCapabilityType, scListener);
-		}
-
-		@Override
-		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
-			return proxy.getSystemCapabilityManager().isCapabilitySupported(systemCapabilityType);
-		}
-
-		@Override
-		public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
-			proxy.getSystemCapabilityManager().addOnSystemCapabilityListener(systemCapabilityType, listener);
-		}
-
-		@Override
-		public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
-			return proxy.getSystemCapabilityManager().removeOnSystemCapabilityListener(systemCapabilityType, listener);
-		}
-
-		@Override
-		public boolean isTransportForServiceAvailable(SessionType serviceType) {
-			/* FIXME if(SessionType.NAV.equals(serviceType)){
-				return proxy.isVideoStreamTransportAvailable();
-			}else if(SessionType.PCM.equals(serviceType)){
-				return proxy.isAudioStreamTransportAvailable();
-			} */
-			return false;
-		}
-
-		@Override
-		public SdlMsgVersion getSdlMsgVersion(){
-			//FIXME this should be a breaking change to support our version
-			 Version rpcSepcVersion =  proxy.getRpcSpecVersion();
-			 if(rpcSepcVersion != null){
-				 SdlMsgVersion sdlMsgVersion = new SdlMsgVersion();
-				 sdlMsgVersion.setMajorVersion(rpcSepcVersion.getMajor());
-				 sdlMsgVersion.setMinorVersion(rpcSepcVersion.getMinor());
-				 sdlMsgVersion.setPatchVersion(rpcSepcVersion.getPatch());
-				 return sdlMsgVersion;
-			 }
-
-			return null;
-		}
-
-		@Override
-		public @NonNull Version getProtocolVersion() {
-			if(proxy.getProtocolVersion() != null){
-				return proxy.getProtocolVersion();
-			}else{
-				return new Version(1,0,0);
-			}
-		}
-
-	};
 
 
 	// BUILDER

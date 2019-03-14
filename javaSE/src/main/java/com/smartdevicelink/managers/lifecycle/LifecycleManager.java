@@ -1,8 +1,10 @@
 package com.smartdevicelink.managers.lifecycle;
 
+import android.support.annotation.RestrictTo;
 import android.util.Log;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -28,6 +30,11 @@ import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * The lifecycle manager creates a centeral point for all SDL session logic to converge. It should only be used by
+ * the library itself. Usage outside the library is not permitted and will not be protected for in the future.
+ */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
 public class LifecycleManager extends BaseLifecycleManager {
 
     private static final String TAG = "Lifecycle Manager";
@@ -82,7 +89,6 @@ public class LifecycleManager extends BaseLifecycleManager {
         this.session = new SdlSession(this, config);
 
         this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
-
 
     }
 
@@ -742,6 +748,20 @@ public class LifecycleManager extends BaseLifecycleManager {
         this.minimumRPCVersion = minimumRPCVersion;
     }
 
+    /**
+     * This method is used to ensure all of the methods in this class can remain private and no grantees can be made
+     * to the developer what methods are availalbe or not.
+     * @param sdlManager this must be a working manager instance
+     * @return the internal interface that hooks into this manager
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    public ISdl getInternalInterface(SdlManager sdlManager){
+        if(sdlManager != null){
+            return internalInterface;
+        }
+        return null;
+    }
+
     /* *******************************************************************************************************
      *************************************** ISdlConnectionListener END ************************************
      *********************************************************************************************************/
@@ -769,46 +789,52 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         @Override
         public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
-
+            LifecycleManager.this.session.addServiceListener(serviceType,sdlServiceListener);
         }
 
         @Override
         public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
+            LifecycleManager.this.session.removeServiceListener(serviceType,sdlServiceListener);
 
         }
 
         @Override
         public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
+            DebugTool.logWarning("startVideoService is not currently implemented");
 
         }
 
         @Override
         public void stopVideoService() {
+            DebugTool.logWarning("stopVideoService is not currently implemented");
 
         }
 
         @Override
         public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
+            DebugTool.logWarning("startVideoStream is not currently implemented");
             return null;
         }
 
         @Override
         public void startAudioService(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params) {
-
+            DebugTool.logWarning("startAudioService is not currently implemented");
         }
 
         @Override
         public void startAudioService(boolean encrypted) {
+            DebugTool.logWarning("startAudioService is not currently implemented");
 
         }
 
         @Override
         public void stopAudioService() {
-
+            DebugTool.logWarning("stopAudioService is not currently implemented");
         }
 
         @Override
         public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params) {
+            DebugTool.logWarning("startAudioStream is not currently implemented");
             return null;
         }
 
@@ -820,7 +846,9 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         @Override
         public void sendRPC(RPCMessage message) {
-            LifecycleManager.this.sendRPCMessagePrivate(message);
+            if(isConnected()) {
+                LifecycleManager.this.sendRPCMessagePrivate(message);
+            }
         }
 
         @Override
