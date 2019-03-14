@@ -8,6 +8,6 @@ import com.smartdevicelink.protocol.SdlPacket;
 public interface TransportCallback {
     void onConnectionEstablished();
     void onError();
-    void onConnectionTerminated();
+    void onConnectionTerminated(String reason);
     void onPacketReceived(SdlPacket packet);
 }

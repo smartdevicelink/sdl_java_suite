@@ -115,7 +115,7 @@ public class WebSocketServer2 extends WebSocketServer implements TransportInterf
         }
 
         if(callback!=null) {
-            callback.onConnectionTerminated();
+            callback.onConnectionTerminated(s);
         }
     }
 
