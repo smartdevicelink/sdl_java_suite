@@ -39,12 +39,11 @@ import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
-import org.java_websocket.server.WebSocketServer;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
-public class WebSocketServer2 extends WebSocketServer implements TransportInterface{
+public class WebSocketServer extends org.java_websocket.server.WebSocketServer implements TransportInterface{
     private static final String TAG = "WebSocketServer";
     TransportCallback callback;
     WebSocketServerConfig config;
@@ -53,7 +52,7 @@ public class WebSocketServer2 extends WebSocketServer implements TransportInterf
 
     final TransportRecord transportRecord;
 
-    public WebSocketServer2(WebSocketServerConfig config, TransportCallback callback){
+    public WebSocketServer(WebSocketServerConfig config, TransportCallback callback){
         super((new InetSocketAddress(config.port)));
 
         this.config = config;
@@ -140,7 +139,7 @@ public class WebSocketServer2 extends WebSocketServer implements TransportInterf
         byte input;
 
         if(message != null){
-            synchronized (WebSocketServer2.this) {
+            synchronized (WebSocketServer.this) {
                 boolean stateProgress;
                 while (message.hasRemaining()) {
                     input = message.get();
@@ -152,7 +151,7 @@ public class WebSocketServer2 extends WebSocketServer implements TransportInterf
                     }
 
                     if (psm.getState() == SdlPsm.FINISHED_STATE) {
-                        synchronized (com.smartdevicelink.transport.WebSocketServer2.this) {
+                        synchronized (WebSocketServer.this) {
                             SdlPacket packet = psm.getFormedPacket();
                             if (callback != null && packet != null) {
                                /// Log.i(TAG, "Read a packet: " + packet);

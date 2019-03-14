@@ -44,7 +44,6 @@ public abstract class TransportManagerBase {
 
     final Object TRANSPORT_STATUS_LOCK;
 
-    //WebSocketServer2 transport;
     final List<TransportRecord> transportStatus;
     final TransportEventListener transportListener;
 

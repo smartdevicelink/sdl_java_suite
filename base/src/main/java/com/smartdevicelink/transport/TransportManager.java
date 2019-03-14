@@ -60,7 +60,7 @@ public class TransportManager extends TransportManagerBase{
         //Start the new transport
         switch (config.getTransportType()){
             case WEB_SOCKET_SERVER:
-                transport = new WebSocketServer2((WebSocketServerConfig)config, new SingleTransportCallbackImpl(new TransportRecord(TransportType.WEB_SOCKET_SERVER,"127.0.0.1:"+((WebSocketServerConfig)config).port)));
+                transport = new WebSocketServer((WebSocketServerConfig)config, new SingleTransportCallbackImpl(new TransportRecord(TransportType.WEB_SOCKET_SERVER,"127.0.0.1:"+((WebSocketServerConfig)config).port)));
                 break;
             case CUSTOM:
                 transport = ((CustomTransportConfig) config).getTransportInterface();
