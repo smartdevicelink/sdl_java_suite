@@ -149,10 +149,23 @@ public interface ISdl {
     void sendRequests(List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener);
 
     /**
-     * Add an OnRPCNotificationListener for specified notification
-     * @param notificationId FunctionID of the notification that is to be listened for
-     * @param listener listener that should be added for the notification ID
+     * Takes a list of RPCMessages and sends it to SDL in a synchronous fashion. Responses are captured through callback on OnMultipleRequestListener.
+     * For sending requests asynchronously, use sendRequests <br>
+     *
+     * <strong>NOTE: This will override any listeners on individual RPCs</strong><br>
+     *
+     * <strong>ADDITIONAL NOTE: This only takes the type of RPCRequest for now, notifications and responses will be thrown out</strong>
+     *
+     * @param rpcs is the list of RPCMessages being sent
+     * @param listener listener for updates and completions
      */
+    void sendSequentialRPCs(final List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener);
+
+        /**
+         * Add an OnRPCNotificationListener for specified notification
+         * @param notificationId FunctionID of the notification that is to be listened for
+         * @param listener listener that should be added for the notification ID
+         */
     void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener);
 
     /**

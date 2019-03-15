@@ -169,7 +169,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
-    public void sendSequentialRPCs(final List<? extends RPCMessage> messages, final OnMultipleRequestListener listener){
+    private void sendSequentialRPCs(final List<? extends RPCMessage> messages, final OnMultipleRequestListener listener){
        if (messages != null){
            int requestCount = messages.size();
 
@@ -923,6 +923,11 @@ public class LifecycleManager extends BaseLifecycleManager {
         @Override
         public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
             LifecycleManager.this.sendRPCs(rpcs,listener);
+        }
+
+        @Override
+        public void sendSequentialRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
+            LifecycleManager.this.sendSequentialRPCs(rpcs,listener);
         }
 
         @Override

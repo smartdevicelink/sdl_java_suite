@@ -717,6 +717,15 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		@Override
+		public void sendSequentialRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
+			try {
+				proxy.sendSequentialRequests(rpcs,listener);
+			} catch (SdlException e) {
+				DebugTool.logError("Issue sending sequential RPCs ", e);
+			}
+		}
+
+		@Override
 		public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
 			proxy.addOnRPCNotificationListener(notificationId,listener);
 		}

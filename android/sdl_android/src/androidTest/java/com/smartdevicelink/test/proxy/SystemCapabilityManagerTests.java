@@ -183,6 +183,11 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		}
 
 		@Override
+		public void sendSequentialRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
+
+		}
+
+		@Override
 		public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {}
 
 		@Override

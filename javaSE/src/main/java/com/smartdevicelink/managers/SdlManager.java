@@ -419,7 +419,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		if (rpcRequestList.size() > 0) {
-			lifecycleManager.sendSequentialRPCs(rpcRequestList, listener);
+			_internalInterface.sendSequentialRPCs(rpcRequestList, listener);
 		}
 	}
 

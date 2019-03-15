@@ -355,6 +355,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
+		public void sendSequentialRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
+			try{
+				SdlProxyBase.this.sendSequentialRequests(rpcs,listener);
+			}catch (SdlException e ){
+				DebugTool.logError("Issue sending sequential RPCs ", e);
+			}
+		}
+
+		@Override
 		public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
 			SdlProxyBase.this.addOnRPCNotificationListener(notificationId,listener);
 		}
