@@ -78,7 +78,7 @@ public class WeatherDataTests extends TestCase {
 		Float precipProbability = msg.getPrecipProbability();
 		String precipType = msg.getPrecipType();
 		Float visibility = msg.getVisibility();
-		Image weatherIconImageName = msg.getWeatherIcon();
+		Image weatherIcon = msg.getWeatherIcon();
 
 		// Valid Tests
 		assertEquals(Test.MATCH, currentTemperature, Test.GENERAL_TEMPERATURE);
@@ -101,7 +101,7 @@ public class WeatherDataTests extends TestCase {
 		assertEquals(Test.MATCH, precipProbability, Test.GENERAL_FLOAT);
 		assertEquals(Test.MATCH, precipType, Test.GENERAL_STRING);
 		assertEquals(Test.MATCH, visibility, Test.GENERAL_FLOAT);
-		assertEquals(Test.MATCH, weatherIconImageName, Test.GENERAL_IMAGE);
+		assertEquals(Test.MATCH, weatherIcon, Test.GENERAL_IMAGE);
 
 		// Invalid/Null Tests
 		WeatherData msg = new WeatherData();
