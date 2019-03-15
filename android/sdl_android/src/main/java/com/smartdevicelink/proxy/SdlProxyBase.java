@@ -355,6 +355,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
+		public void sendSequentialRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
+			try{
+				SdlProxyBase.this.sendSequentialRequests(rpcs,listener);
+			}catch (SdlException e ){
+				DebugTool.logError("Issue sending sequential RPCs ", e);
+			}
+		}
+
+		@Override
 		public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
 			SdlProxyBase.this.addOnRPCNotificationListener(notificationId,listener);
 		}
@@ -362,6 +371,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
 			return SdlProxyBase.this.removeOnRPCNotificationListener(notificationId,listener);
+		}
+
+		@Override
+		public void addOnRPCRequestListener(FunctionID functionID, OnRPCRequestListener listener) {
+			SdlProxyBase.this.addOnRPCRequestListener(functionID,listener);
+		}
+
+		@Override
+		public boolean removeOnRPCRequestListener(FunctionID functionID, OnRPCRequestListener listener) {
+			return SdlProxyBase.this.removeOnRPCRequestListener(functionID,listener);
 		}
 
 		@Override

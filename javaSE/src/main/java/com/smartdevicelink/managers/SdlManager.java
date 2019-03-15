@@ -228,7 +228,6 @@ public class SdlManager extends BaseSdlManager{
 		this.fileManager = new FileManager(_internalInterface);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
 
-
 		// Start sub managers
 		this.permissionManager.start(subManagerListener);
 		this.fileManager.start(subManagerListener);
@@ -325,7 +324,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @return a SystemCapabilityManager object
 	 */
 	public SystemCapabilityManager getSystemCapabilityManager(){
-		return lifecycleManager.getSystemCapabilityManager();
+		return lifecycleManager.getSystemCapabilityManager(this);
 	}
 
 	/**
@@ -396,7 +395,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param message RPCMessage
 	 */
 	public void sendRPC(RPCMessage message) {
-		lifecycleManager.sendRPC(message);
+		_internalInterface.sendRPC(message);
 	}
 
 	/**
@@ -420,7 +419,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		if (rpcRequestList.size() > 0) {
-			lifecycleManager.sendSequentialRPCs(rpcRequestList, listener);
+			_internalInterface.sendSequentialRPCs(rpcRequestList, listener);
 		}
 	}
 
@@ -445,7 +444,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		if (rpcRequestList.size() > 0) {
-			lifecycleManager.sendRPCs(rpcRequestList, listener);
+			_internalInterface.sendRequests(rpcRequestList,listener);
 		}
 	}
 
@@ -454,7 +453,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param listener listener that will be called when a notification is received
 	 */
 	public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
-		lifecycleManager.addOnRPCNotificationListener(notificationId,listener);
+		_internalInterface.addOnRPCNotificationListener(notificationId,listener);
 	}
 
 	/**
@@ -462,7 +461,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param listener listener that was previously added
 	 */
 	public void removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
-		lifecycleManager.removeOnRPCNotificationListener(notificationId, listener);
+		_internalInterface.removeOnRPCNotificationListener(notificationId, listener);
 	}
 
 	/**
@@ -470,7 +469,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param listener listener that will be called when a request is received
 	 */
 	public void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
-		lifecycleManager.addOnRPCRequestListener(requestId,listener);
+		_internalInterface.addOnRPCRequestListener(requestId,listener);
 	}
 
 	/**
@@ -478,7 +477,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param listener listener that was previously added
 	 */
 	public void removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
-		lifecycleManager.removeOnRPCRequestListener(requestId, listener);
+		_internalInterface.removeOnRPCRequestListener(requestId, listener);
 	}
 
 	// LIFECYCLE / OTHER
@@ -508,11 +507,12 @@ public class SdlManager extends BaseSdlManager{
 				appConfig.setDayColorScheme(dayColorScheme);
 				appConfig.setNightColorScheme(nightColorScheme);
 				appConfig.setAppID(appId);
-
+				appConfig.setMinimumProtocolVersion(minimumProtocolVersion);
+				appConfig.setMinimumRPCVersion(minimumRPCVersion);
 
 				lifecycleManager = new LifecycleManager(appConfig, transport, lifecycleListener);
-				lifecycleManager.setMinimumProtocolVersion(minimumProtocolVersion);
-				lifecycleManager.setMinimumRPCVersion(minimumRPCVersion);
+				_internalInterface = lifecycleManager.getInternalInterface(SdlManager.this);
+
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
 					lifecycleManager.setSdlSecurityClassList(sdlSecList);
 				}
@@ -520,12 +520,11 @@ public class SdlManager extends BaseSdlManager{
 					Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
 					if (functionIDSet != null && !functionIDSet.isEmpty()) {
 						for (FunctionID functionID : functionIDSet) {
-							lifecycleManager.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
+							_internalInterface.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
 						}
 					}
 				}
 
-				_internalInterface = lifecycleManager.getInternalInterface(SdlManager.this);
 
 				lifecycleManager.start();
 
