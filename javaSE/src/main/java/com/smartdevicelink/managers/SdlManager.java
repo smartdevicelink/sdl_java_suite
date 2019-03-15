@@ -444,7 +444,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		if (rpcRequestList.size() > 0) {
-			lifecycleManager.sendRPCs(rpcRequestList, listener);
+			_internalInterface.sendRequests(rpcRequestList,listener);
 		}
 	}
 
@@ -507,12 +507,12 @@ public class SdlManager extends BaseSdlManager{
 				appConfig.setDayColorScheme(dayColorScheme);
 				appConfig.setNightColorScheme(nightColorScheme);
 				appConfig.setAppID(appId);
-
+				appConfig.setMinimumProtocolVersion(minimumProtocolVersion);
+				appConfig.setMinimumRPCVersion(minimumRPCVersion);
 
 				lifecycleManager = new LifecycleManager(appConfig, transport, lifecycleListener);
 				_internalInterface = lifecycleManager.getInternalInterface(SdlManager.this);
-				lifecycleManager.setMinimumProtocolVersion(minimumProtocolVersion);
-				lifecycleManager.setMinimumRPCVersion(minimumRPCVersion);
+
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
 					lifecycleManager.setSdlSecurityClassList(sdlSecList);
 				}

@@ -149,15 +149,8 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
         return new Version(1,0,0);
     }
-    private Version getRpcSpecVersion(){
-        return rpcSpecVersion;
-    }
 
-    private void sendRPC(RPCMessage message){
-        this.sendRPCMessagePrivate(message);
-    }
-
-    public void sendRPCs(List<? extends RPCMessage> messages, OnMultipleRequestListener listener){
+    private void sendRPCs(List<? extends RPCMessage> messages, OnMultipleRequestListener listener){
         if(messages != null ){
             for(RPCMessage message : messages){
                 if(message instanceof RPCRequest){
@@ -266,6 +259,21 @@ public class LifecycleManager extends BaseLifecycleManager {
         if(lifecycleListener != null){
             lifecycleListener.onProxyClosed(this, info,e,null);
         }
+    }
+
+    /**
+     * This method is used to ensure all of the methods in this class can remain private and no grantees can be made
+     * to the developer what methods are availalbe or not.
+     *
+     * @param sdlManager this must be a working manager instance
+     * @return the internal interface that hooks into this manager
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    public ISdl getInternalInterface(SdlManager sdlManager) {
+        if (sdlManager != null) {
+            return internalInterface;
+        }
+        return null;
     }
 
 
@@ -822,41 +830,6 @@ public class LifecycleManager extends BaseLifecycleManager {
             LifecycleManager.this.authToken = token;
         }
 
-        /**
-         * Sets the minimum protocol version that will be permitted to connect.
-         * If the protocol version of the head unit connected is below this version,
-         * the app will disconnect with an EndService protocol message and will not register.
-         *
-         * @param minimumProtocolVersion
-         */
-        public void setMinimumProtocolVersion(Version minimumProtocolVersion) {
-            LifecycleManager.this.minimumProtocolVersion = minimumProtocolVersion;
-        }
-
-        /**
-         * The minimum RPC version that will be permitted to connect.
-         * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
-         *
-         * @param minimumRPCVersion
-         */
-        public void setMinimumRPCVersion(Version minimumRPCVersion) {
-            LifecycleManager.this.minimumRPCVersion = minimumRPCVersion;
-        }
-
-        /**
-         * This method is used to ensure all of the methods in this class can remain private and no grantees can be made
-         * to the developer what methods are availalbe or not.
-         *
-         * @param sdlManager this must be a working manager instance
-         * @return the internal interface that hooks into this manager
-         */
-        @RestrictTo(RestrictTo.Scope.LIBRARY)
-        public ISdl getInternalInterface(SdlManager sdlManager) {
-            if (sdlManager != null) {
-                return internalInterface;
-            }
-            return null;
-        }
     };
     /* *******************************************************************************************************
      *************************************** ISdlConnectionListener END ************************************
@@ -1047,6 +1020,8 @@ public class LifecycleManager extends BaseLifecycleManager {
         private Language languageDesired, hmiDisplayLanguageDesired;
         private Vector<AppHMIType> appType;
         private TemplateColorScheme dayColorScheme, nightColorScheme;
+        private Version minimumProtocolVersion;
+        private Version minimumRPCVersion;
 
         private void prepare(){
             if (getNgnMediaScreenAppName() == null) {
@@ -1153,6 +1128,35 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         public void setNightColorScheme(TemplateColorScheme nightColorScheme) {
             this.nightColorScheme = nightColorScheme;
+        }
+
+        public Version getMinimumProtocolVersion() {
+            return minimumProtocolVersion;
+        }
+
+        /**
+         * Sets the minimum protocol version that will be permitted to connect.
+         * If the protocol version of the head unit connected is below this version,
+         * the app will disconnect with an EndService protocol message and will not register.
+         *
+         * @param minimumProtocolVersion
+         */
+        public void setMinimumProtocolVersion(Version minimumProtocolVersion) {
+            this.minimumProtocolVersion = minimumProtocolVersion;
+        }
+
+        public Version getMinimumRPCVersion() {
+            return minimumRPCVersion;
+        }
+
+        /**
+         * The minimum RPC version that will be permitted to connect.
+         * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
+         *
+         * @param minimumRPCVersion
+         */
+        public void setMinimumRPCVersion(Version minimumRPCVersion) {
+            this.minimumRPCVersion = minimumRPCVersion;
         }
     }
 
