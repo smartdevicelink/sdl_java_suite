@@ -324,7 +324,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @return a SystemCapabilityManager object
 	 */
 	public SystemCapabilityManager getSystemCapabilityManager(){
-		return lifecycleManager.getSystemCapabilityManager();
+		return lifecycleManager.getSystemCapabilityManager(this);
 	}
 
 	/**

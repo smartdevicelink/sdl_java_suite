@@ -221,8 +221,21 @@ public class LifecycleManager extends BaseLifecycleManager {
        }
     }
 
-    public SystemCapabilityManager getSystemCapabilityManager(){
-        return systemCapabilityManager;
+    /**
+     * This method is used to ensure all of the methods in this class can remain private and no grantees can be made
+     * to the developer what methods are available or not.
+     *
+     * <b>NOTE: THERE IS NO GURANTEE THIS WILL BE A VALID SYSTEM CAPABILITY MANAGER</b>
+     *
+     * @param sdlManager this must be a working manager instance
+     * @return the system capability manager.
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    public SystemCapabilityManager getSystemCapabilityManager(SdlManager sdlManager){
+        if(sdlManager != null){
+            return systemCapabilityManager;
+        }
+        return null;
     }
 
     private boolean isConnected(){
@@ -263,7 +276,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     /**
      * This method is used to ensure all of the methods in this class can remain private and no grantees can be made
-     * to the developer what methods are availalbe or not.
+     * to the developer what methods are available or not.
      *
      * @param sdlManager this must be a working manager instance
      * @return the internal interface that hooks into this manager
