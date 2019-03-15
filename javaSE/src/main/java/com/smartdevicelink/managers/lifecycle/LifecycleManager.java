@@ -123,6 +123,8 @@ public class LifecycleManager extends BaseLifecycleManager {
         this.rpcRequestListeners = new HashMap<>();
 
         this.appConfig = appConfig;
+        this.minimumProtocolVersion = appConfig.minimumProtocolVersion;
+        this.minimumRPCVersion = appConfig.minimumRPCVersion;
         this.session = new SdlSession(sdlConnectionListener, config);
 
         this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
