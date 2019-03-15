@@ -28,6 +28,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -186,6 +187,16 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		@Override
 		public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {return false;}
+
+		@Override
+		public void addOnRPCRequestListener(FunctionID functionID, OnRPCRequestListener listener) {
+
+		}
+
+		@Override
+		public boolean removeOnRPCRequestListener(FunctionID functionID, OnRPCRequestListener listener) {
+			return false;
+		}
 
 		@Override
 		public void addOnRPCListener(FunctionID responseId, OnRPCListener listener) { }
