@@ -2,6 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.DateTime;
+import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.Temperature;
 import com.smartdevicelink.proxy.rpc.WeatherData;
 import com.smartdevicelink.test.JsonUtils;
@@ -49,7 +50,7 @@ public class WeatherDataTests extends TestCase {
 		msg.setPrecipProbability(Test.GENERAL_FLOAT);
 		msg.setPrecipType(Test.GENERAL_STRING);
 		msg.setVisibility(Test.GENERAL_FLOAT);
-		msg.setWeatherIconImageName(Test.GENERAL_STRING);
+		msg.setWeatherIcon(Test.GENERAL_IMAGE);
 	}
 
 	/**
@@ -77,7 +78,7 @@ public class WeatherDataTests extends TestCase {
 		Float precipProbability = msg.getPrecipProbability();
 		String precipType = msg.getPrecipType();
 		Float visibility = msg.getVisibility();
-		String weatherIconImageName = msg.getWeatherIconImageName();
+		Image weatherIcon = msg.getWeatherIcon();
 
 		// Valid Tests
 		assertEquals(Test.MATCH, currentTemperature, Test.GENERAL_TEMPERATURE);
@@ -100,7 +101,7 @@ public class WeatherDataTests extends TestCase {
 		assertEquals(Test.MATCH, precipProbability, Test.GENERAL_FLOAT);
 		assertEquals(Test.MATCH, precipType, Test.GENERAL_STRING);
 		assertEquals(Test.MATCH, visibility, Test.GENERAL_FLOAT);
-		assertEquals(Test.MATCH, weatherIconImageName, Test.GENERAL_STRING);
+		assertEquals(Test.MATCH, weatherIcon, Test.GENERAL_IMAGE);
 
 		// Invalid/Null Tests
 		WeatherData msg = new WeatherData();
@@ -127,7 +128,7 @@ public class WeatherDataTests extends TestCase {
 		assertNull(Test.NULL, msg.getPrecipProbability());
 		assertNull(Test.NULL, msg.getPrecipType());
 		assertNull(Test.NULL, msg.getVisibility());
-		assertNull(Test.NULL, msg.getWeatherIconImageName());
+		assertNull(Test.NULL, msg.getWeatherIcon());
 	}
 
 	public void testJson(){
@@ -155,7 +156,7 @@ public class WeatherDataTests extends TestCase {
 			reference.put(WeatherData.KEY_PRECIP_PROBABILITY, Test.GENERAL_FLOAT);
 			reference.put(WeatherData.KEY_PRECIP_TYPE, Test.GENERAL_STRING);
 			reference.put(WeatherData.KEY_VISIBILITY, Test.GENERAL_FLOAT);
-			reference.put(WeatherData.KEY_WEATHER_ICON_IMAGE_NAME, Test.GENERAL_STRING);
+			reference.put(WeatherData.KEY_WEATHER_ICON, Test.GENERAL_STRING);
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -173,6 +174,10 @@ public class WeatherDataTests extends TestCase {
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
 					assertTrue(Test.TRUE, Validator.validateDateTime(Test.GENERAL_DATETIME, new DateTime(hashTest)));
+				} else if (key.equals(WeatherData.KEY_WEATHER_ICON)){
+					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
+					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
+					assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, new Image(hashTest)));
 				} else {
 					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}

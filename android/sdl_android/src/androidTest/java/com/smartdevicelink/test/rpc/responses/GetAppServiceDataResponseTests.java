@@ -55,11 +55,6 @@ public class GetAppServiceDataResponseTests extends BaseRpcTests {
 		// test getter
 		AppServiceData serviceData = msg.getServiceData();
 		assertEquals(Test.GENERAL_APPSERVICE_DATA, serviceData);
-
-		// test constructor
-		msg = new GetAppServiceDataResponse(true, Result.SUCCESS, Test.GENERAL_APPSERVICE_DATA);
-		serviceData = msg.getServiceData();
-		assertEquals(Test.GENERAL_APPSERVICE_DATA, serviceData);
 	}
 
 	/**

@@ -27,7 +27,7 @@ public class WeatherData extends RPCStruct {
 	public static final String KEY_PRECIP_PROBABILITY = "precipProbability";
 	public static final String KEY_PRECIP_TYPE = "precipType";
 	public static final String KEY_VISIBILITY = "visibility";
-	public static final String KEY_WEATHER_ICON_IMAGE_NAME = "weatherIconImageName";
+	public static final String KEY_WEATHER_ICON = "weatherIcon";
 
 	// Constructors
 
@@ -320,17 +320,17 @@ public class WeatherData extends RPCStruct {
 	}
 
 	/**
-	 * @param weatherIconImageName -
+	 * @param weatherIcon -
 	 */
-	public void setWeatherIconImageName(String weatherIconImageName) {
-		setValue(KEY_WEATHER_ICON_IMAGE_NAME, weatherIconImageName);
+	public void setWeatherIcon(Image weatherIcon) {
+		setValue(KEY_WEATHER_ICON, weatherIcon);
 	}
 
 	/**
-	 * @return weatherIconImageName
+	 * @return weatherIcon
 	 */
-	public String getWeatherIconImageName() {
-		return getString(KEY_WEATHER_ICON_IMAGE_NAME);
+	public Image getWeatherIcon() {
+		return (Image) getObject(Image.class, KEY_WEATHER_ICON);
 	}
 
 	/**
