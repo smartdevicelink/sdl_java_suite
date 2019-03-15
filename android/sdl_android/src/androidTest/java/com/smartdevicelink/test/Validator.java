@@ -1627,7 +1627,7 @@ public class Validator{
 			return false;
 		}
 
-		if (!item1.getWeatherIconImageName().equals(item2.getWeatherIconImageName())) {
+		if (!validateImage(item1.getWeatherIcon(), item2.getWeatherIcon())) {
 			return false;
 		}
 

@@ -25,9 +25,8 @@ public class GetAppServiceDataResponse extends RPCResponse {
 		super(hash);
 	}
 
-	public GetAppServiceDataResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull AppServiceData serviceData){
+	public GetAppServiceDataResponse(@NonNull Boolean success, @NonNull Result resultCode){
 		this();
-		setServiceData(serviceData);
 		setSuccess(success);
 		setResultCode(resultCode);
 	}
@@ -37,7 +36,7 @@ public class GetAppServiceDataResponse extends RPCResponse {
 	/**
 	 * @param serviceData -
 	 */
-	public void setServiceData(@NonNull AppServiceData serviceData){
+	public void setServiceData(AppServiceData serviceData){
 		setParameters(KEY_SERVICE_DATA, serviceData);
 	}
 
