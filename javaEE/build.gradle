@@ -39,7 +39,7 @@ jar {
 
 apply from: 'bintray.gradle'
 
-// Excluded :javaSE:bintrayUpload from running when we run bintrayUpload in javaEE
+// Exclude :javaSE:bintrayUpload from running when we run bintrayUpload in javaEE
 def taskRequests = gradle.startParameter.taskRequests
 def runTaskRequest = taskRequests.find { it.args.contains('bintrayUpload') }
 if (runTaskRequest) {
