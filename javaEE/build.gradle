@@ -26,12 +26,13 @@ configurations {
 }
 
 dependencies {
-    //extraLibs fileTree(dir: 'libs', include: ['*.jar'])
+    extraLibs fileTree(dir: 'libs', include: ['*.jar'])
     extraLibs project(path: ':javaSE')
-    configurations.implementation.extendsFrom(configurations.extraLibs)
+    configurations.api.extendsFrom(configurations.extraLibs)
 }
 
 jar {
+    dependsOn ':javaSE:jar'
     from {
         configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
     }
@@ -39,7 +40,7 @@ jar {
 
 apply from: 'bintray.gradle'
 
-// Excluded :javaSE:bintrayUpload from running when we run bintrayUpload in javaEE
+// Exclude :javaSE:bintrayUpload from running when we run bintrayUpload in javaEE
 def taskRequests = gradle.startParameter.taskRequests
 def runTaskRequest = taskRequests.find { it.args.contains('bintrayUpload') }
 if (runTaskRequest) {
