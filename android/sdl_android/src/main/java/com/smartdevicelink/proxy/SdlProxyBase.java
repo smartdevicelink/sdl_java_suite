@@ -4420,7 +4420,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					if (ButtonName.OK.equals(buttonName)) {
 						RPCRequest request2 = new RPCRequest(request);
 						request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
+						request2.setOnRPCResponseListener(request.getOnRPCResponseListener());
 						sendRPCMessagePrivate(request2);
+						return;
 					}
 				}
 			}
