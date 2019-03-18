@@ -36,6 +36,7 @@ import android.support.annotation.NonNull;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.PutFile;
+import com.smartdevicelink.util.FileUtls;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -80,7 +81,7 @@ public class FileManager extends BaseFileManager {
 
 		if(file.getFilePath() != null){
 			//Attempt to access the file via a path
-			byte[] data = contentsOfFilePath(file.getFilePath());
+			byte[] data = FileUtls.getFileData(file.getFilePath());
 			if(data != null ){
 				putFile.setFileData(data);
 			}else{
@@ -102,38 +103,4 @@ public class FileManager extends BaseFileManager {
 		return putFile;
 	}
 
-	/**
-	 *
-	 * @param filePath
-	 * @return
-	 */
-	private byte[] contentsOfFilePath(String filePath){
-		File file = new File(filePath);
-		if(file.isFile() && file.canRead()){
-			FileInputStream fileInputStream = null;
-			byte[] bytesArray = null;
-
-			try {
-				bytesArray = new byte[(int) file.length()];
-
-				//read file into bytes[]
-				fileInputStream = new FileInputStream(file);
-				fileInputStream.read(bytesArray);
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				if (fileInputStream != null) {
-					try {
-						fileInputStream.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-
-			}
-			return bytesArray;
-		}
-		return null;
-	}
 }
