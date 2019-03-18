@@ -1,11 +1,11 @@
 package com.smartdevicelink.test.trace;
 
-import java.io.UnsupportedEncodingException;
-
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.trace.Mime;
 
 import junit.framework.TestCase;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

@@ -1,13 +1,9 @@
 package com.smartdevicelink.proxy;
 
-import java.util.List;
-import java.util.Vector;
-
 import android.app.Service;
 import android.content.Context;
 
 import com.smartdevicelink.BuildConfig;
-import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
@@ -19,6 +15,7 @@ import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
@@ -33,6 +30,9 @@ import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
+
+import java.util.List;
+import java.util.Vector;
 
 import static com.smartdevicelink.proxy.SystemCapabilityManager.convertToList;
 

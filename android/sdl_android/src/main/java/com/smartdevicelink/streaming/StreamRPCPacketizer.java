@@ -1,11 +1,6 @@
 package com.smartdevicelink.streaming;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Hashtable;
-
 import com.smartdevicelink.SdlConnection.SdlSession;
-
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -23,6 +18,10 @@ import com.smartdevicelink.proxy.rpc.StreamRPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
 import com.smartdevicelink.util.Version;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Hashtable;
 
 public class StreamRPCPacketizer extends AbstractPacketizer implements IPutFileResponseListener, Runnable{
 

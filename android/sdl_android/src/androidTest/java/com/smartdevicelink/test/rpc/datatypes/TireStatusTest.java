@@ -1,16 +1,16 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
-import junit.framework.TestCase;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
+
+import junit.framework.TestCase;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

@@ -5,7 +5,6 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.AppServiceData;
 import com.smartdevicelink.proxy.rpc.GetAppServiceDataResponse;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;

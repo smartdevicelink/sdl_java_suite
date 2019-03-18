@@ -40,7 +40,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;

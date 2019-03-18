@@ -1,8 +1,8 @@
 package com.smartdevicelink.Dispatcher;
 
-import java.util.concurrent.LinkedBlockingQueue;
-
 import com.smartdevicelink.util.DebugTool;
+
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class ProxyMessageDispatcher<T> {
 	LinkedBlockingQueue<T> _queue = null;

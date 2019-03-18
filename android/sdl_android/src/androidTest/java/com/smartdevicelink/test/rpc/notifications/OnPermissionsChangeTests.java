@@ -1,10 +1,5 @@
 package com.smartdevicelink.test.rpc.notifications;
 
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
@@ -12,6 +7,11 @@ import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

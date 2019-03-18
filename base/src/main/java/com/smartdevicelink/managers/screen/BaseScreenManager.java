@@ -2,6 +2,7 @@ package com.smartdevicelink.managers.screen;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;

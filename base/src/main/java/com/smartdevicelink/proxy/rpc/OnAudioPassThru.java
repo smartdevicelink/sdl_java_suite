@@ -1,9 +1,9 @@
 package com.smartdevicelink.proxy.rpc;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
+
+import java.util.Hashtable;
 
 /**
  * Binary data is in binary part of hybrid msg.

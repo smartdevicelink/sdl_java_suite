@@ -1,13 +1,13 @@
 package com.smartdevicelink.test.transport;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.enums.TransportType;
 
 import junit.framework.TestCase;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

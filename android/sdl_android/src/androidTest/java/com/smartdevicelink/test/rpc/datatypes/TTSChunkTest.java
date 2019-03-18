@@ -1,16 +1,16 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
-import java.util.Iterator;
+import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
+import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
 import junit.framework.TestCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.rpc.TTSChunk;
-import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
-import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import java.util.Iterator;
 
 public class TTSChunkTest extends TestCase {
 	

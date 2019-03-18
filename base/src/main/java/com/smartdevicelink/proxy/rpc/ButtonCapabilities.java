@@ -2,10 +2,10 @@ package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
+
+import java.util.Hashtable;
 
 /**
  * Provides information about the capabilities of a SDL HMI button.

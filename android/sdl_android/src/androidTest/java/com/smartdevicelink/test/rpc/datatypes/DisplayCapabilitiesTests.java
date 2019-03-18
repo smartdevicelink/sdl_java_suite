@@ -1,15 +1,5 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-
-import junit.framework.TestCase;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ImageField;
@@ -20,6 +10,16 @@ import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
+
+import junit.framework.TestCase;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

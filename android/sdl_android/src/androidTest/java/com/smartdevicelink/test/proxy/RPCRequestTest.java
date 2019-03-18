@@ -6,8 +6,6 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.test.Config;
 
-import junit.framework.TestCase;
-
 
 public class RPCRequestTest extends AndroidTestCase2 {
 

@@ -1,11 +1,5 @@
 package com.smartdevicelink.transport;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.util.UUID;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
@@ -21,6 +15,12 @@ import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.util.UUID;
 
 /**
  * Bluetooth Transport Implementation. This transport advertises its existence to SDL by publishing an SDP record and waiting for an incoming connection from SDL. Connection is verified by checking for the SDL UUID. For more detailed information please refer to the <a href="#bluetoothTransport">Bluetooth Transport Guide</a>.

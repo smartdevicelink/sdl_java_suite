@@ -1,12 +1,5 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
-import java.util.Iterator;
-
-import junit.framework.TestCase;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.ScreenParams;
@@ -14,6 +7,13 @@ import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
+
+import junit.framework.TestCase;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

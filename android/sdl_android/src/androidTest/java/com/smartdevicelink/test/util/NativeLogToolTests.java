@@ -1,13 +1,13 @@
 package com.smartdevicelink.test.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.smartdevicelink.test.Test;
+import com.smartdevicelink.util.NativeLogTool;
 
 import junit.framework.TestCase;
 
-import com.smartdevicelink.test.Test;
-import com.smartdevicelink.util.NativeLogTool;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

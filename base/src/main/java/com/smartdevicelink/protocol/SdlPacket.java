@@ -1,14 +1,14 @@
 package com.smartdevicelink.protocol;
 
-import java.nio.ByteBuffer;
-import java.util.HashMap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.livio.BSON.BsonEncoder;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.nio.ByteBuffer;
+import java.util.HashMap;
 
 /**
  * This class is only intended to be parcelable from the transport broker to the SDL Router Service.

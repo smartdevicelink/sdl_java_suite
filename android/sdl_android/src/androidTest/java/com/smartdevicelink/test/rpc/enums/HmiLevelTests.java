@@ -1,12 +1,12 @@
 package com.smartdevicelink.test.rpc.enums;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 
 import junit.framework.TestCase;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

@@ -1,12 +1,12 @@
 package com.smartdevicelink.test.rpc.enums;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 
 import junit.framework.TestCase;
 
-import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

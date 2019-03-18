@@ -1,12 +1,12 @@
 package com.smartdevicelink.streaming;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.util.Version;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 abstract public class AbstractPacketizer {
 

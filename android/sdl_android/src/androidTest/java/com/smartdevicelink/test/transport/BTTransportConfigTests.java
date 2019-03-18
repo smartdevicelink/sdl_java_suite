@@ -1,10 +1,10 @@
 package com.smartdevicelink.test.transport;
 
-import junit.framework.TestCase;
-
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
+
+import junit.framework.TestCase;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

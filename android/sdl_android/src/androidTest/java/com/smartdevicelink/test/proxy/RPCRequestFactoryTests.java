@@ -1,10 +1,5 @@
 package com.smartdevicelink.test.proxy;
 
-import java.util.Vector;
-
-import junit.framework.TestCase;
-import android.telephony.TelephonyManager;
-
 import com.smartdevicelink.proxy.RPCRequestFactory;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AddCommand;
@@ -58,6 +53,10 @@ import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.test.NullValues;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
+
+import junit.framework.TestCase;
+
+import java.util.Vector;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

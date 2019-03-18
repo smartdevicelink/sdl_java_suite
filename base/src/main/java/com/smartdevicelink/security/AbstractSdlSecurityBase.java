@@ -1,9 +1,10 @@
 package com.smartdevicelink.security;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 abstract class AbstractSdlSecurityBase {
 	

@@ -1,12 +1,12 @@
 package com.smartdevicelink.transport.utl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
 import android.util.Log;
 
 import com.smartdevicelink.transport.TransportConstants;
 import com.smartdevicelink.transport.enums.TransportType;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class ByteAraryMessageAssembler {
 	private static final String TAG = "ByteAraryMessageAssembler";

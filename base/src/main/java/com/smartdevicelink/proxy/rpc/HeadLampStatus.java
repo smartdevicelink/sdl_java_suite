@@ -2,10 +2,10 @@ package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
+
+import java.util.Hashtable;
 /** Status of the head lamps.
  * 
  * <p><table border="1" rules="all"></p>

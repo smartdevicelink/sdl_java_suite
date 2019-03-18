@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
+
 import java.util.Hashtable;
 
 /**

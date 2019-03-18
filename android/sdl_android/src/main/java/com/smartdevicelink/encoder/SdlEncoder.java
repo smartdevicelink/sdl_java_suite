@@ -1,9 +1,5 @@
 package com.smartdevicelink.encoder;
 
-import java.io.IOException;
-import java.io.PipedOutputStream;
-import java.nio.ByteBuffer;
-
 import android.annotation.TargetApi;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
@@ -13,6 +9,10 @@ import android.util.Log;
 import android.view.Surface;
 
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+
+import java.io.IOException;
+import java.io.PipedOutputStream;
+import java.nio.ByteBuffer;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class SdlEncoder {

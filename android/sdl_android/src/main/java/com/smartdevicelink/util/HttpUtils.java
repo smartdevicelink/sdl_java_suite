@@ -1,8 +1,8 @@
 package com.smartdevicelink.util;
 
-import java.io.IOException;
-
 import android.graphics.Bitmap;
+
+import java.io.IOException;
 
 /**
  * @see AndroidTools

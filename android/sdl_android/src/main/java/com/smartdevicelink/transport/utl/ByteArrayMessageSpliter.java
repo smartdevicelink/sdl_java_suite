@@ -1,15 +1,14 @@
 package com.smartdevicelink.transport.utl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import com.smartdevicelink.transport.TransportBroker;
-import com.smartdevicelink.transport.TransportConstants;
-import com.smartdevicelink.transport.enums.TransportType;
-
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
+
+import com.smartdevicelink.transport.TransportBroker;
+import com.smartdevicelink.transport.TransportConstants;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 public class ByteArrayMessageSpliter {
 	private static final String TAG = "ByteArrayMessageSpliter";

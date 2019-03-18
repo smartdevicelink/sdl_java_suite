@@ -1,14 +1,14 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
-import junit.framework.TestCase;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.Turn;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
+
+import junit.framework.TestCase;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class TurnTests extends TestCase {
 	

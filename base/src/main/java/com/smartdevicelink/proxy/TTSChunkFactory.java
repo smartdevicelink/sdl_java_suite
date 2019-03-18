@@ -1,9 +1,9 @@
 package com.smartdevicelink.proxy;
 
-import java.util.Vector;
-
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
+
+import java.util.Vector;
 
 public class TTSChunkFactory {
 

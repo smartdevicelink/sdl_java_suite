@@ -2,11 +2,11 @@ package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
+
+import java.util.Hashtable;
 
 /**
  * System Request Response is sent, when SystemRequest  has been called
