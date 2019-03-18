@@ -26,7 +26,7 @@ configurations {
 }
 
 dependencies {
-    //extraLibs fileTree(dir: 'libs', include: ['*.jar'])
+    extraLibs fileTree(dir: 'libs', include: ['*.jar'])
     extraLibs project(path: ':javaSE')
     configurations.implementation.extendsFrom(configurations.extraLibs)
 }
