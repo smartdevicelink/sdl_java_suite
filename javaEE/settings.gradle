@@ -1,2 +1,1 @@
-include ':javaEE' , ':javaSE'
-project (":javaSE").projectDir = new File("../javaSE")
+rootProject.name = 'javaEE'
