@@ -36,7 +36,6 @@ import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
-
 import com.smartdevicelink.transport.TransportManager;
 
 

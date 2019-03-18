@@ -1,17 +1,17 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
-import java.util.Iterator;
+import com.smartdevicelink.proxy.rpc.VehicleDataResult;
+import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
+import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
+import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
 import junit.framework.TestCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.rpc.VehicleDataResult;
-import com.smartdevicelink.proxy.rpc.enums.VehicleDataResultCode;
-import com.smartdevicelink.proxy.rpc.enums.VehicleDataType;
-import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import java.util.Iterator;
 
 public class VehicleDataResultTest extends TestCase {
 	

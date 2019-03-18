@@ -1,14 +1,13 @@
 package com.smartdevicelink.proxy;
 
-import java.io.IOException;
-
 import android.graphics.Bitmap;
 
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.util.AndroidTools;
-import com.smartdevicelink.util.HttpUtils;
+
+import java.io.IOException;
 
 public class LockScreenManager {
 	

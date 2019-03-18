@@ -1,13 +1,13 @@
 package com.smartdevicelink.test.proxy;
 
-import java.util.Vector;
-
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.test.Test;
 
 import junit.framework.TestCase;
+
+import java.util.Vector;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

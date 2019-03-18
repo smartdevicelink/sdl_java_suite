@@ -1,11 +1,6 @@
 package com.smartdevicelink.test.rpc.responses;
 
 
-import java.util.Hashtable;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
@@ -18,6 +13,11 @@ import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Hashtable;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

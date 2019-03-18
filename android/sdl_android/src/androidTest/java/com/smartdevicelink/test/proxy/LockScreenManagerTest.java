@@ -1,12 +1,12 @@
 package com.smartdevicelink.test.proxy;
 
-import junit.framework.TestCase;
-
 import com.smartdevicelink.proxy.LockScreenManager;
 import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.test.Test;
+
+import junit.framework.TestCase;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

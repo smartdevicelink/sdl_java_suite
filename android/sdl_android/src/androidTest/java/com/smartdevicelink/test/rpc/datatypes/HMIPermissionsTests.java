@@ -1,17 +1,17 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
-import java.util.Iterator;
-import java.util.List;
+import com.smartdevicelink.proxy.rpc.HMIPermissions;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
 import junit.framework.TestCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.rpc.HMIPermissions;
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
-import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

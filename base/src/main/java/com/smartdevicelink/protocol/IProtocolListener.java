@@ -1,7 +1,7 @@
 package com.smartdevicelink.protocol;
 
 
-import com.smartdevicelink.protocol.enums.*;
+import com.smartdevicelink.protocol.enums.SessionType;
 
 import java.util.List;
 

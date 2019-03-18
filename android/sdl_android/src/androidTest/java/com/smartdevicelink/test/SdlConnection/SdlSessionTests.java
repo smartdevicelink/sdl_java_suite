@@ -2,16 +2,10 @@ package com.smartdevicelink.test.SdlConnection;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
-import com.smartdevicelink.proxy.rpc.TTSChunk;
-import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
-import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.TCPTransportConfig;
 
 import junit.framework.TestCase;
-
-import java.util.Vector;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

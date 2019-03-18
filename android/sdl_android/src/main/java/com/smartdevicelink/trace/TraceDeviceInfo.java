@@ -3,14 +3,14 @@
  */
 package com.smartdevicelink.trace;
 
-import java.util.Iterator;
-import java.util.Set;
-
-import com.smartdevicelink.util.DebugTool;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.telephony.TelephonyManager;
+
+import com.smartdevicelink.util.DebugTool;
+
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author vvolkman

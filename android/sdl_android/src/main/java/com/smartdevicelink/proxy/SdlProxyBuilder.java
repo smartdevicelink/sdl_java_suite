@@ -1,7 +1,7 @@
 package com.smartdevicelink.proxy;
 
-import java.util.List;
-import java.util.Vector;
+import android.app.Service;
+import android.content.Context;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.proxy.interfaces.IProxyListenerALM;
@@ -15,8 +15,8 @@ import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 
-import android.app.Service;
-import android.content.Context;
+import java.util.List;
+import java.util.Vector;
 
 public class SdlProxyBuilder {
     // Required parameters

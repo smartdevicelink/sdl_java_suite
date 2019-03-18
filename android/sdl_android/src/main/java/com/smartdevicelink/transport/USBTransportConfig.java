@@ -1,9 +1,9 @@
 package com.smartdevicelink.transport;
 
-import com.smartdevicelink.transport.enums.TransportType;
-
 import android.content.Context;
 import android.hardware.usb.UsbAccessory;
+
+import com.smartdevicelink.transport.enums.TransportType;
 
 /**
  * <b>NOTE: </b> This should no longer be used. See the MultplexTransportConfig and guides to

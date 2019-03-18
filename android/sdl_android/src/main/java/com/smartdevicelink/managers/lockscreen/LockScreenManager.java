@@ -20,7 +20,6 @@ import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.AndroidTools;
-import com.smartdevicelink.util.HttpUtils;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;

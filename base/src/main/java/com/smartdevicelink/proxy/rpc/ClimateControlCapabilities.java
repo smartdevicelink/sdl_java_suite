@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
+
 import java.util.Hashtable;
 import java.util.List;
 

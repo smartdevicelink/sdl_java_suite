@@ -1,6 +1,5 @@
 package com.smartdevicelink.transport;
 
-import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageInfo;

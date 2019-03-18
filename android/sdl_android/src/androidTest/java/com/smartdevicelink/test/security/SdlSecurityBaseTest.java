@@ -1,9 +1,5 @@
 package com.smartdevicelink.test.security;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
@@ -13,8 +9,9 @@ import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.MultiplexTransportConfig;
-import com.smartdevicelink.transport.enums.TransportType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SdlSecurityBaseTest extends AndroidTestCase2 {
 		

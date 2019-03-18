@@ -1,7 +1,5 @@
 package com.smartdevicelink.proxy;
 
-import java.util.Vector;
-
 import android.os.Build;
 
 import com.smartdevicelink.proxy.rpc.AddCommand;
@@ -55,6 +53,8 @@ import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
+
+import java.util.Vector;
 
 /**
  * @deprecated Use RPC constructors directly instead

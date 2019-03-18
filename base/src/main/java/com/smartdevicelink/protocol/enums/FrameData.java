@@ -1,8 +1,8 @@
 package com.smartdevicelink.protocol.enums;
 
-import java.util.Vector;
-
 import com.smartdevicelink.util.ByteEnumer;
+
+import java.util.Vector;
 
 public class FrameData extends ByteEnumer {
 

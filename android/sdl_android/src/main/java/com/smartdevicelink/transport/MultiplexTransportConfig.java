@@ -32,11 +32,11 @@
 
 package com.smartdevicelink.transport;
 
-import com.smartdevicelink.transport.enums.TransportType;
-import com.smartdevicelink.transport.utl.TransportRecord;
-
 import android.content.ComponentName;
 import android.content.Context;
+
+import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
 
 import java.util.Arrays;
 import java.util.List;

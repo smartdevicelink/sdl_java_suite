@@ -1,12 +1,12 @@
 package com.smartdevicelink.test.trace;
 
-import junit.framework.TestCase;
-
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.trace.DiagLevel;
 import com.smartdevicelink.trace.SdlTrace;
 import com.smartdevicelink.trace.enums.DetailLevel;
 import com.smartdevicelink.trace.enums.Mod;
+
+import junit.framework.TestCase;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

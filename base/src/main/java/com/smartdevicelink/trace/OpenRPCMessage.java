@@ -1,11 +1,11 @@
 package com.smartdevicelink.trace;
 
+import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.RPCStruct;
+
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-
-import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.RPCStruct;
 
 class OpenRPCMessage extends RPCMessage {
 	private OpenRPCMessage() {super("");}

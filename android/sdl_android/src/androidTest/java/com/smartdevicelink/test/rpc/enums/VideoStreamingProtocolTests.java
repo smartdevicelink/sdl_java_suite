@@ -1,6 +1,5 @@
 package com.smartdevicelink.test.rpc.enums;
 
-import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 
 import junit.framework.TestCase;

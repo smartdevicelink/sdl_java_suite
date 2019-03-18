@@ -1,17 +1,16 @@
 package com.smartdevicelink.test.json.rpc;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import android.content.Context;
+
+import com.smartdevicelink.test.JsonUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-
-import com.smartdevicelink.test.JsonUtils;
+import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class JsonFileReader {
 	private static final String PATH = "json/";

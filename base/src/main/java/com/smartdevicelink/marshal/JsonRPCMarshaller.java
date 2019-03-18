@@ -1,19 +1,19 @@
 package com.smartdevicelink.marshal;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
+import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.trace.SdlTrace;
+import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
+import com.smartdevicelink.util.DebugTool;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.trace.*;
-import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
-import com.smartdevicelink.util.DebugTool;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 
 /*
  * Responsible for marshalling and unmarshing between RPC Objects and byte streams that are sent

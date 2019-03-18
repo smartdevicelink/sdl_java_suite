@@ -1,10 +1,11 @@
 package com.smartdevicelink.test.utl;
 
-import junit.framework.Assert;
 import android.content.ComponentName;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.util.AndroidTools;
+
+import junit.framework.Assert;
 
 public class AndroidToolsTests extends AndroidTestCase2 {
 	

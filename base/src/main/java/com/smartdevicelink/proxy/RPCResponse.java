@@ -5,9 +5,9 @@ package com.smartdevicelink.proxy;
 
 import android.support.annotation.NonNull;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.rpc.enums.Result;
+
+import java.util.Hashtable;
 
 /**
  * Result sent by SDL after an RPC is processed, consists of four parts: 

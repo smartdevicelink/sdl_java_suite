@@ -1,6 +1,7 @@
 package com.smartdevicelink.managers.lifecycle;
 
 import android.util.Log;
+
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;

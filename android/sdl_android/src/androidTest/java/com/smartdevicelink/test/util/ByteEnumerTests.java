@@ -1,11 +1,11 @@
 package com.smartdevicelink.test.util;
 
-import java.util.Vector;
+import com.smartdevicelink.test.Test;
+import com.smartdevicelink.util.ByteEnumer;
 
 import junit.framework.TestCase;
 
-import com.smartdevicelink.test.Test;
-import com.smartdevicelink.util.ByteEnumer;
+import java.util.Vector;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

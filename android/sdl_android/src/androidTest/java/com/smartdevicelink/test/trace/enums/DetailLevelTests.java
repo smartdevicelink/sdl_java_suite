@@ -1,13 +1,13 @@
 package com.smartdevicelink.test.trace.enums;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.smartdevicelink.test.Test;
+import com.smartdevicelink.trace.enums.DetailLevel;
 
 import junit.framework.TestCase;
 
-import com.smartdevicelink.test.Test;
-import com.smartdevicelink.trace.enums.DetailLevel;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

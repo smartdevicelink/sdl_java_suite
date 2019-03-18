@@ -1,11 +1,11 @@
 package com.smartdevicelink.test.protocol;
 
-import junit.framework.Assert;
-
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.BinaryFrameHeader;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.test.SampleRpc;
+
+import junit.framework.Assert;
 
 public class BinaryFrameHeaderTests extends AndroidTestCase2 {
 	

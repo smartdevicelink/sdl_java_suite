@@ -1,11 +1,11 @@
 package com.smartdevicelink.test.protocol.enums;
 
-import java.util.Vector;
-
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
+
+import java.util.Vector;
 
 
 public class FrameDataControlFrameTypeTests extends TestCase {

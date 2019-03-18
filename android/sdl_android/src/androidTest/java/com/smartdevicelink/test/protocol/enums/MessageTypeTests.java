@@ -1,12 +1,12 @@
 package com.smartdevicelink.test.protocol.enums;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.smartdevicelink.protocol.enums.MessageType;
 
 import junit.framework.TestCase;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MessageTypeTests extends TestCase  {
 	

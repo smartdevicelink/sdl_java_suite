@@ -1,7 +1,5 @@
 package com.smartdevicelink.trace;
 
-import java.sql.Timestamp;
-
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.os.Build;
@@ -22,6 +20,8 @@ import com.smartdevicelink.transport.SiphonServer;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.NativeLogTool;
+
+import java.sql.Timestamp;
 
 /* This class handles the global TraceSettings as requested by the users either through the combination of the following
    1. System defaults

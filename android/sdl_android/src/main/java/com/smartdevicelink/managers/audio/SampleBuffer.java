@@ -2,9 +2,10 @@ package com.smartdevicelink.managers.audio;
 
 import android.util.Log;
 
+import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
 
 /**
  * Wraps a buffer of raw audio samples depending on the sample type (8 bit, 16 bit)

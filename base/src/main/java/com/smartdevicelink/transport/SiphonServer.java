@@ -1,13 +1,14 @@
 package com.smartdevicelink.transport;
 
+import com.smartdevicelink.util.BitConverter;
+import com.smartdevicelink.util.DebugTool;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import com.smartdevicelink.util.*;
 
 public class SiphonServer {
 	// Prohibit use of no-arg ctor

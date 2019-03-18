@@ -1,15 +1,15 @@
 package com.smartdevicelink.test;
 
-import java.util.Iterator;
+import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.RPCResponse;
+import java.util.Iterator;
 
 public abstract class BaseRpcTests extends AndroidTestCase2 {
 

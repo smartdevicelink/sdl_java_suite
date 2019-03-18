@@ -1,8 +1,5 @@
 package com.smartdevicelink.test.rpc.notifications;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnSdlChoiceChosen;
@@ -11,6 +8,9 @@ import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

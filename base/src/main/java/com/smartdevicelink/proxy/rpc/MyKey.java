@@ -2,10 +2,10 @@ package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataStatus;
+
+import java.util.Hashtable;
 /** Information related to the MyKey feature.
  * <p><b>Parameter List</b></p>
  * <table border="1" rules="all">

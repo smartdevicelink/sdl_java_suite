@@ -1,10 +1,10 @@
 package com.smartdevicelink.test.rpc.notifications;
 
-import junit.framework.TestCase;
-
 import com.smartdevicelink.proxy.callbacks.InternalProxyMessage;
 import com.smartdevicelink.proxy.callbacks.OnProxyOpened;
 import com.smartdevicelink.test.Test;
+
+import junit.framework.TestCase;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

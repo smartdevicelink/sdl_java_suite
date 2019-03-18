@@ -1,13 +1,13 @@
 package com.smartdevicelink.test.protocol.heartbeat;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import com.smartdevicelink.protocol.heartbeat.HeartbeatMonitor;
 import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitorListener;
 import com.smartdevicelink.test.Test;
 
 import junit.framework.TestCase;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

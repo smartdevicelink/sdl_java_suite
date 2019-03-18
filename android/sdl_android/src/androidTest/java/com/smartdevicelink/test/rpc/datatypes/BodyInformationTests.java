@@ -1,17 +1,17 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
-import java.util.Iterator;
+import com.smartdevicelink.proxy.rpc.BodyInformation;
+import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
+import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
+import com.smartdevicelink.test.JsonUtils;
+import com.smartdevicelink.test.Test;
 
 import junit.framework.TestCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.smartdevicelink.proxy.rpc.BodyInformation;
-import com.smartdevicelink.proxy.rpc.enums.IgnitionStableStatus;
-import com.smartdevicelink.proxy.rpc.enums.IgnitionStatus;
-import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

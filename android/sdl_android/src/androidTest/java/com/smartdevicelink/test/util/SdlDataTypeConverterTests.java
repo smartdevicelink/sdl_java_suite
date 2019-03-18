@@ -1,9 +1,9 @@
 package com.smartdevicelink.test.util;
 
-import junit.framework.TestCase;
-
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.util.SdlDataTypeConverter;
+
+import junit.framework.TestCase;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

@@ -1,16 +1,15 @@
 package com.smartdevicelink.test;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.AppServiceCapability;
+import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.AppServiceCapability;
-import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public final class JsonUtils {

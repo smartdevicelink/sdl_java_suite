@@ -13,7 +13,6 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
-import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.StreamingStateMachine;
 import com.smartdevicelink.protocol.enums.FunctionID;

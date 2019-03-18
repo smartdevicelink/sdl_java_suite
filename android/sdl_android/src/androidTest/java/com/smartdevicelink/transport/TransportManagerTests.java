@@ -1,10 +1,7 @@
 package com.smartdevicelink.transport;
 
 import android.content.ComponentName;
-import android.os.Bundle;
 import android.os.Looper;
-import android.os.Message;
-import android.os.Parcelable;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.SdlPacket;
@@ -14,7 +11,6 @@ import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

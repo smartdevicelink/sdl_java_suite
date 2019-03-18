@@ -1,6 +1,5 @@
 package com.smartdevicelink.protocol;
 
-import android.os.Bundle;
 import android.util.Log;
 
 import com.smartdevicelink.AndroidTestCase2;
@@ -12,15 +11,12 @@ import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.RouterServiceValidator;
-import com.smartdevicelink.transport.enums.TransportType;
 
 import junit.framework.Assert;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 

@@ -3,10 +3,10 @@
  */
 package com.smartdevicelink.proxy;
 
-import java.util.Hashtable;
-
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.CorrelationIdGenerator;
+
+import java.util.Hashtable;
 
 public class RPCRequest extends RPCMessage {
 

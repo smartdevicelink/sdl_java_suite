@@ -1,15 +1,16 @@
 package com.smartdevicelink.test.transport;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
+import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.SdlPsm;
-import com.smartdevicelink.protocol.WiProProtocol;
 
-import android.util.Log;
 import junit.framework.TestCase;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
