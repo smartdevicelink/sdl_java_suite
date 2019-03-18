@@ -44,9 +44,11 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
-import com.smartdevicelink.proxy.interfaces.*;
+import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.*;
-import com.smartdevicelink.proxy.rpc.enums.*;
+import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
+import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
@@ -56,11 +58,7 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-import java.util.Set;
-import java.util.Map;
+import java.util.*;
 
 
 /**
