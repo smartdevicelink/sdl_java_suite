@@ -26,6 +26,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
 public class SSLWebSocketFactoryGenerator {
 
     private static final String JAVA_KEY_STORE = "JKS";
+    private static final String TLS = "TLS";
+    private static final String SUNX509 = "SunX509";
 
     public static WebSocketServerFactory generateWebSocketServer(SSLConfig config){
         SSLContext context = null;
@@ -57,13 +59,13 @@ public class SSLWebSocketFactoryGenerator {
             File kf = config.getJksFile();//= new File(PATHNAME + File.separator + KEYSTORE);
             ks.load(new FileInputStream(kf), config.getStorePassword().toCharArray());
 
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(SUNX509);
             kmf.init(ks, config.getKeyPassword().toCharArray());
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(SUNX509);
             tmf.init(ks);
 
             SSLContext sslContext = null;
-            sslContext = SSLContext.getInstance("TLS");
+            sslContext = SSLContext.getInstance(TLS);
             sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
             return sslContext;
         }
@@ -79,7 +81,7 @@ public class SSLWebSocketFactoryGenerator {
         SSLContext context;
 
         try {
-            context = SSLContext.getInstance( "TLS" );
+            context = SSLContext.getInstance( TLS );
 
             byte[] certBytes = parseDERFromPEM( config.getPemCertificate().getBytes(), "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----" );
             byte[] keyBytes = parseDERFromPEM( config.getPrivateKey().getBytes(), "-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----" );
@@ -92,7 +94,7 @@ public class SSLWebSocketFactoryGenerator {
             keystore.setCertificateEntry( "cert-alias", cert );
             keystore.setKeyEntry( "key-alias", key, config.getPassword().toCharArray(), new Certificate[]{ cert } );
 
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance( "SunX509" );
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance( SUNX509 );
             kmf.init( keystore, config.getPassword().toCharArray() );
 
             KeyManager[] km = kmf.getKeyManagers();
