@@ -152,42 +152,48 @@ public class WeatherData extends RPCStruct {
 	}
 
 	/**
-	 * @param humidity - 0 to 1, percentage humidity
+	 * minValue: 0, maxValue: 1
+	 * @param humidity - percentage humidity
 	 */
 	public void setHumidity(Float humidity) {
 		setValue(KEY_HUMIDITY, humidity);
 	}
 
 	/**
-	 * @return humidity - 0 to 1, percentage humidity
+	 * minValue: 0, maxValue: 1
+	 * @return humidity - percentage humidity
 	 */
 	public Float getHumidity() {
 		return getFloat(KEY_HUMIDITY);
 	}
 
 	/**
-	 * @param cloudCover - 0 to 1, cloud cover
+	 * minValue: 0, maxValue: 1
+	 * @param cloudCover - cloud cover
 	 */
 	public void setCloudCover(Float cloudCover) {
 		setValue(KEY_CLOUD_COVER, cloudCover);
 	}
 
 	/**
-	 * @return cloudCover - 0 to 1, cloud cover
+	 * minValue: 0, maxValue: 1
+	 * @return cloudCover - cloud cover
 	 */
 	public Float getCloudCover() {
 		return getFloat(KEY_CLOUD_COVER);
 	}
 
 	/**
-	 * @param moonPhase - 0 to 1, percentage of the moon seen, e.g. 0 = no moon, 0.25 = quarter moon
+	 * minValue: 0, maxValue: 1
+	 * @param moonPhase - percentage of the moon seen, e.g. 0 = no moon, 0.25 = quarter moon
 	 */
 	public void setMoonPhase(Float moonPhase) {
 		setValue(KEY_MOON_PHASE, moonPhase);
 	}
 
 	/**
-	 * @return moonPhase - 0 to 1, percentage of the moon seen, e.g. 0 = no moon, 0.25 = quarter moon
+	 * minValue: 0, maxValue: 1
+	 * @return moonPhase - percentage of the moon seen, e.g. 0 = no moon, 0.25 = quarter moon
 	 */
 	public Float getMoonPhase() {
 		return getFloat(KEY_MOON_PHASE);
@@ -292,14 +298,16 @@ public class WeatherData extends RPCStruct {
 	}
 
 	/**
-	 * @param precipProbability - 0 to 1, percentage chance
+	 * minValue: 0, maxValue: 1
+	 * @param precipProbability - percentage chance
 	 */
 	public void setPrecipProbability(Float precipProbability) {
 		setValue(KEY_PRECIP_PROBABILITY, precipProbability);
 	}
 
 	/**
-	 * @return precipProbability - 0 to 1, percentage chance
+	 * minValue: 0, maxValue: 1
+	 * @return precipProbability - percentage chance
 	 */
 	public Float getPrecipProbability() {
 		return getFloat(KEY_PRECIP_PROBABILITY);
