@@ -1,4 +1,3 @@
 rootProject.name = 'hello_sdl_java_ee'
-include  "sdl_java_ee"
+include ":sdl_java_ee"
 project (":sdl_java_ee").projectDir = new File("../javaEE/")
-
