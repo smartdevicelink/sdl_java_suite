@@ -35,9 +35,11 @@ package com.smartdevicelink.transport;
 import android.util.Log;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.SSLWebSocketFactoryGenerator;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 import org.java_websocket.WebSocket;
+import org.java_websocket.WebSocketServerFactory;
 import org.java_websocket.handshake.ClientHandshake;
 
 import java.net.InetSocketAddress;
@@ -60,6 +62,14 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
         transportRecord = new TransportRecord(TransportType.WEB_SOCKET_SERVER,"127.0.0.1:" + config.port); //If changed, change in transport manager as well
         //This will set the connection lost timeout to not occur. So we might ping, but not pong
         this.setConnectionLostTimeout(config.connectionLostTimeout);
+        if(config.getSslConfig() != null){
+            WebSocketServerFactory factory = SSLWebSocketFactoryGenerator.generateWebSocketServer(config.getSslConfig());
+            if(factory!=null){
+                this.setWebSocketFactory(factory);
+            }else{
+                DebugTool.logError("WebSocketServer: Unable to generate SSL Web Socket Server Factory");
+            }
+        }
 
     }
 
