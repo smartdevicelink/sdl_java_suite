@@ -1,11 +1,12 @@
 package com.smartdevicelink.transport;
 
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.SSLConfig;
 
 public class WebSocketServerConfig extends BaseTransportConfig{
 
     final int port, connectionLostTimeout;
-
+    SSLConfig sslConfig;
     /**
      * Default constructor for WebsocketConfig
      * @param port the port this web socket should listen on
@@ -16,6 +17,14 @@ public class WebSocketServerConfig extends BaseTransportConfig{
         this.port = port;
         this.shareConnection = false;
         this.connectionLostTimeout = connectionLostTimeout;
+    }
+
+    public SSLConfig getSslConfig() {
+        return sslConfig;
+    }
+
+    public void setSslConfig(SSLConfig sslConfig) {
+        this.sslConfig = sslConfig;
     }
 
     @Override
