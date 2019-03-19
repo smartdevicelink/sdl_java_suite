@@ -72,7 +72,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     private static final String TAG = "Lifecycle Manager";
 
-    public static final Version MAX_SUPPORTED_RPC_VERSION = new Version("5.0.0");
+    public static final Version MAX_SUPPORTED_RPC_VERSION = new Version("5.1.0");
 
     // Protected Correlation IDs
     private final int 	REGISTER_APP_INTERFACE_CORRELATION_ID = 65529,
