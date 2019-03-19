@@ -78,22 +78,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class SdlManager extends BaseSdlManager{
 
 	private static final String TAG = "SdlManager";
-	private String appId, appName, shortAppName;
-	private boolean isMediaApp;
-	private Language hmiLanguage;
+
 	private SdlArtwork appIcon;
-	private Vector<AppHMIType> hmiTypes;
-	private BaseTransportConfig transport;
-	private Vector<String> vrSynonyms;
-	private Vector<TTSChunk> ttsChunks;
-	private TemplateColorScheme dayColorScheme, nightColorScheme;
 	private SdlManagerListener managerListener;
-	private Map<FunctionID, OnRPCNotificationListener> onRPCNotificationListeners;
-	private int state = -1;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
-	private final Object STATE_LOCK = new Object();
-	private Version minimumProtocolVersion;
-	private Version minimumRPCVersion;
 
 
 	// Managers
@@ -102,8 +90,6 @@ public class SdlManager extends BaseSdlManager{
 	private FileManager fileManager;
     private ScreenManager screenManager;
 
-    private Queue<RPCNotification> queuedNotifications = null;
-    private OnRPCNotificationListener queuedNotificationListener = null;
 
 	// INTERNAL INTERFACE
 	/**
@@ -163,6 +149,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 	};
 
+	@Override
 	void checkState() {
 		if (permissionManager != null && fileManager != null && screenManager != null ){
 			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY){
@@ -206,36 +193,6 @@ public class SdlManager extends BaseSdlManager{
 		}
 	}
 
-	private void handleQueuedNotifications(){
-		//Handle queued notifications and add the listeners
-		if (onRPCNotificationListeners != null) {
-			Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
-			if (queuedNotifications != null && queuedNotifications.size() > 0) {
-				for (RPCNotification notification : queuedNotifications) {
-					try {
-						onRPCNotificationListeners.get(notification.getFunctionID()).onNotified(notification);
-					} catch (Exception e) {
-						DebugTool.logError("Error going through queued notifications", e);
-					}
-				}
-			}
-
-			//Swap queued listener for developer's listeners
-			if (functionIDSet != null && !functionIDSet.isEmpty()) {
-				for (FunctionID functionID : functionIDSet) {
-					//Remove the old queue listener
-					_internalInterface.removeOnRPCNotificationListener(functionID, queuedNotificationListener);
-					//Add the developer listener
-					_internalInterface.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
-				}
-			}
-			//Set variables to null that are no longer needed
-			queuedNotifications = null;
-			queuedNotificationListener = null;
-			onRPCNotificationListeners = null;
-		}
-	}
-
 	private void onReady(){
 		// Set the app icon
 		 if (SdlManager.this.appIcon != null && SdlManager.this.appIcon.getName() != null) {
@@ -256,6 +213,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 	}
 
+	@Override
 	protected void initialize(){
 		// Instantiate sub managers
 		this.permissionManager = new PermissionManager(_internalInterface);
@@ -268,23 +226,7 @@ public class SdlManager extends BaseSdlManager{
 		this.screenManager.start(subManagerListener);
 	}
 
-	/**
-	 * Get the current state for the SdlManager
-	 * @return int value that represents the current state
-	 * @see BaseSubManager
-	 */
-	public int getState() {
-		synchronized (STATE_LOCK) {
-			return state;
-		}
-	}
-
-	protected void transitionToState(int state) {
-		synchronized (STATE_LOCK) {
-			this.state = state;
-		}
-	}
-
+	@Override
 	public void dispose() {
 		if (this.permissionManager != null) {
 			this.permissionManager.dispose();
@@ -304,12 +246,6 @@ public class SdlManager extends BaseSdlManager{
 		}
 	}
 
-
-	private void checkSdlManagerState(){
-		if (getState() != BaseSubManager.READY && getState() != BaseSubManager.LIMITED){
-			Log.e(TAG, "SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
-		}
-	}
 
 	// MANAGER GETTERS
 
@@ -369,6 +305,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @return RegisterAppInterfaceResponse received from the module or null if the app has not yet
 	 * registered with the module.
 	 */
+	@Override
 	public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse(){
 		if(lifecycleManager != null){
 			return lifecycleManager.getRegisterAppInterfaceResponse();
@@ -380,6 +317,7 @@ public class SdlManager extends BaseSdlManager{
 	 * Get the current OnHMIStatus
 	 * @return OnHMIStatus object represents the current OnHMIStatus
 	 */
+	@Override
 	public OnHMIStatus getCurrentHMIStatus(){
 		if(this.lifecycleManager !=null ){
 			return lifecycleManager.getCurrentHMIStatus();
@@ -394,33 +332,10 @@ public class SdlManager extends BaseSdlManager{
 	 * service from the module. For example, this should be used to login to a user account.
 	 * @return the string representation of the auth token
 	 */
-	protected String getAuthToken(){
+	@Override
+	public String getAuthToken(){
 		return this.lifecycleManager.getAuthToken();
 	}
-
-	protected String getAppName() { return appName; }
-
-	protected String getAppId() { return appId; }
-
-	protected String getShortAppName() { return shortAppName; }
-
-	protected Version getMinimumProtocolVersion() { return minimumProtocolVersion; }
-
-	protected Version getMinimumRPCVersion() { return minimumRPCVersion; }
-
-	protected Language getHmiLanguage() { return hmiLanguage; }
-
-	protected TemplateColorScheme getDayColorScheme() { return dayColorScheme; }
-
-	protected TemplateColorScheme getNightColorScheme() { return nightColorScheme; }
-
-	protected Vector<AppHMIType> getAppTypes() { return hmiTypes; }
-
-	protected Vector<String> getVrSynonyms() { return vrSynonyms; }
-
-	protected Vector<TTSChunk> getTtsChunks() { return ttsChunks; }
-
-	protected BaseTransportConfig getTransport() { return transport; }
 
 	// SENDING REQUESTS
 
@@ -428,6 +343,7 @@ public class SdlManager extends BaseSdlManager{
 	 * Send RPC Message <br>
 	 * @param message RPCMessage
 	 */
+	@Override
 	public void sendRPC(RPCMessage message) {
 		_internalInterface.sendRPC(message);
 	}
@@ -443,6 +359,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param rpcs is the list of RPCMessages being sent
 	 * @param listener listener for updates and completions
 	 */
+	@Override
 	public void sendSequentialRPCs(final List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener){
 
 		List<RPCRequest> rpcRequestList = new ArrayList<>();
@@ -468,6 +385,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param rpcs is the list of RPCMessages being sent
 	 * @param listener listener for updates and completions
 	 */
+	@Override
 	public void sendRPCs(List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) {
 
 		List<RPCRequest> rpcRequestList = new ArrayList<>();
@@ -486,6 +404,7 @@ public class SdlManager extends BaseSdlManager{
 	 * Add an OnRPCNotificationListener
 	 * @param listener listener that will be called when a notification is received
 	 */
+	@Override
 	public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
 		_internalInterface.addOnRPCNotificationListener(notificationId,listener);
 	}
@@ -494,6 +413,7 @@ public class SdlManager extends BaseSdlManager{
 	 * Remove an OnRPCNotificationListener
 	 * @param listener listener that was previously added
 	 */
+	@Override
 	public void removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
 		_internalInterface.removeOnRPCNotificationListener(notificationId, listener);
 	}
@@ -502,6 +422,7 @@ public class SdlManager extends BaseSdlManager{
 	 * Add an OnRPCRequestListener
 	 * @param listener listener that will be called when a request is received
 	 */
+	@Override
 	public void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
 		_internalInterface.addOnRPCRequestListener(requestId,listener);
 	}
@@ -510,6 +431,7 @@ public class SdlManager extends BaseSdlManager{
 	 * Remove an OnRPCRequestListener
 	 * @param listener listener that was previously added
 	 */
+	@Override
 	public void removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
 		_internalInterface.removeOnRPCRequestListener(requestId, listener);
 	}
@@ -522,6 +444,7 @@ public class SdlManager extends BaseSdlManager{
 	 * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public void start(){
 		Log.i(TAG, "start");
 		if (lifecycleManager == null) {
@@ -552,22 +475,7 @@ public class SdlManager extends BaseSdlManager{
 				}
 
 				//Setup the notification queue
-				if (onRPCNotificationListeners != null) {
-					Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
-					if (functionIDSet != null && !functionIDSet.isEmpty()) {
-						queuedNotifications = new ConcurrentLinkedQueue<RPCNotification>();
-						queuedNotificationListener = new OnRPCNotificationListener() {
-							@Override
-							public void onNotified(RPCNotification notification) {
-								queuedNotifications.add(notification);
-							}
-						};
-						for (FunctionID functionID : functionIDSet) {
-							_internalInterface.addOnRPCNotificationListener(functionID, queuedNotificationListener);
-						}
-					}
-				}
-
+				initNotificationQueue();
 
 				lifecycleManager.start();
 

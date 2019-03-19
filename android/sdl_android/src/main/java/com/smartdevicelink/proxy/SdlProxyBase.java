@@ -233,6 +233,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	protected SdlConnectionState _sdlConnectionState = null;
 	protected SdlInterfaceAvailability _sdlIntefaceAvailablity = null;
 	protected HMILevel _hmiLevel = null;
+	protected OnHMIStatus lastHmiStatus;
 	protected AudioStreamingState _audioStreamingState = null;
 	// Variables set by RegisterAppInterfaceResponse
 	protected SdlMsgVersion _sdlMsgVersion = null;
@@ -3659,6 +3660,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_audioStreamingState = msg.getAudioStreamingState();
 
 				msg.format(rpcSpecVersion, true);
+				lastHmiStatus = msg;
+
 				if (_callbackToUIThread) {
 					// Run in UI thread
 					_mainUIHandler.post(new Runnable() {
@@ -7790,6 +7793,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse(){
 		return this.raiResponse;
+	}
+
+	/**
+	 * Get the current OnHMIStatus
+	 * @return OnHMIStatus object represents the current OnHMIStatus
+	 */
+	public OnHMIStatus getCurrentHMIStatus(){
+		return lastHmiStatus;
 	}
 
 	/**

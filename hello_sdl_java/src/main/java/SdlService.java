@@ -1,5 +1,4 @@
 import android.util.Log;
-import com.smartdevicelink.BuildConfig;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
@@ -14,7 +13,6 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.DebugTool;
-import com.smartdevicelink.util.FileUtls;
 
 import java.util.Collections;
 import java.util.HashMap;
