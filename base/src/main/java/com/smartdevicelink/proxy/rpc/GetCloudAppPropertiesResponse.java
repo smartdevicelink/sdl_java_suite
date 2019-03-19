@@ -35,21 +35,34 @@ import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Hashtable;
 
 public class GetCloudAppPropertiesResponse extends RPCResponse {
 
-    public static final String KEY_PROPERTIES         = "properties";
+    public static final String KEY_PROPERTIES = "properties";
 
     public GetCloudAppPropertiesResponse() {
         super(FunctionID.GET_CLOUD_APP_PROPERTIES.toString());
     }
+
     public GetCloudAppPropertiesResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
 
-    public void setCloudAppProperties(@NonNull CloudAppProperties cloudAppProperties){
+    /**
+     * Constructs a new GetCloudAppPropertiesResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public GetCloudAppPropertiesResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
+
+    public void setCloudAppProperties(CloudAppProperties cloudAppProperties){
         setParameters(KEY_PROPERTIES, cloudAppProperties);
     }
 

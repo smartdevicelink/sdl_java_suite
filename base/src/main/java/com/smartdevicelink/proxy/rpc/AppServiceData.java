@@ -61,7 +61,7 @@ public class AppServiceData extends RPCStruct {
 	public AppServiceData(@NonNull String serviceType, @NonNull String serviceId) {
 		this();
 		setServiceType(serviceType);
-		setServiceId(serviceId);
+		setServiceID(serviceId);
 	}
 
 	// Setters and Getters
@@ -83,14 +83,14 @@ public class AppServiceData extends RPCStruct {
 	/**
 	 * @param serviceId -
 	 */
-	public void setServiceId(@NonNull String serviceId) {
+	public void setServiceID(@NonNull String serviceId) {
 		setValue(KEY_SERVICE_ID, serviceId);
 	}
 
 	/**
 	 * @return serviceId -
 	 */
-	public String getServiceId() {
+	public String getServiceID() {
 		return getString(KEY_SERVICE_ID);
 	}
 

@@ -56,10 +56,10 @@ public class AppServiceRecord extends RPCStruct {
 		super(hash);
 	}
 
-	public AppServiceRecord(@NonNull String serviceId, @NonNull AppServiceManifest serviceManifest,
+	public AppServiceRecord(@NonNull String serviceID, @NonNull AppServiceManifest serviceManifest,
 							@NonNull Boolean servicePublished, @NonNull Boolean serviceActive) {
 		this();
-		setServiceId(serviceId);
+		setServiceID(serviceID);
 		setServiceManifest(serviceManifest);
 		setServicePublished(servicePublished);
 		setServiceActive(serviceActive);
@@ -68,17 +68,17 @@ public class AppServiceRecord extends RPCStruct {
 	// Setters and Getters
 	/**
 	 * ID of this service
-	 * @param serviceId - the service ID
+	 * @param serviceID - the service ID
 	 */
-	public void setServiceId(@NonNull String serviceId){
-		setValue(KEY_SERVICE_ID, serviceId);
+	public void setServiceID(@NonNull String serviceID){
+		setValue(KEY_SERVICE_ID, serviceID);
 	}
 
 	/**
 	 * ID of this service
 	 * @return serviceId
 	 */
-	public String getServiceId(){
+	public String getServiceID(){
 		return getString(KEY_SERVICE_ID);
 	}
 

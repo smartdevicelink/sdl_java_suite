@@ -15,7 +15,7 @@ public class GetCloudAppPropertiesTests extends BaseRpcTests {
 	protected RPCMessage createMessage(){
 		GetCloudAppProperties msg = new GetCloudAppProperties();
 
-		msg.setAppId(Test.GENERAL_STRING);
+		msg.setAppID(Test.GENERAL_STRING);
 
 		return msg;
 	}

@@ -15,7 +15,7 @@ public class SetCloudAppPropertiesTests extends BaseRpcTests {
     protected RPCMessage createMessage(){
         SetCloudAppProperties msg = new SetCloudAppProperties();
 
-        msg.setProperties(Test.GENERAL_CLOUD_APP_PROPERTIES);
+        msg.setProperties(Test.GENERAL_CLOUDAPPPROPERTIES);
 
         return msg;
     }
@@ -35,7 +35,7 @@ public class SetCloudAppPropertiesTests extends BaseRpcTests {
         JSONObject result = new JSONObject();
 
         try{
-            result.put(SetCloudAppProperties.KEY_PROPERTIES, Test.GENERAL_CLOUD_APP_PROPERTIES.serializeJSON());
+            result.put(SetCloudAppProperties.KEY_PROPERTIES, Test.GENERAL_CLOUDAPPPROPERTIES.serializeJSON());
         }catch(JSONException e){
             fail(Test.JSON_FAIL);
         }

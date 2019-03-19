@@ -20,7 +20,7 @@ public class OnAppServiceDataTests extends BaseRpcTests {
 	protected RPCMessage createMessage(){
 		OnAppServiceData msg = new OnAppServiceData();
 
-		msg.setServiceData(Test.GENERAL_APPSERVICE_DATA);
+		msg.setServiceData(Test.GENERAL_APPSERVICEDATA);
 
 		return msg;
 	}
@@ -40,7 +40,7 @@ public class OnAppServiceDataTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try{
-			result.put(OnAppServiceData.KEY_SERVICE_DATA, Test.GENERAL_APPSERVICE_DATA.serializeJSON());
+			result.put(OnAppServiceData.KEY_SERVICE_DATA, Test.GENERAL_APPSERVICEDATA.serializeJSON());
 		}catch(JSONException e){
 			fail(Test.JSON_FAIL);
 		}
@@ -56,7 +56,7 @@ public class OnAppServiceDataTests extends BaseRpcTests {
 		AppServiceData cmdId = ( (OnAppServiceData) msg ).getServiceData();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_APPSERVICE_DATA, cmdId);
+		assertEquals(Test.MATCH, Test.GENERAL_APPSERVICEDATA, cmdId);
 
 		// Invalid/Null Tests
 		OnAppServiceData msg = new OnAppServiceData();
@@ -66,8 +66,8 @@ public class OnAppServiceDataTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getServiceData());
 
 		// test constructor with param
-		msg = new OnAppServiceData(Test.GENERAL_APPSERVICE_DATA);
+		msg = new OnAppServiceData(Test.GENERAL_APPSERVICEDATA);
 		AppServiceData serviceData = msg.getServiceData();
-		assertEquals(serviceData, Test.GENERAL_APPSERVICE_DATA);
+		assertEquals(serviceData, Test.GENERAL_APPSERVICEDATA);
 	}
 }

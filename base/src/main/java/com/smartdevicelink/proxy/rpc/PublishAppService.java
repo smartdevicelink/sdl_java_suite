@@ -68,7 +68,7 @@ public class PublishAppService extends RPCRequest {
 	 */
 	public PublishAppService(@NonNull AppServiceManifest appServiceManifest) {
 			this();
-			setServiceManifest(appServiceManifest);
+			setAppServiceManifest(appServiceManifest);
 	}
 
 	// Getters / Setters
@@ -77,7 +77,7 @@ public class PublishAppService extends RPCRequest {
 	 * The manifest of the service that wishes to be published.
 	 * @param serviceManifest - the App Service Manifest
 	 */
-	public void setServiceManifest(@NonNull AppServiceManifest serviceManifest){
+	public void setAppServiceManifest(@NonNull AppServiceManifest serviceManifest){
 		setParameters(KEY_APP_SERVICE_MANIFEST, serviceManifest);
 	}
 
@@ -85,7 +85,7 @@ public class PublishAppService extends RPCRequest {
 	 * The manifest of the service that wishes to be published.
 	 * @return serviceManifest - the App Service Manifest
 	 */
-	public AppServiceManifest getServiceManifest(){
+	public AppServiceManifest getAppServiceManifest(){
 		return (AppServiceManifest) getObject(AppServiceManifest.class,KEY_APP_SERVICE_MANIFEST);
 	}
 }

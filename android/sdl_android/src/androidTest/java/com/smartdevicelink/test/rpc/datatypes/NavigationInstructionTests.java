@@ -33,7 +33,7 @@ public class NavigationInstructionTests extends TestCase {
 		msg = new NavigationInstruction();
 
 		msg.setLocationDetails(Test.GENERAL_LOCATIONDETAILS);
-		msg.setAction(Test.GENERAL_NAVIGATION_ACTION);
+		msg.setAction(Test.GENERAL_NAVIGATIONACTION);
 		msg.setEta(Test.GENERAL_DATETIME);
 		msg.setBearing(Test.GENERAL_INTEGER);
 		msg.setJunctionType(Test.GENERAL_NAVIGATION_JUNCTION);
@@ -58,7 +58,7 @@ public class NavigationInstructionTests extends TestCase {
 
 		// Valid Tests
 		assertEquals(Test.GENERAL_LOCATIONDETAILS, locationDetails);
-		assertEquals(Test.GENERAL_NAVIGATION_ACTION, action);
+		assertEquals(Test.GENERAL_NAVIGATIONACTION, action);
 		assertEquals(Test.GENERAL_DATETIME, eta);
 		assertEquals(Test.GENERAL_INTEGER, bearing);
 		assertEquals(Test.GENERAL_NAVIGATION_JUNCTION, junctionType);
@@ -81,14 +81,14 @@ public class NavigationInstructionTests extends TestCase {
 	}
 
 	public void testRequiredConstructor(){
-		NavigationInstruction msg = new NavigationInstruction(Test.GENERAL_LOCATIONDETAILS, Test.GENERAL_NAVIGATION_ACTION);
+		NavigationInstruction msg = new NavigationInstruction(Test.GENERAL_LOCATIONDETAILS, Test.GENERAL_NAVIGATIONACTION);
 		assertNotNull(Test.NOT_NULL, msg);
 
 		LocationDetails locationDetails = msg.getLocationDetails();
 		NavigationAction action = msg.getAction();
 
 		assertEquals(Test.GENERAL_LOCATIONDETAILS, locationDetails);
-		assertEquals(Test.GENERAL_NAVIGATION_ACTION, action);
+		assertEquals(Test.GENERAL_NAVIGATIONACTION, action);
 	}
 
 	public void testJson(){
@@ -96,7 +96,7 @@ public class NavigationInstructionTests extends TestCase {
 
 		try{
 			reference.put(NavigationInstruction.KEY_LOCATION_DETAILS, Test.GENERAL_LOCATIONDETAILS);
-			reference.put(NavigationInstruction.KEY_ACTION, Test.GENERAL_NAVIGATION_ACTION);
+			reference.put(NavigationInstruction.KEY_ACTION, Test.GENERAL_NAVIGATIONACTION);
 			reference.put(NavigationInstruction.KEY_ETA, Test.GENERAL_DATETIME);
 			reference.put(NavigationInstruction.KEY_BEARING, Test.GENERAL_INTEGER);
 			reference.put(NavigationInstruction.KEY_JUNCTION_TYPE, Test.GENERAL_NAVIGATION_JUNCTION);
