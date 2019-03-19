@@ -210,7 +210,6 @@ public class SdlManager extends BaseSdlManager{
 		//Handle queued notifications and add the listeners
 		if (onRPCNotificationListeners != null) {
 			Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
-
 			if (queuedNotifications != null && queuedNotifications.size() > 0) {
 				for (RPCNotification notification : queuedNotifications) {
 					try {
@@ -221,15 +220,16 @@ public class SdlManager extends BaseSdlManager{
 				}
 			}
 
+			//Swap queued listener for developer's listeners
 			if (functionIDSet != null && !functionIDSet.isEmpty()) {
-
 				for (FunctionID functionID : functionIDSet) {
-					//Remove the old listener
+					//Remove the old queue listener
 					_internalInterface.removeOnRPCNotificationListener(functionID, queuedNotificationListener);
-					//add the developer listener
+					//Add the developer listener
 					_internalInterface.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
 				}
 			}
+			//Set variables to null that are no longer needed
 			queuedNotifications = null;
 			queuedNotificationListener = null;
 			onRPCNotificationListeners = null;
