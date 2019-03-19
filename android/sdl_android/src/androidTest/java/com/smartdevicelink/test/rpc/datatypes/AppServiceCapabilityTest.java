@@ -28,7 +28,7 @@ public class AppServiceCapabilityTest extends TestCase {
 	public void setUp(){
 
 		msg = new AppServiceCapability();
-		msg.setUpdatedAppServiceRecord(Test.GENERAL_APP_SERVICE_RECORD);
+		msg.setUpdatedAppServiceRecord(Test.GENERAL_APPSERVICERECORD);
 		msg.setUpdateReason(Test.GENERAL_SERVICE_UPDATE_REASON);
 	}
 
@@ -41,7 +41,7 @@ public class AppServiceCapabilityTest extends TestCase {
 		ServiceUpdateReason updateReason = msg.getUpdateReason();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, serviceRecord, Test.GENERAL_APP_SERVICE_RECORD);
+		assertEquals(Test.MATCH, serviceRecord, Test.GENERAL_APPSERVICERECORD);
 		assertEquals(Test.MATCH, updateReason, Test.GENERAL_SERVICE_UPDATE_REASON);
 
 		// Invalid/Null Tests
@@ -53,9 +53,9 @@ public class AppServiceCapabilityTest extends TestCase {
 	}
 
 	public void testRequiredParamsConstructor(){
-		msg = new AppServiceCapability(Test.GENERAL_APP_SERVICE_RECORD);
+		msg = new AppServiceCapability(Test.GENERAL_APPSERVICERECORD);
 		AppServiceRecord serviceRecord = msg.getUpdatedAppServiceRecord();
-		assertEquals(Test.MATCH, serviceRecord, Test.GENERAL_APP_SERVICE_RECORD);
+		assertEquals(Test.MATCH, serviceRecord, Test.GENERAL_APPSERVICERECORD);
 	}
 
 	public void testJson(){
@@ -63,7 +63,7 @@ public class AppServiceCapabilityTest extends TestCase {
 
 		try{
 			reference.put(AppServiceCapability.KEY_UPDATE_REASON, Test.GENERAL_SERVICE_UPDATE_REASON);
-			reference.put(AppServiceCapability.KEY_UPDATED_APP_SERVICE_RECORD, Test.GENERAL_APP_SERVICE_RECORD);
+			reference.put(AppServiceCapability.KEY_UPDATED_APP_SERVICE_RECORD, Test.GENERAL_APPSERVICERECORD);
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -74,7 +74,7 @@ public class AppServiceCapabilityTest extends TestCase {
 				if (key.equals(AppServiceCapability.KEY_UPDATED_APP_SERVICE_RECORD)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateAppServiceRecord(Test.GENERAL_APP_SERVICE_RECORD, new AppServiceRecord(hashTest)));
+					assertTrue(Test.TRUE, Validator.validateAppServiceRecord(Test.GENERAL_APPSERVICERECORD, new AppServiceRecord(hashTest)));
 				} else{
 					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}

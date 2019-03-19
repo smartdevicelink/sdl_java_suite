@@ -30,10 +30,10 @@ public class AppServiceDataTests extends TestCase {
 
 		msg = new AppServiceData();
 		msg.setServiceType(Test.GENERAL_STRING);
-		msg.setServiceId(Test.GENERAL_STRING);
-		msg.setMediaServiceData(Test.GENERAL_MEDIASERVICE_DATA);
-		msg.setWeatherServiceData(Test.GENERAL_WEATHERSERVICE_DATA);
-		msg.setNavigationServiceData(Test.GENERAL_NAVIGATIONSERVICE_DATA);
+		msg.setServiceID(Test.GENERAL_STRING);
+		msg.setMediaServiceData(Test.GENERAL_MEDIASERVICEDATA);
+		msg.setWeatherServiceData(Test.GENERAL_WEATHERSERVICEDATA);
+		msg.setNavigationServiceData(Test.GENERAL_NAVIGATIONSERVICEDATA);
 
 	}
 
@@ -43,7 +43,7 @@ public class AppServiceDataTests extends TestCase {
 	public void testRpcValues () {
 		// Test Values
 		String appServiceType = msg.getServiceType();
-		String serviceId = msg.getServiceId();
+		String serviceId = msg.getServiceID();
 		MediaServiceData mediaServiceData = msg.getMediaServiceData();
 		WeatherServiceData weatherServiceData = msg.getWeatherServiceData();
 		NavigationServiceData navigationServiceData = msg.getNavigationServiceData();
@@ -51,16 +51,16 @@ public class AppServiceDataTests extends TestCase {
 		// Valid Tests
 		assertEquals(Test.GENERAL_STRING, appServiceType);
 		assertEquals(Test.GENERAL_STRING, serviceId);
-		assertEquals(Test.GENERAL_MEDIASERVICE_DATA, mediaServiceData);
-		assertEquals(Test.GENERAL_WEATHERSERVICE_DATA, weatherServiceData);
-		assertEquals(Test.GENERAL_NAVIGATIONSERVICE_DATA, navigationServiceData);
+		assertEquals(Test.GENERAL_MEDIASERVICEDATA, mediaServiceData);
+		assertEquals(Test.GENERAL_WEATHERSERVICEDATA, weatherServiceData);
+		assertEquals(Test.GENERAL_NAVIGATIONSERVICEDATA, navigationServiceData);
 
 		// Invalid/Null Tests
 		AppServiceData msg = new AppServiceData();
 		assertNotNull(Test.NOT_NULL, msg);
 
 		assertNull(Test.NULL, msg.getServiceType());
-		assertNull(Test.NULL, msg.getServiceId());
+		assertNull(Test.NULL, msg.getServiceID());
 		assertNull(Test.NULL, msg.getMediaServiceData());
 		assertNull(Test.NULL, msg.getWeatherServiceData());
 		assertNull(Test.NULL, msg.getNavigationServiceData());
@@ -71,7 +71,7 @@ public class AppServiceDataTests extends TestCase {
 
 		msg = new AppServiceData(Test.GENERAL_STRING, Test.GENERAL_STRING);
 		String appServiceType = msg.getServiceType();
-		String serviceId = msg.getServiceId();
+		String serviceId = msg.getServiceID();
 		assertEquals(Test.GENERAL_STRING, appServiceType);
 		assertEquals(Test.GENERAL_STRING, serviceId);
 
@@ -83,9 +83,9 @@ public class AppServiceDataTests extends TestCase {
 		try{
 			reference.put(AppServiceData.KEY_SERVICE_TYPE, Test.GENERAL_STRING);
 			reference.put(AppServiceData.KEY_SERVICE_ID, Test.GENERAL_STRING);
-			reference.put(AppServiceData.KEY_MEDIA_SERVICE_DATA, Test.GENERAL_MEDIASERVICE_DATA);
-			reference.put(AppServiceData.KEY_WEATHER_SERVICE_DATA, Test.GENERAL_WEATHERSERVICE_DATA);
-			reference.put(AppServiceData.KEY_NAVIGATION_SERVICE_DATA, Test.GENERAL_NAVIGATIONSERVICE_DATA);
+			reference.put(AppServiceData.KEY_MEDIA_SERVICE_DATA, Test.GENERAL_MEDIASERVICEDATA);
+			reference.put(AppServiceData.KEY_WEATHER_SERVICE_DATA, Test.GENERAL_WEATHERSERVICEDATA);
+			reference.put(AppServiceData.KEY_NAVIGATION_SERVICE_DATA, Test.GENERAL_NAVIGATIONSERVICEDATA);
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -97,15 +97,15 @@ public class AppServiceDataTests extends TestCase {
 				if (key.equals(AppServiceData.KEY_MEDIA_SERVICE_DATA)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateMediaServiceData(Test.GENERAL_MEDIASERVICE_DATA, new MediaServiceData(hashTest)));
+					assertTrue(Test.TRUE, Validator.validateMediaServiceData(Test.GENERAL_MEDIASERVICEDATA, new MediaServiceData(hashTest)));
 				} else if (key.equals(AppServiceData.KEY_WEATHER_SERVICE_DATA)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateWeatherServiceData(Test.GENERAL_WEATHERSERVICE_DATA, new WeatherServiceData(hashTest)));
+					assertTrue(Test.TRUE, Validator.validateWeatherServiceData(Test.GENERAL_WEATHERSERVICEDATA, new WeatherServiceData(hashTest)));
 				} else if (key.equals(AppServiceData.KEY_NAVIGATION_SERVICE_DATA)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateNavigationServiceData(Test.GENERAL_NAVIGATIONSERVICE_DATA, new NavigationServiceData(hashTest)));
+					assertTrue(Test.TRUE, Validator.validateNavigationServiceData(Test.GENERAL_NAVIGATIONSERVICEDATA, new NavigationServiceData(hashTest)));
 				} else {
 					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}

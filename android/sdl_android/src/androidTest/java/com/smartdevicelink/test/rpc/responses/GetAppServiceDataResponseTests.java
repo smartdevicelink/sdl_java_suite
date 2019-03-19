@@ -47,13 +47,13 @@ public class GetAppServiceDataResponseTests extends BaseRpcTests {
 	public void testRpcValues () {
 		// Invalid/Null Tests
 		GetAppServiceDataResponse msg = new GetAppServiceDataResponse();
-		msg.setServiceData(Test.GENERAL_APPSERVICE_DATA);
+		msg.setServiceData(Test.GENERAL_APPSERVICEDATA);
 		assertNotNull(Test.NOT_NULL, msg);
 		testNullBase(msg);
 
 		// test getter
 		AppServiceData serviceData = msg.getServiceData();
-		assertEquals(Test.GENERAL_APPSERVICE_DATA, serviceData);
+		assertEquals(Test.GENERAL_APPSERVICEDATA, serviceData);
 	}
 
 	/**

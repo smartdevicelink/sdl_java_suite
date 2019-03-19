@@ -618,7 +618,7 @@ public class Validator{
 			return false;
 		}
 
-		if (!params1.getServiceId().equals(params2.getServiceId())){
+		if (!params1.getServiceID().equals(params2.getServiceID())){
 			return false;
 		}
 

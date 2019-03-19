@@ -27,7 +27,7 @@ public class PerformAppServiceInteraction extends RPCRequest {
 	public PerformAppServiceInteraction(@NonNull String serviceUri, @NonNull String appServiceId, @NonNull String originApp) {
 		this();
 		setServiceUri(serviceUri);
-		setAppServiceId(appServiceId);
+		setServiceID(appServiceId);
 		setOriginApp(originApp);
 	}
 
@@ -53,7 +53,7 @@ public class PerformAppServiceInteraction extends RPCRequest {
 	 * The service ID that the app consumer wishes to send this URI.
 	 * @param appServiceId -
 	 */
-	public void setAppServiceId(@NonNull String appServiceId){
+	public void setServiceID(@NonNull String appServiceId){
 		setParameters(KEY_SERVICE_ID, appServiceId);
 	}
 
@@ -61,7 +61,7 @@ public class PerformAppServiceInteraction extends RPCRequest {
 	 * The service ID that the app consumer wishes to send this URI.
 	 * @return appServiceId
 	 */
-	public String getAppServiceId(){
+	public String getServiceID(){
 		return getString(KEY_SERVICE_ID);
 	}
 

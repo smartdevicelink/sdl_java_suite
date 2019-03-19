@@ -21,7 +21,7 @@ public class PublishAppServiceTests extends BaseRpcTests {
 	@Override
 	protected RPCMessage createMessage() {
 		PublishAppService msg = new PublishAppService();
-		msg.setServiceManifest(Test.GENERAL_APP_SERVICE_MANIFEST);
+		msg.setAppServiceManifest(Test.GENERAL_APPSERVICEMANIFEST);
 		return msg;
 	}
 
@@ -40,7 +40,7 @@ public class PublishAppServiceTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(PublishAppService.KEY_APP_SERVICE_MANIFEST, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_APP_SERVICE_MANIFEST.getStore()));
+			result.put(PublishAppService.KEY_APP_SERVICE_MANIFEST, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_APPSERVICEMANIFEST.getStore()));
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -53,17 +53,17 @@ public class PublishAppServiceTests extends BaseRpcTests {
 	 */
 	public void testRpcValues () {
 		// Test Values
-		AppServiceManifest copy = ( (PublishAppService) msg ).getServiceManifest();
+		AppServiceManifest copy = ( (PublishAppService) msg ).getAppServiceManifest();
 
 		// Valid Tests
-		assertTrue(Validator.validateAppServiceManifest(Test.GENERAL_APP_SERVICE_MANIFEST, copy));
+		assertTrue(Validator.validateAppServiceManifest(Test.GENERAL_APPSERVICEMANIFEST, copy));
 
 		// Invalid/Null Tests
 		PublishAppService msg = new PublishAppService();
 		assertNotNull(Test.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull(Test.MATCH, msg.getServiceManifest());
+		assertNull(Test.MATCH, msg.getAppServiceManifest());
 	}
 
 	/**
@@ -71,10 +71,10 @@ public class PublishAppServiceTests extends BaseRpcTests {
 	 */
 	public void testRequiredParamsConstructor () {
 
-		PublishAppService msg = new PublishAppService(Test.GENERAL_APP_SERVICE_MANIFEST);
+		PublishAppService msg = new PublishAppService(Test.GENERAL_APPSERVICEMANIFEST);
 		assertNotNull(Test.NOT_NULL, msg);
 		// Valid Tests
-		assertTrue(Validator.validateAppServiceManifest(Test.GENERAL_APP_SERVICE_MANIFEST, msg.getServiceManifest()));
+		assertTrue(Validator.validateAppServiceManifest(Test.GENERAL_APPSERVICEMANIFEST, msg.getAppServiceManifest()));
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class PublishAppServiceTests extends BaseRpcTests {
 
 			JSONObject appServiceManifestObject = JsonUtils.readJsonObjectFromJsonObject(parameters, PublishAppService.KEY_APP_SERVICE_MANIFEST);
 			AppServiceManifest manifestTest = new AppServiceManifest(JsonRPCMarshaller.deserializeJSONObject(appServiceManifestObject));
-			assertTrue(Test.TRUE,  Validator.validateAppServiceManifest(manifestTest, cmd.getServiceManifest()));
+			assertTrue(Test.TRUE,  Validator.validateAppServiceManifest(manifestTest, cmd.getAppServiceManifest()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

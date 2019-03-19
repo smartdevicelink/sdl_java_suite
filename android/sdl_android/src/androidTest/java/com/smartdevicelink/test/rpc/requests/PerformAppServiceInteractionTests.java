@@ -22,7 +22,7 @@ public class PerformAppServiceInteractionTests extends BaseRpcTests {
 		PerformAppServiceInteraction msg = new PerformAppServiceInteraction();
 
 		msg.setServiceUri(Test.GENERAL_STRING);
-		msg.setAppServiceId(Test.GENERAL_STRING);
+		msg.setServiceID(Test.GENERAL_STRING);
 		msg.setOriginApp(Test.GENERAL_STRING);
 		msg.setRequestServiceActive(Test.GENERAL_BOOLEAN);
 
@@ -61,7 +61,7 @@ public class PerformAppServiceInteractionTests extends BaseRpcTests {
 	public void testRpcValues () {
 		// Test Values
 		String serviceUri = ( (PerformAppServiceInteraction) msg ).getServiceUri();
-		String appServiceId = ( (PerformAppServiceInteraction) msg ).getAppServiceId();
+		String appServiceId = ( (PerformAppServiceInteraction) msg ).getServiceID();
 		String originApp = ( (PerformAppServiceInteraction) msg ).getOriginApp();
 		boolean requestServiceActive = ( (PerformAppServiceInteraction) msg ).getRequestServiceActive();
 
@@ -77,7 +77,7 @@ public class PerformAppServiceInteractionTests extends BaseRpcTests {
 		testNullBase(msg);
 
 		assertNull(Test.NULL, msg.getServiceUri());
-		assertNull(Test.NULL, msg.getAppServiceId());
+		assertNull(Test.NULL, msg.getServiceID());
 		assertNull(Test.NULL, msg.getOriginApp());
 		assertNull(Test.NULL, msg.getRequestServiceActive());
 	}
@@ -89,7 +89,7 @@ public class PerformAppServiceInteractionTests extends BaseRpcTests {
 		// test with param in constructor
 		PerformAppServiceInteraction msg = new PerformAppServiceInteraction(Test.GENERAL_STRING,Test.GENERAL_STRING,Test.GENERAL_STRING);
 		String serviceUri = msg.getServiceUri();
-		String appServiceId = msg.getAppServiceId();
+		String appServiceId = msg.getServiceID();
 		String originApp = msg.getOriginApp();
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, serviceUri);
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, appServiceId);
@@ -116,7 +116,7 @@ public class PerformAppServiceInteractionTests extends BaseRpcTests {
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAppServiceInteraction.KEY_SERVICE_ID), cmd.getAppServiceId());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAppServiceInteraction.KEY_SERVICE_ID), cmd.getServiceID());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAppServiceInteraction.KEY_SERVICE_URI), cmd.getServiceUri());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformAppServiceInteraction.KEY_ORIGIN_APP), cmd.getOriginApp());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, PerformAppServiceInteraction.KEY_REQUEST_SERVICE_ACTIVE), cmd.getRequestServiceActive());

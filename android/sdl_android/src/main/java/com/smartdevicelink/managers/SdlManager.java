@@ -975,7 +975,7 @@ public class SdlManager extends BaseSdlManager{
 			}
 
 			if (sdlManager.appId == null) {
-				throw new IllegalArgumentException("You must specify an app ID by calling setAppId");
+				throw new IllegalArgumentException("You must specify an app ID by calling setAppID");
 			}
 
 			if (sdlManager.managerListener == null) {

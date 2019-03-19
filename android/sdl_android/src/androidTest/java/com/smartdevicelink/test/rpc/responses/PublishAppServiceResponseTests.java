@@ -27,7 +27,7 @@ public class PublishAppServiceResponseTests extends BaseRpcTests {
 
 		PublishAppServiceResponse msg = new PublishAppServiceResponse();
 
-		msg.setServiceRecord(Test.GENERAL_APP_SERVICE_RECORD);
+		msg.setServiceRecord(Test.GENERAL_APPSERVICERECORD);
 
 		return msg;
 	}
@@ -47,7 +47,7 @@ public class PublishAppServiceResponseTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try{
-			result.put(PublishAppServiceResponse.KEY_APP_SERVICE_RECORD, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_APP_SERVICE_RECORD.getStore()));
+			result.put(PublishAppServiceResponse.KEY_APP_SERVICE_RECORD, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_APPSERVICERECORD.getStore()));
 		}catch(JSONException e){
 			fail(Test.JSON_FAIL);
 		}
@@ -63,7 +63,7 @@ public class PublishAppServiceResponseTests extends BaseRpcTests {
 		AppServiceRecord testRecord = ( (PublishAppServiceResponse) msg ).getServiceRecord();
 
 		// Valid Tests
-		assertTrue(Test.TRUE, Validator.validateAppServiceRecord(Test.GENERAL_APP_SERVICE_RECORD, testRecord));
+		assertTrue(Test.TRUE, Validator.validateAppServiceRecord(Test.GENERAL_APPSERVICERECORD, testRecord));
 
 		// Invalid/Null Tests
 		PublishAppServiceResponse msg = new PublishAppServiceResponse();

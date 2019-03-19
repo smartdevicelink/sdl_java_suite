@@ -3007,7 +3007,7 @@ public class SdlRouterService extends Service{
 			return appId;
 		}
 
-		/*public long getAppId() {
+		/*public long getAppID() {
 			return appId;
 		}*/
 		/**

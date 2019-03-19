@@ -40,7 +40,7 @@ import java.util.Hashtable;
 
 public class GetCloudAppProperties extends RPCRequest {
 
-    public static final String KEY_APP_ID                   = "appID";
+    public static final String KEY_APP_ID = "appID";
 
     public GetCloudAppProperties() {
         super(FunctionID.GET_CLOUD_APP_PROPERTIES.toString());
@@ -55,11 +55,11 @@ public class GetCloudAppProperties extends RPCRequest {
         setParameters(KEY_APP_ID, appID);
     }
 
-    public void setAppId(String appId){
+    public void setAppID(String appId){
         setParameters(KEY_APP_ID, appId);
     }
 
-    public String getAppId(){
+    public String getAppID(){
         return getString((KEY_APP_ID));
     }
 
