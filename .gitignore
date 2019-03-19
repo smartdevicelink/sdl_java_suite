@@ -1,6 +1,12 @@
 ##############################
 # Project Specific
 ##############################
+javaSE/out/
+javaSE/build/
+javaSE/local.properties
+javaEE/out/
+javaEE/build/
+javaEE/local.properties
 
 
 ##############################
