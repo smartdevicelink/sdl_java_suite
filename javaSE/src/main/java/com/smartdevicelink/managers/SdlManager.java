@@ -42,6 +42,7 @@ import com.smartdevicelink.managers.screen.ScreenManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -59,6 +60,7 @@ import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 /**
@@ -100,6 +102,8 @@ public class SdlManager extends BaseSdlManager{
 	private FileManager fileManager;
     private ScreenManager screenManager;
 
+    private Queue<RPCNotification> queuedNotifications = null;
+    private OnRPCNotificationListener queuedNotificationListener = null;
 
 	// INTERNAL INTERFACE
 	/**
@@ -164,6 +168,7 @@ public class SdlManager extends BaseSdlManager{
 			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY){
 				DebugTool.logInfo("Starting sdl manager, all sub managers are in ready state");
 				transitionToState(BaseSubManager.READY);
+				handleQueuedNotifications();
 				notifyDevListener(null);
 				onReady();
 			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR){
@@ -178,6 +183,7 @@ public class SdlManager extends BaseSdlManager{
 			} else {
 				Log.w(TAG, "LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
 				transitionToState(BaseSubManager.LIMITED);
+				handleQueuedNotifications();
 				notifyDevListener(null);
 				onReady();
 			}
@@ -197,6 +203,36 @@ public class SdlManager extends BaseSdlManager{
 			} else {
 				managerListener.onStart(this);
 			}
+		}
+	}
+
+	private void handleQueuedNotifications(){
+		//Handle queued notifications and add the listeners
+		if (onRPCNotificationListeners != null) {
+			Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
+			if (queuedNotifications != null && queuedNotifications.size() > 0) {
+				for (RPCNotification notification : queuedNotifications) {
+					try {
+						onRPCNotificationListeners.get(notification.getFunctionID()).onNotified(notification);
+					} catch (Exception e) {
+						DebugTool.logError("Error going through queued notifications", e);
+					}
+				}
+			}
+
+			//Swap queued listener for developer's listeners
+			if (functionIDSet != null && !functionIDSet.isEmpty()) {
+				for (FunctionID functionID : functionIDSet) {
+					//Remove the old queue listener
+					_internalInterface.removeOnRPCNotificationListener(functionID, queuedNotificationListener);
+					//Add the developer listener
+					_internalInterface.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
+				}
+			}
+			//Set variables to null that are no longer needed
+			queuedNotifications = null;
+			queuedNotificationListener = null;
+			onRPCNotificationListeners = null;
 		}
 	}
 
@@ -514,11 +550,20 @@ public class SdlManager extends BaseSdlManager{
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
 					lifecycleManager.setSdlSecurityClassList(sdlSecList);
 				}
+
+				//Setup the notification queue
 				if (onRPCNotificationListeners != null) {
 					Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
 					if (functionIDSet != null && !functionIDSet.isEmpty()) {
+						queuedNotifications = new ConcurrentLinkedQueue<RPCNotification>();
+						queuedNotificationListener = new OnRPCNotificationListener() {
+							@Override
+							public void onNotified(RPCNotification notification) {
+								queuedNotifications.add(notification);
+							}
+						};
 						for (FunctionID functionID : functionIDSet) {
-							_internalInterface.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
+							_internalInterface.addOnRPCNotificationListener(functionID, queuedNotificationListener);
 						}
 					}
 				}
