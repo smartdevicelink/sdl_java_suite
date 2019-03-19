@@ -146,7 +146,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		try {
 			createSampleManager("app",null, Test.GENERAL_LOCKSCREENCONFIG);
 		} catch (IllegalArgumentException ex) {
-			assertSame(ex.getMessage(), "You must specify an app ID by calling setAppID");
+			assertSame(ex.getMessage(), "You must specify an app ID by calling setAppId");
 		}
 	}
 
