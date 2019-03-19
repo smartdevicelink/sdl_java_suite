@@ -31,7 +31,7 @@ import java.util.List;
 public class WiProProtocol extends AbstractProtocol {
 	private final static String FailurePropagating_Msg = "Failure propagating ";
 	//If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
-	public static final Version MAX_PROTOCOL_VERSION = new Version("5.2.0");
+	public static final Version MAX_PROTOCOL_VERSION = new Version("5.0.0");
 	private Version protocolVersion = new Version("1.0.0");
 	byte _version = 1;
 
