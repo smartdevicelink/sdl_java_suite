@@ -9,34 +9,30 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 
 public class FileUtls {
 
 
-    /**
-     *
-     * @param file should include path and name
-     * @return
-     */
-    public static boolean doesFileExist(String file){
-        try{
-            return false;//Files.exists(new Path(file), (LinkOption)null);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return false;
+
+    public static byte[] getFileData(String file){
+        return getFileData(file,null);
     }
 
-    public static byte[] getFileData(String path){
-        byte[] data = null;
-        if(path != null && path.length() > 0) {
-            if (doesFileExist(path)) {
+    public static byte[] getFileData(String filePath, String fileName){
+        if(filePath != null && filePath.length() > 0) {
+            File file;
+            if(fileName != null && fileName.length() > 0 ){
+                file = new File(filePath, fileName);
+            }else{
+                file = new File(filePath);
+            }
+            if (file.exists() && file.isFile() && file.canRead()) {
                 try {
-                   return Files.readAllBytes(new File("/path/to/file").toPath());
+                   return Files.readAllBytes(file.toPath());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
         }
 

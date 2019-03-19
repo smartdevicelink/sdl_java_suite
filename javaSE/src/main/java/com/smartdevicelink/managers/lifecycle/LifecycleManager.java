@@ -657,21 +657,24 @@ public class LifecycleManager extends BaseLifecycleManager {
             pm.setSessionType(SessionType.RPC);
             pm.setFunctionID(FunctionID.getFunctionId(message.getFunctionName()));
             pm.setPayloadProtected(message.isPayloadProtected());
-            if(RPCMessage.KEY_REQUEST.equals(message.getMessageType())){
-                Integer corrId = ((RPCRequest)message).getCorrelationID();
-                   if( corrId== null) {
-                       Log.e(TAG, "No correlation ID attached to request. Not sending");
-                       return;
-                   }else{
-                       pm.setCorrID(corrId);
 
-                       OnRPCResponseListener listener = ((RPCRequest)message).getOnRPCResponseListener();
-                       if(listener != null){
-                           addOnRPCResponseListener(listener, corrId, msgBytes.length);
-                       }
-                   }
-            }else if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())){
+            if(RPCMessage.KEY_REQUEST.equals(message.getMessageType())){ // Request Specifics
+                pm.setRPCType((byte)0x00);
+                Integer corrId = ((RPCRequest)message).getCorrelationID();
+                if( corrId== null) {
+                    Log.e(TAG, "No correlation ID attached to request. Not sending");
+                    return;
+                }else{
+                    pm.setCorrID(corrId);
+
+                    OnRPCResponseListener listener = ((RPCRequest)message).getOnRPCResponseListener();
+                    if(listener != null){
+                        addOnRPCResponseListener(listener, corrId, msgBytes.length);
+                    }
+                }
+            }else if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())){ // Response Specifics
                 RPCResponse response = (RPCResponse) message;
+                pm.setRPCType((byte)0x01);
                 if (response.getCorrelationID() == null) {
                     //Log error here
                     //throw new SdlException("CorrelationID cannot be null. RPC: " + response.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
@@ -680,6 +683,8 @@ public class LifecycleManager extends BaseLifecycleManager {
                 } else {
                     pm.setCorrID(response.getCorrelationID());
                 }
+            }else if (message.getMessageType().equals(RPCMessage.KEY_NOTIFICATION)) { // Notification Specifics
+                pm.setRPCType((byte)0x02);
             }
 
             if (message.getBulkData() != null){

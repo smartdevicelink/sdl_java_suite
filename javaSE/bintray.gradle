@@ -30,7 +30,7 @@ bintray {
     // Authorization
     user = props.getProperty("bintray.user")
     key = props.getProperty("bintray.key")
-    version = props.getProperty("bintray.version")
+    version = "$project.version"
     publications = ['mavenPublication']
 
 
@@ -43,7 +43,7 @@ bintray {
         licenses = ["BSD 3-Clause"]
         publish = props.getProperty("bintray.publish")  // Will upload to jCenter
         version {
-            name = props.getProperty("bintray.version")  // Change to release version
+            name = "$project.version"  // Change to release version
             desc = libDescription
             released  = new Date()  // Will be the current date & time
             vcsTag = props.getProperty("bintray.vcs") // Should match git tag
@@ -83,7 +83,7 @@ publishing {
             }
             groupId props.getProperty("bintray.userorg")
             artifactId props.getProperty("bintray.artifact")
-            version props.getProperty("bintray.vcs")
+            version "$project.version"
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', libDescription)

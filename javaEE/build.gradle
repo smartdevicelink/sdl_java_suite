@@ -26,9 +26,16 @@ configurations {
 }
 
 dependencies {
-    //extraLibs fileTree(dir: 'libs', include: ['*.jar'])
-    extraLibs project(path: ':javaSE')
-    configurations.implementation.extendsFrom(configurations.extraLibs)
+    extraLibs fileTree(dir: 'libs', include: ['*.jar'])
+    extraLibs fileTree(dir: '../javaSE/libs', include: ['*.jar'])  //BSON lib
+    extraLibs 'com.android.support:support-annotations:28.0.0'
+    extraLibs 'org.java-websocket:Java-WebSocket:1.3.9'
+    configurations.api.extendsFrom(configurations.extraLibs)
+}
+
+sourceSets {
+    main.java.srcDirs += '../base/src/main/java'
+    main.java.srcDirs += '../javaSE/src/main/java'
 }
 
 jar {
@@ -38,10 +45,3 @@ jar {
 }
 
 apply from: 'bintray.gradle'
-
-// Excluded :javaSE:bintrayUpload from running when we run bintrayUpload in javaEE
-def taskRequests = gradle.startParameter.taskRequests
-def runTaskRequest = taskRequests.find { it.args.contains('bintrayUpload') }
-if (runTaskRequest) {
-    gradle.startParameter.excludedTaskNames = [':javaSE:bintrayUpload']
-}
