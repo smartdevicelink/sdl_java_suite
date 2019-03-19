@@ -29,6 +29,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetAppIcon;
@@ -74,25 +75,11 @@ import java.util.Vector;
 public class SdlManager extends BaseSdlManager{
 	private static final String TAG = "SdlManager";
 	private SdlProxyBase proxy;
-	private String appId, appName, shortAppName;
-	private boolean isMediaApp;
-	private Language hmiLanguage;
 	private SdlArtwork appIcon;
-	private Vector<AppHMIType> hmiTypes;
-	private BaseTransportConfig transport;
 	private Context context;
-	private Vector<String> vrSynonyms;
-	private Vector<TTSChunk> ttsChunks;
-	private TemplateColorScheme dayColorScheme, nightColorScheme;
 	private SdlManagerListener managerListener;
-	private Map<FunctionID, OnRPCNotificationListener> onRPCNotificationListeners;
-	private int state = -1;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
 	private LockScreenConfig lockScreenConfig;
-	private final Object STATE_LOCK = new Object();
-	private Version minimumProtocolVersion;
-	private Version minimumRPCVersion;
-
 
 	// Managers
 	private PermissionManager permissionManager;
@@ -143,11 +130,13 @@ public class SdlManager extends BaseSdlManager{
 		}
 	};
 
+	@Override
 	void checkState() {
 		if (permissionManager != null && fileManager != null && screenManager != null && (!lockScreenConfig.isEnabled() || lockScreenManager != null)) {
 			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.READY)) {
 				DebugTool.logInfo("Starting sdl manager, all sub managers are in ready state");
 				transitionToState(BaseSubManager.READY);
+				handleQueuedNotifications();
 				notifyDevListener(null);
 				onReady();
 			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.ERROR)) {
@@ -162,6 +151,7 @@ public class SdlManager extends BaseSdlManager{
 			} else {
 				Log.w(TAG, "LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
 				transitionToState(BaseSubManager.LIMITED);
+				handleQueuedNotifications();
 				notifyDevListener(null);
 				onReady();
 			}
@@ -204,6 +194,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 	}
 
+	@Override
 	protected void initialize(){
 		// Instantiate sub managers
 		this.permissionManager = new PermissionManager(_internalInterface);
@@ -233,24 +224,8 @@ public class SdlManager extends BaseSdlManager{
 		this.screenManager.start(subManagerListener);
 	}
 
-	/**
-	 * Get the current state for the SdlManager
-	 * @return int value that represents the current state
-	 * @see BaseSubManager
-	 */
-	public int getState() {
-		synchronized (STATE_LOCK) {
-			return state;
-		}
-	}
-
-	protected void transitionToState(int state) {
-		synchronized (STATE_LOCK) {
-			this.state = state;
-		}
-	}
-
 	@SuppressLint("NewApi")
+	@Override
 	public void dispose() {
 		if (this.permissionManager != null) {
 			this.permissionManager.dispose();
@@ -280,13 +255,6 @@ public class SdlManager extends BaseSdlManager{
 		if(managerListener != null){
 			managerListener.onDestroy();
 			managerListener = null;
-		}
-	}
-
-
-	private void checkSdlManagerState(){
-		if (getState() != BaseSubManager.READY && getState() != BaseSubManager.LIMITED){
-			Log.e(TAG, "SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
 		}
 	}
 
@@ -388,9 +356,22 @@ public class SdlManager extends BaseSdlManager{
 	 * @return RegisterAppInterfaceResponse received from the module or null if the app has not yet
 	 * registered with the module.
 	 */
+	@Override
 	public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse(){
 		if(proxy != null){
 			return proxy.getRegisterAppInterfaceResponse();
+		}
+		return null;
+	}
+
+	/**
+	 * Get the current OnHMIStatus
+	 * @return OnHMIStatus object represents the current OnHMIStatus
+	 */
+	@Override
+	public OnHMIStatus getCurrentHMIStatus(){
+		if(this.proxy !=null ){
+			return proxy.getCurrentHMIStatus();
 		}
 		return null;
 	}
@@ -400,34 +381,12 @@ public class SdlManager extends BaseSdlManager{
 	 * service from the module. For example, this should be used to login to a user account.
 	 * @return the string representation of the auth token
 	 */
+	@Override
 	public String getAuthToken(){
 		return this.proxy.getAuthToken();
 	}
 
 	// PROTECTED GETTERS
-	protected String getAppName() { return appName; }
-
-	protected String getAppId() { return appId; }
-
-	protected String getShortAppName() { return shortAppName; }
-
-	protected Version getMinimumProtocolVersion() { return minimumProtocolVersion; }
-
-	protected Version getMinimumRPCVersion() { return minimumRPCVersion; }
-
-	protected Language getHmiLanguage() { return hmiLanguage; }
-
-	protected TemplateColorScheme getDayColorScheme() { return dayColorScheme; }
-
-	protected TemplateColorScheme getNightColorScheme() { return nightColorScheme; }
-
-	protected Vector<AppHMIType> getAppTypes() { return hmiTypes; }
-
-	protected Vector<String> getVrSynonyms() { return vrSynonyms; }
-
-	protected Vector<TTSChunk> getTtsChunks() { return ttsChunks; }
-
-	protected BaseTransportConfig getTransport() { return transport; }
 
 	protected LockScreenConfig getLockScreenConfig() { return lockScreenConfig; }
 
@@ -437,6 +396,7 @@ public class SdlManager extends BaseSdlManager{
 	 * Send RPC Message
 	 * @param message RPCMessage
 	 */
+	@Override
 	public void sendRPC(RPCMessage message) {
 		try{
 			proxy.sendRPC(message);
@@ -456,6 +416,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param rpcs is the list of RPCMessages being sent
 	 * @param listener listener for updates and completions
 	 */
+	@Override
 	public void sendSequentialRPCs(final List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener){
 
 		List<RPCRequest> rpcRequestList = new ArrayList<>();
@@ -485,6 +446,7 @@ public class SdlManager extends BaseSdlManager{
 	 * @param rpcs is the list of RPCMessages being sent
 	 * @param listener listener for updates and completions
 	 */
+	@Override
 	public void sendRPCs(List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) {
 
 		List<RPCRequest> rpcRequestList = new ArrayList<>();
@@ -516,6 +478,7 @@ public class SdlManager extends BaseSdlManager{
 	 * Add an OnRPCNotificationListener
 	 * @param listener listener that will be called when a notification is received
 	 */
+	@Override
 	public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
 		proxy.addOnRPCNotificationListener(notificationId,listener);
 	}
@@ -524,6 +487,7 @@ public class SdlManager extends BaseSdlManager{
 	 * Remove an OnRPCNotificationListener
 	 * @param listener listener that was previously added
 	 */
+	@Override
 	public void removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
 		proxy.removeOnRPCNotificationListener(notificationId, listener);
 	}
@@ -532,6 +496,7 @@ public class SdlManager extends BaseSdlManager{
 	 * Add an OnRPCRequestListener
 	 * @param listener listener that will be called when a request is received
 	 */
+	@Override
 	public void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
 		proxy.addOnRPCRequestListener(requestId,listener);
 	}
@@ -540,6 +505,7 @@ public class SdlManager extends BaseSdlManager{
 	 * Remove an OnRPCRequestListener
 	 * @param listener listener that was previously added
 	 */
+	@Override
 	public void removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
 		proxy.removeOnRPCRequestListener(requestId, listener);
 	}
@@ -552,6 +518,7 @@ public class SdlManager extends BaseSdlManager{
 	 * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public void start(){
 		if (proxy == null) {
 			try {
@@ -587,14 +554,9 @@ public class SdlManager extends BaseSdlManager{
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
 					proxy.setSdlSecurityClassList(sdlSecList);
 				}
-				if (onRPCNotificationListeners != null) {
-					Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
-					if (functionIDSet != null && !functionIDSet.isEmpty()) {
-						for (FunctionID functionID : functionIDSet) {
-							proxy.addOnRPCNotificationListener(functionID, onRPCNotificationListeners.get(functionID));
-						}
-					}
-				}
+				//Setup the notification queue
+				initNotificationQueue();
+
 			} catch (SdlException e) {
 				if (managerListener != null) {
 					managerListener.onError("Unable to start manager", e);
