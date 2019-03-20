@@ -6,7 +6,7 @@ android {
         minSdkVersion 8
         targetSdkVersion 26
         versionCode 11
-        versionName "RC1-4.8.0"
+        versionName new File(projectDir.path, ('/../../VERSION')).text.trim()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resValue "string", "SDL_LIB_VERSION", '\"' + versionName + '\"'
     }

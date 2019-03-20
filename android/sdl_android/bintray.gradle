@@ -6,6 +6,8 @@ def siteUrl = 'https://github.com/smartdevicelink/sdl_android'      // Homepage 
 def gitUrl = 'https://github.com/smartdevicelink/sdl_android.git'   // Git repository URL
 group = "com.smartdevicelink" // Maven Group ID for the artifact
 def libDescription = 'SmartDeviceLink mobile library for Android'
+def libVersion = new File(projectDir.path, ('/../../VERSION')).text.trim()
+
 
 install {
     repositories.mavenInstaller {
@@ -51,7 +53,7 @@ bintray {
     // Authorization
     user = props.getProperty("bintray.user")
     key = props.getProperty("bintray.key")
-    version = props.getProperty("bintray.version")
+    version = libVersion
     configurations = ['archives']
     pkg {
         repo = props.getProperty("bintray.repo")
@@ -62,10 +64,10 @@ bintray {
         licenses = ["BSD 3-Clause"]
         publish = props.getProperty("bintray.publish")  // Will upload to jCenter
         version {
-            name = props.getProperty("bintray.version")  // Change to release version
+            name = libVersion // Change to release version
             desc = libDescription
             released  = new Date()  // Will be the current date & time
-            vcsTag = props.getProperty("bintray.vcs") // Should match git tag
+            vcsTag = libVersion // Should match git tag
         }
     }
 }
