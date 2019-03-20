@@ -1,3 +1,5 @@
+package com.smartdevicelink;
+
 import android.util.Log;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
