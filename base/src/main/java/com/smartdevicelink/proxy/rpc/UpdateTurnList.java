@@ -85,7 +85,7 @@ public class UpdateTurnList extends RPCRequest{
      *            <ul>
      *            <li>If omitted on supported displays, the alert will not have any SoftButton</li>
      *            <li>ArrayMin: 0</li>
-     *            <li>ArrayMax: 4</li>
+     *            <li>ArrayMax: 1</li>
      *            </ul>
      * @since SmartDeviceLink 2.0
      */
