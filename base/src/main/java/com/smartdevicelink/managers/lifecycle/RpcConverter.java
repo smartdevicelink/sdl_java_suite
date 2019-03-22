@@ -141,6 +141,9 @@ public class RpcConverter {
         if(params.containsKey(RPCMessage.KEY_FUNCTION_NAME)){
             StringBuilder rpcClassName = new StringBuilder();
             String functionName = (String)params.get(RPCMessage.KEY_FUNCTION_NAME);
+            if(FunctionID.SHOW_CONSTANT_TBT.toString().equals(functionName)) {
+                    functionName = "ShowConstantTbt";
+            }
             rpcClassName.append(RPC_PACKAGE);
             rpcClassName.append (functionName);
 
@@ -157,14 +160,11 @@ public class RpcConverter {
                     if(rpcConstructor != null){
                         return (RPCMessage)rpcConstructor.newInstance(rpcHashTable);
                     }
+                } else {
+                    DebugTool.logError(TAG + " Java class cannot be found for " + rpcClassName.toString());
                 }
-            } catch (ClassNotFoundException e) {
-            } catch (NoSuchMethodException e) {
-            } catch (IllegalAccessException e) {
-            } catch (InstantiationException e) {
-            } catch (InvocationTargetException e) {
-            } catch (ClassCastException e){
-
+            } catch (Exception e) {
+                DebugTool.logError("RPCConverter was unable to process RPC", e);
             }
         }else{
             DebugTool.logError(TAG + " Unable to parse into RPC");
