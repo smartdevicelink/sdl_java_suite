@@ -164,7 +164,7 @@ public class RpcConverter {
                     DebugTool.logError(TAG + " Java class cannot be found for " + rpcClassName.toString());
                 }
             } catch (Exception e) {
-                DebugTool.logError(e.getMessage(), e);
+                DebugTool.logError("RPCConverter was unable to process RPC", e);
             }
         }else{
             DebugTool.logError(TAG + " Unable to parse into RPC");
