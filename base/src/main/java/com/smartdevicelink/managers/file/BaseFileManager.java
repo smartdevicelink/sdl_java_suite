@@ -79,7 +79,7 @@ abstract class BaseFileManager extends BaseSubManager {
 	final static String TAG = "FileManager";
 	private List<String> remoteFiles, uploadedEphemeralFileNames;
 
-	public BaseFileManager(ISdl internalInterface) {
+	BaseFileManager(ISdl internalInterface) {
 
 		// setup
 		super(internalInterface);

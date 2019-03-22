@@ -6,7 +6,7 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 
 abstract class BaseVideoStreamManager extends BaseSubManager {
-    public BaseVideoStreamManager(@NonNull ISdl internalInterface) {
+    BaseVideoStreamManager(@NonNull ISdl internalInterface) {
         super(internalInterface);
     }
 }

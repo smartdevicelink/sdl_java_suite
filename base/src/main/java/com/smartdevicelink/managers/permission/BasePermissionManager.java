@@ -88,7 +88,7 @@ abstract class BasePermissionManager extends BaseSubManager{
      * Creates a new instance of the PermissionManager
      * @param internalInterface
      */
-    public BasePermissionManager(@NonNull ISdl internalInterface){
+    BasePermissionManager(@NonNull ISdl internalInterface){
         super(internalInterface);
         this.currentPermissionItems = new HashMap<>();
         this.filters = new ArrayList<>();

@@ -51,7 +51,7 @@ import java.util.List;
  *
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
 */
-abstract public class BaseScreenManager extends BaseSubManager {
+abstract class BaseScreenManager extends BaseSubManager {
 
 	private static String TAG = "ScreenManager";
 	private final WeakReference<FileManager> fileManager;
@@ -84,7 +84,7 @@ abstract public class BaseScreenManager extends BaseSubManager {
 		}
 	};
 
-	public BaseScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+	BaseScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
 		super(internalInterface);
 		this.fileManager = new WeakReference<>(fileManager);
 		initialize();
