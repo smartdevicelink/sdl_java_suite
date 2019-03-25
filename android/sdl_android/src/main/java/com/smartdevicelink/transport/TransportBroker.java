@@ -77,6 +77,7 @@ public class TransportBroker {
 
     /** Version of the router service that supports the new additional transports (USB and TCP) */
     private static final int RS_MULTI_TRANSPORT_SUPPORT = 8;
+    private static final TransportRecord LEGACY_TRANSPORT_RECORD = new TransportRecord(TransportType.BLUETOOTH,null);
 
     private final String WHERE_TO_REPLY_PREFIX = "com.sdl.android.";
     private String appId = null;
@@ -276,7 +277,7 @@ public class TransportBroker {
                                     // If the transport record is null, one must be added
                                     // This is likely due to an older router service being used
                                     // in which only a bluetooth transport is available
-                                    packet.setTransportRecord(new TransportRecord(TransportType.BLUETOOTH,""));
+                                    packet.setTransportRecord(LEGACY_TRANSPORT_RECORD);
                                 }
 
                                 broker.onPacketReceived(packet);
@@ -328,9 +329,10 @@ public class TransportBroker {
                                 TransportRecord disconnectedTransport = bundle.getParcelable(TransportConstants.TRANSPORT_DISCONNECTED);
                                 List<TransportRecord> connectedTransports = bundle.getParcelableArrayList(TransportConstants.CURRENT_HARDWARE_CONNECTED);
                                 broker.onHardwareDisconnected(disconnectedTransport, connectedTransports);
-                            } else {
-                                TransportType transportType = TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_DISCONNECTED));
-                                broker.onHardwareDisconnected(new TransportRecord(transportType, null), null);
+                            } else { //bundle contains key TransportConstants.HARDWARE_DISCONNECTED
+                                // Since this is an older router service it can be assumed that the
+                                // transport is bluetooth
+                                broker.onHardwareDisconnected(LEGACY_TRANSPORT_RECORD, null);
                             }
 
 
@@ -362,18 +364,9 @@ public class TransportBroker {
                 //Previous versions of the router service only supports a single
                 //transport, so this will be the only extra received
                 if (bundle.containsKey(TransportConstants.HARDWARE_CONNECTED)) {
-                    String transportName = "";
-                    if (bundle.containsKey(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME)) {
-                        //Keep track if we actually get this
-                        transportName = bundle.getString(TransportConstants.CONNECTED_DEVICE_STRING_EXTRA_NAME);
-                    }
-                    TransportType transportType = TransportType.valueOf(bundle.getString(TransportConstants.HARDWARE_CONNECTED));
-                    if(transportType == null){
-                        transportType = TransportType.BLUETOOTH;
-                    }
-                    TransportRecord record = new TransportRecord(transportType,transportName);
-
-                    broker.onHardwareConnected(Collections.singletonList(record));
+                    // Only bluetooth was a supported transport on previous versions of the router
+                    // service so the constant legacy bluetooth transport record will be used.
+                    broker.onHardwareConnected(Collections.singletonList(LEGACY_TRANSPORT_RECORD));
                     return true;
                 }
             } else{
