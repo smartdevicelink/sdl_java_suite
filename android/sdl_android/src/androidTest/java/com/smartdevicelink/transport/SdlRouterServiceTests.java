@@ -64,6 +64,15 @@ public class SdlRouterServiceTests extends AndroidTestCase2 {
         //Nothing here for now
     }
 
+	/**
+	 * Ensure that the router service hardcoded number is the same as the integer value in
+	 * the resources.
+	 */
+	public void testVersionCorrectness(){
+    	int resourceVersion = getContext().getResources().getInteger(com.smartdevicelink.test.R.integer.sdl_router_service_version_value);
+		assertEquals(resourceVersion, SdlRouterService.ROUTER_SERVICE_VERSION_NUMBER);
+	}
+
     /**
      * Test null bundle handling in AltTransportHandler when handling messages. Only test the case of
      * msg.what == TransportConstants.ROUTER_RECEIVED_PACKET
