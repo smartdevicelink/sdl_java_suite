@@ -5094,8 +5094,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             return null;
         }
 
-		if(!navServiceEndResponseReceived || !navServiceEndResponse //If we haven't started the service before
-				|| (navServiceEndResponse && isEncrypted && sdlSession.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
+		if(!navServiceStartResponseReceived || !navServiceStartResponse //If we haven't started the service before
+				|| (navServiceStartResponse && isEncrypted && !sdlSession.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
 			sdlSession.setDesiredVideoParams(parameters);
 
 			navServiceStartResponseReceived = false;
