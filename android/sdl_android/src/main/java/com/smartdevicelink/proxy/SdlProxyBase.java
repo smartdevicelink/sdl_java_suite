@@ -5094,21 +5094,24 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             return null;
         }
 
-		sdlSession.setDesiredVideoParams(parameters);
+		if(!navServiceEndResponseReceived || !navServiceEndResponse //If we haven't started the service before
+				|| (navServiceEndResponse && isEncrypted && sdlSession.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
+			sdlSession.setDesiredVideoParams(parameters);
 
-		navServiceStartResponseReceived = false;
-		navServiceStartResponse = false;
-		navServiceStartRejectedParams = null;
+			navServiceStartResponseReceived = false;
+			navServiceStartResponse = false;
+			navServiceStartRejectedParams = null;
 
-		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
+			sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
 
-		FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
-		ScheduledExecutorService scheduler = createScheduler();
-		scheduler.execute(fTask);
+			FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+			ScheduledExecutorService scheduler = createScheduler();
+			scheduler.execute(fTask);
 
-		//noinspection StatementWithEmptyBody
-        while (!navServiceStartResponseReceived && !fTask.isDone());
-        scheduler.shutdown();
+			//noinspection StatementWithEmptyBody
+			while (!navServiceStartResponseReceived && !fTask.isDone()) ;
+			scheduler.shutdown();
+		}
 
         if (navServiceStartResponse) {
 			if(protocolVersion!= null && protocolVersion.getMajor() < 5){ //Versions 1-4 do not support streaming parameter negotiations
