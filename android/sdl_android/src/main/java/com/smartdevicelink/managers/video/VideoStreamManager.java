@@ -66,7 +66,23 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
 			if(SessionType.NAV.equals(type)){
-				stateMachine.transitionToState(StreamingStateMachine.READY);
+				if(session != null && session.getAcceptedVideoParams() != null){
+					parameters = session.getAcceptedVideoParams();
+				}
+				VideoStreamManager.this.streamListener = internalInterface.startVideoStream(isEncrypted, parameters);
+				if(streamListener == null){
+					Log.e(TAG, "Error starting video service");
+					stateMachine.transitionToState(StreamingStateMachine.ERROR);
+					return;
+				}
+				VideoStreamingCapability capability = (VideoStreamingCapability) internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING);
+				if(capability != null && capability.getIsHapticSpatialDataSupported()){
+					hapticManager = new HapticInterfaceManager(internalInterface);
+				}
+				startEncoder();
+				stateMachine.transitionToState(StreamingStateMachine.STARTED);
+
+
 			}
 		}
 
@@ -229,31 +245,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		}
 	}
 
-	/**
-	 * Opens a video service (service type 11) and subsequently provides an IVideoStreamListener
-	 * to the app to send video data. The supplied VideoStreamingParameters will be set as desired paramaters
-	 * that will be used to negotiate
-	 *
-	 * @param parameters  Video streaming parameters including: codec which will be used for streaming (currently, only
-	 *                    VideoStreamingCodec.H264 is accepted), height and width of the video in pixels.
-	 * @param encrypted Specify true if packets on this service have to be encrypted
-	 *
-	 * @return IVideoStreamListener interface if service is opened successfully and streaming is
-	 *         started, null otherwise
-	 */
-	protected IVideoStreamListener startVideoService(VideoStreamingParameters parameters, boolean encrypted){
-		if(hmiLevel != HMILevel.HMI_FULL){
-			Log.e(TAG, "Cannot start video service if HMILevel is not FULL.");
-			return null;
-		}
-		IVideoStreamListener listener = internalInterface.startVideoStream(encrypted, parameters);
-		if(listener != null){
-			stateMachine.transitionToState(StreamingStateMachine.STARTED);
-		}else{
-			stateMachine.transitionToState(StreamingStateMachine.ERROR);
-		}
-		return listener;
-	}
 
 	/**
 	 * Starts video service, sets up encoder, haptic manager, and remote display. Begins streaming the remote display.
@@ -263,17 +254,14 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 */
 	private void startStreaming(VideoStreamingParameters parameters, boolean encrypted){
 		this.parameters = parameters;
-		this.streamListener = startVideoService(parameters, encrypted);
-		if(streamListener == null){
-			Log.e(TAG, "Error starting video service");
-			stateMachine.transitionToState(StreamingStateMachine.ERROR);
+		if(hmiLevel != HMILevel.HMI_FULL){
+			Log.e(TAG, "Cannot start video service if HMILevel is not FULL.");
 			return;
 		}
-		VideoStreamingCapability capability = (VideoStreamingCapability) internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING);
-		if(capability != null && capability.getIsHapticSpatialDataSupported()){
-			hapticManager = new HapticInterfaceManager(internalInterface);
-		}
-		startEncoder();
+		//Start the video service
+		this.internalInterface.startVideoService(parameters, encrypted);
+
+
 	}
 
 	/**
