@@ -7830,6 +7830,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		float[] touchScalar = {1.0f,1.0f}; //x, y
 		private HapticInterfaceManager hapticManager;
 		SdlMotionEvent sdlMotionEvent = null;
+		VideoStreamingParameters videoStreamingParameters;
 
 		public VideoStreamingManager(Context context,ISdl iSdl){
 			this.context = context;
@@ -7850,8 +7851,30 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			});
 		}
 
+		/**
+		 * Starts the video service, caches the supplied params and prepares for the stream to start.
+		 * @param remoteDisplayClass the extension of SdlRemoteDisplay that will be streamed
+		 * @param parameters desired video streaming params
+		 * @param encrypted if the service is to be encrypted or not
+		 */
 		public void startVideoStreaming(Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, boolean encrypted){
-			streamListener = startVideoStream(encrypted,parameters);
+			this.remoteDisplayClass = remoteDisplayClass;
+			this.videoStreamingParameters = parameters;
+			//Make sure the service is started, allows multi transports to connect and register without timing out
+			internalInterface.startVideoService(parameters, encrypted);
+			//After this, look to the
+		}
+
+		/**
+		 * The video service should already be started at this point. Once called, it will start
+		 * the encoders and fire up the remote display supplied by the user
+		 * @param parameters
+		 * @param encrypted
+		 */
+		private void startStream(VideoStreamingParameters parameters, boolean encrypted){
+			//Start the service first
+			//streamListener = startVideoStream(encrypted,parameters);d
+			streamListener = sdlSession.startVideoStream();
 			if(streamListener == null){
 				Log.e(TAG, "Error starting video service");
 				return;
@@ -7860,9 +7883,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if(capability != null && capability.getIsHapticSpatialDataSupported()){
 				hapticManager = new HapticInterfaceManager(internalInterface);
 			}
-			this.remoteDisplayClass = remoteDisplayClass;
+
 			try {
-				encoder.init(context,streamListener,parameters);
+				encoder.init(context, streamListener, parameters);
 				//We are all set so we can start streaming at at this point
 				encoder.start();
 				//Encoder should be up and running
@@ -7965,8 +7988,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
-
-
+			if(SessionType.NAV.equals(type) && session != null ){
+				DebugTool.logInfo("Video service has been started. Starting video stream from proxy");
+				if(session.getAcceptedVideoParams() != null){
+					videoStreamingParameters = session.getAcceptedVideoParams();
+				}
+				startStream(videoStreamingParameters, isEncrypted);
+			}
 		}
 
 		@Override
