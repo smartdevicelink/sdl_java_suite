@@ -252,7 +252,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 *                    VideoStreamingCodec.H264 is accepted), height and width of the video in pixels.
 	 * @param encrypted Specify true if packets on this service have to be encrypted
 	 */
-	private void startStreaming(VideoStreamingParameters parameters, boolean encrypted){
+	protected void startStreaming(VideoStreamingParameters parameters, boolean encrypted){
 		this.parameters = parameters;
 		if(hmiLevel != HMILevel.HMI_FULL){
 			Log.e(TAG, "Cannot start video service if HMILevel is not FULL.");
