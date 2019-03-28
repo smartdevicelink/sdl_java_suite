@@ -40,6 +40,8 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -116,7 +118,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 	}
 
 	public void testHMILevelNotFull(){
-		ISdl internalInterface = mock(ISdl.class);
+		final ISdl internalInterface = mock(ISdl.class);
 
 		when(internalInterface.getProtocolVersion()).thenReturn((new Version(5,0,0)));
 		when(internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(true);
@@ -125,8 +127,10 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 		videoStreamManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
-				assertNull(videoStreamManager.startVideoService(
-						new VideoStreamingParameters(), false));
+				VideoStreamingParameters params = new VideoStreamingParameters();
+				boolean encrypted = false;
+				videoStreamManager.startStreaming(params, encrypted);
+				verify(internalInterface, times(0)).startVideoService(params, encrypted);
 			}
 		});
 	}
