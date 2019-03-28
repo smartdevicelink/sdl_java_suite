@@ -4895,8 +4895,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
     /**
      * Opens a video service (service type 11) and subsequently provides an IVideoStreamListener
-     * to the app to send video data. The supplied VideoStreamingParameters will be set as desired paramaters
+     * to the app to send video data. The supplied VideoStreamingParameters will be set as desired parameters
 	 * that will be used to negotiate
+	 *
+	 * <br><br><b>NOTE: IF USING SECONDARY TRANSPORTS, THE VIDEO SERVICE MUST BE STARTED BEFORE CALLING THIS
+	 * THIS METHOD. USE A `ISdlServiceListener` TO BE NOTIFIED THAT IT STARTS THEN CALL THIS METHOD TO
+	 * START STREAMING. ADD A LISTENER USE {@link #addServiceListener(SessionType, ISdlServiceListener)}.</b>
      *
      * @param isEncrypted Specify true if packets on this service have to be encrypted
      * @param parameters  Video streaming parameters including: codec which will be used for streaming (currently, only
@@ -4904,6 +4908,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
      *
      * @return IVideoStreamListener interface if service is opened successfully and streaming is
      *         started, null otherwise
+	 *
+	 * @see ISdlServiceListener
      */
     @SuppressWarnings("unused")
     public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
