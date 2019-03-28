@@ -4895,8 +4895,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
     /**
      * Opens a video service (service type 11) and subsequently provides an IVideoStreamListener
-     * to the app to send video data. The supplied VideoStreamingParameters will be set as desired paramaters
+     * to the app to send video data. The supplied VideoStreamingParameters will be set as desired parameters
 	 * that will be used to negotiate
+	 *
+	 * <br><br><b>NOTE: IF USING SECONDARY TRANSPORTS, THE VIDEO SERVICE MUST BE STARTED BEFORE CALLING THIS
+	 * THIS METHOD. USE A `ISdlServiceListener` TO BE NOTIFIED THAT IT STARTS THEN CALL THIS METHOD TO
+	 * START STREAMING. ADD A LISTENER USE {@link #addServiceListener(SessionType, ISdlServiceListener)}.</b>
      *
      * @param isEncrypted Specify true if packets on this service have to be encrypted
      * @param parameters  Video streaming parameters including: codec which will be used for streaming (currently, only
@@ -4904,6 +4908,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
      *
      * @return IVideoStreamListener interface if service is opened successfully and streaming is
      *         started, null otherwise
+	 *
+	 * @see ISdlServiceListener
      */
     @SuppressWarnings("unused")
     public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
@@ -5094,21 +5100,24 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             return null;
         }
 
-		sdlSession.setDesiredVideoParams(parameters);
+		if(!navServiceStartResponseReceived || !navServiceStartResponse //If we haven't started the service before
+				|| (navServiceStartResponse && isEncrypted && !sdlSession.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
+			sdlSession.setDesiredVideoParams(parameters);
 
-		navServiceStartResponseReceived = false;
-		navServiceStartResponse = false;
-		navServiceStartRejectedParams = null;
+			navServiceStartResponseReceived = false;
+			navServiceStartResponse = false;
+			navServiceStartRejectedParams = null;
 
-		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
+			sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
 
-		FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
-		ScheduledExecutorService scheduler = createScheduler();
-		scheduler.execute(fTask);
+			FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+			ScheduledExecutorService scheduler = createScheduler();
+			scheduler.execute(fTask);
 
-		//noinspection StatementWithEmptyBody
-        while (!navServiceStartResponseReceived && !fTask.isDone());
-        scheduler.shutdown();
+			//noinspection StatementWithEmptyBody
+			while (!navServiceStartResponseReceived && !fTask.isDone()) ;
+			scheduler.shutdown();
+		}
 
         if (navServiceStartResponse) {
 			if(protocolVersion!= null && protocolVersion.getMajor() < 5){ //Versions 1-4 do not support streaming parameter negotiations
@@ -7827,6 +7836,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		float[] touchScalar = {1.0f,1.0f}; //x, y
 		private HapticInterfaceManager hapticManager;
 		SdlMotionEvent sdlMotionEvent = null;
+		VideoStreamingParameters videoStreamingParameters;
 
 		public VideoStreamingManager(Context context,ISdl iSdl){
 			this.context = context;
@@ -7847,8 +7857,30 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			});
 		}
 
+		/**
+		 * Starts the video service, caches the supplied params and prepares for the stream to start.
+		 * @param remoteDisplayClass the extension of SdlRemoteDisplay that will be streamed
+		 * @param parameters desired video streaming params
+		 * @param encrypted if the service is to be encrypted or not
+		 */
 		public void startVideoStreaming(Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, boolean encrypted){
-			streamListener = startVideoStream(encrypted,parameters);
+			this.remoteDisplayClass = remoteDisplayClass;
+			this.videoStreamingParameters = parameters;
+			//Make sure the service is started, allows multi transports to connect and register without timing out
+			internalInterface.startVideoService(parameters, encrypted);
+			//After this, look to the
+		}
+
+		/**
+		 * The video service should already be started at this point. Once called, it will start
+		 * the encoders and fire up the remote display supplied by the user
+		 * @param parameters
+		 * @param encrypted
+		 */
+		private void startStream(VideoStreamingParameters parameters, boolean encrypted){
+			//Start the service first
+			//streamListener = startVideoStream(encrypted,parameters);d
+			streamListener = sdlSession.startVideoStream();
 			if(streamListener == null){
 				Log.e(TAG, "Error starting video service");
 				return;
@@ -7857,9 +7889,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if(capability != null && capability.getIsHapticSpatialDataSupported()){
 				hapticManager = new HapticInterfaceManager(internalInterface);
 			}
-			this.remoteDisplayClass = remoteDisplayClass;
+
 			try {
-				encoder.init(context,streamListener,parameters);
+				encoder.init(context, streamListener, parameters);
 				//We are all set so we can start streaming at at this point
 				encoder.start();
 				//Encoder should be up and running
@@ -7962,8 +7994,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
-
-
+			if(SessionType.NAV.equals(type) && session != null ){
+				DebugTool.logInfo("Video service has been started. Starting video stream from proxy");
+				if(session.getAcceptedVideoParams() != null){
+					videoStreamingParameters = session.getAcceptedVideoParams();
+				}
+				startStream(videoStreamingParameters, isEncrypted);
+			}
 		}
 
 		@Override
