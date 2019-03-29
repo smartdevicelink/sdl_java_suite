@@ -47,11 +47,10 @@ import java.util.List;
  * 		</tr>
  *  </table>
  * @since SmartDeviceLink 3.0
- * @see DisplayType 
- * @see MediaClockFormat
- * @see TextFieldName
- * @see ImageType
- * 
+ * @see com.smartdevicelink.proxy.rpc.enums.ImageType
+ * @see com.smartdevicelink.proxy.rpc.ImageResolution
+ * @see com.smartdevicelink.proxy.rpc.enums.ImageFieldName
+ *
  *
  * 
  *

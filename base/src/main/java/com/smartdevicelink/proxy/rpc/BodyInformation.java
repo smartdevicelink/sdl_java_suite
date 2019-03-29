@@ -94,15 +94,14 @@ public class BodyInformation extends RPCStruct {
     public static final String KEY_PASSENGER_DOOR_AJAR = "passengerDoorAjar";
     public static final String KEY_REAR_LEFT_DOOR_AJAR = "rearLeftDoorAjar";
     public static final String KEY_REAR_RIGHT_DOOR_AJAR = "rearRightDoorAjar";
-	/** Constructs a new BodyInformation object indicated by the Hashtable
-	 * parameter
-	 * @param hash
-	 * The hash table to use
-	 * 
-	 *
-	 */
 
     public BodyInformation() { }
+
+    /** Constructs a new BodyInformation object indicated by the Hashtable
+	 * parameter
+     * @param hash hashtable filled with params to create an instance of this RPC
+	 * The hash table to use
+	 */
     public BodyInformation(Hashtable<String, Object> hash) {
         super(hash);
     }

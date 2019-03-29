@@ -4,8 +4,8 @@ package com.smartdevicelink.proxy.rpc.enums;
  * Indicates whether the button was depressed or released. A BUTTONUP event will
  * always be preceded by a BUTTONDOWN event
  * 
- * @see SoftButtonCapabilities
- * @see OnButtonEvent
+ * @see com.smartdevicelink.proxy.rpc.SoftButtonCapabilities
+ * @see com.smartdevicelink.proxy.rpc.OnButtonEvent
  * @since SmartDeviceLink 1.0
  */
 public enum ButtonEventMode {

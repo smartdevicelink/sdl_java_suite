@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 /**
  * Describes different bit depth options for PerformAudioPassThru.
- *  @see PerformAudioPassThru
+ *  @see com.smartdevicelink.proxy.rpc.PerformAudioPassThru
  *  @since SmartDeviceLink 2.0
  */
 public enum BitsPerSample {

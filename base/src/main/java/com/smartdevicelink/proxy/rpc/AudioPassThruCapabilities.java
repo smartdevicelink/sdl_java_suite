@@ -43,8 +43,6 @@ import java.util.Hashtable;
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
  *  </table>
- *  @see ButtonName
- *  @see GetCapabilities
  * @since SmartDeviceLink 2.0
  */
 public class AudioPassThruCapabilities extends RPCStruct {

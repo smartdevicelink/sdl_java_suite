@@ -3,8 +3,8 @@ package com.smartdevicelink.proxy.rpc.enums;
  * 
  * @since SmartDeviceLink 2.0
  * 
- * @see GetVehicleData
- * @see OnVehicleData
+ * @see com.smartdevicelink.proxy.rpc.GetVehicleData
+ * @see com.smartdevicelink.proxy.rpc.OnVehicleData
  */
 
 public enum WiperStatus {

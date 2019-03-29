@@ -50,13 +50,13 @@ public class DIDResult extends RPCStruct {
 	public static final String KEY_RESULT_CODE = "resultCode";
 	public static final String KEY_DATA = "data";
 	public static final String KEY_DID_LOCATION = "didLocation";
-	/** <p>Constructs a new DIDResult object indicated by the Hashtable
-	 * parameter</p>
-	 * @param hash
-	 * The hash table to use
-	 */	
 
     public DIDResult() {}
+
+	/** <p>Constructs a new DIDResult object indicated by the Hashtable
+	 * parameter</p>
+	 * @param hash The hash table to use to create an instance of this RPC
+	 */	
     public DIDResult(Hashtable<String, Object> hash) {
         super(hash);
     }

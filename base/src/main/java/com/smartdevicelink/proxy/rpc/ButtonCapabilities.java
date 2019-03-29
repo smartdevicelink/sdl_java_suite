@@ -26,13 +26,13 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>shortPressAvailable</td>
  * 			<td>Boolean</td>
- * 			<td>The button supports a SHORT press. See {@linkplain ButtonPressMode} for more information.</td>
+ * 			<td>The button supports a SHORT press. See {@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode} for more information.</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  *     <tr>
  * 			<td>longPressAvailable</td>
  * 			<td>Boolean</td>
- * 			<td>The button supports a LONG press. See {@linkplain ButtonPressMode} for more information.</td>
+ * 			<td>The button supports a LONG press. See {@linkplain com.smartdevicelink.proxy.rpc.enums.ButtonPressMode} for more information.</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  *     <tr>
@@ -52,8 +52,8 @@ import java.util.Hashtable;
  * @since SmartDeviceLink 1.0
  * 
  * @see ButtonName
- * @see ButtonEventMode
- * @see ButtonPressMode 
+ * @see com.smartdevicelink.proxy.rpc.enums.ButtonEventMode
+ * @see com.smartdevicelink.proxy.rpc.enums.ButtonPressMode
  * 
  * 
  *

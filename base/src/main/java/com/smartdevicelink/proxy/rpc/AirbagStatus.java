@@ -80,7 +80,6 @@ import java.util.Hashtable;
  *  
  * @since SmartDeviceLink 1.0
  *  
- * @see TextFieldName
  * @see Image
  * @see SubscribeVehicleData
  */
@@ -93,15 +92,15 @@ public class AirbagStatus extends RPCStruct {
     public static final String KEY_PASSENGER_SIDE_AIRBAG_DEPLOYED = "passengerSideAirbagDeployed";
     public static final String KEY_PASSENGER_CURTAIN_AIRBAG_DEPLOYED = "passengerCurtainAirbagDeployed";
     public static final String KEY_PASSENGER_KNEE_AIRBAG_DEPLOYED = "passengerKneeAirbagDeployed";
-	/** Constructs a new AirbagStatus object indicated by the Hashtable
-	 * parameter
-	 * @param hash
-	 * The hash table to use
-	 * 
-	 *
-	 */
+
 
     public AirbagStatus() { }
+
+    /** Constructs a new AirbagStatus object indicated by the Hashtable
+     * parameter
+     * @param hash hashtable filled with params to create an instance of this RPC
+     * The hash table to use
+     */
     public AirbagStatus(Hashtable<String, Object> hash) {
         super(hash);
     }

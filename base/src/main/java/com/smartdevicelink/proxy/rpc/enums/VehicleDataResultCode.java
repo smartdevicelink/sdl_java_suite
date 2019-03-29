@@ -3,8 +3,8 @@ package com.smartdevicelink.proxy.rpc.enums;
  * 
  * @since SmartDeviceLink 2.0 
  *
- *@see DIDResult
- *@see ReadDID
+ *@see com.smartdevicelink.proxy.rpc.DIDResult
+ *@see com.smartdevicelink.proxy.rpc.ReadDID
  */
 
 public enum VehicleDataResultCode {

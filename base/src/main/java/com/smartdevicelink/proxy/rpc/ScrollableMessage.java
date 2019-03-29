@@ -65,8 +65,7 @@ import java.util.List;
  *	<p>REJECTED </p>
  *	<p>ABORTED</p>
  *
- *  @see scrollableMessageBody
- *  @see TextFieldName
+ *  @see com.smartdevicelink.proxy.rpc.SoftButton
  */
 public class ScrollableMessage extends RPCRequest {
 	public static final String KEY_SCROLLABLE_MESSAGE_BODY = "scrollableMessageBody";

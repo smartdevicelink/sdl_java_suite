@@ -58,8 +58,8 @@ import java.util.List;
  * @since SmartDeviceLink 1.0
  * @see DisplayType
  * @see MediaClockFormat
- * @see TextFieldName
- * @see ImageType
+ * @see TextField
+ * @see ImageField
  * 
  */
 public class DisplayCapabilities extends RPCStruct {

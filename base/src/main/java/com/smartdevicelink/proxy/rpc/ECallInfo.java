@@ -48,9 +48,7 @@ import java.util.Hashtable;
  * @since SmartDeviceLink 2.0
  * @see SubscribeVehicleData
  * 
- * 
- * @see TextFieldName
- * @see Image
+ *
  *
  */
 

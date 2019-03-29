@@ -59,24 +59,24 @@ public class ClusterModeStatus extends RPCStruct {
     public static final String KEY_POWER_MODE_QUALIFICATION_STATUS = "powerModeQualificationStatus";
     public static final String KEY_CAR_MODE_STATUS = "carModeStatus";
     public static final String KEY_POWER_MODE_STATUS = "powerModeStatus";
+
+	public ClusterModeStatus() { }
+
 	/** <p>Constructs a new ClusterModeStatus object indicated by the Hashtable
 	 * parameter</p>
-	 * @param hash
-	 * The hash table to use
+	 * @param hash The hash table to use to create an instance of this RPC
 	 * 
 	 */
-
-	    public ClusterModeStatus() { }
-	    public ClusterModeStatus(Hashtable<String, Object> hash) {
+	public ClusterModeStatus(Hashtable<String, Object> hash) {
 	        super(hash);
 	    }
-		public ClusterModeStatus(@NonNull Boolean powerModeActive, @NonNull PowerModeQualificationStatus powerModeQualificationStatus, @NonNull CarModeStatus carModeStatus, @NonNull PowerModeStatus powerModeStatus) {
-	    	this();
-	    	setPowerModeActive(powerModeActive);
-	    	setPowerModeQualificationStatus(powerModeQualificationStatus);
-	    	setCarModeStatus(carModeStatus);
-	    	setPowerModeStatus(powerModeStatus);
-	    }
+	public ClusterModeStatus(@NonNull Boolean powerModeActive, @NonNull PowerModeQualificationStatus powerModeQualificationStatus, @NonNull CarModeStatus carModeStatus, @NonNull PowerModeStatus powerModeStatus) {
+	   	this();
+	   	setPowerModeActive(powerModeActive);
+	   	setPowerModeQualificationStatus(powerModeQualificationStatus);
+	   	setCarModeStatus(carModeStatus);
+	   	setPowerModeStatus(powerModeStatus);
+	}
 
 	    public void setPowerModeActive(@NonNull Boolean powerModeActive) {
 	        setValue(KEY_POWER_MODE_ACTIVE, powerModeActive);

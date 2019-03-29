@@ -37,10 +37,6 @@ import java.util.Hashtable;
  * 		
  *  </table>
  * @since SmartDeviceLink 3.0
- * @see DisplayType
- * @see MediaClockFormat
- * @see TextFieldName
- * @see ImageType 
  *  
  */
 

@@ -23,7 +23,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
 	HttpRequestTaskCallback cb;
 
 	/**
-	 * @param HttpRequestTaskCallback callback for when this task finishes
+	 * @param hcb callback for when this task finishes
 	 * <br><br><b> - When calling execute, params as followed: </b><br>
 	 *  1. Url String<br>
 	 *  2. Request type (Defined in this class) REQUEST_TYPE_POST, REQUEST_TYPE_GET, REQUEST_TYPE_DELETE<br>

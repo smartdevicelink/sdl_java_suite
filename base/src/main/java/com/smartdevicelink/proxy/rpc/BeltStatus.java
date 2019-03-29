@@ -133,15 +133,14 @@ public class BeltStatus extends RPCStruct {
     public static final String KEY_RIGHT_REAR_INFLATABLE_BELTED = "rightRearInflatableBelted";
     public static final String KEY_MIDDLE_ROW_1_BELT_DEPLOYED = "middleRow1BeltDeployed";
     public static final String KEY_MIDDLE_ROW_1_BUCKLE_BELTED = "middleRow1BuckleBelted";
-	/** Constructs a new BeltStatus object indicated by the Hashtable
-	 * parameter
-	 * @param hash
-	 * The hash table to use
-	 * 
-	 *
-	 */
 
     public BeltStatus() { }
+
+    /** Constructs a new BeltStatus object indicated by the Hashtable
+	 * parameter
+	 * @param hash hashtable filled with params to create an instance of this RPC
+	 * The hash table to use
+	 */
     public BeltStatus(Hashtable<String, Object> hash) {
         super(hash);
     }

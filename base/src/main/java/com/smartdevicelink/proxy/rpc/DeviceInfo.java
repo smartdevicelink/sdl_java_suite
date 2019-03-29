@@ -78,18 +78,13 @@ public class DeviceInfo extends RPCStruct{
     public static final String KEY_CARRIER = "carrier";
     public static final String KEY_MAX_NUMBER_RFCOMM_PORTS = "maxNumberRFCOMMPorts";
     public static final String DEVICE_OS = "Android";
-    
-	/** Constructs a new DeviceInfo object indicated by the Hashtable
-	 * parameter
-	 * @param hash
-	 * 
-	 * The hash table to use
-	 * 
-	 *
-	 */
 
-	public DeviceInfo() { }
- 
+    public DeviceInfo() { }
+
+    /** Constructs a new DeviceInfo object indicated by the Hashtable
+	 * parameter
+	 * @param hash The hash table to use to create an instance of this RPC
+	 */
 	public DeviceInfo(Hashtable<String, Object> hash) {
         super(hash);
     }

@@ -21,7 +21,7 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>gps</td>
  * 			<td>Boolean</td>
- * 			<td>GPS data. See {@linkplain GPS data }for details</td>
+ * 			<td>GPS data. See {@linkplain com.smartdevicelink.proxy.rpc.GPSData }for details</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0 </td>
