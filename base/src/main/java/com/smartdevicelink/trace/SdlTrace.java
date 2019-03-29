@@ -1,6 +1,5 @@
 package com.smartdevicelink.trace;
 
-import java.sql.Timestamp;
 
 
 import com.smartdevicelink.protocol.SdlPacket;

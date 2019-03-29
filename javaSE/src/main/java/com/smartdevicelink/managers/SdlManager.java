@@ -42,7 +42,6 @@ import com.smartdevicelink.managers.screen.ScreenManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -60,7 +59,6 @@ import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 /**
