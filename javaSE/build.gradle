@@ -1,0 +1,63 @@
+apply plugin: 'java-library'
+
+group 'com.smartdevicelink'
+version '4.7.2'
+
+sourceCompatibility = 1.7
+
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+    }
+}
+
+repositories {
+    google()
+    jcenter()
+}
+
+// This extraLibs solution is explained here: https://discuss.gradle.org/t/how-to-include-dependencies-in-jar/19571/5
+configurations {
+    // configuration that holds jars to include in the jar
+    extraLibs
+}
+
+dependencies {
+    extraLibs fileTree(dir: 'libs', include: ['*.jar'])
+    extraLibs 'com.android.support:support-annotations:28.0.0'
+    extraLibs 'org.java-websocket:Java-WebSocket:1.3.9'
+    configurations.api.extendsFrom(configurations.extraLibs)
+}
+
+sourceSets {
+    main.java.srcDirs += '../base/src/main/java'
+}
+
+jar {
+    from {
+        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task generateSources {
+    File outputDir = file("$buildDir/../src/main/java/com/smartdevicelink/")
+    outputs.dir outputDir
+    doFirst {
+        def srcFile = new File(outputDir, "BuildConfig.java")
+        srcFile.parentFile.mkdirs()
+        srcFile.write(
+"""package com.smartdevicelink;
+
+public final class BuildConfig {
+    public static final String VERSION_NAME = "$project.version";
+}""")
+    }
+}
+
+compileJava.dependsOn generateSources
+
+apply from: 'bintray.gradle'

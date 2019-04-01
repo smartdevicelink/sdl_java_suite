@@ -1,0 +1,41 @@
+package com.smartdevicelink.transport.enums;
+
+/**
+ * Defines available types of the transports.
+ */
+public enum TransportType {
+	/**
+	 * Transport type will be anything the multiplexing service connects to.
+	 */
+	MULTIPLEX,
+	/**
+	 * Transport type is Bluetooth.
+	 */
+	BLUETOOTH,
+	
+	/**
+	 * Transport type is TCP.
+	 */
+	TCP,
+	USB,
+	/**
+	 * Used for cloud and embedded
+	 */
+	WEB_SOCKET_SERVER,
+
+	/**
+	 * This transport is setup to be essentially a proxy to a different transport. It allows a developer to create a
+	 * custom transport without much effort.
+	 */
+	CUSTOM,
+
+	;
+	
+	public static TransportType valueForString(String value) {
+		try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
+	}
+}

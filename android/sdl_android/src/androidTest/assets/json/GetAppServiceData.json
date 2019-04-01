@@ -1,0 +1,20 @@
+{
+  "request":{
+    "name":"GetAppServiceData",
+    "correlationID":53,
+    "parameters":{
+      "subscribe":true,
+      "serviceType":"MEDIA"
+    }
+  },
+  "response":{
+    "name":"GetAppServiceDataResponse",
+    "correlationID":53,
+    "parameters":{
+      "serviceData": {
+        "serviceId": "test",
+        "serviceType": "MEDIA"
+      }
+    }
+  }
+}
