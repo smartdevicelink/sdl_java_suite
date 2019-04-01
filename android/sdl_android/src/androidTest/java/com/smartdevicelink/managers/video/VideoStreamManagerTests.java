@@ -22,6 +22,7 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.Test;
@@ -34,6 +35,9 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -241,42 +245,91 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 
 	}
 
-	public void testConvertTouchEvent(){
+	public void testMultiTouchUpDown() {
 		ISdl internalInterface = mock(ISdl.class);
-		when(internalInterface.getProtocolVersion()).thenReturn(new Version(5,1,0));
-
 		final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
-		videoStreamManager.start(new CompletionListener() {
-			@Override
-			public void onComplete(boolean success) {
-				assertTrue(success);
-				OnTouchEvent testOnTouchEvent = new OnTouchEvent();
-				TouchEvent touchEvent = Test.GENERAL_TOUCHEVENT;
-				testOnTouchEvent.setEvent(Collections.singletonList(touchEvent));
-				testOnTouchEvent.setType(Test.GENERAL_TOUCHTYPE);
-				MotionEvent motionEvent;
 
-				// Touch one pointer (100)
-				motionEvent = videoStreamManager.convertTouchEvent(testOnTouchEvent);
-				assertEquals(motionEvent.getAction(), MotionEvent.ACTION_DOWN);
+		// Initialize touch event (Touch ID:100)
+		TouchEvent touchEvent = Test.GENERAL_TOUCHEVENT;
 
-				// Touch another pointer (101) without release
-				touchEvent.setId(Test.GENERAL_INT + 1);
-				testOnTouchEvent.setEvent(Collections.singletonList(touchEvent));
-				motionEvent = videoStreamManager.convertTouchEvent(testOnTouchEvent);
-				assertEquals(motionEvent.getAction(), MotionEvent.ACTION_POINTER_DOWN);
+		// Initialize touch event (Touch ID:101)
+		TouchEvent touchEvent2 = new TouchEvent();
+		touchEvent2.setId(touchEvent.getId() + 1);
+		touchEvent2.setTimestamps(Test.GENERAL_LONG_LIST);
+		touchEvent2.setTouchCoordinates(new ArrayList<TouchCoord>(Arrays.asList(new TouchCoord(Test.GENERAL_TOUCHCOORD.getX() + 1, Test.GENERAL_TOUCHCOORD.getY() + 1))));
 
-				// Release one of the pointers (101)
-				testOnTouchEvent.setType(TouchType.END);
-				motionEvent = videoStreamManager.convertTouchEvent(testOnTouchEvent);
-				assertEquals(motionEvent.getAction(), MotionEvent.ACTION_POINTER_UP);
+		// Touch one pointer (Touch ID:100)
+		OnTouchEvent testOnTouchEvent = new OnTouchEvent();
+		testOnTouchEvent.setEvent(Collections.singletonList(touchEvent));
+		testOnTouchEvent.setType(Test.GENERAL_TOUCHTYPE);
+		List<MotionEvent> events = videoStreamManager.convertTouchEvent(testOnTouchEvent);
+		assertEquals(MotionEvent.ACTION_DOWN, events.get(0).getAction());
 
-				// Release the other pointer (100)
-				touchEvent.setId(Test.GENERAL_INT);
-				testOnTouchEvent.setEvent(Collections.singletonList(touchEvent));
-				motionEvent = videoStreamManager.convertTouchEvent(testOnTouchEvent);
-				assertEquals(motionEvent.getAction(), MotionEvent.ACTION_UP);
-			}
-		});
+		// Touch another pointer (Touch ID:101)
+		testOnTouchEvent.setEvent(Collections.singletonList(touchEvent2));
+		testOnTouchEvent.setType(Test.GENERAL_TOUCHTYPE);
+		events = videoStreamManager.convertTouchEvent(testOnTouchEvent);
+		assertEquals(MotionEvent.ACTION_POINTER_DOWN | 1 << MotionEvent.ACTION_POINTER_INDEX_SHIFT, events.get(0).getAction());
+
+		// Release one of the pointers (Touch ID:101)
+		testOnTouchEvent.setEvent(Collections.singletonList(touchEvent2));
+		testOnTouchEvent.setType(TouchType.END);
+		events = videoStreamManager.convertTouchEvent(testOnTouchEvent);
+		assertEquals(MotionEvent.ACTION_POINTER_UP | 1 << MotionEvent.ACTION_POINTER_INDEX_SHIFT, events.get(0).getAction());
+
+		// Release the other pointer (Touch ID:100)
+		testOnTouchEvent.setEvent(Collections.singletonList(touchEvent));
+		testOnTouchEvent.setType(TouchType.END);
+		events = videoStreamManager.convertTouchEvent(testOnTouchEvent);
+		assertEquals(MotionEvent.ACTION_UP, events.get(0).getAction());
+	}
+
+	public void testMultiBeginTouch() {
+		ISdl internalInterface = mock(ISdl.class);
+		final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
+
+		// Initialize touch event (Touch ID:100)
+		TouchEvent touchEvent = Test.GENERAL_TOUCHEVENT;
+
+		// Initialize touch event (Touch ID:101)
+		TouchEvent touchEvent2 = new TouchEvent();
+		touchEvent2.setId(touchEvent.getId() + 1);
+		touchEvent2.setTimestamps(Test.GENERAL_LONG_LIST);
+		touchEvent2.setTouchCoordinates(new ArrayList<TouchCoord>(Arrays.asList(new TouchCoord(Test.GENERAL_TOUCHCOORD.getX() + 1, Test.GENERAL_TOUCHCOORD.getY() + 1))));
+
+		// Touch multi pointer (Touch ID:100, 101)
+		OnTouchEvent testOnTouchEvent = new OnTouchEvent();
+		testOnTouchEvent.setType(Test.GENERAL_TOUCHTYPE);
+		testOnTouchEvent.setEvent(Arrays.asList(touchEvent, touchEvent2));
+		List<MotionEvent> events = videoStreamManager.convertTouchEvent(testOnTouchEvent);
+		assertEquals(MotionEvent.ACTION_DOWN, events.get(0).getAction());
+		assertEquals(MotionEvent.ACTION_POINTER_DOWN | 1 << MotionEvent.ACTION_POINTER_INDEX_SHIFT, events.get(1).getAction());
+	}
+
+	public void testMultiTouchOneFingerMove() {
+		ISdl internalInterface = mock(ISdl.class);
+		final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
+
+		// Initialize touch event (Touch ID:100)
+		TouchEvent touchEvent = Test.GENERAL_TOUCHEVENT;
+
+		// Initialize touch event (Touch ID:101)
+		TouchEvent touchEvent2 = new TouchEvent();
+		touchEvent2.setId(touchEvent.getId() + 1);
+		touchEvent2.setTimestamps(Test.GENERAL_LONG_LIST);
+		touchEvent2.setTouchCoordinates(new ArrayList<TouchCoord>(Arrays.asList(new TouchCoord(Test.GENERAL_TOUCHCOORD.getX() + 1, Test.GENERAL_TOUCHCOORD.getY() + 1))));
+
+		// Touch multi pointer (Touch ID:100, 101)
+		OnTouchEvent testOnTouchEvent = new OnTouchEvent();
+		testOnTouchEvent.setType(Test.GENERAL_TOUCHTYPE);
+		testOnTouchEvent.setEvent(Arrays.asList(touchEvent, touchEvent2));
+		videoStreamManager.convertTouchEvent(testOnTouchEvent);
+
+		// Move pointer (Touch ID:101)
+		testOnTouchEvent.setType(TouchType.MOVE);
+		testOnTouchEvent.setEvent(Arrays.asList(touchEvent2));
+		List<MotionEvent> events = videoStreamManager.convertTouchEvent(testOnTouchEvent);
+		assertEquals(MotionEvent.ACTION_MOVE, events.get(0).getAction());
+		assertEquals(2, events.get(0).getPointerCount());
 	}
 }
