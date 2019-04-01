@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.smartdevicelink.proxy;
 
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;

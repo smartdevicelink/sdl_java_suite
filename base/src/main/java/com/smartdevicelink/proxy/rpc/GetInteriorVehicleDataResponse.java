@@ -33,7 +33,7 @@ public class GetInteriorVehicleDataResponse extends RPCResponse {
 
 	/**
 	 * Constructs a new GetInteriorVehicleDataResponse object
-	 * @param moduleData
+	 * @param moduleData specific data for the module that was requested
 	 * @param resultCode whether the request is successfully processed
 	 * @param success whether the request is successfully processed
 
@@ -57,7 +57,7 @@ public class GetInteriorVehicleDataResponse extends RPCResponse {
 	/**
 	 * Sets the moduleData
 	 *
-	 * @param moduleData
+	 * @param moduleData specific data for the module that was requested
 	 */
 	public void setModuleData(ModuleData moduleData) {
 		setParameters(KEY_MODULE_DATA, moduleData);

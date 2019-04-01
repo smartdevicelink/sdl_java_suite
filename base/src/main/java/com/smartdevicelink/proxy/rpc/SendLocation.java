@@ -64,7 +64,7 @@ public class SendLocation extends RPCRequest{
 
     /**
      * Setter for longitude of the location to send.
-     * @param longitudeDegrees
+     * @param longitudeDegrees degrees of the longitudinal position
      */
     public void setLongitudeDegrees(Double longitudeDegrees){
         setParameters(KEY_LON_DEGREES, longitudeDegrees);
@@ -87,7 +87,7 @@ public class SendLocation extends RPCRequest{
 
     /**
      * Setter for latitude of the location to send.
-     * @param latitudeDegrees
+     * @param latitudeDegrees degrees of the latitudinal position
      */
     public void setLatitudeDegrees(Double latitudeDegrees){
         setParameters(KEY_LAT_DEGREES, latitudeDegrees);

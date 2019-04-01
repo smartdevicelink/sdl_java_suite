@@ -31,7 +31,7 @@ public class GetDTCsResponse extends RPCResponse{
      * Constructs a new GetDTCsResponse object
      * @param success whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
-     * @param ecuHeader
+     * @param ecuHeader representation of the ecu header that was returned from the GetDTC request
      */
     public GetDTCsResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull Integer ecuHeader) {
         this();

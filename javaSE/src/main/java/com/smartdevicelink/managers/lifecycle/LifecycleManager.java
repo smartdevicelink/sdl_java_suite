@@ -1164,7 +1164,7 @@ public class LifecycleManager extends BaseLifecycleManager {
          * If the protocol version of the head unit connected is below this version,
          * the app will disconnect with an EndService protocol message and will not register.
          *
-         * @param minimumProtocolVersion
+         * @param minimumProtocolVersion a Version object with the minimally accepted Protocol version
          */
         public void setMinimumProtocolVersion(Version minimumProtocolVersion) {
             this.minimumProtocolVersion = minimumProtocolVersion;
@@ -1178,7 +1178,7 @@ public class LifecycleManager extends BaseLifecycleManager {
          * The minimum RPC version that will be permitted to connect.
          * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
          *
-         * @param minimumRPCVersion
+         * @param minimumRPCVersion a Version object with the minimally accepted RPC spec version
          */
         public void setMinimumRPCVersion(Version minimumRPCVersion) {
             this.minimumRPCVersion = minimumRPCVersion;
@@ -1189,7 +1189,8 @@ public class LifecycleManager extends BaseLifecycleManager {
     /**
      * Temporary method to bridge the new PLAY_PAUSE and OKAY button functionality with the old
      * OK button name. This should be removed during the next major release
-     * @param notification
+     * @param notification an RPC message object that should be either an ON_BUTTON_EVENT or ON_BUTTON_PRESS otherwise
+     *                     it will be ignored
      */
     private RPCNotification handleButtonNotificationFormatting(RPCMessage notification){
         if(FunctionID.ON_BUTTON_EVENT.toString().equals(notification.getFunctionName())

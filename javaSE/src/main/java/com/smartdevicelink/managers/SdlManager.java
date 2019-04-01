@@ -504,7 +504,7 @@ public class SdlManager extends BaseSdlManager{
 
 		/**
 		 * Sets the App ID
-		 * @param appId
+		 * @param appId String representation of the App ID retreived from the SDL Developer Portal
 		 */
 		public Builder setAppId(@NonNull final String appId){
 			sdlManager.appId = appId;
@@ -513,7 +513,7 @@ public class SdlManager extends BaseSdlManager{
 
 		/**
 		 * Sets the Application Name
-		 * @param appName
+		 * @param appName String that will be associated as the app's name
 		 */
 		public Builder setAppName(@NonNull final String appName){
 			sdlManager.appName = appName;
@@ -522,7 +522,7 @@ public class SdlManager extends BaseSdlManager{
 
 		/**
 		 * Sets the Short Application Name
-		 * @param shortAppName
+		 * @param shortAppName a shorter representation of the app's name for smaller displays
 		 */
 		public Builder setShortAppName(final String shortAppName) {
 			sdlManager.shortAppName = shortAppName;
@@ -533,7 +533,7 @@ public class SdlManager extends BaseSdlManager{
 		 * Sets the minimum protocol version that will be permitted to connect.
 		 * If the protocol version of the head unit connected is below this version,
 		 * the app will disconnect with an EndService protocol message and will not register.
-		 * @param minimumProtocolVersion
+		 * @param minimumProtocolVersion the minimum Protocol spec version that should be accepted
 		 */
 		public Builder setMinimumProtocolVersion(final Version minimumProtocolVersion) {
 			sdlManager.minimumProtocolVersion = minimumProtocolVersion;
@@ -543,7 +543,7 @@ public class SdlManager extends BaseSdlManager{
 		/**
 		 * The minimum RPC version that will be permitted to connect.
 		 * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
-		 * @param minimumRPCVersion
+		 * @param minimumRPCVersion the minimum RPC spec version that should be accepted
 		 */
 		public Builder setMinimumRPCVersion(final Version minimumRPCVersion) {
 			sdlManager.minimumRPCVersion = minimumRPCVersion;
@@ -552,7 +552,7 @@ public class SdlManager extends BaseSdlManager{
 
 		/**
 		 * Sets the Language of the App
-		 * @param hmiLanguage
+		 * @param hmiLanguage the desired language to be used on the display/HMI of the connected module
 		 */
 		public Builder setLanguage(final Language hmiLanguage){
 			sdlManager.hmiLanguage = hmiLanguage;
@@ -561,7 +561,8 @@ public class SdlManager extends BaseSdlManager{
 
 		/**
 		 * Sets the TemplateColorScheme for daytime
-		 * @param dayColorScheme
+		 * @param dayColorScheme color scheme that will be used (if supported) when the display is in a "Day Mode" or
+		 *                       similar. Should comprise of colors that contrast well during the day under sunlight.
 		 */
 		public Builder setDayColorScheme(final TemplateColorScheme dayColorScheme){
 			sdlManager.dayColorScheme = dayColorScheme;
@@ -570,7 +571,9 @@ public class SdlManager extends BaseSdlManager{
 
 		/**
 		 * Sets the TemplateColorScheme for nighttime
-		 * @param nightColorScheme
+		 * @param nightColorScheme color scheme that will be used (if supported) when the display is in a "Night Mode"
+		 *                         or similar. Should comprise of colors that contrast well during the night and are not
+		 *                         brighter than average.
 		 */
 		public Builder setNightColorScheme(final TemplateColorScheme nightColorScheme){
 			sdlManager.nightColorScheme = nightColorScheme;
@@ -578,8 +581,8 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
-		 * Sets the icon for the app on HU <br>
-		 * @param sdlArtwork
+		 * Sets the icon for the app on head unit / In-Vehicle-Infotainment system <br>
+		 * @param sdlArtwork the icon that will be used to represent this application on the connected module
 		 */
 		public Builder setAppIcon(final SdlArtwork sdlArtwork){
 			sdlManager.appIcon = sdlArtwork;
@@ -589,7 +592,8 @@ public class SdlManager extends BaseSdlManager{
 		/**
 		 * Sets the vector of AppHMIType <br>
 		 * <strong>Note: This should be an ordered list from most -> least relevant</strong>
-		 * @param hmiTypes
+		 * @param hmiTypes HMI types that represent this application. For example, if the app is a music player, the
+		 *                 MEDIA HMIType should be included.
 		 */
 		public Builder setAppTypes(final Vector<AppHMIType> hmiTypes){
 
@@ -603,8 +607,10 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
-		 * Sets the vector of vrSynonyms
-		 * @param vrSynonyms
+		 * Sets the voice recognition synonyms that can be used to identify this application.
+		 * @param vrSynonyms a vector of Strings that can be associated with this app. For example the app's name should
+		 *                   be included as well as any phonetic spellings of the app name that might help the on-board
+		 *                   VR system associated a users spoken word with the supplied synonyms.
 		 */
 		public Builder setVrSynonyms(final Vector<String> vrSynonyms) {
 			sdlManager.vrSynonyms = vrSynonyms;
@@ -612,8 +618,9 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
-		 * Sets the TTS Name
-		 * @param ttsChunks
+		 * Sets the Text-To-Speech Name of the application. These TTSChunks might be used by the module as an audio
+		 * representation of the app's name.
+		 * @param ttsChunks the TTS chunks that can represent this app's name
 		 */
 		public Builder setTtsName(final Vector<TTSChunk> ttsChunks) {
 			sdlManager.ttsChunks = ttsChunks;
@@ -623,7 +630,7 @@ public class SdlManager extends BaseSdlManager{
 		/**
 		 * This Object type may change with the transport refactor
 		 * Sets the BaseTransportConfig
-		 * @param transport
+		 * @param transport the type of transport that should be used for this SdlManager instance.
 		 */
 		public Builder setTransportType(BaseTransportConfig transport){
 			sdlManager.transport = transport;
@@ -631,7 +638,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
-		 * Sets the Security library
+		 * Sets the Security libraries
 		 * @param secList The list of security class(es)
 		 */
 		public Builder setSdlSecurity(List<Class<? extends SdlSecurityBase>> secList) {

@@ -44,7 +44,7 @@ public class EqualizerSettings extends RPCStruct {
 	/**
 	 * Sets the channelId portion of the EqualizerSettings class
 	 *
-	 * @param channelId
+	 * @param channelId ID that represents the channel these settings should be applied
 	 */
 	public void setChannelId(@NonNull Integer channelId) {
 		setValue(KEY_CHANNEL_ID, channelId);

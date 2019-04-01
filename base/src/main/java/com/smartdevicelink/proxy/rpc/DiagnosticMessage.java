@@ -57,31 +57,26 @@ public class DiagnosticMessage extends RPCRequest {
 	public static final String KEY_TARGET_ID = "targetID";
 	public static final String KEY_MESSAGE_LENGTH = "messageLength";
 	public static final String KEY_MESSAGE_DATA = "messageData";
+
 	/**
 	 * Constructs a new DiagnosticMessage object
 	 */
-
     public DiagnosticMessage() {
         super(FunctionID.DIAGNOSTIC_MESSAGE.toString());
     }
+
     /**
 	* <p>
 	* Constructs a new DiagnosticMessage object indicated by the Hashtable
 	* parameter
 	* </p>
 	* 
-	* @param hash
-	*            The Hashtable to use
+	* @param hash The Hashtable to use to create this RPC
+	*
 	*/
-
     public DiagnosticMessage(Hashtable<String, Object> hash) {
         super(hash);
     }
-    /** Sets TargetID
-     * 
-     * @param targetID
-     */
-
 
 	/**
 	 * Constructs a new DiagnosticMessage object
@@ -93,9 +88,14 @@ public class DiagnosticMessage extends RPCRequest {
 		setMessageData(messageData);
 	}
 
+	/** Sets TargetID
+	 *
+	 * @param targetID the target for this Diagnostic Message
+	 */
     public void setTargetID(@NonNull Integer targetID) {
 		setParameters(KEY_TARGET_ID, targetID);
     }
+
     /**
 	 * <p>
 	 * Returns an <i>Integer</i> object representing the Target ID that you want to add
@@ -103,7 +103,6 @@ public class DiagnosticMessage extends RPCRequest {
 	 * 
 	 * @return Integer -an integer representation a Unique Target ID
 	 */
-
     public Integer getTargetID() {
     	return getInteger(KEY_TARGET_ID);
     }    

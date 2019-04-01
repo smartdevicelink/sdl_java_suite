@@ -11,6 +11,7 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+import com.smartdevicelink.util.DebugTool;
 
 public class StreamPacketizer extends AbstractPacketizer implements IVideoStreamListener, IAudioStreamListener, Runnable{
 
@@ -84,7 +85,9 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
                         {
 							mPauseLock.wait();
                         }
-                        catch (InterruptedException e) {}
+                        catch (InterruptedException e) {
+							DebugTool.logError("Streaming thread has been interrupted", e);
+						}
                     }
                 }
 

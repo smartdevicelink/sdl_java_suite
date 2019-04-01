@@ -24,9 +24,9 @@ public class SSLConfig {
 
     /**
      * This creates an SSLConfig using a PEM type certificate.
-     * @param pemCertificate
-     * @param privateKey
-     * @param password
+     * @param pemCertificate string representation of a PEM file that should be used for the SSL session
+     * @param privateKey the private key used with the PEM file
+     * @param password the password used with the PEN file
      */
     public SSLConfig(@NonNull String pemCertificate, @NonNull String privateKey, @NonNull String password){
         this.sslCertificateType = PEM;
@@ -38,9 +38,9 @@ public class SSLConfig {
 
     /**
      * This creates an SSLConfig using a JKS file.
-     * @param jksFile
-     * @param storePassword
-     * @param keyPassword
+     * @param jksFile File that contains the JKS that should be used for the SSL session
+     * @param storePassword the password associated with the JKS
+     * @param keyPassword the key password used with the JKS
      */
     public SSLConfig(@NonNull File jksFile, @NonNull String storePassword, @NonNull String keyPassword){
         this.sslCertificateType = JKS;

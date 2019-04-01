@@ -42,7 +42,9 @@ public class LightCapabilities extends RPCStruct {
 	/**
 	 * Sets the name portion of the LightCapabilities class
 	 *
-	 * @param name
+	 * @param name enum value of type LightName that describes the specific light
+	 *
+	 * @see com.smartdevicelink.proxy.rpc.enums.LightName
 	 */
 	public void setName(@NonNull LightName name) {
 		setValue(KEY_NAME, name);
@@ -51,7 +53,9 @@ public class LightCapabilities extends RPCStruct {
 	/**
 	 * Gets the name portion of the LightCapabilities class
 	 *
-	 * @return LightName
+	 * @return LightName enum value that describes the specific light
+	 *
+	 *  @see com.smartdevicelink.proxy.rpc.enums.LightName
 	 */
 	public LightName getName() {
 		return (LightName) getObject(LightName.class, KEY_NAME);

@@ -219,7 +219,7 @@ public class GPSData extends RPCStruct {
     }
     /**
      * set longitude degrees
-     * @param longitudeDegrees
+     * @param longitudeDegrees degrees of the longitudinal position
      */
     public void setLongitudeDegrees(@NonNull Double longitudeDegrees) {
     	setValue(KEY_LONGITUDE_DEGREES, longitudeDegrees);
@@ -236,7 +236,7 @@ public class GPSData extends RPCStruct {
     
     /**
      * set latitude degrees
-     * @param latitudeDegrees latitude degrees
+     * @param latitudeDegrees degrees of the latitudinal position
      */
     public void setLatitudeDegrees(@NonNull Double latitudeDegrees) {
     	setValue(KEY_LATITUDE_DEGREES, latitudeDegrees);

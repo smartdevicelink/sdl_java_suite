@@ -62,12 +62,6 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
     }
 
 	/**
-	 * Gets the version of the SDL&reg; SmartDeviceLink interface
-	 * 
-	 * @return SdlMsgVersion -a SdlMsgVersion object representing version of
-	 *         the SDL&reg; SmartDeviceLink interface
-	 */
-	/**
 	 * Constructs a new RegisterAppInterfaceResponse object
 	 * @param success whether the request is successfully processed
 	 * @param resultCode whether the request is successfully processed
@@ -104,6 +98,13 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 		super.format(rpcVersion,formatParams);
 	}
 
+
+	/**
+	 * Gets the version of the SDL&reg; SmartDeviceLink interface
+	 *
+	 * @return SdlMsgVersion -a SdlMsgVersion object representing version of
+	 *         the SDL&reg; SmartDeviceLink interface
+	 */
     @SuppressWarnings("unchecked")
     public SdlMsgVersion getSdlMsgVersion() {
 		return (SdlMsgVersion) getObject(SdlMsgVersion.class, KEY_SDL_MSG_VERSION);

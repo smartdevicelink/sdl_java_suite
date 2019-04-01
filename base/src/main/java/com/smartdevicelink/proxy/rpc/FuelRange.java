@@ -29,7 +29,9 @@ public class FuelRange extends RPCStruct{
     /**
      * Sets the type portion of the FuelRange class
      *
-     * @param fuelType
+     * @param fuelType the type of fuel related to this FuelRange object.
+     *
+     * @see com.smartdevicelink.proxy.rpc.enums.FuelType
      */
     public void setType(FuelType fuelType) {
         setValue(KEY_TYPE, fuelType);

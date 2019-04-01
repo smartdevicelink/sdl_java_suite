@@ -20,10 +20,9 @@ import java.util.List;
  * 			<th>SmartDeviceLink Ver. Available</th>
  * 		</tr>
  * 		<tr>
- * 		    @Deprecated
- * 			<td>displayType</td>
- * 			<td>DisplayType</td>
- * 			<td>The type of display
+ * 			<td>@Deprecated <s>displayType</s></td>
+ * 			<td><s>DisplayType</s></td>
+ * 			<td><s>The type of display</s>
  *			</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
@@ -88,7 +87,7 @@ public class DisplayCapabilities extends RPCStruct {
      * @param displayType the display type
      * @param textFields the List of textFields
      * @param mediaClockFormats the List of MediaClockFormat
-     * @param graphicSupported
+     * @param graphicSupported true if the display supports graphics, false if it does not
      */
     @Deprecated
     public DisplayCapabilities(@NonNull DisplayType displayType, @NonNull List<TextField> textFields, @NonNull List<MediaClockFormat> mediaClockFormats, @NonNull Boolean graphicSupported) {
@@ -103,7 +102,7 @@ public class DisplayCapabilities extends RPCStruct {
      * @param displayName the display name (String)
      * @param textFields the List of textFields
      * @param mediaClockFormats the List of MediaClockFormat
-     * @param graphicSupported
+     * @param graphicSupported true if the display supports graphics, false if it does not
      */
     public DisplayCapabilities(String displayName, @NonNull List<TextField> textFields, @NonNull List<MediaClockFormat> mediaClockFormats, @NonNull Boolean graphicSupported) {
         this();
@@ -196,7 +195,7 @@ public class DisplayCapabilities extends RPCStruct {
     
     /**
      * set the display's persistent screen supports.
-     * @param graphicSupported
+     * @param graphicSupported true if the display supports graphics, false if it does not
      * @since SmartDeviceLink 2.0
      */
     public void setGraphicSupported(@NonNull Boolean graphicSupported) {
@@ -205,7 +204,7 @@ public class DisplayCapabilities extends RPCStruct {
     
     /**
      * Get the display's persistent screen supports.
-     * @return Boolean get the value of graphicSupported
+     * @return true if the display supports graphics, false if it does not
      * @since SmartDeviceLink 2.0
      */
     public Boolean getGraphicSupported() {

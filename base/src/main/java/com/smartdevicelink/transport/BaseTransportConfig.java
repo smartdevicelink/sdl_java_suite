@@ -17,10 +17,12 @@ public abstract class BaseTransportConfig {
 	public abstract TransportType getTransportType();	
 	
 	/**
+	 * @deprecated
 	 * Indicate whether the application want to share connection with others.
 	 * 
-	 * @return
+	 * @return a boolean if this conneciton should be shared
 	 */
+	@Deprecated
 	public boolean shareConnection() {
 		return shareConnection;
 	}

@@ -300,7 +300,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 *            </ul>
 	 * @param isMediaApplication a Boolean value
 	 * @param languageDesired a Language Enumeration
-	 * @param hmiDisplayLanguageDesired
+	 * @param hmiDisplayLanguageDesired the requested language to be used on the HMI/Display
 	 * @param fullAppID a String value representing a unique ID, which an app will be given when approved <br>
 	 *            <b>Notes: </b>Maxlength = 100
 	 */
@@ -536,7 +536,7 @@ public class RegisterAppInterface extends RPCRequest {
 	 * Sets an enumeration indicating what language the application intends to
 	 * use for user interaction ( Display)
 	 * 
-	 * @param hmiDisplayLanguageDesired
+	 * @param hmiDisplayLanguageDesired the requested language to be used on the HMI/Display
 	 * @since SmartDeviceLink 2.0
 	 */
     public void setHmiDisplayLanguageDesired(@NonNull Language hmiDisplayLanguageDesired) {

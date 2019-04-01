@@ -57,14 +57,7 @@ public class SdlMsgVersion extends RPCStruct {
 	public SdlMsgVersion(Hashtable<String, Object> hash) {
         super(hash);
     }
-    /**
-     * Get major version
-     * 					<ul>
-     * 					<li>minvalue="1"</li>
-     * 				    <li>maxvalue="10"</li>
-     *					</ul>
-     * @return the major version
-     */
+
     /**
      * Constructs a newly allocated SdlMsgVersion object
      * @param majorVersion minvalue="1" and maxvalue="10"
@@ -85,6 +78,14 @@ public class SdlMsgVersion extends RPCStruct {
         super.format(rpcVersion,formatParams);
     }
 
+    /**
+     * Get major version
+     * 					<ul>
+     * 					<li>minvalue="1"</li>
+     * 				    <li>maxvalue="10"</li>
+     *					</ul>
+     * @return the major version
+     */
     public Integer getMajorVersion() {
         return getInteger( KEY_MAJOR_VERSION );
     }

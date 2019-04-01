@@ -26,7 +26,9 @@ public class HMISettingsControlData extends RPCStruct {
 	/**
 	 * Sets the displayMode portion of the HMISettingsControlData class
 	 *
-	 * @param displayMode
+	 * @param displayMode the display mode (DAY, NIGHT, AUTO)  of screen on the respective module
+	 *
+	 * @see com.smartdevicelink.proxy.rpc.enums.DisplayMode
 	 */
 	public void setDisplayMode(DisplayMode displayMode) {
 		setValue(KEY_DISPLAY_MODE, displayMode);
@@ -35,7 +37,9 @@ public class HMISettingsControlData extends RPCStruct {
 	/**
 	 * Gets the displayMode portion of the HMISettingsControlData class
 	 *
-	 * @return DisplayMode
+	 * @return DisplayMode the display mode (DAY, NIGHT, AUTO)  of screen on the respective module
+	 *
+	 * @see com.smartdevicelink.proxy.rpc.enums.DisplayMode
 	 */
 	public DisplayMode getDisplayMode() {
 		return (DisplayMode) getObject(DisplayMode.class, KEY_DISPLAY_MODE);
@@ -44,7 +48,9 @@ public class HMISettingsControlData extends RPCStruct {
 	/**
 	 * Sets the temperatureUnit portion of the HMISettingsControlData class
 	 *
-	 * @param temperatureUnit
+	 * @param temperatureUnit enum value of temperature unit associated with the display of the current module
+	 *
+	 * @see com.smartdevicelink.proxy.rpc.enums.TemperatureUnit
 	 */
 	public void setTemperatureUnit(TemperatureUnit temperatureUnit) {
 		setValue(KEY_TEMPERATURE_UNIT, temperatureUnit);
@@ -53,7 +59,9 @@ public class HMISettingsControlData extends RPCStruct {
 	/**
 	 * Gets the temperatureUnit portion of the HMISettingsControlData class
 	 *
-	 * @return TemperatureUnit
+	 * @return TemperatureUnit enum value of temperature unit associated with the display of the current module
+	 *
+	 * @see com.smartdevicelink.proxy.rpc.enums.TemperatureUnit
 	 */
 	public TemperatureUnit getTemperatureUnit() {
 		return (TemperatureUnit) getObject(TemperatureUnit.class, KEY_TEMPERATURE_UNIT);
@@ -62,7 +70,9 @@ public class HMISettingsControlData extends RPCStruct {
 	/**
 	 * Sets the distanceUnit portion of the HMISettingsControlData class
 	 *
-	 * @param distanceUnit
+	 * @param distanceUnit enum value of distance unit associated with the display of the current module
+	 *
+	 * @see com.smartdevicelink.proxy.rpc.enums.DistanceUnit
 	 */
 	public void setDistanceUnit(DistanceUnit distanceUnit) {
 		setValue(KEY_DISTANCE_UNIT, distanceUnit);
@@ -71,7 +81,9 @@ public class HMISettingsControlData extends RPCStruct {
 	/**
 	 * Gets the distanceUnit portion of the HMISettingsControlData class
 	 *
-	 * @return DistanceUnit
+	 * @return DistanceUnit enum value of distance unit associated with the display of the current module
+	 *
+	 * @see com.smartdevicelink.proxy.rpc.enums.DistanceUnit
 	 */
 	public DistanceUnit getDistanceUnit() {
 		return (DistanceUnit) getObject(DistanceUnit.class, KEY_DISTANCE_UNIT);

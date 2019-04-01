@@ -174,8 +174,9 @@ public enum ButtonName{
      * returns the value 1. If the buttonName given is not a preset button,
      * the method will return null.
      *  
-     * @param buttonName
-     * @return Integer
+     * @param buttonName the buttonName of PRESET_0 through PRESET_9 to
+     * @return Integer that represents which preset the supplied button name represents. It will return null if the
+	 *         ButtonName is not one of the PRESET_# names.
      */
     public static Integer indexForPresetButton(ButtonName buttonName) {
         if(buttonName == null){

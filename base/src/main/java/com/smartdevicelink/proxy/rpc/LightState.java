@@ -64,7 +64,9 @@ public class LightState extends RPCStruct {
 	/**
 	 * Sets the status portion of the LightState class
 	 *
-	 * @param status
+	 * @param status enum value of type LightStatus that describes the specific lights state
+	 *
+	 * @see com.smartdevicelink.proxy.rpc.enums.LightStatus
 	 */
 	public void setStatus(@NonNull LightStatus status) {
 		setValue(KEY_STATUS, status);
@@ -73,7 +75,9 @@ public class LightState extends RPCStruct {
 	/**
 	 * Gets the status portion of the LightState class
 	 *
-	 * @return LightStatus
+	 * @return LightStatus enum value that describes the specific lights state
+	 *
+	 *  @see com.smartdevicelink.proxy.rpc.enums.LightStatus
 	 */
 	public LightStatus getStatus() {
 		return (LightStatus) getObject(LightStatus.class, KEY_STATUS);
@@ -82,7 +86,7 @@ public class LightState extends RPCStruct {
 	/**
 	 * Gets the density portion of the LightState class
 	 *
-	 * @return Float
+	 * @return a float representation of the density of the specific light state
 	 */
 	public Float getDensity() {
 		Object value = getValue(KEY_DENSITY);
@@ -92,7 +96,7 @@ public class LightState extends RPCStruct {
 	/**
 	 * Sets the density portion of the LightState class
 	 *
-	 * @param density
+	 * @param density a float representation of the density of the specific light state
 	 */
 	public void setDensity(Float density) {
 		setValue(KEY_DENSITY, density);
@@ -101,7 +105,9 @@ public class LightState extends RPCStruct {
 	/**
 	 * Gets the color portion of the LightState class
 	 *
-	 * @return RGBColor
+	 * @return an RGBColor representation of the color of this specific light state
+	 *
+	 * @see com.smartdevicelink.proxy.rpc.RGBColor
 	 */
 	@SuppressWarnings("unchecked")
 	public RGBColor getColor() {
@@ -111,7 +117,9 @@ public class LightState extends RPCStruct {
 	/**
 	 * Sets the color portion of the LightState class
 	 *
-	 * @param color
+	 * @param color an RGBColor representation of the color of this specific light state
+	 *
+	 * @see com.smartdevicelink.proxy.rpc.RGBColor
 	 */
 	public void setColor(RGBColor color) {
 		setValue(KEY_COLOR, color);

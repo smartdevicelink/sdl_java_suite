@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.smartdevicelink.proxy;
 
 import android.support.annotation.NonNull;

@@ -36,8 +36,7 @@ public class PerformAppServiceInteractionResponse extends RPCResponse {
 	// Setters / getters
 
 	/**
-	 * The service can provide specific result strings to the consumer through this param. These
-	 * results should be described in the URI schema set in the Service Manifest
+	 * The service can provide specific result strings to the consumer through this param.
 	 * @param serviceSpecificResult -
 	 */
 	public void setServiceSpecificResult(String serviceSpecificResult){
@@ -45,8 +44,7 @@ public class PerformAppServiceInteractionResponse extends RPCResponse {
 	}
 
 	/**
-	 * The service can provide specific result strings to the consumer through this param. These
-	 * results should be described in the URI schema set in the Service Manifest
+	 * The service can provide specific result strings to the consumer through this param.
 	 * @return serviceSpecificResult
 	 */
 	public String getServiceSpecificResult(){

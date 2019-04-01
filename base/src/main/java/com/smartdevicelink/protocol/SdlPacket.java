@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.livio.BSON.BsonEncoder;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.transport.utl.TransportRecord;
+import com.smartdevicelink.util.DebugTool;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -148,8 +149,8 @@ public class SdlPacket implements Parcelable{
 	}
 	
 	/**
-	 * Creates a new packet based on previous packet definitions
-	 * @param packet
+	 * Creates a new packet based on previous packet definitions. Will not copy payload.
+	 * @param packet an instance of the packet that should be copied.
 	 */
 	protected SdlPacket(SdlPacket packet){
 		this.version = packet.version;
@@ -225,7 +226,7 @@ public class SdlPacket implements Parcelable{
 	}
 	/**
 	 * Set the priority for this packet. The lower the number the higher the priority. <br>0 is the highest priority and the default.
-	 * @param priority
+	 * @param priority the priority of this packet
 	 */
 	public void setPriorityCoefficient(int priority){
 		this.priorityCoefficient = priority;
@@ -244,16 +245,16 @@ public class SdlPacket implements Parcelable{
 
 	/**
 	 * This method takes in the various components to the SDL packet structure and creates a new byte array that can be sent via the transport
-	 * @param version
-	 * @param encryption
-	 * @param frameType
-	 * @param serviceType
-	 * @param controlFrameInfo
-	 * @param sessionId
-	 * @param dataSize
-	 * @param messageId
-	 * @param payload
-	 * @return
+	 * @param version protocol version to use
+	 * @param encryption whether or not this packet is encrypted
+	 * @param frameType the packet frame type
+	 * @param serviceType the service that this packet is associated with
+	 * @param controlFrameInfo specific frame info related to this packet
+	 * @param sessionId ID this packet is associated with
+	 * @param dataSize size of the payload that will be added
+	 * @param messageId ID of this specific packet
+	 * @param payload raw data that will be attached to the packet (RPC message, raw bytes, etc)
+	 * @return a byte[] representation of an SdlPacket built using the supplied params
 	 */
 	public static byte[] constructPacket(int version, boolean encryption, int frameType,
 			int serviceType, int controlFrameInfo, int sessionId,
@@ -362,7 +363,7 @@ public class SdlPacket implements Parcelable{
 					}
 				}
 			}catch (RuntimeException e){
-
+				DebugTool.logError("Error creating packet from parcel", e);
 			}
 		}
 	}

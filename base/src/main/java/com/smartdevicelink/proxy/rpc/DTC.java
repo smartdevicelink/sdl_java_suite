@@ -45,7 +45,7 @@ public class DTC extends RPCStruct {
     
     /**
      * set identifier
-     * @param identifier
+     * @param identifier the hexadecimal id of the DTC
      */
     public void setIdentifier(String identifier) {
     	setValue(KEY_IDENTIFIER, identifier);

@@ -91,6 +91,7 @@ public class OnButtonEvent extends RPCNotification {
 	/**
 	*Constructs a newly allocated OnButtonEvent object
 	*/
+
     public OnButtonEvent() {
         super(FunctionID.ON_BUTTON_EVENT.toString());
     }
@@ -100,16 +101,14 @@ public class OnButtonEvent extends RPCNotification {
 	 * Hashtable parameter
 	 * </p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use to create this RPC
+	 *
      */    
     public OnButtonEvent(Hashtable<String, Object> hash) {
         super(hash);
     }
-    /**
-     * <p>Returns <i>{@linkplain ButtonName}</i> the button's name</p>
-     * @return ButtonName Name of the button
-     */
+
+
     /**
      *Constructs a newly allocated OnButtonEvent object
      * @param buttonName name of the button
@@ -120,9 +119,15 @@ public class OnButtonEvent extends RPCNotification {
         setButtonName(buttonName);
         setButtonEventMode(buttonEventMode);
     }
+
+    /**
+     * <p>Returns <i>{@linkplain ButtonName}</i> the button's name</p>
+     * @return ButtonName Name of the button
+     */
     public ButtonName getButtonName() {
         return (ButtonName) getObject(ButtonName.class, KEY_BUTTON_NAME);
     }
+
     /**
      * <p>Set the button's name</p>    
      * @param buttonName name of the button
@@ -130,6 +135,7 @@ public class OnButtonEvent extends RPCNotification {
     public void setButtonName(@NonNull ButtonName buttonName) {
         setParameters(KEY_BUTTON_NAME, buttonName);
     }
+
     /**
      * <p>Return <i>{@linkplain ButtonEventMode} indicates the button was depressed or released</i></p>
      * @return ButtonEventMode the button depressed or released
@@ -137,6 +143,7 @@ public class OnButtonEvent extends RPCNotification {
     public ButtonEventMode getButtonEventMode() {
         return (ButtonEventMode) getObject(ButtonEventMode.class, KEY_BUTTON_EVENT_MODE);
     }
+
     /**
      * <p> Set the event mode of the button,pressed or released</p>
      * @param buttonEventMode indicates the button is pressed or released
@@ -145,6 +152,7 @@ public class OnButtonEvent extends RPCNotification {
     public void setButtonEventMode(@NonNull ButtonEventMode buttonEventMode) {
         setParameters(KEY_BUTTON_EVENT_MODE, buttonEventMode);
     }
+
     public void setCustomButtonID(Integer customButtonID) {
         setParameters(KEY_CUSTOM_BUTTON_ID, customButtonID);
     }

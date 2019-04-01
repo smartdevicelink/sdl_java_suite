@@ -46,16 +46,16 @@ public class SisData extends RPCStruct {
 	}
 
 	/**
-	 * Sets the stationIDNumber portion of the SisData class
+	 * Sets the stationIDNumber which is used for network Application. Consists of Country Code and FCC Facility ID
 	 *
-	 * @param stationIDNumber
+	 * @param stationIDNumber Consists of Country Code and FCC Facility ID
 	 */
 	public void setStationIDNumber(StationIDNumber stationIDNumber) {
 		setValue(KEY_STATION_ID_NUMBER, stationIDNumber);
 	}
 
 	/**
-	 * Gets the stationIDNumber portion of the SisData class
+	 * Gets the stationIDNumber which is used for network Application. Consists of Country Code and FCC Facility ID
 	 *
 	 * @return StationIDNumber.
 	 */

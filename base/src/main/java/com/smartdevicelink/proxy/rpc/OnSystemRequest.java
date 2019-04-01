@@ -282,7 +282,7 @@ public class OnSystemRequest extends RPCNotification {
 
     /**
      * @deprecated as of SmartDeviceLink 4.0
-     * @param offset
+     * @param offset  of the data attached
      */
     public void setOffset(Integer offset) {
     	if(offset == null){
@@ -345,7 +345,7 @@ public class OnSystemRequest extends RPCNotification {
 
     /**
      * @deprecated as of SmartDeviceLink 4.0
-     * @param length
+     * @param length of the data attached
      */
     public void setLength(Integer length) {
     	if(length == null){

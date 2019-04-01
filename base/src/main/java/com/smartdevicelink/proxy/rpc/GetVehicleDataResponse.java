@@ -266,7 +266,10 @@ public class GetVehicleDataResponse extends RPCResponse {
 
     /**
      * Sets Fuel Range List. Fuel Range - The estimate range in KM the vehicle can travel based on fuel level and consumption.
-     * @param fuelRange
+     * @param fuelRange the range in KM left as well as fuel type
+     *
+     * @see com.smartdevicelink.proxy.rpc.FuelRange
+     * @see com.smartdevicelink.proxy.rpc.enums.FuelType
      */
     public void setFuelRange(List<FuelRange> fuelRange) {
         setParameters(KEY_FUEL_RANGE, fuelRange);
@@ -284,7 +287,9 @@ public class GetVehicleDataResponse extends RPCResponse {
 
     /**
      * Sets turnSignal
-     * @param turnSignal
+     * @param turnSignal status of the turn signals
+     *
+     * @see com.smartdevicelink.proxy.rpc.enums.TurnSignal
      */
     public void setTurnSignal(TurnSignal turnSignal) {
         setParameters(KEY_TURN_SIGNAL, turnSignal);
@@ -292,7 +297,9 @@ public class GetVehicleDataResponse extends RPCResponse {
 
     /**
      * Gets turnSignal
-     * @return TurnSignal
+     * @return TurnSignal status of the turn signals
+     *
+     * @see com.smartdevicelink.proxy.rpc.enums.TurnSignal
      */
     @SuppressWarnings("unchecked")
     public TurnSignal getTurnSignal() {
@@ -301,7 +308,9 @@ public class GetVehicleDataResponse extends RPCResponse {
 
     /**
      * Sets electronicParkBrakeStatus
-     * @param electronicParkBrakeStatus
+     * @param electronicParkBrakeStatus status of the electronic park brake of the connected vehicle
+     *
+     * @see com.smartdevicelink.proxy.rpc.enums.ElectronicParkBrakeStatus
      */
     public void setElectronicParkBrakeStatus(ElectronicParkBrakeStatus electronicParkBrakeStatus){
         setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
@@ -309,7 +318,9 @@ public class GetVehicleDataResponse extends RPCResponse {
 
     /**
      * Gets electronicParkBrakeStatus
-     * @return ElectronicParkBrakeStatus
+     * @return ElectronicParkBrakeStatus status of the electronic park brake of the connected vehicle
+     *
+     * @see com.smartdevicelink.proxy.rpc.enums.ElectronicParkBrakeStatus
      */
     public ElectronicParkBrakeStatus getElectronicParkBrakeStatus(){
         return (ElectronicParkBrakeStatus) getObject(ElectronicParkBrakeStatus.class, KEY_ELECTRONIC_PARK_BRAKE_STATUS);

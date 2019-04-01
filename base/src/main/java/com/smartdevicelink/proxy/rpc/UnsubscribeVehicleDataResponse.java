@@ -67,22 +67,22 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	 * parameter
 	 * <p></p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use to build this RPC
+	 *
 	 */
     public UnsubscribeVehicleDataResponse(Hashtable<String, Object> hash) {
         super(hash);
     }
     /**
      * Sets Gps
-     * @param gps
+     * @param gps a VehicleDataResult related to GPS
      */
     public void setGps(VehicleDataResult gps) {
         setParameters(KEY_GPS, gps);
     }
     /**
      * Gets Gps
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to GPS
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getGps() {
@@ -90,14 +90,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Speed
-     * @param speed
+     * @param speed a VehicleDataResult related to speed
      */
     public void setSpeed(VehicleDataResult speed) {
         setParameters(KEY_SPEED, speed);
     }
     /**
      * Gets Speed
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to speed
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getSpeed() {
@@ -105,14 +105,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets rpm
-     * @param rpm
+     * @param rpm a VehicleDataResult related to RPM
      */
     public void setRpm(VehicleDataResult rpm) {
         setParameters(KEY_RPM, rpm);
     }
     /**
      * Gets rpm
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to RPM
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getRpm() {
@@ -120,14 +120,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Fuel Level
-     * @param fuelLevel
+     * @param fuelLevel a VehicleDataResult related to Fuel Level
      */
     public void setFuelLevel(VehicleDataResult fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
     /**
      * Gets Fuel Level
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to FuelLevel
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getFuelLevel() {
@@ -135,7 +135,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Fuel Level State
-     * @param fuelLevel_State
+     * @param fuelLevel_State a VehicleDataResult related to FuelLevel State
      */
     @Deprecated
     public void setFuelLevel_State(VehicleDataResult fuelLevel_State) {
@@ -143,7 +143,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Gets Fuel Level State
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to FuelLevel State
      */
     @Deprecated
     public VehicleDataResult getFuelLevel_State() {
@@ -151,29 +151,29 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Fuel Level State
-     * @param fuelLevelState
+     * @param fuelLevelState a VehicleDataResult related to FuelLevel State
      */
     public void setFuelLevelState(VehicleDataResult fuelLevelState) {
         setParameters(KEY_FUEL_LEVEL_STATE, fuelLevelState);
     }
     /**
      * Gets Fuel Level State
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to FuelLevel State
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getFuelLevelState() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_LEVEL_STATE);
     }
     /**
-     * Sets Instant Fuel Comsumption
-     * @param instantFuelConsumption
+     * Sets Instant Fuel Consumption
+     * @param instantFuelConsumption a VehicleDataResult related to instant fuel consumption
      */
     public void setInstantFuelConsumption(VehicleDataResult instantFuelConsumption) {
         setParameters(KEY_INSTANT_FUEL_CONSUMPTION, instantFuelConsumption);
     }
     /**
-     * Gets Instant Fuel Comsumption
-     * @return VehicleDataResult
+     * Gets Instant Fuel Consumption
+     * @return a VehicleDataResult related to instant fuel consumption
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getInstantFuelConsumption() {
@@ -181,14 +181,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets External Temperature
-     * @param externalTemperature
+     * @param externalTemperature a VehicleDataResult related to external temperature
      */
     public void setExternalTemperature(VehicleDataResult externalTemperature) {
         setParameters(KEY_EXTERNAL_TEMPERATURE, externalTemperature);
     }
     /**
      * Gets External Temperature
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to external temperature
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getExternalTemperature() {
@@ -196,14 +196,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Gets currently selected gear data
-     * @param prndl
+     * @param prndl a VehicleDataResult related to the PRNDL status (automatic transmission gear)
      */
     public void setPrndl(VehicleDataResult prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
     /**
      * Gets currently selected gear data
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to the PRNDL status (automatic transmission gear)
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getPrndl() {
@@ -211,14 +211,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Tire Pressure
-     * @param tirePressure
+     * @param tirePressure a VehicleDataResult related to tire pressure
      */
     public void setTirePressure(VehicleDataResult tirePressure) {
         setParameters(KEY_TIRE_PRESSURE, tirePressure);
     }
     /**
      * Gets Tire Pressure
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to tire pressure
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getTirePressure() {
@@ -226,14 +226,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Odometer
-     * @param odometer
+     * @param odometer a VehicleDataResult related to the odometer
      */
     public void setOdometer(VehicleDataResult odometer) {
         setParameters(KEY_ODOMETER, odometer);
     }
     /**
      * Gets Odometer
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to the odometer
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getOdometer() {
@@ -241,14 +241,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Belt Status
-     * @param beltStatus
+     * @param beltStatus a VehicleDataResult related to the seat belt status
      */
     public void setBeltStatus(VehicleDataResult beltStatus) {
         setParameters(KEY_BELT_STATUS, beltStatus);
     }
     /**
      * Gets Belt Status
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to the seat belt status
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getBeltStatus() {
@@ -256,14 +256,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Body Information
-     * @param bodyInformation
+     * @param bodyInformation a VehicleDataResult related to the body info
      */
     public void setBodyInformation(VehicleDataResult bodyInformation) {
         setParameters(KEY_BODY_INFORMATION, bodyInformation);
     }
     /**
      * Gets Body Information
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to the body info
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getBodyInformation() {
@@ -271,14 +271,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Device Status
-     * @param deviceStatus
+     * @param deviceStatus a VehicleDataResult related to the device status of the connected device
      */
     public void setDeviceStatus(VehicleDataResult deviceStatus) {
         setParameters(KEY_DEVICE_STATUS, deviceStatus);
     }
     /**
      * Gets Device Status
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to the device status of the connected device
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getDeviceStatus() {
@@ -286,14 +286,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Driver Braking
-     * @param driverBraking
+     * @param driverBraking a VehicleDataResult related to the driver breaking status
      */
     public void setDriverBraking(VehicleDataResult driverBraking) {
         setParameters(KEY_DRIVER_BRAKING, driverBraking);
     }
     /**
      * Gets Driver Braking
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to the driver breaking status
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getDriverBraking() {
@@ -301,14 +301,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Wiper Status
-     * @param wiperStatus
+     * @param wiperStatus a VehicleDataResult related to the wiper status
      */
     public void setWiperStatus(VehicleDataResult wiperStatus) {
         setParameters(KEY_WIPER_STATUS, wiperStatus);
     }
     /**
      * Gets Wiper Status
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to the wiper status
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getWiperStatus() {
@@ -316,14 +316,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Head Lamp Status
-     * @param headLampStatus
+     * @param headLampStatus a VehicleDataResult related to the headlamp status
      */
     public void setHeadLampStatus(VehicleDataResult headLampStatus) {
         setParameters(KEY_HEAD_LAMP_STATUS, headLampStatus);
     }
     /**
      * Gets Head Lamp Status
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to the headlamp status
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getHeadLampStatus() {
@@ -331,14 +331,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Engine Torque
-     * @param engineTorque
+     * @param engineTorque a VehicleDataResult related to the engine's torque
      */
     public void setEngineTorque(VehicleDataResult engineTorque) {
         setParameters(KEY_ENGINE_TORQUE, engineTorque);
     }
     /**
      * Gets Engine Torque
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to the enginer's torque
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getEngineTorque() {
@@ -346,14 +346,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets Engine Oil Life
-     * @param engineOilLife
+     * @param engineOilLife a VehicleDataResult related to the engine's oil life
      */
     public void setEngineOilLife(VehicleDataResult engineOilLife) {
         setParameters(KEY_ENGINE_OIL_LIFE, engineOilLife);
     }
     /**
      * Gets Engine Oil Life
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to the engine's oil life
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getEngineOilLife() {
@@ -361,14 +361,14 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Sets AccPedal Position
-     * @param accPedalPosition
+     * @param accPedalPosition a VehicleDataResult related to the accelerator pedal's position
      */
     public void setAccPedalPosition(VehicleDataResult accPedalPosition) {
         setParameters(KEY_ACC_PEDAL_POSITION, accPedalPosition);
     }
     /**
      * Gets AccPedal Position
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to the accelerator pedal's position
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getAccPedalPosition() {
@@ -422,7 +422,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 
     /**
      * Sets Fuel Range
-     * @param fuelRange
+     * @param fuelRange a VehicleDataResult related to the fuel range
      */
     public void setFuelRange(VehicleDataResult fuelRange) {
         setParameters(KEY_FUEL_RANGE, fuelRange);
@@ -430,7 +430,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 
     /**
      * Gets Fuel Range
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to the fuel range
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getFuelRange() {
@@ -439,7 +439,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 
     /**
      * Sets turnSignal
-     * @param turnSignal
+     * @param turnSignal a VehicleDataResult related to the turn signal status
      */
     public void setTurnSignal(VehicleDataResult turnSignal) {
         setParameters(KEY_TURN_SIGNAL, turnSignal);
@@ -447,7 +447,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 
     /**
      * Gets turnSignal
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to the turn signal status
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getTurnSignal() {
@@ -456,7 +456,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 
     /**
      * Sets electronicParkBrakeStatus
-     * @param electronicParkBrakeStatus
+     * @param electronicParkBrakeStatus a VehicleDataResult related to the electronic park brake status
      */
     public void setElectronicParkBrakeStatus(VehicleDataResult electronicParkBrakeStatus){
         setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
@@ -464,7 +464,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 
     /**
      * Gets electronicParkBrakeStatus
-     * @return VehicleDataResult
+     * @return a VehicleDataResult related to the electronic park brake status
      */
     public VehicleDataResult getElectronicParkBrakeStatus(){
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_ELECTRONIC_PARK_BRAKE_STATUS);
@@ -472,7 +472,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 
     /**
      * Sets cloudAppVehicleID
-     * @param cloudAppVehicleID a boolean value
+     * @param cloudAppVehicleID a VehicleDataResult related to the cloud app vehicle ID
      */
     public void setCloudAppVehicleID(VehicleDataResult cloudAppVehicleID){
         setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
@@ -480,7 +480,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 
     /**
      * Gets a boolean value. If true, means the cloudAppVehicleDataID data has been unsubscribed.
-     * @return a Boolean value.
+     * @return a VehicleDataResult related to the cloud app vehicle ID
      */
     public VehicleDataResult getCloudAppVehicleID(){
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLOUD_APP_VEHICLE_ID);

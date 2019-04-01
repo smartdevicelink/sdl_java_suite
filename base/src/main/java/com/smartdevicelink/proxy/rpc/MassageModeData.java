@@ -25,7 +25,7 @@ public class MassageModeData extends RPCStruct {
 	 * <p>Constructs a new MassageModeData object indicated by the Hashtable parameter
 	 * </p>
 	 *
-	 * @param hash The Hashtable to use
+	 * @param hash The Hashtable to use to create this RPC
 	 */
 	public MassageModeData(Hashtable<String, Object> hash) {
 		super(hash);
@@ -43,25 +43,25 @@ public class MassageModeData extends RPCStruct {
 	}
 
 	/**
-	 * Sets the massageZone portion of the MassageModeData class
+	 * Sets the massageZone that will be associated with the supplied massage mode
 	 *
-	 * @param massageZone
+	 * @param massageZone the zone of a multi-contour massage seat
 	 */
 	public void setMassageZone(@NonNull MassageZone massageZone) {
 		setValue(KEY_MASSAGE_ZONE, massageZone);
 	}
 
 	/**
-	 * Gets the massageZone portion of the MassageModeData class
+	 * Gets the massageZone that will be associated with the supplied massage mode
 	 *
-	 * @return MassageZone.
+	 * @return the zone of a multi-contour massage seat.
 	 */
 	public MassageZone getMassageZone() {
 		return (MassageZone) getObject(MassageZone.class, KEY_MASSAGE_ZONE);
 	}
 
 	/**
-	 * Gets the massageMode portion of the MassageModeData class
+	 * Gets the massageMode that will be associated with the supplied massage zone
 	 *
 	 * @return MassageMode
 	 */
@@ -70,9 +70,9 @@ public class MassageModeData extends RPCStruct {
 	}
 
 	/**
-	 * Sets the massageMode portion of the MassageModeData class
+	 * Sets the massageMode that will be associated with the supplied massage zone
 	 *
-	 * @param massageMode
+	 * @param massageMode mode of massage to be used (OFF, LOW, HIGH)
 	 */
 	public void setMassageMode(@NonNull MassageMode massageMode) {
 		setValue(KEY_MASSAGE_MODE, massageMode);

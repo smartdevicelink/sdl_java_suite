@@ -140,7 +140,7 @@ public class ProtocolMessage {
 	
 	/**
 	 * Set the priority for this packet. The lower the number the higher the priority. <br>0 is the highest priority and the default.
-	 * @param priority
+	 * @param priority the priority of this message
 	 */
 	public void setPriorityCoefficient(int priority){
 		this.priorityCoefficient = priority;
