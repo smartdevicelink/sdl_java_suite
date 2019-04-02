@@ -41,7 +41,6 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 import java.util.Set;
 

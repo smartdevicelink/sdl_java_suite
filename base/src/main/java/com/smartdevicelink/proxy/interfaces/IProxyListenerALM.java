@@ -1,48 +1,36 @@
+/*
+ * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from this 
+ * software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 package com.smartdevicelink.proxy.interfaces;
 
 public interface IProxyListenerALM extends IProxyListenerBase {
-	// Adds Advanced Life-cycle Management call-backs to the IProxyListenerAbstract interface
-	
-	/**
-	 * **MOVED TO IProxyListenerBase** - onOnHMIStatus() being called indicates that the proxy has entered a state in which the 
-	 * application may create SDL related resources (addCommands, ChoiceSets). 
-	 */
-	//public void onOnHMIStatus(OnHMIStatus notification);
-	
-	/**
-	 * **MOVED TO IProxyListenerBase** - onProxyClosed() being called indicates that the app is no longer registered with SDL
-	 * All resources on SDL (addCommands and ChoiceSets) have been deleted and will have to be
-	 * recreated upon the next onReadyForInitialization() call-back. 
-	 */
-	//public void onProxyClosed(String info, Exception e);
-	
-	/**
-	 * **MOVED TO IProxyListenerBase** - onError() being called indicates that the proxy has experienced an unrecoverable error.
-	 * A new proxy object must be initiated to reestablish connection with SDL.
-	 * 
-	 * @param info - Any info present about the error that occurred.
-	 * @param e - Any exception thrown by the error.
-	 */
-	//public void onError(String info, Exception e);
-	
-	/**
-	 * **Deprecated** - onSdlInterfaceAvailable() being called indicates that the proxy now has access to SDL's HMI. 
-	 * Monitor the onFocusChange call-back to determine which level of HMI is available to the proxy.
-	 * 
-	 * @param isFirstAvailability - Indicates this is the first onSdlInterfaceAvailable in this lifecycle.
-	 */
-	// HMI (Background, Limited, Full) from Unavailable  = onSdlInterfaceAvailable(Boolean isFirstAvailability);
-
-	/**
-	 * **Deprecated** - onSdlInterfaceUnavailable() being called indicates that the proxy does NOT have access to SDL's HIM.
-	 */
-	// HMI None onSdlInterfaceUnavailable();
-	
-	/**
-	 * **Deprecated** - ALM HMI states converted back to HMI Levels
-	 * 
-	 * HMI Full = onSdlInFocus(Boolean isFirstSdlInFocus);
-	 * HMI Limited = onSdlInFocusLimited();
-	 * HMI Background = onSdlLostFocus();
-	 */
+	// All methods moved into base interface
 }

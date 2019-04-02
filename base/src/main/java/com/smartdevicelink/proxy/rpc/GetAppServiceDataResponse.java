@@ -40,7 +40,7 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
 import java.util.Hashtable;
 
 /**
- * This response includes the data that is requested from the specific service
+ * This response includes the data that was requested from the specific service
  */
 public class GetAppServiceDataResponse extends RPCResponse {
 

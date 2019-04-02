@@ -1,3 +1,34 @@
+/*
+ * Copyright (c) 2019, Livio, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 package com.smartdevicelink.protocol;
 
 import android.os.Parcel;
@@ -6,6 +37,7 @@ import android.os.Parcelable;
 import com.livio.BSON.BsonEncoder;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.transport.utl.TransportRecord;
+import com.smartdevicelink.util.DebugTool;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -148,8 +180,8 @@ public class SdlPacket implements Parcelable{
 	}
 	
 	/**
-	 * Creates a new packet based on previous packet definitions
-	 * @param packet
+	 * Creates a new packet based on previous packet definitions. Will not copy payload.
+	 * @param packet an instance of the packet that should be copied.
 	 */
 	protected SdlPacket(SdlPacket packet){
 		this.version = packet.version;
@@ -225,7 +257,7 @@ public class SdlPacket implements Parcelable{
 	}
 	/**
 	 * Set the priority for this packet. The lower the number the higher the priority. <br>0 is the highest priority and the default.
-	 * @param priority
+	 * @param priority the priority of this packet
 	 */
 	public void setPriorityCoefficient(int priority){
 		this.priorityCoefficient = priority;
@@ -244,16 +276,16 @@ public class SdlPacket implements Parcelable{
 
 	/**
 	 * This method takes in the various components to the SDL packet structure and creates a new byte array that can be sent via the transport
-	 * @param version
-	 * @param encryption
-	 * @param frameType
-	 * @param serviceType
-	 * @param controlFrameInfo
-	 * @param sessionId
-	 * @param dataSize
-	 * @param messageId
-	 * @param payload
-	 * @return
+	 * @param version protocol version to use
+	 * @param encryption whether or not this packet is encrypted
+	 * @param frameType the packet frame type
+	 * @param serviceType the service that this packet is associated with
+	 * @param controlFrameInfo specific frame info related to this packet
+	 * @param sessionId ID this packet is associated with
+	 * @param dataSize size of the payload that will be added
+	 * @param messageId ID of this specific packet
+	 * @param payload raw data that will be attached to the packet (RPC message, raw bytes, etc)
+	 * @return a byte[] representation of an SdlPacket built using the supplied params
 	 */
 	public static byte[] constructPacket(int version, boolean encryption, int frameType,
 			int serviceType, int controlFrameInfo, int sessionId,
@@ -362,7 +394,7 @@ public class SdlPacket implements Parcelable{
 					}
 				}
 			}catch (RuntimeException e){
-
+				DebugTool.logError("Error creating packet from parcel", e);
 			}
 		}
 	}

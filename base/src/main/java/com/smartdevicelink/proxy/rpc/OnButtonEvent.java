@@ -1,3 +1,34 @@
+/*
+ * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from this 
+ * software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
@@ -91,6 +122,7 @@ public class OnButtonEvent extends RPCNotification {
 	/**
 	*Constructs a newly allocated OnButtonEvent object
 	*/
+
     public OnButtonEvent() {
         super(FunctionID.ON_BUTTON_EVENT.toString());
     }
@@ -100,16 +132,14 @@ public class OnButtonEvent extends RPCNotification {
 	 * Hashtable parameter
 	 * </p>
 	 * 
-	 * @param hash
-	 *            The Hashtable to use
+	 * @param hash The Hashtable to use to create this RPC
+	 *
      */    
     public OnButtonEvent(Hashtable<String, Object> hash) {
         super(hash);
     }
-    /**
-     * <p>Returns <i>{@linkplain ButtonName}</i> the button's name</p>
-     * @return ButtonName Name of the button
-     */
+
+
     /**
      *Constructs a newly allocated OnButtonEvent object
      * @param buttonName name of the button
@@ -120,9 +150,15 @@ public class OnButtonEvent extends RPCNotification {
         setButtonName(buttonName);
         setButtonEventMode(buttonEventMode);
     }
+
+    /**
+     * <p>Returns <i>{@linkplain ButtonName}</i> the button's name</p>
+     * @return ButtonName Name of the button
+     */
     public ButtonName getButtonName() {
         return (ButtonName) getObject(ButtonName.class, KEY_BUTTON_NAME);
     }
+
     /**
      * <p>Set the button's name</p>    
      * @param buttonName name of the button
@@ -130,6 +166,7 @@ public class OnButtonEvent extends RPCNotification {
     public void setButtonName(@NonNull ButtonName buttonName) {
         setParameters(KEY_BUTTON_NAME, buttonName);
     }
+
     /**
      * <p>Return <i>{@linkplain ButtonEventMode} indicates the button was depressed or released</i></p>
      * @return ButtonEventMode the button depressed or released
@@ -137,6 +174,7 @@ public class OnButtonEvent extends RPCNotification {
     public ButtonEventMode getButtonEventMode() {
         return (ButtonEventMode) getObject(ButtonEventMode.class, KEY_BUTTON_EVENT_MODE);
     }
+
     /**
      * <p> Set the event mode of the button,pressed or released</p>
      * @param buttonEventMode indicates the button is pressed or released
@@ -145,6 +183,7 @@ public class OnButtonEvent extends RPCNotification {
     public void setButtonEventMode(@NonNull ButtonEventMode buttonEventMode) {
         setParameters(KEY_BUTTON_EVENT_MODE, buttonEventMode);
     }
+
     public void setCustomButtonID(Integer customButtonID) {
         setParameters(KEY_CUSTOM_BUTTON_ID, customButtonID);
     }

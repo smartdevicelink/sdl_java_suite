@@ -38,10 +38,6 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.util.FileUtls;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-
 /**
  * <strong>FileManager</strong> <br>
  *

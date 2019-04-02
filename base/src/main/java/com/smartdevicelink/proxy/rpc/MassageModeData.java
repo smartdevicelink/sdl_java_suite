@@ -1,3 +1,34 @@
+/*
+ * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from this 
+ * software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
@@ -25,7 +56,7 @@ public class MassageModeData extends RPCStruct {
 	 * <p>Constructs a new MassageModeData object indicated by the Hashtable parameter
 	 * </p>
 	 *
-	 * @param hash The Hashtable to use
+	 * @param hash The Hashtable to use to create this RPC
 	 */
 	public MassageModeData(Hashtable<String, Object> hash) {
 		super(hash);
@@ -43,25 +74,25 @@ public class MassageModeData extends RPCStruct {
 	}
 
 	/**
-	 * Sets the massageZone portion of the MassageModeData class
+	 * Sets the massageZone that will be associated with the supplied massage mode
 	 *
-	 * @param massageZone
+	 * @param massageZone the zone of a multi-contour massage seat
 	 */
 	public void setMassageZone(@NonNull MassageZone massageZone) {
 		setValue(KEY_MASSAGE_ZONE, massageZone);
 	}
 
 	/**
-	 * Gets the massageZone portion of the MassageModeData class
+	 * Gets the massageZone that will be associated with the supplied massage mode
 	 *
-	 * @return MassageZone.
+	 * @return the zone of a multi-contour massage seat.
 	 */
 	public MassageZone getMassageZone() {
 		return (MassageZone) getObject(MassageZone.class, KEY_MASSAGE_ZONE);
 	}
 
 	/**
-	 * Gets the massageMode portion of the MassageModeData class
+	 * Gets the massageMode that will be associated with the supplied massage zone
 	 *
 	 * @return MassageMode
 	 */
@@ -70,9 +101,9 @@ public class MassageModeData extends RPCStruct {
 	}
 
 	/**
-	 * Sets the massageMode portion of the MassageModeData class
+	 * Sets the massageMode that will be associated with the supplied massage zone
 	 *
-	 * @param massageMode
+	 * @param massageMode mode of massage to be used (OFF, LOW, HIGH)
 	 */
 	public void setMassageMode(@NonNull MassageMode massageMode) {
 		setValue(KEY_MASSAGE_MODE, massageMode);

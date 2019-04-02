@@ -75,10 +75,11 @@ public class SendHapticData extends RPCRequest {
 		setParameters(KEY_HAPTIC_RECT_DATA, hapticRectData);
 	}
 
-	@SuppressWarnings("unchecked")
 	/**
+	 * Get the haptic data
 	 * @return array of spatial data structures that represent the locations of all user controls present on the app's layout.
 	 */
+	@SuppressWarnings("unchecked")
 	public List<HapticRect> getHapticRectData() {
 		return (List<HapticRect>) getObject(HapticRect.class, KEY_HAPTIC_RECT_DATA);
 	}

@@ -47,7 +47,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
     /**
      * Creates a new instance of the PermissionManager
      *
-     * @param internalInterface
+     * @param internalInterface an instance of the FileManager so that button graphics can be sent
      */
     public PermissionManager(@NonNull ISdl internalInterface) {
         super(internalInterface);

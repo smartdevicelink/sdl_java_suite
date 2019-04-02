@@ -86,7 +86,7 @@ abstract class BasePermissionManager extends BaseSubManager{
 
     /**
      * Creates a new instance of the PermissionManager
-     * @param internalInterface
+     * @param internalInterface an instance of the ISdl interface that can be used for common SDL operations (sendRpc, addRpcListener, etc)
      */
     BasePermissionManager(@NonNull ISdl internalInterface){
         super(internalInterface);

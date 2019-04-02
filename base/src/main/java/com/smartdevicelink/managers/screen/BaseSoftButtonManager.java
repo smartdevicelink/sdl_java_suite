@@ -94,8 +94,8 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     /**
      * Creates a new instance of the SoftButtonManager
-     * @param internalInterface
-     * @param fileManager
+     * @param internalInterface an instance of the ISdl interface that can be used for common SDL operations (sendRpc, addRpcListener, etc)
+     * @param fileManager an instance of the FileManager so that button graphics can be sent
      */
     BaseSoftButtonManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
@@ -480,8 +480,8 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     /**
      * Check if two SoftButtonObject have the same name
-     * @param softButtonObjects
-     * @return a boolean value
+     * @param softButtonObjects a list of SoftButton objects that will be iterated through
+     * @return true if two buttons exist that are the same in the list, false if not
      */
     private boolean hasTwoSoftButtonObjectsOfSameName(List<SoftButtonObject> softButtonObjects) {
         for (int i = 0; i < softButtonObjects.size(); i++) {
@@ -496,8 +496,8 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
     }
 
     /**
-     * Get the TextField1
-     * @return currentMainField1
+     * Get the current String associated with MainField1
+     * @return the string that is currently used for MainField1
      */
     protected String getCurrentMainField1() {
         if (currentMainField1 == null){
@@ -507,16 +507,17 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
     }
 
     /**
-     * Set the TextField1
-     * @param currentMainField1
+     * Sets the String to be associated with MainField1
+     * @param currentMainField1 the String that will be set to TextField1 on the current template
      */
     protected void setCurrentMainField1(String currentMainField1) {
         this.currentMainField1 = currentMainField1;
     }
 
     /**
-     * Set the batchUpdates flag that represents whether the manager should wait until commit() is called to send the updated show RPC
-     * @param batchUpdates
+     * Sets the batchUpdates flag that represents whether the manager should wait until commit() is called to send the updated show RPC
+     * @param batchUpdates Set true if the manager should batch updates together, or false if it should send them as soon
+     *                     as they happen
      */
     protected void setBatchUpdates(boolean batchUpdates) {
         this.batchUpdates = batchUpdates;

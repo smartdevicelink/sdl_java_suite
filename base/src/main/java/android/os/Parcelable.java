@@ -1,5 +1,3 @@
-package android.os;
-
 /*
  * Copyright (C) 2006 The Android Open Source Project
  *
@@ -17,6 +15,7 @@ package android.os;
  *
  * Note: This file has been modified from its original form.
  */
+package android.os;
 
 public interface Parcelable {
 
