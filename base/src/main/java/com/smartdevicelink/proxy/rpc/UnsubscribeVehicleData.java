@@ -328,7 +328,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes Gps data
+	 * Sets a boolean value. If true, unsubscribes from Gps data
 	 * 
 	 * @param gps
 	 *            a boolean value
@@ -348,7 +348,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes speed data
+	 * Sets a boolean value. If true, unsubscribes from speed data
 	 * 
 	 * @param speed
 	 *            a boolean value
@@ -388,7 +388,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes FuelLevel data
+	 * Sets a boolean value. If true, unsubscribes from FuelLevel data
 	 * 
 	 * @param fuelLevel
 	 *            a boolean value
@@ -409,7 +409,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
     /**
-     * Sets a boolean value. If true, unsubscribes fuelLevel_State data
+     * Sets a boolean value. If true, unsubscribes from fuelLevel_State data
      * 
      * @param fuelLevel_State
      *            a boolean value
@@ -432,7 +432,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
     /**
-     * Sets a boolean value. If true, unsubscribes fuelLevelState data
+     * Sets a boolean value. If true, unsubscribes from fuelLevelState data
      * 
      * @param fuelLevelState
      *            a boolean value
@@ -453,7 +453,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes instantFuelConsumption data
+	 * Sets a boolean value. If true, unsubscribes from instantFuelConsumption data
 	 * 
 	 * @param instantFuelConsumption
 	 *            a boolean value
@@ -474,7 +474,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes externalTemperature data
+	 * Sets a boolean value. If true, unsubscribes from externalTemperature data
 	 * 
 	 * @param externalTemperature
 	 *            a boolean value
@@ -516,7 +516,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes tire pressure status data
+	 * Sets a boolean value. If true, unsubscribes from tire pressure status data
 	 * 
 	 * @param tirePressure
 	 *            a boolean value
@@ -537,7 +537,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes odometer data
+	 * Sets a boolean value. If true, unsubscribes from odometer data
 	 * 
 	 * @param odometer
 	 *            a boolean value
@@ -558,7 +558,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes belt Status data
+	 * Sets a boolean value. If true, unsubscribes from belt Status data
 	 * 
 	 * @param beltStatus
 	 *            a boolean value
@@ -579,7 +579,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes body Information data
+	 * Sets a boolean value. If true, unsubscribes from body Information data
 	 * 
 	 * @param bodyInformation
 	 *            a boolean value
@@ -600,7 +600,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes device Status data
+	 * Sets a boolean value. If true, unsubscribes from device Status data
 	 * 
 	 * @param deviceStatus
 	 *            a boolean value
@@ -621,7 +621,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes driver Braking data
+	 * Sets a boolean value. If true, unsubscribes from driver Braking data
 	 * 
 	 * @param driverBraking
 	 *            a boolean value
@@ -642,7 +642,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes wiper Status data
+	 * Sets a boolean value. If true, unsubscribes from wiper Status data
 	 * 
 	 * @param wiperStatus
 	 *            a boolean value
@@ -663,7 +663,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes Head Lamp Status data
+	 * Sets a boolean value. If true, unsubscribes from Head Lamp Status data
 	 * 
 	 * @param headLampStatus
 	 *            a boolean value
@@ -684,7 +684,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes Engine Torque data
+	 * Sets a boolean value. If true, unsubscribes from Engine Torque data
 	 *
 	 * @param engineTorque
 	 *            a boolean value
@@ -705,7 +705,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	}
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes Engine Oil Life data
+	 * Sets a boolean value. If true, unsubscribes from Engine Oil Life data
 	 *
 	 * @param engineOilLife
 	 *            a boolean value
@@ -727,7 +727,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes accPedalPosition data
+	 * Sets a boolean value. If true, unsubscribes from accPedalPosition data
 	 * 
 	 * @param accPedalPosition
 	 *            a boolean value
@@ -787,7 +787,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
-	 * Sets a boolean value. If true, unsubscribes fuelRange data
+	 * Sets a boolean value. If true, unsubscribes from fuelRange data
 	 *
 	 * @param fuelRange
 	 *            a boolean value
@@ -808,19 +808,19 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	}
 
 	/**
-	 * Sets a boolean value. If true, subscribes turnSignal data
+	 * Sets a boolean value. If true, unsubscribes from turnSignal data
 	 * @param turnSignal a boolean value
 	 */
 	public void setTurnSignal(Boolean turnSignal) { setParameters(KEY_TURN_SIGNAL, turnSignal); }
 
 	/**
-	 * Gets a boolean value. If true, means the turnSignal data has been subscribed.
+	 * Gets a boolean value. If true, means the turnSignal data has been unsubscribed.
 	 * @return a Boolean value.
 	 */
 	public Boolean getTurnSignal() { return getBoolean(KEY_TURN_SIGNAL); }
 
 	/**
-	 * Sets a boolean value. If true, subscribes electronicParkBrakeStatus data
+	 * Sets a boolean value. If true, unsubscribes from electronicParkBrakeStatus data
 	 * @param electronicParkBrakeStatus a boolean value
 	 */
 	public void setElectronicParkBrakeStatus(Boolean electronicParkBrakeStatus) {
@@ -836,18 +836,18 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	}
 
 	/**
-	 * Sets cloudAppVehicleID
-	 * @param cloudAppVehicleID a boolean value
+	 * Sets a boolean value. If true, unsubscribes from cloudAppVehicleID data
+	 * @param cloudAppVehicleID a boolean value. 
 	 */
-	public void setCloudAppVehicleID(VehicleDataResult cloudAppVehicleID){
+	public void setCloudAppVehicleID(boolean cloudAppVehicleID){
 		setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
 	}
 
 	/**
-	 * Gets a boolean value. If true, means the cloudAppVehicleDataID data should be  unsubscribed.
+	 * Gets a boolean value. If true, means the cloudAppVehicleID data has been unsubscribed.
 	 * @return a Boolean value.
 	 */
-	public VehicleDataResult getCloudAppVehicleID(){
-		return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLOUD_APP_VEHICLE_ID);
+	public Boolean getCloudAppVehicleID(){
+		return getBoolean( KEY_CLOUD_APP_VEHICLE_ID);
 	}
 }
