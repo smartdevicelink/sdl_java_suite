@@ -24,7 +24,7 @@ import java.util.Hashtable;
  * 		<tr>
  * 			<td>gps</td>
  * 			<td>Boolean</td>
- * 			<td>GPS data. See {@linkplain GPSdata} for details</td>
+ * 			<td>GPS data. See {@linkplain GPSData} for details</td>
  *                 <td>N</td>
  *                 <td>Subscribable</td>
  * 			<td>SmartDeviceLink 2.0 </td>
@@ -808,7 +808,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * Sets cloudAppVehicleID
 	 * @param cloudAppVehicleID a boolean value
 	 */
-	public void setCloudAppVehicleID(VehicleDataResult cloudAppVehicleID){
+	public void setCloudAppVehicleID(boolean cloudAppVehicleID){
 		setParameters(KEY_CLOUD_APP_VEHICLE_ID, cloudAppVehicleID);
 	}
 
@@ -816,7 +816,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * Gets a boolean value. If true, means the cloudAppVehicleDataID data should be  unsubscribed.
 	 * @return a Boolean value.
 	 */
-	public VehicleDataResult getCloudAppVehicleID(){
-		return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLOUD_APP_VEHICLE_ID);
+	public Boolean getCloudAppVehicleID(){
+		return getBoolean( KEY_CLOUD_APP_VEHICLE_ID);
 	}
 }
