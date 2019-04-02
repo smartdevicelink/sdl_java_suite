@@ -367,7 +367,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     }
     /**
      * Gets Engine Torque
-     * @return a VehicleDataResult related to the enginer's torque
+     * @return a VehicleDataResult related to the engine's torque
      */
     @SuppressWarnings("unchecked")
     public VehicleDataResult getEngineTorque() {
@@ -508,7 +508,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     }
 
     /**
-     * Gets a boolean value. If true, means the cloudAppVehicleDataID data has been unsubscribed.
+     * Gets a VehicleDataResult for the subscription response of the CloudAppVehicleID vehicle data item.
      * @return a VehicleDataResult related to the cloud app vehicle ID
      */
     public VehicleDataResult getCloudAppVehicleID(){

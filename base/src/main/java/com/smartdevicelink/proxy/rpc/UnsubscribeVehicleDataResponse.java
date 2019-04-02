@@ -510,7 +510,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
 
     /**
-     * Gets a boolean value. If true, means the cloudAppVehicleDataID data has been unsubscribed.
+     * Gets a VehicleDataResult for the unsubscribe response of the CloudAppVehicleID vehicle data item.
      * @return a VehicleDataResult related to the cloud app vehicle ID
      */
     public VehicleDataResult getCloudAppVehicleID(){
