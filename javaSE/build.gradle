@@ -51,18 +51,20 @@ task generateSources {
         def srcFile = new File(outputDir, "BuildConfig.java")
         srcFile.parentFile.mkdirs()
         File license = new File("$buildDir/../../LICENSE")
-        srcFile.write("/*\n")
-        def lines = license.readLines()
-        for (line in lines) {
-            srcFile.append("* ")
-            srcFile.append(line)
-            srcFile.append("\n")
+        if (license.exists()) {
+            srcFile.write("/*\n")
+            def lines = license.readLines()
+            for (line in lines) {
+                srcFile.append("* ")
+                srcFile.append(line)
+                srcFile.append("\n")
+            }
+            srcFile.append("*/\n")
         }
-        srcFile.append("*/\n")
         srcFile.append(
 """package com.smartdevicelink;
 
-// THIS FILE IS AUTO GENERATED, DO NOT MODY!!
+// THIS FILE IS AUTO GENERATED, DO NOT MODIFY!!
 public final class BuildConfig {
     public static final String VERSION_NAME = "$project.version";
 }""")
