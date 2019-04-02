@@ -60,6 +60,8 @@ task generateSources {
                 srcFile.append("\n")
             }
             srcFile.append("*/\n")
+        }else{
+            srcFile.write("\n")
         }
         srcFile.append(
 """package com.smartdevicelink;
