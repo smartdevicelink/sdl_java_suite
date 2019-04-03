@@ -122,9 +122,12 @@ public class SystemCapabilityManager {
                                                 cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
                                                 //Set the new capability object to the updated cached capabilities
                                                 capability = cachedAppServicesCapabilities;
+                                                break;
                                         }
                                     }
-                                    setCapability(systemCapabilityType, capability);
+                                    if(capability != null){
+                                    	setCapability(systemCapabilityType, capability);
+									}
                                 }
                         }
                     }
