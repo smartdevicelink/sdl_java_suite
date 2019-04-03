@@ -3,8 +3,12 @@ package com.smartdevicelink.test;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.smartdevicelink.R;
+import com.smartdevicelink.SdlConnection.SdlSession2;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
+import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.AppServiceCapability;
 import com.smartdevicelink.proxy.rpc.AppServiceData;
@@ -195,6 +199,14 @@ import java.util.Vector;
 
 public class Test {
 
+	//Versions
+	public static final Version MAX_RPC_VERSION_SUPPORTED		= SdlProxyBase.MAX_SUPPORTED_RPC_VERSION;
+	/**
+	 * @see SdlProtocol
+	 */
+	public static final Version MAX_PROTOCOL_VERSION_SUPPORTED 	= new Version(5, 2, 0);
+
+
 	// Test Failure Messages
 	public static final String NULL      = "Value should be null.";
 	public static final String MATCH     = "Values should match.";
@@ -330,7 +342,7 @@ public class Test {
 	public static final CloudAppProperties             GENERAL_CLOUDAPPPROPERTIES             = new CloudAppProperties();
 	public static final AppServiceType                 GENERAL_APP_SERVICE_TYPE               = AppServiceType.MEDIA;
 	public static final List<Integer>                  GENERAL_FUNCTION_ID_LIST               = Arrays.asList(FunctionID.GET_VEHICLE_DATA.getId(), FunctionID.SEND_HAPTIC_DATA.getId());
-	public static final AppServiceManifest             GENERAL_APPSERVICEMANIFEST             = new AppServiceManifest();
+	public static final AppServiceManifest             GENERAL_APPSERVICEMANIFEST             = new AppServiceManifest(AppServiceType.MEDIA.name());
 	public static final MediaServiceManifest           GENERAL_MEDIA_SERVICE_MANIFEST         = new MediaServiceManifest();
 	public static final WeatherServiceManifest         GENERAL_WEATHER_SERVICE_MANIFEST       = new WeatherServiceManifest();
 	public static final NavigationServiceManifest      GENERAL_NAVIGATION_SERVICE_MANIFEST    = new NavigationServiceManifest();
