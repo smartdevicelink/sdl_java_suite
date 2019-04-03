@@ -108,9 +108,11 @@ public class AppServiceCapability extends RPCStruct {
 			AppServiceRecord otherASR = capability.getUpdatedAppServiceRecord();
 
 			if(appServiceRecord != null && otherASR != null) {
-				//Check service IDs, if they are the same we can assume these are the same
-				if (appServiceRecord.getServiceID() != null && appServiceRecord.getServiceID().equalsIgnoreCase(otherASR.getServiceID())) {
-					return true;
+				// If both service IDs exists we can compare them. If either is null we can't use
+				// only this check.
+				if(appServiceRecord.getServiceID() != null && otherASR.getServiceID() != null){
+					//return whether the app service IDs are equal or not
+					return appServiceRecord.getServiceID().equalsIgnoreCase(otherASR.getServiceID());
 				}else{
 					AppServiceManifest manifest = appServiceRecord.getServiceManifest();
 					AppServiceManifest otherManifest = otherASR.getServiceManifest();
