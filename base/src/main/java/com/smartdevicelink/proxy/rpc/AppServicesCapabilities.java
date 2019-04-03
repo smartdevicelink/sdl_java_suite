@@ -128,7 +128,7 @@ public class AppServicesCapabilities extends RPCStruct {
 		}
 
 		setAppServices(tempList);
-		return tempList.equals(appServiceCapabilities);
+		return !tempList.equals(appServiceCapabilities); //Return if the list is not equal to the original
 	}
 
 }
