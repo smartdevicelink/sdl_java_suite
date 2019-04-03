@@ -81,7 +81,9 @@ public class SystemCapability extends RPCStruct {
     }
 
     public RPCStruct getCapabilityForType(SystemCapabilityType type) {
-	    if (type.equals(SystemCapabilityType.NAVIGATION)) {
+	    if(type == null) {
+	        return null;
+        }else if (type.equals(SystemCapabilityType.NAVIGATION)) {
 		    return (RPCStruct) getObject(NavigationCapability.class, KEY_NAVIGATION_CAPABILITY);
 	    } else if (type.equals(SystemCapabilityType.PHONE_CALL)) {
 		    return (RPCStruct) getObject(PhoneCapability.class, KEY_PHONE_CAPABILITY);
