@@ -34,11 +34,15 @@ package com.smartdevicelink.proxy;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.AppServiceCapability;
+import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
+import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
+import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
@@ -82,28 +86,60 @@ public class SystemCapabilityManager {
 		}
 	}
 
-	private void setupRpcListeners(){
-		rpcListener = new OnRPCListener() {
-			@Override
-			public void onReceived(RPCMessage message) {
-				if (message != null && RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) {
-					switch (message.getFunctionID()) {
-						case SET_DISPLAY_LAYOUT:
-							SetDisplayLayoutResponse response = (SetDisplayLayoutResponse)message;
-							setCapability(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
-							setCapability(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
-							setCapability(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
-							setCapability(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
-							break;
-					}
-				}
-			}
-		};
+    private void setupRpcListeners(){
+        rpcListener = new OnRPCListener() {
+            @Override
+            public void onReceived(RPCMessage message) {
+                if (message != null) {
+                    if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) {
+                        switch (message.getFunctionID()) {
+                            case SET_DISPLAY_LAYOUT:
+                                SetDisplayLayoutResponse response = (SetDisplayLayoutResponse) message;
+                                setCapability(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
+                                setCapability(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
+                                setCapability(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
+                                setCapability(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
+                                break;
+                        }
+                    } else if (RPCMessage.KEY_NOTIFICATION.equals(message.getMessageType())){
+                        switch (message.getFunctionID()) {
+                            case ON_SYSTEM_CAPABILITY_UPDATED:
+                                OnSystemCapabilityUpdated onSystemCapabilityUpdated =(OnSystemCapabilityUpdated)message;
+                                if(onSystemCapabilityUpdated.getSystemCapability() != null){
+                                    SystemCapability systemCapability = onSystemCapabilityUpdated.getSystemCapability();
+                                    SystemCapabilityType systemCapabilityType = systemCapability.getSystemCapabilityType();
+                                    Object capability = systemCapability.getCapabilityForType(systemCapabilityType);
+                                    if(cachedSystemCapabilities.containsKey(systemCapabilityType)) { //The capability already exists
+                                        switch (systemCapabilityType) {
+                                            case APP_SERVICES:
+                                                // App services only updates what was changed so we need
+                                                // to update the capability rather than override it
+                                                AppServicesCapabilities appServicesCapabilities = (AppServicesCapabilities) capability;
+                                                List<AppServiceCapability> appServicesCapabilitiesList = appServicesCapabilities.getAppServices();
+                                                AppServicesCapabilities cachedAppServicesCapabilities = (AppServicesCapabilities) cachedSystemCapabilities.get(systemCapabilityType);
 
-		if(callback != null){
-			callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
-		}
-	}
+                                                //Update the cached app services
+                                                cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
+                                                //Set the new capability object to the updated cached capabilities
+                                                capability = cachedAppServicesCapabilities;
+                                                break;
+                                        }
+                                    }
+                                    if(capability != null){
+                                    	setCapability(systemCapabilityType, capability);
+									}
+                                }
+                        }
+                    }
+                }
+            }
+        };
+
+        if(callback != null){
+            callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
+            callback.addOnRPCListener(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED, rpcListener);
+        }
+    }
 
 	/**
 	 * Sets a capability in the cached map. This should only be done when an RPC is received and contains updates to the capability

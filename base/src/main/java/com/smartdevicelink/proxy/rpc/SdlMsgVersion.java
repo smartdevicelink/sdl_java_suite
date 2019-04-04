@@ -34,6 +34,7 @@ package com.smartdevicelink.proxy.rpc;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.util.Version;
 
 import java.util.Hashtable;
 
@@ -98,6 +99,17 @@ public class SdlMsgVersion extends RPCStruct {
         this();
         setMajorVersion(majorVersion);
         setMinorVersion(minorVersion);
+
+    }
+    /**
+     * Constructs a newly allocated SdlMsgVersion object
+     * @param version Creates a new RPC struct SdlMsgVersion based on the utility class
+     */
+    public SdlMsgVersion(@NonNull Version version) {
+        this();
+        setMajorVersion(version.getMajor());
+        setMinorVersion(version.getMinor());
+        setPatchVersion(version.getPatch());
 
     }
 

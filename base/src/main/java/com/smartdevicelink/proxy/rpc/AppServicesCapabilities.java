@@ -31,8 +31,11 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -80,6 +83,52 @@ public class AppServicesCapabilities extends RPCStruct {
 	@SuppressWarnings("unchecked")
 	public List<AppServiceCapability> getAppServices(){
 		return (List<AppServiceCapability>) getObject(AppServiceCapability.class,KEY_APP_SERVICES);
+	}
+
+	/**
+	 * This method will update the current List<AppServiceCapability> with the updated items. If the
+	 * items don't exist in the original ist they will be added. If the original list is null or
+	 * empty, the new list will simply be set as the list.
+	 * @param updatedAppServiceCapabilities the List<AppServiceCapability> that have been updated
+	 * @return if the list was updated
+	 */
+	public boolean updateAppServices(@NonNull List<AppServiceCapability> updatedAppServiceCapabilities){
+		if(updatedAppServiceCapabilities == null){
+			return false;
+		}
+		final List<AppServiceCapability> appServiceCapabilities = getAppServices();
+
+		if(appServiceCapabilities == null || appServiceCapabilities.isEmpty()){
+			//If this list is null or empty, just copy the updated list into this object
+			setAppServices(updatedAppServiceCapabilities);
+			return true;
+		}
+
+		//Create a shallow copy for us to alter while iterating through the original list
+		List<AppServiceCapability> tempList = new ArrayList<>(appServiceCapabilities);
+
+		boolean updated;
+		for(AppServiceCapability updatedAppServiceCapability: updatedAppServiceCapabilities){
+			updated = false;
+			if(updatedAppServiceCapability != null) {
+				for (AppServiceCapability appServiceCapability : appServiceCapabilities) {
+					if (updatedAppServiceCapability.matchesAppService(appServiceCapability)) {
+						tempList.remove(appServiceCapability); //Remove the old entry
+						tempList.add(updatedAppServiceCapability); //Add the new entry
+						updated = true;
+						break;
+					}
+				}
+			}
+
+			if(!updated){
+				//If the updated App Service capability doesn't exist in the old list, just add it
+				tempList.add(updatedAppServiceCapability);
+			}
+		}
+
+		setAppServices(tempList);
+		return !tempList.equals(appServiceCapabilities); //Return if the list is not equal to the original
 	}
 
 }
