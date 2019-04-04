@@ -151,28 +151,6 @@ public class SystemCapabilityManager {
 			cachedSystemCapabilities.put(systemCapabilityType, capability);
 			notifyListeners(systemCapabilityType, capability);
 	}
-	/**
-	 * Updates a capability in the cached map. Unlike setCapability, this method will update the
-     * existing capability instead if is supported. This should only be done when an RPC is received and
-     * contains updates to the capability that is being cached in the SystemCapabilityManager.
-	 * @param systemCapabilityType the system capability type that will be set
-	 * @param capability the value of the capability that will be set
-	 */
-	private synchronized void updateCapability(SystemCapabilityType systemCapabilityType, Object capability){
-		if(cachedSystemCapabilities.containsKey(systemCapabilityType)){
-		    switch (systemCapabilityType){
-                case APP_SERVICES:
-                    AppServicesCapabilities appServicesCapabilities = (AppServicesCapabilities) capability;
-                    List<AppServiceCapability> appServicesCapabilitiesList = appServicesCapabilities.getAppServices();
-                    AppServicesCapabilities cachedAppServiceCapabilies = (AppServicesCapabilities)cachedSystemCapabilities.get(systemCapabilityType);
-
-
-            }
-        }else{
-		    cachedSystemCapabilities.put(systemCapabilityType, capability);
-        }
-			notifyListeners(systemCapabilityType, capability);
-	}
 
 	/**
 	 * Notify listners in the list about the new retrieved capability
