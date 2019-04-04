@@ -86,7 +86,7 @@ public class AppServicesCapabilities extends RPCStruct {
 	}
 
 	/**
-	 * This method will update the current List<AppServiceCapability> with the udpated items. If the
+	 * This method will update the current List<AppServiceCapability> with the updated items. If the
 	 * items don't exist in the original ist they will be added. If the original list is null or
 	 * empty, the new list will simply be set as the list.
 	 * @param updatedAppServiceCapabilities the List<AppServiceCapability> that have been updated
