@@ -939,8 +939,8 @@ public class SdlRouterService extends Service{
 		return super.onUnbind(intent);
 	}
 
-	
-	private void notifyClients(Message message){
+
+	private void notifyClients(final Message message){
 		if(message==null){
 			Log.w(TAG, "Can't notify clients, message was null");
 			return;
@@ -950,11 +950,13 @@ public class SdlRouterService extends Service{
 		synchronized(REGISTERED_APPS_LOCK){
 			Collection<RegisteredApp> apps = registeredApps.values();
 			Iterator<RegisteredApp> it = apps.iterator();
+			Message formattedMessage = new Message();
 			while(it.hasNext()){
 				RegisteredApp app = it.next();
+				formattedMessage.copyFrom(message);
 				//Format the message for the receiving app and appropriate messaging version
-				if(formatMessage(app, message)) {
-					result = app.sendMessage(message);
+				if(formatMessage(app, formattedMessage)) {
+					result = app.sendMessage(formattedMessage);
 					if (result == RegisteredApp.SEND_MESSAGE_ERROR_MESSENGER_DEAD_OBJECT) {
 						app.close();
 						it.remove();
