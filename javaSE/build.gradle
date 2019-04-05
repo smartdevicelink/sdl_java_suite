@@ -39,15 +39,18 @@ sourceSets {
 }
 
 jar {
+    dependsOn 'generateSources'
     from {
         configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
 task generateSources {
+    outputs.upToDateWhen { false }
     File outputDir = file("$buildDir/../src/main/java/com/smartdevicelink/")
     outputs.dir outputDir
     doFirst {
+        println "Generating BuildConfig.java ..."
         def srcFile = new File(outputDir, "BuildConfig.java")
         srcFile.parentFile.mkdirs()
         File license = new File("$buildDir/../../LICENSE")
@@ -72,7 +75,5 @@ public final class BuildConfig {
 }""")
     }
 }
-
-compileJava.dependsOn generateSources
 
 apply from: 'bintray.gradle'
