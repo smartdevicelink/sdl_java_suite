@@ -30,6 +30,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
+import com.smartdevicelink.util.DebugTool;
 
 import java.util.Collections;
 import java.util.Vector;
@@ -118,6 +119,10 @@ public class SdlService extends Service {
 		// Typically in your app, you will only set one of these.
 		if (sdlManager == null) {
 			Log.i(TAG, "Starting SDL Proxy");
+			// Enable DebugTool for debug build type
+			if (BuildConfig.DEBUG){
+				DebugTool.enableDebugTool();
+			}
 			BaseTransportConfig transport = null;
 			if (BuildConfig.TRANSPORT.equals("MULTI")) {
 				int securityLevel;
