@@ -30,6 +30,7 @@ import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
@@ -275,6 +276,25 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		cachedCap = (AppServicesCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES);
 		assertNotNull(cachedCap);
 		assertEquals(cachedCap.getAppServices().size(), 2);
+
+		/* PERFORM A NOTIFICATION SEND THROUGH THE SCM WITH A REMOVED SERVICE */
+		AppServiceCapability removedService = AppServiceFactory.createAppServiceCapability(AppServiceType.NAVIGATION, "NewNav", "eeeeeeeee", false, null);
+		removedService.setUpdateReason(ServiceUpdateReason.REMOVED);
+		AppServicesCapabilities removedServiceASC = new AppServicesCapabilities();
+		removedServiceASC.setAppServices(Collections.singletonList(removedService));
+
+		systemCapability = new SystemCapability();
+		systemCapability.setSystemCapabilityType(SystemCapabilityType.APP_SERVICES);
+		systemCapability.setCapabilityForType(SystemCapabilityType.APP_SERVICES, removedServiceASC);
+
+		onSystemCapabilityUpdated = new OnSystemCapabilityUpdated();
+		onSystemCapabilityUpdated.setSystemCapability(systemCapability);
+
+		scmRpcListener.onReceived(onSystemCapabilityUpdated);
+
+		cachedCap = (AppServicesCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES);
+		assertNotNull(cachedCap);
+		assertEquals(cachedCap.getAppServices().size(), 1);
 
 	}
 

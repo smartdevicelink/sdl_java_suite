@@ -34,6 +34,7 @@ package com.smartdevicelink.proxy.rpc;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -96,34 +97,33 @@ public class AppServicesCapabilities extends RPCStruct {
 		if(updatedAppServiceCapabilities == null){
 			return false;
 		}
-		final List<AppServiceCapability> appServiceCapabilities = getAppServices();
 
-		if(appServiceCapabilities == null || appServiceCapabilities.isEmpty()){
-			//If this list is null or empty, just copy the updated list into this object
-			setAppServices(updatedAppServiceCapabilities);
-			return true;
+		List<AppServiceCapability> appServiceCapabilities = getAppServices();
+
+		if(appServiceCapabilities == null){
+			//If there are currently no app services, create one to iterate over with no entries
+			appServiceCapabilities = new ArrayList<>(0);
 		}
 
 		//Create a shallow copy for us to alter while iterating through the original list
 		List<AppServiceCapability> tempList = new ArrayList<>(appServiceCapabilities);
 
-		boolean updated;
 		for(AppServiceCapability updatedAppServiceCapability: updatedAppServiceCapabilities){
-			updated = false;
 			if(updatedAppServiceCapability != null) {
+				//First search if the record exists in the current list and remove it if so
 				for (AppServiceCapability appServiceCapability : appServiceCapabilities) {
 					if (updatedAppServiceCapability.matchesAppService(appServiceCapability)) {
 						tempList.remove(appServiceCapability); //Remove the old entry
-						tempList.add(updatedAppServiceCapability); //Add the new entry
-						updated = true;
 						break;
 					}
 				}
-			}
 
-			if(!updated){
-				//If the updated App Service capability doesn't exist in the old list, just add it
-				tempList.add(updatedAppServiceCapability);
+				if(!ServiceUpdateReason.REMOVED.equals(updatedAppServiceCapability.getUpdateReason())){
+					//If the app service was anything but removed, we can add the updated
+					//record back into the temp list. If it was REMOVED as the update reason
+					//it will not be added back.
+					tempList.add(updatedAppServiceCapability);
+				}
 			}
 		}
 
