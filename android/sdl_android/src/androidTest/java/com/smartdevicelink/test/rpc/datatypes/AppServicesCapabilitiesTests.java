@@ -3,6 +3,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 import com.smartdevicelink.proxy.rpc.AppServiceCapability;
 import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
+import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
@@ -124,6 +125,18 @@ public class AppServicesCapabilitiesTests extends TestCase {
 
 		/* TEST TO ENSURE A NEW RECORD WAS NOT ADDED */
 		assertEquals(capabilities1.getAppServices().size(), 3);
+
+
+		capability5.setUpdateReason(ServiceUpdateReason.REMOVED);
+
+		/* TEST TO ENSURE A THE LIST BEING STORED WAS MODIFIED */
+		assertTrue(capabilities1.updateAppServices(Collections.singletonList(capability5)));
+
+		/* TEST TO ENSURE THE RECORD WAS REMOVED */
+		assertEquals(capabilities1.getAppServices().size(), 2);
+
+		/* TEST TO ENSURE THE RECORD REMOVED WAS THE CORRECT ONE */
+		assertFalse(capabilities1.getAppServices().contains(capability5));
 
 
 	}

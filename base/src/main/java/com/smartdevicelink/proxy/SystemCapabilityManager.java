@@ -115,13 +115,15 @@ public class SystemCapabilityManager {
                                                 // App services only updates what was changed so we need
                                                 // to update the capability rather than override it
                                                 AppServicesCapabilities appServicesCapabilities = (AppServicesCapabilities) capability;
-                                                List<AppServiceCapability> appServicesCapabilitiesList = appServicesCapabilities.getAppServices();
-                                                AppServicesCapabilities cachedAppServicesCapabilities = (AppServicesCapabilities) cachedSystemCapabilities.get(systemCapabilityType);
+                                                if(capability != null) {
+													List<AppServiceCapability> appServicesCapabilitiesList = appServicesCapabilities.getAppServices();
+													AppServicesCapabilities cachedAppServicesCapabilities = (AppServicesCapabilities) cachedSystemCapabilities.get(systemCapabilityType);
 
-                                                //Update the cached app services
-                                                cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
-                                                //Set the new capability object to the updated cached capabilities
-                                                capability = cachedAppServicesCapabilities;
+													//Update the cached app services
+													cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
+													//Set the new capability object to the updated cached capabilities
+													capability = cachedAppServicesCapabilities;
+												}
                                                 break;
                                         }
                                     }
