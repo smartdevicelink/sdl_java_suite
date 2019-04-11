@@ -295,8 +295,35 @@ public class TransportManager extends TransportManagerBase{
             }
 
             synchronized (TRANSPORT_STATUS_LOCK){
-                TransportManager.this.transportStatus.remove(record);
+                boolean wasRemoved = TransportManager.this.transportStatus.remove(record);
                 //Might check connectedTransports vs transportStatus to ensure they are equal
+
+                //If the transport wasn't removed, check RS version for corner case
+                if(!wasRemoved && getRouterServiceVersion() == 8){
+                    boolean foundMatch = false;
+                    //There is an issue in the first gen of multi transport router services that
+                    //will remove certain extras from messages to the TransportBroker if older apps
+                    //are connected that do not support the multi transport messages. Because of
+                    //that, we check the records we have and if the transport matches we assume it
+                    //was the original transport that was received regardless of the address.
+                    TransportType disconnectedTransportType = record.getType();
+                    if(disconnectedTransportType != null) {
+                        for (TransportRecord transportRecord : TransportManager.this.transportStatus) {
+                            if (disconnectedTransportType.equals(transportRecord.getType())) {
+                                //The record stored in the TM will contain the actual record the
+                                //protocol layer used during the transport connection event
+                                record = transportRecord;
+                                foundMatch = true;
+                                break;
+                            }
+                        }
+
+                        if (foundMatch) { //Remove item after the loop to avoid concurrent modifications
+                            TransportManager.this.transportStatus.remove(record);
+                            Log.d(TAG, "Handling corner case of transport disconnect mismatch");
+                        }
+                    }
+                }
             }
 
             if(isLegacyModeEnabled()
