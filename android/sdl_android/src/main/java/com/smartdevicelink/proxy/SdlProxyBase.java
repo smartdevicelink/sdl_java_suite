@@ -3817,6 +3817,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							_proxyListener.onOnButtonPress(msg);
 							onRPCNotificationReceived(msg);
 							if(onButtonPressCompat != null){
+								onRPCNotificationReceived(onButtonPressCompat);
 								_proxyListener.onOnButtonPress(onButtonPressCompat);
 							}
 						}
@@ -3825,6 +3826,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onOnButtonPress(msg);
 					onRPCNotificationReceived(msg);
 					if(onButtonPressCompat != null){
+						onRPCNotificationReceived(onButtonPressCompat);
 						_proxyListener.onOnButtonPress(onButtonPressCompat);
 					}
 				}
@@ -3843,6 +3845,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							_proxyListener.onOnButtonEvent(msg);
 							onRPCNotificationReceived(msg);
 							if(onButtonEventCompat != null){
+								onRPCNotificationReceived(onButtonEventCompat);
 								_proxyListener.onOnButtonEvent(onButtonEventCompat);
 							}
 						}
@@ -3851,6 +3854,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onOnButtonEvent(msg);
 					onRPCNotificationReceived(msg);
 					if(onButtonEventCompat != null){
+						onRPCNotificationReceived(onButtonEventCompat);
 						_proxyListener.onOnButtonEvent(onButtonEventCompat);
 					}
 				}
