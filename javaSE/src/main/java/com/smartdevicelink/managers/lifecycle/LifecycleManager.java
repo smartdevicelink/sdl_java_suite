@@ -642,6 +642,33 @@ public class LifecycleManager extends BaseLifecycleManager {
 
 
     private void sendRPCMessagePrivate(RPCMessage message){
+        //FIXME this is temporary until the next major release of the library where OK is removed
+        if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+            RPCRequest request = (RPCRequest) message;
+            if(FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+                    || FunctionID.UNSUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+                    || FunctionID.BUTTON_PRESS.toString().equals(request.getFunctionName())) {
+
+                ButtonName buttonName = (ButtonName) request.getObject(ButtonName.class, SubscribeButton.KEY_BUTTON_NAME);
+
+                if (rpcSpecVersion != null && rpcSpecVersion.getMajor() < 5) {
+
+                    if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
+                        request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
+                    }
+                } else { //Newer than version 5.0.0
+                    if (ButtonName.OK.equals(buttonName)) {
+                        RPCRequest request2 = new RPCRequest(request);
+                        request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
+                        request2.setOnRPCResponseListener(request.getOnRPCResponseListener());
+                        sendRPCMessagePrivate(request2);
+                        return;
+                    }
+                }
+            }
+        }
+
+
         try {
 
             message.format(rpcSpecVersion,true);
@@ -742,11 +769,6 @@ public class LifecycleManager extends BaseLifecycleManager {
 
                     rpc.format(rpcSpecVersion, true);
 
-                    FunctionID functionID = rpc.getFunctionID();
-                    if (functionID != null && (functionID.equals(FunctionID.ON_BUTTON_PRESS.toString()) || functionID.equals(FunctionID.ON_BUTTON_EVENT.toString()))) {
-                        rpc = handleButtonNotificationFormatting(rpc);
-                    }
-
                     onRPCReceived(rpc);
 
                     if (RPCMessage.KEY_RESPONSE.equals(messageType)) {
@@ -754,6 +776,13 @@ public class LifecycleManager extends BaseLifecycleManager {
                         onRPCResponseReceived((RPCResponse) rpc);
 
                     } else if (RPCMessage.KEY_NOTIFICATION.equals(messageType)) {
+                        FunctionID functionID = rpc.getFunctionID();
+                        if (functionID != null && (functionID.equals(FunctionID.ON_BUTTON_PRESS)) || functionID.equals(FunctionID.ON_BUTTON_EVENT)) {
+                            RPCNotification notificationCompat = handleButtonNotificationFormatting(rpc);
+                            if(notificationCompat != null){
+                                onRPCNotificationReceived((notificationCompat));
+                            }
+                        }
 
                         onRPCNotificationReceived((RPCNotification) rpc);
 
