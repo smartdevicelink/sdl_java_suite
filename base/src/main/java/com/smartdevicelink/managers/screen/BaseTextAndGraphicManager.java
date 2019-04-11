@@ -226,9 +226,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 			if (listener != null){
 				queuedUpdateListener = listener;
-			}else{
-				hasQueuedUpdate = true;
 			}
+
+			hasQueuedUpdate = true;
+
 			return;
 		}
 
