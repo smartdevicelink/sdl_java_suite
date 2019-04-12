@@ -63,11 +63,10 @@ public abstract class CustomTransport implements TransportInterface{
      * Call this method when reading a byte array off the transport
      * @param bytes the bytes read off the transport
      */
-    public synchronized void onByteArrayReceived (byte[] bytes) {
+    public synchronized void onByteArrayReceived (byte[] bytes, int offset, int length) {
 
         if(bytes != null && bytes.length > 0){
             boolean stateProgress;
-            int length = bytes.length;
             for(int i = 0; i < length; i++){
                 stateProgress = psm.handleByte(bytes[i]);
                 if (!stateProgress) {//We are trying to weed through the bad packet info until we get something
@@ -137,7 +136,7 @@ public abstract class CustomTransport implements TransportInterface{
         byte[] bytes = packet.constructPacket();
         if(bytes != null && bytes.length > 0) {
             try {
-                onWrite(bytes);
+                onWrite(bytes, 0, bytes.length);
             } catch (Exception exc) {
                 DebugTool.logError("Error attempting to write packet", exc);
             }
@@ -160,8 +159,10 @@ public abstract class CustomTransport implements TransportInterface{
      * Integrator should write out these bytes to whatever actual transport there is. This will be called from the
      * internals of the library.
      * @param bytes a deconstructed packet into a byte array that needs to be written out
+     * @param offset in bytes
+     * @param length in bytes
      */
-    public abstract void onWrite(byte[] bytes);
+    public abstract void onWrite(byte[] bytes, int offset, int length);
 
 
 

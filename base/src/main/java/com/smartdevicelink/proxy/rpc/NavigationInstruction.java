@@ -144,17 +144,17 @@ public class NavigationInstruction extends RPCStruct {
 	}
 
 	/**
-	 * Used to infer which side of the road this instruction takes place. For a U-Turn
-	 * (Action=Turn, direction=180) this will determine which direction the turn should take place.
-	 * @param drivingSide -
+	 * Used to infer which side of the road this instruction takes place. For a U-Turn (action=TURN, bearing=180) this
+	 * will determine which direction the turn should take place.
+	 * @param drivingSide - Direction enum value that represents the driving side
 	 */
 	public void setDrivingSide(Direction drivingSide){
 		setValue(KEY_DRIVING_SIDE, drivingSide);
 	}
 
 	/**
-	 * Used to infer which side of the road this instruction takes place. For a U-Turn
-	 * (Action=Turn, direction=180) this will determine which direction the turn should take place.
+	 * Used to infer which side of the road this instruction takes place. For a U-Turn (action=TURN, bearing=180) this
+	 * will determine which direction the turn should take place.
 	 * @return drivingSide
 	 */
 	public Direction getDrivingSide(){

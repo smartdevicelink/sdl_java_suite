@@ -33,8 +33,11 @@ package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
 
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -61,9 +64,23 @@ public class AppServiceManifest extends RPCStruct {
 		super(hash);
 	}
 
+	/**
+	 * Constructor that takes in the mandatory parameters.
+	 * @param serviceType the type of service this is, use {@link com.smartdevicelink.proxy.rpc.enums.AppServiceType}
+	 * @see com.smartdevicelink.proxy.rpc.enums.AppServiceType
+	 */
 	public AppServiceManifest(@NonNull String serviceType) {
 		this();
 		setServiceType(serviceType);
+	}
+	/**
+	 * Constructor that takes in the mandatory parameters.
+	 * @param serviceType the type of service this is
+	 * @see com.smartdevicelink.proxy.rpc.enums.AppServiceType
+	 */
+	public AppServiceManifest(@NonNull AppServiceType serviceType) {
+		this();
+		setServiceType(serviceType.name());
 	}
 
 	// Setters and Getters
@@ -85,7 +102,8 @@ public class AppServiceManifest extends RPCStruct {
 
 	/**
 	 * The type of service that is to be offered by this app
-	 * @param serviceType - the serviceType
+	 * @param serviceType - the serviceType use {@link com.smartdevicelink.proxy.rpc.enums.AppServiceType}
+	 * @see com.smartdevicelink.proxy.rpc.enums.AppServiceType
 	 */
 	public void setServiceType(@NonNull String serviceType){
 		setValue(KEY_SERVICE_TYPE, serviceType);
@@ -94,6 +112,7 @@ public class AppServiceManifest extends RPCStruct {
 	/**
 	 * The type of service that is to be offered by this app
 	 * @return the AppServiceType
+	 * @see com.smartdevicelink.proxy.rpc.enums.AppServiceType
 	 */
 	public String getServiceType(){
 		return getString(KEY_SERVICE_TYPE);
@@ -154,16 +173,36 @@ public class AppServiceManifest extends RPCStruct {
 	/**
 	 * This field contains the Function IDs for the RPCs that this service intends to handle correctly.
 	 * This means the service will provide meaningful responses.
-	 * @param handledRPCs - The List of Handled RPCs
+	 * @param handledRPCs - The List of Handled RPCs using their ID value from the FunctionID enum
+	 * @see com.smartdevicelink.protocol.enums.FunctionID
+	 * @see #setHandledRpcsUsingFunctionIDs(List)
 	 */
 	public void setHandledRpcs(List<Integer> handledRPCs){
 		setValue(KEY_HANDLED_RPCS, handledRPCs);
 	}
-
 	/**
 	 * This field contains the Function IDs for the RPCs that this service intends to handle correctly.
 	 * This means the service will provide meaningful responses.
-	 * @return handledRPCs - The List of Handled RPCs
+	 * @param handledRPCs - The List of Handled RPCs using the FunctionID enum
+	 * @see #setHandledRpcs(List)
+	 */
+	public void setHandledRpcsUsingFunctionIDs(List<FunctionID> handledRPCs){
+		if(handledRPCs != null){
+			List<Integer> rpcIds = new ArrayList<>();
+			for(FunctionID functionID : handledRPCs){
+				rpcIds.add(functionID.getId());
+			}
+			setHandledRpcs(rpcIds);
+		}else{
+			setValue(KEY_HANDLED_RPCS, null);
+		}
+	}
+
+	/**
+	 * This field contains the FunctionID integer ID values for the RPCs that this service intends to handle correctly.
+	 * This means the service will provide meaningful responses.
+	 * @return handledRPCs - The List of Handled RPC IDs obtained through the FunctionID enum
+	 * @see com.smartdevicelink.protocol.enums.FunctionID
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Integer> getHandledRpcs(){

@@ -121,10 +121,10 @@ public interface ISdl {
 
     /**
      * Start Audio Stream and return IAudioStreamListener
-     * @param isEncrypted
-     * @param codec
-     * @param params
-     * @return IAudioStreamListener
+     * @param isEncrypted whether or not the audio stream should be encrypted
+     * @param codec the codec that should be used for the audio stream
+     * @param params specific options and settings associated with the audio stream
+     * @return IAudioStreamListener, an interface that allows the writing of audio data
      */
     IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params);
 
@@ -205,22 +205,23 @@ public interface ISdl {
 
     /**
      * Get SystemCapability Object
-     * @param systemCapabilityType
-     * @return Object
+     * @param systemCapabilityType a system capability type that should be retrieved
+     * @return the system capability provided if available, null if not
      */
     Object getCapability(SystemCapabilityType systemCapabilityType);
 
     /**
      * Get Capability
-     * @param systemCapabilityType
-     * @param scListener
+     * @param systemCapabilityType a system capability type that should be retrieved
+     * @param scListener listener that will be called when the system capability is retrieved. If already cached, it
+     *                   will be called immediately
      */
     void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener);
 
     /**
      * Check if capability is supported
-     * @param systemCapabilityType
-     * @return Boolean
+     * @param systemCapabilityType a system capability type that should be checked for support
+     * @return Boolean whether or not the supplied capability type is supported on the connected module
      */
     boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType);
 

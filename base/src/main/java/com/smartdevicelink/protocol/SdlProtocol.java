@@ -35,7 +35,6 @@ package com.smartdevicelink.protocol;
 
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TransportManager;
-import com.smartdevicelink.transport.WebSocketServerConfig;
 
 
 @SuppressWarnings("WeakerAccess")

@@ -50,10 +50,6 @@ public class SdlArtwork extends SdlFile {
         super(staticIconName);
     }
 
-    public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, int id, boolean persistentFile) {
-        super(fileName, fileType, id, persistentFile);
-    }
-
     public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, String filePath, boolean persistentFile) {
         super(fileName, fileType, filePath, persistentFile);
     }

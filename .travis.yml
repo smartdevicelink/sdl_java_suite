@@ -46,7 +46,9 @@ before_script:
 script:
   - android list target
   - ./android/gradlew -p ./android :sdl_android:connectedCheck
+  - ./android/gradlew -p ./android :hello_sdl_android:test
   - ./javaSE/gradlew -p ./javaSE test
+  - ./hello_sdl_java/gradlew -p ./hello_sdl_java test
   - ./javaEE/gradlew -p ./javaEE test
 
 before_install:

@@ -1,13 +1,48 @@
+/*
+ * Copyright (c) 2019, Livio, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 package com.smartdevicelink.proxy;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.AppServiceCapability;
+import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
+import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
+import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
@@ -51,34 +86,67 @@ public class SystemCapabilityManager {
 		}
 	}
 
-	private void setupRpcListeners(){
-		rpcListener = new OnRPCListener() {
-			@Override
-			public void onReceived(RPCMessage message) {
-				if (message != null && RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) {
-					switch (message.getFunctionID()) {
-						case SET_DISPLAY_LAYOUT:
-							SetDisplayLayoutResponse response = (SetDisplayLayoutResponse)message;
-							setCapability(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
-							setCapability(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
-							setCapability(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
-							setCapability(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
-							break;
-					}
-				}
-			}
-		};
+    private void setupRpcListeners(){
+        rpcListener = new OnRPCListener() {
+            @Override
+            public void onReceived(RPCMessage message) {
+                if (message != null) {
+                    if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) {
+                        switch (message.getFunctionID()) {
+                            case SET_DISPLAY_LAYOUT:
+                                SetDisplayLayoutResponse response = (SetDisplayLayoutResponse) message;
+                                setCapability(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
+                                setCapability(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
+                                setCapability(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
+                                setCapability(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
+                                break;
+                        }
+                    } else if (RPCMessage.KEY_NOTIFICATION.equals(message.getMessageType())){
+                        switch (message.getFunctionID()) {
+                            case ON_SYSTEM_CAPABILITY_UPDATED:
+                                OnSystemCapabilityUpdated onSystemCapabilityUpdated =(OnSystemCapabilityUpdated)message;
+                                if(onSystemCapabilityUpdated.getSystemCapability() != null){
+                                    SystemCapability systemCapability = onSystemCapabilityUpdated.getSystemCapability();
+                                    SystemCapabilityType systemCapabilityType = systemCapability.getSystemCapabilityType();
+                                    Object capability = systemCapability.getCapabilityForType(systemCapabilityType);
+                                    if(cachedSystemCapabilities.containsKey(systemCapabilityType)) { //The capability already exists
+                                        switch (systemCapabilityType) {
+                                            case APP_SERVICES:
+                                                // App services only updates what was changed so we need
+                                                // to update the capability rather than override it
+                                                AppServicesCapabilities appServicesCapabilities = (AppServicesCapabilities) capability;
+                                                if(capability != null) {
+                                                	List<AppServiceCapability> appServicesCapabilitiesList = appServicesCapabilities.getAppServices();
+                                                	AppServicesCapabilities cachedAppServicesCapabilities = (AppServicesCapabilities) cachedSystemCapabilities.get(systemCapabilityType);
+                                                	//Update the cached app services
+                                                	cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
+                                                	//Set the new capability object to the updated cached capabilities
+                                                	capability = cachedAppServicesCapabilities;
+                                                }
+                                                break;
+                                        }
+                                    }
+                                    if(capability != null){
+                                    	setCapability(systemCapabilityType, capability);
+									}
+                                }
+                        }
+                    }
+                }
+            }
+        };
 
-		if(callback != null){
-			callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
-		}
-	}
+        if(callback != null){
+            callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
+            callback.addOnRPCListener(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED, rpcListener);
+        }
+    }
 
 	/**
 	 * Sets a capability in the cached map. This should only be done when an RPC is received and contains updates to the capability
 	 * that is being cached in the SystemCapabilityManager.
-	 * @param systemCapabilityType
-	 * @param capability
+	 * @param systemCapabilityType the system capability type that will be set
+	 * @param capability the value of the capability that will be set
 	 */
 	public synchronized void setCapability(SystemCapabilityType systemCapabilityType, Object capability){
 			cachedSystemCapabilities.put(systemCapabilityType, capability);
@@ -87,8 +155,8 @@ public class SystemCapabilityManager {
 
 	/**
 	 * Notify listners in the list about the new retrieved capability
-	 * @param systemCapabilityType
-	 * @param capability
+	 * @param systemCapabilityType the system capability type that was retrieved
+	 * @param capability the system capability value that was retrieved
 	 */
 	private void notifyListeners(SystemCapabilityType systemCapabilityType, Object capability) {
 		synchronized(LISTENER_LOCK){
@@ -203,7 +271,9 @@ public class SystemCapabilityManager {
 		if (!systemCapabilityType.isQueryable()){
 			String message = "This systemCapabilityType cannot be queried for";
 			DebugTool.logError(message);
-			scListener.onError(message);
+			if( scListener != null){
+				scListener.onError(message);
+			}
 			return;
 		}
 		final GetSystemCapability request = new GetSystemCapability();

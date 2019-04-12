@@ -1,3 +1,35 @@
+/*
+ * Copyright (c) 2019 Livio, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.smartdevicelink.managers.video;
 
 import android.annotation.TargetApi;
@@ -66,7 +98,23 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
 			if(SessionType.NAV.equals(type)){
-				stateMachine.transitionToState(StreamingStateMachine.READY);
+				if(session != null && session.getAcceptedVideoParams() != null){
+					parameters = session.getAcceptedVideoParams();
+				}
+				VideoStreamManager.this.streamListener = internalInterface.startVideoStream(isEncrypted, parameters);
+				if(streamListener == null){
+					Log.e(TAG, "Error starting video service");
+					stateMachine.transitionToState(StreamingStateMachine.ERROR);
+					return;
+				}
+				VideoStreamingCapability capability = (VideoStreamingCapability) internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING);
+				if(capability != null && capability.getIsHapticSpatialDataSupported()){
+					hapticManager = new HapticInterfaceManager(internalInterface);
+				}
+				startEncoder();
+				stateMachine.transitionToState(StreamingStateMachine.STARTED);
+
+
 			}
 		}
 
@@ -229,31 +277,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		}
 	}
 
-	/**
-	 * Opens a video service (service type 11) and subsequently provides an IVideoStreamListener
-	 * to the app to send video data. The supplied VideoStreamingParameters will be set as desired paramaters
-	 * that will be used to negotiate
-	 *
-	 * @param parameters  Video streaming parameters including: codec which will be used for streaming (currently, only
-	 *                    VideoStreamingCodec.H264 is accepted), height and width of the video in pixels.
-	 * @param encrypted Specify true if packets on this service have to be encrypted
-	 *
-	 * @return IVideoStreamListener interface if service is opened successfully and streaming is
-	 *         started, null otherwise
-	 */
-	protected IVideoStreamListener startVideoService(VideoStreamingParameters parameters, boolean encrypted){
-		if(hmiLevel != HMILevel.HMI_FULL){
-			Log.e(TAG, "Cannot start video service if HMILevel is not FULL.");
-			return null;
-		}
-		IVideoStreamListener listener = internalInterface.startVideoStream(encrypted, parameters);
-		if(listener != null){
-			stateMachine.transitionToState(StreamingStateMachine.STARTED);
-		}else{
-			stateMachine.transitionToState(StreamingStateMachine.ERROR);
-		}
-		return listener;
-	}
 
 	/**
 	 * Starts video service, sets up encoder, haptic manager, and remote display. Begins streaming the remote display.
@@ -261,19 +284,16 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 *                    VideoStreamingCodec.H264 is accepted), height and width of the video in pixels.
 	 * @param encrypted Specify true if packets on this service have to be encrypted
 	 */
-	private void startStreaming(VideoStreamingParameters parameters, boolean encrypted){
+	protected void startStreaming(VideoStreamingParameters parameters, boolean encrypted){
 		this.parameters = parameters;
-		this.streamListener = startVideoService(parameters, encrypted);
-		if(streamListener == null){
-			Log.e(TAG, "Error starting video service");
-			stateMachine.transitionToState(StreamingStateMachine.ERROR);
+		if(hmiLevel != HMILevel.HMI_FULL){
+			Log.e(TAG, "Cannot start video service if HMILevel is not FULL.");
 			return;
 		}
-		VideoStreamingCapability capability = (VideoStreamingCapability) internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING);
-		if(capability != null && capability.getIsHapticSpatialDataSupported()){
-			hapticManager = new HapticInterfaceManager(internalInterface);
-		}
-		startEncoder();
+		//Start the video service
+		this.internalInterface.startVideoService(parameters, encrypted);
+
+
 	}
 
 	/**

@@ -1,3 +1,34 @@
+/*
+ * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from this 
+ * software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 package com.smartdevicelink.proxy;
 
 import android.annotation.TargetApi;
@@ -2067,6 +2098,36 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		try {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, message, SDL_LIB_TRACE_KEY);
 
+			//FIXME this is temporary until the next major release of the library where OK is removed
+			if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+				RPCRequest request = (RPCRequest) message;
+				if (FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+						|| FunctionID.UNSUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+						|| FunctionID.BUTTON_PRESS.toString().equals(request.getFunctionName())) {
+
+					ButtonName buttonName = (ButtonName) request.getObject(ButtonName.class, SubscribeButton.KEY_BUTTON_NAME);
+
+
+					if (rpcSpecVersion != null) {
+						if (rpcSpecVersion.getMajor() < 5) {
+
+							if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
+								request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
+							}
+						} else { //Newer than version 5.0.0
+							if (ButtonName.OK.equals(buttonName)) {
+								RPCRequest request2 = new RPCRequest(request);
+								request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
+								request2.setOnRPCResponseListener(request.getOnRPCResponseListener());
+								sendRPCMessagePrivate(request2);
+								return;
+							}
+						}
+					}
+
+				}
+			}
+
 			message.format(rpcSpecVersion,true);
 			byte[] msgBytes = JsonRPCMarshaller.marshall(message, (byte)getProtocolVersion().getMajor());
 
@@ -3817,6 +3878,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							_proxyListener.onOnButtonPress(msg);
 							onRPCNotificationReceived(msg);
 							if(onButtonPressCompat != null){
+								onRPCNotificationReceived(onButtonPressCompat);
 								_proxyListener.onOnButtonPress(onButtonPressCompat);
 							}
 						}
@@ -3825,6 +3887,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onOnButtonPress(msg);
 					onRPCNotificationReceived(msg);
 					if(onButtonPressCompat != null){
+						onRPCNotificationReceived(onButtonPressCompat);
 						_proxyListener.onOnButtonPress(onButtonPressCompat);
 					}
 				}
@@ -3843,6 +3906,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							_proxyListener.onOnButtonEvent(msg);
 							onRPCNotificationReceived(msg);
 							if(onButtonEventCompat != null){
+								onRPCNotificationReceived(onButtonEventCompat);
 								_proxyListener.onOnButtonEvent(onButtonEventCompat);
 							}
 						}
@@ -3851,6 +3915,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onOnButtonEvent(msg);
 					onRPCNotificationReceived(msg);
 					if(onButtonEventCompat != null){
+						onRPCNotificationReceived(onButtonEventCompat);
 						_proxyListener.onOnButtonEvent(onButtonEventCompat);
 					}
 				}
@@ -4404,33 +4469,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		}
 
-		//FIXME this is temporary until the next major release of the library where OK is removed
-
-		if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
-			RPCRequest request = (RPCRequest) message;
-			if(FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
-					|| FunctionID.UNSUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
-					|| FunctionID.BUTTON_PRESS.toString().equals(request.getFunctionName())) {
-
-				ButtonName buttonName = (ButtonName) request.getObject(ButtonName.class, SubscribeButton.KEY_BUTTON_NAME);
-
-				if (rpcSpecVersion != null && rpcSpecVersion.getMajor() < 5) {
-
-					if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
-						request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
-					}
-				} else { //Newer than version 5.0.0
-					if (ButtonName.OK.equals(buttonName)) {
-						RPCRequest request2 = new RPCRequest(request);
-						request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
-						request2.setOnRPCResponseListener(request.getOnRPCResponseListener());
-						sendRPCMessagePrivate(request2);
-						return;
-					}
-				}
-			}
-		}
-
 		sendRPCMessagePrivate(message);
 	}
 	
@@ -4895,8 +4933,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
     /**
      * Opens a video service (service type 11) and subsequently provides an IVideoStreamListener
-     * to the app to send video data. The supplied VideoStreamingParameters will be set as desired paramaters
+     * to the app to send video data. The supplied VideoStreamingParameters will be set as desired parameters
 	 * that will be used to negotiate
+	 *
+	 * <br><br><b>NOTE: IF USING SECONDARY TRANSPORTS, THE VIDEO SERVICE MUST BE STARTED BEFORE CALLING THIS
+	 * THIS METHOD. USE A `ISdlServiceListener` TO BE NOTIFIED THAT IT STARTS THEN CALL THIS METHOD TO
+	 * START STREAMING. ADD A LISTENER USE {@link #addServiceListener(SessionType, ISdlServiceListener)}.</b>
      *
      * @param isEncrypted Specify true if packets on this service have to be encrypted
      * @param parameters  Video streaming parameters including: codec which will be used for streaming (currently, only
@@ -4904,6 +4946,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
      *
      * @return IVideoStreamListener interface if service is opened successfully and streaming is
      *         started, null otherwise
+	 *
+	 * @see ISdlServiceListener
      */
     @SuppressWarnings("unused")
     public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
@@ -5094,21 +5138,24 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             return null;
         }
 
-		sdlSession.setDesiredVideoParams(parameters);
+		if(!navServiceStartResponseReceived || !navServiceStartResponse //If we haven't started the service before
+				|| (navServiceStartResponse && isEncrypted && !sdlSession.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
+			sdlSession.setDesiredVideoParams(parameters);
 
-		navServiceStartResponseReceived = false;
-		navServiceStartResponse = false;
-		navServiceStartRejectedParams = null;
+			navServiceStartResponseReceived = false;
+			navServiceStartResponse = false;
+			navServiceStartRejectedParams = null;
 
-		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
+			sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
 
-		FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
-		ScheduledExecutorService scheduler = createScheduler();
-		scheduler.execute(fTask);
+			FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+			ScheduledExecutorService scheduler = createScheduler();
+			scheduler.execute(fTask);
 
-		//noinspection StatementWithEmptyBody
-        while (!navServiceStartResponseReceived && !fTask.isDone());
-        scheduler.shutdown();
+			//noinspection StatementWithEmptyBody
+			while (!navServiceStartResponseReceived && !fTask.isDone()) ;
+			scheduler.shutdown();
+		}
 
         if (navServiceStartResponse) {
 			if(protocolVersion!= null && protocolVersion.getMajor() < 5){ //Versions 1-4 do not support streaming parameter negotiations
@@ -7827,6 +7874,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		float[] touchScalar = {1.0f,1.0f}; //x, y
 		private HapticInterfaceManager hapticManager;
 		SdlMotionEvent sdlMotionEvent = null;
+		VideoStreamingParameters videoStreamingParameters;
 
 		public VideoStreamingManager(Context context,ISdl iSdl){
 			this.context = context;
@@ -7847,8 +7895,30 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			});
 		}
 
+		/**
+		 * Starts the video service, caches the supplied params and prepares for the stream to start.
+		 * @param remoteDisplayClass the extension of SdlRemoteDisplay that will be streamed
+		 * @param parameters desired video streaming params
+		 * @param encrypted if the service is to be encrypted or not
+		 */
 		public void startVideoStreaming(Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, boolean encrypted){
-			streamListener = startVideoStream(encrypted,parameters);
+			this.remoteDisplayClass = remoteDisplayClass;
+			this.videoStreamingParameters = parameters;
+			//Make sure the service is started, allows multi transports to connect and register without timing out
+			internalInterface.startVideoService(parameters, encrypted);
+			//After this, look to the
+		}
+
+		/**
+		 * The video service should already be started at this point. Once called, it will start
+		 * the encoders and fire up the remote display supplied by the user
+		 * @param parameters
+		 * @param encrypted
+		 */
+		private void startStream(VideoStreamingParameters parameters, boolean encrypted){
+			//Start the service first
+			//streamListener = startVideoStream(encrypted,parameters);d
+			streamListener = sdlSession.startVideoStream();
 			if(streamListener == null){
 				Log.e(TAG, "Error starting video service");
 				return;
@@ -7857,9 +7927,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if(capability != null && capability.getIsHapticSpatialDataSupported()){
 				hapticManager = new HapticInterfaceManager(internalInterface);
 			}
-			this.remoteDisplayClass = remoteDisplayClass;
+
 			try {
-				encoder.init(context,streamListener,parameters);
+				encoder.init(context, streamListener, parameters);
 				//We are all set so we can start streaming at at this point
 				encoder.start();
 				//Encoder should be up and running
@@ -7962,8 +8032,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
-
-
+			if(SessionType.NAV.equals(type) && session != null ){
+				DebugTool.logInfo("Video service has been started. Starting video stream from proxy");
+				if(session.getAcceptedVideoParams() != null){
+					videoStreamingParameters = session.getAcceptedVideoParams();
+				}
+				startStream(videoStreamingParameters, isEncrypted);
+			}
 		}
 
 		@Override

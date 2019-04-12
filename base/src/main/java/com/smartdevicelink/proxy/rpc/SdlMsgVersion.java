@@ -1,8 +1,40 @@
+/*
+ * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from this 
+ * software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.util.Version;
 
 import java.util.Hashtable;
 
@@ -57,14 +89,7 @@ public class SdlMsgVersion extends RPCStruct {
 	public SdlMsgVersion(Hashtable<String, Object> hash) {
         super(hash);
     }
-    /**
-     * Get major version
-     * 					<ul>
-     * 					<li>minvalue="1"</li>
-     * 				    <li>maxvalue="10"</li>
-     *					</ul>
-     * @return the major version
-     */
+
     /**
      * Constructs a newly allocated SdlMsgVersion object
      * @param majorVersion minvalue="1" and maxvalue="10"
@@ -76,6 +101,17 @@ public class SdlMsgVersion extends RPCStruct {
         setMinorVersion(minorVersion);
 
     }
+    /**
+     * Constructs a newly allocated SdlMsgVersion object
+     * @param version Creates a new RPC struct SdlMsgVersion based on the utility class
+     */
+    public SdlMsgVersion(@NonNull Version version) {
+        this();
+        setMajorVersion(version.getMajor());
+        setMinorVersion(version.getMinor());
+        setPatchVersion(version.getPatch());
+
+    }
 
     @Override
     public void format(com.smartdevicelink.util.Version rpcVersion, boolean formatParams) {
@@ -85,6 +121,14 @@ public class SdlMsgVersion extends RPCStruct {
         super.format(rpcVersion,formatParams);
     }
 
+    /**
+     * Get major version
+     * 					<ul>
+     * 					<li>minvalue="1"</li>
+     * 				    <li>maxvalue="10"</li>
+     *					</ul>
+     * @return the major version
+     */
     public Integer getMajorVersion() {
         return getInteger( KEY_MAJOR_VERSION );
     }

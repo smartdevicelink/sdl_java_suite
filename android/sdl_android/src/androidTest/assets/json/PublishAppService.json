@@ -12,9 +12,7 @@
           "patchVersion":0},
         "serviceName":"Mobile_MEDIA",
         "serviceType":"MEDIA",
-        "uriPrefix": "test",
-        "uriScheme": {},
-        "handledRPCs":["ButtonPress"]
+        "handledRPCs":[39,41]
       }
     }
   },
@@ -34,11 +32,7 @@
           "serviceName": "Mobile_MEDIA",
           "serviceType": "MEDIA",
           "serviceIcon": "test",
-          "uriPrefix": "test",
-          "uriScheme": {},
-          "handledRPCs": [
-            "ButtonPress"
-          ]
+          "handledRPCs": [39,41]
         },
         "servicePublished": true,
         "serviceActive":true

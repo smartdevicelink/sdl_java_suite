@@ -1,3 +1,34 @@
+/*
+ * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from this 
+ * software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
 package com.smartdevicelink.proxy.rpc;
 
 
@@ -266,7 +297,10 @@ public class GetVehicleDataResponse extends RPCResponse {
 
     /**
      * Sets Fuel Range List. Fuel Range - The estimate range in KM the vehicle can travel based on fuel level and consumption.
-     * @param fuelRange
+     * @param fuelRange the range in KM left as well as fuel type
+     *
+     * @see com.smartdevicelink.proxy.rpc.FuelRange
+     * @see com.smartdevicelink.proxy.rpc.enums.FuelType
      */
     public void setFuelRange(List<FuelRange> fuelRange) {
         setParameters(KEY_FUEL_RANGE, fuelRange);
@@ -284,7 +318,9 @@ public class GetVehicleDataResponse extends RPCResponse {
 
     /**
      * Sets turnSignal
-     * @param turnSignal
+     * @param turnSignal status of the turn signals
+     *
+     * @see com.smartdevicelink.proxy.rpc.enums.TurnSignal
      */
     public void setTurnSignal(TurnSignal turnSignal) {
         setParameters(KEY_TURN_SIGNAL, turnSignal);
@@ -292,7 +328,9 @@ public class GetVehicleDataResponse extends RPCResponse {
 
     /**
      * Gets turnSignal
-     * @return TurnSignal
+     * @return TurnSignal status of the turn signals
+     *
+     * @see com.smartdevicelink.proxy.rpc.enums.TurnSignal
      */
     @SuppressWarnings("unchecked")
     public TurnSignal getTurnSignal() {
@@ -301,7 +339,9 @@ public class GetVehicleDataResponse extends RPCResponse {
 
     /**
      * Sets electronicParkBrakeStatus
-     * @param electronicParkBrakeStatus
+     * @param electronicParkBrakeStatus status of the electronic park brake of the connected vehicle
+     *
+     * @see com.smartdevicelink.proxy.rpc.enums.ElectronicParkBrakeStatus
      */
     public void setElectronicParkBrakeStatus(ElectronicParkBrakeStatus electronicParkBrakeStatus){
         setParameters(KEY_ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
@@ -309,7 +349,9 @@ public class GetVehicleDataResponse extends RPCResponse {
 
     /**
      * Gets electronicParkBrakeStatus
-     * @return ElectronicParkBrakeStatus
+     * @return ElectronicParkBrakeStatus status of the electronic park brake of the connected vehicle
+     *
+     * @see com.smartdevicelink.proxy.rpc.enums.ElectronicParkBrakeStatus
      */
     public ElectronicParkBrakeStatus getElectronicParkBrakeStatus(){
         return (ElectronicParkBrakeStatus) getObject(ElectronicParkBrakeStatus.class, KEY_ELECTRONIC_PARK_BRAKE_STATUS);

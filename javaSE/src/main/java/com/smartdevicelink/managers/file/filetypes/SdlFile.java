@@ -40,7 +40,6 @@ import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
  */
 public class SdlFile{
     private String      fileName;
-    private int         id = -1;
     private String      filePath;
     private byte[]      fileData;
     private FileType    fileType;
@@ -54,13 +53,6 @@ public class SdlFile{
         this.fileData = staticIconName.toString().getBytes();
         this.persistentFile = false;
         this.isStaticIcon = true;
-    }
-
-    public SdlFile(@NonNull String fileName, @NonNull FileType fileType, int id, boolean persistentFile){
-        this.fileName = fileName;
-        this.fileType = fileType;
-        this.id = id;
-        this.persistentFile = persistentFile;
     }
 
     public SdlFile(@NonNull String fileName, @NonNull FileType fileType, byte[] data, boolean persistentFile){
@@ -82,13 +74,6 @@ public class SdlFile{
     }
     public String getName(){
         return fileName;
-    }
-
-    public void setResourceId(int id){
-        this.id = id;
-    }
-    public int getResourceId(){
-        return id;
     }
 
     public void setFilePath(String filePath){

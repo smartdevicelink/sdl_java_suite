@@ -358,7 +358,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
     /**
      * Returns the currently set desired video streaming parameters. If there haven't been any set,
      * the default options will be returned and set for this instance.
-     * @return
+     * @return the desired video streaming parameters
      */
     public VideoStreamingParameters getDesiredVideoParams(){
         if(desiredVideoParams == null){

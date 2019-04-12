@@ -86,9 +86,9 @@ abstract class BasePermissionManager extends BaseSubManager{
 
     /**
      * Creates a new instance of the PermissionManager
-     * @param internalInterface
+     * @param internalInterface an instance of the ISdl interface that can be used for common SDL operations (sendRpc, addRpcListener, etc)
      */
-    public BasePermissionManager(@NonNull ISdl internalInterface){
+    BasePermissionManager(@NonNull ISdl internalInterface){
         super(internalInterface);
         this.currentPermissionItems = new HashMap<>();
         this.filters = new ArrayList<>();
@@ -112,8 +112,13 @@ abstract class BasePermissionManager extends BaseSubManager{
                 List<PermissionItem> permissionItems = ((OnPermissionsChange)notification).getPermissionItem();
                 Map<FunctionID, PermissionItem> previousPermissionItems = currentPermissionItems;
                 currentPermissionItems = new HashMap<>();
-                for (PermissionItem permissionItem : permissionItems) {
-                    currentPermissionItems.put(FunctionID.getEnumForString(permissionItem.getRpcName()), permissionItem);
+                if (permissionItems != null && !permissionItems.isEmpty()) {
+                    for (PermissionItem permissionItem : permissionItems) {
+                        FunctionID functionID = FunctionID.getEnumForString(permissionItem.getRpcName());
+                        if (functionID != null) {
+                            currentPermissionItems.put(functionID, permissionItem);
+                        }
+                    }
                 }
                 notifyListeners(previousPermissionItems, currentHMILevel, currentPermissionItems, currentHMILevel);
                 previousPermissionItems.clear();
