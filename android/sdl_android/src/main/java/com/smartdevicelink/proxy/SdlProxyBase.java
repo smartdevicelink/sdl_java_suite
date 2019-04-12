@@ -2098,6 +2098,36 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		try {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, message, SDL_LIB_TRACE_KEY);
 
+			//FIXME this is temporary until the next major release of the library where OK is removed
+			if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+				RPCRequest request = (RPCRequest) message;
+				if (FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+						|| FunctionID.UNSUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+						|| FunctionID.BUTTON_PRESS.toString().equals(request.getFunctionName())) {
+
+					ButtonName buttonName = (ButtonName) request.getObject(ButtonName.class, SubscribeButton.KEY_BUTTON_NAME);
+
+
+					if (rpcSpecVersion != null) {
+						if (rpcSpecVersion.getMajor() < 5) {
+
+							if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
+								request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
+							}
+						} else { //Newer than version 5.0.0
+							if (ButtonName.OK.equals(buttonName)) {
+								RPCRequest request2 = new RPCRequest(request);
+								request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
+								request2.setOnRPCResponseListener(request.getOnRPCResponseListener());
+								sendRPCMessagePrivate(request2);
+								return;
+							}
+						}
+					}
+
+				}
+			}
+
 			message.format(rpcSpecVersion,true);
 			byte[] msgBytes = JsonRPCMarshaller.marshall(message, (byte)getProtocolVersion().getMajor());
 
@@ -3848,6 +3878,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							_proxyListener.onOnButtonPress(msg);
 							onRPCNotificationReceived(msg);
 							if(onButtonPressCompat != null){
+								onRPCNotificationReceived(onButtonPressCompat);
 								_proxyListener.onOnButtonPress(onButtonPressCompat);
 							}
 						}
@@ -3856,6 +3887,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onOnButtonPress(msg);
 					onRPCNotificationReceived(msg);
 					if(onButtonPressCompat != null){
+						onRPCNotificationReceived(onButtonPressCompat);
 						_proxyListener.onOnButtonPress(onButtonPressCompat);
 					}
 				}
@@ -3874,6 +3906,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 							_proxyListener.onOnButtonEvent(msg);
 							onRPCNotificationReceived(msg);
 							if(onButtonEventCompat != null){
+								onRPCNotificationReceived(onButtonEventCompat);
 								_proxyListener.onOnButtonEvent(onButtonEventCompat);
 							}
 						}
@@ -3882,6 +3915,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onOnButtonEvent(msg);
 					onRPCNotificationReceived(msg);
 					if(onButtonEventCompat != null){
+						onRPCNotificationReceived(onButtonEventCompat);
 						_proxyListener.onOnButtonEvent(onButtonEventCompat);
 					}
 				}
@@ -4432,33 +4466,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				SdlTrace.logProxyEvent("Application attempted to send a RegisterAppInterface or UnregisterAppInterface while using ALM.", SDL_LIB_TRACE_KEY);
 				throw new SdlException("The RPCRequest, " + message.getFunctionName() +
 						", is un-allowed using the Advanced Lifecycle Management Model.", SdlExceptionCause.INCORRECT_LIFECYCLE_MODEL);
-			}
-		}
-
-		//FIXME this is temporary until the next major release of the library where OK is removed
-
-		if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
-			RPCRequest request = (RPCRequest) message;
-			if(FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
-					|| FunctionID.UNSUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
-					|| FunctionID.BUTTON_PRESS.toString().equals(request.getFunctionName())) {
-
-				ButtonName buttonName = (ButtonName) request.getObject(ButtonName.class, SubscribeButton.KEY_BUTTON_NAME);
-
-				if (rpcSpecVersion != null && rpcSpecVersion.getMajor() < 5) {
-
-					if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
-						request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
-					}
-				} else { //Newer than version 5.0.0
-					if (ButtonName.OK.equals(buttonName)) {
-						RPCRequest request2 = new RPCRequest(request);
-						request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
-						request2.setOnRPCResponseListener(request.getOnRPCResponseListener());
-						sendRPCMessagePrivate(request2);
-						return;
-					}
-				}
 			}
 		}
 
