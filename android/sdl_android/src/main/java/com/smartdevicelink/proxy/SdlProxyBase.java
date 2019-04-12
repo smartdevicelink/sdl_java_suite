@@ -2070,7 +2070,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			//FIXME this is temporary until the next major release of the library where OK is removed
 			if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
 				RPCRequest request = (RPCRequest) message;
-				if(FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+				if (FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
 						|| FunctionID.UNSUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
 						|| FunctionID.BUTTON_PRESS.toString().equals(request.getFunctionName())) {
 
