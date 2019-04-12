@@ -535,6 +535,10 @@ public class TransportBroker {
 
     }
 
+    protected int getRouterServiceVersion(){
+        return routerServiceVersion;
+    }
+
     /**
      * We want to check to see if the Router service is already up and running
      *
