@@ -67,7 +67,7 @@ public class SdlArtwork extends SdlFile {
      * Creates a new instance of SdlArtwork
      * @param fileName a String value representing the name that will be used to store the file in the head unit
      * @param fileType a FileType enum value representing the type of the file
-     * @param uri a URI value representing a file's location. Currently, it only supports local files.
+     * @param uri a URI value representing a file's location. Currently, it only supports local files
      * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
      */
     public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, Uri uri, boolean persistentFile) {
@@ -120,8 +120,8 @@ public class SdlArtwork extends SdlFile {
     }
 
     /**
-     * Gets the Image RPC representing this artwork. Generally for use internally, you should instead pass an artwork to a Screen Manager method.
-     * @return The Image RPC representing this artwork.
+     * Gets the Image RPC representing this artwork. Generally for use internally, you should instead pass an artwork to a Screen Manager method
+     * @return The Image RPC representing this artwork
      */
     public Image getImageRPC() {
         if (imageRPC == null) {

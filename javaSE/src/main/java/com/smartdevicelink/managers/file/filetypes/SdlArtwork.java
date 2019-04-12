@@ -107,7 +107,7 @@ public class SdlArtwork extends SdlFile {
     }
 
     /**
-     * Gets the Image RPC representing this artwork. Generally for use internally, you should instead pass an artwork to a Screen Manager method.
+     * Gets the Image RPC representing this artwork. Generally for use internally, you should instead pass an artwork to a Screen Manager method
      * @return The Image RPC representing this artwork.
      */
     public Image getImageRPC() {

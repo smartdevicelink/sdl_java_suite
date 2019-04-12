@@ -171,7 +171,7 @@ public class SdlFile{
     }
 
     /**
-     * Sets the the name of the static file. Static files comes pre-shipped with the head unit.
+     * Sets the the name of the static file. Static files comes pre-shipped with the head unit
      * @param staticIcon a StaticIconName enum value representing the name of a static file that comes pre-shipped with the head unit
      */
     public void setStaticIcon(boolean staticIcon) {
@@ -179,7 +179,7 @@ public class SdlFile{
     }
 
     /**
-     * Gets the the name of the static file. Static files comes pre-shipped with the head unit.
+     * Gets the the name of the static file. Static files comes pre-shipped with the head unit
      * @return a StaticIconName enum value representing the name of a static file that comes pre-shipped with the head unit
      */
     public boolean isStaticIcon() {
