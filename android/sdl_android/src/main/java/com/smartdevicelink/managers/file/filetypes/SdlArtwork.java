@@ -47,6 +47,9 @@ public class SdlArtwork extends SdlFile {
     private boolean isTemplate;
     private Image imageRPC;
 
+    /**
+     * Creates a new instance of SdlArtwork
+     */
     public SdlArtwork(){}
 
     /**

@@ -50,7 +50,9 @@ public class SdlFile{
     private boolean     persistentFile;
     private boolean     isStaticIcon;
 
-
+    /**
+     * Creates a new instance of SdlFile
+     */
     public SdlFile(){}
 
     /**
