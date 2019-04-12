@@ -2076,22 +2076,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 					ButtonName buttonName = (ButtonName) request.getObject(ButtonName.class, SubscribeButton.KEY_BUTTON_NAME);
 
-					if (rpcSpecVersion != null) {
-						if (rpcSpecVersion.getMajor() < 5) {
 
-							if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
-								request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
-							}
-						} else { //Newer than version 5.0.0
-							if (ButtonName.OK.equals(buttonName)) {
-								RPCRequest request2 = new RPCRequest(request);
-								request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
-								request2.setOnRPCResponseListener(request.getOnRPCResponseListener());
-								sendRPCMessagePrivate(request2);
-								return;
-							}
+					if (rpcSpecVersion.getMajor() < 5) {
+
+						if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
+							request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
+						}
+					} else { //Newer than version 5.0.0
+						if (ButtonName.OK.equals(buttonName)) {
+							RPCRequest request2 = new RPCRequest(request);
+							request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
+							request2.setOnRPCResponseListener(request.getOnRPCResponseListener());
+							sendRPCMessagePrivate(request2);
+							return;
 						}
 					}
+
 				}
 			}
 
