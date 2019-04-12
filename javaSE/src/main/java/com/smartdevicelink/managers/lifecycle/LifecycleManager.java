@@ -642,34 +642,33 @@ public class LifecycleManager extends BaseLifecycleManager {
 
 
     private void sendRPCMessagePrivate(RPCMessage message){
-        //FIXME this is temporary until the next major release of the library where OK is removed
-        if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
-            RPCRequest request = (RPCRequest) message;
-            if(FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
-                    || FunctionID.UNSUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
-                    || FunctionID.BUTTON_PRESS.toString().equals(request.getFunctionName())) {
+        try {
+            //FIXME this is temporary until the next major release of the library where OK is removed
+            if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+                RPCRequest request = (RPCRequest) message;
+                if(FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+                        || FunctionID.UNSUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+                        || FunctionID.BUTTON_PRESS.toString().equals(request.getFunctionName())) {
 
-                ButtonName buttonName = (ButtonName) request.getObject(ButtonName.class, SubscribeButton.KEY_BUTTON_NAME);
+                    ButtonName buttonName = (ButtonName) request.getObject(ButtonName.class, SubscribeButton.KEY_BUTTON_NAME);
 
-                if (rpcSpecVersion != null && rpcSpecVersion.getMajor() < 5) {
+                    if (rpcSpecVersion != null && rpcSpecVersion.getMajor() < 5) {
 
-                    if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
-                        request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
-                    }
-                } else { //Newer than version 5.0.0
-                    if (ButtonName.OK.equals(buttonName)) {
-                        RPCRequest request2 = new RPCRequest(request);
-                        request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
-                        request2.setOnRPCResponseListener(request.getOnRPCResponseListener());
-                        sendRPCMessagePrivate(request2);
-                        return;
+                        if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
+                            request.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.OK);
+                        }
+                    } else { //Newer than version 5.0.0
+                        if (ButtonName.OK.equals(buttonName)) {
+                            RPCRequest request2 = new RPCRequest(request);
+                            request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
+                            request2.setOnRPCResponseListener(request.getOnRPCResponseListener());
+                            sendRPCMessagePrivate(request2);
+                            return;
+                        }
                     }
                 }
             }
-        }
 
-
-        try {
 
             message.format(rpcSpecVersion,true);
             byte[] msgBytes = JsonRPCMarshaller.marshall(message, (byte)getProtocolVersion().getMajor());
