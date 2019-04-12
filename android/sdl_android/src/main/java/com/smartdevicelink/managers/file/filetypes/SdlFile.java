@@ -39,7 +39,7 @@ public class SdlFile{
      * Creates a new instance of SdlFile
      * @param fileName a String value representing the name that will be used to store the file in the head unit
      * @param fileType a FileType enum value representing the type of the file
-     * @param uri a URI value representing files location. Currently, it only supports local files.
+     * @param uri a URI value representing a file's location. Currently, it only supports local files.
      * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
      */
     public SdlFile(@NonNull String fileName, @NonNull FileType fileType, Uri uri, boolean persistentFile){
@@ -108,7 +108,7 @@ public class SdlFile{
 
     /**
      * Sets the uri of the file
-     * @param uri a URI value representing files location. Currently, it only supports local files.
+     * @param uri a URI value representing a file's location. Currently, it only supports local files.
      */
     public void setUri(Uri uri){
         this.uri = uri;
@@ -116,7 +116,7 @@ public class SdlFile{
 
     /**
      * Gets the uri of the file
-     * @return a URI value representing files location. Currently, it only supports local files.
+     * @return a URI value representing a file's location. Currently, it only supports local files.
      */
     public Uri getUri(){
         return uri;
