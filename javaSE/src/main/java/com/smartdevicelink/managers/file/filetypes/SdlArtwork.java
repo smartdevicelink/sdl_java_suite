@@ -44,22 +44,43 @@ public class SdlArtwork extends SdlFile {
     private boolean isTemplate;
     private Image imageRPC;
 
+    /**
+     * Creates a new instance of SdlArtwork
+     */
     public SdlArtwork(){}
 
-    public SdlArtwork(@NonNull StaticIconName staticIconName) {
-        super(staticIconName);
-    }
-
+    /**
+     * Creates a new instance of SdlArtwork
+     * @param fileName a String value representing the name that will be used to store the file in the head unit
+     * @param fileType a FileType enum value representing the type of the file
+     * @param filePath a String value representing the the location of the file
+     * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
+     */
     public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, String filePath, boolean persistentFile) {
         super(fileName, fileType, filePath, persistentFile);
     }
 
+    /**
+     * Creates a new instance of SdlArtwork
+     * @param fileName a String value representing the name that will be used to store the file in the head unit
+     * @param fileType a FileType enum value representing the type of the file
+     * @param data a byte array representing the data of the file
+     * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
+     */
     public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, byte[] data, boolean persistentFile) {
         super(fileName, fileType, data, persistentFile);
     }
 
     /**
-     * Set whether this SdlArtwork is a template image whose coloring should be decided by the HMI
+     * Creates a new instance of SdlArtwork
+     * @param staticIconName a StaticIconName enum value representing the name of a static file that comes pre-shipped with the head unit
+     */
+    public SdlArtwork(@NonNull StaticIconName staticIconName) {
+        super(staticIconName);
+    }
+
+    /**
+     * Sets whether this SdlArtwork is a template image whose coloring should be decided by the HMI
      * @param isTemplate boolean that tells whether this SdlArtwork is a template image
      */
     public void setTemplateImage(boolean isTemplate){
@@ -67,7 +88,7 @@ public class SdlArtwork extends SdlFile {
     }
 
     /**
-     * Get whether this SdlArtwork is a template image whose coloring should be decided by the HMI
+     * Gets whether this SdlArtwork is a template image whose coloring should be decided by the HMI
      * @return boolean that tells whether this SdlArtwork is a template image
      */
     public boolean isTemplateImage(){
@@ -86,7 +107,7 @@ public class SdlArtwork extends SdlFile {
     }
 
     /**
-     * Get the Image RPC representing this artwork. Generally for use internally, you should instead pass an artwork to a Screen Manager method.
+     * Gets the Image RPC representing this artwork. Generally for use internally, you should instead pass an artwork to a Screen Manager method
      * @return The Image RPC representing this artwork.
      */
     public Image getImageRPC() {

@@ -50,9 +50,18 @@ public class SdlFile{
     private boolean     persistentFile;
     private boolean     isStaticIcon;
 
-
+    /**
+     * Creates a new instance of SdlFile
+     */
     public SdlFile(){}
 
+    /**
+     * Creates a new instance of SdlFile
+     * @param fileName a String value representing the name that will be used to store the file in the head unit
+     * @param fileType a FileType enum value representing the type of the file
+     * @param id an int value representing the android resource id of the file
+     * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
+     */
     public SdlFile(@NonNull String fileName, @NonNull FileType fileType, int id, boolean persistentFile){
         this.fileName = fileName;
         this.fileType = fileType;
@@ -60,6 +69,13 @@ public class SdlFile{
         this.persistentFile = persistentFile;
     }
 
+    /**
+     * Creates a new instance of SdlFile
+     * @param fileName a String value representing the name that will be used to store the file in the head unit
+     * @param fileType a FileType enum value representing the type of the file
+     * @param uri a URI value representing a file's location. Currently, it only supports local files
+     * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
+     */
     public SdlFile(@NonNull String fileName, @NonNull FileType fileType, Uri uri, boolean persistentFile){
         this.fileName = fileName;
         this.fileType = fileType;
@@ -67,6 +83,13 @@ public class SdlFile{
         this.persistentFile = persistentFile;
     }
 
+    /**
+     * Creates a new instance of SdlFile
+     * @param fileName a String value representing the name that will be used to store the file in the head unit
+     * @param fileType a FileType enum value representing the type of the file
+     * @param data a byte array representing the data of the file
+     * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
+     */
     public SdlFile(@NonNull String fileName, @NonNull FileType fileType, byte[] data, boolean persistentFile){
         this.fileName = fileName;
         this.fileType = fileType;
@@ -74,6 +97,10 @@ public class SdlFile{
         this.persistentFile = persistentFile;
     }
 
+    /**
+     * Creates a new instance of SdlFile
+     * @param staticIconName a StaticIconName enum value representing the name of a static file that comes pre-shipped with the head unit
+     */
     public SdlFile(@NonNull StaticIconName staticIconName){
         this.fileName = staticIconName.toString();
         this.fileData = staticIconName.toString().getBytes();
@@ -81,51 +108,114 @@ public class SdlFile{
         this.isStaticIcon = true;
     }
 
+    /**
+     * Sets the name of the file
+     * @param fileName a String value representing the name that will be used to store the file in the head unit
+     */
     public void setName(@NonNull String fileName){
         this.fileName = fileName;
     }
+
+    /**
+     * Gets the name of the file
+     * @return a String value representing the name that will be used to store the file in the head unit
+     */
     public String getName(){
         return fileName;
     }
 
+    /**
+     * Sets the resource ID of the file
+     * @param id an int value representing the android resource id of the file
+     */
     public void setResourceId(int id){
         this.id = id;
     }
+
+    /**
+     * Gets the resource id of the file
+     * @return an int value representing the android resource id of the file
+     */
     public int getResourceId(){
         return id;
     }
 
+    /**
+     * Sets the uri of the file
+     * @param uri a URI value representing a file's location. Currently, it only supports local files
+     */
     public void setUri(Uri uri){
         this.uri = uri;
     }
+
+    /**
+     * Gets the uri of the file
+     * @return a URI value representing a file's location. Currently, it only supports local files
+     */
     public Uri getUri(){
         return uri;
     }
 
+    /**
+     * Sets the byte array that represents the content of the file
+     * @param data a byte array representing the data of the file
+     */
     public void setFileData(byte[] data){
         this.fileData = data;
     }
+
+    /**
+     * Gets the byte array that represents the content of the file
+     * @return a byte array representing the data of the file
+     */
     public byte[] getFileData(){
         return fileData;
     }
 
+    /**
+     * Sets the type of the file
+     * @param fileType a FileType enum value representing the type of the file
+     */
     public void setType(@NonNull FileType fileType){
         this.fileType = fileType;
     }
+
+    /**
+     * Gets the type of the file
+     * @return a FileType enum value representing the type of the file
+     */
     public FileType getType(){
         return fileType;
     }
 
+    /**
+     * Sets whether the file should persist between sessions / ignition cycles
+     * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
+     */
     public void setPersistent(boolean persistentFile){
         this.persistentFile = persistentFile;
     }
+
+    /**
+     * Gets whether the file should persist between sessions / ignition cycles
+     * @return a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
+     */
     public boolean isPersistent(){
         return this.persistentFile;
     }
 
+    /**
+     * Sets the the name of the static file. Static files comes pre-shipped with the head unit
+     * @param staticIcon a StaticIconName enum value representing the name of a static file that comes pre-shipped with the head unit
+     */
     public void setStaticIcon(boolean staticIcon) {
         isStaticIcon = staticIcon;
     }
+
+    /**
+     * Gets the the name of the static file. Static files comes pre-shipped with the head unit
+     * @return a StaticIconName enum value representing the name of a static file that comes pre-shipped with the head unit
+     */
     public boolean isStaticIcon() {
         return isStaticIcon;
     }
