@@ -1,0 +1,1 @@
+../../../../../../../base/src/main/java/com/smartdevicelink/transport/BaseTransportConfig.java
