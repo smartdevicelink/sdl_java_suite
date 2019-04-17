@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/smartdevicelink/sdl_android.svg?branch=master)](https://travis-ci.org/smartdevicelink/sdl_android)
-[![codecov](https://codecov.io/gh/smartdevicelink/sdl_android/branch/master/graph/badge.svg)](https://codecov.io/gh/smartdevicelink/sdl_android)
+[![Build Status](https://travis-ci.org/smartdevicelink/sdl_android.svg?branch=master)](https://travis-ci.org/smartdevicelink/sdl_java_suite)
+[![codecov](https://codecov.io/gh/smartdevicelink/sdl_android/branch/master/graph/badge.svg)](https://codecov.io/gh/smartdevicelink/sdl_java_suite)
 [![Slack Status](http://sdlslack.herokuapp.com/badge.svg)](http://slack.smartdevicelink.com)
-[ ![Download](https://api.bintray.com/packages/smartdevicelink/sdl_android/sdl_android/images/download.svg) ](https://bintray.com/smartdevicelink/sdl_android/sdl_android/_latestVersion)
+
 # SmartDeviceLink (SDL)
 
 SmartDeviceLink (SDL) is a standard set of protocols and messages that connect applications on a smartphone to a vehicle head unit. This messaging enables a consumer to interact with their application using common in-vehicle interfaces such as a touch screen display, embedded voice recognition, steering wheel controls and various vehicle knobs and buttons. There are three main components that make up the SDL ecosystem.
@@ -24,6 +24,7 @@ The client libraries component of SDL is meant to run on the end user’s smart-
 # SmartDeviceLink Java Suite
 
 ## SmartDeviceLink Android
+[ ![Download Android](https://api.bintray.com/packages/smartdevicelink/sdl_android/sdl_android/images/download.svg) ](https://bintray.com/smartdevicelink/sdl_android/sdl_android/_latestVersion)
 
 We're still working on creating documentation for each of these individual repositories, but in the meantime, you can find more information about SmartDeviceLink [here](https://smartdevicelink.com)
 
@@ -65,6 +66,8 @@ Developers using Proguard to shrink and obfuscate their code should be sure to i
 
 ### JavaSE
 
+[ ![Download JavaSE](https://api.bintray.com/packages/smartdevicelink/sdl_java_se/sdl_java_se/images/download.svg) ](https://bintray.com/smartdevicelink/sdl_java_se/sdl_java_se/_latestVersion)
+
 The JavaSE project is meant to allow SDL compatibility for embedded applications. 
 
 #### Dependency Managers
@@ -81,6 +84,8 @@ dependencies {
 ```
 
 ### JavaEE
+
+[ ![Download JavaEE](https://api.bintray.com/packages/smartdevicelink/sdl_java_ee/sdl_java_ee/images/download.svg) ](https://bintray.com/smartdevicelink/sdl_java_ee/sdl_java_ee/_latestVersion)
 
 The JavaEE project is meant to allow SDL compatibility for web applications. 
 
