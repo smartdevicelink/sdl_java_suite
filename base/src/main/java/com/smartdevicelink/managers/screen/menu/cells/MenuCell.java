@@ -233,7 +233,7 @@ public class MenuCell {
 	 * @return a String description of the cell object
 	 */
 	public String getDescription(){
-		return "MenuCell: ID: "+cellId+ " title: "+ title + " ArtworkName: "+
+		return "MenuCell - ID: "+cellId+ " title: "+ title + " ArtworkName: "+
 				icon.getName() + " VoiceCommands: "+ voiceCommands.size() +  " isSubCell: " + (parentCellId != Integer.MAX_VALUE ? "YES":"NO")+
 				" hasSubCells: "+ (subCells.size() > 0 ? "YES":"NO");
 	}

@@ -32,11 +32,31 @@
 
 package com.smartdevicelink.managers.screen.menu.cells;
 
+import android.content.Context;
+
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+
+import static org.mockito.Mockito.mock;
 
 
 public class MenuCellTests extends AndroidTestCase2 {
 
+	private MenuCell MenuCell;
 
+	@Override
+	public void setUp() throws Exception{
+		super.setUp();
+
+		ISdl internalInterface = mock(ISdl.class);
+
+		Context context =  getContext();
+
+	}
+
+	@Override
+	public void tearDown() throws Exception {
+		super.tearDown();
+	}
 
 }
