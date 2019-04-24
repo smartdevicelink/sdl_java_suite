@@ -32,31 +32,62 @@
 
 package com.smartdevicelink.managers.screen.menu.cells;
 
-import android.content.Context;
-
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.proxy.interfaces.ISdl;
-
-import static org.mockito.Mockito.mock;
+import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
+import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
+import com.smartdevicelink.test.Test;
 
 
 public class MenuCellTests extends AndroidTestCase2 {
 
-	private MenuCell MenuCell;
+	private MenuSelectionListener menuSelectionListener = new MenuSelectionListener() {
+		@Override
+		public void onTriggered(TriggerSource trigger) {
+			// stuff
+		}
+	};
 
 	@Override
 	public void setUp() throws Exception{
 		super.setUp();
-
-		ISdl internalInterface = mock(ISdl.class);
-
-		Context context =  getContext();
-
 	}
 
 	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
+	}
+
+	public void testSettersAndGetters(){
+
+		// set everything
+		MenuCell menuCell = new MenuCell(Test.GENERAL_STRING);
+		menuCell.setIcon(Test.GENERAL_ARTWORK);
+		menuCell.setVoiceCommands(Test.GENERAL_STRING_LIST);
+		menuCell.setSubCells(Test.GENERAL_MENUCELL_LIST);
+		menuCell.setMenuSelectionListener(menuSelectionListener);
+
+		// use getters and assert equality
+		assertEquals(menuCell.getTitle(), Test.GENERAL_STRING);
+		assertEquals(menuCell.getIcon(), Test.GENERAL_ARTWORK);
+		assertEquals(menuCell.getVoiceCommands(), Test.GENERAL_STRING_LIST);
+		assertEquals(menuCell.getSubCells(), Test.GENERAL_MENUCELL_LIST);
+		assertEquals(menuCell.getMenuSelectionListener(), menuSelectionListener);
+	}
+
+	public void testConstructors(){
+
+		// first constructor was tested in previous method, use the last two here
+
+		MenuCell menuCell2 =new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_MENUCELL_LIST);
+		assertEquals(menuCell2.getTitle(), Test.GENERAL_STRING);
+		assertEquals(menuCell2.getIcon(), Test.GENERAL_ARTWORK);
+		assertEquals(menuCell2.getSubCells(), Test.GENERAL_MENUCELL_LIST);
+
+		MenuCell menuCell3 =new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST, menuSelectionListener);
+		assertEquals(menuCell3.getTitle(), Test.GENERAL_STRING);
+		assertEquals(menuCell3.getIcon(), Test.GENERAL_ARTWORK);
+		assertEquals(menuCell3.getVoiceCommands(), Test.GENERAL_STRING_LIST);
+		assertEquals(menuCell3.getMenuSelectionListener(), menuSelectionListener);
 	}
 
 }
