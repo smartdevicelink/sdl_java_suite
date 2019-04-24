@@ -69,22 +69,24 @@ public class MenuCell {
 	private int parentCellId;
 	private int cellId;
 
-
 	// CONSTRUCTORS
 
+	/**
+	 * Creates a new MenuCell Object with just the title set.
+	 * @param title The cell's primary text
+	 */
 	public MenuCell(@NonNull String title) {
 		setTitle(title); // title is the only required param
 		setCellId(Integer.MAX_VALUE);
 		setParentCellId(Integer.MAX_VALUE);
 	}
 
-	public MenuCell(@NonNull String title, List<MenuCell> subCells) {
-		setTitle(title); // title is the only required param
-		setSubCells(subCells);
-		setCellId(Integer.MAX_VALUE);
-		setParentCellId(Integer.MAX_VALUE);
-	}
-
+	/**
+	 * Creates a new MenuCell Object with multiple parameters set
+	 * @param title The cell's primary text
+	 * @param icon The cell's image
+	 * @param subCells The sub-cells that will appear when the cell is selected
+	 */
 	public MenuCell(@NonNull String title, SdlArtwork icon, List<MenuCell> subCells) {
 		setTitle(title); // title is the only required param
 		setIcon(icon);
@@ -93,6 +95,13 @@ public class MenuCell {
 		setParentCellId(Integer.MAX_VALUE);
 	}
 
+	/**
+	 * Creates a new MenuCell Object with multiple parameters set
+	 * @param title The cell's primary text
+	 * @param icon The cell's image
+	 * @param voiceCommands Voice commands that will activate the menu cell
+	 * @param listener Calls the code that will be run when the menu cell is selected
+	 */
 	public MenuCell(@NonNull String title, SdlArtwork icon, List<String> voiceCommands, MenuSelectionListener listener) {
 		setTitle(title); // title is the only required param
 		setIcon(icon);
