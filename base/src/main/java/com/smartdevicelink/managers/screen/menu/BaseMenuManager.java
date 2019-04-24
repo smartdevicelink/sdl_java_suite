@@ -35,12 +35,13 @@ package com.smartdevicelink.managers.screen.menu;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 
 abstract class BaseMenuManager extends BaseSubManager {
 
 
-	public BaseMenuManager(@NonNull ISdl internalInterface) {
+	public BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
 		super(internalInterface);
 	}
 

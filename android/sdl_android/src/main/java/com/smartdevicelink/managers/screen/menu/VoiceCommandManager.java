@@ -32,14 +32,13 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 
-public class MenuManager extends BaseMenuManager {
+public class VoiceCommandManager extends BaseVoiceCommandManager {
 
-	public MenuManager(ISdl internalInterface, FileManager fileManager) {
+	public VoiceCommandManager(ISdl internalInterface) {
 		// setup
-		super(internalInterface, fileManager);
+		super(internalInterface);
 	}
 
 }
