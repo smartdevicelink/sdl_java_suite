@@ -72,8 +72,34 @@ public class MenuCell {
 
 	// CONSTRUCTORS
 
-	public MenuCell() {
+	public MenuCell(@NonNull String title) {
+		setTitle(title); // title is the only required param
+		setCellId(Integer.MAX_VALUE);
+		setParentCellId(Integer.MAX_VALUE);
+	}
 
+	public MenuCell(@NonNull String title, List<MenuCell> subCells) {
+		setTitle(title); // title is the only required param
+		setSubCells(subCells);
+		setCellId(Integer.MAX_VALUE);
+		setParentCellId(Integer.MAX_VALUE);
+	}
+
+	public MenuCell(@NonNull String title, SdlArtwork icon, List<MenuCell> subCells) {
+		setTitle(title); // title is the only required param
+		setIcon(icon);
+		setSubCells(subCells);
+		setCellId(Integer.MAX_VALUE);
+		setParentCellId(Integer.MAX_VALUE);
+	}
+
+	public MenuCell(@NonNull String title, SdlArtwork icon, List<String> voiceCommands, MenuSelectionListener listener) {
+		setTitle(title); // title is the only required param
+		setIcon(icon);
+		setVoiceCommands(voiceCommands);
+		setMenuSelectionListener(listener);
+		setCellId(Integer.MAX_VALUE);
+		setParentCellId(Integer.MAX_VALUE);
 	}
 
 
@@ -189,5 +215,17 @@ public class MenuCell {
 	 */
 	private int getParentCellId() {
 		return parentCellId;
+	}
+
+	// HELPER
+
+	/**
+	 * Get the description of the cell
+	 * @return a String description of the cell object
+	 */
+	public String getDescription(){
+		return "MenuCell: ID: "+cellId+ " title: "+ title + " ArtworkName: "+
+				icon.getName() + " VoiceCommands: "+ voiceCommands.size() +  " isSubCell: " + (parentCellId != Integer.MAX_VALUE ? "YES":"NO")+
+				" hasSubCells: "+ (subCells.size() > 0 ? "YES":"NO");
 	}
 }
