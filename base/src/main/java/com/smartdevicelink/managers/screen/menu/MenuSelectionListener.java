@@ -30,10 +30,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.managers.screen.menu.cells;
+package com.smartdevicelink.managers.screen.menu;
 
-public class VoiceCommand {
+import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 
+public interface MenuSelectionListener {
 
+	void onTriggered(TriggerSource trigger);
 
 }

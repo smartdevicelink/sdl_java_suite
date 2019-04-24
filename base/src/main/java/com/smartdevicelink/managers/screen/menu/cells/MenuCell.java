@@ -32,5 +32,162 @@
 
 package com.smartdevicelink.managers.screen.menu.cells;
 
+import android.support.annotation.NonNull;
+
+import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
+
+import java.util.List;
+
 public class MenuCell {
+
+	/**
+	 * The cell's text to be displayed
+	 */
+	private String title;
+
+	/**
+	 * The cell's icon to be displayed
+	 */
+	private SdlArtwork icon;
+
+	/**
+	 * The strings the user can say to activate this voice command
+	 */
+	private List<String> voiceCommands;
+
+	/**
+	 * If this is not null, this cell will be a sub-menu button, displaying the sub-cells in a menu when pressed.
+	 */
+	private List<MenuCell> subCells;
+
+	/**
+	 * The listener that will be called when the command is activated
+	 */
+	private MenuSelectionListener menuSelectionListener;
+
+	private int parentCellId;
+	private int cellId;
+
+
+	// CONSTRUCTORS
+
+	public MenuCell() {
+
+	}
+
+
+	// SETTERS / GETTERS
+
+	/**
+	 * Sets the title of the menu cell
+	 * @param title - the title of the cell. Required
+	 */
+	public void setTitle(@NonNull String title){
+		this.title = title;
+	}
+
+	/**
+	 * Gets the title of the menu cell
+	 * @return The title of the cell object
+	 */
+	public String getTitle(){
+		return title;
+	}
+
+	/**
+	 * Sets the icon of the menu cell
+	 * @param icon - the icon being set, of type {@link SdlArtwork}
+	 */
+	public void setIcon(SdlArtwork icon){
+		this.icon = icon;
+	}
+
+	/**
+	 * Gets the icon for the cell
+	 * @return the {@link SdlArtwork} icon for the cell
+	 */
+	public SdlArtwork getIcon() {
+		return icon;
+	}
+
+	/**
+	 * A list of Strings that will be used for voice commands
+	 * @param voiceCommands - the string list used by the IVI system for voice commands
+	 */
+	public void setVoiceCommands(List<String> voiceCommands) {
+		this.voiceCommands = voiceCommands;
+	}
+
+	/**
+	 * the string list used by the IVI system for voice commands
+	 * @return The String List used by the menu cell object for voice commands
+	 */
+	public List<String> getVoiceCommands() {
+		return voiceCommands;
+	}
+
+	/**
+	 * The list of MenuCells that can be set as subCells
+	 * @param subCells - the list of subCells for this menu item
+	 */
+	public void setSubCells(List<MenuCell> subCells) {
+		this.subCells = subCells;
+	}
+
+	/**
+	 * The list of subCells for this menu item
+	 * @return a list of MenuCells that are the subCells for this menu item
+	 */
+	public List<MenuCell> getSubCells() {
+		return subCells;
+	}
+
+	/**
+	 * The listener for when a menu item is selected
+	 * @param menuSelectionListener the listener for this menuCell object
+	 */
+	public void setMenuSelectionListener(MenuSelectionListener menuSelectionListener) {
+		this.menuSelectionListener = menuSelectionListener;
+	}
+
+	/**
+	 * The listener that gets triggered when the menuCell object is selected
+	 * @return the MenuSelectionListener for the cell
+	 */
+	public MenuSelectionListener getMenuSelectionListener() {
+		return menuSelectionListener;
+	}
+
+	/**
+	 * Set the cell Id
+	 * @param cellId - the cell Id
+	 */
+	private void setCellId(int cellId) {
+		this.cellId = cellId;
+	}
+
+	/**
+	 * Get the cellId
+	 * @return the cellId for this menuCell
+	 */
+	private int getCellId() {
+		return cellId;
+	}
+
+	/**
+	 * Sets the ParentCellId
+	 * @param parentCellId the parent cell's Id
+	 */
+	private void setParentCellId(int parentCellId) {
+		this.parentCellId = parentCellId;
+	}
+
+	/**
+	 * Get the parent cell's Id
+	 * @return the parent cell's Id
+	 */
+	private int getParentCellId() {
+		return parentCellId;
+	}
 }
