@@ -32,8 +32,60 @@
 
 package com.smartdevicelink.managers.screen.menu.cells;
 
+import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
+
+import java.util.List;
+
 public class VoiceCommand {
 
+	/**
+	 * The strings the user can say to activate this voice command
+	 */
+	private List<String> voiceCommands;
 
+	/**
+	 * The listener that will be called when the command is activated
+	 */
+	private VoiceCommandSelectionListener voiceCommandSelectionListener;
 
+	// CONSTRUCTOR(S)
+
+	public VoiceCommand(List<String> voiceCommands, VoiceCommandSelectionListener voiceCommandSelectionListener){
+		setVoiceCommands(voiceCommands);
+		setVoiceCommandSelectionListener(voiceCommandSelectionListener);
+	}
+
+	// SETTERS / GETTERS
+
+	/**
+	 * The strings the user can say to activate this voice command
+	 * @param voiceCommands - the list of commands to send to the head unit
+	 */
+	public void setVoiceCommands(List<String> voiceCommands) {
+		this.voiceCommands = voiceCommands;
+	}
+
+	/**
+	 * The strings the user can say to activate this voice command
+	 * @return the List of voice commands
+	 */
+	public List<String> getVoiceCommands() {
+		return voiceCommands;
+	}
+
+	/**
+	 * The listener that will be called when the command is activated
+	 * @param voiceCommandSelectionListener - the listener for this object
+	 */
+	public void setVoiceCommandSelectionListener(VoiceCommandSelectionListener voiceCommandSelectionListener) {
+		this.voiceCommandSelectionListener = voiceCommandSelectionListener;
+	}
+
+	/**
+	 * The listener that will be called when the command is activated
+	 * @return voiceCommandSelectionListener - the listener for this object
+	 */
+	public VoiceCommandSelectionListener getVoiceCommandSelectionListener() {
+		return voiceCommandSelectionListener;
+	}
 }
