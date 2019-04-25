@@ -82,9 +82,21 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 		oldVoiceCommands = new ArrayList<>();
 	}
 
+	@Override
+	public void start(CompletionListener listener) {
+		transitionToState(READY);
+		super.start(listener);
+	}
+
 	// SETTERS
 
 	public void setVoiceCommands(List<VoiceCommand> voiceCommands){
+
+		// we actually need voice commands to set.
+		if (voiceCommands == null || voiceCommands.size() == 0){
+			DebugTool.logInfo("Trying to set empty list of voice commands, returning");
+			return;
+		}
 
 		// make sure hmi is not none
 		if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE){
@@ -100,6 +112,10 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 		this.voiceCommands = voiceCommands;
 
 		updateWithListener(null);
+	}
+
+	public List<VoiceCommand> getVoiceCommands(){
+		return voiceCommands;
 	}
 
 	// UPDATING SYSTEM
@@ -266,7 +282,8 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 		}
 	}
 
-	public void stop(){
+	@Override
+	public void dispose(){
 
 		lastVoiceCommandId = voiceCommandIdMin;
 		voiceCommands = null;

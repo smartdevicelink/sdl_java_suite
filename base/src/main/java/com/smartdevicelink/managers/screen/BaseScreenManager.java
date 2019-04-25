@@ -38,6 +38,8 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.screen.menu.VoiceCommandManager;
+import com.smartdevicelink.managers.screen.menu.cells.VoiceCommand;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
@@ -57,19 +59,20 @@ abstract class BaseScreenManager extends BaseSubManager {
 	private final WeakReference<FileManager> fileManager;
 	private SoftButtonManager softButtonManager;
 	private TextAndGraphicManager textAndGraphicManager;
+	private VoiceCommandManager voiceCommandManager;
 
 	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
 		@Override
 		public synchronized void onComplete(boolean success) {
-			if (softButtonManager != null && textAndGraphicManager != null) {
-				if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY) {
+			if (softButtonManager != null && textAndGraphicManager != null && voiceCommandManager != null) {
+				if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY && voiceCommandManager.getState() == BaseSubManager.READY) {
 					DebugTool.logInfo("Starting screen manager, all sub managers are in ready state");
 					transitionToState(READY);
-				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR) {
+				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR && voiceCommandManager.getState() == BaseSubManager.ERROR) {
 					Log.e(TAG, "ERROR starting screen manager, both sub managers in error state");
 					transitionToState(ERROR);
-				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP) {
+				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP || voiceCommandManager.getState() == BaseSubManager.SETTING_UP) {
 					DebugTool.logInfo("SETTING UP screen manager, one sub manager is still setting up");
 					transitionToState(SETTING_UP);
 				} else {
@@ -95,12 +98,14 @@ abstract class BaseScreenManager extends BaseSubManager {
 		super.start(listener);
 		this.softButtonManager.start(subManagerListener);
 		this.textAndGraphicManager.start(subManagerListener);
+		this.voiceCommandManager.start(subManagerListener);
 	}
 
 	private void initialize(){
 		if (fileManager.get() != null) {
 			this.softButtonManager = new SoftButtonManager(internalInterface, fileManager.get());
 			this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get(), softButtonManager);
+			this.voiceCommandManager = new VoiceCommandManager(internalInterface);
 		}
 	}
 
@@ -111,6 +116,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	public void dispose() {
 		softButtonManager.dispose();
 		textAndGraphicManager.dispose();
+		voiceCommandManager.dispose();
 		super.dispose();
 	}
 
@@ -349,6 +355,14 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 */
 	public SoftButtonObject getSoftButtonObjectById(int buttonId){
 		return softButtonManager.getSoftButtonObjectById(buttonId);
+	}
+
+	public List<VoiceCommand> getVoiceCommands(){
+		return voiceCommandManager.getVoiceCommands();
+	}
+
+	public void setVoiceCommands(List<VoiceCommand> voiceCommands){
+		this.voiceCommandManager.setVoiceCommands(voiceCommands);
 	}
 
 	/**
