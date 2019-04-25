@@ -35,11 +35,14 @@ package com.smartdevicelink.managers.screen.menu;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.screen.menu.cells.VoiceCommand;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.AddCommand;
+import com.smartdevicelink.proxy.rpc.DeleteCommand;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
@@ -82,31 +85,81 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 	public void setVoiceCommands(List<VoiceCommand> voiceCommands){
 
+		// make sure hmi is not none
+		if (currentHMILevel == null || currentHMILevel == HMILevel.HMI_NONE){
+			// Trying to send on HMI_NONE, waiting for full
+			waitingOnHMIUpdate = true;
+			return;
+		}
+
+		waitingOnHMIUpdate = false;
+		lastVoiceCommandId = voiceCommandIdMin;
+		updateIdsOnVoiceCommands(voiceCommands);
+		oldVoiceCommands = voiceCommands;
+		this.voiceCommands = voiceCommands;
+
+		updateWithListener(null);
 	}
 
 	// UPDATING SYSTEM
 
-		// update w/ listener
+	private void updateWithListener(CompletionListener listener){
+
+
+
+	}
 
 	// DELETING OLD MENU ITEMS
 
-		// deleteCurrentVoiceCommands w/ listener
+	private void sendDeleteCurrentVoiceCommands(CompletionListener listener){
+
+
+
+	}
 
 	// SEND NEW MENU ITEMS
 
-		// send current voice commands w/ listener
+	private void sendCurrentVoiceCommands(CompletionListener listener){
+
+
+
+	}
 
 	// DELETES
 
-		// deleteCommandsForVoiceCommands
+	private List<DeleteCommand> deleteCommandsForVoiceCommands(List<VoiceCommand> voiceCommands){
+		List<DeleteCommand> deleteCommandList = new ArrayList<>();
+		for (VoiceCommand command : voiceCommands){
+			DeleteCommand delete = new DeleteCommand(command.getCommandId());
+			deleteCommandList.add(delete);
+		}
+		return deleteCommandList;
+	}
 
 	// COMMANDS
 
-		// addCommandsForVoiceCommands
+	private List<AddCommand> addCommandsForVoiceCommands(List<VoiceCommand> voiceCommands){
+		List<AddCommand> addCommandList = new ArrayList<>();
+		for (VoiceCommand command : voiceCommands){
+			addCommandList.add(commandForVoiceCommand(command));
+		}
+		return addCommandList;
+	}
+
+	private AddCommand commandForVoiceCommand(VoiceCommand voiceCommand){
+		AddCommand command = new AddCommand();
+		command.setVrCommands(voiceCommand.getVoiceCommands());
+		command.setCmdID(voiceCommand.getCommandId());
+		return command;
+	}
 
 	// HELPERS
 
-		// updateIdsOnVoiceCommands
+	private void updateIdsOnVoiceCommands(List<VoiceCommand> voiceCommands){
+		for (VoiceCommand command : voiceCommands){
+			command.setCommandId(++lastVoiceCommandId);
+		}
+	}
 
 	public void stop(){
 
@@ -129,7 +182,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 	// LISTENERS
 
 	private void addListeners(){
-		
+
 		// HMI UPDATES
 		hmiListener = new OnRPCNotificationListener() {
 			@Override

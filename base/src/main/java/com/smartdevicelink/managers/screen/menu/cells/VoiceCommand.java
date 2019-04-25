@@ -48,6 +48,9 @@ public class VoiceCommand {
 	 */
 	private VoiceCommandSelectionListener voiceCommandSelectionListener;
 
+
+	private int commandId;
+
 	// CONSTRUCTOR(S)
 
 	/**
@@ -92,5 +95,31 @@ public class VoiceCommand {
 	 */
 	public VoiceCommandSelectionListener getVoiceCommandSelectionListener() {
 		return voiceCommandSelectionListener;
+	}
+
+	/**
+	 * set the command ID
+	 * @param commandId the id to identify the command
+	 */
+	public void setCommandId(int commandId) {
+		this.commandId = commandId;
+	}
+
+	/**
+	 * the id used to identify the command
+	 * @return the id
+	 */
+	public int getCommandId() {
+		return commandId;
+	}
+
+	// HELPER
+
+	/**
+	 * Get the description of the cell
+	 * @return a String description of the cell object
+	 */
+	public String getDescription(){
+		return "VOICE COMMAND - ID: "+commandId+ " First Object: "+ voiceCommands.get(0)+ " Voice Commands: "+ voiceCommands.size();
 	}
 }
