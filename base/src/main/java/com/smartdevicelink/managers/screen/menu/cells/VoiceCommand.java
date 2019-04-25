@@ -50,6 +50,11 @@ public class VoiceCommand {
 
 	// CONSTRUCTOR(S)
 
+	/**
+	 * Constructor that sets all parameters for this class
+	 * @param voiceCommands The strings the user can say to activate this voice command
+	 * @param voiceCommandSelectionListener The listener that will be called when the command is activated
+	 */
 	public VoiceCommand(List<String> voiceCommands, VoiceCommandSelectionListener voiceCommandSelectionListener){
 		setVoiceCommands(voiceCommands);
 		setVoiceCommandSelectionListener(voiceCommandSelectionListener);
