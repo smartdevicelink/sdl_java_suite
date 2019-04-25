@@ -33,8 +33,33 @@
 package com.smartdevicelink.managers.screen.menu.cells;
 
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
+import com.smartdevicelink.test.Test;
 
 public class VoiceCommandTests extends AndroidTestCase2 {
 
+	private VoiceCommandSelectionListener voiceCommandSelectionListener = new VoiceCommandSelectionListener() {
+		@Override
+		public void onVoiceCommandSelected() {
+			// Stuffs
+		}
+	};
+
+	@Override
+	public void setUp() throws Exception{
+		super.setUp();
+	}
+
+	@Override
+	public void tearDown() throws Exception {
+		super.tearDown();
+	}
+
+	public void testSettersAndGetters(){
+		VoiceCommand voiceCommand = new VoiceCommand(Test.GENERAL_STRING_LIST, voiceCommandSelectionListener);
+
+		assertEquals(voiceCommand.getVoiceCommands(), Test.GENERAL_STRING_LIST);
+		assertEquals(voiceCommand.getVoiceCommandSelectionListener(), voiceCommandSelectionListener);
+	}
 
 }
