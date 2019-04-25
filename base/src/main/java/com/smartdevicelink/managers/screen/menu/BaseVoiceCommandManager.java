@@ -78,8 +78,35 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 		oldVoiceCommands = new ArrayList<>();
 	}
 
+	// SETTERS
+
+	public void setVoiceCommands(List<VoiceCommand> voiceCommands){
+
+	}
+
+	// UPDATING SYSTEM
+
+		// update w/ listener
+
+	// DELETING OLD MENU ITEMS
+
+		// deleteCurrentVoiceCommands w/ listener
+
+	// SEND NEW MENU ITEMS
+
+		// send current voice commands w/ listener
+
+	// DELETES
+
+		// deleteCommandsForVoiceCommands
+
+	// COMMANDS
+
+		// addCommandsForVoiceCommands
 
 	// HELPERS
+
+		// updateIdsOnVoiceCommands
 
 	public void stop(){
 
@@ -102,6 +129,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 	// LISTENERS
 
 	private void addListeners(){
+		
 		// HMI UPDATES
 		hmiListener = new OnRPCNotificationListener() {
 			@Override
