@@ -45,14 +45,19 @@ import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.DeleteCommand;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.SetMediaClockTimer;
+import com.smartdevicelink.proxy.rpc.StartTime;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.smartdevicelink.proxy.rpc.SetMediaClockTimer.countUpFromStartTime;
 
 abstract class BaseVoiceCommandManager extends BaseSubManager {
 
@@ -86,6 +91,25 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 	public void start(CompletionListener listener) {
 		transitionToState(READY);
 		super.start(listener);
+	}
+
+	@Override
+	public void dispose(){
+
+		lastVoiceCommandId = voiceCommandIdMin;
+		voiceCommands = null;
+		oldVoiceCommands = null;
+
+		waitingOnHMIUpdate = false;
+		currentHMILevel = null;
+		inProgressUpdate = null;
+		hasQueuedUpdate = false;
+
+		// remove listeners
+		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
+
+		super.dispose();
 	}
 
 	// SETTERS
@@ -280,25 +304,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 		for (VoiceCommand command : voiceCommands){
 			command.setCommandId(++lastVoiceCommandId);
 		}
-	}
-
-	@Override
-	public void dispose(){
-
-		lastVoiceCommandId = voiceCommandIdMin;
-		voiceCommands = null;
-		oldVoiceCommands = null;
-
-		waitingOnHMIUpdate = false;
-		currentHMILevel = null;
-		inProgressUpdate = null;
-		hasQueuedUpdate = false;
-
-		// remove listeners
-		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
-		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
-
-		super.dispose();
 	}
 
 	// LISTENERS

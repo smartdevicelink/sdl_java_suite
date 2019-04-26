@@ -105,8 +105,8 @@ abstract class BaseScreenManager extends BaseSubManager {
 		if (fileManager.get() != null) {
 			this.softButtonManager = new SoftButtonManager(internalInterface, fileManager.get());
 			this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get(), softButtonManager);
-			this.voiceCommandManager = new VoiceCommandManager(internalInterface);
 		}
+		this.voiceCommandManager = new VoiceCommandManager(internalInterface);
 	}
 
 	/**
@@ -357,10 +357,18 @@ abstract class BaseScreenManager extends BaseSubManager {
 		return softButtonManager.getSoftButtonObjectById(buttonId);
 	}
 
+	/**
+	 * Get the currently set voice commands
+	 * @return a List of Voice Command objects
+	 */
 	public List<VoiceCommand> getVoiceCommands(){
 		return voiceCommandManager.getVoiceCommands();
 	}
 
+	/**
+	 * Set voice commands
+	 * @param voiceCommands the voice commands to be sent to the head unit
+	 */
 	public void setVoiceCommands(List<VoiceCommand> voiceCommands){
 		this.voiceCommandManager.setVoiceCommands(voiceCommands);
 	}
