@@ -87,6 +87,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	private OnRPCNotificationListener hmiListener;
 	private OnRPCNotificationListener commandListener;
+	private OnSystemCapabilityListener displayListener;
 	private DisplayCapabilities displayCapabilities;
 
 	private static final int parentIdNotFound = Integer.MAX_VALUE;
@@ -133,6 +134,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
+		internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, displayListener);
 
 		super.dispose();
 	}
@@ -207,6 +209,14 @@ abstract class BaseMenuManager extends BaseSubManager {
 			// No Artworks to be uploaded, send off
 			updateMenuWithListener(null);
 		}
+	}
+
+	/**
+	 * Returns current list of menu cells
+	 * @return a List of Currently set menu cells
+	 */
+	public List<MenuCell> getMenuCells(){
+		return menuCells;
 	}
 
 	// UPDATING SYSTEM
@@ -547,7 +557,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private void addListeners(){
 
 		// DISPLAY CAPABILITIES - via SCM
-		internalInterface.getCapability(SystemCapabilityType.DISPLAY, new OnSystemCapabilityListener() {
+		displayListener = new OnSystemCapabilityListener() {
 			@Override
 			public void onCapabilityRetrieved(Object capability) {
 				displayCapabilities = (DisplayCapabilities) capability;
@@ -557,7 +567,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 			public void onError(String info) {
 				DebugTool.logError("Unable to retrieve display capabilities: "+ info);
 			}
-		});
+		};
+		internalInterface.getCapability(SystemCapabilityType.DISPLAY, displayListener);
 
 		// HMI UPDATES
 		hmiListener = new OnRPCNotificationListener() {
