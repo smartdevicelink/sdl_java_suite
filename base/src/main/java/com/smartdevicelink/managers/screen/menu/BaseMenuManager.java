@@ -37,31 +37,40 @@ import android.support.annotation.NonNull;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
+import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.screen.menu.cells.MenuCell;
 import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.SystemCapabilityManager;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.AddSubMenu;
+import com.smartdevicelink.proxy.rpc.DeleteCommand;
+import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
-import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
-import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
+import org.json.JSONException;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 abstract class BaseMenuManager extends BaseSubManager {
 
@@ -70,7 +79,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private List<MenuCell> menuCells;
 	private List<MenuCell> waitingUpdateMenuCells;
 	private List<MenuCell> oldMenuCells;
-	private List<RPCMessage> inProgressUpdate;
+	private List<RPCRequest> inProgressUpdate;
 
 	private boolean waitingOnHMIUpdate;
 	private boolean hasQueuedUpdate;
@@ -126,6 +135,326 @@ abstract class BaseMenuManager extends BaseSubManager {
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
 
 		super.dispose();
+	}
+
+	// SETTERS
+
+	/**
+	 * Creates and sends all associated Menu RPCs
+	 * @param cells - the menu cells that are to be sent to the head unit, including their sub-cells.
+	 */
+	public void setMenuCells(List<MenuCell> cells){
+
+		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
+			// We are in NONE or the menu is in use, bail out of here
+			waitingOnHMIUpdate = true;
+			waitingUpdateMenuCells = cells;
+			return;
+		}
+
+		waitingOnHMIUpdate = false;
+
+		// HashSet order doesnt matter / does not allow duplicates
+		HashSet<String> titleCheckSet = new HashSet<>();
+		HashSet<String> allMenuVoiceCommands = new HashSet<>();
+		int voiceCommandCount = 0;
+
+		for (MenuCell cell : cells){
+			titleCheckSet.add(cell.getTitle());
+			if (cell.getVoiceCommands() != null){
+				allMenuVoiceCommands.addAll(cell.getVoiceCommands());
+				voiceCommandCount += cell.getVoiceCommands().size();
+			}
+		}
+
+		// Check for duplicate titles
+		if (titleCheckSet.size() != menuCells.size()){
+			DebugTool.logError("Not all cell titles are unique. The menu will not be set");
+			return;
+		}
+
+		// Check for duplicate voice commands
+		if (allMenuVoiceCommands.size() != voiceCommandCount){
+			DebugTool.logError("Attempted to create a menu with duplicate voice commands. Voice commands must be unique. The menu will not be set");
+			return;
+		}
+
+		// Set the IDs
+		lastMenuId = menuCellIdMin;
+		updateIdsOnMenuCells(cells, parentIdNotFound);
+
+		// Update our Lists
+		oldMenuCells = menuCells;
+		menuCells = cells;
+
+		// Upload the Artworks
+		List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(menuCells);
+
+		if (artworksToBeUploaded.size() > 0 && fileManager.get() != null){
+			fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
+				@Override
+				public void onComplete(Map<String, String> errors) {
+					if (errors != null && errors.size() > 0){
+						DebugTool.logError("Error uploading Menu Artworks: "+ errors.toString());
+					}
+
+					DebugTool.logInfo("Menu Artworks Uploaded");
+					// Now that Artworks are on the head unit, proceed
+					updateMenuWithListener(null);
+				}
+			});
+		}else{
+			// No Artworks to be uploaded, send off
+			updateMenuWithListener(null);
+		}
+	}
+
+	// UPDATING SYSTEM
+
+	private void updateMenuWithListener(final CompletionListener listener){
+
+		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
+			// We are in NONE or the menu is in use, bail out of here
+			waitingOnHMIUpdate = true;
+			waitingUpdateMenuCells = menuCells;
+			return;
+		}
+
+		if (inProgressUpdate != null && inProgressUpdate.size() > 0){
+			// there's an in-progress update so this needs to wait
+			hasQueuedUpdate = true;
+			return;
+		}
+
+		sendCurrentMenu(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				inProgressUpdate = null;
+
+				if (!success){
+					DebugTool.logError("Error Sending Current Menu");
+					if (listener != null){
+						listener.onComplete(false);
+					}
+				}
+
+				if (hasQueuedUpdate){
+					updateMenuWithListener(null);
+					hasQueuedUpdate = false;
+				}
+			}
+		});
+
+	}
+
+	// DELETE OLD MENU ITEMS
+
+	private void deleteCurrentMenu(final CompletionListener listener){
+
+		if (oldMenuCells.size() == 0) {
+			if (listener != null){
+				// technically this method is successful if there's nothing to delete
+				listener.onComplete(true);
+			}
+			return;
+		}
+
+		List<RPCRequest> deleteCommands = deleteCommandsForCells(oldMenuCells);
+		oldMenuCells.clear();
+		internalInterface.sendRequests(deleteCommands, new OnMultipleRequestListener() {
+			@Override
+			public void onUpdate(int remainingRequests) {
+
+			}
+
+			@Override
+			public void onFinished() {
+				DebugTool.logInfo("Successfully deleted all old menu commands");
+				if (listener != null){
+					listener.onComplete(true);
+				}
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				DebugTool.logError("Failed to delete all old menu commands");
+				if (listener != null){
+					listener.onComplete(false);
+				}
+			}
+
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+
+			}
+		});
+	}
+
+	// SEND NEW MENU ITEMS
+
+	private void sendCurrentMenu(final CompletionListener listener){
+
+		if (menuCells.size() == 0){
+			DebugTool.logInfo("No main menu to send, returning");
+			if (listener != null){
+				listener.onComplete(false);
+			}
+			return;
+		}
+
+		List<RPCRequest> mainMenuCommands;
+		final List<RPCRequest> subMenuCommands;
+
+		if (findAllArtworksToBeUploadedFromCells(menuCells).size() > 0 || !checkImageFields()){
+			// Send artwork-less menu
+			mainMenuCommands = mainMenuCommandsForCells(menuCells, false);
+			subMenuCommands = subMenuCommandsForCells(menuCells, false);
+		} else {
+			mainMenuCommands = mainMenuCommandsForCells(menuCells, true);
+			subMenuCommands = subMenuCommandsForCells(menuCells, true);
+		}
+
+
+		// add all built commands to inProgressUpdate
+		inProgressUpdate = mainMenuCommands;
+		inProgressUpdate.addAll(subMenuCommands);
+
+		internalInterface.sendRequests(mainMenuCommands, new OnMultipleRequestListener() {
+			@Override
+			public void onUpdate(int remainingRequests) {
+				// nothing here
+			}
+
+			@Override
+			public void onFinished() {
+
+				oldMenuCells = menuCells;
+				sendSubMenuCommands(subMenuCommands, listener);
+
+				DebugTool.logInfo("Finished sending main menu commands. Sending sub menu commands.");
+
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				DebugTool.logError("Failed to send main menu commands: "+ info);
+				if (listener != null){
+					listener.onComplete(false);
+				}
+			}
+
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				try {
+					DebugTool.logInfo("Main Menu response: "+ response.serializeJSON().toString());
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+	}
+
+	private void sendSubMenuCommands(List<RPCRequest> commands, final CompletionListener listener){
+		internalInterface.sendRequests(commands, new OnMultipleRequestListener() {
+			@Override
+			public void onUpdate(int remainingRequests) {
+
+			}
+
+			@Override
+			public void onFinished() {
+				DebugTool.logInfo("Finished Updating Menu");
+				if (listener != null){
+					listener.onComplete(true);
+				}
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				DebugTool.logError("Failed to send sub menu commands: "+ info);
+				if (listener != null){
+					listener.onComplete(false);
+				}
+			}
+
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				try {
+					DebugTool.logInfo("Sub Menu response: "+ response.serializeJSON().toString());
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	// OTHER HELPER METHODS:
+
+	// ARTWORKS
+
+	private List<SdlArtwork> findAllArtworksToBeUploadedFromCells(List<MenuCell> cells){
+		// Make sure we can use images in the menus
+		if (!checkImageFields()){
+			return new ArrayList<>();
+		}
+
+		List<SdlArtwork> artworks = new ArrayList<>();
+		for (MenuCell cell : cells){
+			if (artworkNeedsUpload(cell.getIcon())){
+				artworks.add(cell.getIcon());
+			}
+			if (cell.getSubCells().size() > 0){
+				artworks.addAll(findAllArtworksToBeUploadedFromCells(cell.getSubCells()));
+			}
+		}
+
+		return artworks;
+	}
+
+	private boolean checkImageFields(){
+		List<ImageField> imageFields = displayCapabilities.getImageFields();
+		for (ImageField field: imageFields){
+			if (field.getName().equals(ImageFieldName.cmdIcon)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean artworkNeedsUpload(SdlArtwork artwork){
+		if (fileManager.get() != null){
+			return (artwork != null && !fileManager.get().hasUploadedFile(artwork) && !artwork.isStaticIcon());
+		}
+		return false;
+	}
+
+	// IDs
+
+	private void updateIdsOnMenuCells(List<MenuCell> cells, int parentId){
+		for (MenuCell cell : cells){
+			cell.setCellId(++lastMenuId);
+			cell.setParentCellId(parentId);
+			if (cell.getSubCells().size() > 0){
+				updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
+			}
+		}
+	}
+
+	// DELETES
+
+	private List<RPCRequest> deleteCommandsForCells(List<MenuCell> cells){
+		List<RPCRequest> deletes = new ArrayList<>();
+		for (MenuCell cell : cells){
+			if (cell.getSubCells() == null){
+				DeleteCommand delete = new DeleteCommand(cell.getCellId());
+				deletes.add(delete);
+			}else{
+				DeleteSubMenu delete = new DeleteSubMenu(cell.getCellId());
+				deletes.add(delete);
+			}
+		}
+		return deletes;
 	}
 
 	// COMMANDS / SUBMENU RPCs
@@ -234,9 +563,31 @@ abstract class BaseMenuManager extends BaseSubManager {
 		hmiListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
+				OnHMIStatus hmiStatus = (OnHMIStatus) notification;
 				HMILevel oldHMILevel = currentHMILevel;
-				currentHMILevel = ((OnHMIStatus) notification).getHmiLevel();
-				// TODO
+				currentHMILevel = hmiStatus.getHmiLevel();
+
+				// Auto-send an updated menu if we were in NONE and now we are not, and we need an update
+				if (oldHMILevel.equals(HMILevel.HMI_NONE) && !currentHMILevel.equals(HMILevel.HMI_NONE) && !currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
+					if (waitingOnHMIUpdate){
+						setMenuCells(waitingUpdateMenuCells);
+						waitingUpdateMenuCells.clear();
+						return;
+					}
+				}
+
+				// If we don't check for this and only update when not in the menu, there can be IN_USE errors, especially with submenus.
+				// We also don't want to encourage changing out the menu while the user is using it for usability reasons.
+				SystemContext oldContext = currentSystemContext;
+				currentSystemContext = hmiStatus.getSystemContext();
+
+				if (oldContext.equals(SystemContext.SYSCTXT_MENU) && !currentSystemContext.equals(SystemContext.SYSCTXT_MENU) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
+					if (waitingOnHMIUpdate){
+						setMenuCells(waitingUpdateMenuCells);
+						waitingUpdateMenuCells.clear();
+						return;
+					}
+				}
 			}
 		};
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);

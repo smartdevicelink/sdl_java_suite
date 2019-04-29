@@ -195,10 +195,11 @@ public class MenuCell {
 	}
 
 	/**
-	 * Set the cell Id
+	 * Set the cell Id.
+	 * NOTE: THIS IS USED INTERNALLY ONLY, PLEASE DO NOT SET
 	 * @param cellId - the cell Id
 	 */
-	private void setCellId(int cellId) {
+	public void setCellId(int cellId) {
 		this.cellId = cellId;
 	}
 
@@ -212,6 +213,7 @@ public class MenuCell {
 
 	/**
 	 * Sets the ParentCellId
+	 * NOTE: THIS IS USED INTERNALLY ONLY, PLEASE DO NOT SET
 	 * @param parentCellId the parent cell's Id
 	 */
 	public void setParentCellId(int parentCellId) {
