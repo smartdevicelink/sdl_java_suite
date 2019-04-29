@@ -41,6 +41,7 @@ import com.smartdevicelink.managers.screen.menu.cells.MenuCell;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
@@ -125,6 +126,51 @@ abstract class BaseMenuManager extends BaseSubManager {
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
 
 		super.dispose();
+	}
+
+	// COMMANDS / SUBMENU RPCs
+
+	private List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork) {
+		List<RPCRequest> builtCommands = new ArrayList<>();
+
+		// We need the index so we will use this type of loop
+		for (int i = 0; i < cells.size(); i++) {
+			MenuCell cell = cells.get(i);
+			if (cell.getSubCells().size() > 0){
+				builtCommands.add(subMenuCommandForMenuCell(cell, shouldHaveArtwork, i));
+			}else{
+				builtCommands.add(commandForMenuCell(cell, shouldHaveArtwork, i));
+			}
+		}
+		return builtCommands;
+	}
+
+	private List<RPCRequest> subMenuCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork){
+		List<RPCRequest> builtCommands = new ArrayList<>();
+		for (MenuCell cell : cells){
+			if (cell.getSubCells().size() > 0){
+				builtCommands.addAll(allCommandsForCells(cell.getSubCells(), shouldHaveArtwork));
+			}
+		}
+		return builtCommands;
+	}
+
+	private List<RPCRequest> allCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork){
+		List<RPCRequest> builtCommands = new ArrayList<>();
+
+		// We need the index so we will use this type of loop
+		for (int i = 0; i < cells.size(); i++) {
+			MenuCell cell = cells.get(i);
+			if (cell.getSubCells().size() > 0){
+				builtCommands.add(subMenuCommandForMenuCell(cell, shouldHaveArtwork, i));
+				// recursively grab the commands for all the sub cells
+				builtCommands.addAll(allCommandsForCells(cell.getSubCells(), shouldHaveArtwork));
+			}else{
+				builtCommands.add(commandForMenuCell(cell, shouldHaveArtwork, i));
+			}
+		}
+
+		return builtCommands;
 	}
 
 	private AddCommand commandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position){
