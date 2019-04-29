@@ -41,13 +41,22 @@ import com.smartdevicelink.managers.screen.menu.cells.MenuCell;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.AddCommand;
+import com.smartdevicelink.proxy.rpc.AddSubMenu;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -68,14 +77,13 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	private OnRPCNotificationListener hmiListener;
 	private OnRPCNotificationListener commandListener;
+	private DisplayCapabilities displayCapabilities;
 
 	private static final int parentIdNotFound = Integer.MAX_VALUE;
 	private static final int menuCellIdMin = 1;
 	private int lastMenuId;
 
 	private SystemContext currentSystemContext;
-
-	private DisplayCapabilities displayCapabilities;
 
 	public BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
 
@@ -119,9 +127,62 @@ abstract class BaseMenuManager extends BaseSubManager {
 		super.dispose();
 	}
 
+	private AddCommand commandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position){
+
+		MenuParams params = new MenuParams(cell.getTitle());
+		params.setParentID(cell.getCellId() != Integer.MAX_VALUE ? cell.getParentCellId() : null);
+		params.setPosition(position);
+
+		AddCommand command = new AddCommand(cell.getCellId());
+		command.setMenuParams(params);
+		command.setVrCommands(cell.getVoiceCommands());
+		command.setCmdIcon((cell.getIcon() != null && shouldHaveArtwork) ? cell.getIcon().getImageRPC() : null);
+
+		return command;
+	}
+
+	private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position){
+		AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getTitle());
+		subMenu.setPosition(position);
+		subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon().getName() != null)) ? cell.getIcon().getImageRPC() : null);
+		return subMenu;
+	}
+
+	// CELL COMMAND HANDLING
+
+	private boolean callListenerForCells(List<MenuCell> cells, OnCommand command){
+		for (MenuCell cell : cells){
+			if (cell.getCellId() == command.getCmdID() && cell.getMenuSelectionListener() != null){
+				cell.getMenuSelectionListener().onTriggered(command.getTriggerSource());
+				return true;
+			}
+
+			if (cell.getSubCells().size() > 0){
+				// for each cell, if it has sub cells, recursively loop through those as well
+				if (callListenerForCells(cell.getSubCells(), command)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	// LISTENERS
 
 	private void addListeners(){
+
+		// DISPLAY CAPABILITIES - via SCM
+		internalInterface.getCapability(SystemCapabilityType.DISPLAY, new OnSystemCapabilityListener() {
+			@Override
+			public void onCapabilityRetrieved(Object capability) {
+				displayCapabilities = (DisplayCapabilities) capability;
+			}
+
+			@Override
+			public void onError(String info) {
+				DebugTool.logError("Unable to retrieve display capabilities: "+ info);
+			}
+		});
 
 		// HMI UPDATES
 		hmiListener = new OnRPCNotificationListener() {
@@ -129,10 +190,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			public void onNotified(RPCNotification notification) {
 				HMILevel oldHMILevel = currentHMILevel;
 				currentHMILevel = ((OnHMIStatus) notification).getHmiLevel();
-				// Auto-send an update if we were in NONE and now we are not
-				if (oldHMILevel.equals(HMILevel.HMI_NONE) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
-
-				}
+				// TODO
 			}
 		};
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -142,6 +200,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			@Override
 			public void onNotified(RPCNotification notification) {
 				OnCommand onCommand = (OnCommand) notification;
+				callListenerForCells(menuCells, onCommand);
 			}
 		};
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);

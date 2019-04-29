@@ -206,7 +206,7 @@ public class MenuCell {
 	 * Get the cellId
 	 * @return the cellId for this menuCell
 	 */
-	private int getCellId() {
+	public int getCellId() {
 		return cellId;
 	}
 
@@ -214,7 +214,7 @@ public class MenuCell {
 	 * Sets the ParentCellId
 	 * @param parentCellId the parent cell's Id
 	 */
-	private void setParentCellId(int parentCellId) {
+	public void setParentCellId(int parentCellId) {
 		this.parentCellId = parentCellId;
 	}
 
@@ -222,7 +222,7 @@ public class MenuCell {
 	 * Get the parent cell's Id
 	 * @return the parent cell's Id
 	 */
-	private int getParentCellId() {
+	public int getParentCellId() {
 		return parentCellId;
 	}
 
