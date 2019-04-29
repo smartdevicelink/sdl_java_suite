@@ -596,7 +596,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 					if (waitingOnHMIUpdate){
 						setMenuCells(waitingUpdateMenuCells);
 						waitingUpdateMenuCells.clear();
-						return;
 					}
 				}
 			}

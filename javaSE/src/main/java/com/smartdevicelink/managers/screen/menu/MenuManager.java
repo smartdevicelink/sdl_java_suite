@@ -35,6 +35,13 @@ package com.smartdevicelink.managers.screen.menu;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 
+/**
+ * <strong>MenuManager</strong> <br>
+ *
+ * Note: This class must be accessed through the ScreenManager via the SdlManager. Do not instantiate it by itself. <br>
+ *
+ * The MenuManager takes MenuCell objects and creates and sends all necessary RPCs to build out a menu
+ */
 public class MenuManager extends BaseMenuManager {
 
 	public MenuManager(ISdl internalInterface, FileManager fileManager) {
