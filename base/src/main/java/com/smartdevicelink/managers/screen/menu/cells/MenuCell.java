@@ -69,6 +69,8 @@ public class MenuCell {
 	private int parentCellId;
 	private int cellId;
 
+	private static final int MAX_ID = 2000000000;
+
 	// CONSTRUCTORS
 
 	/**
@@ -77,8 +79,8 @@ public class MenuCell {
 	 */
 	public MenuCell(@NonNull String title) {
 		setTitle(title); // title is the only required param
-		setCellId(Integer.MAX_VALUE);
-		setParentCellId(Integer.MAX_VALUE);
+		setCellId(MAX_ID);
+		setParentCellId(MAX_ID);
 	}
 
 	/**
@@ -91,8 +93,8 @@ public class MenuCell {
 		setTitle(title); // title is the only required param
 		setIcon(icon);
 		setSubCells(subCells);
-		setCellId(Integer.MAX_VALUE);
-		setParentCellId(Integer.MAX_VALUE);
+		setCellId(MAX_ID);
+		setParentCellId(MAX_ID);
 	}
 
 	/**
@@ -107,8 +109,8 @@ public class MenuCell {
 		setIcon(icon);
 		setVoiceCommands(voiceCommands);
 		setMenuSelectionListener(listener);
-		setCellId(Integer.MAX_VALUE);
-		setParentCellId(Integer.MAX_VALUE);
+		setCellId(MAX_ID);
+		setParentCellId(MAX_ID);
 	}
 
 

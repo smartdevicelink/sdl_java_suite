@@ -15,6 +15,8 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
+import com.smartdevicelink.managers.screen.menu.cells.MenuCell;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.TTSChunkFactory;
@@ -26,12 +28,14 @@ import com.smartdevicelink.proxy.rpc.Speak;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.util.DebugTool;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Vector;
 
@@ -56,8 +60,8 @@ public class SdlService extends Service {
 	// TCP/IP transport config
 	// The default port is 12345
 	// The IP is of the machine that is running SDL Core
-	private static final int TCP_PORT = 12345;
-	private static final String DEV_MACHINE_IP_ADDRESS = "192.168.1.78";
+	private static final int TCP_PORT = 16865;
+	private static final String DEV_MACHINE_IP_ADDRESS = "m.sdl.tools";
 
 	// variable to create and call functions of the SyncProxy
 	private SdlManager sdlManager = null;
@@ -159,28 +163,13 @@ public class SdlService extends Service {
 						public void onNotified(RPCNotification notification) {
 							OnHMIStatus status = (OnHMIStatus) notification;
 							if (status.getHmiLevel() == HMILevel.HMI_FULL && ((OnHMIStatus) notification).getFirstRun()) {
-								sendCommands();
+								sendMenu();
 								performWelcomeSpeak();
 								performWelcomeShow();
 							}
 						}
 					});
 
-					// Menu Selected Listener
-					sdlManager.addOnRPCNotificationListener(FunctionID.ON_COMMAND, new OnRPCNotificationListener() {
-						@Override
-						public void onNotified(RPCNotification notification) {
-							OnCommand command = (OnCommand) notification;
-							Integer id = command.getCmdID();
-							if(id != null){
-								switch(id){
-									case TEST_COMMAND_ID:
-										showTest();
-										break;
-								}
-							}
-						}
-					});
 				}
 
 				@Override
@@ -207,16 +196,50 @@ public class SdlService extends Service {
 	}
 
 	/**
-	 *  Add commands for the app on SDL.
+	 *  Setup Menu
 	 */
-	private void sendCommands(){
-		AddCommand command = new AddCommand();
-		MenuParams params = new MenuParams();
-		params.setMenuName(TEST_COMMAND_NAME);
-		command.setCmdID(TEST_COMMAND_ID);
-		command.setMenuParams(params);
-		command.setVrCommands(Collections.singletonList(TEST_COMMAND_NAME));
-		sdlManager.sendRPC(command);
+	private void sendMenu(){
+
+		// First Menu Item
+		MenuCell mainCell1 = new MenuCell("Test Cell 1");
+		mainCell1.setMenuSelectionListener(new MenuSelectionListener() {
+			@Override
+			public void onTriggered(TriggerSource trigger) {
+				Log.i("MENU", "Test cell 1 triggered");
+			}
+		});
+
+		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1));
+
+		// Second Menu Item w/ 2 sub cells
+		MenuCell subCell1 = new MenuCell("Sub 1");
+		subCell1.setMenuSelectionListener(new MenuSelectionListener() {
+			@Override
+			public void onTriggered(TriggerSource trigger) {
+				Log.i("MENU", "Sub cell 1 triggered");
+			}
+		});
+		MenuCell subCell2 = new MenuCell("Sub 2");
+		subCell2.setMenuSelectionListener(new MenuSelectionListener() {
+			@Override
+			public void onTriggered(TriggerSource trigger) {
+				Log.i("MENU", "Sub cell 2 triggered");
+			}
+		});
+		// This goes to sub menu, no listener on it
+		MenuCell mainCell2 = new MenuCell("Test Cell 2", null, Arrays.asList(subCell1, subCell2));
+
+		// Third Menu Item
+		MenuCell mainCell3 = new MenuCell("Test Cell 3");
+		mainCell3.setMenuSelectionListener(new MenuSelectionListener() {
+			@Override
+			public void onTriggered(TriggerSource trigger) {
+				Log.i("MENU", "Main cell 3 triggered");
+			}
+		});
+
+		// create cell list and create menu
+		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3));
 	}
 
 	/**

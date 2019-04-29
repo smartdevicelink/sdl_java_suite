@@ -33,6 +33,7 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -90,7 +91,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private OnSystemCapabilityListener displayListener;
 	private DisplayCapabilities displayCapabilities;
 
-	private static final int parentIdNotFound = Integer.MAX_VALUE;
+	private static final int MAX_ID = 2000000000;
+	private static final int parentIdNotFound = MAX_ID;
 	private static final int menuCellIdMin = 1;
 	private int lastMenuId;
 
@@ -102,6 +104,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 		// Set up some Vars
 		this.fileManager = new WeakReference<>(fileManager);
+		currentSystemContext = SystemContext.SYSCTXT_MAIN;
+		currentHMILevel = HMILevel.HMI_NONE;
 		menuCells = new ArrayList<>();
 		oldMenuCells = new ArrayList<>();
 		waitingUpdateMenuCells = new ArrayList<>();
@@ -155,13 +159,14 @@ abstract class BaseMenuManager extends BaseSubManager {
 		}
 
 		waitingOnHMIUpdate = false;
+		this.menuCells = new ArrayList<>(cells);
 
 		// HashSet order doesnt matter / does not allow duplicates
 		HashSet<String> titleCheckSet = new HashSet<>();
 		HashSet<String> allMenuVoiceCommands = new HashSet<>();
 		int voiceCommandCount = 0;
 
-		for (MenuCell cell : cells){
+		for (MenuCell cell : this.menuCells){
 			titleCheckSet.add(cell.getTitle());
 			if (cell.getVoiceCommands() != null){
 				allMenuVoiceCommands.addAll(cell.getVoiceCommands());
@@ -170,7 +175,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		}
 
 		// Check for duplicate titles
-		if (titleCheckSet.size() != menuCells.size()){
+		if (titleCheckSet.size() != this.menuCells.size()){
 			DebugTool.logError("Not all cell titles are unique. The menu will not be set");
 			return;
 		}
@@ -183,14 +188,13 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 		// Set the IDs
 		lastMenuId = menuCellIdMin;
-		updateIdsOnMenuCells(cells, parentIdNotFound);
+		updateIdsOnMenuCells(this.menuCells, parentIdNotFound);
 
 		// Update our Lists
-		oldMenuCells = menuCells;
-		menuCells = cells;
+		this.oldMenuCells = new ArrayList<>(menuCells);
 
 		// Upload the Artworks
-		List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(menuCells);
+		List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(this.menuCells);
 
 		if (artworksToBeUploaded.size() > 0 && fileManager.get() != null){
 			fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
@@ -236,25 +240,29 @@ abstract class BaseMenuManager extends BaseSubManager {
 			return;
 		}
 
-		sendCurrentMenu(new CompletionListener() {
+		deleteCurrentMenu(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
-				inProgressUpdate = null;
+				sendCurrentMenu(new CompletionListener() {
+					@Override
+					public void onComplete(boolean success) {
+						inProgressUpdate = null;
 
-				if (!success){
-					DebugTool.logError("Error Sending Current Menu");
-					if (listener != null){
-						listener.onComplete(false);
+						if (!success){
+							DebugTool.logError("Error Sending Current Menu");
+							if (listener != null){
+								listener.onComplete(false);
+							}
+						}
+
+						if (hasQueuedUpdate){
+							updateMenuWithListener(null);
+							hasQueuedUpdate = false;
+						}
 					}
-				}
-
-				if (hasQueuedUpdate){
-					updateMenuWithListener(null);
-					hasQueuedUpdate = false;
-				}
+				});
 			}
 		});
-
 	}
 
 	// DELETE OLD MENU ITEMS
@@ -270,7 +278,9 @@ abstract class BaseMenuManager extends BaseSubManager {
 		}
 
 		List<RPCRequest> deleteCommands = deleteCommandsForCells(oldMenuCells);
-		oldMenuCells.clear();
+		if (oldMenuCells != null && oldMenuCells.size() > 0) {
+			oldMenuCells.clear();
+		}
 		internalInterface.sendRequests(deleteCommands, new OnMultipleRequestListener() {
 			@Override
 			public void onUpdate(int remainingRequests) {
@@ -287,10 +297,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				DebugTool.logError("Failed to delete all old menu commands");
-				if (listener != null){
-					listener.onComplete(false);
-				}
+
 			}
 
 			@Override
@@ -347,10 +354,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				DebugTool.logError("Failed to send main menu commands: "+ info);
-				if (listener != null){
-					listener.onComplete(false);
-				}
+
 			}
 
 			@Override
@@ -414,7 +418,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			if (artworkNeedsUpload(cell.getIcon())){
 				artworks.add(cell.getIcon());
 			}
-			if (cell.getSubCells().size() > 0){
+			if (cell.getSubCells() != null && cell.getSubCells().size() > 0){
 				artworks.addAll(findAllArtworksToBeUploadedFromCells(cell.getSubCells()));
 			}
 		}
@@ -423,10 +427,12 @@ abstract class BaseMenuManager extends BaseSubManager {
 	}
 
 	private boolean checkImageFields(){
-		List<ImageField> imageFields = displayCapabilities.getImageFields();
-		for (ImageField field: imageFields){
-			if (field.getName().equals(ImageFieldName.cmdIcon)){
-				return true;
+		if (displayCapabilities != null && displayCapabilities.getImageFields() != null) {
+			List<ImageField> imageFields = displayCapabilities.getImageFields();
+			for (ImageField field : imageFields) {
+				if (field.getName().equals(ImageFieldName.cmdIcon)) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -445,7 +451,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		for (MenuCell cell : cells){
 			cell.setCellId(++lastMenuId);
 			cell.setParentCellId(parentId);
-			if (cell.getSubCells().size() > 0){
+			if (cell.getSubCells() != null && cell.getSubCells().size() > 0){
 				updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
 			}
 		}
@@ -475,7 +481,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		// We need the index so we will use this type of loop
 		for (int i = 0; i < cells.size(); i++) {
 			MenuCell cell = cells.get(i);
-			if (cell.getSubCells().size() > 0){
+			if (cell.getSubCells() != null && cell.getSubCells().size() > 0){
 				builtCommands.add(subMenuCommandForMenuCell(cell, shouldHaveArtwork, i));
 			}else{
 				builtCommands.add(commandForMenuCell(cell, shouldHaveArtwork, i));
@@ -487,7 +493,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private List<RPCRequest> subMenuCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork){
 		List<RPCRequest> builtCommands = new ArrayList<>();
 		for (MenuCell cell : cells){
-			if (cell.getSubCells().size() > 0){
+			if (cell.getSubCells() != null && cell.getSubCells().size() > 0){
 				builtCommands.addAll(allCommandsForCells(cell.getSubCells(), shouldHaveArtwork));
 			}
 		}
@@ -500,7 +506,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		// We need the index so we will use this type of loop
 		for (int i = 0; i < cells.size(); i++) {
 			MenuCell cell = cells.get(i);
-			if (cell.getSubCells().size() > 0){
+			if (cell.getSubCells() != null && cell.getSubCells().size() > 0){
 				builtCommands.add(subMenuCommandForMenuCell(cell, shouldHaveArtwork, i));
 				// recursively grab the commands for all the sub cells
 				builtCommands.addAll(allCommandsForCells(cell.getSubCells(), shouldHaveArtwork));
@@ -515,7 +521,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private AddCommand commandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position){
 
 		MenuParams params = new MenuParams(cell.getTitle());
-		params.setParentID(cell.getCellId() != Integer.MAX_VALUE ? cell.getParentCellId() : null);
+		params.setParentID(cell.getParentCellId() != MAX_ID ? cell.getParentCellId() : 0);
 		params.setPosition(position);
 
 		AddCommand command = new AddCommand(cell.getCellId());
@@ -542,7 +548,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				return true;
 			}
 
-			if (cell.getSubCells().size() > 0){
+			if (cell.getSubCells() != null && cell.getSubCells().size() > 0){
 				// for each cell, if it has sub cells, recursively loop through those as well
 				if (callListenerForCells(cell.getSubCells(), command)) {
 					return true;
@@ -561,6 +567,12 @@ abstract class BaseMenuManager extends BaseSubManager {
 			@Override
 			public void onCapabilityRetrieved(Object capability) {
 				displayCapabilities = (DisplayCapabilities) capability;
+				try {
+					// TODO REMOVE
+					Log.i("MENU CAPS", "DISP CAP: "+ displayCapabilities.serializeJSON().toString());
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
 
 			@Override

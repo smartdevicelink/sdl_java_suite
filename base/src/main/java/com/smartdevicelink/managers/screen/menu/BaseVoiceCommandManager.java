@@ -80,8 +80,9 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 	public BaseVoiceCommandManager(@NonNull ISdl internalInterface) {
 		super(internalInterface);
-		addListeners();
 
+		currentHMILevel = HMILevel.HMI_NONE;
+		addListeners();
 		lastVoiceCommandId = voiceCommandIdMin;
 		voiceCommands = new ArrayList<>();
 		oldVoiceCommands = new ArrayList<>();
@@ -229,10 +230,10 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 	private void sendCurrentVoiceCommands(final CompletionListener listener){
 
 		if (voiceCommands == null || voiceCommands.size() == 0){
-			DebugTool.logInfo("No Voice Commands to Send");
 			if (listener != null){
 				listener.onComplete(false);
 			}
+			DebugTool.logInfo("No Voice Commands to Send");
 			return;
 		}
 
