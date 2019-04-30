@@ -45,19 +45,14 @@ import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.DeleteCommand;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
-import com.smartdevicelink.proxy.rpc.SetMediaClockTimer;
-import com.smartdevicelink.proxy.rpc.StartTime;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.Result;
-import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.smartdevicelink.proxy.rpc.SetMediaClockTimer.countUpFromStartTime;
 
 abstract class BaseVoiceCommandManager extends BaseSubManager {
 
