@@ -88,17 +88,6 @@ public class MenuCell {
 
 	/**
 	 * Creates a new MenuCell Object with just the title set.
-	 * <strong>NOTE: We recommend adding a {@link MenuSelectionListener} to notify you when the cell is clicked</strong>
-	 * @param title The cell's primary text
-	 */
-	public MenuCell(@NonNull String title) {
-		setTitle(title); // title is the only required param
-		setCellId(MAX_ID);
-		setParentCellId(MAX_ID);
-	}
-
-	/**
-	 * Creates a new MenuCell Object with just the title set.
 	 * @param title The cell's primary text
 	 * @param listener a listener that notifies you when the cell was selected and lets you know its trigger source
 	 */
