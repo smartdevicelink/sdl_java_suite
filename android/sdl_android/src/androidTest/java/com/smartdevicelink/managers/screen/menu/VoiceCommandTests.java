@@ -30,10 +30,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.managers.screen.menu.cells;
+package com.smartdevicelink.managers.screen.menu;
 
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.test.Test;
 
 public class VoiceCommandTests extends AndroidTestCase2 {

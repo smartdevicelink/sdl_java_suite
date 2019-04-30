@@ -30,10 +30,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.managers.screen.menu.cells;
+package com.smartdevicelink.managers.screen.menu;
 
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.test.Test;
 
@@ -60,17 +59,15 @@ public class MenuCellTests extends AndroidTestCase2 {
 	public void testSettersAndGetters(){
 
 		// set everything
-		MenuCell menuCell = new MenuCell(Test.GENERAL_STRING);
+		MenuCell menuCell = new MenuCell(Test.GENERAL_STRING, menuSelectionListener);
 		menuCell.setIcon(Test.GENERAL_ARTWORK);
 		menuCell.setVoiceCommands(Test.GENERAL_STRING_LIST);
-		menuCell.setSubCells(Test.GENERAL_MENUCELL_LIST);
 		menuCell.setMenuSelectionListener(menuSelectionListener);
 
 		// use getters and assert equality
 		assertEquals(menuCell.getTitle(), Test.GENERAL_STRING);
 		assertEquals(menuCell.getIcon(), Test.GENERAL_ARTWORK);
 		assertEquals(menuCell.getVoiceCommands(), Test.GENERAL_STRING_LIST);
-		assertEquals(menuCell.getSubCells(), Test.GENERAL_MENUCELL_LIST);
 		assertEquals(menuCell.getMenuSelectionListener(), menuSelectionListener);
 		assertEquals(menuCell.getCellId(), Test.GENERAL_MENU_MAX_ID);
 		assertEquals(menuCell.getParentCellId(), Test.GENERAL_MENU_MAX_ID);
@@ -79,11 +76,6 @@ public class MenuCellTests extends AndroidTestCase2 {
 	public void testConstructors(){
 
 		// first constructor was tested in previous method, use the last two here
-
-		MenuCell menuCell2 =new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_MENUCELL_LIST);
-		assertEquals(menuCell2.getTitle(), Test.GENERAL_STRING);
-		assertEquals(menuCell2.getIcon(), Test.GENERAL_ARTWORK);
-		assertEquals(menuCell2.getSubCells(), Test.GENERAL_MENUCELL_LIST);
 
 		MenuCell menuCell3 =new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST, menuSelectionListener);
 		assertEquals(menuCell3.getTitle(), Test.GENERAL_STRING);
