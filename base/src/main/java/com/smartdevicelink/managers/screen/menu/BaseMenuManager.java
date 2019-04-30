@@ -193,12 +193,13 @@ abstract class BaseMenuManager extends BaseSubManager {
 			fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
 				@Override
 				public void onComplete(Map<String, String> errors) {
+
 					if (errors != null && errors.size() > 0){
 						DebugTool.logError("Error uploading Menu Artworks: "+ errors.toString());
+					}else{
+						DebugTool.logInfo("Menu Artworks Uploaded");
 					}
-
-					DebugTool.logInfo("Menu Artworks Uploaded");
-					// Now that Artworks are on the head unit, proceed
+					// proceed
 					updateMenuWithListener(null);
 				}
 			});
