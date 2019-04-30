@@ -133,7 +133,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 		waitingOnHMIUpdate = false;
 		lastVoiceCommandId = voiceCommandIdMin;
 		updateIdsOnVoiceCommands(voiceCommands);
-		oldVoiceCommands = voiceCommands;
+		oldVoiceCommands = new ArrayList<>(voiceCommands);
 		this.voiceCommands = voiceCommands;
 
 		updateWithListener(null);
@@ -201,7 +201,9 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 		oldVoiceCommands.clear();
 		internalInterface.sendRequests(deleteVoiceCommands, new OnMultipleRequestListener() {
 			@Override
-			public void onUpdate(int remainingRequests) {}
+			public void onUpdate(int remainingRequests) {
+
+			}
 
 			@Override
 			public void onFinished() {
@@ -213,10 +215,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				DebugTool.logError("Error deleting old voice commands");
-				if (listener != null){
-					listener.onComplete(false);
-				}
+
 			}
 
 			@Override
@@ -233,7 +232,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 			if (listener != null){
 				listener.onComplete(true); // no voice commands to send doesnt mean that its an error
 			}
-			DebugTool.logInfo("No Voice Commands to Send");
 			return;
 		}
 
@@ -242,7 +240,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 		internalInterface.sendRequests(inProgressUpdate, new OnMultipleRequestListener() {
 			@Override
 			public void onUpdate(int remainingRequests) {
-				DebugTool.logInfo("Remaining Voice Commands: "+ remainingRequests);
+
 			}
 
 			@Override
@@ -256,10 +254,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				DebugTool.logError("Add Commands Failed: "+info);
-				if (listener != null){
-					listener.onComplete(false);
-				}
+
 			}
 
 			@Override
