@@ -96,7 +96,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	private SystemContext currentSystemContext;
 
-	public BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+	BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
 
 		super(internalInterface);
 
@@ -200,12 +200,12 @@ abstract class BaseMenuManager extends BaseSubManager {
 						DebugTool.logInfo("Menu Artworks Uploaded");
 					}
 					// proceed
-					updateMenuWithListener(null);
+					updateMenuWithListener();
 				}
 			});
 		}else{
 			// No Artworks to be uploaded, send off
-			updateMenuWithListener(null);
+			updateMenuWithListener();
 		}
 	}
 
@@ -219,7 +219,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// UPDATING SYSTEM
 
-	private void updateMenuWithListener(final CompletionListener listener){
+	private void updateMenuWithListener(){
 
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
 			// We are in NONE or the menu is in use, bail out of here
@@ -246,13 +246,10 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 						if (!success){
 							DebugTool.logError("Error Sending Current Menu");
-							if (listener != null){
-								listener.onComplete(false);
-							}
 						}
 
 						if (hasQueuedUpdate){
-							updateMenuWithListener(null);
+							updateMenuWithListener();
 							hasQueuedUpdate = false;
 						}
 					}
@@ -319,7 +316,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		List<RPCRequest> mainMenuCommands;
 		final List<RPCRequest> subMenuCommands;
 
-		if (findAllArtworksToBeUploadedFromCells(menuCells).size() > 0 || !checkImageFields()){
+		if (findAllArtworksToBeUploadedFromCells(menuCells).size() > 0 || !supportsImages()){
 			// Send artwork-less menu
 			mainMenuCommands = mainMenuCommandsForCells(menuCells, false);
 			subMenuCommands = subMenuCommandsForCells(menuCells, false);
@@ -409,7 +406,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	private List<SdlArtwork> findAllArtworksToBeUploadedFromCells(List<MenuCell> cells){
 		// Make sure we can use images in the menus
-		if (!checkImageFields()){
+		if (!supportsImages()){
 			return new ArrayList<>();
 		}
 
@@ -426,7 +423,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 		return artworks;
 	}
 
-	private boolean checkImageFields(){
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+	private boolean supportsImages(){
 		if (displayCapabilities != null && displayCapabilities.getImageFields() != null) {
 			List<ImageField> imageFields = displayCapabilities.getImageFields();
 			for (ImageField field : imageFields) {

@@ -72,7 +72,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 	// CONSTRUCTORS
 
-	public BaseVoiceCommandManager(@NonNull ISdl internalInterface) {
+	BaseVoiceCommandManager(@NonNull ISdl internalInterface) {
 		super(internalInterface);
 
 		currentHMILevel = HMILevel.HMI_NONE;
@@ -130,7 +130,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 		oldVoiceCommands = new ArrayList<>(voiceCommands);
 		this.voiceCommands = voiceCommands;
 
-		updateWithListener(null);
+		updateWithListener();
 	}
 
 	public List<VoiceCommand> getVoiceCommands(){
@@ -139,7 +139,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 	// UPDATING SYSTEM
 
-	private void updateWithListener(final CompletionListener listener){
+	private void updateWithListener(){
 
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE)){
 			waitingOnHMIUpdate = true;
@@ -162,12 +162,8 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 						inProgressUpdate = null;
 
 						if (hasQueuedUpdate){
-							updateWithListener(null);
+							updateWithListener();
 							hasQueuedUpdate = false;
-						}
-
-						if (listener != null){
-							listener.onComplete(success2);
 						}
 
 						if (!success2){
@@ -308,7 +304,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 					if (waitingOnHMIUpdate){
 						setVoiceCommands(voiceCommands);
 					}else{
-						updateWithListener(null);
+						updateWithListener();
 					}
 				}
 			}
