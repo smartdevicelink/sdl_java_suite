@@ -33,6 +33,7 @@
 package com.smartdevicelink.managers.screen.menu.cells;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
@@ -69,12 +70,15 @@ public class MenuCell {
 	private int parentCellId;
 	private int cellId;
 
-	private static final int MAX_ID = 2000000000;
+	private static final int MAX_ID = 2000000000; // Cannot use Integer.MAX_INT as the value is too high.
 
 	// CONSTRUCTORS
 
+	// SINGLE MENU ITEM CONSTRUCTORS
+
 	/**
 	 * Creates a new MenuCell Object with just the title set.
+	 * <strong>NOTE: We recommend adding a {@link MenuSelectionListener} to notify you when the cell is clicked</strong>
 	 * @param title The cell's primary text
 	 */
 	public MenuCell(@NonNull String title) {
@@ -84,15 +88,13 @@ public class MenuCell {
 	}
 
 	/**
-	 * Creates a new MenuCell Object with multiple parameters set
+	 * Creates a new MenuCell Object with just the title set.
 	 * @param title The cell's primary text
-	 * @param icon The cell's image
-	 * @param subCells The sub-cells that will appear when the cell is selected
+	 * @param listener a listener that notifies you when the cell was selected and lets you know its trigger source
 	 */
-	public MenuCell(@NonNull String title, SdlArtwork icon, List<MenuCell> subCells) {
+	public MenuCell(@NonNull String title, @Nullable MenuSelectionListener listener) {
 		setTitle(title); // title is the only required param
-		setIcon(icon);
-		setSubCells(subCells);
+		setMenuSelectionListener(listener);
 		setCellId(MAX_ID);
 		setParentCellId(MAX_ID);
 	}
@@ -104,7 +106,7 @@ public class MenuCell {
 	 * @param voiceCommands Voice commands that will activate the menu cell
 	 * @param listener Calls the code that will be run when the menu cell is selected
 	 */
-	public MenuCell(@NonNull String title, SdlArtwork icon, List<String> voiceCommands, MenuSelectionListener listener) {
+	public MenuCell(@NonNull String title, @Nullable MenuSelectionListener listener, @Nullable SdlArtwork icon, @Nullable List<String> voiceCommands) {
 		setTitle(title); // title is the only required param
 		setIcon(icon);
 		setVoiceCommands(voiceCommands);
@@ -113,6 +115,22 @@ public class MenuCell {
 		setParentCellId(MAX_ID);
 	}
 
+	// CELL THAT WILL LINK TO SUB MENU CONSTRUCTOR
+
+	/**
+	 * Creates a new MenuCell Object with multiple parameters set
+	 * <strong>NOTE: because this has sub-cells, there does not need to be a listener</strong>
+	 * @param title The cell's primary text
+	 * @param icon The cell's image
+	 * @param subCells The sub-cells that will appear when the cell is selected
+	 */
+	public MenuCell(@NonNull String title, @Nullable SdlArtwork icon, @Nullable List<MenuCell> subCells) {
+		setTitle(title); // title is the only required param
+		setIcon(icon);
+		setSubCells(subCells);
+		setCellId(MAX_ID);
+		setParentCellId(MAX_ID);
+	}
 
 	// SETTERS / GETTERS
 
