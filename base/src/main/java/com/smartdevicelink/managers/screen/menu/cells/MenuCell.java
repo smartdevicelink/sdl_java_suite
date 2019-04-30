@@ -115,14 +115,14 @@ public class MenuCell {
 		setParentCellId(MAX_ID);
 	}
 
-	// CELL THAT WILL LINK TO SUB MENU CONSTRUCTOR
+	// CONSTRUCTOR FOR CELL THAT WILL LINK TO SUB MENU
 
 	/**
 	 * Creates a new MenuCell Object with multiple parameters set
 	 * <strong>NOTE: because this has sub-cells, there does not need to be a listener</strong>
 	 * @param title The cell's primary text
 	 * @param icon The cell's image
-	 * @param subCells The sub-cells that will appear when the cell is selected
+	 * @param subCells The sub-cells for the sub menu that will appear when the cell is selected
 	 */
 	public MenuCell(@NonNull String title, @Nullable SdlArtwork icon, @Nullable List<MenuCell> subCells) {
 		setTitle(title); // title is the only required param
