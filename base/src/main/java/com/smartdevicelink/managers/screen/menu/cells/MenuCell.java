@@ -116,7 +116,7 @@ public class MenuCell {
 	 * @param voiceCommands Voice commands that will activate the menu cell
 	 * @param listener Calls the code that will be run when the menu cell is selected
 	 */
-	public MenuCell(@NonNull String title, @Nullable MenuSelectionListener listener, @Nullable SdlArtwork icon, @Nullable List<String> voiceCommands) {
+	public MenuCell(@NonNull String title, @Nullable SdlArtwork icon, @Nullable List<String> voiceCommands, @Nullable MenuSelectionListener listener) {
 		setTitle(title); // title is the only required param
 		setIcon(icon);
 		setVoiceCommands(voiceCommands);

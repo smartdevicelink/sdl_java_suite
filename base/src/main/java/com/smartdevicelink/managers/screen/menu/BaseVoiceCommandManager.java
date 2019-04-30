@@ -231,7 +231,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 		if (voiceCommands == null || voiceCommands.size() == 0){
 			if (listener != null){
-				listener.onComplete(false);
+				listener.onComplete(true); // no voice commands to send doesnt mean that its an error
 			}
 			DebugTool.logInfo("No Voice Commands to Send");
 			return;
@@ -264,9 +264,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				if (response != null && !response.getSuccess()){
-					DebugTool.logError("Error sending voice commands: "+ response.getInfo());
-				}
 			}
 		});
 	}

@@ -314,7 +314,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 		if (menuCells.size() == 0){
 			DebugTool.logInfo("No main menu to send, returning");
 			if (listener != null){
-				listener.onComplete(false);
+				// This can be considered a success if the user was clearing out their menu
+				listener.onComplete(true);
 			}
 			return;
 		}
@@ -331,7 +332,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 			subMenuCommands = subMenuCommandsForCells(menuCells, true);
 		}
 
-
 		// add all built commands to inProgressUpdate
 		inProgressUpdate = mainMenuCommands;
 		inProgressUpdate.addAll(subMenuCommands);
@@ -346,10 +346,12 @@ abstract class BaseMenuManager extends BaseSubManager {
 			public void onFinished() {
 
 				oldMenuCells = menuCells;
-				sendSubMenuCommands(subMenuCommands, listener);
-
-				DebugTool.logInfo("Finished sending main menu commands. Sending sub menu commands.");
-
+				if (subMenuCommands.size() > 0) {
+					sendSubMenuCommands(subMenuCommands, listener);
+					DebugTool.logInfo("Finished sending main menu commands. Sending sub menu commands.");
+				}else{
+					DebugTool.logInfo("Finished sending main menu commands.");
+				}
 			}
 
 			@Override

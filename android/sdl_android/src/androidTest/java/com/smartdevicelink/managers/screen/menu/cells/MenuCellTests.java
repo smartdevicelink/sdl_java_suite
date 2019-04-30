@@ -85,7 +85,7 @@ public class MenuCellTests extends AndroidTestCase2 {
 		assertEquals(menuCell2.getIcon(), Test.GENERAL_ARTWORK);
 		assertEquals(menuCell2.getSubCells(), Test.GENERAL_MENUCELL_LIST);
 
-		MenuCell menuCell3 =new MenuCell(Test.GENERAL_STRING, menuSelectionListener, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST);
+		MenuCell menuCell3 =new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST, menuSelectionListener);
 		assertEquals(menuCell3.getTitle(), Test.GENERAL_STRING);
 		assertEquals(menuCell3.getIcon(), Test.GENERAL_ARTWORK);
 		assertEquals(menuCell3.getVoiceCommands(), Test.GENERAL_STRING_LIST);
