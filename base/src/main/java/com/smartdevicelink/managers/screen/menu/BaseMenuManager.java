@@ -157,25 +157,26 @@ abstract class BaseMenuManager extends BaseSubManager {
 			waitingUpdateMenuCells = cells;
 			return;
 		}
-
 		waitingOnHMIUpdate = false;
-		this.menuCells = new ArrayList<>(cells);
+
+		// Update our Lists
+		this.oldMenuCells = new ArrayList<>(menuCells);
+		menuCells = new ArrayList<>(cells);
 
 		// HashSet order doesnt matter / does not allow duplicates
 		HashSet<String> titleCheckSet = new HashSet<>();
 		HashSet<String> allMenuVoiceCommands = new HashSet<>();
 		int voiceCommandCount = 0;
 
-		for (MenuCell cell : this.menuCells){
+		for (MenuCell cell : menuCells){
 			titleCheckSet.add(cell.getTitle());
 			if (cell.getVoiceCommands() != null){
 				allMenuVoiceCommands.addAll(cell.getVoiceCommands());
 				voiceCommandCount += cell.getVoiceCommands().size();
 			}
 		}
-
 		// Check for duplicate titles
-		if (titleCheckSet.size() != this.menuCells.size()){
+		if (titleCheckSet.size() != menuCells.size()){
 			DebugTool.logError("Not all cell titles are unique. The menu will not be set");
 			return;
 		}
@@ -185,17 +186,11 @@ abstract class BaseMenuManager extends BaseSubManager {
 			DebugTool.logError("Attempted to create a menu with duplicate voice commands. Voice commands must be unique. The menu will not be set");
 			return;
 		}
-
 		// Set the IDs
 		lastMenuId = menuCellIdMin;
-		updateIdsOnMenuCells(this.menuCells, parentIdNotFound);
-
-		// Update our Lists
-		this.oldMenuCells = new ArrayList<>(menuCells);
-
+		updateIdsOnMenuCells(menuCells, parentIdNotFound);
 		// Upload the Artworks
-		List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(this.menuCells);
-
+		List<SdlArtwork> artworksToBeUploaded = findAllArtworksToBeUploadedFromCells(menuCells);
 		if (artworksToBeUploaded.size() > 0 && fileManager.get() != null){
 			fileManager.get().uploadArtworks(artworksToBeUploaded, new MultipleFileCompletionListener() {
 				@Override
@@ -229,6 +224,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
 			// We are in NONE or the menu is in use, bail out of here
+			DebugTool.logInfo("HMI in None or System Context Menu, returning");
 			waitingOnHMIUpdate = true;
 			waitingUpdateMenuCells = menuCells;
 			return;
@@ -236,6 +232,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 		if (inProgressUpdate != null && inProgressUpdate.size() > 0){
 			// there's an in-progress update so this needs to wait
+			DebugTool.logInfo("There is an in progress Menu Update, returning");
 			hasQueuedUpdate = true;
 			return;
 		}
@@ -268,10 +265,10 @@ abstract class BaseMenuManager extends BaseSubManager {
 	// DELETE OLD MENU ITEMS
 
 	private void deleteCurrentMenu(final CompletionListener listener){
-
 		if (oldMenuCells.size() == 0) {
 			if (listener != null){
 				// technically this method is successful if there's nothing to delete
+				DebugTool.logInfo("No old cells to delete, returning");
 				listener.onComplete(true);
 			}
 			return;
@@ -333,7 +330,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		}
 
 		// add all built commands to inProgressUpdate
-		inProgressUpdate = mainMenuCommands;
+		inProgressUpdate = new ArrayList<>(mainMenuCommands);
 		inProgressUpdate.addAll(subMenuCommands);
 
 		internalInterface.sendRequests(mainMenuCommands, new OnMultipleRequestListener() {
@@ -350,6 +347,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 					sendSubMenuCommands(subMenuCommands, listener);
 					DebugTool.logInfo("Finished sending main menu commands. Sending sub menu commands.");
 				}else{
+					inProgressUpdate = null;
 					DebugTool.logInfo("Finished sending main menu commands.");
 				}
 			}
@@ -381,6 +379,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			@Override
 			public void onFinished() {
 				DebugTool.logInfo("Finished Updating Menu");
+				inProgressUpdate = null;
 				if (listener != null){
 					listener.onComplete(true);
 				}
@@ -589,6 +588,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				// Auto-send an updated menu if we were in NONE and now we are not, and we need an update
 				if (oldHMILevel.equals(HMILevel.HMI_NONE) && !currentHMILevel.equals(HMILevel.HMI_NONE) && !currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
 					if (waitingOnHMIUpdate){
+						DebugTool.logInfo("We now have proper HMI, sending waiting update");
 						setMenuCells(waitingUpdateMenuCells);
 						waitingUpdateMenuCells.clear();
 						return;
@@ -602,6 +602,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 				if (oldContext.equals(SystemContext.SYSCTXT_MENU) && !currentSystemContext.equals(SystemContext.SYSCTXT_MENU) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
 					if (waitingOnHMIUpdate){
+						DebugTool.logInfo("We now have a proper system context, sending waiting update");
 						setMenuCells(waitingUpdateMenuCells);
 						waitingUpdateMenuCells.clear();
 					}
