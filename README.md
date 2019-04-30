@@ -9,7 +9,7 @@ SmartDeviceLink (SDL) is a standard set of protocols and messages that connect a
   * The [Core](https://github.com/smartdevicelink/sdl_core) component is the software which Vehicle Manufacturers (OEMs)  implement in their vehicle head units. Integrating this component into their head unit and HMI based on a set of guidelines and templates enables access to various smartphone applications.
   * The optional [SDL Server](https://github.com/smartdevicelink/sdl_server) can be used by Vehicle OEMs to update application policies and gather usage information for connected applications.
   * The [iOS](https://github.com/smartdevicelink/sdl_ios) and [Android](https://github.com/smartdevicelink/sdl_java_suite) libraries are implemented by app developers into their applications to enable command and control via the connected head unit.
-  * The [JavaSE](https://github.com/smartdevicelink/sdl_java_suite) (Embedded) and [JavaEE] (https://github.com/smartdevicelink/sdl_java_suite) (Cloud) libraries, written in Java, are implemented by app developers into their applications to enable command and control of a connected head unit.
+  * The [JavaSE](https://github.com/smartdevicelink/sdl_java_suite) (Embedded) and [JavaEE](https://github.com/smartdevicelink/sdl_java_suite) (Cloud) libraries, written in Java, are implemented by app developers into their applications to enable command and control of a connected head unit.
   
 Pull Requests Welcome!
 
