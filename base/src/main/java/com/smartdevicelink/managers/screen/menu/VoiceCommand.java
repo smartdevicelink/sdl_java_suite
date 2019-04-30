@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.managers.screen.menu.cells;
+package com.smartdevicelink.managers.screen.menu;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -108,7 +108,7 @@ public class VoiceCommand {
 	 * <strong>NOTE: PLEASE DO NOT SET. This is used internally</strong>
 	 * @param commandId the id to identify the command
 	 */
-	public void setCommandId(int commandId) {
+	void setCommandId(int commandId) {
 		this.commandId = commandId;
 	}
 
@@ -116,7 +116,7 @@ public class VoiceCommand {
 	 * the id used to identify the command
 	 * @return the id
 	 */
-	public int getCommandId() {
+	int getCommandId() {
 		return commandId;
 	}
 

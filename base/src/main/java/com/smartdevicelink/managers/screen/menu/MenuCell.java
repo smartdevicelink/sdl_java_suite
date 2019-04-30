@@ -30,13 +30,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.managers.screen.menu.cells;
+package com.smartdevicelink.managers.screen.menu;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
 
 import java.util.List;
 
@@ -218,7 +217,7 @@ public class MenuCell {
 	 * * <strong>NOTE: THIS IS USED INTERNALLY ONLY, PLEASE DO NOT SET</strong>
 	 * @param cellId - the cell Id
 	 */
-	public void setCellId(int cellId) {
+	void setCellId(int cellId) {
 		this.cellId = cellId;
 	}
 
@@ -226,7 +225,7 @@ public class MenuCell {
 	 * Get the cellId
 	 * @return the cellId for this menuCell
 	 */
-	public int getCellId() {
+	int getCellId() {
 		return cellId;
 	}
 
@@ -235,7 +234,7 @@ public class MenuCell {
 	 * <strong>NOTE: THIS IS USED INTERNALLY ONLY, PLEASE DO NOT SET</strong>
 	 * @param parentCellId the parent cell's Id
 	 */
-	public void setParentCellId(int parentCellId) {
+	void setParentCellId(int parentCellId) {
 		this.parentCellId = parentCellId;
 	}
 
@@ -243,7 +242,7 @@ public class MenuCell {
 	 * Get the parent cell's Id
 	 * @return the parent cell's Id
 	 */
-	public int getParentCellId() {
+	int getParentCellId() {
 		return parentCellId;
 	}
 
