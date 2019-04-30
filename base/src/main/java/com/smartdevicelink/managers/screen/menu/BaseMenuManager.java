@@ -152,7 +152,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
 			// We are in NONE or the menu is in use, bail out of here
 			waitingOnHMIUpdate = true;
-			waitingUpdateMenuCells = cells;
+			waitingUpdateMenuCells = new ArrayList<>(cells);
 			return;
 		}
 		waitingOnHMIUpdate = false;
