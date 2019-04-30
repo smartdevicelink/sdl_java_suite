@@ -397,6 +397,7 @@ public class Test {
 	public static final HMISettingsControlData         GENERAL_HMISETTINGSCONTROLDATA         = new HMISettingsControlData();
 	public static final SdlArtwork                     GENERAL_ARTWORK                        = new SdlArtwork();
 	public static final MenuCell                       GENERAL_MENUCELL                       = new MenuCell(GENERAL_STRING);
+	public static final int                            GENERAL_MENU_MAX_ID                    = 2000000000;
 
 	public static final HMICapabilities                GENERAL_HMICAPABILITIES                = new HMICapabilities();
 

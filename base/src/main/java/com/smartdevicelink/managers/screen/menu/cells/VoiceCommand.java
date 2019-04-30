@@ -32,6 +32,9 @@
 
 package com.smartdevicelink.managers.screen.menu.cells;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 
 import java.util.List;
@@ -48,17 +51,20 @@ public class VoiceCommand {
 	 */
 	private VoiceCommandSelectionListener voiceCommandSelectionListener;
 
-
+	/**
+	 * Used Internally to identify the command
+	 */
 	private int commandId;
 
 	// CONSTRUCTOR(S)
 
 	/**
 	 * Constructor that sets all parameters for this class
+	 * <strong>NOTE: While it is possible to pass in null for the listener, It is the easiest way to know when it was triggered.</strong>
 	 * @param voiceCommands The strings the user can say to activate this voice command
 	 * @param voiceCommandSelectionListener The listener that will be called when the command is activated
 	 */
-	public VoiceCommand(List<String> voiceCommands, VoiceCommandSelectionListener voiceCommandSelectionListener){
+	public VoiceCommand(@NonNull List<String> voiceCommands, @Nullable VoiceCommandSelectionListener voiceCommandSelectionListener){
 		setVoiceCommands(voiceCommands);
 		setVoiceCommandSelectionListener(voiceCommandSelectionListener);
 	}
@@ -69,7 +75,7 @@ public class VoiceCommand {
 	 * The strings the user can say to activate this voice command
 	 * @param voiceCommands - the list of commands to send to the head unit
 	 */
-	public void setVoiceCommands(List<String> voiceCommands) {
+	public void setVoiceCommands(@NonNull List<String> voiceCommands) {
 		this.voiceCommands = voiceCommands;
 	}
 
@@ -98,7 +104,8 @@ public class VoiceCommand {
 	}
 
 	/**
-	 * set the command ID
+	 * set the command' ID
+	 * <strong>NOTE: PLEASE DO NOT SET. This is used internally</strong>
 	 * @param commandId the id to identify the command
 	 */
 	public void setCommandId(int commandId) {

@@ -567,12 +567,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 			@Override
 			public void onCapabilityRetrieved(Object capability) {
 				displayCapabilities = (DisplayCapabilities) capability;
-				try {
-					// TODO REMOVE
-					Log.i("MENU CAPS", "DISP CAP: "+ displayCapabilities.serializeJSON().toString());
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
 			}
 
 			@Override

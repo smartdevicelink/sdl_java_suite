@@ -67,10 +67,20 @@ public class MenuCell {
 	 */
 	private MenuSelectionListener menuSelectionListener;
 
+	/**
+	 * Used internally for cell ordering
+	 */
 	private int parentCellId;
+
+	/**
+	 * Used internally for cell ordering
+	 */
 	private int cellId;
 
-	private static final int MAX_ID = 2000000000; // Cannot use Integer.MAX_INT as the value is too high.
+	/**
+	 * MAX ID for cells - Cannot use Integer.MAX_INT as the value is too high.
+	 */
+	private static final int MAX_ID = 2000000000;
 
 	// CONSTRUCTORS
 
@@ -216,7 +226,7 @@ public class MenuCell {
 
 	/**
 	 * Set the cell Id.
-	 * NOTE: THIS IS USED INTERNALLY ONLY, PLEASE DO NOT SET
+	 * * <strong>NOTE: THIS IS USED INTERNALLY ONLY, PLEASE DO NOT SET</strong>
 	 * @param cellId - the cell Id
 	 */
 	public void setCellId(int cellId) {
@@ -233,7 +243,7 @@ public class MenuCell {
 
 	/**
 	 * Sets the ParentCellId
-	 * NOTE: THIS IS USED INTERNALLY ONLY, PLEASE DO NOT SET
+	 * <strong>NOTE: THIS IS USED INTERNALLY ONLY, PLEASE DO NOT SET</strong>
 	 * @param parentCellId the parent cell's Id
 	 */
 	public void setParentCellId(int parentCellId) {
@@ -257,6 +267,6 @@ public class MenuCell {
 	public String getDescription(){
 		return "MenuCell - ID: "+cellId+ " title: "+ title + " ArtworkName: "+
 				icon.getName() + " VoiceCommands: "+ voiceCommands.size() +  " isSubCell: " + (parentCellId != Integer.MAX_VALUE ? "YES":"NO")+
-				" hasSubCells: "+ (subCells.size() > 0 ? "YES":"NO");
+				" hasSubCells: "+ (subCells != null && subCells.size() > 0 ? "YES":"NO");
 	}
 }

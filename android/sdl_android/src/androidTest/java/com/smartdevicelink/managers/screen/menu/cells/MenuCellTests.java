@@ -72,6 +72,8 @@ public class MenuCellTests extends AndroidTestCase2 {
 		assertEquals(menuCell.getVoiceCommands(), Test.GENERAL_STRING_LIST);
 		assertEquals(menuCell.getSubCells(), Test.GENERAL_MENUCELL_LIST);
 		assertEquals(menuCell.getMenuSelectionListener(), menuSelectionListener);
+		assertEquals(menuCell.getCellId(), Test.GENERAL_MENU_MAX_ID);
+		assertEquals(menuCell.getParentCellId(), Test.GENERAL_MENU_MAX_ID);
 	}
 
 	public void testConstructors(){
@@ -83,11 +85,15 @@ public class MenuCellTests extends AndroidTestCase2 {
 		assertEquals(menuCell2.getIcon(), Test.GENERAL_ARTWORK);
 		assertEquals(menuCell2.getSubCells(), Test.GENERAL_MENUCELL_LIST);
 
-		MenuCell menuCell3 =new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST, menuSelectionListener);
+		MenuCell menuCell3 =new MenuCell(Test.GENERAL_STRING, menuSelectionListener, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST);
 		assertEquals(menuCell3.getTitle(), Test.GENERAL_STRING);
 		assertEquals(menuCell3.getIcon(), Test.GENERAL_ARTWORK);
 		assertEquals(menuCell3.getVoiceCommands(), Test.GENERAL_STRING_LIST);
 		assertEquals(menuCell3.getMenuSelectionListener(), menuSelectionListener);
+
+		MenuCell menuCell4 =new MenuCell(Test.GENERAL_STRING, menuSelectionListener);
+		assertEquals(menuCell4.getTitle(), Test.GENERAL_STRING);
+		assertEquals(menuCell4.getMenuSelectionListener(), menuSelectionListener);
 	}
 
 }
