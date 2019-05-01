@@ -287,6 +287,8 @@ public class SdlManager extends BaseSdlManager{
 			managerListener.onDestroy();
 			managerListener = null;
 		}
+
+		transitionToState(BaseSubManager.SHUTDOWN);
 	}
 
 	// MANAGER GETTERS
@@ -589,6 +591,7 @@ public class SdlManager extends BaseSdlManager{
 				initNotificationQueue();
 
 			} catch (SdlException e) {
+				transitionToState(BaseSubManager.ERROR);
 				if (managerListener != null) {
 					managerListener.onError("Unable to start manager", e);
 				}

@@ -242,6 +242,8 @@ public class SdlManager extends BaseSdlManager{
 			managerListener.onDestroy(this);
 			managerListener = null;
 		}
+
+		transitionToState(BaseSubManager.SHUTDOWN);
 	}
 
 
