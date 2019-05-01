@@ -35,12 +35,21 @@ package com.smartdevicelink.managers.screen.menu;
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 public class VoiceCommandManagerTests extends AndroidTestCase2 {
@@ -49,6 +58,7 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 	private List<VoiceCommand> commands;
 	private VoiceCommandManager voiceCommandManager;
 	private static final int voiceCommandIdMin = 1900000000;
+	private OnRPCNotificationListener onHMIStatusListener;
 
 	// SETUP / HELPERS
 
@@ -61,6 +71,19 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 		commands = Arrays.asList(command,command2);
 
 		ISdl internalInterface = mock(ISdl.class);
+		// When internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, OnRPCNotificationListener) is called
+		// inside PermissionManager's constructor, then keep a reference to the OnRPCNotificationListener so we can trigger it later
+		// to emulate what Core does when it sends OnHMIStatus notification
+		Answer<Void> onHMIStatusAnswer = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				onHMIStatusListener = (OnRPCNotificationListener) args[1];
+				return null;
+			}
+		};
+		doAnswer(onHMIStatusAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCNotificationListener.class));
+
 		voiceCommandManager = new VoiceCommandManager(internalInterface);
 
 		// Check some stuff during setup
@@ -102,16 +125,33 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 				assertTrue(success);
 				// Make sure the state has changed, as the Screen Manager is dependant on it
 				assertEquals(voiceCommandManager.getState(), BaseSubManager.READY);
-				// now that we are started, set some voice commands
-				sendCommands(voiceCommandManager);
 			}
 		});
 	}
 
-	private void sendCommands(VoiceCommandManager voiceCommandManager){
+	public void testHMINotReady(){
 
+		voiceCommandManager.currentHMILevel = HMILevel.HMI_NONE;
 		voiceCommandManager.setVoiceCommands(commands);
+		// updating voice commands before HMI is ready
+		assertNull(voiceCommandManager.inProgressUpdate);
+		assertTrue(voiceCommandManager.waitingOnHMIUpdate);
+		assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_NONE);
 
+		// The VCM should send the pending voice commands once HMI full occurs
+		sendFakeCoreOnHMIStatusNotifications(HMILevel.HMI_FULL);
+		assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_FULL);
+		// This being false means it received the hmi notification and sent the pending commands
+		assertFalse(voiceCommandManager.waitingOnHMIUpdate);
+	}
+
+	// Emulate what happens when Core sends OnHMIStatus notification
+	private void sendFakeCoreOnHMIStatusNotifications(HMILevel hmiLevel) {
+		if (hmiLevel != null) {
+			OnHMIStatus onHMIStatusFakeNotification = new OnHMIStatus();
+			onHMIStatusFakeNotification.setHmiLevel(hmiLevel);
+			onHMIStatusListener.onNotified(onHMIStatusFakeNotification);
+		}
 	}
 
 }
