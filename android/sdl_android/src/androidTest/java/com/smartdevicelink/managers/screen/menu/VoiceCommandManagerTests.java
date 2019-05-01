@@ -59,8 +59,7 @@ import static org.mockito.Mockito.verify;
 
 public class VoiceCommandManagerTests extends AndroidTestCase2 {
 
-	public static final String TAG = "VCMTests";
-	private VoiceCommand command, command2, command3;
+	private VoiceCommand command, command3;
 	private List<VoiceCommand> commands;
 	private VoiceCommandManager voiceCommandManager;
 	private static final int voiceCommandIdMin = 1900000000;
@@ -74,7 +73,7 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 
 		VoiceCommandSelectionListener mockListener = mock(VoiceCommandSelectionListener.class);
 		command = new VoiceCommand(Arrays.asList("Command one", "Command two"), null);
-		command2 = new VoiceCommand(Arrays.asList("Command three", "Command four"), null);
+		VoiceCommand command2 = new VoiceCommand(Arrays.asList("Command three", "Command four"), null);
 		command3 = new VoiceCommand(Arrays.asList("Command five", "Command six"), mockListener);
 		commands = Arrays.asList(command,command2);
 
@@ -161,7 +160,7 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 		assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_NONE);
 
 		// The VCM should send the pending voice commands once HMI full occurs
-		sendFakeCoreOnHMIStatusNotifications(HMILevel.HMI_FULL);
+		sendFakeCoreOnHMIFullNotifications();
 		// Listener should be triggered - which sets new HMI level and should proceed to send our pending update
 		assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_FULL);
 		// This being false means it received the hmi notification and sent the pending commands
@@ -193,12 +192,10 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 	}
 
 	// Emulate what happens when Core sends OnHMIStatus notification
-	private void sendFakeCoreOnHMIStatusNotifications(HMILevel hmiLevel) {
-		if (hmiLevel != null) {
-			OnHMIStatus onHMIStatusFakeNotification = new OnHMIStatus();
-			onHMIStatusFakeNotification.setHmiLevel(hmiLevel);
-			onHMIStatusListener.onNotified(onHMIStatusFakeNotification);
-		}
+	private void sendFakeCoreOnHMIFullNotifications() {
+		OnHMIStatus onHMIStatusFakeNotification = new OnHMIStatus();
+		onHMIStatusFakeNotification.setHmiLevel(HMILevel.HMI_FULL);
+		onHMIStatusListener.onNotified(onHMIStatusFakeNotification);
 	}
 
 }

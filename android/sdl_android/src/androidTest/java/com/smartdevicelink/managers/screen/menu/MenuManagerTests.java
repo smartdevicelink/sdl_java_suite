@@ -32,26 +32,83 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import android.content.Context;
-
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 
 public class MenuManagerTests extends AndroidTestCase2 {
 
-	public static final String TAG = "MenuManagerTests";
-	private Context mTestContext;
+	private OnRPCNotificationListener onHMIStatusListener, commandListener;
+	private MenuManager menuManager;
 
 	// SETUP / HELPERS
 
 	@Override
 	public void setUp() throws Exception{
 		super.setUp();
-		mTestContext = this.getContext();
+
+		// menu cell mock listener
+		MenuSelectionListener menuSelectionListener = mock(MenuSelectionListener.class);
+
+		// Create our menu cells
+
+
+		ISdl internalInterface = mock(ISdl.class);
+		FileManager fileManager = mock(FileManager.class);
+
+		// When internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, OnRPCNotificationListener) is called
+		// inside PermissionManager's constructor, then keep a reference to the OnRPCNotificationListener so we can trigger it later
+		// to emulate what Core does when it sends OnHMIStatus notification
+		Answer<Void> onHMIStatusAnswer = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				onHMIStatusListener = (OnRPCNotificationListener) args[1];
+				return null;
+			}
+		};
+		doAnswer(onHMIStatusAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCNotificationListener.class));
+
+		Answer<Void> onCommandAnswer = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				commandListener = (OnRPCNotificationListener) args[1];
+				return null;
+			}
+		};
+		doAnswer(onCommandAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_COMMAND), any(OnRPCNotificationListener.class));
+
+		menuManager = new MenuManager(internalInterface, fileManager);
+
+		assertEquals(menuManager.getState(), BaseSubManager.SETTING_UP);
+
 	}
 
 	@Override
 	public void tearDown() throws Exception {
+
+		menuManager.dispose();
+
+		// after everything, make sure we are in the correct state
+		assertEquals(menuManager.getState(), BaseSubManager.SHUTDOWN);
+
 		super.tearDown();
+	}
+
+	public void testStartMenuManager(){
+
 	}
 
 }
