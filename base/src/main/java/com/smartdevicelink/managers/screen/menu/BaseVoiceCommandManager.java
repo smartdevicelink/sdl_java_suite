@@ -256,7 +256,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 	// DELETES
 
-	private List<DeleteCommand> deleteCommandsForVoiceCommands(List<VoiceCommand> voiceCommands){
+	List<DeleteCommand> deleteCommandsForVoiceCommands(List<VoiceCommand> voiceCommands){
 		List<DeleteCommand> deleteCommandList = new ArrayList<>();
 		for (VoiceCommand command : voiceCommands){
 			DeleteCommand delete = new DeleteCommand(command.getCommandId());
@@ -267,7 +267,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 	// COMMANDS
 
-	private List<AddCommand> addCommandsForVoiceCommands(List<VoiceCommand> voiceCommands){
+	List<AddCommand> addCommandsForVoiceCommands(List<VoiceCommand> voiceCommands){
 		List<AddCommand> addCommandList = new ArrayList<>();
 		for (VoiceCommand command : voiceCommands){
 			addCommandList.add(commandForVoiceCommand(command));

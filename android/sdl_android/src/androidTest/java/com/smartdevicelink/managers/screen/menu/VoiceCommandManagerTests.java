@@ -37,28 +37,34 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class VoiceCommandManagerTests extends AndroidTestCase2 {
 
 	public static final String TAG = "VCMTests";
+	private VoiceCommand command, command2, command3;
 	private List<VoiceCommand> commands;
 	private VoiceCommandManager voiceCommandManager;
 	private static final int voiceCommandIdMin = 1900000000;
-	private OnRPCNotificationListener onHMIStatusListener;
+	private OnRPCNotificationListener onHMIStatusListener, commandListener;
 
 	// SETUP / HELPERS
 
@@ -66,11 +72,14 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 	public void setUp() throws Exception{
 		super.setUp();
 
-		VoiceCommand command = new VoiceCommand(Arrays.asList("Command one", "Command two"), null);
-		VoiceCommand command2 = new VoiceCommand(Arrays.asList("Command three", "Command four"), null);
+		VoiceCommandSelectionListener mockListener = mock(VoiceCommandSelectionListener.class);
+		command = new VoiceCommand(Arrays.asList("Command one", "Command two"), null);
+		command2 = new VoiceCommand(Arrays.asList("Command three", "Command four"), null);
+		command3 = new VoiceCommand(Arrays.asList("Command five", "Command six"), mockListener);
 		commands = Arrays.asList(command,command2);
 
 		ISdl internalInterface = mock(ISdl.class);
+
 		// When internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, OnRPCNotificationListener) is called
 		// inside PermissionManager's constructor, then keep a reference to the OnRPCNotificationListener so we can trigger it later
 		// to emulate what Core does when it sends OnHMIStatus notification
@@ -83,6 +92,16 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 			}
 		};
 		doAnswer(onHMIStatusAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCNotificationListener.class));
+
+		Answer<Void> onCommandAnswer = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				commandListener = (OnRPCNotificationListener) args[1];
+				return null;
+			}
+		};
+		doAnswer(onCommandAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_COMMAND), any(OnRPCNotificationListener.class));
 
 		voiceCommandManager = new VoiceCommandManager(internalInterface);
 
@@ -133,16 +152,44 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 
 		voiceCommandManager.currentHMILevel = HMILevel.HMI_NONE;
 		voiceCommandManager.setVoiceCommands(commands);
+
 		// updating voice commands before HMI is ready
 		assertNull(voiceCommandManager.inProgressUpdate);
 		assertTrue(voiceCommandManager.waitingOnHMIUpdate);
+		// these are the 2 commands we have waiting
+		assertEquals(voiceCommandManager.voiceCommands.size(), 2);
 		assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_NONE);
 
 		// The VCM should send the pending voice commands once HMI full occurs
 		sendFakeCoreOnHMIStatusNotifications(HMILevel.HMI_FULL);
+		// Listener should be triggered - which sets new HMI level and should proceed to send our pending update
 		assertEquals(voiceCommandManager.currentHMILevel, HMILevel.HMI_FULL);
 		// This being false means it received the hmi notification and sent the pending commands
 		assertFalse(voiceCommandManager.waitingOnHMIUpdate);
+	}
+
+	public void testUpdatingCommands(){
+
+		// we have previously sent 2 VoiceCommand objects. we will now update it and have just one
+
+		// This should have been cleared, but still initialized after the last send
+		assertEquals(voiceCommandManager.oldVoiceCommands.size(), 0);
+		// make sure the system returns us 2 delete commands
+		assertEquals(voiceCommandManager.deleteCommandsForVoiceCommands(commands).size(), 2);
+		// when we only send one command to update, we should only be returned one add command
+		assertEquals(voiceCommandManager.addCommandsForVoiceCommands(Collections.singletonList(command)).size(), 1);
+
+		// Send a new single command, and test that its listener works, as it gets called from the VCM
+		voiceCommandManager.setVoiceCommands(Collections.singletonList(command3));
+
+		// Fake onCommand - we want to make sure that we can pass back onCommand events to our VoiceCommand Objects
+		OnCommand onCommand = new OnCommand();
+		onCommand.setCmdID(command3.getCommandId());
+		onCommand.setTriggerSource(TriggerSource.TS_VR); // these are voice commands
+		commandListener.onNotified(onCommand); // send off the notification
+
+		// verify the mock listener has only been hit once
+		verify(command3.getVoiceCommandSelectionListener(), times(1)).onVoiceCommandSelected();
 	}
 
 	// Emulate what happens when Core sends OnHMIStatus notification
