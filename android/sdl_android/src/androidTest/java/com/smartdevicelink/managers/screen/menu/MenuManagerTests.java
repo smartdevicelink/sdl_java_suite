@@ -32,9 +32,26 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
+import android.content.Context;
+
 import com.smartdevicelink.AndroidTestCase2;
 
 public class MenuManagerTests extends AndroidTestCase2 {
 
+	public static final String TAG = "MenuManagerTests";
+	private Context mTestContext;
+
+	// SETUP / HELPERS
+
+	@Override
+	public void setUp() throws Exception{
+		super.setUp();
+		mTestContext = this.getContext();
+	}
+
+	@Override
+	public void tearDown() throws Exception {
+		super.tearDown();
+	}
 
 }

@@ -55,20 +55,20 @@ import java.util.List;
 
 abstract class BaseVoiceCommandManager extends BaseSubManager {
 
-	private List<VoiceCommand> voiceCommands;
-	private List<VoiceCommand> oldVoiceCommands;
+	List<VoiceCommand> voiceCommands;
+	List<VoiceCommand> oldVoiceCommands;
 
-	private List<AddCommand> inProgressUpdate;
+	List<AddCommand> inProgressUpdate;
 
-	private int lastVoiceCommandId;
+	int lastVoiceCommandId;
 	private static final int voiceCommandIdMin = 1900000000;
 
-	private boolean waitingOnHMIUpdate;
-	private boolean hasQueuedUpdate;
+	boolean waitingOnHMIUpdate;
+	boolean hasQueuedUpdate;
 
-	private HMILevel currentHMILevel;
-	private OnRPCNotificationListener hmiListener;
-	private OnRPCNotificationListener commandListener;
+	HMILevel currentHMILevel;
+	OnRPCNotificationListener hmiListener;
+	OnRPCNotificationListener commandListener;
 
 	// CONSTRUCTORS
 
