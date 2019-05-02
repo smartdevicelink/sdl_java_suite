@@ -444,7 +444,7 @@ public class SdlProtocolBase {
         if (supportedSecondaryTransports != null) {
             for (TransportType supportedSecondary : supportedSecondaryTransports) {
                 if(!onlyHighBandwidth || supportedSecondary == TransportType.USB || supportedSecondary == TransportType.TCP) {
-                    if (transportManager.isConnected(supportedSecondary, null)) {
+                    if (transportManager != null && transportManager.isConnected(supportedSecondary, null)) {
                         //A supported secondary transport is already connected
                         return true;
                     } else if (secondaryTransportParams != null && secondaryTransportParams.containsKey(supportedSecondary)) {
@@ -1132,7 +1132,9 @@ public class SdlProtocolBase {
             TransportRecord transportRecord = getTransportForSession(SessionType.RPC);
             if(transportRecord == null && !requestedSession){ //There is currently no transport registered
                 requestedSession = true;
-                transportManager.requestNewSession(getPreferredTransport(requestedPrimaryTransports,connectedTransports));
+                if (transportManager != null) {
+                    transportManager.requestNewSession(getPreferredTransport(requestedPrimaryTransports, connectedTransports));
+                }
             }
             onTransportsConnectedUpdate(connectedTransports);
             if(DebugTool.isDebugEnabled()){
@@ -1144,7 +1146,9 @@ public class SdlProtocolBase {
         public void onTransportDisconnected(String info, TransportRecord disconnectedTransport, List<TransportRecord> connectedTransports) {
             if (disconnectedTransport == null) {
                 Log.d(TAG, "onTransportDisconnected");
-                transportManager.close(iSdlProtocol.getSessionId());
+                if (transportManager != null) {
+                    transportManager.close(iSdlProtocol.getSessionId());
+                }
                 iSdlProtocol.shutdown("No transports left connected");
                 return;
             } else {
@@ -1180,7 +1184,9 @@ public class SdlProtocolBase {
                     }
                 }
                 connectedPrimaryTransport = null;
-                transportManager.close(iSdlProtocol.getSessionId());
+                if (transportManager != null) {
+                    transportManager.close(iSdlProtocol.getSessionId());
+                }
                 transportManager = null;
                 requestedSession = false;
 
