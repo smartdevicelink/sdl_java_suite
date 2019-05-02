@@ -49,6 +49,7 @@ import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
+import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -262,6 +263,7 @@ public class TransportManager extends TransportManagerBase{
 
     protected class TransportBrokerImpl extends TransportBroker{
 
+        boolean shuttingDown = false;
         public TransportBrokerImpl(Context context, String appId, ComponentName routerService){
             super(context,appId,routerService);
         }
@@ -274,8 +276,12 @@ public class TransportManager extends TransportManagerBase{
         }
 
         @Override
-        public boolean onHardwareConnected(List<TransportRecord> transports) {
+        public synchronized boolean onHardwareConnected(List<TransportRecord> transports) {
             super.onHardwareConnected(transports);
+            DebugTool.logInfo("OnHardwareConnected");
+            if(shuttingDown){
+                return false;
+            }
             synchronized (TRANSPORT_STATUS_LOCK){
                 transportStatus.clear();
                 transportStatus.addAll(transports);
@@ -286,14 +292,16 @@ public class TransportManager extends TransportManagerBase{
 
 
         @Override
-        public void onHardwareDisconnected(TransportRecord record, List<TransportRecord> connectedTransports) {
+        public synchronized void onHardwareDisconnected(TransportRecord record, List<TransportRecord> connectedTransports) {
             if(record != null){
                 Log.d(TAG, "Transport disconnected - " + record);
             }else{
                 Log.d(TAG, "Transport disconnected");
 
             }
-
+            if(shuttingDown){
+                return;
+            }
             synchronized (TRANSPORT_STATUS_LOCK){
                 boolean wasRemoved = TransportManager.this.transportStatus.remove(record);
                 //Might check connectedTransports vs transportStatus to ensure they are equal
@@ -328,13 +336,39 @@ public class TransportManager extends TransportManagerBase{
 
             if(isLegacyModeEnabled()
                     && record != null
-                    && TransportType.BLUETOOTH.equals(record.getType()) //Make sure it's bluetooth that has be d/c
-                    && legacyBluetoothTransport == null){ //Make sure we aren't already in legacy mode
-                //Legacy mode has been enabled so we need to cycle
-                enterLegacyMode("Router service has enabled legacy mode");
+                    && TransportType.BLUETOOTH.equals(record.getType())){ //Make sure it's bluetooth that has be d/c
+                    //&& legacyBluetoothTransport == null){ //Make sure we aren't already in legacy mode
+                if(legacyBluetoothTransport == null) {
+                    //Legacy mode has been enabled so we need to cycle
+                    enterLegacyModeAndStart("Router service has enabled legacy mode");
+                }
             }else{
                 //Inform the transport listener that a transport has disconnected
                 transportListener.onTransportDisconnected("", record, connectedTransports);
+            }
+        }
+
+        @Override
+        public synchronized void onLegacyModeEnabled() {
+            if(shuttingDown){
+                return;
+            }
+            if( legacyBluetoothTransport == null){
+                //First remove the connected bluetooth transport if one exists
+                TransportRecord toBeRemoved = null;
+                for (TransportRecord transportRecord : TransportManager.this.transportStatus) {
+                    if (TransportType.BLUETOOTH.equals(transportRecord.getType())) {
+                        //There was a previously connected bluetooth transport through the router service
+                        toBeRemoved = transportRecord;
+                        break;
+                    }
+                }
+
+                if(toBeRemoved != null){ //Remove item after the loop to avoid concurrent modifications
+                    TransportManager.this.transportStatus.remove(toBeRemoved);
+                }
+
+                enterLegacyModeAndStart("Router service has enabled legacy mode");
             }
         }
 
@@ -344,7 +378,22 @@ public class TransportManager extends TransportManagerBase{
                 transportListener.onPacketReceived((SdlPacket)packet);
             }
         }
+
+        @Override
+        public synchronized void stop() {
+            shuttingDown = true;
+            super.stop();
+        }
     }
+
+    void enterLegacyModeAndStart(final String info){
+        enterLegacyMode(info);
+        if(legacyBluetoothTransport != null
+                && legacyBluetoothTransport.getState() == MultiplexBaseTransport.STATE_NONE){
+            legacyBluetoothTransport.start();
+        }
+    }
+
 
     @Override
     synchronized void enterLegacyMode(final String info){
@@ -434,6 +483,10 @@ public class TransportManager extends TransportManagerBase{
                             // Currently attempting to connect - update UI?
                             break;
                         case MultiplexBaseTransport.STATE_LISTEN:
+                            if(service.transport != null){
+                                service.transport.stop();
+                                service.transport = null;
+                            }
                             break;
                         case MultiplexBaseTransport.STATE_NONE:
                             // We've just lost the connection
