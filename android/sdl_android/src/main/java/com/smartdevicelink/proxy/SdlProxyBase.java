@@ -6302,8 +6302,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		if (sdlMsgVersion == null) {
 			sdlMsgVersion = new SdlMsgVersion();
-			sdlMsgVersion.setMajorVersion(MAX_SUPPORTED_RPC_VERSION.getMajor());
-			sdlMsgVersion.setMinorVersion(MAX_SUPPORTED_RPC_VERSION.getMinor());
+			if(protocolVersion.getMajor() == 1) {
+				DebugTool.logInfo("Connected to an older module, must send 1.0.0 as RPC spec");
+				sdlMsgVersion.setMajorVersion(1);
+				sdlMsgVersion.setMinorVersion(0);
+			}else {
+				sdlMsgVersion.setMajorVersion(MAX_SUPPORTED_RPC_VERSION.getMajor());
+				sdlMsgVersion.setMinorVersion(MAX_SUPPORTED_RPC_VERSION.getMinor());
+			}
 		}
 		if (languageDesired == null) {
 			languageDesired = Language.EN_US;

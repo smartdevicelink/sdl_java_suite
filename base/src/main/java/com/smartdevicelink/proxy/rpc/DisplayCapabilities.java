@@ -36,6 +36,7 @@ import android.support.annotation.NonNull;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
+import com.smartdevicelink.util.Version;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -142,6 +143,17 @@ public class DisplayCapabilities extends RPCStruct {
         setMediaClockFormats(mediaClockFormats);
         setGraphicSupported(graphicSupported);
     }
+
+    @Override
+    public void format(Version rpcVersion, boolean formatParams) {
+        super.format(rpcVersion, formatParams);
+        if(!store.containsKey(KEY_GRAPHIC_SUPPORTED)){
+            // At some point this was added to the RPC spec as mandatory but at least in v1.0.0
+            // it was not included.
+            store.put(KEY_GRAPHIC_SUPPORTED, new Boolean(false));
+        }
+    }
+
     /**
      * Get the type of display
      * @return the type of display
