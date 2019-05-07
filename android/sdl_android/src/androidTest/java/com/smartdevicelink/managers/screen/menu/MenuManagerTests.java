@@ -163,7 +163,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.menuCells.size(), 0);
 		assertEquals(menuManager.waitingUpdateMenuCells.size(), 4);
 		assertEquals(menuManager.currentHMILevel, HMILevel.HMI_NONE);
-		// The VCM should send the pending voice commands once HMI full occurs
+		// The Menu Manager should send new menu once HMI full occurs
 		sendFakeCoreOnHMIFullNotifications();
 		// Listener should be triggered - which sets new HMI level and should proceed to send our pending update
 		assertEquals(menuManager.currentHMILevel, HMILevel.HMI_FULL);
@@ -193,7 +193,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 				// Fake onCommand - we want to make sure that we can pass back onCommand events to our root Menu Cell
 				OnCommand onCommand = new OnCommand();
 				onCommand.setCmdID(cell.getCellId());
-				onCommand.setTriggerSource(TriggerSource.TS_MENU); // these are voice commands
+				onCommand.setTriggerSource(TriggerSource.TS_MENU); // these are menu commands
 				commandListener.onNotified(onCommand); // send off the notification
 
 				// verify the mock listener has only been hit once for a root cell
@@ -204,7 +204,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 				// Fake onCommand - we want to make sure that we can pass back onCommand events to our sub Menu Cell
 				OnCommand onCommand2 = new OnCommand();
 				onCommand2.setCmdID(cell.getCellId());
-				onCommand2.setTriggerSource(TriggerSource.TS_MENU); // these are voice commands
+				onCommand2.setTriggerSource(TriggerSource.TS_MENU); // these are menu commands
 				commandListener.onNotified(onCommand2); // send off the notification
 
 				// verify the mock listener has only been hit once for a sub cell
@@ -225,7 +225,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		// some arts
 		SdlArtwork livio = new SdlArtwork("livio", FileType.GRAPHIC_PNG, R.drawable.sdl_lockscreen_icon, false);
 
-		// some voice commands
+		// some menu cells
 		List<String> voice2 = Collections.singletonList("Cell two");
 
 		mainCell1 = new MenuCell("Test Cell 1", livio, null, menuSelectionListener1);
