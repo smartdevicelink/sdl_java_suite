@@ -78,7 +78,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	List<MenuCell> menuCells, waitingUpdateMenuCells, oldMenuCells;
 	List<RPCRequest> inProgressUpdate;
 
-	private boolean waitingOnHMIUpdate;
+	boolean waitingOnHMIUpdate;
 	private boolean hasQueuedUpdate;
 	HMILevel currentHMILevel;
 
@@ -454,7 +454,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// DELETES
 
-	private List<RPCRequest> deleteCommandsForCells(List<MenuCell> cells){
+	List<RPCRequest> deleteCommandsForCells(List<MenuCell> cells){
 		List<RPCRequest> deletes = new ArrayList<>();
 		for (MenuCell cell : cells){
 			if (cell.getSubCells() == null){
@@ -495,7 +495,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		return builtCommands;
 	}
 
-	private List<RPCRequest> allCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork){
+	List<RPCRequest> allCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork){
 		List<RPCRequest> builtCommands = new ArrayList<>();
 
 		// We need the index so we will use this type of loop

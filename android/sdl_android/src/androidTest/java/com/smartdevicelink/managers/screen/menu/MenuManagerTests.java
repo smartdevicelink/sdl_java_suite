@@ -40,10 +40,12 @@ import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 import org.mockito.invocation.InvocationOnMock;
@@ -57,12 +59,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class MenuManagerTests extends AndroidTestCase2 {
 
-	private OnRPCNotificationListener onHMIStatusListener;
+	private OnRPCNotificationListener onHMIStatusListener, commandListener;
 	private MenuManager menuManager;
-	private MenuCell mainCell1, mainCell3, mainCell2, mainCell4;
+	private List<MenuCell> cells;
+	private MenuCell mainCell1, mainCell4;
 
 	// SETUP / HELPERS
 
@@ -70,8 +75,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 	public void setUp() throws Exception{
 		super.setUp();
 
-		// Create our menu cells
-		createTestCells();
+		cells = createTestCells();
 
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
@@ -93,7 +97,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 			@Override
 			public Void answer(InvocationOnMock invocation) {
 				Object[] args = invocation.getArguments();
-				OnRPCNotificationListener commandListener = (OnRPCNotificationListener) args[1];
+				commandListener = (OnRPCNotificationListener) args[1];
 				return null;
 			}
 		};
@@ -148,7 +152,68 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		});
 	}
 
-	private void createTestCells(){
+	public void testHMINotReady(){
+
+		menuManager.currentHMILevel = HMILevel.HMI_NONE;
+		menuManager.setMenuCells(cells);
+
+		// updating voice commands before HMI is ready
+		assertTrue(menuManager.waitingOnHMIUpdate);
+		// these are the 2 commands we have waiting
+		assertEquals(menuManager.menuCells.size(), 0);
+		assertEquals(menuManager.waitingUpdateMenuCells.size(), 4);
+		assertEquals(menuManager.currentHMILevel, HMILevel.HMI_NONE);
+		// The VCM should send the pending voice commands once HMI full occurs
+		sendFakeCoreOnHMIFullNotifications();
+		// Listener should be triggered - which sets new HMI level and should proceed to send our pending update
+		assertEquals(menuManager.currentHMILevel, HMILevel.HMI_FULL);
+		// This being false means it received the hmi notification and sent the pending commands
+		assertFalse(menuManager.waitingOnHMIUpdate);
+	}
+
+	public void testUpdating(){
+
+		assertEquals(menuManager.oldMenuCells.size(), 0); // these were deleted with the previous series of deletions
+		assertEquals(menuManager.deleteCommandsForCells(cells).size(), 4); // 3 root cells and 1 sub menu
+
+		// when we only send one command to update, we should only be returned one add command
+		List<MenuCell> newArray = Arrays.asList(mainCell1, mainCell4);
+		assertEquals(menuManager.allCommandsForCells(newArray, false).size(), 4); // 1 root cells, 1 sub menu root cell, 2 sub menu cells
+
+		menuManager.setMenuCells(newArray);
+
+		// Unlike voice commands, the Menu Manager dynamically assigns Cell ID's. Because of this, we need to get the updated
+		// cell list after setting it and then test the listeners, as they use the newly assigned cell ID's.
+		List<MenuCell> updatedCells = menuManager.getMenuCells();
+
+		for (MenuCell cell : updatedCells){
+
+			// grab 2 of our newly updated cells - 1 root and 1 sub cell, and make sure they can get triggered
+			if (cell.getDescription().equalsIgnoreCase("Test Cell 1")){
+				// Fake onCommand - we want to make sure that we can pass back onCommand events to our root Menu Cell
+				OnCommand onCommand = new OnCommand();
+				onCommand.setCmdID(cell.getCellId());
+				onCommand.setTriggerSource(TriggerSource.TS_MENU); // these are voice commands
+				commandListener.onNotified(onCommand); // send off the notification
+
+				// verify the mock listener has only been hit once for a root cell
+				verify(cell.getMenuSelectionListener(), times(1)).onTriggered(TriggerSource.TS_MENU);
+			}
+
+			if (cell.getDescription().equalsIgnoreCase("SubCell 2")){
+				// Fake onCommand - we want to make sure that we can pass back onCommand events to our sub Menu Cell
+				OnCommand onCommand2 = new OnCommand();
+				onCommand2.setCmdID(cell.getCellId());
+				onCommand2.setTriggerSource(TriggerSource.TS_MENU); // these are voice commands
+				commandListener.onNotified(onCommand2); // send off the notification
+
+				// verify the mock listener has only been hit once for a sub cell
+				verify(cell.getMenuSelectionListener(), times(1)).onTriggered(TriggerSource.TS_MENU);
+			}
+		}
+	}
+
+	private List<MenuCell> createTestCells(){
 
 		// menu cell mock listener
 		MenuSelectionListener menuSelectionListener1 = mock(MenuSelectionListener.class);
@@ -164,14 +229,16 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		List<String> voice2 = Collections.singletonList("Cell two");
 
 		mainCell1 = new MenuCell("Test Cell 1", livio, null, menuSelectionListener1);
-		mainCell2 = new MenuCell("Test Cell 2", livio, voice2, menuSelectionListener2);
-		mainCell3 = new MenuCell("Test Cell 3", menuSelectionListener3);
+		MenuCell mainCell2 = new MenuCell("Test Cell 2", livio, voice2, menuSelectionListener2);
+		MenuCell mainCell3 = new MenuCell("Test Cell 3", menuSelectionListener3);
 
 		// SUB MENU
 		MenuCell subCell1 = new MenuCell("SubCell 1", menuSelectionListenerSub1);
 		MenuCell subCell2 = new MenuCell("SubCell 2", menuSelectionListenerSub2);
 
 		mainCell4 = new MenuCell("Test Cell 4", livio, Arrays.asList(subCell1,subCell2)); // sub menu parent cell
+
+		return Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4);
 	}
 
 	// Emulate what happens when Core sends OnHMIStatus notification
