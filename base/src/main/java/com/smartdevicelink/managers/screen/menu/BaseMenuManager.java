@@ -75,26 +75,23 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	private final WeakReference<FileManager> fileManager;
 
-	private List<MenuCell> menuCells;
-	private List<MenuCell> waitingUpdateMenuCells;
-	private List<MenuCell> oldMenuCells;
-	private List<RPCRequest> inProgressUpdate;
+	List<MenuCell> menuCells, waitingUpdateMenuCells, oldMenuCells;
+	List<RPCRequest> inProgressUpdate;
 
 	private boolean waitingOnHMIUpdate;
 	private boolean hasQueuedUpdate;
-	private HMILevel currentHMILevel;
+	HMILevel currentHMILevel;
 
-	private OnRPCNotificationListener hmiListener;
-	private OnRPCNotificationListener commandListener;
-	private OnSystemCapabilityListener displayListener;
-	private DisplayCapabilities displayCapabilities;
+	OnRPCNotificationListener hmiListener, commandListener;
+	OnSystemCapabilityListener displayListener;
+	DisplayCapabilities displayCapabilities;
 
 	private static final int MAX_ID = 2000000000;
 	private static final int parentIdNotFound = MAX_ID;
 	private static final int menuCellIdMin = 1;
-	private int lastMenuId;
+	int lastMenuId;
 
-	private SystemContext currentSystemContext;
+	SystemContext currentSystemContext;
 
 	BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
 
