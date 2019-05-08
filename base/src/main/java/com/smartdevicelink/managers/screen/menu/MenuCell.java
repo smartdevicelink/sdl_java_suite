@@ -266,10 +266,10 @@ public class MenuCell {
 	@Override
 	public int hashCode() {
 		int result = 1;
-		result = result + ((getTitle() == null) ? 0 : getTitle().hashCode());
-		result = result + ((getIcon() == null || getIcon().getName() == null) ? 0 : getIcon().getName().hashCode());
-		result = result + ((getVoiceCommands() == null) ? 0 : getVoiceCommands().hashCode());
-		result = result + ((getSubCells() == null) ? 0 : getSubCells().hashCode());
+		result = result + ((getTitle() == null) ? 0 : Integer.rotateLeft(getTitle().hashCode(), 2));
+		result = result + ((getIcon() == null || getIcon().getName() == null) ? 0 : Integer.rotateLeft(getIcon().getName().hashCode(), 3));
+		result = result + ((getVoiceCommands() == null) ? 0 : Integer.rotateLeft(getVoiceCommands().hashCode(), 4));
+		result = result + ((getSubCells() == null) ? 0 : Integer.rotateLeft(getSubCells().hashCode(), 5));
 		return result;
 	}
 
