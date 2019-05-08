@@ -779,20 +779,24 @@ public class SdlProtocolBase {
                     }
                 };
 
-                if(transportManager.isConnected(secondaryTransportType,null)){
-                    //The transport is actually connected, however no service has been registered
-                    listenerList.add(secondaryListener);
-                    registerSecondaryTransport(sessionID,transportManager.getTransportRecord(secondaryTransportType,null));
-                }else if(secondaryTransportParams != null && secondaryTransportParams.containsKey(secondaryTransportType)) {
-                    //No acceptable secondary transport is connected, so first one must be connected
-                    header.setTransportRecord(new TransportRecord(secondaryTransportType,""));
-                    listenerList.add(secondaryListener);
-                    transportManager.requestSecondaryTransportConnection(sessionID,secondaryTransportParams.get(secondaryTransportType));
-                }else{
-                    Log.w(TAG, "No params to connect to secondary transport");
-                    //Unable to register or start a secondary connection. Use the callback in case
-                    //there is a chance to use the primary transport for this service.
-                    secondaryListener.onConnectionFailure();
+                if (transportManager != null) {
+                    if (transportManager.isConnected(secondaryTransportType, null)) {
+                        //The transport is actually connected, however no service has been registered
+                        listenerList.add(secondaryListener);
+                        registerSecondaryTransport(sessionID, transportManager.getTransportRecord(secondaryTransportType, null));
+                    } else if (secondaryTransportParams != null && secondaryTransportParams.containsKey(secondaryTransportType)) {
+                        //No acceptable secondary transport is connected, so first one must be connected
+                        header.setTransportRecord(new TransportRecord(secondaryTransportType, ""));
+                        listenerList.add(secondaryListener);
+                        transportManager.requestSecondaryTransportConnection(sessionID, secondaryTransportParams.get(secondaryTransportType));
+                    } else {
+                        Log.w(TAG, "No params to connect to secondary transport");
+                        //Unable to register or start a secondary connection. Use the callback in case
+                        //there is a chance to use the primary transport for this service.
+                        secondaryListener.onConnectionFailure();
+                    }
+                } else {
+                    Log.e(TAG, "transportManager is null");
                 }
 
             }
