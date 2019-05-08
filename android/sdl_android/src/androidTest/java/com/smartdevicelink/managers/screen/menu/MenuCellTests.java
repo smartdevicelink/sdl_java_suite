@@ -88,4 +88,23 @@ public class MenuCellTests extends AndroidTestCase2 {
 		assertEquals(menuCell4.getMenuSelectionListener(), menuSelectionListener);
 	}
 
+	public void testEquality(){
+
+		//We should use assertTrue (or assertFalse) because we want to use the overridden equals() method
+
+		MenuCell menuCell = new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST, menuSelectionListener);
+		MenuCell menuCell2 = new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST, menuSelectionListener);
+
+		// these are the same object, should be equal.
+		assertTrue(menuCell.equals(menuCell));
+
+		// Make sure these are marked as equals, even though they are different objects
+		assertTrue(menuCell.equals(menuCell2));
+
+		MenuCell menuCell3 = new MenuCell(Test.GENERAL_STRING, null, Test.GENERAL_STRING_LIST, menuSelectionListener);
+
+		// these should be different
+		assertFalse(menuCell.equals(menuCell3));
+	}
+
 }

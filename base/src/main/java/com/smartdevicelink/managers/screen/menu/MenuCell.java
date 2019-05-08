@@ -38,6 +38,7 @@ import android.support.annotation.Nullable;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MenuCell {
 
@@ -256,5 +257,33 @@ public class MenuCell {
 		return "MenuCell - ID: "+cellId+ " title: "+ title + " ArtworkName: "+
 				icon.getName() + " VoiceCommands: "+ voiceCommands.size() +  " isSubCell: " + (parentCellId != Integer.MAX_VALUE ? "YES":"NO")+
 				" hasSubCells: "+ (subCells != null && subCells.size() > 0 ? "YES":"NO");
+	}
+
+	/**
+	 * Hash the parameters of the object and return the result for comparison
+	 * @return the hash code as an int
+	 */
+	@Override
+	public int hashCode() {
+		int result = 1;
+		result = result + ((getTitle() == null) ? 0 : getTitle().hashCode());
+		result = result + ((getIcon() == null || getIcon().getName() == null) ? 0 : getIcon().getName().hashCode());
+		result = result + ((getVoiceCommands() == null) ? 0 : getVoiceCommands().hashCode());
+		result = result + ((getSubCells() == null) ? 0 : getSubCells().hashCode());
+		return result;
+	}
+
+
+	/**
+	 * Uses our custom hash
+	 * @param o - The object to compare
+	 * @return boolean of whether the objects are the same or not
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof MenuCell)) return false;
+		MenuCell menuCell = (MenuCell) o;
+		return hashCode() == menuCell.hashCode();
 	}
 }
