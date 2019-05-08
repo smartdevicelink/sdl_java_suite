@@ -260,6 +260,7 @@ public class MenuCell {
 	}
 
 	/**
+	 * Note: You should compare using the {@link #equals(Object)} method. <br>
 	 * Hash the parameters of the object and return the result for comparison
 	 * For each param, increase the rotation distance by one.
 	 * It is necessary to rotate each of our properties because a simple bitwise OR will produce equivalent results if, for example:
@@ -279,7 +280,7 @@ public class MenuCell {
 
 
 	/**
-	 * Uses our custom hash for MenuCell objects, but does <strong>NOT</strong> compare the listener objects
+	 * Uses our custom hashCode for MenuCell objects, but does <strong>NOT</strong> compare the listener objects
 	 * @param o - The object to compare
 	 * @return boolean of whether the objects are the same or not
 	 */
