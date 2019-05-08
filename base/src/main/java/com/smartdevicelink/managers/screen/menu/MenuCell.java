@@ -261,21 +261,25 @@ public class MenuCell {
 
 	/**
 	 * Hash the parameters of the object and return the result for comparison
+	 * For each param, increase the rotation distance by one.
+	 * It is necessary to rotate each of our properties because a simple bitwise OR will produce equivalent results if, for example:
+	 * Object 1: getText() = "Hi", getSecondaryText() = "Hello"
+	 * Object 2: getText() = "Hello", getSecondaryText() = "Hi"
 	 * @return the hash code as an int
 	 */
 	@Override
 	public int hashCode() {
 		int result = 1;
-		result = result + ((getTitle() == null) ? 0 : Integer.rotateLeft(getTitle().hashCode(), 2));
-		result = result + ((getIcon() == null || getIcon().getName() == null) ? 0 : Integer.rotateLeft(getIcon().getName().hashCode(), 3));
-		result = result + ((getVoiceCommands() == null) ? 0 : Integer.rotateLeft(getVoiceCommands().hashCode(), 4));
-		result = result + ((getSubCells() == null) ? 0 : Integer.rotateLeft(getSubCells().hashCode(), 5));
+		result += ((getTitle() == null) ? 0 : Integer.rotateLeft(getTitle().hashCode(), 2));
+		result += ((getIcon() == null || getIcon().getName() == null) ? 0 : Integer.rotateLeft(getIcon().getName().hashCode(), 3));
+		result += ((getVoiceCommands() == null) ? 0 : Integer.rotateLeft(getVoiceCommands().hashCode(), 4));
+		result += ((getSubCells() == null) ? 0 : Integer.rotateLeft(getSubCells().hashCode(), 5));
 		return result;
 	}
 
 
 	/**
-	 * Uses our custom hash
+	 * Uses our custom hash for MenuCell objects, but does <strong>NOT</strong> compare the listener objects
 	 * @param o - The object to compare
 	 * @return boolean of whether the objects are the same or not
 	 */
