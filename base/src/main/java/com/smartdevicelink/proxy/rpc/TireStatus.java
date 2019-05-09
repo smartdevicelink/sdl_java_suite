@@ -101,7 +101,7 @@ import java.util.Hashtable;
  */
 
 public class TireStatus extends RPCStruct {
-	public static final String KEY_PRESSURE_TELL_TALE = "pressureTellTale";
+	public static final String KEY_PRESSURE_TELL_TALE = "pressureTelltale";
 	public static final String KEY_LEFT_FRONT = "leftFront";
 	public static final String KEY_RIGHT_FRONT = "rightFront";
 	public static final String KEY_LEFT_REAR = "leftRear";
