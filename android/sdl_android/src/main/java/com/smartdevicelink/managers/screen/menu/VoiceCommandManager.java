@@ -41,9 +41,9 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
  *
  * The VoiceCommandManager takes a List of VoiceCommand objects and sets them on the Head unit for you.
  */
-class VoiceCommandManager extends BaseVoiceCommandManager {
+public class VoiceCommandManager extends BaseVoiceCommandManager {
 
-	VoiceCommandManager(ISdl internalInterface) {
+	public VoiceCommandManager(ISdl internalInterface) {
 		// setup
 		super(internalInterface);
 	}

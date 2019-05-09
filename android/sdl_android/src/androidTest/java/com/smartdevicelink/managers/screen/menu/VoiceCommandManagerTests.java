@@ -112,8 +112,8 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 		assertFalse(voiceCommandManager.waitingOnHMIUpdate);
 		assertNotNull(voiceCommandManager.commandListener);
 		assertNotNull(voiceCommandManager.hmiListener);
-		assertNotNull(voiceCommandManager.voiceCommands);
-		assertNotNull(voiceCommandManager.oldVoiceCommands);
+		assertNull(voiceCommandManager.voiceCommands);
+		assertNull(voiceCommandManager.oldVoiceCommands);
 		assertNull(voiceCommandManager.inProgressUpdate);
 	}
 
@@ -171,8 +171,6 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 
 		// we have previously sent 2 VoiceCommand objects. we will now update it and have just one
 
-		// This should have been cleared, but still initialized after the last send
-		assertEquals(voiceCommandManager.oldVoiceCommands.size(), 0);
 		// make sure the system returns us 2 delete commands
 		assertEquals(voiceCommandManager.deleteCommandsForVoiceCommands(commands).size(), 2);
 		// when we only send one command to update, we should only be returned one add command

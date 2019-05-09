@@ -150,7 +150,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		waitingOnHMIUpdate = false;
 
 		// Update our Lists
-		this.oldMenuCells = new ArrayList<>(menuCells);
+		this.oldMenuCells = new ArrayList<>(menuCells != null ? menuCells : cells);
 		menuCells = new ArrayList<>(cells);
 
 		// HashSet order doesnt matter / does not allow duplicates
@@ -308,7 +308,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		List<RPCRequest> mainMenuCommands;
 		final List<RPCRequest> subMenuCommands;
 
-		if (findAllArtworksToBeUploadedFromCells(menuCells).size() == 0 || !supportsImages()){
+		if (findAllArtworksToBeUploadedFromCells(menuCells).size() > 0 || !supportsImages()){
 			// Send artwork-less menu
 			mainMenuCommands = mainMenuCommandsForCells(menuCells, false);
 			subMenuCommands = subMenuCommandsForCells(menuCells, false);
