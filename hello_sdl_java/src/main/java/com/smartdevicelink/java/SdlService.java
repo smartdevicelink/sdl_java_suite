@@ -37,6 +37,10 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.screen.menu.MenuCell;
+import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
+import com.smartdevicelink.managers.screen.menu.VoiceCommand;
+import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.TTSChunkFactory;
@@ -44,13 +48,14 @@ import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.DebugTool;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Vector;
+import java.util.*;
+
+import static javafx.scene.input.KeyCode.R;
 
 public class SdlService {
 
@@ -141,28 +146,13 @@ public class SdlService {
                 public void onNotified(RPCNotification notification) {
                     OnHMIStatus status = (OnHMIStatus) notification;
                     if (status.getHmiLevel() == HMILevel.HMI_FULL && ((OnHMIStatus) notification).getFirstRun()) {
-                        sendCommands();
+                        setVoiceCommands();
+                        sendMenus();
                         performWelcomeSpeak();
                         performWelcomeShow();
                     }
                 }
             });
-
-            notificationListenerHashMap.put(FunctionID.ON_COMMAND, new OnRPCNotificationListener() {
-                @Override
-                public void onNotified(RPCNotification notification) {
-                    OnCommand command = (OnCommand) notification;
-                    Integer id = command.getCmdID();
-                    if(id != null){
-                        switch(id){
-                            case TEST_COMMAND_ID:
-                                showTest();
-                                break;
-                        }
-                    }
-                }
-            });
-
 
             // Create App Icon, this is set in the SdlManager builder
             SdlArtwork appIcon = new SdlArtwork(ICON_FILENAME, FileType.GRAPHIC_PNG, IMAGE_DIR+"sdl_s_green.png", true);
@@ -177,17 +167,86 @@ public class SdlService {
         }
     }
 
-    /**
-     *  Add commands for the app on SDL.
+/**
+     * Send some voice commands
      */
-    private void sendCommands(){
-        AddCommand command = new AddCommand();
-        MenuParams params = new MenuParams();
-        params.setMenuName(TEST_COMMAND_NAME);
-        command.setCmdID(TEST_COMMAND_ID);
-        command.setMenuParams(params);
-        command.setVrCommands(Collections.singletonList(TEST_COMMAND_NAME));
-        sdlManager.sendRPC(command);
+    private void setVoiceCommands(){
+
+        List<String> list1 = Arrays.asList("Command One");
+        List<String> list2 = Arrays.asList("Command two");
+
+        VoiceCommand voiceCommand1 = new VoiceCommand(list1, new VoiceCommandSelectionListener() {
+            @Override
+            public void onVoiceCommandSelected() {
+                Log.i(TAG, "Voice Command 1 triggered");
+            }
+        });
+
+        VoiceCommand voiceCommand2 = new VoiceCommand(list2, new VoiceCommandSelectionListener() {
+            @Override
+            public void onVoiceCommandSelected() {
+                Log.i(TAG, "Voice Command 2 triggered");
+            }
+        });
+
+        sdlManager.getScreenManager().setVoiceCommands(Arrays.asList(voiceCommand1,voiceCommand2));
+    }
+
+    /**
+     *  Add menus for the app on SDL.
+     */
+    private void sendMenus(){
+
+        // some arts
+        SdlArtwork livio = new SdlArtwork(ICON_FILENAME, FileType.GRAPHIC_PNG, IMAGE_DIR+"sdl_s_green.png", true);
+
+        // some voice commands
+        List<String> voice2 = Collections.singletonList("Cell two");
+
+        MenuCell mainCell1 = new MenuCell("Test Cell 1", livio, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+                Log.i(TAG, "Test cell 1 triggered. Source: "+ trigger.toString());
+            }
+        });
+
+        MenuCell mainCell2 = new MenuCell("Test Cell 2", null, voice2, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+                Log.i(TAG, "Test cell 2 triggered. Source: "+ trigger.toString());
+            }
+        });
+
+        // SUB MENU
+
+        MenuCell subCell1 = new MenuCell("SubCell 1",null, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+                Log.i(TAG, "Sub cell 1 triggered. Source: "+ trigger.toString());
+            }
+        });
+
+        MenuCell subCell2 = new MenuCell("SubCell 2",null, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+                Log.i(TAG, "Sub cell 2 triggered. Source: "+ trigger.toString());
+            }
+        });
+
+        // sub menu parent cell
+        MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", livio, Arrays.asList(subCell1,subCell2));
+
+        MenuCell mainCell4 = new MenuCell("Clear the menu",null, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+                Log.i(TAG, "Clearing Menu. Source: "+ trigger.toString());
+                // Clear this thing
+                sdlManager.getScreenManager().setMenu(Collections.<MenuCell>emptyList());
+            }
+        });
+
+        // Send the entire menu off to be created
+        sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4));
     }
 
     /**

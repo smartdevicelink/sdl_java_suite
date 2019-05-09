@@ -228,7 +228,7 @@ public class SdlService extends Service {
 		SdlArtwork livio = new SdlArtwork("livio", FileType.GRAPHIC_PNG, R.drawable.sdl, false);
 
 		// some voice commands
-		List<String> voice2 = Arrays.asList("Cell two");
+		List<String> voice2 = Collections.singletonList("Cell two");
 
 		MenuCell mainCell1 = new MenuCell("Test Cell 1", livio, null, new MenuSelectionListener() {
 			@Override
