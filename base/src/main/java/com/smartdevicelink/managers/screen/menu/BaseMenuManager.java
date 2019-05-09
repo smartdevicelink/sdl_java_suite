@@ -525,7 +525,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position){
 		AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getTitle());
 		subMenu.setPosition(position);
-		subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon().getName() != null)) ? cell.getIcon().getImageRPC() : null);
+		subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon()!= null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);
 		return subMenu;
 	}
 

@@ -261,7 +261,7 @@ public class SdlService extends Service {
 		});
 
 		// sub menu parent cell
-		MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", livio, Arrays.asList(subCell1,subCell2));
+		MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", null, Arrays.asList(subCell1,subCell2));
 
 		MenuCell mainCell4 = new MenuCell("Clear the menu",null, null, new MenuSelectionListener() {
 			@Override
