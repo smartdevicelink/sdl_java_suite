@@ -199,8 +199,8 @@ public class SdlService extends Service {
 	 */
 	private void setVoiceCommands(){
 
-		List<String> list1 = Arrays.asList("Command One");
-		List<String> list2 = Arrays.asList("Command two");
+		List<String> list1 = Collections.singletonList("Command One");
+		List<String> list2 = Collections.singletonList("Command two");
 
 		VoiceCommand voiceCommand1 = new VoiceCommand(list1, new VoiceCommandSelectionListener() {
 			@Override
