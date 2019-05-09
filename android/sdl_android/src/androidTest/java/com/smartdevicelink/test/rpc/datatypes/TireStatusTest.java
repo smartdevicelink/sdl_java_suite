@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.TireStatus}
+ * {@link com.smartdevicelink.proxy.rpc.TireStatus}
  */
 public class TireStatusTest extends TestCase {
 	
