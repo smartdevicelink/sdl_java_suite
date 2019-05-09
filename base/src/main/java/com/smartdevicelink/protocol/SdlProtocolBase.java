@@ -444,7 +444,7 @@ public class SdlProtocolBase {
         if (supportedSecondaryTransports != null) {
             for (TransportType supportedSecondary : supportedSecondaryTransports) {
                 if(!onlyHighBandwidth || supportedSecondary == TransportType.USB || supportedSecondary == TransportType.TCP) {
-                    if (transportManager.isConnected(supportedSecondary, null)) {
+                    if (transportManager != null && transportManager.isConnected(supportedSecondary, null)) {
                         //A supported secondary transport is already connected
                         return true;
                     } else if (secondaryTransportParams != null && secondaryTransportParams.containsKey(supportedSecondary)) {
@@ -779,20 +779,24 @@ public class SdlProtocolBase {
                     }
                 };
 
-                if(transportManager.isConnected(secondaryTransportType,null)){
-                    //The transport is actually connected, however no service has been registered
-                    listenerList.add(secondaryListener);
-                    registerSecondaryTransport(sessionID,transportManager.getTransportRecord(secondaryTransportType,null));
-                }else if(secondaryTransportParams != null && secondaryTransportParams.containsKey(secondaryTransportType)) {
-                    //No acceptable secondary transport is connected, so first one must be connected
-                    header.setTransportRecord(new TransportRecord(secondaryTransportType,""));
-                    listenerList.add(secondaryListener);
-                    transportManager.requestSecondaryTransportConnection(sessionID,secondaryTransportParams.get(secondaryTransportType));
-                }else{
-                    Log.w(TAG, "No params to connect to secondary transport");
-                    //Unable to register or start a secondary connection. Use the callback in case
-                    //there is a chance to use the primary transport for this service.
-                    secondaryListener.onConnectionFailure();
+                if (transportManager != null) {
+                    if (transportManager.isConnected(secondaryTransportType, null)) {
+                        //The transport is actually connected, however no service has been registered
+                        listenerList.add(secondaryListener);
+                        registerSecondaryTransport(sessionID, transportManager.getTransportRecord(secondaryTransportType, null));
+                    } else if (secondaryTransportParams != null && secondaryTransportParams.containsKey(secondaryTransportType)) {
+                        //No acceptable secondary transport is connected, so first one must be connected
+                        header.setTransportRecord(new TransportRecord(secondaryTransportType, ""));
+                        listenerList.add(secondaryListener);
+                        transportManager.requestSecondaryTransportConnection(sessionID, secondaryTransportParams.get(secondaryTransportType));
+                    } else {
+                        Log.w(TAG, "No params to connect to secondary transport");
+                        //Unable to register or start a secondary connection. Use the callback in case
+                        //there is a chance to use the primary transport for this service.
+                        secondaryListener.onConnectionFailure();
+                    }
+                } else {
+                    Log.e(TAG, "transportManager is null");
                 }
 
             }
@@ -1132,7 +1136,9 @@ public class SdlProtocolBase {
             TransportRecord transportRecord = getTransportForSession(SessionType.RPC);
             if(transportRecord == null && !requestedSession){ //There is currently no transport registered
                 requestedSession = true;
-                transportManager.requestNewSession(getPreferredTransport(requestedPrimaryTransports,connectedTransports));
+                if (transportManager != null) {
+                    transportManager.requestNewSession(getPreferredTransport(requestedPrimaryTransports, connectedTransports));
+                }
             }
             onTransportsConnectedUpdate(connectedTransports);
             if(DebugTool.isDebugEnabled()){
@@ -1144,7 +1150,9 @@ public class SdlProtocolBase {
         public void onTransportDisconnected(String info, TransportRecord disconnectedTransport, List<TransportRecord> connectedTransports) {
             if (disconnectedTransport == null) {
                 Log.d(TAG, "onTransportDisconnected");
-                transportManager.close(iSdlProtocol.getSessionId());
+                if (transportManager != null) {
+                    transportManager.close(iSdlProtocol.getSessionId());
+                }
                 iSdlProtocol.shutdown("No transports left connected");
                 return;
             } else {
@@ -1180,7 +1188,9 @@ public class SdlProtocolBase {
                     }
                 }
                 connectedPrimaryTransport = null;
-                transportManager.close(iSdlProtocol.getSessionId());
+                if (transportManager != null) {
+                    transportManager.close(iSdlProtocol.getSessionId());
+                }
                 transportManager = null;
                 requestedSession = false;
 
