@@ -244,15 +244,6 @@ public class SdlService extends Service {
 			}
 		});
 
-		MenuCell mainCell3 = new MenuCell("Clear the menu",null, null, new MenuSelectionListener() {
-			@Override
-			public void onTriggered(TriggerSource trigger) {
-				Log.i(TAG, "Clearing Menu. Source: "+ trigger.toString());
-				// Clear this thing
-				sdlManager.getScreenManager().setMenu(Collections.<MenuCell>emptyList());
-			}
-		});
-
 		// SUB MENU
 
 		MenuCell subCell1 = new MenuCell("SubCell 1",null, null, new MenuSelectionListener() {
@@ -270,7 +261,16 @@ public class SdlService extends Service {
 		});
 
 		// sub menu parent cell
-		MenuCell mainCell4 = new MenuCell("Test Cell 4", livio, Arrays.asList(subCell1,subCell2));
+		MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", livio, Arrays.asList(subCell1,subCell2));
+
+		MenuCell mainCell4 = new MenuCell("Clear the menu",null, null, new MenuSelectionListener() {
+			@Override
+			public void onTriggered(TriggerSource trigger) {
+				Log.i(TAG, "Clearing Menu. Source: "+ trigger.toString());
+				// Clear this thing
+				sdlManager.getScreenManager().setMenu(Collections.<MenuCell>emptyList());
+			}
+		});
 
 		// Send the entire menu off to be created
 		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4));
