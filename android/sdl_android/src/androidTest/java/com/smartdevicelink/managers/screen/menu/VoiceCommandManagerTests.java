@@ -80,7 +80,7 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 		ISdl internalInterface = mock(ISdl.class);
 
 		// When internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, OnRPCNotificationListener) is called
-		// inside PermissionManager's constructor, then keep a reference to the OnRPCNotificationListener so we can trigger it later
+		// inside the VoiceCommandManager's constructor, then keep a reference to the OnRPCNotificationListener so we can trigger it later
 		// to emulate what Core does when it sends OnHMIStatus notification
 		Answer<Void> onHMIStatusAnswer = new Answer<Void>() {
 			@Override

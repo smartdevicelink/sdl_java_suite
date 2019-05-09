@@ -101,11 +101,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 		this.fileManager = new WeakReference<>(fileManager);
 		currentSystemContext = SystemContext.SYSCTXT_MAIN;
 		currentHMILevel = HMILevel.HMI_NONE;
-		menuCells = new ArrayList<>();
-		oldMenuCells = new ArrayList<>();
-		waitingUpdateMenuCells = new ArrayList<>();
-		inProgressUpdate = new ArrayList<>();
-
 		lastMenuId = menuCellIdMin;
 		addListeners();
 	}
@@ -197,12 +192,12 @@ abstract class BaseMenuManager extends BaseSubManager {
 						DebugTool.logInfo("Menu Artworks Uploaded");
 					}
 					// proceed
-					updateMenuWithListener();
+					update();
 				}
 			});
 		}else{
 			// No Artworks to be uploaded, send off
-			updateMenuWithListener();
+			update();
 		}
 	}
 
@@ -216,7 +211,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// UPDATING SYSTEM
 
-	private void updateMenuWithListener(){
+	private void update(){
 
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
 			// We are in NONE or the menu is in use, bail out of here
@@ -246,7 +241,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 						}
 
 						if (hasQueuedUpdate){
-							updateMenuWithListener();
+							update();
 							hasQueuedUpdate = false;
 						}
 					}
@@ -313,7 +308,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		List<RPCRequest> mainMenuCommands;
 		final List<RPCRequest> subMenuCommands;
 
-		if (findAllArtworksToBeUploadedFromCells(menuCells).size() > 0 || !supportsImages()){
+		if (findAllArtworksToBeUploadedFromCells(menuCells).size() == 0 || !supportsImages()){
 			// Send artwork-less menu
 			mainMenuCommands = mainMenuCommandsForCells(menuCells, false);
 			subMenuCommands = subMenuCommandsForCells(menuCells, false);

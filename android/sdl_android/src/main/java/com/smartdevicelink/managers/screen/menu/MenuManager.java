@@ -42,9 +42,9 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
  *
  * The MenuManager takes MenuCell objects and creates and sends all necessary RPCs to build out a menu
  */
-public class MenuManager extends BaseMenuManager {
+class MenuManager extends BaseMenuManager {
 
-	public MenuManager(ISdl internalInterface, FileManager fileManager) {
+	MenuManager(ISdl internalInterface, FileManager fileManager) {
 		// setup
 		super(internalInterface, fileManager);
 	}

@@ -73,13 +73,13 @@ abstract class BaseScreenManager extends BaseSubManager {
 					DebugTool.logInfo("Starting screen manager, all sub managers are in ready state");
 					transitionToState(READY);
 				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR && voiceCommandManager.getState() == BaseSubManager.ERROR && menuManager.getState() == BaseSubManager.ERROR) {
-					Log.e(TAG, "ERROR starting screen manager, both sub managers in error state");
+					Log.e(TAG, "ERROR starting screen manager, one or more sub managers in error state");
 					transitionToState(ERROR);
 				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP || voiceCommandManager.getState() == BaseSubManager.SETTING_UP || menuManager.getState() == BaseSubManager.SETTING_UP) {
-					DebugTool.logInfo("SETTING UP screen manager, one sub manager is still setting up");
+					DebugTool.logInfo("SETTING UP screen manager, at least one sub manager is still setting up");
 					transitionToState(SETTING_UP);
 				} else {
-					Log.w(TAG, "LIMITED starting screen manager, one sub manager in error state and the other is ready");
+					Log.w(TAG, "LIMITED starting screen manager, at least one sub manager in error state and the other is ready");
 					transitionToState(LIMITED);
 				}
 			} else {

@@ -35,8 +35,6 @@ package com.smartdevicelink.managers.screen.menu;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
-
 import java.util.List;
 
 public class VoiceCommand {
@@ -126,7 +124,8 @@ public class VoiceCommand {
 	 * Get the description of the cell
 	 * @return a String description of the cell object
 	 */
-	public String getDescription(){
-		return "VOICE COMMAND - ID: "+commandId+ " First Object: "+ voiceCommands.get(0)+ " Voice Commands: "+ voiceCommands.size();
+	@Override
+	public String toString(){
+		return "VOICE COMMAND - ID: "+commandId+ " - First Object: "+ ((voiceCommands.size() > 0) ? voiceCommands.get(0) : "Empty List")+ " - Voice Command List Size: "+ voiceCommands.size();
 	}
 }

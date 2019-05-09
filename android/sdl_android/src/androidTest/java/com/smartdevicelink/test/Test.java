@@ -453,7 +453,7 @@ public class Test {
 	public static final List<WeatherAlert>              GENERAL_WEATHERALERT_LIST              = Arrays.asList(GENERAL_WEATHERALERT);
 	public static final List<NavigationInstruction>     GENERAL_NAVIGATION_INSTRUCTION_LIST    = Arrays.asList(GENERAL_NAVIGATION_INSTRUCTION);
 	public static final int                             GENERAL_MENU_MAX_ID                    = 2000000000;
-	public static final MenuCell                        GENERAL_MENUCELL                       = new MenuCell(GENERAL_STRING, new MenuSelectionListener() {
+	public static final MenuCell                        GENERAL_MENUCELL                       = new MenuCell(GENERAL_STRING,null, null, new MenuSelectionListener() {
 		@Override
 		public void onTriggered(TriggerSource trigger) {
 			//

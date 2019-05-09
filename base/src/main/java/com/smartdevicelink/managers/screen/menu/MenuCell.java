@@ -83,19 +83,7 @@ public class MenuCell {
 
 	// CONSTRUCTORS
 
-	// SINGLE MENU ITEM CONSTRUCTORS
-
-	/**
-	 * Creates a new MenuCell Object with just the title set.
-	 * @param title The cell's primary text
-	 * @param listener a listener that notifies you when the cell was selected and lets you know its trigger source
-	 */
-	public MenuCell(@NonNull String title, @Nullable MenuSelectionListener listener) {
-		setTitle(title); // title is the only required param
-		setMenuSelectionListener(listener);
-		setCellId(MAX_ID);
-		setParentCellId(MAX_ID);
-	}
+	// SINGLE MENU ITEM CONSTRUCTOR
 
 	/**
 	 * Creates a new MenuCell Object with multiple parameters set
@@ -252,9 +240,10 @@ public class MenuCell {
 	 * Get the description of the cell
 	 * @return a String description of the cell object
 	 */
-	public String getDescription(){
-		return "MenuCell - ID: "+cellId+ " title: "+ title + " ArtworkName: "+
-				icon.getName() + " VoiceCommands: "+ voiceCommands.size() +  " isSubCell: " + (parentCellId != Integer.MAX_VALUE ? "YES":"NO")+
-				" hasSubCells: "+ (subCells != null && subCells.size() > 0 ? "YES":"NO");
+	@Override
+	public String toString(){
+		return "MenuCell - ID: "+cellId+ " - title: "+ title + " - ArtworkName: "+
+				(icon != null && icon.getName() != null ? icon.getName() : "Artwork is null") + " - VoiceCommands Size: "+ (voiceCommands != null ? voiceCommands.size() : "0") +  " - isSubCell: " + (parentCellId != MAX_ID ? "YES":"NO")+
+				" - hasSubCells: "+ (subCells != null && subCells.size() > 0 ? "YES":"NO");
 	}
 }
