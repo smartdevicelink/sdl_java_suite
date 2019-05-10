@@ -233,17 +233,4 @@ public class MenuCell {
 	int getParentCellId() {
 		return parentCellId;
 	}
-
-	// HELPER
-
-	/**
-	 * Get the description of the cell
-	 * @return a String description of the cell object
-	 */
-	@Override
-	public String toString(){
-		return "MenuCell - ID: "+cellId+ " - title: "+ title + " - ArtworkName: "+
-				(icon != null && icon.getName() != null ? icon.getName() : "Artwork is null") + " - VoiceCommands Size: "+ (voiceCommands != null ? voiceCommands.size() : "0") +  " - isSubCell: " + (parentCellId != MAX_ID ? "YES":"NO")+
-				" - hasSubCells: "+ (subCells != null && subCells.size() > 0 ? "YES":"NO");
-	}
 }
