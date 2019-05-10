@@ -38,7 +38,6 @@ import android.support.annotation.Nullable;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 
 import java.util.List;
-import java.util.Objects;
 
 public class MenuCell {
 
@@ -85,18 +84,6 @@ public class MenuCell {
 	// CONSTRUCTORS
 
 	// SINGLE MENU ITEM CONSTRUCTORS
-
-	/**
-	 * Creates a new MenuCell Object with just the title set.
-	 * @param title The cell's primary text
-	 * @param listener a listener that notifies you when the cell was selected and lets you know its trigger source
-	 */
-	public MenuCell(@NonNull String title, @Nullable MenuSelectionListener listener) {
-		setTitle(title); // title is the only required param
-		setMenuSelectionListener(listener);
-		setCellId(MAX_ID);
-		setParentCellId(MAX_ID);
-	}
 
 	/**
 	 * Creates a new MenuCell Object with multiple parameters set
