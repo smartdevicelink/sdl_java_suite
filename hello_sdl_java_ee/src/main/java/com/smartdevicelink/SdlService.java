@@ -169,10 +169,11 @@ public class SdlService {
         // some voice commands
         List<String> voice2 = Collections.singletonList("Cell two");
 
-        MenuCell mainCell1 = new MenuCell("Test Cell 1", livio, null, new MenuSelectionListener() {
+        MenuCell mainCell1 = new MenuCell("Test Cell 1 (speak)", livio, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 Log.i(TAG, "Test cell 1 triggered. Source: "+ trigger.toString());
+                showTest();
             }
         });
 
@@ -208,6 +209,7 @@ public class SdlService {
                 Log.i(TAG, "Clearing Menu. Source: "+ trigger.toString());
                 // Clear this thing
                 sdlManager.getScreenManager().setMenu(Collections.<MenuCell>emptyList());
+                showAlert("Menu Cleared");
             }
         });
 
@@ -247,11 +249,18 @@ public class SdlService {
      */
     private void showTest(){
         sdlManager.getScreenManager().beginTransaction();
-        sdlManager.getScreenManager().setTextField1("Command has been selected");
+        sdlManager.getScreenManager().setTextField1("Test Cell 1 has been selected");
         sdlManager.getScreenManager().setTextField2("");
         sdlManager.getScreenManager().commit(null);
 
         sdlManager.sendRPC(new Speak(TTSChunkFactory.createSimpleTTSChunks(TEST_COMMAND_NAME)));
+    }
+
+    private void showAlert(String text){
+        Alert alert = new Alert();
+        alert.setAlertText1(text);
+        alert.setDuration(5000);
+        sdlManager.sendRPC(alert);
     }
 
 

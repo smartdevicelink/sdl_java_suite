@@ -532,16 +532,18 @@ abstract class BaseMenuManager extends BaseSubManager {
 	// CELL COMMAND HANDLING
 
 	private boolean callListenerForCells(List<MenuCell> cells, OnCommand command){
-		for (MenuCell cell : cells){
-			if (cell.getCellId() == command.getCmdID() && cell.getMenuSelectionListener() != null){
-				cell.getMenuSelectionListener().onTriggered(command.getTriggerSource());
-				return true;
-			}
-
-			if (cell.getSubCells() != null && cell.getSubCells().size() > 0){
-				// for each cell, if it has sub cells, recursively loop through those as well
-				if (callListenerForCells(cell.getSubCells(), command)) {
+		if (cells != null && cells.size() > 0 && command != null) {
+			for (MenuCell cell : cells) {
+				if (cell.getCellId() == command.getCmdID() && cell.getMenuSelectionListener() != null) {
+					cell.getMenuSelectionListener().onTriggered(command.getTriggerSource());
 					return true;
+				}
+
+				if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+					// for each cell, if it has sub cells, recursively loop through those as well
+					if (callListenerForCells(cell.getSubCells(), command)) {
+						return true;
+					}
 				}
 			}
 		}
