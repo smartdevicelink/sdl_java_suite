@@ -80,7 +80,7 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 		ISdl internalInterface = mock(ISdl.class);
 
 		// When internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, OnRPCNotificationListener) is called
-		// inside PermissionManager's constructor, then keep a reference to the OnRPCNotificationListener so we can trigger it later
+		// inside the VoiceCommandManager's constructor, then keep a reference to the OnRPCNotificationListener so we can trigger it later
 		// to emulate what Core does when it sends OnHMIStatus notification
 		Answer<Void> onHMIStatusAnswer = new Answer<Void>() {
 			@Override
@@ -112,8 +112,8 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 		assertFalse(voiceCommandManager.waitingOnHMIUpdate);
 		assertNotNull(voiceCommandManager.commandListener);
 		assertNotNull(voiceCommandManager.hmiListener);
-		assertNotNull(voiceCommandManager.voiceCommands);
-		assertNotNull(voiceCommandManager.oldVoiceCommands);
+		assertNull(voiceCommandManager.voiceCommands);
+		assertNull(voiceCommandManager.oldVoiceCommands);
 		assertNull(voiceCommandManager.inProgressUpdate);
 	}
 
@@ -171,8 +171,6 @@ public class VoiceCommandManagerTests extends AndroidTestCase2 {
 
 		// we have previously sent 2 VoiceCommand objects. we will now update it and have just one
 
-		// This should have been cleared, but still initialized after the last send
-		assertEquals(voiceCommandManager.oldVoiceCommands.size(), 0);
 		// make sure the system returns us 2 delete commands
 		assertEquals(voiceCommandManager.deleteCommandsForVoiceCommands(commands).size(), 2);
 		// when we only send one command to update, we should only be returned one add command

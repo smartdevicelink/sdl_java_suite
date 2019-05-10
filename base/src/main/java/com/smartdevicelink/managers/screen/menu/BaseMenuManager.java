@@ -101,11 +101,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 		this.fileManager = new WeakReference<>(fileManager);
 		currentSystemContext = SystemContext.SYSCTXT_MAIN;
 		currentHMILevel = HMILevel.HMI_NONE;
-		menuCells = new ArrayList<>();
-		oldMenuCells = new ArrayList<>();
-		waitingUpdateMenuCells = new ArrayList<>();
-		inProgressUpdate = new ArrayList<>();
-
 		lastMenuId = menuCellIdMin;
 		addListeners();
 	}
@@ -155,7 +150,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		waitingOnHMIUpdate = false;
 
 		// Update our Lists
-		this.oldMenuCells = new ArrayList<>(menuCells);
+		this.oldMenuCells = new ArrayList<>(menuCells != null ? menuCells : cells);
 		menuCells = new ArrayList<>(cells);
 
 		// HashSet order doesnt matter / does not allow duplicates
@@ -197,12 +192,12 @@ abstract class BaseMenuManager extends BaseSubManager {
 						DebugTool.logInfo("Menu Artworks Uploaded");
 					}
 					// proceed
-					updateMenuWithListener();
+					update();
 				}
 			});
 		}else{
 			// No Artworks to be uploaded, send off
-			updateMenuWithListener();
+			update();
 		}
 	}
 
@@ -216,7 +211,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// UPDATING SYSTEM
 
-	private void updateMenuWithListener(){
+	private void update(){
 
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
 			// We are in NONE or the menu is in use, bail out of here
@@ -246,7 +241,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 						}
 
 						if (hasQueuedUpdate){
-							updateMenuWithListener();
+							update();
 							hasQueuedUpdate = false;
 						}
 					}
@@ -530,23 +525,25 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position){
 		AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getTitle());
 		subMenu.setPosition(position);
-		subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon().getName() != null)) ? cell.getIcon().getImageRPC() : null);
+		subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon()!= null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);
 		return subMenu;
 	}
 
 	// CELL COMMAND HANDLING
 
 	private boolean callListenerForCells(List<MenuCell> cells, OnCommand command){
-		for (MenuCell cell : cells){
-			if (cell.getCellId() == command.getCmdID() && cell.getMenuSelectionListener() != null){
-				cell.getMenuSelectionListener().onTriggered(command.getTriggerSource());
-				return true;
-			}
-
-			if (cell.getSubCells() != null && cell.getSubCells().size() > 0){
-				// for each cell, if it has sub cells, recursively loop through those as well
-				if (callListenerForCells(cell.getSubCells(), command)) {
+		if (cells != null && cells.size() > 0 && command != null) {
+			for (MenuCell cell : cells) {
+				if (cell.getCellId() == command.getCmdID() && cell.getMenuSelectionListener() != null) {
+					cell.getMenuSelectionListener().onTriggered(command.getTriggerSource());
 					return true;
+				}
+
+				if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+					// for each cell, if it has sub cells, recursively loop through those as well
+					if (callListenerForCells(cell.getSubCells(), command)) {
+						return true;
+					}
 				}
 			}
 		}

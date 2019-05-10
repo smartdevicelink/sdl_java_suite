@@ -81,7 +81,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		FileManager fileManager = mock(FileManager.class);
 
 		// When internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, OnRPCNotificationListener) is called
-		// inside PermissionManager's constructor, then keep a reference to the OnRPCNotificationListener so we can trigger it later
+		// inside MenuManager's constructor, then keep a reference to the OnRPCNotificationListener so we can trigger it later
 		// to emulate what Core does when it sends OnHMIStatus notification
 		Answer<Void> onHMIStatusAnswer = new Answer<Void>() {
 			@Override
@@ -110,10 +110,10 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.getState(), BaseSubManager.SETTING_UP);
 		assertEquals(menuManager.currentSystemContext, SystemContext.SYSCTXT_MAIN);
 		assertEquals(menuManager.lastMenuId, 1);
-		assertNotNull(menuManager.menuCells);
-		assertNotNull(menuManager.waitingUpdateMenuCells);
-		assertNotNull(menuManager.oldMenuCells);
-		assertNotNull(menuManager.inProgressUpdate);
+		assertNull(menuManager.menuCells);
+		assertNull(menuManager.waitingUpdateMenuCells);
+		assertNull(menuManager.oldMenuCells);
+		assertNull(menuManager.inProgressUpdate);
 		assertNotNull(menuManager.hmiListener);
 		assertNotNull(menuManager.commandListener);
 		assertNotNull(menuManager.displayListener);
@@ -160,7 +160,6 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		// updating voice commands before HMI is ready
 		assertTrue(menuManager.waitingOnHMIUpdate);
 		// these are the 2 commands we have waiting
-		assertEquals(menuManager.menuCells.size(), 0);
 		assertEquals(menuManager.waitingUpdateMenuCells.size(), 4);
 		assertEquals(menuManager.currentHMILevel, HMILevel.HMI_NONE);
 		// The Menu Manager should send new menu once HMI full occurs
@@ -173,13 +172,12 @@ public class MenuManagerTests extends AndroidTestCase2 {
 
 	public void testUpdating(){
 
-		assertEquals(menuManager.oldMenuCells.size(), 0); // these were deleted with the previous series of deletions
 		assertEquals(menuManager.deleteCommandsForCells(cells).size(), 4); // 3 root cells and 1 sub menu
 
 		// when we only send one command to update, we should only be returned one add command
 		List<MenuCell> newArray = Arrays.asList(mainCell1, mainCell4);
 		assertEquals(menuManager.allCommandsForCells(newArray, false).size(), 4); // 1 root cells, 1 sub menu root cell, 2 sub menu cells
-
+		menuManager.currentHMILevel = HMILevel.HMI_FULL;
 		menuManager.setMenuCells(newArray);
 
 		// Unlike voice commands, the Menu Manager dynamically assigns Cell ID's. Because of this, we need to get the updated
@@ -189,7 +187,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		for (MenuCell cell : updatedCells){
 
 			// grab 2 of our newly updated cells - 1 root and 1 sub cell, and make sure they can get triggered
-			if (cell.getDescription().equalsIgnoreCase("Test Cell 1")){
+			if (cell.getTitle().equalsIgnoreCase("Test Cell 1")){
 				// Fake onCommand - we want to make sure that we can pass back onCommand events to our root Menu Cell
 				OnCommand onCommand = new OnCommand();
 				onCommand.setCmdID(cell.getCellId());
@@ -200,7 +198,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 				verify(cell.getMenuSelectionListener(), times(1)).onTriggered(TriggerSource.TS_MENU);
 			}
 
-			if (cell.getDescription().equalsIgnoreCase("SubCell 2")){
+			if (cell.getTitle().equalsIgnoreCase("SubCell 2")){
 				// Fake onCommand - we want to make sure that we can pass back onCommand events to our sub Menu Cell
 				OnCommand onCommand2 = new OnCommand();
 				onCommand2.setCmdID(cell.getCellId());
@@ -230,11 +228,11 @@ public class MenuManagerTests extends AndroidTestCase2 {
 
 		mainCell1 = new MenuCell("Test Cell 1", livio, null, menuSelectionListener1);
 		MenuCell mainCell2 = new MenuCell("Test Cell 2", livio, voice2, menuSelectionListener2);
-		MenuCell mainCell3 = new MenuCell("Test Cell 3", menuSelectionListener3);
+		MenuCell mainCell3 = new MenuCell("Test Cell 3",null, null,  menuSelectionListener3);
 
 		// SUB MENU
-		MenuCell subCell1 = new MenuCell("SubCell 1", menuSelectionListenerSub1);
-		MenuCell subCell2 = new MenuCell("SubCell 2", menuSelectionListenerSub2);
+		MenuCell subCell1 = new MenuCell("SubCell 1",null, null, menuSelectionListenerSub1);
+		MenuCell subCell2 = new MenuCell("SubCell 2",null, null, menuSelectionListenerSub2);
 
 		mainCell4 = new MenuCell("Test Cell 4", livio, Arrays.asList(subCell1,subCell2)); // sub menu parent cell
 

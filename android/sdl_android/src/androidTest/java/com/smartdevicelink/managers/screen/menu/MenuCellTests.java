@@ -59,7 +59,7 @@ public class MenuCellTests extends AndroidTestCase2 {
 	public void testSettersAndGetters(){
 
 		// set everything
-		MenuCell menuCell = new MenuCell(Test.GENERAL_STRING, menuSelectionListener);
+		MenuCell menuCell = new MenuCell(Test.GENERAL_STRING, null, null, menuSelectionListener);
 		menuCell.setIcon(Test.GENERAL_ARTWORK);
 		menuCell.setVoiceCommands(Test.GENERAL_STRING_LIST);
 		menuCell.setMenuSelectionListener(menuSelectionListener);
@@ -83,7 +83,7 @@ public class MenuCellTests extends AndroidTestCase2 {
 		assertEquals(menuCell3.getVoiceCommands(), Test.GENERAL_STRING_LIST);
 		assertEquals(menuCell3.getMenuSelectionListener(), menuSelectionListener);
 
-		MenuCell menuCell4 =new MenuCell(Test.GENERAL_STRING, menuSelectionListener);
+		MenuCell menuCell4 =new MenuCell(Test.GENERAL_STRING,null, null, menuSelectionListener);
 		assertEquals(menuCell4.getTitle(), Test.GENERAL_STRING);
 		assertEquals(menuCell4.getMenuSelectionListener(), menuSelectionListener);
 	}

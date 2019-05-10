@@ -78,8 +78,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 		currentHMILevel = HMILevel.HMI_NONE;
 		addListeners();
 		lastVoiceCommandId = voiceCommandIdMin;
-		voiceCommands = new ArrayList<>();
-		oldVoiceCommands = new ArrayList<>();
 	}
 
 	@Override
@@ -131,7 +129,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 		oldVoiceCommands = new ArrayList<>(voiceCommands);
 		this.voiceCommands = new ArrayList<>(voiceCommands);
 
-		updateWithListener();
+		update();
 	}
 
 	public List<VoiceCommand> getVoiceCommands(){
@@ -140,7 +138,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 	// UPDATING SYSTEM
 
-	private void updateWithListener(){
+	private void update(){
 
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE)){
 			waitingOnHMIUpdate = true;
@@ -163,7 +161,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 						inProgressUpdate = null;
 
 						if (hasQueuedUpdate){
-							updateWithListener();
+							update();
 							hasQueuedUpdate = false;
 						}
 
@@ -183,7 +181,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 		if (oldVoiceCommands == null || oldVoiceCommands.size() == 0){
 			if (listener != null){
-				listener.onComplete(false);
+				listener.onComplete(true);
 			}
 			return;
 		}
@@ -276,9 +274,8 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 	}
 
 	private AddCommand commandForVoiceCommand(VoiceCommand voiceCommand){
-		AddCommand command = new AddCommand();
+		AddCommand command = new AddCommand(voiceCommand.getCommandId());
 		command.setVrCommands(voiceCommand.getVoiceCommands());
-		command.setCmdID(voiceCommand.getCommandId());
 		return command;
 	}
 
@@ -304,8 +301,6 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 				if (oldHMILevel.equals(HMILevel.HMI_NONE) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
 					if (waitingOnHMIUpdate){
 						setVoiceCommands(voiceCommands);
-					}else{
-						updateWithListener();
 					}
 				}
 			}
