@@ -79,7 +79,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 					DebugTool.logInfo("SETTING UP screen manager, at least one sub manager is still setting up");
 					transitionToState(SETTING_UP);
 				} else {
-					Log.w(TAG, "LIMITED starting screen manager, at least one sub manager in error state and the other is ready");
+					Log.w(TAG, "LIMITED starting screen manager, at least one sub manager is in error state and the others are ready");
 					transitionToState(LIMITED);
 				}
 			} else {
