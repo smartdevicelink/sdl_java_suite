@@ -250,16 +250,6 @@ public class MenuCell {
 	// HELPER
 
 	/**
-	 * Get the description of the cell
-	 * @return a String description of the cell object
-	 */
-	public String getDescription(){
-		return "MenuCell - ID: "+cellId+ " title: "+ title + " ArtworkName: "+
-				icon.getName() + " VoiceCommands: "+ voiceCommands.size() +  " isSubCell: " + (parentCellId != Integer.MAX_VALUE ? "YES":"NO")+
-				" hasSubCells: "+ (subCells != null && subCells.size() > 0 ? "YES":"NO");
-	}
-
-	/**
 	 * Note: You should compare using the {@link #equals(Object)} method. <br>
 	 * Hash the parameters of the object and return the result for comparison
 	 * For each param, increase the rotation distance by one.
