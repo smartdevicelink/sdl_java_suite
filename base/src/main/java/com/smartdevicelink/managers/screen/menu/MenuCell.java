@@ -81,6 +81,21 @@ public class MenuCell {
 	 */
 	private static final int MAX_ID = 2000000000;
 
+	/**
+	 * Used internally for dynamic updating
+	 */
+	static final int NOT_SET = 0x00, ADDITION = 0x30, DELETION = 0x60;
+
+	/**
+	 * The state of the cell as it is marked for changes. This is used internally with the enums defined above
+	 */
+	private int state;
+
+	/**
+	 * A lock used when setting / getting states
+	 */
+	private final Object STATE_LOCK = new Object();
+
 	// CONSTRUCTORS
 
 	// SINGLE MENU ITEM CONSTRUCTORS
@@ -99,6 +114,7 @@ public class MenuCell {
 		setMenuSelectionListener(listener);
 		setCellId(MAX_ID);
 		setParentCellId(MAX_ID);
+		setState(NOT_SET);
 	}
 
 	// CONSTRUCTOR FOR CELL THAT WILL LINK TO SUB MENU
@@ -116,6 +132,7 @@ public class MenuCell {
 		setSubCells(subCells);
 		setCellId(MAX_ID);
 		setParentCellId(MAX_ID);
+		setState(NOT_SET);
 	}
 
 	// SETTERS / GETTERS
@@ -234,6 +251,26 @@ public class MenuCell {
 		return parentCellId;
 	}
 
+	/**
+	 * Sets whether or not the state of the cell is marked for addition or deletion
+	 * @param state - the state enum
+	 */
+	void setState(int state){
+		synchronized (STATE_LOCK) {
+			this.state = state;
+		}
+	}
+
+	/**
+	 * Read the state of the cell
+	 * @return Whether or not the cell is marked for addition or deletion
+	 */
+	int getState() {
+		synchronized (STATE_LOCK) {
+			return this.state;
+		}
+	}
+
 	// HELPER
 
 	/**
@@ -248,10 +285,10 @@ public class MenuCell {
 	@Override
 	public int hashCode() {
 		int result = 1;
-		result += ((getTitle() == null) ? 0 : Integer.rotateLeft(getTitle().hashCode(), 2));
-		result += ((getIcon() == null || getIcon().getName() == null) ? 0 : Integer.rotateLeft(getIcon().getName().hashCode(), 3));
-		result += ((getVoiceCommands() == null) ? 0 : Integer.rotateLeft(getVoiceCommands().hashCode(), 4));
-		result += ((getSubCells() == null) ? 0 : Integer.rotateLeft(getSubCells().hashCode(), 5));
+		result += ((getTitle() == null) ? 0 : Integer.rotateLeft(getTitle().hashCode(), 1));
+		result += ((getIcon() == null || getIcon().getName() == null) ? 0 : Integer.rotateLeft(getIcon().getName().hashCode(), 2));
+		result += ((getVoiceCommands() == null) ? 0 : Integer.rotateLeft(getVoiceCommands().hashCode(), 3));
+		result += ((getSubCells() == null) ? 0 : Integer.rotateLeft(getSubCells().hashCode(), 4));
 		return result;
 	}
 
