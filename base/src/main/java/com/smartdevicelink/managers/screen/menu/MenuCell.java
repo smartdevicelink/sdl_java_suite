@@ -45,6 +45,17 @@ import java.util.List;
 public class MenuCell {
 
 	/**
+	 * State enums used internally for dynamic updating
+	 * These should be used to set the 'state' variable
+	 */
+	@IntDef({KEEP, MARKED_FOR_ADDITION, MARKED_FOR_DELETION})
+	@Retention(RetentionPolicy.SOURCE)
+	@interface MenuCellState {}
+	static final int KEEP = 0;
+	static final int MARKED_FOR_ADDITION = 1;
+	static final int MARKED_FOR_DELETION = 2;
+
+	/**
 	 * The cell's text to be displayed
 	 */
 	private String title;
@@ -83,17 +94,6 @@ public class MenuCell {
 	 * MAX ID for cells - Cannot use Integer.MAX_INT as the value is too high.
 	 */
 	private static final int MAX_ID = 2000000000;
-
-	/**
-	 * State enums used internally for dynamic updating
-	 * These should be used to set the 'state' variable
-	 */
-	@IntDef({KEEP, MARKED_FOR_ADDITION, MARKED_FOR_DELETION})
-	@Retention(RetentionPolicy.SOURCE)
-	@interface MenuCellState {}
-	static final int KEEP = 0;
-	static final int MARKED_FOR_ADDITION = 1;
-	static final int MARKED_FOR_DELETION = 2;
 
 	/**
 	 * The state of the cell as it is marked for changes. This is used internally with the enums defined above

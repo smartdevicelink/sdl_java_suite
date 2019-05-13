@@ -33,6 +33,7 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -70,6 +71,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 abstract class BaseMenuManager extends BaseSubManager {
 
@@ -176,6 +178,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			DebugTool.logError("Attempted to create a menu with duplicate voice commands. Voice commands must be unique. The menu will not be set");
 			return;
 		}
+
 		// Set the IDs
 		lastMenuId = menuCellIdMin;
 		updateIdsOnMenuCells(menuCells, parentIdNotFound);
@@ -227,6 +230,14 @@ abstract class BaseMenuManager extends BaseSubManager {
 			hasQueuedUpdate = true;
 			return;
 		}
+
+		// not sure if these will stay here
+		// update states
+		markOldCellsForDeletion();
+		markNewCellsForAddition();
+
+		// compare the lists
+		compareOldAndNewLists();
 
 		deleteCurrentMenu(new CompletionListener() {
 			@Override
@@ -393,6 +404,63 @@ abstract class BaseMenuManager extends BaseSubManager {
 	}
 
 	// OTHER HELPER METHODS:
+
+	// COMPARISONS
+
+	private void markOldCellsForDeletion(){
+		if (oldMenuCells != null && oldMenuCells.size() > 0){
+			for (MenuCell cell : oldMenuCells){
+				cell.setState(MenuCell.MARKED_FOR_DELETION);
+			}
+		}
+	}
+
+	private void markNewCellsForAddition(){
+		if (menuCells != null && menuCells.size() > 0){
+			for (MenuCell cell : menuCells){
+				cell.setState(MenuCell.MARKED_FOR_ADDITION);
+			}
+		}
+	}
+
+	private void compareOldAndNewLists(){
+
+		if (oldMenuCells != null && oldMenuCells.size() > 0 && menuCells != null && menuCells.size() > 0) {
+			for (int i = 0; i < oldMenuCells.size(); i++) {
+				MenuCell oldCell = oldMenuCells.get(i);
+				for (int z = 0; z < menuCells.size(); z++) {
+					MenuCell cell = menuCells.get(z);
+					// We need to make sure position in the list is the same and that the cell itself is the same
+					// if so, remove the need to mark for addition or deletion
+					if (i == z && cell.equals(oldCell)){
+						oldCell.setState(MenuCell.KEEP);
+						cell.setState(MenuCell.KEEP);
+
+						// TODO: verify this listener logic
+						if (oldCell.getMenuSelectionListener() != null && cell.getMenuSelectionListener() != null){
+							// If the new cell is the same based on our equality function, but we aren't updating, and the listeners are different
+							// swap them for the developer so they can keep getting their triggers.
+							if (oldCell.getMenuSelectionListener() != cell.getMenuSelectionListener()){
+								cell.setMenuSelectionListener(oldCell.getMenuSelectionListener());
+							}
+						}
+					}
+
+				}
+			}
+			printCellStates();
+		}
+	}
+
+	private void printCellStates(){
+		for (int i = 0; i < oldMenuCells.size(); i++) {
+			Log.i("Old MENU Cell: ", "Position: "+ i + " State: "+ oldMenuCells.get(i).getState());
+		}
+
+		for (int i = 0; i < menuCells.size(); i++) {
+			Log.i("New MENU Cell: ", "Position: "+ i + " State: "+ menuCells.get(i).getState());
+		}
+	}
 
 	// ARTWORKS
 
