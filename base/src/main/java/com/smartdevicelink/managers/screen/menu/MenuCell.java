@@ -32,11 +32,14 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 public class MenuCell {
@@ -82,14 +85,20 @@ public class MenuCell {
 	private static final int MAX_ID = 2000000000;
 
 	/**
-	 * Used internally for dynamic updating
+	 * State enums used internally for dynamic updating
+	 * These should be used to set the 'state' variable
 	 */
-	static final int NOT_SET = 0x00, ADDITION = 0x30, DELETION = 0x60;
+	@IntDef({NOT_SET, MARKED_FOR_ADDITION, MARKED_FOR_DELETION})
+	@Retention(RetentionPolicy.SOURCE)
+	@interface MenuCellState {}
+	static final int NOT_SET = 0;
+	static final int MARKED_FOR_ADDITION = 1;
+	static final int MARKED_FOR_DELETION = 2;
 
 	/**
 	 * The state of the cell as it is marked for changes. This is used internally with the enums defined above
 	 */
-	private int state;
+	private @MenuCellState int state;
 
 	/**
 	 * A lock used when setting / getting states
@@ -136,6 +145,8 @@ public class MenuCell {
 	}
 
 	// SETTERS / GETTERS
+
+	// PUBLIC METHODS
 
 	/**
 	 * Sets the title of the menu cell
@@ -217,9 +228,10 @@ public class MenuCell {
 		return menuSelectionListener;
 	}
 
+	// INTERNALLY USED METHODS
+
 	/**
 	 * Set the cell Id.
-	 * * <strong>NOTE: THIS IS USED INTERNALLY ONLY, PLEASE DO NOT SET</strong>
 	 * @param cellId - the cell Id
 	 */
 	void setCellId(int cellId) {
@@ -236,7 +248,6 @@ public class MenuCell {
 
 	/**
 	 * Sets the ParentCellId
-	 * <strong>NOTE: THIS IS USED INTERNALLY ONLY, PLEASE DO NOT SET</strong>
 	 * @param parentCellId the parent cell's Id
 	 */
 	void setParentCellId(int parentCellId) {
@@ -255,7 +266,7 @@ public class MenuCell {
 	 * Sets whether or not the state of the cell is marked for addition or deletion
 	 * @param state - the state enum
 	 */
-	void setState(int state){
+	void setState(@MenuCellState int state){
 		synchronized (STATE_LOCK) {
 			this.state = state;
 		}
@@ -265,7 +276,7 @@ public class MenuCell {
 	 * Read the state of the cell
 	 * @return Whether or not the cell is marked for addition or deletion
 	 */
-	int getState() {
+	@MenuCellState int getState() {
 		synchronized (STATE_LOCK) {
 			return this.state;
 		}
@@ -291,7 +302,6 @@ public class MenuCell {
 		result += ((getSubCells() == null) ? 0 : Integer.rotateLeft(getSubCells().hashCode(), 4));
 		return result;
 	}
-
 
 	/**
 	 * Uses our custom hashCode for MenuCell objects, but does <strong>NOT</strong> compare the listener objects
