@@ -88,10 +88,10 @@ public class MenuCell {
 	 * State enums used internally for dynamic updating
 	 * These should be used to set the 'state' variable
 	 */
-	@IntDef({NOT_SET, MARKED_FOR_ADDITION, MARKED_FOR_DELETION})
+	@IntDef({KEEP, MARKED_FOR_ADDITION, MARKED_FOR_DELETION})
 	@Retention(RetentionPolicy.SOURCE)
 	@interface MenuCellState {}
-	static final int NOT_SET = 0;
+	static final int KEEP = 0;
 	static final int MARKED_FOR_ADDITION = 1;
 	static final int MARKED_FOR_DELETION = 2;
 
@@ -123,7 +123,7 @@ public class MenuCell {
 		setMenuSelectionListener(listener);
 		setCellId(MAX_ID);
 		setParentCellId(MAX_ID);
-		setState(NOT_SET);
+		setState(KEEP);
 	}
 
 	// CONSTRUCTOR FOR CELL THAT WILL LINK TO SUB MENU
@@ -141,7 +141,7 @@ public class MenuCell {
 		setSubCells(subCells);
 		setCellId(MAX_ID);
 		setParentCellId(MAX_ID);
-		setState(NOT_SET);
+		setState(KEEP);
 	}
 
 	// SETTERS / GETTERS
