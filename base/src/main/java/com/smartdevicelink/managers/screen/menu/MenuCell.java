@@ -32,28 +32,14 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 public class MenuCell {
-
-	/**
-	 * State enums used internally for dynamic updating
-	 * These should be used to set the 'state' variable
-	 */
-	@IntDef({KEEP, MARKED_FOR_ADDITION, MARKED_FOR_DELETION})
-	@Retention(RetentionPolicy.SOURCE)
-	@interface MenuCellState {}
-	static final int KEEP = 0;
-	static final int MARKED_FOR_ADDITION = 1;
-	static final int MARKED_FOR_DELETION = 2;
 
 	/**
 	 * The cell's text to be displayed
@@ -96,11 +82,6 @@ public class MenuCell {
 	private static final int MAX_ID = 2000000000;
 
 	/**
-	 * The state of the cell as it is marked for changes. This is used internally with the enums defined above
-	 */
-	private @MenuCellState int state;
-
-	/**
 	 * A lock used when setting / getting states
 	 */
 	private final Object STATE_LOCK = new Object();
@@ -123,7 +104,6 @@ public class MenuCell {
 		setMenuSelectionListener(listener);
 		setCellId(MAX_ID);
 		setParentCellId(MAX_ID);
-		setState(KEEP);
 	}
 
 	// CONSTRUCTOR FOR CELL THAT WILL LINK TO SUB MENU
@@ -141,7 +121,6 @@ public class MenuCell {
 		setSubCells(subCells);
 		setCellId(MAX_ID);
 		setParentCellId(MAX_ID);
-		setState(KEEP);
 	}
 
 	// SETTERS / GETTERS
@@ -262,26 +241,6 @@ public class MenuCell {
 		return parentCellId;
 	}
 
-	/**
-	 * Sets whether or not the state of the cell is marked for addition or deletion
-	 * @param state - the state enum
-	 */
-	void setState(@MenuCellState int state){
-		synchronized (STATE_LOCK) {
-			this.state = state;
-		}
-	}
-
-	/**
-	 * Read the state of the cell
-	 * @return Whether or not the cell is marked for addition or deletion
-	 */
-	@MenuCellState int getState() {
-		synchronized (STATE_LOCK) {
-			return this.state;
-		}
-	}
-
 	// HELPER
 
 	/**
@@ -299,7 +258,6 @@ public class MenuCell {
 		result += ((getTitle() == null) ? 0 : Integer.rotateLeft(getTitle().hashCode(), 1));
 		result += ((getIcon() == null || getIcon().getName() == null) ? 0 : Integer.rotateLeft(getIcon().getName().hashCode(), 2));
 		result += ((getVoiceCommands() == null) ? 0 : Integer.rotateLeft(getVoiceCommands().hashCode(), 3));
-		result += ((getSubCells() == null) ? 0 : Integer.rotateLeft(getSubCells().hashCode(), 4));
 		return result;
 	}
 
@@ -310,9 +268,19 @@ public class MenuCell {
 	 */
 	@Override
 	public boolean equals(Object o) {
+		// if this is the same memory address, its the same
 		if (this == o) return true;
+		// if this is not an instance of this class, not the same
 		if (!(o instanceof MenuCell)) return false;
+
 		MenuCell menuCell = (MenuCell) o;
+		// check if one has sub-cells and if one doesnt, if so they are not equal
+		if (menuCell.getSubCells() != null && getSubCells() != null){
+			if (menuCell.getSubCells() != getSubCells()){
+				return false;
+			}
+		}
+		// if we get to this point, create the hashes and compare them
 		return hashCode() == menuCell.hashCode();
 	}
 }

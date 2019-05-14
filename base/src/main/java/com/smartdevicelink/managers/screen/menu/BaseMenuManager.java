@@ -32,6 +32,7 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -66,6 +67,8 @@ import com.smartdevicelink.util.DebugTool;
 
 import org.json.JSONException;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -74,6 +77,17 @@ import java.util.Map;
 import java.util.Objects;
 
 abstract class BaseMenuManager extends BaseSubManager {
+
+	/**
+	 * State enums used internally for dynamic updating
+	 * These should be used to set the 'state' variable
+	 */
+	@IntDef({KEEP, MARKED_FOR_ADDITION, MARKED_FOR_DELETION})
+	@Retention(RetentionPolicy.SOURCE)
+	@interface MenuCellState {}
+	static final int KEEP = 0;
+	static final int MARKED_FOR_ADDITION = 1;
+	static final int MARKED_FOR_DELETION = 2;
 
 	private final WeakReference<FileManager> fileManager;
 
@@ -230,11 +244,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 			hasQueuedUpdate = true;
 			return;
 		}
-
-		// not sure if these will stay here
-		// update states
-		markOldCellsForDeletion();
-		markNewCellsForAddition();
 
 		// compare the lists
 		compareOldAndNewLists();
@@ -407,60 +416,11 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// COMPARISONS
 
-	private void markOldCellsForDeletion(){
-		if (oldMenuCells != null && oldMenuCells.size() > 0){
-			for (MenuCell cell : oldMenuCells){
-				cell.setState(MenuCell.MARKED_FOR_DELETION);
-			}
-		}
-	}
-
-	private void markNewCellsForAddition(){
-		if (menuCells != null && menuCells.size() > 0){
-			for (MenuCell cell : menuCells){
-				cell.setState(MenuCell.MARKED_FOR_ADDITION);
-			}
-		}
-	}
-
 	private void compareOldAndNewLists(){
 
-		if (oldMenuCells != null && oldMenuCells.size() > 0 && menuCells != null && menuCells.size() > 0) {
-			for (int i = 0; i < oldMenuCells.size(); i++) {
-				MenuCell oldCell = oldMenuCells.get(i);
-				for (int z = 0; z < menuCells.size(); z++) {
-					MenuCell cell = menuCells.get(z);
-					// We need to make sure position in the list is the same and that the cell itself is the same
-					// if so, remove the need to mark for addition or deletion
-					if (i == z && cell.equals(oldCell)){
-						oldCell.setState(MenuCell.KEEP);
-						cell.setState(MenuCell.KEEP);
 
-						// TODO: verify this listener logic
-						if (oldCell.getMenuSelectionListener() != null && cell.getMenuSelectionListener() != null){
-							// If the new cell is the same based on our equality function, but we aren't updating, and the listeners are different
-							// swap them for the developer so they can keep getting their triggers.
-							if (oldCell.getMenuSelectionListener() != cell.getMenuSelectionListener()){
-								cell.setMenuSelectionListener(oldCell.getMenuSelectionListener());
-							}
-						}
-					}
-
-				}
-			}
-			printCellStates();
-		}
 	}
 
-	private void printCellStates(){
-		for (int i = 0; i < oldMenuCells.size(); i++) {
-			Log.i("Old MENU Cell: ", "Position: "+ i + " State: "+ oldMenuCells.get(i).getState());
-		}
-
-		for (int i = 0; i < menuCells.size(); i++) {
-			Log.i("New MENU Cell: ", "Position: "+ i + " State: "+ menuCells.get(i).getState());
-		}
-	}
 
 	// ARTWORKS
 
