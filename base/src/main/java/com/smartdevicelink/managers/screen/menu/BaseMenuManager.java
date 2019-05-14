@@ -246,7 +246,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		}
 
 		// compare the lists
-		compareOldAndNewLists();
+		compareOldAndNewLists(oldMenuCells, menuCells);
 
 		deleteCurrentMenu(new CompletionListener() {
 			@Override
@@ -416,11 +416,74 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// COMPARISONS
 
-	private void compareOldAndNewLists(){
+	private void compareOldAndNewLists(List<MenuCell> oldCells, List<MenuCell> newCells){
 
+		if (oldCells == null || oldCells.size() == 0 || oldCells.equals(newCells)){
+			// we don't need to be here as its the initial add, return
+			return;
+		}
+
+		RunScore bestRunScore = null;
+
+		// This first loop is for each 'run'
+		for (int run = 0; run < oldCells.size(); run++) {
+
+			List<Integer> oldArray = new ArrayList<>(oldCells.size());
+			List<Integer> newArray = new ArrayList<>(newCells.size());
+
+			// Set the statuses
+			setDeleteStatus(oldCells.size(), oldArray);
+			setAddStatus(newCells.size(), newArray);
+
+			int startIndex = 0;
+
+			for (int oldItems = run; oldItems < oldCells.size(); oldItems++) {
+
+				for (int newItems = startIndex; newItems < newCells.size(); newItems++) {
+
+					if (oldCells.get(oldItems).equals(newCells.get(newItems))){
+						oldArray.set(oldItems, KEEP);
+						newArray.set(newItems, KEEP);
+						// set the new start index
+						startIndex = newItems + 1;
+						break;
+					}
+				}
+			}
+
+			// Calculate number of adds, or the 'score' for this run
+			int numberOfAdds = 0;
+
+			for (int x = 0; x < newArray.size(); x++) {
+
+				if (newArray.get(x).equals(MARKED_FOR_ADDITION)){
+					numberOfAdds++;
+				}
+			}
+
+			if (bestRunScore == null || numberOfAdds < bestRunScore.getScore()){
+				bestRunScore = new RunScore(numberOfAdds, oldArray, newArray);
+			}
+
+		}
+
+		Log.i("MENU Best Run Score", String.valueOf(bestRunScore.getScore()));
+		Log.i("MENU Best Run OLD", bestRunScore.getOldMenu().toString());
+		Log.i("MENU Best Run NEW", bestRunScore.getCurrentMenu().toString());
 
 	}
 
+	private void setDeleteStatus(Integer size, List<Integer> oldArray){
+		for (int i = 0; i < size; i++) {
+			oldArray.add(MARKED_FOR_DELETION);
+		}
+	}
+
+	private void setAddStatus(Integer size, List<Integer> newArray){
+		for (int i = 0; i < size; i++) {
+			newArray.add(MARKED_FOR_ADDITION);
+		}
+	}
 
 	// ARTWORKS
 
