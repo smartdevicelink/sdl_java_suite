@@ -437,6 +437,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 			int startIndex = 0;
 
+			// Keep items that appear in both lists
 			for (int oldItems = run; oldItems < oldCells.size(); oldItems++) {
 
 				for (int newItems = startIndex; newItems < newCells.size(); newItems++) {
@@ -455,12 +456,12 @@ abstract class BaseMenuManager extends BaseSubManager {
 			int numberOfAdds = 0;
 
 			for (int x = 0; x < newArray.size(); x++) {
-
 				if (newArray.get(x).equals(MARKED_FOR_ADDITION)){
 					numberOfAdds++;
 				}
 			}
 
+			// see if we have a new best score and set it if we do
 			if (bestRunScore == null || numberOfAdds < bestRunScore.getScore()){
 				bestRunScore = new RunScore(numberOfAdds, oldArray, newArray);
 			}
