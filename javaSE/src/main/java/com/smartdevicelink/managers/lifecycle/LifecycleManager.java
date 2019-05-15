@@ -152,20 +152,43 @@ public class LifecycleManager extends BaseLifecycleManager {
         return new Version(1,0,0);
     }
 
-    private void sendRPCs(List<? extends RPCMessage> messages, OnMultipleRequestListener listener){
+    private void sendRPCs(List<? extends RPCMessage> messages, final OnMultipleRequestListener listener){
         if(messages != null ){
             for(RPCMessage message : messages){
+                // Request Specifics
                 if(message instanceof RPCRequest){
                     RPCRequest request = ((RPCRequest) message);
+                    final OnRPCResponseListener devOnRPCResponseListener = request.getOnRPCResponseListener();
                     request.setCorrelationID(CorrelationIdGenerator.generateId());
-                    if(listener != null){
+                    if (listener != null) {
                         listener.addCorrelationId(request.getCorrelationID());
-                        request.setOnRPCResponseListener(listener.getSingleRpcResponseListener());
-                    }
-                    this.sendRPCMessagePrivate(request);
+                        request.setOnRPCResponseListener(new OnRPCResponseListener() {
+                            @Override
+                            public void onResponse(int correlationId, RPCResponse response) {
+                                if (devOnRPCResponseListener != null){
+                                    devOnRPCResponseListener.onResponse(correlationId, response);
+                                }
+                                if (listener.getSingleRpcResponseListener() != null) {
+                                    listener.getSingleRpcResponseListener().onResponse(correlationId, response);
+                                }
+                            }
 
-                }else{
-                    this.sendRPCMessagePrivate(message);
+                            @Override
+                            public void onError(int correlationId, Result resultCode, String info) {
+                                super.onError(correlationId, resultCode, info);
+                                if (devOnRPCResponseListener != null){
+                                    devOnRPCResponseListener.onError(correlationId, resultCode, info);
+                                }
+                                if (listener.getSingleRpcResponseListener() != null) {
+                                    listener.getSingleRpcResponseListener().onError(correlationId, resultCode, info);
+                                }
+                            }
+                        });
+                    }
+                    sendRPCMessagePrivate(request);
+                }else {
+                    // Notifications and Responses
+                    sendRPCMessagePrivate(message);
                 }
             }
         }
@@ -190,24 +213,37 @@ public class LifecycleManager extends BaseLifecycleManager {
                RPCRequest request = (RPCRequest) rpc;
                request.setCorrelationID(CorrelationIdGenerator.generateId());
 
+               final OnRPCResponseListener devOnRPCResponseListener = request.getOnRPCResponseListener();
+
                request.setOnRPCResponseListener(new OnRPCResponseListener() {
                    @Override
                    public void onResponse(int correlationId, RPCResponse response) {
-                       if (response.getSuccess()) {
-                           // success
-                           if (listener != null) {
+                       if (devOnRPCResponseListener != null){
+                           devOnRPCResponseListener.onResponse(correlationId, response);
+                       }
+                       if (listener != null) {
+                           listener.onResponse(correlationId, response);
+                           if (messages.size() > 0) {
                                listener.onUpdate(messages.size());
                            }
-                           // recurse after successful response of RPC
-                           sendSequentialRPCs(messages, listener);
                        }
+                       // recurse after onResponse
+                       sendSequentialRPCs(messages, listener);
                    }
 
                    @Override
                    public void onError(int correlationId, Result resultCode, String info) {
+                       if (devOnRPCResponseListener != null){
+                           devOnRPCResponseListener.onError(correlationId, resultCode, info);
+                       }
                        if (listener != null) {
                            listener.onError(correlationId, resultCode, info);
+                           if (messages.size() > 0) {
+                               listener.onUpdate(messages.size());
+                           }
                        }
+                       // recurse after onError
+                       sendSequentialRPCs(messages, listener);
                    }
                });
                sendRPCMessagePrivate(request);
