@@ -4381,6 +4381,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		} else {
 			// Notifications and Responses
 			sendRPCMessagePrivate(rpc);
+			if (listener != null && rpcs.size() > 0) {
+				listener.onUpdate(rpcs.size());
+			}
+			// recurse after sending a notification or response as there is no response.
+			try {
+				sendSequentialRequests(rpcs, listener);
+			} catch (SdlException e) {
+				e.printStackTrace();
+				if (listener != null) {
+					listener.onError(0, Result.GENERIC_ERROR, e.toString());
+				}
+			}
 		}
 
 
@@ -4459,6 +4471,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}else {
 				// Notifications and Responses
 				sendRPCMessagePrivate(rpc);
+				if (listener != null){
+					if (rpcs.size() > 0){
+						listener.onUpdate(rpcs.size());
+					} else {
+						listener.onFinished();
+					}
+				}
 			}
 		}
 	}

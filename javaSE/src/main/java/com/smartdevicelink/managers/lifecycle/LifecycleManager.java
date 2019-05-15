@@ -189,6 +189,13 @@ public class LifecycleManager extends BaseLifecycleManager {
                 }else {
                     // Notifications and Responses
                     sendRPCMessagePrivate(message);
+                    if (listener != null){
+                        if (messages.size() > 0){
+                            listener.onUpdate(messages.size());
+                        } else {
+                            listener.onFinished();
+                        }
+                    }
                 }
             }
         }
@@ -250,7 +257,7 @@ public class LifecycleManager extends BaseLifecycleManager {
            } else {
                // Notifications and Responses
                sendRPCMessagePrivate(rpc);
-               if (listener != null) {
+               if (listener != null && messages.size() > 0) {
                    listener.onUpdate(messages.size());
                }
                // recurse after sending a notification or response as there is no response.
