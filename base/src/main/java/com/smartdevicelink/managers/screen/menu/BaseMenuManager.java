@@ -349,7 +349,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		final List<RPCRequest> subMenuCommands;
 
 		for (MenuCell cell : dynamicCells){
-			Log.i("MENU CELL SEND: ", cell.getTitle() + " Position: "+ cell.getCellId());
+			Log.i("MENU CELL SEND: ", cell.getTitle() );
 		}
 
 		if (findAllArtworksToBeUploadedFromCells(dynamicCells).size() > 0 || !supportsImages()){
@@ -359,6 +359,14 @@ abstract class BaseMenuManager extends BaseSubManager {
 		} else {
 			mainMenuCommands = mainMenuCommandsForCells(dynamicCells, true);
 			subMenuCommands = subMenuCommandsForCells(dynamicCells, true);
+		}
+
+		for (RPCRequest request : mainMenuCommands){
+			try {
+				Log.i("MENU ADD COMMAND: ", request.serializeJSON().toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 
 		// add all built commands to inProgressUpdate
@@ -685,16 +693,22 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// COMMANDS / SUBMENU RPCs
 
-	private List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cells, boolean shouldHaveArtwork) {
+	private List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cellsToAdd, boolean shouldHaveArtwork) {
 		List<RPCRequest> builtCommands = new ArrayList<>();
 
 		// We need the index so we will use this type of loop
-		for (int i = 0; i < cells.size(); i++) {
-			MenuCell cell = cells.get(i);
-			if (cell.getSubCells() != null && cell.getSubCells().size() > 0){
-				builtCommands.add(subMenuCommandForMenuCell(cell, shouldHaveArtwork, i));
-			}else{
-				builtCommands.add(commandForMenuCell(cell, shouldHaveArtwork, i));
+		for (int z = 0; z < menuCells.size(); z++) {
+			MenuCell mainCell = menuCells.get(z);
+			for (int i = 0; i < cellsToAdd.size(); i++) {
+				MenuCell addCell = cellsToAdd.get(i);
+				if (mainCell.equals(addCell)) {
+					Log.i("MENU CELL ADD", "NAME: "+ addCell.getTitle()+ " POSITION: "+ z);
+					if (addCell.getSubCells() != null && addCell.getSubCells().size() > 0) {
+						builtCommands.add(subMenuCommandForMenuCell(addCell, shouldHaveArtwork, z));
+					} else {
+						builtCommands.add(commandForMenuCell(addCell, shouldHaveArtwork, z));
+					}
+				}
 			}
 		}
 		return builtCommands;
