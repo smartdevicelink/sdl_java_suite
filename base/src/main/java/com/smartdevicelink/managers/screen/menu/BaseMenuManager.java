@@ -413,6 +413,15 @@ abstract class BaseMenuManager extends BaseSubManager {
 	}
 
 	private void sendSubMenuCommands(List<RPCRequest> commands, final CompletionListener listener){
+
+		for (RPCRequest command : commands){
+			try {
+				Log.i("MENU SUB COMMAND", command.serializeJSON().toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+
 		internalInterface.sendSequentialRPCs(commands, new OnMultipleRequestListener() {
 			@Override
 			public void onUpdate(int remainingRequests) {
@@ -510,7 +519,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 		}else{
 			dynamicCells.addAll(adds);
 		}
-
 
 		// now we can check the keeps lists for sub cells
 		if (keepsNew.size() > 0){
@@ -612,6 +620,11 @@ abstract class BaseMenuManager extends BaseSubManager {
 				bestRunScore = new RunScore(numberOfAdds, oldArray, newArray);
 			}
 
+			// if we have a case where we only need to add ONE, that's the best we can get
+			// same some computing and break out NOW
+			if (numberOfAdds == 1){
+				break;
+			}
 		}
 		return bestRunScore;
 	}
@@ -672,9 +685,22 @@ abstract class BaseMenuManager extends BaseSubManager {
 	// IDs
 
 	private void updateIdsOnDynamicCells(){
-		if (dynamicCells != null && dynamicCells.size() > 0) {
-			for (MenuCell cell : dynamicCells) {
-				cell.setCellId(++lastMenuId);
+		if (menuCells != null && menuCells.size() > 0 && dynamicCells != null && dynamicCells.size() > 0) {
+			for (int z = 0; z < menuCells.size(); z++) {
+				MenuCell mainCell = menuCells.get(z);
+				for (int i = 0; i < dynamicCells.size(); i++) {
+					MenuCell dynamicCell = dynamicCells.get(i);
+					if (mainCell.equals(dynamicCell)){
+						int newId = ++ lastMenuId;
+						menuCells.get(z).setCellId(newId);
+						dynamicCells.get(i).setCellId(newId);
+
+						// now we have to update our sub cells to use our new parent ID
+						if (dynamicCell.getSubCells() != null && dynamicCell.getSubCells().size() > 0){
+							updateIdsOnMenuCells(dynamicCell.getSubCells(), newId);
+						}
+					}
+				}
 			}
 		}
 	}
