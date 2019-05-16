@@ -4313,7 +4313,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			throw new SdlException("You must send some RPCs", SdlExceptionCause.INVALID_ARGUMENT);
 		}
 
-		int requestCount = rpcs.size();
+		final int requestCount = rpcs.size();
 
 		// Break out of recursion, we have finished the requests
 		if (requestCount == 0) {
@@ -4340,9 +4340,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 					if (listener != null) {
 						listener.onResponse(correlationId, response);
-						if (rpcs.size() > 0) {
-							listener.onUpdate(rpcs.size());
-						}
+						listener.onUpdate(requestCount);
+
 					}
 					try {
 						// recurse after onResponse
@@ -4362,9 +4361,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 					if (listener != null) {
 						listener.onError(correlationId, resultCode, info);
-						if (rpcs.size() > 0) {
-							listener.onUpdate(rpcs.size());
-						}
+						listener.onUpdate(requestCount);
 					}
 					try {
 						// recurse after onError
@@ -4381,8 +4378,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		} else {
 			// Notifications and Responses
 			sendRPCMessagePrivate(rpc);
-			if (listener != null && rpcs.size() > 0) {
-				listener.onUpdate(rpcs.size());
+			if (listener != null) {
+				listener.onUpdate(requestCount);
 			}
 			// recurse after sending a notification or response as there is no response.
 			try {
@@ -4472,9 +4469,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				// Notifications and Responses
 				sendRPCMessagePrivate(rpc);
 				if (listener != null){
-					if (rpcs.size() > 0){
-						listener.onUpdate(rpcs.size());
-					} else {
+					listener.onUpdate(rpcs.size());
+					if (rpcs.size() == 0){
 						listener.onFinished();
 					}
 				}
