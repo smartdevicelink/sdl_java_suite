@@ -768,6 +768,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 
+	protected SdlProxyBase(){}
+
 	/**
 	 * Used by the SdlManager
 	 *
@@ -2094,7 +2096,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/************* END Functions used by the Message Dispatching Queues ****************/
 	
 	// Private sendRPCMessagePrivate method. All RPCMessages are funneled through this method after error checking.
-	private void sendRPCMessagePrivate(RPCMessage message) throws SdlException {
+	protected void sendRPCMessagePrivate(RPCMessage message) throws SdlException {
 		try {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, message, SDL_LIB_TRACE_KEY);
 
