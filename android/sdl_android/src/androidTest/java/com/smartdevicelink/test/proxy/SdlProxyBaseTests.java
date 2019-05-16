@@ -148,7 +148,7 @@ public class SdlProxyBaseTests extends AndroidTestCase2 {
         testSendMultipleRPCs(false, 1);
     }
 
-    public void testSendRPCsSomeFails(){
+    public void testSendRPCsSomeFail(){
         testSendMultipleRPCs(false, 2);
     }
 
@@ -156,7 +156,7 @@ public class SdlProxyBaseTests extends AndroidTestCase2 {
         testSendMultipleRPCs(true, 1);
     }
 
-    public void testSendSequentialRPCsSomeFails(){
+    public void testSendSequentialRPCsSomeFail(){
         testSendMultipleRPCs(true, 2);
     }
 

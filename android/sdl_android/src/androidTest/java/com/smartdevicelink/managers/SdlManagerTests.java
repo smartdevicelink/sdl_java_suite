@@ -344,8 +344,6 @@ public class SdlManagerTests extends AndroidTestCase2 {
 
 	private void testSendMultipleRPCs(boolean sequentialSend){
 		listenerCalledCounter = 0;
-		final List<RPCRequest> rpcsList = Arrays.asList(new GetVehicleData(), new Show());
-
 
 		// When sdlProxyBase.sendRPCRequests() is called, call listener.onFinished() to fake the response
 		final Answer<Void> answer = new Answer<Void>() {
@@ -353,10 +351,6 @@ public class SdlManagerTests extends AndroidTestCase2 {
 			public Void answer(InvocationOnMock invocation) {
 				Object[] args = invocation.getArguments();
 				OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
-				int rpcsCount = rpcsList.size();
-				while (rpcsCount != 0) {
-					listener.onUpdate(--rpcsCount);
-				}
 				listener.onFinished();
 				return null;
 			}
@@ -374,11 +368,10 @@ public class SdlManagerTests extends AndroidTestCase2 {
 
 
 		// Test send RPC requests
+		List<RPCMessage> rpcsList = Arrays.asList(new GetVehicleData(), new Show(), new OnAppServiceData(), new GetAppServiceDataResponse());
 		OnMultipleRequestListener onMultipleRequestListener = new OnMultipleRequestListener() {
 			@Override
-			public void onUpdate(int remainingRequests) {
-				listenerCalledCounter++;
-			}
+			public void onUpdate(int remainingRequests) { }
 
 			@Override
 			public void onFinished() {
@@ -399,7 +392,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 
 
 		// Make sure the listener is called exactly once
-		assertEquals("Listener was not called or called more/less frequently than expected", listenerCalledCounter, rpcsList.size() + 1);
+		assertEquals("Listener was not called or called more/less frequently than expected", listenerCalledCounter, 1);
 	}
 
 }
