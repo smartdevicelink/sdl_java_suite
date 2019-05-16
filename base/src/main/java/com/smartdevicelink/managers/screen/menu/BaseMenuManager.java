@@ -397,7 +397,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-
+				DebugTool.logError("Result: "+ resultCode.toString() + " Info: "+ info);
 			}
 
 			@Override
@@ -464,6 +464,10 @@ abstract class BaseMenuManager extends BaseSubManager {
 		}
 
 		RunScore bestScore = compareOldAndNewLists(oldCells, newCells);
+
+		Log.i("MENU Best Run Score", String.valueOf(bestScore.getScore()));
+		Log.i("MENU Best Run OLD", bestScore.getOldMenu().toString());
+		Log.i("MENU Best Run NEW", bestScore.getCurrentMenu().toString());
 
 		// we need to run through the keeps and see if they have subCells, as they also need to be run
 		// through the compare function. Take best run score and loop through keeps.
@@ -554,6 +558,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 				}
 			}
 		}
+		// update the cell IDs so we don't have any ID collisions
+		updateIdsOnDynamicCells();
 	}
 
 	private RunScore compareOldAndNewLists(List<MenuCell> oldCells, List<MenuCell> newCells){
@@ -664,6 +670,14 @@ abstract class BaseMenuManager extends BaseSubManager {
 	}
 
 	// IDs
+
+	private void updateIdsOnDynamicCells(){
+		if (dynamicCells != null && dynamicCells.size() > 0) {
+			for (MenuCell cell : dynamicCells) {
+				cell.setCellId(++lastMenuId);
+			}
+		}
+	}
 
 	private void updateIdsOnMenuCells(List<MenuCell> cells, int parentId){
 		for (MenuCell cell : cells){
