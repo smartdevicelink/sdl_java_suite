@@ -74,7 +74,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 abstract class BaseMenuManager extends BaseSubManager {
 
@@ -95,7 +94,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	List<RPCRequest> inProgressUpdate, deleteCommands;
 
 	boolean waitingOnHMIUpdate;
-	private boolean hasQueuedUpdate, firstMenu;
+	private boolean hasQueuedUpdate;
 	HMILevel currentHMILevel;
 
 	OnRPCNotificationListener hmiListener, commandListener;
@@ -118,7 +117,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 		currentSystemContext = SystemContext.SYSCTXT_MAIN;
 		currentHMILevel = HMILevel.HMI_NONE;
 		lastMenuId = menuCellIdMin;
-		firstMenu = true;
 		addListeners();
 	}
 
@@ -143,7 +141,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 		waitingUpdateMenuCells = null;
 		deleteCommands = null;
 		dynamicCells = null;
-		firstMenu = true;
 
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -170,7 +167,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 		waitingOnHMIUpdate = false;
 
 		// Update our Lists
-		this.oldMenuCells = new ArrayList<>(menuCells != null ? menuCells : cells);
 		menuCells = new ArrayList<>(cells);
 
 		// HashSet order doesnt matter / does not allow duplicates
@@ -251,6 +247,9 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 		// run the lists through the new algorithm
 		createDynamicUpdate(oldMenuCells, menuCells);
+
+		// make a copy of our current cells
+		this.oldMenuCells = new ArrayList<>(menuCells);
 
 		deleteCurrentMenu(new CompletionListener() {
 			@Override
@@ -339,7 +338,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private void sendCurrentMenu(final CompletionListener listener){
 
 		if (dynamicCells.size() == 0){
-			DebugTool.logInfo("No updates to send, returning");
+
 			if (listener != null){
 				// This can be considered a success if the user was clearing out their menu
 				listener.onComplete(true);
@@ -383,47 +382,42 @@ abstract class BaseMenuManager extends BaseSubManager {
 		inProgressUpdate = new ArrayList<>(mainMenuCommands);
 		inProgressUpdate.addAll(subMenuCommands);
 
-		if (mainMenuCommands.size() > 0) {
-			internalInterface.sendSequentialRPCs(mainMenuCommands, new OnMultipleRequestListener() {
-				@Override
-				public void onUpdate(int remainingRequests) {
-					// nothing here
+		internalInterface.sendSequentialRPCs(mainMenuCommands, new OnMultipleRequestListener() {
+			@Override
+			public void onUpdate(int remainingRequests) {
+				// nothing here
+			}
+
+			@Override
+			public void onFinished() {
+
+				oldMenuCells = menuCells;
+				// we don't need these anymore
+				dynamicCells.clear();
+
+				if (subMenuCommands.size() > 0) {
+					sendSubMenuCommands(subMenuCommands, listener);
+					DebugTool.logInfo("Finished sending main menu commands. Sending sub menu commands.");
+				} else {
+					inProgressUpdate = null;
+					DebugTool.logInfo("Finished sending main menu commands.");
 				}
+			}
 
-				@Override
-				public void onFinished() {
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				DebugTool.logError("Result: " + resultCode.toString() + " Info: " + info);
+			}
 
-					oldMenuCells = menuCells;
-					// we don't need these anymore
-					dynamicCells.clear();
-
-					if (subMenuCommands.size() > 0) {
-						sendSubMenuCommands(subMenuCommands, listener);
-						DebugTool.logInfo("Finished sending main menu commands. Sending sub menu commands.");
-					} else {
-						inProgressUpdate = null;
-						DebugTool.logInfo("Finished sending main menu commands.");
-					}
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				try {
+					DebugTool.logInfo("Main Menu response: " + response.serializeJSON().toString());
+				} catch (JSONException e) {
+					e.printStackTrace();
 				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError("Result: " + resultCode.toString() + " Info: " + info);
-				}
-
-				@Override
-				public void onResponse(int correlationId, RPCResponse response) {
-					try {
-						DebugTool.logInfo("Main Menu response: " + response.serializeJSON().toString());
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-				}
-			});
-		}else{
-			sendSubMenuCommands(subMenuCommands, null);
-		}
-
+			}
+		});
 	}
 
 	private void sendSubMenuCommands(List<RPCRequest> commands, final CompletionListener listener){
@@ -437,6 +431,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			public void onFinished() {
 				DebugTool.logInfo("Finished Updating Menu");
 				inProgressUpdate = null;
+
 				if (listener != null){
 					listener.onComplete(true);
 				}
@@ -465,27 +460,15 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// COMPARISONS
 
-	private static boolean cmp( List<?> l1, List<?> l2 ) {
-		// make a copy of the list so the original list is not changed, and remove() is supported
-		ArrayList<?> cp = new ArrayList<>( l1 );
-		for ( Object o : l2 ) {
-			if ( !cp.remove( o ) ) {
-				return false;
-			}
-		}
-		return cp.isEmpty();
-	}
-
 	private void createDynamicUpdate(List<MenuCell> oldCells, List<MenuCell> newCells){
 
-		if (firstMenu){
+		if (oldCells == null || oldCells.size() == 0){
 			// This is the first menu we are sending, just get it out
 			if (dynamicCells == null){
 				dynamicCells = new ArrayList<>(newCells);
 			}else{
 				dynamicCells.addAll(newCells);
 			}
-			firstMenu = false;
 			return;
 		}
 
@@ -495,107 +478,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 		Log.i("MENU Best Run OLD", bestScore.getOldMenu().toString());
 		Log.i("MENU Best Run NEW", bestScore.getCurrentMenu().toString());
 
-		// we need to run through the keeps and see if they have subCells, as they also need to be run
-		// through the compare function. Take best run score and loop through keeps.
-		// Currently submenus can only be one level deep
-		List<Integer> newIntArray = bestScore.getCurrentMenu();
-		List<Integer> oldIntArray = bestScore.getOldMenu();
-		List<MenuCell> keepsNew = new ArrayList<>();
-		List<MenuCell> keepsOld = new ArrayList<>();
-
-		// Set up deletes
-		List<MenuCell> deletes = new ArrayList<>();
-		for (int x = 0; x < oldIntArray.size(); x++) {
-			Integer old = oldIntArray.get(x);
-			if (old.equals(MARKED_FOR_DELETION)){
-				// grab cell to send to function to create delete commands
-				deletes.add(oldCells.get(x));
-			}else if (old.equals(KEEP)){
-				// we need the array of keeps to check for sub cells
-				keepsOld.add(oldCells.get(x));
-			}
-		}
-		// create the delete commands
-		deleteCommands = deleteCommandsForCells(deletes);
-
-		// Set up the adds
-		List<MenuCell> adds = new ArrayList<>();
-		for (int x = 0; x < newIntArray.size(); x++) {
-			Integer newInt = newIntArray.get(x);
-			if (newInt.equals(MARKED_FOR_ADDITION)){
-				// grab cell to send to function to create delete commands
-				adds.add(newCells.get(x));
-			}else if (newInt.equals(KEEP)){
-				// we need the array of keeps to check for sub cells
-				keepsNew.add(newCells.get(x));
-			}
-		}
-		// add the cells needed to added here
-		if (dynamicCells == null){
-			dynamicCells = new ArrayList<>(adds);
-		}else{
-			dynamicCells.addAll(adds);
-		}
-
-
-		// now we can check the keeps lists for sub cells
-		if (keepsNew.size() > 0){
-			// lets see if we have any cells that contain sub-cells
-			for (int i = 0; i < keepsNew.size(); i++) {
-
-				MenuCell newCell = keepsNew.get(i);
-				Log.i("MENU", "KEEP: "+newCell.getTitle());
-				if (newCell.getSubCells() != null && newCell.getSubCells().size() > 0){
-					// This cell HAS SUB-CELLS. Get the old cell
-					MenuCell oldCell = keepsOld.get(i);
-					Log.i("MENU", "MATCHING SUB CELLS");
-					List<MenuCell> newSubCells = newCell.getSubCells();
-					List<MenuCell> oldSubCells = oldCell.getSubCells();
-
-					RunScore subCellScore = compareOldAndNewLists(oldSubCells, newSubCells);
-
-					if (subCellScore == null){
-						return;
-					}
-
-					Log.i("MENU SUB Run Score", String.valueOf(subCellScore.getScore()));
-					Log.i("MENU SUB Run OLD", subCellScore.getOldMenu().toString());
-					Log.i("MENU SUB Run NEW", subCellScore.getCurrentMenu().toString());
-
-					// Grab the responses so that we can create the add / delete commands
-					List<Integer> subCellNewArray = subCellScore.getCurrentMenu();
-					List<Integer> subCellOldArray = subCellScore.getOldMenu();
-
-					// Set up deletes
-					List<MenuCell> subDeletes = new ArrayList<>();
-					for (int x = 0; x < subCellOldArray.size(); x++) {
-						Integer old = subCellOldArray.get(x);
-						if (old.equals(MARKED_FOR_DELETION)){
-							// grab cell to send to function to create delete commands
-							subDeletes.add(oldSubCells.get(x));
-						}
-					}
-					// create the delete commands and append to previous delete list
-					deleteCommands.addAll(deleteCommandsForCells(subDeletes));
-
-					// Set up the adds
-					List<MenuCell> subAdds = new ArrayList<>();
-					for (int x = 0; x < subCellNewArray.size(); x++) {
-						Integer newInt = subCellNewArray.get(x);
-						if (newInt.equals(MARKED_FOR_ADDITION)){
-							// grab cell to send to function to create delete commands
-							subAdds.add(newSubCells.get(x));
-						}
-					}
-					for (MenuCell cell : subAdds){
-						Log.i("SUB MENU CELL ADD ", cell.getTitle());
-					}
-					// add subs to the list
-					dynamicCells.addAll(subAdds);
-					menuCells.addAll(subAdds);
-				}
-			}
-		}
 		// update the cell IDs so we don't have any ID collisions
 		updateIdsOnDynamicCells();
 	}
@@ -756,14 +638,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private List<RPCRequest> mainMenuCommandsForCells(List<MenuCell> cellsToAdd, boolean shouldHaveArtwork) {
 		List<RPCRequest> builtCommands = new ArrayList<>();
 
-		for (MenuCell cell : menuCells){
-			Log.i("MENU CELL COMMANDMAIN: ", cell.getTitle()+ " ID: "+ cell.getCellId() + " PARENT ID: "+ cell.getParentCellId());
-		}
-
-		for (MenuCell cell : cellsToAdd){
-			Log.i("MENU CELL TO ADD: ", cell.getTitle()+ " ID: "+ cell.getCellId() + " PARENT ID: "+ cell.getParentCellId());
-		}
-
 		// We need the index so we will use this type of loop
 		for (int z = 0; z < menuCells.size(); z++) {
 			MenuCell mainCell = menuCells.get(z);
@@ -811,6 +685,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	}
 
 	private AddCommand commandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position){
+		Log.i("MENU", "ADD COMMAND FOR MENU CELL");
 
 		MenuParams params = new MenuParams(cell.getTitle());
 		params.setParentID(cell.getParentCellId() != MAX_ID ? cell.getParentCellId() : 0);
@@ -825,6 +700,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	}
 
 	private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position){
+		Log.i("MENU", "SUB COMMAND FOR MENU CELL");
 		AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getTitle());
 		subMenu.setPosition(position);
 		subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon()!= null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);

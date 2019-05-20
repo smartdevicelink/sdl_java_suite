@@ -274,6 +274,18 @@ public class MenuCell {
 		if (!(o instanceof MenuCell)) return false;
 
 		MenuCell menuCell = (MenuCell) o;
+		// check if one has sub-cells and if one doesnt, if so they are not equal
+		if (menuCell.getSubCells() == null && getSubCells() != null){
+			return false;
+		} else if (menuCell.getSubCells() != null && getSubCells() == null){
+			return false;
+		} else if (menuCell.getSubCells() != null && getSubCells() != null){
+			if (!menuCell.getSubCells().containsAll(getSubCells())){
+				return false;
+			}else if (!getSubCells().containsAll(menuCell.getSubCells())){
+				return false;
+			}
+		}
 		// if we get to this point, create the hashes and compare them
 		return hashCode() == menuCell.hashCode();
 	}
