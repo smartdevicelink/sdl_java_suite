@@ -32,7 +32,6 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -67,28 +66,17 @@ import com.smartdevicelink.util.DebugTool;
 
 import org.json.JSONException;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 abstract class BaseMenuManager extends BaseSubManager {
 
-	/**
-	 * State enums used internally for dynamic updating
-	 * These should be used to set the 'state' variable
-	 */
-	@IntDef({KEEP, MARKED_FOR_ADDITION, MARKED_FOR_DELETION})
-	@Retention(RetentionPolicy.SOURCE)
-	@interface MenuCellState {}
-	static final int KEEP = 0;
-	static final int MARKED_FOR_ADDITION = 1;
-	static final int MARKED_FOR_DELETION = 2;
+	private static final int KEEP = 0;
+	private static final int MARKED_FOR_ADDITION = 1;
+	private static final int MARKED_FOR_DELETION = 2;
 
 	private final WeakReference<FileManager> fileManager;
 
