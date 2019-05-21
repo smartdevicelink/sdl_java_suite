@@ -512,6 +512,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 					MenuCell dynamicCell = dynamicCells.get(i);
 					if (mainCell.equals(dynamicCell)) {
 						int newId = ++lastMenuId;
+						Log.i("MENU", "UPDATING ID ON DYNAMIC CELL: " + dynamicCell.getTitle() + " TO: " + newId);
 						menuCells.get(z).setCellId(newId);
 						dynamicCells.get(i).setCellId(newId);
 
