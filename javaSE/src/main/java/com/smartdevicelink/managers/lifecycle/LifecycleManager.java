@@ -202,10 +202,8 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     private void sendSequentialRPCs(final List<? extends RPCMessage> messages, final OnMultipleRequestListener listener){
        if (messages != null){
-           final int rpcCount = messages.size();
-
            // Break out of recursion, we have finished the requests
-           if (rpcCount == 0) {
+           if (messages.size() == 0) {
                if(listener != null){
                    listener.onFinished();
                }
@@ -229,7 +227,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                        }
                        if (listener != null) {
                            listener.onResponse(correlationId, response);
-                           listener.onUpdate(rpcCount);
+                           listener.onUpdate(messages.size());
                        }
                        // recurse after onResponse
                        sendSequentialRPCs(messages, listener);
@@ -242,7 +240,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                        }
                        if (listener != null) {
                            listener.onError(correlationId, resultCode, info);
-                           listener.onUpdate(rpcCount);
+                           listener.onUpdate(messages.size());
 
                        }
                        // recurse after onError
@@ -254,7 +252,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                // Notifications and Responses
                sendRPCMessagePrivate(rpc);
                if (listener != null) {
-                   listener.onUpdate(rpcCount);
+                   listener.onUpdate(messages.size());
                }
                // recurse after sending a notification or response as there is no response.
                sendSequentialRPCs(messages, listener);
