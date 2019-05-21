@@ -45,7 +45,7 @@ import static org.mockito.Mockito.mock;
 public class SdlProxyBaseTests extends AndroidTestCase2 {
     public static final String TAG = "SdlProxyBaseTests";
 
-    int onUpdateListenerCounter, onFinishedListenerCounter, onResponseListenerCounter, onErrorListenerCounter;
+    int onUpdateListenerCounter, onFinishedListenerCounter, onResponseListenerCounter, onErrorListenerCounter, remainingRequestsExpected;
 
     @Override
     protected void setUp() throws Exception{
@@ -213,10 +213,12 @@ public class SdlProxyBaseTests extends AndroidTestCase2 {
 
 
         // Send RPCs
+        remainingRequestsExpected = rpcsList.size();
         OnMultipleRequestListener onMultipleRequestListener = new OnMultipleRequestListener() {
             @Override
             public void onUpdate(int remainingRequests) {
                 onUpdateListenerCounter++;
+                assertEquals(remainingRequestsExpected, remainingRequests);
             }
 
             @Override
@@ -227,11 +229,13 @@ public class SdlProxyBaseTests extends AndroidTestCase2 {
             @Override
             public void onError(int correlationId, Result resultCode, String info) {
                 onErrorListenerCounter++;
+                remainingRequestsExpected--;
             }
 
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 onResponseListenerCounter++;
+                remainingRequestsExpected--;
             }
         };
         try {
