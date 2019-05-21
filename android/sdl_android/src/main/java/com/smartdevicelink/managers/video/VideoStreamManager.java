@@ -544,6 +544,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 			if(motionEventAction == MotionEvent.ACTION_UP || motionEventAction == MotionEvent.ACTION_CANCEL){
 				//If the motion event should be finished we should clear our reference
+				sdlMotionEvent.pointers.clear();
 				sdlMotionEvent = null;
 				break;
 			} else if((motionEventAction & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_POINTER_UP){
