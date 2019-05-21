@@ -80,7 +80,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	private final WeakReference<FileManager> fileManager;
 
-	List<MenuCell> menuCells, waitingUpdateMenuCells, oldMenuCells;
+	List<MenuCell> menuCells, waitingUpdateMenuCells, oldMenuCells, keepsNew, keepsOld;
 	List<RPCRequest> inProgressUpdate;
 
 	boolean waitingOnHMIUpdate;
@@ -155,6 +155,11 @@ abstract class BaseMenuManager extends BaseSubManager {
 		waitingOnHMIUpdate = false;
 
 		// Update our Lists
+		// set old list
+		if (menuCells != null) {
+			oldMenuCells = new ArrayList<>(menuCells);
+		}
+		// copy new list
 		menuCells = new ArrayList<>(cells);
 
 		// HashSet order doesnt matter / does not allow duplicates
@@ -213,6 +218,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// UPDATING SYSTEM
 
+	// ROOT MENU
+
 	private void updateRootMenu(){
 
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
@@ -233,7 +240,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		// run the lists through the new algorithm
 		RunScore rootScore = createDynamicUpdate(oldMenuCells, menuCells);
 
-		if (rootScore == null || rootScore.getScore() == 0){
+		if (rootScore == null){
 			// send initial menu (score will return null)
 			// make a copy of our current cells
 			DebugTool.logInfo("Creating initial Menu");
@@ -258,11 +265,14 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 		// Set up deletes
 		List<MenuCell> deletes = new ArrayList<>();
+		keepsOld = new ArrayList<>();
 		for (int x = 0; x < oldIntArray.size(); x++) {
 			Integer old = oldIntArray.get(x);
 			if (old.equals(MARKED_FOR_DELETION)){
 				// grab cell to send to function to create delete commands
 				deletes.add(oldMenuCells.get(x));
+			} else if (old.equals(KEEP)){
+				keepsOld.add(oldMenuCells.get(x));
 			}
 		}
 		// create the delete commands
@@ -270,20 +280,34 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 		// Set up the adds
 		List<MenuCell> adds = new ArrayList<>();
-		List<MenuCell> keeps = new ArrayList<>();
+		keepsNew = new ArrayList<>();
 		for (int x = 0; x < newIntArray.size(); x++) {
 			Integer newInt = newIntArray.get(x);
 			if (newInt.equals(MARKED_FOR_ADDITION)){
 				// grab cell to send to function to create add commands
 				adds.add(menuCells.get(x));
 			} else if (newInt.equals(KEEP)){
-				keeps.add(menuCells.get(x));
+				keepsNew.add(menuCells.get(x));
 			}
 		}
 		List<MenuCell> addsWithNewIds = updateIdsOnDynamicCells(adds);
-		transferIdsToKeeps(keeps);
-		sendDynamicRootMenu(deleteCommands, addsWithNewIds);
+		transferIdsToKeeps(keepsNew);
+
+		if (addsWithNewIds != null && addsWithNewIds.size() > 0){
+			Log.i("MENU", "THERE ARE ROOT MENU UPDATES. SEND THESE OFF");
+			sendDynamicRootMenu(deleteCommands, addsWithNewIds);
+		}else{
+			Log.i("MENU", "EVERYTHING IS A KEEP. LETS CHECK THE SUB MENUS");
+			sendSubMenuUpdates();
+		}
+
 	}
+
+	// SUB MENU COMPARISONS
+
+
+
+	// OTHER
 
 	private void transferIdsToKeeps(List<MenuCell> keeps){
 		for (int z = 0; z < oldMenuCells.size(); z++) {
@@ -324,9 +348,41 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// This is called in the listener in the sendMenu and sendSubMenuCommands Methods
 	private void sendSubMenuUpdates(){
+		// any cells that were re-added have their sub-cells added with them
+		// at this point all we care about are the cells that were deemed equal and kept.
+		if (keepsNew == null || keepsNew.size() == 0) {
+			return;
+		}
+
+		for (int i = 0; i < keepsNew.size(); i++) {
+
+			MenuCell keptCell = keepsNew.get(i);
+			MenuCell oldKeptCell = keepsOld.get(i);
+
+			if ((oldKeptCell.getSubCells() != null && oldKeptCell.getSubCells().size() > 0 && (keptCell.getSubCells() == null || keptCell.getSubCells().size() == 0))){
+				// CASE 1: If the oldKeep[i] has a submenu and newKeep[i] does not, delete all submenu cells
+				Log.i("MENU SUB COMP", "New Cell "+keptCell.getTitle() + " No longer has subcells, delete all subcells from old");
+			} else if ((oldKeptCell.getSubCells() == null || oldKeptCell.getSubCells().size() == 0) && keptCell.getSubCells() != null && keptCell.getSubCells().size() > 0){
+				// CASE 2: If the oldKeep[i] doesn’t have a submenu and newKeep[i] does, add all submenu cells
+				Log.i("MENU SUB COMP", "New Cell "+keptCell.getTitle() + " has subcells, and previously didnt ADD SUBMENU STUFF");
+			}else if (oldKeptCell.getSubCells() != null && oldKeptCell.getSubCells().size() > 0 && keptCell.getSubCells() != null && keptCell.getSubCells().size() > 0){
+				// CASE 3: If BOTH have submenus, run the algorithm between them
+				Log.i("MENU SUB COMP", "Both Old and New: "+keptCell.getTitle() + " have sub cells. Run compare");
+			}
 
 
-
+			// FOR EACH CELL WITH SUB CELLS, PRINT OUT INFO FOR THEIR SUBMENU
+			if (keptCell.getSubCells() != null && keptCell.getSubCells().size() > 0) {
+				for (MenuCell newCell : keptCell.getSubCells()) {
+					Log.i("MENU NEW SUBCELL", "TITLE: " + newCell.getTitle() + " PARENT: " + newCell.getParentCellId() + " ID: " + newCell.getCellId());
+				}
+			}
+			if (oldKeptCell.getSubCells() != null && oldKeptCell.getSubCells().size() > 0) {
+				for (MenuCell oldCell : oldKeptCell.getSubCells()) {
+					Log.i("MENU OLD SUBCELL", "TITLE: " + oldCell.getTitle() + " PARENT: " + oldCell.getParentCellId() + " ID: " + oldCell.getCellId());
+				}
+			}
+		}
 	}
 
 
@@ -702,7 +758,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private void sendMenu(final List<MenuCell> menu, final CompletionListener listener){
 
 		if (menu.size() == 0){
-
 			if (listener != null){
 				// This can be considered a success if the user was clearing out their menu
 				listener.onComplete(true);
@@ -761,8 +816,13 @@ abstract class BaseMenuManager extends BaseSubManager {
 					sendSubMenuCommands(subMenuCommands, listener);
 					DebugTool.logInfo("Finished sending main menu commands. Sending sub menu commands.");
 				} else {
-					inProgressUpdate = null;
-					DebugTool.logInfo("Finished sending main menu commands.");
+
+					if (keepsNew != null && keepsNew.size() > 0){
+						sendSubMenuUpdates();
+					}else {
+						inProgressUpdate = null;
+						DebugTool.logInfo("Finished sending main menu commands.");
+					}
 				}
 			}
 
@@ -783,6 +843,19 @@ abstract class BaseMenuManager extends BaseSubManager {
 	}
 
 	private void sendSubMenuCommands(List<RPCRequest> commands, final CompletionListener listener){
+
+		if (commands != null){
+			for (RPCRequest command: commands){
+				try {
+					Log.i("MENU SUB COMMAND", command.serializeJSON().toString());
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}else{
+			Log.e("MENU", "SUB MENU COMMANDS NULL");
+		}
+
 		internalInterface.sendSequentialRPCs(commands, new OnMultipleRequestListener() {
 			@Override
 			public void onUpdate(int remainingRequests) {
@@ -791,11 +864,16 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 			@Override
 			public void onFinished() {
-				DebugTool.logInfo("Finished Updating Menu");
-				inProgressUpdate = null;
 
-				if (listener != null){
-					listener.onComplete(true);
+				if (keepsNew != null && keepsNew.size() > 0){
+					sendSubMenuUpdates();
+				}else {
+					DebugTool.logInfo("Finished Updating Menu");
+					inProgressUpdate = null;
+
+					if (listener != null) {
+						listener.onComplete(true);
+					}
 				}
 			}
 

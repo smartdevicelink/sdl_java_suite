@@ -258,7 +258,7 @@ public class MenuCell {
 		result += ((getTitle() == null) ? 0 : Integer.rotateLeft(getTitle().hashCode(), 1));
 		result += ((getIcon() == null || getIcon().getName() == null) ? 0 : Integer.rotateLeft(getIcon().getName().hashCode(), 2));
 		result += ((getVoiceCommands() == null) ? 0 : Integer.rotateLeft(getVoiceCommands().hashCode(), 3));
-		result += ((getSubCells() == null) ? 0 : Integer.rotateLeft(getSubCells().size(), 4));
+		result += ((getSubCells() == null) ? 0 : Integer.rotateLeft(1, 4));
 		return result;
 	}
 
