@@ -40,7 +40,7 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.smartdevicelink:bson_java_port:1.1.1'
+    api 'com.smartdevicelink:bson_java_port:1.2.0'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
