@@ -300,22 +300,17 @@ abstract class BaseMenuManager extends BaseSubManager {
 			Log.i("MENU", "EVERYTHING IS A KEEP. LETS CHECK THE SUB MENUS");
 			sendSubMenuUpdates();
 		}
-
 	}
-
-	// SUB MENU COMPARISONS
-
-
 
 	// OTHER
 
 	private void transferIdsToKeeps(List<MenuCell> keeps){
 		for (int z = 0; z < oldMenuCells.size(); z++) {
-			MenuCell mainCell = oldMenuCells.get(z);
+			MenuCell oldCell = oldMenuCells.get(z);
 			for (int i = 0; i < keeps.size(); i++) {
 				MenuCell keptCell = keeps.get(i);
-				if (mainCell.equals(keptCell)) {
-					keptCell.setCellId(mainCell.getCellId());
+				if (oldCell.equals(keptCell)) {
+					keptCell.setCellId(oldCell.getCellId());
 				}
 			}
 		}
@@ -519,6 +514,10 @@ abstract class BaseMenuManager extends BaseSubManager {
 						int newId = ++lastMenuId;
 						menuCells.get(z).setCellId(newId);
 						dynamicCells.get(i).setCellId(newId);
+
+						if (mainCell.getSubCells() != null && mainCell.getSubCells().size() > 0) {
+							updateIdsOnMenuCells(mainCell.getSubCells(), mainCell.getCellId());
+						}
 					}
 				}
 			}
