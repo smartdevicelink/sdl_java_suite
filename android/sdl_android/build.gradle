@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+import org.apache.tools.ant.taskdefs.condition.Os
 
 android {
     compileSdkVersion 28
@@ -34,7 +35,11 @@ android {
     }
 
     sourceSets {
-        main.java.srcDirs += '../../baseAndroid/src/main/java'
+        if(Os.isFamily(Os.FAMILY_WINDOWS)){
+            main.java.srcDirs += '../../baseAndroid/windows/src/main/java'
+        }else{
+            main.java.srcDirs += '../../baseAndroid/src/main/java'
+        }
     }
 }
 
