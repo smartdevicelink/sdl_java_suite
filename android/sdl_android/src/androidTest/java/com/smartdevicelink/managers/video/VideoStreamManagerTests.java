@@ -275,7 +275,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 		assertEquals(1, motionEvent.getPointerCount());
 		assertEquals(e1x, Math.round(motionEvent.getX(0)));
 		assertEquals(e1y, Math.round(motionEvent.getY(0)));
-		assertEquals(MotionEvent.ACTION_DOWN, motionEvent.getAction());
+		assertEquals(MotionEvent.ACTION_DOWN, motionEvent.getActionMasked());
 
 
 		// Second MotionEvent should be ACTION_POINTER_DOWN and have 2 pointers
@@ -388,7 +388,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 		assertEquals(1, motionEvent.getPointerCount());
 		assertEquals(e1x, Math.round(motionEvent.getX(0)));
 		assertEquals(e1y, Math.round(motionEvent.getY(0)));
-		assertEquals(MotionEvent.ACTION_DOWN, motionEvent.getAction());
+		assertEquals(MotionEvent.ACTION_DOWN, motionEvent.getActionMasked());
 
 
 		// Second MotionEvent should be ACTION_POINTER_DOWN and have 2 pointers
@@ -429,7 +429,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 		assertEquals(1, motionEvent.getPointerCount());
 		assertEquals(e1x, Math.round(motionEvent.getX(0)));
 		assertEquals(e1y, Math.round(motionEvent.getY(0)));
-		assertEquals(MotionEvent.ACTION_DOWN, motionEvent.getAction());
+		assertEquals(MotionEvent.ACTION_DOWN, motionEvent.getActionMasked());
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	}
 }
