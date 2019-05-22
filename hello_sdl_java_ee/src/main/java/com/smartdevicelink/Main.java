@@ -31,7 +31,7 @@ package com.smartdevicelink;
                 }
             };
             this.session = session;
-            sdlService = new com.smartdevicelink.SdlService(websocket, sdlServiceCallback);
+            sdlService = new com.smartdevicelink.SdlService(new CustomTransportConfig(websocket), sdlServiceCallback);
             sdlService.start();
         }
 

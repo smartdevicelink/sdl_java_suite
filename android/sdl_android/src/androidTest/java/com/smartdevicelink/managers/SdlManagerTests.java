@@ -288,6 +288,11 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.SETTING_UP);
 		sdlManager.checkState();
 		assertEquals(BaseSubManager.LIMITED, sdlManager.getState());
+
+
+		// Case 6
+		sdlManager.dispose();
+		assertEquals(BaseSubManager.SHUTDOWN, sdlManager.getState());
 	}
 
 	public void testSendRPC(){
