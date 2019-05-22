@@ -1,15 +1,19 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
+import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.MediaServiceData;
 import com.smartdevicelink.proxy.rpc.enums.MediaType;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Hashtable;
 import java.util.Iterator;
 
 /**
@@ -28,6 +32,7 @@ public class MediaServiceDataTests extends TestCase {
 		msg.setMediaTitle(Test.GENERAL_STRING);
 		msg.setMediaArtist(Test.GENERAL_STRING);
 		msg.setMediaAlbum(Test.GENERAL_STRING);
+		msg.setMediaImage(Test.GENERAL_IMAGE);
 		msg.setPlaylistName(Test.GENERAL_STRING);
 		msg.setIsExplicit(Test.GENERAL_BOOLEAN);
 		msg.setTrackPlaybackProgress(Test.GENERAL_INTEGER);
@@ -47,6 +52,7 @@ public class MediaServiceDataTests extends TestCase {
 		String mediaTitle = msg.getMediaTitle();
 		String mediaArtist = msg.getMediaArtist();
 		String mediaAlbum = msg.getMediaAlbum();
+		Image mediaImage = msg.getMediaImage();
 		String playlistName = msg.getPlaylistName();
 		boolean isExplicit = msg.getIsExplicit();
 		Integer trackPlaybackProgress = msg.getTrackPlaybackProgress();
@@ -61,6 +67,7 @@ public class MediaServiceDataTests extends TestCase {
 		assertEquals(Test.GENERAL_STRING, mediaTitle);
 		assertEquals(Test.GENERAL_STRING, mediaArtist);
 		assertEquals(Test.GENERAL_STRING, mediaAlbum);
+		assertEquals(Test.GENERAL_IMAGE, mediaImage);
 		assertEquals(Test.GENERAL_STRING, playlistName);
 		assertEquals(Test.GENERAL_BOOLEAN, isExplicit);
 		assertEquals(Test.GENERAL_INTEGER, trackPlaybackProgress);
@@ -78,6 +85,7 @@ public class MediaServiceDataTests extends TestCase {
 		assertNull(Test.NULL, msg.getMediaTitle());
 		assertNull(Test.NULL, msg.getMediaArtist());
 		assertNull(Test.NULL, msg.getMediaAlbum());
+		assertNull(Test.NULL, msg.getMediaImage());
 		assertNull(Test.NULL, msg.getPlaylistName());
 		assertNull(Test.NULL, msg.getIsExplicit());
 		assertNull(Test.NULL, msg.getTrackPlaybackProgress());
@@ -96,6 +104,7 @@ public class MediaServiceDataTests extends TestCase {
 			reference.put(MediaServiceData.KEY_MEDIA_TITLE, Test.GENERAL_STRING);
 			reference.put(MediaServiceData.KEY_MEDIA_ARTIST, Test.GENERAL_STRING);
 			reference.put(MediaServiceData.KEY_MEDIA_ALBUM, Test.GENERAL_STRING);
+			reference.put(MediaServiceData.KEY_MEDIA_IMAGE, Test.GENERAL_IMAGE);
 			reference.put(MediaServiceData.KEY_PLAYLIST_NAME, Test.GENERAL_STRING);
 			reference.put(MediaServiceData.KEY_IS_EXPLICIT, Test.GENERAL_BOOLEAN);
 			reference.put(MediaServiceData.KEY_TRACK_PLAYBACK_PROGRESS, Test.GENERAL_INTEGER);
@@ -111,7 +120,14 @@ public class MediaServiceDataTests extends TestCase {
 			Iterator<?> iterator = reference.keys();
 			while(iterator.hasNext()){
 				String key = (String) iterator.next();
-				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+
+				if (key.equals(MediaServiceData.KEY_MEDIA_IMAGE)){
+					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
+					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
+					assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, new Image(hashTest)));
+				} else {
+					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+				}
 			}
 		} catch(JSONException e){
 			fail(Test.JSON_FAIL);
