@@ -249,7 +249,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 
 	}
 
-	public void testConvertTouchEvent(){
+	public void testConvertTouchEvent() {
 		ISdl internalInterface = mock(ISdl.class);
 		VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
 		List<MotionEvent> motionEventList;
@@ -269,6 +269,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 		/////////////////////////////////////////////////// First OnTouchEvent Notification ///////////////////////////////////////////////////
 		testOnTouchEvent = new OnTouchEvent(TouchType.BEGIN, Arrays.asList(touchEvent1, touchEvent2));
 		motionEventList = videoStreamManager.convertTouchEvent(testOnTouchEvent);
+
 
 		// First MotionEvent should be ACTION_DOWN and have 1 pointer
 		motionEvent = motionEventList.get(0);
@@ -328,39 +329,39 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 
 
 
-        /////////////////////////////////////////////////// Fourth OnTouchEvent Notification ///////////////////////////////////////////////////
-        testOnTouchEvent = new OnTouchEvent(TouchType.END, Arrays.asList(touchEvent2AfterMovingPointer));
-        motionEventList = videoStreamManager.convertTouchEvent(testOnTouchEvent);
+		/////////////////////////////////////////////////// Fourth OnTouchEvent Notification ///////////////////////////////////////////////////
+		testOnTouchEvent = new OnTouchEvent(TouchType.END, Arrays.asList(touchEvent2AfterMovingPointer));
+		motionEventList = videoStreamManager.convertTouchEvent(testOnTouchEvent);
 
 
-        // First MotionEvent should be ACTION_POINTER_UP and have 3 pointers
-        motionEvent = motionEventList.get(0);
-        assertEquals(3, motionEvent.getPointerCount());
-        assertEquals(e1x, Math.round(motionEvent.getX(0)));
-        assertEquals(e1y, Math.round(motionEvent.getY(0)));
-        assertEquals(e2x + movingStep, Math.round(motionEvent.getX(1)));
-        assertEquals(e2y + movingStep, Math.round(motionEvent.getY(1)));
-        assertEquals(e3x, Math.round(motionEvent.getX(2)));
-        assertEquals(e3y, Math.round(motionEvent.getY(2)));
-        assertEquals(MotionEvent.ACTION_POINTER_UP, motionEvent.getActionMasked());
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// First MotionEvent should be ACTION_POINTER_UP and have 3 pointers
+		motionEvent = motionEventList.get(0);
+		assertEquals(3, motionEvent.getPointerCount());
+		assertEquals(e1x, Math.round(motionEvent.getX(0)));
+		assertEquals(e1y, Math.round(motionEvent.getY(0)));
+		assertEquals(e2x + movingStep, Math.round(motionEvent.getX(1)));
+		assertEquals(e2y + movingStep, Math.round(motionEvent.getY(1)));
+		assertEquals(e3x, Math.round(motionEvent.getX(2)));
+		assertEquals(e3y, Math.round(motionEvent.getY(2)));
+		assertEquals(MotionEvent.ACTION_POINTER_UP, motionEvent.getActionMasked());
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-        /////////////////////////////////////////////////// Fifth OnTouchEvent Notification ///////////////////////////////////////////////////
-        testOnTouchEvent = new OnTouchEvent(TouchType.END, Arrays.asList(touchEvent3));
-        motionEventList = videoStreamManager.convertTouchEvent(testOnTouchEvent);
+		/////////////////////////////////////////////////// Fifth OnTouchEvent Notification ///////////////////////////////////////////////////
+		testOnTouchEvent = new OnTouchEvent(TouchType.END, Arrays.asList(touchEvent3));
+		motionEventList = videoStreamManager.convertTouchEvent(testOnTouchEvent);
 
 
-        // First MotionEvent should be ACTION_POINTER_UP and have 2 pointers
-        motionEvent = motionEventList.get(0);
-        assertEquals(2, motionEvent.getPointerCount());
-        assertEquals(e1x, Math.round(motionEvent.getX(0)));
-        assertEquals(e1y, Math.round(motionEvent.getY(0)));
-        assertEquals(e3x, Math.round(motionEvent.getX(1)));
-        assertEquals(e3y, Math.round(motionEvent.getY(1)));
-        assertEquals(MotionEvent.ACTION_POINTER_UP, motionEvent.getActionMasked());
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// First MotionEvent should be ACTION_POINTER_UP and have 2 pointers
+		motionEvent = motionEventList.get(0);
+		assertEquals(2, motionEvent.getPointerCount());
+		assertEquals(e1x, Math.round(motionEvent.getX(0)));
+		assertEquals(e1y, Math.round(motionEvent.getY(0)));
+		assertEquals(e3x, Math.round(motionEvent.getX(1)));
+		assertEquals(e3y, Math.round(motionEvent.getY(1)));
+		assertEquals(MotionEvent.ACTION_POINTER_UP, motionEvent.getActionMasked());
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -382,6 +383,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 		/////////////////////////////////////////////////// Seventh OnTouchEvent Notification ///////////////////////////////////////////////////
 		testOnTouchEvent = new OnTouchEvent(TouchType.BEGIN, Arrays.asList(touchEvent1, touchEvent2));
 		motionEventList = videoStreamManager.convertTouchEvent(testOnTouchEvent);
+
 
 		// First MotionEvent should be ACTION_DOWN and have 1 pointer
 		motionEvent = motionEventList.get(0);
@@ -424,12 +426,28 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 		testOnTouchEvent = new OnTouchEvent(TouchType.BEGIN, Arrays.asList(touchEvent1));
 		motionEventList = videoStreamManager.convertTouchEvent(testOnTouchEvent);
 
+
 		// First MotionEvent should be ACTION_DOWN and have 1 pointer
 		motionEvent = motionEventList.get(0);
 		assertEquals(1, motionEvent.getPointerCount());
 		assertEquals(e1x, Math.round(motionEvent.getX(0)));
 		assertEquals(e1y, Math.round(motionEvent.getY(0)));
 		assertEquals(MotionEvent.ACTION_DOWN, motionEvent.getActionMasked());
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+		/////////////////////////////////////////////////// Tenth OnTouchEvent Notification ///////////////////////////////////////////////////
+		testOnTouchEvent = new OnTouchEvent(TouchType.END, Arrays.asList(touchEvent1));
+		motionEventList = videoStreamManager.convertTouchEvent(testOnTouchEvent);
+
+
+		// First MotionEvent should be ACTION_UP and have 1 pointer
+		motionEvent = motionEventList.get(0);
+		assertEquals(1, motionEvent.getPointerCount());
+		assertEquals(e1x, Math.round(motionEvent.getX(0)));
+		assertEquals(e1y, Math.round(motionEvent.getY(0)));
+		assertEquals(MotionEvent.ACTION_UP, motionEvent.getActionMasked());
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	}
 }
