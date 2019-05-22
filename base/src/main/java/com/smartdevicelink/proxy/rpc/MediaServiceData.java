@@ -155,9 +155,8 @@ public class MediaServiceData extends RPCStruct {
 	 * Music: The album art of the current track
 	 * Podcast: The podcast or chapter artwork of the current podcast episode
 	 * Audiobook: The book or chapter artwork of the current audiobook
-	 * @param mediaImage
 	 */
-	public Image getMediaImage(Image mediaImage){
+	public Image getMediaImage(){
 		return (Image) getObject(Image.class, KEY_MEDIA_IMAGE);
 	}
 
