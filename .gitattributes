@@ -1,0 +1,6 @@
+# Handles the end of line issues between linux and windows
+*               text=auto
+
+baseAndroid/windows/* text
+
+ eol=crlf
