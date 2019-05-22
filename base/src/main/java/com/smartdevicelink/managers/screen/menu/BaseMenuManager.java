@@ -271,7 +271,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			if (old.equals(MARKED_FOR_DELETION)){
 				// grab cell to send to function to create delete commands
 				deletes.add(oldMenuCells.get(x));
-			} else if (old.equals(KEEP)){
+			} else if (old.equals(KEEP)) {
 				keepsOld.add(oldMenuCells.get(x));
 			}
 		}
@@ -345,9 +345,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 			MenuCell oldKeptCell = keepsOld.get(i);
 
 			if (oldKeptCell.getSubCells() != null && oldKeptCell.getSubCells().size() > 0 && keptCell.getSubCells() != null && keptCell.getSubCells().size() > 0){
-
-				// LOG STUFF - TO BE REMOVED
-				Log.i("MENU SUB COMP", "Both Old and New: "+keptCell.getTitle() + " have sub cells. Run compare");
 				// ACTUAL LOGIC
 				RunScore subScore = compareOldAndNewLists(oldKeptCell.getSubCells(), keptCell.getSubCells());
 
@@ -355,14 +352,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 					SubCellCommandLists commandList = new SubCellCommandLists(oldKeptCell.getTitle(), subScore, oldKeptCell.getSubCells(), keptCell.getSubCells());
 					commandLists.add(commandList);
 				}
-
 			}
 		}
-
-		for (SubCellCommandLists commandList : commandLists){
-			Log.i("MENU SUB COMMAND LIST: ", "TITLE: "+ commandList.getMenuTitle()+ " RunScore: "+ commandList.getListsScore().getScore());
-		}
-
 		createSubMenuDynamicCommands(commandLists);
 	}
 
@@ -374,10 +365,11 @@ abstract class BaseMenuManager extends BaseSubManager {
 				inProgressUpdate = null;
 			}
 
-			/*if (hasQueuedUpdate) {
-				//setMenuCells(waitingUpdateMenuCells);
+			if (hasQueuedUpdate) {
+				DebugTool.logInfo("Menu Manager has waiting updates, sending now");
+				setMenuCells(waitingUpdateMenuCells);
 				hasQueuedUpdate = false;
-			}*/
+			}
 			Log.i("MENU", "HOORAY ALL DYNAMIC SUB MENU STUFF DONE");
 			return;
 		}
@@ -426,17 +418,17 @@ abstract class BaseMenuManager extends BaseSubManager {
 					sendDynamicSubMenu(addsWithNewIds, new CompletionListener() {
 						@Override
 						public void onComplete(boolean success) {
+							// recurse
 							createSubMenuDynamicCommands(commandLists);
 						}
 					});
 				} else{
+					// no add commands to send, recurse
 					createSubMenuDynamicCommands(commandLists);
 				}
 			}
 		});
-
 	}
-
 
 	// OTHER HELPER METHODS:
 
@@ -451,8 +443,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 		RunScore bestScore = compareOldAndNewLists(oldCells, newCells);
 
 		Log.i("MENU Best Run Score", String.valueOf(bestScore.getScore()));
-		Log.i("MENU Best Run OLD", bestScore.getOldMenu().toString());
-		Log.i("MENU Best Run NEW", bestScore.getCurrentMenu().toString());
 
 		return bestScore;
 	}
@@ -592,7 +582,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 					MenuCell dynamicCell = dynamicCells.get(i);
 					if (mainCell.equals(dynamicCell)) {
 						int newId = ++lastMenuId;
-						Log.i("MENU", "UPDATING ID ON DYNAMIC CELL: " + dynamicCell.getTitle() + " TO: " + newId);
+						Log.i("MENU", "UPDATING ID ON DYNAMIC SUB CELL: " + dynamicCell.getTitle() + " TO: " + newId);
 						dynamicCells.get(i).setParentCellId(menuCells.get(z).getCellId());
 						menuCells.get(z).setCellId(newId);
 						dynamicCells.get(i).setCellId(newId);
@@ -734,8 +724,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private boolean callListenerForCells(List<MenuCell> cells, OnCommand command){
 		if (cells != null && cells.size() > 0 && command != null) {
 			for (MenuCell cell : cells) {
-
-				Log.i("MENU COMMANDS", "CHECKING CELL: "+ cell.getTitle() + " With Command ID: "+ cell.getCellId());
 
 				if (cell.getCellId() == command.getCmdID() && cell.getMenuSelectionListener() != null) {
 					cell.getMenuSelectionListener().onTriggered(command.getTriggerSource());
@@ -911,8 +899,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 			@Override
 			public void onFinished() {
 
-				oldMenuCells = new ArrayList<>(menuCells);
-
 				if (subMenuCommands.size() > 0) {
 					sendSubMenuCommands(subMenuCommands, listener);
 					DebugTool.logInfo("Finished sending main menu commands. Sending sub menu commands.");
@@ -1008,7 +994,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 		}
 
 		List<RPCRequest> mainMenuCommands;
-		final List<RPCRequest> subMenuCommands;
 
 		for (MenuCell cell : menu){
 			Log.i("SUB MENU CELL SEND: ", cell.getTitle()+ " ID: "+ cell.getCellId() + " PARENT ID: "+ cell.getParentCellId());
@@ -1017,23 +1002,13 @@ abstract class BaseMenuManager extends BaseSubManager {
 		if (findAllArtworksToBeUploadedFromCells(menu).size() > 0 || !supportsImages()){
 			// Send artwork-less menu
 			mainMenuCommands = mainMenuCommandsForCells(menu, false);
-			subMenuCommands = subMenuCommandsForCells(menu, false);
 		} else {
 			mainMenuCommands = mainMenuCommandsForCells(menu, true);
-			subMenuCommands = subMenuCommandsForCells(menu, true);
 		}
 
 		for (RPCRequest request : mainMenuCommands){
 			try {
-				Log.i("MENU ADD COMMAND: ", request.serializeJSON().toString());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-
-		for (RPCRequest request : subMenuCommands){
-			try {
-				Log.i("MENU SUB COMMAND: ", request.serializeJSON().toString());
+				Log.i("SUB MENU ADD COMMAND: ", request.serializeJSON().toString());
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
