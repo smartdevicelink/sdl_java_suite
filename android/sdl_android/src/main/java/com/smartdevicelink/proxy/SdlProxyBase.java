@@ -768,6 +768,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 
+	protected SdlProxyBase(){}
+
 	/**
 	 * Used by the SdlManager
 	 *
@@ -2094,7 +2096,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/************* END Functions used by the Message Dispatching Queues ****************/
 	
 	// Private sendRPCMessagePrivate method. All RPCMessages are funneled through this method after error checking.
-	private void sendRPCMessagePrivate(RPCMessage message) throws SdlException {
+	protected void sendRPCMessagePrivate(RPCMessage message) throws SdlException {
 		try {
 			SdlTrace.logRPCEvent(InterfaceActivityDirection.Transmit, message, SDL_LIB_TRACE_KEY);
 
@@ -4313,10 +4315,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			throw new SdlException("You must send some RPCs", SdlExceptionCause.INVALID_ARGUMENT);
 		}
 
-		int requestCount = rpcs.size();
-
 		// Break out of recursion, we have finished the requests
-		if (requestCount == 0) {
+		if (rpcs.size() == 0) {
 			if(listener != null){
 				listener.onFinished();
 			}
@@ -4330,30 +4330,47 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			RPCRequest request = (RPCRequest) rpc;
 			request.setCorrelationID(CorrelationIdGenerator.generateId());
 
+			final OnRPCResponseListener devOnRPCResponseListener = request.getOnRPCResponseListener();
+
 			request.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
-					if (response.getSuccess()) {
-						// success
+					if (devOnRPCResponseListener != null){
+						devOnRPCResponseListener.onResponse(correlationId, response);
+					}
+					if (listener != null) {
+						listener.onResponse(correlationId, response);
+						listener.onUpdate(rpcs.size());
+
+					}
+					try {
+						// recurse after onResponse
+						sendSequentialRequests(rpcs, listener);
+					} catch (SdlException e) {
+						e.printStackTrace();
 						if (listener != null) {
-							listener.onUpdate(rpcs.size());
-						}
-						try {
-							// recurse after successful response of RPC
-							sendSequentialRequests(rpcs, listener);
-						} catch (SdlException e) {
-							e.printStackTrace();
-							if (listener != null) {
-								listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
-							}
+							listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
 						}
 					}
 				}
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info) {
+					if (devOnRPCResponseListener != null){
+						devOnRPCResponseListener.onError(correlationId, resultCode, info);
+					}
 					if (listener != null) {
 						listener.onError(correlationId, resultCode, info);
+						listener.onUpdate(rpcs.size());
+					}
+					try {
+						// recurse after onError
+						sendSequentialRequests(rpcs, listener);
+					} catch (SdlException e) {
+						e.printStackTrace();
+						if (listener != null) {
+							listener.onError(correlationId, Result.GENERIC_ERROR, e.toString());
+						}
 					}
 				}
 			});
@@ -4361,6 +4378,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		} else {
 			// Notifications and Responses
 			sendRPCMessagePrivate(rpc);
+			if (listener != null) {
+				listener.onUpdate(rpcs.size());
+			}
+			// recurse after sending a notification or response as there is no response.
+			try {
+				sendSequentialRequests(rpcs, listener);
+			} catch (SdlException e) {
+				e.printStackTrace();
+				if (listener != null) {
+					listener.onError(0, Result.GENERIC_ERROR, e.toString());
+				}
+			}
 		}
 
 
@@ -4408,15 +4437,43 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			// Request Specifics
 			if (rpc.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
 				RPCRequest request = (RPCRequest) rpc;
+				final OnRPCResponseListener devOnRPCResponseListener = request.getOnRPCResponseListener();
 				request.setCorrelationID(CorrelationIdGenerator.generateId());
 				if (listener != null) {
 					listener.addCorrelationId(request.getCorrelationID());
-					request.setOnRPCResponseListener(listener.getSingleRpcResponseListener());
+					request.setOnRPCResponseListener(new OnRPCResponseListener() {
+						@Override
+						public void onResponse(int correlationId, RPCResponse response) {
+							if (devOnRPCResponseListener != null){
+								devOnRPCResponseListener.onResponse(correlationId, response);
+							}
+							if (listener.getSingleRpcResponseListener() != null) {
+								listener.getSingleRpcResponseListener().onResponse(correlationId, response);
+							}
+						}
+
+						@Override
+						public void onError(int correlationId, Result resultCode, String info) {
+							super.onError(correlationId, resultCode, info);
+							if (devOnRPCResponseListener != null){
+								devOnRPCResponseListener.onError(correlationId, resultCode, info);
+							}
+							if (listener.getSingleRpcResponseListener() != null) {
+								listener.getSingleRpcResponseListener().onError(correlationId, resultCode, info);
+							}
+						}
+					});
 				}
 				sendRPCMessagePrivate(request);
 			}else {
 				// Notifications and Responses
 				sendRPCMessagePrivate(rpc);
+				if (listener != null){
+					listener.onUpdate(rpcs.size());
+					if (rpcs.size() == 0){
+						listener.onFinished();
+					}
+				}
 			}
 		}
 	}

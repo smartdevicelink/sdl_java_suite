@@ -65,9 +65,8 @@ public abstract class OnMultipleRequestListener extends OnRPCResponseListener {
 
 			private synchronized void update(int correlationId){
 				correlationIds.remove(Integer.valueOf(correlationId));
-				if(correlationIds.size()>0){
-					onUpdate(correlationIds.size());
-				}else{
+				onUpdate(correlationIds.size());
+				if(correlationIds.size() == 0){
 					onFinished();
 				}
 			}
