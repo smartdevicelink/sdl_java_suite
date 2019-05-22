@@ -349,35 +349,52 @@ abstract class BaseMenuManager extends BaseSubManager {
 			return;
 		}
 
+		List<SubCellCommandLists> commandLists = new ArrayList<>();
+
 		for (int i = 0; i < keepsNew.size(); i++) {
 
 			MenuCell keptCell = keepsNew.get(i);
 			MenuCell oldKeptCell = keepsOld.get(i);
 
-			if ((oldKeptCell.getSubCells() != null && oldKeptCell.getSubCells().size() > 0 && (keptCell.getSubCells() == null || keptCell.getSubCells().size() == 0))){
-				// CASE 1: If the oldKeep[i] has a submenu and newKeep[i] does not, delete all submenu cells
-				Log.i("MENU SUB COMP", "New Cell "+keptCell.getTitle() + " No longer has subcells, delete all subcells from old");
-			} else if ((oldKeptCell.getSubCells() == null || oldKeptCell.getSubCells().size() == 0) && keptCell.getSubCells() != null && keptCell.getSubCells().size() > 0){
-				// CASE 2: If the oldKeep[i] doesn’t have a submenu and newKeep[i] does, add all submenu cells
-				Log.i("MENU SUB COMP", "New Cell "+keptCell.getTitle() + " has subcells, and previously didnt ADD SUBMENU STUFF");
-			}else if (oldKeptCell.getSubCells() != null && oldKeptCell.getSubCells().size() > 0 && keptCell.getSubCells() != null && keptCell.getSubCells().size() > 0){
-				// CASE 3: If BOTH have submenus, run the algorithm between them
+			if (oldKeptCell.getSubCells() != null && oldKeptCell.getSubCells().size() > 0 && keptCell.getSubCells() != null && keptCell.getSubCells().size() > 0){
+
+				// LOG STUFF - TO BE REMOVED
 				Log.i("MENU SUB COMP", "Both Old and New: "+keptCell.getTitle() + " have sub cells. Run compare");
-			}
-
-
-			// FOR EACH CELL WITH SUB CELLS, PRINT OUT INFO FOR THEIR SUBMENU
-			if (keptCell.getSubCells() != null && keptCell.getSubCells().size() > 0) {
-				for (MenuCell newCell : keptCell.getSubCells()) {
-					Log.i("MENU NEW SUBCELL", "TITLE: " + newCell.getTitle() + " PARENT: " + newCell.getParentCellId() + " ID: " + newCell.getCellId());
+				// FOR EACH CELL WITH SUB CELLS, PRINT OUT INFO FOR THEIR SUBMENU
+				/*if (keptCell.getSubCells() != null && keptCell.getSubCells().size() > 0) {
+					for (MenuCell newCell : keptCell.getSubCells()) {
+						Log.i("MENU NEW SUBCELL", "TITLE: " + newCell.getTitle() + " PARENT: " + newCell.getParentCellId() + " ID: " + newCell.getCellId());
+					}
 				}
-			}
-			if (oldKeptCell.getSubCells() != null && oldKeptCell.getSubCells().size() > 0) {
-				for (MenuCell oldCell : oldKeptCell.getSubCells()) {
-					Log.i("MENU OLD SUBCELL", "TITLE: " + oldCell.getTitle() + " PARENT: " + oldCell.getParentCellId() + " ID: " + oldCell.getCellId());
+				if (oldKeptCell.getSubCells() != null && oldKeptCell.getSubCells().size() > 0) {
+					for (MenuCell oldCell : oldKeptCell.getSubCells()) {
+						Log.i("MENU OLD SUBCELL", "TITLE: " + oldCell.getTitle() + " PARENT: " + oldCell.getParentCellId() + " ID: " + oldCell.getCellId());
+					}
+				}*/
+
+				// ACTUAL LOGIC
+				RunScore subScore = compareOldAndNewLists(oldKeptCell.getSubCells(), keptCell.getSubCells());
+
+				if (subScore != null){
+					SubCellCommandLists commandList = new SubCellCommandLists(oldKeptCell.getTitle(), subScore, oldKeptCell.getSubCells(), keptCell.getSubCells());
+					commandLists.add(commandList);
 				}
+
 			}
 		}
+
+		for (SubCellCommandLists commandList : commandLists){
+			Log.i("MENU SUB COMMAND LIST: ", "TITLE: "+ commandList.getMenuTitle()+ " RunScore: "+ commandList.getListsScore().getScore());
+		}
+
+		createSubMenuDynamicCommands(commandLists);
+	}
+
+	private void createSubMenuDynamicCommands(List<SubCellCommandLists> commandLists){
+
+		
+
+
 	}
 
 

@@ -34,39 +34,48 @@ package com.smartdevicelink.managers.screen.menu;
 
 import java.util.List;
 
-class RunScore {
+class SubCellCommandLists {
 
-	private int score;
-	private List<Integer> oldMenu, currentMenu;
+	private RunScore listsScore;
+	private String menuTitle;
+	private List<MenuCell> oldList, newList;
 
-	RunScore(int score, List<Integer> oldMenu, List<Integer> currentMenu){
-		setScore(score);
-		setOldMenu(oldMenu);
-		setCurrentMenu(currentMenu);
+	SubCellCommandLists(String menuTitle, RunScore listsScore, List<MenuCell> oldList, List<MenuCell> newList){
+		setMenuTitle(menuTitle);
+		setListsScore(listsScore);
+		setOldList(oldList);
+		setNewList(newList);
 	}
 
-	private void setCurrentMenu(List<Integer> currentMenu) {
-		this.currentMenu = currentMenu;
+	private void setMenuTitle(String menuTitle) {
+		this.menuTitle = menuTitle;
 	}
 
-	List<Integer> getCurrentMenu() {
-		return currentMenu;
+	String getMenuTitle() {
+		return menuTitle;
 	}
 
-	private void setOldMenu(List<Integer> oldMenu) {
-		this.oldMenu = oldMenu;
+	private void setListsScore(RunScore listsScore){
+		this.listsScore = listsScore;
 	}
 
-	List<Integer> getOldMenu() {
-		return oldMenu;
+	RunScore getListsScore() {
+		return listsScore;
 	}
 
-	private void setScore(int score) {
-		this.score = score;
+	private void setOldList(List<MenuCell> oldList) {
+		this.oldList = oldList;
 	}
 
-	public int getScore() {
-		return score;
+	List<MenuCell> getOldList() {
+		return oldList;
 	}
 
+	private void setNewList(List<MenuCell> newList) {
+		this.newList = newList;
+	}
+
+	List<MenuCell> getNewList() {
+		return newList;
+	}
 }
