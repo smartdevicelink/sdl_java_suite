@@ -94,7 +94,12 @@ public class TransportManager extends TransportManagerBase{
     @Override
     public void start(){
         if(transport != null){
-            transport.start();
+            if (!transport.start()){
+                //Unable to connect to a router service
+                if(transportListener != null){
+                    transportListener.onError("Unable to connect with the router service");
+                }
+            }
         }else if(legacyBluetoothTransport != null){
             legacyBluetoothTransport.start();
         }
