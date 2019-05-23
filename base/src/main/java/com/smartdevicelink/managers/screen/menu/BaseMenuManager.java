@@ -250,9 +250,33 @@ abstract class BaseMenuManager extends BaseSubManager {
 			this.oldMenuCells = new ArrayList<>(menuCells);
 			sendInitialMenu();
 		}else{
-			// lets dynamically update the root menu
-			dynamicUpdateRoot(rootScore);
+			if (menuCells.size() == 0 && (oldMenuCells != null && oldMenuCells.size() > 0)){
+				// the dev wants to clear the menu. We have old cells and an empty array of new ones.
+				deleteMenuWhenNewCellsEmpty();
+			}else {
+				// lets dynamically update the root menu
+				dynamicUpdateRoot(rootScore);
+			}
 		}
+	}
+
+	private void deleteMenuWhenNewCellsEmpty(){
+		deleteMenuCells(deleteCommandsForCells(oldMenuCells), new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				inProgressUpdate = null;
+
+				if (!success){
+					DebugTool.logError("Error Sending Current Menu");
+				}else{
+					DebugTool.logInfo("Successfully Cleared Menu");
+				}
+				oldMenuCells = null;
+				if (hasQueuedUpdate){
+					hasQueuedUpdate = false;
+				}
+			}
+		});
 	}
 
 	private void dynamicUpdateRoot(RunScore bestRootScore){
