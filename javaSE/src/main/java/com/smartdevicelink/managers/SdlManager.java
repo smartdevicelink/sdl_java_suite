@@ -667,6 +667,17 @@ public class SdlManager extends BaseSdlManager{
 			return this;
 		}
 
+		/**
+		 * Default: true. If set to false, the Menu Manager will enter a compatibility mode that deletes
+		 * and re-adds menus and sub menus each time a new menu or menu item is set. We discourage its
+		 * use due to performance issues on older head units.
+		 * @param enableDynamicMenuUpdates - a boolean
+		 */
+		public Builder setEnableDynamicMenuUpdates(Boolean enableDynamicMenuUpdates){
+			sdlManager.enableDynamicMenuUpdates = enableDynamicMenuUpdates;
+			return this;
+		}
+
 		public SdlManager build() {
 
 			if (sdlManager.appName == null) {

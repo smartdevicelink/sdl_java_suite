@@ -44,9 +44,9 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
  */
 public class MenuManager extends BaseMenuManager {
 
-	public MenuManager(ISdl internalInterface, FileManager fileManager) {
+	public MenuManager(ISdl internalInterface, FileManager fileManager, Boolean enableDynamicMenuUpdates) {
 		// setup
-		super(internalInterface, fileManager);
+		super(internalInterface, fileManager, enableDynamicMenuUpdates);
 	}
 
 }

@@ -85,6 +85,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	boolean waitingOnHMIUpdate;
 	private boolean hasQueuedUpdate;
+	Boolean enableDynamicMenuUpdates;
 	HMILevel currentHMILevel;
 
 	OnRPCNotificationListener hmiListener, commandListener;
@@ -98,7 +99,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	SystemContext currentSystemContext;
 
-	BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+	BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, Boolean enableDynamicMenuUpdates) {
 
 		super(internalInterface);
 
@@ -107,6 +108,14 @@ abstract class BaseMenuManager extends BaseSubManager {
 		currentSystemContext = SystemContext.SYSCTXT_MAIN;
 		currentHMILevel = HMILevel.HMI_NONE;
 		lastMenuId = menuCellIdMin;
+
+		// if not set, we want this to be true by default
+		if (enableDynamicMenuUpdates == null){
+			this.enableDynamicMenuUpdates = true;
+		}else{
+			this.enableDynamicMenuUpdates = enableDynamicMenuUpdates;
+		}
+
 		addListeners();
 	}
 
@@ -237,26 +246,37 @@ abstract class BaseMenuManager extends BaseSubManager {
 			return;
 		}
 
-		// run the lists through the new algorithm
-		RunScore rootScore = runMenuCompareAlgorithm(oldMenuCells, menuCells);
-
-		if (rootScore == null){
-			// send initial menu (score will return null)
-			// make a copy of our current cells
-			DebugTool.logInfo("Creating initial Menu");
-			// Set the IDs if needed
+		if (enableDynamicMenuUpdates) {
+			// run the lists through the new algorithm
+			RunScore rootScore = runMenuCompareAlgorithm(oldMenuCells, menuCells);
+			if (rootScore == null) {
+				// send initial menu (score will return null)
+				// make a copy of our current cells
+				DebugTool.logInfo("Creating initial Menu");
+				// Set the IDs if needed
+				lastMenuId = menuCellIdMin;
+				updateIdsOnMenuCells(menuCells, parentIdNotFound);
+				this.oldMenuCells = new ArrayList<>(menuCells);
+				createAndSendEntireMenu();
+			} else {
+				if (menuCells.size() == 0 && (oldMenuCells != null && oldMenuCells.size() > 0)) {
+					// the dev wants to clear the menu. We have old cells and an empty array of new ones.
+					deleteMenuWhenNewCellsEmpty();
+				} else {
+					// lets dynamically update the root menu
+					dynamicallyUpdateRootMenu(rootScore);
+				}
+			}
+		} else {
+			// we are in compatibility mode
+			DebugTool.logInfo("Updating menus in compatibility mode");
 			lastMenuId = menuCellIdMin;
 			updateIdsOnMenuCells(menuCells, parentIdNotFound);
-			this.oldMenuCells = new ArrayList<>(menuCells);
-			createAndSendFirstMenu();
-		}else{
-			if (menuCells.size() == 0 && (oldMenuCells != null && oldMenuCells.size() > 0)){
-				// the dev wants to clear the menu. We have old cells and an empty array of new ones.
-				deleteMenuWhenNewCellsEmpty();
-			}else {
-				// lets dynamically update the root menu
-				dynamicallyUpdateRootMenu(rootScore);
+			// if the old cell array is not null, we want to delete the entire thing, else copy the new array
+			if (oldMenuCells == null) {
+				this.oldMenuCells = new ArrayList<>(menuCells);
 			}
+			createAndSendEntireMenu();
 		}
 	}
 
@@ -852,7 +872,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// SEND NEW MENU ITEMS
 
-	private void createAndSendFirstMenu(){
+	private void createAndSendEntireMenu(){
 
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
 			// We are in NONE or the menu is in use, bail out of here

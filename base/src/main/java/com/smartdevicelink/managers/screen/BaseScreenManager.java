@@ -63,6 +63,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	private TextAndGraphicManager textAndGraphicManager;
 	private VoiceCommandManager voiceCommandManager;
 	private MenuManager menuManager;
+	private Boolean enableDynamicMenuUpdates;
 
 	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
@@ -90,9 +91,10 @@ abstract class BaseScreenManager extends BaseSubManager {
 		}
 	};
 
-	BaseScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+	BaseScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, Boolean enableDynamicMenuUpdates) {
 		super(internalInterface);
 		this.fileManager = new WeakReference<>(fileManager);
+		this.enableDynamicMenuUpdates = enableDynamicMenuUpdates;
 		initialize();
 	}
 
@@ -109,7 +111,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 		if (fileManager.get() != null) {
 			this.softButtonManager = new SoftButtonManager(internalInterface, fileManager.get());
 			this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get(), softButtonManager);
-			this.menuManager = new MenuManager(internalInterface, fileManager.get());
+			this.menuManager = new MenuManager(internalInterface, fileManager.get(), enableDynamicMenuUpdates);
 		}
 		this.voiceCommandManager = new VoiceCommandManager(internalInterface);
 	}
