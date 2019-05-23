@@ -38,13 +38,23 @@ class SubCellCommandLists {
 
 	private RunScore listsScore;
 	private String menuTitle;
+	private Integer parentId;
 	private List<MenuCell> oldList, newList;
 
-	SubCellCommandLists(String menuTitle, RunScore listsScore, List<MenuCell> oldList, List<MenuCell> newList){
+	SubCellCommandLists(String menuTitle, Integer parentId, RunScore listsScore, List<MenuCell> oldList, List<MenuCell> newList){
 		setMenuTitle(menuTitle);
+		setParentId(parentId);
 		setListsScore(listsScore);
 		setOldList(oldList);
 		setNewList(newList);
+	}
+
+	private void setParentId(Integer parentId) {
+		this.parentId = parentId;
+	}
+
+	Integer getParentId() {
+		return parentId;
 	}
 
 	private void setMenuTitle(String menuTitle) {

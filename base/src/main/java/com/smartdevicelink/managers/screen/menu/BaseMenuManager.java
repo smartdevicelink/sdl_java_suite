@@ -375,7 +375,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 				if (subScore != null){
 					DebugTool.logInfo("Sub menu Run Score: "+ oldKeptCell.getTitle()+ " Score: "+ subScore.getScore());
-					SubCellCommandLists commandList = new SubCellCommandLists(oldKeptCell.getTitle(), subScore, oldKeptCell.getSubCells(), keptCell.getSubCells());
+					SubCellCommandLists commandList = new SubCellCommandLists(oldKeptCell.getTitle(), oldKeptCell.getCellId(), subScore, oldKeptCell.getSubCells(), keptCell.getSubCells());
 					commandLists.add(commandList);
 				}
 			}
@@ -441,7 +441,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				subCellKeepsNew.add(newCells.get(x));
 			}
 		}
-		final List<MenuCell> addsWithNewIds = updateIdsOnDynamicSubCells(oldCells, adds);
+		final List<MenuCell> addsWithNewIds = updateIdsOnDynamicSubCells(oldCells, adds, commandList.getParentId());
 		// this is needed for the onCommands to still work
 		transferIdsToKeptSubCells(oldCells, subCellKeepsNew);
 
@@ -608,7 +608,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		return null;
 	}
 
-	private List<MenuCell> updateIdsOnDynamicSubCells(List<MenuCell> oldList, List<MenuCell> dynamicCells){
+	private List<MenuCell> updateIdsOnDynamicSubCells(List<MenuCell> oldList, List<MenuCell> dynamicCells, Integer parentId){
 		if (oldList != null && oldList.size() > 0 && dynamicCells != null && dynamicCells.size() > 0) {
 			for (int z = 0; z < oldList.size(); z++) {
 				MenuCell mainCell = oldList.get(z);
@@ -616,8 +616,12 @@ abstract class BaseMenuManager extends BaseSubManager {
 					MenuCell dynamicCell = dynamicCells.get(i);
 					if (mainCell.equals(dynamicCell)) {
 						int newId = ++lastMenuId;
-						dynamicCells.get(i).setParentCellId(oldList.get(z).getParentCellId());
 						oldList.get(z).setCellId(newId);
+						dynamicCells.get(i).setParentCellId(parentId);
+						dynamicCells.get(i).setCellId(newId);
+					}else{
+						int newId = ++lastMenuId;
+						dynamicCells.get(i).setParentCellId(parentId);
 						dynamicCells.get(i).setCellId(newId);
 					}
 				}
