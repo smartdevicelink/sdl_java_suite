@@ -248,7 +248,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			lastMenuId = menuCellIdMin;
 			updateIdsOnMenuCells(menuCells, parentIdNotFound);
 			this.oldMenuCells = new ArrayList<>(menuCells);
-			sendInitialMenu();
+			createAndSendFirstMenu();
 		}else{
 			if (menuCells.size() == 0 && (oldMenuCells != null && oldMenuCells.size() > 0)){
 				// the dev wants to clear the menu. We have old cells and an empty array of new ones.
@@ -400,7 +400,9 @@ abstract class BaseMenuManager extends BaseSubManager {
 			return;
 		}
 
-		SubCellCommandLists commandList = commandLists.remove(0);
+		final SubCellCommandLists commandList = commandLists.remove(0);
+
+		DebugTool.logInfo("Creating and Sending Dynamic Sub Commands For Root Menu Cell: "+ commandList.getMenuTitle());
 
 		// grab the scores
 		RunScore score = commandList.getListsScore();
@@ -451,11 +453,13 @@ abstract class BaseMenuManager extends BaseSubManager {
 						@Override
 						public void onComplete(boolean success) {
 							// recurse through next sub list
+							DebugTool.logInfo("Finished Sending Dynamic Sub Commands For Root Menu Cell: "+ commandList.getMenuTitle());
 							createSubMenuDynamicCommands(commandLists);
 						}
 					});
 				} else{
 					// no add commands to send, recurse through next sub list
+					DebugTool.logInfo("Finished Sending Dynamic Sub Commands For Root Menu Cell: "+ commandList.getMenuTitle());
 					createSubMenuDynamicCommands(commandLists);
 				}
 			}
@@ -723,7 +727,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		return builtCommands;
 	}
 
-	List<RPCRequest> createCommandsForDynamicSubCells(List<MenuCell> oldMenuCells, List<MenuCell> cells, boolean shouldHaveArtwork) {
+	private List<RPCRequest> createCommandsForDynamicSubCells(List<MenuCell> oldMenuCells, List<MenuCell> cells, boolean shouldHaveArtwork) {
 		List<RPCRequest> builtCommands = new ArrayList<>();
 		for (int z = 0; z < oldMenuCells.size(); z++) {
 			MenuCell oldCell = oldMenuCells.get(z);
@@ -844,7 +848,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// SEND NEW MENU ITEMS
 
-	private void sendInitialMenu(){
+	private void createAndSendFirstMenu(){
 
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
 			// We are in NONE or the menu is in use, bail out of here
