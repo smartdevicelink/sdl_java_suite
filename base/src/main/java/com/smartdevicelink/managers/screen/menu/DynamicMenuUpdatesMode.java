@@ -32,17 +32,17 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-public enum MenuManagerCompatMode {
+public enum DynamicMenuUpdatesMode {
 
 	/**
-	 * FORCE_ON: Forces on compatibility mode. This will force the menu manager to delete and re-add
-	 * each menu item for every menu update. This mode is generally not advised due to performance issues.
+	 * FORCE_ON: This mode forces the menu manager to always dynamically update menu items for each menu
+	 * update. This will provide the best performance but may cause ordering issues on some SYNC Gen 3 head units.
 	 */
 	FORCE_ON,
 
 	/**
-	 * FORCE_OFF: This mode forces the menu manager to always dynamically update menu items for each menu
-	 * update. This will provide the best performance but may cause ordering issues on some SYNC Gen 3 head units.
+	 * FORCE_OFF: Forces off compatibility mode. This will force the menu manager to delete and re-add
+	 * each menu item for every menu update. This mode is generally not advised due to performance issues.
 	 */
 	FORCE_OFF,
 
@@ -55,7 +55,7 @@ public enum MenuManagerCompatMode {
 
 	;
 
-	public static MenuManagerCompatMode valueForString(String value) {
+	public static DynamicMenuUpdatesMode valueForString(String value) {
 		try{
 			return valueOf(value);
 		}catch(Exception e){

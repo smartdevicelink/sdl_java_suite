@@ -55,6 +55,7 @@ import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.Result;
@@ -82,10 +83,11 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	List<MenuCell> menuCells, waitingUpdateMenuCells, oldMenuCells, keepsNew, keepsOld;
 	List<RPCRequest> inProgressUpdate;
+	DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
+	private DisplayType displayType;
 
 	boolean waitingOnHMIUpdate;
 	private boolean hasQueuedUpdate;
-	Boolean enableDynamicMenuUpdates;
 	HMILevel currentHMILevel;
 
 	OnRPCNotificationListener hmiListener, commandListener;
@@ -108,6 +110,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		currentSystemContext = SystemContext.SYSCTXT_MAIN;
 		currentHMILevel = HMILevel.HMI_NONE;
 		lastMenuId = menuCellIdMin;
+		dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
 
 		addListeners();
 	}
@@ -141,6 +144,10 @@ abstract class BaseMenuManager extends BaseSubManager {
 	}
 
 	// SETTERS
+
+	public void setDynamicUpdatesMode(DynamicMenuUpdatesMode value){
+		this.dynamicMenuUpdatesMode = value;
+	}
 
 	/**
 	 * Creates and sends all associated Menu RPCs
@@ -239,7 +246,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			return;
 		}
 
-		if (enableDynamicMenuUpdates) {
+		if (checkUpdateMode(dynamicMenuUpdatesMode, displayType)) {
 			// run the lists through the new algorithm
 			RunScore rootScore = runMenuCompareAlgorithm(oldMenuCells, menuCells);
 			if (rootScore == null) {
@@ -271,6 +278,23 @@ abstract class BaseMenuManager extends BaseSubManager {
 			}
 			createAndSendEntireMenu();
 		}
+	}
+
+	private boolean checkUpdateMode(DynamicMenuUpdatesMode updateMode, DisplayType displayType){
+
+		if (updateMode.equals(DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE)){
+			if (displayType == null){
+				return true;
+			}
+			return (!displayType.equals(DisplayType.GEN3_8_INCH));
+
+		} else if (updateMode.equals(DynamicMenuUpdatesMode.FORCE_OFF)){
+			return false;
+		} else if (updateMode.equals(DynamicMenuUpdatesMode.FORCE_ON)){
+			return true;
+		}
+
+		return true;
 	}
 
 	private void deleteMenuWhenNewCellsEmpty(){
@@ -809,6 +833,9 @@ abstract class BaseMenuManager extends BaseSubManager {
 			@Override
 			public void onCapabilityRetrieved(Object capability) {
 				displayCapabilities = (DisplayCapabilities) capability;
+				if (displayCapabilities != null) {
+					displayType = displayCapabilities.getDisplayType();
+				}
 			}
 
 			@Override

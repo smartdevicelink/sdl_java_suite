@@ -172,8 +172,6 @@ public class MenuManagerTests extends AndroidTestCase2 {
 
 	public void testUpdating(){
 
-		assertEquals(menuManager.deleteCommandsForCells(cells).size(), 4); // 3 root cells and 1 sub menu
-
 		// when we only send one command to update, we should only be returned one add command
 		List<MenuCell> newArray = Arrays.asList(mainCell1, mainCell4);
 		assertEquals(menuManager.allCommandsForCells(newArray, false).size(), 4); // 1 root cells, 1 sub menu root cell, 2 sub menu cells
