@@ -32,21 +32,60 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
+import java.util.List;
 
-/**
- * <strong>MenuManager</strong> <br>
- *
- * Note: This class must be accessed through the ScreenManager via the SdlManager. Do not instantiate it by itself. <br>
- *
- * The MenuManager takes MenuCell objects and creates and sends all necessary RPCs to build out a menu
- */
-public class MenuManager extends BaseMenuManager {
+class SubCellCommandList {
 
-	public MenuManager(ISdl internalInterface, FileManager fileManager) {
-		// setup
-		super(internalInterface, fileManager);
+	private RunScore listsScore;
+	private String menuTitle;
+	private Integer parentId;
+	private List<MenuCell> oldList, newList;
+
+	SubCellCommandList(String menuTitle, Integer parentId, RunScore listsScore, List<MenuCell> oldList, List<MenuCell> newList){
+		setMenuTitle(menuTitle);
+		setParentId(parentId);
+		setListsScore(listsScore);
+		setOldList(oldList);
+		setNewList(newList);
 	}
 
+	private void setParentId(Integer parentId) {
+		this.parentId = parentId;
+	}
+
+	Integer getParentId() {
+		return parentId;
+	}
+
+	private void setMenuTitle(String menuTitle) {
+		this.menuTitle = menuTitle;
+	}
+
+	String getMenuTitle() {
+		return menuTitle;
+	}
+
+	private void setListsScore(RunScore listsScore){
+		this.listsScore = listsScore;
+	}
+
+	RunScore getListsScore() {
+		return listsScore;
+	}
+
+	private void setOldList(List<MenuCell> oldList) {
+		this.oldList = oldList;
+	}
+
+	List<MenuCell> getOldList() {
+		return oldList;
+	}
+
+	private void setNewList(List<MenuCell> newList) {
+		this.newList = newList;
+	}
+
+	List<MenuCell> getNewList() {
+		return newList;
+	}
 }

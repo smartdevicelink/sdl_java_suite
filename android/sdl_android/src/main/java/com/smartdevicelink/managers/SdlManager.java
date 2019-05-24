@@ -233,7 +233,7 @@ public class SdlManager extends BaseSdlManager{
 		if (lockScreenConfig.isEnabled()) {
 			this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
 		}
-		this.screenManager = new ScreenManager(_internalInterface, this.fileManager, enableDynamicMenuUpdates);
+		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
 		if(getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)){
 			this.videoStreamManager = new VideoStreamManager(_internalInterface);
 		} else {
@@ -1008,17 +1008,6 @@ public class SdlManager extends BaseSdlManager{
 		 */
 		public Builder setRPCNotificationListeners(Map<FunctionID, OnRPCNotificationListener> listeners){
 			sdlManager.onRPCNotificationListeners = listeners;
-			return this;
-		}
-
-		/**
-		 * Default: true. If set to false, the Menu Manager will enter a compatibility mode that deletes
-		 * and re-adds menus and sub menus each time a new menu or menu item is set. We discourage its
-		 * use due to performance issues on older head units.
-		 * @param enableDynamicMenuUpdates - a boolean
-		 */
-		public Builder setEnableDynamicMenuUpdates(Boolean enableDynamicMenuUpdates){
-			sdlManager.enableDynamicMenuUpdates = enableDynamicMenuUpdates;
 			return this;
 		}
 

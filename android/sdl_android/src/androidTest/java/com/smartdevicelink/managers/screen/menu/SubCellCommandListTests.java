@@ -32,21 +32,18 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.AndroidTestCase2;
 
-/**
- * <strong>MenuManager</strong> <br>
- *
- * Note: This class must be accessed through the ScreenManager via the SdlManager. Do not instantiate it by itself. <br>
- *
- * The MenuManager takes MenuCell objects and creates and sends all necessary RPCs to build out a menu
- */
-public class MenuManager extends BaseMenuManager {
+public class SubCellCommandListTests extends AndroidTestCase2 {
 
-	public MenuManager(ISdl internalInterface, FileManager fileManager) {
-		// setup
-		super(internalInterface, fileManager);
+	@Override
+	public void setUp() throws Exception{
+		super.setUp();
+	}
+
+	@Override
+	public void tearDown() throws Exception {
+		super.tearDown();
 	}
 
 }

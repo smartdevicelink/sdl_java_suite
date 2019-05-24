@@ -99,7 +99,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	SystemContext currentSystemContext;
 
-	BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, Boolean enableDynamicMenuUpdates) {
+	BaseMenuManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
 
 		super(internalInterface);
 
@@ -108,13 +108,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 		currentSystemContext = SystemContext.SYSCTXT_MAIN;
 		currentHMILevel = HMILevel.HMI_NONE;
 		lastMenuId = menuCellIdMin;
-
-		// if not set, we want this to be true by default
-		if (enableDynamicMenuUpdates == null){
-			this.enableDynamicMenuUpdates = true;
-		}else{
-			this.enableDynamicMenuUpdates = enableDynamicMenuUpdates;
-		}
 
 		addListeners();
 	}
@@ -382,7 +375,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			return;
 		}
 
-		List<SubCellCommandLists> commandLists = new ArrayList<>();
+		List<SubCellCommandList> commandLists = new ArrayList<>();
 
 		for (int i = 0; i < keepsNew.size(); i++) {
 
@@ -395,7 +388,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 				if (subScore != null){
 					DebugTool.logInfo("Sub menu Run Score: "+ oldKeptCell.getTitle()+ " Score: "+ subScore.getScore());
-					SubCellCommandLists commandList = new SubCellCommandLists(oldKeptCell.getTitle(), oldKeptCell.getCellId(), subScore, oldKeptCell.getSubCells(), keptCell.getSubCells());
+					SubCellCommandList commandList = new SubCellCommandList(oldKeptCell.getTitle(), oldKeptCell.getCellId(), subScore, oldKeptCell.getSubCells(), keptCell.getSubCells());
 					commandLists.add(commandList);
 				}
 			}
@@ -403,7 +396,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		createSubMenuDynamicCommands(commandLists);
 	}
 
-	private void createSubMenuDynamicCommands(final List<SubCellCommandLists> commandLists){
+	private void createSubMenuDynamicCommands(final List<SubCellCommandList> commandLists){
 
 		// break out
 		if (commandLists.size() == 0){
@@ -420,7 +413,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			return;
 		}
 
-		final SubCellCommandLists commandList = commandLists.remove(0);
+		final SubCellCommandList commandList = commandLists.remove(0);
 
 		DebugTool.logInfo("Creating and Sending Dynamic Sub Commands For Root Menu Cell: "+ commandList.getMenuTitle());
 

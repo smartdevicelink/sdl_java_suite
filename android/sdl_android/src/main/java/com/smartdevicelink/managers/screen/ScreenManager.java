@@ -44,7 +44,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 */
 public class ScreenManager extends BaseScreenManager {
 
-	public ScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager, Boolean enableDynamicMenuUpdates) {
-		super(internalInterface, fileManager, enableDynamicMenuUpdates);
+	public ScreenManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+		super(internalInterface, fileManager);
 	}
 }

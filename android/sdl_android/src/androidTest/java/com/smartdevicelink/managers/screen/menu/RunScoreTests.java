@@ -32,60 +32,19 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import java.util.List;
+import com.smartdevicelink.AndroidTestCase2;
 
-class SubCellCommandLists {
+public class RunScoreTests extends AndroidTestCase2 {
 
-	private RunScore listsScore;
-	private String menuTitle;
-	private Integer parentId;
-	private List<MenuCell> oldList, newList;
 
-	SubCellCommandLists(String menuTitle, Integer parentId, RunScore listsScore, List<MenuCell> oldList, List<MenuCell> newList){
-		setMenuTitle(menuTitle);
-		setParentId(parentId);
-		setListsScore(listsScore);
-		setOldList(oldList);
-		setNewList(newList);
+	@Override
+	public void setUp() throws Exception{
+		super.setUp();
 	}
 
-	private void setParentId(Integer parentId) {
-		this.parentId = parentId;
+	@Override
+	public void tearDown() throws Exception {
+		super.tearDown();
 	}
 
-	Integer getParentId() {
-		return parentId;
-	}
-
-	private void setMenuTitle(String menuTitle) {
-		this.menuTitle = menuTitle;
-	}
-
-	String getMenuTitle() {
-		return menuTitle;
-	}
-
-	private void setListsScore(RunScore listsScore){
-		this.listsScore = listsScore;
-	}
-
-	RunScore getListsScore() {
-		return listsScore;
-	}
-
-	private void setOldList(List<MenuCell> oldList) {
-		this.oldList = oldList;
-	}
-
-	List<MenuCell> getOldList() {
-		return oldList;
-	}
-
-	private void setNewList(List<MenuCell> newList) {
-		this.newList = newList;
-	}
-
-	List<MenuCell> getNewList() {
-		return newList;
-	}
 }

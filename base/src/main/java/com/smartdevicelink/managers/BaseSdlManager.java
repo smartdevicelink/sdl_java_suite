@@ -65,7 +65,6 @@ abstract class BaseSdlManager {
 
     String appId, appName, shortAppName;
     boolean isMediaApp;
-    Boolean enableDynamicMenuUpdates;
     Language hmiLanguage;
     Vector<AppHMIType> hmiTypes;
     BaseTransportConfig transport;
