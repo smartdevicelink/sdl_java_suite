@@ -975,22 +975,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 			subMenuCommands = subMenuCommandsForCells(menu, true);
 		}
 
-		for (RPCRequest request : mainMenuCommands){
-			try {
-				Log.i("ADD MENU COMMAND: ", request.serializeJSON().toString());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-
-		for (RPCRequest request : subMenuCommands){
-			try {
-				Log.i("ADD SUB MENU COMMAND: ", request.serializeJSON().toString());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-
 		// add all built commands to inProgressUpdate
 		inProgressUpdate = new ArrayList<>(mainMenuCommands);
 		inProgressUpdate.addAll(subMenuCommands);
@@ -1096,14 +1080,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 			mainMenuCommands = createCommandsForDynamicSubCells(newMenu, adds, true);
 		}
 
-		for (RPCRequest request : mainMenuCommands){
-			try {
-				Log.i("DYNAMIC SUB ADD COMMAN ", request.serializeJSON().toString());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-
 		internalInterface.sendSequentialRPCs(mainMenuCommands, new OnMultipleRequestListener() {
 			@Override
 			public void onUpdate(int remainingRequests) {
@@ -1166,14 +1142,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 				listener.onComplete(true);
 			}
 			return;
-		}
-
-		for (RPCRequest delete : deleteCommands){
-			try {
-				Log.i("MENU CELL DELETE: ", delete.serializeJSON().toString());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
 		}
 
 		internalInterface.sendRequests(deleteCommands, new OnMultipleRequestListener() {
