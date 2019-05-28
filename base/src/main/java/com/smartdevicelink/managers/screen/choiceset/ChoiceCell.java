@@ -43,17 +43,17 @@ public class ChoiceCell {
     private List<String> voiceCommands;
     private SdlArtwork artwork, secondaryArtwork;
 
-    public ChoiceCell(@NonNull String text){
+    public ChoiceCell(@NonNull String text) {
         this.text = text;
     }
 
-    public ChoiceCell(@NonNull String text, List<String> voiceCommands, SdlArtwork artwork){
+    public ChoiceCell(@NonNull String text, List<String> voiceCommands, SdlArtwork artwork) {
         setText(text);
         setVoiceCommands(voiceCommands);
         setArtwork(artwork);
     }
 
-    public ChoiceCell(@NonNull String text, String secondaryText, String tertiaryText, List<String> voiceCommands, SdlArtwork artwork, SdlArtwork secondaryArtwork){
+    public ChoiceCell(@NonNull String text, String secondaryText, String tertiaryText, List<String> voiceCommands, SdlArtwork artwork, SdlArtwork secondaryArtwork) {
         setText(text);
         setSecondaryText(secondaryText);
         setTertiaryText(tertiaryText);

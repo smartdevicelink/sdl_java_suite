@@ -44,7 +44,7 @@ public class ChoiceSet {
     private List<ChoiceCell> choices;
     private ChoiceSetSelectionListener choiceSetSelectionListener;
 
-    public ChoiceSet(String title, ChoiceSetSelectionListener listener, ChoiceSetLayout layout, List<TTSChunk> initialPrompt, List<ChoiceCell> choices){
+    public ChoiceSet(String title, ChoiceSetSelectionListener listener, ChoiceSetLayout layout, List<TTSChunk> initialPrompt, List<ChoiceCell> choices) {
         setTitle(title);
         setChoiceSetSelectionListener(listener);
         setLayout(layout);
@@ -52,7 +52,7 @@ public class ChoiceSet {
         setChoices(choices);
     }
 
-    public ChoiceSet(String title, ChoiceSetSelectionListener listener, ChoiceSetLayout layout, List<TTSChunk> initialPrompt, int timeout, List<ChoiceCell> choices){
+    public ChoiceSet(String title, ChoiceSetSelectionListener listener, ChoiceSetLayout layout, List<TTSChunk> initialPrompt, int timeout, List<ChoiceCell> choices) {
         setTitle(title);
         setChoiceSetSelectionListener(listener);
         setLayout(layout);
@@ -61,7 +61,7 @@ public class ChoiceSet {
         setChoices(choices);
     }
 
-    public ChoiceSet(String title, ChoiceSetSelectionListener listener, List<TTSChunk> initialPrompt, List<TTSChunk> timeoutPrompt, List<TTSChunk> helpPrompt, List<ChoiceCell> choices){
+    public ChoiceSet(String title, ChoiceSetSelectionListener listener, List<TTSChunk> initialPrompt, List<TTSChunk> timeoutPrompt, List<TTSChunk> helpPrompt, List<ChoiceCell> choices) {
         setTitle(title);
         setChoiceSetSelectionListener(listener);
         setInitialPrompt(initialPrompt);
@@ -70,7 +70,7 @@ public class ChoiceSet {
         setChoices(choices);
     }
 
-    public ChoiceSet(String title, ChoiceSetSelectionListener listener, ChoiceSetLayout layout, List<TTSChunk> initialPrompt, List<TTSChunk> timeoutPrompt, List<TTSChunk> helpPrompt, List<ChoiceCell> choices){
+    public ChoiceSet(String title, ChoiceSetSelectionListener listener, ChoiceSetLayout layout, List<TTSChunk> initialPrompt, List<TTSChunk> timeoutPrompt, List<TTSChunk> helpPrompt, List<ChoiceCell> choices) {
         setTitle(title);
         setChoiceSetSelectionListener(listener);
         setLayout(layout);

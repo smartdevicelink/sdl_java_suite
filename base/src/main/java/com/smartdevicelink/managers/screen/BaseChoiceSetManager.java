@@ -39,12 +39,12 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 
 /**
  * <strong>ChoiceSetManager</strong> <br>
- *
+ * <p>
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
-*/
+ */
 abstract class BaseChoiceSetManager extends BaseSubManager {
 
-	BaseChoiceSetManager(@NonNull ISdl internalInterface) {
-		super(internalInterface);
-	}
+    BaseChoiceSetManager(@NonNull ISdl internalInterface) {
+        super(internalInterface);
+    }
 }
