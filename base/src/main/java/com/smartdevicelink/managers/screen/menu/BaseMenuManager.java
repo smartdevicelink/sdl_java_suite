@@ -135,6 +135,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 		hasQueuedUpdate = false;
 		waitingOnHMIUpdate = false;
 		waitingUpdateMenuCells = null;
+		keepsNew = null;
+		keepsOld = null;
 
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);

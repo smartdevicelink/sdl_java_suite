@@ -118,6 +118,8 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertNull(menuManager.waitingUpdateMenuCells);
 		assertNull(menuManager.oldMenuCells);
 		assertNull(menuManager.inProgressUpdate);
+		assertNull(menuManager.keepsNew);
+		assertNull(menuManager.keepsOld);
 		assertNotNull(menuManager.hmiListener);
 		assertNotNull(menuManager.commandListener);
 		assertNotNull(menuManager.displayListener);
@@ -138,6 +140,8 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertNull(menuManager.displayCapabilities);
 		assertNull(menuManager.inProgressUpdate);
 		assertNull(menuManager.waitingUpdateMenuCells);
+		assertNull(menuManager.keepsNew);
+		assertNull(menuManager.keepsOld);
 
 		// after everything, make sure we are in the correct state
 		assertEquals(menuManager.getState(), BaseSubManager.SHUTDOWN);
@@ -185,6 +189,9 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.allCommandsForCells(newArray, false).size(), 4); // 1 root cells, 1 sub menu root cell, 2 sub menu cells
 		menuManager.currentHMILevel = HMILevel.HMI_FULL;
 		menuManager.setMenuCells(newArray);
+		// Algorithm should NOT have run
+		assertNull(menuManager.keepsNew);
+		assertNull(menuManager.keepsOld);
 
 		// Unlike voice commands, the Menu Manager dynamically assigns Cell ID's. Because of this, we need to get the updated
 		// cell list after setting it and then test the listeners, as they use the newly assigned cell ID's.
@@ -249,6 +256,8 @@ public class MenuManagerTests extends AndroidTestCase2 {
 
 		menuManager.setMenuCells(newMenu);
 		assertEquals(menuManager.menuCells.size(), 5);
+		assertEquals(menuManager.keepsNew.size(), 4);
+		assertEquals(menuManager.keepsOld.size(), 4);
 	}
 
 	public void testAlgorithmTest2(){
@@ -283,6 +292,8 @@ public class MenuManagerTests extends AndroidTestCase2 {
 
 		menuManager.setMenuCells(newMenu);
 		assertEquals(menuManager.menuCells.size(), 3);
+		assertEquals(menuManager.keepsNew.size(), 3);
+		assertEquals(menuManager.keepsOld.size(), 3);
 	}
 
 	public void testAlgorithmTest3(){
@@ -317,6 +328,8 @@ public class MenuManagerTests extends AndroidTestCase2 {
 
 		menuManager.setMenuCells(newMenu);
 		assertEquals(menuManager.menuCells.size(), 3);
+		assertEquals(menuManager.keepsNew.size(), 0);
+		assertEquals(menuManager.keepsOld.size(), 0);
 	}
 
 	public void testAlgorithmTest4(){
@@ -351,6 +364,8 @@ public class MenuManagerTests extends AndroidTestCase2 {
 
 		menuManager.setMenuCells(newMenu);
 		assertEquals(menuManager.menuCells.size(), 4);
+		assertEquals(menuManager.keepsNew.size(), 2);
+		assertEquals(menuManager.keepsOld.size(), 2);
 	}
 
 	public void testAlgorithmTest5(){
@@ -385,7 +400,41 @@ public class MenuManagerTests extends AndroidTestCase2 {
 
 		menuManager.setMenuCells(newMenu);
 		assertEquals(menuManager.menuCells.size(), 4);
+		assertEquals(menuManager.keepsNew.size(), 3);
+		assertEquals(menuManager.keepsOld.size(), 3);
 	}
+
+	public void testClearingMenu(){
+
+		// Make sure we can send an empty menu with no issues
+		// start fresh
+		menuManager.oldMenuCells = null;
+		menuManager.menuCells = null;
+		menuManager.inProgressUpdate = null;
+		menuManager.waitingUpdateMenuCells = null;
+		menuManager.waitingOnHMIUpdate = false;
+
+		menuManager.currentHMILevel = HMILevel.HMI_FULL;
+		// send new cells. They should set the old way
+		List<MenuCell> oldMenu = createDynamicMenu1();
+		List<MenuCell> newMenu = Collections.emptyList();
+		menuManager.setMenuCells(oldMenu);
+		assertEquals(menuManager.menuCells.size(), 4);
+
+		menuManager.setMenuCells(newMenu);
+		assertEquals(menuManager.menuCells.size(), 0);
+	}
+
+	// HELPERS
+
+	// Emulate what happens when Core sends OnHMIStatus notification
+	private void sendFakeCoreOnHMIFullNotifications() {
+		OnHMIStatus onHMIStatusFakeNotification = new OnHMIStatus();
+		onHMIStatusFakeNotification.setHmiLevel(HMILevel.HMI_FULL);
+		onHMIStatusListener.onNotified(onHMIStatusFakeNotification);
+	}
+
+	// CREATING CELLS FOR TEST CASES
 
 	private List<MenuCell> createTestCells(){
 
@@ -597,13 +646,6 @@ public class MenuManagerTests extends AndroidTestCase2 {
 
 		return Arrays.asList(B, C, D, A);
 
-	}
-
-	// Emulate what happens when Core sends OnHMIStatus notification
-	private void sendFakeCoreOnHMIFullNotifications() {
-		OnHMIStatus onHMIStatusFakeNotification = new OnHMIStatus();
-		onHMIStatusFakeNotification.setHmiLevel(HMILevel.HMI_FULL);
-		onHMIStatusListener.onNotified(onHMIStatusFakeNotification);
 	}
 
 }
