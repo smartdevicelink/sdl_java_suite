@@ -527,7 +527,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// COMPARISONS
 
-	private RunScore runMenuCompareAlgorithm(List<MenuCell> oldCells, List<MenuCell> newCells){
+	RunScore runMenuCompareAlgorithm(List<MenuCell> oldCells, List<MenuCell> newCells){
 
 		if (oldCells == null || oldCells.size() == 0){
 			return null;

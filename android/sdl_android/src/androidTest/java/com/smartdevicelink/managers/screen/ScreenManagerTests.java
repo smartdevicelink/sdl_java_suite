@@ -55,9 +55,12 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertNull(screenManager.getTextField2Type());
 		assertNull(screenManager.getTextField3Type());
 		assertNull(screenManager.getTextField4Type());
+		assertNull(screenManager.getMenu());
+		assertNull(screenManager.getVoiceCommands());
 		assertTrue(screenManager.getSoftButtonObjects().isEmpty());
 		assertNull(screenManager.getSoftButtonObjectByName("test"));
 		assertNull(screenManager.getSoftButtonObjectById(1));
+		assertEquals(screenManager.getDynamicMenuUpdatesMode(), DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE);
 		assertEquals(screenManager.getState(), BaseSubManager.READY);
 	}
 	
@@ -117,9 +120,6 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 	}
 
 	public void testSetMenuManagerFields(){
-		// make sure the default is set
-		assertEquals(screenManager.getDynamicMenuUpdatesMode(), DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE);
-
 		screenManager.setDynamicMenuUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
 		screenManager.setMenu(Test.GENERAL_MENUCELL_LIST);
 
