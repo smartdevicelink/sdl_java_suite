@@ -246,6 +246,9 @@ abstract class BaseMenuManager extends BaseSubManager {
 			return;
 		}
 
+		// Checks against what the developer set for update mode and against the display type
+		// to determine how the menu will be updated. This has the ability to be changed during
+		// a session.
 		if (checkUpdateMode(dynamicMenuUpdatesMode, displayType)) {
 			// run the lists through the new algorithm
 			RunScore rootScore = runMenuCompareAlgorithm(oldMenuCells, menuCells);
@@ -259,6 +262,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				this.oldMenuCells = new ArrayList<>(menuCells);
 				createAndSendEntireMenu();
 			} else {
+				DebugTool.logInfo("Dynamically Updating Menu");
 				if (menuCells.size() == 0 && (oldMenuCells != null && oldMenuCells.size() > 0)) {
 					// the dev wants to clear the menu. We have old cells and an empty array of new ones.
 					deleteMenuWhenNewCellsEmpty();
