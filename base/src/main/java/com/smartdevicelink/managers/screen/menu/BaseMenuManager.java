@@ -129,6 +129,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		oldMenuCells = null;
 		currentHMILevel = null;
 		currentSystemContext = SystemContext.SYSCTXT_MAIN;
+		dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
 		displayCapabilities = null;
 		inProgressUpdate = null;
 		hasQueuedUpdate = false;
@@ -222,7 +223,22 @@ abstract class BaseMenuManager extends BaseSubManager {
 	 * @return a List of Currently set menu cells
 	 */
 	public List<MenuCell> getMenuCells(){
-		return menuCells;
+
+		if (menuCells != null) {
+			return menuCells;
+		} else if (waitingOnHMIUpdate && waitingUpdateMenuCells != null) {
+			// this will keep from returning null if the menu list is set and we are pending HMI FULL
+			return  waitingUpdateMenuCells;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * @return The currently set DynamicMenuUpdatesMode. It defaults to ON_WITH_COMPAT_MODE
+	 */
+	public DynamicMenuUpdatesMode getDynamicMenuUpdatesMode() {
+		return this.dynamicMenuUpdatesMode;
 	}
 
 	// UPDATING SYSTEM

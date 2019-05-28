@@ -8,6 +8,8 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
 import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
+import com.smartdevicelink.managers.screen.menu.VoiceCommand;
+import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.SdlProxyBase;
@@ -460,6 +462,13 @@ public class Test {
 		}
 	});
 	public static final List<MenuCell>                  GENERAL_MENUCELL_LIST                  = Arrays.asList(GENERAL_MENUCELL);
+	public static final VoiceCommand					GENERAL_VOICE_COMMAND                  = new VoiceCommand(GENERAL_STRING_LIST, new VoiceCommandSelectionListener() {
+		@Override
+		public void onVoiceCommandSelected() {
+
+		}
+	});
+	public static final List<VoiceCommand>              GENERAL_VOICE_COMMAND_LIST             = Arrays.asList(GENERAL_VOICE_COMMAND);
 
 
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();

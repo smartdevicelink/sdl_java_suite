@@ -405,6 +405,14 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
+	 *
+	 * @return The currently set DynamicMenuUpdatesMode. It defaults to ON_WITH_COMPAT_MODE if not set.
+	 */
+	public DynamicMenuUpdatesMode getDynamicMenuUpdatesMode(){
+		return this.menuManager.getDynamicMenuUpdatesMode();
+	}
+
+	/**
 	 * Begin a multiple updates transaction. The updates will be applied when commit() is called<br>
 	 * Note: if we don't use beginTransaction & commit, every update will be sent individually.
 	 */
