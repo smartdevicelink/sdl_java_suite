@@ -47,10 +47,10 @@ public class ChoiceCell {
         this.text = text;
     }
 
-    public ChoiceCell(@NonNull String text, SdlArtwork artwork, List<String> voiceCommands){
+    public ChoiceCell(@NonNull String text, List<String> voiceCommands, SdlArtwork artwork){
         setText(text);
-        setArtwork(artwork);
         setVoiceCommands(voiceCommands);
+        setArtwork(artwork);
     }
 
     public ChoiceCell(@NonNull String text, String secondaryText, String tertiaryText, List<String> voiceCommands, SdlArtwork artwork, SdlArtwork secondaryArtwork){
