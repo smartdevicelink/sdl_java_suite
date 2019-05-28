@@ -33,6 +33,7 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.test.Test;
 
 public class SubCellCommandListTests extends AndroidTestCase2 {
 
@@ -46,4 +47,19 @@ public class SubCellCommandListTests extends AndroidTestCase2 {
 		super.tearDown();
 	}
 
+	public void testSettersAndGetters() {
+
+		RunScore runScore = new RunScore(Test.GENERAL_INT, Test.GENERAL_INTEGER_LIST, Test.GENERAL_INTEGER_LIST);
+
+		// set everything
+		SubCellCommandList subCellCommandList = new SubCellCommandList(Test.GENERAL_STRING, Test.GENERAL_INTEGER, runScore, Test.GENERAL_MENUCELL_LIST, Test.GENERAL_MENUCELL_LIST);
+
+		// use getters and assert equality
+		assertEquals(subCellCommandList.getMenuTitle(), Test.GENERAL_STRING);
+		assertEquals(subCellCommandList.getParentId(), Test.GENERAL_INTEGER);
+		assertEquals(runScore, runScore);
+		assertEquals(subCellCommandList.getNewList(), Test.GENERAL_MENUCELL_LIST);
+		assertEquals(subCellCommandList.getOldList(), Test.GENERAL_MENUCELL_LIST);
+
+	}
 }
