@@ -33,8 +33,8 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 public enum ChoiceSetLayout {
-    ChoiceSetLayoutList,
-    ChoiceSetLayoutTiles;
+    CHOICE_SET_LAYOUT_LIST,
+    CHOICE_SET_LAYOUT_TILES;
 
     public static ChoiceSetLayout valueForString(String value) {
         try {

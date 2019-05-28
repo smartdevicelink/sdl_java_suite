@@ -45,39 +45,39 @@ public class ChoiceSet {
     private ChoiceSetSelectionListener choiceSetSelectionListener;
 
     public ChoiceSet(String title, ChoiceSetSelectionListener listener, ChoiceSetLayout layout, List<TTSChunk> initialPrompt, List<ChoiceCell> choices){
-        this.title = title;
-        this.choiceSetSelectionListener = listener;
-        this.layout = layout;
-        this.initialPrompt = initialPrompt;
-        this.choices = choices;
+        setTitle(title);
+        setChoiceSetSelectionListener(listener);
+        setLayout(layout);
+        setInitialPrompt(initialPrompt);
+        setChoices(choices);
     }
 
     public ChoiceSet(String title, ChoiceSetSelectionListener listener, ChoiceSetLayout layout, List<TTSChunk> initialPrompt, int timeout, List<ChoiceCell> choices){
-        this.title = title;
-        this.choiceSetSelectionListener = listener;
-        this.layout = layout;
-        this.initialPrompt = initialPrompt;
-        this.timeout = timeout;
-        this.choices = choices;
+        setTitle(title);
+        setChoiceSetSelectionListener(listener);
+        setLayout(layout);
+        setInitialPrompt(initialPrompt);
+        setTimeout(timeout);
+        setChoices(choices);
     }
 
     public ChoiceSet(String title, ChoiceSetSelectionListener listener, List<TTSChunk> initialPrompt, List<TTSChunk> timeoutPrompt, List<TTSChunk> helpPrompt, List<ChoiceCell> choices){
-        this.title = title;
-        this.choiceSetSelectionListener = listener;
-        this.initialPrompt = initialPrompt;
-        this.timeoutPrompt = timeoutPrompt;
-        this.helpPrompt = helpPrompt;
-        this.choices = choices;
+        setTitle(title);
+        setChoiceSetSelectionListener(listener);
+        setInitialPrompt(initialPrompt);
+        setTimeoutPrompt(timeoutPrompt);
+        setHelpPrompt(helpPrompt);
+        setChoices(choices);
     }
 
     public ChoiceSet(String title, ChoiceSetSelectionListener listener, ChoiceSetLayout layout, List<TTSChunk> initialPrompt, List<TTSChunk> timeoutPrompt, List<TTSChunk> helpPrompt, List<ChoiceCell> choices){
-        this.title = title;
-        this.choiceSetSelectionListener = listener;
-        this.layout = layout;
-        this.initialPrompt = initialPrompt;
-        this.timeoutPrompt = timeoutPrompt;
-        this.helpPrompt = helpPrompt;
-        this.choices = choices;
+        setTitle(title);
+        setChoiceSetSelectionListener(listener);
+        setLayout(layout);
+        setInitialPrompt(initialPrompt);
+        setTimeoutPrompt(timeoutPrompt);
+        setHelpPrompt(helpPrompt);
+        setChoices(choices);
     }
 
     public String getTitle() {
