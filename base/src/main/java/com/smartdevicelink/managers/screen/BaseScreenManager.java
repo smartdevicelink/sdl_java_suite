@@ -38,7 +38,11 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
+import com.smartdevicelink.managers.screen.choiceset.KeyboardListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.util.DebugTool;
@@ -349,6 +353,27 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 */
 	public SoftButtonObject getSoftButtonObjectById(int buttonId){
 		return softButtonManager.getSoftButtonObjectById(buttonId);
+	}
+
+	// This can only take up to 100 items, if more are passed the completion handler will be called with an error
+	public void preloadChoices (List<ChoiceCell> choices, CompletionListener listener){
+
+	}
+
+	public void deleteChoices (List<ChoiceCell> preloadedChoiceKeys){
+
+	}
+
+	public void presentSearchableChoiceSet (ChoiceSet choiceSet, InteractionMode mode, KeyboardListener listener){
+
+	}
+
+	public void presentChoiceSet (ChoiceSet choiceSet, InteractionMode mode){
+
+	}
+
+	public void presentKeyboardWithInitialText (String initialText, KeyboardListener listener){
+
 	}
 
 	/**

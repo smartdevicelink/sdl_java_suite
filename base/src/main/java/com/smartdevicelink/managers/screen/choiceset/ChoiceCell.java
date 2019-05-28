@@ -1,0 +1,112 @@
+/*
+ * Copyright (c) 2019 Livio, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the Livio Inc. nor the names of its contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package com.smartdevicelink.managers.screen.choiceset;
+
+import android.support.annotation.NonNull;
+
+import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+
+import java.util.List;
+
+public class ChoiceCell {
+    private String text, secondaryText, tertiaryText;
+    private List<String> voiceCommands;
+    private SdlArtwork artwork, secondaryArtwork;
+
+    public ChoiceCell(@NonNull String text){
+        this.text = text;
+    }
+
+    public ChoiceCell(@NonNull String text, SdlArtwork artwork, List<String> voiceCommands){
+        this.text = text;
+        this.artwork = artwork;
+        this.voiceCommands = voiceCommands;
+    }
+
+    public ChoiceCell(@NonNull String text, String secondaryText, String tertiaryText, List<String> voiceCommands, SdlArtwork artwork, SdlArtwork secondaryArtwork){
+        this.text = text;
+        this.secondaryText = secondaryText;
+        this.tertiaryText = tertiaryText;
+        this.voiceCommands = voiceCommands;
+        this.artwork = artwork;
+        this.secondaryArtwork = secondaryArtwork;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(@NonNull String text) {
+        this.text = text;
+    }
+
+    public String getSecondaryText() {
+        return secondaryText;
+    }
+
+    public void setSecondaryText(String secondaryText) {
+        this.secondaryText = secondaryText;
+    }
+
+    public String getTertiaryText() {
+        return tertiaryText;
+    }
+
+    public void setTertiaryText(String tertiaryText) {
+        this.tertiaryText = tertiaryText;
+    }
+
+    public List<String> getVoiceCommands() {
+        return voiceCommands;
+    }
+
+    public void setVoiceCommands(List<String> voiceCommands) {
+        this.voiceCommands = voiceCommands;
+    }
+
+    public SdlArtwork getArtwork() {
+        return artwork;
+    }
+
+    public void setArtwork(SdlArtwork artwork) {
+        this.artwork = artwork;
+    }
+
+    public SdlArtwork getSecondaryArtwork() {
+        return secondaryArtwork;
+    }
+
+    public void setSecondaryArtwork(SdlArtwork secondaryArtwork) {
+        this.secondaryArtwork = secondaryArtwork;
+    }
+}
