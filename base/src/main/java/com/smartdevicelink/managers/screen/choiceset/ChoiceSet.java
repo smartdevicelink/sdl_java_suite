@@ -34,6 +34,7 @@ package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
@@ -59,6 +60,7 @@ public class ChoiceSet {
     private ChoiceSetLayout defaultLayout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
 
     public ChoiceSet(@NonNull String title, @Nullable ChoiceSetSelectionListener listener, @NonNull List<ChoiceCell> choices) {
+
         setTitle(title);
         setChoiceSetSelectionListener(listener);
         setChoices(choices);
@@ -73,6 +75,7 @@ public class ChoiceSet {
     }
 
     public ChoiceSet(@NonNull String title, @Nullable ChoiceSetSelectionListener listener, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable String initialPrompt, @Nullable String timeoutPrompt, @Nullable String helpPrompt, @Nullable List<VrHelpItem> helpList, @NonNull List<ChoiceCell> choices) {
+
         setTitle(title);
         setChoiceSetSelectionListener(listener);
         setLayout(layout);
@@ -98,6 +101,7 @@ public class ChoiceSet {
     }
 
     public ChoiceSet(@NonNull String title, @Nullable ChoiceSetSelectionListener listener, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable List<TTSChunk> initialPrompt, @Nullable List<TTSChunk> timeoutPrompt, @Nullable List<TTSChunk> helpPrompt, @Nullable List<VrHelpItem> helpList, @NonNull List<ChoiceCell> choices) {
+
         setTitle(title);
         setChoiceSetSelectionListener(listener);
         setInitialPrompt(initialPrompt);
@@ -218,11 +222,8 @@ public class ChoiceSet {
 
         // Choices are not optional here
         if (getChoices() == null){
-            try {
-                throw new SdlException("Cannot initiate a choice set with no choices", SdlExceptionCause.INVALID_ARGUMENT);
-            } catch (SdlException e) {
-                e.printStackTrace();
-            }
+            Log.e("Choice Set", "Cannot initiate a choice set with no choices");
+            return;
         }
 
         HashSet<String> choiceTextSet = new HashSet<>();
@@ -243,31 +244,19 @@ public class ChoiceSet {
 
         // Cell text MUST be unique
         if (choiceTextSet.size() < choices.size()){
-            try {
-                throw new SdlException("Attempted to create a choice set with duplicate cell text. Cell text must be unique. The choice set will not be set.", SdlExceptionCause.INVALID_ARGUMENT);
-            } catch (SdlException e) {
-                e.printStackTrace();
-            }
+            Log.e("Choice Set", "Attempted to create a choice set with duplicate cell text. Cell text must be unique. The choice set will not be set.");
             return;
         }
 
         // All or none of the choices MUST have VR Commands
         if (choiceCellWithVoiceCommandCount > 0 && choiceCellWithVoiceCommandCount < choices.size()){
-            try {
-                throw new SdlException("If using voice recognition commands, all of the choice set cells must have unique VR commands. There are "+uniqueVoiceCommands.size()+" cells with unique voice commands and "+allVoiceCommandsCount+" total cells. The choice set will not be set.", SdlExceptionCause.INVALID_ARGUMENT);
-            } catch (SdlException e) {
-                e.printStackTrace();
-            }
+            Log.e("Choice Set", "If using voice recognition commands, all of the choice set cells must have unique VR commands. There are "+uniqueVoiceCommands.size()+" cells with unique voice commands and "+allVoiceCommandsCount+" total cells. The choice set will not be set.");
             return;
         }
 
         // All VR Commands MUST be unique
         if (uniqueVoiceCommands.size() < allVoiceCommandsCount){
-            try {
-                throw new SdlException("If using voice recognition commands, all VR commands must be unique. There are "+uniqueVoiceCommands.size()+" unique VR commands and "+allVoiceCommandsCount+" VR commands. The choice set will not be set.", SdlExceptionCause.INVALID_ARGUMENT);
-            } catch (SdlException e) {
-                e.printStackTrace();
-            }
+            Log.e("Choice Set", "If using voice recognition commands, all VR commands must be unique. There are "+uniqueVoiceCommands.size()+" unique VR commands and "+allVoiceCommandsCount+" VR commands. The choice set will not be set.");
             return;
         }
 

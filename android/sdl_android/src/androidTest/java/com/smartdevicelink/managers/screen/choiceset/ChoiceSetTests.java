@@ -33,7 +33,6 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.test.Test;
 
 import java.util.Arrays;
@@ -100,17 +99,4 @@ public class ChoiceSetTests extends AndroidTestCase2 {
         assertEquals(choiceSet2.getChoices(), choices);
         assertEquals(choiceSet2.getChoiceSetSelectionListener(), listener);
     }
-
-    public void testExceptions(){
-
-        // Null choices
-        try {
-            new ChoiceSet(Test.GENERAL_STRING, listener, null);
-            fail( "Should have thrown an exception" );
-        } catch (Exception expectedException) {
-            assertNotNull(expectedException);
-        }
-
-    }
-
 }
