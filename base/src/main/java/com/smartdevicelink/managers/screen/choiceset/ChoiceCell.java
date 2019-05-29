@@ -169,7 +169,7 @@ public class ChoiceCell {
      * @return A string description of the cell, useful for debugging.
      */
     public String getDescription() {
-        return "ChoiceCell: ID: " + this.choiceId + " Text" + text+ " - "+ secondaryText+" - "+ " - "+ tertiaryText+ " " +
+        return "ChoiceCell: ID: " + this.choiceId + " Text: " + text+ " - "+ secondaryText+" - "+ " - "+ tertiaryText+ " " +
                 "| Artwork Names: "+ ((getArtwork() == null || getArtwork().getName() == null) ? "Primary Art null" : getArtwork().getName())
                 + " - "+((getSecondaryArtwork() == null || getSecondaryArtwork().getName() == null) ? "Secondary Art null" : getSecondaryArtwork().getName()) +
                 " Voice Commands Size: "+ ((getVoiceCommands() == null) ? 0 : getVoiceCommands().size());

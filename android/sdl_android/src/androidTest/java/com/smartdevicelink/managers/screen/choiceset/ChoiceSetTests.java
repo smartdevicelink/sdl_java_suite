@@ -75,7 +75,7 @@ public class ChoiceSetTests extends AndroidTestCase2 {
         assertEquals(choiceSet.getHelpPrompt(), Test.GENERAL_TTSCHUNK_LIST);
         assertEquals(choiceSet.getTimeoutPrompt(), Test.GENERAL_TTSCHUNK_LIST);
         assertEquals(choiceSet.getLayout(), layout);
-        assertEquals(choiceSet.getTimeout(), Test.GENERAL_INT);
+        assertEquals(choiceSet.getTimeout(), Test.GENERAL_INTEGER);
         assertEquals(choiceSet.getChoices(), choices);
         assertEquals(choiceSet.getChoiceSetSelectionListener(), listener);
 
@@ -83,17 +83,17 @@ public class ChoiceSetTests extends AndroidTestCase2 {
 
     public void testConstructors() {
         // first constructor was tested in previous method, use the rest here
+        Integer defaultTimeout = 10;
 
-        ChoiceSet choiceSet = new ChoiceSet(Test.GENERAL_STRING, listener, layout, Test.GENERAL_TTSCHUNK_LIST, Test.GENERAL_INT ,choices);
+        ChoiceSet choiceSet = new ChoiceSet(Test.GENERAL_STRING, listener, layout, Test.GENERAL_TTSCHUNK_LIST, null ,choices);
         choiceSet.setTimeoutPrompt(Test.GENERAL_TTSCHUNK_LIST);
         choiceSet.setHelpPrompt(Test.GENERAL_TTSCHUNK_LIST);
-        choiceSet.setTimeout(Test.GENERAL_INT);
         assertEquals(choiceSet.getTitle(), Test.GENERAL_STRING);
         assertEquals(choiceSet.getInitialPrompt(), Test.GENERAL_TTSCHUNK_LIST);
         assertEquals(choiceSet.getHelpPrompt(), Test.GENERAL_TTSCHUNK_LIST);
         assertEquals(choiceSet.getTimeoutPrompt(), Test.GENERAL_TTSCHUNK_LIST);
         assertEquals(choiceSet.getLayout(), layout);
-        assertEquals(choiceSet.getTimeout(), Test.GENERAL_INT);
+        assertEquals(choiceSet.getTimeout(), defaultTimeout);
         assertEquals(choiceSet.getChoices(), choices);
         assertEquals(choiceSet.getChoiceSetSelectionListener(), listener);
 
@@ -106,7 +106,7 @@ public class ChoiceSetTests extends AndroidTestCase2 {
         assertEquals(choiceSet.getHelpPrompt(), Test.GENERAL_TTSCHUNK_LIST);
         assertEquals(choiceSet.getTimeoutPrompt(), Test.GENERAL_TTSCHUNK_LIST);
         assertEquals(choiceSet.getLayout(), layout);
-        assertEquals(choiceSet.getTimeout(), Test.GENERAL_INT);
+        assertEquals(choiceSet.getTimeout(), Test.GENERAL_INTEGER);
         assertEquals(choiceSet.getChoices(), choices);
         assertEquals(choiceSet.getChoiceSetSelectionListener(), listener);
 
@@ -118,7 +118,7 @@ public class ChoiceSetTests extends AndroidTestCase2 {
         assertEquals(choiceSet.getHelpPrompt(), Test.GENERAL_TTSCHUNK_LIST);
         assertEquals(choiceSet.getTimeoutPrompt(), Test.GENERAL_TTSCHUNK_LIST);
         assertEquals(choiceSet.getLayout(), layout);
-        assertEquals(choiceSet.getTimeout(), Test.GENERAL_INT);
+        assertEquals(choiceSet.getTimeout(), Test.GENERAL_INTEGER);
         assertEquals(choiceSet.getChoices(), choices);
         assertEquals(choiceSet.getChoiceSetSelectionListener(), listener);
 

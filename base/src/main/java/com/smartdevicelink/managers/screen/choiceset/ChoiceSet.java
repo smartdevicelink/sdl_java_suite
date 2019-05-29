@@ -32,7 +32,9 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
+import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.VrHelpItem;
 
 import java.util.List;
 
@@ -40,25 +42,44 @@ public class ChoiceSet {
     private String title;
     private List<TTSChunk> initialPrompt, timeoutPrompt, helpPrompt;
     private ChoiceSetLayout layout;
-    private int timeout;
+    private Integer timeout;
     private List<ChoiceCell> choices;
+    private List<VrHelpItem> vrHelpList;
     private ChoiceSetSelectionListener choiceSetSelectionListener;
 
-    public ChoiceSet(String title, ChoiceSetSelectionListener listener, ChoiceSetLayout layout, List<TTSChunk> initialPrompt, List<ChoiceCell> choices) {
+    // defaults
+    private Integer defaultTimeout = 10;
+    private ChoiceSetLayout defaultLayout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
+
+    public ChoiceSet(String title, ChoiceSetSelectionListener listener, List<ChoiceCell> choices) {
         setTitle(title);
         setChoiceSetSelectionListener(listener);
-        setLayout(layout);
-        setInitialPrompt(initialPrompt);
         setChoices(choices);
+
+        // defaults
+        setLayout(defaultLayout);
+        setTimeout(defaultTimeout);
     }
 
-    public ChoiceSet(String title, ChoiceSetSelectionListener listener, ChoiceSetLayout layout, List<TTSChunk> initialPrompt, int timeout, List<ChoiceCell> choices) {
+    public ChoiceSet(String title, ChoiceSetSelectionListener listener, ChoiceSetLayout layout, Integer timeout, String initialPrompt, String timeoutPrompt, String helpPrompt, List<VrHelpItem> helpList, List<ChoiceCell> choices) {
         setTitle(title);
         setChoiceSetSelectionListener(listener);
         setLayout(layout);
-        setInitialPrompt(initialPrompt);
         setTimeout(timeout);
         setChoices(choices);
+        setVrHelpList(helpList);
+
+        if (initialPrompt != null){
+            setInitialPrompt(TTSChunkFactory.createSimpleTTSChunks(initialPrompt));
+        }
+
+        if (timeoutPrompt != null){
+            setTimeoutPrompt(TTSChunkFactory.createSimpleTTSChunks(timeoutPrompt));
+        }
+
+        if (helpPrompt != null){
+            setTimeoutPrompt(TTSChunkFactory.createSimpleTTSChunks(helpPrompt));
+        }
     }
 
     public ChoiceSet(String title, ChoiceSetSelectionListener listener, List<TTSChunk> initialPrompt, List<TTSChunk> timeoutPrompt, List<TTSChunk> helpPrompt, List<ChoiceCell> choices) {
@@ -68,16 +89,8 @@ public class ChoiceSet {
         setTimeoutPrompt(timeoutPrompt);
         setHelpPrompt(helpPrompt);
         setChoices(choices);
-    }
-
-    public ChoiceSet(String title, ChoiceSetSelectionListener listener, ChoiceSetLayout layout, List<TTSChunk> initialPrompt, List<TTSChunk> timeoutPrompt, List<TTSChunk> helpPrompt, List<ChoiceCell> choices) {
-        setTitle(title);
-        setChoiceSetSelectionListener(listener);
-        setLayout(layout);
-        setInitialPrompt(initialPrompt);
-        setTimeoutPrompt(timeoutPrompt);
-        setHelpPrompt(helpPrompt);
-        setChoices(choices);
+        setTimeout(defaultTimeout);
+        setLayout(defaultLayout);
     }
 
     public String getTitle() {
@@ -112,20 +125,36 @@ public class ChoiceSet {
         this.helpPrompt = helpPrompt;
     }
 
+    public List<VrHelpItem> getVrHelpList() {
+        return vrHelpList;
+    }
+
+    public void setVrHelpList(List<VrHelpItem> vrHelpList) {
+        this.vrHelpList = vrHelpList;
+    }
+
     public ChoiceSetLayout getLayout() {
         return layout;
     }
 
     public void setLayout(ChoiceSetLayout layout) {
-        this.layout = layout;
+        if (layout == null){
+            this.layout = defaultLayout;
+        } else {
+            this.layout = layout;
+        }
     }
 
-    public int getTimeout() {
+    public Integer getTimeout() {
         return timeout;
     }
 
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
+    public void setTimeout(Integer timeout) {
+        if (timeout == null) {
+            this.timeout = defaultTimeout;
+        } else {
+            this.timeout = timeout;
+        }
     }
 
     public List<ChoiceCell> getChoices() {
@@ -142,5 +171,11 @@ public class ChoiceSet {
 
     public void setChoiceSetSelectionListener(ChoiceSetSelectionListener choiceSetSelectionListener) {
         this.choiceSetSelectionListener = choiceSetSelectionListener;
+    }
+
+    // HELPERS
+
+    public void checkChoiceSetParameters(){
+
     }
 }
