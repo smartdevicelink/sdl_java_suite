@@ -42,15 +42,23 @@ public class ChoiceCell {
     private String text, secondaryText, tertiaryText;
     private List<String> voiceCommands;
     private SdlArtwork artwork, secondaryArtwork;
+    private Integer choiceId;
+
+    /**
+     * MAX ID for cells - Cannot use Integer.MAX_INT as the value is too high.
+     */
+    private static final int MAX_ID = 2000000000;
 
     public ChoiceCell(@NonNull String text) {
-        this.text = text;
+        setText(text);
+        setChoiceId(MAX_ID);
     }
 
     public ChoiceCell(@NonNull String text, List<String> voiceCommands, SdlArtwork artwork) {
         setText(text);
         setVoiceCommands(voiceCommands);
         setArtwork(artwork);
+        setChoiceId(MAX_ID);
     }
 
     public ChoiceCell(@NonNull String text, String secondaryText, String tertiaryText, List<String> voiceCommands, SdlArtwork artwork, SdlArtwork secondaryArtwork) {
@@ -60,6 +68,7 @@ public class ChoiceCell {
         setVoiceCommands(voiceCommands);
         setArtwork(artwork);
         setSecondaryArtwork(secondaryArtwork);
+        setChoiceId(MAX_ID);
     }
 
     public String getText() {
@@ -109,4 +118,61 @@ public class ChoiceCell {
     public void setSecondaryArtwork(SdlArtwork secondaryArtwork) {
         this.secondaryArtwork = secondaryArtwork;
     }
+
+    /**
+     * Set the choice Id.
+     * @param choiceId - the choice Id
+     */
+    void setChoiceId(int choiceId) {
+        this.choiceId = choiceId;
+    }
+
+    /**
+     * Get the choiceId
+     * @return the choiceId for this Choice Cell
+     */
+    int getChoiceId() {
+        return choiceId;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result += ((getText() == null) ? 0 : Integer.rotateLeft(getText().hashCode(), 1));
+        result += ((getSecondaryText() == null) ? 0 : Integer.rotateLeft(getSecondaryText().hashCode(), 2));
+        result += ((getTertiaryText() == null) ? 0 : Integer.rotateLeft(getTertiaryText().hashCode(), 3));
+        result += ((getArtwork() == null || getArtwork().getName() == null) ? 0 : Integer.rotateLeft(getArtwork().getName().hashCode(), 4));
+        result += ((getSecondaryArtwork() == null || getSecondaryArtwork().getName() == null) ? 0 : Integer.rotateLeft(getSecondaryArtwork().getName().hashCode(), 5));
+        result += ((getVoiceCommands() == null) ? 0 : Integer.rotateLeft(getVoiceCommands().hashCode(), 6));
+        return result;
+    }
+
+    /**
+     * Uses our custom hashCode for ChoiceCell objects
+     * @param o - The object to compare
+     * @return boolean of whether the objects are the same or not
+     */
+    @Override
+    public boolean equals(Object o) {
+        // if this is the same memory address, its the same
+        if (this == o) return true;
+        // if this is not an instance of this class, not the same
+        if (!(o instanceof ChoiceCell)) return false;
+
+        ChoiceCell choiceCell = (ChoiceCell) o;
+        // if we get to this point, create the hashes and compare them
+        return hashCode() == choiceCell.hashCode();
+    }
+
+    /**
+     * Overriding toString was throwing a warning in AS, so I changed the name for now
+     * @return A string description of the cell, useful for debugging.
+     */
+    public String getDescription() {
+        return "ChoiceCell: ID: " + this.choiceId + " Text" + text+ " - "+ secondaryText+" - "+ " - "+ tertiaryText+ " " +
+                "| Artwork Names: "+ ((getArtwork() == null || getArtwork().getName() == null) ? "Primary Art null" : getArtwork().getName())
+                + " - "+((getSecondaryArtwork() == null || getSecondaryArtwork().getName() == null) ? "Secondary Art null" : getSecondaryArtwork().getName()) +
+                " Voice Commands Size: "+ ((getVoiceCommands() == null) ? 0 : getVoiceCommands().size());
+    }
+
 }

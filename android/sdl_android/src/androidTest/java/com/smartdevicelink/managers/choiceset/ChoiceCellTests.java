@@ -39,6 +39,8 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.test.Test;
 
 public class ChoiceCellTests extends AndroidTestCase2 {
+
+    private static final int MAX_ID = 2000000000;
     private SdlArtwork artwork = new SdlArtwork("image", FileType.GRAPHIC_PNG, 1, true);
 
     @Override
