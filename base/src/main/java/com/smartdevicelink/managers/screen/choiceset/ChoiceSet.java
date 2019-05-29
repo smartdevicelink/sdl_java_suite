@@ -214,8 +214,9 @@ public class ChoiceSet {
         }
     }
 
-    private void setUpChoiceSet(List<VrHelpItem> helpItems){
+    private void setUpChoiceSet(List<VrHelpItem> helpItems) {
 
+        // Choices are not optional here
         if (getChoices() == null){
             try {
                 throw new SdlException("Cannot initiate a choice set with no choices", SdlExceptionCause.INVALID_ARGUMENT);
@@ -233,15 +234,14 @@ public class ChoiceSet {
 
             choiceTextSet.add(cell.getText());
 
-            if (cell.getVoiceCommands() == null){
-                continue;
+            if (cell.getVoiceCommands() != null){
+                uniqueVoiceCommands.addAll(cell.getVoiceCommands());
+                choiceCellWithVoiceCommandCount += 1;
+                allVoiceCommandsCount += cell.getVoiceCommands().size();
             }
-
-            uniqueVoiceCommands.addAll(cell.getVoiceCommands());
-            choiceCellWithVoiceCommandCount += 1;
-            allVoiceCommandsCount += cell.getVoiceCommands().size();
         }
 
+        // Cell text MUST be unique
         if (choiceTextSet.size() < choices.size()){
             try {
                 throw new SdlException("Attempted to create a choice set with duplicate cell text. Cell text must be unique. The choice set will not be set.", SdlExceptionCause.INVALID_ARGUMENT);
@@ -271,6 +271,7 @@ public class ChoiceSet {
             return;
         }
 
+        // set help item positioning
         if (helpItems != null) {
             for (int i = 0; i < helpItems.size(); i++) {
                 helpItems.get(i).setPosition(i+1);
