@@ -243,19 +243,31 @@ public class ChoiceSet {
         }
 
         if (choiceTextSet.size() < choices.size()){
-            DebugTool.logError("Attempted to create a choice set with duplicate cell text. Cell text must be unique. The choice set will not be set.");
+            try {
+                throw new SdlException("Attempted to create a choice set with duplicate cell text. Cell text must be unique. The choice set will not be set.", SdlExceptionCause.INVALID_ARGUMENT);
+            } catch (SdlException e) {
+                e.printStackTrace();
+            }
             return;
         }
 
         // All or none of the choices MUST have VR Commands
         if (choiceCellWithVoiceCommandCount > 0 && choiceCellWithVoiceCommandCount < choices.size()){
-            DebugTool.logError("If using voice recognition commands, all of the choice set cells must have unique VR commands. There are "+uniqueVoiceCommands.size()+" cells with unique voice commands and "+allVoiceCommandsCount+" total cells. The choice set will not be set.");
+            try {
+                throw new SdlException("If using voice recognition commands, all of the choice set cells must have unique VR commands. There are "+uniqueVoiceCommands.size()+" cells with unique voice commands and "+allVoiceCommandsCount+" total cells. The choice set will not be set.", SdlExceptionCause.INVALID_ARGUMENT);
+            } catch (SdlException e) {
+                e.printStackTrace();
+            }
             return;
         }
 
         // All VR Commands MUST be unique
         if (uniqueVoiceCommands.size() < allVoiceCommandsCount){
-            DebugTool.logError("If using voice recognition commands, all VR commands must be unique. There are "+uniqueVoiceCommands.size()+" unique VR commands and "+allVoiceCommandsCount+" VR commands. The choice set will not be set.");
+            try {
+                throw new SdlException("If using voice recognition commands, all VR commands must be unique. There are "+uniqueVoiceCommands.size()+" unique VR commands and "+allVoiceCommandsCount+" VR commands. The choice set will not be set.", SdlExceptionCause.INVALID_ARGUMENT);
+            } catch (SdlException e) {
+                e.printStackTrace();
+            }
             return;
         }
 
