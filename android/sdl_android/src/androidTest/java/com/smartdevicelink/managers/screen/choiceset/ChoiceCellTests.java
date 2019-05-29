@@ -30,11 +30,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.managers.choiceset;
+package com.smartdevicelink.managers.screen.choiceset;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.test.Test;
 
@@ -71,6 +70,7 @@ public class ChoiceCellTests extends AndroidTestCase2 {
         assertEquals(choiceCell.getVoiceCommands(), Test.GENERAL_STRING_LIST);
         assertEquals(choiceCell.getArtwork(), artwork);
         assertEquals(choiceCell.getSecondaryArtwork(), artwork);
+        assertEquals(choiceCell.getChoiceId(), MAX_ID);
     }
 
     public void testConstructors() {
@@ -86,6 +86,7 @@ public class ChoiceCellTests extends AndroidTestCase2 {
         assertEquals(choiceCell.getVoiceCommands(), Test.GENERAL_STRING_LIST);
         assertEquals(choiceCell.getArtwork(), artwork);
         assertEquals(choiceCell.getSecondaryArtwork(), artwork);
+        assertEquals(choiceCell.getChoiceId(), MAX_ID);
 
 
         choiceCell = new ChoiceCell(Test.GENERAL_STRING, Test.GENERAL_STRING, Test.GENERAL_STRING, Test.GENERAL_STRING_LIST, artwork, artwork);
@@ -95,5 +96,28 @@ public class ChoiceCellTests extends AndroidTestCase2 {
         assertEquals(choiceCell.getVoiceCommands(), Test.GENERAL_STRING_LIST);
         assertEquals(choiceCell.getArtwork(), artwork);
         assertEquals(choiceCell.getSecondaryArtwork(), artwork);
+        assertEquals(choiceCell.getChoiceId(), MAX_ID);
+    }
+
+    public void testCellEquality(){
+
+        ChoiceCell choiceCell = new ChoiceCell(Test.GENERAL_STRING, Test.GENERAL_STRING_LIST, artwork);
+        choiceCell.setSecondaryText(Test.GENERAL_STRING);
+        choiceCell.setTertiaryText(Test.GENERAL_STRING);
+        choiceCell.setSecondaryArtwork(artwork);
+
+        ChoiceCell choiceCell2 = new ChoiceCell(Test.GENERAL_STRING, Test.GENERAL_STRING_LIST, artwork);
+        choiceCell2.setSecondaryText(Test.GENERAL_STRING);
+        choiceCell2.setTertiaryText(Test.GENERAL_STRING);
+        choiceCell2.setSecondaryArtwork(artwork);
+
+        ChoiceCell choiceCell3 = new ChoiceCell(Test.GENERAL_STRING, Test.GENERAL_STRING_LIST, artwork);
+        choiceCell3.setSecondaryText(Test.GENERAL_STRING);
+        choiceCell3.setTertiaryText(Test.GENERAL_STRING);
+
+        // Make sure our overridden method works, even though these are different objects in memory
+        assertTrue(choiceCell.equals(choiceCell2));
+        assertFalse(choiceCell.equals(choiceCell3));
+
     }
 }

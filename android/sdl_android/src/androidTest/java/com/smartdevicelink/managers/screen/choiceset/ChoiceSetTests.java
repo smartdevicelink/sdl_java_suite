@@ -30,13 +30,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.managers.choiceset;
+package com.smartdevicelink.managers.screen.choiceset;
 
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceSetLayout;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceSetSelectionListener;
 import com.smartdevicelink.test.Test;
 
 import java.util.Arrays;
