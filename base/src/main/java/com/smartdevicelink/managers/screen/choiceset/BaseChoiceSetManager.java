@@ -132,6 +132,88 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
 
     }
 
+    // SETTERS
+
+    public void setKeyboardConfiguration(KeyboardProperties keyboardConfiguration){
+
+        if (keyboardConfiguration == null){
+            this.keyboardConfiguration = defaultKeyboardConfiguration();
+        } else{
+            KeyboardProperties properties = new KeyboardProperties();
+            properties.setLanguage((keyboardConfiguration.getLanguage() == null ? Language.EN_US : keyboardConfiguration.getLanguage()));
+            properties.setKeyboardLayout((keyboardConfiguration.getKeyboardLayout() == null ? KeyboardLayout.QWERTZ : keyboardConfiguration.getKeyboardLayout()));
+            properties.setKeypressMode(KeypressMode.RESEND_CURRENT_ENTRY);
+            properties.setLimitedCharacterList(keyboardConfiguration.getLimitedCharacterList());
+            properties.setAutoCompleteText(keyboardConfiguration.getAutoCompleteText());
+            this.keyboardConfiguration = properties;
+        }
+    }
+
+    // GETTERS
+
+    public HashSet<ChoiceCell> getPreloadedChoices(){
+        return this.preloadedChoices;
+    }
+
+    public HashSet<ChoiceCell> getPendingPreloadChoices(){
+        return this.pendingPreloadChoices;
+    }
+
+    // CHOICE SET MANAGEMENT HELPERS
+
+    private HashSet<ChoiceCell> choicesToBeUploadedWithArray(List<ChoiceCell> choices){
+        HashSet<ChoiceCell> choicesSet = new HashSet<>(choices);
+        choicesSet.removeAll(this.preloadedChoices);
+        return choicesSet;
+    }
+
+    private HashSet<ChoiceCell> choicesToBeDeletedWithArray(List<ChoiceCell> choices){
+        HashSet<ChoiceCell> choicesSet = new HashSet<>(choices);
+        choicesSet.retainAll(this.preloadedChoices);
+        return choicesSet;
+    }
+
+    private HashSet<ChoiceCell> choicesToBeRemovedFromPendingWithArray(List<ChoiceCell> choices){
+        HashSet<ChoiceCell> choicesSet = new HashSet<>(choices);
+        choicesSet.retainAll(this.pendingPreloadChoices);
+        return choicesSet;
+    }
+
+    private void updateIdsOnChoices(HashSet<ChoiceCell> choices){
+        for (ChoiceCell cell : choices){
+            cell.setChoiceId(this.nextChoiceId);
+            this.nextChoiceId++;
+        }
+    }
+
+    private void findIdsOnChoiceSet(ChoiceSet choiceSet){
+        findIdsOnChoices(new HashSet<>(choiceSet.getChoices()));
+    }
+
+    private void findIdsOnChoices(HashSet<ChoiceCell> choices){
+        for (ChoiceCell cell : choices){
+            ChoiceCell uploadCell = null;
+            if (pendingPreloadChoices.contains(cell)){
+                uploadCell = findIfPresent(cell, pendingPreloadChoices);
+            }else if (preloadedChoices.contains(cell)){
+                uploadCell = findIfPresent(cell, preloadedChoices);
+            }
+            if (uploadCell != null ){
+                cell.setChoiceId(uploadCell.getChoiceId());
+            }
+        }
+    }
+
+    private ChoiceCell findIfPresent(ChoiceCell cell, HashSet<ChoiceCell> set){
+        if (set.contains(cell)) {
+            for (ChoiceCell setCell : set) {
+                if (setCell.equals(cell))
+                    return setCell;
+            }
+        }
+        return null;
+    }
+
     // LISTENERS
 
     private void addListeners(){
@@ -145,7 +227,7 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
 
             @Override
             public void onError(String info) {
-                DebugTool.logError("Unable to retrieve display capabilities: "+ info);
+                DebugTool.logError("Unable to retrieve display capabilities. Many things will probably break. Info: "+ info);
             }
         };
         internalInterface.getCapability(SystemCapabilityType.DISPLAY, displayListener);
