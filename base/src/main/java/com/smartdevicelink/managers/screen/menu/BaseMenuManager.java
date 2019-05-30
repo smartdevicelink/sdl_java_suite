@@ -375,13 +375,13 @@ abstract class BaseMenuManager extends BaseSubManager {
 				keepsNew.add(menuCells.get(x));
 			}
 		}
-		List<MenuCell> addsWithNewIds = updateIdsOnDynamicCells(adds);
+		updateIdsOnDynamicCells(adds);
 		// this is needed for the onCommands to still work
 		transferIdsToKeptCells(keepsNew);
 
-		if (addsWithNewIds != null && addsWithNewIds.size() > 0){
+		if (adds != null && adds.size() > 0){
 			DebugTool.logInfo("Sending root menu updates");
-			sendDynamicRootMenuRPCs(deleteCommands, addsWithNewIds);
+			sendDynamicRootMenuRPCs(deleteCommands, adds);
 		}else{
 			DebugTool.logInfo("All root menu items are kept. Check the sub menus");
 			runSubMenuCompareAlgorithm();
@@ -647,7 +647,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// IDs
 
-	private List<MenuCell> updateIdsOnDynamicCells(List<MenuCell> dynamicCells){
+	private void updateIdsOnDynamicCells(List<MenuCell> dynamicCells){
 		if (menuCells != null && menuCells.size() > 0 && dynamicCells != null && dynamicCells.size() > 0) {
 			for (int z = 0; z < menuCells.size(); z++) {
 				MenuCell mainCell = menuCells.get(z);
@@ -661,12 +661,11 @@ abstract class BaseMenuManager extends BaseSubManager {
 						if (mainCell.getSubCells() != null && mainCell.getSubCells().size() > 0) {
 							updateIdsOnMenuCells(mainCell.getSubCells(), mainCell.getCellId());
 						}
+						break;
 					}
 				}
 			}
-			return dynamicCells;
 		}
-		return null;
 	}
 
 	private List<MenuCell> updateIdsOnDynamicSubCells(List<MenuCell> oldList, List<MenuCell> dynamicCells, Integer parentId){
@@ -692,14 +691,14 @@ abstract class BaseMenuManager extends BaseSubManager {
 		return null;
 	}
 
-	private void updateIdsOnMenuCells(List<MenuCell> cells, int parentId){
+	private void updateIdsOnMenuCells(List<MenuCell> cells, int parentId) {
 		for (MenuCell cell : cells) {
-				int newId = ++lastMenuId;
-				cell.setCellId(newId);
-				cell.setParentCellId(parentId);
-				if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
-					updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
-				}
+			int newId = ++lastMenuId;
+			cell.setCellId(newId);
+			cell.setParentCellId(parentId);
+			if (cell.getSubCells() != null && cell.getSubCells().size() > 0) {
+				updateIdsOnMenuCells(cell.getSubCells(), cell.getCellId());
+			}
 		}
 	}
 
@@ -710,6 +709,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				MenuCell keptCell = keeps.get(i);
 				if (oldCell.equals(keptCell)) {
 					keptCell.setCellId(oldCell.getCellId());
+					break;
 				}
 			}
 		}
@@ -722,6 +722,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				MenuCell keptCell = keeps.get(i);
 				if (oldCell.equals(keptCell)) {
 					keptCell.setCellId(oldCell.getCellId());
+					break;
 				}
 			}
 		}
@@ -759,6 +760,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 					} else {
 						builtCommands.add(commandForMenuCell(addCell, shouldHaveArtwork, z));
 					}
+					break;
 				}
 			}
 		}
@@ -800,6 +802,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				MenuCell cell = cells.get(i);
 				if (cell.equals(oldCell)){
 					builtCommands.add(commandForMenuCell(cell, shouldHaveArtwork, z));
+					break;
 				}
 			}
 		}
