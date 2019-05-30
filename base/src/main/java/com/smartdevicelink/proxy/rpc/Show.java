@@ -196,6 +196,9 @@ public class Show extends RPCRequest {
 	public static final String KEY_SECONDARY_GRAPHIC = "secondaryGraphic";
 	public static final String KEY_SOFT_BUTTONS = "softButtons";
 	public static final String KEY_METADATA_TAGS = "metadataTags";
+	public static final String KEY_WINDOW_ID = "windowID";
+	public static final String KEY_TEMPLATE_CONFIGURATION = "templateConfiguration";
+
 	/**
 	 * Constructs a new Show object
 	 */
@@ -576,5 +579,43 @@ public class Show extends RPCRequest {
 	 */
 	public MetadataTags getMetadataTags() {
 		return (MetadataTags) getObject(MetadataTags.class, KEY_METADATA_TAGS);
+	}
+
+	/**
+	 * Sets the windowID. It's a unique ID to identify the window.
+	 * If this param is not included, it will be assumed that this request is specifically for the main window on the main display.
+	 * See PredefinedWindows enum.
+	 *
+	 * @param windowID
+	 */
+	public void setWindowID(Integer windowID) {
+		setParameters(KEY_WINDOW_ID, windowID);
+	}
+
+	/**
+	 * Gets the windowID.
+	 *
+	 * @return int -an int value representing the windowID.
+	 */
+	public Integer getWindowID() {
+		return getInteger(KEY_WINDOW_ID);
+	}
+
+	/**
+	 * Gets the templateConfiguration.
+	 *
+	 * @return TemplateConfiguration
+	 */
+	@SuppressWarnings("unchecked")
+	public TemplateConfiguration getTemplateConfiguration() {
+		return (TemplateConfiguration) getObject(TemplateConfiguration.class, KEY_TEMPLATE_CONFIGURATION);
+	}
+
+	/**
+	 * Sets the templateConfiguration. It's used to set an alternate template layout to a window.
+	 * @param templateConfiguration
+	 */
+	public void setTemplateConfiguration(TemplateConfiguration templateConfiguration) {
+		setParameters(KEY_TEMPLATE_CONFIGURATION, templateConfiguration);
 	}
 }

@@ -37,6 +37,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Struct that indicates the a SystemCapabilityType and houses different structs to describe particular capabilities
@@ -49,6 +50,7 @@ public class SystemCapability extends RPCStruct {
 	public static final String KEY_VIDEO_STREAMING_CAPABILITY = "videoStreamingCapability";
     public static final String KEY_REMOTE_CONTROL_CAPABILITY = "remoteControlCapability";
     public static final String KEY_APP_SERVICES_CAPABILITIES = "appServicesCapabilities";
+    public static final String KEY_DISPLAY_CAPABILITIES = "displayCapabilities";
 
     public SystemCapability(){}
 
@@ -114,5 +116,22 @@ public class SystemCapability extends RPCStruct {
 		}else{
 	        return;
         }
+    }
+
+    /**
+     * set the displayCapabilities portion of SystemCapability.
+     * @param displayCapabilities Contains a list of capabilities of display.
+     */
+    public void setDisplayCapabilities(List<DisplayCapability> displayCapabilities) {
+        setValue(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
+    }
+
+    /**
+     * get the displayCapabilities portion of SystemCapability.
+     * @return List<DisplayCapability> - Contains a list of capabilities of display.
+     */
+    @SuppressWarnings("unchecked")
+    public List<DisplayCapability> getDisplayCapabilities() {
+        return (List<DisplayCapability>) getObject(DisplayCapability.class, KEY_DISPLAY_CAPABILITIES);
     }
 }
