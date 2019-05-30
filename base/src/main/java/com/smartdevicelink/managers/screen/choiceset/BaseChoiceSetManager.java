@@ -153,9 +153,19 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
     public void deleteChoices(List<ChoiceCell> choices){
         if (getState() != READY){ return; }
 
+        // Find cells to be deleted that are already uploaded or are pending upload
+        HashSet<ChoiceCell> cellsToDelete = choicesToBeDeletedWithArray(choices);
+        HashSet<ChoiceCell> cellsToBeRemovedFromPending = choicesToBeRemovedFromPendingWithArray(choices);
+
+        // If choices are deleted that are already uploaded or pending and are used by a pending presentation, cancel it and send an error
+        if (pendingPresentationSet != null && pendingPresentationSet.getChoices() != null) {
+            HashSet<ChoiceCell> pendingPresentationChoices = new HashSet<>(pendingPresentationSet.getChoices());
+
+        }
+
     }
 
-    public void presentChoiceSet(ChoiceSet choiceSet, InteractionMode mode, KeyboardListener listener){
+    public void presentChoiceSet(final ChoiceSet choiceSet, InteractionMode mode, KeyboardListener listener){
         if (getState() != READY){ return; }
         if (choiceSet == null) {
             DebugTool.logWarning("Attempted to present a null choice set. Ignoring request");
@@ -164,11 +174,38 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
         // Perform additional checks against the ChoiceSet
         if (!setUpChoiceSet(choiceSet)){ return; }
 
+        if (this.pendingPresentationSet != null){
+            // cancel pendingPresentationOperation
+        }
+
+        this.pendingPresentationSet = choiceSet;
+        preloadChoices(this.pendingPresentationSet.getChoices(), new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                if (!success){
+                    choiceSet.getChoiceSetSelectionListener().onError("There was an error pre-loading choice set choices");
+                    return;
+                }
+            }
+        });
+
+        findIdsOnChoiceSet(this.pendingPresentationSet);
+
+        // create presentationChoiceSetOperation
+        // add the operation to the queue
+
     }
 
     public void presentKeyboardWithInitialText(String initialText, KeyboardListener listener){
+        if (getState() != READY){ return; }
 
+        if (pendingPresentationSet != null){
+            //[self.pendingPresentOperation cancel];
+            pendingPresentationSet = null;
+        }
 
+        // create PresentKeyboardOperation
+        // add operation to the transaction queue
     }
 
     // SETTERS
