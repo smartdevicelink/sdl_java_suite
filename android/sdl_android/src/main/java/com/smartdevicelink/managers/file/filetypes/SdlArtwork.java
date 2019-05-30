@@ -156,7 +156,7 @@ public class SdlArtwork extends SdlFile implements Cloneable{
         }
         clone.setName(this.getName());
         clone.setResourceId(this.getResourceId());
-        clone.setUri(Uri.parse(this.getUri().toString()));
+        clone.setUri(this.getUri() == null ? null : Uri.parse(this.getUri().toString()));
         if (this.getFileData() != null){
             byte[] data = new byte[this.getFileData().length];
             for (int i = 0; i < this.getFileData().length; i++) {
