@@ -35,7 +35,16 @@ package com.smartdevicelink.managers.screen.choiceset;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.OnSdlChoiceChosen;
+import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
+
+import java.lang.ref.WeakReference;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * <strong>ChoiceSetManager</strong> <br>
@@ -44,7 +53,52 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
  */
 public abstract class BaseChoiceSetManager extends BaseSubManager {
 
-    public BaseChoiceSetManager(@NonNull ISdl internalInterface) {
+    // additional state
+    private static final int CHECKING_VOICE = 0xA0;
+
+    private final WeakReference<FileManager> fileManager;
+    private HashSet<ChoiceCell> preloadedChoices;
+    private KeyboardProperties keyboardConfiguration;
+
+
+    public BaseChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
+
+        this.fileManager = new WeakReference<>(fileManager);
+
+    }
+
+    @Override
+    public void start(CompletionListener listener){
+
+        transitionToState(READY);
+        super.start(listener);
+    }
+
+    @Override
+    public void dispose(){
+
+
+        super.dispose();
+    }
+
+    public void preloadChoices(List<ChoiceCell> choices, CompletionListener listener){
+
+
+    }
+
+    public void deleteChoices(List<ChoiceCell> choices){
+
+
+    }
+
+    public void presentChoiceSet(ChoiceSet choiceSet, InteractionMode mode, KeyboardListener listener){
+
+
+    }
+
+    public void presentKeyboardWithInitialText(String initialText, KeyboardListener listener){
+
+
     }
 }

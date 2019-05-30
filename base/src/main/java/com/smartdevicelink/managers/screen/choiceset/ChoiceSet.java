@@ -218,6 +218,7 @@ public class ChoiceSet {
         }
     }
 
+    // TODO: See if this can be put elsewhere to not have to throw exceptions
     private void setUpChoiceSet(List<VrHelpItem> helpItems) {
 
         // Choices are not optional here

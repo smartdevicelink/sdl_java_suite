@@ -34,10 +34,11 @@ package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.annotation.NonNull;
 
+import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 
 /**
- * <strong>SoftButtonManager</strong> <br>
+ * <strong>ChoiceSetManager</strong> <br>
  * ChoiceSetManager gives the developer the ability to control how soft choice sets are displayed on the head unit.<br>
  * Note: This class must be accessed through the SdlManager->ScreenManager. Do not instantiate it by itself.<br>
  */
@@ -48,7 +49,7 @@ class ChoiceSetManager extends BaseChoiceSetManager {
      *
      * @param internalInterface
      */
-    ChoiceSetManager(@NonNull ISdl internalInterface) {
-        super(internalInterface);
+    ChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+        super(internalInterface, fileManager);
     }
 }
