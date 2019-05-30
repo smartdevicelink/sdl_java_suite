@@ -37,9 +37,10 @@ import android.support.annotation.Nullable;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MenuCell {
+public class MenuCell implements Cloneable{
 
 	/**
 	 * The cell's text to be displayed
@@ -271,5 +272,39 @@ public class MenuCell {
 
 		// if we get to this point, create the hashes and compare them
 		return hashCode() == o.hashCode();
+	}
+
+	/**
+	 * Creates a deep copy of the object
+	 * @return deep copy of the object
+	 */
+	@Override
+	public MenuCell clone() {
+		final MenuCell clone;
+		try {
+			clone = (MenuCell) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException("superclass messed up", e);
+		}
+		clone.title = this.title;
+		clone.icon = this.icon == null ? null : this.icon.clone();
+		clone.voiceCommands = null;
+		if (this.voiceCommands != null){
+			clone.voiceCommands = new ArrayList<>();
+			for (String voiceCommand : this.voiceCommands) {
+				clone.voiceCommands.add(voiceCommand);
+			}
+		}
+		clone.subCells = null;
+		if (this.subCells != null) {
+			clone.subCells = new ArrayList<>();
+			for (MenuCell subCell : this.subCells) {
+				clone.subCells.add(subCell == null ? null : subCell.clone());
+			}
+		}
+		clone.menuSelectionListener = this.menuSelectionListener;
+		clone.parentCellId = this.parentCellId;
+		clone.cellId = this.cellId;
+		return clone;
 	}
 }

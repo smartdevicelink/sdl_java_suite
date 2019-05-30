@@ -390,6 +390,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 
 	/**
 	 * Creates and sends all associated Menu RPCs
+	 * Note: the manager will store a deep copy the menuCells internally to be able to handle future updates correctly
 	 * @param menuCells - the menu cells that are to be sent to the head unit, including their sub-cells.
 	 */
 	public void setMenu(List<MenuCell> menuCells){

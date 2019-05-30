@@ -158,10 +158,13 @@ abstract class BaseMenuManager extends BaseSubManager {
 	 */
 	public void setMenuCells(List<MenuCell> cells){
 
+		// Create a deep copy of the list so future changes by developers don't affect the algorithm logic
+		List <MenuCell> clonedCells = cloneMenuCellsList(cells);
+
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
 			// We are in NONE or the menu is in use, bail out of here
 			waitingOnHMIUpdate = true;
-			waitingUpdateMenuCells = new ArrayList<>(cells);
+			waitingUpdateMenuCells = new ArrayList<>(clonedCells);
 			return;
 		}
 		waitingOnHMIUpdate = false;
@@ -172,7 +175,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			oldMenuCells = new ArrayList<>(menuCells);
 		}
 		// copy new list
-		menuCells = new ArrayList<>(cells);
+		menuCells = new ArrayList<>(clonedCells);
 
 		// HashSet order doesnt matter / does not allow duplicates
 		HashSet<String> titleCheckSet = new HashSet<>();
@@ -1167,6 +1170,18 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 			}
 		});
+	}
+
+	private List<MenuCell> cloneMenuCellsList (List<MenuCell> originalList){
+		if (originalList == null){
+			return null;
+		}
+
+		List<MenuCell> clone = new ArrayList<>();
+		for (MenuCell menuCell : originalList){
+			clone.add(menuCell.clone());
+		}
+		return clone;
 	}
 
 }
