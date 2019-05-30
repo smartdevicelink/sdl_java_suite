@@ -37,10 +37,23 @@ import android.support.annotation.NonNull;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnSdlChoiceChosen;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
+import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
+import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
+import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
@@ -56,16 +69,33 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
     // additional state
     private static final int CHECKING_VOICE = 0xA0;
 
-    private final WeakReference<FileManager> fileManager;
-    private HashSet<ChoiceCell> preloadedChoices;
-    private KeyboardProperties keyboardConfiguration;
+    OnRPCNotificationListener hmiListener;
+    OnSystemCapabilityListener displayListener;
 
+    private final WeakReference<FileManager> fileManager;
+    private KeyboardProperties keyboardConfiguration;
+    private HMILevel currentHMILevel;
+    private SystemContext currentSystemContext;
+    private DisplayCapabilities displayCapabilities;
+
+    private HashSet<ChoiceCell> preloadedChoices;
+    private HashSet<ChoiceCell> pendingPreloadChoices;
+    private ChoiceSet pendingPresentationSet;
+    private Boolean isVROptional;
+
+    private int nextChoiceId;
+    private int choiceCellIdMin = 1;
 
     public BaseChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
 
         this.fileManager = new WeakReference<>(fileManager);
-
+        preloadedChoices = new HashSet<>();
+        pendingPreloadChoices = new HashSet<>();
+        nextChoiceId = choiceCellIdMin;
+        isVROptional = true;
+        keyboardConfiguration = defaultKeyboardConfiguration();
+        addListeners();
     }
 
     @Override
@@ -100,5 +130,46 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
     public void presentKeyboardWithInitialText(String initialText, KeyboardListener listener){
 
 
+    }
+
+    // LISTENERS
+
+    private void addListeners(){
+
+        // DISPLAY CAPABILITIES - via SCM
+        displayListener = new OnSystemCapabilityListener() {
+            @Override
+            public void onCapabilityRetrieved(Object capability) {
+                displayCapabilities = (DisplayCapabilities) capability;
+            }
+
+            @Override
+            public void onError(String info) {
+                DebugTool.logError("Unable to retrieve display capabilities: "+ info);
+            }
+        };
+        internalInterface.getCapability(SystemCapabilityType.DISPLAY, displayListener);
+
+        // HMI UPDATES
+        hmiListener = new OnRPCNotificationListener() {
+            @Override
+            public void onNotified(RPCNotification notification) {
+                OnHMIStatus hmiStatus = (OnHMIStatus) notification;
+                HMILevel oldHMILevel = currentHMILevel;
+                currentHMILevel = hmiStatus.getHmiLevel();
+            }
+        };
+        internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+
+    }
+
+    // HELPERS
+
+    private KeyboardProperties defaultKeyboardConfiguration(){
+        KeyboardProperties defaultProperties = new KeyboardProperties();
+        defaultProperties.setLanguage(Language.EN_US);
+        defaultProperties.setKeyboardLayout(KeyboardLayout.QWERTY);
+        defaultProperties.setKeypressMode(KeypressMode.RESEND_CURRENT_ENTRY);
+        return defaultProperties;
     }
 }
