@@ -235,6 +235,13 @@ public class ChoiceSet {
      * array, the image will need to uploaded by you before use using SDLFileManager.
      */
     public void setVrHelpList(List<VrHelpItem> vrHelpList) {
+
+        if (vrHelpList != null) {
+            for (int i = 0; i < vrHelpList.size(); i++) {
+                vrHelpList.get(i).setPosition(i+1);
+            }
+        }
+
         this.vrHelpList = vrHelpList;
     }
 
