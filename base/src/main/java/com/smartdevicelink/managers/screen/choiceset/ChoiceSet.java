@@ -217,8 +217,8 @@ public class ChoiceSet {
      * they are in a voice recognition interaction from your choice set of options. If this set is
      * presented in a touch only interaction, this will be ignored.
      *
-     * Note: That while SDLVRHelpItem's position will be automatically set based on position in the
-     * array, the image will need to uploaded by you before use using SDLFileManager.
+     * Note: That while VRHelpItem's position will be automatically set based on position in the
+     * array, the image will need to uploaded by you before use using the FileManager.
      *
      * @return The List of VR Help Items
      */
@@ -232,7 +232,7 @@ public class ChoiceSet {
      * presented in a touch only interaction, this will be ignored.
      *
      * Note: That while SDLVRHelpItem's position will be automatically set based on position in the
-     * array, the image will need to uploaded by you before use using SDLFileManager.
+     * array, the image will need to uploaded by you before use using the FileManager.
      */
     public void setVrHelpList(List<VrHelpItem> vrHelpList) {
 

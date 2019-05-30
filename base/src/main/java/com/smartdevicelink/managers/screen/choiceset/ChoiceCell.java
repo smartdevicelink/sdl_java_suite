@@ -112,7 +112,7 @@ public class ChoiceCell {
 
     /**
      * Maps to Choice.secondaryText. Optional secondary text of the cell, if available. Duplicates
-     * within an `SDLChoiceSet` are permitted.
+     * within an `ChoiceSet` are permitted.
      * @return Optional secondary text of the cell
      */
     public String getSecondaryText() {
@@ -121,7 +121,7 @@ public class ChoiceCell {
 
     /**
      * @param secondaryText - Maps to Choice.secondaryText. Optional secondary text of the cell, if
-     * available. Duplicates within an `SDLChoiceSet` are permitted.
+     * available. Duplicates within an `ChoiceSet` are permitted.
      */
     public void setSecondaryText(String secondaryText) {
         this.secondaryText = secondaryText;
