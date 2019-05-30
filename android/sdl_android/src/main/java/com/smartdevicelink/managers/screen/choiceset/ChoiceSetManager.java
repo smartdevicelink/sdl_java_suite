@@ -30,11 +30,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.managers.screen;
+package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.annotation.NonNull;
 
-import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 
 /**

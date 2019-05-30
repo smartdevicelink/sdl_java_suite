@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.managers.screen;
+package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.annotation.NonNull;
 
@@ -42,9 +42,9 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
  * <p>
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
  */
-abstract class BaseChoiceSetManager extends BaseSubManager {
+public abstract class BaseChoiceSetManager extends BaseSubManager {
 
-    BaseChoiceSetManager(@NonNull ISdl internalInterface) {
+    public BaseChoiceSetManager(@NonNull ISdl internalInterface) {
         super(internalInterface);
     }
 }
