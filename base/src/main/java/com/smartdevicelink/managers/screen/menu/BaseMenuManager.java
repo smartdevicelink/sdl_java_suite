@@ -33,7 +33,6 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
