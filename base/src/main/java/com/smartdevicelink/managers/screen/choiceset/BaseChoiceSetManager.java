@@ -33,7 +33,6 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -45,8 +44,6 @@ import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
-import com.smartdevicelink.proxy.rpc.OnSdlChoiceChosen;
-import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
@@ -82,6 +79,8 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
 
     private HashSet<ChoiceCell> preloadedChoices;
     private HashSet<ChoiceCell> pendingPreloadChoices;
+    private HashSet<ChoiceCell> preloadedMutableChoices;
+    private HashSet<ChoiceCell> pendingMutablePreloadChoices;
     private ChoiceSet pendingPresentationSet;
     private Boolean isVROptional;
 
@@ -91,9 +90,10 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
     public BaseChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
 
+        transitionToState(SHUTDOWN); // We need to do some stuff first. keep in shutdown state
         this.fileManager = new WeakReference<>(fileManager);
-        preloadedChoices = new HashSet<>();
-        pendingPreloadChoices = new HashSet<>();
+        preloadedMutableChoices = new HashSet<>();
+        pendingMutablePreloadChoices = new HashSet<>();
         nextChoiceId = choiceCellIdMin;
         isVROptional = true;
         keyboardConfiguration = defaultKeyboardConfiguration();
@@ -102,25 +102,56 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
 
     @Override
     public void start(CompletionListener listener){
-
-        transitionToState(READY);
-        super.start(listener);
+        if (getState() == SHUTDOWN) {
+            transitionToState(SETTING_UP);
+            checkVoiceOptional();
+            super.start(listener);
+        } // Else we are already started
     }
 
     @Override
     public void dispose(){
 
+        currentHMILevel = null;
+        currentSystemContext = null;
+        displayCapabilities = null;
+
+        // TODO: cancel all queued operations, if any exist
+
+        pendingPresentationSet = null;
+        isVROptional = true;
+        nextChoiceId = choiceCellIdMin;
 
         super.dispose();
     }
 
     public void preloadChoices(List<ChoiceCell> choices, CompletionListener listener){
+        if (getState() != READY){ return; }
 
+        HashSet<ChoiceCell> choicesToUpload = choicesToBeUploadedWithArray(choices);
+        choicesToUpload.removeAll(preloadedMutableChoices);
+        choicesToUpload.removeAll(pendingMutablePreloadChoices);
+
+        if (choicesToUpload.size() == 0){
+            if (listener != null){
+                listener.onComplete(true);
+            }
+            return;
+        }
+
+        updateIdsOnChoices(choicesToUpload);
+
+        // Add the preload cells to the pending preload choices
+        pendingMutablePreloadChoices.addAll(choicesToUpload);
+
+        // Upload pending preloads
+
+        //TODO: PreloadChoicesOperation
 
     }
 
     public void deleteChoices(List<ChoiceCell> choices){
-
+        if (getState() != READY){ return; }
 
     }
 
@@ -255,13 +286,19 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
 
     // ADDITIONAL HELPERS
 
+    private void checkVoiceOptional(){
+        transitionToState(CHECKING_VOICE);
+
+        // TODO: CheckChoiceVROptionalOperation
+    }
+
     private boolean setUpChoiceSet(ChoiceSet choiceSet) {
 
         List<ChoiceCell> choices = choiceSet.getChoices();
 
         // Choices are not optional here
         if (choices == null) {
-            Log.e("Choice Set", "Cannot initiate a choice set with no choices");
+            DebugTool.logError("Cannot initiate a choice set with no choices");
             return false;
         }
 
@@ -283,19 +320,19 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
 
         // Cell text MUST be unique
         if (choiceTextSet.size() < choices.size()) {
-            Log.e("Choice Set", "Attempted to create a choice set with duplicate cell text. Cell text must be unique. The choice set will not be set.");
+            DebugTool.logError("Attempted to create a choice set with duplicate cell text. Cell text must be unique. The choice set will not be set.");
             return false;
         }
 
         // All or none of the choices MUST have VR Commands
         if (choiceCellWithVoiceCommandCount > 0 && choiceCellWithVoiceCommandCount < choices.size()) {
-            Log.e("Choice Set", "If using voice recognition commands, all of the choice set cells must have unique VR commands. There are " + uniqueVoiceCommands.size() + " cells with unique voice commands and " + allVoiceCommandsCount + " total cells. The choice set will not be set.");
+            DebugTool.logError("If using voice recognition commands, all of the choice set cells must have unique VR commands. There are " + uniqueVoiceCommands.size() + " cells with unique voice commands and " + allVoiceCommandsCount + " total cells. The choice set will not be set.");
             return false;
         }
 
         // All VR Commands MUST be unique
         if (uniqueVoiceCommands.size() < allVoiceCommandsCount) {
-            Log.e("Choice Set", "If using voice recognition commands, all VR commands must be unique. There are " + uniqueVoiceCommands.size() + " unique VR commands and " + allVoiceCommandsCount + " VR commands. The choice set will not be set.");
+            DebugTool.logError("If using voice recognition commands, all VR commands must be unique. There are " + uniqueVoiceCommands.size() + " unique VR commands and " + allVoiceCommandsCount + " VR commands. The choice set will not be set.");
             return false;
         }
 
