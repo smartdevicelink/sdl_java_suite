@@ -33,6 +33,7 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -45,6 +46,7 @@ import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnSdlChoiceChosen;
+import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
@@ -123,7 +125,13 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     public void presentChoiceSet(ChoiceSet choiceSet, InteractionMode mode, KeyboardListener listener){
-
+        if (getState() != READY){ return; }
+        if (choiceSet == null) {
+            DebugTool.logWarning("Attempted to present a null choice set. Ignoring request");
+            return;
+        }
+        // Perform additional checks against the ChoiceSet
+        if (!setUpChoiceSet(choiceSet)){ return; }
 
     }
 
@@ -245,7 +253,55 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
 
     }
 
-    // HELPERS
+    // ADDITIONAL HELPERS
+
+    private boolean setUpChoiceSet(ChoiceSet choiceSet) {
+
+        List<ChoiceCell> choices = choiceSet.getChoices();
+
+        // Choices are not optional here
+        if (choices == null) {
+            Log.e("Choice Set", "Cannot initiate a choice set with no choices");
+            return false;
+        }
+
+        HashSet<String> choiceTextSet = new HashSet<>();
+        HashSet<String> uniqueVoiceCommands = new HashSet<>();
+        int allVoiceCommandsCount = 0;
+        int choiceCellWithVoiceCommandCount = 0;
+
+        for (ChoiceCell cell : choices) {
+
+            choiceTextSet.add(cell.getText());
+
+            if (cell.getVoiceCommands() != null) {
+                uniqueVoiceCommands.addAll(cell.getVoiceCommands());
+                choiceCellWithVoiceCommandCount += 1;
+                allVoiceCommandsCount += cell.getVoiceCommands().size();
+            }
+        }
+
+        // Cell text MUST be unique
+        if (choiceTextSet.size() < choices.size()) {
+            Log.e("Choice Set", "Attempted to create a choice set with duplicate cell text. Cell text must be unique. The choice set will not be set.");
+            return false;
+        }
+
+        // All or none of the choices MUST have VR Commands
+        if (choiceCellWithVoiceCommandCount > 0 && choiceCellWithVoiceCommandCount < choices.size()) {
+            Log.e("Choice Set", "If using voice recognition commands, all of the choice set cells must have unique VR commands. There are " + uniqueVoiceCommands.size() + " cells with unique voice commands and " + allVoiceCommandsCount + " total cells. The choice set will not be set.");
+            return false;
+        }
+
+        // All VR Commands MUST be unique
+        if (uniqueVoiceCommands.size() < allVoiceCommandsCount) {
+            Log.e("Choice Set", "If using voice recognition commands, all VR commands must be unique. There are " + uniqueVoiceCommands.size() + " unique VR commands and " + allVoiceCommandsCount + " VR commands. The choice set will not be set.");
+            return false;
+        }
+
+        return true;
+    }
+
 
     private KeyboardProperties defaultKeyboardConfiguration(){
         KeyboardProperties defaultProperties = new KeyboardProperties();

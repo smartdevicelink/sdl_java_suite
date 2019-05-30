@@ -59,7 +59,15 @@ public class ChoiceSet {
     private Integer defaultTimeout = 10;
     private ChoiceSetLayout defaultLayout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
 
-    public ChoiceSet(@NonNull String title, @Nullable ChoiceSetSelectionListener listener, @NonNull List<ChoiceCell> choices) {
+    /**
+     * Initialize with a title, listener, and choices. It will use the default timeout and layout,
+     * all other properties (such as prompts) will be `null`.
+     *
+     * @param title - The choice set's title
+     * @param listener - The choice set listener called after the user has interacted with your choice set
+     * @param choices - The choices to be displayed to the user for interaction
+     */
+    public ChoiceSet(@NonNull String title, @NonNull ChoiceSetSelectionListener listener, @NonNull List<ChoiceCell> choices) {
 
         setTitle(title);
         setChoiceSetSelectionListener(listener);
@@ -71,10 +79,22 @@ public class ChoiceSet {
 
         // things to do
         checkChoiceSetParameters();
-        setUpChoiceSet(null);
     }
 
-    public ChoiceSet(@NonNull String title, @Nullable ChoiceSetSelectionListener listener, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable String initialPrompt, @Nullable String timeoutPrompt, @Nullable String helpPrompt, @Nullable List<VrHelpItem> helpList, @NonNull List<ChoiceCell> choices) {
+    /**
+     * Constructor  with all possible properties.
+     *
+     * @param title - The choice set's title
+     * @param listener - The choice set listener called after the user has interacted with your choice set
+     * @param layout - The layout of choice options (Manual/touch only)
+     * @param timeout - The timeout of a touch interaction (Manual/touch only)
+     * @param initialPrompt - A voice prompt spoken to the user when this set is displayed
+     * @param timeoutPrompt - A voice prompt spoken to the user when the set times out (Voice only)
+     * @param helpPrompt - A voice prompt spoken to the user when the user asks for "help"
+     * @param helpList - A table list of text and images shown to the user during a voice recognition session for this choice set (Voice only)
+     * @param choices - The list of choices presented to the user either as a manual/touch interaction or via the user's voice
+     */
+    public ChoiceSet(@NonNull String title, @NonNull ChoiceSetSelectionListener listener, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable String initialPrompt, @Nullable String timeoutPrompt, @Nullable String helpPrompt, @Nullable List<VrHelpItem> helpList, @NonNull List<ChoiceCell> choices) {
 
         setTitle(title);
         setChoiceSetSelectionListener(listener);
@@ -97,10 +117,23 @@ public class ChoiceSet {
 
         // things to do
         checkChoiceSetParameters();
-        setUpChoiceSet(helpList);
+        setUpHelpItems(helpList);
     }
 
-    public ChoiceSet(@NonNull String title, @Nullable ChoiceSetSelectionListener listener, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable List<TTSChunk> initialPrompt, @Nullable List<TTSChunk> timeoutPrompt, @Nullable List<TTSChunk> helpPrompt, @Nullable List<VrHelpItem> helpList, @NonNull List<ChoiceCell> choices) {
+    /**
+     * Constructor  with all possible properties.
+     *
+     * @param title - The choice set's title
+     * @param listener - The choice set listener called after the user has interacted with your choice set
+     * @param layout - The layout of choice options (Manual/touch only)
+     * @param timeout - The timeout of a touch interaction (Manual/touch only)
+     * @param initialPrompt - A voice prompt spoken to the user when this set is displayed
+     * @param timeoutPrompt - A voice prompt spoken to the user when the set times out (Voice only)
+     * @param helpPrompt - A voice prompt spoken to the user when the user asks for "help"
+     * @param helpList - A table list of text and images shown to the user during a voice recognition session for this choice set (Voice only)
+     * @param choices - The list of choices presented to the user either as a manual/touch interaction or via the user's voice
+     */
+    public ChoiceSet(@NonNull String title, @NonNull ChoiceSetSelectionListener listener, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable List<TTSChunk> initialPrompt, @Nullable List<TTSChunk> timeoutPrompt, @Nullable List<TTSChunk> helpPrompt, @Nullable List<VrHelpItem> helpList, @NonNull List<ChoiceCell> choices) {
 
         setTitle(title);
         setChoiceSetSelectionListener(listener);
@@ -113,53 +146,111 @@ public class ChoiceSet {
 
         // things to do
         checkChoiceSetParameters();
-        setUpChoiceSet(helpList);
+        setUpHelpItems(helpList);
     }
 
+    /**
+     * Maps to PerformInteraction.initialText. The title of the choice set, and/or the initial text on a keyboard prompt.
+     * @return the title
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * @param title - Maps to PerformInteraction.initialText. The title of the choice set, and/or the initial text on a keyboard prompt.
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Maps to PerformInteraction.initialPrompt. The initial prompt spoken to the user at the start of an interaction.
+     * @return The list of TTSChunks
+     */
     public List<TTSChunk> getInitialPrompt() {
         return initialPrompt;
     }
 
+    /**
+     * @param initialPrompt - Maps to PerformInteraction.initialPrompt. The initial prompt spoken to the user at the start of an interaction.
+     */
     public void setInitialPrompt(List<TTSChunk> initialPrompt) {
         this.initialPrompt = initialPrompt;
     }
 
+    /**
+     * Maps to PerformInteraction.timeoutPrompt. This text is spoken when a VR interaction times out.
+     * If this set is presented in a manual (non-voice) only interaction, this will be ignored.
+     * @return - The list of TTS Chunks
+     */
     public List<TTSChunk> getTimeoutPrompt() {
         return timeoutPrompt;
     }
 
+    /**
+     * @param timeoutPrompt - Maps to PerformInteraction.timeoutPrompt. This text is spoken when a
+     * VR interaction times out. If this set is presented in a manual (non-voice) only interaction, this will be ignored.
+     */
     public void setTimeoutPrompt(List<TTSChunk> timeoutPrompt) {
         this.timeoutPrompt = timeoutPrompt;
     }
 
+    /**
+     * Maps to PerformInteraction.helpPrompt. This is the spoken string when a user speaks "help" when the interaction is occurring.
+     * @return The List of TTS Chunks
+     */
     public List<TTSChunk> getHelpPrompt() {
         return helpPrompt;
     }
 
+    /**
+     * @param helpPrompt - Maps to PerformInteraction.helpPrompt. This is the spoken string when a user
+     * speaks "help" when the interaction is occurring.
+     */
     public void setHelpPrompt(List<TTSChunk> helpPrompt) {
         this.helpPrompt = helpPrompt;
     }
 
+    /**
+     * Maps to PerformInteraction.vrHelp. This is a list of help text presented to the user when
+     * they are in a voice recognition interaction from your choice set of options. If this set is
+     * presented in a touch only interaction, this will be ignored.
+     *
+     * Note: That while SDLVRHelpItem's position will be automatically set based on position in the
+     * array, the image will need to uploaded by you before use using SDLFileManager.
+     *
+     * @return The List of VR Help Items
+     */
     public List<VrHelpItem> getVrHelpList() {
         return vrHelpList;
     }
 
+    /**
+     * @param vrHelpList - Maps to PerformInteraction.vrHelp. This is a list of help text presented to the user when
+     * they are in a voice recognition interaction from your choice set of options. If this set is
+     * presented in a touch only interaction, this will be ignored.
+     *
+     * Note: That while SDLVRHelpItem's position will be automatically set based on position in the
+     * array, the image will need to uploaded by you before use using SDLFileManager.
+     */
     public void setVrHelpList(List<VrHelpItem> vrHelpList) {
         this.vrHelpList = vrHelpList;
     }
 
+    /**
+     * Maps to PerformInteraction.interactionLayout. Whether the presented choices are arranged as
+     * a set of tiles or a list.
+     * @return The ChoiceSetLayout
+     */
     public ChoiceSetLayout getLayout() {
         return layout;
     }
 
+    /**
+     * @param layout - Maps to PerformInteraction.interactionLayout. Whether the presented choices
+     * are arranged as a set of tiles or a list.
+     */
     public void setLayout(ChoiceSetLayout layout) {
         if (layout == null){
             this.layout = defaultLayout;
@@ -168,10 +259,19 @@ public class ChoiceSet {
         }
     }
 
+    /**
+     * Maps to PerformInteraction.timeout. This applies only to a manual selection (not a voice
+     * selection, which has its timeout handled by the system). Defaults to `defaultTimeout`.
+     * @return The Timeout
+     */
     public Integer getTimeout() {
         return timeout;
     }
 
+    /**
+     * @param timeout - Maps to PerformInteraction.timeout. This applies only to a manual selection
+     * (not a voice selection, which has its timeout handled by the system). Defaults to `defaultTimeout`.
+     */
     public void setTimeout(Integer timeout) {
         if (timeout == null) {
             this.timeout = defaultTimeout;
@@ -180,18 +280,40 @@ public class ChoiceSet {
         }
     }
 
+    /**
+     * The choices to be displayed to the user within this choice set. These choices could match
+     * those already preloaded
+     *
+     * This is limited to 100 items. If you attempt to set more than 100 items, the set will not
+     * have any items (this array will be empty).
+     * @return The List of ChoiceCells
+     */
     public List<ChoiceCell> getChoices() {
         return choices;
     }
 
+    /**
+     * @param choices - The choices to be displayed to the user within this choice set. These choices could match
+     * those already preloaded
+     *
+     * This is limited to 100 items. If you attempt to set more than 100 items, the set will not
+     * have any items (this array will be empty).
+     */
     public void setChoices(List<ChoiceCell> choices) {
         this.choices = choices;
     }
 
+    /**
+     * The listener of this choice set, called when the user interacts with it.
+     * @return The listener
+     */
     public ChoiceSetSelectionListener getChoiceSetSelectionListener() {
         return choiceSetSelectionListener;
     }
 
+    /**
+     * @param choiceSetSelectionListener The listener of this choice set, called when the user interacts with it.
+     */
     public void setChoiceSetSelectionListener(ChoiceSetSelectionListener choiceSetSelectionListener) {
         this.choiceSetSelectionListener = choiceSetSelectionListener;
     }
@@ -218,49 +340,7 @@ public class ChoiceSet {
         }
     }
 
-    // TODO: See if this can be put elsewhere to not have to throw exceptions
-    private void setUpChoiceSet(List<VrHelpItem> helpItems) {
-
-        // Choices are not optional here
-        if (getChoices() == null){
-            Log.e("Choice Set", "Cannot initiate a choice set with no choices");
-            return;
-        }
-
-        HashSet<String> choiceTextSet = new HashSet<>();
-        HashSet<String> uniqueVoiceCommands = new HashSet<>();
-        int allVoiceCommandsCount = 0;
-        int choiceCellWithVoiceCommandCount = 0;
-
-        for (ChoiceCell cell : getChoices()){
-
-            choiceTextSet.add(cell.getText());
-
-            if (cell.getVoiceCommands() != null){
-                uniqueVoiceCommands.addAll(cell.getVoiceCommands());
-                choiceCellWithVoiceCommandCount += 1;
-                allVoiceCommandsCount += cell.getVoiceCommands().size();
-            }
-        }
-
-        // Cell text MUST be unique
-        if (choiceTextSet.size() < choices.size()){
-            Log.e("Choice Set", "Attempted to create a choice set with duplicate cell text. Cell text must be unique. The choice set will not be set.");
-            return;
-        }
-
-        // All or none of the choices MUST have VR Commands
-        if (choiceCellWithVoiceCommandCount > 0 && choiceCellWithVoiceCommandCount < choices.size()){
-            Log.e("Choice Set", "If using voice recognition commands, all of the choice set cells must have unique VR commands. There are "+uniqueVoiceCommands.size()+" cells with unique voice commands and "+allVoiceCommandsCount+" total cells. The choice set will not be set.");
-            return;
-        }
-
-        // All VR Commands MUST be unique
-        if (uniqueVoiceCommands.size() < allVoiceCommandsCount){
-            Log.e("Choice Set", "If using voice recognition commands, all VR commands must be unique. There are "+uniqueVoiceCommands.size()+" unique VR commands and "+allVoiceCommandsCount+" VR commands. The choice set will not be set.");
-            return;
-        }
-
+    private void setUpHelpItems(List<VrHelpItem> helpItems){
         // set help item positioning
         if (helpItems != null) {
             for (int i = 0; i < helpItems.size(); i++) {
@@ -268,6 +348,6 @@ public class ChoiceSet {
             }
             setVrHelpList(helpItems);
         }
-
     }
+
 }

@@ -49,11 +49,23 @@ public class ChoiceCell {
      */
     private static final int MAX_ID = 2000000000;
 
+    /**
+     * Initialize the cell with text and nothing else.
+     *
+     * @param text - The primary text of the cell.
+     */
     public ChoiceCell(@NonNull String text) {
         setText(text);
         setChoiceId(MAX_ID);
     }
 
+    /**
+     * Initialize the cell with text, optional artwork, and optional voice commands
+     *
+     * @param text - The primary text of the cell
+     * @param voiceCommands - Strings that can be spoken by the user to activate this cell in a voice or both interaction mode
+     * @param artwork - The primary artwork of the cell
+     */
     public ChoiceCell(@NonNull String text, List<String> voiceCommands, SdlArtwork artwork) {
         setText(text);
         setVoiceCommands(voiceCommands);
@@ -61,6 +73,16 @@ public class ChoiceCell {
         setChoiceId(MAX_ID);
     }
 
+    /**
+     * Initialize the cell with all optional items
+     *
+     * @param text - The primary text
+     * @param secondaryText - The secondary text
+     * @param tertiaryText - The tertiary text
+     * @param voiceCommands - Strings that can be spoken by the user to activate this cell in a voice or both interaction mode
+     * @param artwork - The primary artwork of the cell
+     * @param secondaryArtwork - The secondary artwork of the cell
+     */
     public ChoiceCell(@NonNull String text, String secondaryText, String tertiaryText, List<String> voiceCommands, SdlArtwork artwork, SdlArtwork secondaryArtwork) {
         setText(text);
         setSecondaryText(secondaryText);
@@ -71,55 +93,115 @@ public class ChoiceCell {
         setChoiceId(MAX_ID);
     }
 
+    /**
+     * Maps to Choice.menuName. The primary text of the cell. Duplicates within an `ChoiceSet`
+     * are not permitted and will result in the `ChoiceSet` failing to initialize.
+     * @return The primary text of the cell
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * @param text - Maps to Choice.menuName. The primary text of the cell. Duplicates within an `ChoiceSet`
+     * are not permitted and will result in the `ChoiceSet` failing to initialize.
+     */
     public void setText(@NonNull String text) {
         this.text = text;
     }
 
+    /**
+     * Maps to Choice.secondaryText. Optional secondary text of the cell, if available. Duplicates
+     * within an `SDLChoiceSet` are permitted.
+     * @return Optional secondary text of the cell
+     */
     public String getSecondaryText() {
         return secondaryText;
     }
 
+    /**
+     * @param secondaryText - Maps to Choice.secondaryText. Optional secondary text of the cell, if
+     * available. Duplicates within an `SDLChoiceSet` are permitted.
+     */
     public void setSecondaryText(String secondaryText) {
         this.secondaryText = secondaryText;
     }
 
+    /**
+     * Maps to Choice.tertiaryText. Optional tertiary text of the cell, if available. Duplicates within an `ChoiceSet` are permitted.
+     * @return Optional tertiary text of the cell
+     */
     public String getTertiaryText() {
         return tertiaryText;
     }
 
+    /**
+     * @param tertiaryText - Maps to Choice.tertiaryText. Optional tertiary text of the cell, if
+     * available. Duplicates within an `ChoiceSet` are permitted.
+     */
     public void setTertiaryText(String tertiaryText) {
         this.tertiaryText = tertiaryText;
     }
 
+    /**
+     * Maps to Choice.vrCommands. Optional voice commands the user can speak to activate the cell.
+     * If not set and the head unit requires it, this will be set to the number in the list that this
+     * item appears. However, this would be a very poor experience for a user if the choice set is
+     * presented as a voice only interaction or both interaction mode. Therefore, consider not setting
+     * this only when you know the choice set will be presented as a touch only interaction.
+     * @return The list of voice command strings
+     */
     public List<String> getVoiceCommands() {
         return voiceCommands;
     }
 
+    /**
+     * @param voiceCommands - Maps to Choice.vrCommands. Optional voice commands the user can speak to activate the cell.
+     * If not set and the head unit requires it, this will be set to the number in the list that this
+     * item appears. However, this would be a very poor experience for a user if the choice set is
+     * presented as a voice only interaction or both interaction mode. Therefore, consider not setting
+     * this only when you know the choice set will be presented as a touch only interaction.
+     */
     public void setVoiceCommands(List<String> voiceCommands) {
         this.voiceCommands = voiceCommands;
     }
 
+    /**
+     * Maps to Choice.image. Optional image for the cell. This will be uploaded before the cell is
+     * used when the cell is preloaded or presented for the first time.
+     * @return The SdlArtwork
+     */
     public SdlArtwork getArtwork() {
         return artwork;
     }
 
+    /**
+     * @param artwork - Maps to Choice.image. Optional image for the cell. This will be uploaded
+     * before the cell is used when the cell is preloaded or presented for the first time.
+     */
     public void setArtwork(SdlArtwork artwork) {
         this.artwork = artwork;
     }
 
+    /**
+     * Maps to Choice.secondaryImage. Optional secondary image for the cell. This will be uploaded
+     * before the cell is used when the cell is preloaded or presented for the first time.
+     * @return The SdlArtwork
+     */
     public SdlArtwork getSecondaryArtwork() {
         return secondaryArtwork;
     }
 
+    /**
+     * @param secondaryArtwork - Maps to Choice.secondaryImage. Optional secondary image for the cell.
+     * This will be uploaded before the cell is used when the cell is preloaded or presented for the first time.
+     */
     public void setSecondaryArtwork(SdlArtwork secondaryArtwork) {
         this.secondaryArtwork = secondaryArtwork;
     }
 
     /**
+     * NOTE: USED INTERNALLY
      * Set the choice Id.
      * @param choiceId - the choice Id
      */
@@ -128,6 +210,7 @@ public class ChoiceCell {
     }
 
     /**
+     * NOTE: USED INTERNALLY
      * Get the choiceId
      * @return the choiceId for this Choice Cell
      */
