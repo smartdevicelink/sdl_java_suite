@@ -117,15 +117,4 @@ public class VoiceCommand {
 	int getCommandId() {
 		return commandId;
 	}
-
-	// HELPER
-
-	/**
-	 * Get the description of the cell
-	 * @return a String description of the cell object
-	 */
-	@Override
-	public String toString(){
-		return "VOICE COMMAND - ID: "+commandId+ " - First Object: "+ ((voiceCommands.size() > 0) ? voiceCommands.get(0) : "Empty List")+ " - Voice Command List Size: "+ voiceCommands.size();
-	}
 }

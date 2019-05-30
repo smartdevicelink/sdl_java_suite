@@ -81,11 +81,6 @@ public class MenuCell {
 	 */
 	private static final int MAX_ID = 2000000000;
 
-	/**
-	 * A lock used when setting / getting states
-	 */
-	private final Object STATE_LOCK = new Object();
-
 	// CONSTRUCTORS
 
 	// SINGLE MENU ITEM CONSTRUCTORS
@@ -274,8 +269,7 @@ public class MenuCell {
 		// if this is not an instance of this class, not the same
 		if (!(o instanceof MenuCell)) return false;
 
-		MenuCell menuCell = (MenuCell) o;
 		// if we get to this point, create the hashes and compare them
-		return hashCode() == menuCell.hashCode();
+		return hashCode() == o.hashCode();
 	}
 }
