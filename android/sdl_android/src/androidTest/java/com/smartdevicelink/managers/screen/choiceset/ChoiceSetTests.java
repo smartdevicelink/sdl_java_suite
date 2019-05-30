@@ -73,7 +73,6 @@ public class ChoiceSetTests extends AndroidTestCase2 {
         assertEquals(choiceSet.getTimeout(), defaultTimeout);
         assertEquals(choiceSet.getChoices(), choices);
         assertEquals(choiceSet.getChoiceSetSelectionListener(), listener);
-
     }
 
     public void testConstructors() {

@@ -33,4 +33,10 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 public interface KeyboardAutocompleteCompletionListener {
+
+	/**
+	 * This listener is called when you wish to update your autocomplete text in response to the user's input
+	 * @param updatedAutoCompleteText - The new autocomplete text to use
+	 */
+	void onUpdatedAutoCompleteText(String updatedAutoCompleteText);
 }
