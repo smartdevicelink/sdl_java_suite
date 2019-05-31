@@ -376,7 +376,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * Set voice commands
 	 * @param voiceCommands the voice commands to be sent to the head unit
 	 */
-	public void setVoiceCommands(List<VoiceCommand> voiceCommands){
+	public void setVoiceCommands(@NonNull List<VoiceCommand> voiceCommands){
 		this.voiceCommandManager.setVoiceCommands(voiceCommands);
 	}
 
@@ -393,7 +393,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * Note: the manager will store a deep copy the menuCells internally to be able to handle future updates correctly
 	 * @param menuCells - the menu cells that are to be sent to the head unit, including their sub-cells.
 	 */
-	public void setMenu(List<MenuCell> menuCells){
+	public void setMenu(@NonNull List<MenuCell> menuCells){
 		this.menuManager.setMenuCells(menuCells);
 	}
 
@@ -401,7 +401,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * Sets the behavior of how menus are updated. For explanations of the differences, see {@link DynamicMenuUpdatesMode}
 	 * @param value - the update mode
 	 */
-	public void setDynamicMenuUpdatesMode(DynamicMenuUpdatesMode value){
+	public void setDynamicMenuUpdatesMode(@NonNull DynamicMenuUpdatesMode value){
 		this.menuManager.setDynamicUpdatesMode(value);
 	}
 

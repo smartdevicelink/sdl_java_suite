@@ -147,7 +147,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// SETTERS
 
-	public void setDynamicUpdatesMode(DynamicMenuUpdatesMode value){
+	public void setDynamicUpdatesMode(@NonNull DynamicMenuUpdatesMode value){
 		this.dynamicMenuUpdatesMode = value;
 	}
 
@@ -155,7 +155,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	 * Creates and sends all associated Menu RPCs
 	 * @param cells - the menu cells that are to be sent to the head unit, including their sub-cells.
 	 */
-	public void setMenuCells(List<MenuCell> cells){
+	public void setMenuCells(@NonNull List<MenuCell> cells){
 
 		// Create a deep copy of the list so future changes by developers don't affect the algorithm logic
 		List <MenuCell> clonedCells = cloneMenuCellsList(cells);
@@ -944,11 +944,11 @@ abstract class BaseMenuManager extends BaseSubManager {
 					public void onComplete(boolean success) {
 						inProgressUpdate = null;
 
-						if (!success){
+						if (!success) {
 							DebugTool.logError("Error Sending Current Menu");
 						}
 
-						if (hasQueuedUpdate){
+						if (hasQueuedUpdate) {
 							setMenuCells(waitingUpdateMenuCells);
 							hasQueuedUpdate = false;
 						}
@@ -1174,16 +1174,15 @@ abstract class BaseMenuManager extends BaseSubManager {
 		});
 	}
 
-	private List<MenuCell> cloneMenuCellsList (List<MenuCell> originalList){
-		if (originalList == null){
+	private List<MenuCell> cloneMenuCellsList(List<MenuCell> originalList) {
+		if (originalList == null) {
 			return null;
 		}
 
 		List<MenuCell> clone = new ArrayList<>();
-		for (MenuCell menuCell : originalList){
+		for (MenuCell menuCell : originalList) {
 			clone.add(menuCell.clone());
 		}
 		return clone;
 	}
-
 }
