@@ -1032,6 +1032,15 @@ public class SdlManager extends BaseSdlManager{
 				sdlManager.isMediaApp = false;
 			}
 
+			if(TransportType.MULTIPLEX.equals(sdlManager.transport.getTransportType())){
+				//If the requires audio support has not been set, it should be set to true if the
+				//app is a media app, and false otherwise
+				if(((MultiplexTransportConfig)sdlManager.transport).requiresAudioSupport() == null){
+					((MultiplexTransportConfig)sdlManager.transport).setRequiresAudioSupport(sdlManager.isMediaApp);
+				}
+			}
+
+
 			if (sdlManager.lockScreenConfig == null){
 				// if lock screen params are not set, use default
 				sdlManager.lockScreenConfig = new LockScreenConfig();
