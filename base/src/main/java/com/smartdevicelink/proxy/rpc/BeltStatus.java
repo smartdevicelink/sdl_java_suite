@@ -160,7 +160,7 @@ public class BeltStatus extends RPCStruct {
     public static final String KEY_LEFT_ROW_3_BUCKLE_BELTED = "leftRow3BuckleBelted";
 
     public static final String KEY_RIGHT_ROW_3_BUCKLE_BELTED = "rightRow3BuckleBelted";
-    public static final String KEY_REAR_INFLATABLE_BELTED = "rearInflatableBelted";
+    public static final String KEY_LEFT_REAR_INFLATABLE_BELTED = "leftRearInflatableBelted";
     public static final String KEY_RIGHT_REAR_INFLATABLE_BELTED = "rightRearInflatableBelted";
     public static final String KEY_MIDDLE_ROW_1_BELT_DEPLOYED = "middleRow1BeltDeployed";
     public static final String KEY_MIDDLE_ROW_1_BUCKLE_BELTED = "middleRow1BuckleBelted";
@@ -267,10 +267,10 @@ public class BeltStatus extends RPCStruct {
         return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_RIGHT_ROW_3_BUCKLE_BELTED);
     }
     public void setLeftRearInflatableBelted(@NonNull VehicleDataEventStatus rearInflatableBelted) {
-        setValue(KEY_REAR_INFLATABLE_BELTED, rearInflatableBelted);
+        setValue(KEY_LEFT_REAR_INFLATABLE_BELTED, rearInflatableBelted);
     }
     public VehicleDataEventStatus getLeftRearInflatableBelted() {
-        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_REAR_INFLATABLE_BELTED);
+        return (VehicleDataEventStatus) getObject(VehicleDataEventStatus.class, KEY_LEFT_REAR_INFLATABLE_BELTED);
     }
     public void setRightRearInflatableBelted(@NonNull VehicleDataEventStatus rightRearInflatableBelted) {
         setValue(KEY_RIGHT_REAR_INFLATABLE_BELTED, rightRearInflatableBelted);
