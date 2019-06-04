@@ -45,7 +45,6 @@ import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
-import android.util.SparseIntArray;
 import android.view.Display;
 import android.view.InputDevice;
 import android.view.MotionEvent;
@@ -8131,6 +8130,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 				if (motionEventAction == MotionEvent.ACTION_UP || motionEventAction == MotionEvent.ACTION_CANCEL) {
 					//If the motion event should be finished we should clear our reference
+					sdlMotionEvent.pointers.clear();
 					sdlMotionEvent = null;
 					break;
 				} else if ((motionEventAction & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_POINTER_UP) {
@@ -8163,7 +8163,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		}
 
-		private List<Pointer> pointers = new ArrayList<>();
+		private CopyOnWriteArrayList<Pointer> pointers = new CopyOnWriteArrayList<>();
 		private long downTime;
 		private long downTimeOnHMI;
 		private long eventTime;

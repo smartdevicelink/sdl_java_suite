@@ -73,6 +73,7 @@ import com.smartdevicelink.util.Version;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.FutureTask;
 
 @TargetApi(19)
@@ -594,7 +595,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			}
 		}
 
-		private List<Pointer> pointers = new ArrayList<>();
+		private CopyOnWriteArrayList<Pointer> pointers = new CopyOnWriteArrayList<>();
 		private long downTime;
 		private long downTimeOnHMI;
 		private long eventTime;
