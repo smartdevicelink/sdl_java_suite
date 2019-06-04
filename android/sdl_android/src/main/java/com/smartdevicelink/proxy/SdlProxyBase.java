@@ -8202,7 +8202,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					eventTime = downTime + touchEvent.getTimestamps().get(touchEvent.getTimestamps().size() - 1) - downTimeOnHMI;
 					break;
 				case END:
-					if(pointers.size() == 0){
+					if(pointers.size() <= 1){
 						//The motion event has just ended
 						motionEventAction = MotionEvent.ACTION_UP;
 					} else {
