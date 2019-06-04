@@ -33,10 +33,12 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.managers.screen.choiceset.operations.CheckChoiceVROptionalOperation;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -57,6 +59,8 @@ import com.smartdevicelink.util.DebugTool;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * <strong>ChoiceSetManager</strong> <br>
@@ -83,6 +87,8 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
     private HashSet<ChoiceCell> pendingMutablePreloadChoices;
     private ChoiceSet pendingPresentationSet;
     private Boolean isVROptional;
+    // We will pass operations into this to be completed
+    private ExecutorService transactionService;
 
     private int nextChoiceId;
     private int choiceCellIdMin = 1;
@@ -97,6 +103,8 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
         nextChoiceId = choiceCellIdMin;
         isVROptional = true;
         keyboardConfiguration = defaultKeyboardConfiguration();
+        // create the new executor service
+        transactionService = Executors.newSingleThreadExecutor();
         addListeners();
     }
 
@@ -117,6 +125,7 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
         displayCapabilities = null;
 
         // TODO: cancel all queued operations, if any exist
+        transactionService.shutdownNow();
 
         pendingPresentationSet = null;
         isVROptional = true;
@@ -326,7 +335,13 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
     private void checkVoiceOptional(){
         transitionToState(CHECKING_VOICE);
 
-        // TODO: CheckChoiceVROptionalOperation
+        CheckChoiceVROptionalOperation checkChoiceVR = new CheckChoiceVROptionalOperation(isVROptional, new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                Log.i("CHOICE SET", "CHECKING VR: "+ success);
+            }
+        });
+        transactionService.submit(checkChoiceVR);
     }
 
     private boolean setUpChoiceSet(ChoiceSet choiceSet) {

@@ -67,7 +67,7 @@ public class ChoiceSet {
      * @param listener - The choice set listener called after the user has interacted with your choice set
      * @param choices - The choices to be displayed to the user for interaction
      */
-    public ChoiceSet(@NonNull String title, @NonNull ChoiceSetSelectionListener listener, @NonNull List<ChoiceCell> choices) {
+    public ChoiceSet(@NonNull String title, @NonNull List<ChoiceCell> choices, @NonNull ChoiceSetSelectionListener listener) {
 
         setTitle(title);
         setChoiceSetSelectionListener(listener);
@@ -94,7 +94,7 @@ public class ChoiceSet {
      * @param helpList - A table list of text and images shown to the user during a voice recognition session for this choice set (Voice only)
      * @param choices - The list of choices presented to the user either as a manual/touch interaction or via the user's voice
      */
-    public ChoiceSet(@NonNull String title, @NonNull ChoiceSetSelectionListener listener, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable String initialPrompt, @Nullable String timeoutPrompt, @Nullable String helpPrompt, @Nullable List<VrHelpItem> helpList, @NonNull List<ChoiceCell> choices) {
+    public ChoiceSet(@NonNull String title, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable String initialPrompt, @Nullable String timeoutPrompt, @Nullable String helpPrompt, @Nullable List<VrHelpItem> helpList, @NonNull List<ChoiceCell> choices, @NonNull ChoiceSetSelectionListener listener) {
 
         setTitle(title);
         setChoiceSetSelectionListener(listener);
@@ -133,7 +133,7 @@ public class ChoiceSet {
      * @param helpList - A table list of text and images shown to the user during a voice recognition session for this choice set (Voice only)
      * @param choices - The list of choices presented to the user either as a manual/touch interaction or via the user's voice
      */
-    public ChoiceSet(@NonNull String title, @NonNull ChoiceSetSelectionListener listener, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable List<TTSChunk> initialPrompt, @Nullable List<TTSChunk> timeoutPrompt, @Nullable List<TTSChunk> helpPrompt, @Nullable List<VrHelpItem> helpList, @NonNull List<ChoiceCell> choices) {
+    public ChoiceSet(@NonNull String title, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable List<TTSChunk> initialPrompt, @Nullable List<TTSChunk> timeoutPrompt, @Nullable List<TTSChunk> helpPrompt, @Nullable List<VrHelpItem> helpList, @NonNull List<ChoiceCell> choices, @NonNull ChoiceSetSelectionListener listener) {
 
         setTitle(title);
         setChoiceSetSelectionListener(listener);

@@ -42,14 +42,14 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
  * ChoiceSetManager gives the developer the ability to control how soft choice sets are displayed on the head unit.<br>
  * Note: This class must be accessed through the SdlManager->ScreenManager. Do not instantiate it by itself.<br>
  */
-class ChoiceSetManager extends BaseChoiceSetManager {
+public class ChoiceSetManager extends BaseChoiceSetManager {
 
     /**
      * Creates a new instance of the ChoiceSetManager
      *
      * @param internalInterface
      */
-    ChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+    public ChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface, fileManager);
     }
 }

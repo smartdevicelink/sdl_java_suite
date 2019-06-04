@@ -30,26 +30,25 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.managers.screen.choiceset;
+package com.smartdevicelink.managers.screen.choiceset.operations;
 
-import android.support.annotation.NonNull;
+import com.smartdevicelink.managers.CompletionListener;
 
-import com.smartdevicelink.managers.file.FileManager;
-import com.smartdevicelink.proxy.interfaces.ISdl;
+public class CheckChoiceVROptionalOperation implements Runnable {
 
-/**
- * <strong>ChoiceSetManager</strong> <br>
- * ChoiceSetManager gives the developer the ability to control how soft choice sets are displayed on the head unit.<br>
- * Note: This class must be accessed through the SdlManager->ScreenManager. Do not instantiate it by itself.<br>
- */
-public class ChoiceSetManager extends BaseChoiceSetManager {
+	private Boolean isVROptional;
+	private CompletionListener completionListener;
 
-    /**
-     * Creates a new instance of the ChoiceSetManager
-     *
-     * @param internalInterface
-     */
-    public ChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
-        super(internalInterface, fileManager);
-    }
+	public CheckChoiceVROptionalOperation(Boolean isVROptional, CompletionListener completionListener){
+		this.isVROptional = isVROptional;
+		this.completionListener = completionListener;
+	}
+
+	@Override
+	public void run(){
+		if (completionListener != null){
+			completionListener.onComplete(true);
+		}
+	}
+
 }

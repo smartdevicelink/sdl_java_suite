@@ -38,6 +38,7 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceSetManager;
 import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdatesMode;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
 import com.smartdevicelink.managers.screen.menu.MenuManager;
@@ -64,6 +65,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	private TextAndGraphicManager textAndGraphicManager;
 	private VoiceCommandManager voiceCommandManager;
 	private MenuManager menuManager;
+	private ChoiceSetManager choiceSetManager;
 
 	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
