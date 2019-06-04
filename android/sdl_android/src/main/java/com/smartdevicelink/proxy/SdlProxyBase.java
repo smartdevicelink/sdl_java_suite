@@ -8108,10 +8108,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					pointer.setCoords(touchCoord.getX() * touchScalar[0], touchCoord.getY() * touchScalar[1]);
 				}
 
-				MotionEvent.PointerProperties[] pointerProperties;
-				MotionEvent.PointerCoords[] pointerCoords;
-				pointerProperties = new MotionEvent.PointerProperties[sdlMotionEvent.pointers.size()];
-				pointerCoords = new MotionEvent.PointerCoords[sdlMotionEvent.pointers.size()];
+				MotionEvent.PointerProperties[] pointerProperties = new MotionEvent.PointerProperties[sdlMotionEvent.pointers.size()];
+				MotionEvent.PointerCoords[] pointerCoords = new MotionEvent.PointerCoords[sdlMotionEvent.pointers.size()];
 
 				for (int i = 0; i < sdlMotionEvent.pointers.size(); i++) {
 					pointerProperties[i] = new MotionEvent.PointerProperties();
@@ -8224,9 +8222,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		Pointer getPointerById(int id) {
-			for (Pointer pointer : pointers) {
-				if (pointer.id == id) {
-					return pointer;
+			if (pointers != null && !pointers.isEmpty()) {
+				for (Pointer pointer : pointers) {
+					if (pointer.id == id) {
+						return pointer;
+					}
 				}
 			}
 			return null;
