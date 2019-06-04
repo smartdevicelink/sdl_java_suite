@@ -39,10 +39,10 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdatesMode;
-import com.smartdevicelink.managers.screen.menu.MenuManager;
-import com.smartdevicelink.managers.screen.menu.VoiceCommandManager;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
+import com.smartdevicelink.managers.screen.menu.MenuManager;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
+import com.smartdevicelink.managers.screen.menu.VoiceCommandManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
@@ -376,7 +376,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * Set voice commands
 	 * @param voiceCommands the voice commands to be sent to the head unit
 	 */
-	public void setVoiceCommands(List<VoiceCommand> voiceCommands){
+	public void setVoiceCommands(@NonNull List<VoiceCommand> voiceCommands){
 		this.voiceCommandManager.setVoiceCommands(voiceCommands);
 	}
 
@@ -390,9 +390,10 @@ abstract class BaseScreenManager extends BaseSubManager {
 
 	/**
 	 * Creates and sends all associated Menu RPCs
+	 * Note: the manager will store a deep copy the menuCells internally to be able to handle future updates correctly
 	 * @param menuCells - the menu cells that are to be sent to the head unit, including their sub-cells.
 	 */
-	public void setMenu(List<MenuCell> menuCells){
+	public void setMenu(@NonNull List<MenuCell> menuCells){
 		this.menuManager.setMenuCells(menuCells);
 	}
 
@@ -400,7 +401,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * Sets the behavior of how menus are updated. For explanations of the differences, see {@link DynamicMenuUpdatesMode}
 	 * @param value - the update mode
 	 */
-	public void setDynamicMenuUpdatesMode(DynamicMenuUpdatesMode value){
+	public void setDynamicMenuUpdatesMode(@NonNull DynamicMenuUpdatesMode value){
 		this.menuManager.setDynamicUpdatesMode(value);
 	}
 
