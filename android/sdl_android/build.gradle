@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+import org.apache.tools.ant.taskdefs.condition.Os
+
 
 android {
     compileSdkVersion 28
@@ -34,8 +36,21 @@ android {
     }
 
     sourceSets {
-        main.java.srcDirs += '../../baseAndroid/src/main/java'
+        if(Os.isFamily(Os.FAMILY_WINDOWS)){
+            //The buildWindowsSymLinks task must be run first if this is
+            //being compiled on a Windows machine
+            main.java.srcDirs += '../../baseAndroid/windows/src/main/java'
+        }else{
+            main.java.srcDirs += '../../baseAndroid/src/main/java'
+        }
     }
+}
+
+task buildWindowSymLinks(type:Exec){
+
+    workingDir '../../baseAndroid'
+
+    commandLine 'cmd', '/c', 'make_symlinks.lnk'
 }
 
 dependencies {
