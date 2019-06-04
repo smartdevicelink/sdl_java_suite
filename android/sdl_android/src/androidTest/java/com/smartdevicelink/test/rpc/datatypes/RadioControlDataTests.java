@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
@@ -42,6 +43,7 @@ public class RadioControlDataTests extends TestCase{
         msg.setState(Test.GENERAL_RADIOSTATE);
         msg.setHdRadioEnable(Test.GENERAL_BOOLEAN);
         msg.setSisData(Test.GENERAL_SISDATA);
+        msg.setAvailableHdChannels(Test.GENERAL_AVAILABLE_HD_CHANNELS_LIST);
     }
 
     /**
@@ -61,6 +63,7 @@ public class RadioControlDataTests extends TestCase{
         RadioState state = msg.getState();
         boolean hdRadioEnable = msg.getHdRadioEnable();
         SisData sisData = msg.getSisData();
+        List<Integer> availableHdChannels = msg.getAvailableHdChannels();
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_INT, frequencyInteger);
@@ -75,6 +78,7 @@ public class RadioControlDataTests extends TestCase{
         assertEquals(Test.MATCH, Test.GENERAL_RADIOSTATE, state);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, hdRadioEnable);
         assertTrue(Test.TRUE, Validator.validateSisData(Test.GENERAL_SISDATA, sisData));
+        assertEquals(Test.MATCH, Test.GENERAL_AVAILABLE_HD_CHANNELS_LIST, availableHdChannels);
 
         // Invalid/Null Tests
         RadioControlData msg = new RadioControlData();
@@ -92,6 +96,7 @@ public class RadioControlDataTests extends TestCase{
         assertNull(Test.NULL, msg.getState());
         assertNull(Test.NULL, msg.getHdRadioEnable());
         assertNull(Test.NULL, msg.getSisData());
+        assertNull(Test.NULL, msg.getAvailableHdChannels());
     }
 
     public void testJson(){
@@ -110,6 +115,7 @@ public class RadioControlDataTests extends TestCase{
             reference.put(RadioControlData.KEY_STATE, Test.GENERAL_RADIOSTATE);
             reference.put(RadioControlData.KEY_HD_RADIO_ENABLE, Test.GENERAL_BOOLEAN);
             reference.put(RadioControlData.KEY_SIS_DATA, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_SISDATA.getStore()));
+            reference.put(RadioControlData.KEY_AVAILABLE_HD_CHANNELS, Test.GENERAL_AVAILABLE_HD_CHANNELS_LIST);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -130,6 +136,10 @@ public class RadioControlDataTests extends TestCase{
 	                Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
 	                Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
 	                assertTrue(Test.TRUE, Validator.validateSisData(new SisData(hashReference), new SisData(hashTest)));
+                } else if(key.equals(RadioControlData.KEY_AVAILABLE_HD_CHANNELS)){
+                    List<Integer> list1 = Test.GENERAL_AVAILABLE_HD_CHANNELS_LIST;
+                    List<Integer> list2 = JsonUtils.readIntegerListFromJsonObject(underTest, key);
+                    assertTrue(Test.TRUE, Validator.validateIntegerList(list1,list2));
                 } else{
                     assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }

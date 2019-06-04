@@ -43,6 +43,7 @@ public class ClimateControlDataTests extends TestCase{
         msg.setHeatedWindshieldEnable(Test.GENERAL_BOOLEAN);
         msg.setHeatedRearWindowEnable(Test.GENERAL_BOOLEAN);
         msg.setHeatedMirrorsEnable(Test.GENERAL_BOOLEAN);
+        msg.setClimateEnable(Test.GENERAL_BOOLEAN);
     }
 
     /**
@@ -64,6 +65,7 @@ public class ClimateControlDataTests extends TestCase{
         boolean heatedWindshieldEnable = msg.getHeatedWindshieldEnable();
         boolean heatedRearWindowEnable = msg.getHeatedRearWindowEnable();
         boolean heatedMirrorsEnable = msg.getHeatedMirrorsEnable();
+        boolean climateEnable = msg.getClimateEnable();
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_INT, fanSpeed);
@@ -80,6 +82,7 @@ public class ClimateControlDataTests extends TestCase{
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedWindshieldEnable);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedRearWindowEnable);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedMirrorsEnable);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, climateEnable);
 
         // Invalid/Null Tests
         ClimateControlData msg = new ClimateControlData();
@@ -99,6 +102,7 @@ public class ClimateControlDataTests extends TestCase{
         assertNull(Test.NULL, msg.getHeatedWindshieldEnable());
         assertNull(Test.NULL, msg.getHeatedRearWindowEnable());
         assertNull(Test.NULL, msg.getHeatedMirrorsEnable());
+        assertNull(Test.NULL, msg.getClimateEnable());
     }
 
     public void testJson(){
@@ -119,6 +123,7 @@ public class ClimateControlDataTests extends TestCase{
             reference.put(ClimateControlData.KEY_HEATED_WIND_SHIELD_ENABLE, Test.GENERAL_BOOLEAN);
             reference.put(ClimateControlData.KEY_HEATED_REAR_WINDOW_ENABLE, Test.GENERAL_BOOLEAN);
             reference.put(ClimateControlData.KEY_HEATED_MIRRORS_ENABLE, Test.GENERAL_BOOLEAN);
+            reference.put(ClimateControlData.KEY_CLIMATE_ENABLE, Test.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());
