@@ -38,6 +38,7 @@ import android.util.Log;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.managers.screen.choiceset.operations.CheckChoiceVROptionalInterface;
 import com.smartdevicelink.managers.screen.choiceset.operations.CheckChoiceVROptionalOperation;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -96,7 +97,6 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
     public BaseChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
 
-        transitionToState(SHUTDOWN); // We need to do some stuff first. keep in shutdown state
         this.fileManager = new WeakReference<>(fileManager);
         preloadedMutableChoices = new HashSet<>();
         pendingMutablePreloadChoices = new HashSet<>();
@@ -110,11 +110,9 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
 
     @Override
     public void start(CompletionListener listener){
-        if (getState() == SHUTDOWN) {
-            transitionToState(SETTING_UP);
-            checkVoiceOptional();
-            super.start(listener);
-        } // Else we are already started
+        transitionToState(CHECKING_VOICE);
+        checkVoiceOptional();
+        super.start(listener);
     }
 
     @Override
@@ -334,11 +332,11 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
 
     private void checkVoiceOptional(){
         transitionToState(CHECKING_VOICE);
-
-        CheckChoiceVROptionalOperation checkChoiceVR = new CheckChoiceVROptionalOperation(isVROptional, new CompletionListener() {
+        CheckChoiceVROptionalOperation checkChoiceVR = new CheckChoiceVROptionalOperation(new CheckChoiceVROptionalInterface() {
             @Override
-            public void onComplete(boolean success) {
-                Log.i("CHOICE SET", "CHECKING VR: "+ success);
+            public void onCheckChoiceVROperationComplete(boolean vrOptional) {
+                isVROptional = vrOptional;
+                transitionToState(READY);
             }
         });
         transactionService.submit(checkChoiceVR);

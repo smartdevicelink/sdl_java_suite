@@ -71,14 +71,14 @@ abstract class BaseScreenManager extends BaseSubManager {
 	private final CompletionListener subManagerListener = new CompletionListener() {
 		@Override
 		public synchronized void onComplete(boolean success) {
-			if (softButtonManager != null && textAndGraphicManager != null && voiceCommandManager != null && menuManager != null) {
-				if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY && voiceCommandManager.getState() == BaseSubManager.READY && menuManager.getState() == BaseSubManager.READY) {
+			if (softButtonManager != null && textAndGraphicManager != null && voiceCommandManager != null && menuManager != null && choiceSetManager != null) {
+				if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY && voiceCommandManager.getState() == BaseSubManager.READY && menuManager.getState() == BaseSubManager.READY && choiceSetManager.getState() == BaseSubManager.READY) {
 					DebugTool.logInfo("Starting screen manager, all sub managers are in ready state");
 					transitionToState(READY);
-				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR && voiceCommandManager.getState() == BaseSubManager.ERROR && menuManager.getState() == BaseSubManager.ERROR) {
+				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR && voiceCommandManager.getState() == BaseSubManager.ERROR && menuManager.getState() == BaseSubManager.ERROR && choiceSetManager.getState() == BaseSubManager.ERROR) {
 					Log.e(TAG, "ERROR starting screen manager, all sub managers are in error state");
 					transitionToState(ERROR);
-				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP || voiceCommandManager.getState() == BaseSubManager.SETTING_UP || menuManager.getState() == BaseSubManager.SETTING_UP) {
+				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP || voiceCommandManager.getState() == BaseSubManager.SETTING_UP || menuManager.getState() == BaseSubManager.SETTING_UP || choiceSetManager.getState() == BaseSubManager.SETTING_UP) {
 					DebugTool.logInfo("SETTING UP screen manager, at least one sub manager is still setting up");
 					transitionToState(SETTING_UP);
 				} else {
@@ -106,6 +106,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 		this.textAndGraphicManager.start(subManagerListener);
 		this.voiceCommandManager.start(subManagerListener);
 		this.menuManager.start(subManagerListener);
+		this.choiceSetManager.start(subManagerListener);
 	}
 
 	private void initialize(){
@@ -113,6 +114,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 			this.softButtonManager = new SoftButtonManager(internalInterface, fileManager.get());
 			this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get(), softButtonManager);
 			this.menuManager = new MenuManager(internalInterface, fileManager.get());
+			this.choiceSetManager = new ChoiceSetManager(internalInterface, fileManager.get());
 		}
 		this.voiceCommandManager = new VoiceCommandManager(internalInterface);
 	}
@@ -126,6 +128,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 		textAndGraphicManager.dispose();
 		voiceCommandManager.dispose();
 		menuManager.dispose();
+		choiceSetManager.dispose();
 		super.dispose();
 	}
 

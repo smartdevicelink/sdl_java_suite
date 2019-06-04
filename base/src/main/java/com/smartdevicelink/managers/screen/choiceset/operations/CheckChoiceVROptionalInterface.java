@@ -32,20 +32,6 @@
 
 package com.smartdevicelink.managers.screen.choiceset.operations;
 
-import java.lang.ref.WeakReference;
-
-public class CheckChoiceVROptionalOperation implements Runnable {
-
-	private WeakReference<CheckChoiceVROptionalInterface> checkChoiceVROptionalInterface;
-
-	public CheckChoiceVROptionalOperation(CheckChoiceVROptionalInterface checkChoiceVROptionalInterface){
-		this.checkChoiceVROptionalInterface = new WeakReference<>(checkChoiceVROptionalInterface);
-	}
-
-	@Override
-	public void run() {
-		if (checkChoiceVROptionalInterface != null){
-			checkChoiceVROptionalInterface.get().onCheckChoiceVROperationComplete(false);
-		}
-	}
+public interface CheckChoiceVROptionalInterface {
+	void onCheckChoiceVROperationComplete(boolean vrOptional);
 }

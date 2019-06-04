@@ -65,7 +65,7 @@ public class ChoiceSetTests extends AndroidTestCase2 {
     public void testSettersAndGetters(){
 
         // test small constructor
-        ChoiceSet choiceSet = new ChoiceSet(Test.GENERAL_STRING, listener, choices);
+        ChoiceSet choiceSet = new ChoiceSet(Test.GENERAL_STRING, choices, listener);
 
         // use getters and assert equality
         assertEquals(choiceSet.getTitle(), Test.GENERAL_STRING);
@@ -78,7 +78,7 @@ public class ChoiceSetTests extends AndroidTestCase2 {
     public void testConstructors() {
 
         // first constructor was tested in previous method, use the rest here
-        ChoiceSet choiceSet = new ChoiceSet(Test.GENERAL_STRING, listener, layout, Test.GENERAL_INTEGER, Test.GENERAL_STRING, Test.GENERAL_STRING, Test.GENERAL_STRING, Test.GENERAL_VRHELPITEM_LIST, choices);
+        ChoiceSet choiceSet = new ChoiceSet(Test.GENERAL_STRING, layout, Test.GENERAL_INTEGER, Test.GENERAL_STRING, Test.GENERAL_STRING, Test.GENERAL_STRING, Test.GENERAL_VRHELPITEM_LIST, choices, listener);
         assertEquals(choiceSet.getTitle(), Test.GENERAL_STRING);
         assertEquals(choiceSet.getInitialPrompt().get(0).getText(),Test.GENERAL_STRING);
         assertEquals(choiceSet.getHelpPrompt().get(0).getText(), Test.GENERAL_STRING);
@@ -88,7 +88,7 @@ public class ChoiceSetTests extends AndroidTestCase2 {
         assertEquals(choiceSet.getChoices(), choices);
         assertEquals(choiceSet.getChoiceSetSelectionListener(), listener);
 
-        ChoiceSet choiceSet2 = new ChoiceSet(Test.GENERAL_STRING, listener, layout, Test.GENERAL_INTEGER, Test.GENERAL_TTSCHUNK_LIST, Test.GENERAL_TTSCHUNK_LIST, Test.GENERAL_TTSCHUNK_LIST, Test.GENERAL_VRHELPITEM_LIST, choices);
+        ChoiceSet choiceSet2 = new ChoiceSet(Test.GENERAL_STRING, layout, Test.GENERAL_INTEGER, Test.GENERAL_TTSCHUNK_LIST, Test.GENERAL_TTSCHUNK_LIST, Test.GENERAL_TTSCHUNK_LIST, Test.GENERAL_VRHELPITEM_LIST, choices, listener);
         assertEquals(choiceSet2.getTitle(), Test.GENERAL_STRING);
         assertEquals(choiceSet2.getInitialPrompt(),Test.GENERAL_TTSCHUNK_LIST);
         assertEquals(choiceSet2.getHelpPrompt(), Test.GENERAL_TTSCHUNK_LIST);
