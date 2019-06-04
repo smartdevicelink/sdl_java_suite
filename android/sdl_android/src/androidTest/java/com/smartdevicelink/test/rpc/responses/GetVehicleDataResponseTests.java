@@ -157,6 +157,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 			GPSDataObj.put(GPSData.KEY_ALTITUDE, VehicleDataHelper.GPS_ALTITUDE);
 			GPSDataObj.put(GPSData.KEY_HEADING, VehicleDataHelper.GPS_HEADING);
 			GPSDataObj.put(GPSData.KEY_SPEED, VehicleDataHelper.GPS_SPEED);
+			GPSDataObj.put(GPSData.KEY_SHIFTED, VehicleDataHelper.GPS_SHIFTED);
 			
 			//BELT_STATUS
 			beltStatusObj.put(BeltStatus.KEY_DRIVER_BELT_DEPLOYED, VehicleDataHelper.BELT_STATUS_DRIVER_DEPLOYED);

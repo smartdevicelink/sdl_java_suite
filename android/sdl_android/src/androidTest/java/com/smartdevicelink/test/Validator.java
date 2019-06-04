@@ -2002,6 +2002,9 @@ public class Validator{
         if(item1.getVdop() != item2.getVdop()){
             return false;
         }
+        if(item1.getShifted() != item2.getShifted()){
+            return false;
+        }
 
         return true;
     }
