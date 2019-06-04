@@ -478,6 +478,26 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		}
 	}
 
+	@Override
+	protected void onTransportUpdate(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail){
+
+		isTransportAvailable = videoStreamTransportAvail;
+
+		if(internalInterface.getProtocolVersion().isNewerThan(new Version(5,1,0)) >= 0){
+			if(videoStreamTransportAvail){
+				checkState();
+			}
+		}else{
+			//The protocol version doesn't support simultaneous transports.
+			if(!videoStreamTransportAvail){
+				//If video streaming isn't available on primary transport then it is not possible to
+				//use the video streaming manager until a complete register on a transport that
+				//supports video
+				transitionToState(ERROR);
+			}
+		}
+	}
+
 	List<MotionEvent> convertTouchEvent(OnTouchEvent onTouchEvent){
 		List<MotionEvent> motionEventList = new ArrayList<MotionEvent>();
 
@@ -648,26 +668,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 		void removePointerById(int id){
 			pointers.remove(getPointerById(id));
-		}
-	}
-
-	@Override
-	protected void onTransportUpdate(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail){
-
-		isTransportAvailable = videoStreamTransportAvail;
-
-		if(internalInterface.getProtocolVersion().isNewerThan(new Version(5,1,0)) >= 0){
-			if(videoStreamTransportAvail){
-				checkState();
-			}
-		}else{
-			//The protocol version doesn't support simultaneous transports.
-			if(!videoStreamTransportAvail){
-				//If video streaming isn't available on primary transport then it is not possible to
-				//use the video streaming manager until a complete register on a transport that
-				//supports video
-				transitionToState(ERROR);
-			}
 		}
 	}
 
