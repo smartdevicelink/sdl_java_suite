@@ -38,11 +38,12 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
-import com.smartdevicelink.managers.screen.choiceset.KeyboardListener;
+import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdatesMode;
+import com.smartdevicelink.managers.screen.menu.MenuCell;
+import com.smartdevicelink.managers.screen.menu.MenuManager;
+import com.smartdevicelink.managers.screen.menu.VoiceCommand;
+import com.smartdevicelink.managers.screen.menu.VoiceCommandManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.util.DebugTool;
@@ -61,23 +62,25 @@ abstract class BaseScreenManager extends BaseSubManager {
 	private final WeakReference<FileManager> fileManager;
 	private SoftButtonManager softButtonManager;
 	private TextAndGraphicManager textAndGraphicManager;
+	private VoiceCommandManager voiceCommandManager;
+	private MenuManager menuManager;
 
 	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
 		@Override
 		public synchronized void onComplete(boolean success) {
-			if (softButtonManager != null && textAndGraphicManager != null) {
-				if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY) {
+			if (softButtonManager != null && textAndGraphicManager != null && voiceCommandManager != null && menuManager != null) {
+				if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY && voiceCommandManager.getState() == BaseSubManager.READY && menuManager.getState() == BaseSubManager.READY) {
 					DebugTool.logInfo("Starting screen manager, all sub managers are in ready state");
 					transitionToState(READY);
-				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR) {
-					Log.e(TAG, "ERROR starting screen manager, both sub managers in error state");
+				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR && voiceCommandManager.getState() == BaseSubManager.ERROR && menuManager.getState() == BaseSubManager.ERROR) {
+					Log.e(TAG, "ERROR starting screen manager, all sub managers are in error state");
 					transitionToState(ERROR);
-				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP) {
-					DebugTool.logInfo("SETTING UP screen manager, one sub manager is still setting up");
+				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP || voiceCommandManager.getState() == BaseSubManager.SETTING_UP || menuManager.getState() == BaseSubManager.SETTING_UP) {
+					DebugTool.logInfo("SETTING UP screen manager, at least one sub manager is still setting up");
 					transitionToState(SETTING_UP);
 				} else {
-					Log.w(TAG, "LIMITED starting screen manager, one sub manager in error state and the other is ready");
+					Log.w(TAG, "LIMITED starting screen manager, at least one sub manager is in error state and the others are ready");
 					transitionToState(LIMITED);
 				}
 			} else {
@@ -99,13 +102,17 @@ abstract class BaseScreenManager extends BaseSubManager {
 		super.start(listener);
 		this.softButtonManager.start(subManagerListener);
 		this.textAndGraphicManager.start(subManagerListener);
+		this.voiceCommandManager.start(subManagerListener);
+		this.menuManager.start(subManagerListener);
 	}
 
 	private void initialize(){
 		if (fileManager.get() != null) {
 			this.softButtonManager = new SoftButtonManager(internalInterface, fileManager.get());
 			this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get(), softButtonManager);
+			this.menuManager = new MenuManager(internalInterface, fileManager.get());
 		}
+		this.voiceCommandManager = new VoiceCommandManager(internalInterface);
 	}
 
 	/**
@@ -115,6 +122,8 @@ abstract class BaseScreenManager extends BaseSubManager {
 	public void dispose() {
 		softButtonManager.dispose();
 		textAndGraphicManager.dispose();
+		voiceCommandManager.dispose();
+		menuManager.dispose();
 		super.dispose();
 	}
 
@@ -355,25 +364,53 @@ abstract class BaseScreenManager extends BaseSubManager {
 		return softButtonManager.getSoftButtonObjectById(buttonId);
 	}
 
-	// This can only take up to 100 items, if more are passed the completion handler will be called with an error
-	public void preloadChoices (List<ChoiceCell> choices, CompletionListener listener){
-
+	/**
+	 * Get the currently set voice commands
+	 * @return a List of Voice Command objects
+	 */
+	public List<VoiceCommand> getVoiceCommands(){
+		return voiceCommandManager.getVoiceCommands();
 	}
 
-	public void deleteChoices (List<ChoiceCell> preloadedChoiceKeys){
-
+	/**
+	 * Set voice commands
+	 * @param voiceCommands the voice commands to be sent to the head unit
+	 */
+	public void setVoiceCommands(@NonNull List<VoiceCommand> voiceCommands){
+		this.voiceCommandManager.setVoiceCommands(voiceCommands);
 	}
 
-	public void presentSearchableChoiceSet (ChoiceSet choiceSet, InteractionMode mode, KeyboardListener listener){
-
+	/**
+	 * The list of currently set menu cells
+	 * @return a List of the currently set menu cells
+	 */
+	public List<MenuCell> getMenu(){
+		return this.menuManager.getMenuCells();
 	}
 
-	public void presentChoiceSet (ChoiceSet choiceSet, InteractionMode mode){
-
+	/**
+	 * Creates and sends all associated Menu RPCs
+	 * Note: the manager will store a deep copy the menuCells internally to be able to handle future updates correctly
+	 * @param menuCells - the menu cells that are to be sent to the head unit, including their sub-cells.
+	 */
+	public void setMenu(@NonNull List<MenuCell> menuCells){
+		this.menuManager.setMenuCells(menuCells);
 	}
 
-	public void presentKeyboardWithInitialText (String initialText, KeyboardListener listener){
+	/**
+	 * Sets the behavior of how menus are updated. For explanations of the differences, see {@link DynamicMenuUpdatesMode}
+	 * @param value - the update mode
+	 */
+	public void setDynamicMenuUpdatesMode(@NonNull DynamicMenuUpdatesMode value){
+		this.menuManager.setDynamicUpdatesMode(value);
+	}
 
+	/**
+	 *
+	 * @return The currently set DynamicMenuUpdatesMode. It defaults to ON_WITH_COMPAT_MODE if not set.
+	 */
+	public DynamicMenuUpdatesMode getDynamicMenuUpdatesMode(){
+		return this.menuManager.getDynamicMenuUpdatesMode();
 	}
 
 	/**
