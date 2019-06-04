@@ -152,8 +152,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		public void onNotified(RPCNotification notification) {
 			if(notification != null && remoteDisplay != null){
 				List<MotionEvent> motionEventList = convertTouchEvent((OnTouchEvent)notification);
-				for (MotionEvent motionEvent : motionEventList) {
-					remoteDisplay.handleMotionEvent(motionEvent);
+				if (motionEventList != null && !motionEventList.isEmpty()) {
+					for (MotionEvent motionEvent : motionEventList) {
+						remoteDisplay.handleMotionEvent(motionEvent);
+					}
 				}
 			}
 		}
@@ -489,7 +491,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			if (touchType == TouchType.BEGIN) {
 				sdlMotionEvent = new SdlMotionEvent();
 			} else{
-				return motionEventList;
+				return null;
 			}
 		}
 

@@ -7893,8 +7893,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				public void onNotified(RPCNotification notification) {
 					if (notification != null && remoteDisplay != null) {
 						List<MotionEvent> events = convertTouchEvent((OnTouchEvent) notification);
-						for (MotionEvent ev : events) {
-							remoteDisplay.handleMotionEvent(ev);
+						if (events != null && !events.isEmpty()) {
+							for (MotionEvent ev : events) {
+								remoteDisplay.handleMotionEvent(ev);
+							}
 						}
 					}
 				}
@@ -8076,7 +8078,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				if (touchType == TouchType.BEGIN) {
 					sdlMotionEvent = new SdlMotionEvent();
 				} else {
-					return motionEventList;
+					return null;
 				}
 			}
 
