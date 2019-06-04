@@ -8202,11 +8202,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					eventTime = downTime + touchEvent.getTimestamps().get(touchEvent.getTimestamps().size() - 1) - downTimeOnHMI;
 					break;
 				case END:
-					if (pointers.size() > 1) {
-						motionEventAction = MotionEvent.ACTION_POINTER_UP | pointers.indexOf(getPointerById(touchEvent.getId())) << MotionEvent.ACTION_POINTER_INDEX_SHIFT;
-					} else {
+					if(pointers.size() == 0){
 						//The motion event has just ended
 						motionEventAction = MotionEvent.ACTION_UP;
+					} else {
+						int pointerIndex = pointers.indexOf(getPointerById(touchEvent.getId()));
+						if (pointerIndex != -1) {
+							motionEventAction = MotionEvent.ACTION_POINTER_UP | pointerIndex << MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+						} else {
+							motionEventAction = MotionEvent.ACTION_UP;
+						}
 					}
 					eventTime = downTime + touchEvent.getTimestamps().get(touchEvent.getTimestamps().size() - 1) - downTimeOnHMI;
 					break;
