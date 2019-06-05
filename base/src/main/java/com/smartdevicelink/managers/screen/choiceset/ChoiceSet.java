@@ -43,7 +43,9 @@ import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.util.DebugTool;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 
 public class ChoiceSet {
@@ -348,13 +350,23 @@ public class ChoiceSet {
     }
 
     private void setUpHelpItems(List<VrHelpItem> helpItems){
-        // set help item positioning
+        List<VrHelpItem> clonedHelpItems = null;
+        VrHelpItem clonedHelpItem;
         if (helpItems != null) {
-            for (int i = 0; i < helpItems.size(); i++) {
-                helpItems.get(i).setPosition(i+1);
+            clonedHelpItems = new ArrayList<>();
+            if (!helpItems.isEmpty()) {
+                for (int i = 0; i < helpItems.size(); i++) {
+                    // clone helpItem so we don't modify the develop copy
+                    clonedHelpItem = new VrHelpItem((Hashtable) helpItems.get(i).getStore().clone());
+
+                    // set help item positioning
+                    clonedHelpItem.setPosition(i + 1);
+
+                    clonedHelpItems.add(clonedHelpItem);
+                }
             }
-            setVrHelpList(helpItems);
         }
+        setVrHelpList(clonedHelpItems);
     }
 
 }

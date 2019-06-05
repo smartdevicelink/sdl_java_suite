@@ -32,6 +32,8 @@
 
 package com.smartdevicelink.managers.screen.choiceset.operations;
 
+import android.util.Log;
+
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Choice;
@@ -40,23 +42,26 @@ import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
 
+import org.json.JSONException;
+
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 
 public class CheckChoiceVROptionalOperation implements Runnable {
 
-	private WeakReference<CheckChoiceVROptionalInterface> checkChoiceVROptionalInterface;
+	private CheckChoiceVROptionalInterface checkChoiceVROptionalInterface;
 	private WeakReference<ISdl> internalInterface;
 	private boolean isVROptional;
 
 	public CheckChoiceVROptionalOperation(ISdl internalInterface, CheckChoiceVROptionalInterface checkChoiceVROptionalInterface){
 		this.internalInterface = new WeakReference<>(internalInterface);
-		this.checkChoiceVROptionalInterface = new WeakReference<>(checkChoiceVROptionalInterface);
+		this.checkChoiceVROptionalInterface = checkChoiceVROptionalInterface;
 	}
 
 	@Override
 	public void run() {
 		sendTestChoiceNoVR();
+		Log.i("CHOICE SET", " SENDING TEST CHOICES");
 	}
 
 	/**
@@ -68,6 +73,11 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 		cics.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
+				try {
+					Log.i("CHOICE SET", "WITH NO VR: "+ response.serializeJSON().toString());
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 				if (response.getSuccess()) {
 					// The request was successful, now send the SDLPerformInteraction RPC
 					DebugTool.logInfo("Connected head unit supports choice cells without voice commands. " +
@@ -93,6 +103,11 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 		cics.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
+				try {
+					Log.i("CHOICE SET", "WITH VR: "+ response.serializeJSON().toString());
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 				if (response.getSuccess()) {
 					// The request was successful, now send the SDLPerformInteraction RPC
 					DebugTool.logWarning("Connected head unit does not support choice cells without voice commands. " +
@@ -103,7 +118,7 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 					DebugTool.logError("Connected head unit has rejected all choice cells, choice manager disabled. Error: " + response.getInfo());
 					isVROptional = false;
 					if (checkChoiceVROptionalInterface != null){
-						checkChoiceVROptionalInterface.get().onError(response.getInfo());
+						checkChoiceVROptionalInterface.onError(response.getInfo());
 					}
 				}
 			}
@@ -120,7 +135,7 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (checkChoiceVROptionalInterface != null){
-					checkChoiceVROptionalInterface.get().onCheckChoiceVROperationComplete(isVROptional);
+					checkChoiceVROptionalInterface.onCheckChoiceVROperationComplete(isVROptional);
 				}
 			}
 		});
@@ -132,6 +147,7 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 	private CreateInteractionChoiceSet testCellWithVR(boolean hasVR){
 		Choice choice = new Choice(0, "Test Cell");
 		choice.setVrCommands((hasVR ? Collections.singletonList("Test VR") : null));
+		choice.setIgnoreAddingVRItems(true);
 		return new CreateInteractionChoiceSet(0, Collections.singletonList(choice));
 	}
 }

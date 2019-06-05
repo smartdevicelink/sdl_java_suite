@@ -32,7 +32,6 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -63,6 +62,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * <strong>ChoiceSetManager</strong> <br>
@@ -90,7 +90,7 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
     private ChoiceSet pendingPresentationSet;
     private Boolean isVROptional;
     // We will pass operations into this to be completed
-    private ExecutorService transactionService;
+    private OperationScheduler operationScheduler;
 
     private int nextChoiceId;
     private int choiceCellIdMin = 1;
@@ -104,16 +104,20 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
         nextChoiceId = choiceCellIdMin;
         isVROptional = true;
         keyboardConfiguration = defaultKeyboardConfiguration();
+        currentSystemContext = SystemContext.SYSCTXT_MAIN;
+        currentHMILevel = HMILevel.HMI_NONE;
         // create the new executor service
-        transactionService = Executors.newSingleThreadExecutor();
+        operationScheduler = new OperationScheduler();
+        operationScheduler.suspend(); // suspend when constructed.
         addListeners();
     }
 
     @Override
     public void start(CompletionListener listener){
-        transitionToState(CHECKING_VOICE);
-        checkVoiceOptional();
+        transitionToState(READY);
         super.start(listener);
+        // after manager is started, check voice
+        checkVoiceOptional();
     }
 
     @Override
@@ -123,8 +127,8 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
         currentSystemContext = null;
         displayCapabilities = null;
 
-        // TODO: cancel all queued operations, if any exist
-        transactionService.shutdownNow();
+        // cancel the operations
+        operationScheduler.shutdownNow();
 
         pendingPresentationSet = null;
         isVROptional = true;
@@ -323,6 +327,25 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
                 OnHMIStatus hmiStatus = (OnHMIStatus) notification;
                 HMILevel oldHMILevel = currentHMILevel;
                 currentHMILevel = hmiStatus.getHmiLevel();
+
+                if (currentHMILevel.equals(HMILevel.HMI_NONE)){
+                    operationScheduler.suspend();
+                }
+
+                if (oldHMILevel.equals(HMILevel.HMI_NONE) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
+                    operationScheduler.resume();
+                }
+
+                currentSystemContext = hmiStatus.getSystemContext();
+
+                if (currentSystemContext.equals(SystemContext.SYSCTXT_HMI_OBSCURED) || currentSystemContext.equals(SystemContext.SYSCTXT_ALERT)){
+                    operationScheduler.suspend();
+                }
+
+                if (currentSystemContext.equals(SystemContext.SYSCTXT_MAIN) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
+                    operationScheduler.resume();
+                }
+
             }
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -338,6 +361,7 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
             public void onCheckChoiceVROperationComplete(boolean vrOptional) {
                 isVROptional = vrOptional;
                 transitionToState(READY);
+                Log.i("CHOICE", "VOICE IS OPTIONAL: "+ vrOptional + " READY TO GO");
             }
 
             @Override
@@ -346,7 +370,7 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
                 transitionToState(ERROR);
             }
         });
-        transactionService.submit(checkChoiceVR);
+        operationScheduler.submit(checkChoiceVR);
     }
 
     private boolean setUpChoiceSet(ChoiceSet choiceSet) {
@@ -404,4 +428,6 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
         defaultProperties.setKeypressMode(KeypressMode.RESEND_CURRENT_ENTRY);
         return defaultProperties;
     }
+
+    // Our own
 }

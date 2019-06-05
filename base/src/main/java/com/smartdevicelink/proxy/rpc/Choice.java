@@ -97,6 +97,7 @@ public class Choice extends RPCStruct {
 	public static final String KEY_VR_COMMANDS = "vrCommands";
 	public static final String KEY_CHOICE_ID = "choiceID";
 	public static final String KEY_IMAGE = "image";
+	private boolean ignoreAddingVRItems;
 
 	/**
 	 * Constructs a newly allocated Choice object
@@ -153,15 +154,18 @@ public class Choice extends RPCStruct {
 
         if (rpcVersion == null || rpcVersion.getMajor() < 5){
 
-            // make sure there is at least one vr param
-            List<String> existingVrCommands = getVrCommands();
+            // this is added to allow the choice set manager to disable this functionality
+            if (!getIgnoreAddingVRItems()) {
+                // make sure there is at least one vr param
+                List<String> existingVrCommands = getVrCommands();
 
-            if (existingVrCommands == null || existingVrCommands.size() == 0) {
-                // if no commands set, set one due to a legacy head unit requirement
-                Integer choiceID = getChoiceID();
-                List<String> vrCommands = new ArrayList<>();
-                vrCommands.add(String.valueOf(choiceID));
-                setVrCommands(vrCommands);
+                if (existingVrCommands == null || existingVrCommands.size() == 0) {
+                    // if no commands set, set one due to a legacy head unit requirement
+                    Integer choiceID = getChoiceID();
+                    List<String> vrCommands = new ArrayList<>();
+                    vrCommands.add(String.valueOf(choiceID));
+                    setVrCommands(vrCommands);
+                }
             }
         }
 
@@ -256,5 +260,13 @@ public class Choice extends RPCStruct {
     @SuppressWarnings("unchecked")
     public Image getSecondaryImage() {
         return (Image) getObject(Image.class, KEY_SECONDARY_IMAGE);
-    }      
+    }
+
+    public void setIgnoreAddingVRItems(boolean ignoreAddingVRItems){
+        this.ignoreAddingVRItems = ignoreAddingVRItems;
+    }
+
+    private Boolean getIgnoreAddingVRItems(){
+        return this.ignoreAddingVRItems;
+    }
 }
