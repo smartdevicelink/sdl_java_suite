@@ -64,6 +64,7 @@ import com.smartdevicelink.util.Version;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -428,6 +429,24 @@ public class AudioStreamManager extends BaseAudioStreamManager {
         }
     }
 
+    /**
+     * Pushes raw audio data to SDL Core.
+     * The audio file will be played immediately. If another audio file is currently playing,
+     * the specified file will stay queued and automatically played when ready.
+     * @param data Audio raw dara to send.
+     * @param completionListener A completion listener that informs when the audio file is played.
+     */
+    public void pushBuffer(ByteBuffer data, CompletionListener completionListener) {
+        // streaming state must be STARTED (starting the service is ready. starting stream is started)
+        if (streamingStateMachine.getState() != StreamingStateMachine.STARTED) {
+            Log.w(TAG, "AudioStreamManager is not ready!");
+            return;
+        }
+
+        if (sdlAudioStream != null) {
+            sdlAudioStream.sendAudio(data, -1);
+        }
+    }
 
     @Override
     protected void onTransportUpdate(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail){
