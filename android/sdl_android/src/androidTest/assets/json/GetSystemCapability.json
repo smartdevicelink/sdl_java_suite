@@ -1,0 +1,19 @@
+{
+  "request":{
+    "name":"GetSystemCapability",
+    "correlationID":203,
+    "parameters":{
+      "systemCapabilityType":"NAVIGATION",
+      "subscribe": true
+    }
+  },
+  "response":{
+    "name":"GetSystemCapabilityResponse",
+    "correlationID":204,
+    "parameters":{
+      "systemCapability":{
+        "systemCapabilityType":"NAVIGATION"
+      }
+    }
+  }
+}
