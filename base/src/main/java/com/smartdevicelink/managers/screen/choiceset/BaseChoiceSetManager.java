@@ -333,11 +333,17 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
 
     private void checkVoiceOptional(){
         transitionToState(CHECKING_VOICE);
-        CheckChoiceVROptionalOperation checkChoiceVR = new CheckChoiceVROptionalOperation(new CheckChoiceVROptionalInterface() {
+        CheckChoiceVROptionalOperation checkChoiceVR = new CheckChoiceVROptionalOperation(internalInterface, new CheckChoiceVROptionalInterface() {
             @Override
             public void onCheckChoiceVROperationComplete(boolean vrOptional) {
                 isVROptional = vrOptional;
                 transitionToState(READY);
+            }
+
+            @Override
+            public void onError(String error) {
+                DebugTool.logError(error);
+                transitionToState(ERROR);
             }
         });
         transactionService.submit(checkChoiceVR);

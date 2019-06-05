@@ -34,4 +34,5 @@ package com.smartdevicelink.managers.screen.choiceset.operations;
 
 public interface CheckChoiceVROptionalInterface {
 	void onCheckChoiceVROperationComplete(boolean vrOptional);
+	void onError(String error);
 }

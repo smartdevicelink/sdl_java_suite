@@ -32,20 +32,106 @@
 
 package com.smartdevicelink.managers.screen.choiceset.operations;
 
+import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.Choice;
+import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
+import com.smartdevicelink.util.DebugTool;
+
 import java.lang.ref.WeakReference;
+import java.util.Collections;
 
 public class CheckChoiceVROptionalOperation implements Runnable {
 
 	private WeakReference<CheckChoiceVROptionalInterface> checkChoiceVROptionalInterface;
+	private WeakReference<ISdl> internalInterface;
+	private boolean isVROptional;
 
-	public CheckChoiceVROptionalOperation(CheckChoiceVROptionalInterface checkChoiceVROptionalInterface){
+	public CheckChoiceVROptionalOperation(ISdl internalInterface, CheckChoiceVROptionalInterface checkChoiceVROptionalInterface){
+		this.internalInterface = new WeakReference<>(internalInterface);
 		this.checkChoiceVROptionalInterface = new WeakReference<>(checkChoiceVROptionalInterface);
 	}
 
 	@Override
 	public void run() {
-		if (checkChoiceVROptionalInterface != null){
-			checkChoiceVROptionalInterface.get().onCheckChoiceVROperationComplete(false);
+		sendTestChoiceNoVR();
+	}
+
+	/**
+	 * As VR used to me mandatory, we first will sent a choice cell WITHOUT VR. If this succeeds, we are good,
+	 * if not check again without.
+	 */
+	private void sendTestChoiceNoVR() {
+		CreateInteractionChoiceSet cics = testCellWithVR(false);
+		cics.setOnRPCResponseListener(new OnRPCResponseListener() {
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				if (response.getSuccess()) {
+					// The request was successful, now send the SDLPerformInteraction RPC
+					DebugTool.logInfo("Connected head unit supports choice cells without voice commands. " +
+							"Cells without voice will be sent without voice from now on (no placeholder voice).");
+					isVROptional = true;
+					deleteTestChoices();
+				}else{
+					sendTestChoiceWithVR();
+				}
+			}
+		});
+
+		if (internalInterface.get() != null) {
+			internalInterface.get().sendRPC(cics);
 		}
+	}
+
+	/**
+	 * The initial request failed. Try again without VR, if this fails, return and put CSM in error state
+	 */
+	private void sendTestChoiceWithVR(){
+		CreateInteractionChoiceSet cics = testCellWithVR(true);
+		cics.setOnRPCResponseListener(new OnRPCResponseListener() {
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				if (response.getSuccess()) {
+					// The request was successful, now send the SDLPerformInteraction RPC
+					DebugTool.logWarning("Connected head unit does not support choice cells without voice commands. " +
+							"Cells without voice will be sent with placeholder voices from now on.");
+					isVROptional = false;
+					deleteTestChoices();
+				}else{
+					DebugTool.logError("Connected head unit has rejected all choice cells, choice manager disabled. Error: " + response.getInfo());
+					isVROptional = false;
+					if (checkChoiceVROptionalInterface != null){
+						checkChoiceVROptionalInterface.get().onError(response.getInfo());
+					}
+				}
+			}
+		});
+
+		if (internalInterface.get() != null) {
+			internalInterface.get().sendRPC(cics);
+		}
+	}
+
+	private void deleteTestChoices(){
+		DeleteInteractionChoiceSet delete = new DeleteInteractionChoiceSet(0);
+		delete.setOnRPCResponseListener(new OnRPCResponseListener() {
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				if (checkChoiceVROptionalInterface != null){
+					checkChoiceVROptionalInterface.get().onCheckChoiceVROperationComplete(isVROptional);
+				}
+			}
+		});
+		if (internalInterface.get() != null){
+			internalInterface.get().sendRPC(delete);
+		}
+	}
+
+	private CreateInteractionChoiceSet testCellWithVR(boolean hasVR){
+		Choice choice = new Choice(0, "Test Cell");
+		choice.setVrCommands((hasVR ? Collections.singletonList("Test VR") : null));
+		return new CreateInteractionChoiceSet(0, Collections.singletonList(choice));
 	}
 }
