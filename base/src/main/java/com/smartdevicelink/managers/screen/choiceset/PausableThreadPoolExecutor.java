@@ -59,7 +59,7 @@ class PausableThreadPoolExecutor extends ThreadPoolExecutor {
 		}
 	}
 
-	public void resume() {
+	void resume() {
 		threadLock.lock();
 		try {
 			isPaused = false;
