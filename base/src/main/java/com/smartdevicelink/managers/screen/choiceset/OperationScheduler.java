@@ -38,15 +38,18 @@ import java.util.concurrent.TimeUnit;
 class OperationScheduler {
 
 	private PausableThreadPoolExecutor pausableThreadPoolExecutor;
+	private LinkedBlockingQueue<Runnable> operationQueue;
 
 	OperationScheduler() {
-		LinkedBlockingQueue<Runnable> operationQueue = new LinkedBlockingQueue<>();
+		operationQueue = new LinkedBlockingQueue<>();
 		pausableThreadPoolExecutor = new PausableThreadPoolExecutor(1, 10, 10, TimeUnit.SECONDS, operationQueue);
 	}
 
 	void submit(Runnable operation){
 		pausableThreadPoolExecutor.execute(operation);
 	}
+
+	void clearQueue() { operationQueue.clear(); }
 
 	void suspend() {
 		pausableThreadPoolExecutor.pause();

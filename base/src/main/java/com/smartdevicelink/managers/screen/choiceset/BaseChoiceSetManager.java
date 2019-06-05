@@ -111,9 +111,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     @Override
     public void start(CompletionListener listener){
-        transitionToState(READY);
-        super.start(listener);
+        transitionToState(CHECKING_VOICE);
         checkVoiceOptional();
+        super.start(listener);
     }
 
     @Override
@@ -134,7 +134,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     private void checkVoiceOptional(){
-        transitionToState(CHECKING_VOICE);
         CheckChoiceVROptionalOperation checkChoiceVR = new CheckChoiceVROptionalOperation(internalInterface, new CheckChoiceVROptionalInterface() {
             @Override
             public void onCheckChoiceVROperationComplete(boolean vrOptional) {
@@ -145,15 +144,20 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
             @Override
             public void onError(String error) {
+                // At this point, there were errors trying to send a test CICS
+                // If we reach this state, we cannot use the manager
                 DebugTool.logError(error);
                 transitionToState(ERROR);
+                // checking VR will always be first in the queue.
+                // If pre-load operations were added while this was in progress
+                // clear it from the queue onError.
+                operationScheduler.clearQueue();
             }
         });
         operationScheduler.submit(checkChoiceVR);
     }
 
     public void preloadChoices(List<ChoiceCell> choices, CompletionListener listener){
-        if (!isReady()){ return; }
 
         HashSet<ChoiceCell> choicesToUpload = choicesToBeUploadedWithArray(choices);
         choicesToUpload.removeAll(preloadedMutableChoices);
