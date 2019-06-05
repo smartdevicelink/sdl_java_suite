@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class PausableThreadPoolExecutor extends ThreadPoolExecutor {
+class PausableThreadPoolExecutor extends ThreadPoolExecutor {
 
 	private boolean isPaused;
 	private ReentrantLock threadLock;
@@ -50,7 +50,7 @@ public class PausableThreadPoolExecutor extends ThreadPoolExecutor {
 		}
 	}
 
-	public void pause() {
+	void pause() {
 		threadLock.lock();
 		try {
 			isPaused = true;

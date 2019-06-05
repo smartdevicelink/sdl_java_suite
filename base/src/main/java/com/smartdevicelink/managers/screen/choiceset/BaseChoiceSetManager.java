@@ -60,16 +60,13 @@ import com.smartdevicelink.util.DebugTool;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 /**
  * <strong>ChoiceSetManager</strong> <br>
  * <p>
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
  */
-public abstract class BaseChoiceSetManager extends BaseSubManager {
+abstract class BaseChoiceSetManager extends BaseSubManager {
 
     // additional state
     private static final int CHECKING_VOICE = 0xA0;
@@ -95,14 +92,14 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
     private int nextChoiceId;
     private int choiceCellIdMin = 1;
 
-    public BaseChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+    BaseChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
 
         this.fileManager = new WeakReference<>(fileManager);
         preloadedMutableChoices = new HashSet<>();
         pendingMutablePreloadChoices = new HashSet<>();
         nextChoiceId = choiceCellIdMin;
-        isVROptional = true;
+        isVROptional = false;
         keyboardConfiguration = defaultKeyboardConfiguration();
         currentSystemContext = SystemContext.SYSCTXT_MAIN;
         currentHMILevel = HMILevel.HMI_NONE;
@@ -116,7 +113,6 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
     public void start(CompletionListener listener){
         transitionToState(READY);
         super.start(listener);
-        // after manager is started, check voice
         checkVoiceOptional();
     }
 
@@ -137,8 +133,27 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
         super.dispose();
     }
 
+    private void checkVoiceOptional(){
+        transitionToState(CHECKING_VOICE);
+        CheckChoiceVROptionalOperation checkChoiceVR = new CheckChoiceVROptionalOperation(internalInterface, new CheckChoiceVROptionalInterface() {
+            @Override
+            public void onCheckChoiceVROperationComplete(boolean vrOptional) {
+                isVROptional = vrOptional;
+                transitionToState(READY);
+                Log.i("CHOICE", "VOICE IS OPTIONAL: "+ vrOptional + " READY TO GO");
+            }
+
+            @Override
+            public void onError(String error) {
+                DebugTool.logError(error);
+                transitionToState(ERROR);
+            }
+        });
+        operationScheduler.submit(checkChoiceVR);
+    }
+
     public void preloadChoices(List<ChoiceCell> choices, CompletionListener listener){
-        if (getState() != READY){ return; }
+        if (!isReady()){ return; }
 
         HashSet<ChoiceCell> choicesToUpload = choicesToBeUploadedWithArray(choices);
         choicesToUpload.removeAll(preloadedMutableChoices);
@@ -163,7 +178,7 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     public void deleteChoices(List<ChoiceCell> choices){
-        if (getState() != READY){ return; }
+        if (!isReady()){ return; }
 
         // Find cells to be deleted that are already uploaded or are pending upload
         HashSet<ChoiceCell> cellsToDelete = choicesToBeDeletedWithArray(choices);
@@ -178,7 +193,7 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     public void presentChoiceSet(final ChoiceSet choiceSet, InteractionMode mode, KeyboardListener listener){
-        if (getState() != READY){ return; }
+        if (!isReady()){ return; }
         if (choiceSet == null) {
             DebugTool.logWarning("Attempted to present a null choice set. Ignoring request");
             return;
@@ -209,7 +224,7 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     public void presentKeyboardWithInitialText(String initialText, KeyboardListener listener){
-        if (getState() != READY){ return; }
+        if (!isReady()){ return; }
 
         if (pendingPresentationSet != null){
             //[self.pendingPresentOperation cancel];
@@ -354,25 +369,6 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
 
     // ADDITIONAL HELPERS
 
-    private void checkVoiceOptional(){
-        transitionToState(CHECKING_VOICE);
-        CheckChoiceVROptionalOperation checkChoiceVR = new CheckChoiceVROptionalOperation(internalInterface, new CheckChoiceVROptionalInterface() {
-            @Override
-            public void onCheckChoiceVROperationComplete(boolean vrOptional) {
-                isVROptional = vrOptional;
-                transitionToState(READY);
-                Log.i("CHOICE", "VOICE IS OPTIONAL: "+ vrOptional + " READY TO GO");
-            }
-
-            @Override
-            public void onError(String error) {
-                DebugTool.logError(error);
-                transitionToState(ERROR);
-            }
-        });
-        operationScheduler.submit(checkChoiceVR);
-    }
-
     private boolean setUpChoiceSet(ChoiceSet choiceSet) {
 
         List<ChoiceCell> choices = choiceSet.getChoices();
@@ -416,7 +412,6 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
             DebugTool.logError("If using voice recognition commands, all VR commands must be unique. There are " + uniqueVoiceCommands.size() + " unique VR commands and " + allVoiceCommandsCount + " VR commands. The choice set will not be set.");
             return false;
         }
-
         return true;
     }
 
@@ -429,5 +424,12 @@ public abstract class BaseChoiceSetManager extends BaseSubManager {
         return defaultProperties;
     }
 
-    // Our own
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean isReady(){
+        if (getState() != READY){
+            DebugTool.logInfo("Choice Manager State: "+ getState());
+            return false;
+        }
+        return true;
+    }
 }

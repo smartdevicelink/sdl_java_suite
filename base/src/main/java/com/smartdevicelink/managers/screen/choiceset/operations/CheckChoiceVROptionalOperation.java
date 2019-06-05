@@ -32,8 +32,6 @@
 
 package com.smartdevicelink.managers.screen.choiceset.operations;
 
-import android.util.Log;
-
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Choice;
@@ -41,8 +39,6 @@ import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
-
-import org.json.JSONException;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
@@ -61,7 +57,6 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 	@Override
 	public void run() {
 		sendTestChoiceNoVR();
-		Log.i("CHOICE SET", " SENDING TEST CHOICES");
 	}
 
 	/**
@@ -73,11 +68,6 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 		cics.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				try {
-					Log.i("CHOICE SET", "WITH NO VR: "+ response.serializeJSON().toString());
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
 				if (response.getSuccess()) {
 					// The request was successful, now send the SDLPerformInteraction RPC
 					DebugTool.logInfo("Connected head unit supports choice cells without voice commands. " +
@@ -103,11 +93,6 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 		cics.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				try {
-					Log.i("CHOICE SET", "WITH VR: "+ response.serializeJSON().toString());
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
 				if (response.getSuccess()) {
 					// The request was successful, now send the SDLPerformInteraction RPC
 					DebugTool.logWarning("Connected head unit does not support choice cells without voice commands. " +
@@ -134,6 +119,10 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 		delete.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
+				if (response.getSuccess() != null){
+					DebugTool.logInfo("Delete choice test set: "+ response.getSuccess());
+				}
+
 				if (checkChoiceVROptionalInterface != null){
 					checkChoiceVROptionalInterface.onCheckChoiceVROperationComplete(isVROptional);
 				}
