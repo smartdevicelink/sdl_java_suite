@@ -73,7 +73,7 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 					DebugTool.logInfo("Connected head unit supports choice cells without voice commands. " +
 							"Cells without voice will be sent without voice from now on (no placeholder voice).");
 					isVROptional = true;
-					deleteTestChoices();
+					deleteTestChoiceSet();
 				}else{
 					sendTestChoiceWithVR();
 				}
@@ -98,7 +98,7 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 					DebugTool.logWarning("Connected head unit does not support choice cells without voice commands. " +
 							"Cells without voice will be sent with placeholder voices from now on.");
 					isVROptional = false;
-					deleteTestChoices();
+					deleteTestChoiceSet();
 				}else{
 					DebugTool.logError("Connected head unit has rejected all choice cells, choice manager disabled. Error: " + response.getInfo());
 					isVROptional = false;
@@ -114,7 +114,7 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 		}
 	}
 
-	private void deleteTestChoices(){
+	private void deleteTestChoiceSet(){
 		DeleteInteractionChoiceSet delete = new DeleteInteractionChoiceSet(0);
 		delete.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override

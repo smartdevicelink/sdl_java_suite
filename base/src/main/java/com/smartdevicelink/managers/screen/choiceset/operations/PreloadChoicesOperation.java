@@ -30,41 +30,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.managers.screen.choiceset;
+package com.smartdevicelink.managers.screen.choiceset.operations;
 
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+class PreloadChoicesOperation implements Runnable {
 
-class OperationScheduler {
-
-	private PausableThreadPoolExecutor pausableThreadPoolExecutor;
-	private LinkedBlockingQueue<Runnable> operationQueue;
-
-	OperationScheduler() {
-		operationQueue = new LinkedBlockingQueue<>();
-		// set maxPoolSize to number of processors
-		pausableThreadPoolExecutor = new PausableThreadPoolExecutor(1, Runtime.getRuntime().availableProcessors(), 10, TimeUnit.SECONDS, operationQueue);
-	}
-
-	void submit(Runnable operation){
-		pausableThreadPoolExecutor.execute(operation);
-	}
-
-	void clearQueue() { operationQueue.clear(); }
-
-	void suspend() {
-		pausableThreadPoolExecutor.pause();
-	}
-
-	void resume(){
-		pausableThreadPoolExecutor.resume();
-	}
-
-	void shutdown(){
-		pausableThreadPoolExecutor.shutdown();
-	}
-
-	void shutdownNow(){
-		pausableThreadPoolExecutor.shutdownNow();
+	@Override
+	public void run() {
 	}
 }

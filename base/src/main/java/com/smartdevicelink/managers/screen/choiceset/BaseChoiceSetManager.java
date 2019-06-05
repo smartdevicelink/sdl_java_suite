@@ -175,8 +175,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         // Add the preload cells to the pending preload choices
         pendingMutablePreloadChoices.addAll(choicesToUpload);
 
-        // Upload pending preloads
-
         //TODO: PreloadChoicesOperation
 
     }
