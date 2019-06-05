@@ -444,7 +444,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
         }
 
         if (sdlAudioStream != null) {
-            sdlAudioStream.sendAudio(data, -1);
+            sdlAudioStream.sendAudio(data, -1, completionListener);
         }
     }
 

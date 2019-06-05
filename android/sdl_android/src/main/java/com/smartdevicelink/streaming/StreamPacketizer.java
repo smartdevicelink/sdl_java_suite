@@ -33,6 +33,7 @@ package com.smartdevicelink.streaming;
 
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
@@ -68,7 +69,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
     private Object mPauseLock;
     private boolean mPaused;
     private boolean isServiceProtected = false;
-    private BlockingQueue<ByteBuffer> mOutputQueue;
+    private BlockingQueue<ByteBufferWithListener> mOutputQueue;
 
 	public StreamPacketizer(IStreamListener streamListener, InputStream is, SessionType sType, byte rpcSessionID, SdlSession session) throws IOException {
 		super(streamListener, is, sType, rpcSessionID, session);
@@ -83,7 +84,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 			bufferSize = BUFF_READ_SIZE;
 			buffer = new byte[bufferSize];
 		}
-		mOutputQueue = new LinkedBlockingQueue<ByteBuffer>(MAX_QUEUE_SIZE / bufferSize);
+		mOutputQueue = new LinkedBlockingQueue<ByteBufferWithListener>(MAX_QUEUE_SIZE / bufferSize);
 	}
 
 	public void start() throws IOException {
@@ -138,9 +139,13 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 						}
 					}
 				} else { // using sendFrame interface
+					ByteBufferWithListener byteBufferWithListener;
 					ByteBuffer frame;
+					CompletionListener completionListener;
 					try {
-						frame = mOutputQueue.take();
+						byteBufferWithListener = mOutputQueue.take();
+						frame = byteBufferWithListener.byteBuffer;
+						completionListener = byteBufferWithListener.completionListener;
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt();
 						break;
@@ -162,6 +167,10 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 						}
 
 						frame.position(frame.position() + len);
+					}
+
+					if (!frame.hasRemaining() && completionListener != null){
+						completionListener.onComplete(true);
 					}
 				}
 			}
@@ -216,7 +225,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 	 */
 	@Override
 	public void sendFrame(ByteBuffer data, long presentationTimeUs) {
-		sendByteBufferData(data);
+		sendByteBufferData(data, null);
 	}
 
 	/**
@@ -237,7 +246,12 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 	 */
 	@Override
 	public void sendAudio(ByteBuffer data, long presentationTimeUs) {
-		sendByteBufferData(data);
+		sendByteBufferData(data, null);
+	}
+
+	@Override
+	public void sendAudio(ByteBuffer data, long presentationTimeUs, CompletionListener completionListener) {
+		sendByteBufferData(data, completionListener);
 	}
 
 	private void sendArrayData(byte[] data, int offset, int length)
@@ -252,13 +266,13 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 		buffer.flip();
 
 		try {
-			mOutputQueue.put(buffer);
+			mOutputQueue.put(new ByteBufferWithListener(buffer, null));
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
 	}
 
-	private void sendByteBufferData(ByteBuffer data) {
+	private void sendByteBufferData(ByteBuffer data, CompletionListener completionListener) {
 		if (data == null || data.remaining() == 0) {
 			return;
 		}
@@ -270,9 +284,18 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 		buffer.flip();
 
 		try {
-			mOutputQueue.put(buffer);
+			mOutputQueue.put(new ByteBufferWithListener(buffer, completionListener));
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
+		}
+	}
+
+	private class ByteBufferWithListener{
+		ByteBuffer byteBuffer;
+		CompletionListener completionListener;
+		ByteBufferWithListener (ByteBuffer byteBuffer, CompletionListener completionListener){
+			this.byteBuffer = byteBuffer;
+			this.completionListener = completionListener;
 		}
 	}
 }
