@@ -61,7 +61,6 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertNull(screenManager.getSoftButtonObjectByName("test"));
 		assertNull(screenManager.getSoftButtonObjectById(1));
 		assertEquals(screenManager.getDynamicMenuUpdatesMode(), DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE);
-		assertEquals(screenManager.getState(), BaseSubManager.READY);
 	}
 	
 	public void testSetTextField() {
