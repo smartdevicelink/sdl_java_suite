@@ -39,6 +39,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -55,6 +57,10 @@ public class SDLLockScreenActivity extends Activity {
 	public static final String LOCKSCREEN_CUSTOM_VIEW_EXTRA = "LOCKSCREEN_CUSTOM_VIEW_EXTRA";
 	public static final String LOCKSCREEN_DEVICE_LOGO_DOWNLOADED = "LOCKSCREEN_DEVICE_LOGO_DOWNLOADED";
 	public static final String CLOSE_LOCK_SCREEN_ACTION = "CLOSE_LOCK_SCREEN";
+	public static final String KEY_LOCKSCREEN_DISIMISSIBLE = "KEY_LOCKSCREEN_DISIMISSIBLE";
+	private static final int MIN_SWIPE_DISTANCE = 200;
+	private boolean mIsDismissable;
+	private GestureDetector mGestureDetector;
 
 	private final BroadcastReceiver lockScreenBroadcastReceiver = new BroadcastReceiver() {
 		@Override
@@ -81,6 +87,8 @@ public class SDLLockScreenActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+		mIsDismissable = getIntent().getBooleanExtra(KEY_LOCKSCREEN_DISIMISSIBLE, false);
+		mGestureDetector = new GestureDetector(this, new SwipeUpGestureListener());
 		// set any parameters that came from the lock screen manager
 		initializeActivity(getIntent());
 
@@ -94,6 +102,15 @@ public class SDLLockScreenActivity extends Activity {
 	}
 
 	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		if (mIsDismissable) {
+			return mGestureDetector.onTouchEvent(event);
+		}
+		return super.onTouchEvent(event);
+	}
+
+
+		@Override
 	protected void onDestroy() {
 		unregisterReceiver(lockScreenBroadcastReceiver);
 		super.onDestroy();
@@ -156,6 +173,17 @@ public class SDLLockScreenActivity extends Activity {
 
 	private void setCustomView(int customView) {
 		setContentView(customView);
+	}
+
+	private class SwipeUpGestureListener extends GestureDetector.SimpleOnGestureListener {
+		@Override
+		public boolean onFling(MotionEvent event1, MotionEvent event2,
+							   float velocityX, float velocityY) {
+			if ((event1.getY() - event2.getY()) > MIN_SWIPE_DISTANCE) {
+				finish();
+			}
+			return true;
+		}
 	}
 
 }
