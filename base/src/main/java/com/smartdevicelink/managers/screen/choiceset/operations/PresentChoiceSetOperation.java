@@ -45,6 +45,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.PerformInteraction;
+import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
@@ -103,21 +104,60 @@ public class PresentChoiceSetOperation implements Runnable {
 				presentChoiceSet();
 			}
 		});
-
 	}
-
 
 	// SENDING REQUESTS
 
-	private void updateKeyboardProperties(CompletionListener listener){
+	private void updateKeyboardProperties(final CompletionListener listener){
 
+		if (keyboardProperties == null){
+			if (listener != null){
+				listener.onComplete(false);
+			}
+			return;
+		}
 
+		SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
+		setGlobalProperties.setKeyboardProperties(keyboardProperties);
+		setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+
+				if (!response.getSuccess()){
+					DebugTool.logError("Error Setting keyboard properties in present choice set operation");
+				}
+
+				updatedKeyboardProperties = true;
+
+				if (listener != null){
+					listener.onComplete(true);
+				}
+			}
+		});
 	}
 
 	private void presentChoiceSet() {
+		PerformInteraction pi = getPerformInteraction();
+		pi.setOnRPCResponseListener(new OnRPCResponseListener() {
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				if (!response.getSuccess()){
+					DebugTool.logError("Presenting Choice set failed: "+ response.getInfo());
+					finishOperation();
+				}
 
+				PerformInteractionResponse performInteractionResponse = (PerformInteractionResponse) response;
+				setSelectedCellWithId(performInteractionResponse.getChoiceID());
+				selectedTriggerSource = performInteractionResponse.getTriggerSource();
 
-
+				finishOperation();
+			}
+		});
+		if (internalInterface.get() != null){
+			internalInterface.get().sendRPC(pi);
+		}else {
+			DebugTool.logError("Internal Interface null when presenting choice set in operation");
+		}
 	}
 
 	private void finishOperation() {
@@ -244,7 +284,5 @@ public class PresentChoiceSetOperation implements Runnable {
 		} else {
 			DebugTool.logError("Present Choice Keyboard Listener Not Added");
 		}
-
-
 	}
 }
