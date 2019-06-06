@@ -210,7 +210,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 	/**
 	 * Called by the app.
 	 *
-	 * @see com.smartdevicelink.proxy.interfaces.IVideoStreamListener#sendFrame(byte[], int, int, long)
+	 * @see IVideoStreamListener#sendFrame(byte[], int, int, long)
 	 */
 	@Override
 	public void sendFrame(byte[] data, int offset, int length, long presentationTimeUs)
@@ -221,7 +221,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 	/**
 	 * Called by the app.
 	 *
-	 * @see com.smartdevicelink.proxy.interfaces.IVideoStreamListener#sendFrame(ByteBuffer, long)
+	 * @see IVideoStreamListener#sendFrame(ByteBuffer, long)
 	 */
 	@Override
 	public void sendFrame(ByteBuffer data, long presentationTimeUs) {
@@ -231,7 +231,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 	/**
 	 * Called by the app.
 	 *
-	 * @see com.smartdevicelink.proxy.interfaces.IAudioStreamListener#sendAudio(byte[], int, int, long)
+	 * @see IAudioStreamListener#sendAudio(byte[], int, int, long)
 	 */
 	@Override
 	public void sendAudio(byte[] data, int offset, int length, long presentationTimeUs)
@@ -242,13 +242,18 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 	/**
 	 * Called by the app.
 	 *
-	 * @see com.smartdevicelink.proxy.interfaces.IAudioStreamListener#sendAudio(ByteBuffer, long)
+	 * @see IAudioStreamListener#sendAudio(ByteBuffer, long)
 	 */
 	@Override
 	public void sendAudio(ByteBuffer data, long presentationTimeUs) {
 		sendByteBufferData(data, null);
 	}
 
+	/**
+	 * Called by the app.
+	 *
+	 * @see IAudioStreamListener#sendAudio(ByteBuffer, long, CompletionListener)
+	 */
 	@Override
 	public void sendAudio(ByteBuffer data, long presentationTimeUs, CompletionListener completionListener) {
 		sendByteBufferData(data, completionListener);
