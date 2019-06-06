@@ -40,6 +40,8 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.screen.choiceset.operations.CheckChoiceVROptionalInterface;
 import com.smartdevicelink.managers.screen.choiceset.operations.CheckChoiceVROptionalOperation;
+import com.smartdevicelink.managers.screen.choiceset.operations.DeleteChoicesOperation;
+import com.smartdevicelink.managers.screen.choiceset.operations.PreloadChoicesOperation;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -91,6 +93,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     // We will pass operations into this to be completed
     private PausableThreadPoolExecutor pausableThreadPoolExecutor;
     private LinkedBlockingQueue<Runnable> operationQueue;
+    private boolean pendingPresentOperation;
 
     private int nextChoiceId;
     private int choiceCellIdMin = 1;
@@ -98,20 +101,21 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     BaseChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
 
+        // capabilities
+        currentSystemContext = SystemContext.SYSCTXT_MAIN;
+        currentHMILevel = HMILevel.HMI_NONE;
+        addListeners();
+
+        // setting/instantiating class vars
         this.fileManager = new WeakReference<>(fileManager);
         preloadedMutableChoices = new HashSet<>();
         pendingMutablePreloadChoices = new HashSet<>();
         nextChoiceId = choiceCellIdMin;
         isVROptional = false;
         keyboardConfiguration = defaultKeyboardConfiguration();
-        currentSystemContext = SystemContext.SYSCTXT_MAIN;
-        currentHMILevel = HMILevel.HMI_NONE;
-        // create the new executor service
         operationQueue = new LinkedBlockingQueue<>();
-        // set maxPoolSize to number of processors
         pausableThreadPoolExecutor = new PausableThreadPoolExecutor(1, Runtime.getRuntime().availableProcessors(), 10, TimeUnit.SECONDS, operationQueue);
         pausableThreadPoolExecutor.pause(); // pause until HMI ready
-        addListeners();
     }
 
     @Override
@@ -188,15 +192,43 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         if (!isReady()){ return; }
 
         // Find cells to be deleted that are already uploaded or are pending upload
-        HashSet<ChoiceCell> cellsToDelete = choicesToBeDeletedWithArray(choices);
+        final HashSet<ChoiceCell> cellsToBeDeleted = choicesToBeDeletedWithArray(choices);
         HashSet<ChoiceCell> cellsToBeRemovedFromPending = choicesToBeRemovedFromPendingWithArray(choices);
 
         // If choices are deleted that are already uploaded or pending and are used by a pending presentation, cancel it and send an error
-        if (pendingPresentationSet != null && pendingPresentationSet.getChoices() != null) {
-            HashSet<ChoiceCell> pendingPresentationChoices = new HashSet<>(pendingPresentationSet.getChoices());
+        HashSet<ChoiceCell> pendingPresentationChoices = new HashSet<>(pendingPresentationSet.getChoices());
 
+        if (!pendingPresentOperation && (cellsToBeDeleted.retainAll(pendingPresentationChoices) || cellsToBeRemovedFromPending.retainAll(pendingPresentationChoices))){
+            DebugTool.logError("Attempting to delete choice cells while there is a pending presentation operation");
+            return;
         }
 
+        // Remove cells from pending and delete choices
+        pendingPresentationChoices.removeAll(cellsToBeRemovedFromPending);
+        for (Runnable operation : operationQueue){
+
+            if (!(operation instanceof PreloadChoicesOperation)){ continue; }
+
+            ((PreloadChoicesOperation) operation).removeChoicesFromUpload(cellsToBeRemovedFromPending);
+        }
+
+        // Find Choices to delete
+        if (cellsToBeDeleted.size() == 0){ return; }
+
+        findIdsOnChoices(cellsToBeDeleted);
+
+        DeleteChoicesOperation deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, cellsToBeDeleted, new CompletionListener() {
+            @Override
+            public void onComplete(boolean success) {
+                if (!success){
+                    DebugTool.logError("Failed to delete choices");
+                    return;
+                }
+                preloadedMutableChoices.removeAll(cellsToBeDeleted);
+            }
+        });
+
+        pausableThreadPoolExecutor.execute(deleteChoicesOperation);
     }
 
     public void presentChoiceSet(final ChoiceSet choiceSet, InteractionMode mode, KeyboardListener listener){

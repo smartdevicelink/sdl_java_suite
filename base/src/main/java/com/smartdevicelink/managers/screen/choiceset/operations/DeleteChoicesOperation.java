@@ -32,9 +32,66 @@
 
 package com.smartdevicelink.managers.screen.choiceset.operations;
 
-class DeleteChoicesOperation implements Runnable {
+import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
+import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+public class DeleteChoicesOperation implements Runnable {
+
+	private WeakReference<ISdl> internalInterface;
+	private HashSet<ChoiceCell> cellsToDelete;
+	private CompletionListener completionListener;
+
+	public DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, CompletionListener completionListener){
+		this.internalInterface = new WeakReference<>(internalInterface);
+		this.cellsToDelete = cellsToDelete;
+		this.completionListener = completionListener;
+	}
 
 	@Override
 	public void run() {
+		sendDeletions();
+	}
+
+	private void sendDeletions(){
+
+		List<DeleteInteractionChoiceSet> deleteChoices = new ArrayList<>(cellsToDelete.size());
+		for (ChoiceCell cell : cellsToDelete){
+			deleteChoices.add(new DeleteInteractionChoiceSet(cell.getChoiceId()));
+		}
+
+		if (internalInterface.get() != null){
+			internalInterface.get().sendRequests(deleteChoices, new OnMultipleRequestListener() {
+				@Override
+				public void onUpdate(int remainingRequests) {}
+
+				@Override
+				public void onFinished() {
+					if (completionListener != null){
+						completionListener.onComplete(true);
+					}
+				}
+
+				@Override
+				public void onError(int correlationId, Result resultCode, String info) {
+					if (completionListener != null){
+						completionListener.onComplete(false);
+					}
+				}
+
+				@Override
+				public void onResponse(int correlationId, RPCResponse response) {}
+			});
+		}
+
 	}
 }

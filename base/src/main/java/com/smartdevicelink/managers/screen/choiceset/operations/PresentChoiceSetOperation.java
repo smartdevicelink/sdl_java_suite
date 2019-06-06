@@ -32,7 +32,9 @@
 
 package com.smartdevicelink.managers.screen.choiceset.operations;
 
-class PresentChoiceSetOperation implements Runnable {
+public class PresentChoiceSetOperation implements Runnable {
+
+	public PresentChoiceSetOperation(){}
 
 	@Override
 	public void run() {

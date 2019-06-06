@@ -32,7 +32,9 @@
 
 package com.smartdevicelink.managers.screen.choiceset.operations;
 
-class PresentKeyboardOperation implements Runnable {
+public class PresentKeyboardOperation implements Runnable {
+
+	public PresentKeyboardOperation(){}
 
 	@Override
 	public void run() {

@@ -214,7 +214,7 @@ public class ChoiceCell {
      * Get the choiceId
      * @return the choiceId for this Choice Cell
      */
-    int getChoiceId() {
+    public int getChoiceId() {
         return choiceId;
     }
 

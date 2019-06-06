@@ -32,9 +32,19 @@
 
 package com.smartdevicelink.managers.screen.choiceset.operations;
 
-class PreloadChoicesOperation implements Runnable {
+import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
+
+import java.util.HashSet;
+
+public class PreloadChoicesOperation implements Runnable {
+
+	public PreloadChoicesOperation(){}
 
 	@Override
 	public void run() {
+	}
+
+	public void removeChoicesFromUpload(HashSet<ChoiceCell> choices){
+
 	}
 }
