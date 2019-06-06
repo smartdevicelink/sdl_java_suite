@@ -143,6 +143,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     private void checkVoiceOptional(){
+
         CheckChoiceVROptionalOperation checkChoiceVR = new CheckChoiceVROptionalOperation(internalInterface, new CheckChoiceVROptionalInterface() {
             @Override
             public void onCheckChoiceVROperationComplete(boolean vrOptional) {
@@ -168,7 +169,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     public void preloadChoices(List<ChoiceCell> choices, CompletionListener listener){
 
-        HashSet<ChoiceCell> choicesToUpload = choicesToBeUploadedWithArray(choices);
+        final HashSet<ChoiceCell> choicesToUpload = choicesToBeUploadedWithArray(choices);
         choicesToUpload.removeAll(preloadedMutableChoices);
         choicesToUpload.removeAll(pendingMutablePreloadChoices);
 
@@ -184,11 +185,28 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         // Add the preload cells to the pending preload choices
         pendingMutablePreloadChoices.addAll(choicesToUpload);
 
-        //TODO: PreloadChoicesOperation
+        if (fileManager.get() != null) {
+            PreloadChoicesOperation preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager.get(), displayCapabilities, isVROptional, choicesToUpload, new CompletionListener() {
+                @Override
+                public void onComplete(boolean success) {
+                    if (success){
+                        preloadedMutableChoices.addAll(choicesToUpload);
+                        pendingMutablePreloadChoices.removeAll(choicesToUpload);
+                    }else {
+                        DebugTool.logError("There was an error pre loading choice cells");
+                    }
+                }
+            });
+
+            executor.submit(preloadChoicesOperation);
+        } else {
+            DebugTool.logError("File Manager was null in preload choice operation");
+        }
 
     }
 
     public void deleteChoices(List<ChoiceCell> choices){
+
         if (!isReady()){ return; }
 
         // Find cells to be deleted that are already uploaded or are pending upload
@@ -227,7 +245,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     public void presentChoiceSet(final ChoiceSet choiceSet, InteractionMode mode, KeyboardListener listener){
+
         if (!isReady()){ return; }
+
         if (choiceSet == null) {
             DebugTool.logWarning("Attempted to present a null choice set. Ignoring request");
             return;
@@ -258,6 +278,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     public void presentKeyboardWithInitialText(String initialText, KeyboardListener listener){
+
         if (!isReady()){ return; }
 
         if (pendingPresentationSet != null){
