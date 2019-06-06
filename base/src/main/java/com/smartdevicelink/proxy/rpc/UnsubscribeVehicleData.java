@@ -850,4 +850,21 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	public Boolean getCloudAppVehicleID(){
 		return getBoolean( KEY_CLOUD_APP_VEHICLE_ID);
 	}
+
+	/**
+	 * Sets a boolean value for generic VehicleData.
+	 * @param vehicleDataName a String value
+	 * @param vehicleDataState a boolean value
+	 */
+	public void setGenericNetworkData(String vehicleDataName, Boolean vehicleDataState){
+		setParameters(vehicleDataName, vehicleDataState);
+	}
+
+	/**
+	 * Gets a boolean value for generic VehicleData.
+	 * @return a Boolean value.
+	 */
+	public Boolean getGenericNetworkData(String vehicleDataName){
+		return getBoolean(vehicleDataName);
+	}
 }

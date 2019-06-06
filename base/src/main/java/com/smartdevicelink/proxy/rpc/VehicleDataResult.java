@@ -74,6 +74,7 @@ import java.util.Hashtable;
 public class VehicleDataResult extends RPCStruct {
 	public static final String KEY_DATA_TYPE = "dataType";
 	public static final String KEY_RESULT_CODE = "resultCode";
+	public static final String KEY_CUSTOM_DATA_TYPE = "customDataType";
 
 	public VehicleDataResult() { }
 	  /**
@@ -93,22 +94,45 @@ public class VehicleDataResult extends RPCStruct {
 	 * @param dataType Defined published data element type.
 	 * @param resultCode Published data result code.
 	 */
+	@Deprecated
 	public VehicleDataResult(@NonNull VehicleDataType dataType, @NonNull VehicleDataResultCode resultCode){
     	this();
     	setDataType(dataType);
     	setResultCode(resultCode);
 	}
 
-    public void setDataType(@NonNull VehicleDataType dataType) {
-    	setValue(KEY_DATA_TYPE, dataType);
-    }
-    public VehicleDataType getDataType() {
-        return (VehicleDataType) getObject(VehicleDataType.class, KEY_DATA_TYPE);
-    }
+	/**
+	 * Individual published data request result.
+	 * @param customDataType Custom published data element type.
+	 * @param resultCode Published data result code.
+	 */
+	public VehicleDataResult(@NonNull String customDataType, @NonNull VehicleDataResultCode resultCode){
+		this();
+		setCustomDataType(customDataType);
+		setResultCode(resultCode);
+	}
+
+	@Deprecated
+	public void setDataType(@NonNull VehicleDataType dataType) {
+		setValue(KEY_DATA_TYPE, dataType);
+	}
+
+	@Deprecated
+	public VehicleDataType getDataType() {
+		return (VehicleDataType) getObject(VehicleDataType.class, KEY_DATA_TYPE);
+	}
     public void setResultCode(@NonNull VehicleDataResultCode resultCode) {
     	setValue(KEY_RESULT_CODE, resultCode);
     }
     public VehicleDataResultCode getResultCode() {
         return (VehicleDataResultCode) getObject(VehicleDataResultCode.class, KEY_RESULT_CODE);
     }
+
+	public void setCustomDataType(@NonNull String customDataType) {
+		setValue(KEY_CUSTOM_DATA_TYPE, customDataType);
+	}
+
+	public String getCustomDataType() {
+		return (String) getObject(String.class, KEY_CUSTOM_DATA_TYPE);
+	}
 }
