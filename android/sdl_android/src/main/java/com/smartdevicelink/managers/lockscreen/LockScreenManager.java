@@ -77,6 +77,7 @@ public class LockScreenManager extends BaseSubManager {
 	protected boolean lockScreenEnabled, deviceLogoEnabled;
 	protected int lockScreenIcon, lockScreenColor, customView;
 	protected Bitmap deviceLogo;
+	private boolean mIsLockscreenDissmissable;
 
 	public LockScreenManager(LockScreenConfig lockScreenConfig, Context context, ISdl internalInterface){
 
@@ -166,6 +167,10 @@ public class LockScreenManager extends BaseSubManager {
 				// do something with the status
 				if (notification != null) {
 					OnDriverDistraction ddState = (OnDriverDistraction) notification;
+					Boolean isDismissable = ddState.getLockscreenDismissibility();
+					if (isDismissable != null) {
+						mIsLockscreenDissmissable = isDismissable;
+					}
 
 					if (ddState.getState() == DriverDistractionState.DD_ON){
 						// launch lock screen
@@ -254,6 +259,7 @@ public class LockScreenManager extends BaseSubManager {
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_CUSTOM_VIEW_EXTRA, customView);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);
+				showLockScreenIntent.putExtra(SDLLockScreenActivity.KEY_LOCKSCREEN_DISIMISSIBLE, mIsLockscreenDissmissable);
 				context.get().startActivity(showLockScreenIntent);
 			} else if (status == LockScreenStatus.OFF) {
 				context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
