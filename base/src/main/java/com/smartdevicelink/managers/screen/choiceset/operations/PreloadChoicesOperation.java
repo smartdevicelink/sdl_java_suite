@@ -39,14 +39,23 @@ import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.Choice;
+import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
+import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -92,10 +101,10 @@ public class PreloadChoicesOperation implements Runnable {
 
 		List<SdlArtwork> artworksToUpload = new ArrayList<>(cellsToUpload.size());
 		for (ChoiceCell cell : cellsToUpload){
-			if (hasImageFieldOfName(displayCapabilities, ImageFieldName.choiceImage) && artworkNeedsUpload(cell.getArtwork())){
+			if (hasImageFieldOfName(ImageFieldName.choiceImage) && artworkNeedsUpload(cell.getArtwork())){
 				artworksToUpload.add(cell.getArtwork());
 			}
-			if (hasImageFieldOfName(displayCapabilities, ImageFieldName.choiceSecondaryImage) && artworkNeedsUpload(cell.getSecondaryArtwork())){
+			if (hasImageFieldOfName(ImageFieldName.choiceSecondaryImage) && artworkNeedsUpload(cell.getSecondaryArtwork())){
 				artworksToUpload.add(cell.getSecondaryArtwork());
 			}
 		}
@@ -120,15 +129,90 @@ public class PreloadChoicesOperation implements Runnable {
 				}
 			});
 		}else{
-			DebugTool.logError("File manager null in choice preload operation");
+			DebugTool.logError("File manager is null in choice preload operation");
 			listener.onComplete(false);
 		}
-
 	}
 
 	private void preloadCells(){
+		isRunning = true;
+		List<CreateInteractionChoiceSet> choiceRPCs = new ArrayList<>(cellsToUpload.size());
+		for (ChoiceCell cell : cellsToUpload){
+			CreateInteractionChoiceSet csCell = choiceFromCell(cell);
+			if (csCell != null){
+				choiceRPCs.add(csCell);
+			}
+		}
 
+		if (choiceRPCs.size() == 0){
+			DebugTool.logError(" All Choice cells to send are null, so the choice set will not be shown");
+			completionListener.onComplete(true);
+			return;
+		}
+
+		if (internalInterface.get() != null){
+			internalInterface.get().sendRequests(choiceRPCs, new OnMultipleRequestListener() {
+				@Override
+				public void onUpdate(int remainingRequests) {
+
+				}
+
+				@Override
+				public void onFinished() {
+					isRunning = false;
+					DebugTool.logInfo("Finished pre loading choice cells");
+					completionListener.onComplete(true);
+				}
+
+				@Override
+				public void onError(int correlationId, Result resultCode, String info) {
+					DebugTool.logError("There was an error uploading a choice cell: "+ info);
+				}
+
+				@Override
+				public void onResponse(int correlationId, RPCResponse response) {
+
+				}
+			});
+		}else{
+			DebugTool.logError("Internal Interface null in preload choice operation");
+			isRunning = false;
+			completionListener.onComplete(false);
+		}
 	}
+
+	private CreateInteractionChoiceSet choiceFromCell(ChoiceCell cell){
+
+		List<String> vrCommands;
+		if (cell.getVoiceCommands() == null){
+			vrCommands = isVROptional ? null : Collections.singletonList(String.valueOf(cell.getChoiceId()));
+		}else{
+			vrCommands = cell.getVoiceCommands();
+		}
+
+		String menuName = hasTextFieldOfName(TextFieldName.menuName) ? cell.getText() : null;
+		if (menuName == null){
+			DebugTool.logError("Could not convert Choice Cell to CreateInteractionChoiceSet. It will not be shown. Cell: "+ cell.toString());
+			return null;
+		}
+
+		String secondaryText = hasTextFieldOfName(TextFieldName.secondaryText) ? cell.getSecondaryText() : null;
+		String tertiaryText = hasTextFieldOfName(TextFieldName.tertiaryText) ? cell.getTertiaryText() : null;
+
+		Image image = hasImageFieldOfName(ImageFieldName.choiceImage) && cell.getArtwork() != null ? cell.getArtwork().getImageRPC() : null;
+		Image secondaryImage = hasImageFieldOfName(ImageFieldName.choiceSecondaryImage) && cell.getSecondaryArtwork() != null ? cell.getSecondaryArtwork().getImageRPC() : null;
+
+		Choice choice = new Choice(cell.getChoiceId(), menuName);
+		choice.setVrCommands(vrCommands);
+		choice.setImage(image);
+		choice.setSecondaryImage(secondaryImage);
+		choice.setSecondaryText(secondaryText);
+		choice.setTertiaryText(tertiaryText);
+
+		return new CreateInteractionChoiceSet(choice.getChoiceID(), Collections.singletonList(choice));
+	}
+
+	// HELPERS
 
 	private boolean artworkNeedsUpload(SdlArtwork artwork){
 		if (fileManager.get() != null){
@@ -137,11 +221,23 @@ public class PreloadChoicesOperation implements Runnable {
 		return false;
 	}
 
-	private boolean hasImageFieldOfName(DisplayCapabilities displayCapabilities, ImageFieldName name){
+	private boolean hasImageFieldOfName(ImageFieldName name){
 		if (displayCapabilities == null ){ return false; }
 		if (displayCapabilities.getGraphicSupported() == null || !displayCapabilities.getGraphicSupported()) { return false; }
 		if (displayCapabilities.getImageFields() != null){
 			for (ImageField field : displayCapabilities.getImageFields()){
+				if (field.getName().equals(name)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean hasTextFieldOfName(TextFieldName name){
+		if (displayCapabilities == null ){ return false; }
+		if (displayCapabilities.getTextFields() != null){
+			for (TextField field : displayCapabilities.getTextFields()){
 				if (field.getName().equals(name)){
 					return true;
 				}
