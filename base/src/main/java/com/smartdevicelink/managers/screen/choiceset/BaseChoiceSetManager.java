@@ -91,7 +91,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     private ChoiceSet pendingPresentationSet;
     private Boolean isVROptional;
     // We will pass operations into this to be completed
-    private PausableThreadPoolExecutor pausableThreadPoolExecutor;
+    private PausableThreadPoolExecutor executor;
     private LinkedBlockingQueue<Runnable> operationQueue;
     private boolean pendingPresentOperation;
 
@@ -114,8 +114,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         isVROptional = false;
         keyboardConfiguration = defaultKeyboardConfiguration();
         operationQueue = new LinkedBlockingQueue<>();
-        pausableThreadPoolExecutor = new PausableThreadPoolExecutor(1, Runtime.getRuntime().availableProcessors(), 10, TimeUnit.SECONDS, operationQueue);
-        pausableThreadPoolExecutor.pause(); // pause until HMI ready
+        executor = new PausableThreadPoolExecutor(1, Runtime.getRuntime().availableProcessors(), 10, TimeUnit.SECONDS, operationQueue);
+        executor.pause(); // pause until HMI ready
     }
 
     @Override
@@ -133,7 +133,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         displayCapabilities = null;
 
         // cancel the operations
-        pausableThreadPoolExecutor.shutdownNow();
+        executor.shutdownNow();
 
         pendingPresentationSet = null;
         isVROptional = true;
@@ -163,7 +163,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 operationQueue.clear();
             }
         });
-        pausableThreadPoolExecutor.submit(checkChoiceVR);
+        executor.submit(checkChoiceVR);
     }
 
     public void preloadChoices(List<ChoiceCell> choices, CompletionListener listener){
@@ -194,7 +194,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         // Find cells to be deleted that are already uploaded or are pending upload
         final HashSet<ChoiceCell> cellsToBeDeleted = choicesToBeDeletedWithArray(choices);
         HashSet<ChoiceCell> cellsToBeRemovedFromPending = choicesToBeRemovedFromPendingWithArray(choices);
-
         // If choices are deleted that are already uploaded or pending and are used by a pending presentation, cancel it and send an error
         HashSet<ChoiceCell> pendingPresentationChoices = new HashSet<>(pendingPresentationSet.getChoices());
 
@@ -206,15 +205,12 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         // Remove cells from pending and delete choices
         pendingPresentationChoices.removeAll(cellsToBeRemovedFromPending);
         for (Runnable operation : operationQueue){
-
             if (!(operation instanceof PreloadChoicesOperation)){ continue; }
-
             ((PreloadChoicesOperation) operation).removeChoicesFromUpload(cellsToBeRemovedFromPending);
         }
 
         // Find Choices to delete
         if (cellsToBeDeleted.size() == 0){ return; }
-
         findIdsOnChoices(cellsToBeDeleted);
 
         DeleteChoicesOperation deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, cellsToBeDeleted, new CompletionListener() {
@@ -227,8 +223,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 preloadedMutableChoices.removeAll(cellsToBeDeleted);
             }
         });
-
-        pausableThreadPoolExecutor.execute(deleteChoicesOperation);
+        executor.submit(deleteChoicesOperation);
     }
 
     public void presentChoiceSet(final ChoiceSet choiceSet, InteractionMode mode, KeyboardListener listener){
@@ -383,21 +378,21 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 currentHMILevel = hmiStatus.getHmiLevel();
 
                 if (currentHMILevel.equals(HMILevel.HMI_NONE)){
-                    pausableThreadPoolExecutor.pause();
+                    executor.pause();
                 }
 
                 if (oldHMILevel.equals(HMILevel.HMI_NONE) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
-                    pausableThreadPoolExecutor.resume();
+                    executor.resume();
                 }
 
                 currentSystemContext = hmiStatus.getSystemContext();
 
                 if (currentSystemContext.equals(SystemContext.SYSCTXT_HMI_OBSCURED) || currentSystemContext.equals(SystemContext.SYSCTXT_ALERT)){
-                    pausableThreadPoolExecutor.pause();
+                    executor.pause();
                 }
 
                 if (currentSystemContext.equals(SystemContext.SYSCTXT_MAIN) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
-                    pausableThreadPoolExecutor.resume();
+                    executor.resume();
                 }
 
             }
