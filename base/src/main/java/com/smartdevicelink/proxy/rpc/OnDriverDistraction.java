@@ -73,6 +73,7 @@ import java.util.Hashtable;
  */
 public class OnDriverDistraction  extends RPCNotification {
 	public static final String KEY_STATE = "state";
+    public static final String KEY_LOCKSCREEN_DISMISSIBLE = "lockScreenDismissalEnabled";
 	/**
 	*Constructs a newly allocated OnDriverDistraction object
 	*/ 
@@ -107,5 +108,21 @@ public class OnDriverDistraction  extends RPCNotification {
      */    
     public void setState( @NonNull DriverDistractionState state ) {
         setParameters(KEY_STATE, state);
-    }  
+    }
+
+    /**
+     * <p>Called to set dismissible state of Lockscreen</p>
+     * @param isDismissible the Lockscreen'S dismissibility
+     */
+    public void setLockscreenDismissible(boolean isDismissible) {
+        setParameters(KEY_LOCKSCREEN_DISMISSIBLE, isDismissible);
+    }
+
+    /**
+     * <p>Called to get the dismissible state of Lockscreen</p>
+     * @return true if the Lockscreen is dismissible, false otherwise
+     */
+    public Boolean getLockscreenDismissibility() {
+        return (Boolean) getObject(Boolean.class, KEY_LOCKSCREEN_DISMISSIBLE);
+    }
 }
