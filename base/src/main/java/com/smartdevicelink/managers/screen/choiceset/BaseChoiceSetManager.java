@@ -60,6 +60,8 @@ import com.smartdevicelink.util.DebugTool;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <strong>ChoiceSetManager</strong> <br>
@@ -87,7 +89,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     private ChoiceSet pendingPresentationSet;
     private Boolean isVROptional;
     // We will pass operations into this to be completed
-    private OperationScheduler operationScheduler;
+    private PausableThreadPoolExecutor pausableThreadPoolExecutor;
+    private LinkedBlockingQueue<Runnable> operationQueue;
 
     private int nextChoiceId;
     private int choiceCellIdMin = 1;
@@ -104,8 +107,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         currentSystemContext = SystemContext.SYSCTXT_MAIN;
         currentHMILevel = HMILevel.HMI_NONE;
         // create the new executor service
-        operationScheduler = new OperationScheduler();
-        operationScheduler.suspend(); // suspend when constructed.
+        operationQueue = new LinkedBlockingQueue<>();
+        // set maxPoolSize to number of processors
+        pausableThreadPoolExecutor = new PausableThreadPoolExecutor(1, Runtime.getRuntime().availableProcessors(), 10, TimeUnit.SECONDS, operationQueue);
+        pausableThreadPoolExecutor.pause(); // pause until HMI ready
         addListeners();
     }
 
@@ -124,7 +129,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         displayCapabilities = null;
 
         // cancel the operations
-        operationScheduler.shutdownNow();
+        pausableThreadPoolExecutor.shutdownNow();
 
         pendingPresentationSet = null;
         isVROptional = true;
@@ -151,10 +156,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 // checking VR will always be first in the queue.
                 // If pre-load operations were added while this was in progress
                 // clear it from the queue onError.
-                operationScheduler.clearQueue();
+                operationQueue.clear();
             }
         });
-        operationScheduler.submit(checkChoiceVR);
+        pausableThreadPoolExecutor.submit(checkChoiceVR);
     }
 
     public void preloadChoices(List<ChoiceCell> choices, CompletionListener listener){
@@ -346,21 +351,21 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 currentHMILevel = hmiStatus.getHmiLevel();
 
                 if (currentHMILevel.equals(HMILevel.HMI_NONE)){
-                    operationScheduler.suspend();
+                    pausableThreadPoolExecutor.pause();
                 }
 
                 if (oldHMILevel.equals(HMILevel.HMI_NONE) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
-                    operationScheduler.resume();
+                    pausableThreadPoolExecutor.resume();
                 }
 
                 currentSystemContext = hmiStatus.getSystemContext();
 
                 if (currentSystemContext.equals(SystemContext.SYSCTXT_HMI_OBSCURED) || currentSystemContext.equals(SystemContext.SYSCTXT_ALERT)){
-                    operationScheduler.suspend();
+                    pausableThreadPoolExecutor.pause();
                 }
 
                 if (currentSystemContext.equals(SystemContext.SYSCTXT_MAIN) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
-                    operationScheduler.resume();
+                    pausableThreadPoolExecutor.resume();
                 }
 
             }
