@@ -69,6 +69,7 @@ public interface IAudioStreamListener {
 	 *                           It must be greater than the previous timestamp.
 	 *                           Specify -1 if unknown.
 	 */
+	@Deprecated
 	void sendAudio(ByteBuffer data, long presentationTimeUs);
 
 	/**

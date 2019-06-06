@@ -385,7 +385,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
             @Override
             public void onAudioDataAvailable(SampleBuffer buffer) {
                 if (sdlAudioStream != null) {
-                    sdlAudioStream.sendAudio(buffer.getByteBuffer(), buffer.getPresentationTimeUs());
+                    sdlAudioStream.sendAudio(buffer.getByteBuffer(), buffer.getPresentationTimeUs(), null);
                 }
             }
 

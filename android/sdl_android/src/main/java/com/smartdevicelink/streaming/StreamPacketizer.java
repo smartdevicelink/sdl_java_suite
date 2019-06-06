@@ -244,6 +244,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 	 *
 	 * @see IAudioStreamListener#sendAudio(ByteBuffer, long)
 	 */
+	@Deprecated
 	@Override
 	public void sendAudio(ByteBuffer data, long presentationTimeUs) {
 		sendByteBufferData(data, null);

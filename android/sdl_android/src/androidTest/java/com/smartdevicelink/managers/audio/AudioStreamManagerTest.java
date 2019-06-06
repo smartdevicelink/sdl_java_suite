@@ -231,11 +231,16 @@ public class AudioStreamManagerTest extends TestCase {
             @Override
             public void sendAudio(byte[] data, int offset, int length, long presentationTimeUs) throws ArrayIndexOutOfBoundsException {
                 ByteBuffer buffer = ByteBuffer.wrap(data, offset, length);
-                this.sendAudio(buffer, presentationTimeUs);
+                this.sendAudio(buffer, presentationTimeUs, null);
             }
 
             @Override
             public void sendAudio(ByteBuffer data, long presentationTimeUs) {
+                sendAudio(data, presentationTimeUs, null);
+            }
+
+            @Override
+            public void sendAudio(ByteBuffer data, long presentationTimeUs, CompletionListener listener) {
                 SampleBuffer samples = SampleBuffer.wrap(data, sampleType, presentationTimeUs);
                 double timeUs = presentationTimeUs;
                 double sampleDurationUs = 1000000.0 / sampleRate;
@@ -473,11 +478,16 @@ public class AudioStreamManagerTest extends TestCase {
             @Override
             public void sendAudio(byte[] data, int offset, int length, long presentationTimeUs) throws ArrayIndexOutOfBoundsException {
                 ByteBuffer buffer = ByteBuffer.wrap(data, offset, length);
-                this.sendAudio(buffer, presentationTimeUs);
+                this.sendAudio(buffer, presentationTimeUs, null);
             }
 
             @Override
             public void sendAudio(ByteBuffer data, long presentationTimeUs) {
+                sendAudio(data, presentationTimeUs, null);
+            }
+
+            @Override
+            public void sendAudio(ByteBuffer data, long presentationTimeUs, CompletionListener listener) {
                 try {
                     long length = data.limit();
                     byte[] d = data.array();
