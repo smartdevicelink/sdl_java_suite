@@ -39,6 +39,7 @@ import android.util.Log;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.proxy.TTSChunkFactory;
+import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.util.DebugTool;
@@ -56,6 +57,7 @@ public class ChoiceSet {
     private List<ChoiceCell> choices;
     private List<VrHelpItem> vrHelpList;
     private ChoiceSetSelectionListener choiceSetSelectionListener;
+    private KeyboardProperties customKeyboardConfiguration;
 
     // defaults
     private Integer defaultTimeout = 10;
@@ -95,14 +97,16 @@ public class ChoiceSet {
      * @param helpPrompt - A voice prompt spoken to the user when the user asks for "help"
      * @param helpList - A table list of text and images shown to the user during a voice recognition session for this choice set (Voice only)
      * @param choices - The list of choices presented to the user either as a manual/touch interaction or via the user's voice
+     * @param customKeyboardConfiguration - Implement this in order to provide a custom keyboard configuration to just this keyboard. To apply default settings to all keyboards, see ScreenManager.setKeyboardConfiguration
      */
-    public ChoiceSet(@NonNull String title, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable String initialPrompt, @Nullable String timeoutPrompt, @Nullable String helpPrompt, @Nullable List<VrHelpItem> helpList, @NonNull List<ChoiceCell> choices, @NonNull ChoiceSetSelectionListener listener) {
+    public ChoiceSet(@NonNull String title, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable String initialPrompt, @Nullable String timeoutPrompt, @Nullable String helpPrompt, @Nullable List<VrHelpItem> helpList, @Nullable KeyboardProperties customKeyboardConfiguration, @NonNull List<ChoiceCell> choices, @NonNull ChoiceSetSelectionListener listener) {
 
         setTitle(title);
         setChoiceSetSelectionListener(listener);
         setLayout(layout);
         setTimeout(timeout);
         setChoices(choices);
+        setCustomKeyboardConfiguration(customKeyboardConfiguration);
 
         // Help the dev by creating TTS chunks for them
         if (initialPrompt != null){
@@ -134,8 +138,9 @@ public class ChoiceSet {
      * @param helpPrompt - A voice prompt spoken to the user when the user asks for "help"
      * @param helpList - A table list of text and images shown to the user during a voice recognition session for this choice set (Voice only)
      * @param choices - The list of choices presented to the user either as a manual/touch interaction or via the user's voice
+     * @param customKeyboardConfiguration - Implement this in order to provide a custom keyboard configuration to just this keyboard. To apply default settings to all keyboards, see ScreenManager.setKeyboardConfiguration
      */
-    public ChoiceSet(@NonNull String title, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable List<TTSChunk> initialPrompt, @Nullable List<TTSChunk> timeoutPrompt, @Nullable List<TTSChunk> helpPrompt, @Nullable List<VrHelpItem> helpList, @NonNull List<ChoiceCell> choices, @NonNull ChoiceSetSelectionListener listener) {
+    public ChoiceSet(@NonNull String title, @Nullable ChoiceSetLayout layout, @Nullable Integer timeout, @Nullable List<TTSChunk> initialPrompt, @Nullable List<TTSChunk> timeoutPrompt, @Nullable List<TTSChunk> helpPrompt, @Nullable List<VrHelpItem> helpList, @Nullable KeyboardProperties customKeyboardConfiguration, @NonNull List<ChoiceCell> choices, @NonNull ChoiceSetSelectionListener listener) {
 
         setTitle(title);
         setChoiceSetSelectionListener(listener);
@@ -145,6 +150,7 @@ public class ChoiceSet {
         setChoices(choices);
         setTimeout(timeout);
         setLayout(layout);
+        setCustomKeyboardConfiguration(customKeyboardConfiguration);
 
         // things to do
         checkChoiceSetParameters();
@@ -325,6 +331,24 @@ public class ChoiceSet {
      */
     public void setChoiceSetSelectionListener(ChoiceSetSelectionListener choiceSetSelectionListener) {
         this.choiceSetSelectionListener = choiceSetSelectionListener;
+    }
+
+    /**
+     * Implement this in order to provide a custom keyboard configuration to just this keyboard.
+     * To apply default settings to all keyboards, see ScreenManager.setKeyboardConfiguration
+     * @param customKeyboardConfiguration - the keyboard config used for this choice set
+     */
+    public void setCustomKeyboardConfiguration(KeyboardProperties customKeyboardConfiguration) {
+        this.customKeyboardConfiguration = customKeyboardConfiguration;
+    }
+
+    /**
+     * Implement this in order to provide a custom keyboard configuration to just this keyboard.
+     * To apply default settings to all keyboards, see ScreenManager.setKeyboardConfiguration
+     * @return the custom keyboard configuration
+     */
+    public KeyboardProperties getCustomKeyboardConfiguration() {
+        return customKeyboardConfiguration;
     }
 
     // HELPERS
