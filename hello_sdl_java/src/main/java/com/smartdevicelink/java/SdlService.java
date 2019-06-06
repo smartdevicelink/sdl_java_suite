@@ -55,8 +55,6 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.util.*;
 
-import static javafx.scene.input.KeyCode.R;
-
 public class SdlService {
 
 
