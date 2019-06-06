@@ -20,7 +20,6 @@ import com.smartdevicelink.proxy.rpc.enums.AudioType;
 import com.smartdevicelink.proxy.rpc.enums.BitsPerSample;
 import com.smartdevicelink.proxy.rpc.enums.SamplingRate;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
-import com.smartdevicelink.streaming.StreamPacketizer;
 
 import junit.framework.TestCase;
 
@@ -38,7 +37,6 @@ import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
