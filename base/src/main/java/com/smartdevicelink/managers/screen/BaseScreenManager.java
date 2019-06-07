@@ -32,19 +32,25 @@
 package com.smartdevicelink.managers.screen;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSetManager;
+import com.smartdevicelink.managers.screen.choiceset.KeyboardListener;
 import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdatesMode;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
 import com.smartdevicelink.managers.screen.menu.MenuManager;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.util.DebugTool;
@@ -417,6 +423,30 @@ abstract class BaseScreenManager extends BaseSubManager {
 	public DynamicMenuUpdatesMode getDynamicMenuUpdatesMode(){
 		return this.menuManager.getDynamicMenuUpdatesMode();
 	}
+
+	// CHOICE SETS
+
+	public void deleteChoices(List<ChoiceCell> choices){
+		this.choiceSetManager.deleteChoices(choices);
+	}
+
+	public void preloadChoices(List<ChoiceCell> choices, CompletionListener listener){
+		this.choiceSetManager.preloadChoices(choices, listener);
+	}
+
+	public void presentSearchableChoiceSet(ChoiceSet choiceSet, InteractionMode mode, KeyboardListener keyboardListener){
+		this.choiceSetManager.presentChoiceSet(choiceSet, mode, keyboardListener);
+	}
+
+	public void presentChoiceSet(ChoiceSet choiceSet, InteractionMode mode){
+		this.choiceSetManager.presentChoiceSet(choiceSet, mode, null);
+	}
+
+	public void presentKeyboardWithInitialText(String initialText, KeyboardProperties customKeyboardProperties, KeyboardListener keyboardListener){
+		this.choiceSetManager.presentKeyboardWithInitialText(initialText, customKeyboardProperties, keyboardListener);
+	}
+
+	// END CHOICE SETS
 
 	/**
 	 * Begin a multiple updates transaction. The updates will be applied when commit() is called<br>

@@ -43,6 +43,7 @@ import com.smartdevicelink.managers.screen.choiceset.operations.CheckChoiceVROpt
 import com.smartdevicelink.managers.screen.choiceset.operations.DeleteChoicesOperation;
 import com.smartdevicelink.managers.screen.choiceset.operations.PreloadChoicesOperation;
 import com.smartdevicelink.managers.screen.choiceset.operations.PresentChoiceSetOperation;
+import com.smartdevicelink.managers.screen.choiceset.operations.PresentKeyboardOperation;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -86,10 +87,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     private SystemContext currentSystemContext;
     private DisplayCapabilities displayCapabilities;
 
-    private HashSet<ChoiceCell> preloadedChoices;
-    private HashSet<ChoiceCell> pendingPreloadChoices;
-    private HashSet<ChoiceCell> preloadedMutableChoices;
-    private HashSet<ChoiceCell> pendingMutablePreloadChoices;
+    private HashSet<ChoiceCell> preloadedChoices, pendingPreloadChoices;
     private ChoiceSet pendingPresentationSet;
     private Boolean isVROptional;
     // We will pass operations into this to be completed
@@ -110,8 +108,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         // setting/instantiating class vars
         this.fileManager = new WeakReference<>(fileManager);
-        preloadedMutableChoices = new HashSet<>();
-        pendingMutablePreloadChoices = new HashSet<>();
+        preloadedChoices = new HashSet<>();
+        pendingPreloadChoices = new HashSet<>();
         nextChoiceId = choiceCellIdMin;
         isVROptional = false;
         keyboardConfiguration = defaultKeyboardConfiguration();
@@ -172,8 +170,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     public void preloadChoices(List<ChoiceCell> choices, CompletionListener listener){
 
         final HashSet<ChoiceCell> choicesToUpload = choicesToBeUploadedWithArray(choices);
-        choicesToUpload.removeAll(preloadedMutableChoices);
-        choicesToUpload.removeAll(pendingMutablePreloadChoices);
+        choicesToUpload.removeAll(preloadedChoices);
+        choicesToUpload.removeAll(pendingPreloadChoices);
 
         if (choicesToUpload.size() == 0){
             if (listener != null){
@@ -185,15 +183,15 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         updateIdsOnChoices(choicesToUpload);
 
         // Add the preload cells to the pending preload choices
-        pendingMutablePreloadChoices.addAll(choicesToUpload);
+        pendingPreloadChoices.addAll(choicesToUpload);
 
         if (fileManager.get() != null) {
             PreloadChoicesOperation preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager.get(), displayCapabilities, isVROptional, choicesToUpload, new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
                     if (success){
-                        preloadedMutableChoices.addAll(choicesToUpload);
-                        pendingMutablePreloadChoices.removeAll(choicesToUpload);
+                        preloadedChoices.addAll(choicesToUpload);
+                        pendingPreloadChoices.removeAll(choicesToUpload);
                     }else {
                         DebugTool.logError("There was an error pre loading choice cells");
                     }
@@ -240,7 +238,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                     DebugTool.logError("Failed to delete choices");
                     return;
                 }
-                preloadedMutableChoices.removeAll(cellsToBeDeleted);
+                preloadedChoices.removeAll(cellsToBeDeleted);
             }
         });
         executor.submit(deleteChoicesOperation);
@@ -315,17 +313,18 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         executor.submit(presentOp);
     }
 
-    public void presentKeyboardWithInitialText(String initialText, KeyboardListener listener){
+    public void presentKeyboardWithInitialText(String initialText, KeyboardProperties customKeyboardConfig, KeyboardListener listener){
 
         if (!isReady()){ return; }
 
-        if (pendingPresentationSet != null){
-            //[self.pendingPresentOperation cancel];
-            pendingPresentationSet = null;
+        if (pendingPresentationSet != null || isPresentOperationPending){
+            DebugTool.logError("Currently presenting a choice set. Please wait until it is finished");
+            return;
         }
 
-        // create PresentKeyboardOperation
-        // add operation to the transaction queue
+        // Present a keyboard with the choice set that we used to test VR's optional state
+        PresentKeyboardOperation keyboardOp = new PresentKeyboardOperation(internalInterface, keyboardConfiguration, initialText, customKeyboardConfig, listener);
+        executor.submit(keyboardOp);
     }
 
     // SETTERS
