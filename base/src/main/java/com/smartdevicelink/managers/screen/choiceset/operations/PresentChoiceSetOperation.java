@@ -35,6 +35,7 @@ package com.smartdevicelink.managers.screen.choiceset.operations;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceSetSelectionListener;
 import com.smartdevicelink.managers.screen.choiceset.KeyboardAutocompleteCompletionListener;
 import com.smartdevicelink.managers.screen.choiceset.KeyboardCharacterSetCompletionListener;
 import com.smartdevicelink.managers.screen.choiceset.KeyboardListener;
@@ -71,10 +72,10 @@ public class PresentChoiceSetOperation implements Runnable {
 	private Integer selectedCellRow;
 	private boolean updatedKeyboardProperties;
 	private OnRPCNotificationListener keyboardRPCListener;
-	private CompletionListener completionListener;
+	private ChoiceSetSelectionListener choiceSetSelectionListener;
 
 	public PresentChoiceSetOperation(ISdl internalInterface, ChoiceSet choiceSet, InteractionMode mode,
-									 KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, CompletionListener completionListener){
+									 KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, ChoiceSetSelectionListener choiceSetSelectionListener){
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.keyboardListener = new WeakReference<>(keyboardListener);
 		this.choiceSet = choiceSet;
@@ -82,7 +83,7 @@ public class PresentChoiceSetOperation implements Runnable {
 		this.originalKeyboardProperties = originalKeyboardProperties;
 		this.keyboardProperties = originalKeyboardProperties;
 		this.selectedCellRow = null;
-		this.completionListener = completionListener;
+		this.choiceSetSelectionListener = choiceSetSelectionListener;
 	}
 
 	@Override
@@ -96,6 +97,7 @@ public class PresentChoiceSetOperation implements Runnable {
 		// Check if we're using a keyboard (searchable) choice set and setup keyboard properties if we need to
 		if (keyboardListener != null && choiceSet.getCustomKeyboardConfiguration() != null){
 			keyboardProperties = choiceSet.getCustomKeyboardConfiguration();
+			updatedKeyboardProperties = true;
 		}
 
 		updateKeyboardProperties(new CompletionListener() {
@@ -143,12 +145,20 @@ public class PresentChoiceSetOperation implements Runnable {
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (!response.getSuccess()){
 					DebugTool.logError("Presenting Choice set failed: "+ response.getInfo());
+
+					if (choiceSetSelectionListener != null){
+						choiceSetSelectionListener.onError(response.getInfo());
+					}
 					finishOperation();
 				}
 
 				PerformInteractionResponse performInteractionResponse = (PerformInteractionResponse) response;
 				setSelectedCellWithId(performInteractionResponse.getChoiceID());
 				selectedTriggerSource = performInteractionResponse.getTriggerSource();
+
+				if (choiceSetSelectionListener != null){
+					choiceSetSelectionListener.onChoiceSelected(selectedCell, selectedTriggerSource, selectedCellRow);
+				}
 
 				finishOperation();
 			}
@@ -162,29 +172,24 @@ public class PresentChoiceSetOperation implements Runnable {
 
 	private void finishOperation() {
 
-		if (keyboardProperties == null){
-			completionListener.onComplete(true);
-		}
-
-		// We need to reset the keyboard properties
-		SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
-		setGlobalProperties.setKeyboardProperties(originalKeyboardProperties);
-		setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
-			@Override
-			public void onResponse(int correlationId, RPCResponse response) {
-				if (response.getSuccess()){
-					completionListener.onComplete(true);
-				}else{
-					DebugTool.logError("Error resetting keyboard properties");
-					completionListener.onComplete(false);
+		if (updatedKeyboardProperties) {
+			// We need to reset the keyboard properties
+			SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
+			setGlobalProperties.setKeyboardProperties(originalKeyboardProperties);
+			setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
+				@Override
+				public void onResponse(int correlationId, RPCResponse response) {
+					updatedKeyboardProperties = false;
+					DebugTool.logInfo("Successfully reset choice keyboard properties to original config");
 				}
-			}
-		});
+			});
 
-		if (internalInterface.get() != null){
-			internalInterface.get().sendRPC(setGlobalProperties);
-		} else {
-			DebugTool.logError("Internal Interface null when finishing choice keyboard reset");
+			if (internalInterface.get() != null) {
+				internalInterface.get().sendRPC(setGlobalProperties);
+				internalInterface.get().removeOnRPCNotificationListener(FunctionID.ON_KEYBOARD_INPUT, keyboardRPCListener);
+			} else {
+				DebugTool.logError("Internal Interface null when finishing choice keyboard reset");
+			}
 		}
 	}
 
@@ -261,6 +266,7 @@ public class PresentChoiceSetOperation implements Runnable {
 						public void onUpdatedAutoCompleteText(String updatedAutoCompleteText) {
 							keyboardProperties.setAutoCompleteText(updatedAutoCompleteText);
 							updateKeyboardProperties(null);
+							updatedKeyboardProperties = true;
 						}
 					});
 
@@ -269,6 +275,7 @@ public class PresentChoiceSetOperation implements Runnable {
 						public void onUpdatedCharacterSet(List<String> updatedCharacterSet) {
 							keyboardProperties.setLimitedCharacterList(updatedCharacterSet);
 							updateKeyboardProperties(null);
+							updatedKeyboardProperties = true;
 						}
 					});
 				} else if (onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_ABORTED) || onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_CANCELLED)){

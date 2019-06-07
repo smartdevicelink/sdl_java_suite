@@ -42,6 +42,7 @@ import com.smartdevicelink.managers.screen.choiceset.operations.CheckChoiceVROpt
 import com.smartdevicelink.managers.screen.choiceset.operations.CheckChoiceVROptionalOperation;
 import com.smartdevicelink.managers.screen.choiceset.operations.DeleteChoicesOperation;
 import com.smartdevicelink.managers.screen.choiceset.operations.PreloadChoicesOperation;
+import com.smartdevicelink.managers.screen.choiceset.operations.PresentChoiceSetOperation;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -56,6 +57,7 @@ import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
@@ -93,7 +95,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     // We will pass operations into this to be completed
     private PausableThreadPoolExecutor executor;
     private LinkedBlockingQueue<Runnable> operationQueue;
-    private boolean pendingPresentOperation;
+    private boolean isPresentOperationPending;
 
     private int nextChoiceId;
     private int choiceCellIdMin = 1;
@@ -215,7 +217,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         // If choices are deleted that are already uploaded or pending and are used by a pending presentation, cancel it and send an error
         HashSet<ChoiceCell> pendingPresentationChoices = new HashSet<>(pendingPresentationSet.getChoices());
 
-        if (!pendingPresentOperation && (cellsToBeDeleted.retainAll(pendingPresentationChoices) || cellsToBeRemovedFromPending.retainAll(pendingPresentationChoices))){
+        if (!isPresentOperationPending && (cellsToBeDeleted.retainAll(pendingPresentationChoices) || cellsToBeRemovedFromPending.retainAll(pendingPresentationChoices))){
             DebugTool.logError("Attempting to delete choice cells while there is a pending presentation operation");
             return;
         }
@@ -244,7 +246,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         executor.submit(deleteChoicesOperation);
     }
 
-    public void presentChoiceSet(final ChoiceSet choiceSet, InteractionMode mode, KeyboardListener listener){
+    public void presentChoiceSet(final ChoiceSet choiceSet, final InteractionMode mode, final KeyboardListener keyboardListener){
 
         if (!isReady()){ return; }
 
@@ -255,26 +257,62 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         // Perform additional checks against the ChoiceSet
         if (!setUpChoiceSet(choiceSet)){ return; }
 
-        if (this.pendingPresentationSet != null){
-            // cancel pendingPresentationOperation
+        if (this.pendingPresentationSet != null || isPresentOperationPending){
+            DebugTool.logError("Currently presenting a choice set. Please wait until it is finished");
+            return;
         }
 
         this.pendingPresentationSet = choiceSet;
+        isPresentOperationPending = true;
         preloadChoices(this.pendingPresentationSet.getChoices(), new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
                 if (!success){
                     choiceSet.getChoiceSetSelectionListener().onError("There was an error pre-loading choice set choices");
+                    isPresentOperationPending = false;
                     return;
                 }
+                sendChoiceSet(keyboardListener, mode);
             }
         });
+    }
 
-        findIdsOnChoiceSet(this.pendingPresentationSet);
+    private void sendChoiceSet(KeyboardListener keyboardListener, InteractionMode mode){
 
-        // create presentationChoiceSetOperation
-        // add the operation to the queue
+        findIdsOnChoiceSet(pendingPresentationSet);
 
+        // Pass back the information to the developer
+        ChoiceSetSelectionListener privateChoiceListener = new ChoiceSetSelectionListener() {
+            @Override
+            public void onChoiceSelected(ChoiceCell choiceCell, TriggerSource triggerSource, int rowIndex) {
+                if (pendingPresentationSet.getChoiceSetSelectionListener() != null){
+                    pendingPresentationSet.getChoiceSetSelectionListener().onChoiceSelected(choiceCell, triggerSource,rowIndex);
+                }
+                pendingPresentationSet = null;
+                isPresentOperationPending = false;
+            }
+
+            @Override
+            public void onError(String error) {
+                if (pendingPresentationSet.getChoiceSetSelectionListener() != null){
+                    pendingPresentationSet.getChoiceSetSelectionListener().onError(error);
+                }
+                pendingPresentationSet = null;
+                isPresentOperationPending = false;
+            }
+        };
+
+        PresentChoiceSetOperation presentOp = null;
+
+        if (keyboardListener == null){
+            // Non-searchable choice set
+            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, null, null, privateChoiceListener);
+        } else {
+            // Searchable choice set
+            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener);
+        }
+
+        executor.submit(presentOp);
     }
 
     public void presentKeyboardWithInitialText(String initialText, KeyboardListener listener){
