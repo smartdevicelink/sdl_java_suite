@@ -167,7 +167,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         executor.submit(checkChoiceVR);
     }
 
-    public void preloadChoices(List<ChoiceCell> choices, CompletionListener listener){
+    public void preloadChoices(List<ChoiceCell> choices, final CompletionListener listener){
 
         final HashSet<ChoiceCell> choicesToUpload = choicesToBeUploadedWithArray(choices);
         choicesToUpload.removeAll(preloadedChoices);
@@ -192,8 +192,14 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                     if (success){
                         preloadedChoices.addAll(choicesToUpload);
                         pendingPreloadChoices.removeAll(choicesToUpload);
+                        if (listener != null){
+                            listener.onComplete(true);
+                        }
                     }else {
                         DebugTool.logError("There was an error pre loading choice cells");
+                        if (listener != null){
+                            listener.onComplete(false);
+                        }
                     }
                 }
             });
@@ -202,7 +208,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         } else {
             DebugTool.logError("File Manager was null in preload choice operation");
         }
-
     }
 
     public void deleteChoices(List<ChoiceCell> choices){
@@ -276,9 +281,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     private void sendChoiceSet(KeyboardListener keyboardListener, InteractionMode mode){
-
+        Log.i("Choice", " Sending set 1");
         findIdsOnChoiceSet(pendingPresentationSet);
-
+        Log.i("Choice", " Sending set 2");
         // Pass back the information to the developer
         ChoiceSetSelectionListener privateChoiceListener = new ChoiceSetSelectionListener() {
             @Override
@@ -300,13 +305,15 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
         };
 
-        PresentChoiceSetOperation presentOp = null;
+        PresentChoiceSetOperation presentOp;
 
         if (keyboardListener == null){
             // Non-searchable choice set
+            Log.i("Choice", " Sending set non search");
             presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, null, null, privateChoiceListener);
         } else {
             // Searchable choice set
+            Log.i("Choice", " Sending set search");
             presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener);
         }
 
@@ -342,16 +349,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             properties.setAutoCompleteText(keyboardConfiguration.getAutoCompleteText());
             this.keyboardConfiguration = properties;
         }
-    }
-
-    // GETTERS
-
-    public HashSet<ChoiceCell> getPreloadedChoices(){
-        return this.preloadedChoices;
-    }
-
-    public HashSet<ChoiceCell> getPendingPreloadChoices(){
-        return this.pendingPreloadChoices;
     }
 
     // CHOICE SET MANAGEMENT HELPERS

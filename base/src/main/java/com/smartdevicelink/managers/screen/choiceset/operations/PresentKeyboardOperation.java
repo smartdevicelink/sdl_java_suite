@@ -58,7 +58,7 @@ import java.util.List;
 public class PresentKeyboardOperation implements Runnable {
 
 	private WeakReference<ISdl> internalInterface;
-	private WeakReference<KeyboardListener> keyboardListener;
+	private KeyboardListener keyboardListener;
 	private KeyboardProperties originalKeyboardProperties, keyboardProperties, customConfig;
 	private boolean updatedKeyboardProperties;
 	private String initialText;
@@ -66,7 +66,7 @@ public class PresentKeyboardOperation implements Runnable {
 
 	public PresentKeyboardOperation(ISdl internalInterface, KeyboardProperties originalKeyboardProperties, String initialText, KeyboardProperties customConfig, KeyboardListener keyboardListener){
 		this.internalInterface = new WeakReference<>(internalInterface);
-		this.keyboardListener = new WeakReference<>(keyboardListener);
+		this.keyboardListener = keyboardListener;
 		this.originalKeyboardProperties = originalKeyboardProperties;
 		this.keyboardProperties = originalKeyboardProperties;
 		this.customConfig = customConfig;
@@ -189,14 +189,14 @@ public class PresentKeyboardOperation implements Runnable {
 				}
 
 				OnKeyboardInput onKeyboard = (OnKeyboardInput) notification;
-				keyboardListener.get().onKeyboardDidSendEvent(onKeyboard.getEvent(), onKeyboard.getData());
+				keyboardListener.onKeyboardDidSendEvent(onKeyboard.getEvent(), onKeyboard.getData());
 
 				if (onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_VOICE) || onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_SUBMITTED)){
 					// Submit Voice or Text
-					keyboardListener.get().onUserDidSubmitInput(onKeyboard.getData(), onKeyboard.getEvent());
+					keyboardListener.onUserDidSubmitInput(onKeyboard.getData(), onKeyboard.getEvent());
 				} else if (onKeyboard.getEvent().equals(KeyboardEvent.KEYPRESS)){
 					// Notify of Keypress
-					keyboardListener.get().updateAutocompleteWithInput(onKeyboard.getData(), new KeyboardAutocompleteCompletionListener() {
+					keyboardListener.updateAutocompleteWithInput(onKeyboard.getData(), new KeyboardAutocompleteCompletionListener() {
 						@Override
 						public void onUpdatedAutoCompleteText(String updatedAutoCompleteText) {
 							keyboardProperties.setAutoCompleteText(updatedAutoCompleteText);
@@ -205,7 +205,7 @@ public class PresentKeyboardOperation implements Runnable {
 						}
 					});
 
-					keyboardListener.get().updateCharacterSetWithInput(onKeyboard.getData(), new KeyboardCharacterSetCompletionListener() {
+					keyboardListener.updateCharacterSetWithInput(onKeyboard.getData(), new KeyboardCharacterSetCompletionListener() {
 						@Override
 						public void onUpdatedCharacterSet(List<String> updatedCharacterSet) {
 							keyboardProperties.setLimitedCharacterList(updatedCharacterSet);
@@ -215,7 +215,7 @@ public class PresentKeyboardOperation implements Runnable {
 					});
 				} else if (onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_ABORTED) || onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_CANCELLED)){
 					// Notify of abort / Cancellation
-					keyboardListener.get().onKeyboardDidAbortWithReason(onKeyboard.getEvent());
+					keyboardListener.onKeyboardDidAbortWithReason(onKeyboard.getEvent());
 				}
 
 			}
