@@ -43,7 +43,7 @@ import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 /**
  * A class that extends SdlFile, representing artwork (JPEG, PNG, or BMP) to be uploaded to core
  */
-public class SdlArtwork extends SdlFile {
+public class SdlArtwork extends SdlFile implements Cloneable{
     private boolean isTemplate;
     private Image imageRPC;
 
@@ -125,14 +125,50 @@ public class SdlArtwork extends SdlFile {
      */
     public Image getImageRPC() {
         if (imageRPC == null) {
-            if (isStaticIcon()) {
-                imageRPC = new Image(getName(), ImageType.STATIC);
-                imageRPC.setIsTemplate(true);
-            } else {
-                imageRPC = new Image(getName(), ImageType.DYNAMIC);
-                imageRPC.setIsTemplate(isTemplate);
-            }
+            imageRPC = createImageRPC();
         }
         return imageRPC;
+    }
+
+    private Image createImageRPC(){
+        Image image;
+        if (isStaticIcon()) {
+            image = new Image(getName(), ImageType.STATIC);
+            image.setIsTemplate(true);
+        } else {
+            image = new Image(getName(), ImageType.DYNAMIC);
+            image.setIsTemplate(isTemplate);
+        }
+        return image;
+    }
+
+    /**
+     * Creates a deep copy of the object
+     * @return deep copy of the object
+     */
+    @Override
+    public SdlArtwork clone() {
+        final SdlArtwork clone;
+        try {
+            clone = (SdlArtwork) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("superclass messed up", e);
+        }
+        clone.setName(this.getName());
+        clone.setResourceId(this.getResourceId());
+        clone.setUri(this.getUri() == null ? null : Uri.parse(this.getUri().toString()));
+        if (this.getFileData() != null){
+            byte[] data = new byte[this.getFileData().length];
+            for (int i = 0; i < this.getFileData().length; i++) {
+                data[i] = this.getFileData()[i];
+            }
+            clone.setFileData(data);
+        }
+        clone.setType(this.getType());
+        clone.setPersistent(this.isPersistent());
+        clone.setStaticIcon(this.isStaticIcon());
+        clone.isTemplate = this.isTemplate;
+        clone.imageRPC = this.createImageRPC();
+        return clone;
     }
 }
