@@ -39,6 +39,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -79,6 +80,7 @@ public class DeleteChoicesOperation implements Runnable {
 					if (completionListener != null){
 						completionListener.onComplete(true);
 					}
+					DebugTool.logInfo("Successfully deleted choices");
 				}
 
 				@Override
@@ -86,6 +88,7 @@ public class DeleteChoicesOperation implements Runnable {
 					if (completionListener != null){
 						completionListener.onComplete(false);
 					}
+					DebugTool.logError("Failed to delete choice: "+ info+ " | Corr ID: "+ correlationId);
 				}
 
 				@Override

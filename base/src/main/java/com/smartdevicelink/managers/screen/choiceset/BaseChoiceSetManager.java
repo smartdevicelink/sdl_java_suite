@@ -156,7 +156,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             public void onCheckChoiceVROperationComplete(boolean vrOptional) {
                 isVROptional = vrOptional;
                 transitionToState(READY);
-                Log.i("CHOICE", "VOICE IS OPTIONAL: "+ vrOptional + " READY TO GO");
+                DebugTool.logInfo("VR is optional: "+ isVROptional);
             }
 
             @Override
@@ -225,7 +225,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         final HashSet<ChoiceCell> cellsToBeDeleted = choicesToBeDeletedWithArray(choices);
         HashSet<ChoiceCell> cellsToBeRemovedFromPending = choicesToBeRemovedFromPendingWithArray(choices);
         // If choices are deleted that are already uploaded or pending and are used by a pending presentation, cancel it and send an error
-        HashSet<ChoiceCell> pendingPresentationChoices = new HashSet<>(pendingPresentationSet.getChoices());
+        HashSet<ChoiceCell> pendingPresentationChoices = new HashSet<>();
+        if (pendingPresentationSet != null && pendingPresentationSet.getChoices() != null) {
+            pendingPresentationChoices.addAll(pendingPresentationSet.getChoices());
+        }
 
         if (pendingPresentOperation != null && !pendingPresentOperation.isCancelled() && !pendingPresentOperation.isDone() && (cellsToBeDeleted.retainAll(pendingPresentationChoices) || cellsToBeRemovedFromPending.retainAll(pendingPresentationChoices))){
             pendingPresentOperation.cancel(true);
@@ -241,7 +244,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
 
         // Find Choices to delete
-        if (cellsToBeDeleted.size() == 0){ return; }
+        if (cellsToBeDeleted.size() == 0){
+            DebugTool.logInfo("Cells to be deleted size == 0");
+            return;
+        }
         findIdsOnChoices(cellsToBeDeleted);
 
         DeleteChoicesOperation deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, cellsToBeDeleted, new CompletionListener() {
@@ -254,8 +260,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 preloadedChoices.removeAll(cellsToBeDeleted);
             }
         });
-        Future something = executor.submit(deleteChoicesOperation);
-        something.cancel(true);
+        executor.submit(deleteChoicesOperation);
     }
 
     public void presentChoiceSet(final ChoiceSet choiceSet, final InteractionMode mode, final KeyboardListener keyboardListener){
