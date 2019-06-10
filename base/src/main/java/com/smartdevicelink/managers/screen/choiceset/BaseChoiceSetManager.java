@@ -346,8 +346,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         pendingPresentOperation = executor.submit(keyboardOp);
     }
 
-    // SETTERS
-
     public void setKeyboardConfiguration(KeyboardProperties keyboardConfiguration){
         if (keyboardConfiguration == null){
             this.keyboardConfiguration = defaultKeyboardConfiguration();
@@ -525,7 +523,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isReady(){
         if (getState() != READY){
-            DebugTool.logInfo("Choice Manager State: "+ getState());
+            DebugTool.logInfo("Choice Manager In Not-Ready State: "+ getState());
             return false;
         }
         return true;
