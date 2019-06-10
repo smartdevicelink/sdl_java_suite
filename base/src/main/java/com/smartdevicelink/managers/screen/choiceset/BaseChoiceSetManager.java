@@ -33,7 +33,6 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -315,11 +314,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         if (keyboardListener == null){
             // Non-searchable choice set
-            Log.i("Choice", " Sending set non search");
+            DebugTool.logInfo("Creating non-searchable choice set");
             presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, null, null, privateChoiceListener);
         } else {
             // Searchable choice set
-            Log.i("Choice", " Sending set search");
+            DebugTool.logInfo("Creating searchable choice set");
             presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener);
         }
 
@@ -502,7 +501,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         // All or none of the choices MUST have VR Commands
         if (choiceCellWithVoiceCommandCount > 0 && choiceCellWithVoiceCommandCount < choices.size()) {
-            DebugTool.logError("If using voice recognition commands, all of the choice set cells must have unique VR commands. There are " + uniqueVoiceCommands.size() + " cells with unique voice commands and " + allVoiceCommandsCount + " total cells. The choice set will not be set.");
+            DebugTool.logError("If using voice recognition commands, all of the choice set cells must have unique VR commands. There are " + uniqueVoiceCommands.size() + " cells with unique voice commands and " + choices.size() + " total cells. The choice set will not be set.");
             return false;
         }
 
