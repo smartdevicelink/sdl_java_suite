@@ -4,10 +4,12 @@ import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdatesMode;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
+import com.smartdevicelink.test.Test;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,9 +55,12 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertNull(screenManager.getTextField2Type());
 		assertNull(screenManager.getTextField3Type());
 		assertNull(screenManager.getTextField4Type());
+		assertNull(screenManager.getMenu());
+		assertNull(screenManager.getVoiceCommands());
 		assertTrue(screenManager.getSoftButtonObjects().isEmpty());
 		assertNull(screenManager.getSoftButtonObjectByName("test"));
 		assertNull(screenManager.getSoftButtonObjectById(1));
+		assertEquals(screenManager.getDynamicMenuUpdatesMode(), DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE);
 		assertEquals(screenManager.getState(), BaseSubManager.READY);
 	}
 	
@@ -112,6 +117,19 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertEquals(screenManager.getTextField2Type(), MetadataType.MEDIA_ALBUM);
 		assertEquals(screenManager.getTextField3Type(), MetadataType.MEDIA_ARTIST);
 		assertEquals(screenManager.getTextField4Type(), MetadataType.MEDIA_GENRE);
+	}
+
+	public void testSetMenuManagerFields(){
+		screenManager.setDynamicMenuUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
+		screenManager.setMenu(Test.GENERAL_MENUCELL_LIST);
+
+		assertEquals(screenManager.getMenu(), Test.GENERAL_MENUCELL_LIST);
+		assertEquals(screenManager.getDynamicMenuUpdatesMode(), DynamicMenuUpdatesMode.FORCE_ON);
+	}
+
+	public void testSetVoiceCommands(){
+		screenManager.setVoiceCommands(Test.GENERAL_VOICE_COMMAND_LIST);
+		assertEquals(screenManager.getVoiceCommands(), Test.GENERAL_VOICE_COMMAND_LIST);
 	}
 
 	public void testSetSoftButtonObjects(){
