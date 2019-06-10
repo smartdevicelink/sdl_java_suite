@@ -277,7 +277,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         if (this.pendingPresentationSet != null && pendingPresentOperation != null){
             pendingPresentOperation.cancel(true);
             DebugTool.logWarning("Presenting a choice set while one is currently presented. Cancelling previous and continuing");
-            return;
         }
 
         this.pendingPresentationSet = choiceSet;
@@ -328,7 +327,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
 
-    public void presentKeyboardWithInitialText(String initialText, KeyboardProperties customKeyboardConfig, KeyboardListener listener){
+    public void presentKeyboard(String initialText, KeyboardProperties customKeyboardConfig, KeyboardListener listener){
 
         if (!isReady()){ return; }
 
@@ -351,7 +350,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     // SETTERS
 
     public void setKeyboardConfiguration(KeyboardProperties keyboardConfiguration){
-
         if (keyboardConfiguration == null){
             this.keyboardConfiguration = defaultKeyboardConfiguration();
         } else{
@@ -423,7 +421,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     // LISTENERS
 
     private void addListeners(){
-
         // DISPLAY CAPABILITIES - via SCM
         displayListener = new OnSystemCapabilityListener() {
             @Override
@@ -467,7 +464,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             }
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
-
     }
 
     // ADDITIONAL HELPERS

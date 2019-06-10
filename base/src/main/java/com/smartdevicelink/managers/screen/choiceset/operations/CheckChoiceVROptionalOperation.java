@@ -56,6 +56,7 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 
 	@Override
 	public void run() {
+		DebugTool.logInfo("Choice Operation: Executing check vr optional operation");
 		sendTestChoiceNoVR();
 	}
 

@@ -80,7 +80,7 @@ public class PresentKeyboardOperation implements Runnable {
 	}
 
 	private void start(){
-
+		DebugTool.logInfo("Choice Operation: Executing present keyboard operation");
 		if (keyboardListener != null){
 			keyboardProperties = customConfig;
 			updatedKeyboardProperties = true;
@@ -193,6 +193,7 @@ public class PresentKeyboardOperation implements Runnable {
 			public void onNotified(RPCNotification notification) {
 
 				if (Thread.interrupted()){
+					DebugTool.logWarning("Choice Operation - keyboard: Thread has been interrupted. Cleaning up");
 					finishOperation();
 					return;
 				}

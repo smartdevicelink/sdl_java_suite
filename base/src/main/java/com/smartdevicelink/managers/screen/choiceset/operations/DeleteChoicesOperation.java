@@ -60,6 +60,7 @@ public class DeleteChoicesOperation implements Runnable {
 
 	@Override
 	public void run() {
+		DebugTool.logInfo("Choice Operation: Executing delete choices operation");
 		sendDeletions();
 	}
 

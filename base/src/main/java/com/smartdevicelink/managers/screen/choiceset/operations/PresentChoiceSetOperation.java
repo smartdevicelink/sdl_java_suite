@@ -88,12 +88,12 @@ public class PresentChoiceSetOperation implements Runnable {
 
 	@Override
 	public void run() {
+		DebugTool.logInfo("Choice Operation: Executing present choice set operation");
 		addListeners();
 		start();
 	}
 
 	private void start(){
-
 		// Check if we're using a keyboard (searchable) choice set and setup keyboard properties if we need to
 		if (keyboardListener != null && choiceSet.getCustomKeyboardConfiguration() != null){
 			keyboardProperties = choiceSet.getCustomKeyboardConfiguration();
@@ -111,14 +111,12 @@ public class PresentChoiceSetOperation implements Runnable {
 	// SENDING REQUESTS
 
 	private void updateKeyboardProperties(final CompletionListener listener){
-
 		if (keyboardProperties == null){
 			if (listener != null){
 				listener.onComplete(false);
 			}
 			return;
 		}
-
 		SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
 		setGlobalProperties.setKeyboardProperties(keyboardProperties);
 		setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
@@ -136,6 +134,11 @@ public class PresentChoiceSetOperation implements Runnable {
 				}
 			}
 		});
+		if (internalInterface.get() != null){
+			internalInterface.get().sendRPC(setGlobalProperties);
+		} else {
+			DebugTool.logError("Internal interface null - present choice set op - choice");
+		}
 	}
 
 	private void presentChoiceSet() {
@@ -156,7 +159,7 @@ public class PresentChoiceSetOperation implements Runnable {
 				setSelectedCellWithId(performInteractionResponse.getChoiceID());
 				selectedTriggerSource = performInteractionResponse.getTriggerSource();
 
-				if (choiceSetSelectionListener != null){
+				if (choiceSetSelectionListener != null && selectedCell != null && selectedTriggerSource != null && selectedCellRow != null){
 					choiceSetSelectionListener.onChoiceSelected(selectedCell, selectedTriggerSource, selectedCellRow);
 				}
 
@@ -208,7 +211,6 @@ public class PresentChoiceSetOperation implements Runnable {
 	}
 
 	private LayoutMode getLayoutMode() {
-
 		switch (choiceSet.getLayout()){
 			case CHOICE_SET_LAYOUT_LIST:
 				return keyboardListener != null ? LayoutMode.LIST_WITH_SEARCH : LayoutMode.LIST_ONLY;
@@ -230,12 +232,14 @@ public class PresentChoiceSetOperation implements Runnable {
 	// HELPERS
 
 	private void setSelectedCellWithId(Integer cellId){
-		List<ChoiceCell> cells = choiceSet.getChoices();
-		for (int i = 0; i < cells.size(); i++) {
-			if (cells.get(i).getChoiceId() == cellId){
-				selectedCell = cells.get(i);
-				selectedCellRow = i;
-				return;
+		if (choiceSet.getChoices() != null && cellId != null) {
+			List<ChoiceCell> cells = choiceSet.getChoices();
+			for (int i = 0; i < cells.size(); i++) {
+				if (cells.get(i).getChoiceId() == cellId) {
+					selectedCell = cells.get(i);
+					selectedCellRow = i;
+					return;
+				}
 			}
 		}
 	}
@@ -249,6 +253,7 @@ public class PresentChoiceSetOperation implements Runnable {
 			public void onNotified(RPCNotification notification) {
 
 				if (Thread.interrupted()){
+					DebugTool.logWarning("Choice Operation - Present: Thread has been interrupted. Cleaning up");
 					finishOperation();
 					return;
 				}
@@ -287,7 +292,6 @@ public class PresentChoiceSetOperation implements Runnable {
 					// Notify of abort / Cancellation
 					keyboardListener.onKeyboardDidAbortWithReason(onKeyboard.getEvent());
 				}
-
 			}
 		};
 

@@ -464,12 +464,12 @@ abstract class BaseScreenManager extends BaseSubManager {
 
 	/**
 	 * Presents a keyboard on the Head unit to capture user input
-	 * @param initialText - The initial text that is used as a placeholder text
+	 * @param initialText - The initial text that is used as a placeholder text. It might not work on some head units.
 	 * @param customKeyboardProperties - the custom keyboard configuration to be used when the keyboard is displayed
 	 * @param keyboardListener - A keyboard listener to capture user input
 	 */
-	public void presentKeyboardWithInitialText(String initialText, KeyboardProperties customKeyboardProperties, KeyboardListener keyboardListener){
-		this.choiceSetManager.presentKeyboardWithInitialText(initialText, customKeyboardProperties, keyboardListener);
+	public void presentKeyboard(String initialText, KeyboardProperties customKeyboardProperties, KeyboardListener keyboardListener){
+		this.choiceSetManager.presentKeyboard(initialText, customKeyboardProperties, keyboardListener);
 	}
 
 	/**

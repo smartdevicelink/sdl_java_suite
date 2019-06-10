@@ -82,6 +82,7 @@ public class PreloadChoicesOperation implements Runnable {
 
 	@Override
 	public void run() {
+		DebugTool.logInfo("Choice Operation: Executing preload choices operation");
 		preloadCellArtworks(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
