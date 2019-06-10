@@ -360,6 +360,12 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
     }
 
+    // GETTERS
+
+    public HashSet<ChoiceCell> getPreloadedChoices(){
+        return this.preloadedChoices;
+    }
+
     // CHOICE SET MANAGEMENT HELPERS
 
     private HashSet<ChoiceCell> choicesToBeUploadedWithArray(List<ChoiceCell> choices){

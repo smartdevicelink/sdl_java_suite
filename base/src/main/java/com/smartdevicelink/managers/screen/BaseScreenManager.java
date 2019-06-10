@@ -56,6 +56,7 @@ import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -478,6 +479,13 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 */
 	public void setKeyboardConfiguration(KeyboardProperties keyboardConfiguration){
 		this.choiceSetManager.setKeyboardConfiguration(keyboardConfiguration);
+	}
+
+	/**
+	 * @return A set of choice cells that have been preloaded to the head unit
+	 */
+	public HashSet<ChoiceCell> getPreloadedChoices(){
+		return this.choiceSetManager.getPreloadedChoices();
 	}
 
 	// END CHOICE SETS
