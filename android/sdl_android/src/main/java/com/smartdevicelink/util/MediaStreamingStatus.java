@@ -60,6 +60,7 @@ import java.util.List;
 
 public class MediaStreamingStatus {
     private static final Object BROADCAST_RECEIVER_LOCK = new Object();
+    public boolean broadcastReceiverValid = true;
 
 
     WeakReference<Context> contextWeakReference;
@@ -207,6 +208,9 @@ public class MediaStreamingStatus {
             }
 
             if(preAddSize != intentList.size()){
+                synchronized (BROADCAST_RECEIVER_LOCK){
+                    broadcastReceiverValid = true;
+                }
                 updateBroadcastReceiver();
             }
         }
@@ -240,18 +244,18 @@ public class MediaStreamingStatus {
     }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        boolean valid = true;
         @Override
         public void onReceive(Context context, Intent intent) {
             synchronized (BROADCAST_RECEIVER_LOCK) {
                 if (!isAudioOutputAvailable()) {
-                    if (valid) {
-                        valid = false;
+                    if (broadcastReceiverValid) {
+                        broadcastReceiverValid = false;
                         //No audio device is acceptable any longer
                         if (callback != null) {
                             callback.onAudioNoLongerAvailable();
                         }
 
+                        intentList.clear();
                         unregisterBroadcastReceiver();
                     }
                 }
@@ -259,10 +263,9 @@ public class MediaStreamingStatus {
         }
     };
 
+
     public interface Callback{
         void onAudioNoLongerAvailable();
     }
-
-
 
 }
