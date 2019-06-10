@@ -65,6 +65,7 @@ import com.smartdevicelink.util.DebugTool;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -78,8 +79,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     // additional state
     private static final int CHECKING_VOICE = 0xA0;
 
-    OnRPCNotificationListener hmiListener;
-    OnSystemCapabilityListener displayListener;
+    private OnRPCNotificationListener hmiListener;
+    private OnSystemCapabilityListener displayListener;
 
     private final WeakReference<FileManager> fileManager;
     private KeyboardProperties keyboardConfiguration;
@@ -93,7 +94,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     // We will pass operations into this to be completed
     private PausableThreadPoolExecutor executor;
     private LinkedBlockingQueue<Runnable> operationQueue;
-    private boolean isPresentOperationPending;
+    private Future pendingPresentOperation;
 
     private int nextChoiceId;
     private int choiceCellIdMin = 1;
@@ -128,16 +129,22 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     @Override
     public void dispose(){
 
+        // cancel the operations
+        operationQueue.clear();
+        executor.shutdownNow();
+
         currentHMILevel = null;
         currentSystemContext = null;
         displayCapabilities = null;
 
-        // cancel the operations
-        executor.shutdownNow();
-
         pendingPresentationSet = null;
+        pendingPresentOperation = null;
         isVROptional = true;
         nextChoiceId = choiceCellIdMin;
+
+        // remove listeners
+        internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+        internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, displayListener);
 
         super.dispose();
     }
@@ -220,9 +227,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         // If choices are deleted that are already uploaded or pending and are used by a pending presentation, cancel it and send an error
         HashSet<ChoiceCell> pendingPresentationChoices = new HashSet<>(pendingPresentationSet.getChoices());
 
-        if (!isPresentOperationPending && (cellsToBeDeleted.retainAll(pendingPresentationChoices) || cellsToBeRemovedFromPending.retainAll(pendingPresentationChoices))){
-            DebugTool.logError("Attempting to delete choice cells while there is a pending presentation operation");
-            return;
+        if (pendingPresentOperation != null && !pendingPresentOperation.isCancelled() && !pendingPresentOperation.isDone() && (cellsToBeDeleted.retainAll(pendingPresentationChoices) || cellsToBeRemovedFromPending.retainAll(pendingPresentationChoices))){
+            pendingPresentOperation.cancel(true);
+            DebugTool.logWarning("Attempting to delete choice cells while there is a pending presentation operation. Pending presentation cancelled.");
+            pendingPresentOperation = null;
         }
 
         // Remove cells from pending and delete choices
@@ -246,7 +254,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 preloadedChoices.removeAll(cellsToBeDeleted);
             }
         });
-        executor.submit(deleteChoicesOperation);
+        Future something = executor.submit(deleteChoicesOperation);
+        something.cancel(true);
     }
 
     public void presentChoiceSet(final ChoiceSet choiceSet, final InteractionMode mode, final KeyboardListener keyboardListener){
@@ -260,30 +269,23 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         // Perform additional checks against the ChoiceSet
         if (!setUpChoiceSet(choiceSet)){ return; }
 
-        if (this.pendingPresentationSet != null || isPresentOperationPending){
-            DebugTool.logError("Currently presenting a choice set. Please wait until it is finished");
+        if (this.pendingPresentationSet != null && pendingPresentOperation != null){
+            pendingPresentOperation.cancel(true);
+            DebugTool.logWarning("Presenting a choice set while one is currently presented. Cancelling previous and continuing");
             return;
         }
 
         this.pendingPresentationSet = choiceSet;
-        isPresentOperationPending = true;
         preloadChoices(this.pendingPresentationSet.getChoices(), new CompletionListener() {
             @Override
             public void onComplete(boolean success) {
                 if (!success){
                     choiceSet.getChoiceSetSelectionListener().onError("There was an error pre-loading choice set choices");
-                    isPresentOperationPending = false;
-                    return;
                 }
-                sendChoiceSet(keyboardListener, mode);
             }
         });
-    }
 
-    private void sendChoiceSet(KeyboardListener keyboardListener, InteractionMode mode){
-        Log.i("Choice", " Sending set 1");
         findIdsOnChoiceSet(pendingPresentationSet);
-        Log.i("Choice", " Sending set 2");
         // Pass back the information to the developer
         ChoiceSetSelectionListener privateChoiceListener = new ChoiceSetSelectionListener() {
             @Override
@@ -292,7 +294,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                     pendingPresentationSet.getChoiceSetSelectionListener().onChoiceSelected(choiceCell, triggerSource,rowIndex);
                 }
                 pendingPresentationSet = null;
-                isPresentOperationPending = false;
+                pendingPresentOperation = null;
             }
 
             @Override
@@ -301,7 +303,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                     pendingPresentationSet.getChoiceSetSelectionListener().onError(error);
                 }
                 pendingPresentationSet = null;
-                isPresentOperationPending = false;
+                pendingPresentOperation = null;
             }
         };
 
@@ -317,21 +319,28 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener);
         }
 
-        executor.submit(presentOp);
+        pendingPresentOperation = executor.submit(presentOp);
     }
+
 
     public void presentKeyboardWithInitialText(String initialText, KeyboardProperties customKeyboardConfig, KeyboardListener listener){
 
         if (!isReady()){ return; }
 
-        if (pendingPresentationSet != null || isPresentOperationPending){
-            DebugTool.logError("Currently presenting a choice set. Please wait until it is finished");
-            return;
+        if (pendingPresentationSet != null && pendingPresentOperation != null){
+            pendingPresentOperation.cancel(true);
+            pendingPresentationSet = null;
+            DebugTool.logWarning("There is a current or pending choice set, cancelling and continuing.");
+        }
+
+        if (customKeyboardConfig == null){
+            customKeyboardConfig = defaultKeyboardConfiguration();
         }
 
         // Present a keyboard with the choice set that we used to test VR's optional state
+        DebugTool.logInfo("Presenting Keyboard - Choice Set Manager");
         PresentKeyboardOperation keyboardOp = new PresentKeyboardOperation(internalInterface, keyboardConfiguration, initialText, customKeyboardConfig, listener);
-        executor.submit(keyboardOp);
+        pendingPresentOperation = executor.submit(keyboardOp);
     }
 
     // SETTERS

@@ -142,6 +142,12 @@ public class PresentKeyboardOperation implements Runnable {
 				}
 			}
 		});
+
+		if (internalInterface.get() != null){
+			internalInterface.get().sendRPC(setGlobalProperties);
+		} else {
+			DebugTool.logError("Internal interface null - present keyboard op - choice");
+		}
 	}
 
 	private void finishOperation() {
@@ -170,7 +176,10 @@ public class PresentKeyboardOperation implements Runnable {
 	// GETTERS
 
 	private PerformInteraction getPerformInteraction() {
-		PerformInteraction pi = new PerformInteraction(initialText, InteractionMode.MANUAL_ONLY, Collections.<Integer>emptyList());
+		PerformInteraction pi = new PerformInteraction();
+		pi.setInitialText(initialText);
+		pi.setInteractionMode(InteractionMode.MANUAL_ONLY);
+		pi.setInteractionChoiceSetIDList(Collections.<Integer>emptyList());
 		pi.setInteractionLayout(LayoutMode.KEYBOARD);
 		return pi;
 	}

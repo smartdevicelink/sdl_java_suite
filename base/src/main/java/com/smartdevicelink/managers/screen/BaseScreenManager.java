@@ -426,24 +426,58 @@ abstract class BaseScreenManager extends BaseSubManager {
 
 	// CHOICE SETS
 
+	/**
+	 * Deletes choices that were sent previously
+	 * @param choices - A list of ChoiceCell objects
+	 */
 	public void deleteChoices(List<ChoiceCell> choices){
 		this.choiceSetManager.deleteChoices(choices);
 	}
 
+	/**
+	 * Preload choices to improve performance while presenting a choice set at a later time
+	 * @param choices - a list of ChoiceCell objects that will be part of a choice set later
+	 * @param listener - a completion listener to inform when the operation is complete
+	 */
 	public void preloadChoices(List<ChoiceCell> choices, CompletionListener listener){
 		this.choiceSetManager.preloadChoices(choices, listener);
 	}
 
+	/**
+	 * Presents a searchable choice set
+	 * @param choiceSet - The choice set to be presented. This can include Choice Cells that were preloaded or not
+	 * @param mode - The intended interaction mode
+	 * @param keyboardListener - A keyboard listener to capture user input
+	 */
 	public void presentSearchableChoiceSet(ChoiceSet choiceSet, InteractionMode mode, KeyboardListener keyboardListener){
 		this.choiceSetManager.presentChoiceSet(choiceSet, mode, keyboardListener);
 	}
 
+	/**
+	 * Presents a choice set
+	 * @param choiceSet - The choice set to be presented. This can include Choice Cells that were preloaded or not
+	 * @param mode - The intended interaction mode
+	 */
 	public void presentChoiceSet(ChoiceSet choiceSet, InteractionMode mode){
 		this.choiceSetManager.presentChoiceSet(choiceSet, mode, null);
 	}
 
+	/**
+	 * Presents a keyboard on the Head unit to capture user input
+	 * @param initialText - The initial text that is used as a placeholder text
+	 * @param customKeyboardProperties - the custom keyboard configuration to be used when the keyboard is displayed
+	 * @param keyboardListener - A keyboard listener to capture user input
+	 */
 	public void presentKeyboardWithInitialText(String initialText, KeyboardProperties customKeyboardProperties, KeyboardListener keyboardListener){
 		this.choiceSetManager.presentKeyboardWithInitialText(initialText, customKeyboardProperties, keyboardListener);
+	}
+
+	/**
+	 * Set a custom keyboard configuration for this session
+	 * @param keyboardConfiguration - the custom keyboard configuration to be used when the keyboard is displayed
+	 */
+	public void setKeyboardConfiguration(KeyboardProperties keyboardConfiguration){
+		this.choiceSetManager.setKeyboardConfiguration(keyboardConfiguration);
 	}
 
 	// END CHOICE SETS

@@ -98,7 +98,7 @@ public class PreloadChoicesOperation implements Runnable {
 	}
 
 	private void preloadCellArtworks(@NonNull final CompletionListener listener){
-
+		isRunning = true;
 		List<SdlArtwork> artworksToUpload = new ArrayList<>(cellsToUpload.size());
 		for (ChoiceCell cell : cellsToUpload){
 			if (hasImageFieldOfName(ImageFieldName.choiceImage) && artworkNeedsUpload(cell.getArtwork())){
@@ -112,6 +112,7 @@ public class PreloadChoicesOperation implements Runnable {
 		if (artworksToUpload.size() == 0){
 			DebugTool.logInfo("Choice Preload: No Choice Artworks to upload");
 			listener.onComplete(true);
+			isRunning = false;
 			return;
 		}
 
@@ -122,15 +123,18 @@ public class PreloadChoicesOperation implements Runnable {
 					if (errors != null && errors.size() > 0){
 						DebugTool.logError("Error uploading choice cell Artworks: "+ errors.toString());
 						listener.onComplete(false);
+						isRunning = false;
 					}else{
 						DebugTool.logInfo("Choice Artworks Uploaded");
 						listener.onComplete(true);
+						isRunning = false;
 					}
 				}
 			});
 		}else{
 			DebugTool.logError("File manager is null in choice preload operation");
 			listener.onComplete(false);
+			isRunning = false;
 		}
 	}
 
@@ -147,6 +151,7 @@ public class PreloadChoicesOperation implements Runnable {
 		if (choiceRPCs.size() == 0){
 			DebugTool.logError(" All Choice cells to send are null, so the choice set will not be shown");
 			completionListener.onComplete(true);
+			isRunning = false;
 			return;
 		}
 
