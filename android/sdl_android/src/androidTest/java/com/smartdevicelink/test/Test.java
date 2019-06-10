@@ -4,8 +4,12 @@ import android.graphics.Color;
 import android.util.Log;
 
 import com.smartdevicelink.R;
-import com.smartdevicelink.SdlConnection.SdlSession2;
+import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
+import com.smartdevicelink.managers.screen.menu.MenuCell;
+import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
+import com.smartdevicelink.managers.screen.menu.VoiceCommand;
+import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.SdlProxyBase;
@@ -393,6 +397,7 @@ public class Test {
 	public static final AudioControlData               GENERAL_AUDIOCONTROLDATA               = new AudioControlData();
 	public static final LightControlData               GENERAL_LIGHTCONTROLDATA               = new LightControlData();
 	public static final HMISettingsControlData         GENERAL_HMISETTINGSCONTROLDATA         = new HMISettingsControlData();
+	public static final SdlArtwork                     GENERAL_ARTWORK                        = new SdlArtwork("sdl", FileType.GRAPHIC_PNG, R.drawable.ic_sdl, false);
 
 	public static final HMICapabilities                GENERAL_HMICAPABILITIES                = new HMICapabilities();
 
@@ -449,7 +454,24 @@ public class Test {
 	public static final List<WeatherData>               GENERAL_WEATHERDATA_LIST               = Arrays.asList(GENERAL_WEATHERDATA);
 	public static final List<WeatherAlert>              GENERAL_WEATHERALERT_LIST              = Arrays.asList(GENERAL_WEATHERALERT);
 	public static final List<NavigationInstruction>     GENERAL_NAVIGATION_INSTRUCTION_LIST    = Arrays.asList(GENERAL_NAVIGATION_INSTRUCTION);
+
 	public static final List<Integer>                   GENERAL_AVAILABLE_HD_CHANNELS_LIST     = Arrays.asList(new Integer[]{ 1, 2});
+
+	public static final int                             GENERAL_MENU_MAX_ID                    = 2000000000;
+	public static final MenuCell                        GENERAL_MENUCELL                       = new MenuCell(GENERAL_STRING,null, null, new MenuSelectionListener() {
+		@Override
+		public void onTriggered(TriggerSource trigger) {
+			//
+		}
+	});
+	public static final List<MenuCell>                  GENERAL_MENUCELL_LIST                  = Arrays.asList(GENERAL_MENUCELL);
+	public static final VoiceCommand					GENERAL_VOICE_COMMAND                  = new VoiceCommand(GENERAL_STRING_LIST, new VoiceCommandSelectionListener() {
+		@Override
+		public void onVoiceCommandSelected() {
+
+		}
+	});
+	public static final List<VoiceCommand>              GENERAL_VOICE_COMMAND_LIST             = Arrays.asList(GENERAL_VOICE_COMMAND);
 
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();

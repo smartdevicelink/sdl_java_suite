@@ -107,7 +107,7 @@ public class BeltStatusTests extends TestCase{
 
         try{
             reference.put(BeltStatus.KEY_PASSENGER_CHILD_DETECTED, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
-            reference.put(BeltStatus.KEY_REAR_INFLATABLE_BELTED, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
+            reference.put(BeltStatus.KEY_LEFT_REAR_INFLATABLE_BELTED, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
             reference.put(BeltStatus.KEY_RIGHT_REAR_INFLATABLE_BELTED, Test.GENERAL_VEHCILEDATAEVENTSTATUS);            
             reference.put(BeltStatus.KEY_DRIVER_BELT_DEPLOYED, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
             reference.put(BeltStatus.KEY_DRIVER_BUCKLE_BELTED, Test.GENERAL_VEHCILEDATAEVENTSTATUS);
