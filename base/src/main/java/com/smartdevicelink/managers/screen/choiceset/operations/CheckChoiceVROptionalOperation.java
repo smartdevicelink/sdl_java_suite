@@ -118,7 +118,7 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 	}
 
 	private void deleteTestChoiceSet(){
-		DeleteInteractionChoiceSet delete = new DeleteInteractionChoiceSet(0);
+		DeleteInteractionChoiceSet delete = createDeleteInteractionChoiceSet();
 		delete.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
@@ -136,7 +136,11 @@ public class CheckChoiceVROptionalOperation implements Runnable {
 		}
 	}
 
-	private CreateInteractionChoiceSet testCellWithVR(boolean hasVR){
+	DeleteInteractionChoiceSet createDeleteInteractionChoiceSet(){
+		return new DeleteInteractionChoiceSet(0);
+	}
+
+	CreateInteractionChoiceSet testCellWithVR(boolean hasVR){
 		Choice choice = new Choice(0, "Test Cell");
 		choice.setVrCommands((hasVR ? Collections.singletonList("Test VR") : null));
 		choice.setIgnoreAddingVRItems(true);

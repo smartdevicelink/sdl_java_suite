@@ -35,17 +35,50 @@
 package com.smartdevicelink.managers.screen.choiceset.operations;
 
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.Choice;
+import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
+
+import static org.mockito.Mockito.mock;
 
 public class CheckChoiceVROptionalOperationTests extends AndroidTestCase2 {
+
+	private CheckChoiceVROptionalOperation checkChoiceVROptionalOperation;
 
 	@Override
 	public void setUp() throws Exception{
 		super.setUp();
+
+		ISdl internalInterface = mock(ISdl.class);
+		CheckChoiceVROptionalInterface checkChoiceVROptionalInterface = mock(CheckChoiceVROptionalInterface.class);
+		checkChoiceVROptionalOperation = new CheckChoiceVROptionalOperation(internalInterface, checkChoiceVROptionalInterface);
 	}
 
 	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
+	}
+
+	public void testCreateChoiceNoVR(){
+		CreateInteractionChoiceSet setNoVR = checkChoiceVROptionalOperation.testCellWithVR(false);
+		assertNotNull(setNoVR);
+		// This set only has one choice
+		Choice choice = setNoVR.getChoiceSet().get(0);
+		assertNull(choice.getVrCommands());
+	}
+
+	public void testCreateChoiceWithVR(){
+		CreateInteractionChoiceSet setNoVR = checkChoiceVROptionalOperation.testCellWithVR(true);
+		assertNotNull(setNoVR);
+		// This set only has one choice
+		Choice choice = setNoVR.getChoiceSet().get(0);
+		assertEquals(choice.getVrCommands().get(0), "Test VR");
+	}
+
+	public void testDeleteInteractionChoiceSet(){
+		DeleteInteractionChoiceSet deleteSet = checkChoiceVROptionalOperation.createDeleteInteractionChoiceSet();
+		assertNotNull(deleteSet);
 	}
 
 }

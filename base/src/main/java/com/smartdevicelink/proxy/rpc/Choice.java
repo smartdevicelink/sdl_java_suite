@@ -262,6 +262,10 @@ public class Choice extends RPCStruct {
         return (Image) getObject(Image.class, KEY_SECONDARY_IMAGE);
     }
 
+    /**
+     * This prevents the @{link Choice#format} method from adding VR commands if set to true
+     * @param ignoreAddingVRItems - whether or not to let the format method add vr commands
+     */
     public void setIgnoreAddingVRItems(boolean ignoreAddingVRItems){
         this.ignoreAddingVRItems = ignoreAddingVRItems;
     }
