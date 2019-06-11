@@ -68,36 +68,50 @@ public class DeleteChoicesOperation implements Runnable {
 
 	private void sendDeletions(){
 
+		List<DeleteInteractionChoiceSet> deleteChoices = createDeleteSets();
+
+		if (deleteChoices.size() > 0) {
+
+			if (internalInterface.get() != null) {
+				internalInterface.get().sendRequests(deleteChoices, new OnMultipleRequestListener() {
+					@Override
+					public void onUpdate(int remainingRequests) {
+					}
+
+					@Override
+					public void onFinished() {
+						if (completionListener != null) {
+							completionListener.onComplete(true);
+						}
+						DebugTool.logInfo("Successfully deleted choices");
+					}
+
+					@Override
+					public void onError(int correlationId, Result resultCode, String info) {
+						if (completionListener != null) {
+							completionListener.onComplete(false);
+						}
+						DebugTool.logError("Failed to delete choice: " + info + " | Corr ID: " + correlationId);
+					}
+
+					@Override
+					public void onResponse(int correlationId, RPCResponse response) {
+					}
+				});
+			}
+		} else{
+			if (completionListener != null) {
+				completionListener.onComplete(true);
+			}
+			DebugTool.logInfo("No Choices to delete, continue");
+		}
+	}
+
+	List<DeleteInteractionChoiceSet> createDeleteSets(){
 		List<DeleteInteractionChoiceSet> deleteChoices = new ArrayList<>(cellsToDelete.size());
 		for (ChoiceCell cell : cellsToDelete){
 			deleteChoices.add(new DeleteInteractionChoiceSet(cell.getChoiceId()));
 		}
-
-		if (internalInterface.get() != null){
-			internalInterface.get().sendRequests(deleteChoices, new OnMultipleRequestListener() {
-				@Override
-				public void onUpdate(int remainingRequests) {}
-
-				@Override
-				public void onFinished() {
-					if (completionListener != null){
-						completionListener.onComplete(true);
-					}
-					DebugTool.logInfo("Successfully deleted choices");
-				}
-
-				@Override
-				public void onError(int correlationId, Result resultCode, String info) {
-					if (completionListener != null){
-						completionListener.onComplete(false);
-					}
-					DebugTool.logError("Failed to delete choice: "+ info+ " | Corr ID: "+ correlationId);
-				}
-
-				@Override
-				public void onResponse(int correlationId, RPCResponse response) {}
-			});
-		}
-
+		return deleteChoices;
 	}
 }

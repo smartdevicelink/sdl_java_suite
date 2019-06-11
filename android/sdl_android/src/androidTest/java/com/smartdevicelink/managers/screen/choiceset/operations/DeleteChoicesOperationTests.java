@@ -35,17 +35,45 @@
 package com.smartdevicelink.managers.screen.choiceset.operations;
 
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
+
+import java.util.HashSet;
+import java.util.List;
+
+import static org.mockito.Mockito.mock;
 
 public class DeleteChoicesOperationTests extends AndroidTestCase2 {
+
+	private DeleteChoicesOperation deleteChoicesOperation;
 
 	@Override
 	public void setUp() throws Exception{
 		super.setUp();
+
+		ChoiceCell cell1 = new ChoiceCell("cell 1");
+		ChoiceCell cell2 = new ChoiceCell("cell 2");
+		HashSet<ChoiceCell> cellsToDelete = new HashSet<>();
+		cellsToDelete.add(cell1);
+		cellsToDelete.add(cell2);
+
+		ISdl internalInterface = mock(ISdl.class);
+		deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, cellsToDelete, null);
 	}
 
 	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
+	}
+
+	public void testCreateListDeleteInteractionSets(){
+		List<DeleteInteractionChoiceSet> deletes = deleteChoicesOperation.createDeleteSets();
+		assertNotNull(deletes);
+		assertEquals(deletes.size(), 2);
+		for (DeleteInteractionChoiceSet delete : deletes) {
+			assertNotNull(delete);
+		}
 	}
 
 }
