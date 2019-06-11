@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c)  2019 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,24 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * Created by brettywhite on 2019-06-11.
+ * Created by brettywhite on 6/11/19 9:58 AM
+ *
  */
 
-package com.smartdevicelink.managers.screen.choiceset.operations;
+package com.smartdevicelink.managers.screen.choiceset;
 
-public interface CheckChoiceVROptionalInterface {
-	void onCheckChoiceVROperationComplete(boolean vrOptional);
-	void onError(String error);
+import com.smartdevicelink.AndroidTestCase2;
+
+public class ChoiceSetManagerTests extends AndroidTestCase2 {
+
+	@Override
+	public void setUp() throws Exception{
+		super.setUp();
+	}
+
+	@Override
+	public void tearDown() throws Exception {
+		super.tearDown();
+	}
+
 }

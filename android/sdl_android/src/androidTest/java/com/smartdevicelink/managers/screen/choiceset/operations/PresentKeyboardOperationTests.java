@@ -34,7 +34,18 @@
 
 package com.smartdevicelink.managers.screen.choiceset.operations;
 
-public interface CheckChoiceVROptionalInterface {
-	void onCheckChoiceVROperationComplete(boolean vrOptional);
-	void onError(String error);
+import com.smartdevicelink.AndroidTestCase2;
+
+public class PresentKeyboardOperationTests extends AndroidTestCase2 {
+
+	@Override
+	public void setUp() throws Exception{
+		super.setUp();
+	}
+
+	@Override
+	public void tearDown() throws Exception {
+		super.tearDown();
+	}
+
 }
