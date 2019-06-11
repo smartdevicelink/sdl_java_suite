@@ -189,7 +189,7 @@ public class PreloadChoicesOperation implements Runnable {
 		}
 	}
 
-	private CreateInteractionChoiceSet choiceFromCell(ChoiceCell cell){
+	CreateInteractionChoiceSet choiceFromCell(ChoiceCell cell){
 
 		List<String> vrCommands;
 		if (cell.getVoiceCommands() == null){

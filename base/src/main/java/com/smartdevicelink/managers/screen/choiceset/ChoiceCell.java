@@ -106,7 +106,7 @@ public class ChoiceCell {
      * @param text - Maps to Choice.menuName. The primary text of the cell. Duplicates within an `ChoiceSet`
      * are not permitted and will result in the `ChoiceSet` failing to initialize.
      */
-    public void setText(@NonNull String text) {
+    void setText(@NonNull String text) {
         this.text = text;
     }
 
@@ -123,7 +123,7 @@ public class ChoiceCell {
      * @param secondaryText - Maps to Choice.secondaryText. Optional secondary text of the cell, if
      * available. Duplicates within an `ChoiceSet` are permitted.
      */
-    public void setSecondaryText(String secondaryText) {
+    void setSecondaryText(String secondaryText) {
         this.secondaryText = secondaryText;
     }
 
@@ -139,7 +139,7 @@ public class ChoiceCell {
      * @param tertiaryText - Maps to Choice.tertiaryText. Optional tertiary text of the cell, if
      * available. Duplicates within an `ChoiceSet` are permitted.
      */
-    public void setTertiaryText(String tertiaryText) {
+    void setTertiaryText(String tertiaryText) {
         this.tertiaryText = tertiaryText;
     }
 
@@ -162,7 +162,7 @@ public class ChoiceCell {
      * presented as a voice only interaction or both interaction mode. Therefore, consider not setting
      * this only when you know the choice set will be presented as a touch only interaction.
      */
-    public void setVoiceCommands(List<String> voiceCommands) {
+    void setVoiceCommands(List<String> voiceCommands) {
         this.voiceCommands = voiceCommands;
     }
 
@@ -179,7 +179,7 @@ public class ChoiceCell {
      * @param artwork - Maps to Choice.image. Optional image for the cell. This will be uploaded
      * before the cell is used when the cell is preloaded or presented for the first time.
      */
-    public void setArtwork(SdlArtwork artwork) {
+    void setArtwork(SdlArtwork artwork) {
         this.artwork = artwork;
     }
 
@@ -196,7 +196,7 @@ public class ChoiceCell {
      * @param secondaryArtwork - Maps to Choice.secondaryImage. Optional secondary image for the cell.
      * This will be uploaded before the cell is used when the cell is preloaded or presented for the first time.
      */
-    public void setSecondaryArtwork(SdlArtwork secondaryArtwork) {
+    void setSecondaryArtwork(SdlArtwork secondaryArtwork) {
         this.secondaryArtwork = secondaryArtwork;
     }
 
