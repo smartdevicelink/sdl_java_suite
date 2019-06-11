@@ -62,7 +62,6 @@ public class ChoiceCellTests extends AndroidTestCase2 {
         choiceCell.setArtwork(artwork);
         choiceCell.setSecondaryArtwork(artwork);
 
-
         // use getters and assert equality
         assertEquals(choiceCell.getText(), Test.GENERAL_STRING);
         assertEquals(choiceCell.getSecondaryText(), Test.GENERAL_STRING);

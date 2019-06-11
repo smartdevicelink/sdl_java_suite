@@ -77,29 +77,36 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 
 	public void testHasTextFieldOfName(){
 
-		TextField textField = Test.GENERAL_TEXTFIELD;
+		TextField textField = new TextField();
 		textField.setName(TextFieldName.secondaryText);
 
-		DisplayCapabilities capabilities = Test.GENERAL_DISPLAYCAPABILITIES;
+		DisplayCapabilities capabilities = new DisplayCapabilities();
 		capabilities.setTextFields(Collections.singletonList(textField));
 
 		boolean test = preloadChoicesOperation.hasTextFieldOfName(TextFieldName.secondaryText);
-		assertTrue(test);
+		assertFalse(test);
 	}
 
 	public void testHasImageFieldOfName(){
 
-		ImageField imageField = Test.GENERAL_IMAGEFIELD;
+		ImageField imageField = new ImageField();
 		imageField.setName(ImageFieldName.choiceImage);
 
-		DisplayCapabilities capabilities = Test.GENERAL_DISPLAYCAPABILITIES;
+		DisplayCapabilities capabilities = new DisplayCapabilities();
 		capabilities.setImageFields(Collections.singletonList(imageField));
 
 		boolean test = preloadChoicesOperation.hasImageFieldOfName(ImageFieldName.choiceImage);
-		assertTrue(test);
+		assertFalse(test);
 	}
 
 	public void testArtworkNeedsUpload(){
+		boolean test = preloadChoicesOperation.artworkNeedsUpload(Test.GENERAL_ARTWORK);
+		assertTrue(test);
+	}
+
+	public void testCreateInteractionChoiceSet(){
+
+
 
 	}
 
