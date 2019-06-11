@@ -222,14 +222,14 @@ public class PreloadChoicesOperation implements Runnable {
 
 	// HELPERS
 
-	private boolean artworkNeedsUpload(SdlArtwork artwork){
+	boolean artworkNeedsUpload(SdlArtwork artwork){
 		if (fileManager.get() != null){
 			return (artwork != null && !fileManager.get().hasUploadedFile(artwork) && !artwork.isStaticIcon());
 		}
 		return false;
 	}
 
-	private boolean hasImageFieldOfName(ImageFieldName name){
+	boolean hasImageFieldOfName(ImageFieldName name){
 		if (displayCapabilities == null ){ return false; }
 		if (displayCapabilities.getGraphicSupported() == null || !displayCapabilities.getGraphicSupported()) { return false; }
 		if (displayCapabilities.getImageFields() != null){
@@ -242,7 +242,7 @@ public class PreloadChoicesOperation implements Runnable {
 		return false;
 	}
 
-	private boolean hasTextFieldOfName(TextFieldName name){
+	boolean hasTextFieldOfName(TextFieldName name){
 		if (displayCapabilities == null ){ return false; }
 		if (displayCapabilities.getTextFields() != null){
 			for (TextField field : displayCapabilities.getTextFields()){

@@ -35,17 +35,72 @@
 package com.smartdevicelink.managers.screen.choiceset.operations;
 
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.ImageField;
+import com.smartdevicelink.proxy.rpc.TextField;
+import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
+import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
+import com.smartdevicelink.test.Test;
+
+import java.util.Collections;
+import java.util.HashSet;
+
+import static org.mockito.Mockito.mock;
 
 public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 
+	private PreloadChoicesOperation preloadChoicesOperation;
+
 	@Override
 	public void setUp() throws Exception{
+
 		super.setUp();
+
+		ChoiceCell cell1 = new ChoiceCell("cell 1");
+		ChoiceCell cell2 = new ChoiceCell("cell 2");
+		HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+		cellsToPreload.add(cell1);
+		cellsToPreload.add(cell2);
+
+		ISdl internalInterface = mock(ISdl.class);
+		FileManager fileManager = mock(FileManager.class);
+		preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, Test.GENERAL_DISPLAYCAPABILITIES, true, cellsToPreload, null);
 	}
 
 	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
+	}
+
+	public void testHasTextFieldOfName(){
+
+		TextField textField = Test.GENERAL_TEXTFIELD;
+		textField.setName(TextFieldName.secondaryText);
+
+		DisplayCapabilities capabilities = Test.GENERAL_DISPLAYCAPABILITIES;
+		capabilities.setTextFields(Collections.singletonList(textField));
+
+		boolean test = preloadChoicesOperation.hasTextFieldOfName(TextFieldName.secondaryText);
+		assertTrue(test);
+	}
+
+	public void testHasImageFieldOfName(){
+
+		ImageField imageField = Test.GENERAL_IMAGEFIELD;
+		imageField.setName(ImageFieldName.choiceImage);
+
+		DisplayCapabilities capabilities = Test.GENERAL_DISPLAYCAPABILITIES;
+		capabilities.setImageFields(Collections.singletonList(imageField));
+
+		boolean test = preloadChoicesOperation.hasImageFieldOfName(ImageFieldName.choiceImage);
+		assertTrue(test);
+	}
+
+	public void testArtworkNeedsUpload(){
+
 	}
 
 }

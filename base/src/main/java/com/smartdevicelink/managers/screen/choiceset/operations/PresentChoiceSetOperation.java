@@ -254,12 +254,6 @@ public class PresentChoiceSetOperation implements Runnable {
 			@Override
 			public void onNotified(RPCNotification notification) {
 
-				if (Thread.interrupted()){
-					DebugTool.logWarning("Choice Operation - Present: Thread has been interrupted. Cleaning up");
-					finishOperation();
-					return;
-				}
-
 				if (keyboardListener == null){
 					DebugTool.logError("Received Keyboard Input But Listener is null");
 					return;
