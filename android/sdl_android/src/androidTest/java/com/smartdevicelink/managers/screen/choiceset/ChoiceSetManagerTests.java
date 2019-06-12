@@ -43,19 +43,24 @@ import static org.mockito.Mockito.mock;
 
 public class ChoiceSetManagerTests extends AndroidTestCase2 {
 
+	private ChoiceSetManager csm;
+
 	@Override
 	public void setUp() throws Exception{
 		super.setUp();
 
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
-
-
+		csm = new ChoiceSetManager(internalInterface, fileManager);
 	}
 
 	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
+	}
+
+	public void testDefaultKeyboardConfiguration(){
+
 	}
 
 }

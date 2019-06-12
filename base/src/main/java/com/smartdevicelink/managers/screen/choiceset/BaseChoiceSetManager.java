@@ -321,7 +321,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         pendingPresentOperation = executor.submit(presentOp);
     }
 
-
     public void presentKeyboard(String initialText, KeyboardProperties customKeyboardConfig, KeyboardListener listener){
 
         if (!isReady()){ return; }
@@ -518,7 +517,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
 
-    private KeyboardProperties defaultKeyboardConfiguration(){
+    KeyboardProperties defaultKeyboardConfiguration(){
         KeyboardProperties defaultProperties = new KeyboardProperties();
         defaultProperties.setLanguage(Language.EN_US);
         defaultProperties.setKeyboardLayout(KeyboardLayout.QWERTY);
