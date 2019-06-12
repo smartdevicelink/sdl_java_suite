@@ -134,7 +134,11 @@ public class PresentKeyboardOperation implements Runnable {
 			public void onResponse(int correlationId, RPCResponse response) {
 
 				if (!response.getSuccess()){
-					DebugTool.logError("Error Setting keyboard properties in present choice set operation");
+					if (listener != null){
+						listener.onComplete(false);
+					}
+					DebugTool.logError("Error Setting keyboard properties in present keyboard operation - choice manager");
+					return;
 				}
 
 				updatedKeyboardProperties = true;
@@ -142,6 +146,7 @@ public class PresentKeyboardOperation implements Runnable {
 				if (listener != null){
 					listener.onComplete(true);
 				}
+				DebugTool.logInfo("Success Setting keyboard properties in present keyboard operation - choice manager");
 			}
 		});
 
@@ -212,7 +217,6 @@ public class PresentKeyboardOperation implements Runnable {
 						public void onUpdatedAutoCompleteText(String updatedAutoCompleteText) {
 							keyboardProperties.setAutoCompleteText(updatedAutoCompleteText);
 							updateKeyboardProperties(null);
-							updatedKeyboardProperties = true;
 						}
 					});
 
@@ -221,7 +225,6 @@ public class PresentKeyboardOperation implements Runnable {
 						public void onUpdatedCharacterSet(List<String> updatedCharacterSet) {
 							keyboardProperties.setLimitedCharacterList(updatedCharacterSet);
 							updateKeyboardProperties(null);
-							updatedKeyboardProperties = true;
 						}
 					});
 				} else if (onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_ABORTED) || onKeyboard.getEvent().equals(KeyboardEvent.ENTRY_CANCELLED)){
