@@ -70,7 +70,7 @@ public class PreloadChoicesOperation implements Runnable {
 	private HashSet<ChoiceCell> cellsToUpload;
 	private CompletionListener completionListener;
 	private boolean isRunning;
-	Boolean isVROptional;
+	private Boolean isVROptional;
 
 	public PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, DisplayCapabilities displayCapabilities,
 								   Boolean isVROptional, HashSet<ChoiceCell> cellsToPreload, CompletionListener listener){
@@ -102,15 +102,8 @@ public class PreloadChoicesOperation implements Runnable {
 
 	private void preloadCellArtworks(@NonNull final CompletionListener listener){
 		isRunning = true;
-		List<SdlArtwork> artworksToUpload = new ArrayList<>(cellsToUpload.size());
-		for (ChoiceCell cell : cellsToUpload){
-			if (hasImageFieldOfName(ImageFieldName.choiceImage) && artworkNeedsUpload(cell.getArtwork())){
-				artworksToUpload.add(cell.getArtwork());
-			}
-			if (hasImageFieldOfName(ImageFieldName.choiceSecondaryImage) && artworkNeedsUpload(cell.getSecondaryArtwork())){
-				artworksToUpload.add(cell.getSecondaryArtwork());
-			}
-		}
+
+		List<SdlArtwork> artworksToUpload = artworksToUpload();
 
 		if (artworksToUpload.size() == 0){
 			DebugTool.logInfo("Choice Preload: No Choice Artworks to upload");
@@ -189,7 +182,7 @@ public class PreloadChoicesOperation implements Runnable {
 		}
 	}
 
-	CreateInteractionChoiceSet choiceFromCell(ChoiceCell cell){
+	private CreateInteractionChoiceSet choiceFromCell(ChoiceCell cell){
 
 		List<String> vrCommands;
 		if (cell.getVoiceCommands() == null){
@@ -221,6 +214,19 @@ public class PreloadChoicesOperation implements Runnable {
 	}
 
 	// HELPERS
+
+	List<SdlArtwork> artworksToUpload(){
+		List<SdlArtwork> artworksToUpload = new ArrayList<>(cellsToUpload.size());
+		for (ChoiceCell cell : cellsToUpload){
+			if (hasImageFieldOfName(ImageFieldName.choiceImage) && artworkNeedsUpload(cell.getArtwork())){
+				artworksToUpload.add(cell.getArtwork());
+			}
+			if (hasImageFieldOfName(ImageFieldName.choiceSecondaryImage) && artworkNeedsUpload(cell.getSecondaryArtwork())){
+				artworksToUpload.add(cell.getSecondaryArtwork());
+			}
+		}
+		return artworksToUpload;
+	}
 
 	boolean artworkNeedsUpload(SdlArtwork artwork){
 		if (fileManager.get() != null){
