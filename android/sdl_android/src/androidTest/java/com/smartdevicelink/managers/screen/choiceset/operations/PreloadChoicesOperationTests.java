@@ -38,6 +38,7 @@ import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.TextField;
@@ -104,10 +105,6 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 		assertTrue(test);
 	}
 
-	public void testCreateInteractionChoiceSet(){
 
-
-
-	}
 
 }

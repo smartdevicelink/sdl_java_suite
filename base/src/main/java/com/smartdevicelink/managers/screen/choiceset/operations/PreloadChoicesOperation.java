@@ -67,10 +67,10 @@ public class PreloadChoicesOperation implements Runnable {
 	private WeakReference<ISdl> internalInterface;
 	private WeakReference<FileManager> fileManager;
 	private DisplayCapabilities displayCapabilities;
-	private Boolean isVROptional;
 	private HashSet<ChoiceCell> cellsToUpload;
 	private CompletionListener completionListener;
 	private boolean isRunning;
+	Boolean isVROptional;
 
 	public PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, DisplayCapabilities displayCapabilities,
 								   Boolean isVROptional, HashSet<ChoiceCell> cellsToPreload, CompletionListener listener){

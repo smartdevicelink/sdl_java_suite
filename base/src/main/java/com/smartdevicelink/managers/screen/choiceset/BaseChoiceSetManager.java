@@ -339,7 +339,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
 
         if (customKeyboardConfig == null){
-            customKeyboardConfig = defaultKeyboardConfiguration();
+            if (this.keyboardConfiguration != null){
+                customKeyboardConfig = this.keyboardConfiguration;
+            } else {
+                customKeyboardConfig = defaultKeyboardConfiguration();
+            }
         }
 
         // Present a keyboard with the choice set that we used to test VR's optional state

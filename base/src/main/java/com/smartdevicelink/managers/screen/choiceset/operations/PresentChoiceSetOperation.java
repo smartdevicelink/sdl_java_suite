@@ -297,7 +297,7 @@ public class PresentChoiceSetOperation implements Runnable {
 		if (internalInterface.get() != null) {
 			internalInterface.get().addOnRPCNotificationListener(FunctionID.ON_KEYBOARD_INPUT, keyboardRPCListener);
 		} else {
-			DebugTool.logError("Present Choice Keyboard Listener Not Added");
+			DebugTool.logError("Present Choice Set Keyboard Listener Not Added");
 		}
 	}
 }
