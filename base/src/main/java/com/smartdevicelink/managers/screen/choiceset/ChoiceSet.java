@@ -118,7 +118,7 @@ public class ChoiceSet {
 
         // things to do
         checkChoiceSetParameters();
-        setUpHelpItems(helpList);
+        setVrHelpList(helpList);
     }
 
     /**
@@ -149,7 +149,7 @@ public class ChoiceSet {
 
         // things to do
         checkChoiceSetParameters();
-        setUpHelpItems(helpList);
+        setVrHelpList(helpList);
     }
 
     /**
@@ -238,14 +238,7 @@ public class ChoiceSet {
      * array, the image will need to uploaded by you before use using the FileManager.
      */
     public void setVrHelpList(List<VrHelpItem> vrHelpList) {
-
-        if (vrHelpList != null) {
-            for (int i = 0; i < vrHelpList.size(); i++) {
-                vrHelpList.get(i).setPosition(i+1);
-            }
-        }
-
-        this.vrHelpList = vrHelpList;
+        this.vrHelpList = setUpHelpItems(vrHelpList);
     }
 
     /**
@@ -369,7 +362,7 @@ public class ChoiceSet {
         }
     }
 
-    private void setUpHelpItems(List<VrHelpItem> helpItems){
+    private List<VrHelpItem> setUpHelpItems(List<VrHelpItem> helpItems){
         List<VrHelpItem> clonedHelpItems = null;
         VrHelpItem clonedHelpItem;
         if (helpItems != null) {
@@ -386,7 +379,7 @@ public class ChoiceSet {
                 }
             }
         }
-        setVrHelpList(clonedHelpItems);
+        return clonedHelpItems;
     }
 
 }
