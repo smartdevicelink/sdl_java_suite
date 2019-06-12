@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c)  2019 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,10 +29,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * Created by brettywhite on 2019-06-11.
+ * Created by brettywhite on 6/12/19 1:52 PM
+ *
  */
 
-package com.smartdevicelink.managers.screen.choiceset.operations;
+package com.smartdevicelink.managers.screen.choiceset;
 
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
@@ -65,16 +66,16 @@ import java.util.List;
 public class PresentChoiceSetOperation implements Runnable {
 
 	private WeakReference<ISdl> internalInterface;
-	private KeyboardListener keyboardListener;
 	private ChoiceSet choiceSet;
 	private InteractionMode presentationMode;
 	private KeyboardProperties originalKeyboardProperties, keyboardProperties;
 	private ChoiceCell selectedCell;
 	private TriggerSource selectedTriggerSource;
-	private Integer selectedCellRow;
 	private boolean updatedKeyboardProperties;
 	private OnRPCNotificationListener keyboardRPCListener;
 	private ChoiceSetSelectionListener choiceSetSelectionListener;
+	private Integer selectedCellRow;
+	KeyboardListener keyboardListener;
 
 	public PresentChoiceSetOperation(ISdl internalInterface, ChoiceSet choiceSet, InteractionMode mode,
 									 KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, ChoiceSetSelectionListener choiceSetSelectionListener){
@@ -205,7 +206,7 @@ public class PresentChoiceSetOperation implements Runnable {
 
 	// GETTERS
 
-	private PerformInteraction getPerformInteraction() {
+	PerformInteraction getPerformInteraction() {
 
 		PerformInteraction pi = new PerformInteraction(choiceSet.getTitle(), presentationMode, getChoiceIds());
 		pi.setInitialPrompt(choiceSet.getInitialPrompt());
@@ -217,7 +218,7 @@ public class PresentChoiceSetOperation implements Runnable {
 		return pi;
 	}
 
-	private LayoutMode getLayoutMode() {
+	LayoutMode getLayoutMode() {
 		switch (choiceSet.getLayout()){
 			case CHOICE_SET_LAYOUT_LIST:
 				return keyboardListener != null ? LayoutMode.LIST_WITH_SEARCH : LayoutMode.LIST_ONLY;

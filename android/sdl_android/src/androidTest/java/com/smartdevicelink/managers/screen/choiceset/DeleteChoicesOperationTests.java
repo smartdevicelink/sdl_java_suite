@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c)  2019 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,53 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * Created by brettywhite on 2019-06-11.
+ * Created by brettywhite on 6/12/19 1:52 PM
+ *
  */
 
-package com.smartdevicelink.managers.screen.choiceset.operations;
+package com.smartdevicelink.managers.screen.choiceset;
 
-public interface CheckChoiceVROptionalInterface {
-	void onCheckChoiceVROperationComplete(boolean vrOptional);
-	void onError(String error);
+import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
+import com.smartdevicelink.managers.screen.choiceset.DeleteChoicesOperation;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
+
+import java.util.HashSet;
+import java.util.List;
+
+import static org.mockito.Mockito.mock;
+
+public class DeleteChoicesOperationTests extends AndroidTestCase2 {
+
+	private DeleteChoicesOperation deleteChoicesOperation;
+
+	@Override
+	public void setUp() throws Exception{
+		super.setUp();
+
+		ChoiceCell cell1 = new ChoiceCell("cell 1");
+		ChoiceCell cell2 = new ChoiceCell("cell 2");
+		HashSet<ChoiceCell> cellsToDelete = new HashSet<>();
+		cellsToDelete.add(cell1);
+		cellsToDelete.add(cell2);
+
+		ISdl internalInterface = mock(ISdl.class);
+		deleteChoicesOperation = new DeleteChoicesOperation(internalInterface, cellsToDelete, null);
+	}
+
+	@Override
+	public void tearDown() throws Exception {
+		super.tearDown();
+	}
+
+	public void testCreateListDeleteInteractionSets(){
+		List<DeleteInteractionChoiceSet> deletes = deleteChoicesOperation.createDeleteSets();
+		assertNotNull(deletes);
+		assertEquals(deletes.size(), 2);
+		for (DeleteInteractionChoiceSet delete : deletes) {
+			assertNotNull(delete);
+		}
+	}
+
 }
