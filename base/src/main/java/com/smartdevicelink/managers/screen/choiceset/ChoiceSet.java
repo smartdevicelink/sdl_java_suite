@@ -165,6 +165,7 @@ public class ChoiceSet {
      */
     public void setTitle(String title) {
         this.title = title;
+        checkChoiceSetParameters();
     }
 
     /**
@@ -282,6 +283,7 @@ public class ChoiceSet {
         } else {
             this.timeout = timeout;
         }
+        checkChoiceSetParameters();
     }
 
     /**
@@ -305,6 +307,7 @@ public class ChoiceSet {
      */
     public void setChoices(List<ChoiceCell> choices) {
         this.choices = choices;
+        checkChoiceSetParameters();
     }
 
     /**
