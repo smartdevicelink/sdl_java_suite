@@ -60,9 +60,8 @@ import java.util.List;
 
 public class MediaStreamingStatus {
     private static final Object BROADCAST_RECEIVER_LOCK = new Object();
-    public boolean broadcastReceiverValid = true;
 
-
+    boolean broadcastReceiverValid = true;
     WeakReference<Context> contextWeakReference;
     Callback callback;
     List<String> intentList;
@@ -116,11 +115,14 @@ public class MediaStreamingStatus {
         // device is present.
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             AudioDeviceInfo[] deviceInfos = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
-            for(AudioDeviceInfo deviceInfo : deviceInfos){
-                if(deviceInfo != null && isSupportedAudioDevice(deviceInfo.getType())){
-                    return true;
+            if(deviceInfos != null) {
+                for (AudioDeviceInfo deviceInfo : deviceInfos) {
+                    if (deviceInfo != null && isSupportedAudioDevice(deviceInfo.getType())) {
+                        return true;
+                    }
                 }
             }
+            return false;
         }
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE
@@ -135,31 +137,31 @@ public class MediaStreamingStatus {
         return false;
     }
 
-    @SuppressLint("MissingPermission")
-    private boolean isSupportedAudioDevice(int audioDevice){
+    /**
+     * This method will check to ensure that the device is supported. If possible, it will also
+     * check against known variables and flags to ensure that that device is connected. This is
+     * required as the AudioManager tends to be untrustworthy.
+     * @param audioDevice
+     * @return
+     */
+    boolean isSupportedAudioDevice(int audioDevice){
         DebugTool.logInfo("Audio device connected: " + audioDevice);
         switch (audioDevice){
             case AudioDeviceInfo.TYPE_BLUETOOTH_A2DP:
-                BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-                if(adapter == null || !adapter.isEnabled() ){
-                    //False positive
-                    return false;
-                }
-                if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH ){
-                    int state = adapter.getProfileConnectionState(BluetoothProfile.A2DP);
-                    if(state != BluetoothAdapter.STATE_CONNECTING && state != BluetoothAdapter.STATE_CONNECTED){
-                        //False positive
-                        return false;
-                    }
-                }
-                setupBluetoothBroadcastReceiver();
-                return true; //Make sure this doesn't fall to any other logic after this point
+              if(isBluetoothActuallyAvailable()) {
+                  setupBluetoothBroadcastReceiver();
+                  return true; //Make sure this doesn't fall to any other logic after this point
+              }
+              return false;
             case AudioDeviceInfo.TYPE_DOCK:
             case AudioDeviceInfo.TYPE_USB_ACCESSORY:
             case AudioDeviceInfo.TYPE_USB_DEVICE:
             case AudioDeviceInfo.TYPE_USB_HEADSET:
-                setupUSBBroadcastReceiver();
-                return true;
+                if(isUsbActuallyConnected()) {
+                    setupUSBBroadcastReceiver();
+                    return true;
+                }
+                return false;
             case AudioDeviceInfo.TYPE_LINE_ANALOG:
             case AudioDeviceInfo.TYPE_LINE_DIGITAL:
             case AudioDeviceInfo.TYPE_WIRED_HEADSET:
@@ -169,6 +171,33 @@ public class MediaStreamingStatus {
                 return true;
         }
         return false;
+    }
+
+    @SuppressLint("MissingPermission")
+    boolean isBluetoothActuallyAvailable(){
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        if(adapter == null || !adapter.isEnabled() ){
+            //False positive
+            return false;
+        }
+        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH ){
+            int state = adapter.getProfileConnectionState(BluetoothProfile.A2DP);
+            if(state != BluetoothAdapter.STATE_CONNECTING && state != BluetoothAdapter.STATE_CONNECTED){
+                //False positive
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    boolean isUsbActuallyConnected(){
+        Context context = contextWeakReference.get();
+        if(context != null){
+           return AndroidTools.isUSBCableConnected(context);
+        }
+        //default to true
+        return true;
     }
 
 
