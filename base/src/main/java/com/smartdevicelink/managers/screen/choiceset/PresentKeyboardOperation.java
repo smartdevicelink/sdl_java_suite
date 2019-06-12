@@ -180,7 +180,7 @@ class PresentKeyboardOperation implements Runnable {
 
 	// GETTERS
 
-	private PerformInteraction getPerformInteraction() {
+	PerformInteraction getPerformInteraction() {
 		PerformInteraction pi = new PerformInteraction();
 		pi.setInitialText(initialText);
 		pi.setInteractionMode(InteractionMode.MANUAL_ONLY);

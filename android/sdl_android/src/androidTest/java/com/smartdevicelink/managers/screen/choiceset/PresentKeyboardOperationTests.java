@@ -36,12 +36,27 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.PerformInteraction;
+import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
+import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
+import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
+
+import static org.mockito.Mockito.mock;
 
 public class PresentKeyboardOperationTests extends AndroidTestCase2 {
+
+	private PresentKeyboardOperation presentKeyboardOperation;
 
 	@Override
 	public void setUp() throws Exception{
 		super.setUp();
+
+		ISdl internalInterface = mock(ISdl.class);
+		KeyboardListener keyboardListener = mock(KeyboardListener.class);
+		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, getKeyBoardProperties(), "Test", null, keyboardListener);
 	}
 
 	@Override
@@ -49,4 +64,20 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		super.tearDown();
 	}
 
+	public void testGetPerformInteraction(){
+		PerformInteraction pi = presentKeyboardOperation.getPerformInteraction();
+		assertEquals(pi.getInitialText(), "Test");
+		assertNull(pi.getHelpPrompt());
+		assertNull(pi.getTimeoutPrompt());
+		assertNull(pi.getVrHelp());
+		assertEquals(pi.getInteractionLayout(), LayoutMode.KEYBOARD);
+	}
+
+	private KeyboardProperties getKeyBoardProperties(){
+		KeyboardProperties properties = new KeyboardProperties();
+		properties.setLanguage(Language.EN_US);
+		properties.setKeyboardLayout(KeyboardLayout.QWERTZ);
+		properties.setKeypressMode(KeypressMode.RESEND_CURRENT_ENTRY);
+		return properties;
+	}
 }

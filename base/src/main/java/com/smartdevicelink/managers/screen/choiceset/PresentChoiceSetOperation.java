@@ -68,7 +68,7 @@ class PresentChoiceSetOperation implements Runnable {
 	private boolean updatedKeyboardProperties;
 	private OnRPCNotificationListener keyboardRPCListener;
 	private ChoiceSetSelectionListener choiceSetSelectionListener;
-	private Integer selectedCellRow;
+	Integer selectedCellRow;
 	KeyboardListener keyboardListener;
 
 	PresentChoiceSetOperation(ISdl internalInterface, ChoiceSet choiceSet, InteractionMode mode,
@@ -233,7 +233,7 @@ class PresentChoiceSetOperation implements Runnable {
 
 	// HELPERS
 
-	private void setSelectedCellWithId(Integer cellId){
+	void setSelectedCellWithId(Integer cellId){
 		if (choiceSet.getChoices() != null && cellId != null) {
 			List<ChoiceCell> cells = choiceSet.getChoices();
 			for (int i = 0; i < cells.size(); i++) {

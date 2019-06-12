@@ -44,7 +44,8 @@ import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
-import com.smartdevicelink.test.Test;
+
+import java.util.Collections;
 
 import static org.mockito.Mockito.mock;
 
@@ -59,7 +60,9 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		ISdl internalInterface = mock(ISdl.class);
 		KeyboardListener keyboardListener = mock(KeyboardListener.class);
 		ChoiceSetSelectionListener choiceSetSelectionListener = mock(ChoiceSetSelectionListener.class);
-		ChoiceSet choiceSet = new ChoiceSet("Test", Test.GENERAL_CHOICECELL_LIST, choiceSetSelectionListener);
+		ChoiceCell cell1 = new ChoiceCell("Cell1");
+		cell1.setChoiceId(0);
+		ChoiceSet choiceSet = new ChoiceSet("Test", Collections.singletonList(cell1), choiceSetSelectionListener);
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener);
 	}
 
@@ -83,6 +86,12 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		assertNull(pi.getVrHelp());
 		assertEquals(pi.getTimeout(), Integer.valueOf(10000));
 		assertEquals(presentChoiceSetOperation.getLayoutMode(), LayoutMode.LIST_WITH_SEARCH);
+	}
+
+	public void testSetSelectedCellWithId(){
+		assertNull(presentChoiceSetOperation.selectedCellRow);
+		presentChoiceSetOperation.setSelectedCellWithId(0);
+		assertEquals(presentChoiceSetOperation.selectedCellRow, Integer.valueOf(0));
 	}
 
 	private KeyboardProperties getKeyBoardProperties(){
