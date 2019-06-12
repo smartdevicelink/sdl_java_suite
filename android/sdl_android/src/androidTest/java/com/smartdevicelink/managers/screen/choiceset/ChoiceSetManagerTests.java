@@ -36,12 +36,21 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+
+import static org.mockito.Mockito.mock;
 
 public class ChoiceSetManagerTests extends AndroidTestCase2 {
 
 	@Override
 	public void setUp() throws Exception{
 		super.setUp();
+
+		ISdl internalInterface = mock(ISdl.class);
+		FileManager fileManager = mock(FileManager.class);
+
+
 	}
 
 	@Override

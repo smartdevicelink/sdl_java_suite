@@ -86,7 +86,7 @@ public class ChoiceSet {
      * @param title - The choice set's title
      * @param listener - The choice set listener called after the user has interacted with your choice set
      * @param layout - The layout of choice options (Manual/touch only)
-     * @param timeout - The timeout of a touch interaction (Manual/touch only)
+     * @param timeout - The timeout of a touch interaction (Manual/touch only). <strong>This is set to seconds if using the screen manager.</strong>
      * @param initialPrompt - A voice prompt spoken to the user when this set is displayed
      * @param timeoutPrompt - A voice prompt spoken to the user when the set times out (Voice only)
      * @param helpPrompt - A voice prompt spoken to the user when the user asks for "help"
@@ -127,7 +127,7 @@ public class ChoiceSet {
      * @param title - The choice set's title
      * @param listener - The choice set listener called after the user has interacted with your choice set
      * @param layout - The layout of choice options (Manual/touch only)
-     * @param timeout - The timeout of a touch interaction (Manual/touch only)
+     * @param timeout - The timeout of a touch interaction (Manual/touch only). <strong>This is set to seconds if using the screen manager.</strong>
      * @param initialPrompt - A voice prompt spoken to the user when this set is displayed
      * @param timeoutPrompt - A voice prompt spoken to the user when the set times out (Voice only)
      * @param helpPrompt - A voice prompt spoken to the user when the user asks for "help"
@@ -281,6 +281,7 @@ public class ChoiceSet {
     /**
      * @param timeout - Maps to PerformInteraction.timeout. This applies only to a manual selection
      * (not a voice selection, which has its timeout handled by the system). Defaults to `defaultTimeout`.
+     * <strong>This is set to seconds if using the screen manager.</strong>
      */
     public void setTimeout(Integer timeout) {
         if (timeout == null) {
