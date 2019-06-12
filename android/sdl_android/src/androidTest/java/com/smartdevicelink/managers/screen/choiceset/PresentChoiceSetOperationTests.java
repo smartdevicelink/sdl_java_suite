@@ -36,10 +36,6 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceSetSelectionListener;
-import com.smartdevicelink.managers.screen.choiceset.KeyboardListener;
-import com.smartdevicelink.managers.screen.choiceset.PresentChoiceSetOperation;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.PerformInteraction;
@@ -80,13 +76,13 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 	}
 
 	public void testGetPerformInteraction(){
-
 		PerformInteraction pi = presentChoiceSetOperation.getPerformInteraction();
 		assertEquals(pi.getInitialText(), "Test");
 		assertNull(pi.getHelpPrompt());
+		assertNull(pi.getTimeoutPrompt());
+		assertNull(pi.getVrHelp());
 		assertEquals(pi.getTimeout(), Integer.valueOf(10000));
-
-
+		assertEquals(presentChoiceSetOperation.getLayoutMode(), LayoutMode.LIST_WITH_SEARCH);
 	}
 
 	private KeyboardProperties getKeyBoardProperties(){

@@ -63,7 +63,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-public class PreloadChoicesOperation implements Runnable {
+class PreloadChoicesOperation implements Runnable {
 
 	private WeakReference<ISdl> internalInterface;
 	private WeakReference<FileManager> fileManager;
@@ -73,7 +73,7 @@ public class PreloadChoicesOperation implements Runnable {
 	private boolean isRunning;
 	private Boolean isVROptional;
 
-	public PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, DisplayCapabilities displayCapabilities,
+	PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, DisplayCapabilities displayCapabilities,
 								   Boolean isVROptional, HashSet<ChoiceCell> cellsToPreload, CompletionListener listener){
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.fileManager = new WeakReference<>(fileManager);
@@ -96,7 +96,7 @@ public class PreloadChoicesOperation implements Runnable {
 		});
 	}
 
-	public void removeChoicesFromUpload(HashSet<ChoiceCell> choices){
+	void removeChoicesFromUpload(HashSet<ChoiceCell> choices){
 		if (isRunning){ return; }
 		cellsToUpload.removeAll(choices);
 	}

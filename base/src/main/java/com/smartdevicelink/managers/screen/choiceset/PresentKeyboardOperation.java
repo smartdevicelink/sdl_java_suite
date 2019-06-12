@@ -36,9 +36,6 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.smartdevicelink.managers.CompletionListener;
-import com.smartdevicelink.managers.screen.choiceset.KeyboardAutocompleteCompletionListener;
-import com.smartdevicelink.managers.screen.choiceset.KeyboardCharacterSetCompletionListener;
-import com.smartdevicelink.managers.screen.choiceset.KeyboardListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -58,7 +55,7 @@ import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
 
-public class PresentKeyboardOperation implements Runnable {
+class PresentKeyboardOperation implements Runnable {
 
 	private WeakReference<ISdl> internalInterface;
 	private KeyboardListener keyboardListener;
@@ -67,7 +64,7 @@ public class PresentKeyboardOperation implements Runnable {
 	private String initialText;
 	private OnRPCNotificationListener keyboardRPCListener;
 
-	public PresentKeyboardOperation(ISdl internalInterface, KeyboardProperties originalKeyboardProperties, String initialText, KeyboardProperties customConfig, KeyboardListener keyboardListener){
+	PresentKeyboardOperation(ISdl internalInterface, KeyboardProperties originalKeyboardProperties, String initialText, KeyboardProperties customConfig, KeyboardListener keyboardListener){
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.keyboardListener = keyboardListener;
 		this.originalKeyboardProperties = originalKeyboardProperties;

@@ -46,13 +46,13 @@ import com.smartdevicelink.util.DebugTool;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 
-public class CheckChoiceVROptionalOperation implements Runnable {
+class CheckChoiceVROptionalOperation implements Runnable {
 
 	private CheckChoiceVROptionalInterface checkChoiceVROptionalInterface;
 	private WeakReference<ISdl> internalInterface;
 	private boolean isVROptional;
 
-	public CheckChoiceVROptionalOperation(ISdl internalInterface, CheckChoiceVROptionalInterface checkChoiceVROptionalInterface){
+	CheckChoiceVROptionalOperation(ISdl internalInterface, CheckChoiceVROptionalInterface checkChoiceVROptionalInterface){
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.checkChoiceVROptionalInterface = checkChoiceVROptionalInterface;
 	}

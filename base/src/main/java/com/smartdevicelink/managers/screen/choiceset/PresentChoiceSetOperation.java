@@ -36,12 +36,6 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.smartdevicelink.managers.CompletionListener;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceSetSelectionListener;
-import com.smartdevicelink.managers.screen.choiceset.KeyboardAutocompleteCompletionListener;
-import com.smartdevicelink.managers.screen.choiceset.KeyboardCharacterSetCompletionListener;
-import com.smartdevicelink.managers.screen.choiceset.KeyboardListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -63,7 +57,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PresentChoiceSetOperation implements Runnable {
+class PresentChoiceSetOperation implements Runnable {
 
 	private WeakReference<ISdl> internalInterface;
 	private ChoiceSet choiceSet;
@@ -77,7 +71,7 @@ public class PresentChoiceSetOperation implements Runnable {
 	private Integer selectedCellRow;
 	KeyboardListener keyboardListener;
 
-	public PresentChoiceSetOperation(ISdl internalInterface, ChoiceSet choiceSet, InteractionMode mode,
+	PresentChoiceSetOperation(ISdl internalInterface, ChoiceSet choiceSet, InteractionMode mode,
 									 KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, ChoiceSetSelectionListener choiceSetSelectionListener){
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.keyboardListener = keyboardListener;

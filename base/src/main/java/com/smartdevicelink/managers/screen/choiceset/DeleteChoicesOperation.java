@@ -36,7 +36,6 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.smartdevicelink.managers.CompletionListener;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
@@ -49,13 +48,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class DeleteChoicesOperation implements Runnable {
+class DeleteChoicesOperation implements Runnable {
 
 	private WeakReference<ISdl> internalInterface;
 	private HashSet<ChoiceCell> cellsToDelete;
 	private CompletionListener completionListener;
 
-	public DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, CompletionListener completionListener){
+	DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, CompletionListener completionListener){
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.cellsToDelete = cellsToDelete;
 		this.completionListener = completionListener;
