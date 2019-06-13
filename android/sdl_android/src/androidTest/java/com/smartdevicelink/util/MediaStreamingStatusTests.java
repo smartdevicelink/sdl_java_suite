@@ -85,7 +85,12 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
     public void testNullAudioDeviceInfoList(){
         assertNotNull(mockedContext);
         MediaStreamingStatus mediaStreamingStatus = new MediaStreamingStatus(mockedContext, mock(MediaStreamingStatus.Callback.class));
-        doAnswer(onGetDevices).when(audioManager).getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return deviceInfosToReturn;
+            }
+        }).when(audioManager).getDevices(AudioManager.GET_DEVICES_OUTPUTS);
         deviceInfosToReturn = null;
         assertFalse(mediaStreamingStatus.isAudioOutputAvailable());
     }
