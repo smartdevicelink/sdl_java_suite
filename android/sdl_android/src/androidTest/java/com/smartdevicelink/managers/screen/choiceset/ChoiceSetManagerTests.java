@@ -38,6 +38,15 @@ package com.smartdevicelink.managers.screen.choiceset;
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
+import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
+import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 
 import static org.mockito.Mockito.mock;
 
@@ -60,7 +69,82 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 	}
 
 	public void testDefaultKeyboardConfiguration(){
+		KeyboardProperties properties = csm.defaultKeyboardConfiguration();
+		assertEquals(properties.getLanguage(), Language.EN_US);
+		assertEquals(properties.getKeyboardLayout(), KeyboardLayout.QWERTY);
+		assertEquals(properties.getKeypressMode(), KeypressMode.RESEND_CURRENT_ENTRY);
+	}
 
+	public void testSetupChoiceSet(){
+
+		ChoiceSetSelectionListener choiceSetSelectionListener = new ChoiceSetSelectionListener() {
+			@Override
+			public void onChoiceSelected(ChoiceCell choiceCell, TriggerSource triggerSource, int rowIndex) {}
+
+			@Override
+			public void onError(String error) {}
+		};
+
+		// Cannot send choice set with empty or null choice list
+		ChoiceSet choiceSet1 = new ChoiceSet("test", Collections.<ChoiceCell>emptyList(), choiceSetSelectionListener);
+		assertFalse(csm.setUpChoiceSet(choiceSet1));
+
+		// cells cant have duplicate text
+		ChoiceCell cell1 = new ChoiceCell("test");
+		ChoiceCell cell2 = new ChoiceCell("test");
+		ChoiceSet choiceSet2 = new ChoiceSet("test", Arrays.asList(cell1, cell2), choiceSetSelectionListener);
+		assertFalse(csm.setUpChoiceSet(choiceSet2));
+
+		// cells cannot mix and match VR / non-VR
+		ChoiceCell cell3 = new ChoiceCell("test", Collections.singletonList("Test"), null);
+		ChoiceCell cell4 = new ChoiceCell("test2");
+		ChoiceSet choiceSet3 = new ChoiceSet("test", Arrays.asList(cell3, cell4), choiceSetSelectionListener);
+		assertFalse(csm.setUpChoiceSet(choiceSet3));
+
+		// VR Commands must be unique
+		ChoiceCell cell5 = new ChoiceCell("test", Collections.singletonList("Test"), null);
+		ChoiceCell cell6 = new ChoiceCell("test2", Collections.singletonList("Test"), null);
+		ChoiceSet choiceSet4 = new ChoiceSet("test", Arrays.asList(cell5, cell6), choiceSetSelectionListener);
+		assertFalse(csm.setUpChoiceSet(choiceSet4));
+
+		// Passing Case
+		ChoiceCell cell7 = new ChoiceCell("test", Collections.singletonList("Test"), null);
+		ChoiceCell cell8 = new ChoiceCell("test2", Collections.singletonList("Test2"), null);
+		ChoiceSet choiceSet5 = new ChoiceSet("test", Arrays.asList(cell7, cell8), choiceSetSelectionListener);
+		assertTrue(csm.setUpChoiceSet(choiceSet5));
+	}
+
+	public void testFindIfPresent(){
+
+		ChoiceCell cell1 = new ChoiceCell("test");
+		ChoiceCell cell2 = new ChoiceCell("test2");
+		ChoiceCell cell3 = new ChoiceCell("test3");
+		HashSet<ChoiceCell> cellSet = new HashSet<>();
+		cellSet.add(cell1);
+		cellSet.add(cell2);
+
+		assertNotNull(csm.findIfPresent(cell1, cellSet));
+		assertNull(csm.findIfPresent(cell3, cellSet));
+	}
+
+	public void testUpdateIdsOnChoices(){
+
+		ChoiceCell cell1 = new ChoiceCell("test");
+		ChoiceCell cell2 = new ChoiceCell("test2");
+		ChoiceCell cell3 = new ChoiceCell("test3");
+		HashSet<ChoiceCell> cellSet = new HashSet<>();
+		cellSet.add(cell1);
+		cellSet.add(cell2);
+		cellSet.add(cell3);
+		// Cells are initially set to MAX_ID
+		assertEquals(cell1.getChoiceId(), 2000000000);
+		assertEquals(cell2.getChoiceId(), 2000000000);
+		assertEquals(cell3.getChoiceId(), 2000000000);
+		csm.updateIdsOnChoices(cellSet);
+		// We are looking for unique IDs
+		assertEquals(cell1.getChoiceId(), 3);
+		assertEquals(cell2.getChoiceId(), 1);
+		assertEquals(cell3.getChoiceId(), 2);
 	}
 
 }

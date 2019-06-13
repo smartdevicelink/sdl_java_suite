@@ -385,7 +385,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         return choicesSet;
     }
 
-    private void updateIdsOnChoices(HashSet<ChoiceCell> choices){
+    void updateIdsOnChoices(HashSet<ChoiceCell> choices){
         for (ChoiceCell cell : choices){
             cell.setChoiceId(this.nextChoiceId);
             this.nextChoiceId++;
@@ -410,7 +410,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
     }
 
-    private ChoiceCell findIfPresent(ChoiceCell cell, HashSet<ChoiceCell> set){
+    ChoiceCell findIfPresent(ChoiceCell cell, HashSet<ChoiceCell> set){
         if (set.contains(cell)) {
             for (ChoiceCell setCell : set) {
                 if (setCell.equals(cell))
@@ -470,12 +470,12 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     // ADDITIONAL HELPERS
 
-    private boolean setUpChoiceSet(ChoiceSet choiceSet) {
+    boolean setUpChoiceSet(ChoiceSet choiceSet) {
 
         List<ChoiceCell> choices = choiceSet.getChoices();
 
         // Choices are not optional here
-        if (choices == null) {
+        if (choices == null || choices.size() == 0) {
             DebugTool.logError("Cannot initiate a choice set with no choices");
             return false;
         }
