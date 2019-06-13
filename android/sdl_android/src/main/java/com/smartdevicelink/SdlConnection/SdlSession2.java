@@ -75,7 +75,7 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
         this.transportConfig = config;
         if(config != null){
             contextWeakReference = new WeakReference<>(config.getContext());
-            this.requiresAudioSupport = config.requiresAudioSupport();
+            this.requiresAudioSupport = Boolean.TRUE.equals(config.requiresAudioSupport()); //handle null case
 
         }
         this.sessionListener = listener;
