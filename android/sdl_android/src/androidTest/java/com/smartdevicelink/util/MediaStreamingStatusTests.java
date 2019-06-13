@@ -47,13 +47,6 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
         }
     };
 
-    private Answer<Object[]> onGetDevices = new Answer<Object[]>() {
-        @Override
-        public Object[] answer(InvocationOnMock invocation) {
-            return deviceInfosToReturn;
-        }
-    };
-
 
     @Override
     public void setUp() throws Exception{
@@ -72,7 +65,12 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
 
             }
         });
-        doAnswer(onGetDevices).when(audioManager).getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return deviceInfosToReturn;
+            }
+        }).when(audioManager).getDevices(AudioManager.GET_DEVICES_OUTPUTS);
 
         deviceInfosToReturn = new AudioDeviceInfo[0];
 
