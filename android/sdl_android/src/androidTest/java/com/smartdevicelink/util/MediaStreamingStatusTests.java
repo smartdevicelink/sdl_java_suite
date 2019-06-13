@@ -32,7 +32,6 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
     Context mockedContext;
 
     MediaStreamingStatus defaultMediaStreamingStatus;
-    AudioDeviceInfo[] deviceInfosToReturn = null;
 
     private Answer<Object> onGetSystemService = new Answer<Object>() {
         @Override
@@ -68,18 +67,12 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                return deviceInfosToReturn;
+                return new AudioDeviceInfo[0];
             }
         }).when(audioManager).getDevices(AudioManager.GET_DEVICES_OUTPUTS);
 
-        deviceInfosToReturn = new AudioDeviceInfo[0];
 
        assertFalse(mediaStreamingStatus.isAudioOutputAvailable());
-
-       //Clear out the return list before moving forward
-       deviceInfosToReturn = null;
-
-
     }
 
     public void testNullAudioDeviceInfoList(){
@@ -88,10 +81,10 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                return deviceInfosToReturn;
+                return null;
             }
         }).when(audioManager).getDevices(AudioManager.GET_DEVICES_OUTPUTS);
-        deviceInfosToReturn = null;
+
         assertFalse(mediaStreamingStatus.isAudioOutputAvailable());
     }
 
