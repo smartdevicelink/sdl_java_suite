@@ -179,9 +179,9 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		assertEquals(cell3.getChoiceId(), 2000000000);
 		csm.updateIdsOnChoices(cellSet);
 		// We are looking for unique IDs
-		assertEquals(cell1.getChoiceId(), 3);
-		assertEquals(cell2.getChoiceId(), 1);
-		assertEquals(cell3.getChoiceId(), 2);
+		assertNotSame(cell1.getChoiceId(), 2000000000);
+		assertNotSame(cell2.getChoiceId(), 2000000000);
+		assertNotSame(cell3.getChoiceId(), 2000000000);
 	}
 
 	public void testChoicesToBeRemovedFromPendingWithArray(){
