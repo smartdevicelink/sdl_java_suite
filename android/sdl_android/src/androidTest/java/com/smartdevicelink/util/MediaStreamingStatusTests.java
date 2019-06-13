@@ -3,6 +3,7 @@ package com.smartdevicelink.util;
 import android.content.Context;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
+import android.os.Build;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.SdlManager;
@@ -56,36 +57,39 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
 
 
     public void testEmptyAudioDeviceInfoList(){
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            assertNotNull(mockedContext);
+            MediaStreamingStatus mediaStreamingStatus = new MediaStreamingStatus(mockedContext, new MediaStreamingStatus.Callback() {
+                @Override
+                public void onAudioNoLongerAvailable() {
 
-        assertNotNull(mockedContext);
-        MediaStreamingStatus mediaStreamingStatus = new MediaStreamingStatus(mockedContext, new MediaStreamingStatus.Callback() {
-            @Override
-            public void onAudioNoLongerAvailable() {
-
-            }
-        });
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return new AudioDeviceInfo[0];
-            }
-        }).when(audioManager).getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+                }
+            });
+            doAnswer(new Answer() {
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    return new AudioDeviceInfo[0];
+                }
+            }).when(audioManager).getDevices(AudioManager.GET_DEVICES_OUTPUTS);
 
 
-       assertFalse(mediaStreamingStatus.isAudioOutputAvailable());
+            assertFalse(mediaStreamingStatus.isAudioOutputAvailable());
+        }
     }
 
     public void testNullAudioDeviceInfoList(){
-        assertNotNull(mockedContext);
-        MediaStreamingStatus mediaStreamingStatus = new MediaStreamingStatus(mockedContext, mock(MediaStreamingStatus.Callback.class));
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return null;
-            }
-        }).when(audioManager).getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            assertNotNull(mockedContext);
+            MediaStreamingStatus mediaStreamingStatus = new MediaStreamingStatus(mockedContext, mock(MediaStreamingStatus.Callback.class));
+            doAnswer(new Answer() {
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    return null;
+                }
+            }).when(audioManager).getDevices(AudioManager.GET_DEVICES_OUTPUTS);
 
-        assertFalse(mediaStreamingStatus.isAudioOutputAvailable());
+            assertFalse(mediaStreamingStatus.isAudioOutputAvailable());
+        }
     }
 
 
