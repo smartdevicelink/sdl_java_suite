@@ -73,26 +73,27 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     // additional state
     private static final int CHECKING_VOICE = 0xA0;
-
-    private OnRPCNotificationListener hmiListener;
-    private OnSystemCapabilityListener displayListener;
-
-    private final WeakReference<FileManager> fileManager;
     private KeyboardProperties keyboardConfiguration;
-    private HMILevel currentHMILevel;
-    private SystemContext currentSystemContext;
-    private DisplayCapabilities displayCapabilities;
 
-    private HashSet<ChoiceCell> preloadedChoices, pendingPreloadChoices;
-    private ChoiceSet pendingPresentationSet;
-    private Boolean isVROptional;
+    OnRPCNotificationListener hmiListener;
+    OnSystemCapabilityListener displayListener;
+
+    final WeakReference<FileManager> fileManager;
+    HMILevel currentHMILevel;
+    DisplayCapabilities displayCapabilities;
+
+    HashSet<ChoiceCell> preloadedChoices, pendingPreloadChoices;
+    ChoiceSet pendingPresentationSet;
+    Boolean isVROptional;
     // We will pass operations into this to be completed
-    private PausableThreadPoolExecutor executor;
-    private LinkedBlockingQueue<Runnable> operationQueue;
-    private Future pendingPresentOperation;
+    PausableThreadPoolExecutor executor;
+    LinkedBlockingQueue<Runnable> operationQueue;
+    Future pendingPresentOperation;
 
-    private int nextChoiceId;
-    private int choiceCellIdMin = 1;
+    int nextChoiceId;
+    int choiceCellIdMin = 1;
+
+	SystemContext currentSystemContext;
 
     BaseChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
@@ -367,19 +368,19 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     // CHOICE SET MANAGEMENT HELPERS
 
-    private HashSet<ChoiceCell> choicesToBeUploadedWithArray(List<ChoiceCell> choices){
+    HashSet<ChoiceCell> choicesToBeUploadedWithArray(List<ChoiceCell> choices){
         HashSet<ChoiceCell> choicesSet = new HashSet<>(choices);
         choicesSet.removeAll(this.preloadedChoices);
         return choicesSet;
     }
 
-    private HashSet<ChoiceCell> choicesToBeDeletedWithArray(List<ChoiceCell> choices){
+    HashSet<ChoiceCell> choicesToBeDeletedWithArray(List<ChoiceCell> choices){
         HashSet<ChoiceCell> choicesSet = new HashSet<>(choices);
         choicesSet.retainAll(this.preloadedChoices);
         return choicesSet;
     }
 
-    private HashSet<ChoiceCell> choicesToBeRemovedFromPendingWithArray(List<ChoiceCell> choices){
+    HashSet<ChoiceCell> choicesToBeRemovedFromPendingWithArray(List<ChoiceCell> choices){
         HashSet<ChoiceCell> choicesSet = new HashSet<>(choices);
         choicesSet.retainAll(this.pendingPreloadChoices);
         return choicesSet;

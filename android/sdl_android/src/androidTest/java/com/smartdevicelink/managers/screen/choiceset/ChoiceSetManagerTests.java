@@ -36,17 +36,22 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 import static org.mockito.Mockito.mock;
 
@@ -61,10 +66,42 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
 		csm = new ChoiceSetManager(internalInterface, fileManager);
+
+		assertEquals(csm.getState(), BaseSubManager.SETTING_UP);
+		assertEquals(csm.currentSystemContext, SystemContext.SYSCTXT_MAIN);
+		assertEquals(csm.currentHMILevel, HMILevel.HMI_NONE);
+		assertEquals(csm.choiceCellIdMin, 1);
+		assertEquals(csm.nextChoiceId, 1);
+		assertFalse(csm.isVROptional);
+		assertNotNull(csm.fileManager);
+		assertNotNull(csm.preloadedChoices);
+		assertNotNull(csm.pendingPreloadChoices);
+		assertNotNull(csm.operationQueue);
+		assertNotNull(csm.executor);
+		assertNotNull(csm.hmiListener);
+		assertNotNull(csm.displayListener);
+		assertNull(csm.pendingPresentOperation);
 	}
 
 	@Override
 	public void tearDown() throws Exception {
+
+		csm.dispose();
+
+		assertNull(csm.currentHMILevel);
+		assertNull(csm.currentSystemContext);
+		assertNull(csm.displayCapabilities);
+		assertNull(csm.pendingPresentationSet);
+		assertNull(csm.pendingPresentOperation);
+
+		assertEquals(csm.operationQueue.size(), 0);
+		assertEquals(csm.nextChoiceId, 1);
+
+		assertTrue(csm.executor.isShutdown());
+		assertTrue(csm.isVROptional);
+
+		assertEquals(csm.getState(), BaseSubManager.SHUTDOWN);
+
 		super.tearDown();
 	}
 
@@ -145,6 +182,92 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		assertEquals(cell1.getChoiceId(), 3);
 		assertEquals(cell2.getChoiceId(), 1);
 		assertEquals(cell3.getChoiceId(), 2);
+	}
+
+	public void testChoicesToBeRemovedFromPendingWithArray(){
+
+		ChoiceCell cell1 = new ChoiceCell("test");
+		ChoiceCell cell2 = new ChoiceCell("test2");
+		ChoiceCell cell3 = new ChoiceCell("test3");
+
+		HashSet<ChoiceCell> pendingPreloadSet = new HashSet<>();
+		pendingPreloadSet.add(cell1);
+		pendingPreloadSet.add(cell2);
+		pendingPreloadSet.add(cell3);
+
+		csm.pendingPreloadChoices.clear();
+		csm.pendingPreloadChoices = pendingPreloadSet;
+
+		List<ChoiceCell> choices = new ArrayList<>();
+		choices.add(cell2);
+
+		HashSet<ChoiceCell> returnedChoices = csm.choicesToBeRemovedFromPendingWithArray(choices);
+
+		assertEquals(returnedChoices.size(), 1);
+		for (ChoiceCell cell : returnedChoices){
+			assertEquals(cell.getText(), "test2");
+		}
+	}
+
+	public void testChoicesToBeDeletedWithArray(){
+
+		ChoiceCell cell1 = new ChoiceCell("test");
+		ChoiceCell cell2 = new ChoiceCell("test2");
+		ChoiceCell cell3 = new ChoiceCell("test3");
+		ChoiceCell cell4 = new ChoiceCell("test4");
+		ChoiceCell cell5 = new ChoiceCell("test5");
+
+		HashSet<ChoiceCell> preloadedChoices = new HashSet<>();
+		preloadedChoices.add(cell1);
+		preloadedChoices.add(cell2);
+		preloadedChoices.add(cell3);
+
+		csm.preloadedChoices.clear();
+		csm.preloadedChoices = preloadedChoices;
+
+		List<ChoiceCell> choices = new ArrayList<>();
+		choices.add(cell1);
+		choices.add(cell2);
+		choices.add(cell3);
+		choices.add(cell4);
+		choices.add(cell5);
+
+		HashSet<ChoiceCell> returnedChoices = csm.choicesToBeUploadedWithArray(choices);
+
+		assertEquals(returnedChoices.size(), 2);
+		for (ChoiceCell cell : returnedChoices){
+			if (cell.getText().equals("test4") || cell.getText().equals("test5")){
+				return;
+			}else{
+				fail();
+			}
+		}
+	}
+
+	public void testChoicesToBeUploadedWithArray(){
+
+		ChoiceCell cell1 = new ChoiceCell("test");
+		ChoiceCell cell2 = new ChoiceCell("test2");
+		ChoiceCell cell3 = new ChoiceCell("test3");
+
+		HashSet<ChoiceCell> pendingDeleteSet = new HashSet<>();
+		pendingDeleteSet.add(cell1);
+		pendingDeleteSet.add(cell2);
+		pendingDeleteSet.add(cell3);
+
+		csm.preloadedChoices.clear();
+		csm.preloadedChoices = pendingDeleteSet;
+
+		List<ChoiceCell> choices = new ArrayList<>();
+		choices.add(cell2);
+
+		HashSet<ChoiceCell> returnedChoices = csm.choicesToBeDeletedWithArray(choices);
+
+		assertEquals(returnedChoices.size(), 1);
+		for (ChoiceCell cell : returnedChoices){
+			assertEquals(cell.getText(), "test2");
+		}
+
 	}
 
 }
