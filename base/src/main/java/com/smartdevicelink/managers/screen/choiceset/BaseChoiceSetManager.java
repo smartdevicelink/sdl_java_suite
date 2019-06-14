@@ -92,7 +92,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     Future pendingPresentOperation;
 
     int nextChoiceId;
-    int choiceCellIdMin = 1;
+    final int choiceCellIdMin = 1;
 
 	SystemContext currentSystemContext;
 
@@ -264,10 +264,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         if (!isReady()){ return; }
 
-        if (choiceSet == null) {
-            DebugTool.logWarning("Attempted to present a null choice set. Ignoring request");
-            return;
-        }
         // Perform additional checks against the ChoiceSet
         if (!setUpChoiceSet(choiceSet)){ return; }
 
@@ -354,7 +350,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             KeyboardProperties properties = new KeyboardProperties();
             properties.setLanguage((keyboardConfiguration.getLanguage() == null ? Language.EN_US : keyboardConfiguration.getLanguage()));
             properties.setKeyboardLayout((keyboardConfiguration.getKeyboardLayout() == null ? KeyboardLayout.QWERTZ : keyboardConfiguration.getKeyboardLayout()));
-            properties.setKeypressMode(KeypressMode.RESEND_CURRENT_ENTRY);
+            properties.setKeypressMode((keyboardConfiguration.getKeypressMode() == null ? KeypressMode.RESEND_CURRENT_ENTRY : keyboardConfiguration.getKeypressMode()));
             properties.setLimitedCharacterList(keyboardConfiguration.getLimitedCharacterList());
             properties.setAutoCompleteText(keyboardConfiguration.getAutoCompleteText());
             this.keyboardConfiguration = properties;
@@ -537,7 +533,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isReady(){
         if (getState() != READY){
-            DebugTool.logInfo("Choice Manager In Not-Ready State: "+ getState());
+            DebugTool.logError("Choice Manager In Not-Ready State: "+ getState());
             return false;
         }
         return true;

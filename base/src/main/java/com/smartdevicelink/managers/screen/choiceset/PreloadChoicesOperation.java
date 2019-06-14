@@ -89,9 +89,7 @@ class PreloadChoicesOperation implements Runnable {
 		preloadCellArtworks(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
-				if (success) {
-					preloadCells();
-				}
+				preloadCells();
 			}
 		});
 	}
@@ -206,10 +204,18 @@ class PreloadChoicesOperation implements Runnable {
 
 		Choice choice = new Choice(cell.getChoiceId(), menuName);
 		choice.setVrCommands(vrCommands);
-		choice.setImage(image);
-		choice.setSecondaryImage(secondaryImage);
 		choice.setSecondaryText(secondaryText);
 		choice.setTertiaryText(tertiaryText);
+		choice.setIgnoreAddingVRItems(true);
+
+		if (fileManager.get() != null){
+			if (fileManager.get().hasUploadedFile(cell.getArtwork())){
+				choice.setImage(image);
+			}
+			if (fileManager.get().hasUploadedFile(cell.getSecondaryArtwork())){
+				choice.setSecondaryImage(secondaryImage);
+			}
+		}
 
 		return new CreateInteractionChoiceSet(choice.getChoiceID(), Collections.singletonList(choice));
 	}

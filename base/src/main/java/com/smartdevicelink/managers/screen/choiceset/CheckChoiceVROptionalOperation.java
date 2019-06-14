@@ -40,6 +40,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
 
@@ -82,6 +83,15 @@ class CheckChoiceVROptionalOperation implements Runnable {
 					sendTestChoiceWithVR();
 				}
 			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info){
+				DebugTool.logError("There was an error in the check choice vr optional operation. Send test choice with no VR failed. Error: " + info);
+				isVROptional = false;
+				if (checkChoiceVROptionalInterface != null){
+					checkChoiceVROptionalInterface.onError(info);
+				}
+			}
 		});
 
 		if (internalInterface.get() != null) {
@@ -109,6 +119,15 @@ class CheckChoiceVROptionalOperation implements Runnable {
 					if (checkChoiceVROptionalInterface != null){
 						checkChoiceVROptionalInterface.onError(response.getInfo());
 					}
+				}
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info){
+				DebugTool.logError("There was an error in the check choice vr optional operation. Send test choice with VR failed. Error: " + info);
+				isVROptional = false;
+				if (checkChoiceVROptionalInterface != null){
+					checkChoiceVROptionalInterface.onError(info);
 				}
 			}
 		});
