@@ -585,7 +585,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isReady(){
         if (getState() != READY){
-            DebugTool.logError("Choice Manager In Not-Ready State");
+            DebugTool.logWarning("Choice Manager In Not-Ready State");
             return false;
         }
         return true;
