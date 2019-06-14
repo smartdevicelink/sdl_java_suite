@@ -70,7 +70,7 @@ class PreloadChoicesOperation implements Runnable {
 	private HashSet<ChoiceCell> cellsToUpload;
 	private CompletionListener completionListener;
 	private boolean isRunning;
-	private Boolean isVROptional;
+	private boolean isVROptional;
 
 	PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, DisplayCapabilities displayCapabilities,
 								   Boolean isVROptional, HashSet<ChoiceCell> cellsToPreload, CompletionListener listener){

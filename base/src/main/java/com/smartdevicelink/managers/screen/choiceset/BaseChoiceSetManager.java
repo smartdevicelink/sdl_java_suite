@@ -173,7 +173,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     public void preloadChoices(@NonNull List<ChoiceCell> choices, @Nullable final CompletionListener listener){
 
-        final HashSet<ChoiceCell> choicesToUpload = choicesToBeUploadedWithArray(choices);
+        final HashSet<ChoiceCell> choicesToUpload = new HashSet<>(choices);
         choicesToUpload.removeAll(preloadedChoices);
         choicesToUpload.removeAll(pendingPreloadChoices);
 
@@ -373,12 +373,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     // CHOICE SET MANAGEMENT HELPERS
-
-    HashSet<ChoiceCell> choicesToBeUploadedWithArray(List<ChoiceCell> choices){
-        HashSet<ChoiceCell> choicesSet = new HashSet<>(choices);
-        choicesSet.removeAll(this.preloadedChoices);
-        return choicesSet;
-    }
 
     HashSet<ChoiceCell> choicesToBeDeletedWithArray(List<ChoiceCell> choices){
         HashSet<ChoiceCell> choicesSet = new HashSet<>(choices);
