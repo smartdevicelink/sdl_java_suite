@@ -524,7 +524,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         return true;
     }
 
-
     KeyboardProperties defaultKeyboardConfiguration(){
         KeyboardProperties defaultProperties = new KeyboardProperties();
         defaultProperties.setLanguage(Language.EN_US);
