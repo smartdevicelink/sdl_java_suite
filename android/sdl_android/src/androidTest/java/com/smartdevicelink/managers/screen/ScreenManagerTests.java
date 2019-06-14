@@ -32,8 +32,6 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		FileManager fileManager = mock(FileManager.class);
 		screenManager = new ScreenManager(internalInterface, fileManager);
 		screenManager.start(null);
-
-
 		testArtwork = new SdlArtwork("testFile", FileType.GRAPHIC_PNG, 1, false);
 	}
 

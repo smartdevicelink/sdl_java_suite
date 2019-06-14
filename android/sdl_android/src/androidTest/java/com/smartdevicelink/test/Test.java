@@ -6,6 +6,7 @@ import android.util.Log;
 import com.smartdevicelink.R;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
 import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
@@ -461,6 +462,8 @@ public class Test {
 			//
 		}
 	});
+	public static final ChoiceCell                      GENERAL_CHOICECELL                     = new ChoiceCell(GENERAL_STRING);
+	public static final List<ChoiceCell>                GENERAL_CHOICECELL_LIST                = Arrays.asList(GENERAL_CHOICECELL);
 	public static final List<MenuCell>                  GENERAL_MENUCELL_LIST                  = Arrays.asList(GENERAL_MENUCELL);
 	public static final VoiceCommand					GENERAL_VOICE_COMMAND                  = new VoiceCommand(GENERAL_STRING_LIST, new VoiceCommandSelectionListener() {
 		@Override

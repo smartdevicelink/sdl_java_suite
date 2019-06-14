@@ -379,7 +379,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		// this is needed for the onCommands to still work
 		transferIdsToKeptCells(keepsNew);
 
-		if (adds != null && adds.size() > 0){
+		if (adds.size() > 0){
 			DebugTool.logInfo("Sending root menu updates");
 			sendDynamicRootMenuRPCs(deleteCommands, adds);
 		}else{
@@ -853,6 +853,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// LISTENERS
 
+	@SuppressWarnings("deprecation")
 	private void addListeners(){
 
 		// DISPLAY CAPABILITIES - via SCM
