@@ -433,7 +433,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
      * Pushes raw audio data to SDL Core.
      * The audio file will be played immediately. If another audio file is currently playing,
      * the specified file will stay queued and automatically played when ready.
-     * @param data Audio raw dara to send.
+     * @param data Audio raw data to send.
      * @param completionListener A completion listener that informs when the audio file is played.
      */
     public void pushBuffer(ByteBuffer data, CompletionListener completionListener) {
