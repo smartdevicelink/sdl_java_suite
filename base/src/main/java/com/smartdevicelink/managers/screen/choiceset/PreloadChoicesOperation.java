@@ -41,7 +41,6 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Choice;
