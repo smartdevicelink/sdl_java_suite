@@ -208,10 +208,10 @@ class PreloadChoicesOperation implements Runnable {
 		choice.setIgnoreAddingVRItems(true);
 
 		if (fileManager.get() != null){
-			if (fileManager.get().hasUploadedFile(cell.getArtwork())){
+			if (image != null && fileManager.get().hasUploadedFile(cell.getArtwork())) {
 				choice.setImage(image);
 			}
-			if (fileManager.get().hasUploadedFile(cell.getSecondaryArtwork())){
+			if (secondaryImage != null && fileManager.get().hasUploadedFile(cell.getSecondaryArtwork())) {
 				choice.setSecondaryImage(secondaryImage);
 			}
 		}
