@@ -214,7 +214,7 @@ public class ChoiceCell {
      * Get the choiceId
      * @return the choiceId for this Choice Cell
      */
-    public int getChoiceId() {
+    int getChoiceId() {
         return choiceId;
     }
 
@@ -242,9 +242,7 @@ public class ChoiceCell {
         // if this is not an instance of this class, not the same
         if (!(o instanceof ChoiceCell)) return false;
 
-        ChoiceCell choiceCell = (ChoiceCell) o;
-        // if we get to this point, create the hashes and compare them
-        return hashCode() == choiceCell.hashCode();
+        return hashCode() == o.hashCode();
     }
 
     /**

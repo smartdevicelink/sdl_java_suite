@@ -431,7 +431,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * Deletes choices that were sent previously
 	 * @param choices - A list of ChoiceCell objects
 	 */
-	public void deleteChoices(List<ChoiceCell> choices){
+	public void deleteChoices(@NonNull List<ChoiceCell> choices){
 		this.choiceSetManager.deleteChoices(choices);
 	}
 
@@ -440,7 +440,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @param choices - a list of ChoiceCell objects that will be part of a choice set later
 	 * @param listener - a completion listener to inform when the operation is complete
 	 */
-	public void preloadChoices(List<ChoiceCell> choices, CompletionListener listener){
+	public void preloadChoices(@NonNull List<ChoiceCell> choices, CompletionListener listener){
 		this.choiceSetManager.preloadChoices(choices, listener);
 	}
 
@@ -450,7 +450,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @param mode - The intended interaction mode
 	 * @param keyboardListener - A keyboard listener to capture user input
 	 */
-	public void presentSearchableChoiceSet(ChoiceSet choiceSet, InteractionMode mode, KeyboardListener keyboardListener){
+	public void presentSearchableChoiceSet(@NonNull ChoiceSet choiceSet, @Nullable InteractionMode mode, @NonNull KeyboardListener keyboardListener){
 		this.choiceSetManager.presentChoiceSet(choiceSet, mode, keyboardListener);
 	}
 
@@ -459,7 +459,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @param choiceSet - The choice set to be presented. This can include Choice Cells that were preloaded or not
 	 * @param mode - The intended interaction mode
 	 */
-	public void presentChoiceSet(ChoiceSet choiceSet, InteractionMode mode){
+	public void presentChoiceSet(@NonNull ChoiceSet choiceSet, @Nullable InteractionMode mode){
 		this.choiceSetManager.presentChoiceSet(choiceSet, mode, null);
 	}
 
@@ -469,15 +469,15 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @param customKeyboardProperties - the custom keyboard configuration to be used when the keyboard is displayed
 	 * @param keyboardListener - A keyboard listener to capture user input
 	 */
-	public void presentKeyboard(String initialText, KeyboardProperties customKeyboardProperties, KeyboardListener keyboardListener){
+	public void presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardProperties, @NonNull KeyboardListener keyboardListener){
 		this.choiceSetManager.presentKeyboard(initialText, customKeyboardProperties, keyboardListener);
 	}
 
 	/**
-	 * Set a custom keyboard configuration for this session
+	 * Set a custom keyboard configuration for this session. If set to null, it will reset to default keyboard configuration.
 	 * @param keyboardConfiguration - the custom keyboard configuration to be used when the keyboard is displayed
 	 */
-	public void setKeyboardConfiguration(KeyboardProperties keyboardConfiguration){
+	public void setKeyboardConfiguration(@Nullable KeyboardProperties keyboardConfiguration){
 		this.choiceSetManager.setKeyboardConfiguration(keyboardConfiguration);
 	}
 

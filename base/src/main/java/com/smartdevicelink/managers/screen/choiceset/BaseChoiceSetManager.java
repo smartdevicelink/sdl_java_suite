@@ -35,6 +35,7 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -170,7 +171,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         executor.submit(checkChoiceVR);
     }
 
-    public void preloadChoices(List<ChoiceCell> choices, final CompletionListener listener){
+    public void preloadChoices(@NonNull List<ChoiceCell> choices, @Nullable final CompletionListener listener){
 
         final HashSet<ChoiceCell> choicesToUpload = choicesToBeUploadedWithArray(choices);
         choicesToUpload.removeAll(preloadedChoices);
@@ -213,7 +214,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
     }
 
-    public void deleteChoices(List<ChoiceCell> choices){
+    public void deleteChoices(@NonNull List<ChoiceCell> choices){
 
         if (!isReady()){ return; }
 
@@ -259,7 +260,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         executor.submit(deleteChoicesOperation);
     }
 
-    public void presentChoiceSet(final ChoiceSet choiceSet, final InteractionMode mode, final KeyboardListener keyboardListener){
+    public void presentChoiceSet(@NonNull final ChoiceSet choiceSet, @Nullable final InteractionMode mode, @Nullable final KeyboardListener keyboardListener){
 
         if (!isReady()){ return; }
 
@@ -322,7 +323,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         pendingPresentOperation = executor.submit(presentOp);
     }
 
-    public void presentKeyboard(String initialText, KeyboardProperties customKeyboardConfig, KeyboardListener listener){
+    public void presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardConfig, @NonNull KeyboardListener listener){
 
         if (!isReady()){ return; }
 
@@ -346,7 +347,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         pendingPresentOperation = executor.submit(keyboardOp);
     }
 
-    public void setKeyboardConfiguration(KeyboardProperties keyboardConfiguration){
+    public void setKeyboardConfiguration(@Nullable KeyboardProperties keyboardConfiguration){
         if (keyboardConfiguration == null){
             this.keyboardConfiguration = defaultKeyboardConfiguration();
         } else{
@@ -479,6 +480,13 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         if (choices == null || choices.size() == 0) {
             DebugTool.logError("Cannot initiate a choice set with no choices");
             return false;
+        }
+
+        if (choiceSet.getTimeout() != null) {
+            if (choiceSet.getTimeout() < 5 || choiceSet.getTimeout() > 100) {
+                DebugTool.logWarning("Attempted to create a choice set with a " + choiceSet.getTimeout() + " second timeout; Only 5 - 100 seconds is valid. When using the choice set manager, setTimeout() uses seconds.");
+                return false;
+            }
         }
 
         HashSet<String> choiceTextSet = new HashSet<>();
