@@ -265,11 +265,11 @@ public class MenuCell implements Cloneable{
 	 */
 	@Override
 	public boolean equals(Object o) {
+		if (o == null) { return false; }
 		// if this is the same memory address, its the same
 		if (this == o) return true;
 		// if this is not an instance of this class, not the same
 		if (!(o instanceof MenuCell)) return false;
-
 		// if we get to this point, create the hashes and compare them
 		return hashCode() == o.hashCode();
 	}

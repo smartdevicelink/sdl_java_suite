@@ -47,6 +47,7 @@ import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
@@ -104,6 +105,12 @@ class PresentKeyboardOperation implements Runnable {
 			pi.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
+					finishOperation();
+				}
+
+				@Override
+				public void onError(int correlationId, Result resultCode, String info){
+					DebugTool.logError("There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info);
 					finishOperation();
 				}
 			});

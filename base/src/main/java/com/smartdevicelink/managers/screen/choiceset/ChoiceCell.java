@@ -237,23 +237,24 @@ public class ChoiceCell {
      */
     @Override
     public boolean equals(Object o) {
+        if (o == null) { return false; }
         // if this is the same memory address, its the same
         if (this == o) return true;
         // if this is not an instance of this class, not the same
         if (!(o instanceof ChoiceCell)) return false;
-
+        // return comparison
         return hashCode() == o.hashCode();
     }
 
     /**
-     * Overriding toString was throwing a warning in AS, so I changed the name for now
      * @return A string description of the cell, useful for debugging.
      */
-    public String getDescription() {
-        return "ChoiceCell: ID: " + this.choiceId + " Text: " + text+ " - "+ secondaryText+" - "+ " - "+ tertiaryText+ " " +
+    @Override @NonNull
+    public String toString() {
+        return "ChoiceCell: ID: " + this.choiceId + " Text: " + text+ " - Secondary Text: "+ secondaryText+" - Tertiary Text: "+ tertiaryText+ " " +
                 "| Artwork Names: "+ ((getArtwork() == null || getArtwork().getName() == null) ? "Primary Art null" : getArtwork().getName())
-                + " - "+((getSecondaryArtwork() == null || getSecondaryArtwork().getName() == null) ? "Secondary Art null" : getSecondaryArtwork().getName()) +
-                " Voice Commands Size: "+ ((getVoiceCommands() == null) ? 0 : getVoiceCommands().size());
+                + " Secondary Art - "+((getSecondaryArtwork() == null || getSecondaryArtwork().getName() == null) ? "Secondary Art null" : getSecondaryArtwork().getName()) +
+                " | Voice Commands Size: "+ ((getVoiceCommands() == null) ? 0 : getVoiceCommands().size());
     }
 
 }

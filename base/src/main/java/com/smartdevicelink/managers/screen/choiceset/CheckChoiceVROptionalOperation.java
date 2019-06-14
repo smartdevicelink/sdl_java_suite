@@ -150,6 +150,14 @@ class CheckChoiceVROptionalOperation implements Runnable {
 					checkChoiceVROptionalInterface.onCheckChoiceVROperationComplete(isVROptional);
 				}
 			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info){
+				DebugTool.logError("There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info);
+				if (checkChoiceVROptionalInterface != null){
+					checkChoiceVROptionalInterface.onError(info);
+				}
+			}
 		});
 		if (internalInterface.get() != null){
 			internalInterface.get().sendRPC(delete);

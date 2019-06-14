@@ -97,6 +97,11 @@ public class Choice extends RPCStruct {
 	public static final String KEY_VR_COMMANDS = "vrCommands";
 	public static final String KEY_CHOICE_ID = "choiceID";
 	public static final String KEY_IMAGE = "image";
+
+    /**
+     * Used to bypass the format() method that adds VR items based on RPC version. This is used by the
+     * choiceSetManager, which has a more in-depth approach as to whether or not it should add VR items
+     */
 	private boolean ignoreAddingVRItems;
 
 	/**
@@ -155,7 +160,7 @@ public class Choice extends RPCStruct {
         if (rpcVersion == null || rpcVersion.getMajor() < 5){
 
             // this is added to allow the choice set manager to disable this functionality
-            if (!getIgnoreAddingVRItems()) {
+            if (!ignoreAddingVRItems) {
                 // make sure there is at least one vr param
                 List<String> existingVrCommands = getVrCommands();
 
@@ -268,9 +273,5 @@ public class Choice extends RPCStruct {
      */
     public void setIgnoreAddingVRItems(boolean ignoreAddingVRItems){
         this.ignoreAddingVRItems = ignoreAddingVRItems;
-    }
-
-    private Boolean getIgnoreAddingVRItems(){
-        return this.ignoreAddingVRItems;
     }
 }

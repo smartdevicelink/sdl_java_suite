@@ -59,6 +59,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -75,17 +76,18 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     // additional state
     private static final int CHECKING_VOICE = 0xA0;
     private KeyboardProperties keyboardConfiguration;
+    final WeakReference<FileManager> fileManager;
 
     OnRPCNotificationListener hmiListener;
     OnSystemCapabilityListener displayListener;
-
-    final WeakReference<FileManager> fileManager;
     HMILevel currentHMILevel;
     DisplayCapabilities displayCapabilities;
-
+    SystemContext currentSystemContext;
     HashSet<ChoiceCell> preloadedChoices, pendingPreloadChoices;
     ChoiceSet pendingPresentationSet;
-    Boolean isVROptional;
+    private List<ChoiceCell> waitingChoices;
+    private CompletionListener waitingListener;
+
     // We will pass operations into this to be completed
     PausableThreadPoolExecutor executor;
     LinkedBlockingQueue<Runnable> operationQueue;
@@ -93,8 +95,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     int nextChoiceId;
     final int choiceCellIdMin = 1;
-
-	SystemContext currentSystemContext;
+    boolean isVROptional;
 
     BaseChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
@@ -136,6 +137,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         pendingPresentationSet = null;
         pendingPresentOperation = null;
+        waitingChoices = null;
+        waitingListener = null;
         isVROptional = true;
         nextChoiceId = choiceCellIdMin;
 
@@ -171,7 +174,19 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         executor.submit(checkChoiceVR);
     }
 
+    /**
+     * Preload choices to improve performance while presenting a choice set at a later time
+     * @param choices - a list of ChoiceCell objects that will be part of a choice set later
+     * @param listener - a completion listener to inform when the operation is complete
+     */
     public void preloadChoices(@NonNull List<ChoiceCell> choices, @Nullable final CompletionListener listener){
+
+        if (!isReady()){
+            waitingChoices = new ArrayList<>(choices);
+            waitingListener = listener;
+            DebugTool.logInfo("Preload pending choice set manager being ready");
+            return;
+        }
 
         final HashSet<ChoiceCell> choicesToUpload = new HashSet<>(choices);
         choicesToUpload.removeAll(preloadedChoices);
@@ -199,11 +214,15 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                         if (listener != null){
                             listener.onComplete(true);
                         }
+                        waitingChoices = null;
+                        waitingListener = null;
                     }else {
                         DebugTool.logError("There was an error pre loading choice cells");
                         if (listener != null){
                             listener.onComplete(false);
                         }
+                        waitingChoices = null;
+                        waitingListener = null;
                     }
                 }
             });
@@ -214,6 +233,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
     }
 
+    /**
+     * Deletes choices that were sent previously
+     * @param choices - A list of ChoiceCell objects
+     */
     public void deleteChoices(@NonNull List<ChoiceCell> choices){
 
         if (!isReady()){ return; }
@@ -260,6 +283,12 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         executor.submit(deleteChoicesOperation);
     }
 
+    /**
+     * Presents a choice set
+     * @param choiceSet - The choice set to be presented. This can include Choice Cells that were preloaded or not
+     * @param mode - The intended interaction mode
+     * @param keyboardListener - A keyboard listener to capture user input
+     */
     public void presentChoiceSet(@NonNull final ChoiceSet choiceSet, @Nullable final InteractionMode mode, @Nullable final KeyboardListener keyboardListener){
 
         if (!isReady()){ return; }
@@ -328,6 +357,12 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         pendingPresentOperation = executor.submit(presentOp);
     }
 
+    /**
+     * Presents a keyboard on the Head unit to capture user input
+     * @param initialText - The initial text that is used as a placeholder text. It might not work on some head units.
+     * @param customKeyboardConfig - the custom keyboard configuration to be used when the keyboard is displayed
+     * @param listener - A keyboard listener to capture user input
+     */
     public void presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardConfig, @NonNull KeyboardListener listener){
 
         if (!isReady()){ return; }
@@ -352,6 +387,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         pendingPresentOperation = executor.submit(keyboardOp);
     }
 
+    /**
+     * Set a custom keyboard configuration for this session. If set to null, it will reset to default keyboard configuration.
+     * @param keyboardConfiguration - the custom keyboard configuration to be used when the keyboard is displayed
+     */
     public void setKeyboardConfiguration(@Nullable KeyboardProperties keyboardConfiguration){
         if (keyboardConfiguration == null){
             this.keyboardConfiguration = defaultKeyboardConfiguration();
@@ -368,6 +407,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     // GETTERS
 
+    /**
+     * @return A set of choice cells that have been preloaded to the head unit
+     */
     public HashSet<ChoiceCell> getPreloadedChoices(){
         return this.preloadedChoices;
     }
@@ -452,6 +494,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
                 if (oldHMILevel.equals(HMILevel.HMI_NONE) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
                     executor.resume();
+                    if (waitingChoices != null && waitingChoices.size() > 0){
+                        DebugTool.logInfo("Pending Preload Choices now being sent");
+                        preloadChoices(waitingChoices, waitingListener);
+                    }
                 }
 
                 currentSystemContext = hmiStatus.getSystemContext();
@@ -462,6 +508,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
                 if (currentSystemContext.equals(SystemContext.SYSCTXT_MAIN) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
                     executor.resume();
+                    if (waitingChoices != null && waitingChoices.size() > 0){
+                        DebugTool.logInfo("Pending Preload Choices now being sent");
+                        preloadChoices(waitingChoices, waitingListener);
+                    }
                 }
 
             }
@@ -535,7 +585,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isReady(){
         if (getState() != READY){
-            DebugTool.logError("Choice Manager In Not-Ready State: "+ getState());
+            DebugTool.logError("Choice Manager In Not-Ready State");
             return false;
         }
         return true;
