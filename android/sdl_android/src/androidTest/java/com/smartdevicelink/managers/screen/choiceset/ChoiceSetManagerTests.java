@@ -209,41 +209,6 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		}
 	}
 
-	public void testChoicesToBeDeletedWithArray(){
-
-		ChoiceCell cell1 = new ChoiceCell("test");
-		ChoiceCell cell2 = new ChoiceCell("test2");
-		ChoiceCell cell3 = new ChoiceCell("test3");
-		ChoiceCell cell4 = new ChoiceCell("test4");
-		ChoiceCell cell5 = new ChoiceCell("test5");
-
-		HashSet<ChoiceCell> preloadedChoices = new HashSet<>();
-		preloadedChoices.add(cell1);
-		preloadedChoices.add(cell2);
-		preloadedChoices.add(cell3);
-
-		csm.preloadedChoices.clear();
-		csm.preloadedChoices = preloadedChoices;
-
-		List<ChoiceCell> choices = new ArrayList<>();
-		choices.add(cell1);
-		choices.add(cell2);
-		choices.add(cell3);
-		choices.add(cell4);
-		choices.add(cell5);
-
-		HashSet<ChoiceCell> returnedChoices = csm.choicesToBeUploadedWithArray(choices);
-
-		assertEquals(returnedChoices.size(), 2);
-		for (ChoiceCell cell : returnedChoices){
-			if (cell.getText().equals("test4") || cell.getText().equals("test5")){
-				return;
-			}else{
-				fail();
-			}
-		}
-	}
-
 	public void testChoicesToBeUploadedWithArray(){
 
 		ChoiceCell cell1 = new ChoiceCell("test");
