@@ -104,6 +104,7 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
         builder.setTransportType(multiplexTransportConfig);
 
         SdlManager manager = builder.build();
+        manager.start();
 
         //Original reference should be updated
         assertTrue(multiplexTransportConfig.requiresAudioSupport());
@@ -120,6 +121,7 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
         builder.setTransportType(multiplexTransportConfig);
 
         SdlManager manager = builder.build();
+        manager.start();
 
         //Original reference should be updated
         assertFalse(multiplexTransportConfig.requiresAudioSupport());
