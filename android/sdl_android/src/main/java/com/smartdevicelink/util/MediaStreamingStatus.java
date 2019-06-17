@@ -61,10 +61,10 @@ import java.util.List;
 public class MediaStreamingStatus {
     private static final Object BROADCAST_RECEIVER_LOCK = new Object();
 
-    boolean broadcastReceiverValid = true;
-    WeakReference<Context> contextWeakReference;
-    Callback callback;
-    List<String> intentList;
+    private boolean broadcastReceiverValid = true;
+    private WeakReference<Context> contextWeakReference;
+    private Callback callback;
+    private List<String> intentList;
 
     public MediaStreamingStatus(@NonNull Context context, @NonNull Callback callback){
         contextWeakReference = new WeakReference<>(context);
@@ -201,7 +201,7 @@ public class MediaStreamingStatus {
     }
 
 
-    void setupBluetoothBroadcastReceiver(){
+    private void setupBluetoothBroadcastReceiver(){
         String[] actions = new String[4];
         actions[0] = BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED;
         actions[1] = BluetoothAdapter.ACTION_STATE_CHANGED;
@@ -211,21 +211,21 @@ public class MediaStreamingStatus {
         listenForIntents(actions);
     }
 
-    void setupHeadsetBroadcastReceiver(){
+    private void setupHeadsetBroadcastReceiver(){
         String[] actions = new String[1];
         actions[0] = AudioManager.ACTION_HEADSET_PLUG;
 
         listenForIntents(actions);
     }
 
-    void setupUSBBroadcastReceiver(){
+    private void setupUSBBroadcastReceiver(){
         String[] actions = new String[1];
         actions[0] = Intent.ACTION_BATTERY_CHANGED;
 
         listenForIntents(actions);
     }
 
-    void listenForIntents(@NonNull String[] actions){
+    private void listenForIntents(@NonNull String[] actions){
         if(intentList != null){
             //Add each intent
             int preAddSize = intentList.size();
@@ -245,7 +245,7 @@ public class MediaStreamingStatus {
         }
     }
 
-    void updateBroadcastReceiver() {
+    private void updateBroadcastReceiver() {
         //The broadcast receiver has not been setup for this yet
         Context context = contextWeakReference.get();
         if (context != null) {
@@ -261,7 +261,7 @@ public class MediaStreamingStatus {
 
     }
 
-    void unregisterBroadcastReceiver(){
+    private void unregisterBroadcastReceiver(){
         Context context = contextWeakReference.get();
         if(context != null) {
             try{
