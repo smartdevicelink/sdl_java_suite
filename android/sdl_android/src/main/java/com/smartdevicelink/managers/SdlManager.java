@@ -577,6 +577,12 @@ public class SdlManager extends BaseSdlManager{
 							}
 						}
 					});
+
+					//If the requires audio support has not been set, it should be set to true if the
+					//app is a media app, and false otherwise
+					if(multiplexTransportConfig.requiresAudioSupport() == null){
+						multiplexTransportConfig.setRequiresAudioSupport(isMediaApp);
+					}
 				}
 
 				proxy = new SdlProxyBase(proxyBridge, context, appName, shortAppName, isMediaApp, hmiLanguage,
@@ -826,6 +832,21 @@ public class SdlManager extends BaseSdlManager{
 			setAppName(appName);
 			setManagerListener(listener);
 		}
+		/**
+		 * Builder for the SdlManager. Parameters in the constructor are required.
+		 * @param context the current context
+		 * @param appId the app's ID
+		 * @param appName the app's name
+		 * @param listener a SdlManagerListener object
+		 */
+		public Builder(@NonNull Context context, @NonNull final String appId, @NonNull final String appName, @NonNull BaseTransportConfig transport, @NonNull final SdlManagerListener listener){
+			sdlManager = new SdlManager();
+			setContext(context);
+			setAppId(appId);
+			setAppName(appName);
+			setTransportType(transport);
+			setManagerListener(listener);
+		}
 
 		/**
 		 * Sets the App ID
@@ -969,7 +990,7 @@ public class SdlManager extends BaseSdlManager{
 		 * Sets the BaseTransportConfig
 		 * @param transport the type of transport that should be used for this SdlManager instance.
 		 */
-		public Builder setTransportType(BaseTransportConfig transport){
+		public Builder setTransportType(@NonNull BaseTransportConfig transport){
 			sdlManager.transport = transport;
 			return this;
 		}
@@ -1023,6 +1044,10 @@ public class SdlManager extends BaseSdlManager{
 
 			if (sdlManager.managerListener == null) {
 				throw new IllegalArgumentException("You must set a SdlManagerListener object");
+			}
+
+			if (sdlManager.transport == null) {
+				throw new IllegalArgumentException("You must set a transport type object");
 			}
 
 			if (sdlManager.hmiTypes == null) {
