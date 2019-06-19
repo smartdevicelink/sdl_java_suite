@@ -255,6 +255,9 @@ public class SdlManager extends BaseSdlManager{
 		this.screenManager.start(subManagerListener);
 	}
 
+	/** Dispose SdlManager and clean its resources
+	 * <strong>Note: new instance of SdlManager should be created on every connection. SdlManager cannot be reused after getting disposed.</strong>
+	 */
 	@SuppressLint("NewApi")
 	@Override
 	public void dispose() {
@@ -1032,6 +1035,11 @@ public class SdlManager extends BaseSdlManager{
 			return this;
 		}
 
+		/**
+		 * Build SdlManager ang get it ready to be started
+		 * <strong>Note: new instance of SdlManager should be created on every connection. SdlManager cannot be reused after getting disposed.</strong>
+		 * @return SdlManager instance that is ready to be started
+		 */
 		public SdlManager build() {
 
 			if (sdlManager.appName == null) {
