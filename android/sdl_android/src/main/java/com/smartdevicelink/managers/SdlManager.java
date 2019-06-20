@@ -228,7 +228,16 @@ public class SdlManager extends BaseSdlManager{
 	@Override
 	protected void initialize(){
 		// Instantiate sub managers
-		this.permissionManager = new PermissionManager(_internalInterface);
+		this.permissionManager = new PermissionManager(_internalInterface, new EncryptionRequireCallback() {
+			@Override
+			public void onEncryptionRequireChange(List<String> rpcNames) {
+				//TODO: uncomment when security library is ready to test
+//				if (proxy.startProtectedRPCService()) {
+//					proxy.setEncryptedRPCs(rpcNames);
+//				}
+                proxy.setEncryptedRPCs(rpcNames);
+			}
+		});
 		this.fileManager = new FileManager(_internalInterface, context);
 		if (lockScreenConfig.isEnabled()) {
 			this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
@@ -1053,5 +1062,9 @@ public class SdlManager extends BaseSdlManager{
 
 			return sdlManager;
 		}
+	}
+
+	public interface EncryptionRequireCallback {
+		void onEncryptionRequireChange(List<String> rpcNames);
 	}
 }

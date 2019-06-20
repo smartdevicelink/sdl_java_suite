@@ -33,9 +33,11 @@ package com.smartdevicelink.managers.permission;
 
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -88,7 +90,7 @@ abstract class BasePermissionManager extends BaseSubManager{
      * Creates a new instance of the PermissionManager
      * @param internalInterface an instance of the ISdl interface that can be used for common SDL operations (sendRpc, addRpcListener, etc)
      */
-    BasePermissionManager(@NonNull ISdl internalInterface){
+    BasePermissionManager(@NonNull ISdl internalInterface, @NonNull final SdlManager.EncryptionRequireCallback callback){
         super(internalInterface);
         this.currentPermissionItems = new HashMap<>();
         this.filters = new ArrayList<>();
@@ -112,13 +114,24 @@ abstract class BasePermissionManager extends BaseSubManager{
                 List<PermissionItem> permissionItems = ((OnPermissionsChange)notification).getPermissionItem();
                 Map<FunctionID, PermissionItem> previousPermissionItems = currentPermissionItems;
                 currentPermissionItems = new HashMap<>();
+                ArrayList rpcNames = new ArrayList();
+                boolean requireEncryptionAppLevel = Boolean.TRUE.equals(((OnPermissionsChange) notification).getEncryptionRequirement());
                 if (permissionItems != null && !permissionItems.isEmpty()) {
                     for (PermissionItem permissionItem : permissionItems) {
                         FunctionID functionID = FunctionID.getEnumForString(permissionItem.getRpcName());
                         if (functionID != null) {
                             currentPermissionItems.put(functionID, permissionItem);
                         }
+                        if (requireEncryptionAppLevel && Boolean.TRUE.equals(permissionItem.getEncryptionRequirement())) {
+                            String rpcName = permissionItem.getRpcName();
+                            if (rpcName != null) {
+                                rpcNames.add(rpcName);
+                            }
+                        }
                     }
+                }
+                if (!rpcNames.isEmpty()) {
+                    callback.onEncryptionRequireChange(rpcNames);
                 }
                 notifyListeners(previousPermissionItems, currentHMILevel, currentPermissionItems, currentHMILevel);
                 previousPermissionItems.clear();
@@ -126,6 +139,7 @@ abstract class BasePermissionManager extends BaseSubManager{
         };
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE, onPermissionsChangeListener);
     }
+
 
     @Override
     public void start(CompletionListener listener) {

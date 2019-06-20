@@ -34,6 +34,7 @@ package com.smartdevicelink.managers.permission;
 
 import android.support.annotation.NonNull;
 
+import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 
 /**
@@ -51,7 +52,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
      *
      * @param internalInterface
      */
-    public PermissionManager(@NonNull ISdl internalInterface) {
-        super(internalInterface);
+    public PermissionManager(@NonNull ISdl internalInterface, @NonNull SdlManager.EncryptionRequireCallback callback) {
+        super(internalInterface, callback);
     }
 }

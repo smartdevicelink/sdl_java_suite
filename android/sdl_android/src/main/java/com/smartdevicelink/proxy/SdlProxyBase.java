@@ -298,6 +298,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	private Version minimumProtocolVersion;
 	private Version minimumRPCVersion;
+	private List<String> mEncryptedRPCNames = new ArrayList<>();
 
 
 	// Interface broker
@@ -2138,6 +2139,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			pm.setSessionType(SessionType.RPC);
 			pm.setFunctionID(FunctionID.getFunctionId(message.getFunctionName()));
 			pm.setPayloadProtected(message.isPayloadProtected());
+
+			//TODO: to uncomment and test when sec library is ready
+//			if (mEncryptedRPCNames.contains(message.getFunctionName())) {
+//                pm.setPayloadProtected(true);
+//            } else {
+//                pm.setPayloadProtected(message.isPayloadProtected());
+//            }
 			
 			if (sdlSession != null) {
 				pm.setSessionID(sdlSession.getSessionId());
@@ -5425,6 +5433,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void setAppService(Service mService)
 	{
 		_appService = mService;
+	}
+
+	/**
+	 * Sets the list of RPC that need to be encrypted
+	 * @param encryptRPCNames list of RPC names to be encrypted
+	 */
+	public void setEncryptedRPCs(List<String> encryptRPCNames) {
+    	mEncryptedRPCNames = encryptRPCNames;
 	}
 	
 	@SuppressWarnings("unused")
