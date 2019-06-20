@@ -488,11 +488,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 HMILevel oldHMILevel = currentHMILevel;
                 currentHMILevel = hmiStatus.getHmiLevel();
 
-                if (currentHMILevel.equals(HMILevel.HMI_NONE)){
+                if (currentHMILevel == HMILevel.HMI_NONE){
                     executor.pause();
                 }
 
-                if (oldHMILevel.equals(HMILevel.HMI_NONE) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
+                if (oldHMILevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE){
                     executor.resume();
                     if (waitingChoices != null && waitingChoices.size() > 0){
                         DebugTool.logInfo("Pending Preload Choices now being sent");
@@ -502,11 +502,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
                 currentSystemContext = hmiStatus.getSystemContext();
 
-                if (currentSystemContext.equals(SystemContext.SYSCTXT_HMI_OBSCURED) || currentSystemContext.equals(SystemContext.SYSCTXT_ALERT)){
+                if (currentSystemContext == SystemContext.SYSCTXT_HMI_OBSCURED || currentSystemContext == SystemContext.SYSCTXT_ALERT){
                     executor.pause();
                 }
 
-                if (currentSystemContext.equals(SystemContext.SYSCTXT_MAIN) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
+                if (currentSystemContext == SystemContext.SYSCTXT_MAIN && currentHMILevel != HMILevel.HMI_NONE){
                     executor.resume();
                     if (waitingChoices != null && waitingChoices.size() > 0){
                         DebugTool.logInfo("Pending Preload Choices now being sent");

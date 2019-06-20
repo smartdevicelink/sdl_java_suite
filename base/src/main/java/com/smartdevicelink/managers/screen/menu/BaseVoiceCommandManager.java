@@ -298,7 +298,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 				HMILevel oldHMILevel = currentHMILevel;
 				currentHMILevel = ((OnHMIStatus) notification).getHmiLevel();
 				// Auto-send an update if we were in NONE and now we are not
-				if (oldHMILevel.equals(HMILevel.HMI_NONE) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
+				if (oldHMILevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE){
 					if (waitingOnHMIUpdate){
 						setVoiceCommands(voiceCommands);
 					}

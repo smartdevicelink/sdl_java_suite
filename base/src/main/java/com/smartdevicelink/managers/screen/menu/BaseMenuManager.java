@@ -882,7 +882,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				currentHMILevel = hmiStatus.getHmiLevel();
 
 				// Auto-send an updated menu if we were in NONE and now we are not, and we need an update
-				if (oldHMILevel.equals(HMILevel.HMI_NONE) && !currentHMILevel.equals(HMILevel.HMI_NONE) && !currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
+				if (oldHMILevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE && currentSystemContext != SystemContext.SYSCTXT_MENU){
 					if (waitingOnHMIUpdate){
 						DebugTool.logInfo("We now have proper HMI, sending waiting update");
 						setMenuCells(waitingUpdateMenuCells);
@@ -896,7 +896,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				SystemContext oldContext = currentSystemContext;
 				currentSystemContext = hmiStatus.getSystemContext();
 
-				if (oldContext.equals(SystemContext.SYSCTXT_MENU) && !currentSystemContext.equals(SystemContext.SYSCTXT_MENU) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
+				if (oldContext == SystemContext.SYSCTXT_MENU && currentSystemContext != SystemContext.SYSCTXT_MENU && currentHMILevel != HMILevel.HMI_NONE){
 					if (waitingOnHMIUpdate){
 						DebugTool.logInfo("We now have a proper system context, sending waiting update");
 						setMenuCells(waitingUpdateMenuCells);
