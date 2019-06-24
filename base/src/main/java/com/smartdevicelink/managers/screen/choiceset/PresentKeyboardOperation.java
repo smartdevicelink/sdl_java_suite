@@ -110,7 +110,7 @@ class PresentKeyboardOperation implements Runnable {
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info){
-					DebugTool.logError("There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info);
+					DebugTool.logError("There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info + " resultCode: " + resultCode);
 					finishOperation();
 				}
 			});

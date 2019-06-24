@@ -365,6 +365,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
      */
     public void presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardConfig, @NonNull KeyboardListener listener){
 
+        if (initialText == null || initialText.length() == 0){
+            DebugTool.logError("initialText cannot be an empty string.");
+            return;
+        }
+
         if (!isReady()){ return; }
 
         if (pendingPresentationSet != null && pendingPresentOperation != null){
