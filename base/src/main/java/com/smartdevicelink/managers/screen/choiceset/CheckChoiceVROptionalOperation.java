@@ -86,7 +86,7 @@ class CheckChoiceVROptionalOperation implements Runnable {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError("There was an error in the check choice vr optional operation. Send test choice with no VR failed. Error: " + info);
+				DebugTool.logError("There was an error in the check choice vr optional operation. Send test choice with no VR failed. Error: " + info + " resultCode: " + resultCode);
 				isVROptional = false;
 				if (checkChoiceVROptionalInterface != null){
 					checkChoiceVROptionalInterface.onError(info);
@@ -124,7 +124,7 @@ class CheckChoiceVROptionalOperation implements Runnable {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError("There was an error in the check choice vr optional operation. Send test choice with VR failed. Error: " + info);
+				DebugTool.logError("There was an error in the check choice vr optional operation. Send test choice with VR failed. Error: " + info + " resultCode: " + resultCode);
 				isVROptional = false;
 				if (checkChoiceVROptionalInterface != null){
 					checkChoiceVROptionalInterface.onError(info);
@@ -153,7 +153,7 @@ class CheckChoiceVROptionalOperation implements Runnable {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError("There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info);
+				DebugTool.logError("There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info + " resultCode: " + resultCode);
 				if (checkChoiceVROptionalInterface != null){
 					checkChoiceVROptionalInterface.onError(info);
 				}

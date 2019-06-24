@@ -165,7 +165,7 @@ class PreloadChoicesOperation implements Runnable {
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError("There was an error uploading a choice cell: "+ info);
+					DebugTool.logError("There was an error uploading a choice cell: "+ info + " resultCode: " + resultCode);
 				}
 
 				@Override
