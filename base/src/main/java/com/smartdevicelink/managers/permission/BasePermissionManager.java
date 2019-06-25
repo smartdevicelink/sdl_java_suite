@@ -114,7 +114,7 @@ abstract class BasePermissionManager extends BaseSubManager{
                 List<PermissionItem> permissionItems = ((OnPermissionsChange)notification).getPermissionItem();
                 Map<FunctionID, PermissionItem> previousPermissionItems = currentPermissionItems;
                 currentPermissionItems = new HashMap<>();
-                ArrayList rpcNames = new ArrayList();
+                List<String> rpcNames = null;
                 boolean requireEncryptionAppLevel = Boolean.TRUE.equals(((OnPermissionsChange) notification).getEncryptionRequirement());
                 if (permissionItems != null && !permissionItems.isEmpty()) {
                     for (PermissionItem permissionItem : permissionItems) {
@@ -124,13 +124,16 @@ abstract class BasePermissionManager extends BaseSubManager{
                         }
                         if (requireEncryptionAppLevel && Boolean.TRUE.equals(permissionItem.getEncryptionRequirement())) {
                             String rpcName = permissionItem.getRpcName();
+                            if (rpcNames == null) {
+                                rpcNames = new ArrayList<>();
+                            }
                             if (rpcName != null) {
                                 rpcNames.add(rpcName);
                             }
                         }
                     }
                 }
-                if (!rpcNames.isEmpty()) {
+                if (rpcNames != null && !rpcNames.isEmpty()) {
                     callback.onEncryptionRequireChange(rpcNames);
                 }
                 notifyListeners(previousPermissionItems, currentHMILevel, currentPermissionItems, currentHMILevel);
