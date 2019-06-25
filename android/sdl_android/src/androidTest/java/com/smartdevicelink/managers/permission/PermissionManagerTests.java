@@ -1,8 +1,10 @@
 package com.smartdevicelink.managers.permission;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
@@ -33,7 +35,7 @@ public class PermissionManagerTests extends AndroidTestCase2 {
     private OnRPCNotificationListener onHMIStatusListener, onPermissionsChangeListener;
     private PermissionManager permissionManager;
     private int listenerCalledCounter;
-
+    private List<String> mRpcNames;
 
     @Override
     protected void setUp() throws Exception {
@@ -72,7 +74,12 @@ public class PermissionManagerTests extends AndroidTestCase2 {
 
 
         // Initialize PermissionManager
-        permissionManager = new PermissionManager(internalInterface);
+        permissionManager = new PermissionManager(internalInterface, new SdlManager.EncryptionRequireCallback() {
+            @Override
+            public void onEncryptionRequireChange(List<String> rpcNames) {
+                mRpcNames = rpcNames;
+            }
+        });
     }
 
     // Emulate what happens when Core sends OnHMIStatus notification
@@ -93,6 +100,53 @@ public class PermissionManagerTests extends AndroidTestCase2 {
         }
     }
 
+    private void sendEncryptedRPCNames(Boolean appLevelEncrypt, Boolean itemLevelEncrypt) {
+        List<PermissionItem> items = new ArrayList<>();
+
+        PermissionItem item1 = new PermissionItem();
+        item1.setRpcName(FunctionID.SLIDER.toString());
+        item1.setEncryptionRequirement(itemLevelEncrypt);
+        items.add(item1);
+
+        PermissionItem item2 = new PermissionItem();
+        item2.setRpcName(FunctionID.SET_MEDIA_CLOCK_TIMER.toString());
+        item2.setEncryptionRequirement(itemLevelEncrypt);
+        items.add(item2);
+
+        PermissionItem item3 = new PermissionItem();
+        item3.setRpcName(FunctionID.SHOW.toString());
+        item3.setEncryptionRequirement(false);
+        items.add(item3);
+
+        OnPermissionsChange opm = new OnPermissionsChange();
+        opm.setPermissionItem(items);
+        opm.setEncryptionRequirement(appLevelEncrypt);
+        onPermissionsChangeListener.onNotified(opm);
+    }
+
+    public void testAppLevelAndItemLevelEncryptionTrue() {
+        mRpcNames = null;
+        sendEncryptedRPCNames(true, true);
+        List<String> list = new ArrayList<>();
+        list.add(FunctionID.SLIDER.toString());
+        list.add(FunctionID.SET_MEDIA_CLOCK_TIMER.toString());
+        assertNotNull("Encrypted rpc list should not be null", mRpcNames);
+        assertEquals("Returned encrypted RPC names not matched with 'SLIDER' & 'SET_MEDIA_CLOCK_TIMER'", list, mRpcNames);
+    }
+
+    public void testAppLevelEncryptionFalse() {
+        mRpcNames = null;
+        sendEncryptedRPCNames(false, true);
+        assertNull("Encrypted rpc list updated when it's not supposed to", mRpcNames);
+    }
+
+    public void testItemLevelEncryptionFalse() {
+        mRpcNames = null;
+        sendEncryptedRPCNames(true, false);
+        assertNull("Encrypted rpc list updated when it's not supposed to", mRpcNames);
+    }
+
+
     // Test adding a listener to be called when ALL of the specified permissions become allowed
     public void testListenersAllAllowed() {
         listenerCalledCounter = 0;
@@ -105,13 +159,13 @@ public class PermissionManagerTests extends AndroidTestCase2 {
         permissionManager.addListener(permissionElements, PermissionManager.PERMISSION_GROUP_TYPE_ALL_ALLOWED, new OnPermissionChangeListener() {
             @Override
             public void onPermissionsChange(@NonNull Map<FunctionID, PermissionStatus> allowedPermissions, @NonNull int permissionGroupStatus) {
-            // Make sure is the actual result matches the expected one
-            assertEquals(permissionGroupStatus, PERMISSION_GROUP_STATUS_ALLOWED);
-            assertTrue(allowedPermissions.get(FunctionID.SHOW).getIsRPCAllowed());
-            assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getIsRPCAllowed());
-            assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("rpm"));
-            assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("airbagStatus"));
-            listenerCalledCounter++;
+                // Make sure is the actual result matches the expected one
+                assertEquals(permissionGroupStatus, PERMISSION_GROUP_STATUS_ALLOWED);
+                assertTrue(allowedPermissions.get(FunctionID.SHOW).getIsRPCAllowed());
+                assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getIsRPCAllowed());
+                assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("rpm"));
+                assertTrue(allowedPermissions.get(FunctionID.GET_VEHICLE_DATA).getAllowedParameters().get("airbagStatus"));
+                listenerCalledCounter++;
             }
         });
 
@@ -201,3 +255,4 @@ public class PermissionManagerTests extends AndroidTestCase2 {
         assertEquals("Listener was not called or called more/less frequently than expected", listenerCalledCounter, 2);
     }
 }
+
