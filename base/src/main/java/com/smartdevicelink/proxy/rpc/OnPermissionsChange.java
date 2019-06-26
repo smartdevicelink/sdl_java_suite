@@ -82,6 +82,7 @@ import java.util.List;
  */
 public class OnPermissionsChange extends RPCNotification {
 	public static final String KEY_PERMISSION_ITEM = "permissionItem";
+	public static final String KEY_REQUIRE_ENCRYPTION = "requireEncryption";
 	/**
 	*Constructs a newly allocated OnCommand object
 	*/    
@@ -117,5 +118,11 @@ public class OnPermissionsChange extends RPCNotification {
      */  
 	public void setPermissionItem(@NonNull List<PermissionItem> permissionItem) {
 		setParameters(KEY_PERMISSION_ITEM, permissionItem);
+	}
+	public Boolean getEncryptionRequirement() {
+		return getBoolean(KEY_REQUIRE_ENCRYPTION);
+	}
+	public void setEncryptionRequirement(Boolean isRequired) {
+		setParameters(KEY_REQUIRE_ENCRYPTION, isRequired);
 	}
 }

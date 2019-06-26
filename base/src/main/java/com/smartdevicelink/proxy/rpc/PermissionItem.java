@@ -83,6 +83,7 @@ public class PermissionItem extends RPCStruct {
 	public static final String KEY_RPC_NAME = "rpcName";
 	public static final String KEY_HMI_PERMISSIONS = "hmiPermissions";
 	public static final String KEY_PARAMETER_PERMISSIONS = "parameterPermissions";
+	public static final String KEY_ENCRYPTION_REQUIRE = "requireEncryption";
 	/**
 	* Constructs a new PermissionItem object
 	*/
@@ -124,5 +125,11 @@ public class PermissionItem extends RPCStruct {
     }
     public void setParameterPermissions(@NonNull ParameterPermissions parameterPermissions) {
         setValue(KEY_PARAMETER_PERMISSIONS, parameterPermissions);
+    }
+    public Boolean getEncryptionRequirement() {
+        return (Boolean) getValue(KEY_ENCRYPTION_REQUIRE);
+    }
+    public void setKeyEncryptionRequirement(Boolean isRequire) {
+        setValue(KEY_ENCRYPTION_REQUIRE, isRequire);
     }
 }
