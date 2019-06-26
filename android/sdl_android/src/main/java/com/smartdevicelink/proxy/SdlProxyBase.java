@@ -148,8 +148,10 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -299,6 +301,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private Version minimumProtocolVersion;
 	private Version minimumRPCVersion;
 
+	private Set<String> mEncryptedRPCNames = new HashSet<>();
 
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
@@ -1013,8 +1016,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_outgoingProxyMessageDispatcher = null;
 			}
 			throw e;
-		} 
-		
+		}
+
+		addOnRPCNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE, mEncryptionReqListener);
 		// Trace that ctor has fired
 		SdlTrace.logProxyEvent("SdlProxy Created, instanceID=" + this.toString(), SDL_LIB_TRACE_KEY);		
 	}
@@ -2093,6 +2097,37 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		_proxyListener.onError("Proxy callback dispatcher is down. Proxy instance is invalid.", e);
 	}
 	/************* END Functions used by the Message Dispatching Queues ****************/
+
+	private OnRPCNotificationListener mEncryptionReqListener = new OnRPCNotificationListener() {
+		@Override
+		public void onNotified(RPCNotification notification) {
+			List<PermissionItem> permissionItems = ((OnPermissionsChange)notification).getPermissionItem();
+			Set<String> encryptedRpcs = new HashSet<>();
+			boolean requireEncryptionAppLevel = Boolean.TRUE.equals(((OnPermissionsChange) notification).getEncryptionRequirement());
+			for (PermissionItem permissionItem : permissionItems) {
+				if (permissionItems != null && !permissionItems.isEmpty()) {
+					if (permissionItem != null) {
+						if (requireEncryptionAppLevel && Boolean.TRUE.equals(permissionItem.getEncryptionRequirement())) {
+							String rpcName = permissionItem.getRpcName();
+							if (rpcName != null) {
+								encryptedRpcs.add(rpcName);
+							}
+						}
+					}
+				}
+			}
+			if (!encryptedRpcs.isEmpty()) {
+				//TODO: uncomment later
+//				if (!rpcProtectedResponseReceived && !rpcProtectedStartResponse) {
+//					startProtectedRPCService();
+//				}
+				if (!mEncryptedRPCNames.equals(encryptedRpcs)) {
+					mEncryptedRPCNames = encryptedRpcs;
+				}
+
+			}
+		}
+	};
 	
 	// Private sendRPCMessagePrivate method. All RPCMessages are funneled through this method after error checking.
 	protected void sendRPCMessagePrivate(RPCMessage message) throws SdlException {
@@ -2137,6 +2172,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			pm.setMessageType(MessageType.RPC);
 			pm.setSessionType(SessionType.RPC);
 			pm.setFunctionID(FunctionID.getFunctionId(message.getFunctionName()));
+			//TODO: uncomment for testing
+//			if (mEncryptedRPCNames.contains(message.getFunctionName())) {
+//				pm.setPayloadProtected(true);
+//			} else {
+//				pm.setPayloadProtected(message.isPayloadProtected());
+//			}
 			pm.setPayloadProtected(message.isPayloadProtected());
 			
 			if (sdlSession != null) {
