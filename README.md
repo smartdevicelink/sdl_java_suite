@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/smartdevicelink/sdl_android.svg?branch=master)](https://travis-ci.org/smartdevicelink/sdl_java_suite)
+[![Build Status](https://travis-ci.org/smartdevicelink/sdl_java_suite.svg?branch=master)](https://travis-ci.org/smartdevicelink/sdl_java_suite)
 [![codecov](https://codecov.io/gh/smartdevicelink/sdl_android/branch/master/graph/badge.svg)](https://codecov.io/gh/smartdevicelink/sdl_java_suite)
 [![Slack Status](http://sdlslack.herokuapp.com/badge.svg)](http://slack.smartdevicelink.com)
 
