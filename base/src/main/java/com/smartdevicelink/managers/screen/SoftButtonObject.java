@@ -255,7 +255,7 @@ public class SoftButtonObject {
     }
 
     /**
-     * Get the dd of the SoftButtonObject
+     * Get the id of the SoftButtonObject
      * @return an int value that represents the id of the SoftButtonObject
      */
     public int getButtonId() {
@@ -263,7 +263,8 @@ public class SoftButtonObject {
     }
 
     /**
-     * Set the id of the SoftButtonObject
+     * Sets the id of the SoftButtonObject <br>
+     * <strong>Note: This may be overridden by the Screen Manager</strong>
      * @param buttonId an int value that represents the id of the SoftButtonObject
      */
     public void setButtonId(int buttonId) {
