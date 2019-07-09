@@ -2117,14 +2117,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			}
 			if (!encryptedRpcs.isEmpty()) {
-				//TODO: uncomment later
-//				if (!rpcProtectedResponseReceived && !rpcProtectedStartResponse) {
-//					startProtectedRPCService();
-//				}
+				if (!rpcProtectedResponseReceived && !rpcProtectedStartResponse) {
+					startProtectedRPCService();
+				}
 				if (!mEncryptedRPCNames.equals(encryptedRpcs)) {
 					mEncryptedRPCNames = encryptedRpcs;
 				}
-
 			}
 		}
 	};
@@ -2172,14 +2170,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			pm.setMessageType(MessageType.RPC);
 			pm.setSessionType(SessionType.RPC);
 			pm.setFunctionID(FunctionID.getFunctionId(message.getFunctionName()));
-			//TODO: uncomment for testing
-//			if (mEncryptedRPCNames.contains(message.getFunctionName())) {
-//				pm.setPayloadProtected(true);
-//			} else {
-//				pm.setPayloadProtected(message.isPayloadProtected());
-//			}
-			pm.setPayloadProtected(message.isPayloadProtected());
-			
+			if (rpcProtectedResponseReceived && mEncryptedRPCNames.contains(message.getFunctionName())) {
+				pm.setPayloadProtected(true);
+			} else {
+				pm.setPayloadProtected(message.isPayloadProtected());
+			}
+
 			if (sdlSession != null) {
 				pm.setSessionID(sdlSession.getSessionId());
 			}
