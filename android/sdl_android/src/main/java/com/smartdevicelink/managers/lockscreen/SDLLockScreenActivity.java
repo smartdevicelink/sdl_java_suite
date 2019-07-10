@@ -62,7 +62,7 @@ public class SDLLockScreenActivity extends Activity {
 	public static final String KEY_LOCKSCREEN_DISIMISSIBLE = "KEY_LOCKSCREEN_DISIMISSIBLE";
 	public static final String KEY_LOCKSCREEN_WARNING_MSG = "KEY_LOCKSCREEN_WARNING_MSG";
 	private static final int MIN_SWIPE_DISTANCE = 200;
-	private boolean mIsDismissable;
+	private boolean mIsDismissible;
 	private GestureDetector mGestureDetector;
 
 	private final BroadcastReceiver lockScreenBroadcastReceiver = new BroadcastReceiver() {
@@ -105,7 +105,7 @@ public class SDLLockScreenActivity extends Activity {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if (mIsDismissable) {
+		if (mIsDismissible) {
 			return mGestureDetector.onTouchEvent(event);
 		}
 		return super.onTouchEvent(event);
@@ -152,9 +152,9 @@ public class SDLLockScreenActivity extends Activity {
 				if (deviceLogoEnabled && deviceIcon != null){
 					setDeviceLogo(deviceIcon);
 				}
-				mIsDismissable = intent.getBooleanExtra(KEY_LOCKSCREEN_DISIMISSIBLE, false);
+				mIsDismissible = intent.getBooleanExtra(KEY_LOCKSCREEN_DISIMISSIBLE, false);
 				String warningMsg = intent.getStringExtra(KEY_LOCKSCREEN_WARNING_MSG);
-				if (mIsDismissable) {
+				if (mIsDismissible) {
 					setLockscreenWarningMessage(warningMsg);
 				}
 			}
