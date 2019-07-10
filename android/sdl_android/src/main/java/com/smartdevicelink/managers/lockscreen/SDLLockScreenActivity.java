@@ -44,6 +44,7 @@ import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.smartdevicelink.R;
 
@@ -57,7 +58,9 @@ public class SDLLockScreenActivity extends Activity {
 	public static final String LOCKSCREEN_CUSTOM_VIEW_EXTRA = "LOCKSCREEN_CUSTOM_VIEW_EXTRA";
 	public static final String LOCKSCREEN_DEVICE_LOGO_DOWNLOADED = "LOCKSCREEN_DEVICE_LOGO_DOWNLOADED";
 	public static final String CLOSE_LOCK_SCREEN_ACTION = "CLOSE_LOCK_SCREEN";
+	public static final String KEY_LOCKSCREEN_DISMISSED = "KEY_LOCKSCREEN_DISMISSED";
 	public static final String KEY_LOCKSCREEN_DISIMISSIBLE = "KEY_LOCKSCREEN_DISIMISSIBLE";
+	public static final String KEY_LOCKSCREEN_WARNING_MSG = "KEY_LOCKSCREEN_WARNING_MSG";
 	private static final int MIN_SWIPE_DISTANCE = 200;
 	private boolean mIsDismissable;
 	private GestureDetector mGestureDetector;
@@ -87,7 +90,6 @@ public class SDLLockScreenActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		mIsDismissable = getIntent().getBooleanExtra(KEY_LOCKSCREEN_DISIMISSIBLE, false);
 		mGestureDetector = new GestureDetector(this, new SwipeUpGestureListener());
 		// set any parameters that came from the lock screen manager
 		initializeActivity(getIntent());
@@ -150,6 +152,11 @@ public class SDLLockScreenActivity extends Activity {
 				if (deviceLogoEnabled && deviceIcon != null){
 					setDeviceLogo(deviceIcon);
 				}
+				mIsDismissable = intent.getBooleanExtra(KEY_LOCKSCREEN_DISIMISSIBLE, false);
+				String warningMsg = intent.getStringExtra(KEY_LOCKSCREEN_WARNING_MSG);
+				if (mIsDismissable) {
+					setLockscreenWarningMessage(warningMsg);
+				}
 			}
 		}
 	}
@@ -171,6 +178,13 @@ public class SDLLockScreenActivity extends Activity {
 		}
 	}
 
+	private void setLockscreenWarningMessage(String msg) {
+		TextView tv = findViewById(R.id.lockscreen_text);
+		if (tv != null) {
+			tv.setText(msg != null ? msg : getString(R.string.default_lockscreen_warning_message));
+		}
+	}
+
 	private void setCustomView(int customView) {
 		setContentView(customView);
 	}
@@ -179,11 +193,11 @@ public class SDLLockScreenActivity extends Activity {
 		@Override
 		public boolean onFling(MotionEvent event1, MotionEvent event2,
 							   float velocityX, float velocityY) {
-			if ((event1.getY() - event2.getY()) > MIN_SWIPE_DISTANCE) {
+			if ((event2.getY() - event1.getY()) > MIN_SWIPE_DISTANCE) {
+				sendBroadcast(new Intent(KEY_LOCKSCREEN_DISMISSED));
 				finish();
 			}
 			return true;
 		}
 	}
-
 }

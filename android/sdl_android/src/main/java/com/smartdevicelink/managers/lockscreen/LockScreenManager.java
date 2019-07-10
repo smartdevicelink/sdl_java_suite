@@ -32,8 +32,10 @@
 
 package com.smartdevicelink.managers.lockscreen;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
@@ -78,6 +80,9 @@ public class LockScreenManager extends BaseSubManager {
 	protected int lockScreenIcon, lockScreenColor, customView;
 	protected Bitmap deviceLogo;
 	private boolean mIsLockscreenDissmissable;
+	private boolean mLockScreenHasBeenDismissed;
+	private String mLockscreenWarningMsg;
+	private BroadcastReceiver mLockscreenDismissedReceiver;
 
 	public LockScreenManager(LockScreenConfig lockScreenConfig, Context context, ISdl internalInterface){
 
@@ -132,6 +137,7 @@ public class LockScreenManager extends BaseSubManager {
 		}
 
 		isApplicationForegrounded = false;
+		context.get().unregisterReceiver(mLockscreenDismissedReceiver);
 
 		super.dispose();
 	}
@@ -170,7 +176,11 @@ public class LockScreenManager extends BaseSubManager {
 					Boolean isDismissable = ddState.getLockscreenDismissibility();
 					if (isDismissable != null) {
 						mIsLockscreenDissmissable = isDismissable;
+						if (!mIsLockscreenDissmissable) {
+							mLockScreenHasBeenDismissed = false;
+						}
 					}
+					mLockscreenWarningMsg = ddState.getLockscreenWarningMessage();
 
 					if (ddState.getState() == DriverDistractionState.DD_ON){
 						// launch lock screen
@@ -231,6 +241,16 @@ public class LockScreenManager extends BaseSubManager {
 		} else{
 			isApplicationForegrounded = true;
 		}
+
+		mLockscreenDismissedReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if (SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED.equals(intent.getAction())) {
+					mLockScreenHasBeenDismissed = true;
+				}
+			}
+		};
+		context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
 	}
 
 	////
@@ -245,6 +265,10 @@ public class LockScreenManager extends BaseSubManager {
 	 * X. If the status is set to OFF, Send broadcast to close lock screen if it is open
 	 */
 	private void launchLockScreenActivity(){
+		//If the user has dismissed the lockscreen for this run, do not show it again
+		if (mLockScreenHasBeenDismissed) {
+			return;
+		}
 		// intent to open SDLLockScreenActivity
 		// pass in icon, background color, and custom view
 		if (lockScreenEnabled && isApplicationForegrounded && context.get() != null) {
@@ -260,6 +284,7 @@ public class LockScreenManager extends BaseSubManager {
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.KEY_LOCKSCREEN_DISIMISSIBLE, mIsLockscreenDissmissable);
+				showLockScreenIntent.putExtra(SDLLockScreenActivity.KEY_LOCKSCREEN_WARNING_MSG, mLockscreenWarningMsg);
 				context.get().startActivity(showLockScreenIntent);
 			} else if (status == LockScreenStatus.OFF) {
 				context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
