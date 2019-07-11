@@ -416,10 +416,10 @@ public interface IProxyListenerBase {
 	public void onOnSystemCapabilityUpdated(OnSystemCapabilityUpdated notification);
 
 	/**
-	 * onCloseApplication being called indicates that SDL has
+	 * onCloseApplicationResponse being called indicates that SDL has
 	 * responded to a request to close the application on the module.
 	 *
 	 * @param response - Contains information about the response sent from SDL.
 	 */
-	public void onCloseApplication(CloseApplicationResponse response);
+	public void onCloseApplicationResponse(CloseApplicationResponse response);
 }

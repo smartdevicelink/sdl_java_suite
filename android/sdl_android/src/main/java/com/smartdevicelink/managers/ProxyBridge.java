@@ -639,7 +639,7 @@ public class ProxyBridge implements IProxyListener{
 	}
 
 	@Override
-	public void onCloseApplication(CloseApplicationResponse response) {
+	public void onCloseApplicationResponse(CloseApplicationResponse response) {
 		onRPCReceived(response);
 	}
 }
