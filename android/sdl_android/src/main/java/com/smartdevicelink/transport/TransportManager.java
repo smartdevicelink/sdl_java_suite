@@ -312,7 +312,7 @@ public class TransportManager extends TransportManagerBase{
                 //Might check connectedTransports vs transportStatus to ensure they are equal
 
                 //If the transport wasn't removed, check RS version for corner case
-                if(!wasRemoved && getRouterServiceVersion() == 8){
+                if(!wasRemoved && record != null &&getRouterServiceVersion() == 8){
                     boolean foundMatch = false;
                     //There is an issue in the first gen of multi transport router services that
                     //will remove certain extras from messages to the TransportBroker if older apps
