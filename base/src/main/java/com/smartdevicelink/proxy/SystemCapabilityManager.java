@@ -219,10 +219,10 @@ public class SystemCapabilityManager {
 	 */
 	public void getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener){
 		Object capability = cachedSystemCapabilities.get(systemCapabilityType);
-		if(capability != null){
+		if(capability != null && scListener != null){
 			scListener.onCapabilityRetrieved(capability);
 			return;
-		}else if(scListener == null){
+		} else if(scListener == null){
 			return;
 		}
 
