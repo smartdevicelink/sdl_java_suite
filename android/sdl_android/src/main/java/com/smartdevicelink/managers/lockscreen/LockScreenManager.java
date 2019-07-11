@@ -79,7 +79,7 @@ public class LockScreenManager extends BaseSubManager {
 	protected boolean lockScreenEnabled, deviceLogoEnabled;
 	protected int lockScreenIcon, lockScreenColor, customView;
 	protected Bitmap deviceLogo;
-	private boolean mIsLockscreenDissmissable;
+	private boolean mIsLockscreenDissmissible;
 	private boolean mLockScreenHasBeenDismissed;
 	private String mLockscreenWarningMsg;
 	private BroadcastReceiver mLockscreenDismissedReceiver;
@@ -114,7 +114,11 @@ public class LockScreenManager extends BaseSubManager {
 		// send broadcast to close lock screen if open
 		if (context.get() != null) {
 			context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
-			context.get().unregisterReceiver(mLockscreenDismissedReceiver);
+			try {
+				context.get().unregisterReceiver(mLockscreenDismissedReceiver);
+			} catch (IllegalArgumentException e) {
+				//do nothing
+			}
 		}
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -175,8 +179,8 @@ public class LockScreenManager extends BaseSubManager {
 					OnDriverDistraction ddState = (OnDriverDistraction) notification;
 					Boolean isDismissable = ddState.getLockscreenDismissibility();
 					if (isDismissable != null) {
-						mIsLockscreenDissmissable = isDismissable;
-						if (!mIsLockscreenDissmissable) {
+						mIsLockscreenDissmissible = isDismissable;
+						if (!mIsLockscreenDissmissible) {
 							mLockScreenHasBeenDismissed = false;
 						}
 					}
@@ -271,7 +275,9 @@ public class LockScreenManager extends BaseSubManager {
 		// intent to open SDLLockScreenActivity
 		// pass in icon, background color, and custom view
 		if (lockScreenEnabled && isApplicationForegrounded && context.get() != null) {
-			context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
+			if (mIsLockscreenDissmissible) {
+				context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
+			}
 			LockScreenStatus status = getLockScreenStatus();
 			if (status == LockScreenStatus.REQUIRED) {
 				Intent showLockScreenIntent = new Intent(context.get(), SDLLockScreenActivity.class);
@@ -283,7 +289,7 @@ public class LockScreenManager extends BaseSubManager {
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_CUSTOM_VIEW_EXTRA, customView);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);
-				showLockScreenIntent.putExtra(SDLLockScreenActivity.KEY_LOCKSCREEN_DISIMISSIBLE, mIsLockscreenDissmissable);
+				showLockScreenIntent.putExtra(SDLLockScreenActivity.KEY_LOCKSCREEN_DISIMISSIBLE, mIsLockscreenDissmissible);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.KEY_LOCKSCREEN_WARNING_MSG, mLockscreenWarningMsg);
 				context.get().startActivity(showLockScreenIntent);
 			} else if (status == LockScreenStatus.OFF) {
