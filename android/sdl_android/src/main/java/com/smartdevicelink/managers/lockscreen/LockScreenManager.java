@@ -114,6 +114,7 @@ public class LockScreenManager extends BaseSubManager {
 		// send broadcast to close lock screen if open
 		if (context.get() != null) {
 			context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
+			context.get().unregisterReceiver(mLockscreenDismissedReceiver);
 		}
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -137,7 +138,6 @@ public class LockScreenManager extends BaseSubManager {
 		}
 
 		isApplicationForegrounded = false;
-		context.get().unregisterReceiver(mLockscreenDismissedReceiver);
 
 		super.dispose();
 	}
@@ -250,7 +250,6 @@ public class LockScreenManager extends BaseSubManager {
 				}
 			}
 		};
-		context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
 	}
 
 	////
@@ -272,6 +271,7 @@ public class LockScreenManager extends BaseSubManager {
 		// intent to open SDLLockScreenActivity
 		// pass in icon, background color, and custom view
 		if (lockScreenEnabled && isApplicationForegrounded && context.get() != null) {
+			context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
 			LockScreenStatus status = getLockScreenStatus();
 			if (status == LockScreenStatus.REQUIRED) {
 				Intent showLockScreenIntent = new Intent(context.get(), SDLLockScreenActivity.class);
