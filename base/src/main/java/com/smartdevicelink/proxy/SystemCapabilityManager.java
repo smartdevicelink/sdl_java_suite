@@ -197,6 +197,22 @@ public class SystemCapabilityManager {
 			return false;
 		}
 	}
+
+	/**
+	 * Checks is subscriptions are available on the connected head unit.
+	 * @return True if subscriptions are supported. False if not.
+	 */
+	public boolean supportsSubscriptions(){
+		if (callback != null && callback.getSdlMsgVersion() != null) {
+			com.smartdevicelink.util.Version onSystemCapabilityNotificationRPCVersion = new com.smartdevicelink.util.Version(5, 1, 0);
+			com.smartdevicelink.util.Version headUnitRPCVersion = new com.smartdevicelink.util.Version(callback.getSdlMsgVersion().getMajorVersion(), callback.getSdlMsgVersion().getMinorVersion(), callback.getSdlMsgVersion().getPatchVersion());
+			if (headUnitRPCVersion.isNewerThan(onSystemCapabilityNotificationRPCVersion) >= 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * @param systemCapabilityType Type of capability desired
 	 * @param scListener callback to execute upon retrieving capability
