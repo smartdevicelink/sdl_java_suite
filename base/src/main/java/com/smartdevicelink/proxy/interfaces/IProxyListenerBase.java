@@ -39,6 +39,7 @@ import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
 import com.smartdevicelink.proxy.rpc.ButtonPressResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
+import com.smartdevicelink.proxy.rpc.CloseApplicationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
 import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
 import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
@@ -414,4 +415,11 @@ public interface IProxyListenerBase {
 
 	public void onOnSystemCapabilityUpdated(OnSystemCapabilityUpdated notification);
 
+	/**
+	 * onCloseApplication being called indicates that SDL has
+	 * responded to a request to close the application on the module.
+	 *
+	 * @param response - Contains information about the response sent from SDL.
+	 */
+	public void onCloseApplication(CloseApplicationResponse response);
 }
