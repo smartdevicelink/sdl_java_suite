@@ -302,6 +302,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private Version minimumRPCVersion;
 
 	private Set<String> mEncryptedRPCNames = new HashSet<>();
+	private boolean mRPCSecuredServiceStarted;
 
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
@@ -632,10 +633,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					 
 					startRPCProtocolSession();
 				}
-				else
-				{
-					RPCProtectedServiceStarted();
-				}
+				//comment out for now in favor of a service callback
+//				else
+//				{
+//					RPCProtectedServiceStarted();
+//				}
 			} else if (sessionType.eq(SessionType.NAV)) {
 				NavServiceStarted();
 			} else if (sessionType.eq(SessionType.PCM)) {
@@ -1019,6 +1021,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		addOnRPCNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE, mEncryptionReqListener);
+		this._internalInterface.addServiceListener(SessionType.RPC, mRPCSecuredServiceListener);
+
 		// Trace that ctor has fired
 		SdlTrace.logProxyEvent("SdlProxy Created, instanceID=" + this.toString(), SDL_LIB_TRACE_KEY);		
 	}
@@ -2107,7 +2111,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			for (PermissionItem permissionItem : permissionItems) {
 				if (permissionItems != null && !permissionItems.isEmpty()) {
 					if (permissionItem != null) {
-						if (requireEncryptionAppLevel && Boolean.TRUE.equals(permissionItem.getEncryptionRequirement())) {
+					    if (requireEncryptionAppLevel && Boolean.TRUE.equals(permissionItem.getEncryptionRequirement())) {
 							String rpcName = permissionItem.getRpcName();
 							if (rpcName != null) {
 								encryptedRpcs.add(rpcName);
@@ -2117,7 +2121,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			}
 			if (!encryptedRpcs.isEmpty()) {
-				if (!rpcProtectedResponseReceived && !rpcProtectedStartResponse) {
+				if (!mRPCSecuredServiceStarted) {
 					startProtectedRPCService();
 				}
 				if (!mEncryptedRPCNames.equals(encryptedRpcs)) {
@@ -2126,7 +2130,37 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			}
 		}
 	};
-	
+
+	private ISdlServiceListener mRPCSecuredServiceListener = new ISdlServiceListener() {
+		@Override
+		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
+			if(SessionType.RPC.equals(type) && session != null ){
+				Log.v(TAG, "onServiceStarted, sessionID: " + session.getSessionId() + ", session Type: " + type.getName()
+						+ ", isEncrypted: " + isEncrypted);
+				mRPCSecuredServiceStarted = isEncrypted;
+			}
+		}
+
+		@Override
+		public void onServiceEnded(SdlSession session, SessionType type) {
+			if (session != null) {
+				Log.v(TAG, "onServiceEnded, sessionID: " + session.getSessionId() + ", session Type: " + type.getName());
+			} else {
+				Log.v(TAG, "onServiceEnded, session NULL");
+			}
+		}
+
+		@Override
+		public void onServiceError(SdlSession session, SessionType type, String reason) {
+			if (session != null) {
+				Log.v(TAG, "onServiceError, sessionID: " + session.getSessionId() + ", session Type: " + type.getName());
+			} else {
+				Log.v(TAG, "onServiceError, session NULL");
+			}
+		}
+	};
+
+
 	// Private sendRPCMessagePrivate method. All RPCMessages are funneled through this method after error checking.
 	protected void sendRPCMessagePrivate(RPCMessage message) throws SdlException {
 		try {
@@ -2170,7 +2204,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			pm.setMessageType(MessageType.RPC);
 			pm.setSessionType(SessionType.RPC);
 			pm.setFunctionID(FunctionID.getFunctionId(message.getFunctionName()));
-			if (rpcProtectedResponseReceived && mEncryptedRPCNames.contains(message.getFunctionName())) {
+			Log.v("nntt", "SdlProxy ****, rpc name: " + message.getFunctionName() + ", hash: " + mEncryptedRPCNames
+				+ ", mEncBit: " + mRPCSecuredServiceStarted);
+			if (mRPCSecuredServiceStarted && mEncryptedRPCNames.contains(message.getFunctionName())) {
 				pm.setPayloadProtected(true);
 			} else {
 				pm.setPayloadProtected(message.isPayloadProtected());
