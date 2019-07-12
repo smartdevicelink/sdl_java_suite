@@ -3,7 +3,7 @@
     "name":"UnpublishAppService",
     "correlationID":184,
     "parameters":{
-      "serviceID":"123abc"
+      "serviceID":"test"
     }
   },
   "response":{

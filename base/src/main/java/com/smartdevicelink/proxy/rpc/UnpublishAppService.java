@@ -81,7 +81,7 @@ public class UnpublishAppService extends RPCRequest {
 	 * @param serviceID - set the service ID for the service to be unpublished
 	 */
 	public void setServiceID(String serviceID){
-		setValue(KEY_SERVICE_ID, serviceID);
+		setParameters(KEY_SERVICE_ID, serviceID);
 	}
 
 	/**
