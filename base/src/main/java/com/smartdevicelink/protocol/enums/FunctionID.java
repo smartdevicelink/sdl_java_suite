@@ -100,6 +100,7 @@ public enum FunctionID{
     GET_APP_SERVICE_DATA(53, "GetAppServiceData"),
     GET_FILE(54, "GetFile"),
     PERFORM_APP_SERVICES_INTERACTION(55, "PerformAppServiceInteraction"),
+    UNPUBLISH_APP_SERVICE(56, "UnpublishAppService"),
     CLOSE_APPLICATION(58, "CloseApplication"),
 
     // NOTIFICATIONS
