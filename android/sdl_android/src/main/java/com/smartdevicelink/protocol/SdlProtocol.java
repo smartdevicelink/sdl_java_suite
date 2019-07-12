@@ -32,11 +32,27 @@
 
 package com.smartdevicelink.protocol;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.transport.MultiplexBaseTransport;
+import com.smartdevicelink.transport.MultiplexTcpTransport;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
+import com.smartdevicelink.transport.SdlRouterService;
+import com.smartdevicelink.transport.TCPTransport;
+import com.smartdevicelink.transport.TCPTransportConfig;
+import com.smartdevicelink.transport.TCPTransportManager;
 import com.smartdevicelink.transport.TransportManager;
+import com.smartdevicelink.transport.TransportManagerBase;
+import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.TransportRecord;
+
+import java.lang.ref.WeakReference;
+import java.util.Collections;
 
 
 @SuppressWarnings("WeakerAccess")
@@ -54,17 +70,27 @@ public class SdlProtocol extends SdlProtocolBase {
     }
 
 
+    public SdlProtocol(@NonNull ISdlProtocol iSdlProtocol, @NonNull TCPTransportConfig config) {
+        super(iSdlProtocol,config);
+        this.requestedPrimaryTransports = Collections.singletonList(TransportType.TCP);
+        this.requestedSecondaryTransports = null;
+        this.requiresHighBandwidth =false;
+        this.setTransportManager(new TCPTransportManager(config,transportEventListener));
+        this.requestedPrimaryTransports = Collections.singletonList(TransportType.TCP);
+    }
+
     /**
      * If there was a TransportListener attached to the supplied multiplex config, this method will
      * call the onTransportEvent method.
      */
     @Override
     void notifyDevTransportListener (){
-        MultiplexTransportConfig transportConfig = (MultiplexTransportConfig)this.transportConfig;
-        if(transportConfig.getTransportListener() != null && transportManager != null) {
-            transportConfig.getTransportListener().onTransportEvent(transportManager.getConnectedTransports(), isTransportForServiceAvailable(SessionType.PCM),isTransportForServiceAvailable(SessionType.NAV));
+        if(TransportType.MULTIPLEX.equals(transportConfig.getTransportType() )) {
+            MultiplexTransportConfig transportConfig = (MultiplexTransportConfig) this.transportConfig;
+            if (transportConfig.getTransportListener() != null && transportManager != null) {
+                transportConfig.getTransportListener().onTransportEvent(transportManager.getConnectedTransports(), isTransportForServiceAvailable(SessionType.PCM), isTransportForServiceAvailable(SessionType.NAV));
+            }
         }
     }
-
 
 }
