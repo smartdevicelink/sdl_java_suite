@@ -3694,6 +3694,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onPerformAppServiceInteractionResponse( msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.CLOSE_APPLICATION.toString())) {
+				final CloseApplicationResponse msg = new CloseApplicationResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onCloseApplicationResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onCloseApplicationResponse( msg);
+					onRPCResponseReceived(msg);
+				}
 			} else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logError("Unrecognized response Message: " + functionName +
