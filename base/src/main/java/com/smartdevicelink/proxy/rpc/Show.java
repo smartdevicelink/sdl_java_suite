@@ -449,7 +449,7 @@ public class Show extends RPCRequest {
 	 * Sets the text in the track field
 	 * 
 	 * @param mediaTrack
-	 *            a String value disaplayed in the track field
+	 *            a String value displayed in the track field
 	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
