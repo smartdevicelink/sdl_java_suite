@@ -380,7 +380,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			show.setMediaTrack(mediaTrackTextField);
 		}
 
-		if (templateTitle != null && templateTitle.length() > 0){
+		if (templateTitle != null){
 			show.setTemplateTitle(templateTitle);
 		}
 
@@ -607,6 +607,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		newShow.setMainField2(show.getMainField2());
 		newShow.setMainField3(show.getMainField3());
 		newShow.setMainField4(show.getMainField4());
+		newShow.setTemplateTitle(show.getTemplateTitle());
 
 		return newShow;
 	}
@@ -618,6 +619,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		newShow.setMainField3("");
 		newShow.setMainField4("");
 		newShow.setMediaTrack("");
+		newShow.setTemplateTitle("");
 
 		return newShow;
 	}
@@ -641,6 +643,9 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 		if (show.getMainField4() != null){
 			currentScreenData.setMainField4(show.getMainField4());
+		}
+		if (show.getTemplateTitle() != null){
+			currentScreenData.setTemplateTitle(show.getTemplateTitle());
 		}
 		if (show.getMediaTrack() != null){
 			currentScreenData.setMediaTrack(show.getMediaTrack());
