@@ -599,7 +599,7 @@ public class Show extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 6.0.0
 	 */
-	public void setKeyTemplateTitle(String templateTitle){
+	public void setTemplateTitle(String templateTitle){
 		setParameters(KEY_TEMPLATE_TITLE, templateTitle);
 	}
 
@@ -609,7 +609,7 @@ public class Show extends RPCRequest {
 	 * @return templateTitle - String value that represents the title of the new template that will be displayed
 	 * @since SmartDeviceLink 6.0.0
 	 */
-	public String getKeyTemplateTitle(){
+	public String getTemplateTitle(){
 		return getString(KEY_TEMPLATE_TITLE);
 	}
 }
