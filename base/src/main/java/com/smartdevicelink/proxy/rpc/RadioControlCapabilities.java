@@ -54,6 +54,7 @@ public class RadioControlCapabilities extends RPCStruct{
     public static final String KEY_HD_RADIO_ENABLE_AVAILABLE = "hdRadioEnableAvailable";
     public static final String KEY_SIRIUS_XM_RADIO_AVAILABLE = "siriusxmRadioAvailable";
     public static final String KEY_SIS_DATA_AVAILABLE = "sisDataAvailable";
+    public static final String KEY_AVAILABLE_HD_CHANNELS_AVAILABLE = "availableHdChannelsAvailable";
 
     public RadioControlCapabilities() {
     }
@@ -204,6 +205,7 @@ public class RadioControlCapabilities extends RPCStruct{
      * Availability of the getting the number of available HD channels.
      * True: Available, False: Not Available, Not present: Not Available.
      */
+    @Deprecated
     public void setAvailableHDsAvailable(Boolean availableHDsAvailable) {
         setValue(KEY_AVAILABLE_HDS_AVAILABLE, availableHDsAvailable);
     }
@@ -214,8 +216,30 @@ public class RadioControlCapabilities extends RPCStruct{
      * @return Boolean - Availability of the getting the number of available HD channels.
      * True: Available, False: Not Available, Not present: Not Available.
      */
+    @Deprecated
     public Boolean getAvailableHDsAvailable() {
         return getBoolean(KEY_AVAILABLE_HDS_AVAILABLE);
+    }
+
+    /**
+     * Sets the availableHdChannelsAvailable portion of the RadioControlCapabilities class
+     *
+     * @param availableHdChannelsAvailable
+     * Availability of the list of available HD sub-channel indexes.
+     * True: Available, False: Not Available, Not present: Not Available.
+     */
+    public void setAvailableHdChannelsAvailable(Boolean availableHdChannelsAvailable) {
+        setValue(KEY_AVAILABLE_HD_CHANNELS_AVAILABLE, availableHdChannelsAvailable);
+    }
+
+    /**
+     * Gets the availableHdChannelsAvailable portion of the RadioControlCapabilities class
+     *
+     * @return Boolean - Availability of the list of available HD sub-channel indexes.
+     * True: Available, False: Not Available, Not present: Not Available.
+     */
+    public Boolean getAvailableHdChannelsAvailable() {
+        return getBoolean(KEY_AVAILABLE_HD_CHANNELS_AVAILABLE);
     }
 
     /**

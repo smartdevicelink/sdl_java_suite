@@ -455,6 +455,7 @@ public class Test {
 	public static final List<WeatherData>               GENERAL_WEATHERDATA_LIST               = Arrays.asList(GENERAL_WEATHERDATA);
 	public static final List<WeatherAlert>              GENERAL_WEATHERALERT_LIST              = Arrays.asList(GENERAL_WEATHERALERT);
 	public static final List<NavigationInstruction>     GENERAL_NAVIGATION_INSTRUCTION_LIST    = Arrays.asList(GENERAL_NAVIGATION_INSTRUCTION);
+	public static final List<Integer>                   GENERAL_AVAILABLE_HD_CHANNELS_LIST     = Arrays.asList(new Integer[]{ 1, 2});
 	public static final int                             GENERAL_MENU_MAX_ID                    = 2000000000;
 	public static final MenuCell                        GENERAL_MENUCELL                       = new MenuCell(GENERAL_STRING,null, null, new MenuSelectionListener() {
 		@Override
@@ -472,7 +473,6 @@ public class Test {
 		}
 	});
 	public static final List<VoiceCommand>              GENERAL_VOICE_COMMAND_LIST             = Arrays.asList(GENERAL_VOICE_COMMAND);
-
 
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();

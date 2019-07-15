@@ -61,6 +61,7 @@ public class ClimateControlCapabilities extends RPCStruct{
     public static final String KEY_HEATED_WIND_SHIELD_AVAILABLE = "heatedWindshieldAvailable";
     public static final String KEY_HEATED_REAR_WINDOW_AVAILABLE = "heatedRearWindowAvailable";
     public static final String KEY_HEATED_MIRRORS_AVAILABLE = "heatedMirrorsAvailable";
+    public static final String KEY_CLIMATE_ENABLE_AVAILABLE = "climateEnableAvailable";
 
     public ClimateControlCapabilities() {
     }
@@ -402,5 +403,25 @@ public class ClimateControlCapabilities extends RPCStruct{
      */
     public Boolean getHeatedMirrorsAvailable() {
 	    return getBoolean(KEY_HEATED_MIRRORS_AVAILABLE);
+    }
+
+    /**
+     * Sets the climateEnableAvailable portion of the ClimateControlCapabilities class
+     *
+     * @param climateEnableAvailable Availability of the control of enable/disable climate control.
+     *                               True: Available, False: Not Available, Not present: Not Available.
+     */
+    public void setClimateEnableAvailable(Boolean climateEnableAvailable) {
+        setValue(KEY_CLIMATE_ENABLE_AVAILABLE, climateEnableAvailable);
+    }
+
+    /**
+     * Gets the climateEnableAvailable portion of the ClimateControlCapabilities class
+     *
+     * @return Boolean - Availability of the control of enable/disable climate control.
+     * True: Available, False: Not Available, Not present: Not Available.
+     */
+    public Boolean getClimateEnableAvailable() {
+        return getBoolean(KEY_CLIMATE_ENABLE_AVAILABLE);
     }
 }
