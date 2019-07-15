@@ -2204,8 +2204,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			pm.setMessageType(MessageType.RPC);
 			pm.setSessionType(SessionType.RPC);
 			pm.setFunctionID(FunctionID.getFunctionId(message.getFunctionName()));
-			Log.v("nntt", "SdlProxy ****, rpc name: " + message.getFunctionName() + ", hash: " + mEncryptedRPCNames
-				+ ", mEncBit: " + mRPCSecuredServiceStarted);
 			if (mRPCSecuredServiceStarted && mEncryptedRPCNames.contains(message.getFunctionName())) {
 				pm.setPayloadProtected(true);
 			} else {
