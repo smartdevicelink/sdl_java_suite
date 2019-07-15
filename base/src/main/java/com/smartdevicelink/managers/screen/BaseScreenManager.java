@@ -343,6 +343,29 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
+	 * Sets the title of the new template that will be displayed.
+	 * How this will be displayed is dependent on the OEM design and implementation of the template.
+	 * @param templateTitle the title of the new template that will be displayed
+	 *            <p></p>
+	 *            <ul>
+	 *            <li>Minlength: 0</li>
+	 *            <li>Maxlength: 100</li>
+	 *            </ul>
+	 */
+	public void setTemplateTitle(String templateTitle){
+		this.textAndGraphicManager.setTemplateTitle(templateTitle);
+	}
+
+	/**
+	 * Gets the title of the new template that will be displayed
+	 * How this will be displayed is dependent on the OEM design and implementation of the template.
+	 * @return templateTitle - String value that represents the title of the new template that will be displayed
+	 */
+	public String getTemplateTitle(){
+		return this.textAndGraphicManager.getTemplateTitle();
+	}
+
+	/**
 	 * Set softButtonObjects list and upload the images to the head unit
 	 * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
 	 */
