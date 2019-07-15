@@ -45,6 +45,7 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertNull(screenManager.getTextField2());
 		assertNull(screenManager.getTextField3());
 		assertNull(screenManager.getTextField4());
+		assertNull(screenManager.getTemplateTitle());
 		assertNull(screenManager.getMediaTrackTextField());
 		assertNull(screenManager.getPrimaryGraphic());
 		assertNull(screenManager.getSecondaryGraphic());
@@ -67,10 +68,12 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		screenManager.setTextField2("Wednesday");
 		screenManager.setTextField3("My");
 		screenManager.setTextField4("Dudes");
+		screenManager.setTemplateTitle("title");
 		assertEquals(screenManager.getTextField1(), "It is");
 		assertEquals(screenManager.getTextField2(), "Wednesday");
 		assertEquals(screenManager.getTextField3(), "My");
 		assertEquals(screenManager.getTextField4(), "Dudes");
+		assertEquals(screenManager.getTemplateTitle(), "title");
 	}
 
 	public void testMediaTrackTextFields() {
