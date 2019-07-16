@@ -475,6 +475,27 @@ public enum SystemCapabilityType {
 	 */
 	APP_SERVICES (true),
 
+	/**
+	 * Available Synchronously after Register App Interface response <br>
+	 * <table border="1" rules="all">
+	 * 		<tr>
+	 * 			<th>Enum Name</th>
+	 * 			<th>Return Type</th>
+	 * 			<th>Description</th>
+	 * 			<th>Requires Async?</th>
+	 * 			<th>Notes</th>
+	 * 		</tr>
+	 * 		<tr>
+	 * 			<td>APP_SERVICES</td>
+	 * 			<td>AppServicesCapabilities</td>
+	 * 			<td>Returns APP_SERVICES</td>
+	 * 			<td align=center>N</td>
+	 * 			<td>Available Asynchronously, Call is synchronous <strong>after</strong> initial call</td>
+	 * 		</tr>
+	 * 	</table>
+	 */
+	SEAT_LOCATION (true),
+
 	;
 
     boolean IS_QUERYABLE;

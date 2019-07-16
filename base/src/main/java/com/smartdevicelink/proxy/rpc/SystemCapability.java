@@ -49,6 +49,7 @@ public class SystemCapability extends RPCStruct {
 	public static final String KEY_VIDEO_STREAMING_CAPABILITY = "videoStreamingCapability";
     public static final String KEY_REMOTE_CONTROL_CAPABILITY = "remoteControlCapability";
     public static final String KEY_APP_SERVICES_CAPABILITIES = "appServicesCapabilities";
+    public static final String KEY_SEAT_LOCATION_CAPABILITY = "seatLocationCapability";
 
     public SystemCapability(){}
 
@@ -93,7 +94,9 @@ public class SystemCapability extends RPCStruct {
             return (RPCStruct) getObject(RemoteControlCapabilities.class, KEY_REMOTE_CONTROL_CAPABILITY);
         }else if(type.equals(SystemCapabilityType.APP_SERVICES)){
 			return (RPCStruct) getObject(AppServicesCapabilities.class, KEY_APP_SERVICES_CAPABILITIES);
-		}else{
+		}else if(type.equals(SystemCapabilityType.SEAT_LOCATION)){
+            return (RPCStruct) getObject(SeatLocationCapability.class, KEY_SEAT_LOCATION_CAPABILITY);
+        }else{
             return null;
         }
     }
@@ -111,7 +114,9 @@ public class SystemCapability extends RPCStruct {
             setValue(KEY_REMOTE_CONTROL_CAPABILITY, capability);
         }else if(type.equals(SystemCapabilityType.APP_SERVICES)){
 			setValue(KEY_APP_SERVICES_CAPABILITIES, capability);
-		}else{
+		}else if(type.equals(SystemCapabilityType.SEAT_LOCATION)){
+            setValue(KEY_SEAT_LOCATION_CAPABILITY, capability);
+        }else{
 	        return;
         }
     }
