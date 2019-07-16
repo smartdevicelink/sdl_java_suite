@@ -633,11 +633,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					 
 					startRPCProtocolSession();
 				}
-				//comment out for now in favor of a service callback
-//				else
-//				{
-//					RPCProtectedServiceStarted();
-//				}
+				else
+				{
+					RPCProtectedServiceStarted();
+				}
 			} else if (sessionType.eq(SessionType.NAV)) {
 				NavServiceStarted();
 			} else if (sessionType.eq(SessionType.PCM)) {
