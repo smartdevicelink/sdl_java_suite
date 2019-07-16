@@ -344,7 +344,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 
 	/**
 	 * Sets the title of the new template that will be displayed.
-     * Sending an empty String "" will clear the field
+	 * Sending an empty String "" will clear the field
 	 * @param templateTitle the title of the new template that will be displayed. Maxlength: 100.
 	 */
 	public void setTemplateTitle(String templateTitle){
