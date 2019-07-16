@@ -12,7 +12,7 @@ public class GetInteriorVehicleDataConsent extends RPCRequest {
     public static final String KEY_MODULE_ID = "moduleIds";
 
     public GetInteriorVehicleDataConsent() {
-        super(FunctionID.GET_INTERIOR_VEHICLE_CONSENT.toString());
+        super(FunctionID.GET_INTERIOR_VEHICLE_DATA_CONSENT.toString());
     }
 
     public GetInteriorVehicleDataConsent(Hashtable<String, Object> hash) {

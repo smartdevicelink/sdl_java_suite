@@ -14,7 +14,7 @@ public class GetInteriorVehicleDataConsentResponse extends RPCResponse {
     public static final String KEY_ALLOWED = "allowed";
 
     public GetInteriorVehicleDataConsentResponse() {
-        super(FunctionID.GET_INTERIOR_VEHICLE_CONSENT.toString());
+        super(FunctionID.GET_INTERIOR_VEHICLE_DATA_CONSENT.toString());
     }
 
     public GetInteriorVehicleDataConsentResponse(Hashtable<String, Object> hash) {

@@ -8,10 +8,10 @@ import java.util.Hashtable;
  * Struct that describes a module within different SystemCapabilities
  */
 public class ModuleInfo extends RPCStruct {
-    public static final String KEY_MODULE_ID = "KEY_MODULE_ID";
-    public static final String KEY_MODULE_LOCATION = "KEY_MODULE_LOCATION";
-    public static final String KEY_MODULE_SERVICE_AREA = "KEY_MODULE_SERVICE_AREA";
-    public static final String KEY_MULTIPLE_ACCESS_ALLOWED = "KEY_MULTIPLE_ACCESS_ALLOWED";
+    public static final String KEY_MODULE_ID = "moduleId";
+    public static final String KEY_MODULE_LOCATION = "location";
+    public static final String KEY_MODULE_SERVICE_AREA = "serviceArea";
+    public static final String KEY_MULTIPLE_ACCESS_ALLOWED = "allowMultipleAccess";
 
     public ModuleInfo(){}
 
@@ -39,7 +39,7 @@ public class ModuleInfo extends RPCStruct {
      * Sets the location of this Module
      * @param location the location to be set
      */
-    public void setModuleGridLocation(Grid location) {
+    public void setModuleLocation(Grid location) {
         setValue(KEY_MODULE_LOCATION, location);
     }
 
@@ -47,7 +47,7 @@ public class ModuleInfo extends RPCStruct {
      * Gets the location of this Module
      * @return the location of this Module
      */
-    public Grid getModuleGridLocation() {
+    public Grid getModuleLocation() {
         return (Grid) getObject(Grid.class, KEY_MODULE_LOCATION);
     }
 
