@@ -399,7 +399,6 @@ public class Alert extends RPCRequest {
 
 	/**
 	 * <p>Gets the image to be shown along with the alert </p>
-	 *
 	 * @return Image -an Image object
 	 */
 	public Image getAlertIcon() {

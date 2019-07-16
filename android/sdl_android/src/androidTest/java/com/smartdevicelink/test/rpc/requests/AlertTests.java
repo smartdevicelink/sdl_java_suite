@@ -88,7 +88,7 @@ public class AlertTests extends BaseRpcTests{
     	boolean testProgressIndicator    = ( (Alert) msg ).getProgressIndicator();
 		List<TTSChunk> testTtsChunks     = ( (Alert) msg ).getTtsChunks();
 		List<SoftButton> testSoftButtons = ( (Alert) msg ).getSoftButtons();
-        Image alertIcon = ( (Alert) msg ).getAlertIcon();
+		Image alertIcon = ( (Alert) msg ).getAlertIcon();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_INT, testDuration);
@@ -98,8 +98,8 @@ public class AlertTests extends BaseRpcTests{
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testPlayTone);
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testProgressIndicator);
 		assertTrue(Test.TRUE, Validator.validateSoftButtons(Test.GENERAL_SOFTBUTTON_LIST, testSoftButtons));
-        assertTrue(Test.TRUE, Validator.validateTtsChunks(Test.GENERAL_TTSCHUNK_LIST, testTtsChunks));
-        assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, alertIcon));
+		assertTrue(Test.TRUE, Validator.validateTtsChunks(Test.GENERAL_TTSCHUNK_LIST, testTtsChunks));
+		assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, alertIcon));
 	    	
     	// Invalid/Null Tests
         Alert msg = new Alert();
@@ -158,9 +158,9 @@ public class AlertTests extends BaseRpcTests{
 			}
 			assertTrue(Test.TRUE,  Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
 
-            JSONObject alertIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, Alert.KEY_ALERT_ICON);
-            Image referenceAlertIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(alertIcon));
-            assertTrue(Test.TRUE, Validator.validateImage(referenceAlertIcon, cmd.getAlertIcon()));
+			JSONObject alertIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, Alert.KEY_ALERT_ICON);
+			Image referenceAlertIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(alertIcon));
+			assertTrue(Test.TRUE, Validator.validateImage(referenceAlertIcon, cmd.getAlertIcon()));
         } catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}    	
