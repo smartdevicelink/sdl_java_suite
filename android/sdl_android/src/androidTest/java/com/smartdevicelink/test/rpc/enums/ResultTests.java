@@ -196,6 +196,7 @@ public class ResultTests extends TestCase {
 		enumTestList.add(Result.DATA_NOT_AVAILABLE);
 		enumTestList.add(Result.READ_ONLY);
 		enumTestList.add(Result.CORRUPTED_DATA);
+		enumTestList.add(Result.ENCRYPTION_NEEDED);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
