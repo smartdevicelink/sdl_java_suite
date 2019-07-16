@@ -95,6 +95,7 @@ import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetInteriorVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
+import com.smartdevicelink.proxy.rpc.ShowAppMenuResponse;
 import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
@@ -422,4 +423,12 @@ public interface IProxyListenerBase {
 	 * @param response - Contains information about the response sent from SDL.
 	 */
 	public void onCloseApplicationResponse(CloseApplicationResponse response);
+
+	/**
+	 * onShowAppMenuResponse being called indicates that SDL has
+	 * responded to a request to close the application on the module.
+	 *
+	 * @param response - Contains information about the response sent from SDL.
+	 */
+	public void onShowAppMenuResponse(ShowAppMenuResponse response);
 }

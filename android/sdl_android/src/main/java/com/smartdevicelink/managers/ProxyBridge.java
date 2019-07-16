@@ -103,6 +103,7 @@ import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetInteriorVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
+import com.smartdevicelink.proxy.rpc.ShowAppMenuResponse;
 import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
@@ -640,6 +641,11 @@ public class ProxyBridge implements IProxyListener{
 
 	@Override
 	public void onCloseApplicationResponse(CloseApplicationResponse response) {
+		onRPCReceived(response);
+	}
+
+	@Override
+	public void onShowAppMenuResponse(ShowAppMenuResponse response) {
 		onRPCReceived(response);
 	}
 }
