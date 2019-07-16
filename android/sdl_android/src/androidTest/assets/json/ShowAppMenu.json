@@ -3,7 +3,7 @@
     "name":"ShowAppMenu",
     "correlationID":187,
     "parameters":{
-      "menuID":"test"
+      "menuID":100
     }
   },
   "response":{
