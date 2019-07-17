@@ -113,9 +113,9 @@ public class OnDriverDistraction  extends RPCNotification {
 
     /**
      * <p>Called to set dismissible state of Lockscreen</p>
-     * @param isDismissible the Lockscreen'S dismissibility
+     * @param isDismissible the Lockscreen's dismissibility
      */
-    public void setLockscreenDismissible(boolean isDismissible) {
+    public void setLockscreenDismissibility(boolean isDismissible) {
         setParameters(KEY_LOCKSCREEN_DISMISSIBLE, isDismissible);
     }
 

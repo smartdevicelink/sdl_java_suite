@@ -111,7 +111,6 @@ public class SDLLockScreenActivity extends Activity {
 		return super.onTouchEvent(event);
 	}
 
-
 		@Override
 	protected void onDestroy() {
 		unregisterReceiver(lockScreenBroadcastReceiver);
