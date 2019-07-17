@@ -93,6 +93,13 @@ import java.util.List;
  *                 <td>maxlength = 1000 </td>
  * 			<td>Allows an app to prepopulate the text field with a suggested or completed entry as the user types.</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>autoCompleteList</td>
+ * 			<td>String</td>
+ * 			<td>false</td>
+ *                 <td>Array = true maxlength = 1000 minsize = 0 maxsize = 100</td>
+ * 			<td>Allows an app to prepopulate the text field with a list of suggested or completed entry as the user types. Set to 0 to remove the auto-complete list from the screen</td>
+ * 		</tr>
  *  </table>
  * 
  * @since SmartDeviceLink 3.0
@@ -104,6 +111,7 @@ public class KeyboardProperties extends RPCStruct {
 	public static final String KEY_KEYBOARD_LAYOUT = "keyboardLayout";
 	public static final String KEY_LIMITED_CHARACTER_LIST = "limitedCharacterList";
 	public static final String KEY_AUTO_COMPLETE_TEXT = "autoCompleteText";
+	public static final String KEY_AUTO_COMPLETE_LIST = "autoCompleteList";
 	public static final String KEY_LANGUAGE = "language";
 	
     private static final KeypressMode KEYPRESS_MODE_DEFAULT = KeypressMode.RESEND_CURRENT_ENTRY;
@@ -166,5 +174,23 @@ public class KeyboardProperties extends RPCStruct {
 
     public void setAutoCompleteText(String autoCompleteText) {
         setValue(KEY_AUTO_COMPLETE_TEXT, autoCompleteText);
+    }
+
+    /**
+     * Gets the list that allows an app to prepopulate the text field with a list of suggested or
+     * completed entry as the user types.
+     * @return List<String> representing the suggestions list
+     */
+    public List<String> getAutoCompleteList() {
+        return (List<String>) getObject(String.class, KEY_AUTO_COMPLETE_LIST);
+    }
+
+    /**
+     * Sets the lists that allows an app to prepopulate the text field with a list of suggested or
+     * completed entry as the user types. Set to 0 to remove the auto-complete list from the screen
+     * @param autoCompleteList List<String> representing the suggestions list
+     */
+    public void setAutoCompleteList(List<String> autoCompleteList) {
+        setValue(KEY_AUTO_COMPLETE_LIST, autoCompleteList);
     }
 }
