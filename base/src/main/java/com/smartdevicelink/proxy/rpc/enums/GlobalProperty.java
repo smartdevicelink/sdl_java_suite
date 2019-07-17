@@ -73,7 +73,7 @@ public enum GlobalProperty{
     /**
      * The user seat location of setGlobalProperties
      */
-    USER_LOCATION;
+    USERLOCATION;
 
     /**
      * Convert String to GlobalProperty
