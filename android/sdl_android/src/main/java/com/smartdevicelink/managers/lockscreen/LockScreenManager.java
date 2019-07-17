@@ -79,7 +79,7 @@ public class LockScreenManager extends BaseSubManager {
 	protected boolean lockScreenEnabled, deviceLogoEnabled;
 	protected int lockScreenIcon, lockScreenColor, customView;
 	protected Bitmap deviceLogo;
-	private boolean mIsLockscreenDissmissible;
+	private boolean mIsLockscreenDismissible;
 	private boolean mLockScreenHasBeenDismissed;
 	private String mLockscreenWarningMsg;
 	private BroadcastReceiver mLockscreenDismissedReceiver;
@@ -177,10 +177,10 @@ public class LockScreenManager extends BaseSubManager {
 				// do something with the status
 				if (notification != null) {
 					OnDriverDistraction ddState = (OnDriverDistraction) notification;
-					Boolean isDismissable = ddState.getLockscreenDismissibility();
-					if (isDismissable != null) {
-						mIsLockscreenDissmissible = isDismissable;
-						if (!mIsLockscreenDissmissible) {
+					Boolean isDismissible = ddState.getLockscreenDismissibility();
+					if (isDismissible != null) {
+						mIsLockscreenDismissible = isDismissible;
+						if (!mIsLockscreenDismissible) {
 							mLockScreenHasBeenDismissed = false;
 						}
 					}
@@ -275,7 +275,7 @@ public class LockScreenManager extends BaseSubManager {
 		// intent to open SDLLockScreenActivity
 		// pass in icon, background color, and custom view
 		if (lockScreenEnabled && isApplicationForegrounded && context.get() != null) {
-			if (mIsLockscreenDissmissible) {
+			if (mIsLockscreenDismissible) {
 				context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
 			}
 			LockScreenStatus status = getLockScreenStatus();
@@ -289,7 +289,7 @@ public class LockScreenManager extends BaseSubManager {
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_CUSTOM_VIEW_EXTRA, customView);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);
-				showLockScreenIntent.putExtra(SDLLockScreenActivity.KEY_LOCKSCREEN_DISIMISSIBLE, mIsLockscreenDissmissible);
+				showLockScreenIntent.putExtra(SDLLockScreenActivity.KEY_LOCKSCREEN_DISIMISSIBLE, mIsLockscreenDismissible);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.KEY_LOCKSCREEN_WARNING_MSG, mLockscreenWarningMsg);
 				context.get().startActivity(showLockScreenIntent);
 			} else if (status == LockScreenStatus.OFF) {
