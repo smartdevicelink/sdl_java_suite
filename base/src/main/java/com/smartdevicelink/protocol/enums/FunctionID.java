@@ -101,6 +101,7 @@ public enum FunctionID{
     GET_FILE(54, "GetFile"),
     PERFORM_APP_SERVICES_INTERACTION(55, "PerformAppServiceInteraction"),
     CLOSE_APPLICATION(58, "CloseApplication"),
+    CANCEL_INTERACTION(-1, "CancelInteraction"), // FIXME when core updates
 
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
