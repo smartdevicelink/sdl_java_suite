@@ -273,6 +273,13 @@ class PresentChoiceSetOperation implements Runnable {
 							keyboardProperties.setAutoCompleteText(updatedAutoCompleteText);
 							updateKeyboardProperties(null);
 						}
+
+						@Override
+						public void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList) {
+							keyboardProperties.setAutoCompleteList(updatedAutoCompleteList != null ? updatedAutoCompleteList : new ArrayList<String>());
+							keyboardProperties.setAutoCompleteText(updatedAutoCompleteList != null && !updatedAutoCompleteList.isEmpty() ? updatedAutoCompleteList.get(0) : "");
+							updateKeyboardProperties(null);
+						}
 					});
 
 					keyboardListener.updateCharacterSetWithInput(onKeyboard.getData(), new KeyboardCharacterSetCompletionListener() {
