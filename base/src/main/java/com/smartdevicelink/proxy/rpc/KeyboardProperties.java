@@ -110,7 +110,7 @@ public class KeyboardProperties extends RPCStruct {
     public static final String KEY_KEYPRESS_MODE = "keypressMode";
 	public static final String KEY_KEYBOARD_LAYOUT = "keyboardLayout";
 	public static final String KEY_LIMITED_CHARACTER_LIST = "limitedCharacterList";
-    @Deprecated public static final String KEY_AUTO_COMPLETE_TEXT = "autoCompleteText";
+	@Deprecated public static final String KEY_AUTO_COMPLETE_TEXT = "autoCompleteText";
 	public static final String KEY_AUTO_COMPLETE_LIST = "autoCompleteList";
 	public static final String KEY_LANGUAGE = "language";
 	
