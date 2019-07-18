@@ -173,7 +173,7 @@ public class KeyboardProperties extends RPCStruct {
         return (String) getObject(String.class, KEY_AUTO_COMPLETE_TEXT);
     }
 
-    @Deprecated
+    @Deprecated // Note: removing autoCompleteText will leave no way to provide auto complete suggestions on old head units that don't support autoCompleteList
     public void setAutoCompleteText(String autoCompleteText) {
         setValue(KEY_AUTO_COMPLETE_TEXT, autoCompleteText);
     }
