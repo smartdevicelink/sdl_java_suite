@@ -54,6 +54,8 @@ import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
@@ -62,6 +64,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
 
 import org.json.JSONException;
@@ -83,7 +86,9 @@ abstract class BaseMenuManager extends BaseSubManager {
 	List<MenuCell> menuCells, waitingUpdateMenuCells, oldMenuCells, keepsNew, keepsOld;
 	List<RPCRequest> inProgressUpdate;
 	DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
+	MenuConfiguration menuConfiguration;
 	private DisplayType displayType;
+	private SdlMsgVersion sdlMsgVersion;
 
 	boolean waitingOnHMIUpdate;
 	private boolean hasQueuedUpdate;
@@ -110,6 +115,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		currentHMILevel = HMILevel.HMI_NONE;
 		lastMenuId = menuCellIdMin;
 		dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
+		sdlMsgVersion = internalInterface.getSdlMsgVersion();
 
 		addListeners();
 	}
@@ -243,6 +249,55 @@ abstract class BaseMenuManager extends BaseSubManager {
 	 */
 	public DynamicMenuUpdatesMode getDynamicMenuUpdatesMode() {
 		return this.dynamicMenuUpdatesMode;
+	}
+
+	/**
+	 * This method is called via the screen manager to set the menuConfiguration.
+	 * This will be used when a menu item with sub-cells has a null value for menuConfiguration
+	 * @param menuConfiguration - The default menuConfiguration
+	 */
+	public void setMenuConfiguration(final MenuConfiguration menuConfiguration) {
+
+		if (sdlMsgVersion == null) {
+			DebugTool.logError("SDL Message Version is null. Cannot set Menu Configuration");
+			return;
+		}
+
+		if (sdlMsgVersion.getMajorVersion() < 6){
+			DebugTool.logWarning("Menu configurations is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is"+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
+			return;
+		}
+
+		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
+			// We are in NONE or the menu is in use, bail out of here
+			DebugTool.logError("Could not set main menu configuration, HMI level: "+currentHMILevel+", required: 'Not-NONE', system context: "+currentSystemContext+", required: 'Not MENU'");
+			return;
+		}
+
+		SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
+		setGlobalProperties.setMenuLayout(menuConfiguration.getMenuLayout());
+		setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				if (response.getSuccess()){
+					setMenuConfigPrivate(menuConfiguration);
+				}
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info){
+				DebugTool.logError("onError: "+ resultCode+ " | Info: "+ info );
+			}
+		});
+		internalInterface.sendRPC(setGlobalProperties);
+	}
+
+	private void setMenuConfigPrivate(MenuConfiguration menuConfigPrivate){
+		this.menuConfiguration = menuConfigPrivate;
+	}
+
+	public MenuConfiguration getMenuConfiguration(){
+		return this.menuConfiguration;
 	}
 
 	// UPDATING SYSTEM
