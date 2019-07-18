@@ -173,7 +173,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
                 public void run() {
                     // Want to create presentation on UI thread so it finds the right Looper
                     // when setting up the Dialog.
-                    if ((remoteDisplay == null) && (mDisplay != null))
+                    if((mDisplay!=null) && (remoteDisplay == null || remoteDisplay.getDisplay() != mDisplay))
                     {
                         try {
                             Constructor constructor = remoteDisplayClass.getConstructor(Context.class, Display.class);
