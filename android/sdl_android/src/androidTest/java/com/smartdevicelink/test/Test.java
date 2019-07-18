@@ -149,6 +149,7 @@ import com.smartdevicelink.proxy.rpc.enums.MassageMode;
 import com.smartdevicelink.proxy.rpc.enums.MassageZone;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.proxy.rpc.enums.MediaType;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
 import com.smartdevicelink.proxy.rpc.enums.NavigationAction;
@@ -456,6 +457,7 @@ public class Test {
 	public static final List<WeatherAlert>              GENERAL_WEATHERALERT_LIST              = Arrays.asList(GENERAL_WEATHERALERT);
 	public static final List<NavigationInstruction>     GENERAL_NAVIGATION_INSTRUCTION_LIST    = Arrays.asList(GENERAL_NAVIGATION_INSTRUCTION);
 	public static final List<Integer>                   GENERAL_AVAILABLE_HD_CHANNELS_LIST     = Arrays.asList(new Integer[]{ 1, 2});
+	public static final List<MenuLayout>                GENERAL_MENU_LAYOUT_LIST               = Arrays.asList(MenuLayout.LIST, MenuLayout.TILES);
 	public static final int                             GENERAL_MENU_MAX_ID                    = 2000000000;
 	public static final MenuCell                        GENERAL_MENUCELL                       = new MenuCell(GENERAL_STRING,null, null, new MenuSelectionListener() {
 		@Override
