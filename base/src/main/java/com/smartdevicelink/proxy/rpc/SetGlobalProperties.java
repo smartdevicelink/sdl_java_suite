@@ -118,6 +118,14 @@ import java.util.List;
  * 			<td></td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>menuLayout</td>
+ * 			<td>MenuLayout</td>
+ * 			<td>Sets the layout of the main menu screen. If this is sent while a menu is already on-screen, the head unit will change the display to the new layout type.</td>
+ * 			<td></td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 6.0</td>
+ * 		</tr>
  *
  *  </table>
  *  
