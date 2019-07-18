@@ -154,6 +154,12 @@ class PresentKeyboardOperation implements Runnable {
 				}
 				DebugTool.logInfo("Success Setting keyboard properties in present keyboard operation - choice manager");
 			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				DebugTool.logError("Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
+				super.onError(correlationId, resultCode, info);
+			}
 		});
 
 		if (internalInterface.get() != null){
@@ -228,7 +234,7 @@ class PresentKeyboardOperation implements Runnable {
 						@Override
 						public void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList) {
 							keyboardProperties.setAutoCompleteList(updatedAutoCompleteList != null ? updatedAutoCompleteList : new ArrayList<String>());
-							keyboardProperties.setAutoCompleteText(updatedAutoCompleteList != null && !updatedAutoCompleteList.isEmpty() ? updatedAutoCompleteList.get(0) : "");
+							keyboardProperties.setAutoCompleteText(updatedAutoCompleteList != null && !updatedAutoCompleteList.isEmpty() ? updatedAutoCompleteList.get(0) : null);
 							updateKeyboardProperties(null);
 						}
 					});
