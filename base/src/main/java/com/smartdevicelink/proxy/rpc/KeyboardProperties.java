@@ -180,7 +180,7 @@ public class KeyboardProperties extends RPCStruct {
 
     /**
      * Gets the list that allows an app to prepopulate the text field with a list of suggested or
-     * completed entry as the user types.
+     * completed entries as the user types.
      * @return List<String> representing the suggestions list
      */
     public List<String> getAutoCompleteList() {
