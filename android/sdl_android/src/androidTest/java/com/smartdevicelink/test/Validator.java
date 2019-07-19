@@ -31,6 +31,7 @@ import com.smartdevicelink.proxy.rpc.EmergencyEvent;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
 import com.smartdevicelink.proxy.rpc.FuelRange;
 import com.smartdevicelink.proxy.rpc.GPSData;
+import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities;
@@ -3581,5 +3582,41 @@ public class Validator{
 		}
 
 		return true;
+	}
+
+	public static boolean validateGrid(Grid g1, Grid g2) {
+    	String tag = "validateGrid";
+    	if (g1 == null) {
+    		return (g2 == null);
+		}
+    	if (g2 == null) {
+    		return (g1 == null);
+		}
+    	if (g1.getColumn() != g2.getColumn()) {
+    		log(tag, "Columns do not match");
+    		return false;
+		}
+    	if (g1.getRow() != g2.getRow()) {
+    		log(tag, "Rows do not match");
+    		return false;
+		}
+		if (g1.getLevel() != g2.getLevel()) {
+			log(tag, "Levels do not match");
+			return false;
+		}
+    	if (g1.getColumnSpan() != g2.getColumnSpan()) {
+			log(tag, "Column spans do not match");
+    		return false;
+		}
+    	if (g1.getRowSpan() != g2.getRowSpan()) {
+    		log(tag, "Row spans do not match");
+    		return false;
+		}
+    	if (g1.getLevelSpan() != g2.getLevelSpan()) {
+    		log(tag, "Level spans do not match");
+    		return false;
+		}
+
+    	return true;
 	}
 }

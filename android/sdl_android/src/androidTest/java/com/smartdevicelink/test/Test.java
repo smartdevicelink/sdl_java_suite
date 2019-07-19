@@ -33,6 +33,7 @@ import com.smartdevicelink.proxy.rpc.DateTime;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
+import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities;
@@ -406,6 +407,7 @@ public class Test {
 	public static final HapticRect                     GENERAL_HAPTIC_RECT                    = new HapticRect();
 	public static final FuelType                       GENERAL_FUELTYPE                       = FuelType.GASOLINE;
 	public static final LockScreenConfig               GENERAL_LOCKSCREENCONFIG               = new LockScreenConfig();
+	public static final Grid                           GENERAL_GRID                           = new Grid();
 
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
