@@ -335,9 +335,7 @@ public class MenuCell implements Cloneable{
 		clone.voiceCommands = null;
 		if (this.voiceCommands != null){
 			clone.voiceCommands = new ArrayList<>();
-			for (String voiceCommand : this.voiceCommands) {
-				clone.voiceCommands.add(voiceCommand);
-			}
+			clone.voiceCommands.addAll(this.voiceCommands);
 		}
 		clone.subCells = null;
 		if (this.subCells != null) {
