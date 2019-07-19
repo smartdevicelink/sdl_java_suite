@@ -189,7 +189,7 @@ public class KeyboardProperties extends RPCStruct {
 
     /**
      * Sets the lists that allows an app to prepopulate the text field with a list of suggested or
-     * completed entry as the user types. Set to 0 to remove the auto-complete list from the screen
+     * completed entries as the user types. Set to 0 to remove the auto-complete list from the screen
      * @param autoCompleteList List<String> representing the suggestions list
      */
     public void setAutoCompleteList(List<String> autoCompleteList) {
