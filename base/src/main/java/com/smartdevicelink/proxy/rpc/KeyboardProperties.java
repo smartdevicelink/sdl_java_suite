@@ -98,7 +98,7 @@ import java.util.List;
  * 			<td>String</td>
  * 			<td>false</td>
  *                 <td>Array = true maxlength = 1000 minsize = 0 maxsize = 100</td>
- * 			<td>Allows an app to prepopulate the text field with a list of suggested or completed entry as the user types. Set to 0 to remove the auto-complete list from the screen</td>
+ * 			<td>Allows an app to prepopulate the text field with a list of suggested or completed entry as the user types. Set to an empty array to remove the auto-complete list from the screen</td>
  * 		</tr>
  *  </table>
  * 
@@ -168,12 +168,21 @@ public class KeyboardProperties extends RPCStruct {
         setValue(KEY_LIMITED_CHARACTER_LIST, limitedCharacterList);
     }
 
+    /**
+     * Gets the text that allows an app to prepopulate the text field with a suggested entry as the user types
+     * @return String representing the suggestions text
+     */
     @Deprecated
     public String getAutoCompleteText() {
         return (String) getObject(String.class, KEY_AUTO_COMPLETE_TEXT);
     }
 
-    @Deprecated // Note: removing autoCompleteText will leave no way to provide auto complete suggestions on old head units that don't support autoCompleteList
+    /**
+     * Sets the text that allows an app to prepopulate the text field with a suggested entry as the user types
+     * @param autoCompleteText String representing the suggestions text
+     * @deprecated use {@link #setAutoCompleteList(List<String>)} instead
+     */
+    @Deprecated // Note: removing autoCompleteText setter will leave no way to provide auto complete suggestions on old head units that don't support autoCompleteList
     public void setAutoCompleteText(String autoCompleteText) {
         setValue(KEY_AUTO_COMPLETE_TEXT, autoCompleteText);
     }
@@ -189,7 +198,7 @@ public class KeyboardProperties extends RPCStruct {
 
     /**
      * Sets the lists that allows an app to prepopulate the text field with a list of suggested or
-     * completed entries as the user types. Set to 0 to remove the auto-complete list from the screen
+     * completed entries as the user types. Set to an empty array to remove the auto-complete list from the screen
      * @param autoCompleteList List<String> representing the suggestions list
      */
     public void setAutoCompleteList(List<String> autoCompleteList) {
