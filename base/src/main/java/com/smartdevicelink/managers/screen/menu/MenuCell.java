@@ -118,7 +118,7 @@ public class MenuCell implements Cloneable{
 	 * @param icon The cell's image
 	 * @param subCells The sub-cells for the sub menu that will appear when the cell is selected
 	 *
-	 * @deprecated use @link{{@link #MenuCell(String, MenuLayout, SdlArtwork, List)}}
+	 * @deprecated use {@link #MenuCell(String, MenuLayout, SdlArtwork, List)}
 	 */
 	@Deprecated
 	public MenuCell(@NonNull String title, @Nullable SdlArtwork icon, @Nullable List<MenuCell> subCells) {
