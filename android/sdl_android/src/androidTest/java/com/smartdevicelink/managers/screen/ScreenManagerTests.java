@@ -60,7 +60,7 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertNull(screenManager.getSoftButtonObjectById(1));
 		assertEquals(screenManager.getDynamicMenuUpdatesMode(), DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE);
 		assertEquals(screenManager.getState(), BaseSubManager.READY);
-		assertNull(screenManager.getMenuConfiguration());
+		assertNotNull(screenManager.getMenuConfiguration());
 	}
 	
 	public void testSetTextField() {
@@ -126,7 +126,7 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertEquals(screenManager.getMenu(), Test.GENERAL_MENUCELL_LIST);
 		assertEquals(screenManager.getDynamicMenuUpdatesMode(), DynamicMenuUpdatesMode.FORCE_ON);
 		// Should not set because of improper RAI response and improper HMI states
-		assertNull(screenManager.getMenuConfiguration());
+		assertNotNull(screenManager.getMenuConfiguration());
 	}
 
 	public void testSetVoiceCommands(){
