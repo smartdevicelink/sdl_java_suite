@@ -59,6 +59,7 @@ import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
@@ -116,6 +117,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 		lastMenuId = menuCellIdMin;
 		dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
 		sdlMsgVersion = internalInterface.getSdlMsgVersion();
+		// default menu configuration
+		menuConfiguration = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
 
 		addListeners();
 	}
@@ -266,7 +269,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		}
 
 		if (sdlMsgVersion.getMajorVersion() < 6){
-			DebugTool.logWarning("Menu configurations is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is"+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
+			DebugTool.logWarning("Menu configurations is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
 			return;
 		}
 
@@ -884,6 +887,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position){
 		AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getTitle());
 		subMenu.setPosition(position);
+		subMenu.setMenuLayout((cell.getSubMenuLayout() != null ? cell.getSubMenuLayout() : menuConfiguration.getSubMenuLayout()));
 		subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon()!= null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);
 		return subMenu;
 	}
