@@ -87,8 +87,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 	List<RPCRequest> inProgressUpdate;
 	DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
 	MenuConfiguration menuConfiguration;
+	SdlMsgVersion sdlMsgVersion;
 	private DisplayType displayType;
-	private SdlMsgVersion sdlMsgVersion;
 
 	boolean waitingOnHMIUpdate;
 	private boolean hasQueuedUpdate;
@@ -142,6 +142,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 		waitingUpdateMenuCells = null;
 		keepsNew = null;
 		keepsOld = null;
+		menuConfiguration = null;
+		sdlMsgVersion = null;
 
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -281,6 +283,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()){
 					setMenuConfigPrivate(menuConfiguration);
+					DebugTool.logInfo("Menu Configuration successfully set: "+ menuConfiguration.toString());
 				}
 			}
 

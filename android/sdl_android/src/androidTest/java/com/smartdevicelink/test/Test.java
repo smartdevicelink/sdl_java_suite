@@ -8,6 +8,7 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
+import com.smartdevicelink.managers.screen.menu.MenuConfiguration;
 import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
@@ -401,6 +402,7 @@ public class Test {
 	public static final HMISettingsControlData         GENERAL_HMISETTINGSCONTROLDATA         = new HMISettingsControlData();
 	public static final SdlArtwork                     GENERAL_ARTWORK                        = new SdlArtwork("sdl", FileType.GRAPHIC_PNG, R.drawable.ic_sdl, false);
 	public static final MenuLayout                     GENERAL_MENU_LAYOUT                    = MenuLayout.LIST;
+	public static final MenuConfiguration              GENERAL_MENU_CONFIGURATION             = new MenuConfiguration(GENERAL_MENU_LAYOUT, GENERAL_MENU_LAYOUT);
 
 	public static final HMICapabilities                GENERAL_HMICAPABILITIES                = new HMICapabilities();
 

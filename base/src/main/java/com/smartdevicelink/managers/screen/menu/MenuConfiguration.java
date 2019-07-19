@@ -84,4 +84,12 @@ public class MenuConfiguration {
 		return defaultSubmenuLayout;
 	}
 
+	/**
+	 * @return A string description of the cell, useful for debugging.
+	 */
+	@Override @NonNull
+	public String toString() {
+		return "MenuConfiguration: MenuLayout = "+ this.mainMenuLayout + " | SubMenuLayout = "+ this.defaultSubmenuLayout;
+	}
+
 }
