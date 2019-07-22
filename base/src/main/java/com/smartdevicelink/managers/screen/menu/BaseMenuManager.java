@@ -279,13 +279,14 @@ abstract class BaseMenuManager extends BaseSubManager {
 			return;
 		}
 
+		this.menuConfiguration = menuConfiguration;
+		
 		SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
 		setGlobalProperties.setMenuLayout(menuConfiguration.getMenuLayout());
 		setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()){
-					setMenuConfigPrivate(menuConfiguration);
 					DebugTool.logInfo("Menu Configuration successfully set: "+ menuConfiguration.toString());
 				}
 			}
@@ -296,10 +297,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 			}
 		});
 		internalInterface.sendRPC(setGlobalProperties);
-	}
-
-	private void setMenuConfigPrivate(MenuConfiguration menuConfigPrivate){
-		this.menuConfiguration = menuConfigPrivate;
 	}
 
 	public MenuConfiguration getMenuConfiguration(){
