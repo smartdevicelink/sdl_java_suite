@@ -213,7 +213,7 @@ public enum ButtonName{
 	 */
 	NAV_PAN_UP,
 	/**
-	 * Represents thepPan up-right button.
+	 * Represents the pan up-right button.
 	 *
 	 * @since SmartDeviceLink 6.0
 	 */
