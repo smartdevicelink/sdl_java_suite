@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.KeyboardProperties}
+ * {@link com.smartdevicelink.proxy.rpc.KeyboardProperties}
  */
 public class KeyboardPropertiesTests extends TestCase{
 
@@ -29,6 +29,7 @@ public class KeyboardPropertiesTests extends TestCase{
         msg = new KeyboardProperties();
 
         msg.setAutoCompleteText(Test.GENERAL_STRING);
+        msg.setAutoCompleteList(Test.GENERAL_STRING_LIST);
         msg.setKeyboardLayout(Test.GENERAL_KEYBOARDLAYOUT);
         msg.setKeypressMode(Test.GENERAL_KEYPRESSMODE);
         msg.setLanguage(Test.GENERAL_LANGUAGE);
@@ -40,14 +41,17 @@ public class KeyboardPropertiesTests extends TestCase{
 	 */
     public void testRpcValues () {
     	// Test Values
-        String autoComplete = msg.getAutoCompleteText();
+        String autoCompleteText = msg.getAutoCompleteText();
+        List<String> autoCompleteList = msg.getAutoCompleteList();
         KeyboardLayout keyboardLayout = msg.getKeyboardLayout();
         KeypressMode keypressMode = msg.getKeypressMode();
         Language language = msg.getLanguage();
         List<String> limitedChars = msg.getLimitedCharacterList();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, autoComplete);
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, autoCompleteText);
+        assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST.size(), autoCompleteList.size());
+        assertTrue(Test.TRUE, Validator.validateStringList(Test.GENERAL_STRING_LIST, autoCompleteList));
         assertEquals(Test.MATCH, Test.GENERAL_KEYBOARDLAYOUT, keyboardLayout);
         assertEquals(Test.MATCH, Test.GENERAL_KEYPRESSMODE, keypressMode);
         assertEquals(Test.MATCH, Test.GENERAL_LANGUAGE, language);
@@ -60,8 +64,8 @@ public class KeyboardPropertiesTests extends TestCase{
         
         // Keypress mode is created in the object constructor
         assertNotNull(Test.NOT_NULL, msg.getKeypressMode());
-        
         assertNull(Test.NULL, msg.getAutoCompleteText());
+        assertNull(Test.NULL, msg.getAutoCompleteList());
         assertNull(Test.NULL, msg.getLanguage());
         assertNull(Test.NULL, msg.getKeyboardLayout());        
         assertNull(Test.NULL, msg.getLimitedCharacterList());
@@ -72,6 +76,7 @@ public class KeyboardPropertiesTests extends TestCase{
 
         try{
             reference.put(KeyboardProperties.KEY_AUTO_COMPLETE_TEXT, Test.GENERAL_STRING);
+            reference.put(KeyboardProperties.KEY_AUTO_COMPLETE_LIST, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));
             reference.put(KeyboardProperties.KEY_KEYBOARD_LAYOUT, Test.GENERAL_KEYBOARDLAYOUT);
             reference.put(KeyboardProperties.KEY_KEYPRESS_MODE, Test.GENERAL_KEYPRESSMODE);
             reference.put(KeyboardProperties.KEY_LANGUAGE, Test.GENERAL_LANGUAGE);
@@ -83,7 +88,7 @@ public class KeyboardPropertiesTests extends TestCase{
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                if(key.equals(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST)){
+                if(key.equals(KeyboardProperties.KEY_LIMITED_CHARACTER_LIST) || key.equals(KeyboardProperties.KEY_AUTO_COMPLETE_LIST)){
                     assertTrue(Test.TRUE, Validator.validateStringList(JsonUtils.readStringListFromJsonObject(reference, key), JsonUtils.readStringListFromJsonObject(underTest, key)));
                 } else{
                     assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
