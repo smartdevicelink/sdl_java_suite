@@ -72,7 +72,7 @@ public class DisplayCapabilitiesTests extends TestCase{
 		assertEquals(Test.MATCH, Test.GENERAL_MEDIACLOCKFORMAT_LIST.size(), mediaClock.size());
 		assertEquals(Test.MATCH, Test.GENERAL_TEXTFIELD_LIST.size(), textFields.size());
 		assertEquals(Test.MATCH, Test.GENERAL_IMAGEFIELD_LIST.size(), imageFields.size());
-        assertEquals(Test.MATCH, Test.GENERAL_MENU_LAYOUT_LIST.size(), menuLayouts.size());
+		assertEquals(Test.MATCH, Test.GENERAL_MENU_LAYOUT_LIST.size(), menuLayouts.size());
 		
 		for(int i = 0; i < Test.GENERAL_STRING_LIST.size(); i++){
             assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST.get(i), templatesAvailable.get(i));

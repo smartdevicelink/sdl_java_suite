@@ -243,7 +243,7 @@ public class AddSubMenu extends RPCRequest {
 	}
 
 	/**
-	 * Sets the layout of the submenu screen.
+	 * Gets the layout of the submenu screen.
 	 * @return the MenuLayout
 	 */
 	@SuppressWarnings("unchecked")

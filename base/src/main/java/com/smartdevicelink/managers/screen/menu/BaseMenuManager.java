@@ -261,7 +261,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	 * This will be used when a menu item with sub-cells has a null value for menuConfiguration
 	 * @param menuConfiguration - The default menuConfiguration
 	 */
-	public void setMenuConfiguration(final MenuConfiguration menuConfiguration) {
+	public void setMenuConfiguration(@NonNull final MenuConfiguration menuConfiguration) {
 
 		if (sdlMsgVersion == null) {
 			DebugTool.logError("SDL Message Version is null. Cannot set Menu Configuration");

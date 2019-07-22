@@ -430,7 +430,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable. Defaults to LIST.
 	 * @param menuConfiguration - The default menuConfiguration
 	 */
-	public void setMenuConfiguration(MenuConfiguration menuConfiguration) {
+	public void setMenuConfiguration(@NonNull MenuConfiguration menuConfiguration) {
 		this.menuManager.setMenuConfiguration(menuConfiguration);
 	}
 
