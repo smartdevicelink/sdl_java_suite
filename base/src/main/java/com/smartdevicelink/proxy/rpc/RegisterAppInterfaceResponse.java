@@ -216,6 +216,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return DisplayCapabilities
 	 */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public DisplayCapabilities getDisplayCapabilities() {
 		return (DisplayCapabilities) getObject(DisplayCapabilities.class, KEY_DISPLAY_CAPABILITIES);
@@ -224,6 +225,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * Sets Display Capabilities
      * @param displayCapabilities
      */
+    @Deprecated
     public void setDisplayCapabilities(DisplayCapabilities displayCapabilities) {
 		setParameters(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
     }
@@ -233,6 +235,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return buttonCapabilities
 	 */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public List<ButtonCapabilities> getButtonCapabilities() {
 		return (List<ButtonCapabilities>) getObject(ButtonCapabilities.class, KEY_BUTTON_CAPABILITIES);
@@ -241,6 +244,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * Sets Button Capabilities
      * @param buttonCapabilities
      */
+    @Deprecated
     public void setButtonCapabilities(List<ButtonCapabilities> buttonCapabilities) {
 		setParameters(KEY_BUTTON_CAPABILITIES, buttonCapabilities);
     }
@@ -249,6 +253,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return SoftButtonCapabilities 
 	 */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public List<SoftButtonCapabilities> getSoftButtonCapabilities() {
 		return (List<SoftButtonCapabilities>) getObject(SoftButtonCapabilities.class, KEY_SOFT_BUTTON_CAPABILITIES);
@@ -257,6 +262,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * Sets softButtonCapabilities
      * @param softButtonCapabilities
      */
+    @Deprecated
     public void setSoftButtonCapabilities(List<SoftButtonCapabilities> softButtonCapabilities) {
 		setParameters(KEY_SOFT_BUTTON_CAPABILITIES, softButtonCapabilities);
     }
@@ -266,6 +272,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
 	 * 
 	 * @return PresetBankCapabilities 
 	 */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public PresetBankCapabilities getPresetBankCapabilities() {
 		return (PresetBankCapabilities) getObject(PresetBankCapabilities.class, KEY_PRESET_BANK_CAPABILITIES);
@@ -274,6 +281,7 @@ public class RegisterAppInterfaceResponse extends RPCResponse {
      * Sets presetBankCapabilities
      * @param	presetBankCapabilities
      */
+    @Deprecated
     public void setPresetBankCapabilities(PresetBankCapabilities presetBankCapabilities) {
 		setParameters(KEY_PRESET_BANK_CAPABILITIES, presetBankCapabilities);
     }

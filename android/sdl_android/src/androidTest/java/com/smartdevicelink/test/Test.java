@@ -33,6 +33,7 @@ import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DateTime;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
@@ -85,6 +86,7 @@ import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.Temperature;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
+import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
@@ -99,6 +101,8 @@ import com.smartdevicelink.proxy.rpc.WeatherAlert;
 import com.smartdevicelink.proxy.rpc.WeatherData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
@@ -190,6 +194,7 @@ import com.smartdevicelink.proxy.rpc.enums.VideoStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.WayPointType;
+import com.smartdevicelink.proxy.rpc.enums.WindowType;
 import com.smartdevicelink.util.Version;
 
 import org.json.JSONArray;
@@ -398,6 +403,11 @@ public class Test {
 	public static final AudioControlData               GENERAL_AUDIOCONTROLDATA               = new AudioControlData();
 	public static final LightControlData               GENERAL_LIGHTCONTROLDATA               = new LightControlData();
 	public static final HMISettingsControlData         GENERAL_HMISETTINGSCONTROLDATA         = new HMISettingsControlData();
+
+	public static final TemplateConfiguration          GENERAL_TEMPLATE_CONFIGURATION         = new TemplateConfiguration();
+	public static final WindowTypeCapabilities         GENERAL_WINDOW_TYPE_CAPABILITIES       = new WindowTypeCapabilities();
+	public static final WindowCapability               GENERAL_WINDOW_CAPABILITY              = new WindowCapability();
+	public static final DisplayCapability              GENERAL_DISPLAY_CAPABILITY             = new DisplayCapability();
 	public static final SdlArtwork                     GENERAL_ARTWORK                        = new SdlArtwork("sdl", FileType.GRAPHIC_PNG, R.drawable.ic_sdl, false);
 
 	public static final HMICapabilities                GENERAL_HMICAPABILITIES                = new HMICapabilities();
@@ -407,6 +417,7 @@ public class Test {
 	public static final HapticRect                     GENERAL_HAPTIC_RECT                    = new HapticRect();
 	public static final FuelType                       GENERAL_FUELTYPE                       = FuelType.GASOLINE;
 	public static final LockScreenConfig               GENERAL_LOCKSCREENCONFIG               = new LockScreenConfig();
+	public static final WindowType                     GENERAL_WINDOW_TYPE                    = WindowType.MAIN;
 
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
@@ -456,6 +467,12 @@ public class Test {
 	public static final List<WeatherAlert>              GENERAL_WEATHERALERT_LIST              = Arrays.asList(GENERAL_WEATHERALERT);
 	public static final List<NavigationInstruction>     GENERAL_NAVIGATION_INSTRUCTION_LIST    = Arrays.asList(GENERAL_NAVIGATION_INSTRUCTION);
 	public static final List<Integer>                   GENERAL_AVAILABLE_HD_CHANNELS_LIST     = Arrays.asList(new Integer[]{ 1, 2});
+
+	public static final List<ImageType>                 GENERAL_IMAGE_TYPE_LIST                = Arrays.asList(new ImageType[]{ImageType.DYNAMIC, ImageType.STATIC});
+	public static final List<WindowTypeCapabilities>    GENERAL_WINDOW_TYPE_CAPABILITIES_LIST  = new ArrayList<WindowTypeCapabilities>(1);
+	public static final List<WindowCapability>          GENERAL_WINDOW_CAPABILITY_LIST         = new ArrayList<WindowCapability>(1);
+	public static final List<DisplayCapability>         GENERAL_DISPLAYCAPABILITY_LIST         = new ArrayList<DisplayCapability>(1);
+
 	public static final int                             GENERAL_MENU_MAX_ID                    = 2000000000;
 	public static final MenuCell                        GENERAL_MENUCELL                       = new MenuCell(GENERAL_STRING,null, null, new MenuSelectionListener() {
 		@Override
@@ -519,6 +536,14 @@ public class Test {
 	public static final JSONObject JSON_RGBCOLOR                  = new JSONObject();
 	public static final JSONObject JSON_DAYCOLORSCHEME            = new JSONObject();
 	public static final JSONObject JSON_NIGHTCOLORSCHEME          = new JSONObject();
+	public static final JSONArray  JSON_IMAGE_TYPE_SUPPORTED      = new JSONArray();
+	public static final JSONObject JSON_WINDOW_TYPE_CAPABILITIES  = new JSONObject();
+	public static final JSONArray  JSON_WINDOW_TYPE_CAPABILITIES_LIST  = new JSONArray();
+	public static final JSONObject JSON_WINDOW_CAPABILITY         = new JSONObject();
+	public static final JSONArray  JSON_WINDOW_CAPABILITIES       = new JSONArray();
+	public static final JSONArray  JSON_IMAGE_TYPES               = new JSONArray();
+	public static final JSONObject JSON_DISPLAYCAPABILITY         = new JSONObject();
+	public static final JSONArray  JSON_DISPLAYCAPABILITY_LIST    = new JSONArray();
 
 	static {
 		GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
@@ -666,6 +691,25 @@ public class Test {
 		GENERAL_IMAGEFIELD.setImageTypeSupported(GENERAL_FILETYPE_LIST);
 		GENERAL_IMAGEFIELD_LIST.add(GENERAL_IMAGEFIELD);
 
+		GENERAL_WINDOW_TYPE_CAPABILITIES.setType(GENERAL_WINDOW_TYPE);
+		GENERAL_WINDOW_TYPE_CAPABILITIES.setMaximumNumberOfWindows(GENERAL_INT);
+		GENERAL_WINDOW_TYPE_CAPABILITIES_LIST.add(GENERAL_WINDOW_TYPE_CAPABILITIES);
+
+		GENERAL_WINDOW_CAPABILITY.setWindowID(GENERAL_INT);
+		GENERAL_WINDOW_CAPABILITY.setTextFields(GENERAL_TEXTFIELD_LIST);
+		GENERAL_WINDOW_CAPABILITY.setImageFields(GENERAL_IMAGEFIELD_LIST);
+		GENERAL_WINDOW_CAPABILITY.setImageTypeSupported(GENERAL_IMAGE_TYPE_LIST);
+		GENERAL_WINDOW_CAPABILITY.setTemplatesAvailable(GENERAL_STRING_LIST);
+		GENERAL_WINDOW_CAPABILITY.setNumCustomPresetsAvailable(GENERAL_INT);
+		GENERAL_WINDOW_CAPABILITY.setButtonCapabilities(GENERAL_BUTTONCAPABILITIES_LIST);
+		GENERAL_WINDOW_CAPABILITY.setSoftButtonCapabilities(GENERAL_SOFTBUTTONCAPABILITIES_LIST);
+		GENERAL_WINDOW_CAPABILITY_LIST.add(GENERAL_WINDOW_CAPABILITY);
+
+		GENERAL_DISPLAY_CAPABILITY.setDisplayName(GENERAL_STRING);
+		GENERAL_DISPLAY_CAPABILITY.setWindowTypeSupported(GENERAL_WINDOW_TYPE_CAPABILITIES_LIST);
+		GENERAL_DISPLAY_CAPABILITY.setWindowCapabilities(GENERAL_WINDOW_CAPABILITY_LIST);
+		GENERAL_DISPLAYCAPABILITY_LIST.add(GENERAL_DISPLAY_CAPABILITY);
+
 		GENERAL_SCREENPARAMS.setImageResolution(GENERAL_IMAGERESOLUTION);
 		GENERAL_SCREENPARAMS.setTouchEventAvailable(GENERAL_TOUCHEVENTCAPABILITIES);
 
@@ -675,6 +719,10 @@ public class Test {
 		GENERAL_IMAGE.setValue(GENERAL_STRING);
 		GENERAL_IMAGE.setImageType(GENERAL_IMAGETYPE);
 		GENERAL_IMAGE.setIsTemplate(GENERAL_BOOLEAN);
+
+		GENERAL_TEMPLATE_CONFIGURATION.setTemplate(GENERAL_STRING);
+		GENERAL_TEMPLATE_CONFIGURATION.setDayColorScheme(Test.GENERAL_DAYCOLORSCHEME);
+		GENERAL_TEMPLATE_CONFIGURATION.setNightColorScheme(Test.GENERAL_NIGHTCOLORSCHEME);
 
 		GENERAL_SOFTBUTTON.setIsHighlighted(GENERAL_BOOLEAN);
 		GENERAL_SOFTBUTTON.setSoftButtonID(GENERAL_INT);
@@ -1062,6 +1110,9 @@ public class Test {
 			JSON_CHOICE.put(Choice.KEY_SECONDARY_IMAGE, JSON_IMAGE);
 			JSON_CHOICE.put(Choice.KEY_VR_COMMANDS, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
 
+			JSON_IMAGE_TYPE_SUPPORTED.put(ImageType.DYNAMIC);
+			JSON_IMAGE_TYPE_SUPPORTED.put(ImageType.STATIC);
+
 			JSON_HMILEVELS.put(HMILevel.HMI_FULL);
 			JSON_HMILEVELS.put(HMILevel.HMI_BACKGROUND);
 
@@ -1210,6 +1261,23 @@ public class Test {
 			JSON_IMAGEFIELD.put(ImageField.KEY_NAME, ImageFieldName.graphic);
 			JSON_IMAGEFIELDS.put(JSON_IMAGEFIELD);
 
+			JSON_WINDOW_TYPE_CAPABILITIES.put(WindowTypeCapabilities.KEY_TYPE, GENERAL_WINDOW_TYPE);
+			JSON_WINDOW_TYPE_CAPABILITIES.put(WindowTypeCapabilities.KEY_MAXIMUM_NUMBER_OF_WINDOWS, GENERAL_INT);
+			JSON_WINDOW_TYPE_CAPABILITIES_LIST.put(JSON_WINDOW_TYPE_CAPABILITIES);
+
+			JSON_IMAGE_TYPES.put(ImageType.DYNAMIC);
+			JSON_IMAGE_TYPES.put(ImageType.STATIC);
+
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_WINDOW_ID, GENERAL_INT);
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_TEXT_FIELDS, JSON_TEXTFIELDS);
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_IMAGE_FIELDS, JSON_IMAGEFIELDS);
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_IMAGE_TYPE_SUPPORTED, JSON_IMAGE_TYPES);
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_TEMPLATES_AVAILABLE, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_NUM_CUSTOM_PRESETS_AVAILABLE, GENERAL_INT);
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_BUTTON_CAPABILITIES, JSON_BUTTONCAPABILITIES);
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_SOFT_BUTTON_CAPABILITIES, JSON_SOFTBUTTONCAPABILITIES);
+			JSON_WINDOW_CAPABILITIES.put(JSON_WINDOW_CAPABILITY);
+
 			JSONObject jsonTEC = new JSONObject();
 			jsonTEC.put(TouchEventCapabilities.KEY_DOUBLE_PRESS_AVAILABLE, GENERAL_BOOLEAN);
 			jsonTEC.put(TouchEventCapabilities.KEY_MULTI_TOUCH_AVAILABLE, GENERAL_BOOLEAN);
@@ -1227,6 +1295,11 @@ public class Test {
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_SCREEN_PARAMS, JSON_SCREENPARAMS);
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_TEXT_FIELDS, JSON_TEXTFIELDS);
+
+			JSON_DISPLAYCAPABILITY.put(DisplayCapability.KEY_DISPLAY_NAME, GENERAL_STRING);
+			JSON_DISPLAYCAPABILITY.put(DisplayCapability.KEY_WINDOW_TYPE_SUPPORTED, JSON_WINDOW_TYPE_CAPABILITIES_LIST);
+			JSON_DISPLAYCAPABILITY.put(DisplayCapability.KEY_WINDOW_CAPABILITIES, JSON_WINDOW_CAPABILITIES);
+			JSON_DISPLAYCAPABILITY_LIST.put(JSON_DISPLAYCAPABILITY);
 
 			JSON_TOUCHCOORD.put(TouchCoord.KEY_X, GENERAL_INT);
 			JSON_TOUCHCOORD.put(TouchCoord.KEY_Y, GENERAL_INT);

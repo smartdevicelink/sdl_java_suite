@@ -41,10 +41,12 @@ import com.smartdevicelink.proxy.rpc.ButtonPressResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
 import com.smartdevicelink.proxy.rpc.CloseApplicationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
+import com.smartdevicelink.proxy.rpc.CreateWindowResponse;
 import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
 import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSetResponse;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.DeleteWindowResponse;
 import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
 import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
@@ -389,6 +391,10 @@ public interface IProxyListenerBase {
 	public void onGetSystemCapabilityResponse(GetSystemCapabilityResponse response);
 
 	public void onGetInteriorVehicleDataResponse(GetInteriorVehicleDataResponse response);
+
+	public void onCreateWindowResponse(CreateWindowResponse response);
+
+	public void onDeleteWindowResponse(DeleteWindowResponse response);
 
 	public void onButtonPressResponse(ButtonPressResponse response);
 
