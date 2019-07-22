@@ -200,6 +200,22 @@ public class ButtonNameTests extends TestCase {
 		enumTestList.add(ButtonName.SHUFFLE);
 		enumTestList.add(ButtonName.REPEAT);
 		enumTestList.add(ButtonName.PLAY_PAUSE);
+		enumTestList.add(ButtonName.NAV_CENTER_LOCATION);
+		enumTestList.add(ButtonName.NAV_ZOOM_IN);
+		enumTestList.add(ButtonName.NAV_ZOOM_OUT);
+		enumTestList.add(ButtonName.NAV_PAN_UP);
+		enumTestList.add(ButtonName.NAV_PAN_UP_RIGHT);
+		enumTestList.add(ButtonName.NAV_PAN_RIGHT);
+		enumTestList.add(ButtonName.NAV_PAN_DOWN_RIGHT);
+		enumTestList.add(ButtonName.NAV_PAN_DOWN);
+		enumTestList.add(ButtonName.NAV_PAN_DOWN_LEFT);
+		enumTestList.add(ButtonName.NAV_PAN_LEFT);
+		enumTestList.add(ButtonName.NAV_PAN_UP_LEFT);
+		enumTestList.add(ButtonName.NAV_TILT_TOGGLE);
+		enumTestList.add(ButtonName.NAV_ROTATE_CLOCKWISE);
+		enumTestList.add(ButtonName.NAV_ROTATE_COUNTERCLOCKWISE);
+		enumTestList.add(ButtonName.NAV_HEADING_TOGGLE);
+
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
