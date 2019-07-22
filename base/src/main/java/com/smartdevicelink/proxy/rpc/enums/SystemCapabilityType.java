@@ -281,7 +281,30 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
+	@Deprecated
     DISPLAY (false),
+
+	/**
+	 * Available Synchronously reflecting the last known capabilities of all displays and all windows.
+	 * Returns: List&lt;DisplayCapability&gt;
+	 * <table border="1" rules="all">
+	 * 		<tr>
+	 * 			<th>Enum Name</th>
+	 * 			<th>Return Type</th>
+	 * 			<th>Description</th>
+	 * 			<th>Requires Async?</th>
+	 * 			<th>Notes</th>
+	 * 		</tr>
+	 * 		<tr>
+	 * 			<td>DISPLAYS</td>
+	 * 			<td>List&lt;DisplayCapability&gt;</td>
+	 * 			<td>Returns List of DisplayCapability</td>
+	 * 			<td align=center>N</td>
+	 * 			<td>Available Synchronously</td>
+	 * 		</tr>
+	 * 	</table>
+	 */
+	DISPLAYS(true),
 
 	/**
 	 * Available Synchronously after Register App Interface response <br>
