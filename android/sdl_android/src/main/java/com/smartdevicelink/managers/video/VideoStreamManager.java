@@ -451,8 +451,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					if(resolution != null){
 						DisplayMetrics displayMetrics = new DisplayMetrics();
 						disp.getMetrics(displayMetrics);
-						touchScalar[0] = ((float)displayMetrics.widthPixels) / resolution.getResolutionWidth();
-						touchScalar[1] = ((float)displayMetrics.heightPixels) / resolution.getResolutionHeight();
+						createTouchScalar(resolution, displayMetrics);
                     }
 
 				}
