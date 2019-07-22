@@ -32,6 +32,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.util.SdlDataTypeConverter;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -45,6 +46,9 @@ public class VideoStreamingCapability extends RPCStruct {
 	public static final String KEY_MAX_BITRATE = "maxBitrate";
 	public static final String KEY_SUPPORTED_FORMATS = "supportedFormats";
 	public static final String KEY_HAPTIC_SPATIAL_DATA_SUPPORTED = "hapticSpatialDataSupported";
+	public static final String KEY_DIAGONAL_SCREEN_SIZE = "diagonalScreenSize";
+	public static final String KEY_PIXEL_PER_INCH = "pixelPerInch";
+	public static final String KEY_SCALE = "scale";
 
 	public VideoStreamingCapability(){}
 	public VideoStreamingCapability(Hashtable<String, Object> hash){super(hash);}
@@ -91,5 +95,32 @@ public class VideoStreamingCapability extends RPCStruct {
 
 	public void setIsHapticSpatialDataSupported(Boolean hapticSpatialDataSupported) {
 		setValue(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, hapticSpatialDataSupported);
+	}
+
+	public Double getDiagonalScreenSize() {
+	    Object object = getValue(KEY_DIAGONAL_SCREEN_SIZE);
+		return SdlDataTypeConverter.objectToDouble(object);
+	}
+
+	public void setDiagonalScreenSize(Double diagonalScreenSize) {
+		setValue(KEY_DIAGONAL_SCREEN_SIZE, diagonalScreenSize);
+	}
+
+	public Double getPixelPerInch() {
+	    Object object = getValue(KEY_PIXEL_PER_INCH);
+	    return SdlDataTypeConverter.objectToDouble(object);
+	}
+
+	public void setPixelPerInch(Double pixelPerInch) {
+		setValue(KEY_PIXEL_PER_INCH, pixelPerInch);
+	}
+
+	public Double getScale() {
+	    Object object = getValue(KEY_SCALE);
+	    return SdlDataTypeConverter.objectToDouble(object);
+	}
+
+	public void setScale(Double scale) {
+		setValue(KEY_SCALE, scale);
 	}
 }

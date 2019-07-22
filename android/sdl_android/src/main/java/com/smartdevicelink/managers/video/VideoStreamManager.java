@@ -453,7 +453,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 						disp.getMetrics(displayMetrics);
 						touchScalar[0] = ((float)displayMetrics.widthPixels) / resolution.getResolutionWidth();
 						touchScalar[1] = ((float)displayMetrics.heightPixels) / resolution.getResolutionHeight();
-					}
+                    }
 
 				}
 
@@ -498,6 +498,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			}
 		}
 	}
+
+    void createTouchScalar(ImageResolution resolution, DisplayMetrics displayMetrics) {
+        touchScalar[0] = ((float)displayMetrics.widthPixels) / resolution.getResolutionWidth();
+        touchScalar[1] = ((float)displayMetrics.heightPixels) / resolution.getResolutionHeight();
+    }
 
 	List<MotionEvent> convertTouchEvent(OnTouchEvent onTouchEvent){
 		List<MotionEvent> motionEventList = new ArrayList<MotionEvent>();
