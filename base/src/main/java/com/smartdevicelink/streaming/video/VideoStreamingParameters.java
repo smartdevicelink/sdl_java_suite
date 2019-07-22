@@ -50,7 +50,7 @@ public class VideoStreamingParameters {
 	private final int DEFAULT_FRAMERATE = 30;
 	private final int DEFAULT_BITRATE = 512000;
 	private final int DEFAULT_INTERVAL = 5;
-	private final double DEFAULT_SCALE = 1.0;
+	private final static double DEFAULT_SCALE = 1.0;
 
 
 	private int displayDensity;
@@ -75,6 +75,13 @@ public class VideoStreamingParameters {
 	    format.setCodec(DEFAULT_CODEC);
     }
 
+
+    @Deprecated
+    public VideoStreamingParameters(int displayDensity, int frameRate, int bitrate, int interval,
+                                    ImageResolution resolution, VideoStreamingFormat format){
+        this(displayDensity, frameRate, bitrate, interval, DEFAULT_SCALE, resolution, format);
+    }
+
     public VideoStreamingParameters(int displayDensity, int frameRate, int bitrate, int interval,
                                     double scale, ImageResolution resolution,
                                     VideoStreamingFormat format){
@@ -86,6 +93,8 @@ public class VideoStreamingParameters {
 	    this.resolution = resolution;
 	    this.format = format;
     }
+
+
 
     /**
      * Will only copy values that are not null or are greater than 0
