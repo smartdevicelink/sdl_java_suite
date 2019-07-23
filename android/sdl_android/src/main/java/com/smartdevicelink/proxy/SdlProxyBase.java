@@ -1787,6 +1787,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 		
 		_proxyDisposed = true;
+		mRPCSecuredServiceStarted = false;
 		
 		SdlTrace.logProxyEvent("Application called dispose() method.", SDL_LIB_TRACE_KEY);
 		
@@ -2133,29 +2134,29 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private ISdlServiceListener mRPCSecuredServiceListener = new ISdlServiceListener() {
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
-			if(SessionType.RPC.equals(type) && session != null ){
-				Log.v(TAG, "onServiceStarted, sessionID: " + session.getSessionId() + ", session Type: " + type.getName()
-						+ ", isEncrypted: " + isEncrypted);
+			if(SessionType.RPC.equals(type) && session != null && isEncrypted){
 				mRPCSecuredServiceStarted = isEncrypted;
 			}
+			Log.v(TAG, "onServiceStarted, session id: " + (session == null ? "session NULL" : session.getSessionId()
+					+ ", session Type: " + type.getName()) + ", isEncrypted: " + isEncrypted);
 		}
 
 		@Override
 		public void onServiceEnded(SdlSession session, SessionType type) {
-			if (session != null) {
-				Log.v(TAG, "onServiceEnded, sessionID: " + session.getSessionId() + ", session Type: " + type.getName());
-			} else {
-				Log.v(TAG, "onServiceEnded, session NULL");
+			if (SessionType.RPC.equals(type) && session != null) {
+				mRPCSecuredServiceStarted = false;
 			}
+			Log.v(TAG, "onServiceEnded, session id: " + (session == null ? "session NULL" : session.getSessionId()
+					+ ", session Type: " + type.getName()));
 		}
 
 		@Override
 		public void onServiceError(SdlSession session, SessionType type, String reason) {
-			if (session != null) {
-				Log.v(TAG, "onServiceError, sessionID: " + session.getSessionId() + ", session Type: " + type.getName());
-			} else {
-				Log.v(TAG, "onServiceError, session NULL");
+			if (SessionType.RPC.equals(type) && session != null) {
+				mRPCSecuredServiceStarted = false;
 			}
+			Log.v(TAG, "onServiceError, session id: " + (session == null ? "session NULL" : session.getSessionId()
+					+ ", session Type: " + type.getName()));
 		}
 	};
 
