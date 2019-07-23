@@ -279,6 +279,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			return;
 		}
 
+		// In the future, when the manager is switched to use queues, the menuConfiguration should be set when SetGlobalProperties response is received
 		this.menuConfiguration = menuConfiguration;
 		
 		SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
