@@ -52,6 +52,7 @@ import java.util.List;
 public class SoftButtonObject {
 
     private static final String TAG = "SoftButtonObject";
+    static int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
     private String name;
     private List<SoftButtonState> states;
     private String currentStateName;
@@ -78,7 +79,7 @@ public class SoftButtonObject {
         this.name = name;
         this.states = states;
         currentStateName = initialStateName;
-        this.buttonId = 0;
+        this.buttonId = SOFT_BUTTON_ID_NOT_SET_VALUE;
         this.onEventListener = onEventListener;
     }
 
@@ -268,6 +269,10 @@ public class SoftButtonObject {
      * @param buttonId an int value that represents the id of the SoftButtonObject
      */
     public void setButtonId(int buttonId) {
+        if (buttonId < 0){
+            Log.e(TAG, "buttonId has to be more than 0");
+            return;
+        }
         this.buttonId = buttonId;
     }
 

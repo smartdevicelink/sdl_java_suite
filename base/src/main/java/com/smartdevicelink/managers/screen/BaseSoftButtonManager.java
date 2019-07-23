@@ -62,6 +62,8 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -269,16 +271,40 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         }
 
 
+        // Check if two soft button objects have the same name
         if (hasTwoSoftButtonObjectsOfSameName(softButtonObjects)) {
             this.softButtonObjects = new CopyOnWriteArrayList<>();
             Log.e(TAG, "Attempted to set soft button objects, but two buttons had the same name");
             return;
         }
 
+
+        // Check if two soft button objects have the same id
+        HashSet<Integer> buttonIdsSetByDevHashSet = new HashSet<>();
+        int currentSoftButtonId, numberOfButtonIdsSetByDev = 0;
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            currentSoftButtonId = softButtonObject.getButtonId();
+            if (currentSoftButtonId != SoftButtonObject.SOFT_BUTTON_ID_NOT_SET_VALUE) {
+                numberOfButtonIdsSetByDev++;
+                buttonIdsSetByDevHashSet.add(softButtonObject.getButtonId());
+            }
+        }
+        if (numberOfButtonIdsSetByDev != buttonIdsSetByDevHashSet.size()){
+            Log.e(TAG, "Attempted to set soft button objects, but multiple buttons had the same id");
+            return;
+        }
+
+
         // Set ids and updateListeners for soft button objects
-        for (int i = 0; i < softButtonObjects.size(); i++) {
-            softButtonObjects.get(i).setButtonId(i * 100);
-            softButtonObjects.get(i).setUpdateListener(updateListener);
+        int generatedSoftButtonId = buttonIdsSetByDevHashSet.isEmpty() ? 0 : Collections.max(buttonIdsSetByDevHashSet);
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            softButtonObject.setUpdateListener(updateListener);
+
+            // If the dev did not set the buttonId, the manager should set an id on the dev's behalf
+            currentSoftButtonId = softButtonObject.getButtonId();
+            if (currentSoftButtonId == SoftButtonObject.SOFT_BUTTON_ID_NOT_SET_VALUE){
+                softButtonObject.setButtonId(++generatedSoftButtonId);
+            }
         }
         this.softButtonObjects = softButtonObjects;
 
@@ -470,7 +496,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         });
 
 
-        internalInterface.sendRPCRequest(inProgressShowRPC);
+        internalInterface.sendRPC(inProgressShowRPC);
     }
 
     private boolean softButtonImagesSupported(){

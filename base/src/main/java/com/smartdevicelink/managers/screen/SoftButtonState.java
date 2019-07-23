@@ -81,7 +81,7 @@ public class SoftButtonState {
         } else {
             type = SoftButtonType.SBT_TEXT;
         }
-        this.softButton = new SoftButton(type, 0);
+        this.softButton = new SoftButton(type, SoftButtonObject.SOFT_BUTTON_ID_NOT_SET_VALUE);
 
 
         // Set the SoftButton's image
