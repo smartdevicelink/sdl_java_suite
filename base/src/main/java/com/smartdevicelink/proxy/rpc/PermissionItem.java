@@ -129,7 +129,7 @@ public class PermissionItem extends RPCStruct {
     public Boolean getEncryptionRequirement() {
         return (Boolean) getValue(KEY_ENCRYPTION_REQUIRE);
     }
-    public void setKeyEncryptionRequirement(Boolean isRequire) {
+    public void setEncryptionRequirement(Boolean isRequire) {
         setValue(KEY_ENCRYPTION_REQUIRE, isRequire);
     }
 }
