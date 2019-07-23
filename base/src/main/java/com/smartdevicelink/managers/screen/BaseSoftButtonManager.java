@@ -444,9 +444,8 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
             public void onError(int correlationId, Result resultCode, String info) {
                 super.onError(correlationId, resultCode, info);
 
-                Log.e(TAG, "Soft button update error");
+                Log.e(TAG, "Soft button update error. resultCode: " + resultCode + ". info: " + info);
                 handleResponse(false);
-
             }
 
             private void handleResponse(boolean success){
