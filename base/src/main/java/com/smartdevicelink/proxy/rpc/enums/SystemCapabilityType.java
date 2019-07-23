@@ -281,7 +281,29 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
-    DISPLAY (false),
+	DISPLAY (false),
+
+	/**
+	 * Available Synchronously after Register App Interface response <br>
+	 * Returns: List<PrerecordedSpeech>
+	 * <table border="1" rules="all">
+	 * 		<tr>
+	 * 			<th>Enum Name</th>
+	 * 			<th>Return Type</th>
+	 * 			<th>Description</th>
+	 * 			<th>Requires Async?</th>
+	 * 			<th>Notes</th>
+	 * 		</tr>
+	 * 		<tr>
+	 * 			<td>DISPLAY</td>
+	 * 			<td>prerecordedSpeechCapabilities</td>
+	 * 			<td>Returns List<PrerecordedSpeech></td>
+	 * 			<td align=center>N</td>
+	 * 			<td>Available Synchronously <strong>after</strong> Register App Interface response received</td>
+	 * 		</tr>
+	 * 	</table>
+	 */
+	PRERECORDED_SPEECH (false),
 
 	/**
 	 * Available Synchronously after Register App Interface response <br>

@@ -30,6 +30,7 @@ import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -81,6 +82,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		raiResponse.setPresetBankCapabilities(Test.GENERAL_PRESETBANKCAPABILITIES);
 		raiResponse.setSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
 		raiResponse.setSpeechCapabilities(Test.GENERAL_SPEECHCAPABILITIES_LIST);
+		raiResponse.setPrerecordedSpeech(Test.GENERAL_PRERECORDEDSPEECH_LIST);
 		raiResponse.setSuccess(true);
 
 		systemCapabilityManager.parseRAIResponse(raiResponse);
@@ -106,6 +108,9 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 				Validator.validateSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST, (List<SoftButtonCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON)));
 		assertTrue(Test.TRUE,
 				Validator.validateSpeechCapabilities(Test.GENERAL_SPEECHCAPABILITIES_LIST, (List<SpeechCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.SPEECH)));
+		assertTrue(Test.TRUE,
+				Validator.validatePreRecordedSpeechCapabilities(Test.GENERAL_PRERECORDEDSPEECH_LIST, (List<PrerecordedSpeech>) systemCapabilityManager.getCapability(SystemCapabilityType.PRERECORDED_SPEECH)));
+
 	}
 
 	public void testGetVSCapability(){
