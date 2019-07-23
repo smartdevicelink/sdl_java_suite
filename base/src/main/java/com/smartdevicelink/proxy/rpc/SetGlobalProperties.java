@@ -33,6 +33,7 @@ package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -87,7 +88,7 @@ import java.util.List;
  * 		</tr>
  * 		<tr>
  * 			<td>vrHelp</td>
- * 			<td>VrHelep</td>
+ * 			<td>VrHelp</td>
  * 			<td>Items listed in the VR help screen used in an interaction started by PTT.</td>
  *                 <td>N</td>
  * 			<td>If omitted on supported displays, the default SDL VR help / What Can I Say? screen will be used<p>If the list of VR Help Items contains nonsequential positions (e.g. [1,2,4]), the RPC will be rejected.</p><p>If omitted and a vrHelpTitle is provided, the request will be rejected.</p>minsize:1; maxsize: 100 </td>
@@ -112,10 +113,18 @@ import java.util.List;
  * 		<tr>
  * 			<td>keyboardProperties</td>
  * 			<td>KeyboardProperties</td>
- * 			<td>On-screen keybaord configuration (if available).</td>
+ * 			<td>On-screen keyboard configuration (if available).</td>
  *                 <td>N</td>
  * 			<td></td>
  * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>menuLayout</td>
+ * 			<td>MenuLayout</td>
+ * 			<td>Sets the layout of the main menu screen. If this is sent while a menu is already on-screen, the head unit will change the display to the new layout type.</td>
+ * 			<td></td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 6.0</td>
  * 		</tr>
  *
  *  </table>
@@ -144,6 +153,7 @@ public class SetGlobalProperties extends RPCRequest {
 	public static final String KEY_HELP_PROMPT = "helpPrompt";
 	public static final String KEY_TIMEOUT_PROMPT = "timeoutPrompt";
 	public static final String KEY_VR_HELP = "vrHelp";
+	public static final String KEY_MENU_LAYOUT = "menuLayout";
 	/**
 	 * Constructs a new SetGlobalProperties object
 	 */
@@ -305,6 +315,25 @@ public class SetGlobalProperties extends RPCRequest {
     @SuppressWarnings("unchecked")
     public KeyboardProperties getKeyboardProperties() {
 		return (KeyboardProperties) getObject(KeyboardProperties.class, KEY_KEYBOARD_PROPERTIES);
-    }    
+    }
+
+	/**
+	 * Sets the layout of the main menu screen. If this is sent while a menu is already on-screen,
+	 * the head unit will change the display to the new layout type.
+	 * @param menuLayout - the menuLayout
+	 */
+	public void setMenuLayout(MenuLayout menuLayout) {
+		setParameters(KEY_MENU_LAYOUT, menuLayout);
+	}
+
+	/**
+	 * Sets the layout of the main menu screen. If this is sent while a menu is already on-screen,
+	 * the head unit will change the display to the new layout type.
+	 * @return the MenuLayout
+	 */
+	@SuppressWarnings("unchecked")
+	public MenuLayout getMenuLayout() {
+		return (MenuLayout) getObject(MenuLayout.class, KEY_MENU_LAYOUT);
+	}
     
 }
