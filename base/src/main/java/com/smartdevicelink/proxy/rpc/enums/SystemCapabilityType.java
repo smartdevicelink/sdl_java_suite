@@ -295,7 +295,7 @@ public enum SystemCapabilityType {
 	 * 			<th>Notes</th>
 	 * 		</tr>
 	 * 		<tr>
-	 * 			<td>DISPLAY</td>
+	 * 			<td>PRERECORDED_SPEECH</td>
 	 * 			<td>prerecordedSpeechCapabilities</td>
 	 * 			<td>Returns List<PrerecordedSpeech></td>
 	 * 			<td align=center>N</td>
