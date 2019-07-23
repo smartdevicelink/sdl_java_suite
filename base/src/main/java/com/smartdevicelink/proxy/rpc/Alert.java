@@ -139,7 +139,7 @@ import java.util.List;
  * 		<tr>
  * 			<td>alertIcon</td>
  * 			<td>Image</td>
- * 			<td>Image struct determining whether static or dynamic icon. If omitted on supported displays, no (or the default if applicable) icon should be displayed.</td>
+ * 			<td>Image struct determining whether the icon is static or dynamic. If omitted on supported displays, no (or the default if applicable) icon should be displayed.</td>
  *                 <td>N</td>
  * 			<td></td>
  * 			<td>SmartDeviceLink 6.0.0</td>
