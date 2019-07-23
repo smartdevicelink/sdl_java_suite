@@ -277,7 +277,7 @@ public enum SystemCapabilityType {
 	 * 			<td>DisplayCapabilities</td>
 	 * 			<td>Returns Display Capabilities</td>
 	 * 			<td align=center>N</td>
-	 * 			<td>Available Synchronously <strong>after</strong> Register App Interface response received</td>
+	 * 			<td> <strong>Since 6.0</strong> Available Synchronously <strong>after</strong> Register App Interface response received</td>
 	 * 		</tr>
 	 * 	</table>
 	 */

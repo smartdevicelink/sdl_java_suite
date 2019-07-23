@@ -5,6 +5,9 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import java.util.Hashtable;
 
+/**
+ * @since 6.0
+ */
 public class DeleteWindow extends RPCRequest {
     public static final String KEY_WINDOW_ID = "windowID";
 
@@ -27,6 +30,9 @@ public class DeleteWindow extends RPCRequest {
 
     /**
      * Constructs a new DeleteWindow object
+     *
+     * @param windowID A unique ID to identify the window. The value of '0' will always be the default main window on the main display and cannot be deleted.
+     *       See PredefinedWindows enum.
      */
     public DeleteWindow(@NonNull Integer windowID) {
         this();

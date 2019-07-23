@@ -587,6 +587,8 @@ public class Show extends RPCRequest {
 	 * See PredefinedWindows enum.
 	 *
 	 * @param windowID
+	 *
+	 * @since 6.0
 	 */
 	public void setWindowID(Integer windowID) {
 		setParameters(KEY_WINDOW_ID, windowID);
@@ -605,6 +607,8 @@ public class Show extends RPCRequest {
 	 * Gets the templateConfiguration.
 	 *
 	 * @return TemplateConfiguration
+	 *
+	 * @since 6.0
 	 */
 	@SuppressWarnings("unchecked")
 	public TemplateConfiguration getTemplateConfiguration() {

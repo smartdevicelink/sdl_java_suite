@@ -1,5 +1,8 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
+/**
+ * @since 6.0
+ */
 public enum PredefinedWindows {
     /**
      * The default window is a main window pre-created on behalf of the app.
@@ -16,7 +19,6 @@ public enum PredefinedWindows {
      * @param value String
      * @return PredefinedWindows
      */
-
     public static PredefinedWindows valueForString(String value) {
         try {
             return valueOf(value);

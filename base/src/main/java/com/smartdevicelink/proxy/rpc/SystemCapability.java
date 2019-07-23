@@ -120,6 +120,8 @@ public class SystemCapability extends RPCStruct {
 
     /**
      * set the displayCapabilities portion of SystemCapability.
+     * {@code 1<= displayCapabilities.size() <= 100}
+     *
      * @param displayCapabilities Contains a list of capabilities of display.
      */
     public void setDisplayCapabilities(List<DisplayCapability> displayCapabilities) {

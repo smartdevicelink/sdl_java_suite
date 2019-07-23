@@ -5,6 +5,9 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.WindowType;
 import java.util.Hashtable;
 
+/**
+ * @since 6.0
+ */
 public class WindowTypeCapabilities extends RPCStruct {
     public static final String KEY_TYPE = "type";
     public static final String KEY_MAXIMUM_NUMBER_OF_WINDOWS = "maximumNumberOfWindows";

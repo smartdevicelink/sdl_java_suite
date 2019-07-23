@@ -194,6 +194,7 @@ public class SoftButtonCapabilities extends RPCStruct {
     /**
      * set the text support. If not included, the default value should be considered true that the button will support text.
      * @param textSupported whether the button supports the use of text or not.
+     * @since 6.0
      */
     public void setTextSupported(Boolean textSupported) {
         setValue(KEY_TEXT_SUPPORTED, textSupported);

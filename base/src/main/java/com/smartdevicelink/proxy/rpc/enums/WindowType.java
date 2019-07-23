@@ -1,5 +1,8 @@
 package com.smartdevicelink.proxy.rpc.enums;
 
+/**
+ * @since 6.0
+ */
 public enum WindowType {
     /**
      * This window type describes the main window on a display.
@@ -16,7 +19,6 @@ public enum WindowType {
      * @param value String
      * @return WindowType
      */
-
     public static WindowType valueForString(String value) {
         try {
             return valueOf(value);

@@ -4,6 +4,9 @@ import com.smartdevicelink.proxy.RPCStruct;
 import java.util.Hashtable;
 import java.util.List;
 
+/**
+ * @since 6.0
+ */
 public class DisplayCapability extends RPCStruct {
     public static final String KEY_DISPLAY_NAME = "displayName";
     public static final String KEY_WINDOW_TYPE_SUPPORTED = "windowTypeSupported";
@@ -27,6 +30,7 @@ public class DisplayCapability extends RPCStruct {
 
     /**
      * Set the name of the display
+     * {@code displayName.length() > 1}
      *
      * @param displayName the name of the display
      */
@@ -36,6 +40,7 @@ public class DisplayCapability extends RPCStruct {
 
     /**
      * Sets the windowTypeSupported portion of the DisplayCapability class.
+     * {@code 1<= windowTypeSupported.size() <= 1000}
      *
      * @param windowTypeSupported It informs the application how many windows the app is allowed to create per type.
      */

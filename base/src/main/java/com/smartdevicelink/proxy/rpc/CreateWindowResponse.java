@@ -6,6 +6,9 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import java.util.Hashtable;
 
+/**
+ * @since 6.0
+ */
 public class CreateWindowResponse extends RPCResponse {
 
     /**

@@ -4,6 +4,9 @@ import android.support.annotation.NonNull;
 import com.smartdevicelink.proxy.RPCStruct;
 import java.util.Hashtable;
 
+/**
+ * @since 6.0
+ */
 public class TemplateConfiguration extends RPCStruct {
     public static final String KEY_TEMPLATE = "template";
     public static final String KEY_DAY_COLOR_SCHEME = "dayColorScheme";
@@ -11,6 +14,8 @@ public class TemplateConfiguration extends RPCStruct {
 
     /**
      * Constructs a new TemplateConfiguration object
+     * @param template Predefined or dynamically created window template.
+     *         Currently only predefined window template layouts are defined.
      */
     public TemplateConfiguration(@NonNull String template) {
         this();
@@ -64,7 +69,7 @@ public class TemplateConfiguration extends RPCStruct {
     /**
      * Sets the dayColorScheme.
      *
-     * @param dayColorScheme
+     * @param dayColorScheme TemplateColorScheme for the day
      */
     public void setDayColorScheme(TemplateColorScheme dayColorScheme) {
         setValue(KEY_DAY_COLOR_SCHEME, dayColorScheme);
@@ -83,7 +88,7 @@ public class TemplateConfiguration extends RPCStruct {
     /**
      * Sets the nightColorScheme.
      *
-     * @param nightColorScheme
+     * @param nightColorScheme TemplateColorScheme for the night
      */
     public void setNightColorScheme(TemplateColorScheme nightColorScheme) {
         setValue(KEY_NIGHT_COLOR_SCHEME, nightColorScheme);

@@ -5,6 +5,9 @@ import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import java.util.Hashtable;
 import java.util.List;
 
+/**
+ * @since 6.0
+ */
 public class WindowCapability extends RPCStruct {
     public static final String KEY_WINDOW_ID = "windowID";
     public static final String KEY_TEXT_FIELDS = "textFields";
@@ -52,6 +55,7 @@ public class WindowCapability extends RPCStruct {
 
     /**
      * Set an array of TextField structures. It's set of all fields that support text data.
+     * {@code 1<= textFields.size() <= 100}
      *
      * @param textFields the List of textFields
      */
@@ -71,6 +75,7 @@ public class WindowCapability extends RPCStruct {
 
     /**
      * Set an array of ImageField structures. A set of all fields that support images.
+     * {@code 1<= ImageFields.size() <= 100}
      *
      * @param imageFields the List of imageFields
      */
@@ -90,6 +95,7 @@ public class WindowCapability extends RPCStruct {
 
     /**
      * Set an array of ImageType elements.
+     * {@code 0<= imageTypeSupported.size() <= 1000}
      *
      * @param imageTypeSupported the List of ImageType
      */
@@ -109,6 +115,7 @@ public class WindowCapability extends RPCStruct {
 
     /**
      * Set an array of templatesAvailable.
+     * {@code 0<= templatesAvailable.size() <= 1000}
      *
      * @param templatesAvailable the List of String
      */
@@ -127,6 +134,7 @@ public class WindowCapability extends RPCStruct {
 
     /**
      * Sets the numCustomPresetsAvailable. The number of on-window custom presets available (if any); otherwise omitted.
+     * {@code 1<= numCustomPresetsAvailable.size() <= 100}
      *
      * @param numCustomPresetsAvailable
      */
@@ -136,6 +144,7 @@ public class WindowCapability extends RPCStruct {
 
     /**
      * Sets the buttonCapabilities portion of the WindowCapability class.
+     * {@code 1<= buttonCapabilities.size() <= 100}
      *
      * @param buttonCapabilities It refers to number of buttons and the capabilities of each on-window button.
      */
@@ -156,6 +165,7 @@ public class WindowCapability extends RPCStruct {
 
     /**
      * Sets the softButtonCapabilities portion of the WindowCapability class.
+     * {@code 1<= softButtonCapabilities.size() <= 100}
      *
      * @param softButtonCapabilities It refers to number of soft buttons available on-window and the capabilities for each button.
      */

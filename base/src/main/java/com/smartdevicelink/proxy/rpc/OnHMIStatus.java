@@ -224,6 +224,7 @@ public class OnHMIStatus extends RPCNotification {
      * @param windowID This is the unique ID assigned to the window that this RPC is intended.
      *                If this param is not included, it will be assumed that this request is specifically for the main window on the main display.
      *                See PredefinedWindows enum.
+     * @since 6.0
      */
     public void setWindowID(Integer windowID) {
         setParameters(KEY_WINDOW_ID, windowID);
@@ -231,6 +232,7 @@ public class OnHMIStatus extends RPCNotification {
     /**
      * <p>Get the windowID value</p>
      * @return Integer This is the unique ID assigned to the window that this RPC is intended.
+     * @since 6.0
      */
     public Integer getWindowID() {
         return getInteger(KEY_WINDOW_ID);
