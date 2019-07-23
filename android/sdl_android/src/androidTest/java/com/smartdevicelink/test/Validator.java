@@ -73,6 +73,8 @@ import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
 import com.smartdevicelink.proxy.rpc.SeatControlData;
+import com.smartdevicelink.proxy.rpc.SeatLocation;
+import com.smartdevicelink.proxy.rpc.SeatLocationCapability;
 import com.smartdevicelink.proxy.rpc.SeatMemoryAction;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.SisData;
@@ -3618,5 +3620,15 @@ public class Validator{
 		}
 
     	return true;
+	}
+
+	public static boolean validateSeatLocation(SeatLocation cap1, SeatLocation cap2) {
+		if (cap1 == null) {
+			return (cap2 == null);
+		}
+		if (cap2 == null) {
+			return (cap1 == null);
+		}
+		return validateGrid(cap1.getGrid(), cap2.getGrid());
 	}
 }
