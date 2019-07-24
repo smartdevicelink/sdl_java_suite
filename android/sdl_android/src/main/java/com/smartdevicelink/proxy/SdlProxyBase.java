@@ -2137,7 +2137,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if(SessionType.RPC.equals(type) && session != null && isEncrypted){
 				mRPCSecuredServiceStarted = isEncrypted;
 			}
-			Log.v(TAG, "onServiceStarted, session id: " + (session == null ? "session NULL" : session.getSessionId()
+			Log.d(TAG, "onServiceStarted, session id: " + (session == null ? "session NULL" : session.getSessionId()
 					+ ", session Type: " + type.getName()) + ", isEncrypted: " + isEncrypted);
 		}
 
@@ -2146,7 +2146,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if (SessionType.RPC.equals(type) && session != null) {
 				mRPCSecuredServiceStarted = false;
 			}
-			Log.v(TAG, "onServiceEnded, session id: " + (session == null ? "session NULL" : session.getSessionId()
+			Log.d(TAG, "onServiceEnded, session id: " + (session == null ? "session NULL" : session.getSessionId()
 					+ ", session Type: " + type.getName()));
 		}
 
@@ -2155,7 +2155,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if (SessionType.RPC.equals(type) && session != null) {
 				mRPCSecuredServiceStarted = false;
 			}
-			Log.v(TAG, "onServiceError, session id: " + (session == null ? "session NULL" : session.getSessionId()
+			Log.d(TAG, "onServiceError, session id: " + (session == null ? "session NULL" : session.getSessionId()
 					+ ", session Type: " + type.getName()));
 		}
 	};
