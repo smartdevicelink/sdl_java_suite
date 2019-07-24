@@ -74,7 +74,7 @@ import java.util.Hashtable;
 public class VehicleDataResult extends RPCStruct {
 	public static final String KEY_DATA_TYPE = "dataType";
 	public static final String KEY_RESULT_CODE = "resultCode";
-	public static final String KEY_CUSTOM_DATA_TYPE = "customDataType";
+	public static final String KEY_OEM_CUSTOM_DATA_TYPE = "oemCustomDataType";
 
 	public VehicleDataResult() { }
 	  /**
@@ -94,7 +94,6 @@ public class VehicleDataResult extends RPCStruct {
 	 * @param dataType Defined published data element type.
 	 * @param resultCode Published data result code.
 	 */
-	@Deprecated
 	public VehicleDataResult(@NonNull VehicleDataType dataType, @NonNull VehicleDataResultCode resultCode){
     	this();
     	setDataType(dataType);
@@ -103,21 +102,19 @@ public class VehicleDataResult extends RPCStruct {
 
 	/**
 	 * Individual published data request result.
-	 * @param customDataType Custom published data element type.
+	 * @param oemCustomDataType Custom published data element type.
 	 * @param resultCode Published data result code.
 	 */
-	public VehicleDataResult(@NonNull String customDataType, @NonNull VehicleDataResultCode resultCode){
+	public VehicleDataResult(@NonNull String oemCustomDataType, @NonNull VehicleDataResultCode resultCode){
 		this();
-		setCustomDataType(customDataType);
+		setOEMCustomVehicleDataType(oemCustomDataType);
 		setResultCode(resultCode);
 	}
 
-	@Deprecated
 	public void setDataType(@NonNull VehicleDataType dataType) {
 		setValue(KEY_DATA_TYPE, dataType);
 	}
 
-	@Deprecated
 	public VehicleDataType getDataType() {
 		return (VehicleDataType) getObject(VehicleDataType.class, KEY_DATA_TYPE);
 	}
@@ -128,11 +125,11 @@ public class VehicleDataResult extends RPCStruct {
         return (VehicleDataResultCode) getObject(VehicleDataResultCode.class, KEY_RESULT_CODE);
     }
 
-	public void setCustomDataType(@NonNull String customDataType) {
-		setValue(KEY_CUSTOM_DATA_TYPE, customDataType);
+	public void setOEMCustomVehicleDataType(@NonNull String oemCustomDataType) {
+		setValue(KEY_OEM_CUSTOM_DATA_TYPE, oemCustomDataType);
 	}
 
-	public String getCustomDataType() {
-		return (String) getObject(String.class, KEY_CUSTOM_DATA_TYPE);
+	public String getOEMCustomVehicleDataType() {
+		return (String) getObject(String.class, KEY_OEM_CUSTOM_DATA_TYPE);
 	}
 }

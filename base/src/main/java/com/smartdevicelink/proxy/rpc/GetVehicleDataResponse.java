@@ -375,11 +375,11 @@ public class GetVehicleDataResponse extends RPCResponse {
 
 
     /**
-     * Sets a value for generic VehicleData.
+     * Sets a value for OEM Custom VehicleData.
      * @param vehicleDataName a String value
      * @param vehicleDataState a VehicleDataResult value
      */
-    public void setGenericNetworkData(String vehicleDataName, Object vehicleDataState){
+    public void setOEMCustomVehicleData(String vehicleDataName, Object vehicleDataState){
         setParameters(vehicleDataName, vehicleDataState);
     }
 
@@ -387,7 +387,7 @@ public class GetVehicleDataResponse extends RPCResponse {
      * Gets a VehicleData value for the vehicle data item.
      * @return a Object related to the vehicle data
      */
-    public Object getGenericNetworkData(String vehicleDataName){
+    public Object getOEMCustomVehicleData(String vehicleDataName){
         return getParameters(vehicleDataName);
     }
 }

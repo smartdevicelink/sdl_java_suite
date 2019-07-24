@@ -518,11 +518,11 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     }
 
     /**
-     * Sets a value for generic VehicleData.
+     * Sets a value for OEM Custom VehicleData.
      * @param vehicleDataName a String value
      * @param vehicleDataState a VehicleDataResult value
      */
-    public void setGenericNetworkData(String vehicleDataName, VehicleDataResult vehicleDataState){
+    public void setOEMCustomVehicleData(String vehicleDataName, VehicleDataResult vehicleDataState){
         setParameters(vehicleDataName, vehicleDataState);
     }
 
@@ -530,7 +530,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets a VehicleDataResult for the vehicle data item.
      * @return a VehicleDataResult related to the vehicle data
      */
-    public VehicleDataResult getGenericNetworkData(String vehicleDataName){
+    public VehicleDataResult getOEMCustomVehicleData(String vehicleDataName){
         return (VehicleDataResult) getObject(VehicleDataResult.class, vehicleDataName);
     }
 }
