@@ -267,7 +267,8 @@ public class SoftButtonObject {
 
     /**
      * Sets the id of the SoftButtonObject <br>
-     * <strong>Note: This may be overridden by the Screen Manager</strong>
+     * <strong>Note: If the developer did not set buttonId, the manager will automatically assign an id before the SoftButtons are sent to the head unit.
+     * Please note that the manager may reuse ids from previous batch of SoftButtons that were already sent to the head unit</strong>
      * @param buttonId an int value that represents the id of the SoftButtonObject
      */
     public void setButtonId(int buttonId) {
