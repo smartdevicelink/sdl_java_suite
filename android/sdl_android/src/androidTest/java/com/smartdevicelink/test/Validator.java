@@ -2385,7 +2385,7 @@ public class Validator{
             return false;
         }
 
-        if ( item1.getEncryptionRequirement() != item2.getEncryptionRequirement()) {
+        if(item1.getEncryptionRequirement() != item2.getEncryptionRequirement()) {
         	return false;
 		}
 
