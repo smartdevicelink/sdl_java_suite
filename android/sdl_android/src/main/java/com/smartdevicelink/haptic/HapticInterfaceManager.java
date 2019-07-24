@@ -61,8 +61,8 @@ public class HapticInterfaceManager {
      */
     public void setHapticData(List<HapticRect> hapticData) {
         userHapticData = hapticData;
-        ISdl proxy = proxyHolder.get();
-        if (proxy != null) {
+        if(proxyHolder.get() != null) {
+            ISdl proxy = proxyHolder.get();
             SendHapticData msg = new SendHapticData();
             msg.setHapticRectData(userHapticData);
             proxy.sendRPCRequest(msg);
@@ -77,15 +77,17 @@ public class HapticInterfaceManager {
      *          the root or parent View
      */
     public void refreshHapticData(View root) {
-        ISdl proxy = proxyHolder.get();
-        if ((userHapticData == null) && (proxy != null)) {
-            List<HapticRect> hapticRects = new ArrayList<>();
-            findHapticRects(root, hapticRects);
+        if(proxyHolder.get() != null) {
+            ISdl proxy = proxyHolder.get();
+            if (userHapticData == null) {
+                List<HapticRect> hapticRects = new ArrayList<>();
+                findHapticRects(root, hapticRects);
 
-            SendHapticData msg = new SendHapticData();
-            msg.setHapticRectData(hapticRects);
+                SendHapticData msg = new SendHapticData();
+                msg.setHapticRectData(hapticRects);
 
-            proxy.sendRPCRequest(msg);
+                proxy.sendRPCRequest(msg);
+            }
         }
     }
 
@@ -94,9 +96,9 @@ public class HapticInterfaceManager {
         getFocusableViews(root, focusables);
 
         double scale = 1.0;
-        ISdl proxy = proxyHolder.get();
 
-        if (proxy != null) {
+        if (proxyHolder.get() != null) {
+            ISdl proxy = proxyHolder.get();
             VideoStreamingCapability videoStreamingCapability = (VideoStreamingCapability)
                     proxy.getCapability(SystemCapabilityType.VIDEO_STREAMING);
             if (videoStreamingCapability != null && videoStreamingCapability.getScale() != null) {
