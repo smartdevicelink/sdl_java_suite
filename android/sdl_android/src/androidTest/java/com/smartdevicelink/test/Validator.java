@@ -367,7 +367,7 @@ public class Validator{
         return validateImage(button1.getImage(), button2.getImage())
                 && validateText(button1.getText(), button2.getText())
                 && button1.getIsHighlighted() == button2.getIsHighlighted()
-                && button1.getSoftButtonID() == button2.getSoftButtonID()
+                && ( (button1 .getSoftButtonID() == null && button2.getSoftButtonID() == null) || button1.getSoftButtonID().equals(button2.getSoftButtonID()))
                 && button1.getSystemAction() == button2.getSystemAction()
                 && button1.getType() == button2.getType();
     }

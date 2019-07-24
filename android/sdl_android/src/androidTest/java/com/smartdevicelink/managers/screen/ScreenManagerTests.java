@@ -139,17 +139,19 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		SoftButtonState softButtonState1 = new SoftButtonState("object1-state1", "it is", testArtwork);
 		SoftButtonState softButtonState2 = new SoftButtonState("object1-state2", "Wed", testArtwork);
 		SoftButtonObject softButtonObject1 = new SoftButtonObject("object1", Arrays.asList(softButtonState1, softButtonState2), softButtonState1.getName(),null);
+		softButtonObject1.setButtonId(100);
 
 		// Create softButtonObject2
 		SoftButtonState softButtonState3 = new SoftButtonState("object2-state1", "my", testArtwork);
 		SoftButtonState softButtonState4 = new SoftButtonState("object2-state2", "dudes!", null);
 		SoftButtonObject softButtonObject2 = new SoftButtonObject("object2", Arrays.asList(softButtonState3, softButtonState4), softButtonState3.getName(), null);
+		softButtonObject2.setButtonId(200);
 
 		List<SoftButtonObject> softButtonObjects = Arrays.asList(softButtonObject1, softButtonObject2);
 		screenManager.setSoftButtonObjects(Arrays.asList(softButtonObject1, softButtonObject2));
 		assertEquals(screenManager.getSoftButtonObjects(), softButtonObjects);
 		assertEquals(screenManager.getSoftButtonObjectByName("object2"), softButtonObject2);
-		assertEquals(screenManager.getSoftButtonObjectById(100), softButtonObject2);
+		assertEquals(screenManager.getSoftButtonObjectById(200), softButtonObject2);
 	}
 
 }
