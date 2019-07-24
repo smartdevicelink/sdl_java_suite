@@ -245,7 +245,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         assertEquals(softButtonState1, softButtonObject1.getCurrentState());
     }
 
-    public void testAssigningIdsToSoftButtonObjects(){
+    public void testAssigningIdsToSoftButtonObjects() {
         SoftButtonObject sbo1, sbo2, sbo3, sbo4, sbo5;
 
         // Case 1 - don't set id for any button (Manager should set ids automatically starting from 1 and up)
@@ -281,7 +281,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         assertEquals("SoftButtonObject id doesn't match the expected value", 500, sbo5.getButtonId());
 
 
-        // Case 23 - Set ids for some buttons (Manager shouldn't alter the ids set by developer. And it should assign ids for the ones that don't have id)
+        // Case 3 - Set ids for some buttons (Manager shouldn't alter the ids set by developer. And it should assign ids for the ones that don't have id)
         sbo1 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
         sbo1.setButtonId(50);
         sbo2 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
