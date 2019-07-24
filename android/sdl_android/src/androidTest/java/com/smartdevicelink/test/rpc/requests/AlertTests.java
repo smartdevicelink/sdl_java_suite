@@ -22,9 +22,9 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.Alert}
+ * {@link com.smartdevicelink.proxy.rpc.Alert}
  */
-public class AlertTests extends BaseRpcTests{
+public class AlertTests extends BaseRpcTests {
 
     @Override
     protected RPCMessage createMessage(){
@@ -38,6 +38,7 @@ public class AlertTests extends BaseRpcTests{
         msg.setProgressIndicator(Test.GENERAL_BOOLEAN);
         msg.setTtsChunks(Test.GENERAL_TTSCHUNK_LIST);
         msg.setSoftButtons(Test.GENERAL_SOFTBUTTON_LIST);
+        msg.setCancelID(Test.GENERAL_INTEGER);
         
         return msg;
     }
@@ -65,6 +66,7 @@ public class AlertTests extends BaseRpcTests{
             result.put(Alert.KEY_PROGRESS_INDICATOR, Test.GENERAL_BOOLEAN);
             result.put(Alert.KEY_TTS_CHUNKS, Test.JSON_TTSCHUNKS);
             result.put(Alert.KEY_SOFT_BUTTONS, Test.JSON_SOFTBUTTONS);
+            result.put(Alert.KEY_CANCEL_ID, Test.GENERAL_INTEGER);
         }catch(JSONException e){
         	fail(Test.JSON_FAIL);
         }
@@ -85,6 +87,7 @@ public class AlertTests extends BaseRpcTests{
     	boolean testProgressIndicator    = ( (Alert) msg ).getProgressIndicator();
 		List<TTSChunk> testTtsChunks     = ( (Alert) msg ).getTtsChunks();
 		List<SoftButton> testSoftButtons = ( (Alert) msg ).getSoftButtons();
+		Integer testCancelID = ( (Alert) msg ).getCancelID();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_INT, testDuration);
@@ -95,6 +98,7 @@ public class AlertTests extends BaseRpcTests{
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testProgressIndicator);
 		assertTrue(Test.TRUE, Validator.validateSoftButtons(Test.GENERAL_SOFTBUTTON_LIST, testSoftButtons));
 		assertTrue(Test.TRUE, Validator.validateTtsChunks(Test.GENERAL_TTSCHUNK_LIST, testTtsChunks));
+        assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testCancelID);
 	    	
     	// Invalid/Null Tests
         Alert msg = new Alert();
@@ -109,6 +113,7 @@ public class AlertTests extends BaseRpcTests{
         assertNull(Test.NULL, msg.getProgressIndicator());
         assertNull(Test.NULL, msg.getTtsChunks());
         assertNull(Test.NULL, msg.getSoftButtons());
+        assertNull(Test.NULL, msg.getCancelID());
     }
     
     /**
@@ -135,6 +140,7 @@ public class AlertTests extends BaseRpcTests{
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Alert.KEY_ALERT_TEXT_2), cmd.getAlertText2());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Alert.KEY_ALERT_TEXT_3), cmd.getAlertText3());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, Alert.KEY_PROGRESS_INDICATOR), cmd.getProgressIndicator());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, Alert.KEY_CANCEL_ID), cmd.getCancelID());
 			
 			JSONArray ttsChunkArray = JsonUtils.readJsonArrayFromJsonObject(parameters, Alert.KEY_TTS_CHUNKS);
 			List<TTSChunk> ttsChunkList = new ArrayList<TTSChunk>();
