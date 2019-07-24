@@ -1,0 +1,24 @@
+{
+  "request":{
+    "name":"GetInteriorVehicleDataConsent",
+    "correlationID":168,
+    "parameters":{
+      "moduleType":"CLIMATE",
+      "moduleIds" :[
+        "A0A",
+        "R0A"
+      ]
+    }
+  },
+  "response":{
+    "name":"GetInteriorVehicleDataConsent",
+    "correlationID":169,
+    "info": "Consent info",
+    "success": "true",
+    "resultCode": "SUCCESS",
+    "allowed": [
+      "true",
+      "false"
+    ]
+  }
+}
