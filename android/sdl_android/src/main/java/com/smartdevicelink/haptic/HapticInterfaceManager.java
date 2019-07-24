@@ -96,10 +96,12 @@ public class HapticInterfaceManager {
         double scale = 1.0;
         ISdl proxy = proxyHolder.get();
 
-        VideoStreamingCapability videoStreamingCapability = (VideoStreamingCapability)
-                proxy.getCapability(SystemCapabilityType.VIDEO_STREAMING);
-        if (videoStreamingCapability != null && videoStreamingCapability.getScale() != null) {
-            scale = videoStreamingCapability.getScale();
+        if (proxy != null) {
+            VideoStreamingCapability videoStreamingCapability = (VideoStreamingCapability)
+                    proxy.getCapability(SystemCapabilityType.VIDEO_STREAMING);
+            if (videoStreamingCapability != null && videoStreamingCapability.getScale() != null) {
+                scale = videoStreamingCapability.getScale();
+            }
         }
 
         int [] loc = new int[2];
