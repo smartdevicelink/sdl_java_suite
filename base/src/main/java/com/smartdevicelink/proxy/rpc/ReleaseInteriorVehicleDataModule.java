@@ -47,7 +47,7 @@ public class ReleaseInteriorVehicleDataModule extends RPCRequest {
      * Gets the Module Id of this class
      * @return the Module Ids
      */
-    public String getModuleIds() {
+    public String getModuleId() {
         return getString(KEY_MODULE_ID);
     }
 }

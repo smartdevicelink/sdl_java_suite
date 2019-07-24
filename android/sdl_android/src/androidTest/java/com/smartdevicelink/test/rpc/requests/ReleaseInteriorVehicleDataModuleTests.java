@@ -3,28 +3,25 @@ package com.smartdevicelink.test.rpc.requests;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.rpc.GetInteriorVehicleDataConsent;
+import com.smartdevicelink.proxy.rpc.ReleaseInteriorVehicleDataModule;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
-import junit.framework.TestCase;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Hashtable;
-import java.util.List;
 
-public class GetInteriorVehicleDataConsentTests extends BaseRpcTests {
+public class ReleaseInteriorVehicleDataModuleTests extends BaseRpcTests {
 
 	@Override
 	protected RPCMessage createMessage() {
-		GetInteriorVehicleDataConsent msg = new GetInteriorVehicleDataConsent();
+		ReleaseInteriorVehicleDataModule msg = new ReleaseInteriorVehicleDataModule();
 		msg.setModuleType(Test.GENERAL_MODULETYPE);
-		msg.setModuleIds(Test.GENERAL_STRING_LIST);
+		msg.setModuleId(Test.GENERAL_STRING);
 		return msg;
 	}
 
@@ -32,8 +29,8 @@ public class GetInteriorVehicleDataConsentTests extends BaseRpcTests {
 	protected JSONObject getExpectedParameters(int sdlVersion) {
 		JSONObject result = new JSONObject();
 		try {
-			result.put(GetInteriorVehicleDataConsent.KEY_MODULE_TYPE, Test.GENERAL_MODULETYPE);
-			result.put(GetInteriorVehicleDataConsent.KEY_MODULE_ID, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));
+			result.put(ReleaseInteriorVehicleDataModule.KEY_MODULE_TYPE, Test.GENERAL_MODULETYPE);
+			result.put(ReleaseInteriorVehicleDataModule.KEY_MODULE_ID, Test.GENERAL_STRING);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -42,27 +39,26 @@ public class GetInteriorVehicleDataConsentTests extends BaseRpcTests {
 
 	@Override
 	protected String getCommandType() {
-		return FunctionID.GET_INTERIOR_VEHICLE_DATA_CONSENT.toString();
+		return FunctionID.RELEASE_INTERIOR_VEHICLE_MODULE.toString();
 	}
 
 	@Override
-	protected String getMessageType(){
+	protected String getMessageType() {
 		return RPCMessage.KEY_REQUEST;
 	}
 
 	public void testRpcValues() {
-		ModuleType type = ((GetInteriorVehicleDataConsent) msg).getModuleType();
-		List<String> ids = ((GetInteriorVehicleDataConsent) msg).getModuleIds();
+		ModuleType type = ((ReleaseInteriorVehicleDataModule) msg).getModuleType();
+		String id = ((ReleaseInteriorVehicleDataModule) msg).getModuleId();
 
 		//valid tests
 		assertEquals(Test.MATCH, Test.GENERAL_MODULETYPE, type);
-		assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST, ids);
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, id);
 
 		//null tests
-		GetInteriorVehicleDataConsent msg = new GetInteriorVehicleDataConsent();
+		ReleaseInteriorVehicleDataModule msg = new ReleaseInteriorVehicleDataModule();
 		assertNull(Test.NULL, msg.getModuleType());
-		assertNull(Test.NULL, msg.getModuleIds());
-
+		assertNull(Test.NULL, msg.getModuleId());
 	}
 
 	public void testJsonConstructor() {
@@ -71,7 +67,7 @@ public class GetInteriorVehicleDataConsentTests extends BaseRpcTests {
 
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
-			GetInteriorVehicleDataConsent cmd = new GetInteriorVehicleDataConsent(hash);
+			ReleaseInteriorVehicleDataModule cmd = new ReleaseInteriorVehicleDataModule(hash);
 
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
 			assertNotNull(Test.NOT_NULL, body);
@@ -80,12 +76,10 @@ public class GetInteriorVehicleDataConsentTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetInteriorVehicleDataConsent.KEY_MODULE_TYPE).toString(), cmd.getModuleType().toString());
-			assertEquals(Test.MATCH, JsonUtils.readStringListFromJsonObject(parameters, GetInteriorVehicleDataConsent.KEY_MODULE_ID), cmd.getModuleIds());
+			assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, ReleaseInteriorVehicleDataModule.KEY_MODULE_TYPE).toString(), cmd.getModuleType().toString());
+			assertEquals(Test.MATCH, JsonUtils.readStringListFromJsonObject(parameters, ReleaseInteriorVehicleDataModule.KEY_MODULE_ID), cmd.getModuleId());
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
 	}
-
-
 }
