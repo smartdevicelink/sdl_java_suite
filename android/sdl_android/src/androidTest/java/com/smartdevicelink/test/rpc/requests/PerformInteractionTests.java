@@ -147,7 +147,6 @@ public class PerformInteractionTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformInteraction.KEY_INTERACTION_MODE), cmd.getInteractionMode().toString());
 			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PerformInteraction.KEY_CANCEL_ID), cmd.getCancelID());
 
-
 			List<Integer> interactionIDList = JsonUtils.readIntegerListFromJsonObject(parameters, PerformInteraction.KEY_INTERACTION_CHOICE_SET_ID_LIST);
 			List<Integer> testIDList = cmd.getInteractionChoiceSetIDList();
 			assertEquals(Test.MATCH, interactionIDList.size(), testIDList.size());

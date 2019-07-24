@@ -99,6 +99,14 @@ import java.util.List;
  * 			<td>Minvalue=0; Maxvalue=65535; Defvalue= 10000</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>cancelID</td>
+ * 			<td>Integer</td>
+ * 			<td>An ID for this specific slider to allow cancellation through the `CancelInteraction` RPC.</td>
+ *          <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 6.0</td>
+ * 		</tr>
  *  </table>
 *<p><b>Response </b></p>
 *
@@ -124,6 +132,8 @@ public class Slider extends RPCRequest {
 	public static final String KEY_SLIDER_FOOTER = "sliderFooter";
 	public static final String KEY_POSITION = "position";
 	public static final String KEY_TIMEOUT = "timeout";
+	public static final String KEY_CANCEL_ID = "cancelID";
+
 	/**
 	 * Constructs a new Slider object
 	 */
@@ -263,4 +273,26 @@ public class Slider extends RPCRequest {
     public Integer getTimeout() {
     	return getInteger(KEY_TIMEOUT);
     }
+
+	/**
+	 * Gets an Integer value representing the cancel ID
+	 *
+	 * @return Integer - An Integer value representing the ID for this specific slider to allow cancellation through the `CancelInteraction` RPC.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	public Integer getCancelID() {
+		return getInteger(KEY_CANCEL_ID);
+	}
+
+	/**
+	 * Sets the cancel ID
+	 *
+	 * @param cancelID An Integer ID for this specific slider to allow cancellation through the `CancelInteraction` RPC.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	public void setCancelID(Integer cancelID) {
+		setParameters(KEY_CANCEL_ID, cancelID);
+	}
 }
