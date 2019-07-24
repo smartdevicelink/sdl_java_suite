@@ -44,6 +44,7 @@ import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
 import com.smartdevicelink.proxy.rpc.ButtonPressResponse;
+import com.smartdevicelink.proxy.rpc.CancelInteractionResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
 import com.smartdevicelink.proxy.rpc.CloseApplicationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
@@ -608,7 +609,8 @@ public class ProxyBridge implements IProxyListener{
 	public void onGetCloudAppProperties(GetCloudAppPropertiesResponse response) {
 		onRPCReceived(response);
 	}
-@Override
+
+	@Override
 	public void onPublishAppServiceResponse(PublishAppServiceResponse response){
 		onRPCReceived(response);
 	}
@@ -640,6 +642,11 @@ public class ProxyBridge implements IProxyListener{
 
 	@Override
 	public void onCloseApplicationResponse(CloseApplicationResponse response) {
+		onRPCReceived(response);
+	}
+
+	@Override
+	public void onCancelInteractionResponse(CancelInteractionResponse response) {
 		onRPCReceived(response);
 	}
 }
