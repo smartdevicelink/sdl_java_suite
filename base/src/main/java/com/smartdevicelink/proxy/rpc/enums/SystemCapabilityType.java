@@ -148,6 +148,13 @@ package com.smartdevicelink.proxy.rpc.enums;
  * 			<td align=center>N</td>
  * 			<td>Available Asynchronously, Call is synchronous <strong>after</strong> initial call</td>
  * 		</tr>
+ * 	   <tr>
+ * 	       <td>SEAT_LOCATION</td>
+ * 	       <td>SeatLocationCapability</td>
+ * 	       <td>Returns SEAT_LOCATION</td>
+ * 	       <td align=center>N</td>
+ * 	       <td>Available Asynchronously, Call is synchronous <strong>after</strong> initial call</strong></td>
+ * 	   </tr>
  * 	</table>
  *
  */
@@ -486,9 +493,9 @@ public enum SystemCapabilityType {
 	 * 			<th>Notes</th>
 	 * 		</tr>
 	 * 		<tr>
-	 * 			<td>APP_SERVICES</td>
-	 * 			<td>AppServicesCapabilities</td>
-	 * 			<td>Returns APP_SERVICES</td>
+	 * 			<td>SEAT_LOCATION</td>
+	 * 			<td>SeatLocationCapability</td>
+	 * 			<td>Returns SEAT_LOCATION</td>
 	 * 			<td align=center>N</td>
 	 * 			<td>Available Asynchronously, Call is synchronous <strong>after</strong> initial call</td>
 	 * 		</tr>
