@@ -102,6 +102,7 @@ import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
 
@@ -3548,6 +3549,15 @@ public class Validator{
 	}
 
 	public static boolean validateSpeechCapabilities(List<SpeechCapabilities> spA, List<SpeechCapabilities> spB){
+		for(int i = 0; i < spA.size(); i++){
+			if(!spA.get(i).equals(spB.get(i))){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean validatePreRecordedSpeechCapabilities(List<PrerecordedSpeech> spA, List<PrerecordedSpeech> spB){
 		for(int i = 0; i < spA.size(); i++){
 			if(!spA.get(i).equals(spB.get(i))){
 				return false;
