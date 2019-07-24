@@ -296,7 +296,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
 
         // Set ids and updateListeners for soft button objects
-        int generatedSoftButtonId = buttonIdsSetByDevHashSet.isEmpty() ? SoftButtonObject.SOFT_BUTTON_ID_MIN_VALUE : Collections.max(buttonIdsSetByDevHashSet);;
+        int generatedSoftButtonId = buttonIdsSetByDevHashSet.isEmpty() ? SoftButtonObject.SOFT_BUTTON_ID_MIN_VALUE : Collections.max(buttonIdsSetByDevHashSet);
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             softButtonObject.setUpdateListener(updateListener);
 
