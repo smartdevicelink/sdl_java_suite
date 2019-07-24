@@ -411,7 +411,6 @@ public class Test {
 	public static final FuelType                       GENERAL_FUELTYPE                       = FuelType.GASOLINE;
 	public static final LockScreenConfig               GENERAL_LOCKSCREENCONFIG               = new LockScreenConfig();
 	public static final Grid                           GENERAL_GRID                           = new Grid();
-	public static final List<SeatLocation>             GENERAL_SEAT_LIST                      = new ArrayList<>(1);
 	public static final SeatLocation                   GENERAL_SEAT_LOCATION                  = new SeatLocation();
 
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
@@ -461,6 +460,8 @@ public class Test {
 	public static final List<WeatherData>               GENERAL_WEATHERDATA_LIST               = Arrays.asList(GENERAL_WEATHERDATA);
 	public static final List<WeatherAlert>              GENERAL_WEATHERALERT_LIST              = Arrays.asList(GENERAL_WEATHERALERT);
 	public static final List<NavigationInstruction>     GENERAL_NAVIGATION_INSTRUCTION_LIST    = Arrays.asList(GENERAL_NAVIGATION_INSTRUCTION);
+	public static final List<SeatLocation>              GENERAL_SEAT_LIST                      = new ArrayList<>(1);
+	public static final List<Boolean>                   GENERAL_BOOLEAN_LIST                   = Arrays.asList(new Boolean[]{Boolean.TRUE, Boolean.TRUE});
 	public static final int                             GENERAL_MENU_MAX_ID                    = 2000000000;
 	public static final MenuCell                        GENERAL_MENUCELL                       = new MenuCell(GENERAL_STRING,null, null, new MenuSelectionListener() {
 		@Override
