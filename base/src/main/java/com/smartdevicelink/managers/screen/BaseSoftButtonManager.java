@@ -279,7 +279,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         }
 
 
-        // Check if two soft button objects have the same id
+        // Check if multiple soft button objects have the same id
         HashSet<Integer> buttonIdsSetByDevHashSet = new HashSet<>();
         int currentSoftButtonId, numberOfButtonIdsSetByDev = 0;
         for (SoftButtonObject softButtonObject : softButtonObjects) {
@@ -296,14 +296,20 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
 
         // Set ids and updateListeners for soft button objects
-        int generatedSoftButtonId = buttonIdsSetByDevHashSet.isEmpty() ? 0 : Collections.max(buttonIdsSetByDevHashSet);
+        int generatedSoftButtonId = buttonIdsSetByDevHashSet.isEmpty() ? SoftButtonObject.SOFT_BUTTON_ID_MIN_VALUE : Collections.max(buttonIdsSetByDevHashSet);;
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             softButtonObject.setUpdateListener(updateListener);
 
             // If the dev did not set the buttonId, the manager should set an id on the dev's behalf
             currentSoftButtonId = softButtonObject.getButtonId();
             if (currentSoftButtonId == SoftButtonObject.SOFT_BUTTON_ID_NOT_SET_VALUE){
-                softButtonObject.setButtonId(++generatedSoftButtonId);
+                do {
+                    if (generatedSoftButtonId >= SoftButtonObject.SOFT_BUTTON_ID_MAX_VALUE){
+                        generatedSoftButtonId = SoftButtonObject.SOFT_BUTTON_ID_MIN_VALUE;
+                    }
+                    generatedSoftButtonId++;
+                } while (buttonIdsSetByDevHashSet.contains(generatedSoftButtonId));
+                softButtonObject.setButtonId(generatedSoftButtonId);
             }
         }
         this.softButtonObjects = softButtonObjects;

@@ -53,6 +53,8 @@ public class SoftButtonObject {
 
     private static final String TAG = "SoftButtonObject";
     static int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
+    static int SOFT_BUTTON_ID_MIN_VALUE = 0;
+    static int SOFT_BUTTON_ID_MAX_VALUE = 65535;
     private String name;
     private List<SoftButtonState> states;
     private String currentStateName;
@@ -269,8 +271,8 @@ public class SoftButtonObject {
      * @param buttonId an int value that represents the id of the SoftButtonObject
      */
     public void setButtonId(int buttonId) {
-        if (buttonId < 0){
-            Log.e(TAG, "buttonId has to be more than 0");
+        if (buttonId < SOFT_BUTTON_ID_MIN_VALUE){
+            Log.e(TAG, "buttonId has to be equal or more than " + SOFT_BUTTON_ID_MIN_VALUE);
             return;
         }
         this.buttonId = buttonId;
