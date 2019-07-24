@@ -103,7 +103,7 @@ public class CancelInteractionTests extends BaseRpcTests {
         assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getFunctionID());
+        assertNull(Test.NULL, msg.getInteractionFunctionID());
         assertNull(Test.NULL, msg.getCancelID());
     }
 
