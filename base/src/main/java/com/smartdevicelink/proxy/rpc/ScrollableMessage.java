@@ -81,6 +81,14 @@ import java.util.List;
  *                 <td>minsize=0; maxsize=8</td>
  * 			<td>SmartDevice Link 1.0 </td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>cancelID</td>
+ * 			<td>Integer</td>
+ * 			<td>An ID for this specific alert to allow cancellation through the `CancelInteraction` RPC.</td>
+ *          <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 6.0</td>
+ * 		</tr>
  *  </table>
  *  <p> <b>Response</b></p>
  *<b>Non-default Result Codes:</b>
@@ -102,6 +110,7 @@ public class ScrollableMessage extends RPCRequest {
 	public static final String KEY_SCROLLABLE_MESSAGE_BODY = "scrollableMessageBody";
 	public static final String KEY_TIMEOUT = "timeout";
 	public static final String KEY_SOFT_BUTTONS = "softButtons";
+	public static final String KEY_CANCEL_ID = "cancelID";
 
 	/**
 	 * Constructs a new ScrollableMessage object
@@ -197,4 +206,26 @@ public class ScrollableMessage extends RPCRequest {
     public List<SoftButton> getSoftButtons() {
 		return (List<SoftButton>) getObject(SoftButton.class, KEY_SOFT_BUTTONS);
     }
+
+	/**
+	 * Gets an Integer value representing the cancel ID
+	 *
+	 * @return Integer - An Integer value representing the ID for this specific scrollable message to allow cancellation through the `CancelInteraction` RPC.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	public Integer getCancelID() {
+		return getInteger(KEY_CANCEL_ID);
+	}
+
+	/**
+	 * Sets the cancel ID
+	 *
+	 * @param cancelID An Integer ID for this specific scrollable message to allow cancellation through the `CancelInteraction` RPC.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	public void setCancelID(Integer cancelID) {
+		setParameters(KEY_CANCEL_ID, cancelID);
+	}
 }
