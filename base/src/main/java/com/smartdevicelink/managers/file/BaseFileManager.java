@@ -79,7 +79,7 @@ import java.util.Map;
 abstract class BaseFileManager extends BaseSubManager {
 
 	final static String TAG = "FileManager";
-	private final static int SPACE_AVAILABLE_MAX_VALUE = 2000000000;
+	final static int SPACE_AVAILABLE_MAX_VALUE = 2000000000;
 	private List<String> remoteFiles, uploadedEphemeralFileNames;
 	private int bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
 
