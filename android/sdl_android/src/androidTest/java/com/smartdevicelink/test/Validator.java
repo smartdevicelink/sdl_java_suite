@@ -53,6 +53,7 @@ import com.smartdevicelink.proxy.rpc.MediaServiceData;
 import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.ModuleData;
+import com.smartdevicelink.proxy.rpc.ModuleInfo;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
 import com.smartdevicelink.proxy.rpc.NavigationInstruction;
@@ -3617,6 +3618,29 @@ public class Validator{
     	if (g1.getLevelSpan() != g2.getLevelSpan()) {
     		log(tag, "Level spans do not match");
     		return false;
+		}
+
+    	return true;
+	}
+
+	public static boolean validateModuleInfo(ModuleInfo m1, ModuleInfo m2) {
+		if (m1 == null) {
+			return (m2 == null);
+		}
+		if (m2 == null) {
+			return (m1 == null);
+		}
+		if (!m1.getModuleId().equals(m2.getModuleId())) {
+			return false;
+		}
+		if (!m1.getMultipleAccessAllowance().equals(m2.getMultipleAccessAllowance())) {
+			return false;
+		}
+		if (!validateGrid(m1.getModuleLocation(), m2.getModuleLocation())) {
+			return false;
+		}
+		if (!validateGrid(m1.getModuleServiceArea(), m2.getModuleServiceArea())) {
+			return false;
 		}
 
     	return true;

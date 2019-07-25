@@ -56,6 +56,7 @@ import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.ModuleData;
+import com.smartdevicelink.proxy.rpc.ModuleInfo;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
 import com.smartdevicelink.proxy.rpc.NavigationInstruction;
 import com.smartdevicelink.proxy.rpc.NavigationServiceData;
@@ -412,6 +413,7 @@ public class Test {
 	public static final LockScreenConfig               GENERAL_LOCKSCREENCONFIG               = new LockScreenConfig();
 	public static final Grid                           GENERAL_GRID                           = new Grid();
 	public static final SeatLocation                   GENERAL_SEAT_LOCATION                  = new SeatLocation();
+	public static final ModuleInfo                     GENERAL_MODULE_INFO                    = new ModuleInfo();
 
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
@@ -526,6 +528,7 @@ public class Test {
 	public static final JSONObject JSON_DAYCOLORSCHEME            = new JSONObject();
 	public static final JSONObject JSON_NIGHTCOLORSCHEME          = new JSONObject();
 	public static final JSONObject JSON_GRID                      = new JSONObject();
+	public static final JSONObject JSON_MODULE_INFO               = new JSONObject();
 
 	static {
 		GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
@@ -1045,6 +1048,10 @@ public class Test {
 		GENERAL_NAVIGATION_INSTRUCTION.setDrivingSide(GENERAL_DIRECTION);
 		GENERAL_NAVIGATION_INSTRUCTION.setDetails(GENERAL_STRING);
 		GENERAL_NAVIGATION_INSTRUCTION.setImage(GENERAL_IMAGE);
+		GENERAL_MODULE_INFO.setModuleId(Test.GENERAL_STRING);
+		GENERAL_MODULE_INFO.setModuleLocation(Test.GENERAL_GRID);
+		GENERAL_MODULE_INFO.setModuleServiceArea(Test.GENERAL_GRID);
+		GENERAL_MODULE_INFO.setMultipleAccessAllowance(Test.GENERAL_BOOLEAN);
 
 
 		try {
@@ -1250,6 +1257,11 @@ public class Test {
 			JSON_TEXTFIELDTYPES.put(MetadataType.MEDIA_ARTIST);
 
 			JSON_SEAT_LOCATIONS.put(JSON_GRID);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_ID, Test.GENERAL_STRING);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_LOCATION, Test.JSON_GRID);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_SERVICE_AREA, Test.JSON_GRID);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MULTIPLE_ACCESS_ALLOWED, Test.GENERAL_BOOLEAN);
+
 
 		} catch (JSONException e) {
 			Log.e("Test", "Static Json Construction Failed.", e);

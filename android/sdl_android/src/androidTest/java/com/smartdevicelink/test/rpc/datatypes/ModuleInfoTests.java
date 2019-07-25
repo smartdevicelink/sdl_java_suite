@@ -57,33 +57,10 @@ public class ModuleInfoTests extends TestCase {
 
 			JSONObject serialized = msg.serializeJSON();
 			assertEquals(Test.MATCH, original.length(), serialized.length());
-			Iterator<String> iter = original.keys();
-			while (iter.hasNext()) {
-				String key = iter.next();
-				if (key.equals(ModuleInfo.KEY_MODULE_LOCATION) || key.equals(ModuleInfo.KEY_MODULE_SERVICE_AREA)) {
-					doTestJson(original, serialized, key);
-				} else if (key.equals(ModuleInfo.KEY_MODULE_ID)) {
-					String s1 = new ModuleInfo(JsonRPCMarshaller.deserializeJSONObject(original)).getModuleId();
-					String s2 = new ModuleInfo(JsonRPCMarshaller.deserializeJSONObject(serialized)).getModuleId();
-					assertEquals(Test.MATCH, s1, s2);
-				} else if (key.equals(ModuleInfo.KEY_MULTIPLE_ACCESS_ALLOWED)) {
-					boolean b1 = new ModuleInfo(JsonRPCMarshaller.deserializeJSONObject(original)).getMultipleAccessAllowance();
-					boolean b2 = new ModuleInfo(JsonRPCMarshaller.deserializeJSONObject(serialized)).getMultipleAccessAllowance();
-					assertEquals(Test.MATCH, b1, b2);
-				}
-			}
-		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
-		}
-	}
 
-	private void doTestJson(JSONObject obj1, JSONObject obj2, String key) {
-		try {
-			JSONObject o1 = (JSONObject) JsonUtils.readObjectFromJsonObject(obj1, key);
-			JSONObject o2 = (JSONObject) JsonUtils.readObjectFromJsonObject(obj2, key);
-			Hashtable<String, Object> h1 = JsonRPCMarshaller.deserializeJSONObject(o1);
-			Hashtable<String, Object> h2 = JsonRPCMarshaller.deserializeJSONObject(o2);
-			assertTrue(Test.TRUE, Validator.validateGrid(new Grid(h1), new Grid(h2)));
+			Hashtable<String, Object> h1 = JsonRPCMarshaller.deserializeJSONObject(original);
+			Hashtable<String, Object> h2 = JsonRPCMarshaller.deserializeJSONObject(serialized);
+			assertTrue(Test.TRUE, Validator.validateModuleInfo(new ModuleInfo(h1), new ModuleInfo(h2)));
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}

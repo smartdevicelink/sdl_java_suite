@@ -1,14 +1,18 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
+import com.smartdevicelink.proxy.rpc.ModuleInfo;
 import com.smartdevicelink.proxy.rpc.RadioControlCapabilities;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Hashtable;
 import java.util.Iterator;
 
 /**
@@ -36,6 +40,7 @@ public class RadioControlCapabilitiesTests extends TestCase{
         msg.setHdRadioEnableAvailable(Test.GENERAL_BOOLEAN);
         msg.setSiriusXMRadioAvailable(Test.GENERAL_BOOLEAN);
         msg.setSisDataAvailable(Test.GENERAL_BOOLEAN);
+        msg.setModuleInfo(Test.GENERAL_MODULE_INFO);
     }
 
     /**
@@ -56,6 +61,7 @@ public class RadioControlCapabilitiesTests extends TestCase{
         boolean hdRadioEnableAvailable = msg.getHdRadioEnableAvailable();
         boolean siriusXMRadioAvailable = msg.getSiriusXMRadioAvailable();
         boolean sisDataAvailable = msg.getSisDataAvailable();
+        ModuleInfo info = msg.getModuleInfo();
 
 
         // Valid Tests
@@ -72,6 +78,7 @@ public class RadioControlCapabilitiesTests extends TestCase{
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, hdRadioEnableAvailable);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, siriusXMRadioAvailable);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, sisDataAvailable);
+        assertEquals(Test.MATCH, Test.GENERAL_MODULE_INFO, info);
 
         // Invalid/Null Tests
         RadioControlCapabilities msg = new RadioControlCapabilities();
@@ -90,6 +97,7 @@ public class RadioControlCapabilitiesTests extends TestCase{
         assertNull(Test.NULL, msg.getHdRadioEnableAvailable());
         assertNull(Test.NULL, msg.getSiriusXMRadioAvailable());
         assertNull(Test.NULL, msg.getSisDataAvailable());
+        assertNull(Test.NULL, msg.getModuleInfo());
     }
 
     public void testJson(){
@@ -109,6 +117,7 @@ public class RadioControlCapabilitiesTests extends TestCase{
             reference.put(RadioControlCapabilities.KEY_HD_RADIO_ENABLE_AVAILABLE, Test.GENERAL_BOOLEAN);
             reference.put(RadioControlCapabilities.KEY_SIRIUS_XM_RADIO_AVAILABLE, Test.GENERAL_BOOLEAN);
             reference.put(RadioControlCapabilities.KEY_SIS_DATA_AVAILABLE, Test.GENERAL_BOOLEAN);
+            reference.put(RadioControlCapabilities.KEY_MODULE_INFO, Test.JSON_MODULE_INFO);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -116,8 +125,15 @@ public class RadioControlCapabilitiesTests extends TestCase{
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                if (key.equals(RadioControlCapabilities.KEY_MODULE_INFO)) {
+                    JSONObject o1 = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
+                    JSONObject o2 = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
+                    Hashtable<String, Object> h1 = JsonRPCMarshaller.deserializeJSONObject(o1);
+                    Hashtable<String, Object> h2 = JsonRPCMarshaller.deserializeJSONObject(o2);
+                    assertTrue(Test.TRUE, Validator.validateModuleInfo(new ModuleInfo(h1), new ModuleInfo(h2)));
+                } else {
+                    assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                }
 
             }
         } catch(JSONException e){
