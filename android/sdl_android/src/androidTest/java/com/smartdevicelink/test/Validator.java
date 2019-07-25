@@ -136,8 +136,13 @@ public class Validator{
             return ( result1 == null );
         }
 
-        return ( result1.getDataType().equals(result2.getDataType())
-                && result1.getResultCode().equals(result2.getResultCode()) );
+        if(result1.getDataType() != null && result2.getDataType() != null){
+            return ( result1.getDataType().equals(result2.getDataType())
+                    && result1.getResultCode().equals(result2.getResultCode()) );
+        } else {
+            return ( result1.getOEMCustomVehicleDataType().equals(result2.getOEMCustomVehicleDataType())
+                    && result1.getResultCode().equals(result2.getResultCode()) );
+        }
     }
 
     public static boolean validateBulkData(byte[] array1, byte[] array2){
