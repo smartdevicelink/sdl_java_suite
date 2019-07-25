@@ -7,6 +7,8 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
 import java.util.Hashtable;
 
 /**
+ * This RPC is the response of the DeleteWindow RPC
+ * @see DeleteWindow
  * @since 6.0
  */
 public class DeleteWindowResponse extends RPCResponse {

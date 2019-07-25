@@ -6,6 +6,7 @@ import com.smartdevicelink.proxy.rpc.enums.WindowType;
 import java.util.Hashtable;
 
 /**
+ * Used to inform an app how many window instances per type they can be created.
  * @since 6.0
  */
 public class WindowTypeCapabilities extends RPCStruct {

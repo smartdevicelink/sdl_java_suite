@@ -6,6 +6,8 @@ import com.smartdevicelink.proxy.RPCRequest;
 import java.util.Hashtable;
 
 /**
+ * This RPC deletes the window created by the CreateWindow RPC
+ * @see CreateWindow
  * @since 6.0
  */
 public class DeleteWindow extends RPCRequest {

@@ -7,6 +7,8 @@ import com.smartdevicelink.proxy.rpc.enums.WindowType;
 import java.util.Hashtable;
 
 /**
+ * The RPC CreateWindow allows an app to create a new window on the display.
+ * The app needs to specify a window ID that is used for window manipulation e.g. with the RPC Show and the window type which can either be MAIN or WIDGET (see sub-section Window types).
  * @since 6.0
  */
 public class CreateWindow extends RPCRequest {

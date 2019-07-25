@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
+ * Contain the display related information and all windows related to that display.
  * @since 6.0
  */
 public class DisplayCapability extends RPCStruct {
