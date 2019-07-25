@@ -94,7 +94,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     Future pendingPresentOperation;
 
     int nextChoiceId;
+    int nextCancelId;
     final int choiceCellIdMin = 1;
+    final int choiceCellCancelIdMin = 1;
     boolean isVROptional;
 
     BaseChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
@@ -110,6 +112,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         preloadedChoices = new HashSet<>();
         pendingPreloadChoices = new HashSet<>();
         nextChoiceId = choiceCellIdMin;
+        nextCancelId = choiceCellCancelIdMin;
         isVROptional = false;
         keyboardConfiguration = defaultKeyboardConfiguration();
         operationQueue = new LinkedBlockingQueue<>();
@@ -141,6 +144,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         waitingListener = null;
         isVROptional = true;
         nextChoiceId = choiceCellIdMin;
+        nextCancelId = choiceCellCancelIdMin;
 
         // remove listeners
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -321,6 +325,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
 
         findIdsOnChoiceSet(pendingPresentationSet);
+        pendingPresentationSet.cancelID = nextCancelId++;
+
         // Pass back the information to the developer
         ChoiceSetSelectionListener privateChoiceListener = new ChoiceSetSelectionListener() {
             @Override

@@ -76,6 +76,12 @@ class PresentChoiceSetOperation implements Runnable {
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.keyboardListener = keyboardListener;
 		this.choiceSet = choiceSet;
+		this.choiceSet.canceledListener = new ChoiceSetCanceledListener() {
+			@Override
+			public void onChoiceSetCanceled() {
+				cancelInteraction();
+			}
+		};
 		this.presentationMode = mode;
 		this.originalKeyboardProperties = originalKeyboardProperties;
 		this.keyboardProperties = originalKeyboardProperties;
@@ -196,6 +202,10 @@ class PresentChoiceSetOperation implements Runnable {
 				DebugTool.logError("Internal Interface null when finishing choice keyboard reset");
 			}
 		}
+	}
+
+	private void cancelInteraction() {
+		System.out.println("cancelling stuff");
 	}
 
 	// GETTERS
