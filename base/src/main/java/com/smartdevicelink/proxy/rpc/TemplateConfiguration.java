@@ -5,6 +5,7 @@ import com.smartdevicelink.proxy.RPCStruct;
 import java.util.Hashtable;
 
 /**
+ * Used to set an alternate template layout to a window.
  * @since 6.0
  */
 public class TemplateConfiguration extends RPCStruct {
