@@ -44,9 +44,11 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DeleteFile;
+import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
 import com.smartdevicelink.proxy.rpc.ListFiles;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
 import com.smartdevicelink.proxy.rpc.PutFile;
+import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
@@ -77,7 +79,9 @@ import java.util.Map;
 abstract class BaseFileManager extends BaseSubManager {
 
 	final static String TAG = "FileManager";
+	final static int SPACE_AVAILABLE_MAX_VALUE = 2000000000;
 	private List<String> remoteFiles, uploadedEphemeralFileNames;
+	private int bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
 
 	BaseFileManager(ISdl internalInterface) {
 
@@ -108,6 +112,14 @@ abstract class BaseFileManager extends BaseSubManager {
 		return remoteFiles;
 	}
 
+	/**
+	 * Get the number of bytes still available for files for this app.
+	 * @return int value representing The number of bytes still available
+	 */
+	public int getBytesAvailable(){
+		return bytesAvailable;
+	}
+
 	private void retrieveRemoteFiles(){
 		remoteFiles = new ArrayList<>();
 		// hold list in remoteFiles class var
@@ -115,9 +127,12 @@ abstract class BaseFileManager extends BaseSubManager {
 		listFiles.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				if(response.getSuccess()){
-					if(((ListFilesResponse) response).getFilenames() != null){
-						remoteFiles.addAll(((ListFilesResponse) response).getFilenames());
+				ListFilesResponse listFilesResponse = (ListFilesResponse) response;
+				if(listFilesResponse.getSuccess()){
+					bytesAvailable = listFilesResponse.getSpaceAvailable() != null ? listFilesResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
+
+					if(listFilesResponse.getFilenames() != null){
+						remoteFiles.addAll(listFilesResponse.getFilenames());
 					}
 					// on callback set manager to ready state
 					transitionToState(BaseSubManager.READY);
@@ -146,12 +161,15 @@ abstract class BaseFileManager extends BaseSubManager {
 		deleteFile.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				if(response.getSuccess()){
+				DeleteFileResponse deleteFileResponse = (DeleteFileResponse) response;
+				if(deleteFileResponse.getSuccess()){
+					bytesAvailable = deleteFileResponse.getSpaceAvailable() != null ? deleteFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
+
 					remoteFiles.remove(fileName);
 					uploadedEphemeralFileNames.remove(fileName);
 				}
 				if(listener != null){
-					listener.onComplete(response.getSuccess());
+					listener.onComplete(deleteFileResponse.getSuccess());
 				}
 			}
 		});
@@ -238,7 +256,10 @@ abstract class BaseFileManager extends BaseSubManager {
 
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				if(response.getSuccess()){
+				PutFileResponse putFileResponse = (PutFileResponse) response;
+				if(putFileResponse.getSuccess()){
+					bytesAvailable = putFileResponse.getSpaceAvailable() != null ? putFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
+
 					if(fileNameMap.get(correlationId) != null){
 						if(deletionOperation){
 							remoteFiles.remove(fileNameMap.get(correlationId));
@@ -269,12 +290,15 @@ abstract class BaseFileManager extends BaseSubManager {
 		putFile.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				if(response.getSuccess()){
+				PutFileResponse putFileResponse = (PutFileResponse) response;
+				if(putFileResponse.getSuccess()){
+					bytesAvailable = putFileResponse.getSpaceAvailable() != null ? putFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
+
 					remoteFiles.add(file.getName());
 					uploadedEphemeralFileNames.add(file.getName());
 				}
 				if(listener != null){
-					listener.onComplete(response.getSuccess());
+					listener.onComplete(putFileResponse.getSuccess());
 				}
 			}
 
