@@ -35,6 +35,7 @@ import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 
 import java.util.Hashtable;
 
@@ -89,6 +90,14 @@ import java.util.Hashtable;
  * 			<td></td>
  * 			<td>SmartDeviceLink 5.0</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>menuLayout</td>
+ * 			<td>MenuLayout</td>
+ * 			<td>Sets the layout of the submenu screen.</td>
+ * 			<td></td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 6.0</td>
+ * 		</tr>
  *  </table>
  *  <b>Response</b>
  *  <p>Indicates that the corresponding request either failed or succeeded. If the response returns with a SUCCESS result code, this means the SubMenu was added to the Command Menu successfully</p>
@@ -106,6 +115,7 @@ public class AddSubMenu extends RPCRequest {
 	public static final String KEY_MENU_NAME = "menuName";
 	public static final String KEY_MENU_ID = "menuID";
 	public static final String KEY_MENU_ICON = "menuIcon";
+	public static final String KEY_MENU_LAYOUT = "menuLayout";
 
 	/**
 	 * Constructs a new AddSubMenu object
@@ -222,5 +232,22 @@ public class AddSubMenu extends RPCRequest {
 	 */
 	public void setMenuIcon(Image menuIcon) {
 		setParameters(KEY_MENU_ICON, menuIcon);
+	}
+
+	/**
+	 * Sets the layout of the submenu screen.
+	 * @param menuLayout - the menuLayout
+	 */
+	public void setMenuLayout(MenuLayout menuLayout) {
+		setParameters(KEY_MENU_LAYOUT, menuLayout);
+	}
+
+	/**
+	 * Gets the layout of the submenu screen.
+	 * @return the MenuLayout
+	 */
+	@SuppressWarnings("unchecked")
+	public MenuLayout getMenuLayout() {
+		return (MenuLayout) getObject(MenuLayout.class, KEY_MENU_LAYOUT);
 	}
 }

@@ -24,6 +24,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -39,8 +40,9 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
     private SoftButtonManager softButtonManager;
     private boolean fileManagerUploadArtworksGotCalled;
-    private boolean internalInterfaceSendRPCRequestGotCalled;
+    private boolean internalInterfaceSendRPCGotCalled;
     private boolean softButtonMangerUpdateCompleted;
+    private int softButtonObject1Id = 1000, softButtonObject2Id = 2000;
     private SoftButtonObject softButtonObject1, softButtonObject2;
     private SoftButtonState softButtonState1, softButtonState2, softButtonState3, softButtonState4;
 
@@ -86,13 +88,13 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         softButtonManager = new SoftButtonManager(internalInterface, fileManager);
 
 
-        // When internalInterface.sendRPCRequest() is called inside SoftButtonManager:
+        // When internalInterface.sendRPC() is called inside SoftButtonManager:
         // 1) respond with a fake onResponse() callback to let the SoftButtonManager continue working
         // 2) assert that the Show RPC values (ie: MainField1 & SoftButtons) that are created by the SoftButtonManager, match the ones that are provided by the developer
         Answer<Void> onSendShowRPCAnswer = new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) {
-                internalInterfaceSendRPCRequestGotCalled = true;
+                internalInterfaceSendRPCGotCalled = true;
                 Object[] args = invocation.getArguments();
                 Show show = (Show) args[0];
 
@@ -104,16 +106,18 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
                 return null;
             }
         };
-        doAnswer(onSendShowRPCAnswer).when(internalInterface).sendRPCRequest(any(Show.class));
+        doAnswer(onSendShowRPCAnswer).when(internalInterface).sendRPC(any(Show.class));
 
 
         // Create soft button objects
         softButtonState1 = new SoftButtonState("object1-state1", "o1s1", new SdlArtwork("image1", FileType.GRAPHIC_PNG, 1, true));
         softButtonState2 = new SoftButtonState("object1-state2", "o1s2", new SdlArtwork(StaticIconName.ALBUM));
         softButtonObject1 = new SoftButtonObject("object1", Arrays.asList(softButtonState1, softButtonState2), softButtonState1.getName(), null);
+        softButtonObject1.setButtonId(softButtonObject1Id);
         softButtonState3 = new SoftButtonState("object2-state1", "o2s1", null);
         softButtonState4 = new SoftButtonState("object2-state2", "o2s2", new SdlArtwork("image3", FileType.GRAPHIC_PNG, 3, true));
         softButtonObject2 = new SoftButtonObject("object2", Arrays.asList(softButtonState3, softButtonState4), softButtonState3.getName(), null);
+        softButtonObject2.setButtonId(softButtonObject2Id);
     }
 
     @Override
@@ -124,7 +128,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
     public void testSoftButtonManagerUpdate() {
         // Reset the boolean variables
         fileManagerUploadArtworksGotCalled = false;
-        internalInterfaceSendRPCRequestGotCalled = false;
+        internalInterfaceSendRPCGotCalled = false;
         softButtonMangerUpdateCompleted = false;
 
 
@@ -148,7 +152,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
         // Check that everything got called as expected
         assertTrue("FileManager.uploadArtworks() did not get called", fileManagerUploadArtworksGotCalled);
-        assertTrue("InternalInterface.sendRPCRequest() did not get called", internalInterfaceSendRPCRequestGotCalled);
+        assertTrue("InternalInterface.sendRPC() did not get called", internalInterfaceSendRPCGotCalled);
         assertTrue("SoftButtonManger update onComplete() did not get called", softButtonMangerUpdateCompleted);
 
 
@@ -169,11 +173,11 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
 
         // Test get by valid id
-        assertEquals("Returned SoftButtonObject doesn't match the expected value", softButtonObject2, softButtonManager.getSoftButtonObjectById(100));
+        assertEquals("Returned SoftButtonObject doesn't match the expected value", softButtonObject2, softButtonManager.getSoftButtonObjectById(softButtonObject2Id));
 
 
         // Test get by invalid id
-        assertNull("Returned SoftButtonObject doesn't match the expected value", softButtonManager.getSoftButtonObjectById(500));
+        assertNull("Returned SoftButtonObject doesn't match the expected value", softButtonManager.getSoftButtonObjectById(5555));
     }
 
     public void testSoftButtonState(){
@@ -190,9 +194,10 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
 
         // Test SoftButtonState.getSoftButton()
-        SoftButton softButtonExpectedValue = new SoftButton(SoftButtonType.SBT_BOTH, 0);
+        SoftButton softButtonExpectedValue = new SoftButton(SoftButtonType.SBT_BOTH, SoftButtonObject.SOFT_BUTTON_ID_NOT_SET_VALUE);
         softButtonExpectedValue.setText("o1s1");
         softButtonExpectedValue.setImage(new Image(artworkExpectedValue.getName(), ImageType.DYNAMIC));
+        SoftButton actual = softButtonState1.getSoftButton();
         assertTrue("Returned SoftButton doesn't match the expected value", Validator.validateSoftButton(softButtonExpectedValue, softButtonState1.getSoftButton()));
     }
 
@@ -210,11 +215,11 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
 
         // Test SoftButtonObject.getButtonId()
-        assertEquals("Returned button Id doesn't match the expected value", 0, softButtonObject1.getButtonId());
+        assertEquals("Returned button Id doesn't match the expected value", softButtonObject1Id, softButtonObject1.getButtonId());
 
 
         // Test SoftButtonObject.getCurrentStateSoftButton()
-        SoftButton softButtonExpectedValue = new SoftButton(SoftButtonType.SBT_TEXT, 0);
+        SoftButton softButtonExpectedValue = new SoftButton(SoftButtonType.SBT_TEXT, softButtonObject2Id);
         softButtonExpectedValue.setText("o2s1");
         assertTrue("Returned current state SoftButton doesn't match the expected value", Validator.validateSoftButton(softButtonExpectedValue, softButtonObject2.getCurrentStateSoftButton()));
 
@@ -238,5 +243,57 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         success = softButtonObject1.transitionToStateByName("object1-state1");
         assertTrue(success);
         assertEquals(softButtonState1, softButtonObject1.getCurrentState());
+    }
+
+    public void testAssigningIdsToSoftButtonObjects() {
+        SoftButtonObject sbo1, sbo2, sbo3, sbo4, sbo5;
+
+        // Case 1 - don't set id for any button (Manager should set ids automatically starting from 1 and up)
+        sbo1 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo2 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo3 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo4 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo5 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        softButtonManager.checkAndAssignButtonIds(Arrays.asList(sbo1, sbo2, sbo3, sbo4, sbo5));
+        assertEquals("SoftButtonObject id doesn't match the expected value", 1, sbo1.getButtonId());
+        assertEquals("SoftButtonObject id doesn't match the expected value", 2, sbo2.getButtonId());
+        assertEquals("SoftButtonObject id doesn't match the expected value", 3, sbo3.getButtonId());
+        assertEquals("SoftButtonObject id doesn't match the expected value", 4, sbo4.getButtonId());
+        assertEquals("SoftButtonObject id doesn't match the expected value", 5, sbo5.getButtonId());
+
+
+        // Case 2 - Set ids for all buttons (Manager shouldn't alter the ids set by developer)
+        sbo1 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo1.setButtonId(100);
+        sbo2 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo2.setButtonId(200);
+        sbo3 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo3.setButtonId(300);
+        sbo4 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo4.setButtonId(400);
+        sbo5 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo5.setButtonId(500);
+        softButtonManager.checkAndAssignButtonIds(Arrays.asList(sbo1, sbo2, sbo3, sbo4, sbo5));
+        assertEquals("SoftButtonObject id doesn't match the expected value", 100, sbo1.getButtonId());
+        assertEquals("SoftButtonObject id doesn't match the expected value", 200, sbo2.getButtonId());
+        assertEquals("SoftButtonObject id doesn't match the expected value", 300, sbo3.getButtonId());
+        assertEquals("SoftButtonObject id doesn't match the expected value", 400, sbo4.getButtonId());
+        assertEquals("SoftButtonObject id doesn't match the expected value", 500, sbo5.getButtonId());
+
+
+        // Case 3 - Set ids for some buttons (Manager shouldn't alter the ids set by developer. And it should assign ids for the ones that don't have id)
+        sbo1 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo1.setButtonId(50);
+        sbo2 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo3 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo4 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        sbo4.setButtonId(100);
+        sbo5 = new SoftButtonObject(null, Collections.EMPTY_LIST, null, null);
+        softButtonManager.checkAndAssignButtonIds(Arrays.asList(sbo1, sbo2, sbo3, sbo4, sbo5));
+        assertEquals("SoftButtonObject id doesn't match the expected value", 50, sbo1.getButtonId());
+        assertEquals("SoftButtonObject id doesn't match the expected value", 101, sbo2.getButtonId());
+        assertEquals("SoftButtonObject id doesn't match the expected value", 102, sbo3.getButtonId());
+        assertEquals("SoftButtonObject id doesn't match the expected value", 100, sbo4.getButtonId());
+        assertEquals("SoftButtonObject id doesn't match the expected value", 103, sbo5.getButtonId());
     }
 }

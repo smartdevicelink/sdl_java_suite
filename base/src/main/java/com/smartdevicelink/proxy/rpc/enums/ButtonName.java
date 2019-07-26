@@ -188,6 +188,102 @@ public enum ButtonName{
 	 * @see #OK
 	 */
 	PLAY_PAUSE,
+	/**
+	 * Represents the center location button.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_CENTER_LOCATION,
+	/**
+	 * Represents the the zoom in button.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_ZOOM_IN,
+	/**
+	 * Represents the zoom out button.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_ZOOM_OUT,
+	/**
+	 * Represents the pan up button.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_PAN_UP,
+	/**
+	 * Represents the pan up-right button.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_PAN_UP_RIGHT,
+	/**
+	 * Represents the pan right button.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_PAN_RIGHT,
+	/**
+	 * Represents the pan down-right button.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_PAN_DOWN_RIGHT,
+	/**
+	 * Represents the pan down button.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_PAN_DOWN,
+	/**
+	 * Represents the pan down-left button.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_PAN_DOWN_LEFT,
+	/**
+	 * Represents the pan left button.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_PAN_LEFT,
+	/**
+	 * Represents the pan up-left button.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_PAN_UP_LEFT,
+	/**
+	 * Represents the title toggle button
+	 * If supported, this toggles between a top-down view and an angled/3D view.
+	 * If your app supports different, but substantially similar options, then you may implement those.
+	 * If you don't implement these or similar options, do not subscribe to this button.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_TILT_TOGGLE,
+	/**
+	 * Represents the rotate clockwise button
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_ROTATE_CLOCKWISE,
+	/**
+	 * Represents the rotate counterclockwise button
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_ROTATE_COUNTERCLOCKWISE,
+	/**
+	 * Represents the heading toggle button
+	 * If supported, this toggles between locking the orientation to north or to the vehicle's heading.
+	 * If your app supports different, but substantially similar options, then you may implement those.
+	 * If you don't implement these or similar options, do not subscribe to this button.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	NAV_HEADING_TOGGLE
 
 	;
 

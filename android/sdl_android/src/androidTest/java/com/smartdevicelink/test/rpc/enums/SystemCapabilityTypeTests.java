@@ -48,6 +48,8 @@ public class SystemCapabilityTypeTests extends TestCase {
 		SystemCapabilityType enumPCM = SystemCapabilityType.valueForString(example);
 		example = "APP_SERVICES";
 		SystemCapabilityType enumAppServices = SystemCapabilityType.valueForString(example);
+		example = "PRERECORDED_SPEECH";
+		SystemCapabilityType enumPrerecordedSpeech = SystemCapabilityType.valueForString(example);
 
 		assertNotNull("NAVIGATION returned null", enumNavigation);
 		assertNotNull("PHONE_CALL returned null", enumPhoneCall);
@@ -64,6 +66,7 @@ public class SystemCapabilityTypeTests extends TestCase {
 		assertNotNull("VOICE_RECOGNITION returned null", enumVoiceRecognition);
 		assertNotNull("PCM_STREAMING", enumPCM);
 		assertNotNull("APP_SERVICES", enumAppServices);
+		assertNotNull("PRERECORDED_SPEECH", enumPrerecordedSpeech);
 	}
 
 	/**
@@ -116,6 +119,7 @@ public class SystemCapabilityTypeTests extends TestCase {
 		enumTestList.add(SystemCapabilityType.VOICE_RECOGNITION);
 		enumTestList.add(SystemCapabilityType.PCM_STREAMING);
 		enumTestList.add(SystemCapabilityType.APP_SERVICES);
+		enumTestList.add(SystemCapabilityType.PRERECORDED_SPEECH);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

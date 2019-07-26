@@ -83,6 +83,7 @@ public class SystemCapabilityManager {
 			setCapability(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
 			setCapability(SystemCapabilityType.SPEECH, response.getSpeechCapabilities());
 			setCapability(SystemCapabilityType.VOICE_RECOGNITION, response.getVrCapabilities());
+			setCapability(SystemCapabilityType.PRERECORDED_SPEECH, response.getPrerecordedSpeech());
 		}
 	}
 

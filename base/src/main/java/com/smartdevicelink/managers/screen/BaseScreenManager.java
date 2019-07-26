@@ -45,6 +45,7 @@ import com.smartdevicelink.managers.screen.choiceset.ChoiceSetManager;
 import com.smartdevicelink.managers.screen.choiceset.KeyboardListener;
 import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdatesMode;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
+import com.smartdevicelink.managers.screen.menu.MenuConfiguration;
 import com.smartdevicelink.managers.screen.menu.MenuManager;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandManager;
@@ -423,6 +424,22 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 */
 	public DynamicMenuUpdatesMode getDynamicMenuUpdatesMode(){
 		return this.menuManager.getDynamicMenuUpdatesMode();
+	}
+
+	/**
+	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable. Defaults to LIST.
+	 * @param menuConfiguration - The default menuConfiguration
+	 */
+	public void setMenuConfiguration(@NonNull MenuConfiguration menuConfiguration) {
+		this.menuManager.setMenuConfiguration(menuConfiguration);
+	}
+
+	/**
+	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable. Defaults to LIST.
+	 * @return the currently set MenuConfiguration
+	 */
+	public MenuConfiguration getMenuConfiguration(){
+		return this.menuManager.getMenuConfiguration();
 	}
 
 	// CHOICE SETS
