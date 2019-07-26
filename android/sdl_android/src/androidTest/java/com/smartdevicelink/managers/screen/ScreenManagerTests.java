@@ -4,10 +4,12 @@ import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdatesMode;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
+import com.smartdevicelink.test.Test;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,15 +25,13 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 	private SdlArtwork testArtwork;
 
 	@Override
-	public void setUp() throws Exception{
+	public void setUp() throws Exception {
 		super.setUp();
 
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
 		screenManager = new ScreenManager(internalInterface, fileManager);
 		screenManager.start(null);
-
-
 		testArtwork = new SdlArtwork("testFile", FileType.GRAPHIC_PNG, 1, false);
 	}
 
@@ -53,10 +53,14 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertNull(screenManager.getTextField2Type());
 		assertNull(screenManager.getTextField3Type());
 		assertNull(screenManager.getTextField4Type());
+		assertNull(screenManager.getMenu());
+		assertNull(screenManager.getVoiceCommands());
 		assertTrue(screenManager.getSoftButtonObjects().isEmpty());
 		assertNull(screenManager.getSoftButtonObjectByName("test"));
 		assertNull(screenManager.getSoftButtonObjectById(1));
+		assertEquals(screenManager.getDynamicMenuUpdatesMode(), DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE);
 		assertEquals(screenManager.getState(), BaseSubManager.READY);
+		assertNotNull(screenManager.getMenuConfiguration());
 	}
 	
 	public void testSetTextField() {
@@ -114,22 +118,40 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertEquals(screenManager.getTextField4Type(), MetadataType.MEDIA_GENRE);
 	}
 
+	public void testSetMenuManagerFields(){
+		screenManager.setDynamicMenuUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
+		screenManager.setMenu(Test.GENERAL_MENUCELL_LIST);
+		screenManager.setMenuConfiguration(Test.GENERAL_MENU_CONFIGURATION);
+
+		assertEquals(screenManager.getMenu(), Test.GENERAL_MENUCELL_LIST);
+		assertEquals(screenManager.getDynamicMenuUpdatesMode(), DynamicMenuUpdatesMode.FORCE_ON);
+		// Should not set because of improper RAI response and improper HMI states
+		assertNotNull(screenManager.getMenuConfiguration());
+	}
+
+	public void testSetVoiceCommands(){
+		screenManager.setVoiceCommands(Test.GENERAL_VOICE_COMMAND_LIST);
+		assertEquals(screenManager.getVoiceCommands(), Test.GENERAL_VOICE_COMMAND_LIST);
+	}
+
 	public void testSetSoftButtonObjects(){
 		// Create softButtonObject1
 		SoftButtonState softButtonState1 = new SoftButtonState("object1-state1", "it is", testArtwork);
 		SoftButtonState softButtonState2 = new SoftButtonState("object1-state2", "Wed", testArtwork);
 		SoftButtonObject softButtonObject1 = new SoftButtonObject("object1", Arrays.asList(softButtonState1, softButtonState2), softButtonState1.getName(),null);
+		softButtonObject1.setButtonId(100);
 
 		// Create softButtonObject2
 		SoftButtonState softButtonState3 = new SoftButtonState("object2-state1", "my", testArtwork);
 		SoftButtonState softButtonState4 = new SoftButtonState("object2-state2", "dudes!", null);
 		SoftButtonObject softButtonObject2 = new SoftButtonObject("object2", Arrays.asList(softButtonState3, softButtonState4), softButtonState3.getName(), null);
+		softButtonObject2.setButtonId(200);
 
 		List<SoftButtonObject> softButtonObjects = Arrays.asList(softButtonObject1, softButtonObject2);
 		screenManager.setSoftButtonObjects(Arrays.asList(softButtonObject1, softButtonObject2));
 		assertEquals(screenManager.getSoftButtonObjects(), softButtonObjects);
 		assertEquals(screenManager.getSoftButtonObjectByName("object2"), softButtonObject2);
-		assertEquals(screenManager.getSoftButtonObjectById(100), softButtonObject2);
+		assertEquals(screenManager.getSoftButtonObjectById(200), softButtonObject2);
 	}
 
 }

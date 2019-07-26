@@ -98,6 +98,12 @@ public class Choice extends RPCStruct {
 	public static final String KEY_CHOICE_ID = "choiceID";
 	public static final String KEY_IMAGE = "image";
 
+    /**
+     * Used to bypass the format() method that adds VR items based on RPC version. This is used by the
+     * choiceSetManager, which has a more in-depth approach as to whether or not it should add VR items
+     */
+	private boolean ignoreAddingVRItems;
+
 	/**
 	 * Constructs a newly allocated Choice object
 	 */
@@ -153,15 +159,18 @@ public class Choice extends RPCStruct {
 
         if (rpcVersion == null || rpcVersion.getMajor() < 5){
 
-            // make sure there is at least one vr param
-            List<String> existingVrCommands = getVrCommands();
+            // this is added to allow the choice set manager to disable this functionality
+            if (!ignoreAddingVRItems) {
+                // make sure there is at least one vr param
+                List<String> existingVrCommands = getVrCommands();
 
-            if (existingVrCommands == null || existingVrCommands.size() == 0) {
-                // if no commands set, set one due to a legacy head unit requirement
-                Integer choiceID = getChoiceID();
-                List<String> vrCommands = new ArrayList<>();
-                vrCommands.add(String.valueOf(choiceID));
-                setVrCommands(vrCommands);
+                if (existingVrCommands == null || existingVrCommands.size() == 0) {
+                    // if no commands set, set one due to a legacy head unit requirement
+                    Integer choiceID = getChoiceID();
+                    List<String> vrCommands = new ArrayList<>();
+                    vrCommands.add(String.valueOf(choiceID));
+                    setVrCommands(vrCommands);
+                }
             }
         }
 
@@ -256,5 +265,13 @@ public class Choice extends RPCStruct {
     @SuppressWarnings("unchecked")
     public Image getSecondaryImage() {
         return (Image) getObject(Image.class, KEY_SECONDARY_IMAGE);
-    }      
+    }
+
+    /**
+     * This prevents the @{link Choice#format} method from adding VR commands if set to true
+     * @param ignoreAddingVRItems - whether or not to let the format method add vr commands
+     */
+    public void setIgnoreAddingVRItems(boolean ignoreAddingVRItems){
+        this.ignoreAddingVRItems = ignoreAddingVRItems;
+    }
 }

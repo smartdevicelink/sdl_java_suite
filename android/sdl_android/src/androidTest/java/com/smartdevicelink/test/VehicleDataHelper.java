@@ -108,6 +108,7 @@ public class VehicleDataHelper{
 	public static final Double GPS_ALTITUDE = 768.5;
 	public static final Double GPS_HEADING = 315.0;
 	public static final Double GPS_SPEED = 30.5;
+	public static final Boolean GPS_SHIFTED = true;
 	
     // belt status
 	public static final VehicleDataEventStatus BELT_STATUS_DRIVER_DEPLOYED = VehicleDataEventStatus.NO;
@@ -237,6 +238,7 @@ public class VehicleDataHelper{
     	GPS.setAltitude(GPS_ALTITUDE);
     	GPS.setHeading(GPS_HEADING);
     	GPS.setSpeed(GPS_SPEED);
+    	GPS.setShifted(GPS_SHIFTED);
 
     	//BELT_STATUS set up
     	BELT_STATUS.setDriverBeltDeployed(BELT_STATUS_DRIVER_DEPLOYED);

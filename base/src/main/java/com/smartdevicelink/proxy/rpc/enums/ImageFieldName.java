@@ -103,6 +103,12 @@ public enum ImageFieldName {
 	 * @since SmartDeviceLink 5.0
 	 */
 	secondaryGraphic,
+	/**
+	 * The image field for Alert
+	 *
+	 * @since SmartDeviceLink 6.0.0
+	 */
+	alertIcon,
 	;
     
 	/**

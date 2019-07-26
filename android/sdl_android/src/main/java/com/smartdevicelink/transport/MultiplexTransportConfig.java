@@ -74,6 +74,7 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 
 	List<TransportType> primaryTransports, secondaryTransports;
 	boolean requiresHighBandwidth = false;
+	Boolean requiresAudioSupport = null;
 	TransportListener transportListener;
 
 	
@@ -180,6 +181,28 @@ public class MultiplexTransportConfig extends BaseTransportConfig{
 	public boolean requiresHighBandwidth(){
 		return this.requiresHighBandwidth;
 	}
+
+	/**
+	 * Set whether or not this app requires the use of an audio streaming output device
+	 *
+	 * @param requiresAudioSupport whether the app should be treated as requiring an audio streaming
+	 *                             output device
+	 */
+	public void setRequiresAudioSupport(boolean requiresAudioSupport){
+		this.requiresAudioSupport = requiresAudioSupport;
+	}
+
+	/**
+	 * Get the setting from this config to see whether the app should be treated as requiring an
+	 * audio streaming output device
+	 *
+	 * @return whether the app should be treated as requiring an audio streaming output device
+	 */
+	public Boolean requiresAudioSupport(){
+		return this.requiresAudioSupport;
+	}
+
+
 
 	/**
 	 * This will set the order in which a primary transport is determined to be accepted or not.

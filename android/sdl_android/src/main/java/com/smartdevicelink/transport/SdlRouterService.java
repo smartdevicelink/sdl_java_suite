@@ -3217,10 +3217,12 @@ public class SdlRouterService extends Service{
 					queues.put(transportType,queue);
 				}
 				queue.add(new PacketWriteTask(receivedBundle));
-				PacketWriteTaskMaster packetWriteTaskMaster = packetWriteTaskMasterMap.get(transportType);
-				if(packetWriteTaskMaster!=null){
-                    packetWriteTaskMaster.alert();
-                }
+				if(packetWriteTaskMasterMap != null) {
+					PacketWriteTaskMaster packetWriteTaskMaster = packetWriteTaskMasterMap.get(transportType);
+					if (packetWriteTaskMaster != null) {
+						packetWriteTaskMaster.alert();
+					}
+				} //If this is null, it is likely the service is closing
 			}
 			return true;
 		}

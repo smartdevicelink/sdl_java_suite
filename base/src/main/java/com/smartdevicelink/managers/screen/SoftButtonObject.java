@@ -52,6 +52,9 @@ import java.util.List;
 public class SoftButtonObject {
 
     private static final String TAG = "SoftButtonObject";
+    static int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
+    static int SOFT_BUTTON_ID_MIN_VALUE = 0;
+    static int SOFT_BUTTON_ID_MAX_VALUE = 65535;
     private String name;
     private List<SoftButtonState> states;
     private String currentStateName;
@@ -78,7 +81,7 @@ public class SoftButtonObject {
         this.name = name;
         this.states = states;
         currentStateName = initialStateName;
-        this.buttonId = 0;
+        this.buttonId = SOFT_BUTTON_ID_NOT_SET_VALUE;
         this.onEventListener = onEventListener;
     }
 
@@ -255,7 +258,7 @@ public class SoftButtonObject {
     }
 
     /**
-     * Get the dd of the SoftButtonObject
+     * Get the id of the SoftButtonObject
      * @return an int value that represents the id of the SoftButtonObject
      */
     public int getButtonId() {
@@ -263,10 +266,16 @@ public class SoftButtonObject {
     }
 
     /**
-     * Set the id of the SoftButtonObject
+     * Sets the id of the SoftButtonObject <br>
+     * <strong>Note: If the developer did not set buttonId, the manager will automatically assign an id before the SoftButtons are sent to the head unit.
+     * Please note that the manager may reuse ids from previous batch of SoftButtons that were already sent to the head unit</strong>
      * @param buttonId an int value that represents the id of the SoftButtonObject
      */
     public void setButtonId(int buttonId) {
+        if (buttonId < SOFT_BUTTON_ID_MIN_VALUE){
+            Log.e(TAG, "buttonId has to be equal or more than " + SOFT_BUTTON_ID_MIN_VALUE);
+            return;
+        }
         this.buttonId = buttonId;
     }
 
