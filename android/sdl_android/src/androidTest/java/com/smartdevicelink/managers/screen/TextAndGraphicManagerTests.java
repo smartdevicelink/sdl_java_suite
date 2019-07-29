@@ -96,6 +96,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertNull(textAndGraphicManager.getTextField2());
 		assertNull(textAndGraphicManager.getTextField3());
 		assertNull(textAndGraphicManager.getTextField4());
+		assertNull(textAndGraphicManager.getTemplateTitle());
 		assertNull(textAndGraphicManager.getMediaTrackTextField());
 		assertNull(textAndGraphicManager.getPrimaryGraphic());
 		assertNull(textAndGraphicManager.getSecondaryGraphic());
@@ -484,6 +485,13 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertEquals(textAndGraphicManager.getMediaTrackTextField(), songTitle);
 	}
 
+	public void testTemplateTitle() {
+
+		String title = "template title";
+		textAndGraphicManager.setTemplateTitle(title);
+		assertEquals(textAndGraphicManager.getTemplateTitle(), title);
+	}
+
 	public void testAlignment() {
 
 		textAndGraphicManager.setTextAlignment(TextAlignment.LEFT_ALIGNED);
@@ -534,6 +542,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertNull(textAndGraphicManager.getTextField2Type());
 		assertNull(textAndGraphicManager.getTextField3Type());
 		assertNull(textAndGraphicManager.getTextField4Type());
+		assertNull(textAndGraphicManager.getTemplateTitle());
 		assertNotNull(textAndGraphicManager.getBlankArtwork());
 		assertNull(textAndGraphicManager.currentScreenData);
 		assertNull(textAndGraphicManager.inProgressUpdate);

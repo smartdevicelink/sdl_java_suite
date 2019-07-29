@@ -90,7 +90,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private OnSystemCapabilityListener onDisplayCapabilitiesListener;
 	private SdlArtwork primaryGraphic, secondaryGraphic;
 	private TextAlignment textAlignment;
-	private String textField1, textField2, textField3, textField4, mediaTrackTextField;
+	private String textField1, textField2, textField3, textField4, mediaTrackTextField, templateTitle;
 	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
 
 	//Constructors
@@ -128,6 +128,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		textField4 = null;
 		textField4Type = null;
 		mediaTrackTextField = null;
+		templateTitle = null;
 		textAlignment = null;
 		primaryGraphic = null;
 		secondaryGraphic = null;
@@ -379,6 +380,10 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			show.setMediaTrack(mediaTrackTextField);
 		}
 
+		if (templateTitle != null){
+			show.setTemplateTitle(templateTitle);
+		}
+
 		List<String> nonNullFields = findValidMainTextFields();
 		if (nonNullFields.isEmpty()){
 			return show;
@@ -602,6 +607,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		newShow.setMainField2(show.getMainField2());
 		newShow.setMainField3(show.getMainField3());
 		newShow.setMainField4(show.getMainField4());
+		newShow.setTemplateTitle(show.getTemplateTitle());
 
 		return newShow;
 	}
@@ -613,6 +619,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		newShow.setMainField3("");
 		newShow.setMainField4("");
 		newShow.setMediaTrack("");
+		newShow.setTemplateTitle("");
 
 		return newShow;
 	}
@@ -636,6 +643,9 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 		if (show.getMainField4() != null){
 			currentScreenData.setMainField4(show.getMainField4());
+		}
+		if (show.getTemplateTitle() != null){
+			currentScreenData.setTemplateTitle(show.getTemplateTitle());
 		}
 		if (show.getMediaTrack() != null){
 			currentScreenData.setMediaTrack(show.getMediaTrack());
@@ -888,6 +898,19 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	MetadataType getTextField4Type(){
 		return textField4Type;
+	}
+
+	void setTemplateTitle(String templateTitle){
+		this.templateTitle = templateTitle;
+		if (!batchingUpdates){
+			sdlUpdate(null);
+		}else{
+			isDirty = true;
+		}
+	}
+
+	String getTemplateTitle(){
+		return templateTitle;
 	}
 
 	void setPrimaryGraphic(SdlArtwork primaryGraphic){
