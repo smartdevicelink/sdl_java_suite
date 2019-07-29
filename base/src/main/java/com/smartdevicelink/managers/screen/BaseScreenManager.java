@@ -392,6 +392,8 @@ abstract class BaseScreenManager extends BaseSubManager {
 		this.voiceCommandManager.setVoiceCommands(voiceCommands);
 	}
 
+	// MENUS
+
 	/**
 	 * The list of currently set menu cells
 	 * @return a List of the currently set menu cells
@@ -423,6 +425,23 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 */
 	public DynamicMenuUpdatesMode getDynamicMenuUpdatesMode(){
 		return this.menuManager.getDynamicMenuUpdatesMode();
+	}
+
+	/**
+	 * Requires SDL RPC Version 6.0.0 or greater
+	 * Opens the Main Menu
+	 */
+	public void openMenu(){
+		this.menuManager.openMenu();
+	}
+
+	/**
+	 * Requires SDL RPC Version 6.0.0 or greater
+	 * Opens a subMenu. The cell you pass in must be constructed with {@link MenuCell(String,SdlArtwork,List)}
+	 * @param cell - A <Strong>SubMenu</Strong> cell whose sub menu you wish to open
+	 */
+	public void openSubMenu(@NonNull MenuCell cell){
+		this.menuManager.openSubMenu(cell);
 	}
 
 	// CHOICE SETS

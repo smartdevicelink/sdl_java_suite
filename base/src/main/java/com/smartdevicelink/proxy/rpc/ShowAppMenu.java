@@ -66,7 +66,7 @@ public class ShowAppMenu extends RPCRequest {
 	 * If omitted the HMI opens the apps menu.
 	 * If set to a sub-menu ID the HMI opens the corresponding sub-menu
 	 * previously added using `AddSubMenu`.
-	 * @param menuID -
+	 * @param menuID - The SubMenu ID to open
 	 */
 	public void setMenuID(Integer menuID){
 		setParameters(KEY_MENU_ID, menuID);
@@ -76,7 +76,7 @@ public class ShowAppMenu extends RPCRequest {
 	 * If omitted the HMI opens the apps menu.
 	 * If set to a sub-menu ID the HMI opens the corresponding sub-menu
 	 * previously added using `AddSubMenu`.
-	 * @return -
+	 * @return - MenuID int
 	 */
 	public Integer getMenuID(){
 		return getInteger(KEY_MENU_ID);

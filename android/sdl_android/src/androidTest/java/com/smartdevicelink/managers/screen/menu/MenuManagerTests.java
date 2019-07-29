@@ -39,15 +39,19 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.ShowAppMenu;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -425,6 +429,29 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.menuCells.size(), 0);
 	}
 
+	public void testOpeningMainMenu(){
+		// call open Menu
+		MenuManager mockMenuManager = mock(MenuManager.class);
+		mockMenuManager.openMenu();
+		verify(mockMenuManager, Mockito.times(1)).openMenu();
+	}
+
+	public void testOpeningSubMenuNullCells(){
+		// call open Menu
+		MenuManager mockMenuManager = mock(MenuManager.class);
+		MenuCell cell = mock(MenuCell.class);
+		mockMenuManager.menuCells = null;
+		assertFalse(mockMenuManager.openSubMenu(cell));
+	}
+
+	public void testOpeningSubMenu(){
+		// call open Menu
+		List<MenuCell> testCells = createTestCells();
+		menuManager.menuCells = testCells;
+		// has to get success response to be true
+		assertTrue(menuManager.openSubMenu(testCells.get(3)));
+	}
+
 	// HELPERS
 
 	// Emulate what happens when Core sends OnHMIStatus notification
@@ -460,6 +487,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		MenuCell subCell2 = new MenuCell("SubCell 2",null, null, menuSelectionListenerSub2);
 
 		mainCell4 = new MenuCell("Test Cell 4", livio, Arrays.asList(subCell1,subCell2)); // sub menu parent cell
+		mainCell4.setCellId(4);
 
 		return Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4);
 	}

@@ -54,6 +54,7 @@ import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.ShowAppMenu;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
@@ -62,6 +63,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
 
 import org.json.JSONException;
@@ -243,6 +245,75 @@ abstract class BaseMenuManager extends BaseSubManager {
 	 */
 	public DynamicMenuUpdatesMode getDynamicMenuUpdatesMode() {
 		return this.dynamicMenuUpdatesMode;
+	}
+
+	// OPEN MENU RPCs
+
+	/**
+	 * Opens the Main Menu
+	 */
+	public void openMenu(){
+		ShowAppMenu showAppMenu = new ShowAppMenu();
+		showAppMenu.setOnRPCResponseListener(new OnRPCResponseListener() {
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				if (response.getSuccess()){
+					DebugTool.logInfo("Open Main Menu Request Successful");
+				} else {
+					DebugTool.logError("Open Main Menu Request Failed");
+				}
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info){
+				DebugTool.logError("Open Main Menu onError: "+ resultCode+ " | Info: "+ info);
+			}
+		});
+		internalInterface.sendRPC(showAppMenu);
+	}
+
+	/**
+	 * Opens a subMenu. The cell you pass in must be constructed with {@link MenuCell(String,SdlArtwork,List)}
+	 * @param cell - A <Strong>SubMenu</Strong> cell whose sub menu you wish to open
+	 */
+	public boolean openSubMenu(@NonNull MenuCell cell){
+
+		if (menuCells == null){
+			return false;
+		}
+		// We must see if we have a copy of this cell, since we clone the objects
+		for (MenuCell clonedCell : menuCells){
+			if (clonedCell.equals(cell)){
+				// We've found the correct sub menu cell
+				if (cell.getCellId() != MAX_ID) {
+					sendOpenSubMenu(cell.getCellId());
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void sendOpenSubMenu(Integer id){
+
+		ShowAppMenu showAppMenu = new ShowAppMenu();
+		showAppMenu.setMenuID(id);
+		showAppMenu.setOnRPCResponseListener(new OnRPCResponseListener() {
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				if (response.getSuccess()){
+					DebugTool.logInfo("Open Sub Menu Request Successful");
+				} else {
+					DebugTool.logError("Open Sub Menu Request Failed");
+				}
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info){
+				DebugTool.logError("Open Sub Menu onError: "+ resultCode+ " | Info: "+ info);
+			}
+		});
+		internalInterface.sendRPC(showAppMenu);
 	}
 
 	// UPDATING SYSTEM
