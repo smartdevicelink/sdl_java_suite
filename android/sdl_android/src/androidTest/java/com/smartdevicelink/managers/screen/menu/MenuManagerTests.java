@@ -437,14 +437,14 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		// call open Menu
 		MenuManager mockMenuManager = mock(MenuManager.class);
 		MenuCell cell = mock(MenuCell.class);
-		mockMenuManager.menuCells = null;
+		mockMenuManager.oldMenuCells = null;
 		assertFalse(mockMenuManager.openSubMenu(cell));
 	}
 
 	public void testOpeningSubMenu(){
 		// call open Menu
 		List<MenuCell> testCells = createTestCells();
-		menuManager.menuCells = testCells;
+		menuManager.oldMenuCells = testCells;
 		// has to get success response to be true
 		assertTrue(menuManager.openSubMenu(testCells.get(3)));
 	}

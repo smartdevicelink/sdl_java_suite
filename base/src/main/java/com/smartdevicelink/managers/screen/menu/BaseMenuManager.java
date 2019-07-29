@@ -277,16 +277,16 @@ abstract class BaseMenuManager extends BaseSubManager {
 	 * @param cell - A <Strong>SubMenu</Strong> cell whose sub menu you wish to open
 	 */
 	public boolean openSubMenu(@NonNull MenuCell cell){
-
-		if (menuCells == null){
+		if (oldMenuCells == null){
+			DebugTool.logError("open sub menu called, but no Menu cells have been set");
 			return false;
 		}
 		// We must see if we have a copy of this cell, since we clone the objects
-		for (MenuCell clonedCell : menuCells){
+		for (MenuCell clonedCell : oldMenuCells){
 			if (clonedCell.equals(cell)){
 				// We've found the correct sub menu cell
-				if (cell.getCellId() != MAX_ID) {
-					sendOpenSubMenu(cell.getCellId());
+				if (clonedCell.getCellId() != MAX_ID) {
+					sendOpenSubMenu(clonedCell.getCellId());
 				}
 				return true;
 			}
@@ -313,6 +313,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				DebugTool.logError("Open Sub Menu onError: "+ resultCode+ " | Info: "+ info);
 			}
 		});
+
 		internalInterface.sendRPC(showAppMenu);
 	}
 
