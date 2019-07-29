@@ -47,7 +47,7 @@ public class ChoiceSetTests extends AndroidTestCase2 {
     private List<ChoiceCell> choices;
     private Integer defaultTimeout;
     private Integer testCancelID;
-    private Boolean canceledHandlerCalled = false;
+    private Boolean canceledHandlerCalled;
 
     @Override
     public void setUp() throws Exception{
@@ -58,6 +58,7 @@ public class ChoiceSetTests extends AndroidTestCase2 {
         defaultTimeout = 10;
         choices = Arrays.asList(new ChoiceCell(Test.GENERAL_STRING), new ChoiceCell(Test.GENERAL_STRING));
         testCancelID = Test.GENERAL_INTEGER;
+        canceledHandlerCalled = false;
     }
 
     @Override
@@ -100,12 +101,12 @@ public class ChoiceSetTests extends AndroidTestCase2 {
         assertEquals(choiceSet2.getTimeout(), Test.GENERAL_INTEGER);
         assertEquals(choiceSet2.getChoices(), choices);
         assertEquals(choiceSet2.getChoiceSetSelectionListener(), listener);
-
-        assertEquals(choiceSet2.cancelID, testCancelID);
     }
 
     public void testCancelingChoiceSet() {
         ChoiceSet choiceSet = new ChoiceSet(Test.GENERAL_STRING, choices, listener);
+        choiceSet.cancelID = Test.GENERAL_INTEGER;
+
         choiceSet.canceledListener = new ChoiceSetCanceledListener() {
             @Override
             public void onChoiceSetCanceled() {
@@ -113,8 +114,10 @@ public class ChoiceSetTests extends AndroidTestCase2 {
             }
         };
 
-        choiceSet.cancel();
+        Integer testCancelID = choiceSet.cancelID;
+        assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testCancelID);
 
-        assertEquals(canceledHandlerCalled.booleanValue(), true);
+        choiceSet.cancel();
+        assertEquals(Test.MATCH, canceledHandlerCalled.booleanValue(), true);
     }
 }
