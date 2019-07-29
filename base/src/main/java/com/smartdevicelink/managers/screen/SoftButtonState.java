@@ -37,6 +37,9 @@ import android.util.Log;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
+import com.smartdevicelink.proxy.rpc.enums.SystemAction;
+
+import java.util.List;
 
 /**
  * <strong>SoftButtonState</strong> <br>
@@ -78,7 +81,7 @@ public class SoftButtonState {
         } else {
             type = SoftButtonType.SBT_TEXT;
         }
-        this.softButton = new SoftButton(type, 0);
+        this.softButton = new SoftButton(type, SoftButtonObject.SOFT_BUTTON_ID_NOT_SET_VALUE);
 
 
         // Set the SoftButton's image
@@ -106,6 +109,40 @@ public class SoftButtonState {
      */
     public void setName(@NonNull String name) {
         this.name = name;
+    }
+
+    /**
+     * Get whether or not the button should be highlighted on the UI
+     * @return boolean representing whether or not the button should be highlighted
+     */
+    public boolean getHighlighted(){
+        return this.getSoftButton().getIsHighlighted();
+    }
+
+    /**
+     * Set whether or not the button should be highlighted on the UI
+     * @param highlighted boolean representing whether or not the button should be highlighted
+     */
+    public void setHighlighted(boolean highlighted){
+        this.getSoftButton().setIsHighlighted(highlighted);
+    }
+
+    /**
+     * Get whether selecting a SoftButton shall call a specific system action
+     * See {@link SystemAction}
+     * @return SystemAction value representing whether selecting a SoftButton shall call a specific action
+     */
+    public SystemAction getSystemAction(){
+        return this.getSoftButton().getSystemAction();
+    }
+
+    /**
+     * Set whether selecting a SoftButton shall call a specific system action
+     * See {@link SystemAction}
+     * @param systemAction SystemAction value representing whether selecting a SoftButton shall call a specific action
+     */
+    public void setSystemAction(SystemAction systemAction){
+        this.getSoftButton().setSystemAction(systemAction);
     }
 
     /**

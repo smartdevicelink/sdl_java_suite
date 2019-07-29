@@ -49,6 +49,7 @@ public class ClimateControlCapabilitiesTests extends TestCase{
         msg.setHeatedRearWindowAvailable(Test.GENERAL_BOOLEAN);
         msg.setHeatedMirrorsAvailable(Test.GENERAL_BOOLEAN);
         msg.setModuleInfo(Test.GENERAL_MODULE_INFO);
+        msg.setClimateEnableAvailable(Test.GENERAL_BOOLEAN);
     }
 
     /**
@@ -73,6 +74,7 @@ public class ClimateControlCapabilitiesTests extends TestCase{
         boolean heatedRearWindowAvailable = msg.getHeatedRearWindowAvailable();
         boolean heatedMirrorsAvailable = msg.getHeatedMirrorsAvailable();
         ModuleInfo info = msg.getModuleInfo();
+        boolean climateEnableAvailable = msg.getClimateEnableAvailable();
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_STRING, moduleName);
@@ -101,6 +103,8 @@ public class ClimateControlCapabilitiesTests extends TestCase{
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedWindshieldAvailable);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedRearWindowAvailable);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, heatedMirrorsAvailable);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, climateEnableAvailable);
+
         // Invalid/Null Tests
         ClimateControlCapabilities msg = new ClimateControlCapabilities();
         assertNotNull(Test.NOT_NULL, msg);
@@ -121,6 +125,7 @@ public class ClimateControlCapabilitiesTests extends TestCase{
         assertNull(Test.NULL, msg.getHeatedRearWindowAvailable());
         assertNull(Test.NULL, msg.getHeatedMirrorsAvailable());
         assertNull(Test.NULL, msg.getModuleInfo());
+        assertNull(Test.NULL, msg.getClimateEnableAvailable());
     }
 
     public void testJson(){
@@ -144,6 +149,7 @@ public class ClimateControlCapabilitiesTests extends TestCase{
             reference.put(ClimateControlCapabilities.KEY_HEATED_REAR_WINDOW_AVAILABLE, Test.GENERAL_BOOLEAN);
             reference.put(ClimateControlCapabilities.KEY_HEATED_MIRRORS_AVAILABLE, Test.GENERAL_BOOLEAN);
             reference.put(ClimateControlCapabilities.KEY_MODULE_INFO, Test.JSON_MODULE_INFO);
+            reference.put(ClimateControlCapabilities.KEY_CLIMATE_ENABLE_AVAILABLE, Test.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());

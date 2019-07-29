@@ -36,6 +36,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +79,12 @@ public class MenuCell implements Cloneable{
 	private int cellId;
 
 	/**
+	 * The submenu's layout that the subCells will be shown in. If `null`, the default submenu
+	 * layout set via the screen manager's `MenuConfiguration` will be used.
+	 */
+	private MenuLayout subMenuLayout;
+
+	/**
 	 * MAX ID for cells - Cannot use Integer.MAX_INT as the value is too high.
 	 */
 	private static final int MAX_ID = 2000000000;
@@ -110,9 +117,30 @@ public class MenuCell implements Cloneable{
 	 * @param title The cell's primary text
 	 * @param icon The cell's image
 	 * @param subCells The sub-cells for the sub menu that will appear when the cell is selected
+	 *
+	 * @deprecated use {@link #MenuCell(String, MenuLayout, SdlArtwork, List)}
 	 */
+	@Deprecated
 	public MenuCell(@NonNull String title, @Nullable SdlArtwork icon, @Nullable List<MenuCell> subCells) {
 		setTitle(title); // title is the only required param
+		setIcon(icon);
+		setSubCells(subCells);
+		setCellId(MAX_ID);
+		setParentCellId(MAX_ID);
+	}
+
+	/**
+	 * Creates a new MenuCell Object with multiple parameters set
+	 * <strong>NOTE: because this has sub-cells, there does not need to be a listener</strong>
+	 * @param title The cell's primary text
+	 * @param subMenuLayout The submenu's layout that the subCells will be shown in. If `null`, the
+	 *                      default submenu layout in the screen manager's `MenuConfiguration` will be used.
+	 * @param icon The cell's image
+	 * @param subCells The sub-cells for the sub menu that will appear when the cell is selected
+	 */
+	public MenuCell(@NonNull String title, @Nullable MenuLayout subMenuLayout, @Nullable SdlArtwork icon, @Nullable List<MenuCell> subCells) {
+		setTitle(title); // title is the only required param
+		setSubMenuLayout(subMenuLayout);
 		setIcon(icon);
 		setSubCells(subCells);
 		setCellId(MAX_ID);
@@ -203,6 +231,24 @@ public class MenuCell implements Cloneable{
 		return menuSelectionListener;
 	}
 
+	/**
+	 * The submenu's layout that the subCells will be shown in. If `null`, the default submenu
+	 * layout set via the screen manager's `MenuConfiguration` will be used.
+	 * @param subMenuLayout - the layout used for the sub menu
+	 */
+	public void setSubMenuLayout(MenuLayout subMenuLayout) {
+		this.subMenuLayout = subMenuLayout;
+	}
+
+	/**
+	 * The submenu's layout that the subCells will be shown in. If `null`, the default submenu
+	 * layout set via the screen manager's `MenuConfiguration` will be used.
+	 * @return - the layout used for the sub menu
+	 */
+	public MenuLayout getSubMenuLayout() {
+		return this.subMenuLayout;
+	}
+
 	// INTERNALLY USED METHODS
 
 	/**
@@ -265,11 +311,11 @@ public class MenuCell implements Cloneable{
 	 */
 	@Override
 	public boolean equals(Object o) {
+		if (o == null) { return false; }
 		// if this is the same memory address, its the same
 		if (this == o) return true;
 		// if this is not an instance of this class, not the same
 		if (!(o instanceof MenuCell)) return false;
-
 		// if we get to this point, create the hashes and compare them
 		return hashCode() == o.hashCode();
 	}
@@ -291,9 +337,7 @@ public class MenuCell implements Cloneable{
 		clone.voiceCommands = null;
 		if (this.voiceCommands != null){
 			clone.voiceCommands = new ArrayList<>();
-			for (String voiceCommand : this.voiceCommands) {
-				clone.voiceCommands.add(voiceCommand);
-			}
+			clone.voiceCommands.addAll(this.voiceCommands);
 		}
 		clone.subCells = null;
 		if (this.subCells != null) {

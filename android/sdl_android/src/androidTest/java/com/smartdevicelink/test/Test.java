@@ -6,7 +6,9 @@ import android.util.Log;
 import com.smartdevicelink.R;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
+import com.smartdevicelink.managers.screen.menu.MenuConfiguration;
 import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
@@ -153,6 +155,7 @@ import com.smartdevicelink.proxy.rpc.enums.MassageMode;
 import com.smartdevicelink.proxy.rpc.enums.MassageZone;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.proxy.rpc.enums.MediaType;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
 import com.smartdevicelink.proxy.rpc.enums.NavigationAction;
@@ -403,6 +406,8 @@ public class Test {
 	public static final LightControlData               GENERAL_LIGHTCONTROLDATA               = new LightControlData();
 	public static final HMISettingsControlData         GENERAL_HMISETTINGSCONTROLDATA         = new HMISettingsControlData();
 	public static final SdlArtwork                     GENERAL_ARTWORK                        = new SdlArtwork("sdl", FileType.GRAPHIC_PNG, R.drawable.ic_sdl, false);
+	public static final MenuLayout                     GENERAL_MENU_LAYOUT                    = MenuLayout.LIST;
+	public static final MenuConfiguration              GENERAL_MENU_CONFIGURATION             = new MenuConfiguration(GENERAL_MENU_LAYOUT, GENERAL_MENU_LAYOUT);
 
 	public static final HMICapabilities                GENERAL_HMICAPABILITIES                = new HMICapabilities();
 
@@ -464,6 +469,8 @@ public class Test {
 	public static final List<NavigationInstruction>     GENERAL_NAVIGATION_INSTRUCTION_LIST    = Arrays.asList(GENERAL_NAVIGATION_INSTRUCTION);
 	public static final List<SeatLocation>              GENERAL_SEAT_LIST                      = new ArrayList<>(1);
 	public static final List<Boolean>                   GENERAL_BOOLEAN_LIST                   = Arrays.asList(new Boolean[]{Boolean.TRUE, Boolean.TRUE});
+	public static final List<Integer>                   GENERAL_AVAILABLE_HD_CHANNELS_LIST     = Arrays.asList(new Integer[]{ 1, 2});
+	public static final List<MenuLayout>                GENERAL_MENU_LAYOUT_LIST               = Arrays.asList(MenuLayout.LIST, MenuLayout.TILES);
 	public static final int                             GENERAL_MENU_MAX_ID                    = 2000000000;
 	public static final MenuCell                        GENERAL_MENUCELL                       = new MenuCell(GENERAL_STRING,null, null, new MenuSelectionListener() {
 		@Override
@@ -471,6 +478,8 @@ public class Test {
 			//
 		}
 	});
+	public static final ChoiceCell                      GENERAL_CHOICECELL                     = new ChoiceCell(GENERAL_STRING);
+	public static final List<ChoiceCell>                GENERAL_CHOICECELL_LIST                = Arrays.asList(GENERAL_CHOICECELL);
 	public static final List<MenuCell>                  GENERAL_MENUCELL_LIST                  = Arrays.asList(GENERAL_MENUCELL);
 	public static final VoiceCommand					GENERAL_VOICE_COMMAND                  = new VoiceCommand(GENERAL_STRING_LIST, new VoiceCommandSelectionListener() {
 		@Override
@@ -479,7 +488,6 @@ public class Test {
 		}
 	});
 	public static final List<VoiceCommand>              GENERAL_VOICE_COMMAND_LIST             = Arrays.asList(GENERAL_VOICE_COMMAND);
-
 
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();

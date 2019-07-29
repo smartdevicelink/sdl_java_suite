@@ -41,6 +41,7 @@ public class RadioControlCapabilitiesTests extends TestCase{
         msg.setSiriusXMRadioAvailable(Test.GENERAL_BOOLEAN);
         msg.setSisDataAvailable(Test.GENERAL_BOOLEAN);
         msg.setModuleInfo(Test.GENERAL_MODULE_INFO);
+        msg.setAvailableHdChannelsAvailable(Test.GENERAL_BOOLEAN);
     }
 
     /**
@@ -62,6 +63,7 @@ public class RadioControlCapabilitiesTests extends TestCase{
         boolean siriusXMRadioAvailable = msg.getSiriusXMRadioAvailable();
         boolean sisDataAvailable = msg.getSisDataAvailable();
         ModuleInfo info = msg.getModuleInfo();
+        boolean availableHdChannelsAvailable = msg.getAvailableHdChannelsAvailable();
 
 
         // Valid Tests
@@ -79,6 +81,7 @@ public class RadioControlCapabilitiesTests extends TestCase{
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, siriusXMRadioAvailable);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, sisDataAvailable);
         assertEquals(Test.MATCH, Test.GENERAL_MODULE_INFO, info);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, availableHdChannelsAvailable);
 
         // Invalid/Null Tests
         RadioControlCapabilities msg = new RadioControlCapabilities();
@@ -98,6 +101,7 @@ public class RadioControlCapabilitiesTests extends TestCase{
         assertNull(Test.NULL, msg.getSiriusXMRadioAvailable());
         assertNull(Test.NULL, msg.getSisDataAvailable());
         assertNull(Test.NULL, msg.getModuleInfo());
+        assertNull(Test.NULL, msg.getAvailableHdChannelsAvailable());
     }
 
     public void testJson(){
@@ -118,6 +122,7 @@ public class RadioControlCapabilitiesTests extends TestCase{
             reference.put(RadioControlCapabilities.KEY_SIRIUS_XM_RADIO_AVAILABLE, Test.GENERAL_BOOLEAN);
             reference.put(RadioControlCapabilities.KEY_SIS_DATA_AVAILABLE, Test.GENERAL_BOOLEAN);
             reference.put(RadioControlCapabilities.KEY_MODULE_INFO, Test.JSON_MODULE_INFO);
+            reference.put(RadioControlCapabilities.KEY_AVAILABLE_HD_CHANNELS_AVAILABLE, Test.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());

@@ -52,6 +52,7 @@ public class ClimateControlData extends RPCStruct{
     public static final String KEY_HEATED_WIND_SHIELD_ENABLE = "heatedWindshieldEnable";
     public static final String KEY_HEATED_REAR_WINDOW_ENABLE = "heatedRearWindowEnable";
     public static final String KEY_HEATED_MIRRORS_ENABLE = "heatedMirrorsEnable";
+    public static final String KEY_CLIMATE_ENABLE = "climateEnable";
 
     public ClimateControlData() {
     }
@@ -210,5 +211,23 @@ public class ClimateControlData extends RPCStruct{
      */
     public Boolean getHeatedMirrorsEnable() {
         return getBoolean(KEY_HEATED_MIRRORS_ENABLE);
+    }
+
+    /**
+     * Sets the climateEnable portion of the ClimateControlData class
+     *
+     * @param climateEnable Value false means disabled, value true means enabled.
+     */
+    public void setClimateEnable(Boolean climateEnable) {
+        setValue(KEY_CLIMATE_ENABLE, climateEnable);
+    }
+
+    /**
+     * Gets the climateEnable portion of the ClimateControlData class
+     *
+     * @return Boolean - Value false means disabled, value true means enabled.
+     */
+    public Boolean getClimateEnable() {
+        return getBoolean(KEY_CLIMATE_ENABLE);
     }
 }

@@ -167,7 +167,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private static final int PROX_PROT_VER_ONE = 1;
 	private static final int RESPONSE_WAIT_TIME = 2000;
 
-	public static final com.smartdevicelink.util.Version MAX_SUPPORTED_RPC_VERSION = new com.smartdevicelink.util.Version("5.1.0");
+	public static final com.smartdevicelink.util.Version MAX_SUPPORTED_RPC_VERSION = new com.smartdevicelink.util.Version("6.0.0");
 
 	private SdlSession sdlSession = null;
 	private proxyListenerType _proxyListener = null;
@@ -3694,7 +3694,39 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onPerformAppServiceInteractionResponse( msg);
 					onRPCResponseReceived(msg);
 				}
-			} else if (functionName.equals(FunctionID.GET_INTERIOR_VEHICLE_DATA_CONSENT)) {
+			} else if (functionName.equals(FunctionID.CLOSE_APPLICATION.toString())) {
+				final CloseApplicationResponse msg = new CloseApplicationResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onCloseApplicationResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onCloseApplicationResponse(msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.UNPUBLISH_APP_SERVICE.toString())) {
+				final UnpublishAppServiceResponse msg = new UnpublishAppServiceResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onUnpublishAppServiceResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onUnpublishAppServiceResponse( msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.GET_INTERIOR_VEHICLE_DATA_CONSENT.toString())) {
 				final GetInteriorVehicleDataConsentResponse msg = new GetInteriorVehicleDataConsentResponse(hash);
 				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
@@ -3709,7 +3741,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onGetInteriorVehicleDataConsentResponse(msg);
 					onRPCResponseReceived(msg);
 				}
-			} else if (functionName.equals(FunctionID.RELEASE_INTERIOR_VEHICLE_MODULE)) {
+			} else if (functionName.equals(FunctionID.RELEASE_INTERIOR_VEHICLE_MODULE.toString())) {
 				final ReleaseInteriorVehicleDataModuleResponse msg = new ReleaseInteriorVehicleDataModuleResponse(hash);
 				msg.format(rpcSpecVersion, true);
 				if (_callbackToUIThread) {
@@ -3724,7 +3756,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onReleaseInteriorVehicleDataModuleResponse(msg);
 					onRPCResponseReceived(msg);
 				}
-			} else {
+			}
+			else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logError("Unrecognized response Message: " + functionName +
 							" SDL Message Version = " + _sdlMsgVersion);
@@ -3732,6 +3765,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					DebugTool.logError("Unrecognized response Message: " + functionName);
 				}
 			} // end-if
+
 
 		} else if (messageType.equals(RPCMessage.KEY_NOTIFICATION)) {
 			if (functionName.equals(FunctionID.ON_HMI_STATUS.toString())) {

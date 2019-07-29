@@ -45,6 +45,7 @@ import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
 import com.smartdevicelink.proxy.rpc.ButtonPressResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
+import com.smartdevicelink.proxy.rpc.CloseApplicationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
 import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
 import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
@@ -113,6 +114,7 @@ import com.smartdevicelink.proxy.rpc.SubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
+import com.smartdevicelink.proxy.rpc.UnpublishAppServiceResponse;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
@@ -647,5 +649,15 @@ public class ProxyBridge implements IProxyListener{
 	@Override
 	public void onOnSystemCapabilityUpdated(OnSystemCapabilityUpdated notification){
 		onRPCReceived(notification);
+	}
+
+	@Override
+	public void onCloseApplicationResponse(CloseApplicationResponse response) {
+		onRPCReceived(response);
+	}
+
+	@Override
+	public void onUnpublishAppServiceResponse(UnpublishAppServiceResponse response) {
+		onRPCReceived(response);
 	}
 }
