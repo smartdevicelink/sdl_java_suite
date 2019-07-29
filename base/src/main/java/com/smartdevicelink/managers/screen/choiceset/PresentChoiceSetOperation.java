@@ -224,7 +224,13 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 	private void cancelInteraction() {
 		if (isFinished()) {
 			return;
+		} else if (Thread.currentThread().isInterrupted()) {
+			if (!isExecuting()) { return; }
+			finishOperation();
+			return;
 		} else if (isExecuting()) {
+			DebugTool.logInfo("Canceling the presented choice set interaction.");
+
 			CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), choiceSet.cancelID);
 			cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
@@ -248,7 +254,8 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 				DebugTool.logError("Internal interface null - could not send cancel interaction for choice set");
 			}
 		} else {
-			finishOperation();
+			DebugTool.logInfo("Canceling a choice set that has not yet been sent to Core.");
+			Thread.currentThread().interrupt();
 		}
 	}
 
