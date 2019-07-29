@@ -4,6 +4,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.test.BaseRpcTests;
@@ -39,6 +40,7 @@ public class AlertTests extends BaseRpcTests {
         msg.setTtsChunks(Test.GENERAL_TTSCHUNK_LIST);
         msg.setSoftButtons(Test.GENERAL_SOFTBUTTON_LIST);
         msg.setCancelID(Test.GENERAL_INTEGER);
+        msg.setAlertIcon(Test.GENERAL_IMAGE);
         
         return msg;
     }
@@ -67,6 +69,7 @@ public class AlertTests extends BaseRpcTests {
             result.put(Alert.KEY_TTS_CHUNKS, Test.JSON_TTSCHUNKS);
             result.put(Alert.KEY_SOFT_BUTTONS, Test.JSON_SOFTBUTTONS);
             result.put(Alert.KEY_CANCEL_ID, Test.GENERAL_INTEGER);
+            result.put(Alert.KEY_ALERT_ICON, Test.JSON_IMAGE);
         }catch(JSONException e){
         	fail(Test.JSON_FAIL);
         }
@@ -88,6 +91,7 @@ public class AlertTests extends BaseRpcTests {
 		List<TTSChunk> testTtsChunks     = ( (Alert) msg ).getTtsChunks();
 		List<SoftButton> testSoftButtons = ( (Alert) msg ).getSoftButtons();
 		Integer testCancelID = ( (Alert) msg ).getCancelID();
+		Image alertIcon = ( (Alert) msg ).getAlertIcon();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_INT, testDuration);
@@ -99,6 +103,7 @@ public class AlertTests extends BaseRpcTests {
 		assertTrue(Test.TRUE, Validator.validateSoftButtons(Test.GENERAL_SOFTBUTTON_LIST, testSoftButtons));
 		assertTrue(Test.TRUE, Validator.validateTtsChunks(Test.GENERAL_TTSCHUNK_LIST, testTtsChunks));
         assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testCancelID);
+		assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, alertIcon));
 	    	
     	// Invalid/Null Tests
         Alert msg = new Alert();
@@ -114,6 +119,7 @@ public class AlertTests extends BaseRpcTests {
         assertNull(Test.NULL, msg.getTtsChunks());
         assertNull(Test.NULL, msg.getSoftButtons());
         assertNull(Test.NULL, msg.getCancelID());
+        assertNull(Test.NULL, msg.getAlertIcon());
     }
     
     /**
@@ -157,7 +163,11 @@ public class AlertTests extends BaseRpcTests {
 				softButtonList.add(chunk);
 			}
 			assertTrue(Test.TRUE,  Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
-		} catch (JSONException e) {
+
+			JSONObject alertIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, Alert.KEY_ALERT_ICON);
+			Image referenceAlertIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(alertIcon));
+			assertTrue(Test.TRUE, Validator.validateImage(referenceAlertIcon, cmd.getAlertIcon()));
+        } catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}    	
     }

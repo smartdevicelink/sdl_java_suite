@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c)  2019 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,11 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Created by brettywhite on 7/12/19 11:36 AM
+ *
  */
+
 package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
@@ -39,56 +43,53 @@ import com.smartdevicelink.proxy.RPCRequest;
 import java.util.Hashtable;
 
 /**
- * Registers a service offered by this app on the module.
- * Subsequent calls with the same service type will update the manifest for that service.
+ * Unpublish an existing service published by this application.
  */
-public class PublishAppService extends RPCRequest {
+public class UnpublishAppService extends RPCRequest {
 
-	public static final String KEY_APP_SERVICE_MANIFEST = "appServiceManifest";
+	public static final String KEY_SERVICE_ID = "serviceID";
 
-	// Constructors
 	/**
-	 * Constructs a new PublishAppService object
+	 * Constructs a new UnpublishAppService object
 	 */
-	public PublishAppService() {
-		super(FunctionID.PUBLISH_APP_SERVICE.toString());
+	public UnpublishAppService() {
+		super(FunctionID.UNPUBLISH_APP_SERVICE.toString());
 	}
 
 	/**
-	 * Constructs a new PublishAppService object indicated by the Hashtable parameter
+	 * Constructs a new UnpublishAppService object indicated by the Hashtable parameter
 	 *
 	 * @param hash The Hashtable to use
 	 */
-	public PublishAppService(Hashtable<String, Object> hash) {
+	public UnpublishAppService(Hashtable<String, Object> hash) {
 		super(hash);
 	}
 
 	/**
-	 * Constructs a new PublishAppService object
-	 * @param appServiceManifest - The appServiceManifest
+	 * Constructs a new UnpublishAppService object with the required serviceID
+	 * @param serviceID - set the service ID for the service to be unpublished
 	 */
-	public PublishAppService(@NonNull AppServiceManifest appServiceManifest) {
-			this();
-			setAppServiceManifest(appServiceManifest);
+	public UnpublishAppService(@NonNull String serviceID){
+		this();
+		setServiceID(serviceID);
 	}
 
-	// Getters / Setters
-
-	/**
-	 * The manifest of the service that wishes to be published.
-	 * If already published, the updated manifest for this service.
-	 * @param serviceManifest - the App Service Manifest
-	 */
-	public void setAppServiceManifest(@NonNull AppServiceManifest serviceManifest){
-		setParameters(KEY_APP_SERVICE_MANIFEST, serviceManifest);
-	}
+	// SETTERS AND GETTERS
 
 	/**
-	 * The manifest of the service that wishes to be published.
-	 * If already published, the updated manifest for this service.
-	 * @return serviceManifest - the App Service Manifest
+	 * The ID of the service to be unpublished.
+	 * @param serviceID - set the service ID for the service to be unpublished
 	 */
-	public AppServiceManifest getAppServiceManifest(){
-		return (AppServiceManifest) getObject(AppServiceManifest.class,KEY_APP_SERVICE_MANIFEST);
+	public void setServiceID(String serviceID){
+		setParameters(KEY_SERVICE_ID, serviceID);
 	}
+
+	/**
+	 * The ID of the service to be unpublished.
+	 * @return - get the service ID for the service to be unpublished
+	 */
+	public String getServiceID(){
+		return getString(KEY_SERVICE_ID);
+	}
+
 }

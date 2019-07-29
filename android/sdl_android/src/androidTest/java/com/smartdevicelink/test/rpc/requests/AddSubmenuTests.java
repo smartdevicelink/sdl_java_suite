@@ -5,6 +5,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.AddSubMenu;
 import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
@@ -30,6 +31,7 @@ public class AddSubmenuTests extends BaseRpcTests{
         msg.setMenuName(Test.GENERAL_STRING);
         msg.setPosition(Test.GENERAL_INT);
         msg.setMenuIcon(Test.GENERAL_IMAGE);
+        msg.setMenuLayout(Test.GENERAL_MENU_LAYOUT);
 
         return msg;
     }
@@ -53,6 +55,7 @@ public class AddSubmenuTests extends BaseRpcTests{
             result.put(AddSubMenu.KEY_MENU_NAME, Test.GENERAL_STRING);
             result.put(AddSubMenu.KEY_POSITION, Test.GENERAL_INT);
             result.put(AddSubMenu.KEY_MENU_ICON, Test.JSON_IMAGE);
+            result.put(AddSubMenu.KEY_MENU_LAYOUT, Test.GENERAL_MENU_LAYOUT);
         }catch(JSONException e){
         	fail(Test.JSON_FAIL);
         }
@@ -69,12 +72,14 @@ public class AddSubmenuTests extends BaseRpcTests{
         int testPosition    = ( (AddSubMenu) msg ).getPosition();
         String testMenuName = ( (AddSubMenu) msg ).getMenuName();
         Image testMenuIcon = ( (AddSubMenu) msg ).getMenuIcon();
+        MenuLayout testMenuLayout = ( (AddSubMenu) msg ).getMenuLayout();
         
         // Valid Tests
         assertEquals("Menu ID didn't match input menu ID.", Test.GENERAL_INT, testMenuId);
         assertEquals("Menu name didn't match input menu name.", Test.GENERAL_STRING, testMenuName);
         assertEquals("Position didn't match input position.", Test.GENERAL_INT, testPosition);
         assertTrue("Menu icon didn't match input icon.", Validator.validateImage(Test.GENERAL_IMAGE, testMenuIcon));
+        assertEquals("Menu layout didn't match input menu layout.", Test.GENERAL_MENU_LAYOUT, testMenuLayout);
 
 
         // Invalid/Null Tests
@@ -86,6 +91,7 @@ public class AddSubmenuTests extends BaseRpcTests{
         assertNull(Test.NULL, msg.getMenuName());
         assertNull(Test.NULL, msg.getPosition());
         assertNull(Test.NULL, msg.getMenuIcon());
+        assertNull(Test.NULL, msg.getMenuLayout());
     }
     
     /**
@@ -111,10 +117,11 @@ public class AddSubmenuTests extends BaseRpcTests{
 			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, AddSubMenu.KEY_MENU_ID), cmd.getMenuID());
 			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, AddSubMenu.KEY_POSITION), cmd.getPosition());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, AddSubMenu.KEY_MENU_NAME), cmd.getMenuName());
+			assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, AddSubMenu.KEY_MENU_LAYOUT), cmd.getMenuLayout());
 
-            JSONObject menuIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, AddSubMenu.KEY_MENU_ICON);
-            Image referenceMenuIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(menuIcon));
-            assertTrue(Test.TRUE, Validator.validateImage(referenceMenuIcon, cmd.getMenuIcon()));
+			JSONObject menuIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, AddSubMenu.KEY_MENU_ICON);
+			Image referenceMenuIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(menuIcon));
+			assertTrue(Test.TRUE, Validator.validateImage(referenceMenuIcon, cmd.getMenuIcon()));
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}

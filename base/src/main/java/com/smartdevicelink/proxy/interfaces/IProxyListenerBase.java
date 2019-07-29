@@ -105,6 +105,7 @@ import com.smartdevicelink.proxy.rpc.SubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
+import com.smartdevicelink.proxy.rpc.UnpublishAppServiceResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
@@ -431,4 +432,12 @@ public interface IProxyListenerBase {
 	 * @param response - Contains information about the response sent from SDL.
 	 */
 	public void onCancelInteractionResponse(CancelInteractionResponse response);
+
+	/**
+	 * UnpublishAppServiceResponse being called indicates that SDL has
+	 * responded to a request to close the application on the module.
+	 *
+	 * @param response - Contains information about the response sent from SDL.
+	 */
+	public void onUnpublishAppServiceResponse(UnpublishAppServiceResponse response);
 }

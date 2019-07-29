@@ -77,7 +77,7 @@ import java.util.List;
  * 			<td>String</td>
  * 			<td>Text to be displayed in the first field of the display during the Alert. </td>
  *          <td>N</td>
- * 			<td>	Length is limited to what is indicated in RegisterAppInterface response.  If omitted, top display line will be cleared. Text is always centered</td>
+ * 			<td>Length is limited to what is indicated in RegisterAppInterface response.  If omitted, top display line will be cleared. Text is always centered</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -85,7 +85,7 @@ import java.util.List;
  * 			<td>String</td>
  * 			<td>Text to be displayed in the second field of the display during the Alert. </td>
  *          <td>N</td>
- * 			<td>	Only permitted if HMI supports a second display line.	Length is limited to what is indicated in RegisterAppInterface response. 	If omitted, second display line will be cleared.  </td>
+ * 			<td>Only permitted if HMI supports a second display line.	Length is limited to what is indicated in RegisterAppInterface response. 	If omitted, second display line will be cleared.  </td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
@@ -144,6 +144,14 @@ import java.util.List;
  * 			<td></td>
  * 			<td>SmartDeviceLink 6.0</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>alertIcon</td>
+ * 			<td>Image</td>
+ * 			<td>Image struct determining whether the icon is static or dynamic. If omitted on supported displays, no (or the default if applicable) icon should be displayed.</td>
+ *          <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 6.0.0</td>
+ * 		</tr>
  *  </table>
  * @since SmartDeviceLink 1.0
  * 
@@ -163,6 +171,7 @@ public class Alert extends RPCRequest {
 	public static final String KEY_TTS_CHUNKS = "ttsChunks";
 	public static final String KEY_SOFT_BUTTONS = "softButtons";
 	public static final String KEY_CANCEL_ID = "cancelID";
+	public static final String KEY_ALERT_ICON = "alertIcon";
 
 	/**
 	 * Constructs a new Alert object
@@ -419,5 +428,26 @@ public class Alert extends RPCRequest {
 	 */
 	public void setCancelID(Integer cancelID) {
 		setParameters(KEY_CANCEL_ID, cancelID);
+	};
+	
+	/**
+	 * <p>Sets the Image
+	 * If provided, defines the image to be shown along with the alert</p>
+	 * @param alertIcon
+	 *            <p>an Image object representing the Image shown along with the alert</p>
+	 *            <p>
+	 *            <b>Notes: </b>If omitted on supported displays, no (or the
+	 *            default if applicable) icon will be displayed</p>
+	 */
+	public void setAlertIcon(Image alertIcon) {
+		setParameters(KEY_ALERT_ICON, alertIcon);
+	}
+
+	/**
+	 * <p>Gets the image to be shown along with the alert </p>
+	 * @return Image -an Image object
+	 */
+	public Image getAlertIcon() {
+		return (Image) getObject(Image.class, KEY_ALERT_ICON);
 	}
 }

@@ -145,6 +145,12 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 				}
 				DebugTool.logInfo("Success Setting keyboard properties in present choice set operation");
 			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				DebugTool.logError("Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
+				super.onError(correlationId, resultCode, info);
+			}
 		});
 		if (internalInterface.get() != null){
 			internalInterface.get().sendRPC(setGlobalProperties);
@@ -320,6 +326,13 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 						@Override
 						public void onUpdatedAutoCompleteText(String updatedAutoCompleteText) {
 							keyboardProperties.setAutoCompleteText(updatedAutoCompleteText);
+							updateKeyboardProperties(null);
+						}
+
+						@Override
+						public void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList) {
+							keyboardProperties.setAutoCompleteList(updatedAutoCompleteList != null ? updatedAutoCompleteList : new ArrayList<String>());
+							keyboardProperties.setAutoCompleteText(updatedAutoCompleteList != null && !updatedAutoCompleteList.isEmpty() ? updatedAutoCompleteList.get(0) : null);
 							updateKeyboardProperties(null);
 						}
 					});
