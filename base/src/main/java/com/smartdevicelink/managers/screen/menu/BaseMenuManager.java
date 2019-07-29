@@ -253,6 +253,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	 * Opens the Main Menu
 	 */
 	public void openMenu(){
+		
 		ShowAppMenu showAppMenu = new ShowAppMenu();
 		showAppMenu.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
@@ -277,6 +278,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	 * @param cell - A <Strong>SubMenu</Strong> cell whose sub menu you wish to open
 	 */
 	public boolean openSubMenu(@NonNull MenuCell cell){
+
 		if (oldMenuCells == null){
 			DebugTool.logError("open sub menu called, but no Menu cells have been set");
 			return false;
@@ -287,8 +289,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 				// We've found the correct sub menu cell
 				if (clonedCell.getCellId() != MAX_ID) {
 					sendOpenSubMenu(clonedCell.getCellId());
+					return true;
 				}
-				return true;
 			}
 		}
 		return false;
