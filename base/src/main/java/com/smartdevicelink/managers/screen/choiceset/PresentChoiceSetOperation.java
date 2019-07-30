@@ -110,6 +110,10 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		updateKeyboardProperties(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
+				if (Thread.currentThread().isInterrupted()) {
+					finishOperation();
+					return;
+				}
 				presentChoiceSet();
 			}
 		});
@@ -160,10 +164,6 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 	}
 
 	private void presentChoiceSet() {
-		if (isFinished()) {
-			return;
-		}
-
 		PerformInteraction pi = getPerformInteraction();
 		pi.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
@@ -196,7 +196,6 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 	}
 
 	void finishOperation() {
-
 		if (updatedKeyboardProperties) {
 			// We need to reset the keyboard properties
 			SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
@@ -227,6 +226,9 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		} else if (Thread.currentThread().isInterrupted()) {
 			if (!isExecuting()) { return; }
 			finishOperation();
+			if (choiceSetSelectionListener != null) {
+				choiceSetSelectionListener.onError("Presenting the choice set was already canceled");
+			}
 			return;
 		} else if (isExecuting()) {
 			DebugTool.logInfo("Canceling the presented choice set interaction.");
@@ -235,17 +237,20 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 			cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
-					if (!response.getSuccess()){
-						DebugTool.logError("Error canceling the presented choice set " + response);
-						return;
-					}
 					finishOperation();
+					if (choiceSetSelectionListener != null) {
+						choiceSetSelectionListener.onError((response.getSuccess()) ?
+								"Presented choice set canceled successfully." :
+								"Error canceling the presented choice set " + response.getResultCode());
+					}
 				}
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info){
-					DebugTool.logError("Error canceling the presented choice set " + resultCode);
 					finishOperation();
+					if (choiceSetSelectionListener != null) {
+						choiceSetSelectionListener.onError("Error canceling the presented choice set " + resultCode + " " + info);
+					}
 				};
 			});
 			if (internalInterface.get() != null){
@@ -254,7 +259,10 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 				DebugTool.logError("Internal interface null - could not send cancel interaction for choice set");
 			}
 		} else {
-			DebugTool.logInfo("Canceling a choice set that has not yet been sent to Core.");
+			if (choiceSetSelectionListener != null) {
+				choiceSetSelectionListener.onError("Canceling a choice set that has not yet been sent to Core");
+			}
+			Thread.currentThread().stop();
 			Thread.currentThread().interrupt();
 		}
 	}
@@ -262,7 +270,6 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 	// GETTERS
 
 	PerformInteraction getPerformInteraction() {
-
 		PerformInteraction pi = new PerformInteraction(choiceSet.getTitle(), presentationMode, getChoiceIds());
 		pi.setInitialPrompt(choiceSet.getInitialPrompt());
 		pi.setHelpPrompt(choiceSet.getHelpPrompt());
