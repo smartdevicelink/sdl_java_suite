@@ -58,9 +58,9 @@ class AsynchronousOperation implements Runnable {
     }
 
     void finishOperation() {
-        DebugTool.logInfo("Finishing operation: " + toString());
         executing = false;
         finished = true;
+        DebugTool.logInfo("Finishing operation: " + toString());
     }
 
     public Boolean isAsynchronous() {
