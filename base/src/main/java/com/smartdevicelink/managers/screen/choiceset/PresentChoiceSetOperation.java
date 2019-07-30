@@ -262,7 +262,6 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 			if (choiceSetSelectionListener != null) {
 				choiceSetSelectionListener.onError("Canceling a choice set that has not yet been sent to Core");
 			}
-			Thread.currentThread().stop();
 			Thread.currentThread().interrupt();
 		}
 	}
