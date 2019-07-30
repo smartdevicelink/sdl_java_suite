@@ -59,7 +59,7 @@ public class SDLLockScreenActivity extends Activity {
 	public static final String LOCKSCREEN_DEVICE_LOGO_DOWNLOADED = "LOCKSCREEN_DEVICE_LOGO_DOWNLOADED";
 	public static final String CLOSE_LOCK_SCREEN_ACTION = "CLOSE_LOCK_SCREEN";
 	public static final String KEY_LOCKSCREEN_DISMISSED = "KEY_LOCKSCREEN_DISMISSED";
-	public static final String KEY_LOCKSCREEN_DISIMISSIBLE = "KEY_LOCKSCREEN_DISIMISSIBLE";
+	public static final String KEY_LOCKSCREEN_DISMISSIBLE = "KEY_LOCKSCREEN_DISMISSIBLE";
 	public static final String KEY_LOCKSCREEN_WARNING_MSG = "KEY_LOCKSCREEN_WARNING_MSG";
 	private static final int MIN_SWIPE_DISTANCE = 200;
 	private boolean mIsDismissible;
@@ -151,7 +151,7 @@ public class SDLLockScreenActivity extends Activity {
 				if (deviceLogoEnabled && deviceIcon != null){
 					setDeviceLogo(deviceIcon);
 				}
-				mIsDismissible = intent.getBooleanExtra(KEY_LOCKSCREEN_DISIMISSIBLE, false);
+				mIsDismissible = intent.getBooleanExtra(KEY_LOCKSCREEN_DISMISSIBLE, false);
 				String warningMsg = intent.getStringExtra(KEY_LOCKSCREEN_WARNING_MSG);
 				if (mIsDismissible) {
 					setLockscreenWarningMessage(warningMsg);
