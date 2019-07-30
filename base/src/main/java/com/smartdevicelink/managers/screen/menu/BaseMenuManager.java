@@ -54,6 +54,7 @@ import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.ShowAppMenu;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
@@ -253,6 +254,13 @@ abstract class BaseMenuManager extends BaseSubManager {
 	 * Opens the Main Menu
 	 */
 	public void openMenu(){
+
+		SdlMsgVersion sdlMsgVersion = internalInterface.getSdlMsgVersion();
+
+		if (sdlMsgVersion.getMajorVersion() < 6){
+			DebugTool.logWarning("Menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
+			return;
+		}
 		
 		ShowAppMenu showAppMenu = new ShowAppMenu();
 		showAppMenu.setOnRPCResponseListener(new OnRPCResponseListener() {
@@ -278,6 +286,13 @@ abstract class BaseMenuManager extends BaseSubManager {
 	 * @param cell - A <Strong>SubMenu</Strong> cell whose sub menu you wish to open
 	 */
 	public boolean openSubMenu(@NonNull MenuCell cell){
+
+		SdlMsgVersion sdlMsgVersion = internalInterface.getSdlMsgVersion();
+
+		if (sdlMsgVersion.getMajorVersion() < 6){
+			DebugTool.logWarning("Sub menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
+			return false;
+		}
 
 		if (oldMenuCells == null){
 			DebugTool.logError("open sub menu called, but no Menu cells have been set");
