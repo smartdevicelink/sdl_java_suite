@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c)  2019 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,28 +28,30 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Created by brettywhite on 7/17/19 12:00 PM
+ *
  */
 
-package com.smartdevicelink.managers.screen.choiceset;
+package com.smartdevicelink.proxy.rpc.enums;
 
-import com.smartdevicelink.proxy.SystemCapabilityManager;
-import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+/**
+ * How the main menu or submenu is laid out on screen
+ */
+public enum MenuLayout {
 
-import java.util.List;
+	LIST,
 
-public interface KeyboardAutocompleteCompletionListener {
+	TILES,
 
-	/**
-	 * This listener is called when you wish to update your autocomplete text in response to the user's input
-	 * @param updatedAutoCompleteText - The new autocomplete text to use
-	 * @deprecated use {@link #onUpdatedAutoCompleteList(List<String>)} instead
-	 */
-	@Deprecated
-	void onUpdatedAutoCompleteText(String updatedAutoCompleteText);
+	;
 
-	/**
-	 * This listener is called when you wish to update your autocomplete suggestions list in response to the user's input
-	 * @param updatedAutoCompleteList - The new autocomplete suggestions list to use
-	 */
-	void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList);
+	public static MenuLayout valueForString(String value) {
+		try {
+			return valueOf(value);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 }

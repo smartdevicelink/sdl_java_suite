@@ -45,6 +45,7 @@ import com.smartdevicelink.managers.screen.choiceset.ChoiceSetManager;
 import com.smartdevicelink.managers.screen.choiceset.KeyboardListener;
 import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdatesMode;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
+import com.smartdevicelink.managers.screen.menu.MenuConfiguration;
 import com.smartdevicelink.managers.screen.menu.MenuManager;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandManager;
@@ -343,6 +344,23 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
+	 * Sets the title of the new template that will be displayed.
+	 * Sending an empty String "" will clear the field
+	 * @param templateTitle the title of the new template that will be displayed. Maxlength: 100.
+	 */
+	public void setTemplateTitle(String templateTitle){
+		this.textAndGraphicManager.setTemplateTitle(templateTitle);
+	}
+
+	/**
+	 * Gets the title of the new template that will be displayed
+	 * @return templateTitle - String value that represents the title of the new template that will be displayed
+	 */
+	public String getTemplateTitle(){
+		return this.textAndGraphicManager.getTemplateTitle();
+	}
+
+	/**
 	 * Set softButtonObjects list and upload the images to the head unit
 	 * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
 	 */
@@ -442,6 +460,22 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 */
 	public void openSubMenu(@NonNull MenuCell cell){
 		this.menuManager.openSubMenu(cell);
+  }
+  
+  /**
+	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable. Defaults to LIST.
+	 * @param menuConfiguration - The default menuConfiguration
+	 */
+	public void setMenuConfiguration(@NonNull MenuConfiguration menuConfiguration) {
+		this.menuManager.setMenuConfiguration(menuConfiguration);
+	}
+
+	/**
+	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable. Defaults to LIST.
+	 * @return the currently set MenuConfiguration
+	 */
+	public MenuConfiguration getMenuConfiguration(){
+		return this.menuManager.getMenuConfiguration();
 	}
 
 	// CHOICE SETS

@@ -48,6 +48,7 @@ import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
@@ -134,6 +135,12 @@ class PresentChoiceSetOperation implements Runnable {
 					listener.onComplete(true);
 				}
 				DebugTool.logInfo("Success Setting keyboard properties in present choice set operation");
+			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				DebugTool.logError("Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
+				super.onError(correlationId, resultCode, info);
 			}
 		});
 		if (internalInterface.get() != null){
@@ -271,6 +278,13 @@ class PresentChoiceSetOperation implements Runnable {
 						@Override
 						public void onUpdatedAutoCompleteText(String updatedAutoCompleteText) {
 							keyboardProperties.setAutoCompleteText(updatedAutoCompleteText);
+							updateKeyboardProperties(null);
+						}
+
+						@Override
+						public void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList) {
+							keyboardProperties.setAutoCompleteList(updatedAutoCompleteList != null ? updatedAutoCompleteList : new ArrayList<String>());
+							keyboardProperties.setAutoCompleteText(updatedAutoCompleteList != null && !updatedAutoCompleteList.isEmpty() ? updatedAutoCompleteList.get(0) : null);
 							updateKeyboardProperties(null);
 						}
 					});

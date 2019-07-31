@@ -56,9 +56,11 @@ import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.ShowAppMenu;
+import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
@@ -86,6 +88,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 	List<MenuCell> menuCells, waitingUpdateMenuCells, oldMenuCells, keepsNew, keepsOld;
 	List<RPCRequest> inProgressUpdate;
 	DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
+	MenuConfiguration menuConfiguration;
+	SdlMsgVersion sdlMsgVersion;
 	private DisplayType displayType;
 
 	boolean waitingOnHMIUpdate;
@@ -113,6 +117,9 @@ abstract class BaseMenuManager extends BaseSubManager {
 		currentHMILevel = HMILevel.HMI_NONE;
 		lastMenuId = menuCellIdMin;
 		dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
+		sdlMsgVersion = internalInterface.getSdlMsgVersion();
+		// default menu configuration
+		menuConfiguration = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
 
 		addListeners();
 	}
@@ -139,6 +146,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 		waitingUpdateMenuCells = null;
 		keepsNew = null;
 		keepsOld = null;
+		menuConfiguration = null;
+		sdlMsgVersion = null;
 
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -248,92 +257,139 @@ abstract class BaseMenuManager extends BaseSubManager {
 		return this.dynamicMenuUpdatesMode;
 	}
 
-	// OPEN MENU RPCs
+    // OPEN MENU RPCs
 
-	/**
-	 * Opens the Main Menu
-	 */
-	public void openMenu(){
+    /**
+     * Opens the Main Menu
+     */
+    public void openMenu(){
 
-		SdlMsgVersion sdlMsgVersion = internalInterface.getSdlMsgVersion();
+        if (sdlMsgVersion.getMajorVersion() < 6){
+            DebugTool.logWarning("Menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
+            return;
+        }
+        
+        ShowAppMenu showAppMenu = new ShowAppMenu();
+        showAppMenu.setOnRPCResponseListener(new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+                if (response.getSuccess()){
+                    DebugTool.logInfo("Open Main Menu Request Successful");
+                } else {
+                    DebugTool.logError("Open Main Menu Request Failed");
+                }
+            }
 
-		if (sdlMsgVersion.getMajorVersion() < 6){
-			DebugTool.logWarning("Menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
-			return;
-		}
-		
-		ShowAppMenu showAppMenu = new ShowAppMenu();
-		showAppMenu.setOnRPCResponseListener(new OnRPCResponseListener() {
-			@Override
-			public void onResponse(int correlationId, RPCResponse response) {
-				if (response.getSuccess()){
-					DebugTool.logInfo("Open Main Menu Request Successful");
-				} else {
-					DebugTool.logError("Open Main Menu Request Failed");
-				}
-			}
+            @Override
+            public void onError(int correlationId, Result resultCode, String info){
+                DebugTool.logError("Open Main Menu onError: "+ resultCode+ " | Info: "+ info);
+            }
+        });
+        internalInterface.sendRPC(showAppMenu);
+    }
 
-			@Override
-			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError("Open Main Menu onError: "+ resultCode+ " | Info: "+ info);
-			}
-		});
-		internalInterface.sendRPC(showAppMenu);
-	}
+    /**
+     * Opens a subMenu. The cell you pass in must be constructed with {@link MenuCell(String,SdlArtwork,List)}
+     * @param cell - A <Strong>SubMenu</Strong> cell whose sub menu you wish to open
+     */
+    public boolean openSubMenu(@NonNull MenuCell cell){
 
-	/**
-	 * Opens a subMenu. The cell you pass in must be constructed with {@link MenuCell(String,SdlArtwork,List)}
-	 * @param cell - A <Strong>SubMenu</Strong> cell whose sub menu you wish to open
-	 */
-	public boolean openSubMenu(@NonNull MenuCell cell){
+        SdlMsgVersion sdlMsgVersion = internalInterface.getSdlMsgVersion();
 
-		SdlMsgVersion sdlMsgVersion = internalInterface.getSdlMsgVersion();
+        if (sdlMsgVersion.getMajorVersion() < 6){
+            DebugTool.logWarning("Sub menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
+            return false;
+        }
 
-		if (sdlMsgVersion.getMajorVersion() < 6){
-			DebugTool.logWarning("Sub menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
-			return false;
-		}
+        if (oldMenuCells == null){
+            DebugTool.logError("open sub menu called, but no Menu cells have been set");
+            return false;
+        }
+        // We must see if we have a copy of this cell, since we clone the objects
+        for (MenuCell clonedCell : oldMenuCells){
+            if (clonedCell.equals(cell)){
+                // We've found the correct sub menu cell
+                if (clonedCell.getCellId() != MAX_ID) {
+                    sendOpenSubMenu(clonedCell.getCellId());
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-		if (oldMenuCells == null){
-			DebugTool.logError("open sub menu called, but no Menu cells have been set");
-			return false;
-		}
-		// We must see if we have a copy of this cell, since we clone the objects
-		for (MenuCell clonedCell : oldMenuCells){
-			if (clonedCell.equals(cell)){
-				// We've found the correct sub menu cell
-				if (clonedCell.getCellId() != MAX_ID) {
-					sendOpenSubMenu(clonedCell.getCellId());
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    private void sendOpenSubMenu(Integer id){
 
-	private void sendOpenSubMenu(Integer id){
+        ShowAppMenu showAppMenu = new ShowAppMenu();
+        showAppMenu.setMenuID(id);
+        showAppMenu.setOnRPCResponseListener(new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+                if (response.getSuccess()){
+                    DebugTool.logInfo("Open Sub Menu Request Successful");
+                } else {
+                    DebugTool.logError("Open Sub Menu Request Failed");
+                }
+            }
 
-		ShowAppMenu showAppMenu = new ShowAppMenu();
-		showAppMenu.setMenuID(id);
-		showAppMenu.setOnRPCResponseListener(new OnRPCResponseListener() {
-			@Override
-			public void onResponse(int correlationId, RPCResponse response) {
-				if (response.getSuccess()){
-					DebugTool.logInfo("Open Sub Menu Request Successful");
-				} else {
-					DebugTool.logError("Open Sub Menu Request Failed");
-				}
-			}
+            @Override
+            public void onError(int correlationId, Result resultCode, String info){
+                DebugTool.logError("Open Sub Menu onError: "+ resultCode+ " | Info: "+ info);
+            }
+        });
 
-			@Override
-			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError("Open Sub Menu onError: "+ resultCode+ " | Info: "+ info);
-			}
-		});
+        internalInterface.sendRPC(showAppMenu);
+    }
 
-		internalInterface.sendRPC(showAppMenu);
-	}
+    // MENU CONFIG
 
+        /**
+     * This method is called via the screen manager to set the menuConfiguration.
+     * This will be used when a menu item with sub-cells has a null value for menuConfiguration
+     * @param menuConfiguration - The default menuConfiguration
+     */
+    public void setMenuConfiguration(@NonNull final MenuConfiguration menuConfiguration) {
+
+        if (sdlMsgVersion == null) {
+            DebugTool.logError("SDL Message Version is null. Cannot set Menu Configuration");
+            return;
+        }
+
+        if (sdlMsgVersion.getMajorVersion() < 6){
+            DebugTool.logWarning("Menu configurations is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
+            return;
+        }
+
+        if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
+            // We are in NONE or the menu is in use, bail out of here
+            DebugTool.logError("Could not set main menu configuration, HMI level: "+currentHMILevel+", required: 'Not-NONE', system context: "+currentSystemContext+", required: 'Not MENU'");
+            return;
+        }
+
+        // In the future, when the manager is switched to use queues, the menuConfiguration should be set when SetGlobalProperties response is received
+        this.menuConfiguration = menuConfiguration;
+        
+        SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
+        setGlobalProperties.setMenuLayout(menuConfiguration.getMenuLayout());
+        setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+                if (response.getSuccess()){
+                    DebugTool.logInfo("Menu Configuration successfully set: "+ menuConfiguration.toString());
+                }
+            }
+
+            @Override
+            public void onError(int correlationId, Result resultCode, String info){
+                DebugTool.logError("onError: "+ resultCode+ " | Info: "+ info );
+            }
+        });
+        internalInterface.sendRPC(setGlobalProperties);
+    }
+
+    public MenuConfiguration getMenuConfiguration(){
+        return this.menuConfiguration;
+    }
 	// UPDATING SYSTEM
 
 	// ROOT MENU
@@ -915,6 +971,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position){
 		AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getTitle());
 		subMenu.setPosition(position);
+		subMenu.setMenuLayout((cell.getSubMenuLayout() != null ? cell.getSubMenuLayout() : menuConfiguration.getSubMenuLayout()));
 		subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon()!= null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);
 		return subMenu;
 	}

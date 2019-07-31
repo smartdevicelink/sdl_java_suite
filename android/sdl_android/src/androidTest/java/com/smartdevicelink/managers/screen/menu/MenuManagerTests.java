@@ -39,11 +39,16 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -81,7 +86,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 
 		cells = createTestCells();
 
-		ISdl internalInterface = mock(ISdl.class);
+		final ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
 
 		// When internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, OnRPCNotificationListener) is called
@@ -107,6 +112,19 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		};
 		doAnswer(onCommandAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_COMMAND), any(OnRPCNotificationListener.class));
 
+		Answer<Void> answer = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				RPCRequest request = (RPCRequest) args[0];
+				RPCResponse response = new RPCResponse(FunctionID.SET_GLOBAL_PROPERTIES.toString());
+				response.setSuccess(true);
+				request.getOnRPCResponseListener().onResponse(0, response);
+				return null;
+			}
+		};
+		doAnswer(answer).when(internalInterface).sendRPC(any(SetGlobalProperties.class));
+
 		menuManager = new MenuManager(internalInterface, fileManager);
 
 		// Check some stuff during setup
@@ -121,6 +139,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertNull(menuManager.inProgressUpdate);
 		assertNull(menuManager.keepsNew);
 		assertNull(menuManager.keepsOld);
+		assertNotNull(menuManager.menuConfiguration);
 		assertNotNull(menuManager.hmiListener);
 		assertNotNull(menuManager.commandListener);
 		assertNotNull(menuManager.displayListener);
@@ -143,6 +162,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertNull(menuManager.waitingUpdateMenuCells);
 		assertNull(menuManager.keepsNew);
 		assertNull(menuManager.keepsOld);
+		assertNull(menuManager.menuConfiguration);
 
 		// after everything, make sure we are in the correct state
 		assertEquals(menuManager.getState(), BaseSubManager.SHUTDOWN);
@@ -447,6 +467,17 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		menuManager.oldMenuCells = testCells;
 		// has to get success response to be true
 		assertTrue(menuManager.openSubMenu(testCells.get(3)));
+  }
+  
+	public void testSetMenuConfiguration(){
+		menuManager.currentHMILevel = HMILevel.HMI_FULL;
+		menuManager.currentSystemContext = SystemContext.SYSCTXT_MAIN;
+		menuManager.sdlMsgVersion = new SdlMsgVersion(6,0);
+
+		MenuConfiguration menuConfigurationTest = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
+		menuManager.setMenuConfiguration(menuConfigurationTest);
+		assertEquals(menuManager.menuConfiguration, menuConfigurationTest);
+
 	}
 
 	// HELPERS

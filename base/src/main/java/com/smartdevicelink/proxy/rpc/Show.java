@@ -162,6 +162,14 @@ import java.util.List;
  * 			<td><p>If omitted on supported displays, the presets will be shown as not defined.</p>Minsize: 0; Maxsize: 6</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>templateTitle</td>
+ * 			<td>String</td>
+ * 			<td>The title of the new template that will be displayed.</td>
+ * 			<td><p>How this will be displayed is dependent on the OEM design and implementation of the template..</p>Minsize: 0; Maxsize: 100</td>
+ * 			<td>N</td>
+ * 			<td>SmartDeviceLink 6.0.0</td>
+ * 		</tr>
  *
  *  </table>
  *<p><b>Response </b></p>
@@ -196,6 +204,8 @@ public class Show extends RPCRequest {
 	public static final String KEY_SECONDARY_GRAPHIC = "secondaryGraphic";
 	public static final String KEY_SOFT_BUTTONS = "softButtons";
 	public static final String KEY_METADATA_TAGS = "metadataTags";
+	public static final String KEY_TEMPLATE_TITLE = "templateTitle";
+
 	/**
 	 * Constructs a new Show object
 	 */
@@ -439,7 +449,7 @@ public class Show extends RPCRequest {
 	 * Sets the text in the track field
 	 * 
 	 * @param mediaTrack
-	 *            a String value disaplayed in the track field
+	 *            a String value displayed in the track field
 	 *            <p></p>
 	 *            <b>Notes: </b>
 	 *            <ul>
@@ -576,5 +586,30 @@ public class Show extends RPCRequest {
 	 */
 	public MetadataTags getMetadataTags() {
 		return (MetadataTags) getObject(MetadataTags.class, KEY_METADATA_TAGS);
+	}
+
+	/**
+	 * Sets the title of the new template that will be displayed.
+	 * How this will be displayed is dependent on the OEM design and implementation of the template.
+	 * @param templateTitle the title of the new template that will be displayed
+	 *            <p></p>
+	 *            <ul>
+	 *            <li>Minlength: 0</li>
+	 *            <li>Maxlength: 100</li>
+	 *            </ul>
+	 * @since SmartDeviceLink 6.0.0
+	 */
+	public void setTemplateTitle(String templateTitle){
+		setParameters(KEY_TEMPLATE_TITLE, templateTitle);
+	}
+
+	/**
+	 * Gets the title of the new template that will be displayed
+	 * How this will be displayed is dependent on the OEM design and implementation of the template.
+	 * @return templateTitle - String value that represents the title of the new template that will be displayed
+	 * @since SmartDeviceLink 6.0.0
+	 */
+	public String getTemplateTitle(){
+		return getString(KEY_TEMPLATE_TITLE);
 	}
 }
