@@ -161,6 +161,10 @@ public enum VehicleDataType {
      * Notifies VEHICLEDATA_CLOUDAPPVEHICLEID may be subscribed
      */
     VEHICLEDATA_CLOUDAPPVEHICLEID,
+    /**
+     * Notifies VEHICLEDATA_OEM_VEHICLE_DATA_TYPE may be subscribed
+     */
+    VEHICLEDATA_OEM_VEHICLE_DATA_TYPE,
     ;
 
      /**

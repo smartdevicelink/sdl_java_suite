@@ -107,17 +107,6 @@ public class VehicleDataResult extends RPCStruct {
 	public VehicleDataResultCode getResultCode() {
 		return (VehicleDataResultCode) getObject(VehicleDataResultCode.class, KEY_RESULT_CODE);
 	}	
-	
-	/**
-	 * Individual published data request result.
-	 * @param oemCustomDataType Custom published data element type.
-	 * @param resultCode Published data result code.
-	 */
-	public VehicleDataResult(@NonNull String oemCustomDataType, @NonNull VehicleDataResultCode resultCode){
-		this();
-		setOEMCustomVehicleDataType(oemCustomDataType);
-		setResultCode(resultCode);
-	}
 
 	public void setDataType(@NonNull VehicleDataType dataType) {
 		setValue(KEY_DATA_TYPE, dataType);
@@ -127,7 +116,7 @@ public class VehicleDataResult extends RPCStruct {
 		return (VehicleDataType) getObject(VehicleDataType.class, KEY_DATA_TYPE);
 	}
 	
-	public void setOEMCustomVehicleDataType(@NonNull String oemCustomDataType) {
+	public void setOEMCustomVehicleDataType(String oemCustomDataType) {
 		setValue(KEY_OEM_CUSTOM_DATA_TYPE, oemCustomDataType);
 	}
 
