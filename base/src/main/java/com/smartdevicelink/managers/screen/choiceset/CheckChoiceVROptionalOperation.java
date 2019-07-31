@@ -80,17 +80,15 @@ class CheckChoiceVROptionalOperation implements Runnable {
 					isVROptional = true;
 					deleteTestChoiceSet();
 				}else{
+					DebugTool.logWarning("Head unit doesn't support choices with no VR.");
 					sendTestChoiceWithVR();
 				}
 			}
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError("There was an error in the check choice vr optional operation. Send test choice with no VR failed. Error: " + info + " resultCode: " + resultCode);
-				isVROptional = false;
-				if (checkChoiceVROptionalInterface != null){
-					checkChoiceVROptionalInterface.onError(info);
-				}
+				DebugTool.logWarning("Head unit doesn't support choices with no VR. Error: " + info + " resultCode: " + resultCode);
+				sendTestChoiceWithVR();
 			}
 		});
 
