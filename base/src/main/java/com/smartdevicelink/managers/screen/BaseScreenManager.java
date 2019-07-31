@@ -438,7 +438,6 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
-	 *
 	 * @return The currently set DynamicMenuUpdatesMode. It defaults to ON_WITH_COMPAT_MODE if not set.
 	 */
 	public DynamicMenuUpdatesMode getDynamicMenuUpdatesMode(){
@@ -460,9 +459,9 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 */
 	public void openSubMenu(@NonNull MenuCell cell){
 		this.menuManager.openSubMenu(cell);
-  }
+  	}
   
-  /**
+  	/**
 	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable. Defaults to LIST.
 	 * @param menuConfiguration - The default menuConfiguration
 	 */
