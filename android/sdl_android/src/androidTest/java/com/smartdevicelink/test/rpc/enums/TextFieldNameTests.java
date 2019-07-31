@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.enums.TextFieldName}
+ * {@link com.smartdevicelink.proxy.rpc.enums.TextFieldName}
  */
 public class TextFieldNameTests extends TestCase {
 
@@ -75,6 +75,8 @@ public class TextFieldNameTests extends TestCase {
 		TextFieldName enumAddLines = TextFieldName.valueForString(example);
 		example = "phoneNumber";
 		TextFieldName enumPhone = TextFieldName.valueForString(example);
+		example = "templateTitle";
+		TextFieldName templateTitle = TextFieldName.valueForString(example);
 		
 		assertNotNull("mainField1 returned null", enumMainField1);
 		assertNotNull("mainField2 returned null", enumMainField2);
@@ -100,7 +102,9 @@ public class TextFieldNameTests extends TestCase {
 		assertNotNull("secondaryText returned null", enumSecondaryText);
 		assertNotNull("tertiaryText returned null", enumTertiaryText);
 		assertNotNull("menuTitle returned null", enumMenuTitle);
-		
+		assertNotNull("templateTitle returned null", templateTitle);
+
+
 		assertNotNull(Test.NOT_NULL, enumLocName);
 		assertNotNull(Test.NOT_NULL, enumLocDesc);
 		assertNotNull(Test.NOT_NULL, enumAddLines);
@@ -165,12 +169,12 @@ public class TextFieldNameTests extends TestCase {
 		enumTestList.add(TextFieldName.menuName);
 		enumTestList.add(TextFieldName.secondaryText);		
 		enumTestList.add(TextFieldName.tertiaryText);
-		enumTestList.add(TextFieldName.menuTitle);	
-		
+		enumTestList.add(TextFieldName.menuTitle);
 		enumTestList.add(TextFieldName.locationName);	
 		enumTestList.add(TextFieldName.locationDescription);	
 		enumTestList.add(TextFieldName.addressLines);	
-		enumTestList.add(TextFieldName.phoneNumber);	
+		enumTestList.add(TextFieldName.phoneNumber);
+		enumTestList.add(TextFieldName.templateTitle);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

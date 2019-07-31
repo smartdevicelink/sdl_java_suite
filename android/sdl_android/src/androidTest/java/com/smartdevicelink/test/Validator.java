@@ -102,6 +102,7 @@ import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
 
@@ -367,7 +368,7 @@ public class Validator{
         return validateImage(button1.getImage(), button2.getImage())
                 && validateText(button1.getText(), button2.getText())
                 && button1.getIsHighlighted() == button2.getIsHighlighted()
-                && button1.getSoftButtonID() == button2.getSoftButtonID()
+                && ( (button1 .getSoftButtonID() == null && button2.getSoftButtonID() == null) || button1.getSoftButtonID().equals(button2.getSoftButtonID()))
                 && button1.getSystemAction() == button2.getSystemAction()
                 && button1.getType() == button2.getType();
     }
@@ -2002,6 +2003,9 @@ public class Validator{
         if(item1.getVdop() != item2.getVdop()){
             return false;
         }
+        if(item1.getShifted() != item2.getShifted()){
+            return false;
+        }
 
         return true;
     }
@@ -3545,6 +3549,15 @@ public class Validator{
 	}
 
 	public static boolean validateSpeechCapabilities(List<SpeechCapabilities> spA, List<SpeechCapabilities> spB){
+		for(int i = 0; i < spA.size(); i++){
+			if(!spA.get(i).equals(spB.get(i))){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean validatePreRecordedSpeechCapabilities(List<PrerecordedSpeech> spA, List<PrerecordedSpeech> spB){
 		for(int i = 0; i < spA.size(); i++){
 			if(!spA.get(i).equals(spB.get(i))){
 				return false;

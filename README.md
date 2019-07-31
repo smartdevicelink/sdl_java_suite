@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/smartdevicelink/sdl_android.svg?branch=master)](https://travis-ci.org/smartdevicelink/sdl_java_suite)
+[![Build Status](https://travis-ci.org/smartdevicelink/sdl_java_suite.svg?branch=master)](https://travis-ci.org/smartdevicelink/sdl_java_suite)
 [![codecov](https://codecov.io/gh/smartdevicelink/sdl_android/branch/master/graph/badge.svg)](https://codecov.io/gh/smartdevicelink/sdl_java_suite)
 [![Slack Status](http://sdlslack.herokuapp.com/badge.svg)](http://slack.smartdevicelink.com)
 
@@ -116,10 +116,10 @@ from within the project (JavaSE or JavaEE) and a JAR should be generated in the 
 ![Java Suite Folder Structure](JavaSuiteFolderStructure.png)
 
 #### base Folder
-The base folder contains the source set that is shared between all of the compilable projects. This folder does not contain a a compilable project. 
+The base folder contains the source set that is shared between all of the compilable projects. This folder does not contain a compilable project. 
 
 #### baseAndroid Folder
-The baseAndroid folder contains symbolic links to files and folders from the base folder. This has been included since the Java Suite refactor is a minor version release and the base folder contains breaking changes for the Android project. This folder does not contain a a compilable project. 
+The baseAndroid folder contains symbolic links to files and folders from the base folder. This has been included since the Java Suite refactor is a minor version release and the base folder contains breaking changes for the Android project. This folder does not contain a compilable project. 
 
 #### android Folder 
 The android folder contains the SDL Android library as well as the sample project for Android. Both of those are compilable projects. 
