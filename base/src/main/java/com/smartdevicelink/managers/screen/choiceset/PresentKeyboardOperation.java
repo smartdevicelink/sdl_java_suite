@@ -40,6 +40,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.CancelInteraction;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.PerformInteraction;
@@ -57,7 +58,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class PresentKeyboardOperation implements Runnable {
+class PresentKeyboardOperation extends AsynchronousOperation {
 
 	private WeakReference<ISdl> internalInterface;
 	private KeyboardListener keyboardListener;
@@ -65,18 +66,22 @@ class PresentKeyboardOperation implements Runnable {
 	private boolean updatedKeyboardProperties;
 	private String initialText;
 	private OnRPCNotificationListener keyboardRPCListener;
+	private Integer cancelID;
 
-	PresentKeyboardOperation(ISdl internalInterface, KeyboardProperties originalKeyboardProperties, String initialText, KeyboardProperties customConfig, KeyboardListener keyboardListener){
+	PresentKeyboardOperation(ISdl internalInterface, KeyboardProperties originalKeyboardProperties, String initialText, KeyboardProperties customConfig, KeyboardListener keyboardListener, Integer cancelID){
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.keyboardListener = keyboardListener;
 		this.originalKeyboardProperties = originalKeyboardProperties;
 		this.keyboardProperties = originalKeyboardProperties;
 		this.customConfig = customConfig;
 		this.initialText = initialText;
+		this.cancelID = cancelID;
 	}
 
 	@Override
 	public void run() {
+		PresentKeyboardOperation.super.run();
+		DebugTool.logInfo("Keyboard Operation: Executing present keyboard operation");
 		addListeners();
 		start();
 	}
@@ -99,9 +104,7 @@ class PresentKeyboardOperation implements Runnable {
 	// SENDING REQUESTS
 
 	private void presentKeyboard(){
-
 		if (internalInterface.get() != null){
-
 			PerformInteraction pi = getPerformInteraction();
 			pi.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
@@ -124,8 +127,37 @@ class PresentKeyboardOperation implements Runnable {
 
 	}
 
-	private void updateKeyboardProperties(final CompletionListener listener){
+	void cancelKeyboard() {
+		if (Thread.currentThread().isInterrupted()) {
+			return;
+		} else if (isExecuting()) {
+			DebugTool.logInfo("Canceling the presented keyboard.");
 
+			CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);
+			cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
+				@Override
+				public void onResponse(int correlationId, RPCResponse response) {
+					if (!response.getSuccess()) {
+						DebugTool.logError("Error canceling the presented keyboard " + response.getResultCode());
+					}
+					finishOperation();
+				}
+
+				@Override
+				public void onError(int correlationId, Result resultCode, String info){
+					DebugTool.logError("Error canceling the presented keyboard " + resultCode + " " + info);
+					finishOperation();
+				};
+			});
+			if (internalInterface.get() != null){
+				internalInterface.get().sendRPC(cancelInteraction);
+			} else {
+				DebugTool.logError("Internal interface null - could not send cancel interaction for keyboard");
+			}
+		}
+	}
+
+	private void updateKeyboardProperties(final CompletionListener listener){
 		if (keyboardProperties == null){
 			if (listener != null){
 				listener.onComplete(false);
@@ -169,8 +201,7 @@ class PresentKeyboardOperation implements Runnable {
 		}
 	}
 
-	private void finishOperation() {
-
+	void finishOperation() {
 		if (updatedKeyboardProperties) {
 			// We need to reset the keyboard properties
 			SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
@@ -180,6 +211,7 @@ class PresentKeyboardOperation implements Runnable {
 				public void onResponse(int correlationId, RPCResponse response) {
 					updatedKeyboardProperties = false;
 					DebugTool.logInfo("Successfully reset choice keyboard properties to original config");
+					PresentKeyboardOperation.super.finishOperation();
 				}
 			});
 
@@ -189,6 +221,8 @@ class PresentKeyboardOperation implements Runnable {
 			} else {
 				DebugTool.logError("Internal Interface null when finishing choice keyboard reset");
 			}
+		} else {
+			PresentKeyboardOperation.super.finishOperation();
 		}
 	}
 
@@ -200,6 +234,7 @@ class PresentKeyboardOperation implements Runnable {
 		pi.setInteractionMode(InteractionMode.MANUAL_ONLY);
 		pi.setInteractionChoiceSetIDList(Collections.<Integer>emptyList());
 		pi.setInteractionLayout(LayoutMode.KEYBOARD);
+		pi.setCancelID(cancelID);
 		return pi;
 	}
 

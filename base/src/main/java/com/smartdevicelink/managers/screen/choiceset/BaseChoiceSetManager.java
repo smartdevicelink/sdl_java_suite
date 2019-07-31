@@ -394,8 +394,15 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         // Present a keyboard with the choice set that we used to test VR's optional state
         DebugTool.logInfo("Presenting Keyboard - Choice Set Manager");
-        PresentKeyboardOperation keyboardOp = new PresentKeyboardOperation(internalInterface, keyboardConfiguration, initialText, customKeyboardConfig, listener);
+        PresentKeyboardOperation keyboardOp = new PresentKeyboardOperation(internalInterface, keyboardConfiguration, initialText, customKeyboardConfig, listener, nextCancelId++);
         pendingPresentOperation = executor.submit(keyboardOp);
+    }
+
+    public void dismissKeyboard() {
+        for (Runnable operation : operationQueue){
+            if (!(operation instanceof PresentKeyboardOperation)){ continue; }
+            ((PresentKeyboardOperation) operation).cancelKeyboard();
+        }
     }
 
     /**
