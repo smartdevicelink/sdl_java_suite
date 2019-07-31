@@ -465,6 +465,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		// call open Menu
 		List<MenuCell> testCells = createTestCells();
 		menuManager.oldMenuCells = testCells;
+		menuManager.sdlMsgVersion = new SdlMsgVersion(6,0);
 		// has to get success response to be true
 		assertTrue(menuManager.openSubMenu(testCells.get(3)));
   }
