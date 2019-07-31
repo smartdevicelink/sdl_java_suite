@@ -3711,38 +3711,38 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					onRPCResponseReceived(msg);
 				}
 			} else if (functionName.equals(FunctionID.UNPUBLISH_APP_SERVICE.toString())) {
-                final UnpublishAppServiceResponse msg = new UnpublishAppServiceResponse(hash);
-                msg.format(rpcSpecVersion, true);
-                if (_callbackToUIThread) {
-                    // Run in UI thread
-                    _mainUIHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            _proxyListener.onUnpublishAppServiceResponse( msg);
-                            onRPCResponseReceived(msg);
-                        }
-                    });
-               	} else {
-                    _proxyListener.onUnpublishAppServiceResponse( msg);
-                    onRPCResponseReceived(msg);
-                }
-            } else if (functionName.equals(FunctionID.SHOW_APP_MENU.toString())) {
-                final ShowAppMenuResponse msg = new ShowAppMenuResponse(hash);
-                msg.format(rpcSpecVersion, true);
-                if (_callbackToUIThread) {
-                    // Run in UI thread
-                    _mainUIHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            _proxyListener.onShowAppMenuResponse( msg);
-                            onRPCResponseReceived(msg);
-                        }
-                    });
-                } else {
-                    _proxyListener.onShowAppMenuResponse( msg);
-                    onRPCResponseReceived(msg);
-                }
-            } else {
+				final UnpublishAppServiceResponse msg = new UnpublishAppServiceResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onUnpublishAppServiceResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onUnpublishAppServiceResponse( msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.SHOW_APP_MENU.toString())) {
+				final ShowAppMenuResponse msg = new ShowAppMenuResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onShowAppMenuResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onShowAppMenuResponse( msg);
+					onRPCResponseReceived(msg);
+				}
+			} else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logError("Unrecognized response Message: " + functionName +
 							" SDL Message Version = " + _sdlMsgVersion);

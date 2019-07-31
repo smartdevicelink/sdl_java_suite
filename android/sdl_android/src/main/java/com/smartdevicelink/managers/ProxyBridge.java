@@ -648,10 +648,10 @@ public class ProxyBridge implements IProxyListener{
 
 	@Override
 	public void onShowAppMenuResponse(ShowAppMenuResponse response) {
-    onRPCReceived(response);
-  }
-  
-  @Override
+		onRPCReceived(response);
+	}
+
+	@Override
 	public void onUnpublishAppServiceResponse(UnpublishAppServiceResponse response) {
 		onRPCReceived(response);
 	}
