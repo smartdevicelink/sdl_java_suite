@@ -610,8 +610,8 @@ public class ProxyBridge implements IProxyListener{
 	public void onGetCloudAppProperties(GetCloudAppPropertiesResponse response) {
 		onRPCReceived(response);
 	}
-  
-  @Override
+
+	@Override
 	public void onPublishAppServiceResponse(PublishAppServiceResponse response){
 		onRPCReceived(response);
 	}
