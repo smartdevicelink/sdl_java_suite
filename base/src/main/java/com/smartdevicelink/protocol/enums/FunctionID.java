@@ -101,9 +101,9 @@ public enum FunctionID{
     GET_FILE(54, "GetFile"),
     PERFORM_APP_SERVICES_INTERACTION(55, "PerformAppServiceInteraction"),
     UNPUBLISH_APP_SERVICE(56, "UnpublishAppService"),
-    CLOSE_APPLICATION(57, "CloseApplication"),
-    CREATE_WINDOW(58, "CreateWindow"),
-    DELETE_WINDOW(59, "DeleteWindow"),
+    CLOSE_APPLICATION(58, "CloseApplication"),
+    CREATE_WINDOW(60, "CreateWindow"),
+    DELETE_WINDOW(61, "DeleteWindow"),
 
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
