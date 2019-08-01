@@ -515,7 +515,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		MenuCell subCell1 = new MenuCell("SubCell 1",null, null, menuSelectionListenerSub1);
 		MenuCell subCell2 = new MenuCell("SubCell 2",null, null, menuSelectionListenerSub2);
 
-		mainCell4 = new MenuCell("Test Cell 4", livio, Arrays.asList(subCell1,subCell2)); // sub menu parent cell
+		mainCell4 = new MenuCell("Test Cell 4", null, livio, Arrays.asList(subCell1,subCell2)); // sub menu parent cell
 		mainCell4.setCellId(4);
 
 		return Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4);

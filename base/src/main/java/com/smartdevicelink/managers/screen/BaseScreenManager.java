@@ -446,19 +446,21 @@ abstract class BaseScreenManager extends BaseSubManager {
 
 	/**
 	 * Requires SDL RPC Version 6.0.0 or greater
-	 * Opens the Main Menu
+	 * Opens the Main Menu.
+	 * @return boolean success / failure - whether the request was able to be sent
 	 */
-	public void openMenu(){
-		this.menuManager.openMenu();
+	public boolean openMenu(){
+		return this.menuManager.openMenu();
 	}
 
 	/**
 	 * Requires SDL RPC Version 6.0.0 or greater
 	 * Opens a subMenu. The cell you pass in must be constructed with {@link MenuCell(String,SdlArtwork,List)}
 	 * @param cell - A <Strong>SubMenu</Strong> cell whose sub menu you wish to open
+	 * @return boolean success / failure - whether the request was able to be sent
 	 */
-	public void openSubMenu(@NonNull MenuCell cell){
-		this.menuManager.openSubMenu(cell);
+	public boolean openSubMenu(@NonNull MenuCell cell){
+		return this.menuManager.openSubMenu(cell);
   	}
   
   	/**

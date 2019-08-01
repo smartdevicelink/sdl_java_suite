@@ -262,11 +262,11 @@ abstract class BaseMenuManager extends BaseSubManager {
     /**
      * Opens the Main Menu
      */
-    public void openMenu(){
+    public boolean openMenu(){
 
         if (sdlMsgVersion.getMajorVersion() < 6){
             DebugTool.logWarning("Menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
-            return;
+            return false;
         }
         
         ShowAppMenu showAppMenu = new ShowAppMenu();
@@ -286,6 +286,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             }
         });
         internalInterface.sendRPC(showAppMenu);
+        return true;
     }
 
     /**
@@ -305,12 +306,10 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
         // We must see if we have a copy of this cell, since we clone the objects
         for (MenuCell clonedCell : oldMenuCells){
-            if (clonedCell.equals(cell)){
+            if (clonedCell.equals(cell) && clonedCell.getCellId() != MAX_ID){
                 // We've found the correct sub menu cell
-                if (clonedCell.getCellId() != MAX_ID) {
-                    sendOpenSubMenu(clonedCell.getCellId());
-                    return true;
-                }
+				sendOpenSubMenu(clonedCell.getCellId());
+				return true;
             }
         }
         return false;
