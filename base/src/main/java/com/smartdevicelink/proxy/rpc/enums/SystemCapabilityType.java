@@ -262,7 +262,6 @@ public enum SystemCapabilityType {
     HMI (false),
 
 	/**
-	 * @deprecated This is going to be replaced by Displays
 	 * Available Synchronously after Register App Interface response <br>
 	 * Returns: DisplayCapabilities
 	 * <table border="1" rules="all">
@@ -301,11 +300,11 @@ public enum SystemCapabilityType {
 	 * 			<td>DisplayCapability</td>
 	 * 			<td>Returns Display Capability</td>
 	 * 			<td align=center>N</td>
-	 * 			<td> <strong>Since 6.0</strong> Available Synchronously <strong>after</strong> Register App Interface response received</td>
+	 * 			<td> <strong>Since 6.0</strong> Available Synchronously <strong>after</strong> first automatic system capability update.</td>
 	 * 		</tr>
 	 * 	</table>
 	 */
-	DISPLAYS (false),
+	DISPLAYS (true),
 
 	/**
 	 * Available Synchronously after Register App Interface response <br>
