@@ -102,6 +102,7 @@ public enum FunctionID{
     PERFORM_APP_SERVICES_INTERACTION(55, "PerformAppServiceInteraction"),
     UNPUBLISH_APP_SERVICE(56, "UnpublishAppService"),
     CLOSE_APPLICATION(58, "CloseApplication"),
+    SHOW_APP_MENU(59, "ShowAppMenu"),
 
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
