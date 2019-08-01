@@ -39,7 +39,6 @@ import static org.mockito.Mockito.mock;
  */
 public class FileManagerTests extends AndroidTestCase2 {
 	public static final String TAG = "FileManagerTests";
-	private FileManager fileManager;
 	private Context mTestContext;
 	private SdlFile validFile;
 
@@ -101,6 +100,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 				int correlationId = message.getCorrelationID();
 				PutFileResponse putFileResponse = new PutFileResponse();
 				putFileResponse.setSuccess(true);
+				putFileResponse.setSpaceAvailable(Test.GENERAL_INT);
 				message.getOnRPCResponseListener().onResponse(correlationId, putFileResponse);
 			}
 			return null;
@@ -153,8 +153,9 @@ public class FileManagerTests extends AndroidTestCase2 {
 			@Override
 			public void onComplete(boolean success) {
 				assertTrue(success);
-				Assert.assertEquals(fileManager.getState(), BaseSubManager.READY);
+				assertEquals(fileManager.getState(), BaseSubManager.READY);
 				assertEquals(fileManager.getRemoteFileNames(), Test.GENERAL_STRING_LIST);
+				assertEquals(Test.GENERAL_INT, fileManager.getBytesAvailable());
 			}
 		});
 	}
@@ -170,6 +171,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 			public void onComplete(boolean success) {
 				assertFalse(success);
 				assertEquals(fileManager.getState(), BaseSubManager.ERROR);
+				assertEquals(BaseFileManager.SPACE_AVAILABLE_MAX_VALUE, fileManager.getBytesAvailable());
 			}
 		});
 	}
@@ -191,6 +193,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 						assertTrue(success);
 						assertTrue(fileManager.getRemoteFileNames().contains(validFile.getName()));
 						assertTrue(fileManager.hasUploadedFile(validFile));
+						assertEquals(Test.GENERAL_INT, fileManager.getBytesAvailable());
 					}
 				});
 			}

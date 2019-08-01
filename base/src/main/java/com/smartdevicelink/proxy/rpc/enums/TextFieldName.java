@@ -175,11 +175,17 @@ public enum TextFieldName {
      */
     addressLines,
     /**
-     * Optional hone number of intended location / establishment (if applicable) for SendLocation.
+     * Optional phone number of intended location / establishment (if applicable) for SendLocation.
      * 
      * @since SmartDeviceLink 4.0
      */
     phoneNumber,
+    /**
+     * Optional title of the template that will be displayed
+     *
+     * @since SmartDeviceLink 6.0
+     */
+    templateTitle,
     ;
 	  /**
        * Convert String to TextFieldName
