@@ -25,6 +25,7 @@ public class LockScreenConfigTests extends AndroidTestCase2 {
 		lockScreenConfig.setBackgroundColor(Test.GENERAL_INT);
 		lockScreenConfig.showDeviceLogo(true);
 		lockScreenConfig.setEnabled(true);
+		lockScreenConfig.showInOptionalState(true);
 	}
 
 	@Override
@@ -40,6 +41,7 @@ public class LockScreenConfigTests extends AndroidTestCase2 {
 		assertEquals(Test.GENERAL_INT, lockScreenConfig.getBackgroundColor());
 		assertEquals(true, lockScreenConfig.isEnabled());
 		assertEquals(true, lockScreenConfig.isDeviceLogoEnabled());
+		assertTrue(lockScreenConfig.isShownInOptionalState());
 	}
 
 }

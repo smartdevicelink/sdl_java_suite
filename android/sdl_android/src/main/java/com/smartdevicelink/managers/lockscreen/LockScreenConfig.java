@@ -47,16 +47,19 @@ package com.smartdevicelink.managers.lockscreen;
  * <li> customView - If you would like to provide your own view, you can pass it in here.</li>
  *
  * <li> deviceLogo - On by default. If available, will show the device or OEMs logo on the lockscreen</li>
+ *
+ * <l1> showInOptionalState - Whether or not the lock screen should be shown in the "lock screen optional" state. Defaults to false.</l1>
  */
 public class LockScreenConfig {
 
-	private boolean enable, deviceLogo;
+	private boolean enable, deviceLogo, showInOptionalState;
 	private int backgroundColor, appIconInt, customViewInt;
 
 	public LockScreenConfig(){
 		// set default values
 		this.enable = true;
 		this.deviceLogo = true;
+		this.showInOptionalState = false;
 	}
 
 	/**
@@ -143,6 +146,32 @@ public class LockScreenConfig {
 	 */
 	public boolean isDeviceLogoEnabled() {
 		return deviceLogo;
+	}
+
+	/**
+	 * Whether or not the lock screen should be shown in the "lock screen optional" state. Defaults to false. <br>
+	 * In order for the "lock screen optional" state to occur, the following must be true:
+	 *  1. The app should have received at least 1 driver distraction notification (i.e. a `OnDriverDistraction` notification) from SDL Core. Older versions of Core did not send a notification immediately on connection.
+	 *  2. The driver is not distracted (i.e. the last `OnDriverDistraction` notification received was for a driver distraction state off).
+	 *  3. The `hmiLevel` can not be `NONE`.
+	 *  4. If the `hmiLevel` is currently `BACKGROUND` then the previous `hmiLevel` should have been `FULL` or `LIMITED` (i.e. the user should have interacted with app before it was backgrounded).
+	 * @param showInOptionalState - whether or not to show the lock screen in the optional state
+	 */
+	public void showInOptionalState(boolean showInOptionalState){
+		this.showInOptionalState = showInOptionalState;
+	}
+
+	/**
+	 * Check whether or not the lock screen should is shown in the "lock screen optional" state. Defaults to false.
+	 * In order for the "lock screen optional" state to occur, the following must be true:
+	 *  1. The app should have received at least 1 driver distraction notification (i.e. a `OnDriverDistraction` notification) from SDL Core. Older versions of Core did not send a notification immediately on connection.
+	 *  2. The driver is not distracted (i.e. the last `OnDriverDistraction` notification received was for a driver distraction state off).
+	 *  3. The `hmiLevel` can not be `NONE`.
+	 *  4. If the `hmiLevel` is currently `BACKGROUND` then the previous `hmiLevel` should have been `FULL` or `LIMITED` (i.e. the user should have interacted with app before it was backgrounded).
+	 * @return boolean
+	 */
+	public boolean isShownInOptionalState(){
+		return this.showInOptionalState;
 	}
 
 }
