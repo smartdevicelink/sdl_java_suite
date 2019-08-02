@@ -53,6 +53,8 @@ public class SdlService extends Service {
 	private static final String TAG 					= "SDL Service";
 
 	private static final String APP_NAME 				= "Hello Sdl";
+	private static final String APP_NAME_ES 			= "Hola Sdl";
+	private static final String APP_NAME_FR 			= "Bonjour Sdl";
 	private static final String APP_ID 					= "8678309";
 
 	private static final String ICON_FILENAME 			= "hello_sdl_icon.png";
@@ -193,8 +195,19 @@ public class SdlService extends Service {
 
 				@Override
 				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language){
+					String appName;
+					switch (language) {
+						case ES_MX:
+							appName = APP_NAME_ES;
+							break;
+						case FR_CA:
+							appName = APP_NAME_FR;
+							break;
+						default:
+							return null;
+					}
 
-					return null;
+					return new LifecycleConfigurationUpdate(appName,null,TTSChunkFactory.createSimpleTTSChunks(appName), null);
 				}
 			};
 

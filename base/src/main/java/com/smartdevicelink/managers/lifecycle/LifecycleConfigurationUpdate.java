@@ -52,7 +52,7 @@ public class LifecycleConfigurationUpdate {
 	private Vector<String> voiceRecognitionCommandNames;
 
 	// default constructor
-	LifecycleConfigurationUpdate(){}
+	public LifecycleConfigurationUpdate(){}
 
 	/**
 	 *  Initializes and returns a newly allocated lifecycle configuration update object with the specified app data.
@@ -61,7 +61,7 @@ public class LifecycleConfigurationUpdate {
 	 *  @param ttsName A Text to Speech String for voice recognition of the mobile application name.
 	 *  @param voiceRecognitionCommandNames Additional voice recognition commands. May not interfere with any other app name or global commands.
 	 */
-	LifecycleConfigurationUpdate(@Nullable String appName, @Nullable String shortAppName, @Nullable Vector<TTSChunk> ttsName, @Nullable Vector<String> voiceRecognitionCommandNames){
+	public LifecycleConfigurationUpdate(@Nullable String appName, @Nullable String shortAppName, @Nullable Vector<TTSChunk> ttsName, @Nullable Vector<String> voiceRecognitionCommandNames){
 		setAppName(appName);
 		setShortAppName(shortAppName);
 		setTtsName(ttsName);
