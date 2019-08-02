@@ -105,8 +105,8 @@ public class SdlRouterStatusProvider {
 	public void setFlags(int flags){
 		this.flags = flags;
 	}
-	public void checkIsConnected(){
-		if(!AndroidTools.isServiceExported(context,routerService) || !bindToService()){
+	public void checkIsConnected(boolean bindOnly){
+		if(!AndroidTools.isServiceExported(context,routerService) || !bindToService(bindOnly)){
 			//We are unable to bind to service
 			cb.onConnectionStatusUpdate(false, routerService, context);
 			unBindFromService();
@@ -119,7 +119,7 @@ public class SdlRouterStatusProvider {
 		}
 	}
 
-	private boolean bindToService(){
+	private boolean bindToService(boolean bindOnly){
 		if(isBound){
 			return true;
 		}
@@ -129,17 +129,19 @@ public class SdlRouterStatusProvider {
 		Intent bindingIntent = new Intent();
 		bindingIntent.setClassName(this.routerService.getPackageName(), this.routerService.getClassName());//This sets an explicit intent
 		//Quickly make sure it's just up and running
-		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-			context.startService(bindingIntent);
-		}else {
-			bindingIntent.putExtra(FOREGROUND_EXTRA, true);
-			context.startForegroundService(bindingIntent);
+		if (!bindOnly) {
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+				context.startService(bindingIntent);
+			} else {
+				bindingIntent.putExtra(FOREGROUND_EXTRA, true);
+				context.startForegroundService(bindingIntent);
 
+			}
 		}
 		bindingIntent.setAction( TransportConstants.BIND_REQUEST_TYPE_STATUS);
-		return context.bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
+		return context.bindService(bindingIntent, routerConnection, bindOnly? Context.BIND_NOT_FOREGROUND : Context.BIND_AUTO_CREATE);
 	}
-	
+
 	private void unBindFromService(){
 		try{
 			if(context!=null && routerConnection!=null){

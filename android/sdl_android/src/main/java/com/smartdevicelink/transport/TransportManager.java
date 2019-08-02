@@ -52,20 +52,24 @@ import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
 public class TransportManager extends TransportManagerBase{
     private static final String TAG = "TransportManager";
 
-
     TransportBrokerImpl transport;
+    final List<TransportRecord> transportStatus;
+    final TransportEventListener transportListener;
 
     //Legacy Transport
     MultiplexBluetoothTransport legacyBluetoothTransport;
     LegacyBluetoothHandler legacyBluetoothHandler;
 
     final WeakReference<Context> contextWeakReference;
+    final MultiplexTransportConfig mConfig;
+    final Object TRANSPORT_STATUS_LOCK;
 
 
     /**
@@ -77,32 +81,45 @@ public class TransportManager extends TransportManagerBase{
     public TransportManager(MultiplexTransportConfig config, TransportEventListener listener){
         super(config,listener);
 
+        this.transportListener = listener;
+        this.TRANSPORT_STATUS_LOCK = new Object();
+        this.mConfig = config;
+        synchronized (TRANSPORT_STATUS_LOCK){
+            this.transportStatus = new ArrayList<>();
+        }
+
         if(config.service == null) {
             config.service = SdlBroadcastReceiver.consumeQueuedRouterService();
         }
 
         contextWeakReference = new WeakReference<>(config.context);
-
-        RouterServiceValidator validator = new RouterServiceValidator(config);
-        if(validator.validate()){
-            transport = new TransportBrokerImpl(config.context, config.appId,config.service);
-        }else{
-            enterLegacyMode("Router service is not trusted. Entering legacy mode");
-        }
     }
 
+    /**
+     * start internally validates the target ROuterService, which was done in ctor before.
+     */
     @Override
-    public void start(){
-        if(transport != null){
-            if (!transport.start()){
-                //Unable to connect to a router service
-                if(transportListener != null){
-                    transportListener.onError("Unable to connect with the router service");
+    public void start() {
+        final RouterServiceValidator validator = new RouterServiceValidator(mConfig);
+        validator.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+            @Override
+            public void onFinishedValidation(boolean valid, ComponentName name) {
+                Log.d(TAG, "onFinishedValidation valid=" + valid + "; name=" + ((name == null)? "null" : name.getPackageName()));
+                if (valid) {
+                    mConfig.service = name;
+                    transport = new TransportBrokerImpl(contextWeakReference.get(), mConfig.appId, mConfig.service);
+                    Log.d(TAG, "TransportManager start got called; transport=" + transport);
+                    if(transport != null){
+                        transport.start();
+                    }
+                } else {
+                    enterLegacyMode("Router service is not trusted. Entering legacy mode");
+                    if(legacyBluetoothTransport != null){
+                        legacyBluetoothTransport.start();
+                    }
                 }
             }
-        }else if(legacyBluetoothTransport != null){
-            legacyBluetoothTransport.start();
-        }
+        });
     }
 
     @Override
