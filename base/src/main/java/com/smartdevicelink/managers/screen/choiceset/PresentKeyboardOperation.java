@@ -137,16 +137,12 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 			cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
-					if (!response.getSuccess()) {
-						DebugTool.logError("Error canceling the presented keyboard " + response.getResultCode());
-					}
-					finishOperation();
+					DebugTool.logInfo("Canceled the presented keyboard " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
 				}
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info){
 					DebugTool.logError("Error canceling the presented keyboard " + resultCode + " " + info);
-					finishOperation();
 				};
 			});
 			if (internalInterface.get() != null){

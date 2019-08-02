@@ -137,8 +137,8 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 
 		presentKeyboardOperation.cancelKeyboard();
 
-		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), true);
+		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), true);
+		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), false);
 	}
 
 	public void testCancelingTheKeyboardUnsuccessfullyIfThreadIsRunning(){
@@ -166,8 +166,8 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 
 		presentKeyboardOperation.cancelKeyboard();
 
-		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), true);
+		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), true);
+		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), false);
 	}
 
 	public void testCancelingTheKeyboardIfThreadHasFinished(){

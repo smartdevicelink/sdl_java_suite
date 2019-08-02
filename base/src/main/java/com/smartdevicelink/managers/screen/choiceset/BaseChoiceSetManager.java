@@ -36,6 +36,7 @@ package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -165,7 +166,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
             @Override
             public void onError(String error) {
-                // At this point, there were errors trying to send a test CICS
+                // At this point, there were errors trying to send a test PICS
                 // If we reach this state, we cannot use the manager
                 DebugTool.logError(error);
                 transitionToState(ERROR);
@@ -399,6 +400,19 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     public void dismissKeyboard() {
+        Thread thread = Thread.currentThread();
+        if (Thread.currentThread().getClass().equals(PresentKeyboardOperation.class)) {
+            DebugTool.logInfo("Got something - Choice Set Manager");
+        }
+
+        if (pendingPresentOperation instanceof PresentKeyboardOperation) {
+            DebugTool.logInfo("Got something - Choice Set Manager");
+        }
+
+        if (pendingPresentOperation.getClass().equals(PresentKeyboardOperation.class)) {
+            DebugTool.logInfo("Got something - Choice Set Manager");
+        }
+
         for (Runnable operation : operationQueue){
             if (!(operation instanceof PresentKeyboardOperation)){ continue; }
             ((PresentKeyboardOperation) operation).cancelKeyboard();

@@ -66,7 +66,6 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 	private PresentChoiceSetOperation presentChoiceSetOperation;
 	private ChoiceSet choiceSet;
 	private ISdl internalInterface;
-	private Boolean hasCalledOperationCompletionHandler;
 
 	@Override
 	public void setUp() throws Exception{
@@ -74,26 +73,13 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 		internalInterface = mock(ISdl.class);
 		KeyboardListener keyboardListener = mock(KeyboardListener.class);
-
-        ChoiceSetSelectionListener choiceSetSelectionListener = new ChoiceSetSelectionListener() {
-            @Override
-            public void onChoiceSelected(ChoiceCell choiceCell, TriggerSource triggerSource, int rowIndex) {
-
-            }
-
-            @Override
-            public void onError(String error) {
-				hasCalledOperationCompletionHandler = true;
-            }
-        };
+        ChoiceSetSelectionListener choiceSetSelectionListener = mock(ChoiceSetSelectionListener.class);
 
 		ChoiceCell cell1 = new ChoiceCell("Cell1");
 		cell1.setChoiceId(0);
 		choiceSet = new ChoiceSet("Test", Collections.singletonList(cell1), choiceSetSelectionListener);
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener);
 		choiceSet.cancelID = Test.GENERAL_INTEGER;
-		hasCalledOperationCompletionHandler = false;
-
 	}
 
 	@Override
@@ -158,9 +144,8 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 		choiceSet.cancel();
 
-		assertEquals(hasCalledOperationCompletionHandler.booleanValue(), true);
-		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), true);
+		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), true);
+		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), false);
 	}
 
 	public void testCancelingTheChoiceSetUnsuccessfullyIfThreadIsRunning(){
@@ -188,9 +173,8 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 		choiceSet.cancel();
 
-		assertEquals(hasCalledOperationCompletionHandler.booleanValue(), true);
-        assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), true);
+		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), true);
+		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), false);
 	}
 
 	public void testCancelingTheChoiceSetIfThreadHasFinished(){
@@ -204,7 +188,6 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 
-		// assertEquals(hasCalledOperationCompletionHandler.booleanValue(), true);
 		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), false);
 		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), true);
 	}
@@ -223,7 +206,6 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		// Make sure it doesn't sent a `CancelInteraction` RPC
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 
-		assertEquals(hasCalledOperationCompletionHandler.booleanValue(), true);
 		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), false);
 		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), true);
 	}
