@@ -94,6 +94,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     LinkedBlockingQueue<Runnable> operationQueue;
     Future pendingPresentOperation;
 
+    PresentKeyboardOperation currentlyPresentedKeyboardOperation;
+
     int nextChoiceId;
     int nextCancelId;
     final int choiceCellIdMin = 1;
@@ -119,6 +121,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         operationQueue = new LinkedBlockingQueue<>();
         executor = new PausableThreadPoolExecutor(1, Runtime.getRuntime().availableProcessors(), 10, TimeUnit.SECONDS, operationQueue);
         executor.pause(); // pause until HMI ready
+
+        currentlyPresentedKeyboardOperation = null;
     }
 
     @Override
@@ -396,26 +400,14 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         // Present a keyboard with the choice set that we used to test VR's optional state
         DebugTool.logInfo("Presenting Keyboard - Choice Set Manager");
         PresentKeyboardOperation keyboardOp = new PresentKeyboardOperation(internalInterface, keyboardConfiguration, initialText, customKeyboardConfig, listener, nextCancelId++);
+        currentlyPresentedKeyboardOperation = keyboardOp;
         pendingPresentOperation = executor.submit(keyboardOp);
     }
 
     public void dismissKeyboard() {
-        Thread thread = Thread.currentThread();
-        if (Thread.currentThread().getClass().equals(PresentKeyboardOperation.class)) {
-            DebugTool.logInfo("Got something - Choice Set Manager");
-        }
-
-        if (pendingPresentOperation instanceof PresentKeyboardOperation) {
-            DebugTool.logInfo("Got something - Choice Set Manager");
-        }
-
-        if (pendingPresentOperation.getClass().equals(PresentKeyboardOperation.class)) {
-            DebugTool.logInfo("Got something - Choice Set Manager");
-        }
-
-        for (Runnable operation : operationQueue){
-            if (!(operation instanceof PresentKeyboardOperation)){ continue; }
-            ((PresentKeyboardOperation) operation).cancelKeyboard();
+        if (currentlyPresentedKeyboardOperation != null && currentlyPresentedKeyboardOperation.isExecuting()) {
+            // If the keyboard is currently presented, cancel it. Otherwise it will be ignored.
+            currentlyPresentedKeyboardOperation.cancelKeyboard();
         }
     }
 
