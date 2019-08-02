@@ -39,7 +39,7 @@ import android.support.annotation.Nullable;
 
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 
-import java.util.List;
+import java.util.Vector;
 
 /**
  *  Configuration update options for SDLManager. This class can be used to update the lifecycle configuration in
@@ -48,8 +48,8 @@ import java.util.List;
 public class LifecycleConfigurationUpdate {
 
 	private String appName, shortAppName;
-	private List<TTSChunk> ttsName;
-	private List<String> voiceRecognitionCommandNames;
+	private Vector<TTSChunk> ttsName;
+	private Vector<String> voiceRecognitionCommandNames;
 
 	// default constructor
 	LifecycleConfigurationUpdate(){}
@@ -61,7 +61,7 @@ public class LifecycleConfigurationUpdate {
 	 *  @param ttsName A Text to Speech String for voice recognition of the mobile application name.
 	 *  @param voiceRecognitionCommandNames Additional voice recognition commands. May not interfere with any other app name or global commands.
 	 */
-	LifecycleConfigurationUpdate(@Nullable String appName, @Nullable String shortAppName, @Nullable List<TTSChunk> ttsName, @Nullable List<String> voiceRecognitionCommandNames){
+	LifecycleConfigurationUpdate(@Nullable String appName, @Nullable String shortAppName, @Nullable Vector<TTSChunk> ttsName, @Nullable Vector<String> voiceRecognitionCommandNames){
 		setAppName(appName);
 		setShortAppName(shortAppName);
 		setTtsName(ttsName);
@@ -101,25 +101,25 @@ public class LifecycleConfigurationUpdate {
 	/**
 	 *  A Text to Speech String for voice recognition of the mobile application name.
 	 */
-	public void setTtsName(List<TTSChunk> ttsName) {
+	public void setTtsName(Vector<TTSChunk> ttsName) {
 		this.ttsName = ttsName;
 	}
 
 	/**
 	 *  A Text to Speech String for voice recognition of the mobile application name.
 	 */
-	public List<TTSChunk> getTtsName() {
+	public Vector<TTSChunk> getTtsName() {
 		return ttsName;
 	}
 
-	public void setVoiceRecognitionCommandNames(List<String> voiceRecognitionCommandNames) {
+	public void setVoiceRecognitionCommandNames(Vector<String> voiceRecognitionCommandNames) {
 		this.voiceRecognitionCommandNames = voiceRecognitionCommandNames;
 	}
 
 	/**
 	 *  Additional voice recognition commands. May not interfere with any other app name or global commands.
 	 */
-	public List<String> getVoiceRecognitionCommandNames() {
+	public Vector<String> getVoiceRecognitionCommandNames() {
 		return voiceRecognitionCommandNames;
 	}
 }

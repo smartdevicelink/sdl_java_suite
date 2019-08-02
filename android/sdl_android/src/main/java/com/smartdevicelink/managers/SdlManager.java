@@ -43,6 +43,7 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.audio.AudioStreamManager;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.managers.lockscreen.LockScreenManager;
 import com.smartdevicelink.managers.permission.PermissionManager;
@@ -52,6 +53,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.callbacks.OnServiceEnded;
@@ -61,6 +63,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.ChangeRegistration;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
@@ -69,12 +72,14 @@ import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
@@ -85,6 +90,8 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +133,7 @@ public class SdlManager extends BaseSdlManager{
 		@Override
 		public void onProxyConnected() {
 			DebugTool.logInfo("Proxy is connected. Now initializing.");
-			initialize();
+			checkLifecycleConfiguration();
 		}
 
 		@Override
@@ -223,6 +230,64 @@ public class SdlManager extends BaseSdlManager{
 				_internalInterface.sendRPCRequest(msg);
 			}
 		}
+	}
+
+	@Override
+	protected void checkLifecycleConfiguration(){
+
+		Language actualLanguage =  proxy.getRegisterAppInterfaceResponse().getLanguage();
+		LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage);
+
+		if (lcu != null){
+
+			// go through and change sdlManager properties that were changed via the LCU update
+			hmiLanguage = actualLanguage;
+
+			if (lcu.getAppName() != null){
+				appName = lcu.getAppName();
+			}
+
+			if (lcu.getShortAppName() != null){
+				shortAppName = lcu.getShortAppName();
+			}
+
+			if (lcu.getTtsName() != null){
+				ttsChunks = lcu.getTtsName();
+			}
+
+			if (lcu.getVoiceRecognitionCommandNames() != null){
+				vrSynonyms = lcu.getVoiceRecognitionCommandNames();
+			}
+
+			ChangeRegistration changeRegistration = new ChangeRegistration(actualLanguage,actualLanguage);
+			changeRegistration.setAppName(lcu.getAppName());
+			changeRegistration.setNgnMediaScreenAppName(lcu.getShortAppName());
+			changeRegistration.setTtsName(lcu.getTtsName());
+			changeRegistration.setVrSynonyms(lcu.getVoiceRecognitionCommandNames());
+			changeRegistration.setOnRPCResponseListener(new OnRPCResponseListener() {
+				@Override
+				public void onResponse(int correlationId, RPCResponse response) {
+					try {
+						DebugTool.logInfo(response.serializeJSON().toString());
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+
+				@Override
+				public void onError(int correlationId, Result resultCode, String info){
+					DebugTool.logError( "onError: "+ resultCode+ " | Info: "+ info );
+				}
+			});
+			try {
+				proxy.sendRPC(changeRegistration);
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// we don't really care about that response, initialize the managers
+		initialize();
 	}
 
 	@Override

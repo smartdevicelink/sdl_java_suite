@@ -179,6 +179,7 @@ abstract class BaseSdlManager {
     abstract void checkState();
 
     protected abstract void initialize();
+    protected abstract void checkLifecycleConfiguration();
 
     //Public abstract API
     public abstract  void start();
