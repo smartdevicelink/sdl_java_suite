@@ -96,6 +96,8 @@ public class TransportConstants {
 
 	public static final String SDL_NOTIFICATION_CHANNEL_ID 						= "sdl_notification_channel";
 	public static final String SDL_NOTIFICATION_CHANNEL_NAME 					= "SmartDeviceLink";
+	public static final String SDL_ERROR_NOTIFICATION_CHANNEL_ID                = "sdl_error_notification_channel";
+	public static final int SDL_ERROR_NOTIFICATION_CHANNEL_ID_INT               = 99;
 
 
 

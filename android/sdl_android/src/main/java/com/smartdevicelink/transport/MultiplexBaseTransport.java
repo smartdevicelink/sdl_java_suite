@@ -32,7 +32,9 @@
 
 package com.smartdevicelink.transport;
 
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
@@ -45,6 +47,10 @@ public abstract class MultiplexBaseTransport {
     public static final int STATE_CONNECTING	= 2; 	// now initiating an outgoing connection
     public static final int STATE_CONNECTED 	= 3;  	// now connected to a remote device
     public static final int STATE_ERROR 		= 4;  	// Something bad happened, we wil not try to restart the thread
+
+    public static final String ERROR_REASON_KEY = "ERROR_REASON";
+    public static final byte REASON_SPP_ERROR   = 0x01;    // REASON = SPP error, which is sent through bundle.
+    public static final byte REASON_NONE        = 0x0;
 
     public static final String LOG = "log";
     public static final String DEVICE_NAME = "device_name";
@@ -67,16 +73,22 @@ public abstract class MultiplexBaseTransport {
     }
 
     protected synchronized void setState(int state) {
+        setState(state, null);
+    }
+
+    protected synchronized void setState(int state, Bundle bundle) {
         if(state == mState){
             return; //State hasn't changed. Will not updated listeners.
         }
         //Log.d(TAG, "Setting state from: " +mState + " to: " +state);
-        int previousState = mState;
+        int arg2 = mState;
         mState = state;
 
         // Give the new state to the Handler so the UI Activity can update
         //Also sending the previous state so we know if we lost a connection
-        handler.obtainMessage(SdlRouterService.MESSAGE_STATE_CHANGE, state, previousState, getTransportRecord()).sendToTarget();
+        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_STATE_CHANGE, state, arg2, getTransportRecord());
+        msg.setData(bundle);
+        msg.sendToTarget();
     }
 
     public String getAddress(){
@@ -114,6 +126,7 @@ public abstract class MultiplexBaseTransport {
     }
 
     protected abstract void stop(int state);
+    protected void stop(int state, byte error) {};
 
     public abstract void write(byte[] out,  int offset, int count);
 
