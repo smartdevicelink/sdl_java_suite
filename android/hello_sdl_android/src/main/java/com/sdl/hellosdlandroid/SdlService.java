@@ -161,7 +161,7 @@ public class SdlService extends Service {
 
 			// The app type to be used
 			Vector<AppHMIType> appType = new Vector<>();
-			appType.add(AppHMIType.MEDIA);
+			appType.add(AppHMIType.DEFAULT);
 
 			// The manager listener helps you know when certain events that pertain to the SDL Manager happen
 			// Here we will listen for ON_HMI_STATUS and ON_COMMAND notifications
