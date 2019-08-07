@@ -55,6 +55,7 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.ByteAraryMessageAssembler;
 import com.smartdevicelink.transport.utl.ByteArrayMessageSpliter;
 import com.smartdevicelink.transport.utl.TransportRecord;
+import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -119,7 +120,6 @@ public class TransportBroker {
                 Log.d(TAG, "Unbound from service " + className.getClassName());
                 routerServiceMessenger = null;
                 registeredWithRouterService = false;
-                unBindFromRouterService();
                 isBound = false;
                 onHardwareDisconnected(null, null);
             }
@@ -158,6 +158,7 @@ public class TransportBroker {
                         Log.d(TAG, "Dead object while attempting to send packet");
                         routerServiceMessenger = null;
                         registeredWithRouterService = false;
+                        unBindFromRouterService();
                         isBound = false;
                         onHardwareDisconnected(null, null);
                         return false;
@@ -166,6 +167,7 @@ public class TransportBroker {
                     Log.d(TAG, "Null messenger while attempting to send packet"); // NPE, routerServiceMessenger is null
                     routerServiceMessenger = null;
                     registeredWithRouterService = false;
+                    unBindFromRouterService();
                     isBound = false;
                     onHardwareDisconnected(null, null);
                     return false;
@@ -448,7 +450,7 @@ public class TransportBroker {
      * This method will end our communication with the router service.
      */
     public void stop() {
-        //Log.d(TAG, "STOPPING transport broker for " + whereToReply);
+        DebugTool.logInfo("Stopping transport broker for " + whereToReply);
         synchronized (INIT_LOCK) {
             unregisterWithRouterService();
             unBindFromRouterService();
@@ -461,15 +463,13 @@ public class TransportBroker {
 
     private synchronized void unBindFromRouterService() {
         try {
-            if (isBound && getContext() != null && routerConnection != null) {
-                getContext().unbindService(routerConnection);
-                isBound = false;
-            } else {
-                Log.w(TAG, "Unable to unbind from router service. bound? " + isBound + " context? " + (getContext()!=null) + " router connection?" + (routerConnection != null));
-            }
+            getContext().unbindService(routerConnection);
 
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             //This is ok
+             Log.w(TAG, "Unable to unbind from router service. bound? " + isBound + " context? " + (getContext()!=null) + " router connection?" + (routerConnection != null));
+        }finally {
+            isBound = false;
         }
     }
 
