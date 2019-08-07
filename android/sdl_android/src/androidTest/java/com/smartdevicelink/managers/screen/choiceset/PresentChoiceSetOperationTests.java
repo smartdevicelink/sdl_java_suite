@@ -47,7 +47,6 @@ import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
-import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.test.Test;
 
 import org.mockito.invocation.InvocationOnMock;
