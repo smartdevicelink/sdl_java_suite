@@ -1834,6 +1834,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		try{			
 				_cycling = true;
 				cleanProxy(disconnectedReason);
+
+				if(SdlDisconnectedReason.LANGUAGE_CHANGE.equals(disconnectedReason) ){
+					//The VR engine might need time to reset
+					Thread.sleep(5000);
+				}
+
 				initializeProxy();
 				if(!SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED.equals(disconnectedReason)
 						&& !SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST.equals(disconnectedReason)){//We don't want to alert higher if we are just cycling for legacy bluetooth
@@ -4108,7 +4114,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 				if (_advancedLifecycleManagementEnabled) {
 					// This requires the proxy to be cycled
-                    cycleProxy(SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(msg.getReason()));
+
+					if(_mainUIHandler == null){
+						_mainUIHandler = new Handler(Looper.getMainLooper());
+					}
+
+					//This needs to be ran on the main thread
+                    _mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							cycleProxy(SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(msg.getReason()));
+						}
+					});
                 } else {
 					if (_callbackToUIThread) {
 						// Run in UI thread
