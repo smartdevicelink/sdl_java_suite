@@ -134,7 +134,7 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		};
 		doAnswer(cancelInteractionAnswer).when(internalInterface).sendRPC(any(CancelInteraction.class));
 
-		presentKeyboardOperation.cancelKeyboard();
+		presentKeyboardOperation.dismissKeyboard();
 
 		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), true);
 		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), false);
@@ -163,7 +163,7 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		};
 		doAnswer(cancelInteractionAnswer).when(internalInterface).sendRPC(any(CancelInteraction.class));
 
-		presentKeyboardOperation.cancelKeyboard();
+		presentKeyboardOperation.dismissKeyboard();
 
 		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), true);
 		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), false);
@@ -176,7 +176,7 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), false);
 		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), true);
 
-		presentKeyboardOperation.cancelKeyboard();
+		presentKeyboardOperation.dismissKeyboard();
 
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 
@@ -188,7 +188,7 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), false);
 		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), false);
 
-		presentKeyboardOperation.cancelKeyboard();
+		presentKeyboardOperation.dismissKeyboard();
 
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 

@@ -127,7 +127,7 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 
 	}
 
-	void cancelKeyboard() {
+	void dismissKeyboard() {
 		if (Thread.currentThread().isInterrupted()) {
 			return;
 		} else if (isExecuting()) {

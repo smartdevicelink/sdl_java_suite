@@ -543,7 +543,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
-	 * Cancels the keyboard. If the keyboard has not yet been sent to Core, it will not be sent. If the keyboard is already presented on Core, the keyboard will be immediately dismissed. Canceling an already presented choice set will only work if connected to Core versions 6.0+. On older versions of Core, the keyboard can not be dismissed.
+	 * Cancels the keyboard-only interface if it is currently showing.
 	 */
 	public void dismissKeyboard() {
 		this.choiceSetManager.dismissKeyboard();

@@ -36,7 +36,6 @@ package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -406,8 +405,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     public void dismissKeyboard() {
         if (currentlyPresentedKeyboardOperation != null && currentlyPresentedKeyboardOperation.isExecuting()) {
-            // If the keyboard is currently presented, cancel it. Otherwise it will be ignored.
-            currentlyPresentedKeyboardOperation.cancelKeyboard();
+            currentlyPresentedKeyboardOperation.dismissKeyboard();
         }
     }
 
