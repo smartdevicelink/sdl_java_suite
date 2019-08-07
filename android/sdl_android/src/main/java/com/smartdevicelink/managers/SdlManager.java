@@ -138,7 +138,9 @@ public class SdlManager extends BaseSdlManager{
 
 		@Override
 		public void onProxyClosed(String info, Exception e, SdlDisconnectedReason reason){
-			dispose();
+			if (!reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)){
+				dispose();
+			}
 		}
 
 		@Override
@@ -276,7 +278,7 @@ public class SdlManager extends BaseSdlManager{
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info){
-					DebugTool.logError( "onError: "+ resultCode+ " | Info: "+ info );
+					DebugTool.logError( "Change Registration onError: "+ resultCode+ " | Info: "+ info );
 				}
 			});
 			try {
