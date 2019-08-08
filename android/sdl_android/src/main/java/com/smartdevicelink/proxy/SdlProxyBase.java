@@ -3710,6 +3710,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onCloseApplicationResponse(msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.CANCEL_INTERACTION.toString())) {
+				final CancelInteractionResponse msg = new CancelInteractionResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onCancelInteractionResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onCancelInteractionResponse(msg);
+					onRPCResponseReceived(msg);
+				}
 			} else if (functionName.equals(FunctionID.UNPUBLISH_APP_SERVICE.toString())) {
 				final UnpublishAppServiceResponse msg = new UnpublishAppServiceResponse(hash);
 				msg.format(rpcSpecVersion, true);
