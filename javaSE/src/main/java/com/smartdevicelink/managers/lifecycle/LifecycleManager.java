@@ -423,8 +423,10 @@ public class LifecycleManager extends BaseLifecycleManager {
                         OnAppInterfaceUnregistered onAppInterfaceUnregistered = (OnAppInterfaceUnregistered) message;
 
                         if (!onAppInterfaceUnregistered.getReason().equals(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE)) {
+                            Log.v(TAG, "on app interface unregistered");
                             cleanProxy();
                         }else{
+                            Log.v(TAG, "re-registering for language change");
                             processLanguageChange();
                         }
                         break;
