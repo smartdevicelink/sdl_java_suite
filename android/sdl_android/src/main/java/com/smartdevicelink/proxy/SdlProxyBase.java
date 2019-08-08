@@ -4120,7 +4120,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 
 					//This needs to be ran on the main thread
-                    _mainUIHandler.post(new Runnable() {
+
+					_mainUIHandler.post(new Runnable() {
 						@Override
 						public void run() {
 							cycleProxy(SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(msg.getReason()));
