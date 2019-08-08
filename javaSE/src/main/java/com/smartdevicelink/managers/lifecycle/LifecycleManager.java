@@ -419,8 +419,14 @@ public class LifecycleManager extends BaseLifecycleManager {
                         }
                         break;
                     case ON_APP_INTERFACE_UNREGISTERED:
-                        Log.v(TAG, "on app interface unregistered");
-                        cleanProxy();
+
+                        OnAppInterfaceUnregistered onAppInterfaceUnregistered = (OnAppInterfaceUnregistered) message;
+
+                        if (!onAppInterfaceUnregistered.getReason().equals(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE)) {
+                            cleanProxy();
+                        }else{
+                            processLanguageChange();
+                        }
                         break;
                     case UNREGISTER_APP_INTERFACE:
                         Log.v(TAG, "unregister app interface");
@@ -433,6 +439,19 @@ public class LifecycleManager extends BaseLifecycleManager {
 
 
     };
+
+    private void processLanguageChange(){
+        if (session != null) {
+            if (session.getIsConnected()) {
+                session.close();
+            }
+            try {
+                session.startSession();
+            } catch (SdlException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /* *******************************************************************************************************
      ********************************** INTERNAL - RPC LISTENERS !! END !! *********************************

@@ -251,7 +251,7 @@ public class SdlManager extends BaseSdlManager{
                 @Override
                 public void onResponse(int correlationId, RPCResponse response) {
                     try {
-                        DebugTool.logInfo(response.serializeJSON().toString());
+						Log.v(TAG, response.serializeJSON().toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -259,7 +259,7 @@ public class SdlManager extends BaseSdlManager{
 
                 @Override
                 public void onError(int correlationId, Result resultCode, String info){
-                    DebugTool.logError( "Change Registration onError: "+ resultCode+ " | Info: "+ info );
+					Log.e(TAG, "Change Registration onError: "+ resultCode+ " | Info: "+ info);
                 }
             });
 
