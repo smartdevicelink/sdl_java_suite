@@ -40,8 +40,9 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
- * <p>Creates a full screen or pop-up overlay (depending on platform) with a single
- * user controlled slider.</p>
+ * Creates a full screen or pop-up overlay (depending on platform) with a single user controlled slider.
+ *
+ * If connecting to SDL Core v.6.0+, the slider can be canceled programmatically using the `cancelID`. On older versions of SDL Core, the slider will persist until the user has interacted with the slider or the specified timeout has elapsed.
  *
  * <p>Function Group: Base</p>
  * 

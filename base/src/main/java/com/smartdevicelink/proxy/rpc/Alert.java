@@ -39,7 +39,9 @@ import java.util.List;
 
 /**
  * Provides information to the user using either TTS, the Display or both and
- * can include a system-generated alert tone
+ * can include a system-generated alert tone.
+ *
+ * If connecting to SDL Core v.6.0+, the alert can be canceled programmatically using the `cancelID`. Canceling will not dismiss the alert's speech - only the modal view will be dismissed. On older versions of SDL Core, the alert will persist until the user has interacted with the alert or the specified timeout has elapsed.
  * 
  * <ul>
  * <li>The displayed portion of the Alert, if any, will persist until the

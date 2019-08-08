@@ -47,7 +47,9 @@ import java.util.List;
  * application may use a PerformInteraction to ask a user to say the name of a
  * song to play. The user's response is only valid if it appears in the
  * specified Choice Sets and is recognized by SDL
- * <p></p>
+ *
+ * If connecting to SDL Core v.6.0+, the perform interaction can be canceled programmatically using the `cancelID`. On older versions of SDL Core, the perform interaction will persist until the user has interacted with the perform interaction or the specified timeout has elapsed.
+ *
  * <p>Function Group: Base</p>
  * 
  * <p><b>HMILevel needs to be FULL</b></p>
