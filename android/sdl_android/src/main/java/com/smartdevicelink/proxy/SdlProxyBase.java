@@ -2107,11 +2107,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void onNotified(RPCNotification notification) {
 			List<PermissionItem> permissionItems = ((OnPermissionsChange)notification).getPermissionItem();
 			Set<String> encryptedRpcs = new HashSet<>();
-			boolean requireEncryptionAppLevel = Boolean.TRUE.equals(((OnPermissionsChange) notification).getEncryptionRequirement());
-			for (PermissionItem permissionItem : permissionItems) {
-				if (permissionItems != null && !permissionItems.isEmpty()) {
+			boolean requireEncryptionAppLevel = Boolean.TRUE.equals(((OnPermissionsChange) notification).getRequireEncryption());
+			if (permissionItems != null && !permissionItems.isEmpty()) {
+				for (PermissionItem permissionItem : permissionItems) {
 					if (permissionItem != null) {
-					    if (requireEncryptionAppLevel && Boolean.TRUE.equals(permissionItem.getEncryptionRequirement())) {
+						if (requireEncryptionAppLevel && Boolean.TRUE.equals(permissionItem.getEncryptionRequirement())) {
 							String rpcName = permissionItem.getRpcName();
 							if (rpcName != null) {
 								encryptedRpcs.add(rpcName);

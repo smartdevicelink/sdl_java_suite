@@ -126,10 +126,20 @@ public class PermissionItem extends RPCStruct {
     public void setParameterPermissions(@NonNull ParameterPermissions parameterPermissions) {
         setValue(KEY_PARAMETER_PERMISSIONS, parameterPermissions);
     }
+
+    /**
+     * Gets the encryption requirement for this item
+     * @return true is encryption is required, false otherwise
+     */
     public Boolean getEncryptionRequirement() {
         return (Boolean) getValue(KEY_ENCRYPTION_REQUIRE);
     }
-    public void setEncryptionRequirement(Boolean isRequire) {
-        setValue(KEY_ENCRYPTION_REQUIRE, isRequire);
+
+    /**
+     * Sets the encryption requirement for this item
+     * @param isRequired the boolean requirement to be set
+     */
+    public void setEncryptionRequirement(Boolean isRequired) {
+        setValue(KEY_ENCRYPTION_REQUIRE, isRequired);
     }
 }

@@ -119,10 +119,20 @@ public class OnPermissionsChange extends RPCNotification {
 	public void setPermissionItem(@NonNull List<PermissionItem> permissionItem) {
 		setParameters(KEY_PERMISSION_ITEM, permissionItem);
 	}
-	public Boolean getEncryptionRequirement() {
+
+	/**
+	 * Returns the encryption requirement for this permission change
+	 * @return true if encryption is required, false otherwise
+	 */
+	public Boolean getRequireEncryption() {
 		return getBoolean(KEY_REQUIRE_ENCRYPTION);
 	}
-	public void setEncryptionRequirement(Boolean isRequired) {
+
+	/**
+	 * Sets the encryption requirement for this permission change
+	 * @param isRequired the boolean requirement to be set
+	 */
+	public void setRequireEncryption(Boolean isRequired) {
 		setParameters(KEY_REQUIRE_ENCRYPTION, isRequired);
 	}
 }
