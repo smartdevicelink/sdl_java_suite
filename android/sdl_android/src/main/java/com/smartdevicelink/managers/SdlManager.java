@@ -35,6 +35,8 @@ package com.smartdevicelink.managers;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -112,6 +114,8 @@ import java.util.Vector;
  */
 public class SdlManager extends BaseSdlManager{
 	private static final String TAG = "SdlManager";
+	private static final int MAX_RETRY = 3;
+	private int changeRegistrationRetry = 0;
 	private SdlProxyBase proxy;
 	private SdlArtwork appIcon;
 	private Context context;
@@ -133,6 +137,7 @@ public class SdlManager extends BaseSdlManager{
 		@Override
 		public void onProxyConnected() {
 			DebugTool.logInfo("Proxy is connected. Now initializing.");
+			changeRegistrationRetry = 0;
 			checkLifecycleConfiguration();
 		}
 
@@ -279,6 +284,17 @@ public class SdlManager extends BaseSdlManager{
 				@Override
 				public void onError(int correlationId, Result resultCode, String info){
 					DebugTool.logError( "Change Registration onError: "+ resultCode+ " | Info: "+ info );
+					changeRegistrationRetry++;
+					if (changeRegistrationRetry < MAX_RETRY) {
+						final Handler handler = new Handler(Looper.getMainLooper());
+						handler.postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								checkLifecycleConfiguration();
+								DebugTool.logInfo("Retry Change Registration Count: "+ changeRegistrationRetry);
+							}
+						}, 3000);
+					}
 				}
 			});
 			try {
@@ -289,7 +305,10 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		// we don't really care about that response, initialize the managers
-		initialize();
+		// This will get called regardless of the retry count, so only send it once.
+		if (changeRegistrationRetry == 0) {
+			initialize();
+		}
 	}
 
 	@Override
