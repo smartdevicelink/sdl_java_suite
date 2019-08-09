@@ -302,9 +302,7 @@ public class LockScreenManager extends BaseSubManager {
 	private void closeLockScreenActivity(){
 		if (context.get() != null) {
 			LockScreenStatus status = getLockScreenStatus();
-			if (status == LockScreenStatus.OFF) {
-				context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
-			} else if (!showInOptionalState && status == LockScreenStatus.OPTIONAL){
+			if (status == LockScreenStatus.OFF || (status == LockScreenStatus.OPTIONAL && !showInOptionalState)) {
 				context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
 			}
 		}
