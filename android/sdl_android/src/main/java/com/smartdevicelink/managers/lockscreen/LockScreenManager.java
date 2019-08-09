@@ -275,14 +275,15 @@ public class LockScreenManager extends BaseSubManager {
 		// intent to open SDLLockScreenActivity
 		// pass in icon, background color, and custom view
 		if (lockScreenEnabled && isApplicationForegrounded && context.get() != null) {
+
 			if (mIsLockscreenDismissible) {
 				context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
 			}
+
 			LockScreenStatus status = getLockScreenStatus();
 			if (status == LockScreenStatus.REQUIRED || (showInOptionalState && status == LockScreenStatus.OPTIONAL)) {
 				Intent showLockScreenIntent = new Intent(context.get(), SDLLockScreenActivity.class);
 				showLockScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
 				// Extra parameters for customization of the lock screen view
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_ICON_EXTRA, lockScreenIcon);
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.LOCKSCREEN_COLOR_EXTRA, lockScreenColor);
@@ -320,7 +321,7 @@ public class LockScreenManager extends BaseSubManager {
 	 */
 	synchronized LockScreenStatus getLockScreenStatus() {
 
-		if ( (hmiLevel == null) || (hmiLevel.equals(HMILevel.HMI_NONE))) {
+		if ((hmiLevel == null) || (hmiLevel.equals(HMILevel.HMI_NONE))) {
 			return LockScreenStatus.OFF;
 		}
 		else if ( hmiLevel.equals(HMILevel.HMI_BACKGROUND)) {
@@ -331,7 +332,7 @@ public class LockScreenManager extends BaseSubManager {
 				return LockScreenStatus.REQUIRED;
 			}
 		}
-		else if ( (hmiLevel.equals(HMILevel.HMI_FULL)) || (hmiLevel.equals(HMILevel.HMI_LIMITED))) {
+		else if ((hmiLevel.equals(HMILevel.HMI_FULL)) || (hmiLevel.equals(HMILevel.HMI_LIMITED))) {
 			if (!driverDistStatus) {
 				return LockScreenStatus.OPTIONAL;
 			} else {
@@ -364,5 +365,4 @@ public class LockScreenManager extends BaseSubManager {
 			}
 		}).start();
 	}
-
 }
