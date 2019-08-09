@@ -48,11 +48,13 @@ package com.smartdevicelink.managers.lockscreen;
  *
  * <li> deviceLogo - On by default. If available, will show the device or OEMs logo on the lockscreen</li>
  *
- * <l1> showInOptionalState - Whether or not the lock screen should be shown in the "lock screen optional" state. Defaults to false.</l1>
+ * <li> showInOptionalState - Whether or not the lock screen should be shown in the "lock screen optional" state. Defaults to false.</li>
+ *
+ * <li> enableDismissGesture - If YES, then the lock screen can be dismissed with a downward swipe on compatible head units. Requires a connection of SDL 6.0+ and the head unit to enable the feature. Defaults to YES.</li>
  */
 public class LockScreenConfig {
 
-	private boolean enable, deviceLogo, showInOptionalState;
+	private boolean enable, deviceLogo, showInOptionalState, enableDismissGesture;
 	private int backgroundColor, appIconInt, customViewInt;
 
 	public LockScreenConfig(){
@@ -60,6 +62,7 @@ public class LockScreenConfig {
 		this.enable = true;
 		this.deviceLogo = true;
 		this.showInOptionalState = false;
+		this.enableDismissGesture = true;
 	}
 
 	/**
@@ -174,4 +177,21 @@ public class LockScreenConfig {
 		return this.showInOptionalState;
 	}
 
+	/**
+	 * If YES, then the lock screen can be dismissed with a downward swipe on compatible head units.
+	 * Requires a connection of SDL 6.0+ and the head unit to enable the feature. Defaults to YES.
+	 * @param enableDismissGesture - enable or disable this feature
+	 */
+	public void enableDismissGesture(boolean enableDismissGesture) {
+		this.enableDismissGesture = enableDismissGesture;
+	}
+
+	/**
+	 * If YES, then the lock screen can be dismissed with a downward swipe on compatible head units.
+	 * Requires a connection of SDL 6.0+ and the head unit to enable the feature. Defaults to YES.
+	 * @return - whether or not this is enabled or disabled
+	 */
+	public boolean enableDismissGesture() {
+		return enableDismissGesture;
+	}
 }

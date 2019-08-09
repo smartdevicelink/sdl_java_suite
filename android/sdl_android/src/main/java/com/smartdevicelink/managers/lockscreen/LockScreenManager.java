@@ -75,10 +75,9 @@ public class LockScreenManager extends BaseSubManager {
 	private String deviceIconUrl;
 	private volatile boolean isApplicationForegrounded;
 	private android.arch.lifecycle.LifecycleObserver lifecycleObserver;
-	boolean lockScreenEnabled, deviceLogoEnabled, showInOptionalState, driverDistStatus;
+	boolean lockScreenEnabled, deviceLogoEnabled, showInOptionalState, driverDistStatus, enableDismissGesture, mIsLockscreenDismissible;
 	int lockScreenIcon, lockScreenColor, customView;
 	Bitmap deviceLogo;
-	private boolean mIsLockscreenDismissible;
 	private boolean mLockScreenHasBeenDismissed;
 	private String mLockscreenWarningMsg;
 	private BroadcastReceiver mLockscreenDismissedReceiver;
@@ -99,6 +98,7 @@ public class LockScreenManager extends BaseSubManager {
 		lockScreenEnabled = lockScreenConfig.isEnabled();
 		deviceLogoEnabled = lockScreenConfig.isDeviceLogoEnabled();
 		showInOptionalState = lockScreenConfig.isShownInOptionalState();
+		enableDismissGesture = lockScreenConfig.enableDismissGesture();
 
 		setupListeners();
 	}
@@ -178,8 +178,12 @@ public class LockScreenManager extends BaseSubManager {
 				if (notification != null) {
 					OnDriverDistraction ddState = (OnDriverDistraction) notification;
 					Boolean isDismissible = ddState.getLockscreenDismissibility();
-					if (isDismissible != null) {
-						mIsLockscreenDismissible = isDismissible;
+					if (isDismissible != null ) {
+						// both of these conditions must be met to be able to dismiss lockscreen
+						if (isDismissible && enableDismissGesture){
+							mIsLockscreenDismissible = true;
+						}
+
 						if (!mIsLockscreenDismissible) {
 							mLockScreenHasBeenDismissed = false;
 						}

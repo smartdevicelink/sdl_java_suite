@@ -26,6 +26,7 @@ public class LockScreenConfigTests extends AndroidTestCase2 {
 		lockScreenConfig.showDeviceLogo(true);
 		lockScreenConfig.setEnabled(true);
 		lockScreenConfig.showInOptionalState(true);
+		lockScreenConfig.enableDismissGesture(false);
 	}
 
 	@Override
@@ -39,9 +40,10 @@ public class LockScreenConfigTests extends AndroidTestCase2 {
 		assertEquals(Test.GENERAL_INT, lockScreenConfig.getCustomView());
 		assertEquals(Test.GENERAL_INT, lockScreenConfig.getAppIcon());
 		assertEquals(Test.GENERAL_INT, lockScreenConfig.getBackgroundColor());
-		assertEquals(true, lockScreenConfig.isEnabled());
-		assertEquals(true, lockScreenConfig.isDeviceLogoEnabled());
+		assertTrue(lockScreenConfig.isEnabled());
+		assertTrue(lockScreenConfig.isDeviceLogoEnabled());
 		assertTrue(lockScreenConfig.isShownInOptionalState());
+		assertFalse(lockScreenConfig.enableDismissGesture());
 	}
 
 }
