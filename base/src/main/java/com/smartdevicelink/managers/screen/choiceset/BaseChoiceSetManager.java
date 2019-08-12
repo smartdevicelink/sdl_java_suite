@@ -403,6 +403,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         pendingPresentOperation = executor.submit(keyboardOp);
     }
 
+    /*
+    * Cancels the keyboard-only interface if it is currently showing
+    */
     public void dismissKeyboard() {
         if (currentlyPresentedKeyboardOperation == null || !currentlyPresentedKeyboardOperation.isExecuting()) { return; }
         currentlyPresentedKeyboardOperation.dismissKeyboard();

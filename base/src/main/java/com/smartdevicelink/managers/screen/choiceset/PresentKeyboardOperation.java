@@ -127,29 +127,37 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 
 	}
 
+	/*
+	* Cancels a currently presented keyboard
+	*/
 	void dismissKeyboard() {
 		if (Thread.currentThread().isInterrupted()) {
+			// This operation has been canceled. It will be finished at some point during the operation.
 			return;
-		} else if (isExecuting()) {
-			DebugTool.logInfo("Canceling the presented keyboard.");
+		}
 
-			CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);
-			cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
-				@Override
-				public void onResponse(int correlationId, RPCResponse response) {
-					DebugTool.logInfo("Canceled the presented keyboard " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
-				}
+		if (!isExecuting()) {
+			DebugTool.logInfo("Keyboard is not being presented so it can not be canceled.");
+			return;
+		}
 
-				@Override
-				public void onError(int correlationId, Result resultCode, String info){
-					DebugTool.logError("Error canceling the presented keyboard " + resultCode + " " + info);
-				};
-			});
-			if (internalInterface.get() != null){
-				internalInterface.get().sendRPC(cancelInteraction);
-			} else {
-				DebugTool.logError("Internal interface null - could not send cancel interaction for keyboard");
+		DebugTool.logInfo("Canceling the presented keyboard.");
+		CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);
+		cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
+			@Override
+			public void onResponse(int correlationId, RPCResponse response) {
+				DebugTool.logInfo("Canceled the presented keyboard " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
 			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info){
+				DebugTool.logError("Error canceling the presented keyboard " + resultCode + " " + info);
+			}
+		});
+		if (internalInterface.get() != null){
+			internalInterface.get().sendRPC(cancelInteraction);
+		} else {
+			DebugTool.logError("Internal interface null - could not send cancel interaction for keyboard");
 		}
 	}
 
