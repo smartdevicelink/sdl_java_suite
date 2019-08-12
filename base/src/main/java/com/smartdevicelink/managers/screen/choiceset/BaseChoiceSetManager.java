@@ -47,6 +47,7 @@ import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
@@ -77,6 +78,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     private static final int CHECKING_VOICE = 0xA0;
     private KeyboardProperties keyboardConfiguration;
     final WeakReference<FileManager> fileManager;
+    SdlMsgVersion sdlMsgVersion;
 
     OnRPCNotificationListener hmiListener;
     OnSystemCapabilityListener displayListener;
@@ -122,6 +124,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         executor.pause(); // pause until HMI ready
 
         currentlyPresentedKeyboardOperation = null;
+        this.sdlMsgVersion = internalInterface.getSdlMsgVersion();
     }
 
     @Override
@@ -329,7 +332,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
 
         findIdsOnChoiceSet(pendingPresentationSet);
-        pendingPresentationSet.cancelID = nextCancelId++;
 
         // Pass back the information to the developer
         ChoiceSetSelectionListener privateChoiceListener = new ChoiceSetSelectionListener() {
@@ -357,11 +359,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         if (keyboardListener == null){
             // Non-searchable choice set
             DebugTool.logInfo("Creating non-searchable choice set");
-            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, null, null, privateChoiceListener);
+            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, null, null, privateChoiceListener, nextCancelId++);
         } else {
             // Searchable choice set
             DebugTool.logInfo("Creating searchable choice set");
-            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener);
+            presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener, nextCancelId++);
         }
 
         pendingPresentOperation = executor.submit(presentOp);
@@ -407,6 +409,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     * Cancels the keyboard-only interface if it is currently showing
     */
     public void dismissKeyboard() {
+        if (sdlMsgVersion.getMajorVersion() < 6){
+            DebugTool.logWarning("Canceling a presented keyboard is not supported on this head unit");
+            return;
+        }
+
         if (currentlyPresentedKeyboardOperation == null || !currentlyPresentedKeyboardOperation.isExecuting()) { return; }
         currentlyPresentedKeyboardOperation.dismissKeyboard();
     }

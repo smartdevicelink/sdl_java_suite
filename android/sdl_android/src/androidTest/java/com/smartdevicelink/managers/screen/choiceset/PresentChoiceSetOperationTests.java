@@ -42,6 +42,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.CancelInteraction;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.PerformInteraction;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
@@ -77,8 +78,8 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		ChoiceCell cell1 = new ChoiceCell("Cell1");
 		cell1.setChoiceId(0);
 		choiceSet = new ChoiceSet("Test", Collections.singletonList(cell1), choiceSetSelectionListener);
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener);
-		choiceSet.cancelID = Test.GENERAL_INTEGER;
+		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+		presentChoiceSetOperation.sdlMsgVersion = new SdlMsgVersion(6, 0);
 	}
 
 	@Override
@@ -129,7 +130,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 				Object[] args = invocation.getArguments();
 				CancelInteraction cancelInteraction = (CancelInteraction) args[0];
 
-				assertEquals(cancelInteraction.getCancelID(), choiceSet.cancelID);
+				assertEquals(cancelInteraction.getCancelID(), Test.GENERAL_INTEGER);
 				assertEquals(cancelInteraction.getInteractionFunctionID().intValue(), FunctionID.PERFORM_INTERACTION.getId());
 
 				RPCResponse response = new RPCResponse(FunctionID.CANCEL_INTERACTION.toString());
@@ -158,7 +159,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 				Object[] args = invocation.getArguments();
 				CancelInteraction cancelInteraction = (CancelInteraction) args[0];
 
-				assertEquals(cancelInteraction.getCancelID(), choiceSet.cancelID);
+				assertEquals(cancelInteraction.getCancelID(), Test.GENERAL_INTEGER);
 				assertEquals(cancelInteraction.getInteractionFunctionID().intValue(), FunctionID.PERFORM_INTERACTION.getId());
 
 				RPCResponse response = new RPCResponse(FunctionID.CANCEL_INTERACTION.toString());
@@ -207,5 +208,18 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), false);
 		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), true);
+	}
+
+	public void testCancelingTheChoiceSetIfHeadUnitDoesNotSupportFeature(){
+		// Only supported with RPC spec versions 6.0.0+
+		presentChoiceSetOperation.sdlMsgVersion = new SdlMsgVersion(5, 3);
+		presentChoiceSetOperation.run();
+
+		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), true);
+		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), false);
+
+		choiceSet.cancel();
+
+		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 	}
 }

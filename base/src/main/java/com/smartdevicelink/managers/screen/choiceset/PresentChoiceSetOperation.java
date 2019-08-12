@@ -45,6 +45,7 @@ import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.PerformInteraction;
 import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
@@ -63,6 +64,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 
 	private WeakReference<ISdl> internalInterface;
 	private ChoiceSet choiceSet;
+	private Integer cancelID;
 	private InteractionMode presentationMode;
 	private KeyboardProperties originalKeyboardProperties, keyboardProperties;
 	private ChoiceCell selectedCell;
@@ -72,9 +74,10 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 	private ChoiceSetSelectionListener choiceSetSelectionListener;
 	Integer selectedCellRow;
 	KeyboardListener keyboardListener;
+	SdlMsgVersion sdlMsgVersion;
 
 	PresentChoiceSetOperation(ISdl internalInterface, ChoiceSet choiceSet, InteractionMode mode,
-									 KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, ChoiceSetSelectionListener choiceSetSelectionListener){
+									 KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, ChoiceSetSelectionListener choiceSetSelectionListener, Integer cancelID){
 		super();
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.keyboardListener = keyboardListener;
@@ -86,10 +89,12 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 			}
 		};
 		this.presentationMode = mode;
+		this.cancelID = cancelID;
 		this.originalKeyboardProperties = originalKeyboardProperties;
 		this.keyboardProperties = originalKeyboardProperties;
 		this.selectedCellRow = null;
 		this.choiceSetSelectionListener = choiceSetSelectionListener;
+		this.sdlMsgVersion = internalInterface.getSdlMsgVersion();
 	}
 
 	@Override
@@ -220,17 +225,25 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		}
 	}
 
+	/*
+	* Cancels the choice set. If the choice set has not yet been sent to Core, it will not be sent. If the choice set is already presented on Core, the choice set will be dismissed using the `CancelInteraction` RPC.
+	*/
 	private void cancelInteraction() {
+		if (sdlMsgVersion.getMajorVersion() < 6){
+			DebugTool.logWarning("Canceling a presented choice set is not supported on this head unit");
+			return;
+		}
+
 		if (isFinished()) {
+			// This operation has already finished so it can not be canceled.
 			return;
 		} else if (Thread.currentThread().isInterrupted()) {
-			if (!isExecuting()) { return; }
-			finishOperation();
+			// This operation has been canceled. It will be finished at some point during the operation.
 			return;
 		} else if (isExecuting()) {
 			DebugTool.logInfo("Canceling the presented choice set interaction.");
 
-			CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), choiceSet.cancelID);
+			CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);
 			cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
@@ -249,6 +262,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 				DebugTool.logError("Internal interface null - could not send cancel interaction for choice set");
 			}
 		} else {
+			DebugTool.logInfo("Canceling a choice set that has not yet been sent to Core");
 			Thread.currentThread().interrupt();
 		}
 	}
@@ -263,7 +277,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		pi.setVrHelp(choiceSet.getVrHelpList());
 		pi.setTimeout(choiceSet.getTimeout() * 1000);
 		pi.setInteractionLayout(getLayoutMode());
-		pi.setCancelID(choiceSet.cancelID);
+		pi.setCancelID(cancelID);
 		return pi;
 	}
 

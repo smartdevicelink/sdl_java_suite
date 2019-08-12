@@ -105,7 +105,6 @@ public class ChoiceSetTests extends AndroidTestCase2 {
 
     public void testCancelingChoiceSet() {
         ChoiceSet choiceSet = new ChoiceSet(Test.GENERAL_STRING, choices, listener);
-        choiceSet.cancelID = Test.GENERAL_INTEGER;
 
         choiceSet.canceledListener = new ChoiceSetCanceledListener() {
             @Override
@@ -114,7 +113,6 @@ public class ChoiceSetTests extends AndroidTestCase2 {
             }
         };
 
-        Integer testCancelID = choiceSet.cancelID;
         assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testCancelID);
 
         choiceSet.cancel();

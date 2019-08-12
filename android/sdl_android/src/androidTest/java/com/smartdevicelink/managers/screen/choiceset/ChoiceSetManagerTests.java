@@ -40,6 +40,7 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
@@ -71,6 +72,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
 		csm = new ChoiceSetManager(internalInterface, fileManager);
+		csm.sdlMsgVersion = new SdlMsgVersion(6, 0);
 
 		assertEquals(csm.getState(), BaseSubManager.SETTING_UP);
 		assertEquals(csm.currentSystemContext, SystemContext.SYSCTXT_MAIN);
@@ -239,7 +241,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		}
 	}
 
-	public void testDismissKeyboardThisIsExecuting(){
+	public void testDismissKeyboardThatIsExecuting(){
 		PresentKeyboardOperation testOp = mock(PresentKeyboardOperation.class);
 		doReturn(true).when(testOp).isExecuting();
 		csm.currentlyPresentedKeyboardOperation = testOp;
@@ -250,6 +252,15 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 	public void testDismissKeyboardThatIsNotExecuting(){
 		PresentKeyboardOperation testOp = mock(PresentKeyboardOperation.class);
 		doReturn(false).when(testOp).isExecuting();
+		csm.currentlyPresentedKeyboardOperation = testOp;
+		csm.dismissKeyboard();
+		verify(testOp, times(0)).dismissKeyboard();
+	}
+	
+	public void testDismissKeyboardIfHeadUnitDoesNotSupportFeature(){
+		csm.sdlMsgVersion = new SdlMsgVersion(5, 3);
+		PresentKeyboardOperation testOp = mock(PresentKeyboardOperation.class);
+		doReturn(true).when(testOp).isExecuting();
 		csm.currentlyPresentedKeyboardOperation = testOp;
 		csm.dismissKeyboard();
 		verify(testOp, times(0)).dismissKeyboard();
