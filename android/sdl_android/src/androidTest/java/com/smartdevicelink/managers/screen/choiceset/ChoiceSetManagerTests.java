@@ -53,7 +53,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ChoiceSetManagerTests extends AndroidTestCase2 {
 
@@ -232,7 +237,21 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		for (ChoiceCell cell : returnedChoices){
 			assertEquals(cell.getText(), "test2");
 		}
-
 	}
 
+	public void testDismissKeyboardThisIsExecuting(){
+		PresentKeyboardOperation testOp = mock(PresentKeyboardOperation.class);
+		doReturn(true).when(testOp).isExecuting();
+		csm.currentlyPresentedKeyboardOperation = testOp;
+		csm.dismissKeyboard();
+		verify(testOp, times(1)).dismissKeyboard();
+	}
+
+	public void testDismissKeyboardThatIsNotExecuting(){
+		PresentKeyboardOperation testOp = mock(PresentKeyboardOperation.class);
+		doReturn(false).when(testOp).isExecuting();
+		csm.currentlyPresentedKeyboardOperation = testOp;
+		csm.dismissKeyboard();
+		verify(testOp, times(0)).dismissKeyboard();
+	}
 }

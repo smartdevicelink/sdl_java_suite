@@ -404,9 +404,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     public void dismissKeyboard() {
-        if (currentlyPresentedKeyboardOperation != null && currentlyPresentedKeyboardOperation.isExecuting()) {
-            currentlyPresentedKeyboardOperation.dismissKeyboard();
-        }
+        if (currentlyPresentedKeyboardOperation == null || !currentlyPresentedKeyboardOperation.isExecuting()) { return; }
+        currentlyPresentedKeyboardOperation.dismissKeyboard();
     }
 
     /**
