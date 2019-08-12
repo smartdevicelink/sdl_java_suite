@@ -160,6 +160,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 
 @SuppressWarnings({"WeakerAccess", "Convert2Diamond"})
+@Deprecated
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
 	// Used for calls to Android Log class.
 	public static final String TAG = "SdlProxy";

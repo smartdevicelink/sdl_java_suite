@@ -67,7 +67,7 @@ import java.util.Vector;
 
 import static com.smartdevicelink.proxy.SystemCapabilityManager.convertToList;
 
-
+@Deprecated
 public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 
 	private static final String SDL_LIB_TRACE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
