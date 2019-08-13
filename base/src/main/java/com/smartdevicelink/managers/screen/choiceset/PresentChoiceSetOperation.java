@@ -229,18 +229,18 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 	* Cancels the choice set. If the choice set has not yet been sent to Core, it will not be sent. If the choice set is already presented on Core, the choice set will be dismissed using the `CancelInteraction` RPC.
 	*/
 	private void cancelInteraction() {
-		if (sdlMsgVersion.getMajorVersion() < 6){
-			DebugTool.logWarning("Canceling a presented choice set is not supported on this head unit");
-			return;
-		}
-
 		if (isFinished()) {
-			// This operation has already finished so it can not be canceled.
+			DebugTool.logInfo("This operation has already finished so it can not be canceled.");
 			return;
 		} else if (Thread.currentThread().isInterrupted()) {
-			// This operation has been canceled. It will be finished at some point during the operation.
+			DebugTool.logInfo("This operation has already been canceled. It will be finished at some point during the operation.");
 			return;
 		} else if (isExecuting()) {
+			if (sdlMsgVersion.getMajorVersion() < 6){
+				DebugTool.logWarning("Canceling a presented choice set is not supported on this head unit");
+				return;
+			}
+
 			DebugTool.logInfo("Canceling the presented choice set interaction.");
 
 			CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);

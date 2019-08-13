@@ -78,7 +78,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     private static final int CHECKING_VOICE = 0xA0;
     private KeyboardProperties keyboardConfiguration;
     final WeakReference<FileManager> fileManager;
-    SdlMsgVersion sdlMsgVersion;
 
     OnRPCNotificationListener hmiListener;
     OnSystemCapabilityListener displayListener;
@@ -124,7 +123,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         executor.pause(); // pause until HMI ready
 
         currentlyPresentedKeyboardOperation = null;
-        this.sdlMsgVersion = internalInterface.getSdlMsgVersion();
     }
 
     @Override
@@ -375,14 +373,25 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
      * @param customKeyboardConfig - the custom keyboard configuration to be used when the keyboard is displayed
      * @param listener - A keyboard listener to capture user input
      */
+    @Deprecated
     public void presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardConfig, @NonNull KeyboardListener listener){
+        presentKeyboard(initialText, listener, customKeyboardConfig);
+    }
 
+    /**
+     * Presents a keyboard on the Head unit to capture user input
+     * @param initialText - The initial text that is used as a placeholder text. It might not work on some head units.
+     * @param customKeyboardConfig - the custom keyboard configuration to be used when the keyboard is displayed
+     * @param listener - A keyboard listener to capture user input
+     * @return - A unique id that can be used to cancel this keyboard. If `null`, no keyboard was created.
+     */
+    public Integer presentKeyboard(@NonNull String initialText, @NonNull KeyboardListener listener, @Nullable KeyboardProperties customKeyboardConfig){
         if (initialText == null || initialText.length() == 0){
             DebugTool.logError("initialText cannot be an empty string.");
-            return;
+            return null;
         }
 
-        if (!isReady()){ return; }
+        if (!isReady()){ return null; }
 
         if (pendingPresentationSet != null && pendingPresentOperation != null){
             pendingPresentOperation.cancel(true);
@@ -400,22 +409,37 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         // Present a keyboard with the choice set that we used to test VR's optional state
         DebugTool.logInfo("Presenting Keyboard - Choice Set Manager");
-        PresentKeyboardOperation keyboardOp = new PresentKeyboardOperation(internalInterface, keyboardConfiguration, initialText, customKeyboardConfig, listener, nextCancelId++);
+        Integer keyboardCancelID = nextCancelId++;
+        PresentKeyboardOperation keyboardOp = new PresentKeyboardOperation(internalInterface, keyboardConfiguration, initialText, customKeyboardConfig, listener, keyboardCancelID);
         currentlyPresentedKeyboardOperation = keyboardOp;
         pendingPresentOperation = executor.submit(keyboardOp);
+        return keyboardCancelID;
     }
 
-    /*
-    * Cancels the keyboard-only interface if it is currently showing
-    */
-    public void dismissKeyboard() {
-        if (sdlMsgVersion.getMajorVersion() < 6){
-            DebugTool.logWarning("Canceling a presented keyboard is not supported on this head unit");
+    /**
+     *  Cancels the keyboard-only interface if it is currently showing. If the keyboard has not yet been sent to Core, it will not be sent.
+     *
+     *  This will only dismiss an already presented keyboard if connected to head units running SDL 6.0+.
+     *
+     * @param cancelID - The unique ID assigned to the keyboard, passed as the return value from `presentKeyboardWithInitialText:keyboardDelegate:`
+     */
+    public void dismissKeyboard(Integer cancelID) {
+        // First, attempt to cancel the currently executing keyboard operation (Once an operation has started it is removed from the operationQueue)
+        if (currentlyPresentedKeyboardOperation != null && currentlyPresentedKeyboardOperation.getCancelID() == cancelID) {
+            currentlyPresentedKeyboardOperation.dismissKeyboard();
             return;
         }
 
-        if (currentlyPresentedKeyboardOperation == null || !currentlyPresentedKeyboardOperation.isExecuting()) { return; }
-        currentlyPresentedKeyboardOperation.dismissKeyboard();
+        // Next, attempt to cancel keyboard operations that have not yet started
+        for (Runnable operation : operationQueue){
+            if (!(operation instanceof PresentKeyboardOperation)){ continue; }
+
+            PresentKeyboardOperation pendingOp = (PresentKeyboardOperation) operation;
+            if (!(pendingOp.getCancelID() == cancelID)) { continue; }
+
+            pendingOp.dismissKeyboard();
+            break;
+        }
     }
 
     /**

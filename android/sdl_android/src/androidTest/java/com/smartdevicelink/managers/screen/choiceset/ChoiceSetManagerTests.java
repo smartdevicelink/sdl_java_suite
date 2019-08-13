@@ -48,11 +48,14 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -72,7 +75,6 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
 		csm = new ChoiceSetManager(internalInterface, fileManager);
-		csm.sdlMsgVersion = new SdlMsgVersion(6, 0);
 
 		assertEquals(csm.getState(), BaseSubManager.SETTING_UP);
 		assertEquals(csm.currentSystemContext, SystemContext.SYSCTXT_MAIN);
@@ -241,28 +243,48 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		}
 	}
 
+	public void testPresentingKeyboard() {}
+
+	public void testPresentingKeyboardWithDeprecatedMethod() {}
+
+	public void testPresentingKeyboardWhenKeyboardCannotBeSentToCore() {}
+
 	public void testDismissKeyboardThatIsExecuting(){
-		PresentKeyboardOperation testOp = mock(PresentKeyboardOperation.class);
-		doReturn(true).when(testOp).isExecuting();
-		csm.currentlyPresentedKeyboardOperation = testOp;
-		csm.dismissKeyboard();
-		verify(testOp, times(1)).dismissKeyboard();
+		Integer testCancelID = 42;
+		PresentKeyboardOperation testKeyboardOp = mock(PresentKeyboardOperation.class);
+		doReturn(testCancelID).when(testKeyboardOp).getCancelID();
+		doReturn(true).when(testKeyboardOp).isExecuting();
+		csm.currentlyPresentedKeyboardOperation = testKeyboardOp;
+		csm.dismissKeyboard(testCancelID);
+		verify(testKeyboardOp, times(1)).dismissKeyboard();
 	}
 
 	public void testDismissKeyboardThatIsNotExecuting(){
-		PresentKeyboardOperation testOp = mock(PresentKeyboardOperation.class);
-		doReturn(false).when(testOp).isExecuting();
-		csm.currentlyPresentedKeyboardOperation = testOp;
-		csm.dismissKeyboard();
-		verify(testOp, times(0)).dismissKeyboard();
+		Integer testCancelID = 42;
+		PresentKeyboardOperation testKeyboardOp = mock(PresentKeyboardOperation.class);
+		doReturn(false).when(testKeyboardOp).isExecuting();
+		doReturn(testCancelID).when(testKeyboardOp).getCancelID();
+		csm.currentlyPresentedKeyboardOperation = testKeyboardOp;
+		csm.dismissKeyboard(testCancelID);
+		verify(testKeyboardOp, times(1)).dismissKeyboard();
 	}
-	
-	public void testDismissKeyboardIfHeadUnitDoesNotSupportFeature(){
-		csm.sdlMsgVersion = new SdlMsgVersion(5, 3);
-		PresentKeyboardOperation testOp = mock(PresentKeyboardOperation.class);
-		doReturn(true).when(testOp).isExecuting();
-		csm.currentlyPresentedKeyboardOperation = testOp;
-		csm.dismissKeyboard();
-		verify(testOp, times(0)).dismissKeyboard();
+
+	public void testDismissingMultipleKeyboards(){
+		Integer testCancelID = 42;
+		PresentKeyboardOperation testKeyboardOp = mock(PresentKeyboardOperation.class);
+		doReturn(true).when(testKeyboardOp).isExecuting();
+		doReturn(96).when(testKeyboardOp).getCancelID();
+		csm.currentlyPresentedKeyboardOperation = testKeyboardOp;
+
+		PresentKeyboardOperation testKeyboardOp2 = mock(PresentKeyboardOperation.class);
+		doReturn(true).when(testKeyboardOp2).isExecuting();
+		doReturn(testCancelID).when(testKeyboardOp2).getCancelID();
+		LinkedBlockingQueue<Runnable> testOperationQueue = new LinkedBlockingQueue<>();
+		testOperationQueue.add(testKeyboardOp2);
+		csm.operationQueue = testOperationQueue;
+
+		csm.dismissKeyboard(testCancelID);
+		verify(testKeyboardOp, times(0)).dismissKeyboard();
+		verify(testKeyboardOp2, times(1)).dismissKeyboard();
 	}
 }

@@ -44,6 +44,7 @@ import com.smartdevicelink.proxy.rpc.CancelInteraction;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.PerformInteraction;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
@@ -67,6 +68,7 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 	private String initialText;
 	private OnRPCNotificationListener keyboardRPCListener;
 	private Integer cancelID;
+	SdlMsgVersion sdlMsgVersion;
 
 	PresentKeyboardOperation(ISdl internalInterface, KeyboardProperties originalKeyboardProperties, String initialText, KeyboardProperties customConfig, KeyboardListener keyboardListener, Integer cancelID){
 		this.internalInterface = new WeakReference<>(internalInterface);
@@ -76,6 +78,7 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 		this.customConfig = customConfig;
 		this.initialText = initialText;
 		this.cancelID = cancelID;
+		this.sdlMsgVersion = internalInterface.getSdlMsgVersion();
 	}
 
 	@Override
@@ -88,6 +91,12 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 
 	private void start(){
 		DebugTool.logInfo("Choice Operation: Executing present keyboard operation");
+
+		if (Thread.currentThread().isInterrupted()) {
+			finishOperation();
+			return;
+		}
+
 		if (keyboardListener != null){
 			keyboardProperties = customConfig;
 			updatedKeyboardProperties = true;
@@ -96,6 +105,11 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 		updateKeyboardProperties(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
+				if (Thread.currentThread().isInterrupted()) {
+					finishOperation();
+					return;
+				}
+
 				presentKeyboard();
 			}
 		});
@@ -124,40 +138,48 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 		}else{
 			DebugTool.logError("Internal Interface null in present keyboard operation - choice");
 		}
-
 	}
 
-	/*
-	* Cancels a currently presented keyboard
-	*/
+	/**
+	 *  Cancels the keyboard-only interface if it is currently showing. If the keyboard has not yet been sent to Core, it will not be sent.
+	 *
+	 *  This will only dismiss an already presented keyboard if connected to head units running SDL 6.0+.
+	 */
 	void dismissKeyboard() {
-		if (Thread.currentThread().isInterrupted()) {
-			// This operation has been canceled. It will be finished at some point during the operation.
+		if (isFinished()) {
+			DebugTool.logInfo("This operation has already finished so it can not be canceled.");
 			return;
-		}
-
-		if (!isExecuting()) {
-			DebugTool.logInfo("Keyboard is not being presented so it can not be canceled.");
+		} else if (Thread.currentThread().isInterrupted()) {
+			DebugTool.logInfo("This operation has already been canceled. It will be finished at some point during the operation.");
 			return;
-		}
-
-		DebugTool.logInfo("Canceling the presented keyboard.");
-		CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);
-		cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
-			@Override
-			public void onResponse(int correlationId, RPCResponse response) {
-				DebugTool.logInfo("Canceled the presented keyboard " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
+		} else if (isExecuting()) {
+			if (sdlMsgVersion.getMajorVersion() < 6){
+				DebugTool.logWarning("Canceling a keyboard is not supported on this head unit");
+				return;
 			}
 
-			@Override
-			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError("Error canceling the presented keyboard " + resultCode + " " + info);
+			DebugTool.logInfo("Canceling the presented keyboard.");
+
+			CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);
+			cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
+				@Override
+				public void onResponse(int correlationId, RPCResponse response) {
+					DebugTool.logInfo("Canceled the presented keyboard " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
+				}
+
+				@Override
+				public void onError(int correlationId, Result resultCode, String info){
+					DebugTool.logError("Error canceling the presented keyboard " + resultCode + " " + info);
+				}
+			});
+			if (internalInterface.get() != null){
+				internalInterface.get().sendRPC(cancelInteraction);
+			} else {
+				DebugTool.logError("Internal interface null - could not send cancel interaction for keyboard.");
 			}
-		});
-		if (internalInterface.get() != null){
-			internalInterface.get().sendRPC(cancelInteraction);
 		} else {
-			DebugTool.logError("Internal interface null - could not send cancel interaction for keyboard");
+			DebugTool.logInfo("Canceling a keyboard that has not yet been sent to Core.");
+			Thread.currentThread().interrupt();
 		}
 	}
 
@@ -242,6 +264,10 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 		return pi;
 	}
 
+	public Integer getCancelID() {
+		return cancelID;
+	}
+
 	// LISTENERS
 
 	private void addListeners(){
@@ -249,6 +275,10 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 		keyboardRPCListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
+				if (Thread.currentThread().isInterrupted()) {
+					finishOperation();
+					return;
+				}
 
 				if (keyboardListener == null){
 					DebugTool.logError("Received Keyboard Input But Listener is null");
