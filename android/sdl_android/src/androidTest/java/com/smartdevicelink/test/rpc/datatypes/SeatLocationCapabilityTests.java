@@ -1,9 +1,7 @@
 package com.smartdevicelink.test.rpc.datatypes;
 
-import android.util.Log;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
-import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.SeatLocation;
 import com.smartdevicelink.proxy.rpc.SeatLocationCapability;
 import com.smartdevicelink.test.JsonUtils;
@@ -16,8 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;

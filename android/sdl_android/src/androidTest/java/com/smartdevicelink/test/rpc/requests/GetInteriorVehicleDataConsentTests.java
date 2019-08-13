@@ -10,7 +10,6 @@ import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
-import junit.framework.TestCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;

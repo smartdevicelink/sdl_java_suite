@@ -3,7 +3,6 @@ package com.smartdevicelink.test.rpc.datatypes;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.ModuleInfo;
-import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
 
@@ -13,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Hashtable;
-import java.util.Iterator;
 
 public class ModuleInfoTests extends TestCase {
 	private ModuleInfo msg;

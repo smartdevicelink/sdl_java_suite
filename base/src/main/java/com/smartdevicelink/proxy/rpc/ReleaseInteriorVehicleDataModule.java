@@ -5,7 +5,6 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
 
 import java.util.Hashtable;
-import java.util.List;
 
 public class ReleaseInteriorVehicleDataModule extends RPCRequest {
     public static final String KEY_MODULE_TYPE = "moduleType";

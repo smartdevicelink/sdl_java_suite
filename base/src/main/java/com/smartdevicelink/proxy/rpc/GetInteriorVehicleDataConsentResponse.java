@@ -39,6 +39,7 @@ public class GetInteriorVehicleDataConsentResponse extends RPCResponse {
      * Gets the list of allowances of this class
      * @return the list of allowances of this class
      */
+    @SuppressWarnings("unchecked")
     public List<Boolean> getAllowances() {
         return (List<Boolean>) getObject(Boolean.class, KEY_ALLOWED);
     }

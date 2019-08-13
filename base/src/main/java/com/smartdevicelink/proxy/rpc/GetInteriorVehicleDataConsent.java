@@ -47,6 +47,7 @@ public class GetInteriorVehicleDataConsent extends RPCRequest {
      * Gets the Module Ids of this class
      * @return the Module Ids
      */
+    @SuppressWarnings("unchecked")
     public List<String> getModuleIds() {
         return (List<String>) getObject(String.class, KEY_MODULE_ID);
     }

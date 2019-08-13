@@ -97,7 +97,7 @@ public class ButtonCapabilities extends RPCStruct {
 	public static final String KEY_SHORT_PRESS_AVAILABLE = "shortPressAvailable";
 	public static final String KEY_LONG_PRESS_AVAILABLE = "longPressAvailable";
 	public static final String KEY_UP_DOWN_AVAILABLE = "upDownAvailable";
-    public static final String KEY_MODULE_INFO = "moduleInfo";
+	public static final String KEY_MODULE_INFO = "moduleInfo";
 	/**
 	 * Constructs a newly allocated ButtonCapabilities object
 	 */
