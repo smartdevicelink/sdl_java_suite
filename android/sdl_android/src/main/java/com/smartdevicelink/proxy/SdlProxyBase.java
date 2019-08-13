@@ -3702,7 +3702,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_mainUIHandler.post(new Runnable() {
 						@Override
 						public void run() {
-							_proxyListener.onCloseApplicationResponse( msg);
+							_proxyListener.onCloseApplicationResponse(msg);
 							onRPCResponseReceived(msg);
 						}
 					});
@@ -3724,6 +3724,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					});
 				} else {
 					_proxyListener.onUnpublishAppServiceResponse( msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.SHOW_APP_MENU.toString())) {
+				final ShowAppMenuResponse msg = new ShowAppMenuResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onShowAppMenuResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onShowAppMenuResponse(msg);
 					onRPCResponseReceived(msg);
 				}
 			} else if (functionName.equals(FunctionID.GET_INTERIOR_VEHICLE_DATA_CONSENT.toString())) {
@@ -3756,8 +3772,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onReleaseInteriorVehicleDataModuleResponse(msg);
 					onRPCResponseReceived(msg);
 				}
-			}
-			else {
+			} else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logError("Unrecognized response Message: " + functionName +
 							" SDL Message Version = " + _sdlMsgVersion);

@@ -102,8 +102,9 @@ public enum FunctionID{
     PERFORM_APP_SERVICES_INTERACTION(55, "PerformAppServiceInteraction"),
     UNPUBLISH_APP_SERVICE(56, "UnpublishAppService"),
     CLOSE_APPLICATION(58, "CloseApplication"),
-    GET_INTERIOR_VEHICLE_DATA_CONSENT(59, "GetInteriorVehicleDataConsent"),
-    RELEASE_INTERIOR_VEHICLE_MODULE(60, "ReleaseInteriorVehicleDataModule"),
+    SHOW_APP_MENU(59, "ShowAppMenu"),
+    GET_INTERIOR_VEHICLE_DATA_CONSENT(60, "GetInteriorVehicleDataConsent"),
+    RELEASE_INTERIOR_VEHICLE_MODULE(61, "ReleaseInteriorVehicleDataModule"),
 
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
