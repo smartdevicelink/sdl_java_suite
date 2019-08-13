@@ -1,6 +1,5 @@
 package com.smartdevicelink.proxy.rpc;
 
-import android.security.KeyChain;
 
 import com.smartdevicelink.proxy.RPCStruct;
 
