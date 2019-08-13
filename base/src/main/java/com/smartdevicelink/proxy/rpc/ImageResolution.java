@@ -97,6 +97,9 @@ public class ImageResolution extends RPCStruct {
     }
     
     public void setResolutionWidth(@NonNull Integer resolutionWidth) {
+        if(resolutionWidth != null && resolutionWidth % 2 != 0) {
+            resolutionWidth++;
+        }
         setValue(KEY_RESOLUTION_WIDTH, resolutionWidth);
     }
     
@@ -105,6 +108,9 @@ public class ImageResolution extends RPCStruct {
     }
     
     public void setResolutionHeight(@NonNull Integer resolutionHeight) {
+        if(resolutionHeight != null && resolutionHeight % 2 != 0) {
+            resolutionHeight++;
+        }
         setValue(KEY_RESOLUTION_HEIGHT, resolutionHeight);
     }
     
