@@ -522,20 +522,9 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @param initialText - The initial text that is used as a placeholder text. It might not work on some head units.
 	 * @param customKeyboardProperties - the custom keyboard configuration to be used when the keyboard is displayed
 	 * @param keyboardListener - A keyboard listener to capture user input
-	 */
-	@Deprecated
-	public void presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardProperties, @NonNull KeyboardListener keyboardListener){
-		presentKeyboard(initialText, keyboardListener, customKeyboardProperties);
-	}
-
-	/**
-	 * Presents a keyboard on the Head unit to capture user input
-	 * @param initialText - The initial text that is used as a placeholder text. It might not work on some head units.
-	 * @param keyboardListener - A keyboard listener to capture user input
-	 * @param customKeyboardProperties - the custom keyboard configuration to be used when the keyboard is displayed
 	 * @return A unique cancelID that can be used to cancel this keyboard. If `null`, no keyboard was created.
 	 */
-	public @Nullable Integer presentKeyboard(@NonNull String initialText, @NonNull KeyboardListener keyboardListener, @Nullable KeyboardProperties customKeyboardProperties){
+	public Integer presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardProperties, @NonNull KeyboardListener keyboardListener){
 		return this.choiceSetManager.presentKeyboard(initialText, keyboardListener, customKeyboardProperties);
 	}
 
