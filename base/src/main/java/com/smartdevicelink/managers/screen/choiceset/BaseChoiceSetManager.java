@@ -47,7 +47,6 @@ import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
-import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
@@ -638,7 +637,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean isReady(){
+    boolean isReady(){
         if (getState() != READY){
             DebugTool.logWarning("Choice Manager In Not-Ready State");
             return false;

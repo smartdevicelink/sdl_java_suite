@@ -106,6 +106,11 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 	}
 
 	private void start(){
+		if (Thread.currentThread().isInterrupted()) {
+			finishOperation();
+			return;
+		}
+
 		// Check if we're using a keyboard (searchable) choice set and setup keyboard properties if we need to
 		if (keyboardListener != null && choiceSet.getCustomKeyboardConfiguration() != null){
 			keyboardProperties = choiceSet.getCustomKeyboardConfiguration();
@@ -322,6 +327,10 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		keyboardRPCListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
+				if (Thread.currentThread().isInterrupted()) {
+					finishOperation();
+					return;
+				}
 
 				if (keyboardListener == null){
 					DebugTool.logError("Received Keyboard Input But Listener is null");

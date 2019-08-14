@@ -46,7 +46,6 @@ public class ChoiceSetTests extends AndroidTestCase2 {
     private ChoiceSetLayout layout;
     private List<ChoiceCell> choices;
     private Integer defaultTimeout;
-    private Integer testCancelID;
     private Boolean canceledHandlerCalled;
 
     @Override
@@ -57,7 +56,6 @@ public class ChoiceSetTests extends AndroidTestCase2 {
         layout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
         defaultTimeout = 10;
         choices = Arrays.asList(new ChoiceCell(Test.GENERAL_STRING), new ChoiceCell(Test.GENERAL_STRING));
-        testCancelID = Test.GENERAL_INTEGER;
         canceledHandlerCalled = false;
     }
 
@@ -112,8 +110,6 @@ public class ChoiceSetTests extends AndroidTestCase2 {
                 canceledHandlerCalled = true;
             }
         };
-
-        assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testCancelID);
 
         choiceSet.cancel();
         assertEquals(Test.MATCH, canceledHandlerCalled.booleanValue(), true);

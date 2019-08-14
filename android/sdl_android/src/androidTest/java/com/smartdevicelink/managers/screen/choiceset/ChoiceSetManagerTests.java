@@ -40,7 +40,6 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
-import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
@@ -48,7 +47,7 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 
-import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,15 +56,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static com.smartdevicelink.managers.BaseSubManager.READY;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ChoiceSetManagerTests extends AndroidTestCase2 {
-
 	private ChoiceSetManager csm;
 
 	@Override
@@ -243,39 +243,49 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		}
 	}
 
-	public void testPresentingKeyboard() {}
+	public void testPresentingKeyboardShouldReturnCancelIDIfKeyboardCanBeSent() {
+		ISdl internalInterface = mock(ISdl.class);
+		FileManager fileManager = mock(FileManager.class);
 
-	public void testPresentingKeyboardWithDeprecatedMethod() {}
+		ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
+		ChoiceSetManager partialMockCSM = spy(newCSM);
+		when(partialMockCSM.isReady()).thenReturn(true);
 
-	public void testPresentingKeyboardWhenKeyboardCannotBeSentToCore() {}
+		Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardListener.class), mock(KeyboardProperties.class));
+		assertNotNull(cancelId);
+	}
 
-	public void testDismissKeyboardThatIsExecuting(){
+	public void testPresentingKeyboardShouldNotReturnCancelIDIfKeyboardCannotBeSent() {
+		ISdl internalInterface = mock(ISdl.class);
+		FileManager fileManager = mock(FileManager.class);
+
+		ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
+		ChoiceSetManager partialMockCSM = spy(newCSM);
+		when(partialMockCSM.isReady()).thenReturn(false);
+
+		Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardListener.class), mock(KeyboardProperties.class));
+		assertNull(cancelId);
+	}
+
+	public void testDismissingExecutingKeyboard(){
 		Integer testCancelID = 42;
 		PresentKeyboardOperation testKeyboardOp = mock(PresentKeyboardOperation.class);
 		doReturn(testCancelID).when(testKeyboardOp).getCancelID();
-		doReturn(true).when(testKeyboardOp).isExecuting();
 		csm.currentlyPresentedKeyboardOperation = testKeyboardOp;
 		csm.dismissKeyboard(testCancelID);
 		verify(testKeyboardOp, times(1)).dismissKeyboard();
 	}
 
-	public void testDismissKeyboardThatIsNotExecuting(){
+	public void testDismissingQueuedKeyboard(){
 		Integer testCancelID = 42;
-		PresentKeyboardOperation testKeyboardOp = mock(PresentKeyboardOperation.class);
-		doReturn(false).when(testKeyboardOp).isExecuting();
-		doReturn(testCancelID).when(testKeyboardOp).getCancelID();
-		csm.currentlyPresentedKeyboardOperation = testKeyboardOp;
-		csm.dismissKeyboard(testCancelID);
-		verify(testKeyboardOp, times(1)).dismissKeyboard();
-	}
 
-	public void testDismissingMultipleKeyboards(){
-		Integer testCancelID = 42;
+		// Currently executing operation
 		PresentKeyboardOperation testKeyboardOp = mock(PresentKeyboardOperation.class);
 		doReturn(true).when(testKeyboardOp).isExecuting();
 		doReturn(96).when(testKeyboardOp).getCancelID();
 		csm.currentlyPresentedKeyboardOperation = testKeyboardOp;
 
+		// Queued operations
 		PresentKeyboardOperation testKeyboardOp2 = mock(PresentKeyboardOperation.class);
 		doReturn(true).when(testKeyboardOp2).isExecuting();
 		doReturn(testCancelID).when(testKeyboardOp2).getCancelID();
@@ -283,6 +293,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		testOperationQueue.add(testKeyboardOp2);
 		csm.operationQueue = testOperationQueue;
 
+		// Queued operation should be canceled
 		csm.dismissKeyboard(testCancelID);
 		verify(testKeyboardOp, times(0)).dismissKeyboard();
 		verify(testKeyboardOp2, times(1)).dismissKeyboard();
