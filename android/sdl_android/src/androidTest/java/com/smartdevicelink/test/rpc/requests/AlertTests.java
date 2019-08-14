@@ -25,7 +25,7 @@ import java.util.List;
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.proxy.rpc.Alert}
  */
-public class AlertTests extends BaseRpcTests {
+public class AlertTests extends BaseRpcTests{
 
     @Override
     protected RPCMessage createMessage(){
