@@ -112,6 +112,6 @@ public class ChoiceSetTests extends AndroidTestCase2 {
         };
 
         choiceSet.cancel();
-        assertEquals(Test.MATCH, canceledHandlerCalled.booleanValue(), true);
+        assertTrue(canceledHandlerCalled);
     }
 }

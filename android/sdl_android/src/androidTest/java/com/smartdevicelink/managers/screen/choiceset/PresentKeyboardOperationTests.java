@@ -116,8 +116,6 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 
 	public void testCancelingKeyboardSuccessfullyIfThreadIsRunning(){
 		presentKeyboardOperation.run();
-		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), true);
-		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), false);
 
 		Answer<Void> cancelInteractionAnswer = new Answer<Void>() {
 			@Override
@@ -139,14 +137,12 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 
 		presentKeyboardOperation.dismissKeyboard();
 
-		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), true);
-		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), false);
+		assertTrue(presentKeyboardOperation.isExecuting());
+		assertFalse(presentKeyboardOperation.isFinished());
 	}
 
 	public void testCancelingKeyboardUnsuccessfullyIfThreadIsRunning(){
 		presentKeyboardOperation.run();
-		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), true);
-		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), false);
 
 		Answer<Void> cancelInteractionAnswer = new Answer<Void>() {
 			@Override
@@ -168,37 +164,31 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 
 		presentKeyboardOperation.dismissKeyboard();
 
-		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), true);
-		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), false);
+		assertTrue(presentKeyboardOperation.isExecuting());
+		assertFalse(presentKeyboardOperation.isFinished());
 	}
 
 	public void testCancelingKeyboardIfThreadHasFinished(){
 		presentKeyboardOperation.run();
 		presentKeyboardOperation.finishOperation();
 
-		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), true);
-
 		presentKeyboardOperation.dismissKeyboard();
 
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 
-		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), true);
+		assertFalse(presentKeyboardOperation.isExecuting());
+		assertTrue(presentKeyboardOperation.isFinished());
 	}
 
 	public void testCancelingKeyboardIfThreadHasNotYetRun(){
-		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), false);
-
 		presentKeyboardOperation.dismissKeyboard();
 
 		// Make sure neither a `CancelInteraction` or `PerformInteraction` RPC is sent
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 		verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
 
-		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), false);
+		assertFalse(presentKeyboardOperation.isExecuting());
+		assertFalse(presentKeyboardOperation.isFinished());
 	}
 
 	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeature(){
@@ -206,8 +196,8 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		presentKeyboardOperation.sdlMsgVersion = new SdlMsgVersion(5, 3);
 		presentKeyboardOperation.run();
 
-		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), true);
-		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), false);
+		assertTrue(presentKeyboardOperation.isExecuting());
+		assertFalse(presentKeyboardOperation.isFinished());
 
 		presentKeyboardOperation.dismissKeyboard();
 
@@ -217,9 +207,6 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeatureButThreadIsNotRunning(){
 		// Only supported with RPC spec versions 6.0.0+
 		presentKeyboardOperation.sdlMsgVersion = new SdlMsgVersion(5, 3);
-
-		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), false);
 
 		presentKeyboardOperation.dismissKeyboard();
 
@@ -232,7 +219,7 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 		verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
 
-		assertEquals(presentKeyboardOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentKeyboardOperation.isFinished().booleanValue(), true);
+		assertFalse(presentKeyboardOperation.isExecuting());
+		assertTrue(presentKeyboardOperation.isFinished());
 	}
 }

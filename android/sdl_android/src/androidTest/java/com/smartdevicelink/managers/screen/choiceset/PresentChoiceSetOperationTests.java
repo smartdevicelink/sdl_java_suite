@@ -121,8 +121,6 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 	public void testCancelingChoiceSetSuccessfullyIfThreadIsRunning(){
 		presentChoiceSetOperation.run();
-		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), true);
-		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), false);
 
 		Answer<Void> cancelInteractionAnswer = new Answer<Void>() {
 			@Override
@@ -144,14 +142,12 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 		choiceSet.cancel();
 
-		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), true);
-		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), false);
+		assertTrue(presentChoiceSetOperation.isExecuting());
+		assertFalse(presentChoiceSetOperation.isFinished());
 	}
 
 	public void testCancelingChoiceSetUnsuccessfullyIfThreadIsRunning(){
 		presentChoiceSetOperation.run();
-		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), true);
-		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), false);
 
 		Answer<Void> cancelInteractionAnswer = new Answer<Void>() {
 			@Override
@@ -173,29 +169,23 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 		choiceSet.cancel();
 
-		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), true);
-		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), false);
+		assertTrue(presentChoiceSetOperation.isExecuting());
+		assertFalse(presentChoiceSetOperation.isFinished());
 	}
 
 	public void testCancelingChoiceSetIfThreadHasFinished(){
 		presentChoiceSetOperation.run();
 		presentChoiceSetOperation.finishOperation();
 
-		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), true);
-
 		choiceSet.cancel();
 
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 
-		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), true);
+		assertFalse(presentChoiceSetOperation.isExecuting());
+		assertTrue(presentChoiceSetOperation.isFinished());
 	}
 
 	public void testCancelingChoiceSetIfThreadHasNotYetRun(){
-		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), false);
-
 		choiceSet.cancel();
 
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
@@ -207,17 +197,14 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 		verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
 
-		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), true);
+		assertFalse(presentChoiceSetOperation.isExecuting());
+		assertTrue(presentChoiceSetOperation.isFinished());
 	}
 
 	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeature(){
 		// Only supported with RPC spec versions 6.0.0+
 		presentChoiceSetOperation.sdlMsgVersion = new SdlMsgVersion(5, 3);
 		presentChoiceSetOperation.run();
-
-		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), true);
-		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), false);
 
 		choiceSet.cancel();
 
@@ -228,9 +215,6 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		// Only supported with RPC spec versions 6.0.0+
 		presentChoiceSetOperation.sdlMsgVersion = new SdlMsgVersion(5, 3);
 
-		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), false);
-
 		choiceSet.cancel();
 
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
@@ -242,7 +226,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 		verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
 
-		assertEquals(presentChoiceSetOperation.isExecuting().booleanValue(), false);
-		assertEquals(presentChoiceSetOperation.isFinished().booleanValue(), true);
+		assertFalse(presentChoiceSetOperation.isExecuting());
+		assertTrue(presentChoiceSetOperation.isFinished());
 	}
 }
