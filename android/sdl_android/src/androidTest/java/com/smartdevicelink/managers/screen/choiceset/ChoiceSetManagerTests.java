@@ -62,6 +62,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ChoiceSetManagerTests extends AndroidTestCase2 {
+	
 	private ChoiceSetManager csm;
 
 	@Override
