@@ -2206,6 +2206,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			pm.setFunctionID(FunctionID.getFunctionId(message.getFunctionName()));
 			if (mRPCSecuredServiceStarted && mEncryptedRPCNames.contains(message.getFunctionName())) {
 				pm.setPayloadProtected(true);
+			} else if (!mRPCSecuredServiceStarted || !rpcProtectedStartResponse) {
+				boolean isMsgProtected = message.isPayloadProtected();
+				if (isMsgProtected) {
+					throw new SdlException("Trying to send an encrypted message and there is no secured service", SdlExceptionCause.INVALID_RPC_PARAMETER);
+				} else {
+					pm.setPayloadProtected(isMsgProtected);
+				}
 			} else {
 				pm.setPayloadProtected(message.isPayloadProtected());
 			}
