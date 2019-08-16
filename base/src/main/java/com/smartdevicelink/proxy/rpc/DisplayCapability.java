@@ -41,7 +41,7 @@ public class DisplayCapability extends RPCStruct {
 
     /**
      * Sets the windowTypeSupported portion of the DisplayCapability class.
-     * {@code 1<= windowTypeSupported.size() <= 1000}
+     * {@code windowTypeSupported.size()>=1}
      *
      * @param windowTypeSupported It informs the application how many windows the app is allowed to create per type.
      */

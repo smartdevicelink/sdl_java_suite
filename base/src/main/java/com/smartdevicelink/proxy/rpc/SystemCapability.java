@@ -47,7 +47,7 @@ public class SystemCapability extends RPCStruct {
     public static final String KEY_SYSTEM_CAPABILITY_TYPE = "systemCapabilityType";
     public static final String KEY_NAVIGATION_CAPABILITY = "navigationCapability";
     public static final String KEY_PHONE_CAPABILITY = "phoneCapability";
-	public static final String KEY_VIDEO_STREAMING_CAPABILITY = "videoStreamingCapability";
+    public static final String KEY_VIDEO_STREAMING_CAPABILITY = "videoStreamingCapability";
     public static final String KEY_REMOTE_CONTROL_CAPABILITY = "remoteControlCapability";
     public static final String KEY_APP_SERVICES_CAPABILITIES = "appServicesCapabilities";
     public static final String KEY_DISPLAY_CAPABILITIES = "displayCapabilities";
@@ -58,14 +58,14 @@ public class SystemCapability extends RPCStruct {
         super(hash);
     }
 
-	/**
-	 * Create a systemCapability object
-	 * @param systemCapabilityType The type
-	 */
-	public SystemCapability(@NonNull SystemCapabilityType systemCapabilityType){
-		this();
-		setSystemCapabilityType(systemCapabilityType);
-	}
+    /**
+     * Create a systemCapability object
+     * @param systemCapabilityType The type
+     */
+    public SystemCapability(@NonNull SystemCapabilityType systemCapabilityType){
+        this();
+        setSystemCapabilityType(systemCapabilityType);
+    }
 
     /**
      *
@@ -83,19 +83,19 @@ public class SystemCapability extends RPCStruct {
     }
 
     public RPCStruct getCapabilityForType(SystemCapabilityType type) {
-	    if(type == null) {
-	        return null;
+        if(type == null) {
+            return null;
         }else if (type.equals(SystemCapabilityType.NAVIGATION)) {
-		    return (RPCStruct) getObject(NavigationCapability.class, KEY_NAVIGATION_CAPABILITY);
-	    } else if (type.equals(SystemCapabilityType.PHONE_CALL)) {
-		    return (RPCStruct) getObject(PhoneCapability.class, KEY_PHONE_CAPABILITY);
-	    } else if (type.equals(SystemCapabilityType.VIDEO_STREAMING)){
-		    return (RPCStruct) getObject(VideoStreamingCapability.class, KEY_VIDEO_STREAMING_CAPABILITY);
+            return (RPCStruct) getObject(NavigationCapability.class, KEY_NAVIGATION_CAPABILITY);
+        } else if (type.equals(SystemCapabilityType.PHONE_CALL)) {
+            return (RPCStruct) getObject(PhoneCapability.class, KEY_PHONE_CAPABILITY);
+        } else if (type.equals(SystemCapabilityType.VIDEO_STREAMING)){
+            return (RPCStruct) getObject(VideoStreamingCapability.class, KEY_VIDEO_STREAMING_CAPABILITY);
         }else if(type.equals(SystemCapabilityType.REMOTE_CONTROL)){
             return (RPCStruct) getObject(RemoteControlCapabilities.class, KEY_REMOTE_CONTROL_CAPABILITY);
         }else if(type.equals(SystemCapabilityType.APP_SERVICES)){
-			return (RPCStruct) getObject(AppServicesCapabilities.class, KEY_APP_SERVICES_CAPABILITIES);
-		}else{
+            return (RPCStruct) getObject(AppServicesCapabilities.class, KEY_APP_SERVICES_CAPABILITIES);
+        }else{
             return null;
         }
     }
@@ -108,13 +108,13 @@ public class SystemCapability extends RPCStruct {
         }else if(type.equals(SystemCapabilityType.PHONE_CALL)){
             setValue(KEY_PHONE_CAPABILITY, capability);
         }else if(type.equals(SystemCapabilityType.VIDEO_STREAMING)){
-	        setValue(KEY_VIDEO_STREAMING_CAPABILITY, capability);
+            setValue(KEY_VIDEO_STREAMING_CAPABILITY, capability);
         }else if(type.equals(SystemCapabilityType.REMOTE_CONTROL)){
             setValue(KEY_REMOTE_CONTROL_CAPABILITY, capability);
         }else if(type.equals(SystemCapabilityType.APP_SERVICES)){
-			setValue(KEY_APP_SERVICES_CAPABILITIES, capability);
-		}else{
-	        return;
+            setValue(KEY_APP_SERVICES_CAPABILITIES, capability);
+        }else{
+            return;
         }
     }
 

@@ -15,7 +15,7 @@ import java.util.Hashtable;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.CreateWindow}
+ * {@link com.smartdevicelink.proxy.rpc.CreateWindow}
  */
 public class CreateWindowTests extends BaseRpcTests {
 

@@ -51,7 +51,7 @@ public class TemplateConfiguration extends RPCStruct {
     /**
      * Sets the template. It can be Predefined or dynamically created window template. Currently only predefined window template layouts are defined.
      *
-     * @param template
+     * @param template Predefined or dynamically created window template. Currently only predefined window template layouts are defined.
      */
     public void setTemplate(@NonNull String template) {
         setValue(KEY_TEMPLATE, template);

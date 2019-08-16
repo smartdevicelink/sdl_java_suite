@@ -31,8 +31,8 @@ public class WindowTypeCapabilities extends RPCStruct {
     /**
      * Constructs a newly allocated WindowTypeCapabilities object
      *
-     * @param type
-     * @param maximumNumberOfWindows
+     * @param type Type of windows available, to create.
+     * @param maximumNumberOfWindows Number of windows available, to create.
      */
     public WindowTypeCapabilities(@NonNull WindowType type, @NonNull Integer maximumNumberOfWindows) {
         this();
@@ -43,7 +43,7 @@ public class WindowTypeCapabilities extends RPCStruct {
     /**
      * set the type of Window
      *
-     * @param type
+     * @param type Type of windows available, to create.
      */
     public void setType(@NonNull WindowType type) {
         setValue(KEY_TYPE, type);
@@ -61,7 +61,7 @@ public class WindowTypeCapabilities extends RPCStruct {
     /**
      * set the maximumNumberOfWindows
      *
-     * @param maximumNumberOfWindows
+     * @param maximumNumberOfWindows Number of windows available, to create.
      */
     public void setMaximumNumberOfWindows(@NonNull Integer maximumNumberOfWindows) {
         setValue(KEY_MAXIMUM_NUMBER_OF_WINDOWS, maximumNumberOfWindows);

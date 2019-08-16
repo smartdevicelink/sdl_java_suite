@@ -56,7 +56,7 @@ public class CreateWindow extends RPCRequest {
      * not be used in this context as it will already be created for the app. See PredefinedWindows enum.
      * Creating a window with an ID that is already in use will be rejected with `INVALID_ID`.
      *
-     * @param windowID
+     * @param windowID A unique ID to identify the window. The value of '0' will always be the default main window on the main display and should not be used in this context as it will already be created for the app. See PredefinedWindows enum. Creating a window with an ID that is already in use will be rejected with `INVALID_ID`.
      */
     public void setWindowID(@NonNull Integer windowID) {
         setParameters(KEY_WINDOW_ID, windowID);
@@ -77,7 +77,9 @@ public class CreateWindow extends RPCRequest {
      * Multiple apps can share the same window name except for the default main window.
      * Creating a window with a name which is already in use by the app will result in `DUPLICATE_NAME`.
      *
-     * @param windowName
+     * @param windowName The window name to be used by the HMI. The name of the pre-created default window will match the app name.
+     *        Multiple apps can share the same window name except for the default main window.
+     *        {@code windowName.length() <= 100}
      */
     public void setWindowName(@NonNull String windowName) {
         setParameters(KEY_WINDOW_NAME, windowName);
@@ -95,7 +97,7 @@ public class CreateWindow extends RPCRequest {
     /**
      * Sets the type of the window to be created. Main window or widget.
      *
-     * @param type a WindowType value
+     * @param type The type of the window to be created. Main window or widget.
      */
     public void setType(@NonNull WindowType type) {
         setParameters(KEY_TYPE, type);
@@ -120,7 +122,8 @@ public class CreateWindow extends RPCRequest {
      * permanently included in the HMI. This parameter is related to widgets only. The default main window, which is
      * pre-created during app registration, will be created based on the HMI types specified in the app registration request.
      *
-     * @param associatedServiceType
+     * @param associatedServiceType Allows an app to create a widget related to a specific service type.
+     *                              As an example if a `MEDIA` app becomes active, this app becomes audible and is allowed to play audio.
      */
     public void setAssociatedServiceType(String associatedServiceType) {
         setParameters(KEY_ASSOCIATED_SERVICE_TYPE, associatedServiceType);
@@ -141,7 +144,7 @@ public class CreateWindow extends RPCRequest {
      * should be duplicated to the created window. If there isn't a window with the ID,
      * the request will be rejected with `INVALID_DATA`.
      *
-     * @param duplicateUpdatesFromWindowID
+     * @param duplicateUpdatesFromWindowID Specify whether the content sent to an existing window should be duplicated to the created window.
      */
     public void setDuplicateUpdatesFromWindowID(Integer duplicateUpdatesFromWindowID) {
         setParameters(KEY_DUPLICATE_UPDATES_FROM_WINDOW_ID, duplicateUpdatesFromWindowID);

@@ -14,7 +14,7 @@ import java.util.Iterator;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.TemplateConfiguration}
+ * {@link com.smartdevicelink.proxy.rpc.TemplateConfiguration}
  */
 public class TemplateConfigurationTests extends TestCase {
 

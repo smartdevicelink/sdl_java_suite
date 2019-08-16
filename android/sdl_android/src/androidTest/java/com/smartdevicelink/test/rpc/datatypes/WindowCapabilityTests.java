@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.WindowCapability}
+ * {@link com.smartdevicelink.proxy.rpc.WindowCapability}
  */
 public class WindowCapabilityTests extends TestCase {
 

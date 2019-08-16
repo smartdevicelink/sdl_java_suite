@@ -277,7 +277,7 @@ public enum SystemCapabilityType {
 	 * 			<td>DisplayCapabilities</td>
 	 * 			<td>Returns Display Capabilities</td>
 	 * 			<td align=center>N</td>
-	 * 			<td> <strong>Since 6.0</strong> Available Synchronously <strong>after</strong> Register App Interface response received</td>
+	 * 			<td> Available Synchronously <strong>after</strong> Register App Interface response received</td>
 	 * 		</tr>
 	 * 	</table>
 	 */
@@ -286,7 +286,7 @@ public enum SystemCapabilityType {
 
 	/**
 	 * @since 6.0
-	 * Returns: DisplayCapability
+	 * Returns: List<DisplayCapability>
 	 * <table border="1" rules="all">
 	 * 		<tr>
 	 * 			<th>Enum Name</th>
@@ -297,10 +297,10 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 		<tr>
 	 * 			<td>DISPLAYS</td>
-	 * 			<td>DisplayCapability</td>
-	 * 			<td>Returns Display Capability</td>
-	 * 			<td align=center>N</td>
-	 * 			<td> <strong>Since 6.0</strong> Available Synchronously <strong>after</strong> first automatic system capability update.</td>
+	 * 			<td>List<DisplayCapability></td>
+	 * 			<td>Returns a list of Display Capability</td>
+	 * 			<td align=center>Y</td>
+	 * 			<td> <strong>Since 6.0</strong> Contain the display related information and all windows related to that display.</td>
 	 * 		</tr>
 	 * 	</table>
 	 */

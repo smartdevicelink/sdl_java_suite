@@ -14,7 +14,7 @@ import java.util.Hashtable;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
- * {@link com.smartdevicelink.rpc.DeleteWindow}
+ * {@link com.smartdevicelink.proxy.rpc.DeleteWindow}
  */
 public class DeleteWindowTests extends BaseRpcTests {
 

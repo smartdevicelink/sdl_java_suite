@@ -28,7 +28,7 @@ public class WindowCapability extends RPCStruct {
     /**
      * Sets the windowID. The specified ID of the window. Can be set to a predefined window, or omitted for the main window on the main display.
      *
-     * @param windowID
+     * @param windowID A unique ID to identify the window. The value of '0' will always be the default main window on the main display and should not be used in this context as it will already be created for the app. See PredefinedWindows enum. Creating a window with an ID that is already in use will be rejected with `INVALID_ID`.
      */
     public void setWindowID(Integer windowID) {
         setValue(KEY_WINDOW_ID, windowID);
@@ -115,7 +115,7 @@ public class WindowCapability extends RPCStruct {
 
     /**
      * Set an array of templatesAvailable.
-     * {@code 0<= templatesAvailable.size() <= 1000}
+     * {@code 0<= templatesAvailable.size() <= 100}
      *
      * @param templatesAvailable the List of String
      */
