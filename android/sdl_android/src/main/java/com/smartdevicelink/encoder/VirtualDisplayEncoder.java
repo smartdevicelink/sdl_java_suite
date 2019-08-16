@@ -107,14 +107,8 @@ public class VirtualDisplayEncoder {
     }
 
     @SuppressWarnings("unused")
-    @Deprecated
     public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format) {
         this.streamingParams = new VideoStreamingParameters(displayDensity, frameRate, bitrate, interval, resolution, format);
-    }
-
-    @SuppressWarnings("unused")
-    public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, double scale, VideoStreamingFormat format) {
-        this.streamingParams = new VideoStreamingParameters(displayDensity, frameRate, bitrate, interval, scale, resolution, format);
     }
 
     @SuppressWarnings("unused")
