@@ -96,7 +96,7 @@ public class HapticInterfaceManagerTest extends TestCase {
     public void testRefreshHapticData() throws Exception {
         View root = createViews();
         hapticMgr.refreshHapticData(root);
-        verify(mockProxy).sendRPCRequest(captor.capture());
+        verify(mockProxy).sendRPC(captor.capture());
         SendHapticData data = captor.getValue();
         assertNotNull("SendHapticData RPC", data);
         List<HapticRect> list = data.getHapticRectData();
@@ -107,7 +107,7 @@ public class HapticInterfaceManagerTest extends TestCase {
     @Test
     public void testRefreshHapticDataNull() throws Exception {
         hapticMgr.refreshHapticData(null);
-        verify(mockProxy).sendRPCRequest(captor.capture());
+        verify(mockProxy).sendRPC(captor.capture());
         SendHapticData data = captor.getValue();
         assertNotNull("SendHapticData RPC", data);
         List<HapticRect> list = data.getHapticRectData();
@@ -280,7 +280,7 @@ public class HapticInterfaceManagerTest extends TestCase {
 
 
         hapticMgr.refreshHapticData(button);
-        verify(mockProxy).sendRPCRequest(captor.capture());
+        verify(mockProxy).sendRPC(captor.capture());
 
         SendHapticData data = captor.getValue();
         List<HapticRect> list = data.getHapticRectData();

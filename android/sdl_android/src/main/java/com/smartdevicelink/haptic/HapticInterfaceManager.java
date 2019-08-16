@@ -86,7 +86,7 @@ public class HapticInterfaceManager {
                 SendHapticData msg = new SendHapticData();
                 msg.setHapticRectData(hapticRects);
 
-                proxy.sendRPCRequest(msg);
+                proxy.sendRPC(msg);
             }
         }
     }
