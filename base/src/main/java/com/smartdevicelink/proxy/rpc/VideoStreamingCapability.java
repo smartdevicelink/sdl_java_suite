@@ -97,29 +97,47 @@ public class VideoStreamingCapability extends RPCStruct {
 		setValue(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, hapticSpatialDataSupported);
 	}
 
+	/**
+	 * @return the diagonal screen size in inches.
+	 */
 	public Double getDiagonalScreenSize() {
 	    Object object = getValue(KEY_DIAGONAL_SCREEN_SIZE);
 		return SdlDataTypeConverter.objectToDouble(object);
 	}
 
+	/**
+	 * @param diagonalScreenSize the diagonal screen size in inches.
+	 */
 	public void setDiagonalScreenSize(Double diagonalScreenSize) {
 		setValue(KEY_DIAGONAL_SCREEN_SIZE, diagonalScreenSize);
 	}
 
+	/**
+	 * @return the diagonal resolution in pixels divided by the diagonal screen size in inches.
+	 */
 	public Double getPixelPerInch() {
 	    Object object = getValue(KEY_PIXEL_PER_INCH);
 	    return SdlDataTypeConverter.objectToDouble(object);
 	}
 
+	/**
+	 * @param pixelPerInch the diagonal resolution in pixels divided by the diagonal screen size in inches.
+	 */
 	public void setPixelPerInch(Double pixelPerInch) {
 		setValue(KEY_PIXEL_PER_INCH, pixelPerInch);
 	}
 
+	/**
+	 * @return the scaling factor the app should use to change the size of the projecting view.
+	 */
 	public Double getScale() {
 	    Object object = getValue(KEY_SCALE);
 	    return SdlDataTypeConverter.objectToDouble(object);
 	}
 
+	/**
+	 * @param scale the scaling factor the app should use to change the size of the projecting view.
+	 */
 	public void setScale(Double scale) {
 		setValue(KEY_SCALE, scale);
 	}
