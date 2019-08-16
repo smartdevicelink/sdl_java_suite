@@ -31,33 +31,23 @@
  */
 package com.smartdevicelink.managers;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
-import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCNotification;
-import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.rpc.ChangeRegistration;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
-import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
-
-import org.json.JSONException;
 
 import java.util.List;
 import java.util.Map;
@@ -73,7 +63,7 @@ abstract class BaseSdlManager {
     final Object STATE_LOCK = new Object();
     int state = -1;
 
-    private static final int MAX_RETRY = 3;
+    static final int MAX_RETRY = 3;
     int changeRegistrationRetry = 0;
     String appId, appName, shortAppName;
     boolean isMediaApp;
@@ -185,70 +175,6 @@ abstract class BaseSdlManager {
             queuedNotifications = null;
             queuedNotificationListener = null;
             onRPCNotificationListeners = null;
-        }
-    }
-
-    void checkLifecycleConfigurationPrivate(SdlManagerListener managerListener){
-
-        Language actualLanguage =  this.getRegisterAppInterfaceResponse().getLanguage();
-
-        if (!actualLanguage.equals(hmiLanguage)) {
-
-            LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage);
-
-            if (lcu != null) {
-                // go through and change sdlManager properties that were changed via the LCU update
-                hmiLanguage = actualLanguage;
-
-                if (lcu.getAppName() != null) {
-                    appName = lcu.getAppName();
-                }
-
-                if (lcu.getShortAppName() != null) {
-                    shortAppName = lcu.getShortAppName();
-                }
-
-                if (lcu.getTtsName() != null) {
-                    ttsChunks = lcu.getTtsName();
-                }
-
-                if (lcu.getVoiceRecognitionCommandNames() != null) {
-                    vrSynonyms = lcu.getVoiceRecognitionCommandNames();
-                }
-
-                ChangeRegistration changeRegistration = new ChangeRegistration(actualLanguage, actualLanguage);
-                changeRegistration.setAppName(lcu.getAppName());
-                changeRegistration.setNgnMediaScreenAppName(lcu.getShortAppName());
-                changeRegistration.setTtsName(lcu.getTtsName());
-                changeRegistration.setVrSynonyms(lcu.getVoiceRecognitionCommandNames());
-                changeRegistration.setOnRPCResponseListener(new OnRPCResponseListener() {
-                    @Override
-                    public void onResponse(int correlationId, RPCResponse response) {
-                        try {
-                            DebugTool.logInfo(response.serializeJSON().toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(int correlationId, Result resultCode, String info) {
-                        DebugTool.logError("Change Registration onError: " + resultCode + " | Info: " + info);
-                        changeRegistrationRetry++;
-                        if (changeRegistrationRetry < MAX_RETRY) {
-                            final Handler handler = new Handler(Looper.getMainLooper());
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    checkLifecycleConfiguration();
-                                    DebugTool.logInfo("Retry Change Registration Count: " + changeRegistrationRetry);
-                                }
-                            }, 3000);
-                        }
-                    }
-                });
-                this.sendRPC(changeRegistration);
-            }
         }
     }
 
