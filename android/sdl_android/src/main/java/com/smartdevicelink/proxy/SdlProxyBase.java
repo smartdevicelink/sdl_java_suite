@@ -158,8 +158,14 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledExecutorService;
 
 
-
+/**
+ * @deprecated use {@link com.smartdevicelink.managers.SdlManager} instead.
+ *
+ * The guide created for the initial transition of SdlProxyBase to SdlManager can be found at
+ * <a href="https://smartdevicelink.com/en/guides/android/migrating-to-newer-sdl-versions/updating-to-v47/">Migrating to SDL Manager</a>
+ */
 @SuppressWarnings({"WeakerAccess", "Convert2Diamond"})
+@Deprecated
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
 	// Used for calls to Android Log class.
 	public static final String TAG = "SdlProxy";
