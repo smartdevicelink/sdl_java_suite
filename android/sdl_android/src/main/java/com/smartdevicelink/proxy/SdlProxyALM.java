@@ -67,6 +67,12 @@ import java.util.Vector;
 
 import static com.smartdevicelink.proxy.SystemCapabilityManager.convertToList;
 
+/**
+ * @deprecated use {@link com.smartdevicelink.managers.SdlManager} instead.
+ *
+ * The guide created for the initial transition of SdlProxyBase/ALM to SdlManager can be found at
+ * <a href="https://smartdevicelink.com/en/guides/android/migrating-to-newer-sdl-versions/updating-to-v47/">Migrating to SDL Manager</a>
+ */
 @Deprecated
 public class SdlProxyALM extends SdlProxyBase<IProxyListenerALM> {
 
