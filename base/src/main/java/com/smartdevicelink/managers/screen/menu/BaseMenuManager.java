@@ -383,7 +383,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			});
 			internalInterface.sendRPC(setGlobalProperties);
 		} else {
-        	DebugTool.logInfo("Menu Layout is null, not sending setGlobalProperties");
+			DebugTool.logInfo("Menu Layout is null, not sending setGlobalProperties");
 		}
     }
 
