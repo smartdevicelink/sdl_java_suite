@@ -43,7 +43,12 @@ public class MenuConfiguration {
 
 	private MenuLayout mainMenuLayout, defaultSubmenuLayout;
 
-	public MenuConfiguration(@NonNull MenuLayout mainMenuLayout, @NonNull MenuLayout defaultSubmenuLayout){
+	/**
+	 * Create a MenuConfiguration Object
+	 * @param mainMenuLayout - the layout of the main menu. If `null`, it will default to whatever the head unit uses
+	 * @param defaultSubmenuLayout - the layout of the main menu. If `null`, it will default to whatever the head unit uses
+	 */
+	public MenuConfiguration(MenuLayout mainMenuLayout, MenuLayout defaultSubmenuLayout){
 		setMenuLayout(mainMenuLayout);
 		setSubMenuLayout(defaultSubmenuLayout);
 	}
@@ -52,7 +57,7 @@ public class MenuConfiguration {
 	 * Changes the default main menu layout. Defaults to `MenuLayoutList`.
 	 * @param mainMenuLayout - the layout of the main menu
 	 */
-	private void setMenuLayout(@NonNull MenuLayout mainMenuLayout){
+	private void setMenuLayout(MenuLayout mainMenuLayout){
 		this.mainMenuLayout = mainMenuLayout;
 	}
 
@@ -70,7 +75,7 @@ public class MenuConfiguration {
 	 * Defaults to `MenuLayoutList`.
 	 * @param defaultSubmenuLayout - the MenuLayout for this sub menu
 	 */
-	private void setSubMenuLayout(@NonNull MenuLayout defaultSubmenuLayout){
+	private void setSubMenuLayout(MenuLayout defaultSubmenuLayout){
 		this.defaultSubmenuLayout = defaultSubmenuLayout;
 	}
 

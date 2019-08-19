@@ -139,7 +139,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertNull(menuManager.inProgressUpdate);
 		assertNull(menuManager.keepsNew);
 		assertNull(menuManager.keepsOld);
-		assertNotNull(menuManager.menuConfiguration);
+		assertNull(menuManager.menuConfiguration);
 		assertNotNull(menuManager.hmiListener);
 		assertNotNull(menuManager.commandListener);
 		assertNotNull(menuManager.displayListener);
