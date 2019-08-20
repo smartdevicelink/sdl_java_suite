@@ -70,19 +70,18 @@ public class LockScreenManager extends BaseSubManager {
 
 	private static final String TAG = "LockScreenManager";
 	private WeakReference<Context> context;
-	private HMILevel hmiLevel;
+	HMILevel hmiLevel;
 	private OnRPCNotificationListener systemRequestListener, ddListener, hmiListener;
 	private String deviceIconUrl;
-	private boolean driverDistStatus;
+	boolean driverDistStatus, mIsLockscreenDismissible, enableDismissGesture, lockScreenEnabled, deviceLogoEnabled;
 	private volatile boolean isApplicationForegrounded;
 	private android.arch.lifecycle.LifecycleObserver lifecycleObserver;
-	protected boolean lockScreenEnabled, deviceLogoEnabled;
-	protected int lockScreenIcon, lockScreenColor, customView;
-	protected Bitmap deviceLogo;
-	private boolean mIsLockscreenDismissible;
+	int lockScreenIcon, lockScreenColor, customView;
+	Bitmap deviceLogo;
 	private boolean mLockScreenHasBeenDismissed;
 	private String mLockscreenWarningMsg;
 	private BroadcastReceiver mLockscreenDismissedReceiver;
+	int displayMode;
 
 	public LockScreenManager(LockScreenConfig lockScreenConfig, Context context, ISdl internalInterface){
 
@@ -99,6 +98,14 @@ public class LockScreenManager extends BaseSubManager {
 		customView = lockScreenConfig.getCustomView();
 		lockScreenEnabled = lockScreenConfig.isEnabled();
 		deviceLogoEnabled = lockScreenConfig.isDeviceLogoEnabled();
+		displayMode = lockScreenConfig.getDisplayMode();
+		enableDismissGesture = lockScreenConfig.enableDismissGesture();
+
+		// for older projects that may not use DisplayMode. This can
+		// be removed in a major release
+		if (!lockScreenEnabled){
+			displayMode = LockScreenConfig.DISPLAY_MODE_NEVER;
+		}
 
 		setupListeners();
 	}
@@ -179,9 +186,9 @@ public class LockScreenManager extends BaseSubManager {
 					OnDriverDistraction ddState = (OnDriverDistraction) notification;
 					Boolean isDismissible = ddState.getLockscreenDismissibility();
 					if (isDismissible != null) {
-						mIsLockscreenDismissible = isDismissible;
-						if (!mIsLockscreenDismissible) {
-							mLockScreenHasBeenDismissed = false;
+						// both of these conditions must be met to be able to dismiss lockscreen
+						if (isDismissible && enableDismissGesture){
+							mIsLockscreenDismissible = true;
 						}
 					}
 					mLockscreenWarningMsg = ddState.getLockscreenWarningMessage();
@@ -193,9 +200,7 @@ public class LockScreenManager extends BaseSubManager {
 					}else{
 						// close lock screen
 						driverDistStatus = false;
-						if (context.get() != null) {
-							context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
-						}
+						closeLockScreenActivity();
 					}
 				}
 			}
@@ -268,8 +273,8 @@ public class LockScreenManager extends BaseSubManager {
 	 * X. If the status is set to OFF, Send broadcast to close lock screen if it is open
 	 */
 	private void launchLockScreenActivity(){
-		//If the user has dismissed the lockscreen for this run, do not show it again
-		if (mLockScreenHasBeenDismissed) {
+		// If the user has dismissed the lockscreen for this run or has disabled it, do not show it
+		if (mLockScreenHasBeenDismissed || displayMode == LockScreenConfig.DISPLAY_MODE_NEVER) {
 			return;
 		}
 		// intent to open SDLLockScreenActivity
@@ -279,7 +284,7 @@ public class LockScreenManager extends BaseSubManager {
 				context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
 			}
 			LockScreenStatus status = getLockScreenStatus();
-			if (status == LockScreenStatus.REQUIRED) {
+			if (status == LockScreenStatus.REQUIRED || displayMode == LockScreenConfig.DISPLAY_MODE_ALWAYS || (status == LockScreenStatus.OPTIONAL && displayMode == LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED)) {
 				Intent showLockScreenIntent = new Intent(context.get(), SDLLockScreenActivity.class);
 				showLockScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -293,6 +298,20 @@ public class LockScreenManager extends BaseSubManager {
 				showLockScreenIntent.putExtra(SDLLockScreenActivity.KEY_LOCKSCREEN_WARNING_MSG, mLockscreenWarningMsg);
 				context.get().startActivity(showLockScreenIntent);
 			} else if (status == LockScreenStatus.OFF) {
+				closeLockScreenActivity();
+			}
+		}
+	}
+
+	private void closeLockScreenActivity(){
+
+		if (displayMode == LockScreenConfig.DISPLAY_MODE_ALWAYS){
+			return;
+		}
+
+		if (context.get() != null) {
+			LockScreenStatus status = getLockScreenStatus();
+			if (status == LockScreenStatus.OFF || (status == LockScreenStatus.OPTIONAL && displayMode != LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED)) {
 				context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
 			}
 		}
@@ -308,9 +327,9 @@ public class LockScreenManager extends BaseSubManager {
 	 *
 	 * @return Whether or not the Lock Screen is required
 	 */
-	protected synchronized LockScreenStatus getLockScreenStatus() {
+	synchronized LockScreenStatus getLockScreenStatus() {
 
-		if ( (hmiLevel == null) || (hmiLevel.equals(HMILevel.HMI_NONE))) {
+		if ((hmiLevel == null) || (hmiLevel.equals(HMILevel.HMI_NONE))) {
 			return LockScreenStatus.OFF;
 		}
 		else if ( hmiLevel.equals(HMILevel.HMI_BACKGROUND)) {
@@ -321,7 +340,7 @@ public class LockScreenManager extends BaseSubManager {
 				return LockScreenStatus.REQUIRED;
 			}
 		}
-		else if ( (hmiLevel.equals(HMILevel.HMI_FULL)) || (hmiLevel.equals(HMILevel.HMI_LIMITED))) {
+		else if ((hmiLevel.equals(HMILevel.HMI_FULL)) || (hmiLevel.equals(HMILevel.HMI_LIMITED))) {
 			if (!driverDistStatus) {
 				return LockScreenStatus.OPTIONAL;
 			} else {
