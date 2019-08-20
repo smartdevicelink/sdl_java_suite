@@ -118,8 +118,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 		lastMenuId = menuCellIdMin;
 		dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
 		sdlMsgVersion = internalInterface.getSdlMsgVersion();
-		// default menu configuration
-		menuConfiguration = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
 
 		addListeners();
 	}
@@ -365,23 +363,28 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         // In the future, when the manager is switched to use queues, the menuConfiguration should be set when SetGlobalProperties response is received
         this.menuConfiguration = menuConfiguration;
-        
-        SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
-        setGlobalProperties.setMenuLayout(menuConfiguration.getMenuLayout());
-        setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                if (response.getSuccess()){
-                    DebugTool.logInfo("Menu Configuration successfully set: "+ menuConfiguration.toString());
-                }
-            }
 
-            @Override
-            public void onError(int correlationId, Result resultCode, String info){
-                DebugTool.logError("onError: "+ resultCode+ " | Info: "+ info );
-            }
-        });
-        internalInterface.sendRPC(setGlobalProperties);
+        if (menuConfiguration.getMenuLayout() != null) {
+
+			SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
+			setGlobalProperties.setMenuLayout(menuConfiguration.getMenuLayout());
+			setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
+				@Override
+				public void onResponse(int correlationId, RPCResponse response) {
+					if (response.getSuccess()) {
+						DebugTool.logInfo("Menu Configuration successfully set: " + menuConfiguration.toString());
+					}
+				}
+
+				@Override
+				public void onError(int correlationId, Result resultCode, String info) {
+					DebugTool.logError("onError: " + resultCode + " | Info: " + info);
+				}
+			});
+			internalInterface.sendRPC(setGlobalProperties);
+		} else {
+			DebugTool.logInfo("Menu Layout is null, not sending setGlobalProperties");
+		}
     }
 
     public MenuConfiguration getMenuConfiguration(){
@@ -968,7 +971,11 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position){
 		AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getTitle());
 		subMenu.setPosition(position);
-		subMenu.setMenuLayout((cell.getSubMenuLayout() != null ? cell.getSubMenuLayout() : menuConfiguration.getSubMenuLayout()));
+		if (cell.getSubMenuLayout() != null ) {
+			subMenu.setMenuLayout(cell.getSubMenuLayout());
+		} else if (menuConfiguration != null && menuConfiguration.getSubMenuLayout() != null) {
+			subMenu.setMenuLayout(menuConfiguration.getSubMenuLayout());
+		}
 		subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon()!= null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);
 		return subMenu;
 	}

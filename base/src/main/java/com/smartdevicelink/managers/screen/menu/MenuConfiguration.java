@@ -41,23 +41,28 @@ import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 
 public class MenuConfiguration {
 
-	private MenuLayout mainMenuLayout, defaultSubmenuLayout;
+	private MenuLayout mainMenuLayout, submenuLayout;
 
-	public MenuConfiguration(@NonNull MenuLayout mainMenuLayout, @NonNull MenuLayout defaultSubmenuLayout){
+	/**
+	 * Create a MenuConfiguration Object
+	 * @param mainMenuLayout - the layout of the main menu. If `null`, it will default to whatever the head unit uses
+	 * @param submenuLayout - the layout of the main menu. If `null`, it will default to whatever the head unit uses
+	 */
+	public MenuConfiguration(MenuLayout mainMenuLayout, MenuLayout submenuLayout){
 		setMenuLayout(mainMenuLayout);
-		setSubMenuLayout(defaultSubmenuLayout);
+		setSubMenuLayout(submenuLayout);
 	}
 
 	/**
-	 * Changes the default main menu layout. Defaults to `MenuLayoutList`.
+	 * Changes the default main menu layout.
 	 * @param mainMenuLayout - the layout of the main menu
 	 */
-	private void setMenuLayout(@NonNull MenuLayout mainMenuLayout){
+	private void setMenuLayout(MenuLayout mainMenuLayout){
 		this.mainMenuLayout = mainMenuLayout;
 	}
 
 	/**
-	 * Changes the default main menu layout. Defaults to `MenuLayoutList`.
+	 * Changes the default main menu layout.
 	 * @return - the layout of the main menu
 	 */
 	public MenuLayout getMenuLayout() {
@@ -67,21 +72,19 @@ public class MenuConfiguration {
 	/**
 	 * Changes the default submenu layout. To change this for an individual submenu, set the
 	 * `menuLayout` property on the `MenuCell` constructor for creating a cell with sub-cells.
-	 * Defaults to `MenuLayoutList`.
-	 * @param defaultSubmenuLayout - the MenuLayout for this sub menu
+	 * @param submenuLayout - the MenuLayout for this sub menu
 	 */
-	private void setSubMenuLayout(@NonNull MenuLayout defaultSubmenuLayout){
-		this.defaultSubmenuLayout = defaultSubmenuLayout;
+	private void setSubMenuLayout(MenuLayout submenuLayout){
+		this.submenuLayout = submenuLayout;
 	}
 
 	/**
 	 * Changes the default submenu layout. To change this for an individual submenu, set the
 	 * `menuLayout` property on the `MenuCell` constructor for creating a cell with sub-cells.
-	 * Defaults to `MenuLayoutList`.
 	 * @return - the MenuLayout for this sub menu
 	 */
 	public MenuLayout getSubMenuLayout() {
-		return defaultSubmenuLayout;
+		return submenuLayout;
 	}
 
 	/**
@@ -89,7 +92,7 @@ public class MenuConfiguration {
 	 */
 	@Override @NonNull
 	public String toString() {
-		return "MenuConfiguration: MenuLayout = "+ this.mainMenuLayout + " | SubMenuLayout = "+ this.defaultSubmenuLayout;
+		return "MenuConfiguration: MenuLayout = "+ this.mainMenuLayout + " | SubMenuLayout = "+ this.submenuLayout;
 	}
 
 }
