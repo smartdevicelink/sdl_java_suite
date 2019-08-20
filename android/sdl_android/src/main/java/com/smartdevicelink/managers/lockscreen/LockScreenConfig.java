@@ -93,7 +93,7 @@ public class LockScreenConfig {
 	 * If false, you must manage the lock screen
 	 * @param enable boolean
 	 *
-	 * @deprecated use setDisplayMode with DISPLAY_MODE_NEVER instead
+	 * @deprecated to disable the lockscreen, use setDisplayMode with DISPLAY_MODE_NEVER instead
 	 */
 	@Deprecated
 	public void setEnabled(boolean enable){
@@ -104,7 +104,7 @@ public class LockScreenConfig {
 	 * Gets whether the lock screen is being managed for you
 	 * @return boolean
 	 *
-	 * @deprecated use setDisplayMode with DISPLAY_MODE_NEVER instead
+	 * @deprecated to disable the lockscreen, use setDisplayMode with DISPLAY_MODE_NEVER instead
 	 */
 	@Deprecated
 	public boolean isEnabled() {
