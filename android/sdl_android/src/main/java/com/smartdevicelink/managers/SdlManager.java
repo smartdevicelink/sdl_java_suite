@@ -240,32 +240,13 @@ public class SdlManager extends BaseSdlManager{
 
 	@Override
 	protected void checkLifecycleConfiguration(){
-		Language actualLanguage =  this.getRegisterAppInterfaceResponse().getLanguage();
+		final Language actualLanguage =  this.getRegisterAppInterfaceResponse().getLanguage();
 
 		if (!actualLanguage.equals(hmiLanguage)) {
 
-			LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage);
+			final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage);
 
 			if (lcu != null) {
-				// go through and change sdlManager properties that were changed via the LCU update
-				hmiLanguage = actualLanguage;
-
-				if (lcu.getAppName() != null) {
-					appName = lcu.getAppName();
-				}
-
-				if (lcu.getShortAppName() != null) {
-					shortAppName = lcu.getShortAppName();
-				}
-
-				if (lcu.getTtsName() != null) {
-					ttsChunks = lcu.getTtsName();
-				}
-
-				if (lcu.getVoiceRecognitionCommandNames() != null) {
-					vrSynonyms = lcu.getVoiceRecognitionCommandNames();
-				}
-
 				ChangeRegistration changeRegistration = new ChangeRegistration(actualLanguage, actualLanguage);
 				changeRegistration.setAppName(lcu.getAppName());
 				changeRegistration.setNgnMediaScreenAppName(lcu.getShortAppName());
@@ -274,6 +255,26 @@ public class SdlManager extends BaseSdlManager{
 				changeRegistration.setOnRPCResponseListener(new OnRPCResponseListener() {
 					@Override
 					public void onResponse(int correlationId, RPCResponse response) {
+						if (response.getSuccess()){
+							// go through and change sdlManager properties that were changed via the LCU update
+							hmiLanguage = actualLanguage;
+
+							if (lcu.getAppName() != null) {
+								appName = lcu.getAppName();
+							}
+
+							if (lcu.getShortAppName() != null) {
+								shortAppName = lcu.getShortAppName();
+							}
+
+							if (lcu.getTtsName() != null) {
+								ttsChunks = lcu.getTtsName();
+							}
+
+							if (lcu.getVoiceRecognitionCommandNames() != null) {
+								vrSynonyms = lcu.getVoiceRecognitionCommandNames();
+							}
+						}
 						try {
 							DebugTool.logInfo(response.serializeJSON().toString());
 						} catch (JSONException e) {

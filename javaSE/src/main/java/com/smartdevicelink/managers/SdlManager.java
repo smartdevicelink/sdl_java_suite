@@ -218,54 +218,59 @@ public class SdlManager extends BaseSdlManager{
 		}
 	}
 
-    @Override
-    protected void checkLifecycleConfiguration(){
-		Language actualLanguage =  lifecycleManager.getRegisterAppInterfaceResponse().getLanguage();
-		LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage);
+	@Override
+	protected void checkLifecycleConfiguration() {
+		final Language actualLanguage = lifecycleManager.getRegisterAppInterfaceResponse().getLanguage();
+		
+		if (!actualLanguage.equals(hmiLanguage)) {
 
-		if (lcu != null){
-			// go through and change sdlManager properties that were changed via the LCU update
-			hmiLanguage = actualLanguage;
+			final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage);
 
-			if (lcu.getAppName() != null){
-				appName = lcu.getAppName();
-			}
+			if (lcu != null) {
+				ChangeRegistration changeRegistration = new ChangeRegistration(actualLanguage, actualLanguage);
+				changeRegistration.setAppName(lcu.getAppName());
+				changeRegistration.setNgnMediaScreenAppName(lcu.getShortAppName());
+				changeRegistration.setTtsName(lcu.getTtsName());
+				changeRegistration.setVrSynonyms(lcu.getVoiceRecognitionCommandNames());
+				changeRegistration.setOnRPCResponseListener(new OnRPCResponseListener() {
+					@Override
+					public void onResponse(int correlationId, RPCResponse response) {
+						if (response.getSuccess()) {
+							// go through and change sdlManager properties that were changed via the LCU update
+							hmiLanguage = actualLanguage;
 
-			if (lcu.getShortAppName() != null){
-				shortAppName = lcu.getShortAppName();
-			}
+							if (lcu.getAppName() != null) {
+								appName = lcu.getAppName();
+							}
 
-			if (lcu.getTtsName() != null){
-				ttsChunks = lcu.getTtsName();
-			}
+							if (lcu.getShortAppName() != null) {
+								shortAppName = lcu.getShortAppName();
+							}
 
-			if (lcu.getVoiceRecognitionCommandNames() != null){
-				vrSynonyms = lcu.getVoiceRecognitionCommandNames();
-			}
+							if (lcu.getTtsName() != null) {
+								ttsChunks = lcu.getTtsName();
+							}
 
-			ChangeRegistration changeRegistration = new ChangeRegistration(actualLanguage,actualLanguage);
-			changeRegistration.setAppName(lcu.getAppName());
-			changeRegistration.setNgnMediaScreenAppName(lcu.getShortAppName());
-			changeRegistration.setTtsName(lcu.getTtsName());
-			changeRegistration.setVrSynonyms(lcu.getVoiceRecognitionCommandNames());
-			changeRegistration.setOnRPCResponseListener(new OnRPCResponseListener() {
-				@Override
-				public void onResponse(int correlationId, RPCResponse response) {
-					try {
-						Log.v(TAG, response.serializeJSON().toString());
-					} catch (JSONException e) {
-						e.printStackTrace();
+							if (lcu.getVoiceRecognitionCommandNames() != null) {
+								vrSynonyms = lcu.getVoiceRecognitionCommandNames();
+							}
+						}
+						try {
+							Log.v(TAG, response.serializeJSON().toString());
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
 					}
-				}
 
-				@Override
-				public void onError(int correlationId, Result resultCode, String info){
-					Log.e(TAG, "Change Registration onError: "+ resultCode+ " | Info: "+ info);
-				}
-			});
-			_internalInterface.sendRPC(changeRegistration);
+					@Override
+					public void onError(int correlationId, Result resultCode, String info) {
+						Log.e(TAG, "Change Registration onError: " + resultCode + " | Info: " + info);
+					}
+				});
+				_internalInterface.sendRPC(changeRegistration);
+			}
 		}
-    }
+	}
 
 	@Override
 	protected void initialize(){
