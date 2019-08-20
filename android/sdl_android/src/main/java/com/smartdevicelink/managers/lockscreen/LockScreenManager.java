@@ -76,12 +76,11 @@ public class LockScreenManager extends BaseSubManager {
 	boolean driverDistStatus, mIsLockscreenDismissible, enableDismissGesture, lockScreenEnabled, deviceLogoEnabled;
 	private volatile boolean isApplicationForegrounded;
 	private android.arch.lifecycle.LifecycleObserver lifecycleObserver;
-	int lockScreenIcon, lockScreenColor, customView;
+	int lockScreenIcon, lockScreenColor, customView, displayMode;
 	Bitmap deviceLogo;
 	private boolean mLockScreenHasBeenDismissed;
 	private String mLockscreenWarningMsg;
 	private BroadcastReceiver mLockscreenDismissedReceiver;
-	int displayMode;
 
 	public LockScreenManager(LockScreenConfig lockScreenConfig, Context context, ISdl internalInterface){
 
