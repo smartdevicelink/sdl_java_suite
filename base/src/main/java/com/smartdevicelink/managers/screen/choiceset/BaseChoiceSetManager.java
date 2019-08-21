@@ -371,20 +371,9 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
      * @param initialText - The initial text that is used as a placeholder text. It might not work on some head units.
      * @param customKeyboardConfig - the custom keyboard configuration to be used when the keyboard is displayed
      * @param listener - A keyboard listener to capture user input
-     */
-    @Deprecated
-    public void presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardConfig, @NonNull KeyboardListener listener){
-        presentKeyboard(initialText, listener, customKeyboardConfig);
-    }
-
-    /**
-     * Presents a keyboard on the Head unit to capture user input
-     * @param initialText - The initial text that is used as a placeholder text. It might not work on some head units.
-     * @param customKeyboardConfig - the custom keyboard configuration to be used when the keyboard is displayed
-     * @param listener - A keyboard listener to capture user input
      * @return - A unique id that can be used to cancel this keyboard. If `null`, no keyboard was created.
      */
-    public Integer presentKeyboard(@NonNull String initialText, @NonNull KeyboardListener listener, @Nullable KeyboardProperties customKeyboardConfig){
+    public Integer presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardConfig, @NonNull KeyboardListener listener){
         if (initialText == null || initialText.length() == 0){
             DebugTool.logError("initialText cannot be an empty string.");
             return null;

@@ -525,7 +525,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @return A unique cancelID that can be used to cancel this keyboard. If `null`, no keyboard was created.
 	 */
 	public Integer presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardProperties, @NonNull KeyboardListener keyboardListener){
-		return this.choiceSetManager.presentKeyboard(initialText, keyboardListener, customKeyboardProperties);
+		return this.choiceSetManager.presentKeyboard(initialText, customKeyboardProperties, keyboardListener);
 	}
 
 	/**

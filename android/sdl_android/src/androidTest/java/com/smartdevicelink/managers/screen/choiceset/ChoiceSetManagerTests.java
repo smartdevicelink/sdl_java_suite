@@ -248,7 +248,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		ChoiceSetManager partialMockCSM = spy(newCSM);
 		when(partialMockCSM.isReady()).thenReturn(true);
 
-		Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardListener.class), mock(KeyboardProperties.class));
+		Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardProperties.class), mock(KeyboardListener.class));
 		assertNotNull(cancelId);
 	}
 
@@ -260,7 +260,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		ChoiceSetManager partialMockCSM = spy(newCSM);
 		when(partialMockCSM.isReady()).thenReturn(false);
 
-		Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardListener.class), mock(KeyboardProperties.class));
+		Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardProperties.class), mock(KeyboardListener.class));
 		assertNull(cancelId);
 	}
 
