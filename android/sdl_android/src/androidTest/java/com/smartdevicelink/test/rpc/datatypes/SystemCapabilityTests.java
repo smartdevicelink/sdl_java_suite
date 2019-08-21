@@ -38,8 +38,7 @@ public class SystemCapabilityTests extends TestCase {
         msg.setCapabilityForType(SystemCapabilityType.PHONE_CALL, Test.GENERAL_PHONECAPABILITY);
         msg.setCapabilityForType(SystemCapabilityType.REMOTE_CONTROL, Test.GENERAL_REMOTECONTROLCAPABILITIES);
         msg.setCapabilityForType(SystemCapabilityType.APP_SERVICES, Test.GENERAL_APP_SERVICE_CAPABILITIES);
-        msg.setDisplayCapabilities(Test.GENERAL_DISPLAYCAPABILITY_LIST);
-
+        msg.setCapabilityForType(SystemCapabilityType.DISPLAYS, Test.GENERAL_DISPLAYCAPABILITY_LIST);
     }
 
     /**
@@ -52,7 +51,7 @@ public class SystemCapabilityTests extends TestCase {
         PhoneCapability testPhoneCapability = (PhoneCapability) msg.getCapabilityForType(SystemCapabilityType.PHONE_CALL);
         RemoteControlCapabilities testRemoteControlCapabilities = (RemoteControlCapabilities) msg.getCapabilityForType(SystemCapabilityType.REMOTE_CONTROL);
         AppServicesCapabilities testAppServicesCapabilities = (AppServicesCapabilities) msg.getCapabilityForType(SystemCapabilityType.APP_SERVICES);
-        List<DisplayCapability> displayCapabilities = msg.getDisplayCapabilities();
+        List<DisplayCapability> displayCapabilities = (List<DisplayCapability>) msg.getCapabilityForType(SystemCapabilityType.DISPLAYS);
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_SYSTEMCAPABILITYTYPE, testType);
@@ -74,7 +73,7 @@ public class SystemCapabilityTests extends TestCase {
         assertNull(Test.NULL, msg.getCapabilityForType(SystemCapabilityType.PHONE_CALL));
         assertNull(Test.NULL, msg.getCapabilityForType(SystemCapabilityType.REMOTE_CONTROL));
         assertNull(Test.NULL, msg.getCapabilityForType(SystemCapabilityType.APP_SERVICES));
-        assertNull(Test.NULL, msg.getDisplayCapabilities());
+        assertNull(Test.NULL, msg.getCapabilityForType(SystemCapabilityType.DISPLAYS));
     }
 
     public void testJson() {

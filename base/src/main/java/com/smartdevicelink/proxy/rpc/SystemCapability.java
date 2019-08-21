@@ -82,25 +82,27 @@ public class SystemCapability extends RPCStruct {
         setValue(KEY_SYSTEM_CAPABILITY_TYPE, value);
     }
 
-    public RPCStruct getCapabilityForType(SystemCapabilityType type) {
+    public Object getCapabilityForType(SystemCapabilityType type) {
         if(type == null) {
             return null;
         }else if (type.equals(SystemCapabilityType.NAVIGATION)) {
-            return (RPCStruct) getObject(NavigationCapability.class, KEY_NAVIGATION_CAPABILITY);
+            return getObject(NavigationCapability.class, KEY_NAVIGATION_CAPABILITY);
         } else if (type.equals(SystemCapabilityType.PHONE_CALL)) {
-            return (RPCStruct) getObject(PhoneCapability.class, KEY_PHONE_CAPABILITY);
+            return getObject(PhoneCapability.class, KEY_PHONE_CAPABILITY);
         } else if (type.equals(SystemCapabilityType.VIDEO_STREAMING)){
-            return (RPCStruct) getObject(VideoStreamingCapability.class, KEY_VIDEO_STREAMING_CAPABILITY);
+            return getObject(VideoStreamingCapability.class, KEY_VIDEO_STREAMING_CAPABILITY);
         }else if(type.equals(SystemCapabilityType.REMOTE_CONTROL)){
-            return (RPCStruct) getObject(RemoteControlCapabilities.class, KEY_REMOTE_CONTROL_CAPABILITY);
+            return getObject(RemoteControlCapabilities.class, KEY_REMOTE_CONTROL_CAPABILITY);
         }else if(type.equals(SystemCapabilityType.APP_SERVICES)){
-            return (RPCStruct) getObject(AppServicesCapabilities.class, KEY_APP_SERVICES_CAPABILITIES);
+            return getObject(AppServicesCapabilities.class, KEY_APP_SERVICES_CAPABILITIES);
+        }else if(type.equals(SystemCapabilityType.DISPLAYS)){
+            return getObject(DisplayCapability.class, KEY_DISPLAY_CAPABILITIES);
         }else{
             return null;
         }
     }
 
-    public void setCapabilityForType(SystemCapabilityType type, RPCStruct capability){
+    public void setCapabilityForType(SystemCapabilityType type, Object capability){
         if(type == null) {
             return;
         }else if(type.equals(SystemCapabilityType.NAVIGATION)){
@@ -111,29 +113,13 @@ public class SystemCapability extends RPCStruct {
             setValue(KEY_VIDEO_STREAMING_CAPABILITY, capability);
         }else if(type.equals(SystemCapabilityType.REMOTE_CONTROL)){
             setValue(KEY_REMOTE_CONTROL_CAPABILITY, capability);
-        }else if(type.equals(SystemCapabilityType.APP_SERVICES)){
+        }else if(type.equals(SystemCapabilityType.APP_SERVICES)) {
             setValue(KEY_APP_SERVICES_CAPABILITIES, capability);
+        }else if(type.equals(SystemCapabilityType.DISPLAYS)){
+            setValue(KEY_DISPLAY_CAPABILITIES, capability);
         }else{
             return;
         }
     }
 
-    /**
-     * set the displayCapabilities portion of SystemCapability.
-     * {@code 1<= displayCapabilities.size() <= 100}
-     *
-     * @param displayCapabilities Contains a list of capabilities of display.
-     */
-    public void setDisplayCapabilities(List<DisplayCapability> displayCapabilities) {
-        setValue(KEY_DISPLAY_CAPABILITIES, displayCapabilities);
-    }
-
-    /**
-     * get the displayCapabilities portion of SystemCapability.
-     * @return List<DisplayCapability> - Contains a list of capabilities of display.
-     */
-    @SuppressWarnings("unchecked")
-    public List<DisplayCapability> getDisplayCapabilities() {
-        return (List<DisplayCapability>) getObject(DisplayCapability.class, KEY_DISPLAY_CAPABILITIES);
-    }
 }
