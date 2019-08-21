@@ -420,7 +420,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
      *
      *  This will only dismiss an already presented keyboard if connected to head units running SDL 6.0+.
      *
-     * @param cancelID - The unique ID assigned to the keyboard, passed as the return value from `presentKeyboardWithInitialText:keyboardDelegate:`
+     * @param cancelID - The unique ID assigned to the keyboard, passed as the return value from `presentKeyboard`
      */
     public void dismissKeyboard(Integer cancelID) {
         // First, attempt to cancel the currently executing keyboard operation (Once an operation has started it is removed from the operationQueue)
