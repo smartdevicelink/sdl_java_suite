@@ -103,6 +103,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		DebugTool.logInfo("Choice Operation: Executing present choice set operation");
 		addListeners();
 		start();
+		block();
 	}
 
 	private void start(){
@@ -268,7 +269,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 			}
 		} else {
 			DebugTool.logInfo("Canceling a choice set that has not yet been sent to Core");
-			Thread.currentThread().interrupt();
+			this.cancel();
 		}
 	}
 

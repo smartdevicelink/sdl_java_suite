@@ -37,20 +37,27 @@ package com.smartdevicelink.managers.screen.choiceset;
 import com.smartdevicelink.util.DebugTool;
 
 class AsynchronousOperation implements Runnable {
+    private static final String TAG = "AsynchronousOperation - ";
+    private Thread thread;
+    private Object lock;
+    private Boolean blocked;
     private Boolean executing;
     private Boolean finished;
 
     AsynchronousOperation() {
+        blocked = false;
         executing = false;
         finished = false;
     }
 
     @Override
     public void run() {
-        DebugTool.logInfo("Starting operation: " + toString());
+        thread = Thread.currentThread();
+        lock = new Object();
+        DebugTool.logInfo(TAG + "Starting: " + toString());
         if (isCancelled()) {
             finished = true;
-            DebugTool.logInfo("Operation was cancelled: " + toString());
+            DebugTool.logInfo(TAG + "Operation was cancelled: " + toString());
             return;
         }
 
@@ -58,30 +65,55 @@ class AsynchronousOperation implements Runnable {
     }
 
     void finishOperation() {
+        unblock();
         executing = false;
         finished = true;
-        DebugTool.logInfo("Finishing operation: " + toString());
+        DebugTool.logInfo(TAG + "Finishing: " + toString());
     }
 
-    public Boolean isAsynchronous() {
-        return true;
-    }
-
-    public Boolean isExecuting() {
+    Boolean isExecuting() {
         return executing;
     }
 
-    public Boolean isFinished() {
+    Boolean isFinished() {
         return finished;
     }
 
-    public Boolean isCancelled() {
-        return Thread.currentThread().isInterrupted();
+    void cancel(){
+        thread.interrupt();
     }
 
+    Boolean isCancelled() {
+        return thread.isInterrupted();
+    }
+
+    void block(){
+        if (!blocked && !finished) {
+            blocked = true;
+            DebugTool.logInfo(TAG + "Blocking: " + toString());
+            try {
+                synchronized (lock) {
+                    lock.wait();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    void unblock(){
+        if (blocked) {
+            blocked = false;
+            DebugTool.logInfo(TAG + "Unblocking: " + toString());
+            thread.interrupt();
+            synchronized (lock) {
+                lock.notify();
+            }
+        }
+    }
 
     @Override
     public String toString() {
-        return "Executing: " + executing + ", finished: " + finished + ".";
+        return this.getClass().getSimpleName() + " (OpThread:" + thread.getName() + ", currentThread:" + Thread.currentThread().getName() + ", blocked:" + blocked + ", executing:" + executing + ", finished:" + finished + ")";
     }
 }
