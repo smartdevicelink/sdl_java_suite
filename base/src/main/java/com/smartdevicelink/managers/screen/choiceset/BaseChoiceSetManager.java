@@ -434,7 +434,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             if (!(operation instanceof PresentKeyboardOperation)){ continue; }
 
             PresentKeyboardOperation pendingOp = (PresentKeyboardOperation) operation;
-            if (!(pendingOp.getCancelID() == cancelID)) { continue; }
+            if (!(pendingOp.getCancelID().equals(cancelID))) { continue; }
 
             pendingOp.dismissKeyboard();
             break;
