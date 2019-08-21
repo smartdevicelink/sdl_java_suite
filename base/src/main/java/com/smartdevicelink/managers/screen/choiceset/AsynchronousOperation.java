@@ -54,11 +54,6 @@ class AsynchronousOperation implements Runnable {
             return;
         }
 
-        try {
-
-        } catch (InterruptedException e) {
-        }
-
         executing = true;
     }
 
