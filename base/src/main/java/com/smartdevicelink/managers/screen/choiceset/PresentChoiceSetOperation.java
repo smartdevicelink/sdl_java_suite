@@ -106,7 +106,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 	}
 
 	private void start(){
-		if (Thread.currentThread().isInterrupted()) {
+		if (isCancelled()) {
 			finishOperation();
 			return;
 		}
@@ -120,7 +120,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		updateKeyboardProperties(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
-				if (Thread.currentThread().isInterrupted()) {
+				if (isCancelled()) {
 					finishOperation();
 					return;
 				}
@@ -237,7 +237,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		if (isFinished()) {
 			DebugTool.logInfo("This operation has already finished so it can not be canceled.");
 			return;
-		} else if (Thread.currentThread().isInterrupted()) {
+		} else if (isCancelled()) {
 			DebugTool.logInfo("This operation has already been canceled. It will be finished at some point during the operation.");
 			return;
 		} else if (isExecuting()) {
@@ -327,7 +327,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		keyboardRPCListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
-				if (Thread.currentThread().isInterrupted()) {
+				if (isCancelled()) {
 					finishOperation();
 					return;
 				}

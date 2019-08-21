@@ -48,10 +48,15 @@ class AsynchronousOperation implements Runnable {
     @Override
     public void run() {
         DebugTool.logInfo("Starting operation: " + toString());
-        if (Thread.currentThread().isInterrupted()) {
+        if (isCancelled()) {
             finished = true;
             DebugTool.logInfo("Operation was cancelled: " + toString());
             return;
+        }
+
+        try {
+
+        } catch (InterruptedException e) {
         }
 
         executing = true;
@@ -74,6 +79,11 @@ class AsynchronousOperation implements Runnable {
     public Boolean isFinished() {
         return finished;
     }
+
+    public Boolean isCancelled() {
+        return Thread.currentThread().isInterrupted();
+    }
+
 
     @Override
     public String toString() {
