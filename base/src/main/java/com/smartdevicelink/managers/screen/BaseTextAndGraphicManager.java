@@ -51,6 +51,7 @@ import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
@@ -156,7 +157,11 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		hmiListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
-				currentHMILevel = ((OnHMIStatus)notification).getHmiLevel();
+				OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID().equals(PredefinedWindows.DEFAULT_WINDOW)) {
+					return;
+				}
+				currentHMILevel = onHMIStatus.getHmiLevel();
 				if (currentHMILevel == HMILevel.HMI_FULL){
 					if (pendingHMIFull){
 						DebugTool.logInfo( "Acquired HMI_FULL with pending update. Sending now");

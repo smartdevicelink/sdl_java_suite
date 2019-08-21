@@ -53,6 +53,7 @@ import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -153,8 +154,10 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         this.onHMIStatusListener = new OnRPCNotificationListener() {
             @Override
             public void onNotified(RPCNotification notification) {
-
-                OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
+                OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+                if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID().equals(PredefinedWindows.DEFAULT_WINDOW)) {
+                    return;
+                }
                 HMILevel oldHmiLevel = currentHMILevel;
                 currentHMILevel = onHMIStatus.getHmiLevel();
 

@@ -33,6 +33,7 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
@@ -168,8 +169,11 @@ public class SdlService extends Service {
 					sdlManager.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, new OnRPCNotificationListener() {
 						@Override
 						public void onNotified(RPCNotification notification) {
-							OnHMIStatus status = (OnHMIStatus) notification;
-							if (status.getHmiLevel() == HMILevel.HMI_FULL && ((OnHMIStatus) notification).getFirstRun()) {
+							OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+							if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID().equals(PredefinedWindows.DEFAULT_WINDOW)) {
+								return;
+							}
+							if (onHMIStatus.getHmiLevel() == HMILevel.HMI_FULL && onHMIStatus.getFirstRun()) {
 								setVoiceCommands();
 								sendMenus();
 								performWelcomeSpeak();
