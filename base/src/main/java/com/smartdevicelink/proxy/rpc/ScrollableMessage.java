@@ -86,7 +86,7 @@ import java.util.List;
  * 		<tr>
  * 			<td>cancelID</td>
  * 			<td>Integer</td>
- * 			<td>An ID for this specific alert to allow cancellation through the `CancelInteraction` RPC.</td>
+ * 			<td>An ID for this specific ScrollableMessage to allow cancellation through the `CancelInteraction` RPC.</td>
  *          <td>N</td>
  * 			<td></td>
  * 			<td>SmartDeviceLink 6.0</td>
