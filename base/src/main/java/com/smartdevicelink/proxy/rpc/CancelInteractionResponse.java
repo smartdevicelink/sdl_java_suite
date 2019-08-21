@@ -34,8 +34,11 @@
 
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 
 import java.util.Hashtable;
 
@@ -55,5 +58,16 @@ public class CancelInteractionResponse extends RPCResponse {
      */
     public CancelInteractionResponse(Hashtable<String, Object> hash) {
         super(hash);
+    }
+
+    /**
+     * Constructs a new PublishAppServiceResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public CancelInteractionResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
     }
 }
