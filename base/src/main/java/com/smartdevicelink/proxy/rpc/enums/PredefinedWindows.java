@@ -13,27 +13,20 @@ package com.smartdevicelink.proxy.rpc.enums;
  * The primary widget should be named as the app and can be pre-created by the HMI
  * @since 6.0
  */
-public enum PredefinedWindows {
+public final class PredefinedWindows {
     /**
      * The default window is a main window pre-created on behalf of the app.
      */
-    DEFAULT_WINDOW,
+    public static final int DEFAULT_WINDOW = 0;
     /**
      * The primary widget of the app.
      */
-    PRIMARY_WIDGET;
+    public static final int PRIMARY_WIDGET = 1;
 
     /**
-     * Convert String to PredefinedWindows
-     *
-     * @param value String
-     * @return PredefinedWindows
+     * Private constructor
      */
-    public static PredefinedWindows valueForString(String value) {
-        try {
-            return valueOf(value);
-        } catch (Exception e) {
-            return null;
-        }
+    private PredefinedWindows () {
+
     }
 }
