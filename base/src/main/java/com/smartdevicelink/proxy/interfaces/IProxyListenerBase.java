@@ -114,7 +114,7 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 
-
+@Deprecated
 public interface IProxyListenerBase {
 
 	/**

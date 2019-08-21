@@ -40,6 +40,7 @@ import com.smartdevicelink.util.AndroidTools;
 
 import java.io.IOException;
 
+@Deprecated
 public class LockScreenManager {
 	
     public interface OnLockScreenIconDownloadedListener{

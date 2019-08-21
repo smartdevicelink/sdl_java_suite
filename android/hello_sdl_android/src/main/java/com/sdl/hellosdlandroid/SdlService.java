@@ -15,6 +15,7 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSetSelectionListener;
@@ -32,6 +33,7 @@ import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
+import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
@@ -52,6 +54,8 @@ public class SdlService extends Service {
 	private static final String TAG 					= "SDL Service";
 
 	private static final String APP_NAME 				= "Hello Sdl";
+	private static final String APP_NAME_ES 			= "Hola Sdl";
+	private static final String APP_NAME_FR 			= "Bonjour Sdl";
 	private static final String APP_ID 					= "8678309";
 
 	private static final String ICON_FILENAME 			= "hello_sdl_icon.png";
@@ -158,7 +162,7 @@ public class SdlService extends Service {
 
 			// The app type to be used
 			Vector<AppHMIType> appType = new Vector<>();
-			appType.add(AppHMIType.MEDIA);
+			appType.add(AppHMIType.DEFAULT);
 
 			// The manager listener helps you know when certain events that pertain to the SDL Manager happen
 			// Here we will listen for ON_HMI_STATUS and ON_COMMAND notifications
@@ -191,6 +195,23 @@ public class SdlService extends Service {
 
 				@Override
 				public void onError(String info, Exception e) {
+				}
+
+				@Override
+				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language){
+					String appName;
+					switch (language) {
+						case ES_MX:
+							appName = APP_NAME_ES;
+							break;
+						case FR_CA:
+							appName = APP_NAME_FR;
+							break;
+						default:
+							return null;
+					}
+
+					return new LifecycleConfigurationUpdate(appName,null,TTSChunkFactory.createSimpleTTSChunks(appName), null);
 				}
 			};
 
