@@ -547,7 +547,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * Dismisses a currently presented keyboard with the associated ID. Canceling a keyboard only works when connected to SDL Core v.6.0+. When connected to older versions of SDL Core the keyboard will not be dismissed.
 	 * @param cancelID The unique ID assigned to the keyboard
 	 */
-	public void dismissKeyboard(Integer cancelID) {
+	public void dismissKeyboard(@NonNull Integer cancelID) {
 		this.choiceSetManager.dismissKeyboard(cancelID);
 	}
 

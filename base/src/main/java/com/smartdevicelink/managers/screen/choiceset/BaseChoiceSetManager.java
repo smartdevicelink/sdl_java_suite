@@ -422,7 +422,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
      *
      * @param cancelID - The unique ID assigned to the keyboard, passed as the return value from `presentKeyboard`
      */
-    public void dismissKeyboard(Integer cancelID) {
+    public void dismissKeyboard(@NonNull Integer cancelID) {
         // First, attempt to cancel the currently executing keyboard operation (Once an operation has started it is removed from the operationQueue)
         if (currentlyPresentedKeyboardOperation != null && currentlyPresentedKeyboardOperation.getCancelID().equals(cancelID)) {
             currentlyPresentedKeyboardOperation.dismissKeyboard();
