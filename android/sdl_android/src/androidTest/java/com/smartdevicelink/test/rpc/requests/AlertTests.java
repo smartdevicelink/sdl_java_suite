@@ -102,7 +102,7 @@ public class AlertTests extends BaseRpcTests{
 		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testProgressIndicator);
 		assertTrue(Test.TRUE, Validator.validateSoftButtons(Test.GENERAL_SOFTBUTTON_LIST, testSoftButtons));
 		assertTrue(Test.TRUE, Validator.validateTtsChunks(Test.GENERAL_TTSCHUNK_LIST, testTtsChunks));
-        assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testCancelID);
+		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testCancelID);
 		assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, alertIcon));
 	    	
     	// Invalid/Null Tests

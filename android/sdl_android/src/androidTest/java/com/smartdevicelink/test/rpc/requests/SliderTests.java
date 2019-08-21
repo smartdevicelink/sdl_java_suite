@@ -74,7 +74,7 @@ public class SliderTests extends BaseRpcTests {
     	Integer testPosition    = ( (Slider) msg ).getPosition();
     	String  testSlider      = ( (Slider) msg ).getSliderHeader();
     	List<String> testFooter = ( (Slider) msg ).getSliderFooter();
-		Integer testCancelID = ( (Slider) msg ).getCancelID();
+    	Integer testCancelID = ( (Slider) msg ).getCancelID();
 
     	// Valid Tests
 		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, testNumTicks);
