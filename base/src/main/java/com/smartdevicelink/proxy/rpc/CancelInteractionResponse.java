@@ -61,7 +61,7 @@ public class CancelInteractionResponse extends RPCResponse {
     }
 
     /**
-     * Constructs a new PublishAppServiceResponse object
+     * Constructs a new CancelInteractionResponse object
      * @param success whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      */
