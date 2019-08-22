@@ -80,11 +80,11 @@ class AsynchronousOperation implements Runnable {
     }
 
     void cancel(){
-        thread.interrupt();
+        Thread.currentThread().interrupt();
     }
 
     Boolean isCancelled() {
-        return thread.isInterrupted();
+        return Thread.currentThread().isInterrupted();
     }
 
     void block(){
