@@ -78,7 +78,7 @@ public class LockScreenManager extends BaseSubManager {
 	private android.arch.lifecycle.LifecycleObserver lifecycleObserver;
 	int lockScreenIcon, lockScreenColor, customView, displayMode;
 	Bitmap deviceLogo;
-	private boolean mLockScreenHasBeenDismissed;
+	private boolean mLockScreenHasBeenDismissed, lockscreenDismissReceiverRegistered;
 	private String mLockscreenWarningMsg;
 	private BroadcastReceiver mLockscreenDismissedReceiver;
 
@@ -122,6 +122,7 @@ public class LockScreenManager extends BaseSubManager {
 			context.get().sendBroadcast(new Intent(SDLLockScreenActivity.CLOSE_LOCK_SCREEN_ACTION));
 			try {
 				context.get().unregisterReceiver(mLockscreenDismissedReceiver);
+				lockscreenDismissReceiverRegistered = false;
 			} catch (IllegalArgumentException e) {
 				//do nothing
 			}
@@ -280,7 +281,10 @@ public class LockScreenManager extends BaseSubManager {
 		// pass in icon, background color, and custom view
 		if (lockScreenEnabled && isApplicationForegrounded && context.get() != null) {
 			if (mIsLockscreenDismissible) {
-				context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
+				if (!lockscreenDismissReceiverRegistered) {
+					context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
+					lockscreenDismissReceiverRegistered = true;
+				}
 			}
 			LockScreenStatus status = getLockScreenStatus();
 			if (status == LockScreenStatus.REQUIRED || displayMode == LockScreenConfig.DISPLAY_MODE_ALWAYS || (status == LockScreenStatus.OPTIONAL && displayMode == LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED)) {
