@@ -78,7 +78,7 @@ public class LockScreenManager extends BaseSubManager {
 	private android.arch.lifecycle.LifecycleObserver lifecycleObserver;
 	int lockScreenIcon, lockScreenColor, customView, displayMode;
 	Bitmap deviceLogo;
-	private boolean mLockScreenHasBeenDismissed, lockscreenDismissReceiverRegistered;
+	private boolean mLockScreenHasBeenDismissed, lockscreenDismissReceiverRegistered, receivedFirstDDNotification;
 	private String mLockscreenWarningMsg;
 	private BroadcastReceiver mLockscreenDismissedReceiver;
 
@@ -185,10 +185,18 @@ public class LockScreenManager extends BaseSubManager {
 				if (notification != null) {
 					OnDriverDistraction ddState = (OnDriverDistraction) notification;
 					Boolean isDismissible = ddState.getLockscreenDismissibility();
+					Log.i(TAG, "Lock screen dismissible: "+ isDismissible);
 					if (isDismissible != null) {
 						// both of these conditions must be met to be able to dismiss lockscreen
 						if (isDismissible && enableDismissGesture){
 							mIsLockscreenDismissible = true;
+
+							// if DisplayMode is set to ALWAYS, it will be shown before the first DD notification.
+							// If this is our first DD notification and we are in ALWAYS mode, send another intent to
+							// enable the dismissal
+							if (!receivedFirstDDNotification && displayMode == LockScreenConfig.DISPLAY_MODE_ALWAYS ){
+								launchLockScreenActivity();
+							}
 						}
 					}
 					mLockscreenWarningMsg = ddState.getLockscreenWarningMessage();
@@ -202,6 +210,7 @@ public class LockScreenManager extends BaseSubManager {
 						driverDistStatus = false;
 						closeLockScreenActivity();
 					}
+					receivedFirstDDNotification = true;
 				}
 			}
 		};

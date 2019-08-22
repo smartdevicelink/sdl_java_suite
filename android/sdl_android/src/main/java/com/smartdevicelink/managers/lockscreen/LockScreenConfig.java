@@ -56,7 +56,7 @@ import java.lang.annotation.RetentionPolicy;
  * <li> displayMode - Describes when the lock screen will be displayed. Defaults to `DISPLAY_MODE_REQUIRED_ONLY`.</li>
  *
  * <li> enableDismissGesture - If true, then the lock screen can be dismissed with a downward swipe on compatible head units.
- * Requires a connection of SDL 6.0+ and the head unit to enable the feature. Defaults to YES.</li>
+ * Requires a connection of SDL 6.0+ and the head unit to enable the feature. Defaults to true.</li>
  */
 public class LockScreenConfig {
 
@@ -198,7 +198,7 @@ public class LockScreenConfig {
 
 	/**
 	 * If true, then the lock screen can be dismissed with a downward swipe on compatible head units.
-	 * Requires a connection of SDL 6.0+ and the head unit to enable the feature. Defaults to YES.
+	 * Requires a connection of SDL 6.0+ and the head unit to enable the feature. Defaults to true.
 	 * @param enableDismissGesture - enable or disable this feature
 	 */
 	public void enableDismissGesture(boolean enableDismissGesture) {
@@ -207,7 +207,7 @@ public class LockScreenConfig {
 
 	/**
 	 * If true, then the lock screen can be dismissed with a downward swipe on compatible head units.
-	 * Requires a connection of SDL 6.0+ and the head unit to enable the feature. Defaults to YES.
+	 * Requires a connection of SDL 6.0+ and the head unit to enable the feature. Defaults to true.
 	 * @return - whether or not this is enabled or disabled
 	 */
 	public boolean enableDismissGesture() {
