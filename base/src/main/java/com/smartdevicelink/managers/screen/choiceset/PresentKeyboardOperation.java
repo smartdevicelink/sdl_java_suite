@@ -244,6 +244,12 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 					DebugTool.logInfo("Successfully reset choice keyboard properties to original config");
 					PresentKeyboardOperation.super.finishOperation();
 				}
+
+				@Override
+				public void onError(int correlationId, Result resultCode, String info) {
+					DebugTool.logError("Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
+					PresentKeyboardOperation.super.finishOperation();
+				}
 			});
 
 			if (internalInterface.get() != null) {
