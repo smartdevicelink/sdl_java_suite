@@ -16,10 +16,10 @@ public class PredefinedWindowsTests extends TestCase {
      * Verifies that the enum values are not null upon valid assignment.
      */
     public void testValidEnums() {
-        String example = "DEFAULT_WINDOW";
-        PredefinedWindows enumDefaultWindow = PredefinedWindows.valueForString(example);
-        example = "PRIMARY_WIDGET";
-        PredefinedWindows enumPrimaryWidget = PredefinedWindows.valueForString(example);
+        int example = 0;
+        PredefinedWindows enumDefaultWindow = PredefinedWindows.valueForInt(example);
+        example = 1;
+        PredefinedWindows enumPrimaryWidget = PredefinedWindows.valueForInt(example);
 
         assertNotNull("DEFAULT_WINDOW returned null", enumDefaultWindow);
         assertNotNull("PRIMARY_WIDGET returned null", enumPrimaryWidget);
@@ -29,25 +29,12 @@ public class PredefinedWindowsTests extends TestCase {
      * Verifies that an invalid assignment is null.
      */
     public void testInvalidEnum() {
-        String example = "dEFAULT_WINDOW";
+        int example = 3;
         try {
-            PredefinedWindows temp = PredefinedWindows.valueForString(example);
+            PredefinedWindows temp = PredefinedWindows.valueForInt(example);
             assertNull("Result of valueForString should be null.", temp);
         } catch (IllegalArgumentException exception) {
             fail("Invalid enum throws IllegalArgumentException.");
-        }
-    }
-
-    /**
-     * Verifies that a null assignment is invalid.
-     */
-    public void testNullEnum() {
-        String example = null;
-        try {
-            PredefinedWindows temp = PredefinedWindows.valueForString(example);
-            assertNull("Result of valueForString should be null.", temp);
-        } catch (NullPointerException exception) {
-            fail("Null string throws NullPointerException.");
         }
     }
 

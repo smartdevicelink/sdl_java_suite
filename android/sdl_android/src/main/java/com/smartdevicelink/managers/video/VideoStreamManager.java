@@ -142,7 +142,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		public void onNotified(RPCNotification notification) {
 			if(notification != null){
 				OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
-				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW) {
+				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
 					return;
 				}
 				hmiLevel = onHMIStatus.getHmiLevel();

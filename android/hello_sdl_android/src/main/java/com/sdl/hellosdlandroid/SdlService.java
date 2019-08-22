@@ -174,7 +174,7 @@ public class SdlService extends Service {
 						@Override
 						public void onNotified(RPCNotification notification) {
 							OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
-							if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID().equals(PredefinedWindows.DEFAULT_WINDOW)) {
+							if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
 								return;
 							}
 							if (onHMIStatus.getHmiLevel() == HMILevel.HMI_FULL && onHMIStatus.getFirstRun()) {

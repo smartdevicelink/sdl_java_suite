@@ -99,7 +99,7 @@ abstract class BasePermissionManager extends BaseSubManager{
             @Override
             public void onNotified(RPCNotification notification) {
                 OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
-                if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW) {
+                if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
                     return;
                 }
                 HMILevel previousHMILevel = currentHMILevel;

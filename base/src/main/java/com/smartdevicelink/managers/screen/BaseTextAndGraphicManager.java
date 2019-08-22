@@ -158,7 +158,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			@Override
 			public void onNotified(RPCNotification notification) {
 				OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
-				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW) {
+				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
 					return;
 				}
 				currentHMILevel = onHMIStatus.getHmiLevel();
