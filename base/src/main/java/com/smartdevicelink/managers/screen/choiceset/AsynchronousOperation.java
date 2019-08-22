@@ -39,12 +39,13 @@ import com.smartdevicelink.util.DebugTool;
 class AsynchronousOperation implements Runnable {
     private static final String TAG = "AsynchronousOperation - ";
     private Thread thread;
-    private Object lock;
+    private final Object lock;
     private Boolean blocked;
     private Boolean executing;
     private Boolean finished;
 
     AsynchronousOperation() {
+        lock = new Object();
         blocked = false;
         executing = false;
         finished = false;
@@ -53,7 +54,6 @@ class AsynchronousOperation implements Runnable {
     @Override
     public void run() {
         thread = Thread.currentThread();
-        lock = new Object();
         DebugTool.logInfo(TAG + "Starting: " + toString());
         if (isCancelled()) {
             finished = true;
@@ -96,7 +96,8 @@ class AsynchronousOperation implements Runnable {
                     lock.wait();
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                DebugTool.logWarning(TAG + "InterruptedException: " + toString());
+                finishOperation();
             }
         }
     }
@@ -105,7 +106,6 @@ class AsynchronousOperation implements Runnable {
         if (blocked) {
             blocked = false;
             DebugTool.logInfo(TAG + "Unblocking: " + toString());
-            thread.interrupt();
             synchronized (lock) {
                 lock.notify();
             }
@@ -114,6 +114,6 @@ class AsynchronousOperation implements Runnable {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + " (OpThread:" + thread.getName() + ", currentThread:" + Thread.currentThread().getName() + ", blocked:" + blocked + ", executing:" + executing + ", finished:" + finished + ")";
+        return this.getClass().getSimpleName() + " (OpId: " + System.identityHashCode(this) + ", OpThread:" + thread.getName() + ", currentThread:" + Thread.currentThread().getName() + ", blocked:" + blocked + ", executing:" + executing + ", finished:" + finished + ")";
     }
 }
