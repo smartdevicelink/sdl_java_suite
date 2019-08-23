@@ -87,6 +87,7 @@ public class SdlManager extends BaseSdlManager{
 	private PermissionManager permissionManager;
 	private FileManager fileManager;
     private ScreenManager screenManager;
+    private BaseEncryptionLifecycleManager encryptionManager;
 
 
 	// INTERNAL INTERFACE
@@ -150,18 +151,21 @@ public class SdlManager extends BaseSdlManager{
 	@Override
 	void checkState() {
 		if (permissionManager != null && fileManager != null && screenManager != null ){
-			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY){
+			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY
+					&& screenManager.getState() == BaseSubManager.READY && encryptionManager.getState() == BaseSubManager.READY){
 				DebugTool.logInfo("Starting sdl manager, all sub managers are in ready state");
 				transitionToState(BaseSubManager.READY);
 				handleQueuedNotifications();
 				notifyDevListener(null);
 				onReady();
-			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR){
+			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR
+					&& screenManager.getState() == BaseSubManager.ERROR && encryptionManager.getState() == BaseSubManager.ERROR){
 				String info = "ERROR starting sdl manager, all sub managers are in error state";
 				Log.e(TAG, info);
 				transitionToState(BaseSubManager.ERROR);
 				notifyDevListener(info);
-			} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP) {
+			} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP
+					|| screenManager.getState() == BaseSubManager.SETTING_UP || encryptionManager.getState() == BaseSubManager.SETTING_UP) {
 				DebugTool.logInfo("SETTING UP sdl manager, some sub managers are still setting up");
 				transitionToState(BaseSubManager.SETTING_UP);
 				// No need to notify developer here!
@@ -217,11 +221,13 @@ public class SdlManager extends BaseSdlManager{
 		this.permissionManager = new PermissionManager(_internalInterface);
 		this.fileManager = new FileManager(_internalInterface);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
+		this.encryptionManager = new BaseEncryptionLifecycleManager(_internalInterface);
 
 		// Start sub managers
 		this.permissionManager.start(subManagerListener);
 		this.fileManager.start(subManagerListener);
 		this.screenManager.start(subManagerListener);
+		this.encryptionManager.start(subManagerListener);
 	}
 
 	@Override
@@ -238,6 +244,10 @@ public class SdlManager extends BaseSdlManager{
 			this.screenManager.dispose();
 		}
 
+		if (this.encryptionManager != null) {
+			this.encryptionManager.dispose();
+		}
+
 		if(managerListener != null){
 			managerListener.onDestroy(this);
 			managerListener = null;
@@ -248,6 +258,19 @@ public class SdlManager extends BaseSdlManager{
 
 
 	// MANAGER GETTERS
+
+	/**
+	 * Gets the EncryptionManager. <br>
+	 * <strong>Note: EncryptionManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+	 * @return a BaseEncryptionLifecycleManager object
+	 */
+	public BaseEncryptionLifecycleManager getEncryptionManager() {
+		if (encryptionManager.getState() != BaseSubManager.READY && encryptionManager.getState() != BaseSubManager.LIMITED) {
+			Log.e(TAG, "EncryptionManager should not be accessed because it is not in READY/LIMITED state");
+		}
+		checkSdlManagerState();
+		return encryptionManager;
+	}
 
 	/**
 	 * Gets the PermissionManager. <br>
