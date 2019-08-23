@@ -259,7 +259,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
 
         if (pendingPresentOperation != null && !pendingPresentOperation.isCancelled() && !pendingPresentOperation.isDone() && (cellsToBeDeleted.retainAll(pendingPresentationChoices) || cellsToBeRemovedFromPending.retainAll(pendingPresentationChoices))){
-            pendingPresentOperation.cancel(true);
+            pendingPresentOperation.cancel(false);
             DebugTool.logWarning("Attempting to delete choice cells while there is a pending presentation operation. Pending presentation cancelled.");
             pendingPresentOperation = null;
         }
@@ -305,7 +305,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         if (!setUpChoiceSet(choiceSet)){ return; }
 
         if (this.pendingPresentationSet != null && pendingPresentOperation != null){
-            pendingPresentOperation.cancel(true);
+            pendingPresentOperation.cancel(false);
             DebugTool.logWarning("Presenting a choice set while one is currently presented. Cancelling previous and continuing");
         }
 
@@ -382,7 +382,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         if (!isReady()){ return null; }
 
         if (pendingPresentationSet != null && pendingPresentOperation != null){
-            pendingPresentOperation.cancel(true);
+            pendingPresentOperation.cancel(false);
             pendingPresentationSet = null;
             DebugTool.logWarning("There is a current or pending choice set, cancelling and continuing.");
         }
