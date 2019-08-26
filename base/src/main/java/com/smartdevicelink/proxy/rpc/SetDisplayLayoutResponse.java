@@ -41,10 +41,12 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
+ * @deprecated This RPC is deprecated. Use Show RPC to change layout.
  * Set Display Layout Response is sent, when SetDisplayLayout has been called
  * 
  * @since SmartDeviceLink 2.0
  */
+@Deprecated
 public class SetDisplayLayoutResponse extends RPCResponse {
 	public static final String KEY_BUTTON_CAPABILITIES = "buttonCapabilities";
 	public static final String KEY_DISPLAY_CAPABILITIES = "displayCapabilities";

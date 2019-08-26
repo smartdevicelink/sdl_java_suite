@@ -56,6 +56,7 @@ import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.transport.utl.TransportRecord;
@@ -160,7 +161,11 @@ public class AudioStreamManager extends BaseAudioStreamManager {
         @Override
         public void onNotified(RPCNotification notification) {
             if(notification != null){
-                hmiLevel = ((OnHMIStatus)notification).getHmiLevel();
+                OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+                if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+                    return;
+                }
+                hmiLevel = onHMIStatus.getHmiLevel();
                 if(hmiLevel.equals(HMILevel.HMI_FULL) || hmiLevel.equals(HMILevel.HMI_LIMITED)){
                     checkState();
                 }

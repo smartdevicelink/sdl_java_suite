@@ -52,6 +52,7 @@ import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
@@ -489,9 +490,12 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         hmiListener = new OnRPCNotificationListener() {
             @Override
             public void onNotified(RPCNotification notification) {
-                OnHMIStatus hmiStatus = (OnHMIStatus) notification;
+                OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+                if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+                    return;
+                }
                 HMILevel oldHMILevel = currentHMILevel;
-                currentHMILevel = hmiStatus.getHmiLevel();
+                currentHMILevel = onHMIStatus.getHmiLevel();
 
                 if (currentHMILevel == HMILevel.HMI_NONE){
                     executor.pause();
@@ -505,7 +509,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                     }
                 }
 
-                currentSystemContext = hmiStatus.getSystemContext();
+                currentSystemContext = onHMIStatus.getSystemContext();
 
                 if (currentSystemContext == SystemContext.SYSCTXT_HMI_OBSCURED || currentSystemContext == SystemContext.SYSCTXT_ALERT){
                     executor.pause();

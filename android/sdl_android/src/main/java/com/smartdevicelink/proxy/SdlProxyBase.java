@@ -3558,6 +3558,36 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onGetInteriorVehicleDataResponse(msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.CREATE_WINDOW.toString())) {
+				final CreateWindowResponse msg = new CreateWindowResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onCreateWindowResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onCreateWindowResponse(msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.DELETE_WINDOW.toString())) {
+				final DeleteWindowResponse msg = new DeleteWindowResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onDeleteWindowResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onDeleteWindowResponse(msg);
+					onRPCResponseReceived(msg);
+				}
 			} else if (functionName.equals(FunctionID.GET_SYSTEM_CAPABILITY.toString())) {
 				// GetSystemCapabilityResponse
 				final GetSystemCapabilityResponse msg = new GetSystemCapabilityResponse(hash);

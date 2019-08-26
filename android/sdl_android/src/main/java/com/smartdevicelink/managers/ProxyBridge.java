@@ -47,10 +47,12 @@ import com.smartdevicelink.proxy.rpc.ButtonPressResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
 import com.smartdevicelink.proxy.rpc.CloseApplicationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
+import com.smartdevicelink.proxy.rpc.CreateWindowResponse;
 import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
 import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSetResponse;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.DeleteWindowResponse;
 import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
 import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
@@ -572,6 +574,16 @@ public class ProxyBridge implements IProxyListener{
 	public void onGetInteriorVehicleDataResponse(GetInteriorVehicleDataResponse response) {
 		onRPCReceived(response);
 
+	}
+
+	@Override
+	public void onCreateWindowResponse(CreateWindowResponse response) {
+		onRPCReceived(response);
+	}
+
+	@Override
+	public void onDeleteWindowResponse(DeleteWindowResponse response) {
+		onRPCReceived(response);
 	}
 
 	@Override

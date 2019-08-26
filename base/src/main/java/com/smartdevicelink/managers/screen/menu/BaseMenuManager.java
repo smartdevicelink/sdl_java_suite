@@ -61,6 +61,7 @@ import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
@@ -1027,9 +1028,12 @@ abstract class BaseMenuManager extends BaseSubManager {
 		hmiListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
-				OnHMIStatus hmiStatus = (OnHMIStatus) notification;
+				OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+					return;
+				}
 				HMILevel oldHMILevel = currentHMILevel;
-				currentHMILevel = hmiStatus.getHmiLevel();
+				currentHMILevel = onHMIStatus.getHmiLevel();
 
 				// Auto-send an updated menu if we were in NONE and now we are not, and we need an update
 				if (oldHMILevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE && currentSystemContext != SystemContext.SYSCTXT_MENU){
@@ -1044,7 +1048,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				// If we don't check for this and only update when not in the menu, there can be IN_USE errors, especially with submenus.
 				// We also don't want to encourage changing out the menu while the user is using it for usability reasons.
 				SystemContext oldContext = currentSystemContext;
-				currentSystemContext = hmiStatus.getSystemContext();
+				currentSystemContext = onHMIStatus.getSystemContext();
 
 				if (oldContext == SystemContext.SYSCTXT_MENU && currentSystemContext != SystemContext.SYSCTXT_MENU && currentHMILevel != HMILevel.HMI_NONE){
 					if (waitingOnHMIUpdate){
