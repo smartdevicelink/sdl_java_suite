@@ -33,6 +33,7 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.test.Test;
 
@@ -63,6 +64,7 @@ public class MenuCellTests extends AndroidTestCase2 {
 		menuCell.setIcon(Test.GENERAL_ARTWORK);
 		menuCell.setVoiceCommands(Test.GENERAL_STRING_LIST);
 		menuCell.setMenuSelectionListener(menuSelectionListener);
+		menuCell.setSubMenuLayout(Test.GENERAL_MENU_LAYOUT);
 
 		// use getters and assert equality
 		assertEquals(menuCell.getTitle(), Test.GENERAL_STRING);
@@ -71,6 +73,7 @@ public class MenuCellTests extends AndroidTestCase2 {
 		assertEquals(menuCell.getMenuSelectionListener(), menuSelectionListener);
 		assertEquals(menuCell.getCellId(), Test.GENERAL_MENU_MAX_ID);
 		assertEquals(menuCell.getParentCellId(), Test.GENERAL_MENU_MAX_ID);
+		assertEquals(menuCell.getSubMenuLayout(), Test.GENERAL_MENU_LAYOUT);
 	}
 
 	public void testConstructors(){
@@ -86,6 +89,12 @@ public class MenuCellTests extends AndroidTestCase2 {
 		MenuCell menuCell4 =new MenuCell(Test.GENERAL_STRING,null, null, menuSelectionListener);
 		assertEquals(menuCell4.getTitle(), Test.GENERAL_STRING);
 		assertEquals(menuCell4.getMenuSelectionListener(), menuSelectionListener);
+
+		MenuCell menuCell5 = new MenuCell(Test.GENERAL_STRING, Test.GENERAL_MENU_LAYOUT, Test.GENERAL_ARTWORK, Test.GENERAL_MENUCELL_LIST);
+		assertEquals(menuCell5.getTitle(), Test.GENERAL_STRING);
+		assertEquals(menuCell5.getIcon(), Test.GENERAL_ARTWORK);
+		assertEquals(menuCell5.getSubMenuLayout(), Test.GENERAL_MENU_LAYOUT);
+		assertEquals(menuCell5.getSubCells(), Test.GENERAL_MENUCELL_LIST);
 	}
 
 	public void testEquality(){

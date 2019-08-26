@@ -7,6 +7,7 @@ import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
@@ -23,7 +24,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.DisplayCapabilities}
+ * {@link com.smartdevicelink.proxy.rpc.DisplayCapabilities}
  */
 public class DisplayCapabilitiesTests extends TestCase{
 	
@@ -42,6 +43,7 @@ public class DisplayCapabilitiesTests extends TestCase{
         msg.setMediaClockFormats(Test.GENERAL_MEDIACLOCKFORMAT_LIST);
         msg.setScreenParams(Test.GENERAL_SCREENPARAMS);
         msg.setTemplatesAvailable(Test.GENERAL_STRING_LIST);
+        msg.setMenuLayoutsAvailable(Test.GENERAL_MENU_LAYOUT_LIST);
     }
 
     /**
@@ -58,6 +60,7 @@ public class DisplayCapabilitiesTests extends TestCase{
         List<MediaClockFormat> mediaClock = msg.getMediaClockFormats();
         List<TextField> textFields = msg.getTextFields();
         List<ImageField> imageFields = msg.getImageFields();
+        List<MenuLayout> menuLayouts = msg.getMenuLayoutsAvailable();
         
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, graphicSupported);
@@ -69,6 +72,7 @@ public class DisplayCapabilitiesTests extends TestCase{
 		assertEquals(Test.MATCH, Test.GENERAL_MEDIACLOCKFORMAT_LIST.size(), mediaClock.size());
 		assertEquals(Test.MATCH, Test.GENERAL_TEXTFIELD_LIST.size(), textFields.size());
 		assertEquals(Test.MATCH, Test.GENERAL_IMAGEFIELD_LIST.size(), imageFields.size());
+		assertEquals(Test.MATCH, Test.GENERAL_MENU_LAYOUT_LIST.size(), menuLayouts.size());
 		
 		for(int i = 0; i < Test.GENERAL_STRING_LIST.size(); i++){
             assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST.get(i), templatesAvailable.get(i));
@@ -85,6 +89,10 @@ public class DisplayCapabilitiesTests extends TestCase{
         for(int i = 0; i < Test.GENERAL_IMAGEFIELD_LIST.size(); i++){
             assertTrue(Test.TRUE, Validator.validateImageFields(Test.GENERAL_IMAGEFIELD_LIST.get(i), imageFields.get(i)));
         }
+
+        for(int i = 0; i < Test.GENERAL_MENU_LAYOUT_LIST.size(); i++){
+            assertEquals(Test.MATCH, Test.GENERAL_MENU_LAYOUT_LIST.get(i), menuLayouts.get(i));
+        }
         
         // Invalid/Null Tests
         DisplayCapabilities msg = new DisplayCapabilities();
@@ -99,6 +107,7 @@ public class DisplayCapabilitiesTests extends TestCase{
         assertNull(Test.NULL, msg.getScreenParams());
         assertNull(Test.NULL, msg.getTemplatesAvailable());
         assertNull(Test.NULL, msg.getTextFields());
+        assertNull(Test.NULL, msg.getMenuLayoutsAvailable());
     }
     
     public void testJson(){
@@ -114,6 +123,7 @@ public class DisplayCapabilitiesTests extends TestCase{
             reference.put(DisplayCapabilities.KEY_TEXT_FIELDS, Test.JSON_TEXTFIELDS);
             reference.put(DisplayCapabilities.KEY_IMAGE_FIELDS, Test.JSON_IMAGEFIELDS);
             reference.put(DisplayCapabilities.KEY_SCREEN_PARAMS, Test.JSON_SCREENPARAMS);
+            reference.put(DisplayCapabilities.KEY_MENU_LAYOUTS_AVAILABLE, JsonUtils.createJsonArray(Test.GENERAL_MENU_LAYOUT_LIST));
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -153,7 +163,7 @@ public class DisplayCapabilitiesTests extends TestCase{
                 	Hashtable<String, Object> hashTest= JsonRPCMarshaller.deserializeJSONObject(underTestArray);
                     
                     assertTrue(Test.TRUE, Validator.validateScreenParams(new ScreenParams(hashReference), new ScreenParams(hashTest)));
-                } else if(key.equals(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS)){
+                } else if(key.equals(DisplayCapabilities.KEY_MEDIA_CLOCK_FORMATS) || key.equals(DisplayCapabilities.KEY_MENU_LAYOUTS_AVAILABLE)){
                     JSONArray referenceArray = JsonUtils.readJsonArrayFromJsonObject(reference, key);
                     JSONArray underTestArray = JsonUtils.readJsonArrayFromJsonObject(underTest, key);
                     assertEquals(Test.MATCH, referenceArray.length(), underTestArray.length());

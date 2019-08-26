@@ -36,6 +36,7 @@ import android.support.annotation.NonNull;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.util.Version;
 
 import java.util.Hashtable;
@@ -85,6 +86,12 @@ import java.util.List;
  * 			<td>The display's persistent screen supports referencing a static or dynamic image.</td>
  * 			<td>SmartDeviceLink 2.0</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>menuLayoutsAvailable</td>
+ * 			<td>MenuLayout[]</td>
+ * 			<td>An array of available menu layouts. If this parameter is not provided, only the `LIST` layout is assumed to be available</td>
+ * 			<td>SmartDeviceLink 6.0</td>
+ * 		</tr>
  * </table>
  * @since SmartDeviceLink 1.0
  * @see DisplayType
@@ -103,6 +110,7 @@ public class DisplayCapabilities extends RPCStruct {
     public static final String KEY_SCREEN_PARAMS = "screenParams";
     public static final String KEY_TEMPLATES_AVAILABLE = "templatesAvailable";
     public static final String KEY_NUM_CUSTOM_PRESETS_AVAILABLE = "numCustomPresetsAvailable";
+    public static final String KEY_MENU_LAYOUTS_AVAILABLE = "menuLayoutsAvailable";
 	/**
 	 * Constructs a newly allocated DisplayCapabilities object
 	 */
@@ -270,5 +278,24 @@ public class DisplayCapabilities extends RPCStruct {
     @SuppressWarnings("unchecked")
     public ScreenParams getScreenParams() {
         return (ScreenParams) getObject(ScreenParams.class, KEY_SCREEN_PARAMS);
-    }     
+    }
+
+    /**
+     * An array of available menu layouts. If this parameter is not provided, only the `LIST` layout
+     * is assumed to be available
+     * @param menuLayout - An array of MenuLayouts
+     */
+    public void setMenuLayoutsAvailable(List<MenuLayout> menuLayout) {
+        setValue(KEY_MENU_LAYOUTS_AVAILABLE, menuLayout);
+    }
+
+    /**
+     * An array of available menu layouts. If this parameter is not provided, only the `LIST` layout
+     * is assumed to be available
+     * @return MenuLayout[]
+     */
+    @SuppressWarnings("unchecked")
+    public List<MenuLayout> getMenuLayoutsAvailable() {
+        return (List<MenuLayout>) getObject(MenuLayout.class, KEY_MENU_LAYOUTS_AVAILABLE);
+    }
 }

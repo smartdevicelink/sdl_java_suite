@@ -45,11 +45,14 @@ import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
 import com.smartdevicelink.proxy.rpc.ButtonPressResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
+import com.smartdevicelink.proxy.rpc.CloseApplicationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
+import com.smartdevicelink.proxy.rpc.CreateWindowResponse;
 import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
 import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSetResponse;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.DeleteWindowResponse;
 import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
 import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
@@ -102,6 +105,7 @@ import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetInteriorVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
+import com.smartdevicelink.proxy.rpc.ShowAppMenuResponse;
 import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
@@ -111,6 +115,7 @@ import com.smartdevicelink.proxy.rpc.SubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.SystemRequestResponse;
+import com.smartdevicelink.proxy.rpc.UnpublishAppServiceResponse;
 import com.smartdevicelink.proxy.rpc.UnregisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleDataResponse;
@@ -572,6 +577,16 @@ public class ProxyBridge implements IProxyListener{
 	}
 
 	@Override
+	public void onCreateWindowResponse(CreateWindowResponse response) {
+		onRPCReceived(response);
+	}
+
+	@Override
+	public void onDeleteWindowResponse(DeleteWindowResponse response) {
+		onRPCReceived(response);
+	}
+
+	@Override
 	public void onButtonPressResponse(ButtonPressResponse response) {
 		onRPCReceived(response);
 
@@ -607,7 +622,8 @@ public class ProxyBridge implements IProxyListener{
 	public void onGetCloudAppProperties(GetCloudAppPropertiesResponse response) {
 		onRPCReceived(response);
 	}
-@Override
+
+	@Override
 	public void onPublishAppServiceResponse(PublishAppServiceResponse response){
 		onRPCReceived(response);
 	}
@@ -635,5 +651,20 @@ public class ProxyBridge implements IProxyListener{
 	@Override
 	public void onOnSystemCapabilityUpdated(OnSystemCapabilityUpdated notification){
 		onRPCReceived(notification);
+	}
+
+	@Override
+	public void onCloseApplicationResponse(CloseApplicationResponse response) {
+		onRPCReceived(response);
+	}
+
+	@Override
+	public void onShowAppMenuResponse(ShowAppMenuResponse response) {
+		onRPCReceived(response);
+	}
+
+	@Override
+	public void onUnpublishAppServiceResponse(UnpublishAppServiceResponse response) {
+		onRPCReceived(response);
 	}
 }

@@ -1,3 +1,35 @@
+/*
+ *  Copyright (c) 2019. Livio, Inc.
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following
+ *  disclaimer in the documentation and/or other materials provided with the
+ *  distribution.
+ *
+ *  Neither the name of the Livio Inc. nor the names of its contributors
+ *  may be used to endorse or promote products derived from this software
+ *  without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ *  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ *  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ *  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ *  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ *  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ *  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ *  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ *  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *  POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.smartdevicelink;
 
 import android.util.Log;
@@ -5,6 +37,10 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceSetSelectionListener;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
 import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
@@ -13,10 +49,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.*;
-import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
-import com.smartdevicelink.proxy.rpc.enums.FileType;
-import com.smartdevicelink.proxy.rpc.enums.HMILevel;
-import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
+import com.smartdevicelink.proxy.rpc.enums.*;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.DebugTool;
@@ -29,6 +62,8 @@ public class SdlService {
     private static final String TAG 					= "SDL Service";
 
     private static final String APP_NAME 				= "Hello Sdl";
+    private static final String APP_NAME_ES             = "Hola Sdl";
+    private static final String APP_NAME_FR             = "Bonjour Sdl";
     private static final String APP_ID 					= "8678309";
 
     private static final String ICON_FILENAME 			= "hello_sdl_icon.png";
@@ -38,7 +73,6 @@ public class SdlService {
     private static final String WELCOME_SPEAK 			= "Welcome to Hello S D L";
 
     private static final String TEST_COMMAND_NAME 		= "Test Command";
-    private static final int TEST_COMMAND_ID 			= 1;
 
     private static final String IMAGE_DIR =             "assets/images/";
 
@@ -46,6 +80,7 @@ public class SdlService {
 
     // variable to create and call functions of the SyncProxy
     private SdlManager sdlManager = null;
+    private List<ChoiceCell> choiceCellList;
 
     private SdlServiceCallback callback;
 
@@ -54,8 +89,6 @@ public class SdlService {
         this.callback = callback;
         buildSdlManager(config);
     }
-
-
 
     public void start() {
         DebugTool.logInfo("SdlService start() ");
@@ -103,6 +136,23 @@ public class SdlService {
                 @Override
                 public void onError(SdlManager sdlManager, String info, Exception e) {
                 }
+
+                @Override
+                public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language){
+                    String appName;
+                    switch (language) {
+                        case ES_MX:
+                            appName = APP_NAME_ES;
+                            break;
+                        case FR_CA:
+                            appName = APP_NAME_FR;
+                            break;
+                        default:
+                            return null;
+                    }
+
+                    return new LifecycleConfigurationUpdate(appName,null,TTSChunkFactory.createSimpleTTSChunks(appName), null);
+                }
             };
 
 
@@ -116,6 +166,7 @@ public class SdlService {
                         sendMenus();
                         performWelcomeSpeak();
                         performWelcomeShow();
+                        preloadChoices();
                     }
                 }
             });
@@ -133,7 +184,7 @@ public class SdlService {
         }
     }
 
-        /**
+    /**
      * Send some voice commands
      */
     private void setVoiceCommands(){
@@ -203,7 +254,14 @@ public class SdlService {
         // sub menu parent cell
         MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", null, Arrays.asList(subCell1,subCell2));
 
-        MenuCell mainCell4 = new MenuCell("Clear the menu",null, null, new MenuSelectionListener() {
+        MenuCell mainCell4 = new MenuCell("Show Perform Interaction", null, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+                showPerformInteraction();
+            }
+        });
+
+        MenuCell mainCell5 = new MenuCell("Clear the menu",null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
                 Log.i(TAG, "Clearing Menu. Source: "+ trigger.toString());
@@ -214,7 +272,7 @@ public class SdlService {
         });
 
         // Send the entire menu off to be created
-        sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4));
+        sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5));
     }
 
     /**
@@ -263,11 +321,34 @@ public class SdlService {
         sdlManager.sendRPC(alert);
     }
 
-
     public interface SdlServiceCallback{
         void onEnd();
     }
 
+    // Choice Set
 
+    private void preloadChoices(){
+        ChoiceCell cell1 = new ChoiceCell("Item 1");
+        ChoiceCell cell2 = new ChoiceCell("Item 2");
+        ChoiceCell cell3 = new ChoiceCell("Item 3");
+        choiceCellList = new ArrayList<>(Arrays.asList(cell1,cell2,cell3));
+        sdlManager.getScreenManager().preloadChoices(choiceCellList, null);
+    }
 
+    private void showPerformInteraction(){
+        if (choiceCellList != null) {
+            ChoiceSet choiceSet = new ChoiceSet("Choose an Item from the list", choiceCellList, new ChoiceSetSelectionListener() {
+                @Override
+                public void onChoiceSelected(ChoiceCell choiceCell, TriggerSource triggerSource, int rowIndex) {
+                    showAlert(choiceCell.getText() + " was selected");
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.e(TAG, "There was an error showing the perform interaction: "+ error);
+                }
+            });
+            sdlManager.getScreenManager().presentChoiceSet(choiceSet, InteractionMode.MANUAL_ONLY);
+        }
+    }
 }

@@ -3173,10 +3173,10 @@ public class SdlRouterService extends Service{
 		 * @return
 		 */
 		private TransportType getCompatPrimaryTransport(){
-			if(this.registeredTransports != null){
+			if(this.registeredTransports != null && this.registeredTransports.size() > 0) {
 				List<TransportType> transportTypes = this.registeredTransports.valueAt(0);
-				if(transportTypes != null){
-					if(transportTypes.get(0) != null){
+				if (transportTypes != null) {
+					if (transportTypes.get(0) != null) {
 						return transportTypes.get(0);
 					}
 				}
@@ -3199,7 +3199,9 @@ public class SdlRouterService extends Service{
 			int flags = receivedBundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
 			TransportType transportType = TransportType.valueForString(receivedBundle.getString(TransportConstants.TRANSPORT_TYPE));
 			if(transportType == null){
-				transportType = getCompatPrimaryTransport();
+				synchronized (TRANSPORT_LOCK){
+					transportType = getCompatPrimaryTransport();
+				}
 				receivedBundle.putString(TransportConstants.TRANSPORT_TYPE, transportType.name());
 			}
 
@@ -3217,10 +3219,12 @@ public class SdlRouterService extends Service{
 					queues.put(transportType,queue);
 				}
 				queue.add(new PacketWriteTask(receivedBundle));
-				PacketWriteTaskMaster packetWriteTaskMaster = packetWriteTaskMasterMap.get(transportType);
-				if(packetWriteTaskMaster!=null){
-                    packetWriteTaskMaster.alert();
-                }
+				if(packetWriteTaskMasterMap != null) {
+					PacketWriteTaskMaster packetWriteTaskMaster = packetWriteTaskMasterMap.get(transportType);
+					if (packetWriteTaskMaster != null) {
+						packetWriteTaskMaster.alert();
+					}
+				} //If this is null, it is likely the service is closing
 			}
 			return true;
 		}

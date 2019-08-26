@@ -160,8 +160,14 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledExecutorService;
 
 
-
+/**
+ * @deprecated use {@link com.smartdevicelink.managers.SdlManager} instead.
+ *
+ * The guide created for the initial transition of SdlProxyBase to SdlManager can be found at
+ * <a href="https://smartdevicelink.com/en/guides/android/migrating-to-newer-sdl-versions/updating-to-v47/">Migrating to SDL Manager</a>
+ */
 @SuppressWarnings({"WeakerAccess", "Convert2Diamond"})
+@Deprecated
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
 	// Used for calls to Android Log class.
 	public static final String TAG = "SdlProxy";
@@ -169,7 +175,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private static final int PROX_PROT_VER_ONE = 1;
 	private static final int RESPONSE_WAIT_TIME = 2000;
 
-	public static final com.smartdevicelink.util.Version MAX_SUPPORTED_RPC_VERSION = new com.smartdevicelink.util.Version("5.1.0");
+	public static final com.smartdevicelink.util.Version MAX_SUPPORTED_RPC_VERSION = new com.smartdevicelink.util.Version("6.0.0");
 
 	private SdlSession sdlSession = null;
 	private proxyListenerType _proxyListener = null;
@@ -1842,6 +1848,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		try{			
 				_cycling = true;
 				cleanProxy(disconnectedReason);
+
 				initializeProxy();
 				if(!SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED.equals(disconnectedReason)
 						&& !SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST.equals(disconnectedReason)){//We don't want to alert higher if we are just cycling for legacy bluetooth
@@ -3629,6 +3636,36 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onGetInteriorVehicleDataResponse(msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.CREATE_WINDOW.toString())) {
+				final CreateWindowResponse msg = new CreateWindowResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onCreateWindowResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onCreateWindowResponse(msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.DELETE_WINDOW.toString())) {
+				final DeleteWindowResponse msg = new DeleteWindowResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onDeleteWindowResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onDeleteWindowResponse(msg);
+					onRPCResponseReceived(msg);
+				}
 			} else if (functionName.equals(FunctionID.GET_SYSTEM_CAPABILITY.toString())) {
 				// GetSystemCapabilityResponse
 				final GetSystemCapabilityResponse msg = new GetSystemCapabilityResponse(hash);
@@ -3770,6 +3807,54 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					});
 				} else {
 					_proxyListener.onPerformAppServiceInteractionResponse( msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.CLOSE_APPLICATION.toString())) {
+				final CloseApplicationResponse msg = new CloseApplicationResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onCloseApplicationResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onCloseApplicationResponse(msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.UNPUBLISH_APP_SERVICE.toString())) {
+				final UnpublishAppServiceResponse msg = new UnpublishAppServiceResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onUnpublishAppServiceResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onUnpublishAppServiceResponse( msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.SHOW_APP_MENU.toString())) {
+				final ShowAppMenuResponse msg = new ShowAppMenuResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onShowAppMenuResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onShowAppMenuResponse( msg);
 					onRPCResponseReceived(msg);
 				}
 			} else {
@@ -4154,7 +4239,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 				if (_advancedLifecycleManagementEnabled) {
 					// This requires the proxy to be cycled
-                    cycleProxy(SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(msg.getReason()));
+
+					if(_mainUIHandler == null){
+						_mainUIHandler = new Handler(Looper.getMainLooper());
+					}
+
+					//This needs to be ran on the main thread
+
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							cycleProxy(SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(msg.getReason()));
+						}
+					});
                 } else {
 					if (_callbackToUIThread) {
 						// Run in UI thread

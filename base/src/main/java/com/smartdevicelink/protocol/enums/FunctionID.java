@@ -100,7 +100,11 @@ public enum FunctionID{
     GET_APP_SERVICE_DATA(53, "GetAppServiceData"),
     GET_FILE(54, "GetFile"),
     PERFORM_APP_SERVICES_INTERACTION(55, "PerformAppServiceInteraction"),
-
+    UNPUBLISH_APP_SERVICE(56, "UnpublishAppService"),
+    CLOSE_APPLICATION(58, "CloseApplication"),
+    SHOW_APP_MENU(59, "ShowAppMenu"),
+    CREATE_WINDOW(60, "CreateWindow"),
+    DELETE_WINDOW(61, "DeleteWindow"),
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
     ON_APP_INTERFACE_UNREGISTERED(32769, "OnAppInterfaceUnregistered"),

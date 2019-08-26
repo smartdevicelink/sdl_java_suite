@@ -43,6 +43,7 @@ import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnPermissionsChange;
 import com.smartdevicelink.proxy.rpc.PermissionItem;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
 import java.lang.annotation.Retention;
@@ -97,8 +98,12 @@ abstract class BasePermissionManager extends BaseSubManager{
         onHMIStatusListener = new OnRPCNotificationListener() {
             @Override
             public void onNotified(RPCNotification notification) {
+                OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+                if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+                    return;
+                }
                 HMILevel previousHMILevel = currentHMILevel;
-                currentHMILevel = ((OnHMIStatus)notification).getHmiLevel();
+                currentHMILevel = onHMIStatus.getHmiLevel();
                 checkState();
                 notifyListeners(currentPermissionItems, previousHMILevel, currentPermissionItems, currentHMILevel);
             }

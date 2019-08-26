@@ -15,6 +15,10 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceSetSelectionListener;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
 import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
@@ -28,6 +32,10 @@ import com.smartdevicelink.proxy.rpc.Speak;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
+import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
@@ -35,6 +43,7 @@ import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.util.DebugTool;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +54,8 @@ public class SdlService extends Service {
 	private static final String TAG 					= "SDL Service";
 
 	private static final String APP_NAME 				= "Hello Sdl";
+	private static final String APP_NAME_ES 			= "Hola Sdl";
+	private static final String APP_NAME_FR 			= "Bonjour Sdl";
 	private static final String APP_ID 					= "8678309";
 
 	private static final String ICON_FILENAME 			= "hello_sdl_icon.png";
@@ -60,11 +71,12 @@ public class SdlService extends Service {
 	// TCP/IP transport config
 	// The default port is 12345
 	// The IP is of the machine that is running SDL Core
-	private static final int TCP_PORT = 12345;
-	private static final String DEV_MACHINE_IP_ADDRESS = "192.168.1.78";
+	private static final int TCP_PORT = 12247;
+	private static final String DEV_MACHINE_IP_ADDRESS = "m.sdl.tools";
 
 	// variable to create and call functions of the SyncProxy
 	private SdlManager sdlManager = null;
+	private List<ChoiceCell> choiceCellList;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -150,7 +162,7 @@ public class SdlService extends Service {
 
 			// The app type to be used
 			Vector<AppHMIType> appType = new Vector<>();
-			appType.add(AppHMIType.MEDIA);
+			appType.add(AppHMIType.DEFAULT);
 
 			// The manager listener helps you know when certain events that pertain to the SDL Manager happen
 			// Here we will listen for ON_HMI_STATUS and ON_COMMAND notifications
@@ -161,12 +173,16 @@ public class SdlService extends Service {
 					sdlManager.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, new OnRPCNotificationListener() {
 						@Override
 						public void onNotified(RPCNotification notification) {
-							OnHMIStatus status = (OnHMIStatus) notification;
-							if (status.getHmiLevel() == HMILevel.HMI_FULL && ((OnHMIStatus) notification).getFirstRun()) {
+							OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+							if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+								return;
+							}
+							if (onHMIStatus.getHmiLevel() == HMILevel.HMI_FULL && onHMIStatus.getFirstRun()) {
 								setVoiceCommands();
 								sendMenus();
 								performWelcomeSpeak();
 								performWelcomeShow();
+								preloadChoices();
 							}
 						}
 					});
@@ -179,6 +195,23 @@ public class SdlService extends Service {
 
 				@Override
 				public void onError(String info, Exception e) {
+				}
+
+				@Override
+				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language){
+					String appName;
+					switch (language) {
+						case ES_MX:
+							appName = APP_NAME_ES;
+							break;
+						case FR_CA:
+							appName = APP_NAME_FR;
+							break;
+						default:
+							return null;
+					}
+
+					return new LifecycleConfigurationUpdate(appName,null,TTSChunkFactory.createSimpleTTSChunks(appName), null);
 				}
 			};
 
@@ -263,9 +296,16 @@ public class SdlService extends Service {
 		});
 
 		// sub menu parent cell
-		MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", null, Arrays.asList(subCell1,subCell2));
+		MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", MenuLayout.LIST, null, Arrays.asList(subCell1,subCell2));
 
-		MenuCell mainCell4 = new MenuCell("Clear the menu",null, null, new MenuSelectionListener() {
+		MenuCell mainCell4 = new MenuCell("Show Perform Interaction", null, null, new MenuSelectionListener() {
+			@Override
+			public void onTriggered(TriggerSource trigger) {
+				showPerformInteraction();
+			}
+		});
+
+		MenuCell mainCell5 = new MenuCell("Clear the menu",null, null, new MenuSelectionListener() {
 			@Override
 			public void onTriggered(TriggerSource trigger) {
 				Log.i(TAG, "Clearing Menu. Source: "+ trigger.toString());
@@ -276,7 +316,7 @@ public class SdlService extends Service {
 		});
 
 		// Send the entire menu off to be created
-		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4));
+		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5));
 	}
 
 	/**
@@ -325,5 +365,30 @@ public class SdlService extends Service {
 		sdlManager.sendRPC(alert);
 	}
 
+	// Choice Set
 
+	private void preloadChoices(){
+		ChoiceCell cell1 = new ChoiceCell("Item 1");
+		ChoiceCell cell2 = new ChoiceCell("Item 2");
+		ChoiceCell cell3 = new ChoiceCell("Item 3");
+		choiceCellList = new ArrayList<>(Arrays.asList(cell1,cell2,cell3));
+		sdlManager.getScreenManager().preloadChoices(choiceCellList, null);
+	}
+
+	private void showPerformInteraction(){
+		if (choiceCellList != null) {
+			ChoiceSet choiceSet = new ChoiceSet("Choose an Item from the list", choiceCellList, new ChoiceSetSelectionListener() {
+				@Override
+				public void onChoiceSelected(ChoiceCell choiceCell, TriggerSource triggerSource, int rowIndex) {
+					showAlert(choiceCell.getText() + " was selected");
+				}
+
+				@Override
+				public void onError(String error) {
+					Log.e(TAG, "There was an error showing the perform interaction: "+ error);
+				}
+			});
+			sdlManager.getScreenManager().presentChoiceSet(choiceSet, InteractionMode.MANUAL_ONLY);
+		}
+	}
 }

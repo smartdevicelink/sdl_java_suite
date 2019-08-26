@@ -277,11 +277,56 @@ public enum SystemCapabilityType {
 	 * 			<td>DisplayCapabilities</td>
 	 * 			<td>Returns Display Capabilities</td>
 	 * 			<td align=center>N</td>
+	 * 			<td> Available Synchronously <strong>after</strong> Register App Interface response received</td>
+	 * 		</tr>
+	 * 	</table>
+	 */
+	DISPLAY (false),
+
+
+	/**
+	 * @since 6.0
+	 * Returns: List<DisplayCapability>
+	 * <table border="1" rules="all">
+	 * 		<tr>
+	 * 			<th>Enum Name</th>
+	 * 			<th>Return Type</th>
+	 * 			<th>Description</th>
+	 * 			<th>Requires Async?</th>
+	 * 			<th>Notes</th>
+	 * 		</tr>
+	 * 		<tr>
+	 * 			<td>DISPLAYS</td>
+	 * 			<td>List<DisplayCapability></td>
+	 * 			<td>Returns a list of Display Capability</td>
+	 * 			<td align=center>Y</td>
+	 * 			<td> <strong>Since 6.0</strong> Contain the display related information and all windows related to that display.</td>
+	 * 		</tr>
+	 * 	</table>
+	 */
+	DISPLAYS (true),
+
+	/**
+	 * Available Synchronously after Register App Interface response <br>
+	 * Returns: List<PrerecordedSpeech>
+	 * <table border="1" rules="all">
+	 * 		<tr>
+	 * 			<th>Enum Name</th>
+	 * 			<th>Return Type</th>
+	 * 			<th>Description</th>
+	 * 			<th>Requires Async?</th>
+	 * 			<th>Notes</th>
+	 * 		</tr>
+	 * 		<tr>
+	 * 			<td>PRERECORDED_SPEECH</td>
+	 * 			<td>prerecordedSpeechCapabilities</td>
+	 * 			<td>Returns List<PrerecordedSpeech></td>
+	 * 			<td align=center>N</td>
 	 * 			<td>Available Synchronously <strong>after</strong> Register App Interface response received</td>
 	 * 		</tr>
 	 * 	</table>
 	 */
-    DISPLAY (false),
+	PRERECORDED_SPEECH (false),
 
 	/**
 	 * Available Synchronously after Register App Interface response <br>

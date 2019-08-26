@@ -53,6 +53,7 @@ import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -62,6 +63,7 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -152,8 +154,10 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         this.onHMIStatusListener = new OnRPCNotificationListener() {
             @Override
             public void onNotified(RPCNotification notification) {
-
-                OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
+                OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+                if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+                    return;
+                }
                 HMILevel oldHmiLevel = currentHMILevel;
                 currentHMILevel = onHMIStatus.getHmiLevel();
 
@@ -269,17 +273,26 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         }
 
 
+        // Check if two soft button objects have the same name
         if (hasTwoSoftButtonObjectsOfSameName(softButtonObjects)) {
             this.softButtonObjects = new CopyOnWriteArrayList<>();
             Log.e(TAG, "Attempted to set soft button objects, but two buttons had the same name");
             return;
         }
 
-        // Set ids and updateListeners for soft button objects
-        for (int i = 0; i < softButtonObjects.size(); i++) {
-            softButtonObjects.get(i).setButtonId(i * 100);
-            softButtonObjects.get(i).setUpdateListener(updateListener);
+
+        // Set updateListeners for soft button objects
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            softButtonObject.setUpdateListener(updateListener);
         }
+
+
+        if (!checkAndAssignButtonIds(softButtonObjects)) {
+            Log.e(TAG, "Attempted to set soft button objects, but multiple buttons had the same id");
+            return;
+        }
+
+
         this.softButtonObjects = softButtonObjects;
 
 
@@ -368,6 +381,48 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
     }
 
     /**
+     * Check if there is a collision in the ids provided by the developer and assign ids to the SoftButtonObjects that do not have ids
+     * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
+     * @return boolean representing whether the ids are unique or not
+     */
+    boolean checkAndAssignButtonIds(List<SoftButtonObject> softButtonObjects) {
+        // Check if multiple soft button objects have the same id
+        HashSet<Integer> buttonIdsSetByDevHashSet = new HashSet<>();
+        int currentSoftButtonId, numberOfButtonIdsSetByDev = 0, maxButtonIdsSetByDev = SoftButtonObject.SOFT_BUTTON_ID_MIN_VALUE;
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            currentSoftButtonId = softButtonObject.getButtonId();
+            if (currentSoftButtonId != SoftButtonObject.SOFT_BUTTON_ID_NOT_SET_VALUE) {
+                numberOfButtonIdsSetByDev++;
+                if (currentSoftButtonId > maxButtonIdsSetByDev){
+                    maxButtonIdsSetByDev = currentSoftButtonId;
+                }
+                buttonIdsSetByDevHashSet.add(softButtonObject.getButtonId());
+            }
+        }
+        if (numberOfButtonIdsSetByDev != buttonIdsSetByDevHashSet.size()){
+            return false;
+        }
+
+
+        // Set ids for soft button objects
+        int generatedSoftButtonId = maxButtonIdsSetByDev;
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            // If the dev did not set the buttonId, the manager should set an id on the dev's behalf
+            currentSoftButtonId = softButtonObject.getButtonId();
+            if (currentSoftButtonId == SoftButtonObject.SOFT_BUTTON_ID_NOT_SET_VALUE){
+                do {
+                    if (generatedSoftButtonId >= SoftButtonObject.SOFT_BUTTON_ID_MAX_VALUE){
+                        generatedSoftButtonId = SoftButtonObject.SOFT_BUTTON_ID_MIN_VALUE;
+                    }
+                    generatedSoftButtonId++;
+                } while (buttonIdsSetByDevHashSet.contains(generatedSoftButtonId));
+                softButtonObject.setButtonId(generatedSoftButtonId);
+            }
+        }
+        return true;
+    }
+
+    /**
      * Update the SoftButtonManger by sending a new Show RPC to reflect the changes
      * @param listener a CompletionListener
      */
@@ -444,9 +499,8 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
             public void onError(int correlationId, Result resultCode, String info) {
                 super.onError(correlationId, resultCode, info);
 
-                Log.e(TAG, "Soft button update error");
+                Log.e(TAG, "Soft button update error. resultCode: " + resultCode + ". info: " + info);
                 handleResponse(false);
-
             }
 
             private void handleResponse(boolean success){
@@ -471,7 +525,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         });
 
 
-        internalInterface.sendRPCRequest(inProgressShowRPC);
+        internalInterface.sendRPC(inProgressShowRPC);
     }
 
     private boolean softButtonImagesSupported(){

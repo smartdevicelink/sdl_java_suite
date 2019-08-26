@@ -45,6 +45,8 @@ package com.smartdevicelink.managers.lockscreen;
  * <li> appIcon - if using the default lockscreen, you can set your own app icon</li>
  *
  * <li> customView - If you would like to provide your own view, you can pass it in here.</li>
+ *
+ * <li> deviceLogo - On by default. If available, will show the device or OEMs logo on the lockscreen</li>
  */
 public class LockScreenConfig {
 
@@ -54,7 +56,7 @@ public class LockScreenConfig {
 	public LockScreenConfig(){
 		// set default values
 		this.enable = true;
-		this.deviceLogo = false;
+		this.deviceLogo = true;
 	}
 
 	/**

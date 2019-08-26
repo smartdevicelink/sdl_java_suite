@@ -32,23 +32,32 @@
 package com.smartdevicelink.managers.screen;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
+import com.smartdevicelink.managers.screen.choiceset.ChoiceSetManager;
+import com.smartdevicelink.managers.screen.choiceset.KeyboardListener;
 import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdatesMode;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
+import com.smartdevicelink.managers.screen.menu.MenuConfiguration;
 import com.smartdevicelink.managers.screen.menu.MenuManager;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -64,19 +73,20 @@ abstract class BaseScreenManager extends BaseSubManager {
 	private TextAndGraphicManager textAndGraphicManager;
 	private VoiceCommandManager voiceCommandManager;
 	private MenuManager menuManager;
+	private ChoiceSetManager choiceSetManager;
 
 	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
 		@Override
 		public synchronized void onComplete(boolean success) {
-			if (softButtonManager != null && textAndGraphicManager != null && voiceCommandManager != null && menuManager != null) {
+			if (softButtonManager != null && textAndGraphicManager != null && voiceCommandManager != null && menuManager != null && choiceSetManager != null) {
 				if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY && voiceCommandManager.getState() == BaseSubManager.READY && menuManager.getState() == BaseSubManager.READY) {
 					DebugTool.logInfo("Starting screen manager, all sub managers are in ready state");
 					transitionToState(READY);
-				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR && voiceCommandManager.getState() == BaseSubManager.ERROR && menuManager.getState() == BaseSubManager.ERROR) {
+				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR && voiceCommandManager.getState() == BaseSubManager.ERROR && menuManager.getState() == BaseSubManager.ERROR && choiceSetManager.getState() == BaseSubManager.ERROR) {
 					Log.e(TAG, "ERROR starting screen manager, all sub managers are in error state");
 					transitionToState(ERROR);
-				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP || voiceCommandManager.getState() == BaseSubManager.SETTING_UP || menuManager.getState() == BaseSubManager.SETTING_UP) {
+				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP || voiceCommandManager.getState() == BaseSubManager.SETTING_UP || menuManager.getState() == BaseSubManager.SETTING_UP || choiceSetManager.getState() == BaseSubManager.SETTING_UP) {
 					DebugTool.logInfo("SETTING UP screen manager, at least one sub manager is still setting up");
 					transitionToState(SETTING_UP);
 				} else {
@@ -104,6 +114,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 		this.textAndGraphicManager.start(subManagerListener);
 		this.voiceCommandManager.start(subManagerListener);
 		this.menuManager.start(subManagerListener);
+		this.choiceSetManager.start(subManagerListener);
 	}
 
 	private void initialize(){
@@ -111,6 +122,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 			this.softButtonManager = new SoftButtonManager(internalInterface, fileManager.get());
 			this.textAndGraphicManager = new TextAndGraphicManager(internalInterface, fileManager.get(), softButtonManager);
 			this.menuManager = new MenuManager(internalInterface, fileManager.get());
+			this.choiceSetManager = new ChoiceSetManager(internalInterface, fileManager.get());
 		}
 		this.voiceCommandManager = new VoiceCommandManager(internalInterface);
 	}
@@ -124,6 +136,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 		textAndGraphicManager.dispose();
 		voiceCommandManager.dispose();
 		menuManager.dispose();
+		choiceSetManager.dispose();
 		super.dispose();
 	}
 
@@ -331,6 +344,23 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
+	 * Sets the title of the new template that will be displayed.
+	 * Sending an empty String "" will clear the field
+	 * @param templateTitle the title of the new template that will be displayed. Maxlength: 100.
+	 */
+	public void setTemplateTitle(String templateTitle){
+		this.textAndGraphicManager.setTemplateTitle(templateTitle);
+	}
+
+	/**
+	 * Gets the title of the new template that will be displayed
+	 * @return templateTitle - String value that represents the title of the new template that will be displayed
+	 */
+	public String getTemplateTitle(){
+		return this.textAndGraphicManager.getTemplateTitle();
+	}
+
+	/**
 	 * Set softButtonObjects list and upload the images to the head unit
 	 * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
 	 */
@@ -380,6 +410,8 @@ abstract class BaseScreenManager extends BaseSubManager {
 		this.voiceCommandManager.setVoiceCommands(voiceCommands);
 	}
 
+	// MENUS
+
 	/**
 	 * The list of currently set menu cells
 	 * @return a List of the currently set menu cells
@@ -406,12 +438,111 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
-	 *
 	 * @return The currently set DynamicMenuUpdatesMode. It defaults to ON_WITH_COMPAT_MODE if not set.
 	 */
 	public DynamicMenuUpdatesMode getDynamicMenuUpdatesMode(){
 		return this.menuManager.getDynamicMenuUpdatesMode();
 	}
+
+	/**
+	 * Requires SDL RPC Version 6.0.0 or greater
+	 * Opens the Main Menu.
+	 * @return boolean success / failure - whether the request was able to be sent
+	 */
+	public boolean openMenu(){
+		return this.menuManager.openMenu();
+	}
+
+	/**
+	 * Requires SDL RPC Version 6.0.0 or greater
+	 * Opens a subMenu. The cell you pass in must be constructed with {@link MenuCell(String,SdlArtwork,List)}
+	 * @param cell - A <Strong>SubMenu</Strong> cell whose sub menu you wish to open
+	 * @return boolean success / failure - whether the request was able to be sent
+	 */
+	public boolean openSubMenu(@NonNull MenuCell cell){
+		return this.menuManager.openSubMenu(cell);
+  	}
+  
+  	/**
+	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable.
+	 * @param menuConfiguration - The default menuConfiguration
+	 */
+	public void setMenuConfiguration(@NonNull MenuConfiguration menuConfiguration) {
+		this.menuManager.setMenuConfiguration(menuConfiguration);
+	}
+
+	/**
+	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable.
+	 * @return the currently set MenuConfiguration
+	 */
+	public MenuConfiguration getMenuConfiguration(){
+		return this.menuManager.getMenuConfiguration();
+	}
+
+	// CHOICE SETS
+
+	/**
+	 * Deletes choices that were sent previously
+	 * @param choices - A list of ChoiceCell objects
+	 */
+	public void deleteChoices(@NonNull List<ChoiceCell> choices){
+		this.choiceSetManager.deleteChoices(choices);
+	}
+
+	/**
+	 * Preload choices to improve performance while presenting a choice set at a later time
+	 * @param choices - a list of ChoiceCell objects that will be part of a choice set later
+	 * @param listener - a completion listener to inform when the operation is complete
+	 */
+	public void preloadChoices(@NonNull List<ChoiceCell> choices, CompletionListener listener){
+		this.choiceSetManager.preloadChoices(choices, listener);
+	}
+
+	/**
+	 * Presents a searchable choice set
+	 * @param choiceSet - The choice set to be presented. This can include Choice Cells that were preloaded or not
+	 * @param mode - The intended interaction mode
+	 * @param keyboardListener - A keyboard listener to capture user input
+	 */
+	public void presentSearchableChoiceSet(@NonNull ChoiceSet choiceSet, @Nullable InteractionMode mode, @NonNull KeyboardListener keyboardListener){
+		this.choiceSetManager.presentChoiceSet(choiceSet, mode, keyboardListener);
+	}
+
+	/**
+	 * Presents a choice set
+	 * @param choiceSet - The choice set to be presented. This can include Choice Cells that were preloaded or not
+	 * @param mode - The intended interaction mode
+	 */
+	public void presentChoiceSet(@NonNull ChoiceSet choiceSet, @Nullable InteractionMode mode){
+		this.choiceSetManager.presentChoiceSet(choiceSet, mode, null);
+	}
+
+	/**
+	 * Presents a keyboard on the Head unit to capture user input
+	 * @param initialText - The initial text that is used as a placeholder text. It might not work on some head units.
+	 * @param customKeyboardProperties - the custom keyboard configuration to be used when the keyboard is displayed
+	 * @param keyboardListener - A keyboard listener to capture user input
+	 */
+	public void presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardProperties, @NonNull KeyboardListener keyboardListener){
+		this.choiceSetManager.presentKeyboard(initialText, customKeyboardProperties, keyboardListener);
+	}
+
+	/**
+	 * Set a custom keyboard configuration for this session. If set to null, it will reset to default keyboard configuration.
+	 * @param keyboardConfiguration - the custom keyboard configuration to be used when the keyboard is displayed
+	 */
+	public void setKeyboardConfiguration(@Nullable KeyboardProperties keyboardConfiguration){
+		this.choiceSetManager.setKeyboardConfiguration(keyboardConfiguration);
+	}
+
+	/**
+	 * @return A set of choice cells that have been preloaded to the head unit
+	 */
+	public HashSet<ChoiceCell> getPreloadedChoices(){
+		return this.choiceSetManager.getPreloadedChoices();
+	}
+
+	// END CHOICE SETS
 
 	/**
 	 * Begin a multiple updates transaction. The updates will be applied when commit() is called<br>

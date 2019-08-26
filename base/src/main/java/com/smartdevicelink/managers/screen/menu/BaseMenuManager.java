@@ -54,14 +54,20 @@ import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.ShowAppMenu;
+import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
 
 import org.json.JSONException;
@@ -83,6 +89,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 	List<MenuCell> menuCells, waitingUpdateMenuCells, oldMenuCells, keepsNew, keepsOld;
 	List<RPCRequest> inProgressUpdate;
 	DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
+	MenuConfiguration menuConfiguration;
+	SdlMsgVersion sdlMsgVersion;
 	private DisplayType displayType;
 
 	boolean waitingOnHMIUpdate;
@@ -110,6 +118,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		currentHMILevel = HMILevel.HMI_NONE;
 		lastMenuId = menuCellIdMin;
 		dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
+		sdlMsgVersion = internalInterface.getSdlMsgVersion();
 
 		addListeners();
 	}
@@ -136,6 +145,8 @@ abstract class BaseMenuManager extends BaseSubManager {
 		waitingUpdateMenuCells = null;
 		keepsNew = null;
 		keepsOld = null;
+		menuConfiguration = null;
+		sdlMsgVersion = null;
 
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
@@ -245,6 +256,141 @@ abstract class BaseMenuManager extends BaseSubManager {
 		return this.dynamicMenuUpdatesMode;
 	}
 
+    // OPEN MENU RPCs
+
+    /**
+     * Opens the Main Menu
+     */
+    public boolean openMenu(){
+
+        if (sdlMsgVersion.getMajorVersion() < 6){
+            DebugTool.logWarning("Menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
+            return false;
+        }
+        
+        ShowAppMenu showAppMenu = new ShowAppMenu();
+        showAppMenu.setOnRPCResponseListener(new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+                if (response.getSuccess()){
+                    DebugTool.logInfo("Open Main Menu Request Successful");
+                } else {
+                    DebugTool.logError("Open Main Menu Request Failed");
+                }
+            }
+
+            @Override
+            public void onError(int correlationId, Result resultCode, String info){
+                DebugTool.logError("Open Main Menu onError: "+ resultCode+ " | Info: "+ info);
+            }
+        });
+        internalInterface.sendRPC(showAppMenu);
+        return true;
+    }
+
+    /**
+     * Opens a subMenu. The cell you pass in must be constructed with {@link MenuCell(String,SdlArtwork,List)}
+     * @param cell - A <Strong>SubMenu</Strong> cell whose sub menu you wish to open
+     */
+    public boolean openSubMenu(@NonNull MenuCell cell){
+
+        if (sdlMsgVersion.getMajorVersion() < 6){
+            DebugTool.logWarning("Sub menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
+            return false;
+        }
+
+        if (oldMenuCells == null){
+            DebugTool.logError("open sub menu called, but no Menu cells have been set");
+            return false;
+        }
+        // We must see if we have a copy of this cell, since we clone the objects
+        for (MenuCell clonedCell : oldMenuCells){
+            if (clonedCell.equals(cell) && clonedCell.getCellId() != MAX_ID){
+                // We've found the correct sub menu cell
+				sendOpenSubMenu(clonedCell.getCellId());
+				return true;
+            }
+        }
+        return false;
+    }
+
+    private void sendOpenSubMenu(Integer id){
+
+        ShowAppMenu showAppMenu = new ShowAppMenu();
+        showAppMenu.setMenuID(id);
+        showAppMenu.setOnRPCResponseListener(new OnRPCResponseListener() {
+            @Override
+            public void onResponse(int correlationId, RPCResponse response) {
+                if (response.getSuccess()){
+                    DebugTool.logInfo("Open Sub Menu Request Successful");
+                } else {
+                    DebugTool.logError("Open Sub Menu Request Failed");
+                }
+            }
+
+            @Override
+            public void onError(int correlationId, Result resultCode, String info){
+                DebugTool.logError("Open Sub Menu onError: "+ resultCode+ " | Info: "+ info);
+            }
+        });
+
+        internalInterface.sendRPC(showAppMenu);
+    }
+
+    // MENU CONFIG
+
+        /**
+     * This method is called via the screen manager to set the menuConfiguration.
+     * This will be used when a menu item with sub-cells has a null value for menuConfiguration
+     * @param menuConfiguration - The default menuConfiguration
+     */
+    public void setMenuConfiguration(@NonNull final MenuConfiguration menuConfiguration) {
+
+        if (sdlMsgVersion == null) {
+            DebugTool.logError("SDL Message Version is null. Cannot set Menu Configuration");
+            return;
+        }
+
+        if (sdlMsgVersion.getMajorVersion() < 6){
+            DebugTool.logWarning("Menu configurations is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
+            return;
+        }
+
+        if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
+            // We are in NONE or the menu is in use, bail out of here
+            DebugTool.logError("Could not set main menu configuration, HMI level: "+currentHMILevel+", required: 'Not-NONE', system context: "+currentSystemContext+", required: 'Not MENU'");
+            return;
+        }
+
+        // In the future, when the manager is switched to use queues, the menuConfiguration should be set when SetGlobalProperties response is received
+        this.menuConfiguration = menuConfiguration;
+
+        if (menuConfiguration.getMenuLayout() != null) {
+
+			SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
+			setGlobalProperties.setMenuLayout(menuConfiguration.getMenuLayout());
+			setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
+				@Override
+				public void onResponse(int correlationId, RPCResponse response) {
+					if (response.getSuccess()) {
+						DebugTool.logInfo("Menu Configuration successfully set: " + menuConfiguration.toString());
+					}
+				}
+
+				@Override
+				public void onError(int correlationId, Result resultCode, String info) {
+					DebugTool.logError("onError: " + resultCode + " | Info: " + info);
+				}
+			});
+			internalInterface.sendRPC(setGlobalProperties);
+		} else {
+			DebugTool.logInfo("Menu Layout is null, not sending setGlobalProperties");
+		}
+    }
+
+    public MenuConfiguration getMenuConfiguration(){
+        return this.menuConfiguration;
+    }
 	// UPDATING SYSTEM
 
 	// ROOT MENU
@@ -379,7 +525,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		// this is needed for the onCommands to still work
 		transferIdsToKeptCells(keepsNew);
 
-		if (adds != null && adds.size() > 0){
+		if (adds.size() > 0){
 			DebugTool.logInfo("Sending root menu updates");
 			sendDynamicRootMenuRPCs(deleteCommands, adds);
 		}else{
@@ -826,6 +972,11 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position){
 		AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getTitle());
 		subMenu.setPosition(position);
+		if (cell.getSubMenuLayout() != null ) {
+			subMenu.setMenuLayout(cell.getSubMenuLayout());
+		} else if (menuConfiguration != null && menuConfiguration.getSubMenuLayout() != null) {
+			subMenu.setMenuLayout(menuConfiguration.getSubMenuLayout());
+		}
 		subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon()!= null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);
 		return subMenu;
 	}
@@ -853,6 +1004,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// LISTENERS
 
+	@SuppressWarnings("deprecation")
 	private void addListeners(){
 
 		// DISPLAY CAPABILITIES - via SCM
@@ -876,12 +1028,15 @@ abstract class BaseMenuManager extends BaseSubManager {
 		hmiListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
-				OnHMIStatus hmiStatus = (OnHMIStatus) notification;
+				OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+					return;
+				}
 				HMILevel oldHMILevel = currentHMILevel;
-				currentHMILevel = hmiStatus.getHmiLevel();
+				currentHMILevel = onHMIStatus.getHmiLevel();
 
 				// Auto-send an updated menu if we were in NONE and now we are not, and we need an update
-				if (oldHMILevel.equals(HMILevel.HMI_NONE) && !currentHMILevel.equals(HMILevel.HMI_NONE) && !currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
+				if (oldHMILevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE && currentSystemContext != SystemContext.SYSCTXT_MENU){
 					if (waitingOnHMIUpdate){
 						DebugTool.logInfo("We now have proper HMI, sending waiting update");
 						setMenuCells(waitingUpdateMenuCells);
@@ -893,9 +1048,9 @@ abstract class BaseMenuManager extends BaseSubManager {
 				// If we don't check for this and only update when not in the menu, there can be IN_USE errors, especially with submenus.
 				// We also don't want to encourage changing out the menu while the user is using it for usability reasons.
 				SystemContext oldContext = currentSystemContext;
-				currentSystemContext = hmiStatus.getSystemContext();
+				currentSystemContext = onHMIStatus.getSystemContext();
 
-				if (oldContext.equals(SystemContext.SYSCTXT_MENU) && !currentSystemContext.equals(SystemContext.SYSCTXT_MENU) && !currentHMILevel.equals(HMILevel.HMI_NONE)){
+				if (oldContext == SystemContext.SYSCTXT_MENU && currentSystemContext != SystemContext.SYSCTXT_MENU && currentHMILevel != HMILevel.HMI_NONE){
 					if (waitingOnHMIUpdate){
 						DebugTool.logInfo("We now have a proper system context, sending waiting update");
 						setMenuCells(waitingUpdateMenuCells);
