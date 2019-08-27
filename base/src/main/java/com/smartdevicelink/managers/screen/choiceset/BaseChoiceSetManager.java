@@ -332,8 +332,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 if (pendingPresentationSet.getChoiceSetSelectionListener() != null){
                     pendingPresentationSet.getChoiceSetSelectionListener().onChoiceSelected(choiceCell, triggerSource,rowIndex);
                 }
-                pendingPresentationSet = null;
-                pendingPresentOperation = null;
             }
 
             @Override
@@ -341,8 +339,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 if (pendingPresentationSet.getChoiceSetSelectionListener() != null){
                     pendingPresentationSet.getChoiceSetSelectionListener().onError(error);
                 }
-                pendingPresentationSet = null;
-                pendingPresentOperation = null;
             }
         };
 
