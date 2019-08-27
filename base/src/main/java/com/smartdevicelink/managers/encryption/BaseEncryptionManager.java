@@ -1,7 +1,9 @@
-package com.smartdevicelink.managers;
+package com.smartdevicelink.managers.encryption;
 
 import android.support.annotation.NonNull;
 import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -17,7 +19,7 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.util.*;
 
-public class BaseEncryptionLifecycleManager extends BaseSubManager {
+abstract class BaseEncryptionManager extends BaseSubManager {
     private ISdl internalInterface;
     private OnRPCNotificationListener onPermissionsChangeListener;
     private OnRPCNotificationListener onHMIStatusListener;
@@ -27,7 +29,7 @@ public class BaseEncryptionLifecycleManager extends BaseSubManager {
     private int currentState;
     private boolean isAppLevelEncryptionRequired;
 
-    BaseEncryptionLifecycleManager(ISdl isdl) {
+    BaseEncryptionManager(ISdl isdl) {
         super(isdl);
         internalInterface = isdl;
         currentState = SHUTDOWN;

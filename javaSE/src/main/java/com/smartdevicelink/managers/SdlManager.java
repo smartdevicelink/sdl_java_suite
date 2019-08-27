@@ -34,6 +34,7 @@ package com.smartdevicelink.managers;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+import com.smartdevicelink.managers.encryption.EncryptionManager;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
@@ -92,7 +93,7 @@ public class SdlManager extends BaseSdlManager{
 	private PermissionManager permissionManager;
 	private FileManager fileManager;
     private ScreenManager screenManager;
-    private BaseEncryptionLifecycleManager encryptionManager;
+    private EncryptionManager encryptionManager;
 
 
 	// INTERNAL INTERFACE
@@ -282,7 +283,7 @@ public class SdlManager extends BaseSdlManager{
 		this.permissionManager = new PermissionManager(_internalInterface);
 		this.fileManager = new FileManager(_internalInterface);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-		this.encryptionManager = new BaseEncryptionLifecycleManager(_internalInterface);
+		this.encryptionManager = new EncryptionManager(_internalInterface);
 
 		// Start sub managers
 		this.permissionManager.start(subManagerListener);
@@ -325,7 +326,7 @@ public class SdlManager extends BaseSdlManager{
 	 * <strong>Note: EncryptionManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
 	 * @return a BaseEncryptionLifecycleManager object
 	 */
-	public BaseEncryptionLifecycleManager getEncryptionManager() {
+	public EncryptionManager getEncryptionManager() {
 		if (encryptionManager.getState() != BaseSubManager.READY && encryptionManager.getState() != BaseSubManager.LIMITED) {
 			Log.e(TAG, "EncryptionManager should not be accessed because it is not in READY/LIMITED state");
 		}
