@@ -123,6 +123,7 @@ import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.SiphonServer;
+import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.CorrelationIdGenerator;
@@ -1569,14 +1570,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 
 			//Handle legacy USB connections
-			if(_transportConfig != null
-					&& TransportType.USB.equals(_transportConfig.getTransportType())){
+			if (_transportConfig != null
+					&& TransportType.USB.equals(_transportConfig.getTransportType())) {
 				//A USB transport config was provided
-				USBTransportConfig usbTransportConfig = (USBTransportConfig)_transportConfig;
-				if(usbTransportConfig.getUsbAccessory() == null){
+				USBTransportConfig usbTransportConfig = (USBTransportConfig) _transportConfig;
+				if (usbTransportConfig.getUsbAccessory() == null) {
 					DebugTool.logInfo("Legacy USB transport config was used, but received null for accessory. Attempting to connect with router service");
 					//The accessory was null which means it came from a router service
-					MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(usbTransportConfig.getUSBContext(),_appID);
+					MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(usbTransportConfig.getUSBContext(), _appID);
 					multiplexTransportConfig.setRequiresHighBandwidth(true);
 					multiplexTransportConfig.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
 					multiplexTransportConfig.setPrimaryTransports(Collections.singletonList(TransportType.USB));
@@ -1585,9 +1586,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			}
 
-			if(_transportConfig.getTransportType().equals(TransportType.MULTIPLEX)){
-				this.sdlSession = new SdlSession2(_interfaceBroker,(MultiplexTransportConfig)_transportConfig);
-			}else{
+			if (_transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
+				this.sdlSession = new SdlSession2(_interfaceBroker, (MultiplexTransportConfig) _transportConfig);
+			}else if(_transportConfig.getTransportType().equals(TransportType.TCP)){
+				this.sdlSession = new SdlSession2(_interfaceBroker, (TCPTransportConfig) _transportConfig);
+			}else {
 				this.sdlSession = SdlSession.createSession((byte)getProtocolVersion().getMajor(),_interfaceBroker, _transportConfig);
 			}
 		}
