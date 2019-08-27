@@ -45,6 +45,7 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertNull(screenManager.getTextField2());
 		assertNull(screenManager.getTextField3());
 		assertNull(screenManager.getTextField4());
+		assertNull(screenManager.getTemplateTitle());
 		assertNull(screenManager.getMediaTrackTextField());
 		assertNull(screenManager.getPrimaryGraphic());
 		assertNull(screenManager.getSecondaryGraphic());
@@ -60,7 +61,7 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertNull(screenManager.getSoftButtonObjectById(1));
 		assertEquals(screenManager.getDynamicMenuUpdatesMode(), DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE);
 		assertEquals(screenManager.getState(), BaseSubManager.READY);
-		assertNotNull(screenManager.getMenuConfiguration());
+		assertNull(screenManager.getMenuConfiguration());
 	}
 	
 	public void testSetTextField() {
@@ -68,10 +69,12 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		screenManager.setTextField2("Wednesday");
 		screenManager.setTextField3("My");
 		screenManager.setTextField4("Dudes");
+		screenManager.setTemplateTitle("title");
 		assertEquals(screenManager.getTextField1(), "It is");
 		assertEquals(screenManager.getTextField2(), "Wednesday");
 		assertEquals(screenManager.getTextField3(), "My");
 		assertEquals(screenManager.getTextField4(), "Dudes");
+		assertEquals(screenManager.getTemplateTitle(), "title");
 	}
 
 	public void testMediaTrackTextFields() {
@@ -126,7 +129,7 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertEquals(screenManager.getMenu(), Test.GENERAL_MENUCELL_LIST);
 		assertEquals(screenManager.getDynamicMenuUpdatesMode(), DynamicMenuUpdatesMode.FORCE_ON);
 		// Should not set because of improper RAI response and improper HMI states
-		assertNotNull(screenManager.getMenuConfiguration());
+		assertNull(screenManager.getMenuConfiguration());
 	}
 
 	public void testSetVoiceCommands(){

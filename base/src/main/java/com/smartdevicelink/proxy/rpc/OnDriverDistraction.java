@@ -73,6 +73,8 @@ import java.util.Hashtable;
  */
 public class OnDriverDistraction  extends RPCNotification {
 	public static final String KEY_STATE = "state";
+    public static final String KEY_LOCKSCREEN_DISMISSIBLE = "lockScreenDismissalEnabled";
+    public static final String KEY_LOCKSCREEN_DISMISSIBLE_MSG = "lockScreenDismissalWarning";
 	/**
 	*Constructs a newly allocated OnDriverDistraction object
 	*/ 
@@ -107,5 +109,37 @@ public class OnDriverDistraction  extends RPCNotification {
      */    
     public void setState( @NonNull DriverDistractionState state ) {
         setParameters(KEY_STATE, state);
-    }  
+    }
+
+    /**
+     * <p>Called to set dismissible state of Lockscreen</p>
+     * @param isDismissible the Lockscreen's dismissibility
+     */
+    public void setLockscreenDismissibility(boolean isDismissible) {
+        setParameters(KEY_LOCKSCREEN_DISMISSIBLE, isDismissible);
+    }
+
+    /**
+     * <p>Called to get the dismissible state of Lockscreen</p>
+     * @return true if the Lockscreen is dismissible, false otherwise
+     */
+    public Boolean getLockscreenDismissibility() {
+        return (Boolean) getObject(Boolean.class, KEY_LOCKSCREEN_DISMISSIBLE);
+    }
+
+    /**
+     * Called to set a warning message for the lockscreen
+     * @param msg the message to be set
+     */
+    public void setLockscreenWarningMessage(String msg) {
+        setParameters(KEY_LOCKSCREEN_DISMISSIBLE_MSG, msg);
+    }
+
+    /**
+     * Called to get the lockscreen warning message
+     * @return warning message
+     */
+    public String getLockscreenWarningMessage() {
+        return (String) getObject(String.class, KEY_LOCKSCREEN_DISMISSIBLE_MSG);
+    }
 }

@@ -27,6 +27,7 @@ public class SoftButtonCapabilitiesTest extends TestCase {
 		msg.setShortPressAvailable(Test.GENERAL_BOOLEAN);
 		msg.setLongPressAvailable(Test.GENERAL_BOOLEAN);
 		msg.setUpDownAvailable(Test.GENERAL_BOOLEAN);
+		msg.setTextSupported(Test.GENERAL_BOOLEAN);
 	}
 
     /**
@@ -38,12 +39,14 @@ public class SoftButtonCapabilitiesTest extends TestCase {
 		Boolean updown = msg.getUpDownAvailable();
 		Boolean longPress = msg.getLongPressAvailable();
 		Boolean shortPress = msg.getShortPressAvailable();
+		Boolean textSupported = msg.getTextSupported();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, imageSupp);
 		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, updown);
 		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, longPress);
 		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, shortPress);
+		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, textSupported);
 		
 		// Invalid/Null Tests
 		SoftButtonCapabilities msg = new SoftButtonCapabilities();
@@ -53,6 +56,7 @@ public class SoftButtonCapabilitiesTest extends TestCase {
 		assertNull(Test.NULL, msg.getLongPressAvailable());
 		assertNull(Test.NULL, msg.getShortPressAvailable());
 		assertNull(Test.NULL, msg.getUpDownAvailable());
+		assertNull(Test.NULL, msg.getTextSupported());
 	}
 
 	public void testJson() {
@@ -63,6 +67,7 @@ public class SoftButtonCapabilitiesTest extends TestCase {
 			reference.put(SoftButtonCapabilities.KEY_UP_DOWN_AVAILABLE, Test.GENERAL_BOOLEAN);
 			reference.put(SoftButtonCapabilities.KEY_LONG_PRESS_AVAILABLE, Test.GENERAL_BOOLEAN);
 			reference.put(SoftButtonCapabilities.KEY_SHORT_PRESS_AVAILABLE, Test.GENERAL_BOOLEAN);
+			reference.put(SoftButtonCapabilities.KEY_TEXT_SUPPORTED, Test.GENERAL_BOOLEAN);
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());

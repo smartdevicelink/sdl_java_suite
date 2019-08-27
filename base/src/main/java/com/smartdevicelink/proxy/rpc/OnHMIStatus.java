@@ -107,6 +107,7 @@ public class OnHMIStatus extends RPCNotification {
     public static final String KEY_VIDEO_STREAMING_STATE = "videoStreamingState";
 	public static final String KEY_SYSTEM_CONTEXT = "systemContext";
 	public static final String KEY_HMI_LEVEL = "hmiLevel";
+    public static final String KEY_WINDOW_ID = "windowID";
 
     private Boolean firstRun;
 	
@@ -217,5 +218,23 @@ public class OnHMIStatus extends RPCNotification {
      */    
     public void setFirstRun(Boolean firstRun) {
     	this.firstRun = firstRun;
+    }
+    /**
+     * <p>Set the windowID value</p>
+     * @param windowID This is the unique ID assigned to the window that this RPC is intended.
+     *                If this param is not included, it will be assumed that this request is specifically for the main window on the main display.
+     *                See PredefinedWindows enum.
+     * @since 6.0
+     */
+    public void setWindowID(Integer windowID) {
+        setParameters(KEY_WINDOW_ID, windowID);
+    }
+    /**
+     * <p>Get the windowID value</p>
+     * @return Integer This is the unique ID assigned to the window that this RPC is intended.
+     * @since 6.0
+     */
+    public Integer getWindowID() {
+        return getInteger(KEY_WINDOW_ID);
     }
 }

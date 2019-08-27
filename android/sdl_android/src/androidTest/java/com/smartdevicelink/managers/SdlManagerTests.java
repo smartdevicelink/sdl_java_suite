@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
@@ -103,6 +104,11 @@ public class SdlManagerTests extends AndroidTestCase2 {
 			@Override
 			public void onError(String info, Exception e) {
 
+			}
+
+			@Override
+			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language){
+				return null;
 			}
 		};
 

@@ -53,6 +53,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -138,7 +139,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertNull(menuManager.inProgressUpdate);
 		assertNull(menuManager.keepsNew);
 		assertNull(menuManager.keepsOld);
-		assertNotNull(menuManager.menuConfiguration);
+		assertNull(menuManager.menuConfiguration);
 		assertNotNull(menuManager.hmiListener);
 		assertNotNull(menuManager.commandListener);
 		assertNotNull(menuManager.displayListener);
@@ -445,6 +446,30 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.menuCells.size(), 0);
 	}
 
+	public void testOpeningMainMenu(){
+		// call open Menu
+		MenuManager mockMenuManager = mock(MenuManager.class);
+		mockMenuManager.openMenu();
+		verify(mockMenuManager, Mockito.times(1)).openMenu();
+	}
+
+	public void testOpeningSubMenuNullCells(){
+		// call open Menu
+		MenuManager mockMenuManager = mock(MenuManager.class);
+		MenuCell cell = mock(MenuCell.class);
+		mockMenuManager.oldMenuCells = null;
+		assertFalse(mockMenuManager.openSubMenu(cell));
+	}
+
+	public void testOpeningSubMenu(){
+		// call open Menu
+		List<MenuCell> testCells = createTestCells();
+		menuManager.oldMenuCells = testCells;
+		menuManager.sdlMsgVersion = new SdlMsgVersion(6,0);
+		// has to get success response to be true
+		assertTrue(menuManager.openSubMenu(testCells.get(3)));
+  }
+  
 	public void testSetMenuConfiguration(){
 		menuManager.currentHMILevel = HMILevel.HMI_FULL;
 		menuManager.currentSystemContext = SystemContext.SYSCTXT_MAIN;
@@ -453,6 +478,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		MenuConfiguration menuConfigurationTest = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
 		menuManager.setMenuConfiguration(menuConfigurationTest);
 		assertEquals(menuManager.menuConfiguration, menuConfigurationTest);
+
 	}
 
 	// HELPERS
@@ -489,7 +515,8 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		MenuCell subCell1 = new MenuCell("SubCell 1",null, null, menuSelectionListenerSub1);
 		MenuCell subCell2 = new MenuCell("SubCell 2",null, null, menuSelectionListenerSub2);
 
-		mainCell4 = new MenuCell("Test Cell 4", MenuLayout.LIST, livio, Arrays.asList(subCell1,subCell2)); // sub menu parent cell
+		mainCell4 = new MenuCell("Test Cell 4", null, livio, Arrays.asList(subCell1,subCell2)); // sub menu parent cell
+		mainCell4.setCellId(4);
 
 		return Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4);
 	}

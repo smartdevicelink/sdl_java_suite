@@ -47,10 +47,12 @@ import com.smartdevicelink.proxy.rpc.ButtonPressResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
 import com.smartdevicelink.proxy.rpc.CloseApplicationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
+import com.smartdevicelink.proxy.rpc.CreateWindowResponse;
 import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
 import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSetResponse;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.DeleteWindowResponse;
 import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
 import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
@@ -103,6 +105,7 @@ import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetInteriorVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
+import com.smartdevicelink.proxy.rpc.ShowAppMenuResponse;
 import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
@@ -574,6 +577,16 @@ public class ProxyBridge implements IProxyListener{
 	}
 
 	@Override
+	public void onCreateWindowResponse(CreateWindowResponse response) {
+		onRPCReceived(response);
+	}
+
+	@Override
+	public void onDeleteWindowResponse(DeleteWindowResponse response) {
+		onRPCReceived(response);
+	}
+
+	@Override
 	public void onButtonPressResponse(ButtonPressResponse response) {
 		onRPCReceived(response);
 
@@ -609,7 +622,8 @@ public class ProxyBridge implements IProxyListener{
 	public void onGetCloudAppProperties(GetCloudAppPropertiesResponse response) {
 		onRPCReceived(response);
 	}
-@Override
+
+	@Override
 	public void onPublishAppServiceResponse(PublishAppServiceResponse response){
 		onRPCReceived(response);
 	}
@@ -641,6 +655,11 @@ public class ProxyBridge implements IProxyListener{
 
 	@Override
 	public void onCloseApplicationResponse(CloseApplicationResponse response) {
+		onRPCReceived(response);
+	}
+
+	@Override
+	public void onShowAppMenuResponse(ShowAppMenuResponse response) {
 		onRPCReceived(response);
 	}
 

@@ -529,6 +529,7 @@ public class SdlProtocolBase {
     public void endSession(byte sessionID, int hashId) {
         SdlPacket header = SdlPacketFactory.createEndSession(SessionType.RPC, sessionID, hashId, (byte)protocolVersion.getMajor(), hashId);
         handlePacketToSend(header);
+        transportManager.close(sessionID);
 
     } // end-method
 

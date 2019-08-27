@@ -63,6 +63,8 @@ abstract class BaseSdlManager {
     final Object STATE_LOCK = new Object();
     int state = -1;
 
+    static final int MAX_RETRY = 3;
+    int changeRegistrationRetry = 0;
     String appId, appName, shortAppName;
     boolean isMediaApp;
     Language hmiLanguage;
@@ -179,6 +181,7 @@ abstract class BaseSdlManager {
     abstract void checkState();
 
     protected abstract void initialize();
+    protected abstract void checkLifecycleConfiguration();
 
     //Public abstract API
     public abstract  void start();

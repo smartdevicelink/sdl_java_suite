@@ -32,6 +32,7 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.util.SdlDataTypeConverter;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -45,6 +46,9 @@ public class VideoStreamingCapability extends RPCStruct {
 	public static final String KEY_MAX_BITRATE = "maxBitrate";
 	public static final String KEY_SUPPORTED_FORMATS = "supportedFormats";
 	public static final String KEY_HAPTIC_SPATIAL_DATA_SUPPORTED = "hapticSpatialDataSupported";
+	public static final String KEY_DIAGONAL_SCREEN_SIZE = "diagonalScreenSize";
+	public static final String KEY_PIXEL_PER_INCH = "pixelPerInch";
+	public static final String KEY_SCALE = "scale";
 
 	public VideoStreamingCapability(){}
 	public VideoStreamingCapability(Hashtable<String, Object> hash){super(hash);}
@@ -91,5 +95,50 @@ public class VideoStreamingCapability extends RPCStruct {
 
 	public void setIsHapticSpatialDataSupported(Boolean hapticSpatialDataSupported) {
 		setValue(KEY_HAPTIC_SPATIAL_DATA_SUPPORTED, hapticSpatialDataSupported);
+	}
+
+	/**
+	 * @return the diagonal screen size in inches.
+	 */
+	public Double getDiagonalScreenSize() {
+	    Object object = getValue(KEY_DIAGONAL_SCREEN_SIZE);
+		return SdlDataTypeConverter.objectToDouble(object);
+	}
+
+	/**
+	 * @param diagonalScreenSize the diagonal screen size in inches.
+	 */
+	public void setDiagonalScreenSize(Double diagonalScreenSize) {
+		setValue(KEY_DIAGONAL_SCREEN_SIZE, diagonalScreenSize);
+	}
+
+	/**
+	 * @return the diagonal resolution in pixels divided by the diagonal screen size in inches.
+	 */
+	public Double getPixelPerInch() {
+	    Object object = getValue(KEY_PIXEL_PER_INCH);
+	    return SdlDataTypeConverter.objectToDouble(object);
+	}
+
+	/**
+	 * @param pixelPerInch the diagonal resolution in pixels divided by the diagonal screen size in inches.
+	 */
+	public void setPixelPerInch(Double pixelPerInch) {
+		setValue(KEY_PIXEL_PER_INCH, pixelPerInch);
+	}
+
+	/**
+	 * @return the scaling factor the app should use to change the size of the projecting view.
+	 */
+	public Double getScale() {
+	    Object object = getValue(KEY_SCALE);
+	    return SdlDataTypeConverter.objectToDouble(object);
+	}
+
+	/**
+	 * @param scale the scaling factor the app should use to change the size of the projecting view.
+	 */
+	public void setScale(Double scale) {
+		setValue(KEY_SCALE, scale);
 	}
 }
