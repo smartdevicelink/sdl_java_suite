@@ -18,6 +18,7 @@ import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
@@ -25,9 +26,11 @@ import com.smartdevicelink.proxy.rpc.PhoneCapability;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
@@ -92,6 +95,8 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 	public void testParseRAI() {
 		systemCapabilityManager = createSampleManager();
 
+		assertTrue(Test.TRUE,
+				Validator.validateDisplayCapabilityList(Test.GENERAL_DISPLAY_CAPABILITY_LIST, (List<DisplayCapability>) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS)));
 		assertTrue(Test.TRUE,
 				Validator.validateHMICapabilities(Test.GENERAL_HMICAPABILITIES, (HMICapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.HMI)));
 		assertTrue(Test.TRUE,
@@ -189,6 +194,32 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		scmRpcListener.onReceived(onSystemCapabilityUpdated);
 
 		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES));
+	}
+
+	public void testOnSystemCapabilityUpdatedForDISPLAYS() {
+		InternalSDLInterface iSDL = new InternalSDLInterface();
+		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
+		OnRPCListener scmRpcListener = iSDL.rpcListeners.get(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED.getId()).get(0);
+		assertNotNull(scmRpcListener);
+
+		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS));
+		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY));
+
+		List<DisplayCapability> newCaps = Test.GENERAL_DISPLAYCAPABILITY_LIST;
+
+		SystemCapability systemCapability = new SystemCapability();
+		systemCapability.setSystemCapabilityType(SystemCapabilityType.DISPLAYS);
+		systemCapability.setCapabilityForType(SystemCapabilityType.DISPLAYS, newCaps);
+
+		OnSystemCapabilityUpdated onSystemCapabilityUpdated = new OnSystemCapabilityUpdated();
+		onSystemCapabilityUpdated.setSystemCapability(systemCapability);
+
+		scmRpcListener.onReceived(onSystemCapabilityUpdated);
+
+		List<DisplayCapability> appliedCaps = systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
+		DisplayCapabilities convertedCaps = systemCapabilityManager.getCapability(SystemCapabilityManageType.DISPLAY);
+		assertNotNull(appliedCaps);
+		assertEquals(newCaps.get(0), appliedCaps.get(0));
 
 	}
 
@@ -327,6 +358,28 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		assertNotNull(phoneCapabilityUpdated);
 		assertFalse(phoneCapabilityUpdated.getDialNumberEnabled());
 		assertEquals(phoneCapability, phoneCapabilityUpdated);
+	}
+
+	public void testOnSetDisplayLayout() {
+		InternalSDLInterface iSDL = new InternalSDLInterface();
+		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
+		OnRPCListener dlRpcListener = iSDL.rpcListeners.get(FunctionID.SET_DISPLAY_LAYOUT.getId()).get(0);
+		assertNotNull(dlRpcListener);
+
+		SetDisplayLayoutResponse newLayout = new SetDisplayLayoutResponse();
+		newLayout.setDisplayCapabilities(Test.GENERAL_DISPLAYCAPABILITIES);
+		newLayout.setButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES);
+		newLayout.setSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES);
+		newLayout.setPresetBankCapabilities(Test.GENERAL_PRESETBANKCAPABILITIES);
+		newLayout.setSuccess(true);
+		newLayout.setResultCode(Result.SUCCESS);
+
+		dlRpcListener.onReceived(newLayout);
+
+		List<DisplayCapability> convertedCaps = systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
+		DisplayCapabilities appliedCaps = systemCapabilityManager.getCapability(SystemCapabilityManageType.DISPLAY);
+		assertNotNull(appliedCaps);
+		assertEquals(newLayout.getDisplayCapabilities(), appliedCaps);
 	}
 
 	private class InternalSDLInterface implements ISdl{
