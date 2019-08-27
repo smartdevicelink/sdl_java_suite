@@ -58,20 +58,10 @@ public abstract class BaseSubManager {
 	public static final int SETTING_UP = 0x00, READY = 0x30, LIMITED = 0x50, SHUTDOWN = 0x80, ERROR = 0xC0;
 	protected final ISdl internalInterface;
 	private CompletionListener completionListener;
-	protected boolean isAppLevelEncryptionRequired;
-	protected Set<String> encryptionRequiredRPCs = new HashSet<>();
 
 	public BaseSubManager(@NonNull ISdl internalInterface){
 		this.internalInterface = internalInterface;
 		transitionToState(SETTING_UP);
-	}
-
-	public boolean getRequiresEncryption() {
-		return isAppLevelEncryptionRequired;
-	}
-
-	public boolean getRPCRequiresEncryption(@NonNull FunctionID rpcName) {
-		return encryptionRequiredRPCs.contains(rpcName.toString());
 	}
 
 	/**
