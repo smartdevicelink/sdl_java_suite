@@ -5,7 +5,6 @@ import android.os.Message;
 import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
-import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
@@ -16,7 +15,7 @@ public class TCPTransportManager extends TransportManagerBase{
 
     private static final String TAG = "TCPTransportManager";
 
-    TCPHandler tcpHandler;
+    private TCPHandler tcpHandler;
     private MultiplexTcpTransport transport;
     private TCPTransportConfig config;
 
@@ -45,7 +44,7 @@ public class TCPTransportManager extends TransportManagerBase{
             transport.stop();
         }
         //TODO make sure this makes sense
-        transport = new MultiplexTcpTransport(config.getPort(), config.getIPAddress(),config.getAutoReconnect(),null, null);
+        transport = new MultiplexTcpTransport(config.getPort(), config.getIPAddress(),config.getAutoReconnect(), tcpHandler, null);
 
     }
 

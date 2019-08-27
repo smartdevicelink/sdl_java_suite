@@ -123,7 +123,6 @@ import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.SiphonServer;
-import com.smartdevicelink.transport.TCPTransport;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;

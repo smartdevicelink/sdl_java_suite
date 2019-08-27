@@ -435,7 +435,8 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 		byte[] bytes;
 		int count;
 		int offset;
-		public OutPacket(byte[] bytes, int offset, int count){
+
+		OutPacket(byte[] bytes, int offset, int count){
 			this.bytes = bytes;
 			this.offset = offset;
 			this.count = count;

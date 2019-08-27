@@ -32,26 +32,15 @@
 
 package com.smartdevicelink.protocol;
 
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.transport.BaseTransportConfig;
-import com.smartdevicelink.transport.MultiplexBaseTransport;
-import com.smartdevicelink.transport.MultiplexTcpTransport;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
-import com.smartdevicelink.transport.SdlRouterService;
-import com.smartdevicelink.transport.TCPTransport;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.TCPTransportManager;
 import com.smartdevicelink.transport.TransportManager;
-import com.smartdevicelink.transport.TransportManagerBase;
 import com.smartdevicelink.transport.enums.TransportType;
-import com.smartdevicelink.transport.utl.TransportRecord;
 
-import java.lang.ref.WeakReference;
 import java.util.Collections;
 
 
@@ -76,7 +65,6 @@ public class SdlProtocol extends SdlProtocolBase {
         this.requestedSecondaryTransports = null;
         this.requiresHighBandwidth =false;
         this.setTransportManager(new TCPTransportManager(config,transportEventListener));
-        this.requestedPrimaryTransports = Collections.singletonList(TransportType.TCP);
     }
 
     /**
