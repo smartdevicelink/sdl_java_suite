@@ -93,11 +93,44 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		return systemCapabilityManager;
 	}
 
+	private DisplayCapability createDisplayCapability(DisplayCapabilities display, List<ButtonCapabilities> button, List<SoftButtonCapabilities> softButton) {
+		WindowTypeCapabilities windowTypeCapabilities = new WindowTypeCapabilities(WindowType.MAIN, 1);
+
+		DisplayCapability displayCapability = new DisplayCapability();
+		displayCapability.setDisplayName(display != null ? display.getDisplayName() : null);
+		displayCapability.setWindowTypeSupported(Collections.singletonList(windowTypeCapabilities));
+
+		WindowCapability defaultWindowCapability = new WindowCapability();
+		defaultWindowCapability.setWindowID(PredefinedWindows.DEFAULT_WINDOW.getValue());
+		defaultWindowCapability.setButtonCapabilities(button);
+		defaultWindowCapability.setSoftButtonCapabilities(softButton);
+
+		if (display == null) {
+			displayCapability.setWindowCapabilities(Collections.singletonList(defaultWindowCapability));
+			return Collections.singletonList(displayCapability);
+		}
+
+		defaultWindowCapability.setTemplatesAvailable(display.getTemplatesAvailable());
+		defaultWindowCapability.setNumCustomPresetsAvailable(display.getNumCustomPresetsAvailable());
+		defaultWindowCapability.setTextFields(display.getTextFields());
+		defaultWindowCapability.setImageFields(display.getImageFields());
+		ArrayList<ImageType> imageTypeSupported = new ArrayList<>();
+		imageTypeSupported.add(ImageType.STATIC);
+		if (display.getGraphicSupported()) {
+			imageTypeSupported.add(ImageType.DYNAMIC);
+		}
+		defaultWindowCapability.setImageTypeSupported(imageTypeSupported);
+
+		displayCapability.setWindowCapabilities(Collections.singletonList(defaultWindowCapability));
+		return Collections.singletonList(displayCapability);
+	}
+
 	public void testParseRAI() {
 		systemCapabilityManager = createSampleManager();
 
+		List<DisplayCapability> displayCapabilityList = createDisplayCapability(Test.GENERAL_DISPLAYCAPABILITIES, Test.GENERAL_BUTTONCAPABILITIES_LIST, Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
 		assertTrue(Test.TRUE,
-				Validator.validateDisplayCapability(Test.GENERAL_DISPLAYCAPABILITY_LIST, (List<DisplayCapability>) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS)));
+				Validator.validateDisplayCapability(displayCapabilityList, (List<DisplayCapability>) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS)));
 		assertTrue(Test.TRUE,
 				Validator.validateHMICapabilities(Test.GENERAL_HMICAPABILITIES, (HMICapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.HMI)));
 		assertTrue(Test.TRUE,
@@ -378,7 +411,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		dlRpcListener.onReceived(newLayout);
 
 		List<DisplayCapability> convertedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
-		DisplayCapabilities appliedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityManageType.DISPLAY);
+		DisplayCapabilities appliedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
 		assertNotNull(appliedCaps);
 		assertEquals(newLayout.getDisplayCapabilities(), appliedCaps);
 	}

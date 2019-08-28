@@ -2834,6 +2834,24 @@ public class Validator{
     	return true;
     }
 
+    public static boolean validateDisplayCapabilityList(List<DisplayCapability> list1, List<DisplayCapability> list2) {
+        if (list1 == null || list2 == null) {
+            return false;
+        }
+
+        if (list1.size() != list2.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < list1.size(); i++) {
+            if (!validateDisplayCapability(list1.get(i), list2.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static boolean validateDisplayCapability(DisplayCapability item1, DisplayCapability item2) {
         if (item1 == null) {
             return (item2 == null);
