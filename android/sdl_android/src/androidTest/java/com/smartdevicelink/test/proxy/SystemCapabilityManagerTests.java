@@ -25,7 +25,6 @@ import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.PhoneCapability;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
-import com.smartdevicelink.proxy.rpc.Result;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
@@ -35,6 +34,7 @@ import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -97,7 +97,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		systemCapabilityManager = createSampleManager();
 
 		assertTrue(Test.TRUE,
-				Validator.validateDisplayCapabilityList(Test.GENERAL_DISPLAYCAPABILITY_LIST, (List<DisplayCapability>) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS)));
+				Validator.validateDisplayCapability(Test.GENERAL_DISPLAYCAPABILITY_LIST, (List<DisplayCapability>) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS)));
 		assertTrue(Test.TRUE,
 				Validator.validateHMICapabilities(Test.GENERAL_HMICAPABILITIES, (HMICapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.HMI)));
 		assertTrue(Test.TRUE,
@@ -218,7 +218,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		scmRpcListener.onReceived(onSystemCapabilityUpdated);
 
 		List<DisplayCapability> appliedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
-		DisplayCapabilities convertedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityManageType.DISPLAY);
+		DisplayCapabilities convertedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
 		assertNotNull(appliedCaps);
 		assertEquals(newCaps.get(0), appliedCaps.get(0));
 
@@ -377,8 +377,8 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		dlRpcListener.onReceived(newLayout);
 
-		List<DisplayCapability> convertedCaps = systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
-		DisplayCapabilities appliedCaps = systemCapabilityManager.getCapability(SystemCapabilityManageType.DISPLAY);
+		List<DisplayCapability> convertedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
+		DisplayCapabilities appliedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityManageType.DISPLAY);
 		assertNotNull(appliedCaps);
 		assertEquals(newLayout.getDisplayCapabilities(), appliedCaps);
 	}
