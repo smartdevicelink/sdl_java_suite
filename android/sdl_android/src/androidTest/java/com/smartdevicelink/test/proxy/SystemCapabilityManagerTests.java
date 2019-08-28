@@ -25,6 +25,7 @@ import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.PhoneCapability;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.Result;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
@@ -96,7 +97,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		systemCapabilityManager = createSampleManager();
 
 		assertTrue(Test.TRUE,
-				Validator.validateDisplayCapabilityList(Test.GENERAL_DISPLAY_CAPABILITY_LIST, (List<DisplayCapability>) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS)));
+				Validator.validateDisplayCapabilityList(Test.GENERAL_DISPLAYCAPABILITY_LIST, (List<DisplayCapability>) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS)));
 		assertTrue(Test.TRUE,
 				Validator.validateHMICapabilities(Test.GENERAL_HMICAPABILITIES, (HMICapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.HMI)));
 		assertTrue(Test.TRUE,
@@ -216,8 +217,8 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		scmRpcListener.onReceived(onSystemCapabilityUpdated);
 
-		List<DisplayCapability> appliedCaps = systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
-		DisplayCapabilities convertedCaps = systemCapabilityManager.getCapability(SystemCapabilityManageType.DISPLAY);
+		List<DisplayCapability> appliedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
+		DisplayCapabilities convertedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityManageType.DISPLAY);
 		assertNotNull(appliedCaps);
 		assertEquals(newCaps.get(0), appliedCaps.get(0));
 
@@ -368,8 +369,8 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		SetDisplayLayoutResponse newLayout = new SetDisplayLayoutResponse();
 		newLayout.setDisplayCapabilities(Test.GENERAL_DISPLAYCAPABILITIES);
-		newLayout.setButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES);
-		newLayout.setSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES);
+		newLayout.setButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES_LIST);
+		newLayout.setSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
 		newLayout.setPresetBankCapabilities(Test.GENERAL_PRESETBANKCAPABILITIES);
 		newLayout.setSuccess(true);
 		newLayout.setResultCode(Result.SUCCESS);
