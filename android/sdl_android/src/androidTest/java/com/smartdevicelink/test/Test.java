@@ -12,7 +12,6 @@ import com.smartdevicelink.managers.screen.menu.MenuConfiguration;
 import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
-import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.SdlProxyBase;
@@ -1303,7 +1302,7 @@ public class Test {
 			JSON_DISPLAYCAPABILITY.put(DisplayCapability.KEY_DISPLAY_NAME, GENERAL_STRING);
 			JSON_DISPLAYCAPABILITY.put(DisplayCapability.KEY_WINDOW_TYPE_SUPPORTED, JSON_WINDOW_TYPE_CAPABILITIES_LIST);
 			JSON_DISPLAYCAPABILITY.put(DisplayCapability.KEY_WINDOW_CAPABILITIES, JSON_WINDOW_CAPABILITIES);
-			JSON_DISPLAYCAPABILITY_LIST.put(JsonRPCMarshaller.serializeHashtable(GENERAL_DISPLAY_CAPABILITY.getStore()));
+			JSON_DISPLAYCAPABILITY_LIST.put(JSON_DISPLAYCAPABILITY);
 
 			JSON_TOUCHCOORD.put(TouchCoord.KEY_X, GENERAL_INT);
 			JSON_TOUCHCOORD.put(TouchCoord.KEY_Y, GENERAL_INT);

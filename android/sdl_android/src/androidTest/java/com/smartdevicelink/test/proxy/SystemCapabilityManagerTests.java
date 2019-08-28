@@ -33,8 +33,10 @@ import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
+import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
+import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.Result;
@@ -128,6 +130,20 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		displayCapability.setWindowCapabilities(Collections.singletonList(defaultWindowCapability));
 		return Collections.singletonList(displayCapability);
+	}
+
+	private DisplayCapabilities createDisplayCapabilities(String displayName, WindowCapability defaultMainWindow) {
+		DisplayCapabilities convertedCapabilities = new DisplayCapabilities();
+		convertedCapabilities.setDisplayType(DisplayType.SDL_GENERIC); //deprecated but it is mandatory...
+		convertedCapabilities.setDisplayName(displayName);
+		convertedCapabilities.setTextFields(defaultMainWindow.getTextFields());
+		convertedCapabilities.setImageFields(defaultMainWindow.getImageFields());
+		convertedCapabilities.setTemplatesAvailable(defaultMainWindow.getTemplatesAvailable());
+		convertedCapabilities.setNumCustomPresetsAvailable(defaultMainWindow.getNumCustomPresetsAvailable());
+		convertedCapabilities.setMediaClockFormats(Collections.singletonList(MediaClockFormat.CLOCK3)); // mandatory field...
+		convertedCapabilities.setGraphicSupported(defaultMainWindow.getImageTypeSupported().contains(ImageType.DYNAMIC));
+
+		return convertedCapabilities;
 	}
 
 	public void testParseRAI() {
@@ -244,7 +260,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS));
 		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY));
 
-		List<DisplayCapability> newCaps = Test.GENERAL_DISPLAYCAPABILITY_LIST;
+		List<DisplayCapability> newCaps = createDisplayCapabilityList(Test.GENERAL_DISPLAYCAPABILITIES, Test.GENERAL_BUTTONCAPABILITIES_LIST, Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);;
 
 		SystemCapability systemCapability = new SystemCapability();
 		systemCapability.setSystemCapabilityType(SystemCapabilityType.DISPLAYS);
@@ -256,10 +272,13 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		scmRpcListener.onReceived(onSystemCapabilityUpdated);
 
 		List<DisplayCapability> appliedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
-		DisplayCapabilities convertedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
 		assertNotNull(appliedCaps);
 		assertEquals(newCaps.get(0), appliedCaps.get(0));
 
+		DisplayCapabilities appliedConvertedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
+		assertNotNull(appliedConvertedCaps);
+		DisplayCapabilities testConvertedCaps = createDisplayCapabilities(newCaps.get(0).getDisplayName(), newCaps.get(0).getWindowCapabilities().get(0));
+		assertEquals(appliedConvertedCaps, testConvertedCaps);
 	}
 
 	public void testOnSystemCapabilityUpdated(){
@@ -415,10 +434,15 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		dlRpcListener.onReceived(newLayout);
 
-		List<DisplayCapability> convertedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
+
 		DisplayCapabilities appliedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
 		assertNotNull(appliedCaps);
 		assertEquals(newLayout.getDisplayCapabilities(), appliedCaps);
+
+		List<DisplayCapability> convertedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
+		assertNotNull(convertedCaps);
+		List<DisplayCapability> testCaps = createDisplayCapabilityList(newLayout.getDisplayCapabilities(), newLayout.getButtonCapabilities(), newLayout.getSoftButtonCapabilities());
+		assertEquals(convertedCaps, testCaps);
 	}
 
 	private class InternalSDLInterface implements ISdl{
