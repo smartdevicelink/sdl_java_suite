@@ -289,11 +289,10 @@ public class LockScreenManager extends BaseSubManager {
 		// intent to open SDLLockScreenActivity
 		// pass in icon, background color, and custom view
 		if (lockScreenEnabled && isApplicationForegrounded && context.get() != null) {
-			if (mIsLockscreenDismissible) {
-				if (!lockscreenDismissReceiverRegistered) {
-					context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
-					lockscreenDismissReceiverRegistered = true;
-				}
+			if (mIsLockscreenDismissible && !lockscreenDismissReceiverRegistered) {
+				context.get().registerReceiver(mLockscreenDismissedReceiver, new IntentFilter(SDLLockScreenActivity.KEY_LOCKSCREEN_DISMISSED));
+				lockscreenDismissReceiverRegistered = true;
+
 			}
 			LockScreenStatus status = getLockScreenStatus();
 			if (status == LockScreenStatus.REQUIRED || displayMode == LockScreenConfig.DISPLAY_MODE_ALWAYS || (status == LockScreenStatus.OPTIONAL && displayMode == LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED)) {
