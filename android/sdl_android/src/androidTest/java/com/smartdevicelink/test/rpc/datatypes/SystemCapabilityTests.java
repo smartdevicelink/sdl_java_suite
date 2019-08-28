@@ -85,7 +85,7 @@ public class SystemCapabilityTests extends TestCase {
             reference.put(SystemCapability.KEY_PHONE_CAPABILITY, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_PHONECAPABILITY.getStore()));
             reference.put(SystemCapability.KEY_REMOTE_CONTROL_CAPABILITY, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_REMOTECONTROLCAPABILITIES.getStore()));
             reference.put(SystemCapability.KEY_APP_SERVICES_CAPABILITIES, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_APP_SERVICE_CAPABILITIES.getStore()));
-            reference.put(SystemCapability.KEY_DISPLAY_CAPABILITIES, Test.JSON_DISPLAYCAPABILITY_LIST);
+            reference.put(SystemCapability.KEY_DISPLAY_CAPABILITIES, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_DISPLAYCAPABILITY_LIST.getStore()));
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());
