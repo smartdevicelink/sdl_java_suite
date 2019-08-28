@@ -191,6 +191,9 @@ public class SystemCapabilityManager {
 
 	public WindowCapability getWindowCapability(int windowID) {
 		List<DisplayCapability> capabilities = (List<DisplayCapability>) getCapability(SystemCapabilityType.DISPLAYS);
+		if (capabilities == null || capabilities.size() == 0) {
+			return null;
+		}
 		DisplayCapability display = capabilities.get(0);
 		for (WindowCapability windowCapability : display.getWindowCapabilities()) {
 			if (windowCapability.getWindowID() == windowID) {

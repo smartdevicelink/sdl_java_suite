@@ -1,6 +1,7 @@
 package com.smartdevicelink.test.proxy;
 
 import android.util.SparseArray;
+import android.view.Window;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -443,6 +444,19 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		assertNotNull(convertedCaps);
 		List<DisplayCapability> testCaps = createDisplayCapabilityList(newLayout.getDisplayCapabilities(), newLayout.getButtonCapabilities(), newLayout.getSoftButtonCapabilities());
 		assertTrue(Validator.validateDisplayCapabilityList(convertedCaps, testCaps));
+
+		WindowCapability matchWindowCapability = testCaps.get(0).getWindowCapabilities().get(0);
+		WindowCapability testWindowCapability = systemCapabilityManager.getDefaultMainWindowCapability();
+		assertTrue(Validator.validateWindowCapability(matchWindowCapability, testWindowCapability));
+		assertNull(systemCapabilityManager.getWindowCapability(42));
+	}
+
+	public void testManagerBeforeDisplayUpdate() {
+		InternalSDLInterface iSDL = new InternalSDLInterface();
+		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
+		assertNull(systemCapabilityManager.getDefaultMainWindowCapability());
+		assertNull(systemCapabilityManager.getWindowCapability(PredefinedWindows.DEFAULT_WINDOW.getValue()));
+		assertNull(systemCapabilityManager.getWindowCapability(PredefinedWindows.PRIMARY_WIDGET.getValue()));
 	}
 
 	private class InternalSDLInterface implements ISdl{
