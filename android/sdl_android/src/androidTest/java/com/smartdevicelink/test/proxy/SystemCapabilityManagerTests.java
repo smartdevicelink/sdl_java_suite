@@ -273,12 +273,12 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		List<DisplayCapability> appliedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
 		assertNotNull(appliedCaps);
-		assertEquals(newCaps.get(0), appliedCaps.get(0));
+		assertTrue(Validator.validateDisplayCapabilityList(newCaps, appliedCaps));
 
 		DisplayCapabilities appliedConvertedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
 		assertNotNull(appliedConvertedCaps);
 		DisplayCapabilities testConvertedCaps = createDisplayCapabilities(newCaps.get(0).getDisplayName(), newCaps.get(0).getWindowCapabilities().get(0));
-		assertEquals(appliedConvertedCaps, testConvertedCaps);
+		assertTrue(Validator.validateDisplayCapabilities(appliedConvertedCaps, testConvertedCaps));
 	}
 
 	public void testOnSystemCapabilityUpdated(){
@@ -437,12 +437,12 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		DisplayCapabilities appliedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
 		assertNotNull(appliedCaps);
-		assertEquals(newLayout.getDisplayCapabilities(), appliedCaps);
+		assertTrue(Validator.validateDisplayCapabilities(newLayout.getDisplayCapabilities(), appliedCaps));
 
 		List<DisplayCapability> convertedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
 		assertNotNull(convertedCaps);
 		List<DisplayCapability> testCaps = createDisplayCapabilityList(newLayout.getDisplayCapabilities(), newLayout.getButtonCapabilities(), newLayout.getSoftButtonCapabilities());
-		assertEquals(convertedCaps, testCaps);
+		assertTrue(Validator.validateDisplayCapabilityList(convertedCaps, testCaps));
 	}
 
 	private class InternalSDLInterface implements ISdl{
