@@ -145,11 +145,26 @@ public class SystemCapabilityManager {
 		return convertedCapabilities;
 	}
 
+	private void updateDeprecatedDisplayCapabilities() {
+		WindowCapability defaultMainWindowCapabilities = getDefaultMainWindowCapability();
+		List<DisplayCapability> displayCapabilityList = (List<DisplayCapability>)getCapability(SystemCapabilityType.DISPLAYS);
+
+		if (displayCapabilityList == null || displayCapabilityList.size() == 0) {
+			return;
+		}
+
+		// cover the deprecated capabilities for backward compatibility
+		setCapability(SystemCapabilityType.DISPLAY, createDisplayCapabilities(displayCapabilityList.get(0).getDisplayName(), defaultMainWindowCapabilities));
+		setCapability(SystemCapabilityType.BUTTON, defaultMainWindowCapabilities.getButtonCapabilities());
+		setCapability(SystemCapabilityType.SOFTBUTTON, defaultMainWindowCapabilities.getSoftButtonCapabilities());
+	}
+
 	private void updateCachedDisplayCapabilityList(List<DisplayCapability> newCapabilities) {
 		List<DisplayCapability> oldCapabilities = (List<DisplayCapability>) getCapability(SystemCapabilityType.DISPLAYS);
 
 		if (oldCapabilities == null) {
 			setCapability(SystemCapabilityType.DISPLAYS, newCapabilities);
+			updateDeprecatedDisplayCapabilities();
 			return;
 		}
 
@@ -178,15 +193,8 @@ public class SystemCapabilityManager {
 
 		// replace the window capabilities array with the merged one.
 		newDefaultDisplayCapabilities.setWindowCapabilities(copyWindowCapabilities);
-
 		setCapability(SystemCapabilityType.DISPLAYS, Collections.singletonList(newDefaultDisplayCapabilities));
-
-		WindowCapability defaultMainWindowCapabilities = getDefaultMainWindowCapability();
-
-		// cover the deprecated capabilities for backward compatibility
-		setCapability(SystemCapabilityType.DISPLAY, createDisplayCapabilities(newDefaultDisplayCapabilities.getDisplayName(), defaultMainWindowCapabilities));
-		setCapability(SystemCapabilityType.BUTTON, defaultMainWindowCapabilities.getButtonCapabilities());
-		setCapability(SystemCapabilityType.SOFTBUTTON, defaultMainWindowCapabilities.getSoftButtonCapabilities());
+		updateDeprecatedDisplayCapabilities();
 	}
 
 	public WindowCapability getWindowCapability(int windowID) {
