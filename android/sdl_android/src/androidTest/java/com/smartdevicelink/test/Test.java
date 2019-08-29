@@ -350,6 +350,7 @@ public class Test {
 	public static final AudioStreamingIndicator        GENERAL_AUDIO_STREAMING_INDICATOR      = AudioStreamingIndicator.PLAY;
 	public static final String                         GENERAL_APP_ID                         = "123e4567e8";
 	public static final String                         GENERAL_FULL_APP_ID                    = "123e4567-e89b-12d3-a456-426655440000";
+	public static final String                         GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME   = "oemCustomVehicleDataName";
 	public static final HybridAppPreference 		   GENERAL_HYBRID_APP_PREFERENCE          = HybridAppPreference.CLOUD;
 	public static final CloudAppProperties             GENERAL_CLOUDAPPPROPERTIES             = new CloudAppProperties();
 	public static final AppServiceType                 GENERAL_APP_SERVICE_TYPE               = AppServiceType.MEDIA;
@@ -406,10 +407,12 @@ public class Test {
 	public static final LightControlData               GENERAL_LIGHTCONTROLDATA               = new LightControlData();
 	public static final HMISettingsControlData         GENERAL_HMISETTINGSCONTROLDATA         = new HMISettingsControlData();
 
+	public static final VehicleDataResult              GENERAL_OEM_CUSTOM_VEHICLE_DATA        = new VehicleDataResult();
 	public static final TemplateConfiguration          GENERAL_TEMPLATE_CONFIGURATION         = new TemplateConfiguration();
 	public static final WindowTypeCapabilities         GENERAL_WINDOW_TYPE_CAPABILITIES       = new WindowTypeCapabilities();
 	public static final WindowCapability               GENERAL_WINDOW_CAPABILITY              = new WindowCapability();
 	public static final DisplayCapability              GENERAL_DISPLAY_CAPABILITY             = new DisplayCapability();
+
 	public static final SdlArtwork                     GENERAL_ARTWORK                        = new SdlArtwork("sdl", FileType.GRAPHIC_PNG, R.drawable.ic_sdl, false);
 	public static final MenuLayout                     GENERAL_MENU_LAYOUT                    = MenuLayout.LIST;
 	public static final MenuConfiguration              GENERAL_MENU_CONFIGURATION             = new MenuConfiguration(GENERAL_MENU_LAYOUT, GENERAL_MENU_LAYOUT);
@@ -785,6 +788,9 @@ public class Test {
             result.setDataType(data);
         	GENERAL_VEHICLEDATARESULT_LIST.add(result);
         }
+
+        GENERAL_OEM_CUSTOM_VEHICLE_DATA.setResultCode(VehicleDataResultCode.SUCCESS);
+        GENERAL_OEM_CUSTOM_VEHICLE_DATA.setOEMCustomVehicleDataType(GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
 
         GENERAL_DIDRESULT.setData(GENERAL_STRING);
         GENERAL_DIDRESULT.setDidLocation(GENERAL_INT);

@@ -31,7 +31,8 @@
       "myKey":true,
       "fuelRange":true,
       "turnSignal":true,
-      "electronicParkBrakeStatus":true
+      "electronicParkBrakeStatus":true,
+      "oemCustomVehicleDataName":true
     }
   },
   "response":{
@@ -168,7 +169,8 @@
           "type":"DIESEL",
           "range":10.0
         }
-      ]
+      ],
+      "oemCustomVehicleDataName":"oemCustomVehicleDataState"
     }
   }
 }
