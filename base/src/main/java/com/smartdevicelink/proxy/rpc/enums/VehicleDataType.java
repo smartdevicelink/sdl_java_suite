@@ -162,7 +162,7 @@ public enum VehicleDataType {
      */
     VEHICLEDATA_CLOUDAPPVEHICLEID,
     /**
-     * Notifies VEHICLEDATA_OEM_VEHICLE_DATA_TYPE may be subscribed
+     * Notifies VEHICLEDATA_OEM_CUSTOM_DATA may be subscribed
      *
      * @since SmartDeviceLink 6.0
      */
