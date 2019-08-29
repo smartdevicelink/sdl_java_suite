@@ -36,7 +36,12 @@ import android.support.annotation.NonNull;
 
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
+import com.smartdevicelink.transport.TCPTransportConfig;
+import com.smartdevicelink.transport.TCPTransportManager;
 import com.smartdevicelink.transport.TransportManager;
+import com.smartdevicelink.transport.enums.TransportType;
+
+import java.util.Collections;
 
 
 @SuppressWarnings("WeakerAccess")
@@ -54,17 +59,26 @@ public class SdlProtocol extends SdlProtocolBase {
     }
 
 
+    public SdlProtocol(@NonNull ISdlProtocol iSdlProtocol, @NonNull TCPTransportConfig config) {
+        super(iSdlProtocol,config);
+        this.requestedPrimaryTransports = Collections.singletonList(TransportType.TCP);
+        this.requestedSecondaryTransports = null;
+        this.requiresHighBandwidth =false;
+        this.setTransportManager(new TCPTransportManager(config,transportEventListener));
+    }
+
     /**
      * If there was a TransportListener attached to the supplied multiplex config, this method will
      * call the onTransportEvent method.
      */
     @Override
     void notifyDevTransportListener (){
-        MultiplexTransportConfig transportConfig = (MultiplexTransportConfig)this.transportConfig;
-        if(transportConfig.getTransportListener() != null && transportManager != null) {
-            transportConfig.getTransportListener().onTransportEvent(transportManager.getConnectedTransports(), isTransportForServiceAvailable(SessionType.PCM),isTransportForServiceAvailable(SessionType.NAV));
+        if(TransportType.MULTIPLEX.equals(transportConfig.getTransportType() )) {
+            MultiplexTransportConfig transportConfig = (MultiplexTransportConfig) this.transportConfig;
+            if (transportConfig.getTransportListener() != null && transportManager != null) {
+                transportConfig.getTransportListener().onTransportEvent(transportManager.getConnectedTransports(), isTransportForServiceAvailable(SessionType.PCM), isTransportForServiceAvailable(SessionType.NAV));
+            }
         }
     }
-
 
 }

@@ -32,6 +32,9 @@
 
 package com.smartdevicelink.managers;
 
+import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
+import com.smartdevicelink.proxy.rpc.enums.Language;
+
 public interface SdlManagerListener extends BaseSdlManagerListener{
 
 	/**
@@ -50,4 +53,17 @@ public interface SdlManagerListener extends BaseSdlManagerListener{
 	 * @param e the exception
 	 */
 	void onError(String info, Exception e);
+
+	/**
+	 * Called when the SDL manager detected a language mismatch. In case of a language mismatch the
+	 * manager should change the apps registration by updating the lifecycle configuration to the
+	 * specified language. If the app can support the specified language it should return an Object
+	 * of LifecycleConfigurationUpdate, otherwise it should return null to indicate that the language
+	 * is not supported.
+	 *
+	 * @param language The language of the connected head unit the manager is trying to update the configuration.
+	 * @return An object of LifecycleConfigurationUpdate if the head unit language is supported,
+	 * otherwise null to indicate that the language is not supported.
+	 */
+	LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language);
 }

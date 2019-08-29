@@ -204,6 +204,8 @@ public class Show extends RPCRequest {
 	public static final String KEY_SECONDARY_GRAPHIC = "secondaryGraphic";
 	public static final String KEY_SOFT_BUTTONS = "softButtons";
 	public static final String KEY_METADATA_TAGS = "metadataTags";
+	public static final String KEY_WINDOW_ID = "windowID";
+	public static final String KEY_TEMPLATE_CONFIGURATION = "templateConfiguration";
 	public static final String KEY_TEMPLATE_TITLE = "templateTitle";
 
 	/**
@@ -588,6 +590,48 @@ public class Show extends RPCRequest {
 		return (MetadataTags) getObject(MetadataTags.class, KEY_METADATA_TAGS);
 	}
 
+	/**
+	 * Sets the windowID. It's a unique ID to identify the window.
+	 * If this param is not included, it will be assumed that this request is specifically for the main window on the main display.
+	 * See PredefinedWindows enum.
+	 *
+	 * @param windowID A unique ID to identify the window. The value of '0' will always be the default main window on the main display and should not be used in this context as it will already be created for the app. See PredefinedWindows enum. Creating a window with an ID that is already in use will be rejected with `INVALID_ID`.
+	 *
+	 * @since 6.0
+	 */
+	public void setWindowID(Integer windowID) {
+		setParameters(KEY_WINDOW_ID, windowID);
+	}
+
+	/**
+	 * Gets the windowID.
+	 *
+	 * @return int -an int value representing the windowID.
+	 */
+	public Integer getWindowID() {
+		return getInteger(KEY_WINDOW_ID);
+	}
+
+	/**
+	 * Gets the templateConfiguration.
+	 *
+	 * @return TemplateConfiguration
+	 *
+	 * @since 6.0
+	 */
+	@SuppressWarnings("unchecked")
+	public TemplateConfiguration getTemplateConfiguration() {
+		return (TemplateConfiguration) getObject(TemplateConfiguration.class, KEY_TEMPLATE_CONFIGURATION);
+	}
+
+	/**
+	 * Sets the templateConfiguration. It's used to set an alternate template layout to a window.
+	 * @param templateConfiguration
+	 */
+	public void setTemplateConfiguration(TemplateConfiguration templateConfiguration) {
+		setParameters(KEY_TEMPLATE_CONFIGURATION, templateConfiguration);
+	}
+	
 	/**
 	 * Sets the title of the new template that will be displayed.
 	 * How this will be displayed is dependent on the OEM design and implementation of the template.
