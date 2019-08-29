@@ -453,7 +453,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 	public void testManagerBeforeDisplayUpdate() {
 		InternalSDLInterface iSDL = new InternalSDLInterface();
-		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
+		SystemCapabilityManager systemCapabilityManager = new SystemCapabilityManager(iSDL);
 		assertNull(systemCapabilityManager.getDefaultMainWindowCapability());
 		assertNull(systemCapabilityManager.getWindowCapability(PredefinedWindows.DEFAULT_WINDOW.getValue()));
 		assertNull(systemCapabilityManager.getWindowCapability(PredefinedWindows.PRIMARY_WIDGET.getValue()));
