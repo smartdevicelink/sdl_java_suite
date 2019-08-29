@@ -10,7 +10,7 @@ public class EncryptionManager extends BaseEncryptionManager {
      *
      * @param internalInterface an instance of the ISdl object
      */
-    public EncryptionManager(@NonNull ISdl internalInterface) {
-        super(internalInterface);
+    public EncryptionManager(@NonNull ISdl internalInterface, @NonNull EncryptionCallback cb) {
+        super(internalInterface, cb);
     }
 }

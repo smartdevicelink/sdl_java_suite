@@ -35,6 +35,7 @@ package com.smartdevicelink.managers;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.smartdevicelink.managers.encryption.EncryptionManager;
+import com.smartdevicelink.managers.encryption.EncryptionCallback;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
@@ -86,7 +87,6 @@ public class SdlManager extends BaseSdlManager{
 	private SdlArtwork appIcon;
 	private SdlManagerListener managerListener;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
-
 
 	// Managers
 	private LifecycleManager lifecycleManager;
@@ -283,13 +283,24 @@ public class SdlManager extends BaseSdlManager{
 		this.permissionManager = new PermissionManager(_internalInterface);
 		this.fileManager = new FileManager(_internalInterface);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-		this.encryptionManager = new EncryptionManager(_internalInterface);
+		this.encryptionManager = new EncryptionManager(_internalInterface, new EncryptionCallback(){
+			@Override
+			public void initSecuredSession() {
+				SdlManager.this.lifecycleManager.initSecuredSession();
+			}
+
+			@Override
+			public void stopSecuredSession() {
+				SdlManager.this.lifecycleManager.stopSecuredSession();
+			}
+		});
 
 		// Start sub managers
 		this.permissionManager.start(subManagerListener);
 		this.fileManager.start(subManagerListener);
 		this.screenManager.start(subManagerListener);
 		this.encryptionManager.start(subManagerListener);
+		lifecycleManager.setEncryptionManager(this.encryptionManager);
 	}
 
 	@Override

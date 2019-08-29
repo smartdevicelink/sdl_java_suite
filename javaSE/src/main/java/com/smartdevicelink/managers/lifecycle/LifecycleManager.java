@@ -37,7 +37,9 @@ import android.util.Log;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
+import com.smartdevicelink.managers.encryption.EncryptionManager;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -58,6 +60,7 @@ import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
 import com.smartdevicelink.util.Version;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -112,6 +115,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     private String authToken;
     private Version minimumProtocolVersion;
     private Version minimumRPCVersion;
+    private WeakReference<EncryptionManager> weakRefManager;
 
     public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
 
@@ -139,6 +143,45 @@ public class LifecycleManager extends BaseLifecycleManager {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * Assigns the instance of the EncryptionManager object
+     * @param manager the instance to be assigned
+     */
+    public void setEncryptionManager(EncryptionManager manager) {
+        this.weakRefManager = new WeakReference<>(manager);
+    }
+
+    /**
+     * Attempts to start a secured service.  This a a callback from BaseEncryptionManager
+     */
+    public void initSecuredSession() {
+        session.startService(SessionType.RPC, session.getSessionId(), true);
+    }
+
+    /**
+     * Attempts to stop a service.  This is a callback from BaseEncryptionManager
+     */
+    public void stopSecuredSession() {
+        session.endService(SessionType.RPC, session.getSessionId());
+    }
+
+    /**
+     * Attempts to start an encryption flow.
+     */
+    public void startEncryptionService() {
+        if (weakRefManager != null) {
+            EncryptionManager manager = weakRefManager.get();
+            if (manager != null) {
+                manager.startEncryptedRPCService(new CompletionListener() {
+                    @Override
+                    public void onComplete(boolean success) {
+
+                    }
+                });
+            }
+        }
     }
 
     public void stop(){
@@ -735,7 +778,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             message.format(rpcSpecVersion,true);
             byte[] msgBytes = JsonRPCMarshaller.marshall(message, (byte)getProtocolVersion().getMajor());
 
-            ProtocolMessage pm = new ProtocolMessage();
+            final ProtocolMessage pm = new ProtocolMessage();
             pm.setData(msgBytes);
             if (session != null){
                 pm.setSessionID(session.getSessionId());
@@ -744,7 +787,20 @@ public class LifecycleManager extends BaseLifecycleManager {
             pm.setMessageType(MessageType.RPC);
             pm.setSessionType(SessionType.RPC);
             pm.setFunctionID(FunctionID.getFunctionId(message.getFunctionName()));
-            pm.setPayloadProtected(message.isPayloadProtected());
+
+            EncryptionManager manager = null;
+            if (weakRefManager != null) {
+                manager = weakRefManager.get();
+            }
+            if (manager != null) {
+                try {
+                    pm.setPayloadProtected(manager.prepareRPCPayload(message));
+                } catch (SdlException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                pm.setPayloadProtected(message.isPayloadProtected());
+            }
 
             if(RPCMessage.KEY_REQUEST.equals(message.getMessageType())){ // Request Specifics
                 pm.setRPCType((byte)0x00);
