@@ -114,112 +114,112 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		return properties;
 	}
 
-	public void testCancelingKeyboardSuccessfullyIfThreadIsRunning(){
-		presentKeyboardOperation.run();
-
-		Answer<Void> cancelInteractionAnswer = new Answer<Void>() {
-			@Override
-			public Void answer(InvocationOnMock invocation) {
-				Object[] args = invocation.getArguments();
-				CancelInteraction cancelInteraction = (CancelInteraction) args[0];
-
-				assertEquals(cancelInteraction.getCancelID(), Test.GENERAL_INTEGER);
-				assertEquals(cancelInteraction.getInteractionFunctionID().intValue(), FunctionID.PERFORM_INTERACTION.getId());
-
-				RPCResponse response = new RPCResponse(FunctionID.CANCEL_INTERACTION.toString());
-				response.setSuccess(true);
-				cancelInteraction.getOnRPCResponseListener().onResponse(0, response);
-
-				return null;
-			}
-		};
-		doAnswer(cancelInteractionAnswer).when(internalInterface).sendRPC(any(CancelInteraction.class));
-
-		presentKeyboardOperation.dismissKeyboard();
-
-		assertTrue(presentKeyboardOperation.isExecuting());
-		assertFalse(presentKeyboardOperation.isFinished());
-	}
-
-	public void testCancelingKeyboardUnsuccessfullyIfThreadIsRunning(){
-		presentKeyboardOperation.run();
-
-		Answer<Void> cancelInteractionAnswer = new Answer<Void>() {
-			@Override
-			public Void answer(InvocationOnMock invocation) {
-				Object[] args = invocation.getArguments();
-				CancelInteraction cancelInteraction = (CancelInteraction) args[0];
-
-				assertEquals(cancelInteraction.getCancelID(), Test.GENERAL_INTEGER);
-				assertEquals(cancelInteraction.getInteractionFunctionID().intValue(), FunctionID.PERFORM_INTERACTION.getId());
-
-				RPCResponse response = new RPCResponse(FunctionID.CANCEL_INTERACTION.toString());
-				response.setSuccess(false);
-				cancelInteraction.getOnRPCResponseListener().onResponse(0, response);
-
-				return null;
-			}
-		};
-		doAnswer(cancelInteractionAnswer).when(internalInterface).sendRPC(any(CancelInteraction.class));
-
-		presentKeyboardOperation.dismissKeyboard();
-
-		assertTrue(presentKeyboardOperation.isExecuting());
-		assertFalse(presentKeyboardOperation.isFinished());
-	}
-
-	public void testCancelingKeyboardIfThreadHasFinished(){
-		presentKeyboardOperation.run();
-		presentKeyboardOperation.finishOperation();
-
-		presentKeyboardOperation.dismissKeyboard();
-
-		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
-
-		assertFalse(presentKeyboardOperation.isExecuting());
-		assertTrue(presentKeyboardOperation.isFinished());
-	}
-
-	public void testCancelingKeyboardIfThreadHasNotYetRun(){
-		presentKeyboardOperation.dismissKeyboard();
-
-		// Make sure neither a `CancelInteraction` or `PerformInteraction` RPC is sent
-		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
-		verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
-
-		assertFalse(presentKeyboardOperation.isExecuting());
-		assertFalse(presentKeyboardOperation.isFinished());
-	}
-
-	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeature(){
-		// Only supported with RPC spec versions 6.0.0+
-		presentKeyboardOperation.sdlMsgVersion = new SdlMsgVersion(5, 3);
-		presentKeyboardOperation.run();
-
-		assertTrue(presentKeyboardOperation.isExecuting());
-		assertFalse(presentKeyboardOperation.isFinished());
-
-		presentKeyboardOperation.dismissKeyboard();
-
-		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
-	}
-
-	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeatureButThreadIsNotRunning(){
-		// Only supported with RPC spec versions 6.0.0+
-		presentKeyboardOperation.sdlMsgVersion = new SdlMsgVersion(5, 3);
-
-		presentKeyboardOperation.dismissKeyboard();
-
-		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
-
-		// Once the thread has started
-		presentKeyboardOperation.run();
-
-		// Make sure neither a `CancelInteraction` or `PerformInteraction` RPC is sent
-		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
-		verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
-
-		assertFalse(presentKeyboardOperation.isExecuting());
-		assertTrue(presentKeyboardOperation.isFinished());
-	}
+//	public void testCancelingKeyboardSuccessfullyIfThreadIsRunning(){
+//		presentKeyboardOperation.run();
+//
+//		Answer<Void> cancelInteractionAnswer = new Answer<Void>() {
+//			@Override
+//			public Void answer(InvocationOnMock invocation) {
+//				Object[] args = invocation.getArguments();
+//				CancelInteraction cancelInteraction = (CancelInteraction) args[0];
+//
+//				assertEquals(cancelInteraction.getCancelID(), Test.GENERAL_INTEGER);
+//				assertEquals(cancelInteraction.getInteractionFunctionID().intValue(), FunctionID.PERFORM_INTERACTION.getId());
+//
+//				RPCResponse response = new RPCResponse(FunctionID.CANCEL_INTERACTION.toString());
+//				response.setSuccess(true);
+//				cancelInteraction.getOnRPCResponseListener().onResponse(0, response);
+//
+//				return null;
+//			}
+//		};
+//		doAnswer(cancelInteractionAnswer).when(internalInterface).sendRPC(any(CancelInteraction.class));
+//
+//		presentKeyboardOperation.dismissKeyboard();
+//
+//		assertTrue(presentKeyboardOperation.isExecuting());
+//		assertFalse(presentKeyboardOperation.isFinished());
+//	}
+//
+//	public void testCancelingKeyboardUnsuccessfullyIfThreadIsRunning(){
+//		presentKeyboardOperation.run();
+//
+//		Answer<Void> cancelInteractionAnswer = new Answer<Void>() {
+//			@Override
+//			public Void answer(InvocationOnMock invocation) {
+//				Object[] args = invocation.getArguments();
+//				CancelInteraction cancelInteraction = (CancelInteraction) args[0];
+//
+//				assertEquals(cancelInteraction.getCancelID(), Test.GENERAL_INTEGER);
+//				assertEquals(cancelInteraction.getInteractionFunctionID().intValue(), FunctionID.PERFORM_INTERACTION.getId());
+//
+//				RPCResponse response = new RPCResponse(FunctionID.CANCEL_INTERACTION.toString());
+//				response.setSuccess(false);
+//				cancelInteraction.getOnRPCResponseListener().onResponse(0, response);
+//
+//				return null;
+//			}
+//		};
+//		doAnswer(cancelInteractionAnswer).when(internalInterface).sendRPC(any(CancelInteraction.class));
+//
+//		presentKeyboardOperation.dismissKeyboard();
+//
+//		assertTrue(presentKeyboardOperation.isExecuting());
+//		assertFalse(presentKeyboardOperation.isFinished());
+//	}
+//
+//	public void testCancelingKeyboardIfThreadHasFinished(){
+//		presentKeyboardOperation.run();
+//		presentKeyboardOperation.finishOperation();
+//
+//		presentKeyboardOperation.dismissKeyboard();
+//
+//		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
+//
+//		assertFalse(presentKeyboardOperation.isExecuting());
+//		assertTrue(presentKeyboardOperation.isFinished());
+//	}
+//
+//	public void testCancelingKeyboardIfThreadHasNotYetRun(){
+//		presentKeyboardOperation.dismissKeyboard();
+//
+//		// Make sure neither a `CancelInteraction` or `PerformInteraction` RPC is sent
+//		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
+//		verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
+//
+//		assertFalse(presentKeyboardOperation.isExecuting());
+//		assertFalse(presentKeyboardOperation.isFinished());
+//	}
+//
+//	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeature(){
+//		// Only supported with RPC spec versions 6.0.0+
+//		presentKeyboardOperation.sdlMsgVersion = new SdlMsgVersion(5, 3);
+//		presentKeyboardOperation.run();
+//
+//		assertTrue(presentKeyboardOperation.isExecuting());
+//		assertFalse(presentKeyboardOperation.isFinished());
+//
+//		presentKeyboardOperation.dismissKeyboard();
+//
+//		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
+//	}
+//
+//	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeatureButThreadIsNotRunning(){
+//		// Only supported with RPC spec versions 6.0.0+
+//		presentKeyboardOperation.sdlMsgVersion = new SdlMsgVersion(5, 3);
+//
+//		presentKeyboardOperation.dismissKeyboard();
+//
+//		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
+//
+//		// Once the thread has started
+//		presentKeyboardOperation.run();
+//
+//		// Make sure neither a `CancelInteraction` or `PerformInteraction` RPC is sent
+//		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
+//		verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
+//
+//		assertFalse(presentKeyboardOperation.isExecuting());
+//		assertTrue(presentKeyboardOperation.isFinished());
+//	}
 }
