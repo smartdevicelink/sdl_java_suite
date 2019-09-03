@@ -5505,6 +5505,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private void NavServiceEnded() {
 		navServiceEndResponseReceived = true;
 		navServiceEndResponse = true;
+		// reset the start response flags to allow resumption
+		navServiceStartResponseReceived = false;
+		navServiceStartResponse = false;
 	}
 	
 	private void NavServiceEndedNACK() {
