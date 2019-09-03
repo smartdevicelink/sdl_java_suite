@@ -123,6 +123,7 @@ import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.SiphonServer;
+import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.CorrelationIdGenerator;
@@ -158,8 +159,14 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledExecutorService;
 
 
-
+/**
+ * @deprecated use {@link com.smartdevicelink.managers.SdlManager} instead.
+ *
+ * The guide created for the initial transition of SdlProxyBase to SdlManager can be found at
+ * <a href="https://smartdevicelink.com/en/guides/android/migrating-to-newer-sdl-versions/updating-to-v47/">Migrating to SDL Manager</a>
+ */
 @SuppressWarnings({"WeakerAccess", "Convert2Diamond"})
+@Deprecated
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
 	// Used for calls to Android Log class.
 	public static final String TAG = "SdlProxy";
@@ -1563,14 +1570,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 
 			//Handle legacy USB connections
-			if(_transportConfig != null
-					&& TransportType.USB.equals(_transportConfig.getTransportType())){
+			if (_transportConfig != null
+					&& TransportType.USB.equals(_transportConfig.getTransportType())) {
 				//A USB transport config was provided
-				USBTransportConfig usbTransportConfig = (USBTransportConfig)_transportConfig;
-				if(usbTransportConfig.getUsbAccessory() == null){
+				USBTransportConfig usbTransportConfig = (USBTransportConfig) _transportConfig;
+				if (usbTransportConfig.getUsbAccessory() == null) {
 					DebugTool.logInfo("Legacy USB transport config was used, but received null for accessory. Attempting to connect with router service");
 					//The accessory was null which means it came from a router service
-					MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(usbTransportConfig.getUSBContext(),_appID);
+					MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(usbTransportConfig.getUSBContext(), _appID);
 					multiplexTransportConfig.setRequiresHighBandwidth(true);
 					multiplexTransportConfig.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
 					multiplexTransportConfig.setPrimaryTransports(Collections.singletonList(TransportType.USB));
@@ -1579,9 +1586,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			}
 
-			if(_transportConfig.getTransportType().equals(TransportType.MULTIPLEX)){
-				this.sdlSession = new SdlSession2(_interfaceBroker,(MultiplexTransportConfig)_transportConfig);
-			}else{
+			if (_transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
+				this.sdlSession = new SdlSession2(_interfaceBroker, (MultiplexTransportConfig) _transportConfig);
+			}else if(_transportConfig.getTransportType().equals(TransportType.TCP)){
+				this.sdlSession = new SdlSession2(_interfaceBroker, (TCPTransportConfig) _transportConfig);
+			}else {
 				this.sdlSession = SdlSession.createSession((byte)getProtocolVersion().getMajor(),_interfaceBroker, _transportConfig);
 			}
 		}
@@ -1834,6 +1843,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		try{			
 				_cycling = true;
 				cleanProxy(disconnectedReason);
+
 				initializeProxy();
 				if(!SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED.equals(disconnectedReason)
 						&& !SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST.equals(disconnectedReason)){//We don't want to alert higher if we are just cycling for legacy bluetooth
@@ -3551,6 +3561,36 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onGetInteriorVehicleDataResponse(msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.CREATE_WINDOW.toString())) {
+				final CreateWindowResponse msg = new CreateWindowResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onCreateWindowResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onCreateWindowResponse(msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.DELETE_WINDOW.toString())) {
+				final DeleteWindowResponse msg = new DeleteWindowResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onDeleteWindowResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onDeleteWindowResponse(msg);
+					onRPCResponseReceived(msg);
+				}
 			} else if (functionName.equals(FunctionID.GET_SYSTEM_CAPABILITY.toString())) {
 				// GetSystemCapabilityResponse
 				final GetSystemCapabilityResponse msg = new GetSystemCapabilityResponse(hash);
@@ -4155,7 +4195,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 				if (_advancedLifecycleManagementEnabled) {
 					// This requires the proxy to be cycled
-                    cycleProxy(SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(msg.getReason()));
+
+					if(_mainUIHandler == null){
+						_mainUIHandler = new Handler(Looper.getMainLooper());
+					}
+
+					//This needs to be ran on the main thread
+
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							cycleProxy(SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(msg.getReason()));
+						}
+					});
                 } else {
 					if (_callbackToUIThread) {
 						// Run in UI thread

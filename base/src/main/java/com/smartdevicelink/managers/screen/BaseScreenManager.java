@@ -464,7 +464,7 @@ abstract class BaseScreenManager extends BaseSubManager {
   	}
   
   	/**
-	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable. Defaults to LIST.
+	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable.
 	 * @param menuConfiguration - The default menuConfiguration
 	 */
 	public void setMenuConfiguration(@NonNull MenuConfiguration menuConfiguration) {
@@ -472,7 +472,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
-	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable. Defaults to LIST.
+	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable.
 	 * @return the currently set MenuConfiguration
 	 */
 	public MenuConfiguration getMenuConfiguration(){

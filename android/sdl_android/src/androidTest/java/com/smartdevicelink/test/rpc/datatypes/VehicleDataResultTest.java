@@ -23,6 +23,7 @@ public class VehicleDataResultTest extends TestCase {
 		
 		msg.setDataType(Test.GENERAL_VEHICLEDATATYPE);
 		msg.setResultCode(Test.GENERAL_VEHICLEDATARESULTCODE);
+		msg.setOEMCustomVehicleDataType(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
 	}
 
     /**
@@ -32,10 +33,12 @@ public class VehicleDataResultTest extends TestCase {
 		// Test Values
 		VehicleDataResultCode result = msg.getResultCode();
 		VehicleDataType type = msg.getDataType();
+		String oemCustomDataType = msg.getOEMCustomVehicleDataType();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_VEHICLEDATARESULTCODE, result);
 		assertEquals(Test.MATCH, Test.GENERAL_VEHICLEDATATYPE, type);
+		assertEquals(Test.MATCH, Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, oemCustomDataType);
 		
 		// Invalid/Null Tests
 		VehicleDataResult msg = new VehicleDataResult();
@@ -43,6 +46,7 @@ public class VehicleDataResultTest extends TestCase {
 
 		assertNull(Test.NULL, msg.getDataType());
 		assertNull(Test.NULL, msg.getResultCode());
+		assertNull(Test.NULL, msg.getOEMCustomVehicleDataType());
 	}
 
 	public void testJson() {
@@ -51,6 +55,7 @@ public class VehicleDataResultTest extends TestCase {
 		try {
 			reference.put(VehicleDataResult.KEY_RESULT_CODE, Test.GENERAL_VEHICLEDATARESULTCODE);
 			reference.put(VehicleDataResult.KEY_DATA_TYPE, Test.GENERAL_VEHICLEDATATYPE);
+			reference.put(VehicleDataResult.KEY_OEM_CUSTOM_DATA_TYPE, Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());
