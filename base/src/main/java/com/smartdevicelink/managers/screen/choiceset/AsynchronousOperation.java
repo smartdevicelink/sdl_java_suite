@@ -40,15 +40,17 @@ class AsynchronousOperation implements Runnable {
     private static final String TAG = "AsynchronousOperation - ";
     private Thread thread;
     private final Object lock;
-    private Boolean blocked;
-    private Boolean executing;
-    private Boolean finished;
+    private boolean blocked;
+    private boolean executing;
+    private boolean finished;
+    private boolean cancelled;
 
     AsynchronousOperation() {
         lock = new Object();
         blocked = false;
         executing = false;
         finished = false;
+        cancelled = false;
     }
 
     @Override
@@ -68,23 +70,24 @@ class AsynchronousOperation implements Runnable {
         unblock();
         executing = false;
         finished = true;
+        cancelled = false;
         DebugTool.logInfo(TAG + "Finishing: " + toString());
     }
 
-    Boolean isExecuting() {
+    boolean isExecuting() {
         return executing;
     }
 
-    Boolean isFinished() {
+    boolean isFinished() {
         return finished;
     }
 
     void cancel(){
-        Thread.currentThread().interrupt();
+        cancelled = true;
     }
 
-    Boolean isCancelled() {
-        return Thread.currentThread().isInterrupted();
+    boolean isCancelled() {
+        return cancelled;
     }
 
     void block(){
