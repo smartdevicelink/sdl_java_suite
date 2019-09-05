@@ -244,7 +244,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 		choiceSet.cancel();
 
-		// Once the thread has started
+		// Once the operation has started
 		executor.execute(presentChoiceSetOperation);
 		try {
 			executor.awaitTermination(5, TimeUnit.SECONDS);
@@ -262,7 +262,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 	}
 
 	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeature(){
-		// Cancel Interaction is nly supported on RPC specs v.6.0.0+
+		// Cancel Interaction is only supported on RPC specs v.6.0.0+
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
 		executor.execute(presentChoiceSetOperation);
@@ -279,6 +279,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		choiceSet.cancel();
 
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
+		verify(internalInterface, times(1)).sendRPC(any(PerformInteraction.class));
 	}
 
 	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeatureButThreadIsNotRunning(){
@@ -294,7 +295,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 
-		// Once the thread has started
+		// Once the operation has started
 		executor.execute(presentChoiceSetOperation);
 		try {
 			executor.awaitTermination(5, TimeUnit.SECONDS);
@@ -306,7 +307,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		assertTrue(presentChoiceSetOperation.isFinished());
 		assertFalse(presentChoiceSetOperation.isCancelled());
 
-		// Make sure neither a `CancelInteraction` or `PerformInteraction` RPC is sent
+		// Make sure neither a `CancelInteraction` or `PerformInteraction` RPC is ever sent
 		verify(internalInterface, never()).sendRPC(any(CancelInteraction.class));
 		verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
 	}
