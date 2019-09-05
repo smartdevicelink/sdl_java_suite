@@ -390,7 +390,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @return boolean (true = yes, false = no)
 	 */
 	public boolean isStreaming(){
-		return (stateMachine.getState() == StreamingStateMachine.STARTED) ||
+		return (stateMachine.getState() == StreamingStateMachine.STARTED) &&
 				(hmiLevel == HMILevel.HMI_FULL);
 	}
 
