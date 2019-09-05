@@ -117,6 +117,6 @@ class AsynchronousOperation implements Runnable {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + " (OpId: " + System.identityHashCode(this) + ", OpThread:" + thread.getName() + ", currentThread:" + Thread.currentThread().getName() + ", blocked:" + blocked + ", executing:" + executing + ", finished:" + finished + ", cancelled:" + cancelled + ")";
+        return this.getClass().getSimpleName() + " (OpId: " + System.identityHashCode(this) + ", OpThread:" + (thread != null ? thread.getName() : "no operating thread") + ", currentThread:" + Thread.currentThread().getName() + ", blocked:" + blocked + ", executing:" + executing + ", finished:" + finished + ", cancelled:" + cancelled + ")";
     }
 }
