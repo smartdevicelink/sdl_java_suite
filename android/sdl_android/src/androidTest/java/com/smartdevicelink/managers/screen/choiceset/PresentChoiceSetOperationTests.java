@@ -97,7 +97,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		super.tearDown();
 	}
 
-	private KeyboardProperties getKeyBoardProperties() {
+	private KeyboardProperties getKeyBoardProperties(){
 		KeyboardProperties properties = new KeyboardProperties();
 		properties.setLanguage(Language.EN_US);
 		properties.setKeyboardLayout(KeyboardLayout.QWERTZ);
@@ -176,7 +176,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		assertFalse(presentChoiceSetOperation.isCancelled());
 	}
 
-	public void testCancelingChoiceSetUnsuccessfullyIfThreadIsRunning() {
+	public void testCancelingChoiceSetUnsuccessfullyIfThreadIsRunning(){
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
 		executor.execute(presentChoiceSetOperation);
@@ -262,7 +262,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 	}
 
 	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeature(){
-		// Cancel Interaction only supported on RPC spec versions 6.0.0+
+		// Cancel Interaction is nly supported on RPC specs v.6.0.0+
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
 		executor.execute(presentChoiceSetOperation);
@@ -282,7 +282,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 	}
 
 	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeatureButThreadIsNotRunning(){
-		// Cancel Interaction only supported on RPC spec versions 6.0.0+
+		// Cancel Interaction is only supported on RPC specs v.6.0.0+
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
 
