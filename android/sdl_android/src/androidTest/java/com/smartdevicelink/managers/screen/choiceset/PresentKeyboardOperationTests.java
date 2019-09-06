@@ -128,10 +128,8 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, Test.GENERAL_INTEGER);
 		executor.execute(presentKeyboardOperation);
 		try {
-			executor.awaitTermination(5, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			assertTrue(false);
-		}
+			executor.awaitTermination(1, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {}
 
 		assertTrue(presentKeyboardOperation.isExecuting());
 		assertFalse(presentKeyboardOperation.isFinished());
@@ -169,10 +167,8 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
         presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, Test.GENERAL_INTEGER);
         executor.execute(presentKeyboardOperation);
         try {
-            executor.awaitTermination(5, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            assertTrue(false);
-        }
+            executor.awaitTermination(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {}
 
         presentKeyboardOperation.dismissKeyboard();
         Answer<Void> cancelInteractionAnswer = new Answer<Void>() {
@@ -231,10 +227,8 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		// Once the operation has started
 		executor.execute(presentKeyboardOperation);
 		try {
-			executor.awaitTermination(5, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			assertTrue(false);
-		}
+			executor.awaitTermination(1, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {}
 
 		assertFalse(presentKeyboardOperation.isExecuting());
 		assertTrue(presentKeyboardOperation.isFinished());
@@ -251,10 +245,8 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, Test.GENERAL_INTEGER);
 		executor.execute(presentKeyboardOperation);
 		try {
-			executor.awaitTermination(5, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			assertTrue(false);
-		}
+			executor.awaitTermination(1, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {}
 
 		assertTrue(presentKeyboardOperation.isExecuting());
 		assertFalse(presentKeyboardOperation.isFinished());
@@ -282,10 +274,8 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		// Once the operation has started
 		executor.execute(presentKeyboardOperation);
 		try {
-			executor.awaitTermination(5, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			assertTrue(false);
-		}
+			executor.awaitTermination(1, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {}
 
 		assertFalse(presentKeyboardOperation.isExecuting());
 		assertTrue(presentKeyboardOperation.isFinished());

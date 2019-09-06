@@ -139,11 +139,10 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
 		executor.execute(presentChoiceSetOperation);
+
 		try {
-			executor.awaitTermination(5, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			assertTrue(false);
-		}
+			executor.awaitTermination(1, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {}
 
 		assertTrue(presentChoiceSetOperation.isExecuting());
 		assertFalse(presentChoiceSetOperation.isFinished());
@@ -181,10 +180,8 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
 		executor.execute(presentChoiceSetOperation);
 		try {
-			executor.awaitTermination(5, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			assertTrue(false);
-		}
+			executor.awaitTermination(1, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {}
 
 		assertTrue(presentChoiceSetOperation.isExecuting());
 		assertFalse(presentChoiceSetOperation.isFinished());
@@ -247,10 +244,8 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		// Once the operation has started
 		executor.execute(presentChoiceSetOperation);
 		try {
-			executor.awaitTermination(5, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			assertTrue(false);
-		}
+			executor.awaitTermination(1, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {}
 
 		assertFalse(presentChoiceSetOperation.isExecuting());
 		assertTrue(presentChoiceSetOperation.isFinished());
@@ -267,10 +262,8 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
 		executor.execute(presentChoiceSetOperation);
 		try {
-			executor.awaitTermination(5, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			assertTrue(false);
-		}
+			executor.awaitTermination(1, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {}
 
 		assertTrue(presentChoiceSetOperation.isExecuting());
 		assertFalse(presentChoiceSetOperation.isFinished());
@@ -298,10 +291,8 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		// Once the operation has started
 		executor.execute(presentChoiceSetOperation);
 		try {
-			executor.awaitTermination(5, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			assertTrue(false);
-		}
+			executor.awaitTermination(1, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {}
 
 		assertFalse(presentChoiceSetOperation.isExecuting());
 		assertTrue(presentChoiceSetOperation.isFinished());
