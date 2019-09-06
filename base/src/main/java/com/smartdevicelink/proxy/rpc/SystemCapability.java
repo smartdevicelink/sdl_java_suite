@@ -117,10 +117,11 @@ public class SystemCapability extends RPCStruct {
             setValue(KEY_REMOTE_CONTROL_CAPABILITY, capability);
         }else if(type.equals(SystemCapabilityType.APP_SERVICES)){
 			setValue(KEY_APP_SERVICES_CAPABILITIES, capability);
-	}else if(type.equals(SystemCapabilityType.SEAT_LOCATION)){
+	    }else if(type.equals(SystemCapabilityType.SEAT_LOCATION)){
             setValue(KEY_SEAT_LOCATION_CAPABILITY, capability);
-        }else if(type.equals(SystemCapabilityType.DISPLAYS)){
-            setValue(KEY_DISPLAY_CAPABILITIES, capability);else{
+        }else if(type.equals(SystemCapabilityType.DISPLAYS)) {
+            setValue(KEY_DISPLAY_CAPABILITIES, capability);
+        }else{
 	        return;
         }
     }
