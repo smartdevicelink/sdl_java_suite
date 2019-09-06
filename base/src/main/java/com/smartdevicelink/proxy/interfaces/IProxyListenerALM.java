@@ -31,6 +31,7 @@
  */
 package com.smartdevicelink.proxy.interfaces;
 
+@Deprecated
 public interface IProxyListenerALM extends IProxyListenerBase {
 	// All methods moved into base interface
 }

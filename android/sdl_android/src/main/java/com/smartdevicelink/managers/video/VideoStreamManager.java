@@ -62,6 +62,7 @@ import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -140,7 +141,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		@Override
 		public void onNotified(RPCNotification notification) {
 			if(notification != null){
-				hmiLevel = ((OnHMIStatus)notification).getHmiLevel();
+				OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+					return;
+				}
+				hmiLevel = onHMIStatus.getHmiLevel();
 				if(hmiLevel.equals(HMILevel.HMI_FULL)){
 					checkState();
 				}
@@ -194,6 +199,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				&& hmiLevel != null
 				&& hmiLevel.equals(HMILevel.HMI_FULL)
 				&& parameters != null){
+			stateMachine.transitionToState(StreamingStateMachine.READY);
 			transitionToState(READY);
 		}
 	}
@@ -451,9 +457,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					if(resolution != null){
 						DisplayMetrics displayMetrics = new DisplayMetrics();
 						disp.getMetrics(displayMetrics);
-						touchScalar[0] = ((float)displayMetrics.widthPixels) / resolution.getResolutionWidth();
-						touchScalar[1] = ((float)displayMetrics.heightPixels) / resolution.getResolutionHeight();
-					}
+						createTouchScalar(resolution, displayMetrics);
+                    }
 
 				}
 
@@ -498,6 +503,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			}
 		}
 	}
+
+    void createTouchScalar(ImageResolution resolution, DisplayMetrics displayMetrics) {
+        touchScalar[0] = ((float)displayMetrics.widthPixels) / resolution.getResolutionWidth();
+        touchScalar[1] = ((float)displayMetrics.heightPixels) / resolution.getResolutionHeight();
+    }
 
 	List<MotionEvent> convertTouchEvent(OnTouchEvent onTouchEvent){
 		List<MotionEvent> motionEventList = new ArrayList<MotionEvent>();

@@ -29,6 +29,7 @@ public class OnHMIStatusTests extends BaseRpcTests{
         msg.setFirstRun(Test.GENERAL_BOOLEAN);
         msg.setHmiLevel(Test.GENERAL_HMILEVEL);
         msg.setSystemContext(Test.GENERAL_SYSTEMCONTEXT);
+        msg.setWindowID(Test.GENERAL_INT);
 
         return msg;
     }
@@ -52,6 +53,7 @@ public class OnHMIStatusTests extends BaseRpcTests{
             result.put(OnHMIStatus.KEY_VIDEO_STREAMING_STATE, Test.GENERAL_VIDEOSTREAMINGSTATE);
             result.put(OnHMIStatus.KEY_HMI_LEVEL, Test.GENERAL_HMILEVEL);
             result.put(OnHMIStatus.KEY_SYSTEM_CONTEXT, Test.GENERAL_SYSTEMCONTEXT);
+            result.put(OnHMIStatus.KEY_WINDOW_ID, Test.GENERAL_INT);
         }catch(JSONException e){
         	fail(Test.JSON_FAIL);
         }
@@ -68,12 +70,14 @@ public class OnHMIStatusTests extends BaseRpcTests{
         VideoStreamingState videoStreamingState = ( (OnHMIStatus) msg ).getVideoStreamingState();
         HMILevel hmiLevel = ( (OnHMIStatus) msg ).getHmiLevel();
         SystemContext context = ( (OnHMIStatus) msg ).getSystemContext();
+        int testWindowID = ( (OnHMIStatus) msg ).getWindowID();
         
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_AUDIOSTREAMINGSTATE, audioStreamingState);
         assertEquals(Test.MATCH, Test.GENERAL_VIDEOSTREAMINGSTATE, videoStreamingState);
         assertEquals(Test.MATCH, Test.GENERAL_HMILEVEL, hmiLevel);
         assertEquals(Test.MATCH, Test.GENERAL_SYSTEMCONTEXT, context);
+        assertEquals(Test.MATCH, Test.GENERAL_INT, testWindowID);
    
         // Invalid/Null Tests
         OnHMIStatus msg = new OnHMIStatus();
@@ -87,5 +91,6 @@ public class OnHMIStatusTests extends BaseRpcTests{
         assertEquals(Test.MATCH, VideoStreamingState.STREAMABLE, msg.getVideoStreamingState());
         assertNull(Test.NULL, msg.getHmiLevel());
         assertNull(Test.NULL, msg.getSystemContext());
+        assertNull(Test.NULL, msg.getWindowID());
     }
 }

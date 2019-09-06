@@ -72,6 +72,10 @@ public class WiFiSocketFactory {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static Socket createWiFiSocket(Context context) {
+        if(context == null){
+            logInfo("Context supplied was null");
+            return null;
+        }
         PackageManager pm = context.getPackageManager();
         if (pm == null) {
             logInfo("PackageManager isn't available.");
