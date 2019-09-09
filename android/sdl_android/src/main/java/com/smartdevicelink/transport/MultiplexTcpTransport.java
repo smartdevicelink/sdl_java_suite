@@ -47,6 +47,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.smartdevicelink.util.DebugTool.logError;
 import static com.smartdevicelink.util.NativeLogTool.logInfo;
@@ -354,8 +356,46 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 	}
 
 	private class WriterThread extends Thread {
-		private boolean mCancelled = false;
+		private boolean isHalted = false;
 		private boolean mVerbose = false;
+		final BlockingQueue<OutPacket> packetQueue = new LinkedBlockingQueue<>();
+
+		@Override
+		public void run() {
+			while(!isHalted){
+				try{
+					OutPacket packet = packetQueue.take();
+					if(packet == null){
+						continue;
+					}
+
+					OutputStream out;
+					synchronized (MultiplexTcpTransport.this) {
+						out = mOutputStream;
+					}
+
+					if ((out != null) && (!isHalted)) {
+						try {
+							out.write(packet.bytes, packet.offset, packet.count);
+							if (mVerbose) {
+								logInfo("TCPTransport.sendBytesOverTransport: successfully sent data");
+							}
+						} catch (IOException e) {
+							logError("TCPTransport.sendBytesOverTransport: error during sending data: " + e.getMessage());
+						}
+					} else {
+						if (isHalted) {
+							logError("TCPTransport: sendBytesOverTransport request accepted, thread is cancelled");
+						} else {
+							logError("TCPTransport: sendBytesOverTransport request accepted, but output stream is null");
+						}
+					}
+
+				}catch(InterruptedException e){
+					break;
+				}
+			}
+		}
 
 		public void write(byte[] msgBytes, int offset, int count) {
 			if ((msgBytes == null) || (msgBytes.length == 0)) {
@@ -366,32 +406,12 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 			if (offset + count > msgBytes.length) {
 				count = msgBytes.length - offset;
 			}
+			packetQueue.add(new OutPacket(msgBytes, offset, count));
 
-			OutputStream out;
-			synchronized (MultiplexTcpTransport.this) {
-				out = mOutputStream;
-			}
-
-			if ((out != null) && (!mCancelled)) {
-				try {
-					out.write(msgBytes, offset, count);
-					if (mVerbose) {
-						logInfo("TCPTransport.sendBytesOverTransport: successfully sent data");
-					}
-				} catch (IOException e) {
-					logError("TCPTransport.sendBytesOverTransport: error during sending data: " + e.getMessage());
-				}
-			} else {
-				if (mCancelled) {
-					logError("TCPTransport: sendBytesOverTransport request accepted, thread is cancelled");
-				} else {
-					logError("TCPTransport: sendBytesOverTransport request accepted, but output stream is null");
-				}
-			}
 		}
 
 		public synchronized void cancel() {
-			mCancelled = true;
+			isHalted = true;
 			if (mOutputStream != null) {
 				synchronized (MultiplexTcpTransport.this) {
 					try {
@@ -410,4 +430,18 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 			}
 		}
 	}
+
+	private final class OutPacket{
+		byte[] bytes;
+		int count;
+		int offset;
+
+		OutPacket(byte[] bytes, int offset, int count){
+			this.bytes = bytes;
+			this.offset = offset;
+			this.count = count;
+		}
+	}
+
+
 }
