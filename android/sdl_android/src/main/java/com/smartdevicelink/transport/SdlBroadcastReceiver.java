@@ -52,6 +52,7 @@ import com.smartdevicelink.R;
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedListCallback;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.AndroidTools;
+import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.ServiceFinder;
 
@@ -245,6 +246,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 								context.startService(serviceIntent);
 							}else {
 								serviceIntent.putExtra(FOREGROUND_EXTRA, true);
+								DebugTool.logInfo("Attempting to startForegroundService - " + System.currentTimeMillis());
 								context.startForegroundService(serviceIntent);
 
 							}
@@ -340,6 +342,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
 			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
 				intent.putExtra(FOREGROUND_EXTRA, true);
+				DebugTool.logInfo("Attempting to startForegroundService - " + System.currentTimeMillis());
 				context.startForegroundService(intent);
 			}else {
 				context.startService(intent);
