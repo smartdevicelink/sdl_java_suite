@@ -120,6 +120,7 @@ public class SdlManager extends BaseSdlManager{
 	private SdlManagerListener managerListener;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
 	private LockScreenConfig lockScreenConfig;
+	private ServiceEncryptionListener mEncryptionServiceListener;
 
 	// Managers
 	private PermissionManager permissionManager;
@@ -683,6 +684,9 @@ public class SdlManager extends BaseSdlManager{
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
 					proxy.setSdlSecurityClassList(sdlSecList);
 				}
+				if (mEncryptionServiceListener != null) {
+					proxy.setServiceEncryptionListener(mEncryptionServiceListener);
+				}
 				//Setup the notification queue
 				initNotificationQueue();
 
@@ -1104,6 +1108,17 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
+		 * Sets the Security Library and a callback to notify caller when there is update to encryption service
+		 * @param secList The list of security class(es)
+		 * @param listener The callback object
+		 */
+		public Builder setSdlSecurity(List<Class<? extends  SdlSecurityBase>> secList, @NonNull ServiceEncryptionListener listener) {
+			sdlManager.mEncryptionServiceListener = listener;
+			sdlManager.sdlSecList = secList;
+			return this;
+		}
+
+		/**
 		 * Set the SdlManager Listener
 		 * @param listener the listener
 		 */
@@ -1173,5 +1188,23 @@ public class SdlManager extends BaseSdlManager{
 
 			return sdlManager;
 		}
+	}
+
+	/**
+	 * Attempts to start a secured service
+	 * @return true if secured service is started; false otherwise
+	 */
+	public boolean startRPCEncryptionService() {
+		if (proxy != null) {
+			return proxy.startProtectedRPCService();
+		}
+		return false;
+	}
+
+	/**
+	 * Callback to get update on secured service
+	 */
+	public interface ServiceEncryptionListener {
+		void onEncryptionServiceUpdated(@NonNull SessionType serviceType, boolean isServiceEncrypted, @Nullable String info);
 	}
 }

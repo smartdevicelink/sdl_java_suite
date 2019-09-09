@@ -29,7 +29,7 @@ public class PermissionItemTest extends TestCase {
 		msg.setRpcName(Test.GENERAL_STRING);
 		msg.setHMIPermissions(Test.GENERAL_HMIPERMISSIONS);
 		msg.setParameterPermissions(Test.GENERAL_PARAMETERPERMISSIONS);
-		msg.setEncryptionRequirement(Test.GENERAL_BOOLEAN);
+		msg.setRequireEncryption(Test.GENERAL_BOOLEAN);
 	}
 
     /**
@@ -40,7 +40,7 @@ public class PermissionItemTest extends TestCase {
 		String rpcName = msg.getRpcName();
 		HMIPermissions hmiPermissions = msg.getHMIPermissions();
 		ParameterPermissions parameterPermissions = msg.getParameterPermissions();
-		boolean isEncryptionRequired = msg.getEncryptionRequirement();
+		boolean isEncryptionRequired = msg.getRequireEncryption();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, rpcName);
@@ -55,7 +55,7 @@ public class PermissionItemTest extends TestCase {
 		assertNull(Test.NULL, msg.getRpcName());
 		assertNull(Test.NULL, msg.getHMIPermissions());
 		assertNull(Test.NULL, msg.getParameterPermissions());
-		assertNull(Test.NULL, msg.getEncryptionRequirement());
+		assertNull(Test.NULL, msg.getRequireEncryption());
 	}
 
 	public void testJson() {

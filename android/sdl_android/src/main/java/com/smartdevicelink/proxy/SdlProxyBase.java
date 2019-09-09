@@ -61,6 +61,7 @@ import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.haptic.HapticInterfaceManager;
+import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.lifecycle.RpcConverter;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -310,6 +311,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	private Set<String> mEncryptedRPCNames = new HashSet<>();
 	private boolean mRPCSecuredServiceStarted;
+	private SdlManager.ServiceEncryptionListener mEncryptionCallback;
 
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
@@ -2118,10 +2120,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			List<PermissionItem> permissionItems = ((OnPermissionsChange)notification).getPermissionItem();
 			Set<String> encryptedRpcs = new HashSet<>();
 			boolean requireEncryptionAppLevel = Boolean.TRUE.equals(((OnPermissionsChange) notification).getRequireEncryption());
-			if (permissionItems != null && !permissionItems.isEmpty()) {
+			if (requireEncryptionAppLevel && permissionItems != null && !permissionItems.isEmpty()) {
 				for (PermissionItem permissionItem : permissionItems) {
 					if (permissionItem != null) {
-						if (requireEncryptionAppLevel && Boolean.TRUE.equals(permissionItem.getEncryptionRequirement())) {
+						if (Boolean.TRUE.equals(permissionItem.getRequireEncryption())) {
 							String rpcName = permissionItem.getRpcName();
 							if (rpcName != null) {
 								encryptedRpcs.add(rpcName);
@@ -2147,6 +2149,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if(SessionType.RPC.equals(type) && session != null && isEncrypted){
 				mRPCSecuredServiceStarted = isEncrypted;
 			}
+			mEncryptionCallback.onEncryptionServiceUpdated(type, isEncrypted, isEncrypted ? "Start secured session success" : "Start secured session failure");
 			Log.d(TAG, "onServiceStarted, session id: " + (session == null ? "session NULL" : session.getSessionId()
 					+ ", session Type: " + type.getName()) + ", isEncrypted: " + isEncrypted);
 		}
@@ -2170,6 +2173,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	};
 
+	public void setServiceEncryptionListener(@NonNull SdlManager.ServiceEncryptionListener listener) {
+		mEncryptionCallback = listener;
+	}
 
 	// Private sendRPCMessagePrivate method. All RPCMessages are funneled through this method after error checking.
 	protected void sendRPCMessagePrivate(RPCMessage message) throws SdlException {

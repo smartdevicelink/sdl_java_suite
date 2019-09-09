@@ -131,7 +131,7 @@ public class PermissionItem extends RPCStruct {
      * Gets the encryption requirement for this item
      * @return true is encryption is required, false otherwise
      */
-    public Boolean getEncryptionRequirement() {
+    public Boolean getRequireEncryption() {
         return (Boolean) getValue(KEY_ENCRYPTION_REQUIRE);
     }
 
@@ -139,7 +139,7 @@ public class PermissionItem extends RPCStruct {
      * Sets the encryption requirement for this item
      * @param isRequired the boolean requirement to be set
      */
-    public void setEncryptionRequirement(Boolean isRequired) {
+    public void setRequireEncryption(Boolean isRequired) {
         setValue(KEY_ENCRYPTION_REQUIRE, isRequired);
     }
 }
