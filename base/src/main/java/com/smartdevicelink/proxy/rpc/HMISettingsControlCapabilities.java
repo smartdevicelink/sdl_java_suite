@@ -42,6 +42,7 @@ public class HMISettingsControlCapabilities extends RPCStruct {
 	public static final String KEY_DISTANCE_UNIT_AVAILABLE = "distanceUnitAvailable";
 	public static final String KEY_TEMPERATURE_UNIT_AVAILABLE = "temperatureUnitAvailable";
 	public static final String KEY_DISPLAY_MODE_UNIT_AVAILABLE = "displayModeUnitAvailable";
+	public static final String KEY_MODULE_INFO = "moduleInfo";
 
 	/**
 	 * Constructs a new HMISettingsControlCapabilities object
@@ -134,5 +135,21 @@ public class HMISettingsControlCapabilities extends RPCStruct {
 	 */
 	public Boolean getDisplayModeUnitAvailable() {
 		return getBoolean(KEY_DISPLAY_MODE_UNIT_AVAILABLE);
+	}
+
+	/**
+	 * Sets ModuleInfo for this capability
+	 * @param info the ModuleInfo to be set
+	 */
+	public void setModuleInfo(ModuleInfo info) {
+		setValue(KEY_MODULE_INFO, info);
+	}
+
+	/**
+	 * Gets a ModuleInfo of this capability
+	 * @return module info of this capability
+	 */
+	public ModuleInfo getModuleInfo() {
+		return (ModuleInfo) getObject(ModuleInfo.class, KEY_MODULE_INFO);
 	}
 }
