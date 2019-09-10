@@ -1102,6 +1102,7 @@ public class SdlManager extends BaseSdlManager{
 		 * Sets the Security library
 		 * @param secList The list of security class(es)
 		 */
+		@Deprecated
 		public Builder setSdlSecurity(List<Class<? extends SdlSecurityBase>> secList) {
 			sdlManager.sdlSecList = secList;
 			return this;

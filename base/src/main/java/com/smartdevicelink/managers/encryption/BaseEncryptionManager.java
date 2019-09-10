@@ -63,7 +63,7 @@ abstract class BaseEncryptionManager extends BaseSubManager {
                 if (isAppLevelEncryptionRequired && permissionItems != null && !permissionItems.isEmpty()) {
                     for (PermissionItem permissionItem : permissionItems) {
                         if (permissionItem != null) {
-                            if (Boolean.TRUE.equals(permissionItem.getEncryptionRequirement())) {
+                            if (Boolean.TRUE.equals(permissionItem.getRequireEncryption())) {
                                 String rpcName = permissionItem.getRpcName();
                                 rpcSet.add(rpcName);
                             }

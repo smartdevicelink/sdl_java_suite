@@ -2114,6 +2114,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	}
 	/************* END Functions used by the Message Dispatching Queues ****************/
 
+
 	private OnRPCNotificationListener mEncryptionReqListener = new OnRPCNotificationListener() {
 		@Override
 		public void onNotified(RPCNotification notification) {
@@ -2133,9 +2134,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			}
 			if (!encryptedRpcs.isEmpty()) {
-				if (!mRPCSecuredServiceStarted) {
-					startProtectedRPCService();
-				}
+				checkStatusAndInitSecuredService();
 				if (!mEncryptedRPCNames.equals(encryptedRpcs)) {
 					mEncryptedRPCNames = encryptedRpcs;
 				}
@@ -2143,13 +2142,41 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	};
 
+	/**
+	 * Checks if an RPC requires encryption
+	 *
+	 * @param rpcName the rpc name (FunctionID) to check
+	 * @return true if the given RPC requires encryption; false, otherwise
+	 */
+	public boolean getRPCRequiresEncryption(@NonNull FunctionID rpcName) {
+		return mEncryptedRPCNames.contains(rpcName.toString());
+	}
+
+	/**
+	 * Gets the encryption requirement
+	 * @return true if encryption is required; false otherwise
+	 */
+	public boolean getRequiresEncryption() {
+		return (_hmiLevel == HMILevel.HMI_FULL) && (!mEncryptedRPCNames.isEmpty());
+	}
+
+	/**
+	 * If app is in the foreground and encrypted RPC list is not empty and there is not a secured
+	 * service, start it
+	 */
+	private void checkStatusAndInitSecuredService() {
+		if (!mRPCSecuredServiceStarted && _hmiLevel == HMILevel.HMI_FULL && !mEncryptedRPCNames.isEmpty()) {
+			startProtectedRPCService();
+		}
+	}
+
 	private ISdlServiceListener mRPCSecuredServiceListener = new ISdlServiceListener() {
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
-			if(SessionType.RPC.equals(type) && session != null && isEncrypted){
+			if(SessionType.RPC.equals(type) && session != null){
 				mRPCSecuredServiceStarted = isEncrypted;
+				mEncryptionCallback.onEncryptionServiceUpdated(type, isEncrypted, isEncrypted ? "Start secured session success" : "Start secured session failure");
 			}
-			mEncryptionCallback.onEncryptionServiceUpdated(type, isEncrypted, isEncrypted ? "Start secured session success" : "Start secured session failure");
 			Log.d(TAG, "onServiceStarted, session id: " + (session == null ? "session NULL" : session.getSessionId()
 					+ ", session Type: " + type.getName()) + ", isEncrypted: " + isEncrypted);
 		}
@@ -2158,6 +2185,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if (SessionType.RPC.equals(type) && session != null) {
 				mRPCSecuredServiceStarted = false;
+				mEncryptionCallback.onEncryptionServiceUpdated(type, false, "onServiceEnded");
 			}
 			Log.d(TAG, "onServiceEnded, session id: " + (session == null ? "session NULL" : session.getSessionId()
 					+ ", session Type: " + type.getName()));
@@ -2167,12 +2195,17 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void onServiceError(SdlSession session, SessionType type, String reason) {
 			if (SessionType.RPC.equals(type) && session != null) {
 				mRPCSecuredServiceStarted = false;
+				mEncryptionCallback.onEncryptionServiceUpdated(type, false, "onServiceError");
 			}
 			Log.d(TAG, "onServiceError, session id: " + (session == null ? "session NULL" : session.getSessionId()
 					+ ", session Type: " + type.getName()));
 		}
 	};
 
+	/**
+	 * Sets a callback to notify app on secured service status update
+	 * @param listener The callback to be set
+	 */
 	public void setServiceEncryptionListener(@NonNull SdlManager.ServiceEncryptionListener listener) {
 		mEncryptionCallback = listener;
 	}
@@ -3922,6 +3955,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				if (msg.getHmiLevel() == HMILevel.HMI_FULL) firstTimeFull = false;
 
 				_hmiLevel = msg.getHmiLevel();
+				if (_hmiLevel == HMILevel.HMI_FULL) {
+					checkStatusAndInitSecuredService();
+				}
 				_audioStreamingState = msg.getAudioStreamingState();
 
 				msg.format(rpcSpecVersion, true);
