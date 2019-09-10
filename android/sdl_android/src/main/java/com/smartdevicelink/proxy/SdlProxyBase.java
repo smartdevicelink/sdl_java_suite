@@ -2258,7 +2258,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} else if (!mRPCSecuredServiceStarted || !rpcProtectedStartResponse) {
 				boolean isMsgProtected = message.isPayloadProtected();
 				if (isMsgProtected) {
-					throw new SdlException("Trying to send an encrypted message and there is no secured service", SdlExceptionCause.INVALID_RPC_PARAMETER);
+					if (message.getMessageType().equals((RPCMessage.KEY_REQUEST))) {
+						RPCRequest request = (RPCRequest) message;
+						OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
+						if (listener != null) {
+							listener.onError(request.getCorrelationID(), Result.ABORTED,
+									"Trying to send an encrypted message and there is no secured service");
+						}
+						return;
+					}
 				} else {
 					pm.setPayloadProtected(isMsgProtected);
 				}
