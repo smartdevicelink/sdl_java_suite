@@ -209,12 +209,6 @@ public class SdlManager extends BaseSdlManager{
 		}
 	}
 
-	private void notifyDevListener(String info, SdlException cause) {
-		if (managerListener != null) {
-			managerListener.onError(info, cause);
-		}
-	}
-
 	private void notifyDevListener(String info) {
 		if (managerListener != null) {
 			if (getState() == BaseSubManager.ERROR){
@@ -522,7 +516,6 @@ public class SdlManager extends BaseSdlManager{
 		try{
 			proxy.sendRPC(message);
 		}catch (SdlException exception){
-			notifyDevListener(exception.getMessage(), exception);
 			handleSdlException(exception);
 		}
 	}
@@ -552,7 +545,6 @@ public class SdlManager extends BaseSdlManager{
 			try{
 				proxy.sendSequentialRequests(rpcRequestList, listener);
 			}catch (SdlException exception){
-				notifyDevListener(exception.getMessage(), exception);
 				handleSdlException(exception);
 			}
 		}
@@ -583,7 +575,6 @@ public class SdlManager extends BaseSdlManager{
 			try{
 				proxy.sendRequests(rpcRequestList, listener);
 			}catch (SdlException exception){
-				notifyDevListener(exception.getMessage(), exception);
 				handleSdlException(exception);
 			}
 		}
