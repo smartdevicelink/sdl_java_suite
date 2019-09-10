@@ -5383,6 +5383,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				public void onServiceEnded(SdlSession session, SessionType type) {
 					// reset nav flags so nav can start upon the next transport connection
 					resetNavStartFlags();
+					// propagate notification up to proxy listener so the developer will know that the service is ended
 					if (_proxyListener != null) {
 						_proxyListener.onServiceEnded(new OnServiceEnded(type));
 					}
