@@ -48,6 +48,8 @@ public class SystemCapabilityTypeTests extends TestCase {
 		SystemCapabilityType enumPCM = SystemCapabilityType.valueForString(example);
 		example = "APP_SERVICES";
 		SystemCapabilityType enumAppServices = SystemCapabilityType.valueForString(example);
+		example = "SEAT_LOCATION";
+		SystemCapabilityType enumSeatLocation = SystemCapabilityType.valueForString(example);
 		example = "PRERECORDED_SPEECH";
 		SystemCapabilityType enumPrerecordedSpeech = SystemCapabilityType.valueForString(example);
 		example = "DISPLAYS";
@@ -68,6 +70,7 @@ public class SystemCapabilityTypeTests extends TestCase {
 		assertNotNull("VOICE_RECOGNITION returned null", enumVoiceRecognition);
 		assertNotNull("PCM_STREAMING", enumPCM);
 		assertNotNull("APP_SERVICES", enumAppServices);
+		assertNotNull("SEAT_LOCATION return null", enumSeatLocation);
 		assertNotNull("PRERECORDED_SPEECH", enumPrerecordedSpeech);
 		assertNotNull("DISPLAYS", enumDisplays);
 	}
@@ -122,6 +125,7 @@ public class SystemCapabilityTypeTests extends TestCase {
 		enumTestList.add(SystemCapabilityType.VOICE_RECOGNITION);
 		enumTestList.add(SystemCapabilityType.PCM_STREAMING);
 		enumTestList.add(SystemCapabilityType.APP_SERVICES);
+		enumTestList.add(SystemCapabilityType.SEAT_LOCATION);
 		enumTestList.add(SystemCapabilityType.PRERECORDED_SPEECH);
 		enumTestList.add(SystemCapabilityType.DISPLAYS);
 

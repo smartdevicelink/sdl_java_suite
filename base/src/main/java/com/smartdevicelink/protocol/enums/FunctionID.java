@@ -105,6 +105,8 @@ public enum FunctionID{
     SHOW_APP_MENU(59, "ShowAppMenu"),
     CREATE_WINDOW(60, "CreateWindow"),
     DELETE_WINDOW(61, "DeleteWindow"),
+    GET_INTERIOR_VEHICLE_DATA_CONSENT(62, "GetInteriorVehicleDataConsent"),
+    RELEASE_INTERIOR_VEHICLE_MODULE(63, "ReleaseInteriorVehicleDataModule"),
     // NOTIFICATIONS
     ON_HMI_STATUS(32768, "OnHMIStatus"),
     ON_APP_INTERFACE_UNREGISTERED(32769, "OnAppInterfaceUnregistered"),
