@@ -62,6 +62,7 @@ import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.haptic.HapticInterfaceManager;
 import com.smartdevicelink.managers.SdlManager;
+import com.smartdevicelink.managers.ServiceEncryptionListener;
 import com.smartdevicelink.managers.lifecycle.RpcConverter;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -311,7 +312,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	private Set<String> mEncryptedRPCNames = new HashSet<>();
 	private boolean mRPCSecuredServiceStarted;
-	private SdlManager.ServiceEncryptionListener mEncryptionCallback;
+	private ServiceEncryptionListener mEncryptionCallback;
 
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
@@ -2122,14 +2123,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void onNotified(RPCNotification notification) {
 			List<PermissionItem> permissionItems = ((OnPermissionsChange)notification).getPermissionItem();
 			Set<String> encryptedRpcs = new HashSet<>();
-			boolean requireEncryptionAppLevel = Boolean.TRUE.equals(((OnPermissionsChange) notification).getRequireEncryption());
-			if (requireEncryptionAppLevel && permissionItems != null && !permissionItems.isEmpty()) {
+			Boolean requireEncryptionAppLevel = ((OnPermissionsChange) notification).getRequireEncryption();
+			if (permissionItems != null && !permissionItems.isEmpty()) {
 				for (PermissionItem permissionItem : permissionItems) {
 					if (permissionItem != null) {
 						if (Boolean.TRUE.equals(permissionItem.getRequireEncryption())) {
-							String rpcName = permissionItem.getRpcName();
-							if (rpcName != null) {
-								encryptedRpcs.add(rpcName);
+							if (requireEncryptionAppLevel == null || requireEncryptionAppLevel == true) {
+								String rpcName = permissionItem.getRpcName();
+								if (rpcName != null) {
+									encryptedRpcs.add(rpcName);
+								}
 							}
 						}
 					}
@@ -2159,7 +2162,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @return true if encryption is required; false otherwise
 	 */
 	public boolean getRequiresEncryption() {
-		return (_hmiLevel == HMILevel.HMI_FULL) && (!mEncryptedRPCNames.isEmpty());
+		return (_hmiLevel != null && _hmiLevel != HMILevel.HMI_NONE) && (!mEncryptedRPCNames.isEmpty());
 	}
 
 	/**
@@ -2167,7 +2170,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * service, start it
 	 */
 	private void checkStatusAndInitSecuredService() {
-		if (!mRPCSecuredServiceStarted && _hmiLevel == HMILevel.HMI_FULL && !mEncryptedRPCNames.isEmpty()) {
+		if (!mRPCSecuredServiceStarted && (_hmiLevel != null && _hmiLevel != HMILevel.HMI_NONE) && !mEncryptedRPCNames.isEmpty()) {
 			startProtectedRPCService();
 		}
 	}
@@ -2177,36 +2180,27 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
 			if(SessionType.RPC.equals(type) && session != null){
 				mRPCSecuredServiceStarted = isEncrypted;
-				if (mEncryptionCallback != null) {
-					mEncryptionCallback.onEncryptionServiceUpdated(type, isEncrypted, isEncrypted ? "Start secured session success" : "Start secured session failure");
-				}
+				mEncryptionCallback.onEncryptionServiceUpdated(type, isEncrypted, isEncrypted ? "Secured RPC service started" : "RPC service started");
+				Log.d(TAG, "onServiceStarted, session id: " + (session.getSessionId() + ", session Type: " + type.getName()) + ", isEncrypted: " + isEncrypted);
 			}
-			Log.d(TAG, "onServiceStarted, session id: " + (session == null ? "session NULL" : session.getSessionId()
-					+ ", session Type: " + type.getName()) + ", isEncrypted: " + isEncrypted);
 		}
 
 		@Override
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if (SessionType.RPC.equals(type) && session != null) {
 				mRPCSecuredServiceStarted = false;
-				if (mEncryptionCallback != null) {
-					mEncryptionCallback.onEncryptionServiceUpdated(type, false, "onServiceEnded");
-				}
+				mEncryptionCallback.onEncryptionServiceUpdated(type, false, "onServiceEnded");
+				Log.d(TAG, "onServiceEnded, session id: " + (session.getSessionId() + ", session Type: " + type.getName()));
 			}
-			Log.d(TAG, "onServiceEnded, session id: " + (session == null ? "session NULL" : session.getSessionId()
-					+ ", session Type: " + type.getName()));
 		}
 
 		@Override
 		public void onServiceError(SdlSession session, SessionType type, String reason) {
 			if (SessionType.RPC.equals(type) && session != null) {
 				mRPCSecuredServiceStarted = false;
-				if (mEncryptionCallback != null) {
-					mEncryptionCallback.onEncryptionServiceUpdated(type, false, "onServiceError");
-				}
+				mEncryptionCallback.onEncryptionServiceUpdated(type, false, "onServiceError. " + reason);
+				Log.e(TAG, "onServiceError, session id: " + (session.getSessionId() + ", session Type: " + type.getName()));
 			}
-			Log.d(TAG, "onServiceError, session id: " + (session == null ? "session NULL" : session.getSessionId()
-					+ ", session Type: " + type.getName()));
 		}
 	};
 
@@ -2214,7 +2208,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * Sets a callback to notify app on secured service status update
 	 * @param listener The callback to be set
 	 */
-	public void setServiceEncryptionListener(@NonNull SdlManager.ServiceEncryptionListener listener) {
+	public void setServiceEncryptionListener(@NonNull ServiceEncryptionListener listener) {
 		mEncryptionCallback = listener;
 	}
 
@@ -2263,23 +2257,20 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			pm.setFunctionID(FunctionID.getFunctionId(message.getFunctionName()));
 			if (mRPCSecuredServiceStarted && mEncryptedRPCNames.contains(message.getFunctionName())) {
 				pm.setPayloadProtected(true);
-			} else if (!mRPCSecuredServiceStarted || !rpcProtectedStartResponse) {
-				boolean isMsgProtected = message.isPayloadProtected();
-				if (isMsgProtected) {
-					if (message.getMessageType().equals((RPCMessage.KEY_REQUEST))) {
-						RPCRequest request = (RPCRequest) message;
-						OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
-						if (listener != null) {
-							listener.onError(request.getCorrelationID(), Result.ABORTED,
-									"Trying to send an encrypted message and there is no secured service");
-						}
-						return;
-					}
-				} else {
-					pm.setPayloadProtected(isMsgProtected);
-				}
 			} else {
 				pm.setPayloadProtected(message.isPayloadProtected());
+			}
+			if (pm.getPayloadProtected() && (!mRPCSecuredServiceStarted || !rpcProtectedStartResponse)){
+				if (message.getMessageType().equals((RPCMessage.KEY_REQUEST))) {
+					RPCRequest request = (RPCRequest) message;
+					OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
+					String errorInfo = "Trying to send an encrypted message and there is no secured service";
+					if (listener != null) {
+						listener.onError(request.getCorrelationID(), Result.ABORTED,  errorInfo);
+					}
+					Log.d(TAG, errorInfo);
+				}
+				return;
 			}
 
 			if (sdlSession != null) {
@@ -3971,7 +3962,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				if (msg.getHmiLevel() == HMILevel.HMI_FULL) firstTimeFull = false;
 
 				_hmiLevel = msg.getHmiLevel();
-				if (_hmiLevel == HMILevel.HMI_FULL) {
+				if (_hmiLevel != HMILevel.HMI_NONE) {
 					checkStatusAndInitSecuredService();
 				}
 				_audioStreamingState = msg.getAudioStreamingState();

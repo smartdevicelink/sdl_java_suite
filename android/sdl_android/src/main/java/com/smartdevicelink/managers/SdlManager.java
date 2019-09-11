@@ -1192,11 +1192,4 @@ public class SdlManager extends BaseSdlManager{
 		}
 		return false;
 	}
-
-	/**
-	 * Callback to get update on secured service
-	 */
-	public interface ServiceEncryptionListener {
-		void onEncryptionServiceUpdated(@NonNull SessionType serviceType, boolean isServiceEncrypted, @Nullable String info);
-	}
 }

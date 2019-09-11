@@ -120,7 +120,7 @@ abstract class BasePermissionManager extends BaseSubManager{
                 List<PermissionItem> permissionItems = ((OnPermissionsChange)notification).getPermissionItem();
                 Map<FunctionID, PermissionItem> previousPermissionItems = currentPermissionItems;
                 Set<String> encryptedRPCs = new HashSet<>();
-                boolean requireEncryptionAppLevel = Boolean.TRUE.equals(((OnPermissionsChange) notification).getRequireEncryption());
+                Boolean requireEncryptionAppLevel = ((OnPermissionsChange) notification).getRequireEncryption();
                 currentPermissionItems = new HashMap<>();
                 if (permissionItems != null && !permissionItems.isEmpty()) {
                     for (PermissionItem permissionItem : permissionItems) {
@@ -128,10 +128,12 @@ abstract class BasePermissionManager extends BaseSubManager{
                         if (functionID != null) {
                             currentPermissionItems.put(functionID, permissionItem);
                         }
-                        if (requireEncryptionAppLevel && Boolean.TRUE.equals(permissionItem.getRequireEncryption())) {
-                            String rpcName = permissionItem.getRpcName();
-                            if (rpcName != null) {
-                                encryptedRPCs.add(rpcName);
+                        if (Boolean.TRUE.equals(permissionItem.getRequireEncryption())) {
+                            if (requireEncryptionAppLevel == null || requireEncryptionAppLevel == true) {
+                                String rpcName = permissionItem.getRpcName();
+                                if (rpcName != null) {
+                                    encryptedRPCs.add(rpcName);
+                                }
                             }
                         }
                     }
@@ -164,7 +166,7 @@ abstract class BasePermissionManager extends BaseSubManager{
      * @return true if encryption is required; false otherwise
      */
     public boolean getRequiresEncryption() {
-        return (currentHMILevel == HMILevel.HMI_FULL) && (!mEncryptedRPC.isEmpty());
+        return (currentHMILevel != null && currentHMILevel != HMILevel.HMI_NONE) && (!mEncryptedRPC.isEmpty());
     }
 
     private synchronized void checkState(){
