@@ -1799,6 +1799,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		
 		_proxyDisposed = true;
 		mRPCSecuredServiceStarted = false;
+		mEncryptedRPCNames.clear();
+		mEncryptionCallback = null;
 		
 		SdlTrace.logProxyEvent("Application called dispose() method.", SDL_LIB_TRACE_KEY);
 		
@@ -2175,7 +2177,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
 			if(SessionType.RPC.equals(type) && session != null){
 				mRPCSecuredServiceStarted = isEncrypted;
-				mEncryptionCallback.onEncryptionServiceUpdated(type, isEncrypted, isEncrypted ? "Start secured session success" : "Start secured session failure");
+				if (mEncryptionCallback != null) {
+					mEncryptionCallback.onEncryptionServiceUpdated(type, isEncrypted, isEncrypted ? "Start secured session success" : "Start secured session failure");
+				}
 			}
 			Log.d(TAG, "onServiceStarted, session id: " + (session == null ? "session NULL" : session.getSessionId()
 					+ ", session Type: " + type.getName()) + ", isEncrypted: " + isEncrypted);
@@ -2185,7 +2189,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if (SessionType.RPC.equals(type) && session != null) {
 				mRPCSecuredServiceStarted = false;
-				mEncryptionCallback.onEncryptionServiceUpdated(type, false, "onServiceEnded");
+				if (mEncryptionCallback != null) {
+					mEncryptionCallback.onEncryptionServiceUpdated(type, false, "onServiceEnded");
+				}
 			}
 			Log.d(TAG, "onServiceEnded, session id: " + (session == null ? "session NULL" : session.getSessionId()
 					+ ", session Type: " + type.getName()));
@@ -2195,7 +2201,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void onServiceError(SdlSession session, SessionType type, String reason) {
 			if (SessionType.RPC.equals(type) && session != null) {
 				mRPCSecuredServiceStarted = false;
-				mEncryptionCallback.onEncryptionServiceUpdated(type, false, "onServiceError");
+				if (mEncryptionCallback != null) {
+					mEncryptionCallback.onEncryptionServiceUpdated(type, false, "onServiceError");
+				}
 			}
 			Log.d(TAG, "onServiceError, session id: " + (session == null ? "session NULL" : session.getSessionId()
 					+ ", session Type: " + type.getName()));
