@@ -104,7 +104,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		assertEquals(csm.nextChoiceId, 1);
 
 		assertTrue(csm.executor.isShutdown());
-		assertTrue(csm.isVROptional);
+		assertFalse(csm.isVROptional);
 
 		assertEquals(csm.getState(), BaseSubManager.SHUTDOWN);
 
@@ -246,7 +246,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 
 		ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
 		ChoiceSetManager partialMockCSM = spy(newCSM);
-		when(partialMockCSM.isReady()).thenReturn(true);
+		when(partialMockCSM.getState()).thenReturn(BaseSubManager.READY);
 
 		Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardProperties.class), mock(KeyboardListener.class));
 		assertNotNull(cancelId);
@@ -258,7 +258,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 
 		ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
 		ChoiceSetManager partialMockCSM = spy(newCSM);
-		when(partialMockCSM.isReady()).thenReturn(false);
+		when(partialMockCSM.getState()).thenReturn(BaseSubManager.ERROR);
 
 		Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardProperties.class), mock(KeyboardListener.class));
 		assertNull(cancelId);

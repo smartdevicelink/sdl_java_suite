@@ -103,6 +103,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		DebugTool.logInfo("Choice Operation: Executing present choice set operation");
 		addListeners();
 		start();
+		block();
 	}
 
 	private void start(){
@@ -162,8 +163,10 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
+				if (listener != null){
+					listener.onComplete(false);
+				}
 				DebugTool.logError("Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
-				super.onError(correlationId, resultCode, info);
 			}
 		});
 		if (internalInterface.get() != null){
@@ -197,6 +200,16 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 
 				finishOperation();
 			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				DebugTool.logError("Presenting Choice set failed: " + resultCode + ", " + info);
+
+				if (choiceSetSelectionListener != null){
+					choiceSetSelectionListener.onError(resultCode + ", " + info);
+				}
+				finishOperation();
+			}
 		});
 		if (internalInterface.get() != null){
 			internalInterface.get().sendRPC(pi);
@@ -215,6 +228,12 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 				public void onResponse(int correlationId, RPCResponse response) {
 					updatedKeyboardProperties = false;
 					DebugTool.logInfo("Successfully reset choice keyboard properties to original config");
+					PresentChoiceSetOperation.super.finishOperation();
+				}
+
+				@Override
+				public void onError(int correlationId, Result resultCode, String info) {
+					DebugTool.logError("Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
 					PresentChoiceSetOperation.super.finishOperation();
 				}
 			});
@@ -268,7 +287,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 			}
 		} else {
 			DebugTool.logInfo("Canceling a choice set that has not yet been sent to Core");
-			Thread.currentThread().interrupt();
+			this.cancel();
 		}
 	}
 

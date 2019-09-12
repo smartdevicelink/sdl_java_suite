@@ -71,6 +71,7 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 	SdlMsgVersion sdlMsgVersion;
 
 	PresentKeyboardOperation(ISdl internalInterface, KeyboardProperties originalKeyboardProperties, String initialText, KeyboardProperties customConfig, KeyboardListener keyboardListener, Integer cancelID){
+		super();
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.keyboardListener = keyboardListener;
 		this.originalKeyboardProperties = originalKeyboardProperties;
@@ -87,6 +88,7 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 		DebugTool.logInfo("Keyboard Operation: Executing present keyboard operation");
 		addListeners();
 		start();
+		block();
 	}
 
 	private void start(){
@@ -179,7 +181,7 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 			}
 		} else {
 			DebugTool.logInfo("Canceling a keyboard that has not yet been sent to Core.");
-			Thread.currentThread().interrupt();
+			this.cancel();
 		}
 	}
 
@@ -215,6 +217,9 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
+				if (listener != null){
+					listener.onComplete(false);
+				}
 				DebugTool.logError("Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
 				super.onError(correlationId, resultCode, info);
 			}
@@ -237,6 +242,12 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 				public void onResponse(int correlationId, RPCResponse response) {
 					updatedKeyboardProperties = false;
 					DebugTool.logInfo("Successfully reset choice keyboard properties to original config");
+					PresentKeyboardOperation.super.finishOperation();
+				}
+
+				@Override
+				public void onError(int correlationId, Result resultCode, String info) {
+					DebugTool.logError("Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
 					PresentKeyboardOperation.super.finishOperation();
 				}
 			});
