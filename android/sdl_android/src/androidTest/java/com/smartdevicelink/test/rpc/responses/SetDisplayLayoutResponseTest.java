@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.SetDisplayLayoutResponse}
+ * {@link com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse}
  */
 public class SetDisplayLayoutResponseTest extends BaseRpcTests {
 

@@ -19,7 +19,7 @@ import java.util.Hashtable;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.SetDisplayLayout}
+ * {@link com.smartdevicelink.proxy.rpc.SetDisplayLayout}
  */
 public class SetDisplayLayoutTests extends BaseRpcTests {
 	
