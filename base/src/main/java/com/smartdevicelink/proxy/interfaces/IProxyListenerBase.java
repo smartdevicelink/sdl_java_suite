@@ -38,6 +38,7 @@ import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
 import com.smartdevicelink.proxy.rpc.ButtonPressResponse;
+import com.smartdevicelink.proxy.rpc.CancelInteractionResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
 import com.smartdevicelink.proxy.rpc.CloseApplicationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
@@ -436,6 +437,14 @@ public interface IProxyListenerBase {
 	 * @param response - Contains information about the response sent from SDL.
 	 */
 	public void onCloseApplicationResponse(CloseApplicationResponse response);
+
+	/**
+	 * onCancelInteractionResponse being called indicates that SDL has
+	 * responded to a request to dismiss a modal view on the module.
+	 *
+	 * @param response - Contains information about the response sent from SDL.
+	 */
+	public void onCancelInteractionResponse(CancelInteractionResponse response);
 
     /**
      * UnpublishAppServiceResponse being called indicates that SDL has

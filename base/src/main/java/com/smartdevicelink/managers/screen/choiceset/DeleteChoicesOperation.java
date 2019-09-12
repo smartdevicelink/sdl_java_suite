@@ -48,13 +48,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-class DeleteChoicesOperation implements Runnable {
+class DeleteChoicesOperation extends AsynchronousOperation {
 
 	private WeakReference<ISdl> internalInterface;
 	private HashSet<ChoiceCell> cellsToDelete;
 	private CompletionListener completionListener;
 
 	DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, CompletionListener completionListener){
+		super();
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.cellsToDelete = cellsToDelete;
 		this.completionListener = completionListener;
@@ -62,8 +63,10 @@ class DeleteChoicesOperation implements Runnable {
 
 	@Override
 	public void run() {
+		DeleteChoicesOperation.super.run();
 		DebugTool.logInfo("Choice Operation: Executing delete choices operation");
 		sendDeletions();
+		block();
 	}
 
 	private void sendDeletions(){
@@ -84,6 +87,8 @@ class DeleteChoicesOperation implements Runnable {
 							completionListener.onComplete(true);
 						}
 						DebugTool.logInfo("Successfully deleted choices");
+
+						DeleteChoicesOperation.super.finishOperation();
 					}
 
 					@Override
@@ -92,6 +97,8 @@ class DeleteChoicesOperation implements Runnable {
 							completionListener.onComplete(false);
 						}
 						DebugTool.logError("Failed to delete choice: " + info + " | Corr ID: " + correlationId);
+
+						DeleteChoicesOperation.super.finishOperation();
 					}
 
 					@Override
