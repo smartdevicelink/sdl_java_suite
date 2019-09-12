@@ -1,1 +1,1 @@
-/Users/tnguy238/dev/master_android_sdl_library_forked/base/src/main/java/com/smartdevicelink/managers/ServiceEncryptionListener.java
+../../../../../../../base/src/main/java/com/smartdevicelink/managers/ServiceEncryptionListener.java
