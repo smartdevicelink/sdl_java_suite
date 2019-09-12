@@ -170,6 +170,24 @@ public final class JsonUtils {
 		
 		return null;
 	}
+
+	public static List<Boolean> readBooleanListFromJsonObject(JSONObject json, String key){
+		JSONArray jsonArray = readJsonArrayFromJsonObject(json, key);
+
+		if(jsonArray != null){
+			int len = jsonArray.length();
+			List<Boolean> result = new ArrayList<>(len);
+			for(int i=0; i<len; i++){
+				try {
+					Boolean bool = jsonArray.getBoolean(i);
+					result.add(bool);
+				} catch (JSONException e) {}
+			}
+			return result;
+		}
+
+		return null;
+	}
 	
 	public static List<Double> readDoubleListFromJsonObject(JSONObject json, String key){
 		JSONArray jsonArray = readJsonArrayFromJsonObject(json, key);

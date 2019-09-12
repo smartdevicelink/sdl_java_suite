@@ -32,6 +32,7 @@ import com.smartdevicelink.proxy.rpc.EmergencyEvent;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
 import com.smartdevicelink.proxy.rpc.FuelRange;
 import com.smartdevicelink.proxy.rpc.GPSData;
+import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities;
@@ -53,6 +54,7 @@ import com.smartdevicelink.proxy.rpc.MediaServiceData;
 import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.ModuleData;
+import com.smartdevicelink.proxy.rpc.ModuleInfo;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
 import com.smartdevicelink.proxy.rpc.NavigationInstruction;
@@ -73,6 +75,7 @@ import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
 import com.smartdevicelink.proxy.rpc.SeatControlData;
+import com.smartdevicelink.proxy.rpc.SeatLocation;
 import com.smartdevicelink.proxy.rpc.SeatMemoryAction;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.SisData;
@@ -3786,5 +3789,74 @@ public class Validator{
 		}
 
 		return true;
+	}
+
+	public static boolean validateGrid(Grid g1, Grid g2) {
+    	String tag = "validateGrid";
+    	if (g1 == null) {
+    		return (g2 == null);
+		}
+    	if (g2 == null) {
+    		return (g1 == null);
+		}
+    	if (g1.getColumn() != g2.getColumn()) {
+    		log(tag, "Columns do not match");
+    		return false;
+		}
+    	if (g1.getRow() != g2.getRow()) {
+    		log(tag, "Rows do not match");
+    		return false;
+		}
+		if (g1.getLevel() != g2.getLevel()) {
+			log(tag, "Levels do not match");
+			return false;
+		}
+    	if (g1.getColumnSpan() != g2.getColumnSpan()) {
+			log(tag, "Column spans do not match");
+    		return false;
+		}
+    	if (g1.getRowSpan() != g2.getRowSpan()) {
+    		log(tag, "Row spans do not match");
+    		return false;
+		}
+    	if (g1.getLevelSpan() != g2.getLevelSpan()) {
+    		log(tag, "Level spans do not match");
+    		return false;
+		}
+
+    	return true;
+	}
+
+	public static boolean validateModuleInfo(ModuleInfo m1, ModuleInfo m2) {
+		if (m1 == null) {
+			return (m2 == null);
+		}
+		if (m2 == null) {
+			return (m1 == null);
+		}
+		if (!m1.getModuleId().equals(m2.getModuleId())) {
+			return false;
+		}
+		if (!m1.getMultipleAccessAllowance().equals(m2.getMultipleAccessAllowance())) {
+			return false;
+		}
+		if (!validateGrid(m1.getModuleLocation(), m2.getModuleLocation())) {
+			return false;
+		}
+		if (!validateGrid(m1.getModuleServiceArea(), m2.getModuleServiceArea())) {
+			return false;
+		}
+
+    	return true;
+	}
+
+	public static boolean validateSeatLocation(SeatLocation cap1, SeatLocation cap2) {
+		if (cap1 == null) {
+			return (cap2 == null);
+		}
+		if (cap2 == null) {
+			return (cap1 == null);
+		}
+		return validateGrid(cap1.getGrid(), cap2.getGrid());
 	}
 }

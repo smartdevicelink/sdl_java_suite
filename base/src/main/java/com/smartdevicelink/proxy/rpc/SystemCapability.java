@@ -50,8 +50,8 @@ public class SystemCapability extends RPCStruct {
     public static final String KEY_VIDEO_STREAMING_CAPABILITY = "videoStreamingCapability";
     public static final String KEY_REMOTE_CONTROL_CAPABILITY = "remoteControlCapability";
     public static final String KEY_APP_SERVICES_CAPABILITIES = "appServicesCapabilities";
+    public static final String KEY_SEAT_LOCATION_CAPABILITY = "seatLocationCapability";
     public static final String KEY_DISPLAY_CAPABILITIES = "displayCapabilities";
-
     public SystemCapability(){}
 
     public SystemCapability(Hashtable<String, Object> hash) {
@@ -94,8 +94,10 @@ public class SystemCapability extends RPCStruct {
         }else if(type.equals(SystemCapabilityType.REMOTE_CONTROL)){
             return getObject(RemoteControlCapabilities.class, KEY_REMOTE_CONTROL_CAPABILITY);
         }else if(type.equals(SystemCapabilityType.APP_SERVICES)){
-            return getObject(AppServicesCapabilities.class, KEY_APP_SERVICES_CAPABILITIES);
-        }else if(type.equals(SystemCapabilityType.DISPLAYS)){
+			return (RPCStruct) getObject(AppServicesCapabilities.class, KEY_APP_SERVICES_CAPABILITIES);
+	}else if(type.equals(SystemCapabilityType.SEAT_LOCATION)){
+            return (RPCStruct) getObject(SeatLocationCapability.class, KEY_SEAT_LOCATION_CAPABILITY);		
+	}else if(type.equals(SystemCapabilityType.DISPLAYS)){
             return getObject(DisplayCapability.class, KEY_DISPLAY_CAPABILITIES);
         }else{
             return null;
@@ -113,12 +115,14 @@ public class SystemCapability extends RPCStruct {
             setValue(KEY_VIDEO_STREAMING_CAPABILITY, capability);
         }else if(type.equals(SystemCapabilityType.REMOTE_CONTROL)){
             setValue(KEY_REMOTE_CONTROL_CAPABILITY, capability);
-        }else if(type.equals(SystemCapabilityType.APP_SERVICES)) {
-            setValue(KEY_APP_SERVICES_CAPABILITIES, capability);
-        }else if(type.equals(SystemCapabilityType.DISPLAYS)){
+        }else if(type.equals(SystemCapabilityType.APP_SERVICES)){
+			setValue(KEY_APP_SERVICES_CAPABILITIES, capability);
+	    }else if(type.equals(SystemCapabilityType.SEAT_LOCATION)){
+            setValue(KEY_SEAT_LOCATION_CAPABILITY, capability);
+        }else if(type.equals(SystemCapabilityType.DISPLAYS)) {
             setValue(KEY_DISPLAY_CAPABILITIES, capability);
         }else{
-            return;
+	        return;
         }
     }
 

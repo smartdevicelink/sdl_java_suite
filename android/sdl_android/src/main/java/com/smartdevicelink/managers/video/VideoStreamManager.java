@@ -199,6 +199,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				&& hmiLevel != null
 				&& hmiLevel.equals(HMILevel.HMI_FULL)
 				&& parameters != null){
+			stateMachine.transitionToState(StreamingStateMachine.READY);
 			transitionToState(READY);
 		}
 	}

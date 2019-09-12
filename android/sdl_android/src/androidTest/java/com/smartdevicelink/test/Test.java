@@ -36,6 +36,7 @@ import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
+import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities;
@@ -57,6 +58,7 @@ import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.ModuleData;
+import com.smartdevicelink.proxy.rpc.ModuleInfo;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
 import com.smartdevicelink.proxy.rpc.NavigationInstruction;
 import com.smartdevicelink.proxy.rpc.NavigationServiceData;
@@ -76,6 +78,7 @@ import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
 import com.smartdevicelink.proxy.rpc.SeatControlData;
+import com.smartdevicelink.proxy.rpc.SeatLocation;
 import com.smartdevicelink.proxy.rpc.SeatMemoryAction;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.SisData;
@@ -424,8 +427,10 @@ public class Test {
 	public static final HapticRect                     GENERAL_HAPTIC_RECT                    = new HapticRect();
 	public static final FuelType                       GENERAL_FUELTYPE                       = FuelType.GASOLINE;
 	public static final LockScreenConfig               GENERAL_LOCKSCREENCONFIG               = new LockScreenConfig();
+	public static final Grid                           GENERAL_GRID                           = new Grid();
+	public static final SeatLocation                   GENERAL_SEAT_LOCATION                  = new SeatLocation();
+	public static final ModuleInfo                     GENERAL_MODULE_INFO                    = new ModuleInfo();
 	public static final WindowType                     GENERAL_WINDOW_TYPE                    = WindowType.MAIN;
-
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
 	public static final List<Choice>                    GENERAL_CHOICE_LIST                    = new ArrayList<Choice>();
@@ -473,6 +478,8 @@ public class Test {
 	public static final List<WeatherData>               GENERAL_WEATHERDATA_LIST               = Arrays.asList(GENERAL_WEATHERDATA);
 	public static final List<WeatherAlert>              GENERAL_WEATHERALERT_LIST              = Arrays.asList(GENERAL_WEATHERALERT);
 	public static final List<NavigationInstruction>     GENERAL_NAVIGATION_INSTRUCTION_LIST    = Arrays.asList(GENERAL_NAVIGATION_INSTRUCTION);
+	public static final List<SeatLocation>              GENERAL_SEAT_LIST                      = new ArrayList<>(1);
+	public static final List<Boolean>                   GENERAL_BOOLEAN_LIST                   = Arrays.asList(new Boolean[]{Boolean.TRUE, Boolean.TRUE});
 	public static final List<Integer>                   GENERAL_AVAILABLE_HD_CHANNELS_LIST     = Arrays.asList(new Integer[]{ 1, 2});
 	public static final List<ImageType>                 GENERAL_IMAGE_TYPE_LIST                = Arrays.asList(new ImageType[]{ImageType.DYNAMIC, ImageType.STATIC});
 	public static final List<WindowTypeCapabilities>    GENERAL_WINDOW_TYPE_CAPABILITIES_LIST  = new ArrayList<WindowTypeCapabilities>(1);
@@ -515,6 +522,7 @@ public class Test {
 	public static final JSONArray JSON_RADIOCONTROLCAPABILITIES   = new JSONArray();
 	public static final JSONArray JSON_CLIMATECONTROLCAPABILITIES = new JSONArray();
 	public static final JSONArray  JSON_TEXTFIELDTYPES            = new JSONArray();
+	public static final JSONArray  JSON_SEAT_LOCATIONS            = new JSONArray();
 	public static final JSONObject JSON_TURN                      = new JSONObject();
 	public static final JSONObject JSON_IMAGE                     = new JSONObject();
 	public static final JSONObject JSON_CHOICE                    = new JSONObject();
@@ -542,6 +550,8 @@ public class Test {
 	public static final JSONObject JSON_RGBCOLOR                  = new JSONObject();
 	public static final JSONObject JSON_DAYCOLORSCHEME            = new JSONObject();
 	public static final JSONObject JSON_NIGHTCOLORSCHEME          = new JSONObject();
+	public static final JSONObject JSON_GRID                      = new JSONObject();
+	public static final JSONObject JSON_MODULE_INFO               = new JSONObject();
 	public static final JSONArray  JSON_IMAGE_TYPE_SUPPORTED      = new JSONArray();
 	public static final JSONObject JSON_WINDOW_TYPE_CAPABILITIES  = new JSONObject();
 	public static final JSONArray  JSON_WINDOW_TYPE_CAPABILITIES_LIST  = new JSONArray();
@@ -550,7 +560,6 @@ public class Test {
 	public static final JSONArray  JSON_IMAGE_TYPES               = new JSONArray();
 	public static final JSONObject JSON_DISPLAYCAPABILITY         = new JSONObject();
 	public static final JSONArray  JSON_DISPLAYCAPABILITY_LIST    = new JSONArray();
-
 	static {
 		GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
 		GENERAL_TOUCHEVENTCAPABILITIES.setMultiTouchAvailable(GENERAL_BOOLEAN);
@@ -721,6 +730,7 @@ public class Test {
 
 		GENERAL_MEDIACLOCKFORMAT_LIST.add(MediaClockFormat.CLOCK1);
 		GENERAL_MEDIACLOCKFORMAT_LIST.add(MediaClockFormat.CLOCK2);
+		GENERAL_SEAT_LIST.add(GENERAL_SEAT_LOCATION);
 
 		GENERAL_IMAGE.setValue(GENERAL_STRING);
 		GENERAL_IMAGE.setImageType(GENERAL_IMAGETYPE);
@@ -1094,6 +1104,10 @@ public class Test {
 		GENERAL_NAVIGATION_INSTRUCTION.setDrivingSide(GENERAL_DIRECTION);
 		GENERAL_NAVIGATION_INSTRUCTION.setDetails(GENERAL_STRING);
 		GENERAL_NAVIGATION_INSTRUCTION.setImage(GENERAL_IMAGE);
+		GENERAL_MODULE_INFO.setModuleId(Test.GENERAL_STRING);
+		GENERAL_MODULE_INFO.setModuleLocation(Test.GENERAL_GRID);
+		GENERAL_MODULE_INFO.setModuleServiceArea(Test.GENERAL_GRID);
+		GENERAL_MODULE_INFO.setMultipleAccessAllowance(Test.GENERAL_BOOLEAN);
 
 
 		try {
@@ -1322,6 +1336,13 @@ public class Test {
 			JSON_TEXTFIELDTYPES.put(MetadataType.CURRENT_TEMPERATURE);
 			JSON_TEXTFIELDTYPES.put(MetadataType.MEDIA_ALBUM);
 			JSON_TEXTFIELDTYPES.put(MetadataType.MEDIA_ARTIST);
+
+			JSON_SEAT_LOCATIONS.put(JSON_GRID);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_ID, Test.GENERAL_STRING);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_LOCATION, Test.JSON_GRID);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_SERVICE_AREA, Test.JSON_GRID);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MULTIPLE_ACCESS_ALLOWED, Test.GENERAL_BOOLEAN);
+
 
 		} catch (JSONException e) {
 			Log.e("Test", "Static Json Construction Failed.", e);

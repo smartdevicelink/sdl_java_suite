@@ -32,6 +32,8 @@ public class GlobalPropertyTests extends TestCase {
 		GlobalProperty enumMenuIcon = GlobalProperty.valueForString(example);
 		example = "KEYBOARDPROPERTIES";
 		GlobalProperty enumKeyboardProperties = GlobalProperty.valueForString(example);
+		example = "USERLOCATION";
+		GlobalProperty enumUserLocation = GlobalProperty.valueForString(example);
 		
 		assertNotNull("HELPPROMPT returned null", enumHelpPrompt);
 		assertNotNull("TIMEOUTPROMPT returned null", enumTimeoutPrompt);
@@ -40,6 +42,7 @@ public class GlobalPropertyTests extends TestCase {
 		assertNotNull("MENUNAME returned null", enumMenuName);
 		assertNotNull("MENUICON returned null", enumMenuIcon);
 		assertNotNull("KEYBOARDPROPERTIES returned null", enumKeyboardProperties);
+		assertNotNull("USERLOCATION returned null", enumUserLocation);
 	}
 
 	/**
@@ -84,6 +87,7 @@ public class GlobalPropertyTests extends TestCase {
 		enumTestList.add(GlobalProperty.MENUNAME);
 		enumTestList.add(GlobalProperty.MENUICON);		
 		enumTestList.add(GlobalProperty.KEYBOARDPROPERTIES);
+		enumTestList.add(GlobalProperty.USERLOCATION);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));

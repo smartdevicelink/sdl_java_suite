@@ -49,6 +49,7 @@ import java.util.Hashtable;
 public class GetInteriorVehicleData extends RPCRequest {
 	public static final String KEY_MODULE_TYPE = "moduleType";
     public static final String KEY_SUBSCRIBE = "subscribe";
+    public static final String KEY_MODULE_ID = "moduleId";
 
     /**
      * Constructs a new GetInteriorVehicleData object
@@ -117,5 +118,21 @@ public class GetInteriorVehicleData extends RPCRequest {
      */
     public Boolean getSubscribe() {
         return getBoolean(KEY_SUBSCRIBE);
+    }
+
+    /**
+     * Sets the Module ID for this class
+     * @param id the id to be set
+     */
+    public void setModuleId(String id) {
+        setParameters(KEY_MODULE_ID, id);
+    }
+
+    /**
+     * Gets the Module ID of this class
+     * @return the Module ID of this class
+     */
+    public String getModuleId() {
+        return getString(KEY_MODULE_ID);
     }
 }
