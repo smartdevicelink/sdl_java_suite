@@ -93,6 +93,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private VideoStreamingParameters parameters;
 	private IVideoStreamListener streamListener;
 	private boolean isTransportAvailable = false;
+	private boolean hasStarted;
 
 	// INTERNAL INTERFACES
 
@@ -115,8 +116,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				}
 				startEncoder();
 				stateMachine.transitionToState(StreamingStateMachine.STARTED);
-
-
+				hasStarted = true;
 			}
 		}
 
@@ -316,6 +316,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			//Encoder should be up and running
 			createRemoteDisplay(virtualDisplayEncoder.getVirtualDisplay());
 			stateMachine.transitionToState(StreamingStateMachine.STARTED);
+			hasStarted = true;
 		} catch (Exception e) {
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			e.printStackTrace();
@@ -390,8 +391,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @return boolean (true = yes, false = no)
 	 */
 	public boolean isStreaming(){
-		return (stateMachine.getState() == StreamingStateMachine.STARTED) ||
-				(hmiLevel == HMILevel.HMI_FULL);
+		return (stateMachine.getState() == StreamingStateMachine.STARTED) && (hmiLevel == HMILevel.HMI_FULL);
 	}
 
 	/**
@@ -399,8 +399,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @return boolean (true = not paused, false = paused)
 	 */
 	public boolean isPaused(){
-		return (stateMachine.getState() == StreamingStateMachine.STARTED) ||
-				(hmiLevel != HMILevel.HMI_FULL);
+		return (hasStarted && stateMachine.getState() == StreamingStateMachine.STOPPED) || (hmiLevel != HMILevel.HMI_FULL);
 	}
 
 	/**
