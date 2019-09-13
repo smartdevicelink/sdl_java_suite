@@ -119,8 +119,8 @@ abstract class BasePermissionManager extends BaseSubManager{
             public void onNotified(RPCNotification notification) {
                 List<PermissionItem> permissionItems = ((OnPermissionsChange)notification).getPermissionItem();
                 Map<FunctionID, PermissionItem> previousPermissionItems = currentPermissionItems;
-                Set<String> encryptedRPCs = new HashSet<>();
                 Boolean requireEncryptionAppLevel = ((OnPermissionsChange) notification).getRequireEncryption();
+                mEncryptedRPC.clear();
                 currentPermissionItems = new HashMap<>();
                 if (permissionItems != null && !permissionItems.isEmpty()) {
                     for (PermissionItem permissionItem : permissionItems) {
@@ -132,7 +132,7 @@ abstract class BasePermissionManager extends BaseSubManager{
                             if (requireEncryptionAppLevel == null || requireEncryptionAppLevel == true) {
                                 String rpcName = permissionItem.getRpcName();
                                 if (rpcName != null) {
-                                    encryptedRPCs.add(rpcName);
+                                    mEncryptedRPC.add(rpcName);
                                 }
                             }
                         }
