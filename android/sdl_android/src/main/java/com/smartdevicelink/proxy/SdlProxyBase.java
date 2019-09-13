@@ -2162,7 +2162,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @return true if encryption is required; false otherwise
 	 */
 	public boolean getRequiresEncryption() {
-		return (_hmiLevel != null && _hmiLevel != HMILevel.HMI_NONE) && (!mEncryptedRPCNames.isEmpty());
+		return !mEncryptedRPCNames.isEmpty();
 	}
 
 	/**
