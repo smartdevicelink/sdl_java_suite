@@ -1,7 +1,6 @@
 package com.smartdevicelink.test.proxy;
 
 import android.util.SparseArray;
-import android.view.Window;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.enums.FunctionID;
