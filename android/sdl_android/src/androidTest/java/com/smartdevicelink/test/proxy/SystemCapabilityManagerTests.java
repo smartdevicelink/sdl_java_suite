@@ -140,7 +140,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		convertedCapabilities.setImageFields(defaultMainWindow.getImageFields());
 		convertedCapabilities.setTemplatesAvailable(defaultMainWindow.getTemplatesAvailable());
 		convertedCapabilities.setNumCustomPresetsAvailable(defaultMainWindow.getNumCustomPresetsAvailable());
-		convertedCapabilities.setMediaClockFormats(Collections.singletonList(MediaClockFormat.CLOCK3)); // mandatory field...
+		convertedCapabilities.setMediaClockFormats(new ArrayList<MediaClockFormat>()); // mandatory field but can be empty
 		convertedCapabilities.setGraphicSupported(defaultMainWindow.getImageTypeSupported().contains(ImageType.DYNAMIC));
 
 		return convertedCapabilities;

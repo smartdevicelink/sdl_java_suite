@@ -100,7 +100,7 @@ public class SystemCapabilityManager {
 		WindowTypeCapabilities windowTypeCapabilities = new WindowTypeCapabilities(WindowType.MAIN, 1);
 
 		DisplayCapability displayCapability = new DisplayCapability();
-		displayCapability.setDisplayName(display != null ? display.getDisplayName() : null);
+		displayCapability.setDisplayName(display != null ? display.getDisplayName() : display.getDisplayType().toString());
 		displayCapability.setWindowTypeSupported(Collections.singletonList(windowTypeCapabilities));
 
 		// Create a window capability object for the default MAIN window
