@@ -311,7 +311,15 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
         }else if(SessionType.PCM.equals(serviceType)){
             stopAudioStream();
         }
-
+        // Notify any listeners of the service being ended
+        if(serviceListeners != null && serviceListeners.containsKey(serviceType)){
+            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
+            if (listeners != null && listeners.size() > 0) {
+                for (ISdlServiceListener listener : listeners) {
+                    listener.onServiceEnded(this, serviceType);
+                }
+            }
+        }
     }
 
     @Override

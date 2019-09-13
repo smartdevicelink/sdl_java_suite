@@ -257,6 +257,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private OnSystemRequest lockScreenIconRequest = null;
 	private TelephonyManager telephonyManager = null;
 	private DeviceInfo deviceInfo = null;
+	private ISdlServiceListener navServiceListener;
 	
 	/**
 	 * Contains current configuration for the transport that was selected during 
@@ -356,6 +357,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if(isConnected()){
 				sdlSession.setDesiredVideoParams(parameters);
 				sdlSession.startService(SessionType.NAV,sdlSession.getSessionId(),encrypted);
+				addNavListener();
 			}
 		}
 
@@ -554,13 +556,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig) {
+
 			notifyPutFileStreamError(null, info);
 
-			if( altTransportAvailable){
+			if (altTransportAvailable){
 				SdlProxyBase.this._transportConfig = transportConfig;
 				Log.d(TAG, "notifying RPC session ended, but potential primary transport available");
 				cycleProxy(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
-
 			}else{
 				notifyProxyClosed(info, new SdlException("Transport disconnected.", SdlExceptionCause.SDL_UNAVAILABLE), SdlDisconnectedReason.TRANSPORT_DISCONNECT);
 			}
@@ -1596,9 +1598,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			}
 
-			if (_transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
+			if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
 				this.sdlSession = new SdlSession2(_interfaceBroker, (MultiplexTransportConfig) _transportConfig);
-			}else if(_transportConfig.getTransportType().equals(TransportType.TCP)){
+			}else if(_transportConfig != null &&_transportConfig.getTransportType().equals(TransportType.TCP)){
 				this.sdlSession = new SdlSession2(_interfaceBroker, (TCPTransportConfig) _transportConfig);
 			}else {
 				this.sdlSession = SdlSession.createSession((byte)getProtocolVersion().getMajor(),_interfaceBroker, _transportConfig);
@@ -3874,6 +3876,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onCloseApplicationResponse(msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.CANCEL_INTERACTION.toString())) {
+				final CancelInteractionResponse msg = new CancelInteractionResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onCancelInteractionResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onCancelInteractionResponse(msg);
+					onRPCResponseReceived(msg);
+				}
 			} else if (functionName.equals(FunctionID.UNPUBLISH_APP_SERVICE.toString())) {
 				final UnpublishAppServiceResponse msg = new UnpublishAppServiceResponse(hash);
 				msg.format(rpcSpecVersion, true);
@@ -5039,7 +5057,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		sdlSession.setDesiredVideoParams(emptyParam);
 
 		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
-
+		addNavListener();
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
@@ -5087,7 +5105,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		sdlSession.setDesiredVideoParams(emptyParam);
 
 		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
-
+		addNavListener();
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
@@ -5461,7 +5479,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			navServiceStartRejectedParams = null;
 
 			sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
-
+			addNavListener();
 			FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
 			ScheduledExecutorService scheduler = createScheduler();
 			scheduler.execute(fTask);
@@ -5525,6 +5543,35 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
         sdlSession.drainEncoder(endOfStream);
     }
+
+    private void addNavListener(){
+
+    	// videos may be started and stopped. Only add this once
+    	if (navServiceListener == null){
+
+    		navServiceListener = new ISdlServiceListener() {
+				@Override
+				public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) { }
+
+				@Override
+				public void onServiceEnded(SdlSession session, SessionType type) {
+					// reset nav flags so nav can start upon the next transport connection
+					resetNavStartFlags();
+					// propagate notification up to proxy listener so the developer will know that the service is ended
+					if (_proxyListener != null) {
+						_proxyListener.onServiceEnded(new OnServiceEnded(type));
+					}
+				}
+
+				@Override
+				public void onServiceError(SdlSession session, SessionType type, String reason) {
+					// if there is an error reset the flags so that there is a chance to restart streaming
+					resetNavStartFlags();
+				}
+			};
+			this.sdlSession.addServiceListener(SessionType.NAV, navServiceListener);
+		}
+	}
 
     /**
      * Opens a audio service (service type 10) and subsequently provides an IAudioStreamListener
@@ -5678,7 +5725,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
     private void AudioServiceEndedNACK() {
 		pcmServiceEndResponseReceived = true;
 		pcmServiceEndResponse = false;
-	}	
+	}
+
+	private void resetNavStartFlags() {
+		navServiceStartResponseReceived = false;
+		navServiceStartResponse = false;
+		navServiceStartRejectedParams = null;
+	}
 	
 	public void setAppService(Service mService)
 	{

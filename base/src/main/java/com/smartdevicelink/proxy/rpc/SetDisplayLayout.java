@@ -39,7 +39,7 @@ import com.smartdevicelink.proxy.RPCRequest;
 import java.util.Hashtable;
 
 /**
- * @deprecated This RPC is deprecated. Use Show RPC to change layout.
+ * <Strong>If using Widgets with Core > 6.0, use {@link Show} to change widget layouts</Strong> <br>
  * Used to set an alternate display layout. If not sent, default screen for
  * given platform will be shown
  * 
@@ -93,7 +93,6 @@ import java.util.Hashtable;
  * <p>   REJECTED</p>
  * @since SmartDeviceLink 2.0
  */
-@Deprecated
 public class SetDisplayLayout extends RPCRequest {
 	public static final String KEY_DISPLAY_LAYOUT = "displayLayout";
 	public static final String KEY_DAY_COLOR_SCHEME = "dayColorScheme";
