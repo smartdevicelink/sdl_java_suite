@@ -1186,10 +1186,9 @@ public class SdlManager extends BaseSdlManager{
 	 * Attempts to start a secured service
 	 * @return true if secured service is started; false otherwise
 	 */
-	public boolean startRPCEncryptionService() {
+	public void startRPCEncryptionService() {
 		if (proxy != null) {
-			return proxy.startProtectedRPCService();
+			 proxy.startProtectedRPCService();
 		}
-		return false;
 	}
 }
