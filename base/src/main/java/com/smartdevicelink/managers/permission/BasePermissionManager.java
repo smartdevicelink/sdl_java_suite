@@ -166,7 +166,7 @@ abstract class BasePermissionManager extends BaseSubManager{
      * @return true if encryption is required; false otherwise
      */
     public boolean getRequiresEncryption() {
-        return (currentHMILevel != null && currentHMILevel != HMILevel.HMI_NONE) && (!mEncryptedRPC.isEmpty());
+        return !mEncryptedRPC.isEmpty();
     }
 
     private synchronized void checkState(){
