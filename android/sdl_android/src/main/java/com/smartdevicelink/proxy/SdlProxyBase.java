@@ -456,6 +456,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			return SdlProxyBase.this.protocolVersion;
 		}
 
+		@NonNull
+		@Override
+		public SystemCapabilityManager getSystemCapabilityManager() {
+			return SdlProxyBase.this.getSystemCapabilityManager();
+		}
+
 		@Override
 		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
 			return SdlProxyBase.this.isCapabilitySupported(systemCapabilityType);

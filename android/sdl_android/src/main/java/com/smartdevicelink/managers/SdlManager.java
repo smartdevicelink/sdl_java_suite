@@ -892,6 +892,12 @@ public class SdlManager extends BaseSdlManager{
 			}
 		}
 
+		@NonNull
+		@Override
+		public SystemCapabilityManager getSystemCapabilityManager() {
+			return proxy.getSystemCapabilityManager();
+		}
+
 	};
 
 
