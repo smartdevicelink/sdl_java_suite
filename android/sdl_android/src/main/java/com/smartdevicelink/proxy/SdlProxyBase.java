@@ -2126,11 +2126,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			List<PermissionItem> permissionItems = ((OnPermissionsChange)notification).getPermissionItem();
 			Boolean requireEncryptionAppLevel = ((OnPermissionsChange) notification).getRequireEncryption();
 			mEncryptedRPCNames.clear();
-			if (permissionItems != null && !permissionItems.isEmpty()) {
-				for (PermissionItem permissionItem : permissionItems) {
-					if (permissionItem != null) {
-						if (Boolean.TRUE.equals(permissionItem.getRequireEncryption())) {
-							if (requireEncryptionAppLevel == null || requireEncryptionAppLevel == true) {
+			if (requireEncryptionAppLevel == null || requireEncryptionAppLevel == true) {
+				if (permissionItems != null && !permissionItems.isEmpty()) {
+					for (PermissionItem permissionItem : permissionItems) {
+						if (permissionItem != null) {
+							if (Boolean.TRUE.equals(permissionItem.getRequireEncryption())) {
 								String rpcName = permissionItem.getRpcName();
 								if (rpcName != null) {
 									mEncryptedRPCNames.add(rpcName);
@@ -2139,8 +2139,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						}
 					}
 				}
+				checkStatusAndInitSecuredService();
 			}
-			checkStatusAndInitSecuredService();
 		}
 	};
 
