@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -17,6 +19,11 @@ public class ModuleInfo extends RPCStruct {
 
     public ModuleInfo(Hashtable<String, Object> hash) {
         super(hash);
+    }
+
+    public ModuleInfo(@NonNull String moduleId){
+        this();
+        setModuleId(moduleId);
     }
 
     /**

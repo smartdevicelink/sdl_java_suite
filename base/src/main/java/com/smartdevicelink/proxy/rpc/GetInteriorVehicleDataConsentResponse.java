@@ -21,10 +21,11 @@ public class GetInteriorVehicleDataConsentResponse extends RPCResponse {
         super(hash);
     }
 
-    public GetInteriorVehicleDataConsentResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+    public GetInteriorVehicleDataConsentResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull List<Boolean> allowed) {
         this();
         setSuccess(success);
         setResultCode(resultCode);
+        setAllowances(allowed);
     }
 
     /**

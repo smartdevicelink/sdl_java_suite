@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -20,6 +22,12 @@ public class Grid extends RPCStruct {
 
     public Grid(Hashtable<String, Object> hash) {
         super(hash);
+    }
+
+    public Grid(@NonNull Integer row, @NonNull Integer column){
+        this();
+        setRow(row);
+        setColumn(column);
     }
 
     /**
