@@ -59,6 +59,10 @@ public class ReleaseInteriorVehicleDataModuleTests extends BaseRpcTests {
 		ReleaseInteriorVehicleDataModule msg = new ReleaseInteriorVehicleDataModule();
 		assertNull(Test.NULL, msg.getModuleType());
 		assertNull(Test.NULL, msg.getModuleId());
+
+		// required param tests
+		ReleaseInteriorVehicleDataModule msg2 = new ReleaseInteriorVehicleDataModule(Test.GENERAL_MODULETYPE);
+		assertEquals(Test.MATCH, Test.GENERAL_MODULETYPE, msg2.getModuleType());
 	}
 
 	public void testJsonConstructor() {

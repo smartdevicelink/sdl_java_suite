@@ -50,6 +50,13 @@ public class GridTests extends TestCase {
 		assertNull(Test.NULL, msg.getColumnSpan());
 		assertNull(Test.NULL, msg.getRowSpan());
 		assertNull(Test.NULL, msg.getLevelSpan());
+
+		//test required constructor
+		Grid msg2 = new Grid(Test.GENERAL_INT, Test.GENERAL_INT);
+		int row2 = msg2.getRow();
+		int col2 = msg2.getColumn();
+		assertEquals(Test.MATCH, col2, Test.GENERAL_INT);
+		assertEquals(Test.MATCH, row2, Test.GENERAL_INT);
 	}
 
 	public void testJson() {

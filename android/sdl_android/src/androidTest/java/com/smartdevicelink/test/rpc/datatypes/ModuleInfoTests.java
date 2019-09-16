@@ -43,6 +43,10 @@ public class ModuleInfoTests extends TestCase {
 		assertNull(Test.NULL, msg.getModuleLocation());
 		assertNull(Test.NULL, msg.getModuleServiceArea());
 		assertNull(Test.NULL, msg.getMultipleAccessAllowance());
+
+		//test required params constructor
+		ModuleInfo msg2 = new ModuleInfo(Test.GENERAL_STRING);
+		assertEquals(Test.MATCH, msg2.getModuleId(), Test.GENERAL_STRING);
 	}
 
 	public void testJson() {
