@@ -35,7 +35,7 @@ public class GetInteriorVehicleDataConsent extends RPCRequest {
      * Sets the Module Type for this class
      * @param type the Module Type to be set
      */
-    public void setModuleType(ModuleType type) {
+    public void setModuleType(@NonNull ModuleType type) {
         setParameters(KEY_MODULE_TYPE, type);
     }
 
@@ -51,7 +51,7 @@ public class GetInteriorVehicleDataConsent extends RPCRequest {
      * Sets the Module Ids for this class
      * @param ids the ids to be set
      */
-    public void setModuleIds(List<String> ids) {
+    public void setModuleIds(@NonNull List<String> ids) {
         setParameters(KEY_MODULE_ID, ids);
     }
 

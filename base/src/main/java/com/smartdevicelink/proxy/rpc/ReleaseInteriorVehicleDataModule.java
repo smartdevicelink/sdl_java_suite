@@ -32,7 +32,7 @@ public class ReleaseInteriorVehicleDataModule extends RPCRequest {
      * Sets the Module Type for this class
      * @param type the Module Type to be set
      */
-    public void setModuleType(ModuleType type) {
+    public void setModuleType(@NonNull ModuleType type) {
         setParameters(KEY_MODULE_TYPE, type);
     }
 

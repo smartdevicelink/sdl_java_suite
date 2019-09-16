@@ -39,7 +39,7 @@ public class Grid extends RPCStruct {
      * Sets the column of this Grid
      * @param col the column to be set
      */
-    public void setColumn(Integer col) {
+    public void setColumn(@NonNull Integer col) {
         setValue(KEY_COLUMN, col);
     }
 
@@ -55,7 +55,7 @@ public class Grid extends RPCStruct {
      * Sets the row's value of this Grid
      * @param row the row to be set
      */
-    public void setRow(Integer row) {
+    public void setRow(@NonNull Integer row) {
         setValue(KEY_ROW, row);
     }
 

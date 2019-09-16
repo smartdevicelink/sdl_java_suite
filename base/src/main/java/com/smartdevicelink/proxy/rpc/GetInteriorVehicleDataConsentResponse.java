@@ -32,7 +32,7 @@ public class GetInteriorVehicleDataConsentResponse extends RPCResponse {
      * Sets the list of allowances for this class
      * @param allowances the allowances to be set
      */
-    public void setAllowances(List<Boolean> allowances) {
+    public void setAllowances(@NonNull List<Boolean> allowances) {
         setParameters(KEY_ALLOWED, allowances);
     }
 

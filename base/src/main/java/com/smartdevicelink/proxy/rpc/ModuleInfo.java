@@ -34,7 +34,7 @@ public class ModuleInfo extends RPCStruct {
      * Sets the Module ID for this Module
      * @param id the id to be set
      */
-    public void setModuleId(String id) {
+    public void setModuleId(@NonNull String id) {
         setValue(KEY_MODULE_ID, id);
     }
 
