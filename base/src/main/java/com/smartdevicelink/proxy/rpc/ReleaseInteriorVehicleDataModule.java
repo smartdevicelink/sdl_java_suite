@@ -20,6 +20,9 @@ public class ReleaseInteriorVehicleDataModule extends RPCRequest {
         super(hash);
     }
 
+    /**
+     * @param moduleType Sets the Module Type for this class
+     */
     public ReleaseInteriorVehicleDataModule(@NonNull ModuleType moduleType){
         this();
         setModuleType(moduleType);

@@ -21,6 +21,10 @@ public class ModuleInfo extends RPCStruct {
         super(hash);
     }
 
+    /**
+     * Struct that describes a module within different SystemCapabilities
+     * @param moduleId Sets the Module ID for this Module
+     */
     public ModuleInfo(@NonNull String moduleId){
         this();
         setModuleId(moduleId);

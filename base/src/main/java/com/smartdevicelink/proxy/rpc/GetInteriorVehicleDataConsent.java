@@ -21,6 +21,10 @@ public class GetInteriorVehicleDataConsent extends RPCRequest {
         super(hash);
     }
 
+    /**
+     * @param moduleType Sets the Module Type for this class
+     * @param moduleIds Sets the Module Ids for this class
+     */
     public GetInteriorVehicleDataConsent(@NonNull ModuleType moduleType, @NonNull List<String> moduleIds){
         this();
         setModuleType(moduleType);

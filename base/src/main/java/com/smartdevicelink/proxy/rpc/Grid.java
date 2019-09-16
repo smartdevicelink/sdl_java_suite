@@ -24,6 +24,11 @@ public class Grid extends RPCStruct {
         super(hash);
     }
 
+    /**
+     * Struct that describes a location (origin coordinates and span) of a vehicle component (Module)
+     * @param row Sets the row's value of this Grid
+     * @param column Sets the column of this Grid
+     */
     public Grid(@NonNull Integer row, @NonNull Integer column){
         this();
         setRow(row);

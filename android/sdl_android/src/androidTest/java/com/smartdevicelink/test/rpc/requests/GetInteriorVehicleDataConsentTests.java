@@ -62,6 +62,11 @@ public class GetInteriorVehicleDataConsentTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getModuleType());
 		assertNull(Test.NULL, msg.getModuleIds());
 
+		//test require param constructor
+		GetInteriorVehicleDataConsent msg2 = new GetInteriorVehicleDataConsent(Test.GENERAL_MODULETYPE, Test.GENERAL_STRING_LIST);
+		assertEquals(Test.MATCH, Test.GENERAL_MODULETYPE, msg2.getModuleType());
+		assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST, msg2.getModuleIds());
+
 	}
 
 	public void testJsonConstructor() {
