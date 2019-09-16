@@ -364,6 +364,14 @@ public class SdlManager extends BaseSdlManager{
 			this.audioStreamManager.dispose();
 		}
 
+		if (this.proxy != null) {
+			try {
+				this.proxy.dispose();
+			} catch (SdlException e) {
+				DebugTool.logError("Issue disposing proxy in SdlManager", e);
+			}
+		}
+
 		if(managerListener != null){
 			managerListener.onDestroy();
 			managerListener = null;
