@@ -470,16 +470,18 @@ public class RouterServiceValidator {
 		final JSONObject object = new JSONObject();
 		JSONArray array = new JSONArray();
 		JSONObject jsonApp;
-		
-		for(SdlApp app: apps){	//Format all the apps into a JSON object and add it to the JSON array
-			try{
-				jsonApp = new JSONObject();
-				jsonApp.put(JSON_APP_PACKAGE_TAG, app.packageName);
-				jsonApp.put(JSON_APP_VERSION_TAG, app.versionCode);
-				array.put(jsonApp);
-			}catch(JSONException e){
-				e.printStackTrace();
-				continue;
+
+		if(apps != null) {
+			for (SdlApp app : apps) {    //Format all the apps into a JSON object and add it to the JSON array
+				try {
+					jsonApp = new JSONObject();
+					jsonApp.put(JSON_APP_PACKAGE_TAG, app.packageName);
+					jsonApp.put(JSON_APP_VERSION_TAG, app.versionCode);
+					array.put(jsonApp);
+				} catch (JSONException e) {
+					e.printStackTrace();
+					continue;
+				}
 			}
 		}
 		

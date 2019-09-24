@@ -525,7 +525,9 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 	    						//Looper.loop();
 	    						mmSocket.connect();
 	    						timeOutHandler.removeCallbacks(socketRunable);
-	    						Looper.myLooper().quit();
+	    						if(Looper.myLooper() != null){
+	    						    Looper.myLooper().quit();
+	    						}
 	    						success=true;
 	    						SdlRouterService.setBluetoothPrefs(1,SHARED_PREFS);
 	    	                	break;
@@ -554,7 +556,9 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 	    						//Looper.loop();
 	    						mmSocket.connect();
 	    						timeOutHandler.removeCallbacks(socketRunable);
-	    						Looper.myLooper().quit();
+	    						if(Looper.myLooper() != null){
+	    						    Looper.myLooper().quit();
+	    						}
 	    						success=true;
 	    						SdlRouterService.setBluetoothPrefs(2,SHARED_PREFS);
 	    	                	break;
@@ -583,7 +587,9 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     						//Looper.loop();
     						mmSocket.connect();
     						timeOutHandler.removeCallbacks(socketRunable);
-    						Looper.myLooper().quit();
+    						if(Looper.myLooper() != null){
+    						    Looper.myLooper().quit();
+    						}
     						success=true;
 		                	tryInsecure = false;
 		                	SdlRouterService.setBluetoothPrefs(3,SHARED_PREFS);
@@ -608,7 +614,9 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     						//Looper.loop();
     						mmSocket.connect();
     						timeOutHandler.removeCallbacks(socketRunable);
-    						Looper.myLooper().quit();
+    						if(Looper.myLooper() != null){
+    						    Looper.myLooper().quit();
+    						}
     						success=true;
     						SdlRouterService.setBluetoothPrefs(4,SHARED_PREFS);
 		                	break;

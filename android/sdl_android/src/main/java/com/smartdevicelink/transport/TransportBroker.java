@@ -266,6 +266,10 @@ public class TransportBroker {
 
                     break;
                 case TransportConstants.ROUTER_RECEIVED_PACKET:
+                    if(bundle == null){
+                        DebugTool.logWarning("Received packet message from router service with no bundle");
+                        return;
+                    }
                     //So the intent has a packet with it. PEFRECT! Let's send it through the library
                     int flags = bundle.getInt(TransportConstants.BYTES_TO_SEND_FLAGS, TransportConstants.BYTES_TO_SEND_FLAG_NONE);
 
@@ -320,6 +324,10 @@ public class TransportBroker {
                     }
                     break;
                 case TransportConstants.HARDWARE_CONNECTION_EVENT:
+                    if(bundle == null){
+                        DebugTool.logWarning("Received hardware connection message from router service with no bundle");
+                        return;
+                    }
                     if (bundle.containsKey(TransportConstants.TRANSPORT_DISCONNECTED)
                             || bundle.containsKey(TransportConstants.HARDWARE_DISCONNECTED)) {
                         //We should shut down, so call
