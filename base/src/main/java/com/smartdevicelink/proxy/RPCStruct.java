@@ -325,8 +325,7 @@ public class RPCStruct {
 		}
 		if(valueForString != null){
 			try {
-				Object value = valueForString.invoke(null, (String) s);
-				return value;
+				return valueForString.invoke(null, (String) s);
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {

@@ -378,8 +378,7 @@ public class DebugTool {
 			}
 			if (message.getBulkData() != null) hash.put(RPCStruct.KEY_BULK_DATA, message.getBulkData());
 		} else {
-			final Hashtable<String, Object> mhash = JsonRPCMarshaller.unmarshall(message.getData());
-			hash = mhash;
+			hash = JsonRPCMarshaller.unmarshall(message.getData());
 		}
 		return hash;
 	}
