@@ -31,7 +31,9 @@
  */
 package com.smartdevicelink.util;
 
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -45,10 +47,12 @@ public class FileUtls {
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static byte[] getFileData(String file){
         return getFileData(file,null);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static byte[] getFileData(String filePath, String fileName){
         if(filePath != null && filePath.length() > 0) {
             File file;
