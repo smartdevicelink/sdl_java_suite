@@ -77,6 +77,7 @@ public class DebugTool {
 		return false;		
 	}
 	
+	@SuppressWarnings("ConstantConditions")
 	private static String prependProxyVersionNumberToString(String string) {
 		if (BuildConfig.VERSION_NAME != null && string != null) {
 			string = BuildConfig.VERSION_NAME + ": " + string;
