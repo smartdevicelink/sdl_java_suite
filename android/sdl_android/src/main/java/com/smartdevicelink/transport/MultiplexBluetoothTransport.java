@@ -454,7 +454,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             	}
             	
             } catch (IOException e) {
-                Log.e(TAG, mState + " Socket Type " + mSocketType + " close() of server failed "+ e.getStackTrace());
+                Log.e(TAG, mState + " Socket Type " + mSocketType + " close() of server failed "+ Arrays.toString(e.getStackTrace()));
             }
         }
     }
