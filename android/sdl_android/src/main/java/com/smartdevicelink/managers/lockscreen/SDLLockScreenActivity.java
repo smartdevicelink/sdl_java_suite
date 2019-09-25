@@ -39,9 +39,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.smartdevicelink.R;
 
@@ -55,6 +58,12 @@ public class SDLLockScreenActivity extends Activity {
 	public static final String LOCKSCREEN_CUSTOM_VIEW_EXTRA = "LOCKSCREEN_CUSTOM_VIEW_EXTRA";
 	public static final String LOCKSCREEN_DEVICE_LOGO_DOWNLOADED = "LOCKSCREEN_DEVICE_LOGO_DOWNLOADED";
 	public static final String CLOSE_LOCK_SCREEN_ACTION = "CLOSE_LOCK_SCREEN";
+	public static final String KEY_LOCKSCREEN_DISMISSED = "KEY_LOCKSCREEN_DISMISSED";
+	public static final String KEY_LOCKSCREEN_DISMISSIBLE = "KEY_LOCKSCREEN_DISMISSIBLE";
+	public static final String KEY_LOCKSCREEN_WARNING_MSG = "KEY_LOCKSCREEN_WARNING_MSG";
+	private static final int MIN_SWIPE_DISTANCE = 200;
+	private boolean mIsDismissible;
+	private GestureDetector mGestureDetector;
 
 	private final BroadcastReceiver lockScreenBroadcastReceiver = new BroadcastReceiver() {
 		@Override
@@ -81,6 +90,7 @@ public class SDLLockScreenActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+		mGestureDetector = new GestureDetector(this, new SwipeUpGestureListener());
 		// set any parameters that came from the lock screen manager
 		initializeActivity(getIntent());
 
@@ -91,6 +101,14 @@ public class SDLLockScreenActivity extends Activity {
 
 		// register broadcast receivers
 		registerReceiver(lockScreenBroadcastReceiver, lockscreenFilter);
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		if (mIsDismissible) {
+			return mGestureDetector.onTouchEvent(event);
+		}
+		return super.onTouchEvent(event);
 	}
 
 	@Override
@@ -107,6 +125,9 @@ public class SDLLockScreenActivity extends Activity {
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
 		setIntent(intent);
+		if (intent != null && intent.getBooleanExtra(KEY_LOCKSCREEN_DISMISSIBLE, false)){
+			initializeActivity(intent);
+		}
 	}
 
 	public void initializeActivity(Intent intent){
@@ -133,6 +154,11 @@ public class SDLLockScreenActivity extends Activity {
 				if (deviceLogoEnabled && deviceIcon != null){
 					setDeviceLogo(deviceIcon);
 				}
+				mIsDismissible = intent.getBooleanExtra(KEY_LOCKSCREEN_DISMISSIBLE, false);
+				String warningMsg = intent.getStringExtra(KEY_LOCKSCREEN_WARNING_MSG);
+				if (mIsDismissible) {
+					setLockscreenWarningMessage(warningMsg);
+				}
 			}
 		}
 	}
@@ -154,8 +180,26 @@ public class SDLLockScreenActivity extends Activity {
 		}
 	}
 
+	private void setLockscreenWarningMessage(String msg) {
+		TextView tv = findViewById(R.id.lockscreen_text);
+		if (tv != null) {
+			tv.setText(msg != null ? msg : getString(R.string.default_lockscreen_warning_message));
+		}
+	}
+
 	private void setCustomView(int customView) {
 		setContentView(customView);
 	}
 
+	private class SwipeUpGestureListener extends GestureDetector.SimpleOnGestureListener {
+		@Override
+		public boolean onFling(MotionEvent event1, MotionEvent event2,
+							   float velocityX, float velocityY) {
+			if ((event2.getY() - event1.getY()) > MIN_SWIPE_DISTANCE) {
+				sendBroadcast(new Intent(KEY_LOCKSCREEN_DISMISSED));
+				finish();
+			}
+			return true;
+		}
+	}
 }

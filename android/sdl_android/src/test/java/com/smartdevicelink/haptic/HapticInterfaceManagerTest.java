@@ -28,6 +28,8 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.SendHapticData;
+import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 
 import junit.framework.TestCase;
 
@@ -46,6 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -93,7 +96,7 @@ public class HapticInterfaceManagerTest extends TestCase {
     public void testRefreshHapticData() throws Exception {
         View root = createViews();
         hapticMgr.refreshHapticData(root);
-        verify(mockProxy).sendRPCRequest(captor.capture());
+        verify(mockProxy).sendRPC(captor.capture());
         SendHapticData data = captor.getValue();
         assertNotNull("SendHapticData RPC", data);
         List<HapticRect> list = data.getHapticRectData();
@@ -104,11 +107,91 @@ public class HapticInterfaceManagerTest extends TestCase {
     @Test
     public void testRefreshHapticDataNull() throws Exception {
         hapticMgr.refreshHapticData(null);
-        verify(mockProxy).sendRPCRequest(captor.capture());
+        verify(mockProxy).sendRPC(captor.capture());
         SendHapticData data = captor.getValue();
         assertNotNull("SendHapticData RPC", data);
         List<HapticRect> list = data.getHapticRectData();
         assertNull("List", list);
+    }
+
+    @Test
+    public void testRefreshHapticData_Scale_2_0() {
+        double scale = 2.0;
+
+        final int buttonX = 60;
+        final int buttonY = 60;
+        final int buttonWidth = 150;
+        final int buttonHeight = 70;
+
+        Rectangle expected = new Rectangle();
+        expected.setX(120.0f);
+        expected.setY(120.0f);
+        expected.setWidth(300.0f);
+        expected.setHeight(140.0f);
+
+        VideoStreamingCapability capability = new VideoStreamingCapability();
+        capability.setScale(scale);
+
+        assertViewWithCapability(buttonX, buttonY, buttonWidth, buttonHeight, expected, capability);
+    }
+
+
+    @Test
+    public void testRefreshHapticData_Scale_0_5() {
+        double scale = 0.5;
+
+        final int buttonX = 60;
+        final int buttonY = 60;
+        final int buttonWidth = 150;
+        final int buttonHeight = 70;
+
+        Rectangle expected = new Rectangle();
+        expected.setX(30.0f);
+        expected.setY(30.0f);
+        expected.setWidth(75.0f);
+        expected.setHeight(35.0f);
+
+        VideoStreamingCapability capability = new VideoStreamingCapability();
+        capability.setScale(scale);
+
+        assertViewWithCapability(buttonX, buttonY, buttonWidth, buttonHeight, expected, capability);
+    }
+
+
+
+    @Test
+    public void testRefreshHapticData_NullCapability() {
+        final int buttonX = 60;
+        final int buttonY = 60;
+        final int buttonWidth = 150;
+        final int buttonHeight = 70;
+
+        Rectangle expected = new Rectangle();
+        expected.setX(60.0f);
+        expected.setY(60.0f);
+        expected.setWidth(150.0f);
+        expected.setHeight(70.0f);
+
+        assertViewWithCapability(buttonX, buttonY, buttonWidth, buttonHeight, expected, null);
+    }
+
+    @Test
+    public void testRefreshHapticData_NullScale() {
+        final int buttonX = 60;
+        final int buttonY = 60;
+        final int buttonWidth = 150;
+        final int buttonHeight = 70;
+
+        Rectangle expected = new Rectangle();
+        expected.setX(60.0f);
+        expected.setY(60.0f);
+        expected.setWidth(150.0f);
+        expected.setHeight(70.0f);
+
+        VideoStreamingCapability capability = new VideoStreamingCapability();
+        capability.setScale(null);
+
+        assertViewWithCapability(buttonX, buttonY, buttonWidth, buttonHeight, expected, capability);
     }
 
     @Test
@@ -169,5 +252,44 @@ public class HapticInterfaceManagerTest extends TestCase {
         });
 
         return parent1;
+    }
+
+
+    private View createView(final int x, final int y, int w, int h) {
+        View button = mock(View.class);
+        when(button.isFocusable()).thenReturn(true);
+        doAnswer(new Answer() {
+            @Override
+            public int[] answer(InvocationOnMock invocation) throws Throwable {
+                int[] args = (int[])(invocation.getArguments()[0]);
+                args[0] = x;
+                args[1] = y;
+                return args;
+            }
+        }).when(button).getLocationOnScreen(any(int[].class));
+
+        when(button.getWidth()).thenReturn(w);
+        when(button.getHeight()).thenReturn(h);
+        return button;
+    }
+
+    private void assertViewWithCapability(int x, int y, int w, int h, Rectangle expected, VideoStreamingCapability capability) {
+        when(mockProxy.getCapability(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(capability);
+
+        View button = createView(x, y, w, h);
+
+
+        hapticMgr.refreshHapticData(button);
+        verify(mockProxy).sendRPC(captor.capture());
+
+        SendHapticData data = captor.getValue();
+        List<HapticRect> list = data.getHapticRectData();
+        assertEquals(1, list.size());
+        Rectangle current = list.get(0).getRect();
+
+        assertEquals(expected.getX(), current.getX(), 0.0005);
+        assertEquals(expected.getY(), current.getY(), 0.0005);
+        assertEquals(expected.getWidth(), current.getWidth(), 0.0005);
+        assertEquals(expected.getHeight(), current.getHeight(), 0.0005);
     }
 }

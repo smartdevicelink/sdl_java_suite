@@ -97,6 +97,7 @@ public class ButtonCapabilities extends RPCStruct {
 	public static final String KEY_SHORT_PRESS_AVAILABLE = "shortPressAvailable";
 	public static final String KEY_LONG_PRESS_AVAILABLE = "longPressAvailable";
 	public static final String KEY_UP_DOWN_AVAILABLE = "upDownAvailable";
+	public static final String KEY_MODULE_INFO = "moduleInfo";
 	/**
 	 * Constructs a newly allocated ButtonCapabilities object
 	 */
@@ -177,5 +178,21 @@ public class ButtonCapabilities extends RPCStruct {
      */    
     public void setUpDownAvailable( @NonNull Boolean upDownAvailable ) {
         setValue(KEY_UP_DOWN_AVAILABLE, upDownAvailable);
+    }
+
+    /**
+     * Sets ModuleInfo for this capability
+     * @param info the ModuleInfo to be set
+     */
+    public void setModuleInfo(ModuleInfo info) {
+        setValue(KEY_MODULE_INFO, info);
+    }
+
+    /**
+     * Gets a ModuleInfo of this capability
+     * @return module info of this capability
+     */
+    public ModuleInfo getModuleInfo() {
+        return (ModuleInfo) getObject(ModuleInfo.class, KEY_MODULE_INFO);
     }
 }

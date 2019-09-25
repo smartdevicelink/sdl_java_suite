@@ -123,6 +123,7 @@ import com.smartdevicelink.trace.enums.InterfaceActivityDirection;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.SiphonServer;
+import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.CorrelationIdGenerator;
@@ -158,8 +159,14 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledExecutorService;
 
 
-
+/**
+ * @deprecated use {@link com.smartdevicelink.managers.SdlManager} instead.
+ *
+ * The guide created for the initial transition of SdlProxyBase to SdlManager can be found at
+ * <a href="https://smartdevicelink.com/en/guides/android/migrating-to-newer-sdl-versions/updating-to-v47/">Migrating to SDL Manager</a>
+ */
 @SuppressWarnings({"WeakerAccess", "Convert2Diamond"})
+@Deprecated
 public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase> {
 	// Used for calls to Android Log class.
 	public static final String TAG = "SdlProxy";
@@ -246,6 +253,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private OnSystemRequest lockScreenIconRequest = null;
 	private TelephonyManager telephonyManager = null;
 	private DeviceInfo deviceInfo = null;
+	private ISdlServiceListener navServiceListener;
 	
 	/**
 	 * Contains current configuration for the transport that was selected during 
@@ -342,6 +350,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if(isConnected()){
 				sdlSession.setDesiredVideoParams(parameters);
 				sdlSession.startService(SessionType.NAV,sdlSession.getSessionId(),encrypted);
+				addNavListener();
 			}
 		}
 
@@ -540,13 +549,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onTransportDisconnected(String info, boolean altTransportAvailable, BaseTransportConfig transportConfig) {
+
 			notifyPutFileStreamError(null, info);
 
-			if( altTransportAvailable){
+			if (altTransportAvailable){
 				SdlProxyBase.this._transportConfig = transportConfig;
 				Log.d(TAG, "notifying RPC session ended, but potential primary transport available");
 				cycleProxy(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
-
 			}else{
 				notifyProxyClosed(info, new SdlException("Transport disconnected.", SdlExceptionCause.SDL_UNAVAILABLE), SdlDisconnectedReason.TRANSPORT_DISCONNECT);
 			}
@@ -1563,14 +1572,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 
 			//Handle legacy USB connections
-			if(_transportConfig != null
-					&& TransportType.USB.equals(_transportConfig.getTransportType())){
+			if (_transportConfig != null
+					&& TransportType.USB.equals(_transportConfig.getTransportType())) {
 				//A USB transport config was provided
-				USBTransportConfig usbTransportConfig = (USBTransportConfig)_transportConfig;
-				if(usbTransportConfig.getUsbAccessory() == null){
+				USBTransportConfig usbTransportConfig = (USBTransportConfig) _transportConfig;
+				if (usbTransportConfig.getUsbAccessory() == null) {
 					DebugTool.logInfo("Legacy USB transport config was used, but received null for accessory. Attempting to connect with router service");
 					//The accessory was null which means it came from a router service
-					MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(usbTransportConfig.getUSBContext(),_appID);
+					MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(usbTransportConfig.getUSBContext(), _appID);
 					multiplexTransportConfig.setRequiresHighBandwidth(true);
 					multiplexTransportConfig.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
 					multiplexTransportConfig.setPrimaryTransports(Collections.singletonList(TransportType.USB));
@@ -1579,9 +1588,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			}
 
-			if(_transportConfig.getTransportType().equals(TransportType.MULTIPLEX)){
-				this.sdlSession = new SdlSession2(_interfaceBroker,(MultiplexTransportConfig)_transportConfig);
-			}else{
+			if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
+				this.sdlSession = new SdlSession2(_interfaceBroker, (MultiplexTransportConfig) _transportConfig);
+			}else if(_transportConfig != null &&_transportConfig.getTransportType().equals(TransportType.TCP)){
+				this.sdlSession = new SdlSession2(_interfaceBroker, (TCPTransportConfig) _transportConfig);
+			}else {
 				this.sdlSession = SdlSession.createSession((byte)getProtocolVersion().getMajor(),_interfaceBroker, _transportConfig);
 			}
 		}
@@ -1834,6 +1845,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		try{			
 				_cycling = true;
 				cleanProxy(disconnectedReason);
+
 				initializeProxy();
 				if(!SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED.equals(disconnectedReason)
 						&& !SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST.equals(disconnectedReason)){//We don't want to alert higher if we are just cycling for legacy bluetooth
@@ -3551,6 +3563,36 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onGetInteriorVehicleDataResponse(msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.CREATE_WINDOW.toString())) {
+				final CreateWindowResponse msg = new CreateWindowResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onCreateWindowResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onCreateWindowResponse(msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.DELETE_WINDOW.toString())) {
+				final DeleteWindowResponse msg = new DeleteWindowResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onDeleteWindowResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onDeleteWindowResponse(msg);
+					onRPCResponseReceived(msg);
+				}
 			} else if (functionName.equals(FunctionID.GET_SYSTEM_CAPABILITY.toString())) {
 				// GetSystemCapabilityResponse
 				final GetSystemCapabilityResponse msg = new GetSystemCapabilityResponse(hash);
@@ -3702,12 +3744,28 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_mainUIHandler.post(new Runnable() {
 						@Override
 						public void run() {
-							_proxyListener.onCloseApplicationResponse( msg);
+							_proxyListener.onCloseApplicationResponse(msg);
 							onRPCResponseReceived(msg);
 						}
 					});
 				} else {
-					_proxyListener.onCloseApplicationResponse( msg);
+					_proxyListener.onCloseApplicationResponse(msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.CANCEL_INTERACTION.toString())) {
+				final CancelInteractionResponse msg = new CancelInteractionResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onCancelInteractionResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onCancelInteractionResponse(msg);
 					onRPCResponseReceived(msg);
 				}
 			} else if (functionName.equals(FunctionID.UNPUBLISH_APP_SERVICE.toString())) {
@@ -3726,6 +3784,52 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					_proxyListener.onUnpublishAppServiceResponse( msg);
 					onRPCResponseReceived(msg);
 				}
+			} else if (functionName.equals(FunctionID.SHOW_APP_MENU.toString())) {
+				final ShowAppMenuResponse msg = new ShowAppMenuResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					// Run in UI thread
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onShowAppMenuResponse( msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onShowAppMenuResponse(msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.GET_INTERIOR_VEHICLE_DATA_CONSENT.toString())) {
+				final GetInteriorVehicleDataConsentResponse msg = new GetInteriorVehicleDataConsentResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onGetInteriorVehicleDataConsentResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onGetInteriorVehicleDataConsentResponse(msg);
+					onRPCResponseReceived(msg);
+				}
+			} else if (functionName.equals(FunctionID.RELEASE_INTERIOR_VEHICLE_MODULE.toString())) {
+				final ReleaseInteriorVehicleDataModuleResponse msg = new ReleaseInteriorVehicleDataModuleResponse(hash);
+				msg.format(rpcSpecVersion, true);
+				if (_callbackToUIThread) {
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							_proxyListener.onReleaseInteriorVehicleDataModuleResponse(msg);
+							onRPCResponseReceived(msg);
+						}
+					});
+				} else {
+					_proxyListener.onReleaseInteriorVehicleDataModuleResponse(msg);
+					onRPCResponseReceived(msg);
+				}
 			} else {
 				if (_sdlMsgVersion != null) {
 					DebugTool.logError("Unrecognized response Message: " + functionName +
@@ -3734,6 +3838,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					DebugTool.logError("Unrecognized response Message: " + functionName);
 				}
 			} // end-if
+
 
 		} else if (messageType.equals(RPCMessage.KEY_NOTIFICATION)) {
 			if (functionName.equals(FunctionID.ON_HMI_STATUS.toString())) {
@@ -4108,7 +4213,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 				if (_advancedLifecycleManagementEnabled) {
 					// This requires the proxy to be cycled
-                    cycleProxy(SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(msg.getReason()));
+
+					if(_mainUIHandler == null){
+						_mainUIHandler = new Handler(Looper.getMainLooper());
+					}
+
+					//This needs to be ran on the main thread
+
+					_mainUIHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							cycleProxy(SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(msg.getReason()));
+						}
+					});
                 } else {
 					if (_callbackToUIThread) {
 						// Run in UI thread
@@ -4813,7 +4930,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		sdlSession.setDesiredVideoParams(emptyParam);
 
 		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
-
+		addNavListener();
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
@@ -4861,7 +4978,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		sdlSession.setDesiredVideoParams(emptyParam);
 
 		sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
-
+		addNavListener();
 		FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
 		ScheduledExecutorService scheduler = createScheduler();
 		scheduler.execute(fTask);
@@ -5235,7 +5352,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			navServiceStartRejectedParams = null;
 
 			sdlSession.startService(SessionType.NAV, sdlSession.getSessionId(), isEncrypted);
-
+			addNavListener();
 			FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
 			ScheduledExecutorService scheduler = createScheduler();
 			scheduler.execute(fTask);
@@ -5299,6 +5416,35 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
         sdlSession.drainEncoder(endOfStream);
     }
+
+    private void addNavListener(){
+
+    	// videos may be started and stopped. Only add this once
+    	if (navServiceListener == null){
+
+    		navServiceListener = new ISdlServiceListener() {
+				@Override
+				public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) { }
+
+				@Override
+				public void onServiceEnded(SdlSession session, SessionType type) {
+					// reset nav flags so nav can start upon the next transport connection
+					resetNavStartFlags();
+					// propagate notification up to proxy listener so the developer will know that the service is ended
+					if (_proxyListener != null) {
+						_proxyListener.onServiceEnded(new OnServiceEnded(type));
+					}
+				}
+
+				@Override
+				public void onServiceError(SdlSession session, SessionType type, String reason) {
+					// if there is an error reset the flags so that there is a chance to restart streaming
+					resetNavStartFlags();
+				}
+			};
+			this.sdlSession.addServiceListener(SessionType.NAV, navServiceListener);
+		}
+	}
 
     /**
      * Opens a audio service (service type 10) and subsequently provides an IAudioStreamListener
@@ -5452,7 +5598,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
     private void AudioServiceEndedNACK() {
 		pcmServiceEndResponseReceived = true;
 		pcmServiceEndResponse = false;
-	}	
+	}
+
+	private void resetNavStartFlags() {
+		navServiceStartResponseReceived = false;
+		navServiceStartResponse = false;
+		navServiceStartRejectedParams = null;
+	}
 	
 	public void setAppService(Service mService)
 	{

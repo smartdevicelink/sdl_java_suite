@@ -50,6 +50,7 @@ public class VideoStreamingParameters {
 	private final int DEFAULT_FRAMERATE = 30;
 	private final int DEFAULT_BITRATE = 512000;
 	private final int DEFAULT_INTERVAL = 5;
+	private final static double DEFAULT_SCALE = 1.0;
 
 
 	private int displayDensity;
@@ -132,10 +133,13 @@ public class VideoStreamingParameters {
      */
     public void update(VideoStreamingCapability capability){
         if(capability.getMaxBitrate()!=null){ this.bitrate = capability.getMaxBitrate() * 1000; } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
+        double scale = DEFAULT_SCALE;
+        if(capability.getScale() != null) { scale = capability.getScale(); }
         ImageResolution resolution = capability.getPreferredResolution();
         if(resolution!=null){
-            if(resolution.getResolutionHeight()!=null && resolution.getResolutionHeight() > 0){ this.resolution.setResolutionHeight(resolution.getResolutionHeight()); }
-            if(resolution.getResolutionWidth()!=null && resolution.getResolutionWidth() > 0){ this.resolution.setResolutionWidth(resolution.getResolutionWidth()); }
+
+            if(resolution.getResolutionHeight()!=null && resolution.getResolutionHeight() > 0){ this.resolution.setResolutionHeight((int)(resolution.getResolutionHeight() / scale)); }
+            if(resolution.getResolutionWidth()!=null && resolution.getResolutionWidth() > 0){ this.resolution.setResolutionWidth((int)(resolution.getResolutionWidth() / scale)); }
         }
         List<VideoStreamingFormat> formats = capability.getSupportedFormats();
         if(formats != null && formats.size()>0){

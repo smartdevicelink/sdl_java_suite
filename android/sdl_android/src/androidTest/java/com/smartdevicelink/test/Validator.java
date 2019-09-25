@@ -26,11 +26,13 @@ import com.smartdevicelink.proxy.rpc.DateTime;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DeviceStatus;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.EmergencyEvent;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
 import com.smartdevicelink.proxy.rpc.FuelRange;
 import com.smartdevicelink.proxy.rpc.GPSData;
+import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities;
@@ -52,6 +54,7 @@ import com.smartdevicelink.proxy.rpc.MediaServiceData;
 import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.ModuleData;
+import com.smartdevicelink.proxy.rpc.ModuleInfo;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
 import com.smartdevicelink.proxy.rpc.NavigationInstruction;
@@ -72,6 +75,7 @@ import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
 import com.smartdevicelink.proxy.rpc.SeatControlData;
+import com.smartdevicelink.proxy.rpc.SeatLocation;
 import com.smartdevicelink.proxy.rpc.SeatMemoryAction;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.SisData;
@@ -82,6 +86,7 @@ import com.smartdevicelink.proxy.rpc.StationIDNumber;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.Temperature;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
+import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
@@ -97,6 +102,8 @@ import com.smartdevicelink.proxy.rpc.WeatherAlert;
 import com.smartdevicelink.proxy.rpc.WeatherData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -137,8 +144,13 @@ public class Validator{
             return ( result1 == null );
         }
 
-        return ( result1.getDataType().equals(result2.getDataType())
-                && result1.getResultCode().equals(result2.getResultCode()) );
+        if(result1.getDataType() != null && result2.getDataType() != null){
+            return ( result1.getDataType().equals(result2.getDataType())
+                    && result1.getResultCode().equals(result2.getResultCode()) );
+        } else {
+            return ( result1.getOEMCustomVehicleDataType().equals(result2.getOEMCustomVehicleDataType())
+                    && result1.getResultCode().equals(result2.getResultCode()) );
+        }
     }
 
     public static boolean validateBulkData(byte[] array1, byte[] array2){
@@ -549,6 +561,29 @@ public class Validator{
 
 		return true;
 	}
+
+    public static boolean validateTemplateConfiguration(TemplateConfiguration params1, TemplateConfiguration params2) {
+        if (params1 == null) {
+            return (params2 == null);
+        }
+        if (params2 == null) {
+            return (params1 == null);
+        }
+
+        if (!params1.getTemplate().equals(params2.getTemplate())) {
+            return false;
+        }
+
+        if (!validateTemplateColorScheme(params1.getDayColorScheme(), params2.getDayColorScheme())) {
+            return false;
+        }
+
+        if (!validateTemplateColorScheme(params1.getNightColorScheme(), params2.getNightColorScheme())) {
+            return false;
+        }
+
+        return true;
+    }
 
 	public static boolean validateAppServiceCapabilityList(List<AppServiceCapability> list1, List<AppServiceCapability> list2){
 		if(list1 == null){
@@ -1495,6 +1530,29 @@ public class Validator{
             return false;
         }
         if(!( validateImageResolution(item1.getImageResolution(), item2.getImageResolution()) )){
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateWindowTypeCapabilities(WindowTypeCapabilities item1, WindowTypeCapabilities item2) {
+        if (item1 == null) {
+            return (item2 == null);
+        }
+        if (item2 == null) {
+            return (item1 == null);
+        }
+
+        if (item1.getType() == null) {
+            return (item2.getType() == null);
+        }
+
+        if (item1.getType() != item2.getType()) {
+            return false;
+        }
+
+        if (item1.getMaximumNumberOfWindows() != item2.getMaximumNumberOfWindows()) {
             return false;
         }
 
@@ -2783,7 +2841,144 @@ public class Validator{
     	  	
     	return true;
     }
-    
+
+    public static boolean validateDisplayCapability(DisplayCapability item1, DisplayCapability item2) {
+        if (item1 == null) {
+            return (item2 == null);
+        }
+        if (item2 == null) {
+            return (item1 == null);
+        }
+
+        if (!item1.getDisplayName().equals(item2.getDisplayName())) {
+            return false;
+        }
+
+        if (item1.getWindowTypeSupported() == null) {
+            return (item2.getWindowTypeSupported() == null);
+        }
+
+        if (item1.getWindowTypeSupported().size() != item2.getWindowTypeSupported().size()) {
+            return false;
+        }
+
+        for (int i = 0; i < item1.getWindowTypeSupported().size(); i++) {
+            if (item1.getWindowTypeSupported().get(i) == null && item2.getWindowTypeSupported().get(i) != null) {
+                return false;
+            }
+
+            if (!validateWindowTypeCapabilities(item1.getWindowTypeSupported().get(i), item2.getWindowTypeSupported().get(i))) {
+                return false;
+            }
+        }
+
+        if (item1.getWindowCapabilities() == null) {
+            return (item2.getWindowCapabilities() == null);
+        }
+
+        if (item1.getWindowCapabilities().size() != item2.getWindowCapabilities().size()) {
+            return false;
+        }
+
+        for (int i = 0; i < item1.getWindowCapabilities().size(); i++) {
+            if (item1.getWindowCapabilities().get(i) == null && item2.getWindowCapabilities().get(i) != null) {
+                return false;
+            }
+
+            if (!validateWindowCapability(item1.getWindowCapabilities().get(i), item2.getWindowCapabilities().get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateWindowCapability(WindowCapability item1, WindowCapability item2) {
+        if (item1 == null) {
+            return (item2 == null);
+        }
+        if (item2 == null) {
+            return (item1 == null);
+        }
+
+        if (item1.getWindowID() != item2.getWindowID()) {
+            return false;
+        }
+
+        if (!validateStringList(item1.getTemplatesAvailable(), item2.getTemplatesAvailable())) {
+            log("TA", item1.getTemplatesAvailable() + " | " + item2.getTemplatesAvailable());
+            return false;
+        }
+
+        if (item1.getNumCustomPresetsAvailable() != item2.getNumCustomPresetsAvailable()) {
+            return false;
+        }
+
+        if (item1.getTextFields() == null) {
+            return (item2.getTextFields() == null);
+        }
+
+        if (item1.getTextFields().size() != item2.getTextFields().size()) {
+            return false;
+        }
+
+        for (int i = 0; i < item1.getTextFields().size(); i++) {
+            if (item1.getTextFields().get(i) == null && item2.getTextFields().get(i) != null) {
+                return false;
+            }
+
+            if (!validateTextFields(item1.getTextFields().get(i), item2.getTextFields().get(i))) {
+                return false;
+            }
+        }
+
+        if (item1.getImageFields() == null) {
+            return (item2.getImageFields() == null);
+        }
+
+        if (item1.getImageFields().size() != item2.getImageFields().size()) {
+            return false;
+        }
+
+        for (int i = 0; i < item1.getImageFields().size(); i++) {
+            if (item1.getImageFields().get(i) == null && item2.getImageFields().get(i) != null) {
+                return false;
+            }
+
+            if (!validateImageFields(item1.getImageFields().get(i), item2.getImageFields().get(i))) {
+                return false;
+            }
+        }
+
+        if (item1.getImageTypeSupported() == null) {
+            return (item2.getImageTypeSupported() == null);
+        }
+
+        if (item1.getImageTypeSupported().size() != item2.getImageTypeSupported().size()) {
+            return false;
+        }
+
+        for (int i = 0; i < item1.getImageTypeSupported().size(); i++) {
+            if (item1.getImageTypeSupported().get(i) == null) {
+                return (item2.getImageTypeSupported().get(i) == null);
+            }
+
+            if (item1.getImageTypeSupported().get(i) != item2.getImageTypeSupported().get(i)) {
+                return false;
+            }
+        }
+
+        if (!validateButtonCapabilities(item1.getButtonCapabilities(), item2.getButtonCapabilities())) {
+            return false;
+        }
+
+        if (!validateSoftButtonCapabilities(item1.getSoftButtonCapabilities(), item2.getSoftButtonCapabilities())) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static boolean validateButtonCapabilities (List<ButtonCapabilities> item1, List<ButtonCapabilities> item2) {
     	if (item1 == null) {
     		return ( item2 == null );
@@ -3594,5 +3789,74 @@ public class Validator{
 		}
 
 		return true;
+	}
+
+	public static boolean validateGrid(Grid g1, Grid g2) {
+    	String tag = "validateGrid";
+    	if (g1 == null) {
+    		return (g2 == null);
+		}
+    	if (g2 == null) {
+    		return (g1 == null);
+		}
+    	if (g1.getColumn() != g2.getColumn()) {
+    		log(tag, "Columns do not match");
+    		return false;
+		}
+    	if (g1.getRow() != g2.getRow()) {
+    		log(tag, "Rows do not match");
+    		return false;
+		}
+		if (g1.getLevel() != g2.getLevel()) {
+			log(tag, "Levels do not match");
+			return false;
+		}
+    	if (g1.getColumnSpan() != g2.getColumnSpan()) {
+			log(tag, "Column spans do not match");
+    		return false;
+		}
+    	if (g1.getRowSpan() != g2.getRowSpan()) {
+    		log(tag, "Row spans do not match");
+    		return false;
+		}
+    	if (g1.getLevelSpan() != g2.getLevelSpan()) {
+    		log(tag, "Level spans do not match");
+    		return false;
+		}
+
+    	return true;
+	}
+
+	public static boolean validateModuleInfo(ModuleInfo m1, ModuleInfo m2) {
+		if (m1 == null) {
+			return (m2 == null);
+		}
+		if (m2 == null) {
+			return (m1 == null);
+		}
+		if (!m1.getModuleId().equals(m2.getModuleId())) {
+			return false;
+		}
+		if (!m1.getMultipleAccessAllowance().equals(m2.getMultipleAccessAllowance())) {
+			return false;
+		}
+		if (!validateGrid(m1.getModuleLocation(), m2.getModuleLocation())) {
+			return false;
+		}
+		if (!validateGrid(m1.getModuleServiceArea(), m2.getModuleServiceArea())) {
+			return false;
+		}
+
+    	return true;
+	}
+
+	public static boolean validateSeatLocation(SeatLocation cap1, SeatLocation cap2) {
+		if (cap1 == null) {
+			return (cap2 == null);
+		}
+		if (cap2 == null) {
+			return (cap1 == null);
+		}
+		return validateGrid(cap1.getGrid(), cap2.getGrid());
 	}
 }

@@ -38,13 +38,16 @@ import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
 import com.smartdevicelink.proxy.rpc.ButtonPressResponse;
+import com.smartdevicelink.proxy.rpc.CancelInteractionResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
 import com.smartdevicelink.proxy.rpc.CloseApplicationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
+import com.smartdevicelink.proxy.rpc.CreateWindowResponse;
 import com.smartdevicelink.proxy.rpc.DeleteCommandResponse;
 import com.smartdevicelink.proxy.rpc.DeleteFileResponse;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSetResponse;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenuResponse;
+import com.smartdevicelink.proxy.rpc.DeleteWindowResponse;
 import com.smartdevicelink.proxy.rpc.DiagnosticMessageResponse;
 import com.smartdevicelink.proxy.rpc.DialNumberResponse;
 import com.smartdevicelink.proxy.rpc.EndAudioPassThruResponse;
@@ -53,6 +56,7 @@ import com.smartdevicelink.proxy.rpc.GetAppServiceDataResponse;
 import com.smartdevicelink.proxy.rpc.GetCloudAppPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
 import com.smartdevicelink.proxy.rpc.GetFileResponse;
+import com.smartdevicelink.proxy.rpc.GetInteriorVehicleDataConsentResponse;
 import com.smartdevicelink.proxy.rpc.GetInteriorVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
@@ -85,6 +89,7 @@ import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
 import com.smartdevicelink.proxy.rpc.PublishAppServiceResponse;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
+import com.smartdevicelink.proxy.rpc.ReleaseInteriorVehicleDataModuleResponse;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
 import com.smartdevicelink.proxy.rpc.SendHapticDataResponse;
@@ -95,6 +100,7 @@ import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.SetInteriorVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.SetMediaClockTimerResponse;
+import com.smartdevicelink.proxy.rpc.ShowAppMenuResponse;
 import com.smartdevicelink.proxy.rpc.ShowConstantTbtResponse;
 import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SliderResponse;
@@ -111,7 +117,7 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.UpdateTurnListResponse;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 
-
+@Deprecated
 public interface IProxyListenerBase {
 
 	/**
@@ -390,6 +396,10 @@ public interface IProxyListenerBase {
 
 	public void onGetInteriorVehicleDataResponse(GetInteriorVehicleDataResponse response);
 
+	public void onCreateWindowResponse(CreateWindowResponse response);
+
+	public void onDeleteWindowResponse(DeleteWindowResponse response);
+
 	public void onButtonPressResponse(ButtonPressResponse response);
 
 	public void onSetInteriorVehicleDataResponse(SetInteriorVehicleDataResponse response);
@@ -414,6 +424,10 @@ public interface IProxyListenerBase {
 
 	public void onOnAppServiceData(OnAppServiceData notification);
 
+	public void onGetInteriorVehicleDataConsentResponse(GetInteriorVehicleDataConsentResponse response);
+
+	public void onReleaseInteriorVehicleDataModuleResponse(ReleaseInteriorVehicleDataModuleResponse response);
+
 	public void onOnSystemCapabilityUpdated(OnSystemCapabilityUpdated notification);
 
 	/**
@@ -425,10 +439,26 @@ public interface IProxyListenerBase {
 	public void onCloseApplicationResponse(CloseApplicationResponse response);
 
 	/**
-	 * UnpublishAppServiceResponse being called indicates that SDL has
-	 * responded to a request to close the application on the module.
+	 * onCancelInteractionResponse being called indicates that SDL has
+	 * responded to a request to dismiss a modal view on the module.
 	 *
 	 * @param response - Contains information about the response sent from SDL.
 	 */
-	public void onUnpublishAppServiceResponse(UnpublishAppServiceResponse response);
+	public void onCancelInteractionResponse(CancelInteractionResponse response);
+
+    /**
+     * UnpublishAppServiceResponse being called indicates that SDL has
+     * responded to a request to close the application on the module.
+     *
+     * @param response - Contains information about the response sent from SDL.
+     */
+    public void onUnpublishAppServiceResponse(UnpublishAppServiceResponse response);
+
+    /**
+     * onShowAppMenuResponse being called indicates that SDL has
+     * responded to a request to close the application on the module.
+     *
+     * @param response - Contains information about the response sent from SDL.
+     */
+    public void onShowAppMenuResponse(ShowAppMenuResponse response);
 }

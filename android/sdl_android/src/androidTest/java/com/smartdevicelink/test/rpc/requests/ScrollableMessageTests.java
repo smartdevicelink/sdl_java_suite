@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.ScrollableMessage}
+ * {@link com.smartdevicelink.proxy.rpc.ScrollableMessage}
  */
 public class ScrollableMessageTests extends BaseRpcTests {
     
@@ -32,6 +32,7 @@ public class ScrollableMessageTests extends BaseRpcTests {
 		msg.setTimeout(Test.GENERAL_INT);
 		msg.setSoftButtons(Test.GENERAL_SOFTBUTTON_LIST);
 		msg.setScrollableMessageBody(Test.GENERAL_STRING);
+		msg.setCancelID(Test.GENERAL_INTEGER);
 
 		return msg;
 	}
@@ -53,7 +54,8 @@ public class ScrollableMessageTests extends BaseRpcTests {
 		try {
 			result.put(ScrollableMessage.KEY_SCROLLABLE_MESSAGE_BODY, Test.GENERAL_STRING);
 			result.put(ScrollableMessage.KEY_TIMEOUT, Test.GENERAL_INT);			
-			result.put(ScrollableMessage.KEY_SOFT_BUTTONS, Test.JSON_SOFTBUTTONS);			
+			result.put(ScrollableMessage.KEY_SOFT_BUTTONS, Test.JSON_SOFTBUTTONS);
+			result.put(ScrollableMessage.KEY_CANCEL_ID, Test.GENERAL_INTEGER);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -69,6 +71,7 @@ public class ScrollableMessageTests extends BaseRpcTests {
 		String  testBody    = ( (ScrollableMessage) msg ).getScrollableMessageBody();
 		Integer testTimeout = ( (ScrollableMessage) msg ).getTimeout();
 		List<SoftButton> testSoftButtons = ( (ScrollableMessage) msg ).getSoftButtons();
+		Integer testCancelID = ( (ScrollableMessage) msg ).getCancelID();
 		
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testBody);
@@ -77,7 +80,8 @@ public class ScrollableMessageTests extends BaseRpcTests {
 		for (int i = 0; i < Test.GENERAL_SOFTBUTTON_LIST.size(); i++) {
 			assertEquals(Test.MATCH, Test.GENERAL_SOFTBUTTON_LIST.get(i), testSoftButtons.get(i));
 		}
-		
+		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testCancelID);
+
 		// Invalid/Null Tests
 		ScrollableMessage msg = new ScrollableMessage();
 		assertNotNull(Test.NOT_NULL, msg);
@@ -87,6 +91,7 @@ public class ScrollableMessageTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getScrollableMessageBody());
 		assertNull(Test.NULL, msg.getTimeout());
 		assertNull(Test.NULL, msg.getSoftButtons());
+		assertNull(Test.NULL, msg.getCancelID());
 	}
 
     /**
@@ -110,6 +115,7 @@ public class ScrollableMessageTests extends BaseRpcTests {
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, ScrollableMessage.KEY_SCROLLABLE_MESSAGE_BODY), cmd.getScrollableMessageBody());
 			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, ScrollableMessage.KEY_TIMEOUT), cmd.getTimeout());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, ScrollableMessage.KEY_CANCEL_ID), cmd.getCancelID());
 
 			JSONArray softButtonArray = JsonUtils.readJsonArrayFromJsonObject(parameters, ScrollableMessage.KEY_SOFT_BUTTONS);
 			List<SoftButton> softButtonList = new ArrayList<SoftButton>();

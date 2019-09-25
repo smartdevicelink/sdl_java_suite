@@ -45,6 +45,7 @@ import com.smartdevicelink.protocol.heartbeat.IHeartbeatMonitor;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
+import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.MediaStreamingStatus;
 import com.smartdevicelink.util.Version;
@@ -82,8 +83,14 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
 
     }
 
+    public SdlSession2(ISdlConnectionListener listener, TCPTransportConfig config){ //TODO is it better to have two constructors or make it take BaseTransportConfig?
+        this.transportConfig = config;
+        this.sessionListener = listener;
+        this.sdlProtocol = new SdlProtocol(this,config);
+    }
+
     boolean isAudioRequirementMet(){
-        if(mediaStreamingStatus == null){
+        if(mediaStreamingStatus == null && contextWeakReference!= null && contextWeakReference.get() != null){
             mediaStreamingStatus = new MediaStreamingStatus(contextWeakReference.get(), new MediaStreamingStatus.Callback() {
                 @Override
                 public void onAudioNoLongerAvailable() {
@@ -304,7 +311,15 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
         }else if(SessionType.PCM.equals(serviceType)){
             stopAudioStream();
         }
-
+        // Notify any listeners of the service being ended
+        if(serviceListeners != null && serviceListeners.containsKey(serviceType)){
+            CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(serviceType);
+            if (listeners != null && listeners.size() > 0) {
+                for (ISdlServiceListener listener : listeners) {
+                    listener.onServiceEnded(this, serviceType);
+                }
+            }
+        }
     }
 
     @Override
