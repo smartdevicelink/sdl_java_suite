@@ -68,6 +68,7 @@ import java.util.Locale;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -288,10 +289,6 @@ public class RouterServiceValidator {
 				synchronized (this) {
 					this.service = component;
 				}
-			//} else {
-				// make sure we clear up the Preference
-			//	ServiceNameHolder serviceNameHolder = new ServiceNameHolder(this.context);
-			//	serviceNameHolder.clear();
 			}
 		}
 	}
@@ -309,8 +306,8 @@ public class RouterServiceValidator {
 	 */
 	class FindRouterTask extends AsyncTask<Context, Void, ComponentName> {
 		FindConnectedRouterCallback mCallback;
-		//ServiceNameHolder serviceNameHolder = null;
 		final Handler mHandler = new Handler(Looper.getMainLooper());
+		final Integer TIMEOUT_MSEC = 10000; // 10 sec
 
 		FindRouterTask(FindConnectedRouterCallback callback) {
 			mCallback = callback;
@@ -330,10 +327,6 @@ public class RouterServiceValidator {
 					if (routerServices == null || routerServices.isEmpty()) {
 						return;
 					}
-					//serviceNameHolder = new ServiceNameHolder(contexts[0]);
-					//if (serviceNameHolder.isValid()) {
-					//	routerServices.insertElementAt(serviceNameHolder.getServiceName(), 0);
-					//}
 
 
 					final int numServices = routerServices.size();
@@ -348,12 +341,9 @@ public class RouterServiceValidator {
 										_counter.incrementAndGet();
 										if (connected) {
 											Log.d(TAG, "We found the connected service (" + service + "); currentThread is " + Thread.currentThread().getName());
-											//serviceNameHolder.setServiceName(service);
-											//serviceNameHolder.save(contexts[0]);
 											serviceQueue.add(service);
 										} else if (_counter.get() == numServices) {
 											Log.d(TAG, "SdlRouterStatusProvider returns service=" + service + "; connected=" + connected);
-											//serviceNameHolder.clear();
 											_currentThread.interrupt();
 										}
 									}
@@ -368,7 +358,7 @@ public class RouterServiceValidator {
 			});
 
 			try {
-				ComponentName found = serviceQueue.take();
+				ComponentName found = serviceQueue.poll(TIMEOUT_MSEC, TimeUnit.MILLISECONDS);
 				return found;
 			} catch(InterruptedException e) {
 				Log.d(TAG, "FindRouterTask was interrupted because connected Router cannot be found");
@@ -385,7 +375,6 @@ public class RouterServiceValidator {
 				if (componentName != null && componentName.getPackageName() != null && !componentName.getPackageName().isEmpty()) {
 					mCallback.onFound(componentName);
 				} else {
-
 					mCallback.onFailed();
 				}
 			}
