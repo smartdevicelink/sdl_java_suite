@@ -325,6 +325,7 @@ public class RouterServiceValidator {
 				public void onComplete(Vector<ComponentName> routerServices) {
 					// OK, we found the routerServices. Let's see one-by-one.
 					if (routerServices == null || routerServices.isEmpty()) {
+						_currentThread.interrupt();
 						return;
 					}
 
