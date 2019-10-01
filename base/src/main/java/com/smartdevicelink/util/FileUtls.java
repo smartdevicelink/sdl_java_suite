@@ -31,7 +31,6 @@
  */
 package com.smartdevicelink.util;
 
-import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 
 import java.io.ByteArrayOutputStream;
@@ -60,7 +59,6 @@ public class FileUtls {
      * @param fileName the name of the file
      * @return a byte array representation of the file if one exists
      */
-    @SuppressLint("NewApi")
     public static byte[] getFileData(String filePath, String fileName){
         if(filePath != null && filePath.length() > 0) {
             File file;
