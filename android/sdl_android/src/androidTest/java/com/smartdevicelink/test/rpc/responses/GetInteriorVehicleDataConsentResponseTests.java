@@ -4,6 +4,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.GetInteriorVehicleDataConsentResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
@@ -49,6 +50,13 @@ public class GetInteriorVehicleDataConsentResponseTests extends BaseRpcTests {
 	public void testRpcValues() {
 		List<Boolean> list = ((GetInteriorVehicleDataConsentResponse) msg).getAllowances();
 		assertEquals(Test.MATCH, list, Test.GENERAL_BOOLEAN_LIST);
+	}
+
+	public void testRequiredParams(){
+		GetInteriorVehicleDataConsentResponse msg = new GetInteriorVehicleDataConsentResponse(true, Result.SUCCESS, Test.GENERAL_BOOLEAN_LIST);
+		assertEquals(Test.MATCH, msg.getAllowances(), Test.GENERAL_BOOLEAN_LIST);
+		assertTrue(msg.getSuccess());
+		assertEquals(Test.MATCH, msg.getResultCode(), Result.SUCCESS);
 	}
 
 	public void testJsonConstructor() {

@@ -1,5 +1,7 @@
 package com.smartdevicelink.proxy.rpc;
 
+import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 
 import java.util.Hashtable;
@@ -23,10 +25,21 @@ public class Grid extends RPCStruct {
     }
 
     /**
+     * Struct that describes a location (origin coordinates and span) of a vehicle component (Module)
+     * @param row Sets the row's value of this Grid
+     * @param column Sets the column of this Grid
+     */
+    public Grid(@NonNull Integer row, @NonNull Integer column){
+        this();
+        setRow(row);
+        setColumn(column);
+    }
+
+    /**
      * Sets the column of this Grid
      * @param col the column to be set
      */
-    public void setColumn(Integer col) {
+    public void setColumn(@NonNull Integer col) {
         setValue(KEY_COLUMN, col);
     }
 
@@ -42,7 +55,7 @@ public class Grid extends RPCStruct {
      * Sets the row's value of this Grid
      * @param row the row to be set
      */
-    public void setRow(Integer row) {
+    public void setRow(@NonNull Integer row) {
         setValue(KEY_ROW, row);
     }
 
