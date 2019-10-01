@@ -132,7 +132,7 @@ public class SdlManager extends BaseSdlManager{
 
 
 	// Initialize proxyBridge with anonymous lifecycleListener
-	private final ProxyBridge proxyBridge= new ProxyBridge(new ProxyBridge.LifecycleListener() {
+	private final ProxyBridge proxyBridge = new ProxyBridge(new ProxyBridge.LifecycleListener() {
 		@Override
 		public void onProxyConnected() {
 			DebugTool.logInfo("Proxy is connected. Now initializing.");
@@ -1105,8 +1105,8 @@ public class SdlManager extends BaseSdlManager{
 		 * @param listener The callback object
 		 */
 		public Builder setSdlSecurity(List<Class<? extends  SdlSecurityBase>> secList, @NonNull ServiceEncryptionListener listener) {
-			sdlManager.mEncryptionServiceListener = listener;
 			sdlManager.sdlSecList = secList;
+			sdlManager.mEncryptionServiceListener = listener;
 			return this;
 		}
 
@@ -1186,7 +1186,7 @@ public class SdlManager extends BaseSdlManager{
 	 * Attempts to start a secured service
 	 * @return true if secured service is started; false otherwise
 	 */
-	public void startRPCEncryptionService() {
+	public void startRPCEncryption() {
 		if (proxy != null) {
 			 proxy.startProtectedRPCService();
 		}

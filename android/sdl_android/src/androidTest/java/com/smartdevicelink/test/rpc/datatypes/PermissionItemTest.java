@@ -65,7 +65,7 @@ public class PermissionItemTest extends TestCase {
 			reference.put(PermissionItem.KEY_RPC_NAME, Test.GENERAL_STRING);
 			reference.put(PermissionItem.KEY_HMI_PERMISSIONS, Test.JSON_HMIPERMISSIONS);
 			reference.put(PermissionItem.KEY_PARAMETER_PERMISSIONS, Test.JSON_PARAMETERPERMISSIONS);
-			reference.put(PermissionItem.KEY_ENCRYPTION_REQUIRE, Test.GENERAL_BOOLEAN);
+			reference.put(PermissionItem.KEY_REQUIRE_ENCRYPTION, Test.GENERAL_BOOLEAN);
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -78,7 +78,7 @@ public class PermissionItemTest extends TestCase {
 					assertTrue(Test.TRUE, Validator.validateStringList(JsonUtils.readStringListFromJsonObject(reference, key), JsonUtils.readStringListFromJsonObject(underTest, key)));
 				} else if (key.equals(PermissionItem.KEY_PARAMETER_PERMISSIONS)) {
 					assertTrue(Test.TRUE, Validator.validateStringList(JsonUtils.readStringListFromJsonObject(reference, key), JsonUtils.readStringListFromJsonObject(underTest, key)));
-				} else if (key.equals(PermissionItem.KEY_ENCRYPTION_REQUIRE)) {
+				} else if (key.equals(PermissionItem.KEY_REQUIRE_ENCRYPTION)) {
 					assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(reference, key), JsonUtils.readBooleanFromJsonObject(underTest, key));
 				} else {
 					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));

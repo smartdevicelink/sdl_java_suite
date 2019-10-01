@@ -33,13 +33,10 @@ package com.smartdevicelink.managers;
 
 import android.support.annotation.NonNull;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.transport.utl.TransportRecord;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * <strong>BaseSubManager</strong> <br>

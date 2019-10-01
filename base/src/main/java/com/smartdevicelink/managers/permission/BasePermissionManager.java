@@ -129,7 +129,7 @@ abstract class BasePermissionManager extends BaseSubManager{
                             currentPermissionItems.put(functionID, permissionItem);
                         }
                         if (Boolean.TRUE.equals(permissionItem.getRequireEncryption())) {
-                            if (requireEncryptionAppLevel == null || requireEncryptionAppLevel == true) {
+                            if (requireEncryptionAppLevel == null || requireEncryptionAppLevel) {
                                 String rpcName = permissionItem.getRpcName();
                                 if (rpcName != null) {
                                     mEncryptedRPC.add(rpcName);

@@ -61,7 +61,6 @@ import com.smartdevicelink.encoder.VirtualDisplayEncoder;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.haptic.HapticInterfaceManager;
-import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.ServiceEncryptionListener;
 import com.smartdevicelink.managers.lifecycle.RpcConverter;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -313,7 +312,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	private Set<String> mEncryptedRPCNames = new HashSet<>();
 	private boolean mRPCSecuredServiceStarted;
-	private ServiceEncryptionListener mEncryptionCallback;
+	private ServiceEncryptionListener mServiceEncryptionListener;
 
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
@@ -1031,8 +1030,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			throw e;
 		}
 
-		addOnRPCNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE, mEncryptionReqListener);
-		this._internalInterface.addServiceListener(SessionType.RPC, mRPCSecuredServiceListener);
+		addOnRPCNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE, mPermissionChangeListener);
+		this._internalInterface.addServiceListener(SessionType.RPC, mSecuredServiceListener);
+		this._internalInterface.addServiceListener(SessionType.NAV, mSecuredServiceListener);
 
 		// Trace that ctor has fired
 		SdlTrace.logProxyEvent("SdlProxy Created, instanceID=" + this.toString(), SDL_LIB_TRACE_KEY);		
@@ -1803,7 +1803,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		_proxyDisposed = true;
 		mRPCSecuredServiceStarted = false;
 		mEncryptedRPCNames.clear();
-		mEncryptionCallback = null;
+		mServiceEncryptionListener = null;
 		
 		SdlTrace.logProxyEvent("Application called dispose() method.", SDL_LIB_TRACE_KEY);
 		
@@ -2120,21 +2120,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	/************* END Functions used by the Message Dispatching Queues ****************/
 
 
-	private OnRPCNotificationListener mEncryptionReqListener = new OnRPCNotificationListener() {
+	private OnRPCNotificationListener mPermissionChangeListener = new OnRPCNotificationListener() {
 		@Override
 		public void onNotified(RPCNotification notification) {
-			List<PermissionItem> permissionItems = ((OnPermissionsChange)notification).getPermissionItem();
+			List<PermissionItem> permissionItems = ((OnPermissionsChange) notification).getPermissionItem();
 			Boolean requireEncryptionAppLevel = ((OnPermissionsChange) notification).getRequireEncryption();
 			mEncryptedRPCNames.clear();
-			if (requireEncryptionAppLevel == null || requireEncryptionAppLevel == true) {
+			if (requireEncryptionAppLevel == null || requireEncryptionAppLevel) {
 				if (permissionItems != null && !permissionItems.isEmpty()) {
 					for (PermissionItem permissionItem : permissionItems) {
-						if (permissionItem != null) {
-							if (Boolean.TRUE.equals(permissionItem.getRequireEncryption())) {
-								String rpcName = permissionItem.getRpcName();
-								if (rpcName != null) {
-									mEncryptedRPCNames.add(rpcName);
-								}
+						if (permissionItem != null && Boolean.TRUE.equals(permissionItem.getRequireEncryption())) {
+							String rpcName = permissionItem.getRpcName();
+							if (rpcName != null) {
+								mEncryptedRPCNames.add(rpcName);
 							}
 						}
 					}
@@ -2172,38 +2170,38 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	}
 
-	private ISdlServiceListener mRPCSecuredServiceListener = new ISdlServiceListener() {
+	private ISdlServiceListener mSecuredServiceListener = new ISdlServiceListener() {
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
-			if(SessionType.RPC.equals(type) && session != null){
+			if(SessionType.RPC.equals(type)){
 				mRPCSecuredServiceStarted = isEncrypted;
-				if (mEncryptionCallback != null) {
-					mEncryptionCallback.onEncryptionServiceUpdated(type, isEncrypted, isEncrypted ? "Secured RPC service started" : "RPC service started");
-				}
-				Log.d(TAG, "onServiceStarted, session id: " + (session.getSessionId() + ", session Type: " + type.getName()) + ", isEncrypted: " + isEncrypted);
 			}
+			if (mServiceEncryptionListener != null) {
+				mServiceEncryptionListener.onEncryptionServiceUpdated(type, isEncrypted, null);
+			}
+			DebugTool.logInfo("onServiceStarted, session Type: " + type.getName() + ", isEncrypted: " + isEncrypted);
 		}
 
 		@Override
 		public void onServiceEnded(SdlSession session, SessionType type) {
-			if (SessionType.RPC.equals(type) && session != null) {
+			if (SessionType.RPC.equals(type)) {
 				mRPCSecuredServiceStarted = false;
-				if (mEncryptionCallback != null) {
-					mEncryptionCallback.onEncryptionServiceUpdated(type, false, "onServiceEnded");
-				}
-				Log.d(TAG, "onServiceEnded, session id: " + (session.getSessionId() + ", session Type: " + type.getName()));
 			}
+			if (mServiceEncryptionListener != null) {
+				mServiceEncryptionListener.onEncryptionServiceUpdated(type, false, null);
+			}
+			DebugTool.logInfo("onServiceEnded, session Type: " + type.getName());
 		}
 
 		@Override
 		public void onServiceError(SdlSession session, SessionType type, String reason) {
-			if (SessionType.RPC.equals(type) && session != null) {
+			if (SessionType.RPC.equals(type)) {
 				mRPCSecuredServiceStarted = false;
-				if (mEncryptionCallback != null) {
-					mEncryptionCallback.onEncryptionServiceUpdated(type, false, "onServiceError. " + reason);
-				}
-				Log.e(TAG, "onServiceError, session id: " + (session.getSessionId() + ", session Type: " + type.getName()));
 			}
+			if (mServiceEncryptionListener != null) {
+				mServiceEncryptionListener.onEncryptionServiceUpdated(type, false, "onServiceError: " + reason);
+			}
+			Log.e(TAG, "onServiceError, session Type: " + type.getName() + ", reason: " + reason);
 		}
 	};
 
@@ -2212,7 +2210,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * @param listener The callback to be set
 	 */
 	public void setServiceEncryptionListener(@NonNull ServiceEncryptionListener listener) {
-		mEncryptionCallback = listener;
+		mServiceEncryptionListener = listener;
 	}
 
 	// Private sendRPCMessagePrivate method. All RPCMessages are funneled through this method after error checking.
