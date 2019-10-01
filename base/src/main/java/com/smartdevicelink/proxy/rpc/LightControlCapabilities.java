@@ -41,6 +41,7 @@ import java.util.List;
 public class LightControlCapabilities extends RPCStruct {
 	public static final String KEY_MODULE_NAME = "moduleName";
 	public static final String KEY_SUPPORTED_LIGHTS = "supportedLights";
+	public static final String KEY_MODULE_INFO = "moduleInfo";
 
 	/**
 	 * Constructs a new LightControlCapabilities object
@@ -105,5 +106,21 @@ public class LightControlCapabilities extends RPCStruct {
 	 */
 	public void setSupportedLights(@NonNull List<LightCapabilities> supportedLights) {
 		setValue(KEY_SUPPORTED_LIGHTS, supportedLights);
+	}
+
+	/**
+	 * Sets ModuleInfo for this capability
+	 * @param info the ModuleInfo to be set
+	 */
+	public void setModuleInfo(ModuleInfo info) {
+		setValue(KEY_MODULE_INFO, info);
+	}
+
+	/**
+	 * Gets a ModuleInfo of this capability
+	 * @return module info of this capability
+	 */
+	public ModuleInfo getModuleInfo() {
+		return (ModuleInfo) getObject(ModuleInfo.class, KEY_MODULE_INFO);
 	}
 }

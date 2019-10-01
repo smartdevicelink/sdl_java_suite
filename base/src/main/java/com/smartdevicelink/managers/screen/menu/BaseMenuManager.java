@@ -61,6 +61,7 @@ import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.SystemContext;
@@ -118,8 +119,6 @@ abstract class BaseMenuManager extends BaseSubManager {
 		lastMenuId = menuCellIdMin;
 		dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
 		sdlMsgVersion = internalInterface.getSdlMsgVersion();
-		// default menu configuration
-		menuConfiguration = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
 
 		addListeners();
 	}
@@ -365,23 +364,28 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         // In the future, when the manager is switched to use queues, the menuConfiguration should be set when SetGlobalProperties response is received
         this.menuConfiguration = menuConfiguration;
-        
-        SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
-        setGlobalProperties.setMenuLayout(menuConfiguration.getMenuLayout());
-        setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
-            @Override
-            public void onResponse(int correlationId, RPCResponse response) {
-                if (response.getSuccess()){
-                    DebugTool.logInfo("Menu Configuration successfully set: "+ menuConfiguration.toString());
-                }
-            }
 
-            @Override
-            public void onError(int correlationId, Result resultCode, String info){
-                DebugTool.logError("onError: "+ resultCode+ " | Info: "+ info );
-            }
-        });
-        internalInterface.sendRPC(setGlobalProperties);
+        if (menuConfiguration.getMenuLayout() != null) {
+
+			SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
+			setGlobalProperties.setMenuLayout(menuConfiguration.getMenuLayout());
+			setGlobalProperties.setOnRPCResponseListener(new OnRPCResponseListener() {
+				@Override
+				public void onResponse(int correlationId, RPCResponse response) {
+					if (response.getSuccess()) {
+						DebugTool.logInfo("Menu Configuration successfully set: " + menuConfiguration.toString());
+					}
+				}
+
+				@Override
+				public void onError(int correlationId, Result resultCode, String info) {
+					DebugTool.logError("onError: " + resultCode + " | Info: " + info);
+				}
+			});
+			internalInterface.sendRPC(setGlobalProperties);
+		} else {
+			DebugTool.logInfo("Menu Layout is null, not sending setGlobalProperties");
+		}
     }
 
     public MenuConfiguration getMenuConfiguration(){
@@ -968,7 +972,11 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private AddSubMenu subMenuCommandForMenuCell(MenuCell cell, boolean shouldHaveArtwork, int position){
 		AddSubMenu subMenu = new AddSubMenu(cell.getCellId(), cell.getTitle());
 		subMenu.setPosition(position);
-		subMenu.setMenuLayout((cell.getSubMenuLayout() != null ? cell.getSubMenuLayout() : menuConfiguration.getSubMenuLayout()));
+		if (cell.getSubMenuLayout() != null ) {
+			subMenu.setMenuLayout(cell.getSubMenuLayout());
+		} else if (menuConfiguration != null && menuConfiguration.getSubMenuLayout() != null) {
+			subMenu.setMenuLayout(menuConfiguration.getSubMenuLayout());
+		}
 		subMenu.setMenuIcon((shouldHaveArtwork && (cell.getIcon()!= null && cell.getIcon().getImageRPC() != null)) ? cell.getIcon().getImageRPC() : null);
 		return subMenu;
 	}
@@ -1020,9 +1028,12 @@ abstract class BaseMenuManager extends BaseSubManager {
 		hmiListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
-				OnHMIStatus hmiStatus = (OnHMIStatus) notification;
+				OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+					return;
+				}
 				HMILevel oldHMILevel = currentHMILevel;
-				currentHMILevel = hmiStatus.getHmiLevel();
+				currentHMILevel = onHMIStatus.getHmiLevel();
 
 				// Auto-send an updated menu if we were in NONE and now we are not, and we need an update
 				if (oldHMILevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE && currentSystemContext != SystemContext.SYSCTXT_MENU){
@@ -1037,7 +1048,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				// If we don't check for this and only update when not in the menu, there can be IN_USE errors, especially with submenus.
 				// We also don't want to encourage changing out the menu while the user is using it for usability reasons.
 				SystemContext oldContext = currentSystemContext;
-				currentSystemContext = hmiStatus.getSystemContext();
+				currentSystemContext = onHMIStatus.getSystemContext();
 
 				if (oldContext == SystemContext.SYSCTXT_MENU && currentSystemContext != SystemContext.SYSCTXT_MENU && currentHMILevel != HMILevel.HMI_NONE){
 					if (waitingOnHMIUpdate){

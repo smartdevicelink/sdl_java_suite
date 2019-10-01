@@ -54,6 +54,7 @@ public class RadioControlCapabilities extends RPCStruct{
     public static final String KEY_HD_RADIO_ENABLE_AVAILABLE = "hdRadioEnableAvailable";
     public static final String KEY_SIRIUS_XM_RADIO_AVAILABLE = "siriusxmRadioAvailable";
     public static final String KEY_SIS_DATA_AVAILABLE = "sisDataAvailable";
+    public static final String KEY_MODULE_INFO = "moduleInfo";
     public static final String KEY_AVAILABLE_HD_CHANNELS_AVAILABLE = "availableHdChannelsAvailable";
 
     public RadioControlCapabilities() {
@@ -363,5 +364,21 @@ public class RadioControlCapabilities extends RPCStruct{
      */
     public Boolean getSisDataAvailable() {
         return getBoolean(KEY_SIS_DATA_AVAILABLE);
+    }
+
+    /**
+     * Sets ModuleInfo for this capability
+     * @param info the ModuleInfo to be set
+     */
+    public void setModuleInfo(ModuleInfo info) {
+        setValue(KEY_MODULE_INFO, info);
+    }
+
+    /**
+     * Gets a ModuleInfo of this capability
+     * @return module info of this capability
+     */
+    public ModuleInfo getModuleInfo() {
+        return (ModuleInfo) getObject(ModuleInfo.class, KEY_MODULE_INFO);
     }
 }

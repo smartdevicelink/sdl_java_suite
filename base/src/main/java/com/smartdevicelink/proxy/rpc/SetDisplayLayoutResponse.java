@@ -41,6 +41,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
+ * <Strong>If using Widgets with Core > 6.0, use {@link Show} to change widget layouts</Strong> <br>
  * Set Display Layout Response is sent, when SetDisplayLayout has been called
  * 
  * @since SmartDeviceLink 2.0

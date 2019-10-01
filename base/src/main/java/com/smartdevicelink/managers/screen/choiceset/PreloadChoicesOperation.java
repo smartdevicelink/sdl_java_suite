@@ -62,7 +62,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-class PreloadChoicesOperation implements Runnable {
+class PreloadChoicesOperation extends AsynchronousOperation {
 
 	private WeakReference<ISdl> internalInterface;
 	private WeakReference<FileManager> fileManager;
@@ -74,6 +74,7 @@ class PreloadChoicesOperation implements Runnable {
 
 	PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, DisplayCapabilities displayCapabilities,
 								   Boolean isVROptional, HashSet<ChoiceCell> cellsToPreload, CompletionListener listener){
+		super();
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.fileManager = new WeakReference<>(fileManager);
 		this.displayCapabilities = displayCapabilities;
@@ -84,6 +85,7 @@ class PreloadChoicesOperation implements Runnable {
 
 	@Override
 	public void run() {
+		PreloadChoicesOperation.super.run();
 		DebugTool.logInfo("Choice Operation: Executing preload choices operation");
 		preloadCellArtworks(new CompletionListener() {
 			@Override
@@ -91,6 +93,7 @@ class PreloadChoicesOperation implements Runnable {
 				preloadCells();
 			}
 		});
+		block();
 	}
 
 	void removeChoicesFromUpload(HashSet<ChoiceCell> choices){
@@ -161,11 +164,15 @@ class PreloadChoicesOperation implements Runnable {
 					isRunning = false;
 					DebugTool.logInfo("Finished pre loading choice cells");
 					completionListener.onComplete(true);
+
+					PreloadChoicesOperation.super.finishOperation();
 				}
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info) {
 					DebugTool.logError("There was an error uploading a choice cell: "+ info + " resultCode: " + resultCode);
+
+					PreloadChoicesOperation.super.finishOperation();
 				}
 
 				@Override

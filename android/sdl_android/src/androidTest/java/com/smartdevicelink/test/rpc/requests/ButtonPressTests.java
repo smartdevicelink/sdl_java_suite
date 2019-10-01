@@ -30,6 +30,7 @@ public class ButtonPressTests extends BaseRpcTests {
         msg.setModuleType(Test.GENERAL_MODULETYPE);
         msg.setButtonPressMode(Test.GENERAL_BUTTONPRESSMODE);
         msg.setButtonName(Test.GENERAL_BUTTONNAME);
+        msg.setModuleId(Test.GENERAL_STRING);
 
         return msg;
     }
@@ -52,6 +53,7 @@ public class ButtonPressTests extends BaseRpcTests {
             result.put(ButtonPress.KEY_MODULE_TYPE, Test.GENERAL_MODULETYPE);
             result.put(ButtonPress.KEY_BUTTON_NAME, Test.GENERAL_BUTTONNAME);
             result.put(ButtonPress.KEY_BUTTON_PRESS_MODE, Test.GENERAL_BUTTONPRESSMODE);
+            result.put(ButtonPress.KEY_MODULE_ID, Test.GENERAL_STRING);
         }catch(JSONException e){
             fail(Test.JSON_FAIL);
         }
@@ -67,11 +69,13 @@ public class ButtonPressTests extends BaseRpcTests {
         ModuleType testModuleType = ( (ButtonPress) msg ).getModuleType();
         ButtonName testButtonName = ( (ButtonPress) msg ).getButtonName();
         ButtonPressMode testButtonPressMode = ( (ButtonPress) msg ).getButtonPressMode();
+        String testButtonId = ((ButtonPress) msg).getModuleId();
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_MODULETYPE, testModuleType);
         assertEquals(Test.MATCH, Test.GENERAL_BUTTONNAME, testButtonName);
         assertEquals(Test.MATCH, Test.GENERAL_BUTTONPRESSMODE, testButtonPressMode);
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, testButtonId);
 
         // Invalid/Null Tests
         ButtonPress msg = new ButtonPress();
@@ -81,6 +85,7 @@ public class ButtonPressTests extends BaseRpcTests {
         assertNull(Test.NULL, msg.getModuleType());
         assertNull(Test.NULL, msg.getButtonName());
         assertNull(Test.NULL, msg.getButtonPressMode());
+        assertNull(Test.NULL, msg.getModuleId());
     }
 
     /**
@@ -106,6 +111,7 @@ public class ButtonPressTests extends BaseRpcTests {
             assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, ButtonPress.KEY_MODULE_TYPE).toString(), cmd.getModuleType().toString());
             assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, ButtonPress.KEY_BUTTON_NAME).toString(), cmd.getButtonName().toString());
             assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, ButtonPress.KEY_BUTTON_PRESS_MODE).toString(), cmd.getButtonPressMode().toString());
+            assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, ButtonPress.KEY_MODULE_ID), cmd.getModuleId());
         }catch (JSONException e) {
             fail(Test.JSON_FAIL);
         }

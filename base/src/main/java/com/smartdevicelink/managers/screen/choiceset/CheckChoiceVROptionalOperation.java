@@ -47,21 +47,24 @@ import com.smartdevicelink.util.DebugTool;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 
-class CheckChoiceVROptionalOperation implements Runnable {
+class CheckChoiceVROptionalOperation extends AsynchronousOperation {
 
 	private CheckChoiceVROptionalInterface checkChoiceVROptionalInterface;
 	private WeakReference<ISdl> internalInterface;
 	private boolean isVROptional;
 
 	CheckChoiceVROptionalOperation(ISdl internalInterface, CheckChoiceVROptionalInterface checkChoiceVROptionalInterface){
+		super();
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.checkChoiceVROptionalInterface = checkChoiceVROptionalInterface;
 	}
 
 	@Override
 	public void run() {
+		CheckChoiceVROptionalOperation.super.run();
 		DebugTool.logInfo("Choice Operation: Executing check vr optional operation");
 		sendTestChoiceNoVR();
+		block();
 	}
 
 	/**
@@ -117,6 +120,8 @@ class CheckChoiceVROptionalOperation implements Runnable {
 					if (checkChoiceVROptionalInterface != null){
 						checkChoiceVROptionalInterface.onError(response.getInfo());
 					}
+
+					CheckChoiceVROptionalOperation.super.finishOperation();
 				}
 			}
 
@@ -127,6 +132,8 @@ class CheckChoiceVROptionalOperation implements Runnable {
 				if (checkChoiceVROptionalInterface != null){
 					checkChoiceVROptionalInterface.onError(info);
 				}
+
+				CheckChoiceVROptionalOperation.super.finishOperation();
 			}
 		});
 
@@ -147,6 +154,8 @@ class CheckChoiceVROptionalOperation implements Runnable {
 				if (checkChoiceVROptionalInterface != null){
 					checkChoiceVROptionalInterface.onCheckChoiceVROperationComplete(isVROptional);
 				}
+
+				CheckChoiceVROptionalOperation.super.finishOperation();
 			}
 
 			@Override
@@ -155,6 +164,8 @@ class CheckChoiceVROptionalOperation implements Runnable {
 				if (checkChoiceVROptionalInterface != null){
 					checkChoiceVROptionalInterface.onError(info);
 				}
+
+				CheckChoiceVROptionalOperation.super.finishOperation();
 			}
 		});
 		if (internalInterface.get() != null){
