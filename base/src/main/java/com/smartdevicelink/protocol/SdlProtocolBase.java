@@ -993,7 +993,8 @@ public class SdlProtocolBase {
                         notifyDevTransportListener();
 
                     } else {
-                        Log.w(TAG, "Received a start service ack for RPC service while already active on a different transport.");
+                        DebugTool.logInfo("Received a start service ack for RPC service while already active on a different transport.");
+                        iSdlProtocol.onProtocolSessionStarted(serviceType, (byte) packet.getSessionId(), (byte)protocolVersion.getMajor(), "", hashID, packet.isEncrypted());
                         return;
                     }
 
