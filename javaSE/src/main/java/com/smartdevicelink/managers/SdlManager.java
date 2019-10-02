@@ -546,7 +546,7 @@ public class SdlManager extends BaseSdlManager{
 				_internalInterface = lifecycleManager.getInternalInterface(SdlManager.this);
 
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
-					lifecycleManager.setSdlSecurityClassList(sdlSecList, serviceEncryptionListener);
+					lifecycleManager.setSdlSecurity(sdlSecList, serviceEncryptionListener);
 				}
 
 				//Setup the notification queue
@@ -725,11 +725,11 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
-		 * Sets the Security libraries and a callback to notify caller when there is update to encryption service
+		 * Sets the security libraries and a callback to notify caller when there is update to encryption service
 		 * @param secList The list of security class(es)
 		 * @param listener The callback object
 		 */
-		public Builder setSdlSecurity(List<Class<? extends  SdlSecurityBase>> secList, @NonNull ServiceEncryptionListener listener) {
+		public Builder setSdlSecurity(@NonNull List<Class<? extends SdlSecurityBase>> secList, ServiceEncryptionListener listener) {
 			sdlManager.sdlSecList = secList;
 			sdlManager.serviceEncryptionListener = listener;
 			return this;

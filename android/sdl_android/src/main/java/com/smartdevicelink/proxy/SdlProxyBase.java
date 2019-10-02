@@ -1037,7 +1037,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		addOnRPCNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE, onPermissionsChangeListener);
 		this._internalInterface.addServiceListener(SessionType.RPC, mSecuredServiceListener);
-		this._internalInterface.addServiceListener(SessionType.NAV, mSecuredServiceListener);
 
 		// Trace that ctor has fired
 		SdlTrace.logProxyEvent("SdlProxy Created, instanceID=" + this.toString(), SDL_LIB_TRACE_KEY);		
@@ -2169,9 +2168,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 * If app is in the foreground and encrypted RPC list is not empty and there is not a secured
 	 * service, start it
 	 */
-	private void
-	checkStatusAndInitSecuredService() {
-		if (!mRPCSecuredServiceStarted && (_hmiLevel != null && _hmiLevel != HMILevel.HMI_NONE) && !encryptionRequiredRPCs.isEmpty()) {
+	private void checkStatusAndInitSecuredService() {
+		if ((_hmiLevel != null && _hmiLevel != HMILevel.HMI_NONE) && getRequiresEncryption() && !mRPCSecuredServiceStarted) {
 			startProtectedRPCService();
 		}
 	}
@@ -2210,14 +2208,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			DebugTool.logError("onServiceError, session Type: " + type.getName() + ", reason: " + reason);
 		}
 	};
-
-	/**
-	 * Sets a callback to notify app on secured service status update
-	 * @param listener The callback to be set
-	 */
-	public void setServiceEncryptionListener(@NonNull ServiceEncryptionListener listener) {
-		serviceEncryptionListener = listener;
-	}
 
 	// Private sendRPCMessagePrivate method. All RPCMessages are funneled through this method after error checking.
 	protected void sendRPCMessagePrivate(RPCMessage message) throws SdlException {
@@ -2268,15 +2258,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				pm.setPayloadProtected(message.isPayloadProtected());
 			}
 			if (pm.getPayloadProtected() && (!mRPCSecuredServiceStarted || !rpcProtectedStartResponse)){
+				String errorInfo = "Trying to send an encrypted message and there is no secured service";
 				if (message.getMessageType().equals((RPCMessage.KEY_REQUEST))) {
 					RPCRequest request = (RPCRequest) message;
 					OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
-					String errorInfo = "Trying to send an encrypted message and there is no secured service";
 					if (listener != null) {
 						listener.onError(request.getCorrelationID(), Result.ABORTED,  errorInfo);
 					}
-					Log.d(TAG, errorInfo);
 				}
+				DebugTool.logWarning(errorInfo);
 				return;
 			}
 
@@ -8081,11 +8071,22 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 		return sdlSession.getCurrentTransportType();
 	}
-	
+
+	@Deprecated
 	public void setSdlSecurityClassList(List<Class<? extends SdlSecurityBase>> list) {
 		_secList = list;
-	}	
-	
+	}
+
+	/**
+	 * Sets the security libraries and a callback to notify caller when there is update to encryption service
+	 * @param secList The list of security class(es)
+	 * @param listener The callback object
+	 */
+	public void setSdlSecurity(@NonNull List<Class<? extends SdlSecurityBase>> secList, ServiceEncryptionListener listener) {
+		_secList = secList;
+		serviceEncryptionListener = listener;
+	}
+
 	private void setSdlSecurity(SdlSecurityBase sec) {
 		if (sdlSession != null)
 		{

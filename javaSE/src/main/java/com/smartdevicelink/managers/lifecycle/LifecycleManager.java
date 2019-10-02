@@ -32,6 +32,7 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
@@ -797,15 +798,15 @@ public class LifecycleManager extends BaseLifecycleManager {
                 pm.setPayloadProtected(message.isPayloadProtected());
             }
             if (pm.getPayloadProtected() && (encryptionLifecycleManager == null || !encryptionLifecycleManager.isEncryptionReady())){
+                String errorInfo = "Trying to send an encrypted message and there is no secured service";
                 if (message.getMessageType().equals((RPCMessage.KEY_REQUEST))) {
                     RPCRequest request = (RPCRequest) message;
                     OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
-                    String errorInfo = "Trying to send an encrypted message and there is no secured service";
                     if (listener != null) {
                         listener.onError(request.getCorrelationID(), Result.ABORTED,  errorInfo);
                     }
-                    Log.d(TAG, errorInfo);
                 }
+                DebugTool.logWarning(errorInfo);
                 return;
             }
 
@@ -1412,10 +1413,18 @@ public class LifecycleManager extends BaseLifecycleManager {
         if (session != null && session.getIsConnected()) {
             session.close();
         }
+        if (encryptionLifecycleManager != null){
+            encryptionLifecycleManager.dispose();
+        }
     }
 
-    public void setSdlSecurityClassList(List<Class<? extends SdlSecurityBase>> list, ServiceEncryptionListener listener) {
-        this._secList = list;
+    /**
+     * Sets the security libraries and a callback to notify caller when there is update to encryption service
+     * @param secList The list of security class(es)
+     * @param listener The callback object
+     */
+    public void setSdlSecurity(@NonNull List<Class<? extends SdlSecurityBase>> secList, ServiceEncryptionListener listener) {
+        this._secList = secList;
         this.encryptionLifecycleManager = new EncryptionLifecycleManager(internalInterface, listener);
     }
 

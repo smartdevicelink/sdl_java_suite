@@ -54,11 +54,8 @@ import java.util.Set;
 abstract class BaseEncryptionLifecycleManager {
     private ISdl internalInterface;
     private ServiceEncryptionListener serviceEncryptionListener;
-    private OnRPCNotificationListener onPermissionsChangeListener;
-    private OnRPCNotificationListener onHMIStatusListener;
     private HMILevel currentHMILevel;
     private Set<String> encryptionRequiredRPCs = new HashSet<>();
-    //private boolean isAppLevelEncryptionRequired;
     private boolean rpcSecuredServiceStarted;
 
     BaseEncryptionLifecycleManager(@NonNull ISdl isdl, ServiceEncryptionListener listener) {
@@ -66,7 +63,7 @@ abstract class BaseEncryptionLifecycleManager {
         serviceEncryptionListener = listener;
         rpcSecuredServiceStarted = false;
 
-        onHMIStatusListener = new OnRPCNotificationListener() {
+        OnRPCNotificationListener onHMIStatusListener = new OnRPCNotificationListener() {
             @Override
             public void onNotified(RPCNotification notification) {
                 OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
@@ -161,17 +158,10 @@ abstract class BaseEncryptionLifecycleManager {
     /**
      * Checks the current state and make the call back to initiate secured service flow
      */
-    private void checkStatusAndInitSecuredService() {
-        if (!rpcSecuredServiceStarted && (currentHMILevel != null && currentHMILevel != HMILevel.HMI_NONE) && !encryptionRequiredRPCs.isEmpty()) {
+    void checkStatusAndInitSecuredService() {
+        if ((currentHMILevel != null && currentHMILevel != HMILevel.HMI_NONE) && getRequiresEncryption() && !isEncryptionReady() ) {
             internalInterface.startRPCEncryption();
         }
-    }
-
-    /**
-     * Starts a secured service.
-     */
-    void startRPCEncryption() {
-        internalInterface.startRPCEncryption();
     }
 
     /**
