@@ -313,6 +313,10 @@ public class SdlManager extends BaseSdlManager{
 			this.screenManager.dispose();
 		}
 
+		if (this.lifecycleManager != null) {
+			this.lifecycleManager.stop();
+		}
+
 		if(managerListener != null){
 			managerListener.onDestroy(this);
 			managerListener = null;
