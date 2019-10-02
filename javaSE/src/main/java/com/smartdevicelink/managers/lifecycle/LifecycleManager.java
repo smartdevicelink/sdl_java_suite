@@ -34,22 +34,57 @@ package com.smartdevicelink.managers.lifecycle;
 
 import android.support.annotation.RestrictTo;
 import android.util.Log;
+
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
-import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
-import com.smartdevicelink.managers.encryption.EncryptionManager;
+import com.smartdevicelink.managers.ServiceEncryptionListener;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.*;
-import com.smartdevicelink.proxy.interfaces.*;
-import com.smartdevicelink.proxy.rpc.*;
-import com.smartdevicelink.proxy.rpc.enums.*;
-import com.smartdevicelink.proxy.rpc.listeners.*;
+import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.SystemCapabilityManager;
+import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
+import com.smartdevicelink.proxy.rpc.OnButtonEvent;
+import com.smartdevicelink.proxy.rpc.OnButtonPress;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.OnSystemRequest;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SubscribeButton;
+import com.smartdevicelink.proxy.rpc.SystemRequest;
+import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
+import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
+import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
+import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
+import com.smartdevicelink.proxy.rpc.enums.ButtonName;
+import com.smartdevicelink.proxy.rpc.enums.FileType;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.RequestType;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
@@ -60,14 +95,13 @@ import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.FileUtls;
 import com.smartdevicelink.util.Version;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * The lifecycle manager creates a centeral point for all SDL session logic to converge. It should only be used by
+ * The lifecycle manager creates a central point for all SDL session logic to converge. It should only be used by
  * the library itself. Usage outside the library is not permitted and will not be protected for in the future.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -103,6 +137,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     private final HashMap<Integer, CopyOnWriteArrayList<OnRPCRequestListener>> rpcRequestListeners;
 
     protected final SystemCapabilityManager systemCapabilityManager;
+    private EncryptionLifecycleManager encryptionLifecycleManager;
 
     protected RegisterAppInterfaceResponse raiResponse = null;
 
@@ -115,7 +150,6 @@ public class LifecycleManager extends BaseLifecycleManager {
     private String authToken;
     private Version minimumProtocolVersion;
     private Version minimumRPCVersion;
-    private WeakReference<EncryptionManager> weakRefManager;
 
     public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
 
@@ -132,7 +166,6 @@ public class LifecycleManager extends BaseLifecycleManager {
         this.session = new SdlSession(sdlConnectionListener, config);
 
         this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
-
     }
 
     public void start(){
@@ -146,41 +179,11 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     /**
-     * Assigns the instance of the EncryptionManager object
-     * @param manager the instance to be assigned
+     * Attempts to start a secured service
      */
-    public void setEncryptionManager(EncryptionManager manager) {
-        this.weakRefManager = new WeakReference<>(manager);
-    }
-
-    /**
-     * Attempts to start a secured service.  This a a callback from BaseEncryptionManager
-     */
-    public void initSecuredSession() {
-        session.startService(SessionType.RPC, session.getSessionId(), true);
-    }
-
-    /**
-     * Attempts to stop a service.  This is a callback from BaseEncryptionManager
-     */
-    public void stopSecuredSession() {
-        session.endService(SessionType.RPC, session.getSessionId());
-    }
-
-    /**
-     * Attempts to start an encryption flow.
-     */
-    public void startEncryptionService() {
-        if (weakRefManager != null) {
-            EncryptionManager manager = weakRefManager.get();
-            if (manager != null) {
-                manager.startEncryptedRPCService(new CompletionListener() {
-                    @Override
-                    public void onComplete(boolean success) {
-
-                    }
-                });
-            }
+    public void startRPCEncryption() {
+        if (session != null) {
+            session.startService(SessionType.RPC, session.getSessionId(), true);
         }
     }
 
@@ -788,18 +791,22 @@ public class LifecycleManager extends BaseLifecycleManager {
             pm.setSessionType(SessionType.RPC);
             pm.setFunctionID(FunctionID.getFunctionId(message.getFunctionName()));
 
-            EncryptionManager manager = null;
-            if (weakRefManager != null) {
-                manager = weakRefManager.get();
-            }
-            if (manager != null) {
-                try {
-                    pm.setPayloadProtected(manager.prepareRPCPayload(message));
-                } catch (SdlException e) {
-                    e.printStackTrace();
-                }
+            if (encryptionLifecycleManager != null && encryptionLifecycleManager.isEncryptionReady() && encryptionLifecycleManager.getRPCRequiresEncryption(FunctionID.valueOf(message.getFunctionName()))) {
+                pm.setPayloadProtected(true);
             } else {
                 pm.setPayloadProtected(message.isPayloadProtected());
+            }
+            if (pm.getPayloadProtected() && (encryptionLifecycleManager == null || !encryptionLifecycleManager.isEncryptionReady())){
+                if (message.getMessageType().equals((RPCMessage.KEY_REQUEST))) {
+                    RPCRequest request = (RPCRequest) message;
+                    OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
+                    String errorInfo = "Trying to send an encrypted message and there is no secured service";
+                    if (listener != null) {
+                        listener.onError(request.getCorrelationID(), Result.ABORTED,  errorInfo);
+                    }
+                    Log.d(TAG, errorInfo);
+                }
+                return;
             }
 
             if(RPCMessage.KEY_REQUEST.equals(message.getMessageType())){ // Request Specifics
@@ -1169,6 +1176,11 @@ public class LifecycleManager extends BaseLifecycleManager {
         public Version getProtocolVersion() {
             return LifecycleManager.this.getProtocolVersion();
         }
+
+        @Override
+        public void startRPCEncryption() {
+            LifecycleManager.this.startRPCEncryption();
+        }
     };
 
     /* *******************************************************************************************************
@@ -1402,8 +1414,9 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
-    public void setSdlSecurityClassList(List<Class<? extends SdlSecurityBase>> list) {
-        _secList = list;
+    public void setSdlSecurityClassList(List<Class<? extends SdlSecurityBase>> list, ServiceEncryptionListener listener) {
+        this._secList = list;
+        this.encryptionLifecycleManager = new EncryptionLifecycleManager(internalInterface, listener);
     }
 
     private void processRaiResponse(RegisterAppInterfaceResponse rai) {

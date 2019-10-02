@@ -34,8 +34,7 @@ package com.smartdevicelink.managers;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-import com.smartdevicelink.managers.encryption.EncryptionManager;
-import com.smartdevicelink.managers.encryption.EncryptionCallback;
+
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
@@ -49,7 +48,12 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.rpc.*;
+import com.smartdevicelink.proxy.rpc.ChangeRegistration;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.SetAppIcon;
+import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.Result;
@@ -63,9 +67,13 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
+
 import org.json.JSONException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 
 /**
@@ -87,13 +95,14 @@ public class SdlManager extends BaseSdlManager{
 	private SdlArtwork appIcon;
 	private SdlManagerListener managerListener;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
+	private ServiceEncryptionListener mEncryptionServiceListener;
+
 
 	// Managers
 	private LifecycleManager lifecycleManager;
 	private PermissionManager permissionManager;
 	private FileManager fileManager;
     private ScreenManager screenManager;
-    private EncryptionManager encryptionManager;
 
 
 	// INTERNAL INTERFACE
@@ -160,20 +169,20 @@ public class SdlManager extends BaseSdlManager{
 	void checkState() {
 		if (permissionManager != null && fileManager != null && screenManager != null ){
 			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY
-					&& screenManager.getState() == BaseSubManager.READY && encryptionManager.getState() == BaseSubManager.READY){
+					&& screenManager.getState() == BaseSubManager.READY){
 				DebugTool.logInfo("Starting sdl manager, all sub managers are in ready state");
 				transitionToState(BaseSubManager.READY);
 				handleQueuedNotifications();
 				notifyDevListener(null);
 				onReady();
 			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR
-					&& screenManager.getState() == BaseSubManager.ERROR && encryptionManager.getState() == BaseSubManager.ERROR){
+					&& screenManager.getState() == BaseSubManager.ERROR){
 				String info = "ERROR starting sdl manager, all sub managers are in error state";
 				Log.e(TAG, info);
 				transitionToState(BaseSubManager.ERROR);
 				notifyDevListener(info);
 			} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP
-					|| screenManager.getState() == BaseSubManager.SETTING_UP || encryptionManager.getState() == BaseSubManager.SETTING_UP) {
+					|| screenManager.getState() == BaseSubManager.SETTING_UP) {
 				DebugTool.logInfo("SETTING UP sdl manager, some sub managers are still setting up");
 				transitionToState(BaseSubManager.SETTING_UP);
 				// No need to notify developer here!
@@ -196,7 +205,7 @@ public class SdlManager extends BaseSdlManager{
 	private void notifyDevListener(String info) {
 		if (managerListener != null) {
 			if (getState() == BaseSubManager.ERROR){
-				managerListener.onError(this,info, null);
+				managerListener.onError(this, info, null);
 			} else {
 				managerListener.onStart(this);
 			}
@@ -283,24 +292,11 @@ public class SdlManager extends BaseSdlManager{
 		this.permissionManager = new PermissionManager(_internalInterface);
 		this.fileManager = new FileManager(_internalInterface);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-		this.encryptionManager = new EncryptionManager(_internalInterface, new EncryptionCallback(){
-			@Override
-			public void initSecuredSession() {
-				SdlManager.this.lifecycleManager.initSecuredSession();
-			}
-
-			@Override
-			public void stopSecuredSession() {
-				SdlManager.this.lifecycleManager.stopSecuredSession();
-			}
-		});
 
 		// Start sub managers
 		this.permissionManager.start(subManagerListener);
 		this.fileManager.start(subManagerListener);
 		this.screenManager.start(subManagerListener);
-		this.encryptionManager.start(subManagerListener);
-		lifecycleManager.setEncryptionManager(this.encryptionManager);
 	}
 
 	@Override
@@ -317,10 +313,6 @@ public class SdlManager extends BaseSdlManager{
 			this.screenManager.dispose();
 		}
 
-		if (this.encryptionManager != null) {
-			this.encryptionManager.dispose();
-		}
-
 		if(managerListener != null){
 			managerListener.onDestroy(this);
 			managerListener = null;
@@ -331,20 +323,6 @@ public class SdlManager extends BaseSdlManager{
 
 
 	// MANAGER GETTERS
-
-	/**
-	 * Gets the EncryptionManager. <br>
-	 * <strong>Note: EncryptionManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-	 * @return a BaseEncryptionLifecycleManager object
-	 */
-	public EncryptionManager getEncryptionManager() {
-		if (encryptionManager.getState() != BaseSubManager.READY && encryptionManager.getState() != BaseSubManager.LIMITED) {
-			Log.e(TAG, "EncryptionManager should not be accessed because it is not in READY/LIMITED state");
-		}
-		checkSdlManagerState();
-		return encryptionManager;
-	}
-
 	/**
 	 * Gets the PermissionManager. <br>
 	 * <strong>Note: PermissionManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
@@ -567,7 +545,7 @@ public class SdlManager extends BaseSdlManager{
 				_internalInterface = lifecycleManager.getInternalInterface(SdlManager.this);
 
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
-					lifecycleManager.setSdlSecurityClassList(sdlSecList);
+					lifecycleManager.setSdlSecurityClassList(sdlSecList, mEncryptionServiceListener);
 				}
 
 				//Setup the notification queue
@@ -736,11 +714,23 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
-		 * Sets the Security libraries
+		 * Sets the Security library
 		 * @param secList The list of security class(es)
 		 */
+		@Deprecated
 		public Builder setSdlSecurity(List<Class<? extends SdlSecurityBase>> secList) {
 			sdlManager.sdlSecList = secList;
+			return this;
+		}
+
+		/**
+		 * Sets the Security Library and a callback to notify caller when there is update to encryption service
+		 * @param secList The list of security class(es)
+		 * @param listener The callback object
+		 */
+		public Builder setSdlSecurity(List<Class<? extends  SdlSecurityBase>> secList, @NonNull ServiceEncryptionListener listener) {
+			sdlManager.sdlSecList = secList;
+			sdlManager.mEncryptionServiceListener = listener;
 			return this;
 		}
 
@@ -802,4 +792,13 @@ public class SdlManager extends BaseSdlManager{
 		}
 	}
 
+	/**
+	 * Attempts to start a secured service
+	 * @return true if secured service is started; false otherwise
+	 */
+	public void startRPCEncryption() {
+		if (lifecycleManager != null) {
+			lifecycleManager.startRPCEncryption();
+		}
+	}
 }
