@@ -94,6 +94,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	public void onReceive(Context context, Intent intent) {
 		//Log.i(TAG, "Sdl Receiver Activated");
 		final String action = intent.getAction();
+		if(action == null){
+			return;
+		}
+
 		BluetoothDevice device = null;
 
 		if(action.equalsIgnoreCase(Intent.ACTION_PACKAGE_ADDED)

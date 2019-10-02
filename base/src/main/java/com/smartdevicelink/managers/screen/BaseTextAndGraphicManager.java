@@ -58,6 +58,7 @@ import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
+import com.smartdevicelink.util.CompareUtils;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
@@ -732,7 +733,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			} else if (currentScreenData.getGraphic() == null && primaryGraphic == null) {
 				return false;
 			}
-			return currentScreenData != null && (primaryGraphic != null && !currentScreenData.getGraphic().getValue().equalsIgnoreCase(primaryGraphic.getName()));
+			return currentScreenData != null
+					&& (primaryGraphic != null  && !CompareUtils.areStringsEqual(currentScreenData.getGraphic().getValue(), primaryGraphic.getName(), true, true) );
 		}
 		return false;
 	}
@@ -745,7 +747,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			} else if (currentScreenData.getGraphic() == null && secondaryGraphic == null) {
 				return false;
 			}
-			return currentScreenData != null && (secondaryGraphic != null && !currentScreenData.getGraphic().getValue().equalsIgnoreCase(secondaryGraphic.getName()));
+			return currentScreenData != null
+					&& (secondaryGraphic != null && !CompareUtils.areStringsEqual(currentScreenData.getGraphic().getValue(), secondaryGraphic.getName(),true,true));
 		}
 		return false;
 	}
