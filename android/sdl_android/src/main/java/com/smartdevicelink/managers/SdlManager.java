@@ -896,6 +896,13 @@ public class SdlManager extends BaseSdlManager{
 			}
 		}
 
+		@Override
+		public void startRPCEncryption() {
+			if (proxy != null) {
+				proxy.startProtectedRPCService();
+			}
+		}
+
 	};
 
 
