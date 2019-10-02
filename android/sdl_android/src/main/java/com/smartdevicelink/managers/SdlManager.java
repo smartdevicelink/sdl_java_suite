@@ -120,7 +120,7 @@ public class SdlManager extends BaseSdlManager{
 	private SdlManagerListener managerListener;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
 	private LockScreenConfig lockScreenConfig;
-	private ServiceEncryptionListener mEncryptionServiceListener;
+	private ServiceEncryptionListener serviceEncryptionListener;
 
 	// Managers
 	private PermissionManager permissionManager;
@@ -683,8 +683,8 @@ public class SdlManager extends BaseSdlManager{
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
 					proxy.setSdlSecurityClassList(sdlSecList);
 				}
-				if (mEncryptionServiceListener != null) {
-					proxy.setServiceEncryptionListener(mEncryptionServiceListener);
+				if (serviceEncryptionListener != null) {
+					proxy.setServiceEncryptionListener(serviceEncryptionListener);
 				}
 				//Setup the notification queue
 				initNotificationQueue();
@@ -1121,7 +1121,7 @@ public class SdlManager extends BaseSdlManager{
 		 */
 		public Builder setSdlSecurity(List<Class<? extends  SdlSecurityBase>> secList, @NonNull ServiceEncryptionListener listener) {
 			sdlManager.sdlSecList = secList;
-			sdlManager.mEncryptionServiceListener = listener;
+			sdlManager.serviceEncryptionListener = listener;
 			return this;
 		}
 

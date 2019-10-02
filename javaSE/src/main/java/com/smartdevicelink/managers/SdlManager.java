@@ -95,7 +95,7 @@ public class SdlManager extends BaseSdlManager{
 	private SdlArtwork appIcon;
 	private SdlManagerListener managerListener;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
-	private ServiceEncryptionListener mEncryptionServiceListener;
+	private ServiceEncryptionListener serviceEncryptionListener;
 
 
 	// Managers
@@ -168,21 +168,18 @@ public class SdlManager extends BaseSdlManager{
 	@Override
 	void checkState() {
 		if (permissionManager != null && fileManager != null && screenManager != null ){
-			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY
-					&& screenManager.getState() == BaseSubManager.READY){
+			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY){
 				DebugTool.logInfo("Starting sdl manager, all sub managers are in ready state");
 				transitionToState(BaseSubManager.READY);
 				handleQueuedNotifications();
 				notifyDevListener(null);
 				onReady();
-			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR
-					&& screenManager.getState() == BaseSubManager.ERROR){
+			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR){
 				String info = "ERROR starting sdl manager, all sub managers are in error state";
 				Log.e(TAG, info);
 				transitionToState(BaseSubManager.ERROR);
 				notifyDevListener(info);
-			} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP
-					|| screenManager.getState() == BaseSubManager.SETTING_UP) {
+			} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP) {
 				DebugTool.logInfo("SETTING UP sdl manager, some sub managers are still setting up");
 				transitionToState(BaseSubManager.SETTING_UP);
 				// No need to notify developer here!
@@ -549,7 +546,7 @@ public class SdlManager extends BaseSdlManager{
 				_internalInterface = lifecycleManager.getInternalInterface(SdlManager.this);
 
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
-					lifecycleManager.setSdlSecurityClassList(sdlSecList, mEncryptionServiceListener);
+					lifecycleManager.setSdlSecurityClassList(sdlSecList, serviceEncryptionListener);
 				}
 
 				//Setup the notification queue
@@ -718,7 +715,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
-		 * Sets the Security library
+		 * Sets the Security libraries
 		 * @param secList The list of security class(es)
 		 */
 		@Deprecated
@@ -728,13 +725,13 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
-		 * Sets the Security Library and a callback to notify caller when there is update to encryption service
+		 * Sets the Security libraries and a callback to notify caller when there is update to encryption service
 		 * @param secList The list of security class(es)
 		 * @param listener The callback object
 		 */
 		public Builder setSdlSecurity(List<Class<? extends  SdlSecurityBase>> secList, @NonNull ServiceEncryptionListener listener) {
 			sdlManager.sdlSecList = secList;
-			sdlManager.mEncryptionServiceListener = listener;
+			sdlManager.serviceEncryptionListener = listener;
 			return this;
 		}
 
