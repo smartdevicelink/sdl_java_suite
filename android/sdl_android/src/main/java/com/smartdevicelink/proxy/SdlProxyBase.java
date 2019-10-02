@@ -311,7 +311,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private Version minimumRPCVersion;
 
 	private Set<String> encryptionRequiredRPCs = new HashSet<>();
-	private boolean mRPCSecuredServiceStarted;
+	private boolean rpcSecuredServiceStarted;
 	private ServiceEncryptionListener serviceEncryptionListener;
 
 	// Interface broker
@@ -1036,7 +1036,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		addOnRPCNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE, onPermissionsChangeListener);
-		this._internalInterface.addServiceListener(SessionType.RPC, mSecuredServiceListener);
+		this._internalInterface.addServiceListener(SessionType.RPC, securedServiceListener);
 
 		// Trace that ctor has fired
 		SdlTrace.logProxyEvent("SdlProxy Created, instanceID=" + this.toString(), SDL_LIB_TRACE_KEY);		
@@ -1805,7 +1805,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 		
 		_proxyDisposed = true;
-		mRPCSecuredServiceStarted = false;
+		rpcSecuredServiceStarted = false;
 		encryptionRequiredRPCs.clear();
 		serviceEncryptionListener = null;
 		
@@ -2146,6 +2146,41 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 	};
 
+	private ISdlServiceListener securedServiceListener = new ISdlServiceListener() {
+		@Override
+		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
+			if(SessionType.RPC.equals(type)){
+				rpcSecuredServiceStarted = isEncrypted;
+			}
+			if (serviceEncryptionListener != null) {
+				serviceEncryptionListener.onEncryptionServiceUpdated(type, isEncrypted, null);
+			}
+			DebugTool.logInfo("onServiceStarted, session Type: " + type.getName() + ", isEncrypted: " + isEncrypted);
+		}
+
+		@Override
+		public void onServiceEnded(SdlSession session, SessionType type) {
+			if (SessionType.RPC.equals(type)) {
+				rpcSecuredServiceStarted = false;
+			}
+			if (serviceEncryptionListener != null) {
+				serviceEncryptionListener.onEncryptionServiceUpdated(type, false, null);
+			}
+			DebugTool.logInfo("onServiceEnded, session Type: " + type.getName());
+		}
+
+		@Override
+		public void onServiceError(SdlSession session, SessionType type, String reason) {
+			if (SessionType.RPC.equals(type)) {
+				rpcSecuredServiceStarted = false;
+			}
+			if (serviceEncryptionListener != null) {
+				serviceEncryptionListener.onEncryptionServiceUpdated(type, false, "onServiceError: " + reason);
+			}
+			DebugTool.logError("onServiceError, session Type: " + type.getName() + ", reason: " + reason);
+		}
+	};
+
 	/**
 	 * Checks if an RPC requires encryption
 	 *
@@ -2164,50 +2199,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		return !encryptionRequiredRPCs.isEmpty();
 	}
 
-	/**
-	 * If app is in the foreground and encrypted RPC list is not empty and there is not a secured
-	 * service, start it
-	 */
 	private void checkStatusAndInitSecuredService() {
-		if ((_hmiLevel != null && _hmiLevel != HMILevel.HMI_NONE) && getRequiresEncryption() && !mRPCSecuredServiceStarted) {
+		if ((_hmiLevel != null && _hmiLevel != HMILevel.HMI_NONE) && getRequiresEncryption() && !rpcSecuredServiceStarted) {
 			startProtectedRPCService();
 		}
 	}
-
-	private ISdlServiceListener mSecuredServiceListener = new ISdlServiceListener() {
-		@Override
-		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
-			if(SessionType.RPC.equals(type)){
-				mRPCSecuredServiceStarted = isEncrypted;
-			}
-			if (serviceEncryptionListener != null) {
-				serviceEncryptionListener.onEncryptionServiceUpdated(type, isEncrypted, null);
-			}
-			DebugTool.logInfo("onServiceStarted, session Type: " + type.getName() + ", isEncrypted: " + isEncrypted);
-		}
-
-		@Override
-		public void onServiceEnded(SdlSession session, SessionType type) {
-			if (SessionType.RPC.equals(type)) {
-				mRPCSecuredServiceStarted = false;
-			}
-			if (serviceEncryptionListener != null) {
-				serviceEncryptionListener.onEncryptionServiceUpdated(type, false, null);
-			}
-			DebugTool.logInfo("onServiceEnded, session Type: " + type.getName());
-		}
-
-		@Override
-		public void onServiceError(SdlSession session, SessionType type, String reason) {
-			if (SessionType.RPC.equals(type)) {
-				mRPCSecuredServiceStarted = false;
-			}
-			if (serviceEncryptionListener != null) {
-				serviceEncryptionListener.onEncryptionServiceUpdated(type, false, "onServiceError: " + reason);
-			}
-			DebugTool.logError("onServiceError, session Type: " + type.getName() + ", reason: " + reason);
-		}
-	};
 
 	// Private sendRPCMessagePrivate method. All RPCMessages are funneled through this method after error checking.
 	protected void sendRPCMessagePrivate(RPCMessage message) throws SdlException {
@@ -2252,12 +2248,12 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			pm.setMessageType(MessageType.RPC);
 			pm.setSessionType(SessionType.RPC);
 			pm.setFunctionID(FunctionID.getFunctionId(message.getFunctionName()));
-			if (mRPCSecuredServiceStarted && encryptionRequiredRPCs.contains(message.getFunctionName())) {
+			if (rpcSecuredServiceStarted && getRPCRequiresEncryption(message.getFunctionID())) {
 				pm.setPayloadProtected(true);
 			} else {
 				pm.setPayloadProtected(message.isPayloadProtected());
 			}
-			if (pm.getPayloadProtected() && (!mRPCSecuredServiceStarted || !rpcProtectedStartResponse)){
+			if (pm.getPayloadProtected() && (!rpcSecuredServiceStarted || !rpcProtectedStartResponse)){
 				String errorInfo = "Trying to send an encrypted message and there is no secured service";
 				if (message.getMessageType().equals((RPCMessage.KEY_REQUEST))) {
 					RPCRequest request = (RPCRequest) message;

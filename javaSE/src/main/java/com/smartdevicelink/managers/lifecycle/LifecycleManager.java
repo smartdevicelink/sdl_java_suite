@@ -180,7 +180,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     /**
-     * Attempts to start a secured service
+     * Start a secured RPC service
      */
     public void startRPCEncryption() {
         if (session != null) {
@@ -792,7 +792,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             pm.setSessionType(SessionType.RPC);
             pm.setFunctionID(FunctionID.getFunctionId(message.getFunctionName()));
 
-            if (encryptionLifecycleManager != null && encryptionLifecycleManager.isEncryptionReady() && encryptionLifecycleManager.getRPCRequiresEncryption(FunctionID.valueOf(message.getFunctionName()))) {
+            if (encryptionLifecycleManager != null && encryptionLifecycleManager.isEncryptionReady() && encryptionLifecycleManager.getRPCRequiresEncryption(message.getFunctionID())) {
                 pm.setPayloadProtected(true);
             } else {
                 pm.setPayloadProtected(message.isPayloadProtected());

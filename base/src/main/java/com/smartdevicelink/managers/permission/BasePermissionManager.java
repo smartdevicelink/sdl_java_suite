@@ -69,7 +69,7 @@ abstract class BasePermissionManager extends BaseSubManager{
     private Map<FunctionID, PermissionItem> currentPermissionItems;
     private OnRPCNotificationListener onHMIStatusListener, onPermissionsChangeListener;
     private List<PermissionFilter> filters;
-    private Set<String> mEncryptedRPC = new HashSet<>();
+    private Set<String> encryptionRequiredRPCs = new HashSet<>();
 
     // Permission groups status constants
     @IntDef({PERMISSION_GROUP_STATUS_ALLOWED, PERMISSION_GROUP_STATUS_DISALLOWED,
@@ -120,7 +120,7 @@ abstract class BasePermissionManager extends BaseSubManager{
                 List<PermissionItem> permissionItems = ((OnPermissionsChange)notification).getPermissionItem();
                 Map<FunctionID, PermissionItem> previousPermissionItems = currentPermissionItems;
                 Boolean requireEncryptionAppLevel = ((OnPermissionsChange) notification).getRequireEncryption();
-                mEncryptedRPC.clear();
+                encryptionRequiredRPCs.clear();
                 currentPermissionItems = new HashMap<>();
                 if (permissionItems != null && !permissionItems.isEmpty()) {
                     for (PermissionItem permissionItem : permissionItems) {
@@ -132,7 +132,7 @@ abstract class BasePermissionManager extends BaseSubManager{
                             if (requireEncryptionAppLevel == null || requireEncryptionAppLevel) {
                                 String rpcName = permissionItem.getRpcName();
                                 if (rpcName != null) {
-                                    mEncryptedRPC.add(rpcName);
+                                    encryptionRequiredRPCs.add(rpcName);
                                 }
                             }
                         }
@@ -158,7 +158,7 @@ abstract class BasePermissionManager extends BaseSubManager{
      * @return true if the given RPC requires encryption; false, otherwise
      */
     public boolean getRPCRequiresEncryption(@NonNull FunctionID rpcName) {
-        return mEncryptedRPC.contains(rpcName.toString());
+        return encryptionRequiredRPCs.contains(rpcName.toString());
     }
 
     /**
@@ -166,7 +166,7 @@ abstract class BasePermissionManager extends BaseSubManager{
      * @return true if encryption is required; false otherwise
      */
     public boolean getRequiresEncryption() {
-        return !mEncryptedRPC.isEmpty();
+        return !encryptionRequiredRPCs.isEmpty();
     }
 
     private synchronized void checkState(){

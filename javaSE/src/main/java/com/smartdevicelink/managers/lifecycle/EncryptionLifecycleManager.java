@@ -39,11 +39,6 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 
 class EncryptionLifecycleManager extends BaseEncryptionLifecycleManager {
 
-    /**
-     * Creates a new instance of the EncryptionLifecycleManager
-     *
-     * @param internalInterface an instance of the ISdl object
-     */
     EncryptionLifecycleManager(@NonNull ISdl internalInterface, ServiceEncryptionListener listener) {
         super(internalInterface, listener);
     }

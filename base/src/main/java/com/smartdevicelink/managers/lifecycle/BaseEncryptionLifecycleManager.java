@@ -68,9 +68,7 @@ abstract class BaseEncryptionLifecycleManager {
             public void onNotified(RPCNotification notification) {
                 OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
                 currentHMILevel = onHMIStatus.getHmiLevel();
-                if (currentHMILevel != HMILevel.HMI_NONE) {
-                    checkStatusAndInitSecuredService();
-                }
+                checkStatusAndInitSecuredService();
             }
         };
 
@@ -96,7 +94,7 @@ abstract class BaseEncryptionLifecycleManager {
             }
         };
 
-        ISdlServiceListener serviceListener = new ISdlServiceListener() {
+        ISdlServiceListener securedServiceListener = new ISdlServiceListener() {
             @Override
             public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
                 if(SessionType.RPC.equals(type)){
@@ -133,7 +131,7 @@ abstract class BaseEncryptionLifecycleManager {
 
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, onHMIStatusListener);
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE, onPermissionsChangeListener);
-        internalInterface.addServiceListener(SessionType.RPC, serviceListener);
+        internalInterface.addServiceListener(SessionType.RPC, securedServiceListener);
     }
 
     /**
@@ -173,6 +171,9 @@ abstract class BaseEncryptionLifecycleManager {
         return rpcSecuredServiceStarted;
     }
 
+    /**
+     * Clean up everything after the manager is no longer needed
+     */
     void dispose() {
         rpcSecuredServiceStarted = false;
         encryptionRequiredRPCs.clear();

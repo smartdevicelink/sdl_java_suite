@@ -1195,8 +1195,7 @@ public class SdlManager extends BaseSdlManager{
 	}
 
 	/**
-	 * Attempts to start a secured service
-	 * @return true if secured service is started; false otherwise
+	 * Start a secured RPC service
 	 */
 	public void startRPCEncryption() {
 		if (proxy != null) {
