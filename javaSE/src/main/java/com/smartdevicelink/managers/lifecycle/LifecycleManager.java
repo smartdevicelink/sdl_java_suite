@@ -32,6 +32,7 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
@@ -1112,6 +1113,11 @@ public class LifecycleManager extends BaseLifecycleManager {
         @Override
         public Version getProtocolVersion() {
             return LifecycleManager.this.getProtocolVersion();
+        }
+
+        @Override @NonNull
+        public SystemCapabilityManager getSystemCapabilityManager(){
+            return LifecycleManager.this.systemCapabilityManager;
         }
     };
 
