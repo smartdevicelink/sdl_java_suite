@@ -1795,40 +1795,42 @@ public class SdlRouterService extends Service{
 				master.alert();
 			}
 		}
-		//Ensure the associated transport is dealt with
-		switch (record.getType()){
-			case BLUETOOTH:
-				synchronized(SESSION_LOCK){
-					if(bluetoothSessionMap!= null){
-						bluetoothSessionMap.clear();
+		if(record != null) {
+			//Ensure the associated transport is dealt with
+			switch (record.getType()) {
+				case BLUETOOTH:
+					synchronized (SESSION_LOCK) {
+						if (bluetoothSessionMap != null) {
+							bluetoothSessionMap.clear();
+						}
 					}
-				}
-				if(!connectAsClient ){
-					if(!legacyModeEnabled && !closing){
-						initBluetoothSerialService();
+					if (!connectAsClient) {
+						if (!legacyModeEnabled && !closing) {
+							initBluetoothSerialService();
+						}
 					}
-				}
-				break;
-			case USB:
-				if(usbTransport != null){
-					usbTransport = null;
-				}
-				synchronized(SESSION_LOCK){
-					if(usbSessionMap!= null){
-						usbSessionMap.clear();
+					break;
+				case USB:
+					if (usbTransport != null) {
+						usbTransport = null;
 					}
-				}
-				break;
-			case TCP:
-				if(tcpTransport != null){
-					tcpTransport = null;
-				}
-				synchronized(SESSION_LOCK){
-					if(tcpSessionMap!=null){
-						tcpSessionMap.clear();
+					synchronized (SESSION_LOCK) {
+						if (usbSessionMap != null) {
+							usbSessionMap.clear();
+						}
 					}
-				}
-				break;
+					break;
+				case TCP:
+					if (tcpTransport != null) {
+						tcpTransport = null;
+					}
+					synchronized (SESSION_LOCK) {
+						if (tcpSessionMap != null) {
+							tcpSessionMap.clear();
+						}
+					}
+					break;
+			}
 		}
 
 		if(!getConnectedTransports().isEmpty()){
@@ -1967,26 +1969,28 @@ public class SdlRouterService extends Service{
 			int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
 			int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
 			TransportType transportType = TransportType.valueForString(bundle.getString(TransportConstants.TRANSPORT_TYPE));
-			switch ((transportType)){
-				case BLUETOOTH:
-					if(bluetoothTransport !=null && bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
-						bluetoothTransport.write(packet, offset, count);
-						return true;
-					}
-				case USB:
-					if(usbTransport != null && usbTransport.getState() ==  MultiplexBaseTransport.STATE_CONNECTED) {
-						usbTransport.write(packet, offset, count);
-						return true;
-					}
-				case TCP:
-					if(tcpTransport != null && tcpTransport.getState() ==  MultiplexBaseTransport.STATE_CONNECTED) {
-						tcpTransport.write(packet, offset, count);
-						return true;
-					}
-					default:
-						if(sendThroughAltTransport(bundle)){
+			if(transportType != null) {
+				switch ((transportType)) {
+					case BLUETOOTH:
+						if (bluetoothTransport != null && bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
+							bluetoothTransport.write(packet, offset, count);
 							return true;
 						}
+					case USB:
+						if (usbTransport != null && usbTransport.getState() == MultiplexBaseTransport.STATE_CONNECTED) {
+							usbTransport.write(packet, offset, count);
+							return true;
+						}
+					case TCP:
+						if (tcpTransport != null && tcpTransport.getState() == MultiplexBaseTransport.STATE_CONNECTED) {
+							tcpTransport.write(packet, offset, count);
+							return true;
+						}
+					default:
+						if (sendThroughAltTransport(bundle)) {
+							return true;
+						}
+				}
 			}
 			Log.e(TAG, "Can't send data, no transport  of specified type connected");
 			return false;
@@ -3174,9 +3178,11 @@ public class SdlRouterService extends Service{
 		}
 
 		protected boolean unregisterTransport(int sessionId, @NonNull TransportType transportType){
-			if(queues != null && queues.containsValue(transportType)){
+			if(queues != null && queues.containsKey(transportType)){
 				PacketWriteTaskBlockingQueue queue = queues.remove(transportType);
-				queue.clear();
+				if(queue != null){
+					queue.clear();
+				}
 			}
 			synchronized (TRANSPORT_LOCK){
 				if(sessionId == -1){
