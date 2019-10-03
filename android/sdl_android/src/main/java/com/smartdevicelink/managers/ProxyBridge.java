@@ -44,6 +44,7 @@ import com.smartdevicelink.proxy.rpc.AddSubMenuResponse;
 import com.smartdevicelink.proxy.rpc.AlertManeuverResponse;
 import com.smartdevicelink.proxy.rpc.AlertResponse;
 import com.smartdevicelink.proxy.rpc.ButtonPressResponse;
+import com.smartdevicelink.proxy.rpc.CancelInteractionResponse;
 import com.smartdevicelink.proxy.rpc.ChangeRegistrationResponse;
 import com.smartdevicelink.proxy.rpc.CloseApplicationResponse;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSetResponse;
@@ -61,6 +62,7 @@ import com.smartdevicelink.proxy.rpc.GetAppServiceDataResponse;
 import com.smartdevicelink.proxy.rpc.GetCloudAppPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.GetDTCsResponse;
 import com.smartdevicelink.proxy.rpc.GetFileResponse;
+import com.smartdevicelink.proxy.rpc.GetInteriorVehicleDataConsentResponse;
 import com.smartdevicelink.proxy.rpc.GetInteriorVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
@@ -95,6 +97,7 @@ import com.smartdevicelink.proxy.rpc.PublishAppServiceResponse;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.ReadDIDResponse;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.ReleaseInteriorVehicleDataModuleResponse;
 import com.smartdevicelink.proxy.rpc.ResetGlobalPropertiesResponse;
 import com.smartdevicelink.proxy.rpc.ScrollableMessageResponse;
 import com.smartdevicelink.proxy.rpc.SendHapticDataResponse;
@@ -649,12 +652,27 @@ public class ProxyBridge implements IProxyListener{
 	}
 
 	@Override
+	public void onGetInteriorVehicleDataConsentResponse(GetInteriorVehicleDataConsentResponse response) {
+		onRPCReceived(response);
+	}
+
+	@Override
+	public void onReleaseInteriorVehicleDataModuleResponse(ReleaseInteriorVehicleDataModuleResponse response) {
+		onRPCReceived(response);
+	}
+
+	@Override
 	public void onOnSystemCapabilityUpdated(OnSystemCapabilityUpdated notification){
 		onRPCReceived(notification);
 	}
 
 	@Override
 	public void onCloseApplicationResponse(CloseApplicationResponse response) {
+		onRPCReceived(response);
+	}
+
+	@Override
+	public void onCancelInteractionResponse(CancelInteractionResponse response) {
 		onRPCReceived(response);
 	}
 

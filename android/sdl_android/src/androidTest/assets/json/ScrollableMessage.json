@@ -5,6 +5,7 @@
     "parameters":{
       "scrollableMessageBody":"Sample body text",
       "timeout":1000,
+      "cancelID":45,
       "softButtons":[
         {
           "isHighlighted":true,

@@ -3,7 +3,6 @@ package com.smartdevicelink.managers.lockscreen;
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.test.Test;
 
-
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link com.smartdevicelink.managers.lockscreen.LockScreenConfig}
@@ -25,6 +24,7 @@ public class LockScreenConfigTests extends AndroidTestCase2 {
 		lockScreenConfig.setBackgroundColor(Test.GENERAL_INT);
 		lockScreenConfig.showDeviceLogo(true);
 		lockScreenConfig.setEnabled(true);
+		lockScreenConfig.setDisplayMode(LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED);
 	}
 
 	@Override
@@ -38,8 +38,9 @@ public class LockScreenConfigTests extends AndroidTestCase2 {
 		assertEquals(Test.GENERAL_INT, lockScreenConfig.getCustomView());
 		assertEquals(Test.GENERAL_INT, lockScreenConfig.getAppIcon());
 		assertEquals(Test.GENERAL_INT, lockScreenConfig.getBackgroundColor());
-		assertEquals(true, lockScreenConfig.isEnabled());
-		assertEquals(true, lockScreenConfig.isDeviceLogoEnabled());
+		assertTrue(lockScreenConfig.isEnabled());
+		assertTrue(lockScreenConfig.isDeviceLogoEnabled());
+		assertEquals(LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED, lockScreenConfig.getDisplayMode());
 	}
 
 }

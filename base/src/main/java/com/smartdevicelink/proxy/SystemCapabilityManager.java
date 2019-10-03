@@ -44,6 +44,7 @@ import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
@@ -60,6 +61,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.Version;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -354,15 +356,45 @@ public class SystemCapabilityManager {
 			return true;
 		}else if(cachedSystemCapabilities.containsKey(SystemCapabilityType.HMI)){
 			HMICapabilities hmiCapabilities = ((HMICapabilities)cachedSystemCapabilities.get(SystemCapabilityType.HMI));
+			Version rpcVersion = null;
+			if (callback != null) {
+				SdlMsgVersion version = callback.getSdlMsgVersion();
+				if(version != null){
+					rpcVersion = new Version(version.getMajorVersion(), version.getMinorVersion(), version.getPatchVersion());
+				}
+			}
 			switch (type) {
 				case NAVIGATION:
 					return hmiCapabilities.isNavigationAvailable();
 				case PHONE_CALL:
 					return hmiCapabilities.isPhoneCallAvailable();
 				case VIDEO_STREAMING:
+					if(rpcVersion != null) {
+						if(rpcVersion.isBetween(new Version(3,0,0), new Version(4,4,0)) >= 0){
+							//This was before the system capability feature was added so check if
+							// graphics are supported instead
+							DisplayCapabilities displayCapabilities = (DisplayCapabilities) getCapability(SystemCapabilityType.DISPLAY);
+							if(displayCapabilities != null){
+								return displayCapabilities.getGraphicSupported() != null && displayCapabilities.getGraphicSupported();
+							}
+						}
+					}
 					return hmiCapabilities.isVideoStreamingAvailable();
 				case REMOTE_CONTROL:
 					return hmiCapabilities.isRemoteControlAvailable();
+				case APP_SERVICES:
+					if(rpcVersion != null){
+						if(rpcVersion.getMajor() == 5 && rpcVersion.getMinor() == 1){
+							//This is a corner case that the param was not available in 5.1.0, but
+							//the app services feature was available.
+							return true;
+						}
+					}
+					return hmiCapabilities.isAppServicesAvailable();
+				case DISPLAYS:
+					return hmiCapabilities.isDisplaysCapabilityAvailable();
+				case SEAT_LOCATION:
+					return hmiCapabilities.isSeatLocationAvailable();
 				default:
 					return false;
 			}

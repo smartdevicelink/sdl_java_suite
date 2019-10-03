@@ -464,7 +464,7 @@ abstract class BaseScreenManager extends BaseSubManager {
   	}
   
   	/**
-	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable.
+	 * The main menu layout. See available menu layouts on WindowCapability.menuLayoutsAvailable.
 	 * @param menuConfiguration - The default menuConfiguration
 	 */
 	public void setMenuConfiguration(@NonNull MenuConfiguration menuConfiguration) {
@@ -472,7 +472,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
-	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable.
+	 * The main menu layout. See available menu layouts on WindowCapability.menuLayoutsAvailable.
 	 * @return the currently set MenuConfiguration
 	 */
 	public MenuConfiguration getMenuConfiguration(){
@@ -522,9 +522,10 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @param initialText - The initial text that is used as a placeholder text. It might not work on some head units.
 	 * @param customKeyboardProperties - the custom keyboard configuration to be used when the keyboard is displayed
 	 * @param keyboardListener - A keyboard listener to capture user input
+	 * @return A unique cancelID that can be used to cancel this keyboard. If `null`, no keyboard was created.
 	 */
-	public void presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardProperties, @NonNull KeyboardListener keyboardListener){
-		this.choiceSetManager.presentKeyboard(initialText, customKeyboardProperties, keyboardListener);
+	public Integer presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardProperties, @NonNull KeyboardListener keyboardListener){
+		return this.choiceSetManager.presentKeyboard(initialText, customKeyboardProperties, keyboardListener);
 	}
 
 	/**
@@ -540,6 +541,14 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 */
 	public HashSet<ChoiceCell> getPreloadedChoices(){
 		return this.choiceSetManager.getPreloadedChoices();
+	}
+
+	/**
+	 * Dismisses a currently presented keyboard with the associated ID. Canceling a keyboard only works when connected to SDL Core v.6.0+. When connected to older versions of SDL Core the keyboard will not be dismissed.
+	 * @param cancelID The unique ID assigned to the keyboard
+	 */
+	public void dismissKeyboard(@NonNull Integer cancelID) {
+		this.choiceSetManager.dismissKeyboard(cancelID);
 	}
 
 	// END CHOICE SETS
@@ -581,5 +590,4 @@ abstract class BaseScreenManager extends BaseSubManager {
 			}
 		});
 	}
-
 }

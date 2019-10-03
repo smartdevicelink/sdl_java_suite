@@ -27,6 +27,7 @@ public class GetInteriorVehicleDataTests extends BaseRpcTests {
 
         msg.setModuleType(Test.GENERAL_MODULETYPE);
         msg.setSubscribe(Test.GENERAL_BOOLEAN);
+        msg.setModuleId(Test.GENERAL_STRING);
 
         return msg;
     }
@@ -48,6 +49,7 @@ public class GetInteriorVehicleDataTests extends BaseRpcTests {
         try{
             result.put(GetInteriorVehicleData.KEY_MODULE_TYPE, Test.GENERAL_MODULETYPE);
             result.put(GetInteriorVehicleData.KEY_SUBSCRIBE, Test.GENERAL_BOOLEAN);
+            result.put(GetInteriorVehicleData.KEY_MODULE_ID, Test.GENERAL_STRING);
         }catch(JSONException e){
             fail(Test.JSON_FAIL);
         }
@@ -62,10 +64,12 @@ public class GetInteriorVehicleDataTests extends BaseRpcTests {
         // Test Values
         ModuleType testModuleType = ( (GetInteriorVehicleData) msg ).getModuleType();
         boolean testSubscribed = ( (GetInteriorVehicleData) msg ).getSubscribe();
+        String testModuleId = ((GetInteriorVehicleData) msg).getModuleId();
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_MODULETYPE, testModuleType);
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testSubscribed);
+        assertEquals(Test.MATCH, Test.GENERAL_STRING, testModuleId);
 
         // Invalid/Null Tests
         GetInteriorVehicleData msg = new GetInteriorVehicleData();
@@ -74,6 +78,7 @@ public class GetInteriorVehicleDataTests extends BaseRpcTests {
 
         assertNull(Test.NULL, msg.getModuleType());
         assertNull(Test.NULL, msg.getSubscribe());
+        assertNull(Test.NULL, msg.getModuleId());
     }
 
     /**
@@ -98,6 +103,7 @@ public class GetInteriorVehicleDataTests extends BaseRpcTests {
 
             assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetInteriorVehicleData.KEY_MODULE_TYPE).toString(), cmd.getModuleType().toString());
             assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetInteriorVehicleData.KEY_SUBSCRIBE), cmd.getSubscribe());
+            assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, GetInteriorVehicleData.KEY_MODULE_ID), cmd.getModuleId());
         }catch (JSONException e) {
             fail(Test.JSON_FAIL);
         }

@@ -47,6 +47,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Locale;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -237,7 +238,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 					}else{
 						if(autoReconnect){
 							remainingRetry--;
-							logInfo(String.format("TCPTransport.connect: Socket not connected. AutoReconnect is ON. retryCount is: %d. Waiting for reconnect delay: %d"
+							logInfo(String.format(Locale.US,"TCPTransport.connect: Socket not connected. AutoReconnect is ON. retryCount is: %d. Waiting for reconnect delay: %d"
 									, remainingRetry, RECONNECT_DELAY));
 							waitFor(RECONNECT_DELAY);
 						} else {

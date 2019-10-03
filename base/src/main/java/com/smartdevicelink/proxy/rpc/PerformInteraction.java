@@ -47,7 +47,9 @@ import java.util.List;
  * application may use a PerformInteraction to ask a user to say the name of a
  * song to play. The user's response is only valid if it appears in the
  * specified Choice Sets and is recognized by SDL
- * <p></p>
+ *
+ * If connecting to SDL Core v.6.0+, the perform interaction can be canceled programmatically using the `cancelID`. On older versions of SDL Core, the perform interaction will persist until the user has interacted with the perform interaction or the specified timeout has elapsed.
+ *
  * <p>Function Group: Base</p>
  * 
  * <p><b>HMILevel needs to be FULL</b></p>
@@ -134,6 +136,14 @@ import java.util.List;
  * 			<td></td>
  * 			<td>SmartDeviceLink 3.0</td>
  * 		</tr>
+ * 		<tr>
+ * 			<td>cancelID</td>
+ * 			<td>Integer</td>
+ * 			<td>An ID for this specific perform interaction to allow cancellation through the `CancelInteraction` RPC.</td>
+ *          <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 6.0</td>
+ * 		</tr>
  *  </table>
  *  
  * 
@@ -151,6 +161,8 @@ public class PerformInteraction extends RPCRequest {
 	public static final String KEY_TIMEOUT_PROMPT = "timeoutPrompt";
 	public static final String KEY_TIMEOUT = "timeout";
 	public static final String KEY_VR_HELP = "vrHelp";
+	public static final String KEY_CANCEL_ID = "cancelID";
+
 	/**
 	 * Constructs a new PerformInteraction object
 	 */
@@ -168,10 +180,10 @@ public class PerformInteraction extends RPCRequest {
     }
 	/**
 	 * Constructs a new PerformInteraction object
-	 * @param initialText a String value that Displayed when the interaction begins
+	 * @param initialText a String value that is displayed when the interaction begins
 	 * @param interactionMode indicate how user selects interaction choice (VR_ONLY, MANUAL_ONLY or BOTH)
 	 * @param interactionChoiceSetIDList a List<Integer> representing an Array of one or more Choice Set IDs. User can select any choice from any of the specified
-	 * Choice Sets <b>Notes: </b>Min Value: 0; Max Vlaue: 2000000000
+	 * Choice Sets <b>Notes: </b>Min Value: 0; Max Value: 2000000000
 	 */
 	public PerformInteraction(@NonNull String initialText, @NonNull InteractionMode interactionMode, @NonNull List<Integer> interactionChoiceSetIDList) {
 		this();
@@ -361,8 +373,7 @@ public class PerformInteraction extends RPCRequest {
     }
 
 	/**
-	 * Gets a Voice recognition Help, which is a suggested VR Help Items to
-	 * display on-screen during Perform Interaction
+	 * Gets a Voice Recognition Help list, which is a list of suggested VR Help Items to display on-screen during a Perform Interaction
 	 * 
 	 * @return List<VrHelpItem> -a List value representing a suggested VR
 	 *         Help Items to display on-screen during Perform Interaction
@@ -374,7 +385,8 @@ public class PerformInteraction extends RPCRequest {
     }
 
 	/**
-	 * 
+	 * Sets a Voice Recognition Help list, which is a list of suggested VR Help Items to display on-screen during a Perform Interaction
+	 *
 	 * @param vrHelp
 	 *            a List representing a suggested VR Help Items to display
 	 *            on-screen during Perform Interaction
@@ -387,12 +399,48 @@ public class PerformInteraction extends RPCRequest {
     public void setVrHelp(List<VrHelpItem> vrHelp) {
 		setParameters(KEY_VR_HELP, vrHelp);
     }
-    
-    public LayoutMode getInteractionLayout() {
+
+	/**
+	 * Gets the layout mode of how the choices are presented. For touchscreen interactions only.
+	 *
+	 * @return LayoutMode - The interaction layout mode
+	 *
+	 * @since SmartDeviceLink 3.0
+	 */
+	public LayoutMode getInteractionLayout() {
 		return (LayoutMode) getObject(LayoutMode.class, KEY_INTERACTION_LAYOUT);
     }
-  
-    public void setInteractionLayout( LayoutMode interactionLayout ) {
+
+	/**
+	 * Sets the mode of how the choices are presented. For touchscreen interactions only.
+	 *
+	 * @param interactionLayout A LayoutMode representing the interaction layout mode
+	 *
+	 * @since SmartDeviceLink 3.0
+	 */
+    public void setInteractionLayout(LayoutMode interactionLayout ) {
 		setParameters(KEY_INTERACTION_LAYOUT, interactionLayout);
-    }    
+    }
+
+	/**
+	 * Gets an Integer value representing the cancel ID
+	 *
+	 * @return Integer - An Integer value representing the ID for this specific perform interaction to allow cancellation through the `CancelInteraction` RPC.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	public Integer getCancelID() {
+		return getInteger(KEY_CANCEL_ID);
+	}
+
+	/**
+	 * Sets the cancel ID
+	 *
+	 * @param cancelID An Integer ID for this specific perform interaction to allow cancellation through the `CancelInteraction` RPC.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	public void setCancelID(Integer cancelID) {
+		setParameters(KEY_CANCEL_ID, cancelID);
+	}
 }

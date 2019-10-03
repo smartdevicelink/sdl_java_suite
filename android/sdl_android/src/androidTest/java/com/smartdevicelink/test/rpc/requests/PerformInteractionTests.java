@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.PerformInteraction}
+ * {@link com.smartdevicelink.proxy.rpc.PerformInteraction}
  */
 public class PerformInteractionTests extends BaseRpcTests {
 	
@@ -41,6 +41,7 @@ public class PerformInteractionTests extends BaseRpcTests {
 		msg.setInitialText(Test.GENERAL_STRING);
 		msg.setInteractionMode(Test.GENERAL_INTERACTIONMODE);
 		msg.setTimeout(Test.GENERAL_INT);
+		msg.setCancelID(Test.GENERAL_INTEGER);
 
 		return msg;
 	}
@@ -68,7 +69,8 @@ public class PerformInteractionTests extends BaseRpcTests {
 			result.put(PerformInteraction.KEY_INTERACTION_LAYOUT, Test.GENERAL_LAYOUTMODE);
 			result.put(PerformInteraction.KEY_INITIAL_TEXT, Test.GENERAL_STRING);
 			result.put(PerformInteraction.KEY_INTERACTION_MODE, Test.GENERAL_INTERACTIONMODE);
-			result.put(PerformInteraction.KEY_TIMEOUT, Test.GENERAL_INT);			
+			result.put(PerformInteraction.KEY_TIMEOUT, Test.GENERAL_INT);
+			result.put(PerformInteraction.KEY_CANCEL_ID, Test.GENERAL_INTEGER);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -90,6 +92,7 @@ public class PerformInteractionTests extends BaseRpcTests {
 		String testInitialText   = ( (PerformInteraction) msg).getInitialText();
 		InteractionMode testMode = ( (PerformInteraction) msg).getInteractionMode();
 		Integer testTimeout      = ( (PerformInteraction) msg).getTimeout();
+		Integer testCancelID = ( (PerformInteraction) msg ).getCancelID();
 		
 		// Valid Tests
 		assertTrue(Test.TRUE, Validator.validateTtsChunks(Test.GENERAL_TTSCHUNK_LIST, testInitialPrompt));
@@ -101,6 +104,7 @@ public class PerformInteractionTests extends BaseRpcTests {
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testInitialText);
 		assertEquals(Test.MATCH, Test.GENERAL_INTERACTIONMODE, testMode);
 		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, testTimeout);
+		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testCancelID);
 	
 		// Invald/Null Tests
 		PerformInteraction msg = new PerformInteraction();
@@ -117,6 +121,7 @@ public class PerformInteractionTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getInitialText());
 		assertNull(Test.NULL, msg.getInteractionMode());
 		assertNull(Test.NULL, msg.getTimeout());
+		assertNull(Test.NULL, msg.getCancelID());
 	}
 
     /**
@@ -140,6 +145,7 @@ public class PerformInteractionTests extends BaseRpcTests {
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformInteraction.KEY_INITIAL_TEXT), cmd.getInitialText());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformInteraction.KEY_INTERACTION_MODE), cmd.getInteractionMode().toString());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PerformInteraction.KEY_CANCEL_ID), cmd.getCancelID());
 
 			List<Integer> interactionIDList = JsonUtils.readIntegerListFromJsonObject(parameters, PerformInteraction.KEY_INTERACTION_CHOICE_SET_ID_LIST);
 			List<Integer> testIDList = cmd.getInteractionChoiceSetIDList();

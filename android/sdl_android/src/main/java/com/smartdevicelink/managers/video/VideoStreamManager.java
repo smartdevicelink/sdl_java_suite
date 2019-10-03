@@ -93,6 +93,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private VideoStreamingParameters parameters;
 	private IVideoStreamListener streamListener;
 	private boolean isTransportAvailable = false;
+	private boolean hasStarted;
 
 	// INTERNAL INTERFACES
 
@@ -115,8 +116,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				}
 				startEncoder();
 				stateMachine.transitionToState(StreamingStateMachine.STARTED);
-
-
+				hasStarted = true;
 			}
 		}
 
@@ -199,6 +199,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				&& hmiLevel != null
 				&& hmiLevel.equals(HMILevel.HMI_FULL)
 				&& parameters != null){
+			stateMachine.transitionToState(StreamingStateMachine.READY);
 			transitionToState(READY);
 		}
 	}
@@ -315,6 +316,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			//Encoder should be up and running
 			createRemoteDisplay(virtualDisplayEncoder.getVirtualDisplay());
 			stateMachine.transitionToState(StreamingStateMachine.STARTED);
+			hasStarted = true;
 		} catch (Exception e) {
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			e.printStackTrace();
@@ -359,14 +361,15 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		remoteDisplay = null;
 		parameters = null;
 		virtualDisplayEncoder = null;
-		if(internalInterface!=null){
+		if (internalInterface != null) {
 			internalInterface.stopVideoService();
+			// Remove listeners
+			internalInterface.removeServiceListener(SessionType.NAV, serviceListener);
+			internalInterface.removeOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);
+			internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 		}
 
-		// Remove listeners
-		internalInterface.removeServiceListener(SessionType.NAV, serviceListener);
-		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);
-		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+
 
 		stateMachine.transitionToState(StreamingStateMachine.NONE);
 		super.dispose();
@@ -389,8 +392,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @return boolean (true = yes, false = no)
 	 */
 	public boolean isStreaming(){
-		return (stateMachine.getState() == StreamingStateMachine.STARTED) ||
-				(hmiLevel == HMILevel.HMI_FULL);
+		return (stateMachine.getState() == StreamingStateMachine.STARTED) && (hmiLevel == HMILevel.HMI_FULL);
 	}
 
 	/**
@@ -398,8 +400,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @return boolean (true = not paused, false = paused)
 	 */
 	public boolean isPaused(){
-		return (stateMachine.getState() == StreamingStateMachine.STARTED) ||
-				(hmiLevel != HMILevel.HMI_FULL);
+		return (hasStarted && stateMachine.getState() == StreamingStateMachine.STOPPED) || (hmiLevel != HMILevel.HMI_FULL);
 	}
 
 	/**

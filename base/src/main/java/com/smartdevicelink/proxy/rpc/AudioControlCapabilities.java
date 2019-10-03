@@ -44,6 +44,7 @@ public class AudioControlCapabilities extends RPCStruct {
 	public static final String KEY_VOLUME_AVAILABLE = "volumeAvailable";
 	public static final String KEY_EQUALIZER_AVAILABLE = "equalizerAvailable";
 	public static final String KEY_EQUALIZER_MAX_CHANNEL_ID = "equalizerMaxChannelId";
+	public static final String KEY_MODULE_INFO = "moduleInfo";
 
 	/**
 	 * Constructs a newly allocated AudioControlCapabilities object
@@ -178,4 +179,19 @@ public class AudioControlCapabilities extends RPCStruct {
 		return getInteger(KEY_EQUALIZER_MAX_CHANNEL_ID);
 	}
 
+	/**
+	 * Sets ModuleInfo for this capability
+	 * @param info the ModuleInfo to be set
+	 */
+	public void setModuleInfo(ModuleInfo info) {
+		setValue(KEY_MODULE_INFO, info);
+	}
+
+	/**
+	 * Gets a ModuleInfo of this capability
+	 * @return module info of this capability
+	 */
+	public ModuleInfo getModuleInfo() {
+		return (ModuleInfo) getObject(ModuleInfo.class, KEY_MODULE_INFO);
+	}
 }
