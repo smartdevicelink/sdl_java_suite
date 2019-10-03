@@ -1418,6 +1418,11 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
+    @Deprecated
+    public void setSdlSecurityClassList(List<Class<? extends SdlSecurityBase>> list) {
+        _secList = list;
+    }
+
     /**
      * Sets the security libraries and a callback to notify caller when there is update to encryption service
      * @param secList The list of security class(es)
