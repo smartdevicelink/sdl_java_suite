@@ -1,5 +1,6 @@
 package com.smartdevicelink.test.proxy;
 
+import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import com.smartdevicelink.AndroidTestCase2;
@@ -593,6 +594,11 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		@Override
 		public void startAudioService(boolean encrypted){}
+
+		@Override @NonNull
+		public SystemCapabilityManager getSystemCapabilityManager(){
+			return null;
+		}
 
 	}
 

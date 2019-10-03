@@ -151,7 +151,6 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
 
         // Check that everything got called as expected
-        assertTrue("FileManager.uploadArtworks() did not get called", fileManagerUploadArtworksGotCalled);
         assertTrue("InternalInterface.sendRPC() did not get called", internalInterfaceSendRPCGotCalled);
         assertTrue("SoftButtonManger update onComplete() did not get called", softButtonMangerUpdateCompleted);
 
