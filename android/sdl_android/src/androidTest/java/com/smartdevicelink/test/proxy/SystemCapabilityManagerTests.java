@@ -595,11 +595,6 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		@Override
 		public void startAudioService(boolean encrypted){}
 
-		@Override @NonNull
-		public SystemCapabilityManager getSystemCapabilityManager(){
-			return null;
-		}
-
 	}
 
 
