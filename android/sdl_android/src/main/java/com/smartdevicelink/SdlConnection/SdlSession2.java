@@ -64,6 +64,7 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
     WeakReference<Context> contextWeakReference;
     MediaStreamingStatus mediaStreamingStatus;
     boolean requiresAudioSupport = false;
+    boolean sdlSecurityInitializing = false;
 
     @SuppressWarnings("SameReturnValue")
     @Deprecated
@@ -154,9 +155,12 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
                 if (!serviceList.contains(serviceType))
                     serviceList.add(serviceType);
 
-                sdlSecurity.initialize();
+                if (!sdlSecurityInitializing) {
+                    sdlSecurityInitializing = true;
+                    sdlSecurity.initialize();
+                    return;
+                }
             }
-            return;
         }
         sdlProtocol.startService(serviceType, sessionID, isEncrypted);
     }
