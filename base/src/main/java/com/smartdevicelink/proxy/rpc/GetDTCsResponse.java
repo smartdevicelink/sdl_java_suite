@@ -63,12 +63,25 @@ public class GetDTCsResponse extends RPCResponse{
      * @param success whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
      * @param ecuHeader representation of the ecu header that was returned from the GetDTC request
+     * @deprecated use {@link GetDTCsResponse#GetDTCsResponse(Boolean, Result)}
      */
+    @Deprecated
     public GetDTCsResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull Integer ecuHeader) {
         this();
         setSuccess(success);
         setResultCode(resultCode);
         setEcuHeader(ecuHeader);
+    }
+
+    /**
+     * Constructs a new GetDTCsResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public GetDTCsResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
     }
 
     @SuppressWarnings("unchecked")
@@ -84,7 +97,7 @@ public class GetDTCsResponse extends RPCResponse{
         return getInteger(KEY_ECU_HEADER);
     }
     
-    public void setEcuHeader(@NonNull Integer ecuHeader){
+    public void setEcuHeader(Integer ecuHeader){
         setParameters(KEY_ECU_HEADER, ecuHeader);
     }
 
