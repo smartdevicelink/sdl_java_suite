@@ -1037,6 +1037,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		addOnRPCNotificationListener(FunctionID.ON_PERMISSIONS_CHANGE, onPermissionsChangeListener);
 		this._internalInterface.addServiceListener(SessionType.RPC, securedServiceListener);
+		this._internalInterface.addServiceListener(SessionType.NAV, securedServiceListener);
+		this._internalInterface.addServiceListener(SessionType.PCM, securedServiceListener);
+
 
 		// Trace that ctor has fired
 		SdlTrace.logProxyEvent("SdlProxy Created, instanceID=" + this.toString(), SDL_LIB_TRACE_KEY);		
