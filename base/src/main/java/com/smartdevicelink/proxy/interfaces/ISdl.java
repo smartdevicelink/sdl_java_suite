@@ -263,9 +263,4 @@ public interface ISdl {
      * @return byte value representing WiPro version
      */
     @NonNull Version getProtocolVersion();
-
-    /**
-     * Get the system capability manager.
-     */
-    @NonNull SystemCapabilityManager getSystemCapabilityManager();
 }

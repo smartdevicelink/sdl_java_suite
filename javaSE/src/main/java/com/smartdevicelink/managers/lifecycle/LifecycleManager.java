@@ -1114,11 +1114,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         public Version getProtocolVersion() {
             return LifecycleManager.this.getProtocolVersion();
         }
-
-        @Override @NonNull
-        public SystemCapabilityManager getSystemCapabilityManager(){
-            return LifecycleManager.this.systemCapabilityManager;
-        }
+        
     };
 
     /* *******************************************************************************************************

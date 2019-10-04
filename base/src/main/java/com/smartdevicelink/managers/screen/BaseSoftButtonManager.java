@@ -116,7 +116,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
             @Override
             public void onCapabilityRetrieved(Object capability) {
                 // instead of using the parameter it's more safe to use the convenience method
-                defaultMainWindowCapability = internalInterface.getSystemCapabilityManager().getDefaultMainWindowCapability();
+                //defaultMainWindowCapability = internalInterface.getSystemCapabilityManager().getDefaultMainWindowCapability();
             }
 
             @Override
