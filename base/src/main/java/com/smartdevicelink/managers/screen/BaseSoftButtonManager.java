@@ -78,7 +78,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     private static final String TAG = "SoftButtonManager";
     private WeakReference<FileManager> fileManager;
-    private WindowCapability defaultMainWindowCapability;
+    WindowCapability defaultMainWindowCapability;
     private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     private HMILevel currentHMILevel;
     private Show inProgressShowRPC;
