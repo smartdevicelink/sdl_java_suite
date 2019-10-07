@@ -44,6 +44,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.TextField;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
@@ -75,14 +76,13 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 		ImageField imageField = new ImageField(ImageFieldName.choiceImage, Arrays.asList(FileType.GRAPHIC_PNG, FileType.GRAPHIC_JPEG));
 		TextField textField = new TextField(TextFieldName.menuName, CharacterSet.CID1SET, 2, 2);
 
-		DisplayCapabilities displayCapabilities = new DisplayCapabilities();
-		displayCapabilities.setGraphicSupported(true);
-		displayCapabilities.setImageFields(Collections.singletonList(imageField));
-		displayCapabilities.setTextFields(Collections.singletonList(textField));
+		WindowCapability windowCapability = new WindowCapability();
+		windowCapability.setImageFields(Collections.singletonList(imageField));
+		windowCapability.setTextFields(Collections.singletonList(textField));
 
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
-		preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, displayCapabilities, true, cellsToPreload, null);
+		preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, windowCapability, true, cellsToPreload, null);
 	}
 
 	@Override
