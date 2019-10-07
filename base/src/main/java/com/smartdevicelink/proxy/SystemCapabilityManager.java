@@ -142,7 +142,7 @@ public class SystemCapabilityManager {
 		convertedCapabilities.setTemplatesAvailable(defaultMainWindow.getTemplatesAvailable());
 		convertedCapabilities.setNumCustomPresetsAvailable(defaultMainWindow.getNumCustomPresetsAvailable());
 		convertedCapabilities.setMediaClockFormats(new ArrayList<MediaClockFormat>()); // mandatory field but allows empty array
-		// if there are imageTypes allowed, we must assume graphics are supported
+		// if there are imageTypes in the response, we must assume graphics are supported
 		convertedCapabilities.setGraphicSupported(defaultMainWindow.getImageTypeSupported() != null && defaultMainWindow.getImageTypeSupported().size() > 0);
 
 		return convertedCapabilities;

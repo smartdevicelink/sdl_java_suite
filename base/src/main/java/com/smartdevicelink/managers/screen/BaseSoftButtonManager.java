@@ -42,8 +42,10 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
@@ -116,12 +118,23 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
             @Override
             public void onCapabilityRetrieved(Object capability) {
                 // instead of using the parameter it's more safe to use the convenience method
-                //defaultMainWindowCapability = internalInterface.getSystemCapabilityManager().getDefaultMainWindowCapability();
+                List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
+                if (capabilities == null || capabilities.size() == 0) {
+                    DebugTool.logError("SoftButton Manager - Capabilities sent here are null or empty");
+                }else {
+                    DisplayCapability display = capabilities.get(0);
+                    for (WindowCapability windowCapability : display.getWindowCapabilities()) {
+                        int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+                        if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+                            defaultMainWindowCapability = windowCapability;
+                        }
+                    }
+                }
             }
 
             @Override
             public void onError(String info) {
-                Log.w(TAG, "Display Capability cannot be retrieved:");
+                DebugTool.logError("Display Capability cannot be retrieved");
                 defaultMainWindowCapability = null;
             }
         };
