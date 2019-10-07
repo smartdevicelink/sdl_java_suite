@@ -42,13 +42,15 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TextField;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
@@ -82,14 +84,14 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	volatile Show inProgressUpdate;
 	Show currentScreenData, queuedImageUpdate;
 	HMILevel currentHMILevel;
-	protected DisplayCapabilities displayCapabilities;
+	protected WindowCapability defaultMainWindowCapability;
 	private boolean pendingHMIFull, batchingUpdates;
 	private final WeakReference<FileManager> fileManager;
 	private final WeakReference<SoftButtonManager> softButtonManager;
 	private CompletionListener queuedUpdateListener, inProgressListener, pendingHMIListener;
 	SdlArtwork blankArtwork;
 	private OnRPCNotificationListener hmiListener;
-	private OnSystemCapabilityListener onDisplayCapabilitiesListener;
+	private OnSystemCapabilityListener onDisplaysCapabilityListener;
 	private SdlArtwork primaryGraphic, secondaryGraphic;
 	private TextAlignment textAlignment;
 	private String textField1, textField2, textField3, textField4, mediaTrackTextField, templateTitle;
@@ -135,7 +137,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		primaryGraphic = null;
 		secondaryGraphic = null;
 		blankArtwork = null;
-		displayCapabilities = null;
+		defaultMainWindowCapability = null;
 		inProgressUpdate = null;
 		queuedImageUpdate = null;
 		currentScreenData = null;
@@ -148,7 +150,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
-		internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, onDisplayCapabilitiesListener);
+		internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
 
 		super.dispose();
 	}
@@ -175,20 +177,32 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		};
 		internalInterface.addOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 
-		// Add OnDisplayCapabilitiesListener to keep displayCapabilities updated
-		onDisplayCapabilitiesListener = new OnSystemCapabilityListener() {
+
+		onDisplaysCapabilityListener = new OnSystemCapabilityListener() {
 			@Override
 			public void onCapabilityRetrieved(Object capability) {
-				displayCapabilities = (DisplayCapabilities)capability;
+				// instead of using the parameter it's more safe to use the convenience method
+				List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
+				if (capabilities == null || capabilities.size() == 0) {
+					DebugTool.logError("SoftButton Manager - Capabilities sent here are null or empty");
+				}else {
+					DisplayCapability display = capabilities.get(0);
+					for (WindowCapability windowCapability : display.getWindowCapabilities()) {
+						int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+						if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+							defaultMainWindowCapability = windowCapability;
+						}
+					}
+				}
 			}
 
 			@Override
 			public void onError(String info) {
-				Log.e(TAG, "DISPLAY Capability cannot be retrieved:");
-				displayCapabilities = null;
+				DebugTool.logError("Display Capability cannot be retrieved");
+				defaultMainWindowCapability = null;
 			}
 		};
-		this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, onDisplayCapabilitiesListener);
+		this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
 	}
 
 	// Upload / Send
@@ -323,7 +337,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		if (this.softButtonManager.get() != null) {
 			this.softButtonManager.get().setCurrentMainField1(inProgressUpdate.getMainField1());
 		}
-		internalInterface.sendRPCRequest(inProgressUpdate);
+		internalInterface.sendRPC(inProgressUpdate);
 	}
 
 	// Images
@@ -719,6 +733,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	abstract SdlArtwork getBlankArtwork();
 
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean sdlArtworkNeedsUpload(SdlArtwork artwork){
 		if (fileManager.get() != null) {
 			return artwork != null && !fileManager.get().hasUploadedFile(artwork) && !artwork.isStaticIcon();
@@ -727,7 +742,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	}
 
 	private boolean shouldUpdatePrimaryImage() {
-		if (displayCapabilities == null || displayCapabilities.getGraphicSupported()) {
+		if (defaultMainWindowCapability == null || defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().size() > 0) {
 			if (currentScreenData.getGraphic() == null && primaryGraphic != null) {
 				return true;
 			} else if (currentScreenData.getGraphic() == null && primaryGraphic == null) {
@@ -741,7 +756,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	private boolean shouldUpdateSecondaryImage() {
 		// Cannot detect if there is a secondary image, so we'll just try to detect if there's a primary image and allow it if there is.
-		if (displayCapabilities == null || displayCapabilities.getGraphicSupported()) {
+		if (defaultMainWindowCapability == null || defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().size() > 0) {
 			if (currentScreenData.getGraphic() == null && secondaryGraphic != null) {
 				return true;
 			} else if (currentScreenData.getGraphic() == null && secondaryGraphic == null) {
@@ -755,13 +770,13 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	int getNumberOfLines() {
 
-		if (displayCapabilities == null){
+		if (defaultMainWindowCapability == null){
 			return 4;
 		}
 
 		int linesFound = 0;
 
-		List<TextField> textFields = displayCapabilities.getTextFields();
+		List<TextField> textFields = defaultMainWindowCapability.getTextFields();
 		TextFieldName name;
 		for (TextField field : textFields) {
 			if (field.getName() != null) {

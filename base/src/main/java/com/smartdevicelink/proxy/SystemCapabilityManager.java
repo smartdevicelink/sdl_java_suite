@@ -150,7 +150,7 @@ public class SystemCapabilityManager {
 
 	private void updateDeprecatedDisplayCapabilities() {
 		WindowCapability defaultMainWindowCapabilities = getDefaultMainWindowCapability();
-		List<DisplayCapability> displayCapabilityList = (List<DisplayCapability>)getCapability(SystemCapabilityType.DISPLAYS);
+		List<DisplayCapability> displayCapabilityList = convertToList(getCapability(SystemCapabilityType.DISPLAYS), DisplayCapability.class);
 
 		if (defaultMainWindowCapabilities == null || displayCapabilityList == null || displayCapabilityList.size() == 0) {
 			return;
@@ -168,7 +168,7 @@ public class SystemCapabilityManager {
 			return;
 		}
 
-		List<DisplayCapability> oldCapabilities = (List<DisplayCapability>) getCapability(SystemCapabilityType.DISPLAYS);
+		List<DisplayCapability> oldCapabilities = convertToList(getCapability(SystemCapabilityType.DISPLAYS), DisplayCapability.class);
 
 		if (oldCapabilities == null || oldCapabilities.size() == 0) {
 			setCapability(SystemCapabilityType.DISPLAYS, newCapabilities);
@@ -207,8 +207,9 @@ public class SystemCapabilityManager {
 		updateDeprecatedDisplayCapabilities();
 	}
 
+
 	public WindowCapability getWindowCapability(int windowID) {
-		List<DisplayCapability> capabilities = (List<DisplayCapability>) getCapability(SystemCapabilityType.DISPLAYS);
+		List<DisplayCapability> capabilities = convertToList(getCapability(SystemCapabilityType.DISPLAYS), DisplayCapability.class);
 		if (capabilities == null || capabilities.size() == 0) {
 			return null;
 		}
