@@ -34,28 +34,8 @@ package com.smartdevicelink.proxy;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
-import com.smartdevicelink.proxy.rpc.AppServiceCapability;
-import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
-import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
-import com.smartdevicelink.proxy.rpc.DisplayCapability;
-import com.smartdevicelink.proxy.rpc.GetSystemCapability;
-import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
-import com.smartdevicelink.proxy.rpc.HMICapabilities;
-import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
-import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
-import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
-import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.SystemCapability;
-import com.smartdevicelink.proxy.rpc.WindowCapability;
-import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
-import com.smartdevicelink.proxy.rpc.enums.DisplayType;
-import com.smartdevicelink.proxy.rpc.enums.ImageType;
-import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
-import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
-import com.smartdevicelink.proxy.rpc.enums.Result;
-import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
-import com.smartdevicelink.proxy.rpc.enums.WindowType;
+import com.smartdevicelink.proxy.rpc.*;
+import com.smartdevicelink.proxy.rpc.enums.*;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.CorrelationIdGenerator;
@@ -160,14 +140,14 @@ public class SystemCapabilityManager {
 	}
 
 	private void updateCachedDisplayCapabilityList(List<DisplayCapability> newCapabilities) {
-		if (newCapabilities == null || newCapabilities.size() == 0) {
+		if (newCapabilities == null || newCapabilities.isEmpty()) {
 			DebugTool.logWarning("Received invalid display capability list");
 			return;
 		}
 
 		List<DisplayCapability> oldCapabilities = (List<DisplayCapability>) getCapability(SystemCapabilityType.DISPLAYS);
 
-		if (oldCapabilities == null || oldCapabilities.size() == 0) {
+		if (oldCapabilities == null || oldCapabilities.isEmpty()) {
 			setCapability(SystemCapabilityType.DISPLAYS, newCapabilities);
 			updateDeprecatedDisplayCapabilities();
 			return;
@@ -182,10 +162,10 @@ public class SystemCapabilityManager {
 		for (WindowCapability newWindow : newWindowCapabilities) {
 			ListIterator<WindowCapability> iterator = copyWindowCapabilities.listIterator();
 			boolean oldFound = false;
+			final int newWindowID = newWindow.getWindowID() != null ? newWindow.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
 			while (iterator.hasNext()) {
 				WindowCapability oldWindow = iterator.next();
-				int newWindowID = newWindow.getWindowID() != null ? newWindow.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
-				int oldWindowID = oldWindow.getWindowID() != null ? oldWindow.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+				final int oldWindowID = oldWindow.getWindowID() != null ? oldWindow.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
 				if (newWindowID == oldWindowID) {
 					iterator.set(newWindow); // replace the old window caps with new ones
 					oldFound = true;
@@ -242,78 +222,78 @@ public class SystemCapabilityManager {
 	}
 
     private void setupRpcListeners() {
-        rpcListener = new OnRPCListener() {
-            @Override
-            public void onReceived(RPCMessage message) {
-                if (message != null) {
-                    if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) {
-                        switch (message.getFunctionID()) {
-                            case SET_DISPLAY_LAYOUT:
-                                SetDisplayLayoutResponse response = (SetDisplayLayoutResponse) message;
-                                setCapability(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
-                                setCapability(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
-                                setCapability(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
-                                setCapability(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
-                                if (shouldConvertDeprecatedDisplayCapabilities) {
-                                    setCapability(SystemCapabilityType.DISPLAYS, createDisplayCapabilityList(response));
-                                }
-                                break;
-                            case GET_SYSTEM_CAPABILITY:
-                                GetSystemCapabilityResponse systemCapabilityResponse = (GetSystemCapabilityResponse) message;
-                                SystemCapability systemCapability = systemCapabilityResponse.getSystemCapability();
-                                if (systemCapabilityResponse.getSuccess() && SystemCapabilityType.DISPLAYS.equals(systemCapability.getSystemCapabilityType())) {
-                                    shouldConvertDeprecatedDisplayCapabilities = false; // Successfully got DISPLAYS data. No conversion needed anymore
-                                    List<DisplayCapability> newCapabilities = (List<DisplayCapability>) systemCapability.getCapabilityForType(SystemCapabilityType.DISPLAYS);
-                                    updateCachedDisplayCapabilityList(newCapabilities);
-                                }
-                                break;
-                        }
-                    } else if (RPCMessage.KEY_NOTIFICATION.equals(message.getMessageType())) {
-                        switch (message.getFunctionID()) {
-                            case ON_SYSTEM_CAPABILITY_UPDATED:
-                                OnSystemCapabilityUpdated onSystemCapabilityUpdated = (OnSystemCapabilityUpdated) message;
-                                if (onSystemCapabilityUpdated.getSystemCapability() != null) {
-                                    SystemCapability systemCapability = onSystemCapabilityUpdated.getSystemCapability();
-                                    SystemCapabilityType systemCapabilityType = systemCapability.getSystemCapabilityType();
-                                    Object capability = systemCapability.getCapabilityForType(systemCapabilityType);
-                                    if (cachedSystemCapabilities.containsKey(systemCapabilityType)) { //The capability already exists
-                                        switch (systemCapabilityType) {
-                                            case APP_SERVICES:
-                                                // App services only updates what was changed so we need
-                                                // to update the capability rather than override it
-                                                AppServicesCapabilities appServicesCapabilities = (AppServicesCapabilities) capability;
-                                                if (capability != null) {
-                                                    List<AppServiceCapability> appServicesCapabilitiesList = appServicesCapabilities.getAppServices();
-                                                    AppServicesCapabilities cachedAppServicesCapabilities = (AppServicesCapabilities) cachedSystemCapabilities.get(systemCapabilityType);
-                                                    //Update the cached app services
-                                                    cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
-                                                    //Set the new capability object to the updated cached capabilities
-                                                    capability = cachedAppServicesCapabilities;
-                                                }
-                                                break;
-                                            case DISPLAYS:
-                                                shouldConvertDeprecatedDisplayCapabilities = false; // Successfully got DISPLAYS data. No conversion needed anymore
-                                                // this notification can return only affected windows (hence not all windows)
-                                                List<DisplayCapability> newCapabilities = (List<DisplayCapability>) capability;
-                                                updateCachedDisplayCapabilityList(newCapabilities);
-                                        }
-                                    }
-                                    if (capability != null) {
-                                        setCapability(systemCapabilityType, capability);
-                                    }
-                                }
-                        }
-                    }
-                }
-            }
-        };
+		rpcListener = new OnRPCListener() {
+			@Override
+			public void onReceived(RPCMessage message) {
+				if (message != null) {
+					if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) {
+						switch (message.getFunctionID()) {
+							case SET_DISPLAY_LAYOUT:
+								SetDisplayLayoutResponse response = (SetDisplayLayoutResponse) message;
+								setCapability(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
+								setCapability(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
+								setCapability(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
+								setCapability(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
+								if (shouldConvertDeprecatedDisplayCapabilities) {
+									setCapability(SystemCapabilityType.DISPLAYS, createDisplayCapabilityList(response));
+								}
+								break;
+							case GET_SYSTEM_CAPABILITY:
+								GetSystemCapabilityResponse systemCapabilityResponse = (GetSystemCapabilityResponse) message;
+								SystemCapability systemCapability = systemCapabilityResponse.getSystemCapability();
+								if (systemCapabilityResponse.getSuccess() && SystemCapabilityType.DISPLAYS.equals(systemCapability.getSystemCapabilityType())) {
+									shouldConvertDeprecatedDisplayCapabilities = false; // Successfully got DISPLAYS data. No conversion needed anymore
+									List<DisplayCapability> newCapabilities = (List<DisplayCapability>) systemCapability.getCapabilityForType(SystemCapabilityType.DISPLAYS);
+									updateCachedDisplayCapabilityList(newCapabilities);
+								}
+								break;
+						}
+					} else if (RPCMessage.KEY_NOTIFICATION.equals(message.getMessageType())) {
+						switch (message.getFunctionID()) {
+							case ON_SYSTEM_CAPABILITY_UPDATED:
+								OnSystemCapabilityUpdated onSystemCapabilityUpdated = (OnSystemCapabilityUpdated) message;
+								if (onSystemCapabilityUpdated.getSystemCapability() != null) {
+									SystemCapability systemCapability = onSystemCapabilityUpdated.getSystemCapability();
+									SystemCapabilityType systemCapabilityType = systemCapability.getSystemCapabilityType();
+									Object capability = systemCapability.getCapabilityForType(systemCapabilityType);
+									if (cachedSystemCapabilities.containsKey(systemCapabilityType)) { //The capability already exists
+										switch (systemCapabilityType) {
+											case APP_SERVICES:
+												// App services only updates what was changed so we need
+												// to update the capability rather than override it
+												AppServicesCapabilities appServicesCapabilities = (AppServicesCapabilities) capability;
+												if (capability != null) {
+													List<AppServiceCapability> appServicesCapabilitiesList = appServicesCapabilities.getAppServices();
+													AppServicesCapabilities cachedAppServicesCapabilities = (AppServicesCapabilities) cachedSystemCapabilities.get(systemCapabilityType);
+													//Update the cached app services
+													cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
+													//Set the new capability object to the updated cached capabilities
+													capability = cachedAppServicesCapabilities;
+												}
+												break;
+											case DISPLAYS:
+												shouldConvertDeprecatedDisplayCapabilities = false; // Successfully got DISPLAYS data. No conversion needed anymore
+												// this notification can return only affected windows (hence not all windows)
+												List<DisplayCapability> newCapabilities = (List<DisplayCapability>) capability;
+												updateCachedDisplayCapabilityList(newCapabilities);
+										}
+									}
+									if (capability != null) {
+										setCapability(systemCapabilityType, capability);
+									}
+								}
+						}
+					}
+				}
+			}
+		};
 
-        if (callback != null) {
-        	callback.addOnRPCListener(FunctionID.GET_SYSTEM_CAPABILITY, rpcListener);
-            callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
-            callback.addOnRPCListener(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED, rpcListener);
-        }
-    }
+		if (callback != null) {
+			callback.addOnRPCListener(FunctionID.GET_SYSTEM_CAPABILITY, rpcListener);
+			callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
+			callback.addOnRPCListener(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED, rpcListener);
+		}
+	}
 
 	/**
 	 * Sets a capability in the cached map. This should only be done when an RPC is received and contains updates to the capability
@@ -370,6 +350,7 @@ public class SystemCapabilityManager {
 			return false;
 		}
 	}
+
 	/**
 	 * @param systemCapabilityType Type of capability desired
 	 * @param scListener callback to execute upon retrieving capability
@@ -483,23 +464,23 @@ public class SystemCapabilityManager {
 	 */
 	@SuppressWarnings({"unchecked"})
 	public static <T> List<T> convertToList(Object object, Class<T> classType){
-		if(classType!=null && object!=null && object instanceof List ){
-			List list = (List)object;
-			if(!list.isEmpty()){
-				if(classType.isInstance(list.get(0))){
-					return (List<T>)object;
-				}else{
-					//The list is not of the correct list type
-					return null;
-				}
-			}else {
-				//We return a new list of type T instead of null because while we don't know if
-				//the original list was of type T we want to ensure that we don't throw a cast class exception
-				//but still
-				return new ArrayList<T>();
-			}
-		}else{
+		if(null == classType || null == object || !(object instanceof List)) {
 			return null;
 		}
+
+		List list = (List)object;
+		if (list.isEmpty()) {
+			//We return a new list of type T instead of null because while we don't know if
+			//the original list was of type T we want to ensure that we don't throw a cast class exception
+			//but still
+			return new ArrayList<T>();
+		}
+
+		if(!classType.isInstance(list.get(0))){
+			//The list is not of the correct list type
+			return null;
+		}
+
+		return (List<T>)object;
 	}
 }

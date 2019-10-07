@@ -3,51 +3,12 @@ package com.smartdevicelink.test.proxy;
 import android.util.SparseArray;
 
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.RPCMessage;
-import com.smartdevicelink.proxy.RPCRequest;
-import com.smartdevicelink.proxy.SystemCapabilityManager;
-import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
-import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
-import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
-import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
-import com.smartdevicelink.proxy.rpc.AppServiceCapability;
-import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
-import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
-import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
-import com.smartdevicelink.proxy.rpc.DisplayCapability;
-import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
-import com.smartdevicelink.proxy.rpc.HMICapabilities;
-import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
-import com.smartdevicelink.proxy.rpc.PhoneCapability;
-import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
-import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
-import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
-import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
-import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.SystemCapability;
-import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
-import com.smartdevicelink.proxy.rpc.WindowCapability;
-import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
-import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
-import com.smartdevicelink.proxy.rpc.enums.DisplayType;
-import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
-import com.smartdevicelink.proxy.rpc.enums.ImageType;
-import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
-import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
-import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
-import com.smartdevicelink.proxy.rpc.enums.Result;
-import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
-import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
-import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
-import com.smartdevicelink.proxy.rpc.enums.WindowType;
-import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
-import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
+import com.smartdevicelink.protocol.enums.*;
+import com.smartdevicelink.proxy.*;
+import com.smartdevicelink.proxy.interfaces.*;
+import com.smartdevicelink.proxy.rpc.*;
+import com.smartdevicelink.proxy.rpc.enums.*;
+import com.smartdevicelink.proxy.rpc.listeners.*;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -80,7 +41,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		return createSampleManager(new InternalSDLInterface());
 	}
 
-	public SystemCapabilityManager createSampleManager(InternalSDLInterface iSdl){
+	public static SystemCapabilityManager createSampleManager(InternalSDLInterface iSdl){
 		SystemCapabilityManager systemCapabilityManager = new SystemCapabilityManager(iSdl);
 
 		RegisterAppInterfaceResponse raiResponse = new RegisterAppInterfaceResponse();
@@ -391,7 +352,6 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 	}
 
-
 	public void testOnSystemCapabilityUpdatedOverwrite(){
 		InternalSDLInterface iSDL = new InternalSDLInterface();
 		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
@@ -594,7 +554,9 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		@Override
 		public void startAudioService(boolean encrypted){}
 
+		@Override
+		public SystemCapabilityManager getSystemCapabilityManager(){
+			return null;
+		}
 	}
-
-
 }

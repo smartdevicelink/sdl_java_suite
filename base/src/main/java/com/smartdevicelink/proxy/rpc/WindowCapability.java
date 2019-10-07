@@ -183,4 +183,13 @@ public class WindowCapability extends RPCStruct {
     public List<SoftButtonCapabilities> getSoftButtonCapabilities() {
         return (List<SoftButtonCapabilities>) getObject(SoftButtonCapabilities.class, KEY_SOFT_BUTTON_CAPABILITIES);
     }
+
+    /**
+     *
+     * @return bool value if soft button images supported or not
+     */
+    public boolean isSoftButtonImagesSupported() {
+        final List<SoftButtonCapabilities> buttonCapabilities = getSoftButtonCapabilities();
+        return null != buttonCapabilities && !buttonCapabilities.isEmpty() && buttonCapabilities.get(0).getImageSupported();
+    }
 }

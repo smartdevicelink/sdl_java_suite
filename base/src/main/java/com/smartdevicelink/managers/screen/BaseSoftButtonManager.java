@@ -300,7 +300,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         // so we can upload the initial state images first, then the other states images.
         List<SdlArtwork> initialStatesToBeUploaded = new ArrayList<>();
         List<SdlArtwork> otherStatesToBeUploaded = new ArrayList<>();
-        if (softButtonImagesSupported() && fileManager.get() != null) {
+        if (isSoftButtonImagesSupported() && fileManager.get() != null) {
             for (SoftButtonObject softButtonObject : softButtonObjects) {
                 SoftButtonState initialState = null;
                 if (softButtonObject != null) {
@@ -446,7 +446,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         if (softButtonObjects == null) {
             DebugTool.logInfo("Soft button objects are null, sending an empty array");
             inProgressShowRPC.setSoftButtons(new ArrayList<SoftButton>());
-        } else if ((currentStateHasImages() && !allCurrentStateImagesAreUploaded()) || !softButtonImagesSupported()) {
+        } else if ((currentStateHasImages() && !allCurrentStateImagesAreUploaded()) || !isSoftButtonImagesSupported()) {
             // The images don't yet exist on the head unit, or we cannot use images, send a text update if possible, otherwise, don't send anything yet
             List<SoftButton> textOnlySoftButtons = createTextSoftButtonsForCurrentState();
             if (textOnlySoftButtons != null) {
@@ -505,11 +505,8 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         internalInterface.sendRPC(inProgressShowRPC);
     }
 
-    private boolean softButtonImagesSupported() {
-        return defaultMainWindowCapability != null
-                && defaultMainWindowCapability.getSoftButtonCapabilities() != null
-                && !defaultMainWindowCapability.getSoftButtonCapabilities().isEmpty()
-                && defaultMainWindowCapability.getSoftButtonCapabilities().get(0).getImageSupported();
+    private boolean isSoftButtonImagesSupported() {
+        return null != defaultMainWindowCapability && defaultMainWindowCapability.isSoftButtonImagesSupported();
     }
 
     /**
