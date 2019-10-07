@@ -84,7 +84,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	volatile Show inProgressUpdate;
 	Show currentScreenData, queuedImageUpdate;
 	HMILevel currentHMILevel;
-	protected WindowCapability defaultMainWindowCapability;
+	WindowCapability defaultMainWindowCapability;
 	private boolean pendingHMIFull, batchingUpdates;
 	private final WeakReference<FileManager> fileManager;
 	private final WeakReference<SoftButtonManager> softButtonManager;
