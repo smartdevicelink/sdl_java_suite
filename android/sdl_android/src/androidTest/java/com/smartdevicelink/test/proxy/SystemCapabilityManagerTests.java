@@ -1,6 +1,5 @@
 package com.smartdevicelink.test.proxy;
 
-import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import com.smartdevicelink.AndroidTestCase2;

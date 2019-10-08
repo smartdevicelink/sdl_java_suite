@@ -38,8 +38,6 @@ package com.smartdevicelink.managers.screen.choiceset;
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
-import com.smartdevicelink.managers.screen.choiceset.PreloadChoicesOperation;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ImageField;
