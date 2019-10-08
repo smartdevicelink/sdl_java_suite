@@ -108,8 +108,13 @@ public class RPCStruct {
 		if (protocolVersion > 1) {
 			String messageType = getMessageTypeName(store.keySet());
 			Hashtable<String, Object> function = (Hashtable<String, Object>) store.get(messageType);
-			Hashtable<String, Object> parameters = (Hashtable<String, Object>) function.get(RPCMessage.KEY_PARAMETERS);
-			return JsonRPCMarshaller.serializeHashtable(parameters);
+			if(function != null){
+				Hashtable<String, Object> parameters = (Hashtable<String, Object>) function.get(RPCMessage.KEY_PARAMETERS);
+				return JsonRPCMarshaller.serializeHashtable(parameters);
+			}else{
+				return null;
+			}
+
 		} else return JsonRPCMarshaller.serializeHashtable(store);
 	}
 
@@ -133,7 +138,11 @@ public class RPCStruct {
 				//retrieved from the store object.
 				String messageType = getMessageTypeName(store.keySet());
 				Hashtable<String, Object> function = (Hashtable<String, Object>) store.get(messageType);
-				parameters = (Hashtable<String, Object>) function.get(RPCMessage.KEY_PARAMETERS);
+				if(function != null){
+					parameters = (Hashtable<String, Object>) function.get(RPCMessage.KEY_PARAMETERS);
+				}else {
+					parameters = null;
+				}
 			} else {
 				//If this is just an RPC struct the store itself should be used
 				parameters = store;
@@ -316,8 +325,7 @@ public class RPCStruct {
 		}
 		if(valueForString != null){
 			try {
-				Object value = valueForString.invoke(null, (String) s);
-				return value;
+				return valueForString.invoke(null, (String) s);
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {

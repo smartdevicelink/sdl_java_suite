@@ -66,10 +66,23 @@ public class SetInteriorVehicleDataResponse extends RPCResponse {
 	 * @param moduleData
 	 * @param success whether the request is successfully processed
 	 * @param resultCode whether the request is successfully processed
+	 * @deprecated use {@link SetInteriorVehicleDataResponse#SetInteriorVehicleDataResponse(Result, Boolean)}
 	 */
+	@Deprecated
 	public SetInteriorVehicleDataResponse(@NonNull ModuleData moduleData, @NonNull Result resultCode, @NonNull Boolean success) {
 		this();
 		setModuleData(moduleData);
+		setResultCode(resultCode);
+		setSuccess(success);
+	}
+
+	/**
+	 * Constructs a new SetInteriorVehicleDataResponse object
+	 * @param success whether the request is successfully processed
+	 * @param resultCode whether the request is successfully processed
+	 */
+	public SetInteriorVehicleDataResponse(@NonNull Result resultCode, @NonNull Boolean success) {
+		this();
 		setResultCode(resultCode);
 		setSuccess(success);
 	}
@@ -88,7 +101,7 @@ public class SetInteriorVehicleDataResponse extends RPCResponse {
 	 *
 	 * @param moduleData
 	 */
-	public void setModuleData(@NonNull ModuleData moduleData) {
+	public void setModuleData(ModuleData moduleData) {
 		setParameters(KEY_MODULE_DATA, moduleData);
 	}
 }
