@@ -184,7 +184,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				// instead of using the parameter it's more safe to use the convenience method
 				List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
 				if (capabilities == null || capabilities.size() == 0) {
-					DebugTool.logError("SoftButton Manager - Capabilities sent here are null or empty");
+					DebugTool.logError("TextAndGraphic Manager - Capabilities sent here are null or empty");
 				}else {
 					DisplayCapability display = capabilities.get(0);
 					for (WindowCapability windowCapability : display.getWindowCapabilities()) {
