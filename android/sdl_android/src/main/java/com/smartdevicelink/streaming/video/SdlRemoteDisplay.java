@@ -35,7 +35,6 @@ package com.smartdevicelink.streaming.video;
 import android.annotation.TargetApi;
 import android.app.Presentation;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -81,9 +80,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
 
         startRefreshTask();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            w.setType(WindowManager.LayoutParams.TYPE_PRIVATE_PRESENTATION);
-        }
+        w.setType(WindowManager.LayoutParams.TYPE_PRIVATE_PRESENTATION);
     }
 
     protected void startRefreshTask() {

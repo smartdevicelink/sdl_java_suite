@@ -171,16 +171,13 @@ public class SdlProtocolBase {
      * @return the max transfer unit
      */
     public int getMtu(){
-        return Long.valueOf(getMtu(SessionType.RPC)).intValue();
+        return mtus.get(SessionType.RPC).intValue();
     }
 
     public long getMtu(SessionType type){
         Long mtu = mtus.get(type);
-        if (mtu == null) {
+        if(mtu == null){
             mtu = mtus.get(SessionType.RPC);
-        }
-        if (mtu == null) { //If MTU is still null, use the oldest/smallest
-            mtu = (long) V1_V2_MTU_SIZE;
         }
         return mtu;
     }
@@ -309,16 +306,13 @@ public class SdlProtocolBase {
                         // If this service type has extra information from the RPC StartServiceACK
                         // parse through it to find which transport should be used to start this
                         // specific service type
-                        List<Integer> transportNumList = transportPriorityForServiceMap.get(secondaryService);
-                        if (transportNumList != null){
-                            for (int transportNum : transportNumList) {
-                                if (transportNum == PRIMARY_TRANSPORT_ID) {
-                                    break; // Primary is favored for this service type, break out...
-                                } else if (transportNum == SECONDARY_TRANSPORT_ID) {
-                                    // The secondary transport can be used to start this service
-                                    activeTransports.put(secondaryService, transportRecord);
-                                    break;
-                                }
+                        for(int transportNum : transportPriorityForServiceMap.get(secondaryService)){
+                            if(transportNum == PRIMARY_TRANSPORT_ID){
+                                break; // Primary is favored for this service type, break out...
+                            }else if(transportNum == SECONDARY_TRANSPORT_ID){
+                                // The secondary transport can be used to start this service
+                                activeTransports.put(secondaryService, transportRecord);
+                                break;
                             }
                         }
                     }
@@ -607,7 +601,7 @@ public class SdlProtocolBase {
         }
 
         synchronized(messageLock) {
-            if (data != null && data.length > getMtu(sessionType)) {
+            if (data.length > getMtu(sessionType)) {
 
                 messageID++;
 

@@ -346,18 +346,18 @@ abstract class BaseScreenManager extends BaseSubManager {
 	/**
 	 * Sets the title of the new template that will be displayed.
 	 * Sending an empty String "" will clear the field
-	 * @param title the title of the new template that will be displayed. Maxlength: 100.
+	 * @param templateTitle the title of the new template that will be displayed. Maxlength: 100.
 	 */
-	public void setTitle(String title){
-		this.textAndGraphicManager.setTitle(title);
+	public void setTemplateTitle(String templateTitle){
+		this.textAndGraphicManager.setTemplateTitle(templateTitle);
 	}
 
 	/**
 	 * Gets the title of the new template that will be displayed
-	 * @return title - String value that represents the title of the new template that will be displayed
+	 * @return templateTitle - String value that represents the title of the new template that will be displayed
 	 */
 	public String getTemplateTitle(){
-		return this.textAndGraphicManager.getTitle();
+		return this.textAndGraphicManager.getTemplateTitle();
 	}
 
 	/**
@@ -464,7 +464,7 @@ abstract class BaseScreenManager extends BaseSubManager {
   	}
   
   	/**
-	 * The main menu layout. See available menu layouts on WindowCapability.menuLayoutsAvailable.
+	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable.
 	 * @param menuConfiguration - The default menuConfiguration
 	 */
 	public void setMenuConfiguration(@NonNull MenuConfiguration menuConfiguration) {
@@ -472,7 +472,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
-	 * The main menu layout. See available menu layouts on WindowCapability.menuLayoutsAvailable.
+	 * The main menu layout. See available menu layouts on DisplayCapabilities.menuLayoutsAvailable.
 	 * @return the currently set MenuConfiguration
 	 */
 	public MenuConfiguration getMenuConfiguration(){

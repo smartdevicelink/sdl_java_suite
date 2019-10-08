@@ -234,7 +234,7 @@ abstract class BasePermissionManager extends BaseSubManager{
      */
     private boolean isPermissionParameterAllowed(@NonNull FunctionID rpcName, @NonNull String parameter, Map<FunctionID, PermissionItem> permissionItems, HMILevel hmiLevel){
         PermissionItem permissionItem = permissionItems.get(rpcName);
-        if (permissionItem == null || !isRPCAllowed(rpcName, permissionItems, hmiLevel) || permissionItem.getParameterPermissions() == null || permissionItem.getParameterPermissions().getAllowed() == null){
+        if (!isRPCAllowed(rpcName, permissionItems, hmiLevel) || permissionItem.getParameterPermissions() == null || permissionItem.getParameterPermissions().getAllowed() == null){
             return false;
         } else if (permissionItem.getParameterPermissions().getUserDisallowed() != null){
             return permissionItem.getParameterPermissions().getAllowed().contains(parameter) && !permissionItem.getParameterPermissions().getUserDisallowed().contains(parameter);

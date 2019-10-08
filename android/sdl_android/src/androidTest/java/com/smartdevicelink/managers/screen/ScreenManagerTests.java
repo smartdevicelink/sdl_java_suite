@@ -69,7 +69,7 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		screenManager.setTextField2("Wednesday");
 		screenManager.setTextField3("My");
 		screenManager.setTextField4("Dudes");
-		screenManager.setTitle("title");
+		screenManager.setTemplateTitle("title");
 		assertEquals(screenManager.getTextField1(), "It is");
 		assertEquals(screenManager.getTextField2(), "Wednesday");
 		assertEquals(screenManager.getTextField3(), "My");

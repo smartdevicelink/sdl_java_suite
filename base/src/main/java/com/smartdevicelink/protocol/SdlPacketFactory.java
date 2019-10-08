@@ -44,10 +44,11 @@ public class SdlPacketFactory {
 			int dataSize, int messageId, byte[] payload) {
 	 */
 	public static SdlPacket createStartSession(SessionType serviceType, int messageID, byte version, byte sessionID, boolean encrypted) {
-
-		return new SdlPacket(version,encrypted,SdlPacket.FRAME_TYPE_CONTROL,
+		SdlPacket packet =  new SdlPacket(version,encrypted,SdlPacket.FRAME_TYPE_CONTROL,
 				serviceType.getValue(),SdlPacket.FRAME_INFO_START_SERVICE,sessionID,
 				0,messageID,null);
+
+		return packet;
 	}
 
     public static SdlPacket createHeartbeat(SessionType serviceType, byte sessionID, byte version) {

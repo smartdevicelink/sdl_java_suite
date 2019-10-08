@@ -249,7 +249,7 @@ abstract class BaseFileManager extends BaseSubManager {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				if(fileNameMap != null && fileNameMap.get(correlationId) != null){
+				if(fileNameMap.get(correlationId) != null){
 					errors.put(fileNameMap.get(correlationId), buildErrorString(resultCode, info));
 				}// else no fileName for given correlation ID
 			}

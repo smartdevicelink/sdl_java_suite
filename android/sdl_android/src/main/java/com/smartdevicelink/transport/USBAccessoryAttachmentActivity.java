@@ -103,7 +103,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        checkUsbAccessoryIntent();
+        checkUsbAccessoryIntent("Resume");
     }
 
     @Override
@@ -112,13 +112,13 @@ public class USBAccessoryAttachmentActivity extends Activity {
         this.setIntent(intent);
     }
 
-    private synchronized void checkUsbAccessoryIntent() {
+    private synchronized void checkUsbAccessoryIntent(String sourceAction) {
         if(usbAccessory != null){
             return;
         }
         final Intent intent = getIntent();
         String action = intent.getAction();
-        Log.d(TAG, "Received intent with action: " + action);
+        Log.d(TAG, sourceAction + " with action: " + action);
 
         if (UsbManager.ACTION_USB_ACCESSORY_ATTACHED.equals(action)) {
             usbAccessory = intent.getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
@@ -157,7 +157,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
                             // The most optimal router service doesn't support the USB connection
                             // At this point to ensure that USB connection is still possible it might be
                             // worth trying to use the legacy USB transport scheme
-                            attemptLegacyUsbConnection(usbAccessory);
+                            attemptLegacyUsbConnection();
                             return;
                         }
                         
@@ -168,7 +168,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
                         Log.d(TAG, "WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
                         // At this point to ensure that USB connection is still possible it might be
                         // worth trying to use the legacy USB transport scheme
-                        attemptLegacyUsbConnection(usbAccessory);
+                        attemptLegacyUsbConnection();
                         return;
                     }
                     serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
@@ -185,7 +185,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
                         if(startedService == null){
                             // A router service was not started or is not running.
                             DebugTool.logError(TAG + " - Error starting router service. Attempting legacy connection ");
-                            attemptLegacyUsbConnection(usbAccessory);
+                            attemptLegacyUsbConnection();
                             return;
                         }
 
@@ -224,16 +224,12 @@ public class USBAccessoryAttachmentActivity extends Activity {
         });
     }
     
-    private void attemptLegacyUsbConnection(UsbAccessory usbAccessory){
-        if(usbAccessory != null) {
-            DebugTool.logInfo("Attempting to send USB connection intent using legacy method");
-            Intent usbAccessoryAttachedIntent = new Intent(USBTransport.ACTION_USB_ACCESSORY_ATTACHED);
-            usbAccessoryAttachedIntent.putExtra(UsbManager.EXTRA_ACCESSORY, usbAccessory);
-            usbAccessoryAttachedIntent.putExtra(UsbManager.EXTRA_PERMISSION_GRANTED, permissionGranted);
-            AndroidTools.sendExplicitBroadcast(getApplicationContext(), usbAccessoryAttachedIntent, null);
-        }else{
-            DebugTool.logError("Unable to start legacy USB mode as the accessory was null");
-        }
+    private void attemptLegacyUsbConnection(){
+        DebugTool.logInfo("Attempting to send USB connection intent using legacy method");
+        Intent usbAccessoryAttachedIntent = new Intent(USBTransport.ACTION_USB_ACCESSORY_ATTACHED);
+        usbAccessoryAttachedIntent.putExtra(UsbManager.EXTRA_ACCESSORY, usbAccessory);
+        usbAccessoryAttachedIntent.putExtra(UsbManager.EXTRA_PERMISSION_GRANTED, permissionGranted);
+        AndroidTools.sendExplicitBroadcast(getApplicationContext(),usbAccessoryAttachedIntent,null);
         finish();
     }
 }

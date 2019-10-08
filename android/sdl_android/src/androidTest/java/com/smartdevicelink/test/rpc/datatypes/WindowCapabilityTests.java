@@ -7,7 +7,6 @@ import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
-import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
@@ -40,7 +39,6 @@ public class WindowCapabilityTests extends TestCase {
         msg.setNumCustomPresetsAvailable(Test.GENERAL_INT);
         msg.setButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES_LIST);
         msg.setSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
-        msg.setMenuLayoutsAvailable(Test.GENERAL_MENU_LAYOUT_LIST);
     }
 
     /**
@@ -56,7 +54,6 @@ public class WindowCapabilityTests extends TestCase {
         int numCustomPresetsAvailable = msg.getNumCustomPresetsAvailable();
         List<ButtonCapabilities> buttonCapabilities = msg.getButtonCapabilities();
         List<SoftButtonCapabilities> softButtonCapabilities = msg.getSoftButtonCapabilities();
-        List<MenuLayout> menuLayouts = msg.getMenuLayoutsAvailable();
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_INT, windowID);
@@ -67,7 +64,6 @@ public class WindowCapabilityTests extends TestCase {
         assertEquals(Test.MATCH, Test.GENERAL_INT, numCustomPresetsAvailable);
         assertEquals(Test.MATCH, Test.GENERAL_BUTTONCAPABILITIES_LIST.size(), buttonCapabilities.size());
         assertEquals(Test.MATCH, Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST.size(), softButtonCapabilities.size());
-        assertEquals(Test.MATCH, Test.GENERAL_MENU_LAYOUT_LIST.size(), menuLayouts.size());
 
         for (int i = 0; i < Test.GENERAL_TEXTFIELD_LIST.size(); i++) {
             assertTrue(Test.TRUE, Validator.validateTextFields(Test.GENERAL_TEXTFIELD_LIST.get(i), textFields.get(i)));
@@ -85,10 +81,6 @@ public class WindowCapabilityTests extends TestCase {
             assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST.get(i), templatesAvailable.get(i));
         }
 
-        for(int i = 0; i < Test.GENERAL_MENU_LAYOUT_LIST.size(); i++){
-            assertEquals(Test.MATCH, Test.GENERAL_MENU_LAYOUT_LIST.get(i), menuLayouts.get(i));
-        }
-
         assertTrue(Test.TRUE, Validator.validateButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES_LIST, buttonCapabilities));
         assertTrue(Test.TRUE, Validator.validateSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST, softButtonCapabilities));
 
@@ -104,7 +96,6 @@ public class WindowCapabilityTests extends TestCase {
         assertNull(Test.NULL, msg.getNumCustomPresetsAvailable());
         assertNull(Test.NULL, msg.getButtonCapabilities());
         assertNull(Test.NULL, msg.getSoftButtonCapabilities());
-        assertNull(Test.NULL, msg.getMenuLayoutsAvailable());
     }
 
     public void testJson() {
@@ -119,7 +110,6 @@ public class WindowCapabilityTests extends TestCase {
             reference.put(WindowCapability.KEY_NUM_CUSTOM_PRESETS_AVAILABLE, Test.GENERAL_INT);
             reference.put(WindowCapability.KEY_BUTTON_CAPABILITIES, Test.JSON_BUTTONCAPABILITIES);
             reference.put(WindowCapability.KEY_SOFT_BUTTON_CAPABILITIES, Test.JSON_SOFTBUTTONCAPABILITIES);
-            reference.put(WindowCapability.KEY_MENU_LAYOUTS_AVAILABLE, JsonUtils.createJsonArray(Test.GENERAL_MENU_LAYOUT_LIST));
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -181,7 +171,7 @@ public class WindowCapabilityTests extends TestCase {
                         testList.add(new SoftButtonCapabilities(hashTest));
                     }
                     assertTrue(Test.TRUE, Validator.validateSoftButtonCapabilities(referenceList, testList));
-                } else if (key.equals(WindowCapability.KEY_IMAGE_TYPE_SUPPORTED) || (key.equals(WindowCapability.KEY_MENU_LAYOUTS_AVAILABLE))) {
+                } else if (key.equals(WindowCapability.KEY_IMAGE_TYPE_SUPPORTED)) {
                     List<String> referenceList = JsonUtils.readStringListFromJsonObject(reference, key);
                     List<String> underTestList = JsonUtils.readStringListFromJsonObject(underTest, key);
 

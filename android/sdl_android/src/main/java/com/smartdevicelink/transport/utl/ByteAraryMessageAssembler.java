@@ -40,7 +40,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class ByteAraryMessageAssembler {
-	private static final String TAG = "ByteAraryMsgAssembler";
+	private static final String TAG = "ByteAraryMessageAssembler";
 	ByteArrayOutputStream buffer;
 	boolean isFinished;
 	TransportType transportType;

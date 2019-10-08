@@ -254,10 +254,8 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
                 sessionID, version, correlationID, rejectedParams);
         if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
-            if(listeners != null) {
-                for (ISdlServiceListener listener : listeners) {
-                    listener.onServiceError(this, sessionType, "Start " + sessionType.toString() + " Service NAKed");
-                }
+            for(ISdlServiceListener listener:listeners){
+                listener.onServiceError(this, sessionType, "Start "+ sessionType.toString() +" Service NAKed");
             }
         }
     }

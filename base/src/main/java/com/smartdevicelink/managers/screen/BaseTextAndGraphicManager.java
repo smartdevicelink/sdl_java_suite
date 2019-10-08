@@ -58,7 +58,6 @@ import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
-import com.smartdevicelink.util.CompareUtils;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
@@ -92,7 +91,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private OnSystemCapabilityListener onDisplayCapabilitiesListener;
 	private SdlArtwork primaryGraphic, secondaryGraphic;
 	private TextAlignment textAlignment;
-	private String textField1, textField2, textField3, textField4, mediaTrackTextField, title;
+	private String textField1, textField2, textField3, textField4, mediaTrackTextField, templateTitle;
 	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
 
 	//Constructors
@@ -130,7 +129,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		textField4 = null;
 		textField4Type = null;
 		mediaTrackTextField = null;
-		title = null;
+		templateTitle = null;
 		textAlignment = null;
 		primaryGraphic = null;
 		secondaryGraphic = null;
@@ -386,8 +385,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			show.setMediaTrack(mediaTrackTextField);
 		}
 
-		if (title != null){
-			show.setTemplateTitle(title);
+		if (templateTitle != null){
+			show.setTemplateTitle(templateTitle);
 		}
 
 		List<String> nonNullFields = findValidMainTextFields();
@@ -733,8 +732,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			} else if (currentScreenData.getGraphic() == null && primaryGraphic == null) {
 				return false;
 			}
-			return currentScreenData != null
-					&& (primaryGraphic != null  && !CompareUtils.areStringsEqual(currentScreenData.getGraphic().getValue(), primaryGraphic.getName(), true, true) );
+			return currentScreenData != null && (primaryGraphic != null && !currentScreenData.getGraphic().getValue().equalsIgnoreCase(primaryGraphic.getName()));
 		}
 		return false;
 	}
@@ -747,8 +745,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			} else if (currentScreenData.getGraphic() == null && secondaryGraphic == null) {
 				return false;
 			}
-			return currentScreenData != null
-					&& (secondaryGraphic != null && !CompareUtils.areStringsEqual(currentScreenData.getGraphic().getValue(), secondaryGraphic.getName(),true,true));
+			return currentScreenData != null && (secondaryGraphic != null && !currentScreenData.getGraphic().getValue().equalsIgnoreCase(secondaryGraphic.getName()));
 		}
 		return false;
 	}
@@ -908,8 +905,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		return textField4Type;
 	}
 
-	void setTitle(String title){
-		this.title = title;
+	void setTemplateTitle(String templateTitle){
+		this.templateTitle = templateTitle;
 		if (!batchingUpdates){
 			sdlUpdate(null);
 		}else{
@@ -917,8 +914,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 	}
 
-	String getTitle(){
-		return title;
+	String getTemplateTitle(){
+		return templateTitle;
 	}
 
 	void setPrimaryGraphic(SdlArtwork primaryGraphic){

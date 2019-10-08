@@ -340,15 +340,15 @@ public class SdlPacket implements Parcelable{
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("***** Sdl Packet ******");
-		builder.append("\nVersion:  ").append(version);
-		builder.append("\nEncryption:  ").append(encryption);
-		builder.append("\nFrameType:  ").append(frameType);
-		builder.append("\nServiceType:  ").append(serviceType);
-		builder.append("\nFrameInfo:  ").append(frameInfo);
-		builder.append("\nSessionId:  ").append(sessionId);
-		builder.append("\nDataSize:  ").append(dataSize);
+		builder.append(	"\nVersion:  " +version);
+		builder.append(	"\nEncryption:  " +encryption);
+		builder.append(	"\nFrameType:  " +frameType);
+		builder.append(	"\nServiceType:  " +serviceType);
+		builder.append(	"\nFrameInfo:  " +frameInfo);
+		builder.append(	"\nSessionId:  " +sessionId);
+		builder.append(	"\nDataSize:  " +dataSize);
 		if(version>1){
-			builder.append("\nMessageId:  ").append(messageId);
+			builder.append(	"\nMessageId:  " +messageId);
 		}
 		builder.append("\n***** Sdl Packet  End******");
 

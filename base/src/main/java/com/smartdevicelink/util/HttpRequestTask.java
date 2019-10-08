@@ -138,7 +138,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
 
 				String inputLine;
 				while ((inputLine = reader.readLine()) != null)
-					buffer.append(inputLine).append("\n");
+					buffer.append(inputLine + "\n");
 				if (buffer.length() == 0) {
 					// Stream was empty. No point in parsing.
 					if(cb!=null){
