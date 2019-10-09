@@ -139,7 +139,7 @@ abstract class BaseEncryptionLifecycleManager {
      *
      * @return true if encryption is required for app level; false otherwise
      */
-    boolean getRequiresEncryption() {
+    private boolean getRequiresEncryption() {
         return !encryptionRequiredRPCs.isEmpty();
     }
 
@@ -156,7 +156,7 @@ abstract class BaseEncryptionLifecycleManager {
     /**
      * Checks the current state and make the call back to initiate secured service flow
      */
-    void checkStatusAndInitSecuredService() {
+    private void checkStatusAndInitSecuredService() {
         if ((currentHMILevel != null && currentHMILevel != HMILevel.HMI_NONE) && getRequiresEncryption() && !isEncryptionReady() ) {
             internalInterface.startRPCEncryption();
         }
