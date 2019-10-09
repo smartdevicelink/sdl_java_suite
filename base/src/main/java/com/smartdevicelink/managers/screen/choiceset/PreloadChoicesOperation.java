@@ -251,7 +251,7 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 
 	boolean hasImageFieldOfName(ImageFieldName name){
 		if (defaultMainWindowCapability == null ){ return false; }
-		if (!areGraphicsSupported()) { return false; }
+		if (defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().isEmpty()) { return false; }
 		if (defaultMainWindowCapability.getImageFields() != null){
 			for (ImageField field : defaultMainWindowCapability.getImageFields()){
 				if (field.getName().equals(name)){
@@ -273,9 +273,4 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 		}
 		return false;
 	}
-
-	boolean areGraphicsSupported(){
-		return defaultMainWindowCapability == null || defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().size() > 0;
-	}
-
 }

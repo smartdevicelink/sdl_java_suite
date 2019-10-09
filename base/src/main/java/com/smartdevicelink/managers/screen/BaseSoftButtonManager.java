@@ -519,10 +519,9 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
     }
 
     private boolean softButtonImagesSupported() {
-        return defaultMainWindowCapability != null
-                && defaultMainWindowCapability.getSoftButtonCapabilities() != null
-                && !defaultMainWindowCapability.getSoftButtonCapabilities().isEmpty()
-                && defaultMainWindowCapability.getSoftButtonCapabilities().get(0).getImageSupported();
+        return defaultMainWindowCapability == null
+                || defaultMainWindowCapability.getSoftButtonCapabilities() == null
+                || (!defaultMainWindowCapability.getSoftButtonCapabilities().isEmpty() && defaultMainWindowCapability.getSoftButtonCapabilities().get(0).getImageSupported());
     }
 
     /**
