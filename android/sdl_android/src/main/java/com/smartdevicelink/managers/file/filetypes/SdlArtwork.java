@@ -33,12 +33,15 @@
 package com.smartdevicelink.managers.file.filetypes;
 
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 
+import com.smartdevicelink.BuildConfig;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
+import com.smartdevicelink.util.DebugTool;
 
 /**
  * A class that extends SdlFile, representing artwork (JPEG, PNG, or BMP) to be uploaded to core
@@ -148,27 +151,13 @@ public class SdlArtwork extends SdlFile implements Cloneable{
      */
     @Override
     public SdlArtwork clone() {
-        final SdlArtwork clone;
-        try {
-            clone = (SdlArtwork) super.clone();
+        try{
+            return (SdlArtwork) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("superclass messed up", e);
-        }
-        clone.setName(this.getName());
-        clone.setResourceId(this.getResourceId());
-        clone.setUri(this.getUri() == null ? null : Uri.parse(this.getUri().toString()));
-        if (this.getFileData() != null){
-            byte[] data = new byte[this.getFileData().length];
-            for (int i = 0; i < this.getFileData().length; i++) {
-                data[i] = this.getFileData()[i];
+            if(DebugTool.isDebugEnabled()){
+                throw new RuntimeException("Clone not supported by super class");
             }
-            clone.setFileData(data);
         }
-        clone.setType(this.getType());
-        clone.setPersistent(this.isPersistent());
-        clone.setStaticIcon(this.isStaticIcon());
-        clone.isTemplate = this.isTemplate;
-        clone.imageRPC = this.createImageRPC();
-        return clone;
+        return null;
     }
 }
