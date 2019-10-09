@@ -933,6 +933,10 @@ public enum StaticIconName {
 		return null;
 	}
 
+	/**
+	 * Returns the string representation of the hex value associated with this static icon
+	 * @return string of the hex value representation of this static icon
+	 */
 	@Override
 	public String toString() {
 		return INTERNAL_NAME;
