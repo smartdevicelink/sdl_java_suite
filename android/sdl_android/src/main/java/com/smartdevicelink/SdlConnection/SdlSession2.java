@@ -64,7 +64,6 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
     WeakReference<Context> contextWeakReference;
     MediaStreamingStatus mediaStreamingStatus;
     boolean requiresAudioSupport = false;
-    boolean sdlSecurityInitializing = false;
 
     @SuppressWarnings("SameReturnValue")
     @Deprecated
