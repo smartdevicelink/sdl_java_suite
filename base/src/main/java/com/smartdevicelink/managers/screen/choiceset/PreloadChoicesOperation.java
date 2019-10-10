@@ -266,7 +266,7 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 		if (defaultMainWindowCapability == null ){ return false; }
 		if (defaultMainWindowCapability.getTextFields() != null){
 			for (TextField field : defaultMainWindowCapability.getTextFields()){
-				if (field.getName().equals(name)){
+				if (field != null && field.getName() != null && field.getName().equals(name)){
 					return true;
 				}
 			}
