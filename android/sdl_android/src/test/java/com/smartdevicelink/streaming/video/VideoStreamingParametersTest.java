@@ -37,7 +37,7 @@ import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class VideoStreamingParametersTest {
     private VideoStreamingParameters params;

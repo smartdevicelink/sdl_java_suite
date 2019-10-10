@@ -42,15 +42,16 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
-import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
@@ -77,14 +78,13 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     private static final String TAG = "SoftButtonManager";
     private WeakReference<FileManager> fileManager;
-    private DisplayCapabilities displayCapabilities;
-    private SoftButtonCapabilities softButtonCapabilities;
+    WindowCapability defaultMainWindowCapability;
     private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     private HMILevel currentHMILevel;
     private Show inProgressShowRPC;
     private CompletionListener inProgressListener, queuedUpdateListener, cachedListener;
     private boolean hasQueuedUpdate, batchUpdates, waitingOnHMILevelUpdateToSetButtons;
-    private final OnSystemCapabilityListener onSoftButtonCapabilitiesListener, onDisplayCapabilitiesListener;
+    private final OnSystemCapabilityListener onDisplayCapabilityListener;
     private final OnRPCNotificationListener onHMIStatusListener, onButtonPressListener, onButtonEventListener;
     private final SoftButtonObject.UpdateListener updateListener;
 
@@ -99,7 +99,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
      * @param internalInterface an instance of the ISdl interface that can be used for common SDL operations (sendRpc, addRpcListener, etc)
      * @param fileManager an instance of the FileManager so that button graphics can be sent
      */
-    BaseSoftButtonManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+    BaseSoftButtonManager(@NonNull final ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
         this.softButtonObjects = new CopyOnWriteArrayList<>();
@@ -114,41 +114,31 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
 
         // Add OnSoftButtonCapabilitiesListener to keep softButtonCapabilities updated
-        onSoftButtonCapabilitiesListener = new OnSystemCapabilityListener() {
+        onDisplayCapabilityListener = new OnSystemCapabilityListener() {
             @Override
             public void onCapabilityRetrieved(Object capability) {
-                List<SoftButtonCapabilities> softButtonCapabilitiesList = (List<SoftButtonCapabilities>) capability;
-                if (softButtonCapabilitiesList != null && !softButtonCapabilitiesList.isEmpty()) {
-                    softButtonCapabilities = softButtonCapabilitiesList.get(0);
-                } else {
-                    softButtonCapabilities = null;
+                // instead of using the parameter it's more safe to use the convenience method
+                List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
+                if (capabilities == null || capabilities.size() == 0) {
+                    DebugTool.logError("SoftButton Manager - Capabilities sent here are null or empty");
+                }else {
+                    DisplayCapability display = capabilities.get(0);
+                    for (WindowCapability windowCapability : display.getWindowCapabilities()) {
+                        int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+                        if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+                            defaultMainWindowCapability = windowCapability;
+                        }
+                    }
                 }
             }
 
             @Override
             public void onError(String info) {
-                Log.w(TAG, "SoftButton Capability cannot be retrieved:");
-                softButtonCapabilities = null;
+                DebugTool.logError("Display Capability cannot be retrieved");
+                defaultMainWindowCapability = null;
             }
         };
-        this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.SOFTBUTTON, onSoftButtonCapabilitiesListener);
-
-
-        // Add OnDisplayCapabilitiesListener to keep displayCapabilities updated
-        onDisplayCapabilitiesListener = new OnSystemCapabilityListener() {
-            @Override
-            public void onCapabilityRetrieved(Object capability) {
-                displayCapabilities = (DisplayCapabilities) capability;
-            }
-
-            @Override
-            public void onError(String info) {
-                Log.w(TAG, "Display Capability cannot be retrieved:");
-                displayCapabilities = null;
-            }
-        };
-        this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, onDisplayCapabilitiesListener);
-
+        this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
 
         // Add OnHMIStatusListener to keep currentHMILevel updated
         this.onHMIStatusListener = new OnRPCNotificationListener() {
@@ -528,8 +518,10 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         internalInterface.sendRPC(inProgressShowRPC);
     }
 
-    private boolean softButtonImagesSupported(){
-        return (displayCapabilities == null || displayCapabilities.getGraphicSupported()) && (softButtonCapabilities == null || softButtonCapabilities.getImageSupported());
+    private boolean softButtonImagesSupported() {
+        return defaultMainWindowCapability == null
+                || defaultMainWindowCapability.getSoftButtonCapabilities() == null
+                || (!defaultMainWindowCapability.getSoftButtonCapabilities().isEmpty() && defaultMainWindowCapability.getSoftButtonCapabilities().get(0).getImageSupported());
     }
 
     /**
@@ -588,8 +580,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, onHMIStatusListener);
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, onButtonPressListener);
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_EVENT, onButtonEventListener);
-        internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.SOFTBUTTON, onSoftButtonCapabilitiesListener);
-        internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, onDisplayCapabilitiesListener);
+        internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
     }
 
     /**

@@ -8,10 +8,10 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TextField;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
@@ -58,7 +58,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		super.tearDown();
 	}
 
-	private DisplayCapabilities getDisplayCapability(int numberOfMainFields){
+	private WindowCapability getWindowCapability(int numberOfMainFields){
 
 		TextField mainField1 = new TextField();
 		mainField1.setName(TextFieldName.mainField1);
@@ -84,10 +84,10 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 			}
 		}
 
-		DisplayCapabilities displayCapabilities = new DisplayCapabilities();
-		displayCapabilities.setTextFields(returnList);
+		WindowCapability windowCapability = new WindowCapability();
+		windowCapability.setTextFields(returnList);
 
-		return displayCapabilities;
+		return windowCapability;
 	}
 
 	public void testInstantiation(){
@@ -110,7 +110,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertNull(textAndGraphicManager.inProgressUpdate);
 		assertNull(textAndGraphicManager.queuedImageUpdate);
 		assertFalse(textAndGraphicManager.hasQueuedUpdate);
-		assertNull(textAndGraphicManager.displayCapabilities);
+		assertNull(textAndGraphicManager.defaultMainWindowCapability);
 		assertEquals(textAndGraphicManager.currentHMILevel, HMILevel.HMI_NONE);
 		assertFalse(textAndGraphicManager.isDirty);
 		assertEquals(textAndGraphicManager.getState(), BaseSubManager.SETTING_UP);
@@ -126,7 +126,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 
 		// The tests.java class has an example of this, but we must build it to do what
 		// we need it to do. Build display cap w/ 3 main fields and test that it returns 3
-		textAndGraphicManager.displayCapabilities = getDisplayCapability(3);
+		textAndGraphicManager.defaultMainWindowCapability = getWindowCapability(3);
 		assertEquals(textAndGraphicManager.getNumberOfLines(), 3);
 	}
 
@@ -135,7 +135,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		Show inputShow = new Show();
 
 		// Force it to return display with support for only 1 line of text
-		textAndGraphicManager.displayCapabilities = getDisplayCapability(1);
+		textAndGraphicManager.defaultMainWindowCapability = getWindowCapability(1);
 
 		textAndGraphicManager.setTextField1("It is");
 		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
@@ -185,7 +185,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		Show inputShow = new Show();
 
 		// Force it to return display with support for only 2 lines of text
-		textAndGraphicManager.displayCapabilities = getDisplayCapability(2);
+		textAndGraphicManager.defaultMainWindowCapability = getWindowCapability(2);
 
 		textAndGraphicManager.setTextField1("It is");
 		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
@@ -282,7 +282,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		Show inputShow = new Show();
 
 		// Force it to return display with support for only 3 lines of text
-		textAndGraphicManager.displayCapabilities = getDisplayCapability(3);
+		textAndGraphicManager.defaultMainWindowCapability = getWindowCapability(3);
 
 		textAndGraphicManager.setTextField1("It is");
 		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
@@ -375,7 +375,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		Show inputShow = new Show();
 
 		// Force it to return display with support for only 4 lines of text
-		textAndGraphicManager.displayCapabilities = getDisplayCapability(4);
+		textAndGraphicManager.defaultMainWindowCapability = getWindowCapability(4);
 
 		textAndGraphicManager.setTextField1("It is");
 		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
@@ -548,7 +548,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertNull(textAndGraphicManager.inProgressUpdate);
 		assertNull(textAndGraphicManager.queuedImageUpdate);
 		assertFalse(textAndGraphicManager.hasQueuedUpdate);
-		assertNull(textAndGraphicManager.displayCapabilities);
+		assertNull(textAndGraphicManager.defaultMainWindowCapability);
 		assertFalse(textAndGraphicManager.isDirty);
 		assertEquals(textAndGraphicManager.getState(), BaseSubManager.SHUTDOWN);
 	}

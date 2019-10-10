@@ -32,9 +32,6 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import com.smartdevicelink.proxy.SystemCapabilityManager;
-import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
-
 import java.util.List;
 
 public interface KeyboardAutocompleteCompletionListener {

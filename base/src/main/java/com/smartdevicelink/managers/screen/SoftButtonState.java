@@ -39,8 +39,6 @@ import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 
-import java.util.List;
-
 /**
  * <strong>SoftButtonState</strong> <br>
  * Defines an individual state for SoftButtonObject.<br>
