@@ -33,6 +33,7 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.managers.file.SdlArtworkTests;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.test.Test;
@@ -114,6 +115,21 @@ public class MenuCellTests extends AndroidTestCase2 {
 
 		// these should be different
 		assertFalse(menuCell.equals(menuCell3));
+	}
+
+	public void testClone(){
+		MenuCell original = new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST, menuSelectionListener);
+		MenuCell clone = original.clone();
+
+		assertNotNull(clone);
+		assertNotSame(original, clone);
+
+		assertEquals(original.getTitle(), clone.getTitle());
+		assertEquals(original.getCellId(), clone.getCellId());
+		assertEquals(original.getParentCellId(), clone.getParentCellId());
+
+		SdlArtworkTests.equalTest(original.getIcon(), clone.getIcon());
+
 	}
 
 }
