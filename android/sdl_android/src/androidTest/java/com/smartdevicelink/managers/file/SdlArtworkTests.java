@@ -12,6 +12,24 @@ public class SdlArtworkTests extends AndroidTestCase2 {
         SdlArtwork original = Test.GENERAL_ARTWORK;
         SdlArtwork clone = original.clone();
 
+        equalTest(original, clone);
+
+
+        SdlArtwork artwork = new SdlArtwork(StaticIconName.ALBUM);
+        assertNotNull(artwork);
+
+        SdlArtwork staticIconClone = artwork.clone();
+        assertNotNull(staticIconClone);
+
+
+        assertTrue(clone instanceof Cloneable);
+        assertTrue(artwork instanceof Cloneable);
+
+    }
+
+    public static boolean equalTest(SdlArtwork original, SdlArtwork clone){
+
+        assertNotNull(original);
         assertNotNull(clone);
         assertNotSame(original,clone);
 
@@ -28,17 +46,6 @@ public class SdlArtworkTests extends AndroidTestCase2 {
         assertEquals(original.getImageRPC().getValue(), clone.getImageRPC().getValue());
         assertEquals(original.getImageRPC().getImageType(), clone.getImageRPC().getImageType());
 
-
-        SdlArtwork artwork = new SdlArtwork(StaticIconName.ALBUM);
-        assertNotNull(artwork);
-
-        SdlArtwork staticIconClone = artwork.clone();
-        assertNotNull(staticIconClone);
-
-
-        assertTrue(clone instanceof Cloneable);
-        assertTrue(artwork instanceof Cloneable);
-
-
+        return true;
     }
 }
