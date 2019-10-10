@@ -88,6 +88,8 @@ public class ResultTests extends TestCase {
 		Result enumReadOnly = Result.valueForString(example);
 		example = "CORRUPTED_DATA";
 		Result enumCorruptData = Result.valueForString(example);
+		example = "ENCRYPTION_NEEDED";
+		Result enumEncryptionRequired = Result.valueForString(example);
 		
 		assertNotNull("SUCCESS returned null", enumSuccess);
 		assertNotNull("INVALID_DATA returned null", enumInvalidData);
@@ -124,6 +126,7 @@ public class ResultTests extends TestCase {
 		assertNotNull("DATA_NOT_AVAILABLE returned null", enumDataNotAvailable);
 		assertNotNull("READ_ONLY returned null", enumReadOnly);
 		assertNotNull("CORRUPTED_DATA", enumCorruptData);
+		assertNotNull("ENCRYPTION_NEEDED", enumEncryptionRequired);
 	}
 
 	/**
@@ -196,6 +199,7 @@ public class ResultTests extends TestCase {
 		enumTestList.add(Result.DATA_NOT_AVAILABLE);
 		enumTestList.add(Result.READ_ONLY);
 		enumTestList.add(Result.CORRUPTED_DATA);
+		enumTestList.add(Result.ENCRYPTION_NEEDED);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
