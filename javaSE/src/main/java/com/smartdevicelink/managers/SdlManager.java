@@ -34,6 +34,7 @@ package com.smartdevicelink.managers;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
@@ -47,7 +48,12 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.rpc.*;
+import com.smartdevicelink.proxy.rpc.ChangeRegistration;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.SetAppIcon;
+import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.Result;
@@ -61,6 +67,7 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
+
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -88,6 +95,7 @@ public class SdlManager extends BaseSdlManager{
 	private SdlArtwork appIcon;
 	private SdlManagerListener managerListener;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
+	private ServiceEncryptionListener serviceEncryptionListener;
 
 
 	// Managers
@@ -194,7 +202,7 @@ public class SdlManager extends BaseSdlManager{
 	private void notifyDevListener(String info) {
 		if (managerListener != null) {
 			if (getState() == BaseSubManager.ERROR){
-				managerListener.onError(this,info, null);
+				managerListener.onError(this, info, null);
 			} else {
 				managerListener.onStart(this);
 			}
@@ -316,7 +324,6 @@ public class SdlManager extends BaseSdlManager{
 
 
 	// MANAGER GETTERS
-
 	/**
 	 * Gets the PermissionManager. <br>
 	 * <strong>Note: PermissionManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
@@ -539,7 +546,7 @@ public class SdlManager extends BaseSdlManager{
 				_internalInterface = lifecycleManager.getInternalInterface(SdlManager.this);
 
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
-					lifecycleManager.setSdlSecurityClassList(sdlSecList);
+					lifecycleManager.setSdlSecurity(sdlSecList, serviceEncryptionListener);
 				}
 
 				//Setup the notification queue
@@ -711,8 +718,20 @@ public class SdlManager extends BaseSdlManager{
 		 * Sets the Security libraries
 		 * @param secList The list of security class(es)
 		 */
+		@Deprecated
 		public Builder setSdlSecurity(List<Class<? extends SdlSecurityBase>> secList) {
 			sdlManager.sdlSecList = secList;
+			return this;
+		}
+
+		/**
+		 * Sets the security libraries and a callback to notify caller when there is update to encryption service
+		 * @param secList The list of security class(es)
+		 * @param listener The callback object
+		 */
+		public Builder setSdlSecurity(@NonNull List<Class<? extends SdlSecurityBase>> secList, ServiceEncryptionListener listener) {
+			sdlManager.sdlSecList = secList;
+			sdlManager.serviceEncryptionListener = listener;
 			return this;
 		}
 
@@ -774,4 +793,12 @@ public class SdlManager extends BaseSdlManager{
 		}
 	}
 
+	/**
+	 * Start a secured RPC service
+	 */
+	public void startRPCEncryption() {
+		if (lifecycleManager != null) {
+			lifecycleManager.startRPCEncryption();
+		}
+	}
 }

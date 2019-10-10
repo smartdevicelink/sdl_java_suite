@@ -2349,6 +2349,10 @@ public class Validator{
             return false;
         }
 
+        if(item1.getRequireEncryption() != item2.getRequireEncryption()) {
+            return false;
+        }
+
         return true;
     }
 

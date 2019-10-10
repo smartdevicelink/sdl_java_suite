@@ -94,7 +94,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private OnSystemCapabilityListener onDisplaysCapabilityListener;
 	private SdlArtwork primaryGraphic, secondaryGraphic;
 	private TextAlignment textAlignment;
-	private String textField1, textField2, textField3, textField4, mediaTrackTextField, templateTitle;
+	private String textField1, textField2, textField3, textField4, mediaTrackTextField, title;
 	private MetadataType textField1Type, textField2Type, textField3Type, textField4Type;
 
 	//Constructors
@@ -132,7 +132,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		textField4 = null;
 		textField4Type = null;
 		mediaTrackTextField = null;
-		templateTitle = null;
+		title = null;
 		textAlignment = null;
 		primaryGraphic = null;
 		secondaryGraphic = null;
@@ -400,8 +400,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			show.setMediaTrack(mediaTrackTextField);
 		}
 
-		if (templateTitle != null){
-			show.setTemplateTitle(templateTitle);
+		if (title != null){
+			show.setTemplateTitle(title);
 		}
 
 		List<String> nonNullFields = findValidMainTextFields();
@@ -923,8 +923,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		return textField4Type;
 	}
 
-	void setTemplateTitle(String templateTitle){
-		this.templateTitle = templateTitle;
+	void setTitle(String title){
+		this.title = title;
 		if (!batchingUpdates){
 			sdlUpdate(null);
 		}else{
@@ -932,8 +932,8 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 	}
 
-	String getTemplateTitle(){
-		return templateTitle;
+	String getTitle(){
+		return title;
 	}
 
 	void setPrimaryGraphic(SdlArtwork primaryGraphic){

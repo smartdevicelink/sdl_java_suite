@@ -262,4 +262,9 @@ public interface ISdl {
      * @return byte value representing WiPro version
      */
     @NonNull Version getProtocolVersion();
+
+    /**
+     * Start encrypted RPC service
+     */
+    void startRPCEncryption();
 }

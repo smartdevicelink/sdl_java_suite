@@ -594,6 +594,8 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		@Override
 		public void startAudioService(boolean encrypted){}
 
+		@Override
+		public void startRPCEncryption() {}
 	}
 
 

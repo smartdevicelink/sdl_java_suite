@@ -61,19 +61,33 @@ public class DiagnosticMessageResponse extends RPCResponse {
      * Constructs a new DiagnosticMessageResponse object
      * @param success whether the request is successfully processed
      * @param resultCode whether the request is successfully processed
+     * @deprecated use {@link DiagnosticMessageResponse#DiagnosticMessageResponse(Boolean, Result)}
      */
+    @Deprecated
     public DiagnosticMessageResponse(@NonNull Boolean success, @NonNull Result resultCode, @NonNull List<Integer> messageDataResult) {
         this();
         setSuccess(success);
         setResultCode(resultCode);
         setMessageDataResult(messageDataResult);
     }
+
+    /**
+     * Constructs a new DiagnosticMessageResponse object
+     * @param success whether the request is successfully processed
+     * @param resultCode whether the request is successfully processed
+     */
+    public DiagnosticMessageResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
+
     @SuppressWarnings("unchecked")
     public List<Integer> getMessageDataResult() {
         return (List<Integer>) getObject(Integer.class, KEY_MESSAGE_DATA_RESULT);
     }
     
-    public void setMessageDataResult(@NonNull List<Integer> messageDataResult) {
+    public void setMessageDataResult(List<Integer> messageDataResult) {
         setParameters(KEY_MESSAGE_DATA_RESULT, messageDataResult);
     }
 
