@@ -2,7 +2,6 @@ package com.smartdevicelink.managers.file;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import com.smartdevicelink.test.Test;
 

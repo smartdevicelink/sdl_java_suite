@@ -137,7 +137,11 @@ public class SdlArtwork extends SdlFile implements Cloneable{
     @Override
     public SdlArtwork clone() {
         try{
-            return (SdlArtwork) super.clone();
+            SdlArtwork artwork = (SdlArtwork) super.clone();
+            if(artwork != null){
+                artwork.imageRPC = artwork.createImageRPC();
+            }
+            return artwork;
         } catch (CloneNotSupportedException e) {
             if(DebugTool.isDebugEnabled()){
                 throw new RuntimeException("Clone not supported by super class");

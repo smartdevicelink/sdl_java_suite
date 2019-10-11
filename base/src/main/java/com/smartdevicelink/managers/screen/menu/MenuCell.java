@@ -330,8 +330,16 @@ public class MenuCell implements Cloneable{
 		try {
 			MenuCell clone = (MenuCell) super.clone();
 			if(this.icon != null){
-				clone.setIcon(this.icon.clone());
+				clone.icon = this.icon.clone();
 			}
+			if(this.subCells != null){
+				ArrayList<MenuCell> cloneSubCells = new ArrayList<>();
+				for(MenuCell subCell : subCells){
+					cloneSubCells.add(subCell.clone());
+				}
+				clone.subCells = cloneSubCells;
+			}
+
 			return clone;
 		} catch (CloneNotSupportedException e) {
 			if(DebugTool.isDebugEnabled()){
