@@ -216,10 +216,10 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 		choice.setIgnoreAddingVRItems(true);
 
 		if (fileManager.get() != null){
-			if (image != null && fileManager.get().hasUploadedFile(cell.getArtwork())) {
+			if (image != null && (cell.getArtwork().isStaticIcon() || fileManager.get().hasUploadedFile(cell.getArtwork()))) {
 				choice.setImage(image);
 			}
-			if (secondaryImage != null && fileManager.get().hasUploadedFile(cell.getSecondaryArtwork())) {
+			if (secondaryImage != null && (cell.getSecondaryArtwork().isStaticIcon() || fileManager.get().hasUploadedFile(cell.getSecondaryArtwork()))) {
 				choice.setSecondaryImage(secondaryImage);
 			}
 		}
@@ -266,7 +266,7 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 		if (defaultMainWindowCapability == null ){ return false; }
 		if (defaultMainWindowCapability.getTextFields() != null){
 			for (TextField field : defaultMainWindowCapability.getTextFields()){
-				if (field.getName().equals(name)){
+				if (field != null && field.getName() != null && field.getName().equals(name)){
 					return true;
 				}
 			}
