@@ -49,6 +49,7 @@ import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.TextField;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
@@ -66,18 +67,18 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 
 	private WeakReference<ISdl> internalInterface;
 	private WeakReference<FileManager> fileManager;
-	private DisplayCapabilities displayCapabilities;
+	private WindowCapability defaultMainWindowCapability;
 	private HashSet<ChoiceCell> cellsToUpload;
 	private CompletionListener completionListener;
 	private boolean isRunning;
 	private boolean isVROptional;
 
-	PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, DisplayCapabilities displayCapabilities,
+	PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, WindowCapability defaultMainWindowCapability,
 								   Boolean isVROptional, HashSet<ChoiceCell> cellsToPreload, CompletionListener listener){
 		super();
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.fileManager = new WeakReference<>(fileManager);
-		this.displayCapabilities = displayCapabilities;
+		this.defaultMainWindowCapability = defaultMainWindowCapability;
 		this.isVROptional = isVROptional;
 		this.cellsToUpload = cellsToPreload;
 		this.completionListener = listener;
@@ -249,10 +250,10 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	}
 
 	boolean hasImageFieldOfName(ImageFieldName name){
-		if (displayCapabilities == null ){ return false; }
-		if (displayCapabilities.getGraphicSupported() == null || !displayCapabilities.getGraphicSupported()) { return false; }
-		if (displayCapabilities.getImageFields() != null){
-			for (ImageField field : displayCapabilities.getImageFields()){
+		if (defaultMainWindowCapability == null ){ return false; }
+		if (defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().isEmpty()) { return false; }
+		if (defaultMainWindowCapability.getImageFields() != null){
+			for (ImageField field : defaultMainWindowCapability.getImageFields()){
 				if (field.getName().equals(name)){
 					return true;
 				}
@@ -262,9 +263,9 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	}
 
 	boolean hasTextFieldOfName(TextFieldName name){
-		if (displayCapabilities == null ){ return false; }
-		if (displayCapabilities.getTextFields() != null){
-			for (TextField field : displayCapabilities.getTextFields()){
+		if (defaultMainWindowCapability == null ){ return false; }
+		if (defaultMainWindowCapability.getTextFields() != null){
+			for (TextField field : defaultMainWindowCapability.getTextFields()){
 				if (field.getName().equals(name)){
 					return true;
 				}
@@ -272,5 +273,4 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 		}
 		return false;
 	}
-
 }

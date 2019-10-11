@@ -30,23 +30,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.smartdevicelink.managers.screen.choiceset;
+package com.smartdevicelink.managers.lifecycle;
 
-import java.util.List;
+import android.support.annotation.NonNull;
 
-public interface KeyboardAutocompleteCompletionListener {
+import com.smartdevicelink.managers.ServiceEncryptionListener;
+import com.smartdevicelink.proxy.interfaces.ISdl;
 
-	/**
-	 * This listener is called when you wish to update your autocomplete text in response to the user's input
-	 * @param updatedAutoCompleteText - The new autocomplete text to use
-	 * @deprecated use {@link #onUpdatedAutoCompleteList(List<String>)} instead
-	 */
-	@Deprecated
-	void onUpdatedAutoCompleteText(String updatedAutoCompleteText);
+class EncryptionLifecycleManager extends BaseEncryptionLifecycleManager {
 
-	/**
-	 * This listener is called when you wish to update your autocomplete suggestions list in response to the user's input
-	 * @param updatedAutoCompleteList - The new autocomplete suggestions list to use
-	 */
-	void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList);
+    EncryptionLifecycleManager(@NonNull ISdl internalInterface, ServiceEncryptionListener listener) {
+        super(internalInterface, listener);
+    }
 }

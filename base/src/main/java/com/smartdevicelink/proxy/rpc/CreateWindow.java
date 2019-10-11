@@ -1,9 +1,11 @@
 package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.enums.WindowType;
+
 import java.util.Hashtable;
 
 /**

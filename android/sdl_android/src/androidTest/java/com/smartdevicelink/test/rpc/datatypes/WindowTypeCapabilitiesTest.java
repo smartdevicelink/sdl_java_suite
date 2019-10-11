@@ -4,9 +4,12 @@ import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.WindowType;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
+
 import junit.framework.TestCase;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Iterator;
 
 public class WindowTypeCapabilitiesTest extends TestCase {

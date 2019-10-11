@@ -85,7 +85,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		assertNotNull(csm.operationQueue);
 		assertNotNull(csm.executor);
 		assertNotNull(csm.hmiListener);
-		assertNotNull(csm.displayListener);
+		assertNotNull(csm.onDisplayCapabilityListener);
 		assertNull(csm.pendingPresentOperation);
 	}
 
@@ -96,7 +96,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 
 		assertNull(csm.currentHMILevel);
 		assertNull(csm.currentSystemContext);
-		assertNull(csm.displayCapabilities);
+		assertNull(csm.defaultMainWindowCapability);
 		assertNull(csm.pendingPresentationSet);
 		assertNull(csm.pendingPresentOperation);
 

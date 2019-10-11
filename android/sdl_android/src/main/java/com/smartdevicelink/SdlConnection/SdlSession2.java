@@ -154,9 +154,12 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
                 if (!serviceList.contains(serviceType))
                     serviceList.add(serviceType);
 
-                sdlSecurity.initialize();
+                if (!sdlSecurityInitializing) {
+                    sdlSecurityInitializing = true;
+                    sdlSecurity.initialize();
+                    return;
+                }
             }
-            return;
         }
         sdlProtocol.startService(serviceType, sessionID, isEncrypted);
     }

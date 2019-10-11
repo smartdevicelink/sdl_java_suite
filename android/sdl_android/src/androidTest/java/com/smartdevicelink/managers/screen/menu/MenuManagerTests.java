@@ -142,7 +142,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertNull(menuManager.menuConfiguration);
 		assertNotNull(menuManager.hmiListener);
 		assertNotNull(menuManager.commandListener);
-		assertNotNull(menuManager.displayListener);
+		assertNotNull(menuManager.onDisplaysCapabilityListener);
 
 	}
 
@@ -157,7 +157,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertNull(menuManager.menuCells);
 		assertNull(menuManager.oldMenuCells);
 		assertNull(menuManager.currentHMILevel);
-		assertNull(menuManager.displayCapabilities);
+		assertNull(menuManager.defaultMainWindowCapability);
 		assertNull(menuManager.inProgressUpdate);
 		assertNull(menuManager.waitingUpdateMenuCells);
 		assertNull(menuManager.keepsNew);
