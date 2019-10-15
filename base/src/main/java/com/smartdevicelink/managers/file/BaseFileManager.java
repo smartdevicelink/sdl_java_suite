@@ -141,11 +141,12 @@ abstract class BaseFileManager extends BaseSubManager {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				// file list could not be received
-				transitionToState(BaseSubManager.ERROR);
+				// file list could not be received. assume that setting can work and allow SDLManager to start
+				bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
+				transitionToState(BaseSubManager.READY);
 			}
 		});
-		internalInterface.sendRPCRequest(listFiles);
+		internalInterface.sendRPC(listFiles);
 	}
 
 	// DELETION
@@ -173,7 +174,7 @@ abstract class BaseFileManager extends BaseSubManager {
 				}
 			}
 		});
-		internalInterface.sendRPCRequest(deleteFile);
+		internalInterface.sendRPC(deleteFile);
 	}
 
 	/**
@@ -311,7 +312,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			}
 		});
 
-		internalInterface.sendRPCRequest(putFile);
+		internalInterface.sendRPC(putFile);
 	}
 
 	/**
