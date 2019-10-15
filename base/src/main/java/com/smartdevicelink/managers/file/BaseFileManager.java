@@ -52,6 +52,7 @@ import com.smartdevicelink.proxy.rpc.PutFileResponse;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -142,6 +143,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
 				// file list could not be received. assume that setting can work and allow SDLManager to start
+				DebugTool.logError("File Manager could not list files");
 				bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
 				transitionToState(BaseSubManager.READY);
 			}
