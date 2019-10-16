@@ -27,7 +27,7 @@ public class CreateWindowTests extends BaseRpcTests {
 
         msg.setWindowID(Test.GENERAL_INT);
         msg.setWindowName(Test.GENERAL_STRING);
-        msg.setType(Test.GENERAL_WINDOW_TYPE);
+        msg.setType(Test.GENERAL_WINDOWTYPE);
         msg.setAssociatedServiceType(Test.GENERAL_STRING);
         msg.setDuplicateUpdatesFromWindowID(Test.GENERAL_INT);
 
@@ -51,7 +51,7 @@ public class CreateWindowTests extends BaseRpcTests {
         try {
             result.put(CreateWindow.KEY_WINDOW_ID, Test.GENERAL_INT);
             result.put(CreateWindow.KEY_WINDOW_NAME, Test.GENERAL_STRING);
-            result.put(CreateWindow.KEY_TYPE, Test.GENERAL_WINDOW_TYPE);
+            result.put(CreateWindow.KEY_TYPE, Test.GENERAL_WINDOWTYPE);
             result.put(CreateWindow.KEY_ASSOCIATED_SERVICE_TYPE, Test.GENERAL_STRING);
             result.put(CreateWindow.KEY_DUPLICATE_UPDATES_FROM_WINDOW_ID, Test.GENERAL_INT);
         } catch (JSONException e) {
@@ -75,7 +75,7 @@ public class CreateWindowTests extends BaseRpcTests {
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_INT, testWindowID);
         assertEquals(Test.MATCH, Test.GENERAL_STRING, testWindowName);
-        assertEquals(Test.MATCH, Test.GENERAL_WINDOW_TYPE, testType);
+        assertEquals(Test.MATCH, Test.GENERAL_WINDOWTYPE, testType);
         assertEquals(Test.MATCH, Test.GENERAL_STRING, testAssociatedServiceType);
         assertEquals(Test.MATCH, Test.GENERAL_INT, testDuplicateUpdatesFromWindowID);
 
