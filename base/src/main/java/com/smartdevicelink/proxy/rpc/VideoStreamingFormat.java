@@ -31,7 +31,9 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
@@ -75,6 +77,15 @@ public class VideoStreamingFormat extends RPCStruct {
 
 	public VideoStreamingCodec getCodec(){
 		return (VideoStreamingCodec) getObject(VideoStreamingCodec.class, KEY_CODEC);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj != null && obj instanceof VideoStreamingFormat){
+			VideoStreamingFormat compareTo = (VideoStreamingFormat) obj;
+			return getCodec() == compareTo.getCodec() && getProtocol() == compareTo.getProtocol();
+		}
+		return false;
 	}
 
 	@Override

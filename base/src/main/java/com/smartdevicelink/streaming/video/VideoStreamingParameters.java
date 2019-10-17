@@ -44,6 +44,8 @@ import java.util.List;
 public class VideoStreamingParameters {
 	private final VideoStreamingProtocol DEFAULT_PROTOCOL = VideoStreamingProtocol.RAW;
 	private final VideoStreamingCodec DEFAULT_CODEC = VideoStreamingCodec.H264;
+	private final VideoStreamingFormat[] CURRENTLY_SUPPORTED_FORMATS = { new VideoStreamingFormat(VideoStreamingProtocol.RTP, VideoStreamingCodec.H264),
+                                                                         new VideoStreamingFormat(VideoStreamingProtocol.RAW, VideoStreamingCodec.H264) };
 	private final int DEFAULT_WIDTH = 1024;
 	private final int DEFAULT_HEIGHT = 576;
 	private final int DEFAULT_DENSITY = 240;
@@ -141,9 +143,20 @@ public class VideoStreamingParameters {
             if(resolution.getResolutionHeight()!=null && resolution.getResolutionHeight() > 0){ this.resolution.setResolutionHeight((int)(resolution.getResolutionHeight() / scale)); }
             if(resolution.getResolutionWidth()!=null && resolution.getResolutionWidth() > 0){ this.resolution.setResolutionWidth((int)(resolution.getResolutionWidth() / scale)); }
         }
-        List<VideoStreamingFormat> formats = capability.getSupportedFormats();
+
+        // This should be the last call as it will return out once a suitable format is found
+        final List<VideoStreamingFormat> formats = capability.getSupportedFormats();
         if(formats != null && formats.size()>0){
-            this.format = formats.get(0);
+            for(VideoStreamingFormat format : formats){
+                for(int i = 0; i < CURRENTLY_SUPPORTED_FORMATS.length; i ++){
+                    if(CURRENTLY_SUPPORTED_FORMATS[i].equals(format) ){
+                        this.format = format;
+                        return;
+                    }
+                }
+            }
+            //TODO In the future we should set format to null, but might be a breaking change
+            // For now format, will remain whatever was set prior to this update
         }
 
     }
