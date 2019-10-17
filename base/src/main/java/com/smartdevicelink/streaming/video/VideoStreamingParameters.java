@@ -156,7 +156,7 @@ public class VideoStreamingParameters {
                 }
             }
             //TODO In the future we should set format to null, but might be a breaking change
-            // For now format, will remain whatever was set prior to this update
+            // For now, format will remain whatever was set prior to this update
         }
 
     }
