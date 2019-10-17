@@ -31,9 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc;
 
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
