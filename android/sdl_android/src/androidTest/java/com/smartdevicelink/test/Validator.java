@@ -3723,7 +3723,7 @@ public class Validator{
     	if (g2 == null) {
     		return (g1 == null);
 		}
-    	if (g1.getColumn() != g2.getColumn()) {
+    	if (g1.getCol() != g2.getCol()) {
     		log(tag, "Columns do not match");
     		return false;
 		}
@@ -3735,7 +3735,7 @@ public class Validator{
 			log(tag, "Levels do not match");
 			return false;
 		}
-    	if (g1.getColumnSpan() != g2.getColumnSpan()) {
+    	if (g1.getColSpan() != g2.getColSpan()) {
 			log(tag, "Column spans do not match");
     		return false;
 		}

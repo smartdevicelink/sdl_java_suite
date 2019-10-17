@@ -53,8 +53,7 @@ public class GetInteriorVehicleDataConsentResponseTests extends BaseRpcTests {
 	}
 
 	public void testRequiredParams(){
-		GetInteriorVehicleDataConsentResponse msg = new GetInteriorVehicleDataConsentResponse(true, Result.SUCCESS, Test.GENERAL_BOOLEAN_LIST);
-		assertEquals(Test.MATCH, msg.getAllowances(), Test.GENERAL_BOOLEAN_LIST);
+		GetInteriorVehicleDataConsentResponse msg = new GetInteriorVehicleDataConsentResponse(true, Result.SUCCESS);
 		assertTrue(msg.getSuccess());
 		assertEquals(Test.MATCH, msg.getResultCode(), Result.SUCCESS);
 	}

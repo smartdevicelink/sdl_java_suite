@@ -430,7 +430,7 @@ public class Test {
 	public static final Grid                           GENERAL_GRID                           = new Grid();
 	public static final SeatLocation                   GENERAL_SEAT_LOCATION                  = new SeatLocation();
 	public static final ModuleInfo                     GENERAL_MODULE_INFO                    = new ModuleInfo();
-	public static final WindowType                     GENERAL_WINDOW_TYPE                    = WindowType.MAIN;
+	public static final WindowType                     GENERAL_WINDOWTYPE                     = WindowType.MAIN;
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
 	public static final List<Choice>                    GENERAL_CHOICE_LIST                    = new ArrayList<Choice>();
@@ -706,7 +706,7 @@ public class Test {
 		GENERAL_IMAGEFIELD.setImageTypeSupported(GENERAL_FILETYPE_LIST);
 		GENERAL_IMAGEFIELD_LIST.add(GENERAL_IMAGEFIELD);
 
-		GENERAL_WINDOW_TYPE_CAPABILITIES.setType(GENERAL_WINDOW_TYPE);
+		GENERAL_WINDOW_TYPE_CAPABILITIES.setType(GENERAL_WINDOWTYPE);
 		GENERAL_WINDOW_TYPE_CAPABILITIES.setMaximumNumberOfWindows(GENERAL_INT);
 		GENERAL_WINDOW_TYPE_CAPABILITIES_LIST.add(GENERAL_WINDOW_TYPE_CAPABILITIES);
 
@@ -1286,7 +1286,7 @@ public class Test {
 			JSON_IMAGEFIELD.put(ImageField.KEY_NAME, ImageFieldName.graphic);
 			JSON_IMAGEFIELDS.put(JSON_IMAGEFIELD);
 
-			JSON_WINDOW_TYPE_CAPABILITIES.put(WindowTypeCapabilities.KEY_TYPE, GENERAL_WINDOW_TYPE);
+			JSON_WINDOW_TYPE_CAPABILITIES.put(WindowTypeCapabilities.KEY_TYPE, GENERAL_WINDOWTYPE);
 			JSON_WINDOW_TYPE_CAPABILITIES.put(WindowTypeCapabilities.KEY_MAXIMUM_NUMBER_OF_WINDOWS, GENERAL_INT);
 			JSON_WINDOW_TYPE_CAPABILITIES_LIST.put(JSON_WINDOW_TYPE_CAPABILITIES);
 
