@@ -37,6 +37,7 @@ import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
+import com.smartdevicelink.util.DebugTool;
 
 import java.util.List;
 
@@ -155,6 +156,8 @@ public class VideoStreamingParameters {
                     }
                 }
             }
+            DebugTool.logWarning("The VideoStreamingFormat has not been update because none of the provided formats is supported");
+
             //TODO In the future we should set format to null, but might be a breaking change
             // For now, format will remain whatever was set prior to this update
         }
