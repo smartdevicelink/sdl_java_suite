@@ -156,7 +156,7 @@ public class VideoStreamingParameters {
                     }
                 }
             }
-            DebugTool.logWarning("The VideoStreamingFormat has not been update because none of the provided formats are supported.");
+            DebugTool.logWarning("The VideoStreamingFormat has not been updated because none of the provided formats are supported.");
 
             //TODO In the future we should set format to null, but might be a breaking change
             // For now, format will remain whatever was set prior to this update
