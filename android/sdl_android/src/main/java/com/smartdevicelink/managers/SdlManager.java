@@ -243,7 +243,7 @@ public class SdlManager extends BaseSdlManager{
 	protected void checkLifecycleConfiguration(){
 		final Language actualLanguage =  this.getRegisterAppInterfaceResponse().getLanguage();
 
-		if (!actualLanguage.equals(hmiLanguage)) {
+		if (actualLanguage != null && !actualLanguage.equals(hmiLanguage)) {
 
 			final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage);
 
