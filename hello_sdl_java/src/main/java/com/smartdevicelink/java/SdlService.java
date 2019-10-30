@@ -37,6 +37,7 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSetSelectionListener;
@@ -61,6 +62,8 @@ public class SdlService {
     private static final String TAG 					= "SDL Service";
 
     private static final String APP_NAME 				= "Hello Sdl";
+    private static final String APP_NAME_ES             = "Hola Sdl";
+    private static final String APP_NAME_FR             = "Bonjour Sdl";
     private static final String APP_ID 					= "8678309";
 
     private static final String ICON_FILENAME 			= "hello_sdl_icon.png";
@@ -132,6 +135,23 @@ public class SdlService {
 
                 @Override
                 public void onError(SdlManager sdlManager, String info, Exception e) {
+                }
+
+                @Override
+                public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language){
+                    String appName;
+                    switch (language) {
+                        case ES_MX:
+                            appName = APP_NAME_ES;
+                            break;
+                        case FR_CA:
+                            appName = APP_NAME_FR;
+                            break;
+                        default:
+                            return null;
+                    }
+
+                    return new LifecycleConfigurationUpdate(appName,null,TTSChunkFactory.createSimpleTTSChunks(appName), null);
                 }
             };
 
@@ -232,7 +252,7 @@ public class SdlService {
         });
 
         // sub menu parent cell
-        MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", null, Arrays.asList(subCell1,subCell2));
+        MenuCell mainCell3 = new MenuCell("Test Cell 3 (sub menu)", MenuLayout.LIST, null, Arrays.asList(subCell1,subCell2));
 
         MenuCell mainCell4 = new MenuCell("Show Perform Interaction", null, null, new MenuSelectionListener() {
             @Override

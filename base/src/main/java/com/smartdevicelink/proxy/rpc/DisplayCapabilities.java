@@ -150,7 +150,7 @@ public class DisplayCapabilities extends RPCStruct {
         if(!store.containsKey(KEY_GRAPHIC_SUPPORTED)){
             // At some point this was added to the RPC spec as mandatory but at least in v1.0.0
             // it was not included.
-            store.put(KEY_GRAPHIC_SUPPORTED, new Boolean(false));
+            store.put(KEY_GRAPHIC_SUPPORTED, Boolean.FALSE);
         }
     }
 
@@ -270,5 +270,5 @@ public class DisplayCapabilities extends RPCStruct {
     @SuppressWarnings("unchecked")
     public ScreenParams getScreenParams() {
         return (ScreenParams) getObject(ScreenParams.class, KEY_SCREEN_PARAMS);
-    }     
+    }
 }

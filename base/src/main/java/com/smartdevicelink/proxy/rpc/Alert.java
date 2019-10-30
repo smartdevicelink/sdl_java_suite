@@ -39,7 +39,9 @@ import java.util.List;
 
 /**
  * Provides information to the user using either TTS, the Display or both and
- * can include a system-generated alert tone
+ * can include a system-generated alert tone.
+ *
+ * If connecting to SDL Core v.6.0+, the alert can be canceled programmatically using the `cancelID`. Canceling will not dismiss the alert's speech - only the modal view will be dismissed. On older versions of SDL Core, the alert will persist until the user has interacted with the alert or the specified timeout has elapsed.
  * 
  * <ul>
  * <li>The displayed portion of the Alert, if any, will persist until the
@@ -68,7 +70,7 @@ import java.util.List;
  * 			<th>Name</th>
  * 			<th>Type</th>
  * 			<th>Description</th>
- *                 <th> Req.</th>
+ *          <th>Req.</th>
  * 			<th>Notes</th>
  * 			<th>Version Available</th>
  * 		</tr>
@@ -76,23 +78,23 @@ import java.util.List;
  * 			<td>alertText1</td>
  * 			<td>String</td>
  * 			<td>Text to be displayed in the first field of the display during the Alert. </td>
- *                 <td>N</td>
- * 			<td>	Length is limited to what is indicated in RegisterAppInterface response.  If omitted, top display line will be cleared. Text is always centered</td>
+ *          <td>N</td>
+ * 			<td>Length is limited to what is indicated in RegisterAppInterface response.  If omitted, top display line will be cleared. Text is always centered</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>alertText2</td>
  * 			<td>String</td>
  * 			<td>Text to be displayed in the second field of the display during the Alert. </td>
- *                 <td>N</td>
- * 			<td>	Only permitted if HMI supports a second display line.	Length is limited to what is indicated in RegisterAppInterface response. 	If omitted, second display line will be cleared.  </td>
+ *          <td>N</td>
+ * 			<td>Only permitted if HMI supports a second display line.	Length is limited to what is indicated in RegisterAppInterface response. 	If omitted, second display line will be cleared.  </td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>alertText3</td>
  * 			<td>String</td>
  * 			<td>Text to be displayed in the third field of the display during the Alert.</td>
- *                 <td>N</td>
+ *          <td>N</td>
  * 			<td>Array must have a least one element. </td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
@@ -100,23 +102,23 @@ import java.util.List;
  * 			<td>ttsChunks</td>
  * 			<td>TTSChunk[]</td>
  * 			<td>Array of type TTSChunk which, taken together, specify what is to be spoken to the user.</td>
- *                 <td>N</td>
+ *          <td>N</td>
  * 			<td>Array must have a least one element. </td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>duration</td>
  * 			<td>Integer</td>
- * 			<td><p>The duration of the displayed portion of the alert, in milliseconds.</p> After this amount of time has passed, the display fields alertText1 and alertText2 will revert to what was displayed in those fields before the alert began.</td>
- *                 <td>N</td>
- * 			<td>Min Value: 3000 Max Value: 10000	<p>If omitted, the default is 5000 milliseconds</p></td>
+ * 			<td>The duration of the displayed portion of the alert, in milliseconds. After this amount of time has passed, the display fields alertText1 and alertText2 will revert to what was displayed in those fields before the alert began.</td>
+ *          <td>N</td>
+ * 			<td>Min Value: 3000 Max Value: 10000. If omitted, the default is 5000 milliseconds</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
  * 		<tr>
  * 			<td>playTone</td>
  * 			<td>Boolean</td>
  * 			<td>Specifies whether the alert tone should be played before the TTS (if any) is spoken.</td>
- *                 <td>N</td>
+ *          <td>N</td>
  * 			<td>If omitted, default is true.</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
@@ -124,7 +126,7 @@ import java.util.List;
  * 			<td>softButtons</td>
  * 			<td>SoftButton[]</td>
  * 			<td>Specifies the softbuttons, the apps wants to use in this alert.</td>
- *                 <td></td>
+ *          <td>N</td>
  * 			<td>If omitted on supported displays, the alert will not have any SoftButton.ArrayMin: 0; ArrayMax: 4</td>
  * 			<td>SmartDeviceLink 1.0</td>
  * 		</tr>
@@ -132,9 +134,25 @@ import java.util.List;
  * 			<td>progressIndicator</td>
  * 			<td>Boolean</td>
  * 			<td>If supported on the given platform, the alert GUI will include some sort of animation indicating that loading of a feature is progressing.  e.g. a spinning wheel or hourglass, etc.</td>
- *                 <td>N</td>
+ *         	<td>N</td>
  * 			<td></td>
  * 			<td>SmartDeviceLink 1.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>cancelID</td>
+ * 			<td>Integer</td>
+ * 			<td>An ID for this specific alert to allow cancellation through the `CancelInteraction` RPC.</td>
+ *          <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 6.0</td>
+ * 		</tr>
+ * 		<tr>
+ * 			<td>alertIcon</td>
+ * 			<td>Image</td>
+ * 			<td>Image struct determining whether the icon is static or dynamic. If omitted on supported displays, no (or the default if applicable) icon should be displayed.</td>
+ *          <td>N</td>
+ * 			<td></td>
+ * 			<td>SmartDeviceLink 6.0.0</td>
  * 		</tr>
  *  </table>
  * @since SmartDeviceLink 1.0
@@ -154,6 +172,8 @@ public class Alert extends RPCRequest {
     public static final String KEY_PROGRESS_INDICATOR = "progressIndicator";
 	public static final String KEY_TTS_CHUNKS = "ttsChunks";
 	public static final String KEY_SOFT_BUTTONS = "softButtons";
+	public static final String KEY_CANCEL_ID = "cancelID";
+	public static final String KEY_ALERT_ICON = "alertIcon";
 
 	/**
 	 * Constructs a new Alert object
@@ -364,14 +384,72 @@ public class Alert extends RPCRequest {
 	 *            </ul>
 	 * @since SmartDeviceLink 2.0
 	 */
-    
     public void setSoftButtons(List<SoftButton> softButtons) {
 		setParameters(KEY_SOFT_BUTTONS, softButtons);
     }
-    public Boolean getProgressIndicator() {
-        return getBoolean(KEY_PROGRESS_INDICATOR);
+
+	/**
+	 * Gets a Boolean value representing the progress indicator
+	 *
+	 * @return Boolean - If TRUE, the alert GUI will include some sort of animation indicating that loading of a feature is progressing. e.g. a spinning wheel or hourglass, etc.
+	 *
+	 * @since SmartDeviceLink 3.0
+	 */
+	public Boolean getProgressIndicator() {
+		return getBoolean(KEY_PROGRESS_INDICATOR);
     }
-    public void setProgressIndicator(Boolean progressIndicator) {
+
+	/**
+	 * Sets whether the progress indicator should be shown
+	 *
+	 * @param progressIndicator A Boolean value which specifies whether the alert GUI will include some sort of animation indicating that loading of a feature is progressing. e.g. a spinning wheel or hourglass, etc.
+	 *
+	 * @since SmartDeviceLink 3.0
+	 */
+	public void setProgressIndicator(Boolean progressIndicator) {
         setParameters(KEY_PROGRESS_INDICATOR, progressIndicator);
     }
+
+	/**
+	 * Gets an Integer value representing the cancel ID
+	 *
+	 * @return Integer - An Integer value representing the ID for this specific alert to allow cancellation through the `CancelInteraction` RPC.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+    public Integer getCancelID() {
+		return getInteger(KEY_CANCEL_ID);
+	}
+
+	/**
+	 * Sets the cancel ID
+	 *
+	 * @param cancelID An Integer ID for this specific alert to allow cancellation through the `CancelInteraction` RPC.
+	 *
+	 * @since SmartDeviceLink 6.0
+	 */
+	public void setCancelID(Integer cancelID) {
+		setParameters(KEY_CANCEL_ID, cancelID);
+	};
+	
+	/**
+	 * <p>Sets the Image
+	 * If provided, defines the image to be shown along with the alert</p>
+	 * @param alertIcon
+	 *            <p>an Image object representing the Image shown along with the alert</p>
+	 *            <p>
+	 *            <b>Notes: </b>If omitted on supported displays, no (or the
+	 *            default if applicable) icon will be displayed</p>
+	 */
+	public void setAlertIcon(Image alertIcon) {
+		setParameters(KEY_ALERT_ICON, alertIcon);
+	}
+
+	/**
+	 * <p>Gets the image to be shown along with the alert </p>
+	 * @return Image -an Image object
+	 */
+	public Image getAlertIcon() {
+		return (Image) getObject(Image.class, KEY_ALERT_ICON);
+	}
 }

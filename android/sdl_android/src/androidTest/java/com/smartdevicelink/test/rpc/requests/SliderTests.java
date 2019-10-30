@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.Slider}
+ * {@link com.smartdevicelink.proxy.rpc.Slider}
  */
 public class SliderTests extends BaseRpcTests {
 
@@ -31,6 +31,7 @@ public class SliderTests extends BaseRpcTests {
 		msg.setTimeout(Test.GENERAL_INT);
 		msg.setSliderHeader(Test.GENERAL_STRING);
 		msg.setSliderFooter(Test.GENERAL_STRING_LIST);
+		msg.setCancelID(Test.GENERAL_INTEGER);
 
 		return msg;
 	}
@@ -54,7 +55,8 @@ public class SliderTests extends BaseRpcTests {
 			result.put(Slider.KEY_SLIDER_FOOTER, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));
 			result.put(Slider.KEY_POSITION, Test.GENERAL_INT);
 			result.put(Slider.KEY_TIMEOUT, Test.GENERAL_INT);
-			result.put(Slider.KEY_NUM_TICKS, Test.GENERAL_INT);			
+			result.put(Slider.KEY_NUM_TICKS, Test.GENERAL_INT);
+			result.put(Slider.KEY_CANCEL_ID, Test.GENERAL_INTEGER);
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
@@ -72,13 +74,15 @@ public class SliderTests extends BaseRpcTests {
     	Integer testPosition    = ( (Slider) msg ).getPosition();
     	String  testSlider      = ( (Slider) msg ).getSliderHeader();
     	List<String> testFooter = ( (Slider) msg ).getSliderFooter();
-		
+    	Integer testCancelID = ( (Slider) msg ).getCancelID();
+
     	// Valid Tests
 		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, testNumTicks);
 		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, testTimeout);
 		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, testPosition);
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testSlider);
 		assertTrue(Test.TRUE, Validator.validateStringList(Test.GENERAL_STRING_LIST, testFooter));
+		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testCancelID);
 		    	
     	// Invalid/Null Tests
 		Slider msg = new Slider();
@@ -90,6 +94,7 @@ public class SliderTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getPosition());
 		assertNull(Test.NULL, msg.getTimeout());
 		assertNull(Test.NULL, msg.getNumTicks());
+		assertNull(Test.NULL, msg.getCancelID());
 	}
 	
 	/**
@@ -121,6 +126,7 @@ public class SliderTests extends BaseRpcTests {
 			
 			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, Slider.KEY_POSITION), cmd.getPosition());
 			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, Slider.KEY_TIMEOUT), cmd.getTimeout());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, Slider.KEY_CANCEL_ID), cmd.getCancelID());
 		} 
 		catch (JSONException e) {
 			fail(Test.JSON_FAIL);

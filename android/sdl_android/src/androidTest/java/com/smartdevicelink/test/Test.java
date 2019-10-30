@@ -8,6 +8,7 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
+import com.smartdevicelink.managers.screen.menu.MenuConfiguration;
 import com.smartdevicelink.managers.screen.menu.MenuSelectionListener;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandSelectionListener;
@@ -33,7 +34,9 @@ import com.smartdevicelink.proxy.rpc.DIDResult;
 import com.smartdevicelink.proxy.rpc.DateTime;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
+import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
 import com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities;
@@ -55,6 +58,7 @@ import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.ModuleData;
+import com.smartdevicelink.proxy.rpc.ModuleInfo;
 import com.smartdevicelink.proxy.rpc.NavigationCapability;
 import com.smartdevicelink.proxy.rpc.NavigationInstruction;
 import com.smartdevicelink.proxy.rpc.NavigationServiceData;
@@ -74,6 +78,7 @@ import com.smartdevicelink.proxy.rpc.ScreenParams;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
 import com.smartdevicelink.proxy.rpc.SeatControlData;
+import com.smartdevicelink.proxy.rpc.SeatLocation;
 import com.smartdevicelink.proxy.rpc.SeatMemoryAction;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.SisData;
@@ -85,6 +90,7 @@ import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.proxy.rpc.Temperature;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
+import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
@@ -99,6 +105,8 @@ import com.smartdevicelink.proxy.rpc.WeatherAlert;
 import com.smartdevicelink.proxy.rpc.WeatherData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
@@ -149,6 +157,7 @@ import com.smartdevicelink.proxy.rpc.enums.MassageMode;
 import com.smartdevicelink.proxy.rpc.enums.MassageZone;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.proxy.rpc.enums.MediaType;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
 import com.smartdevicelink.proxy.rpc.enums.NavigationAction;
@@ -190,6 +199,7 @@ import com.smartdevicelink.proxy.rpc.enums.VideoStreamingState;
 import com.smartdevicelink.proxy.rpc.enums.VrCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.WarningLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.WayPointType;
+import com.smartdevicelink.proxy.rpc.enums.WindowType;
 import com.smartdevicelink.util.Version;
 
 import org.json.JSONArray;
@@ -343,6 +353,7 @@ public class Test {
 	public static final AudioStreamingIndicator        GENERAL_AUDIO_STREAMING_INDICATOR      = AudioStreamingIndicator.PLAY;
 	public static final String                         GENERAL_APP_ID                         = "123e4567e8";
 	public static final String                         GENERAL_FULL_APP_ID                    = "123e4567-e89b-12d3-a456-426655440000";
+	public static final String                         GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME   = "oemCustomVehicleDataName";
 	public static final HybridAppPreference 		   GENERAL_HYBRID_APP_PREFERENCE          = HybridAppPreference.CLOUD;
 	public static final CloudAppProperties             GENERAL_CLOUDAPPPROPERTIES             = new CloudAppProperties();
 	public static final AppServiceType                 GENERAL_APP_SERVICE_TYPE               = AppServiceType.MEDIA;
@@ -398,7 +409,16 @@ public class Test {
 	public static final AudioControlData               GENERAL_AUDIOCONTROLDATA               = new AudioControlData();
 	public static final LightControlData               GENERAL_LIGHTCONTROLDATA               = new LightControlData();
 	public static final HMISettingsControlData         GENERAL_HMISETTINGSCONTROLDATA         = new HMISettingsControlData();
+
+	public static final VehicleDataResult              GENERAL_OEM_CUSTOM_VEHICLE_DATA        = new VehicleDataResult();
+	public static final TemplateConfiguration          GENERAL_TEMPLATE_CONFIGURATION         = new TemplateConfiguration();
+	public static final WindowTypeCapabilities         GENERAL_WINDOW_TYPE_CAPABILITIES       = new WindowTypeCapabilities();
+	public static final WindowCapability               GENERAL_WINDOW_CAPABILITY              = new WindowCapability();
+	public static final DisplayCapability              GENERAL_DISPLAY_CAPABILITY             = new DisplayCapability();
+
 	public static final SdlArtwork                     GENERAL_ARTWORK                        = new SdlArtwork("sdl", FileType.GRAPHIC_PNG, R.drawable.ic_sdl, false);
+	public static final MenuLayout                     GENERAL_MENU_LAYOUT                    = MenuLayout.LIST;
+	public static final MenuConfiguration              GENERAL_MENU_CONFIGURATION             = new MenuConfiguration(GENERAL_MENU_LAYOUT, GENERAL_MENU_LAYOUT);
 
 	public static final HMICapabilities                GENERAL_HMICAPABILITIES                = new HMICapabilities();
 
@@ -407,7 +427,10 @@ public class Test {
 	public static final HapticRect                     GENERAL_HAPTIC_RECT                    = new HapticRect();
 	public static final FuelType                       GENERAL_FUELTYPE                       = FuelType.GASOLINE;
 	public static final LockScreenConfig               GENERAL_LOCKSCREENCONFIG               = new LockScreenConfig();
-
+	public static final Grid                           GENERAL_GRID                           = new Grid();
+	public static final SeatLocation                   GENERAL_SEAT_LOCATION                  = new SeatLocation();
+	public static final ModuleInfo                     GENERAL_MODULE_INFO                    = new ModuleInfo();
+	public static final WindowType                     GENERAL_WINDOWTYPE                     = WindowType.MAIN;
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
 	public static final List<Choice>                    GENERAL_CHOICE_LIST                    = new ArrayList<Choice>();
@@ -455,6 +478,14 @@ public class Test {
 	public static final List<WeatherData>               GENERAL_WEATHERDATA_LIST               = Arrays.asList(GENERAL_WEATHERDATA);
 	public static final List<WeatherAlert>              GENERAL_WEATHERALERT_LIST              = Arrays.asList(GENERAL_WEATHERALERT);
 	public static final List<NavigationInstruction>     GENERAL_NAVIGATION_INSTRUCTION_LIST    = Arrays.asList(GENERAL_NAVIGATION_INSTRUCTION);
+	public static final List<SeatLocation>              GENERAL_SEAT_LIST                      = new ArrayList<>(1);
+	public static final List<Boolean>                   GENERAL_BOOLEAN_LIST                   = Arrays.asList(new Boolean[]{Boolean.TRUE, Boolean.TRUE});
+	public static final List<Integer>                   GENERAL_AVAILABLE_HD_CHANNELS_LIST     = Arrays.asList(new Integer[]{ 1, 2});
+	public static final List<ImageType>                 GENERAL_IMAGE_TYPE_LIST                = Arrays.asList(new ImageType[]{ImageType.DYNAMIC, ImageType.STATIC});
+	public static final List<WindowTypeCapabilities>    GENERAL_WINDOW_TYPE_CAPABILITIES_LIST  = new ArrayList<WindowTypeCapabilities>(1);
+	public static final List<WindowCapability>          GENERAL_WINDOW_CAPABILITY_LIST         = new ArrayList<WindowCapability>(1);
+	public static final List<DisplayCapability>         GENERAL_DISPLAYCAPABILITY_LIST         = new ArrayList<DisplayCapability>(1);
+	public static final List<MenuLayout>                GENERAL_MENU_LAYOUT_LIST               = Arrays.asList(MenuLayout.LIST, MenuLayout.TILES);
 	public static final int                             GENERAL_MENU_MAX_ID                    = 2000000000;
 	public static final MenuCell                        GENERAL_MENUCELL                       = new MenuCell(GENERAL_STRING,null, null, new MenuSelectionListener() {
 		@Override
@@ -472,7 +503,6 @@ public class Test {
 		}
 	});
 	public static final List<VoiceCommand>              GENERAL_VOICE_COMMAND_LIST             = Arrays.asList(GENERAL_VOICE_COMMAND);
-
 
 	public static final JSONArray  JSON_TURNS                     = new JSONArray();
 	public static final JSONArray  JSON_CHOICES                   = new JSONArray();
@@ -492,6 +522,7 @@ public class Test {
 	public static final JSONArray JSON_RADIOCONTROLCAPABILITIES   = new JSONArray();
 	public static final JSONArray JSON_CLIMATECONTROLCAPABILITIES = new JSONArray();
 	public static final JSONArray  JSON_TEXTFIELDTYPES            = new JSONArray();
+	public static final JSONArray  JSON_SEAT_LOCATIONS            = new JSONArray();
 	public static final JSONObject JSON_TURN                      = new JSONObject();
 	public static final JSONObject JSON_IMAGE                     = new JSONObject();
 	public static final JSONObject JSON_CHOICE                    = new JSONObject();
@@ -519,7 +550,16 @@ public class Test {
 	public static final JSONObject JSON_RGBCOLOR                  = new JSONObject();
 	public static final JSONObject JSON_DAYCOLORSCHEME            = new JSONObject();
 	public static final JSONObject JSON_NIGHTCOLORSCHEME          = new JSONObject();
-
+	public static final JSONObject JSON_GRID                      = new JSONObject();
+	public static final JSONObject JSON_MODULE_INFO               = new JSONObject();
+	public static final JSONArray  JSON_IMAGE_TYPE_SUPPORTED      = new JSONArray();
+	public static final JSONObject JSON_WINDOW_TYPE_CAPABILITIES  = new JSONObject();
+	public static final JSONArray  JSON_WINDOW_TYPE_CAPABILITIES_LIST  = new JSONArray();
+	public static final JSONObject JSON_WINDOW_CAPABILITY         = new JSONObject();
+	public static final JSONArray  JSON_WINDOW_CAPABILITIES       = new JSONArray();
+	public static final JSONArray  JSON_IMAGE_TYPES               = new JSONArray();
+	public static final JSONObject JSON_DISPLAYCAPABILITY         = new JSONObject();
+	public static final JSONArray  JSON_DISPLAYCAPABILITY_LIST    = new JSONArray();
 	static {
 		GENERAL_TOUCHEVENTCAPABILITIES.setDoublePressAvailable(GENERAL_BOOLEAN);
 		GENERAL_TOUCHEVENTCAPABILITIES.setMultiTouchAvailable(GENERAL_BOOLEAN);
@@ -666,15 +706,39 @@ public class Test {
 		GENERAL_IMAGEFIELD.setImageTypeSupported(GENERAL_FILETYPE_LIST);
 		GENERAL_IMAGEFIELD_LIST.add(GENERAL_IMAGEFIELD);
 
+		GENERAL_WINDOW_TYPE_CAPABILITIES.setType(GENERAL_WINDOWTYPE);
+		GENERAL_WINDOW_TYPE_CAPABILITIES.setMaximumNumberOfWindows(GENERAL_INT);
+		GENERAL_WINDOW_TYPE_CAPABILITIES_LIST.add(GENERAL_WINDOW_TYPE_CAPABILITIES);
+
+		GENERAL_WINDOW_CAPABILITY.setWindowID(GENERAL_INT);
+		GENERAL_WINDOW_CAPABILITY.setTextFields(GENERAL_TEXTFIELD_LIST);
+		GENERAL_WINDOW_CAPABILITY.setImageFields(GENERAL_IMAGEFIELD_LIST);
+		GENERAL_WINDOW_CAPABILITY.setImageTypeSupported(GENERAL_IMAGE_TYPE_LIST);
+		GENERAL_WINDOW_CAPABILITY.setTemplatesAvailable(GENERAL_STRING_LIST);
+		GENERAL_WINDOW_CAPABILITY.setNumCustomPresetsAvailable(GENERAL_INT);
+		GENERAL_WINDOW_CAPABILITY.setButtonCapabilities(GENERAL_BUTTONCAPABILITIES_LIST);
+		GENERAL_WINDOW_CAPABILITY.setSoftButtonCapabilities(GENERAL_SOFTBUTTONCAPABILITIES_LIST);
+		GENERAL_WINDOW_CAPABILITY_LIST.add(GENERAL_WINDOW_CAPABILITY);
+
+		GENERAL_DISPLAY_CAPABILITY.setDisplayName(GENERAL_STRING);
+		GENERAL_DISPLAY_CAPABILITY.setWindowTypeSupported(GENERAL_WINDOW_TYPE_CAPABILITIES_LIST);
+		GENERAL_DISPLAY_CAPABILITY.setWindowCapabilities(GENERAL_WINDOW_CAPABILITY_LIST);
+		GENERAL_DISPLAYCAPABILITY_LIST.add(GENERAL_DISPLAY_CAPABILITY);
+
 		GENERAL_SCREENPARAMS.setImageResolution(GENERAL_IMAGERESOLUTION);
 		GENERAL_SCREENPARAMS.setTouchEventAvailable(GENERAL_TOUCHEVENTCAPABILITIES);
 
 		GENERAL_MEDIACLOCKFORMAT_LIST.add(MediaClockFormat.CLOCK1);
 		GENERAL_MEDIACLOCKFORMAT_LIST.add(MediaClockFormat.CLOCK2);
+		GENERAL_SEAT_LIST.add(GENERAL_SEAT_LOCATION);
 
 		GENERAL_IMAGE.setValue(GENERAL_STRING);
 		GENERAL_IMAGE.setImageType(GENERAL_IMAGETYPE);
 		GENERAL_IMAGE.setIsTemplate(GENERAL_BOOLEAN);
+
+		GENERAL_TEMPLATE_CONFIGURATION.setTemplate(GENERAL_STRING);
+		GENERAL_TEMPLATE_CONFIGURATION.setDayColorScheme(Test.GENERAL_DAYCOLORSCHEME);
+		GENERAL_TEMPLATE_CONFIGURATION.setNightColorScheme(Test.GENERAL_NIGHTCOLORSCHEME);
 
 		GENERAL_SOFTBUTTON.setIsHighlighted(GENERAL_BOOLEAN);
 		GENERAL_SOFTBUTTON.setSoftButtonID(GENERAL_INT);
@@ -735,6 +799,9 @@ public class Test {
         	GENERAL_VEHICLEDATARESULT_LIST.add(result);
         }
 
+        GENERAL_OEM_CUSTOM_VEHICLE_DATA.setResultCode(VehicleDataResultCode.SUCCESS);
+        GENERAL_OEM_CUSTOM_VEHICLE_DATA.setOEMCustomVehicleDataType(GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
+
         GENERAL_DIDRESULT.setData(GENERAL_STRING);
         GENERAL_DIDRESULT.setDidLocation(GENERAL_INT);
         GENERAL_DIDRESULT.setResultCode(VehicleDataResultCode.SUCCESS);
@@ -794,6 +861,7 @@ public class Test {
         GENERAL_PERMISSIONITEM.setRpcName(GENERAL_STRING);
         GENERAL_PERMISSIONITEM.setHMIPermissions(GENERAL_HMIPERMISSIONS);
         GENERAL_PERMISSIONITEM.setParameterPermissions(GENERAL_PARAMETERPERMISSIONS);
+        GENERAL_PERMISSIONITEM.setRequireEncryption(GENERAL_BOOLEAN);
         GENERAL_PERMISSIONITEM_LIST.add(GENERAL_PERMISSIONITEM);
 
 		GENERAL_SYSTEMCAPABILITY.setSystemCapabilityType(GENERAL_SYSTEMCAPABILITYTYPE);
@@ -1037,6 +1105,10 @@ public class Test {
 		GENERAL_NAVIGATION_INSTRUCTION.setDrivingSide(GENERAL_DIRECTION);
 		GENERAL_NAVIGATION_INSTRUCTION.setDetails(GENERAL_STRING);
 		GENERAL_NAVIGATION_INSTRUCTION.setImage(GENERAL_IMAGE);
+		GENERAL_MODULE_INFO.setModuleId(Test.GENERAL_STRING);
+		GENERAL_MODULE_INFO.setModuleLocation(Test.GENERAL_GRID);
+		GENERAL_MODULE_INFO.setModuleServiceArea(Test.GENERAL_GRID);
+		GENERAL_MODULE_INFO.setMultipleAccessAllowance(Test.GENERAL_BOOLEAN);
 
 
 		try {
@@ -1062,6 +1134,9 @@ public class Test {
 			JSON_CHOICE.put(Choice.KEY_SECONDARY_IMAGE, JSON_IMAGE);
 			JSON_CHOICE.put(Choice.KEY_VR_COMMANDS, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
 
+			JSON_IMAGE_TYPE_SUPPORTED.put(ImageType.DYNAMIC);
+			JSON_IMAGE_TYPE_SUPPORTED.put(ImageType.STATIC);
+
 			JSON_HMILEVELS.put(HMILevel.HMI_FULL);
 			JSON_HMILEVELS.put(HMILevel.HMI_BACKGROUND);
 
@@ -1074,6 +1149,7 @@ public class Test {
 			JSON_PERMISSIONITEM.put(PermissionItem.KEY_HMI_PERMISSIONS, JSON_HMIPERMISSIONS);
 			JSON_PERMISSIONITEM.put(PermissionItem.KEY_PARAMETER_PERMISSIONS, JSON_PARAMETERPERMISSIONS);
 			JSON_PERMISSIONITEM.put(PermissionItem.KEY_RPC_NAME, GENERAL_STRING);
+			JSON_PERMISSIONITEM.put(PermissionItem.KEY_REQUIRE_ENCRYPTION, GENERAL_BOOLEAN);
 			JSON_PERMISSIONITEMS.put(JSON_PERMISSIONITEM);
 
 			JSON_IMAGE.put(Image.KEY_IMAGE_TYPE, GENERAL_IMAGETYPE);
@@ -1210,6 +1286,23 @@ public class Test {
 			JSON_IMAGEFIELD.put(ImageField.KEY_NAME, ImageFieldName.graphic);
 			JSON_IMAGEFIELDS.put(JSON_IMAGEFIELD);
 
+			JSON_WINDOW_TYPE_CAPABILITIES.put(WindowTypeCapabilities.KEY_TYPE, GENERAL_WINDOWTYPE);
+			JSON_WINDOW_TYPE_CAPABILITIES.put(WindowTypeCapabilities.KEY_MAXIMUM_NUMBER_OF_WINDOWS, GENERAL_INT);
+			JSON_WINDOW_TYPE_CAPABILITIES_LIST.put(JSON_WINDOW_TYPE_CAPABILITIES);
+
+			JSON_IMAGE_TYPES.put(ImageType.DYNAMIC);
+			JSON_IMAGE_TYPES.put(ImageType.STATIC);
+
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_WINDOW_ID, GENERAL_INT);
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_TEXT_FIELDS, JSON_TEXTFIELDS);
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_IMAGE_FIELDS, JSON_IMAGEFIELDS);
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_IMAGE_TYPE_SUPPORTED, JSON_IMAGE_TYPES);
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_TEMPLATES_AVAILABLE, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_NUM_CUSTOM_PRESETS_AVAILABLE, GENERAL_INT);
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_BUTTON_CAPABILITIES, JSON_BUTTONCAPABILITIES);
+			JSON_WINDOW_CAPABILITY.put(WindowCapability.KEY_SOFT_BUTTON_CAPABILITIES, JSON_SOFTBUTTONCAPABILITIES);
+			JSON_WINDOW_CAPABILITIES.put(JSON_WINDOW_CAPABILITY);
+
 			JSONObject jsonTEC = new JSONObject();
 			jsonTEC.put(TouchEventCapabilities.KEY_DOUBLE_PRESS_AVAILABLE, GENERAL_BOOLEAN);
 			jsonTEC.put(TouchEventCapabilities.KEY_MULTI_TOUCH_AVAILABLE, GENERAL_BOOLEAN);
@@ -1228,6 +1321,11 @@ public class Test {
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_TEMPLATES_AVAILABLE, JsonUtils.createJsonArray(GENERAL_STRING_LIST));
 			JSON_DISPLAYCAPABILITIES.put(DisplayCapabilities.KEY_TEXT_FIELDS, JSON_TEXTFIELDS);
 
+			JSON_DISPLAYCAPABILITY.put(DisplayCapability.KEY_DISPLAY_NAME, GENERAL_STRING);
+			JSON_DISPLAYCAPABILITY.put(DisplayCapability.KEY_WINDOW_TYPE_SUPPORTED, JSON_WINDOW_TYPE_CAPABILITIES_LIST);
+			JSON_DISPLAYCAPABILITY.put(DisplayCapability.KEY_WINDOW_CAPABILITIES, JSON_WINDOW_CAPABILITIES);
+			JSON_DISPLAYCAPABILITY_LIST.put(JSON_DISPLAYCAPABILITY);
+
 			JSON_TOUCHCOORD.put(TouchCoord.KEY_X, GENERAL_INT);
 			JSON_TOUCHCOORD.put(TouchCoord.KEY_Y, GENERAL_INT);
 			JSON_TOUCHCOORDS.put(JSON_TOUCHCOORD);
@@ -1240,6 +1338,13 @@ public class Test {
 			JSON_TEXTFIELDTYPES.put(MetadataType.CURRENT_TEMPERATURE);
 			JSON_TEXTFIELDTYPES.put(MetadataType.MEDIA_ALBUM);
 			JSON_TEXTFIELDTYPES.put(MetadataType.MEDIA_ARTIST);
+
+			JSON_SEAT_LOCATIONS.put(JSON_GRID);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_ID, Test.GENERAL_STRING);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_LOCATION, Test.JSON_GRID);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MODULE_SERVICE_AREA, Test.JSON_GRID);
+			JSON_MODULE_INFO.put(ModuleInfo.KEY_MULTIPLE_ACCESS_ALLOWED, Test.GENERAL_BOOLEAN);
+
 
 		} catch (JSONException e) {
 			Log.e("Test", "Static Json Construction Failed.", e);

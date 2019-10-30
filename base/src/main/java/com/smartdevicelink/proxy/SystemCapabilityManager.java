@@ -36,23 +36,38 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.AppServiceCapability;
 import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
+import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
+import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.DisplayType;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
+import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.enums.WindowType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.Version;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SystemCapabilityManager {
@@ -61,18 +76,161 @@ public class SystemCapabilityManager {
 	private final Object LISTENER_LOCK;
 	private final ISdl callback;
 	private OnRPCListener rpcListener;
+	private boolean shouldConvertDeprecatedDisplayCapabilities;
 
 	public SystemCapabilityManager(ISdl callback){
 		this.callback = callback;
 		this.LISTENER_LOCK = new Object();
 		this.onSystemCapabilityListeners = new HashMap<>();
 		this.cachedSystemCapabilities = new HashMap<>();
+		this.shouldConvertDeprecatedDisplayCapabilities = true;
 
 		setupRpcListeners();
 	}
 
+	private List<DisplayCapability> createDisplayCapabilityList(RegisterAppInterfaceResponse rpc) {
+		return createDisplayCapabilityList(rpc.getDisplayCapabilities(), rpc.getButtonCapabilities(), rpc.getSoftButtonCapabilities());
+	}
+
+	private List<DisplayCapability> createDisplayCapabilityList(SetDisplayLayoutResponse rpc) {
+		return createDisplayCapabilityList(rpc.getDisplayCapabilities(), rpc.getButtonCapabilities(), rpc.getSoftButtonCapabilities());
+	}
+
+	private List<DisplayCapability> createDisplayCapabilityList(DisplayCapabilities display, List<ButtonCapabilities> button, List<SoftButtonCapabilities> softButton) {
+		// Based on deprecated Display capabilities we don't know if widgets are supported,
+		// The Default MAIN window is the only window we know is supported
+		WindowTypeCapabilities windowTypeCapabilities = new WindowTypeCapabilities(WindowType.MAIN, 1);
+
+		DisplayCapability displayCapability = new DisplayCapability();
+		displayCapability.setDisplayName(display != null ? display.getDisplayName() : display.getDisplayType().toString());
+		displayCapability.setWindowTypeSupported(Collections.singletonList(windowTypeCapabilities));
+
+		// Create a window capability object for the default MAIN window
+		WindowCapability defaultWindowCapability = new WindowCapability();
+		defaultWindowCapability.setWindowID(PredefinedWindows.DEFAULT_WINDOW.getValue());
+		defaultWindowCapability.setButtonCapabilities(button);
+		defaultWindowCapability.setSoftButtonCapabilities(softButton);
+
+		// return if display capabilities don't exist.
+		if (display == null) {
+			displayCapability.setWindowCapabilities(Collections.singletonList(defaultWindowCapability));
+			return Collections.singletonList(displayCapability);
+		}
+
+		// copy all available display capabilities
+		defaultWindowCapability.setTemplatesAvailable(display.getTemplatesAvailable());
+		defaultWindowCapability.setNumCustomPresetsAvailable(display.getNumCustomPresetsAvailable());
+		defaultWindowCapability.setTextFields(display.getTextFields());
+		defaultWindowCapability.setImageFields(display.getImageFields());
+		ArrayList<ImageType> imageTypeSupported = new ArrayList<>();
+		imageTypeSupported.add(ImageType.STATIC); // static images expected to always work on any head unit
+		if (display.getGraphicSupported()) {
+			imageTypeSupported.add(ImageType.DYNAMIC);
+		}
+		defaultWindowCapability.setImageTypeSupported(imageTypeSupported);
+
+		displayCapability.setWindowCapabilities(Collections.singletonList(defaultWindowCapability));
+		return Collections.singletonList(displayCapability);
+	}
+
+	private DisplayCapabilities createDeprecatedDisplayCapabilities(String displayName, WindowCapability defaultMainWindow) {
+		DisplayCapabilities convertedCapabilities = new DisplayCapabilities();
+		convertedCapabilities.setDisplayType(DisplayType.SDL_GENERIC); //deprecated but it is mandatory...
+		convertedCapabilities.setDisplayName(displayName);
+		convertedCapabilities.setTextFields(defaultMainWindow.getTextFields());
+		convertedCapabilities.setImageFields(defaultMainWindow.getImageFields());
+		convertedCapabilities.setTemplatesAvailable(defaultMainWindow.getTemplatesAvailable());
+		convertedCapabilities.setNumCustomPresetsAvailable(defaultMainWindow.getNumCustomPresetsAvailable());
+		convertedCapabilities.setMediaClockFormats(new ArrayList<MediaClockFormat>()); // mandatory field but allows empty array
+		// if there are imageTypes in the response, we must assume graphics are supported
+		convertedCapabilities.setGraphicSupported(defaultMainWindow.getImageTypeSupported() != null && defaultMainWindow.getImageTypeSupported().size() > 0);
+
+		return convertedCapabilities;
+	}
+
+	private void updateDeprecatedDisplayCapabilities() {
+		WindowCapability defaultMainWindowCapabilities = getDefaultMainWindowCapability();
+		List<DisplayCapability> displayCapabilityList = convertToList(getCapability(SystemCapabilityType.DISPLAYS), DisplayCapability.class);
+
+		if (defaultMainWindowCapabilities == null || displayCapabilityList == null || displayCapabilityList.size() == 0) {
+			return;
+		}
+
+		// cover the deprecated capabilities for backward compatibility
+		setCapability(SystemCapabilityType.DISPLAY, createDeprecatedDisplayCapabilities(displayCapabilityList.get(0).getDisplayName(), defaultMainWindowCapabilities));
+		setCapability(SystemCapabilityType.BUTTON, defaultMainWindowCapabilities.getButtonCapabilities());
+		setCapability(SystemCapabilityType.SOFTBUTTON, defaultMainWindowCapabilities.getSoftButtonCapabilities());
+	}
+
+	private void updateCachedDisplayCapabilityList(List<DisplayCapability> newCapabilities) {
+		if (newCapabilities == null || newCapabilities.size() == 0) {
+			DebugTool.logWarning("Received invalid display capability list");
+			return;
+		}
+
+		List<DisplayCapability> oldCapabilities = convertToList(getCapability(SystemCapabilityType.DISPLAYS), DisplayCapability.class);
+
+		if (oldCapabilities == null || oldCapabilities.size() == 0) {
+			setCapability(SystemCapabilityType.DISPLAYS, newCapabilities);
+			updateDeprecatedDisplayCapabilities();
+			return;
+		}
+
+		DisplayCapability oldDefaultDisplayCapabilities = oldCapabilities.get(0);
+		ArrayList<WindowCapability> copyWindowCapabilities = new ArrayList<>(oldDefaultDisplayCapabilities.getWindowCapabilities());
+
+		DisplayCapability newDefaultDisplayCapabilities = newCapabilities.get(0);
+		List<WindowCapability> newWindowCapabilities = newDefaultDisplayCapabilities.getWindowCapabilities();
+
+		for (WindowCapability newWindow : newWindowCapabilities) {
+			ListIterator<WindowCapability> iterator = copyWindowCapabilities.listIterator();
+			boolean oldFound = false;
+			while (iterator.hasNext()) {
+				WindowCapability oldWindow = iterator.next();
+				int newWindowID = newWindow.getWindowID() != null ? newWindow.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+				int oldWindowID = oldWindow.getWindowID() != null ? oldWindow.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+				if (newWindowID == oldWindowID) {
+					iterator.set(newWindow); // replace the old window caps with new ones
+					oldFound = true;
+					break;
+				}
+			}
+
+			if (!oldFound) {
+				copyWindowCapabilities.add(newWindow); // this is a new unknown window
+			}
+		}
+
+		// replace the window capabilities array with the merged one.
+		newDefaultDisplayCapabilities.setWindowCapabilities(copyWindowCapabilities);
+		setCapability(SystemCapabilityType.DISPLAYS, Collections.singletonList(newDefaultDisplayCapabilities));
+		updateDeprecatedDisplayCapabilities();
+	}
+
+
+	public WindowCapability getWindowCapability(int windowID) {
+		List<DisplayCapability> capabilities = convertToList(getCapability(SystemCapabilityType.DISPLAYS), DisplayCapability.class);
+		if (capabilities == null || capabilities.size() == 0) {
+			return null;
+		}
+		DisplayCapability display = capabilities.get(0);
+		for (WindowCapability windowCapability : display.getWindowCapabilities()) {
+		    int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+			if (currentWindowID == windowID) {
+				return windowCapability;
+			}
+		}
+		return null;
+	}
+
+	public WindowCapability getDefaultMainWindowCapability() {
+		return getWindowCapability(PredefinedWindows.DEFAULT_WINDOW.getValue());
+	}
+
 	public void parseRAIResponse(RegisterAppInterfaceResponse response){
 		if(response!=null && response.getSuccess()) {
+			this.shouldConvertDeprecatedDisplayCapabilities = true; // reset the flag
+			setCapability(SystemCapabilityType.DISPLAYS, createDisplayCapabilityList(response));
 			setCapability(SystemCapabilityType.HMI, response.getHmiCapabilities());
 			setCapability(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
 			setCapability(SystemCapabilityType.AUDIO_PASSTHROUGH, response.getAudioPassThruCapabilities());
@@ -83,10 +241,11 @@ public class SystemCapabilityManager {
 			setCapability(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
 			setCapability(SystemCapabilityType.SPEECH, response.getSpeechCapabilities());
 			setCapability(SystemCapabilityType.VOICE_RECOGNITION, response.getVrCapabilities());
+			setCapability(SystemCapabilityType.PRERECORDED_SPEECH, response.getPrerecordedSpeech());
 		}
 	}
 
-    private void setupRpcListeners(){
+    private void setupRpcListeners() {
         rpcListener = new OnRPCListener() {
             @Override
             public void onReceived(RPCMessage message) {
@@ -99,36 +258,53 @@ public class SystemCapabilityManager {
                                 setCapability(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
                                 setCapability(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
                                 setCapability(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
+                                if (shouldConvertDeprecatedDisplayCapabilities) {
+                                    setCapability(SystemCapabilityType.DISPLAYS, createDisplayCapabilityList(response));
+                                }
+                                break;
+                            case GET_SYSTEM_CAPABILITY:
+                                GetSystemCapabilityResponse systemCapabilityResponse = (GetSystemCapabilityResponse) message;
+                                SystemCapability systemCapability = systemCapabilityResponse.getSystemCapability();
+                                if (systemCapabilityResponse.getSuccess() && SystemCapabilityType.DISPLAYS.equals(systemCapability.getSystemCapabilityType())) {
+                                    shouldConvertDeprecatedDisplayCapabilities = false; // Successfully got DISPLAYS data. No conversion needed anymore
+                                    List<DisplayCapability> newCapabilities = (List<DisplayCapability>) systemCapability.getCapabilityForType(SystemCapabilityType.DISPLAYS);
+                                    updateCachedDisplayCapabilityList(newCapabilities);
+                                }
                                 break;
                         }
-                    } else if (RPCMessage.KEY_NOTIFICATION.equals(message.getMessageType())){
+                    } else if (RPCMessage.KEY_NOTIFICATION.equals(message.getMessageType())) {
                         switch (message.getFunctionID()) {
                             case ON_SYSTEM_CAPABILITY_UPDATED:
-                                OnSystemCapabilityUpdated onSystemCapabilityUpdated =(OnSystemCapabilityUpdated)message;
-                                if(onSystemCapabilityUpdated.getSystemCapability() != null){
+                                OnSystemCapabilityUpdated onSystemCapabilityUpdated = (OnSystemCapabilityUpdated) message;
+                                if (onSystemCapabilityUpdated.getSystemCapability() != null) {
                                     SystemCapability systemCapability = onSystemCapabilityUpdated.getSystemCapability();
                                     SystemCapabilityType systemCapabilityType = systemCapability.getSystemCapabilityType();
                                     Object capability = systemCapability.getCapabilityForType(systemCapabilityType);
-                                    if(cachedSystemCapabilities.containsKey(systemCapabilityType)) { //The capability already exists
+                                    if (cachedSystemCapabilities.containsKey(systemCapabilityType)) { //The capability already exists
                                         switch (systemCapabilityType) {
                                             case APP_SERVICES:
                                                 // App services only updates what was changed so we need
                                                 // to update the capability rather than override it
                                                 AppServicesCapabilities appServicesCapabilities = (AppServicesCapabilities) capability;
-                                                if(capability != null) {
-                                                	List<AppServiceCapability> appServicesCapabilitiesList = appServicesCapabilities.getAppServices();
-                                                	AppServicesCapabilities cachedAppServicesCapabilities = (AppServicesCapabilities) cachedSystemCapabilities.get(systemCapabilityType);
-                                                	//Update the cached app services
-                                                	cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
-                                                	//Set the new capability object to the updated cached capabilities
-                                                	capability = cachedAppServicesCapabilities;
+                                                if (capability != null) {
+                                                    List<AppServiceCapability> appServicesCapabilitiesList = appServicesCapabilities.getAppServices();
+                                                    AppServicesCapabilities cachedAppServicesCapabilities = (AppServicesCapabilities) cachedSystemCapabilities.get(systemCapabilityType);
+                                                    //Update the cached app services
+                                                    cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
+                                                    //Set the new capability object to the updated cached capabilities
+                                                    capability = cachedAppServicesCapabilities;
                                                 }
                                                 break;
+                                            case DISPLAYS:
+                                                shouldConvertDeprecatedDisplayCapabilities = false; // Successfully got DISPLAYS data. No conversion needed anymore
+                                                // this notification can return only affected windows (hence not all windows)
+                                                List<DisplayCapability> newCapabilities = (List<DisplayCapability>) capability;
+                                                updateCachedDisplayCapabilityList(newCapabilities);
                                         }
                                     }
-                                    if(capability != null){
-                                    	setCapability(systemCapabilityType, capability);
-									}
+                                    if (capability != null) {
+                                        setCapability(systemCapabilityType, capability);
+                                    }
                                 }
                         }
                     }
@@ -136,7 +312,8 @@ public class SystemCapabilityManager {
             }
         };
 
-        if(callback != null){
+        if (callback != null) {
+        	callback.addOnRPCListener(FunctionID.GET_SYSTEM_CAPABILITY, rpcListener);
             callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
             callback.addOnRPCListener(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED, rpcListener);
         }
@@ -181,15 +358,45 @@ public class SystemCapabilityManager {
 			return true;
 		}else if(cachedSystemCapabilities.containsKey(SystemCapabilityType.HMI)){
 			HMICapabilities hmiCapabilities = ((HMICapabilities)cachedSystemCapabilities.get(SystemCapabilityType.HMI));
+			Version rpcVersion = null;
+			if (callback != null) {
+				SdlMsgVersion version = callback.getSdlMsgVersion();
+				if(version != null){
+					rpcVersion = new Version(version.getMajorVersion(), version.getMinorVersion(), version.getPatchVersion());
+				}
+			}
 			switch (type) {
 				case NAVIGATION:
 					return hmiCapabilities.isNavigationAvailable();
 				case PHONE_CALL:
 					return hmiCapabilities.isPhoneCallAvailable();
 				case VIDEO_STREAMING:
+					if(rpcVersion != null) {
+						if(rpcVersion.isBetween(new Version(3,0,0), new Version(4,4,0)) >= 0){
+							//This was before the system capability feature was added so check if
+							// graphics are supported instead
+							DisplayCapabilities displayCapabilities = (DisplayCapabilities) getCapability(SystemCapabilityType.DISPLAY);
+							if(displayCapabilities != null){
+								return displayCapabilities.getGraphicSupported() != null && displayCapabilities.getGraphicSupported();
+							}
+						}
+					}
 					return hmiCapabilities.isVideoStreamingAvailable();
 				case REMOTE_CONTROL:
 					return hmiCapabilities.isRemoteControlAvailable();
+				case APP_SERVICES:
+					if(rpcVersion != null){
+						if(rpcVersion.getMajor() == 5 && rpcVersion.getMinor() == 1){
+							//This is a corner case that the param was not available in 5.1.0, but
+							//the app services feature was available.
+							return true;
+						}
+					}
+					return hmiCapabilities.isAppServicesAvailable();
+				case DISPLAYS:
+					return hmiCapabilities.isDisplaysCapabilityAvailable();
+				case SEAT_LOCATION:
+					return hmiCapabilities.isSeatLocationAvailable();
 				default:
 					return false;
 			}

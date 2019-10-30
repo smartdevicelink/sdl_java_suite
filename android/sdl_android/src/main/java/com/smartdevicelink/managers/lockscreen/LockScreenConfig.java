@@ -32,6 +32,11 @@
 
 package com.smartdevicelink.managers.lockscreen;
 
+import android.support.annotation.IntDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * <strong>LockScreenConfig</strong> <br>
  *
@@ -45,16 +50,41 @@ package com.smartdevicelink.managers.lockscreen;
  * <li> appIcon - if using the default lockscreen, you can set your own app icon</li>
  *
  * <li> customView - If you would like to provide your own view, you can pass it in here.</li>
+ *
+ * <li> deviceLogo - On by default. If available, will show the device or OEMs logo on the lockscreen</li>
+ *
+ * <li> displayMode - Describes when the lock screen will be displayed. Defaults to `DISPLAY_MODE_REQUIRED_ONLY`.</li>
+ *
+ * <li> enableDismissGesture - If true, then the lock screen can be dismissed with a downward swipe on compatible head units.
+ * Requires a connection of SDL 6.0+ and the head unit to enable the feature. Defaults to true.</li>
  */
 public class LockScreenConfig {
 
-	private boolean enable, deviceLogo;
+	private boolean enable, deviceLogo, enableDismissGesture;
 	private int backgroundColor, appIconInt, customViewInt;
+	private @DisplayMode int displayMode;
+
+	/**
+	 * DISPLAY_MODE_NEVER - The lock screen should never be shown. This should almost always mean that you will build your own lock screen.
+	 * DISPLAY_MODE_REQUIRED_ONLY - The lock screen should only be shown when it is required by the head unit.
+	 * DISPLAY_MODE_OPTIONAL_OR_REQUIRED - The lock screen should be shown when required by the head unit or when the head unit says that
+	 * its optional, but *not* in other cases, such as before the user has interacted with your app on the head unit.
+	 * DISPLAY_MODE_ALWAYS - The lock screen should always be shown after connection.
+	 */
+	@IntDef({DISPLAY_MODE_NEVER, DISPLAY_MODE_REQUIRED_ONLY, DISPLAY_MODE_OPTIONAL_OR_REQUIRED, DISPLAY_MODE_ALWAYS})
+	@Retention(RetentionPolicy.SOURCE)
+	public @interface DisplayMode {}
+	public static final int DISPLAY_MODE_NEVER = 0;
+	public static final int DISPLAY_MODE_REQUIRED_ONLY = 1;
+	public static final int DISPLAY_MODE_OPTIONAL_OR_REQUIRED = 2;
+	public static final int DISPLAY_MODE_ALWAYS = 3;
 
 	public LockScreenConfig(){
 		// set default values
 		this.enable = true;
-		this.deviceLogo = false;
+		this.deviceLogo = true;
+		this.displayMode = DISPLAY_MODE_REQUIRED_ONLY;
+		this.enableDismissGesture = true;
 	}
 
 	/**
@@ -62,7 +92,10 @@ public class LockScreenConfig {
 	 *
 	 * If false, you must manage the lock screen
 	 * @param enable boolean
+	 *
+	 * @deprecated to disable the lockscreen, use setDisplayMode with DISPLAY_MODE_NEVER instead
 	 */
+	@Deprecated
 	public void setEnabled(boolean enable){
 		this.enable = enable;
 	}
@@ -70,7 +103,10 @@ public class LockScreenConfig {
 	/**
 	 * Gets whether the lock screen is being managed for you
 	 * @return boolean
+	 *
+	 * @deprecated to disable the lockscreen, use setDisplayMode with DISPLAY_MODE_NEVER instead
 	 */
+	@Deprecated
 	public boolean isEnabled() {
 		return enable;
 	}
@@ -141,6 +177,41 @@ public class LockScreenConfig {
 	 */
 	public boolean isDeviceLogoEnabled() {
 		return deviceLogo;
+	}
+
+
+	/**
+	 * Set the displayMode to be used
+	 * @param displayMode - Describes when the lock screen will be displayed. Defaults to `DISPLAY_MODE_REQUIRED_ONLY`.
+	 */
+	public void setDisplayMode(@DisplayMode int displayMode){
+		this.displayMode = displayMode;
+	}
+
+	/**
+	 * Get the displayMode to be used
+	 * @return displayMode - Describes when the lock screen will be displayed. Defaults to `DISPLAY_MODE_REQUIRED_ONLY`.
+	 */
+	public @DisplayMode int getDisplayMode(){
+		return this.displayMode;
+	}
+
+	/**
+	 * If true, then the lock screen can be dismissed with a downward swipe on compatible head units.
+	 * Requires a connection of SDL 6.0+ and the head unit to enable the feature. Defaults to true.
+	 * @param enableDismissGesture - enable or disable this feature
+	 */
+	public void enableDismissGesture(boolean enableDismissGesture) {
+		this.enableDismissGesture = enableDismissGesture;
+	}
+
+	/**
+	 * If true, then the lock screen can be dismissed with a downward swipe on compatible head units.
+	 * Requires a connection of SDL 6.0+ and the head unit to enable the feature. Defaults to true.
+	 * @return - whether or not this is enabled or disabled
+	 */
+	public boolean enableDismissGesture() {
+		return enableDismissGesture;
 	}
 
 }

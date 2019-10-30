@@ -45,6 +45,7 @@ import com.smartdevicelink.managers.screen.choiceset.ChoiceSetManager;
 import com.smartdevicelink.managers.screen.choiceset.KeyboardListener;
 import com.smartdevicelink.managers.screen.menu.DynamicMenuUpdatesMode;
 import com.smartdevicelink.managers.screen.menu.MenuCell;
+import com.smartdevicelink.managers.screen.menu.MenuConfiguration;
 import com.smartdevicelink.managers.screen.menu.MenuManager;
 import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandManager;
@@ -343,6 +344,23 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
+	 * Sets the title of the new template that will be displayed.
+	 * Sending an empty String "" will clear the field
+	 * @param title the title of the new template that will be displayed. Maxlength: 100.
+	 */
+	public void setTitle(String title){
+		this.textAndGraphicManager.setTitle(title);
+	}
+
+	/**
+	 * Gets the title of the new template that will be displayed
+	 * @return title - String value that represents the title of the new template that will be displayed
+	 */
+	public String getTitle(){
+		return this.textAndGraphicManager.getTitle();
+	}
+
+	/**
 	 * Set softButtonObjects list and upload the images to the head unit
 	 * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
 	 */
@@ -392,6 +410,8 @@ abstract class BaseScreenManager extends BaseSubManager {
 		this.voiceCommandManager.setVoiceCommands(voiceCommands);
 	}
 
+	// MENUS
+
 	/**
 	 * The list of currently set menu cells
 	 * @return a List of the currently set menu cells
@@ -418,11 +438,45 @@ abstract class BaseScreenManager extends BaseSubManager {
 	}
 
 	/**
-	 *
 	 * @return The currently set DynamicMenuUpdatesMode. It defaults to ON_WITH_COMPAT_MODE if not set.
 	 */
 	public DynamicMenuUpdatesMode getDynamicMenuUpdatesMode(){
 		return this.menuManager.getDynamicMenuUpdatesMode();
+	}
+
+	/**
+	 * Requires SDL RPC Version 6.0.0 or greater
+	 * Opens the Main Menu.
+	 * @return boolean success / failure - whether the request was able to be sent
+	 */
+	public boolean openMenu(){
+		return this.menuManager.openMenu();
+	}
+
+	/**
+	 * Requires SDL RPC Version 6.0.0 or greater
+	 * Opens a subMenu. The cell you pass in must be constructed with {@link MenuCell(String,SdlArtwork,List)}
+	 * @param cell - A <Strong>SubMenu</Strong> cell whose sub menu you wish to open
+	 * @return boolean success / failure - whether the request was able to be sent
+	 */
+	public boolean openSubMenu(@NonNull MenuCell cell){
+		return this.menuManager.openSubMenu(cell);
+  	}
+  
+  	/**
+	 * The main menu layout. See available menu layouts on WindowCapability.menuLayoutsAvailable.
+	 * @param menuConfiguration - The default menuConfiguration
+	 */
+	public void setMenuConfiguration(@NonNull MenuConfiguration menuConfiguration) {
+		this.menuManager.setMenuConfiguration(menuConfiguration);
+	}
+
+	/**
+	 * The main menu layout. See available menu layouts on WindowCapability.menuLayoutsAvailable.
+	 * @return the currently set MenuConfiguration
+	 */
+	public MenuConfiguration getMenuConfiguration(){
+		return this.menuManager.getMenuConfiguration();
 	}
 
 	// CHOICE SETS
@@ -468,9 +522,10 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @param initialText - The initial text that is used as a placeholder text. It might not work on some head units.
 	 * @param customKeyboardProperties - the custom keyboard configuration to be used when the keyboard is displayed
 	 * @param keyboardListener - A keyboard listener to capture user input
+	 * @return A unique cancelID that can be used to cancel this keyboard. If `null`, no keyboard was created.
 	 */
-	public void presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardProperties, @NonNull KeyboardListener keyboardListener){
-		this.choiceSetManager.presentKeyboard(initialText, customKeyboardProperties, keyboardListener);
+	public Integer presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardProperties, @NonNull KeyboardListener keyboardListener){
+		return this.choiceSetManager.presentKeyboard(initialText, customKeyboardProperties, keyboardListener);
 	}
 
 	/**
@@ -486,6 +541,14 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 */
 	public HashSet<ChoiceCell> getPreloadedChoices(){
 		return this.choiceSetManager.getPreloadedChoices();
+	}
+
+	/**
+	 * Dismisses a currently presented keyboard with the associated ID. Canceling a keyboard only works when connected to SDL Core v.6.0+. When connected to older versions of SDL Core the keyboard will not be dismissed.
+	 * @param cancelID The unique ID assigned to the keyboard
+	 */
+	public void dismissKeyboard(@NonNull Integer cancelID) {
+		this.choiceSetManager.dismissKeyboard(cancelID);
 	}
 
 	// END CHOICE SETS
@@ -527,5 +590,4 @@ abstract class BaseScreenManager extends BaseSubManager {
 			}
 		});
 	}
-
 }

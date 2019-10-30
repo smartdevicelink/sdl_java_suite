@@ -54,6 +54,7 @@ public class SeatControlCapabilities extends RPCStruct {
 	public static final String KEY_MASSAGE_MODE_AVAILABLE = "massageModeAvailable";
 	public static final String KEY_MASSAGE_CUSHION_FIRMNESS_AVAILABLE = "massageCushionFirmnessAvailable";
 	public static final String KEY_MEMORY_AVAILABLE = "memoryAvailable";
+	public static final String KEY_MODULE_INFO = "moduleInfo";
 
 	/**
 	 * Constructs a new SeatControlCapabilities object
@@ -366,5 +367,21 @@ public class SeatControlCapabilities extends RPCStruct {
 	 */
 	public Boolean getMemoryAvailable() {
 		return getBoolean(KEY_MEMORY_AVAILABLE);
+	}
+
+	/**
+	 * Sets ModuleInfo for this capability
+	 * @param info the ModuleInfo to be set
+	 */
+	public void setModuleInfo(ModuleInfo info) {
+		setValue(KEY_MODULE_INFO, info);
+	}
+
+	/**
+	 * Gets a ModuleInfo of this capability
+	 * @return module info of this capability
+	 */
+	public ModuleInfo getModuleInfo() {
+		return (ModuleInfo) getObject(ModuleInfo.class, KEY_MODULE_INFO);
 	}
 }

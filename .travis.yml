@@ -9,7 +9,7 @@ android:
     - tools
     - platform-tools
     - ndk-bundle
-  
+
     # The BuildTools version used by your project
     - build-tools-28.0.3
 

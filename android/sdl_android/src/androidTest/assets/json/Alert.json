@@ -9,6 +9,11 @@
 			"alertText2":"Line 2",
 			"alertText3":"Line 3",
 			"progressIndicator":true,
+			"cancelID":45,
+			"alertIcon":{
+				"value":"alertIconImage1.png",
+				"imageType":"DYNAMIC"
+			},
 			"ttsChunks":[
 				{
 					"text":"Phrase 1",

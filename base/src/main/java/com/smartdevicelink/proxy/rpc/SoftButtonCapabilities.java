@@ -87,6 +87,7 @@ public class SoftButtonCapabilities extends RPCStruct {
 	public static final String KEY_SHORT_PRESS_AVAILABLE = "shortPressAvailable";
 	public static final String KEY_LONG_PRESS_AVAILABLE = "longPressAvailable";
 	public static final String KEY_UP_DOWN_AVAILABLE = "upDownAvailable";
+	public static final String KEY_TEXT_SUPPORTED = "textSupported";
 
 	/**
 	 * Constructs a newly allocated SoftButtonCapabilities object
@@ -122,7 +123,7 @@ public class SoftButtonCapabilities extends RPCStruct {
         if(!store.containsKey(KEY_IMAGE_SUPPORTED)){
             // At some point this was added to the RPC spec as mandatory but at least in v1.0.0
             // it was not included.
-            store.put(KEY_IMAGE_SUPPORTED, new Boolean(false));
+            store.put(KEY_IMAGE_SUPPORTED, Boolean.FALSE);
         }
     }
 
@@ -188,5 +189,22 @@ public class SoftButtonCapabilities extends RPCStruct {
      */
     public Boolean getImageSupported() {
         return getBoolean( KEY_IMAGE_SUPPORTED);
+    }
+
+    /**
+     * set the text support. If not included, the default value should be considered true that the button will support text.
+     * @param textSupported whether the button supports the use of text or not.
+     * @since 6.0
+     */
+    public void setTextSupported(Boolean textSupported) {
+        setValue(KEY_TEXT_SUPPORTED, textSupported);
+    }
+
+    /**
+     * get the text support.
+     * @return Boolean - the text is supported or not.
+     */
+    public Boolean getTextSupported() {
+        return getBoolean( KEY_TEXT_SUPPORTED);
     }
 }

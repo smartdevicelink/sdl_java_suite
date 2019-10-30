@@ -62,6 +62,7 @@ import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -92,6 +93,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private VideoStreamingParameters parameters;
 	private IVideoStreamListener streamListener;
 	private boolean isTransportAvailable = false;
+	private boolean hasStarted;
 
 	// INTERNAL INTERFACES
 
@@ -114,8 +116,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				}
 				startEncoder();
 				stateMachine.transitionToState(StreamingStateMachine.STARTED);
-
-
+				hasStarted = true;
 			}
 		}
 
@@ -140,7 +141,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		@Override
 		public void onNotified(RPCNotification notification) {
 			if(notification != null){
-				hmiLevel = ((OnHMIStatus)notification).getHmiLevel();
+				OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+					return;
+				}
+				hmiLevel = onHMIStatus.getHmiLevel();
 				if(hmiLevel.equals(HMILevel.HMI_FULL)){
 					checkState();
 				}
@@ -194,6 +199,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				&& hmiLevel != null
 				&& hmiLevel.equals(HMILevel.HMI_FULL)
 				&& parameters != null){
+			stateMachine.transitionToState(StreamingStateMachine.READY);
 			transitionToState(READY);
 		}
 	}
@@ -310,6 +316,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			//Encoder should be up and running
 			createRemoteDisplay(virtualDisplayEncoder.getVirtualDisplay());
 			stateMachine.transitionToState(StreamingStateMachine.STARTED);
+			hasStarted = true;
 		} catch (Exception e) {
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			e.printStackTrace();
@@ -354,14 +361,15 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		remoteDisplay = null;
 		parameters = null;
 		virtualDisplayEncoder = null;
-		if(internalInterface!=null){
+		if (internalInterface != null) {
 			internalInterface.stopVideoService();
+			// Remove listeners
+			internalInterface.removeServiceListener(SessionType.NAV, serviceListener);
+			internalInterface.removeOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);
+			internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 		}
 
-		// Remove listeners
-		internalInterface.removeServiceListener(SessionType.NAV, serviceListener);
-		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);
-		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+
 
 		stateMachine.transitionToState(StreamingStateMachine.NONE);
 		super.dispose();
@@ -384,8 +392,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @return boolean (true = yes, false = no)
 	 */
 	public boolean isStreaming(){
-		return (stateMachine.getState() == StreamingStateMachine.STARTED) ||
-				(hmiLevel == HMILevel.HMI_FULL);
+		return (stateMachine.getState() == StreamingStateMachine.STARTED) && (hmiLevel == HMILevel.HMI_FULL);
 	}
 
 	/**
@@ -393,8 +400,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @return boolean (true = not paused, false = paused)
 	 */
 	public boolean isPaused(){
-		return (stateMachine.getState() == StreamingStateMachine.STARTED) ||
-				(hmiLevel != HMILevel.HMI_FULL);
+		return (hasStarted && stateMachine.getState() == StreamingStateMachine.STOPPED) || (hmiLevel != HMILevel.HMI_FULL);
 	}
 
 	/**
@@ -451,9 +457,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					if(resolution != null){
 						DisplayMetrics displayMetrics = new DisplayMetrics();
 						disp.getMetrics(displayMetrics);
-						touchScalar[0] = ((float)displayMetrics.widthPixels) / resolution.getResolutionWidth();
-						touchScalar[1] = ((float)displayMetrics.heightPixels) / resolution.getResolutionHeight();
-					}
+						createTouchScalar(resolution, displayMetrics);
+                    }
 
 				}
 
@@ -498,6 +503,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			}
 		}
 	}
+
+    void createTouchScalar(ImageResolution resolution, DisplayMetrics displayMetrics) {
+        touchScalar[0] = ((float)displayMetrics.widthPixels) / resolution.getResolutionWidth();
+        touchScalar[1] = ((float)displayMetrics.heightPixels) / resolution.getResolutionHeight();
+    }
 
 	List<MotionEvent> convertTouchEvent(OnTouchEvent onTouchEvent){
 		List<MotionEvent> motionEventList = new ArrayList<MotionEvent>();

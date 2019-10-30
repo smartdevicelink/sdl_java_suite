@@ -39,6 +39,7 @@ import com.smartdevicelink.proxy.RPCRequest;
 import java.util.Hashtable;
 
 /**
+ * <Strong>If using Widgets with Core > 6.0, use {@link Show} to change widget layouts</Strong> <br>
  * Used to set an alternate display layout. If not sent, default screen for
  * given platform will be shown
  * 

@@ -92,6 +92,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
             result.put(OnVehicleData.KEY_FUEL_RANGE, VehicleDataHelper.JSON_FUEL_RANGE);
 			result.put(OnVehicleData.KEY_TURN_SIGNAL, VehicleDataHelper.TURN_SIGNAL);
 			result.put(OnVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS);
+			result.put(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE);
         } catch(JSONException e) {
         	fail(Test.JSON_FAIL);
         }
@@ -133,6 +134,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
     	List<FuelRange> fuelRangeList = ( (OnVehicleData) msg).getFuelRange();
     	TurnSignal turnSignal = ( (OnVehicleData) msg).getTurnSignal();
     	ElectronicParkBrakeStatus electronicParkBrakeStatus = ( (OnVehicleData) msg).getElectronicParkBrakeStatus();
+    	Object oemCustomVehicleData = ( (OnVehicleData) msg).getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
     	
     	// Valid Tests
     	assertEquals(Test.MATCH, VehicleDataHelper.SPEED, speed);
@@ -164,6 +166,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 	    assertTrue(Test.TRUE, Validator.validateFuelRange(VehicleDataHelper.FUEL_RANGE_LIST, fuelRangeList));
 	    assertEquals(Test.MATCH, VehicleDataHelper.TURN_SIGNAL, turnSignal);
 	    assertEquals(Test.MATCH, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+	    assertEquals(Test.MATCH, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE, oemCustomVehicleData);
     
 	    // Invalid/Null Tests
         OnVehicleData msg = new OnVehicleData();
@@ -199,6 +202,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
         assertNull(Test.NULL, msg.getFuelRange());
         assertNull(Test.NULL, msg.getTurnSignal());
         assertNull(Test.NULL, msg.getElectronicParkBrakeStatus());
+        assertNull(Test.NULL, msg.getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 	}
     
     public void testJson() {
@@ -262,6 +266,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 			GPSDataObj.put(GPSData.KEY_ALTITUDE, VehicleDataHelper.GPS_ALTITUDE);
 			GPSDataObj.put(GPSData.KEY_HEADING, VehicleDataHelper.GPS_HEADING);
 			GPSDataObj.put(GPSData.KEY_SPEED, VehicleDataHelper.GPS_SPEED);
+			GPSDataObj.put(GPSData.KEY_SHIFTED, VehicleDataHelper.GPS_SHIFTED);
 			
 			//BELT_STATUS
 			beltStatusObj.put(BeltStatus.KEY_DRIVER_BELT_DEPLOYED, VehicleDataHelper.BELT_STATUS_DRIVER_DEPLOYED);
@@ -372,6 +377,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 			reference.put(OnVehicleData.KEY_FUEL_RANGE, fuelRangeArrayObj);
 			reference.put(OnVehicleData.KEY_TURN_SIGNAL, VehicleDataHelper.TURN_SIGNAL);
 			reference.put(OnVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS);
+			reference.put(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE);
 			
 			JSONObject underTest = msg.serializeJSON();
 			//go inside underTest and only return the JSONObject inside the parameters key inside the notification key

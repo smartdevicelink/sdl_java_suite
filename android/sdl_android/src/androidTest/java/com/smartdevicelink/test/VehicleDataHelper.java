@@ -77,6 +77,7 @@ public class VehicleDataHelper{
 	public static final List<FuelRange> FUEL_RANGE_LIST = new ArrayList<FuelRange>(1);
 	public static final TurnSignal TURN_SIGNAL = TurnSignal.OFF;
 	public static final ElectronicParkBrakeStatus ELECTRONIC_PARK_BRAKE_STATUS = ElectronicParkBrakeStatus.CLOSED;
+	public static final String OEM_CUSTOM_VEHICLE_DATA_STATE = "oemCustomVehicleDataState";
 
 	//other variables inside some of the above objects
     // tire status
@@ -107,6 +108,7 @@ public class VehicleDataHelper{
 	public static final Double GPS_ALTITUDE = 768.5;
 	public static final Double GPS_HEADING = 315.0;
 	public static final Double GPS_SPEED = 30.5;
+	public static final Boolean GPS_SHIFTED = true;
 	
     // belt status
 	public static final VehicleDataEventStatus BELT_STATUS_DRIVER_DEPLOYED = VehicleDataEventStatus.NO;
@@ -236,6 +238,7 @@ public class VehicleDataHelper{
     	GPS.setAltitude(GPS_ALTITUDE);
     	GPS.setHeading(GPS_HEADING);
     	GPS.setSpeed(GPS_SPEED);
+    	GPS.setShifted(GPS_SHIFTED);
 
     	//BELT_STATUS set up
     	BELT_STATUS.setDriverBeltDeployed(BELT_STATUS_DRIVER_DEPLOYED);
@@ -354,6 +357,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA.setFuelRange(FUEL_RANGE_LIST);
 		VEHICLE_DATA.setTurnSignal(TURN_SIGNAL);
 		VEHICLE_DATA.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
+		VEHICLE_DATA.setOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, OEM_CUSTOM_VEHICLE_DATA_STATE);
 		
 		//set up the GetVehicleDataResponse object
 		VEHICLE_DATA_RESPONSE.setSpeed(SPEED);
@@ -385,6 +389,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA_RESPONSE.setFuelRange(FUEL_RANGE_LIST);
 		VEHICLE_DATA_RESPONSE.setTurnSignal(TURN_SIGNAL);
 		VEHICLE_DATA_RESPONSE.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
+		VEHICLE_DATA_RESPONSE.setOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, OEM_CUSTOM_VEHICLE_DATA_STATE);
 	}
 	
     private VehicleDataHelper(){}	

@@ -5,103 +5,13 @@ import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.rpc.AirbagStatus;
-import com.smartdevicelink.proxy.rpc.AppServiceCapability;
-import com.smartdevicelink.proxy.rpc.AppServiceManifest;
-import com.smartdevicelink.proxy.rpc.AppServiceRecord;
-import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
-import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
-import com.smartdevicelink.proxy.rpc.AudioControlData;
-import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
-import com.smartdevicelink.proxy.rpc.BeltStatus;
-import com.smartdevicelink.proxy.rpc.BodyInformation;
-import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.Choice;
-import com.smartdevicelink.proxy.rpc.ClimateControlCapabilities;
-import com.smartdevicelink.proxy.rpc.ClimateControlData;
-import com.smartdevicelink.proxy.rpc.ClusterModeStatus;
-import com.smartdevicelink.proxy.rpc.Coordinate;
-import com.smartdevicelink.proxy.rpc.DIDResult;
-import com.smartdevicelink.proxy.rpc.DateTime;
-import com.smartdevicelink.proxy.rpc.DeviceInfo;
-import com.smartdevicelink.proxy.rpc.DeviceStatus;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
-import com.smartdevicelink.proxy.rpc.ECallInfo;
-import com.smartdevicelink.proxy.rpc.EmergencyEvent;
-import com.smartdevicelink.proxy.rpc.EqualizerSettings;
-import com.smartdevicelink.proxy.rpc.FuelRange;
-import com.smartdevicelink.proxy.rpc.GPSData;
-import com.smartdevicelink.proxy.rpc.HMICapabilities;
-import com.smartdevicelink.proxy.rpc.HMIPermissions;
-import com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities;
-import com.smartdevicelink.proxy.rpc.HMISettingsControlData;
-import com.smartdevicelink.proxy.rpc.HeadLampStatus;
-import com.smartdevicelink.proxy.rpc.Headers;
-import com.smartdevicelink.proxy.rpc.Image;
-import com.smartdevicelink.proxy.rpc.ImageField;
-import com.smartdevicelink.proxy.rpc.ImageResolution;
-import com.smartdevicelink.proxy.rpc.KeyboardProperties;
-import com.smartdevicelink.proxy.rpc.LightCapabilities;
-import com.smartdevicelink.proxy.rpc.LightControlCapabilities;
-import com.smartdevicelink.proxy.rpc.LightControlData;
-import com.smartdevicelink.proxy.rpc.LightState;
-import com.smartdevicelink.proxy.rpc.LocationDetails;
-import com.smartdevicelink.proxy.rpc.MassageCushionFirmness;
-import com.smartdevicelink.proxy.rpc.MassageModeData;
-import com.smartdevicelink.proxy.rpc.MediaServiceData;
-import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
-import com.smartdevicelink.proxy.rpc.MenuParams;
-import com.smartdevicelink.proxy.rpc.ModuleData;
-import com.smartdevicelink.proxy.rpc.MyKey;
-import com.smartdevicelink.proxy.rpc.NavigationCapability;
-import com.smartdevicelink.proxy.rpc.NavigationInstruction;
-import com.smartdevicelink.proxy.rpc.NavigationServiceData;
-import com.smartdevicelink.proxy.rpc.NavigationServiceManifest;
-import com.smartdevicelink.proxy.rpc.OasisAddress;
-import com.smartdevicelink.proxy.rpc.ParameterPermissions;
-import com.smartdevicelink.proxy.rpc.PermissionItem;
-import com.smartdevicelink.proxy.rpc.PhoneCapability;
-import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
-import com.smartdevicelink.proxy.rpc.RGBColor;
-import com.smartdevicelink.proxy.rpc.RadioControlCapabilities;
-import com.smartdevicelink.proxy.rpc.RadioControlData;
-import com.smartdevicelink.proxy.rpc.RdsData;
-import com.smartdevicelink.proxy.rpc.Rectangle;
-import com.smartdevicelink.proxy.rpc.RemoteControlCapabilities;
-import com.smartdevicelink.proxy.rpc.ScreenParams;
-import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
-import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
-import com.smartdevicelink.proxy.rpc.SeatControlData;
-import com.smartdevicelink.proxy.rpc.SeatMemoryAction;
-import com.smartdevicelink.proxy.rpc.SingleTireStatus;
-import com.smartdevicelink.proxy.rpc.SisData;
-import com.smartdevicelink.proxy.rpc.SoftButton;
-import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.StartTime;
-import com.smartdevicelink.proxy.rpc.StationIDNumber;
-import com.smartdevicelink.proxy.rpc.TTSChunk;
-import com.smartdevicelink.proxy.rpc.Temperature;
-import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
-import com.smartdevicelink.proxy.rpc.TextField;
-import com.smartdevicelink.proxy.rpc.TireStatus;
-import com.smartdevicelink.proxy.rpc.TouchCoord;
-import com.smartdevicelink.proxy.rpc.TouchEvent;
-import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
-import com.smartdevicelink.proxy.rpc.Turn;
-import com.smartdevicelink.proxy.rpc.VehicleDataResult;
-import com.smartdevicelink.proxy.rpc.VehicleType;
-import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
-import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
-import com.smartdevicelink.proxy.rpc.VrHelpItem;
-import com.smartdevicelink.proxy.rpc.WeatherAlert;
-import com.smartdevicelink.proxy.rpc.WeatherData;
-import com.smartdevicelink.proxy.rpc.WeatherServiceData;
-import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
+import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
 
@@ -136,8 +46,13 @@ public class Validator{
             return ( result1 == null );
         }
 
-        return ( result1.getDataType().equals(result2.getDataType())
-                && result1.getResultCode().equals(result2.getResultCode()) );
+        if(result1.getDataType() != null && result2.getDataType() != null){
+            return ( result1.getDataType().equals(result2.getDataType())
+                    && result1.getResultCode().equals(result2.getResultCode()) );
+        } else {
+            return ( result1.getOEMCustomVehicleDataType().equals(result2.getOEMCustomVehicleDataType())
+                    && result1.getResultCode().equals(result2.getResultCode()) );
+        }
     }
 
     public static boolean validateBulkData(byte[] array1, byte[] array2){
@@ -367,7 +282,7 @@ public class Validator{
         return validateImage(button1.getImage(), button2.getImage())
                 && validateText(button1.getText(), button2.getText())
                 && button1.getIsHighlighted() == button2.getIsHighlighted()
-                && button1.getSoftButtonID() == button2.getSoftButtonID()
+                && ( (button1 .getSoftButtonID() == null && button2.getSoftButtonID() == null) || button1.getSoftButtonID().equals(button2.getSoftButtonID()))
                 && button1.getSystemAction() == button2.getSystemAction()
                 && button1.getType() == button2.getType();
     }
@@ -548,6 +463,29 @@ public class Validator{
 
 		return true;
 	}
+
+    public static boolean validateTemplateConfiguration(TemplateConfiguration params1, TemplateConfiguration params2) {
+        if (params1 == null) {
+            return (params2 == null);
+        }
+        if (params2 == null) {
+            return (params1 == null);
+        }
+
+        if (!params1.getTemplate().equals(params2.getTemplate())) {
+            return false;
+        }
+
+        if (!validateTemplateColorScheme(params1.getDayColorScheme(), params2.getDayColorScheme())) {
+            return false;
+        }
+
+        if (!validateTemplateColorScheme(params1.getNightColorScheme(), params2.getNightColorScheme())) {
+            return false;
+        }
+
+        return true;
+    }
 
 	public static boolean validateAppServiceCapabilityList(List<AppServiceCapability> list1, List<AppServiceCapability> list2){
 		if(list1 == null){
@@ -1499,6 +1437,29 @@ public class Validator{
 
         return true;
     }
+
+    public static boolean validateWindowTypeCapabilities(WindowTypeCapabilities item1, WindowTypeCapabilities item2) {
+        if (item1 == null) {
+            return (item2 == null);
+        }
+        if (item2 == null) {
+            return (item1 == null);
+        }
+
+        if (item1.getType() == null) {
+            return (item2.getType() == null);
+        }
+
+        if (item1.getType() != item2.getType()) {
+            return false;
+        }
+
+        if (item1.getMaximumNumberOfWindows() != item2.getMaximumNumberOfWindows()) {
+            return false;
+        }
+
+        return true;
+    }
     
     public static boolean validateFileTypes (List<FileType> item1, List<FileType> item2) {
     	if (item1 == null) {
@@ -2002,6 +1963,9 @@ public class Validator{
         if(item1.getVdop() != item2.getVdop()){
             return false;
         }
+        if(item1.getShifted() != item2.getShifted()){
+            return false;
+        }
 
         return true;
     }
@@ -2382,6 +2346,10 @@ public class Validator{
         }
 
         if(!validateParameterPermissions(item1.getParameterPermissions(), item2.getParameterPermissions())){
+            return false;
+        }
+
+        if(item1.getRequireEncryption() != item2.getRequireEncryption()) {
             return false;
         }
 
@@ -2779,7 +2747,162 @@ public class Validator{
     	  	
     	return true;
     }
-    
+
+    public static boolean validateDisplayCapabilityList(List<DisplayCapability> list1, List<DisplayCapability> list2) {
+        if (list1 == null || list2 == null) {
+            return false;
+        }
+
+        if (list1.size() != list2.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < list1.size(); i++) {
+            if (!validateDisplayCapability(list1.get(i), list2.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateDisplayCapability(DisplayCapability item1, DisplayCapability item2) {
+        if (item1 == null) {
+            return (item2 == null);
+        }
+        if (item2 == null) {
+            return (item1 == null);
+        }
+
+        if (!item1.getDisplayName().equals(item2.getDisplayName())) {
+            return false;
+        }
+
+        if (item1.getWindowTypeSupported() == null) {
+            return (item2.getWindowTypeSupported() == null);
+        }
+
+        if (item1.getWindowTypeSupported().size() != item2.getWindowTypeSupported().size()) {
+            return false;
+        }
+
+        for (int i = 0; i < item1.getWindowTypeSupported().size(); i++) {
+            if (item1.getWindowTypeSupported().get(i) == null && item2.getWindowTypeSupported().get(i) != null) {
+                return false;
+            }
+
+            if (!validateWindowTypeCapabilities(item1.getWindowTypeSupported().get(i), item2.getWindowTypeSupported().get(i))) {
+                return false;
+            }
+        }
+
+        if (item1.getWindowCapabilities() == null) {
+            return (item2.getWindowCapabilities() == null);
+        }
+
+        if (item1.getWindowCapabilities().size() != item2.getWindowCapabilities().size()) {
+            return false;
+        }
+
+        for (int i = 0; i < item1.getWindowCapabilities().size(); i++) {
+            if (item1.getWindowCapabilities().get(i) == null && item2.getWindowCapabilities().get(i) != null) {
+                return false;
+            }
+
+            if (!validateWindowCapability(item1.getWindowCapabilities().get(i), item2.getWindowCapabilities().get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateWindowCapability(WindowCapability item1, WindowCapability item2) {
+        if (item1 == null) {
+            return (item2 == null);
+        }
+        if (item2 == null) {
+            return (item1 == null);
+        }
+
+        if (item1.getWindowID() != item2.getWindowID()) {
+            return false;
+        }
+
+        if (!validateStringList(item1.getTemplatesAvailable(), item2.getTemplatesAvailable())) {
+            log("TA", item1.getTemplatesAvailable() + " | " + item2.getTemplatesAvailable());
+            return false;
+        }
+
+        if (item1.getNumCustomPresetsAvailable() != item2.getNumCustomPresetsAvailable()) {
+            return false;
+        }
+
+        if (item1.getTextFields() == null) {
+            return (item2.getTextFields() == null);
+        }
+
+        if (item1.getTextFields().size() != item2.getTextFields().size()) {
+            return false;
+        }
+
+        for (int i = 0; i < item1.getTextFields().size(); i++) {
+            if (item1.getTextFields().get(i) == null && item2.getTextFields().get(i) != null) {
+                return false;
+            }
+
+            if (!validateTextFields(item1.getTextFields().get(i), item2.getTextFields().get(i))) {
+                return false;
+            }
+        }
+
+        if (item1.getImageFields() == null) {
+            return (item2.getImageFields() == null);
+        }
+
+        if (item1.getImageFields().size() != item2.getImageFields().size()) {
+            return false;
+        }
+
+        for (int i = 0; i < item1.getImageFields().size(); i++) {
+            if (item1.getImageFields().get(i) == null && item2.getImageFields().get(i) != null) {
+                return false;
+            }
+
+            if (!validateImageFields(item1.getImageFields().get(i), item2.getImageFields().get(i))) {
+                return false;
+            }
+        }
+
+        if (item1.getImageTypeSupported() == null) {
+            return (item2.getImageTypeSupported() == null);
+        }
+
+        if (item1.getImageTypeSupported().size() != item2.getImageTypeSupported().size()) {
+            return false;
+        }
+
+        for (int i = 0; i < item1.getImageTypeSupported().size(); i++) {
+            if (item1.getImageTypeSupported().get(i) == null) {
+                return (item2.getImageTypeSupported().get(i) == null);
+            }
+
+            if (item1.getImageTypeSupported().get(i) != item2.getImageTypeSupported().get(i)) {
+                return false;
+            }
+        }
+
+        if (!validateButtonCapabilities(item1.getButtonCapabilities(), item2.getButtonCapabilities())) {
+            return false;
+        }
+
+        if (!validateSoftButtonCapabilities(item1.getSoftButtonCapabilities(), item2.getSoftButtonCapabilities())) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static boolean validateButtonCapabilities (List<ButtonCapabilities> item1, List<ButtonCapabilities> item2) {
     	if (item1 == null) {
     		return ( item2 == null );
@@ -3553,6 +3676,15 @@ public class Validator{
 		return true;
 	}
 
+	public static boolean validatePreRecordedSpeechCapabilities(List<PrerecordedSpeech> spA, List<PrerecordedSpeech> spB){
+		for(int i = 0; i < spA.size(); i++){
+			if(!spA.get(i).equals(spB.get(i))){
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public static boolean validateVideoStreamingFormat(VideoStreamingFormat a, VideoStreamingFormat b){
 		if(!a.getCodec().equals(b.getCodec())){
 			return false;
@@ -3581,5 +3713,74 @@ public class Validator{
 		}
 
 		return true;
+	}
+
+	public static boolean validateGrid(Grid g1, Grid g2) {
+    	String tag = "validateGrid";
+    	if (g1 == null) {
+    		return (g2 == null);
+		}
+    	if (g2 == null) {
+    		return (g1 == null);
+		}
+    	if (g1.getCol() != g2.getCol()) {
+    		log(tag, "Columns do not match");
+    		return false;
+		}
+    	if (g1.getRow() != g2.getRow()) {
+    		log(tag, "Rows do not match");
+    		return false;
+		}
+		if (g1.getLevel() != g2.getLevel()) {
+			log(tag, "Levels do not match");
+			return false;
+		}
+    	if (g1.getColSpan() != g2.getColSpan()) {
+			log(tag, "Column spans do not match");
+    		return false;
+		}
+    	if (g1.getRowSpan() != g2.getRowSpan()) {
+    		log(tag, "Row spans do not match");
+    		return false;
+		}
+    	if (g1.getLevelSpan() != g2.getLevelSpan()) {
+    		log(tag, "Level spans do not match");
+    		return false;
+		}
+
+    	return true;
+	}
+
+	public static boolean validateModuleInfo(ModuleInfo m1, ModuleInfo m2) {
+		if (m1 == null) {
+			return (m2 == null);
+		}
+		if (m2 == null) {
+			return (m1 == null);
+		}
+		if (!m1.getModuleId().equals(m2.getModuleId())) {
+			return false;
+		}
+		if (!m1.getMultipleAccessAllowance().equals(m2.getMultipleAccessAllowance())) {
+			return false;
+		}
+		if (!validateGrid(m1.getModuleLocation(), m2.getModuleLocation())) {
+			return false;
+		}
+		if (!validateGrid(m1.getModuleServiceArea(), m2.getModuleServiceArea())) {
+			return false;
+		}
+
+    	return true;
+	}
+
+	public static boolean validateSeatLocation(SeatLocation cap1, SeatLocation cap2) {
+		if (cap1 == null) {
+			return (cap2 == null);
+		}
+		if (cap2 == null) {
+			return (cap1 == null);
+		}
+		return validateGrid(cap1.getGrid(), cap2.getGrid());
 	}
 }

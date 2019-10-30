@@ -49,6 +49,7 @@ import com.smartdevicelink.transport.MultiplexTransportConfig;
 import java.util.List;
 import java.util.Vector;
 
+@Deprecated
 public class SdlProxyBuilder {
     // Required parameters
     private IProxyListenerALM listener;

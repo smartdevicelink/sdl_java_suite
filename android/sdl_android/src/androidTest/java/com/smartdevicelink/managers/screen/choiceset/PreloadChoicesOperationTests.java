@@ -38,15 +38,14 @@ package com.smartdevicelink.managers.screen.choiceset;
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
-import com.smartdevicelink.managers.screen.choiceset.PreloadChoicesOperation;
 import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.TextField;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.test.Test;
 
@@ -75,14 +74,14 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 		ImageField imageField = new ImageField(ImageFieldName.choiceImage, Arrays.asList(FileType.GRAPHIC_PNG, FileType.GRAPHIC_JPEG));
 		TextField textField = new TextField(TextFieldName.menuName, CharacterSet.CID1SET, 2, 2);
 
-		DisplayCapabilities displayCapabilities = new DisplayCapabilities();
-		displayCapabilities.setGraphicSupported(true);
-		displayCapabilities.setImageFields(Collections.singletonList(imageField));
-		displayCapabilities.setTextFields(Collections.singletonList(textField));
+		WindowCapability windowCapability = new WindowCapability();
+		windowCapability.setImageFields(Collections.singletonList(imageField));
+		windowCapability.setImageTypeSupported(Arrays.asList(ImageType.STATIC, ImageType.DYNAMIC));
+		windowCapability.setTextFields(Collections.singletonList(textField));
 
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
-		preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, displayCapabilities, true, cellsToPreload, null);
+		preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, windowCapability, true, cellsToPreload, null);
 	}
 
 	@Override
@@ -91,13 +90,6 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 	}
 
 	public void testHasTextFieldOfName(){
-
-		TextField textField = new TextField();
-		textField.setName(TextFieldName.secondaryText);
-
-		DisplayCapabilities capabilities = new DisplayCapabilities();
-		capabilities.setTextFields(Collections.singletonList(textField));
-
 		boolean test = preloadChoicesOperation.hasTextFieldOfName(TextFieldName.secondaryText);
 		assertFalse(test);
 
@@ -106,13 +98,6 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 	}
 
 	public void testHasImageFieldOfName(){
-
-		ImageField imageField = new ImageField();
-		imageField.setName(ImageFieldName.choiceImage);
-
-		DisplayCapabilities capabilities = new DisplayCapabilities();
-		capabilities.setImageFields(Collections.singletonList(imageField));
-
 		boolean test = preloadChoicesOperation.hasImageFieldOfName(ImageFieldName.choiceImage);
 		assertTrue(test);
 

@@ -18,6 +18,7 @@ import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
@@ -25,14 +26,24 @@ import com.smartdevicelink.proxy.rpc.PhoneCapability;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
+import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
+import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
+import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.enums.WindowType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -46,6 +57,7 @@ import com.smartdevicelink.test.utl.AppServiceFactory;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.Version;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -81,15 +93,65 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		raiResponse.setPresetBankCapabilities(Test.GENERAL_PRESETBANKCAPABILITIES);
 		raiResponse.setSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
 		raiResponse.setSpeechCapabilities(Test.GENERAL_SPEECHCAPABILITIES_LIST);
+		raiResponse.setPrerecordedSpeech(Test.GENERAL_PRERECORDEDSPEECH_LIST);
 		raiResponse.setSuccess(true);
 
 		systemCapabilityManager.parseRAIResponse(raiResponse);
 		return systemCapabilityManager;
 	}
 
+	private List<DisplayCapability> createDisplayCapabilityList(DisplayCapabilities display, List<ButtonCapabilities> button, List<SoftButtonCapabilities> softButton) {
+		WindowTypeCapabilities windowTypeCapabilities = new WindowTypeCapabilities(WindowType.MAIN, 1);
+
+		DisplayCapability displayCapability = new DisplayCapability();
+		displayCapability.setDisplayName(display != null ? display.getDisplayName() : null);
+		displayCapability.setWindowTypeSupported(Collections.singletonList(windowTypeCapabilities));
+
+		WindowCapability defaultWindowCapability = new WindowCapability();
+		defaultWindowCapability.setWindowID(PredefinedWindows.DEFAULT_WINDOW.getValue());
+		defaultWindowCapability.setButtonCapabilities(button);
+		defaultWindowCapability.setSoftButtonCapabilities(softButton);
+
+		if (display == null) {
+			displayCapability.setWindowCapabilities(Collections.singletonList(defaultWindowCapability));
+			return Collections.singletonList(displayCapability);
+		}
+
+		defaultWindowCapability.setTemplatesAvailable(display.getTemplatesAvailable());
+		defaultWindowCapability.setNumCustomPresetsAvailable(display.getNumCustomPresetsAvailable());
+		defaultWindowCapability.setTextFields(display.getTextFields());
+		defaultWindowCapability.setImageFields(display.getImageFields());
+		ArrayList<ImageType> imageTypeSupported = new ArrayList<>();
+		imageTypeSupported.add(ImageType.STATIC);
+		if (display.getGraphicSupported()) {
+			imageTypeSupported.add(ImageType.DYNAMIC);
+		}
+		defaultWindowCapability.setImageTypeSupported(imageTypeSupported);
+
+		displayCapability.setWindowCapabilities(Collections.singletonList(defaultWindowCapability));
+		return Collections.singletonList(displayCapability);
+	}
+
+	private DisplayCapabilities createDisplayCapabilities(String displayName, WindowCapability defaultMainWindow) {
+		DisplayCapabilities convertedCapabilities = new DisplayCapabilities();
+		convertedCapabilities.setDisplayType(DisplayType.SDL_GENERIC); //deprecated but it is mandatory...
+		convertedCapabilities.setDisplayName(displayName);
+		convertedCapabilities.setTextFields(defaultMainWindow.getTextFields());
+		convertedCapabilities.setImageFields(defaultMainWindow.getImageFields());
+		convertedCapabilities.setTemplatesAvailable(defaultMainWindow.getTemplatesAvailable());
+		convertedCapabilities.setNumCustomPresetsAvailable(defaultMainWindow.getNumCustomPresetsAvailable());
+		convertedCapabilities.setMediaClockFormats(new ArrayList<MediaClockFormat>()); // mandatory field but can be empty
+		convertedCapabilities.setGraphicSupported(defaultMainWindow.getImageTypeSupported().contains(ImageType.DYNAMIC));
+
+		return convertedCapabilities;
+	}
+
 	public void testParseRAI() {
 		systemCapabilityManager = createSampleManager();
 
+		List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(Test.GENERAL_DISPLAYCAPABILITIES, Test.GENERAL_BUTTONCAPABILITIES_LIST, Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
+		assertTrue(Test.TRUE,
+				Validator.validateDisplayCapabilityList(displayCapabilityList, (List<DisplayCapability>) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS)));
 		assertTrue(Test.TRUE,
 				Validator.validateHMICapabilities(Test.GENERAL_HMICAPABILITIES, (HMICapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.HMI)));
 		assertTrue(Test.TRUE,
@@ -106,6 +168,9 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 				Validator.validateSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST, (List<SoftButtonCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON)));
 		assertTrue(Test.TRUE,
 				Validator.validateSpeechCapabilities(Test.GENERAL_SPEECHCAPABILITIES_LIST, (List<SpeechCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.SPEECH)));
+		assertTrue(Test.TRUE,
+				Validator.validatePreRecordedSpeechCapabilities(Test.GENERAL_PRERECORDEDSPEECH_LIST, (List<PrerecordedSpeech>) systemCapabilityManager.getCapability(SystemCapabilityType.PRERECORDED_SPEECH)));
+
 	}
 
 	public void testGetVSCapability(){
@@ -184,7 +249,36 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		scmRpcListener.onReceived(onSystemCapabilityUpdated);
 
 		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES));
+	}
 
+	public void testOnSystemCapabilityUpdatedForDISPLAYS() {
+		InternalSDLInterface iSDL = new InternalSDLInterface();
+		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
+		OnRPCListener scmRpcListener = iSDL.rpcListeners.get(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED.getId()).get(0);
+		assertNotNull(scmRpcListener);
+
+		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS));
+		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY));
+
+		List<DisplayCapability> newCaps = createDisplayCapabilityList(Test.GENERAL_DISPLAYCAPABILITIES, Test.GENERAL_BUTTONCAPABILITIES_LIST, Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);;
+
+		SystemCapability systemCapability = new SystemCapability();
+		systemCapability.setSystemCapabilityType(SystemCapabilityType.DISPLAYS);
+		systemCapability.setCapabilityForType(SystemCapabilityType.DISPLAYS, newCaps);
+
+		OnSystemCapabilityUpdated onSystemCapabilityUpdated = new OnSystemCapabilityUpdated();
+		onSystemCapabilityUpdated.setSystemCapability(systemCapability);
+
+		scmRpcListener.onReceived(onSystemCapabilityUpdated);
+
+		List<DisplayCapability> appliedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
+		assertNotNull(appliedCaps);
+		assertTrue(Validator.validateDisplayCapabilityList(newCaps, appliedCaps));
+
+		DisplayCapabilities appliedConvertedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
+		assertNotNull(appliedConvertedCaps);
+		DisplayCapabilities testConvertedCaps = createDisplayCapabilities(newCaps.get(0).getDisplayName(), newCaps.get(0).getWindowCapabilities().get(0));
+		assertTrue(Validator.validateDisplayCapabilities(appliedConvertedCaps, testConvertedCaps));
 	}
 
 	public void testOnSystemCapabilityUpdated(){
@@ -324,6 +418,46 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		assertEquals(phoneCapability, phoneCapabilityUpdated);
 	}
 
+	public void testOnSetDisplayLayout() {
+		InternalSDLInterface iSDL = new InternalSDLInterface();
+		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
+		OnRPCListener dlRpcListener = iSDL.rpcListeners.get(FunctionID.SET_DISPLAY_LAYOUT.getId()).get(0);
+		assertNotNull(dlRpcListener);
+
+		SetDisplayLayoutResponse newLayout = new SetDisplayLayoutResponse();
+		newLayout.setDisplayCapabilities(Test.GENERAL_DISPLAYCAPABILITIES);
+		newLayout.setButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES_LIST);
+		newLayout.setSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
+		newLayout.setPresetBankCapabilities(Test.GENERAL_PRESETBANKCAPABILITIES);
+		newLayout.setSuccess(true);
+		newLayout.setResultCode(Result.SUCCESS);
+
+		dlRpcListener.onReceived(newLayout);
+
+
+		DisplayCapabilities appliedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
+		assertNotNull(appliedCaps);
+		assertTrue(Validator.validateDisplayCapabilities(newLayout.getDisplayCapabilities(), appliedCaps));
+
+		List<DisplayCapability> convertedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
+		assertNotNull(convertedCaps);
+		List<DisplayCapability> testCaps = createDisplayCapabilityList(newLayout.getDisplayCapabilities(), newLayout.getButtonCapabilities(), newLayout.getSoftButtonCapabilities());
+		assertTrue(Validator.validateDisplayCapabilityList(convertedCaps, testCaps));
+
+		WindowCapability matchWindowCapability = testCaps.get(0).getWindowCapabilities().get(0);
+		WindowCapability testWindowCapability = systemCapabilityManager.getDefaultMainWindowCapability();
+		assertTrue(Validator.validateWindowCapability(matchWindowCapability, testWindowCapability));
+		assertNull(systemCapabilityManager.getWindowCapability(42));
+	}
+
+	public void testManagerBeforeDisplayUpdate() {
+		InternalSDLInterface iSDL = new InternalSDLInterface();
+		SystemCapabilityManager systemCapabilityManager = new SystemCapabilityManager(iSDL);
+		assertNull(systemCapabilityManager.getDefaultMainWindowCapability());
+		assertNull(systemCapabilityManager.getWindowCapability(PredefinedWindows.DEFAULT_WINDOW.getValue()));
+		assertNull(systemCapabilityManager.getWindowCapability(PredefinedWindows.PRIMARY_WIDGET.getValue()));
+	}
+
 	private class InternalSDLInterface implements ISdl{
 		private final Object RPC_LISTENER_LOCK = new Object();
 		SparseArray<CopyOnWriteArrayList<OnRPCListener>> rpcListeners = new SparseArray<>();
@@ -460,6 +594,8 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		@Override
 		public void startAudioService(boolean encrypted){}
 
+		@Override
+		public void startRPCEncryption() {}
 	}
 
 

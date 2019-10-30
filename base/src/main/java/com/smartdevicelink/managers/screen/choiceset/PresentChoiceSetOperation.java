@@ -40,14 +40,17 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.rpc.CancelInteraction;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.PerformInteraction;
 import com.smartdevicelink.proxy.rpc.PerformInteractionResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
@@ -57,10 +60,11 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-class PresentChoiceSetOperation implements Runnable {
+class PresentChoiceSetOperation extends AsynchronousOperation {
 
 	private WeakReference<ISdl> internalInterface;
 	private ChoiceSet choiceSet;
+	private Integer cancelID;
 	private InteractionMode presentationMode;
 	private KeyboardProperties originalKeyboardProperties, keyboardProperties;
 	private ChoiceCell selectedCell;
@@ -70,27 +74,44 @@ class PresentChoiceSetOperation implements Runnable {
 	private ChoiceSetSelectionListener choiceSetSelectionListener;
 	Integer selectedCellRow;
 	KeyboardListener keyboardListener;
+	SdlMsgVersion sdlMsgVersion;
 
 	PresentChoiceSetOperation(ISdl internalInterface, ChoiceSet choiceSet, InteractionMode mode,
-									 KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, ChoiceSetSelectionListener choiceSetSelectionListener){
+									 KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, ChoiceSetSelectionListener choiceSetSelectionListener, Integer cancelID){
+		super();
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.keyboardListener = keyboardListener;
 		this.choiceSet = choiceSet;
+		this.choiceSet.canceledListener = new ChoiceSetCanceledListener() {
+			@Override
+			public void onChoiceSetCanceled() {
+				cancelInteraction();
+			}
+		};
 		this.presentationMode = mode;
+		this.cancelID = cancelID;
 		this.originalKeyboardProperties = originalKeyboardProperties;
 		this.keyboardProperties = originalKeyboardProperties;
 		this.selectedCellRow = null;
 		this.choiceSetSelectionListener = choiceSetSelectionListener;
+		this.sdlMsgVersion = internalInterface.getSdlMsgVersion();
 	}
 
 	@Override
 	public void run() {
+		PresentChoiceSetOperation.super.run();
 		DebugTool.logInfo("Choice Operation: Executing present choice set operation");
 		addListeners();
 		start();
+		block();
 	}
 
 	private void start(){
+		if (isCancelled()) {
+			finishOperation();
+			return;
+		}
+
 		// Check if we're using a keyboard (searchable) choice set and setup keyboard properties if we need to
 		if (keyboardListener != null && choiceSet.getCustomKeyboardConfiguration() != null){
 			keyboardProperties = choiceSet.getCustomKeyboardConfiguration();
@@ -100,6 +121,10 @@ class PresentChoiceSetOperation implements Runnable {
 		updateKeyboardProperties(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
+				if (isCancelled()) {
+					finishOperation();
+					return;
+				}
 				presentChoiceSet();
 			}
 		});
@@ -135,6 +160,14 @@ class PresentChoiceSetOperation implements Runnable {
 				}
 				DebugTool.logInfo("Success Setting keyboard properties in present choice set operation");
 			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				if (listener != null){
+					listener.onComplete(false);
+				}
+				DebugTool.logError("Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
+			}
 		});
 		if (internalInterface.get() != null){
 			internalInterface.get().sendRPC(setGlobalProperties);
@@ -167,6 +200,16 @@ class PresentChoiceSetOperation implements Runnable {
 
 				finishOperation();
 			}
+
+			@Override
+			public void onError(int correlationId, Result resultCode, String info) {
+				DebugTool.logError("Presenting Choice set failed: " + resultCode + ", " + info);
+
+				if (choiceSetSelectionListener != null){
+					choiceSetSelectionListener.onError(resultCode + ", " + info);
+				}
+				finishOperation();
+			}
 		});
 		if (internalInterface.get() != null){
 			internalInterface.get().sendRPC(pi);
@@ -175,8 +218,7 @@ class PresentChoiceSetOperation implements Runnable {
 		}
 	}
 
-	private void finishOperation() {
-
+	void finishOperation() {
 		if (updatedKeyboardProperties) {
 			// We need to reset the keyboard properties
 			SetGlobalProperties setGlobalProperties = new SetGlobalProperties();
@@ -186,6 +228,13 @@ class PresentChoiceSetOperation implements Runnable {
 				public void onResponse(int correlationId, RPCResponse response) {
 					updatedKeyboardProperties = false;
 					DebugTool.logInfo("Successfully reset choice keyboard properties to original config");
+					PresentChoiceSetOperation.super.finishOperation();
+				}
+
+				@Override
+				public void onError(int correlationId, Result resultCode, String info) {
+					DebugTool.logError("Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
+					PresentChoiceSetOperation.super.finishOperation();
 				}
 			});
 
@@ -195,13 +244,56 @@ class PresentChoiceSetOperation implements Runnable {
 			} else {
 				DebugTool.logError("Internal Interface null when finishing choice keyboard reset");
 			}
+		} else {
+			PresentChoiceSetOperation.super.finishOperation();
+		}
+	}
+
+	/*
+	* Cancels the choice set. If the choice set has not yet been sent to Core, it will not be sent. If the choice set is already presented on Core, the choice set will be dismissed using the `CancelInteraction` RPC.
+	*/
+	private void cancelInteraction() {
+		if (isFinished()) {
+			DebugTool.logInfo("This operation has already finished so it can not be canceled.");
+			return;
+		} else if (isCancelled()) {
+			DebugTool.logInfo("This operation has already been canceled. It will be finished at some point during the operation.");
+			return;
+		} else if (isExecuting()) {
+			if (sdlMsgVersion.getMajorVersion() < 6){
+				DebugTool.logWarning("Canceling a presented choice set is not supported on this head unit");
+				return;
+			}
+
+			DebugTool.logInfo("Canceling the presented choice set interaction.");
+
+			CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);
+			cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
+				@Override
+				public void onResponse(int correlationId, RPCResponse response) {
+					DebugTool.logInfo("Canceled the presented choice set " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
+				}
+
+				@Override
+				public void onError(int correlationId, Result resultCode, String info){
+					DebugTool.logError("Error canceling the presented choice set " + resultCode + " " + info);
+				};
+			});
+
+			if (internalInterface.get() != null){
+				internalInterface.get().sendRPC(cancelInteraction);
+			} else {
+				DebugTool.logError("Internal interface null - could not send cancel interaction for choice set");
+			}
+		} else {
+			DebugTool.logInfo("Canceling a choice set that has not yet been sent to Core");
+			this.cancel();
 		}
 	}
 
 	// GETTERS
 
 	PerformInteraction getPerformInteraction() {
-
 		PerformInteraction pi = new PerformInteraction(choiceSet.getTitle(), presentationMode, getChoiceIds());
 		pi.setInitialPrompt(choiceSet.getInitialPrompt());
 		pi.setHelpPrompt(choiceSet.getHelpPrompt());
@@ -209,6 +301,7 @@ class PresentChoiceSetOperation implements Runnable {
 		pi.setVrHelp(choiceSet.getVrHelpList());
 		pi.setTimeout(choiceSet.getTimeout() * 1000);
 		pi.setInteractionLayout(getLayoutMode());
+		pi.setCancelID(cancelID);
 		return pi;
 	}
 
@@ -253,6 +346,10 @@ class PresentChoiceSetOperation implements Runnable {
 		keyboardRPCListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
+				if (isCancelled()) {
+					finishOperation();
+					return;
+				}
 
 				if (keyboardListener == null){
 					DebugTool.logError("Received Keyboard Input But Listener is null");
@@ -271,6 +368,13 @@ class PresentChoiceSetOperation implements Runnable {
 						@Override
 						public void onUpdatedAutoCompleteText(String updatedAutoCompleteText) {
 							keyboardProperties.setAutoCompleteText(updatedAutoCompleteText);
+							updateKeyboardProperties(null);
+						}
+
+						@Override
+						public void onUpdatedAutoCompleteList(List<String> updatedAutoCompleteList) {
+							keyboardProperties.setAutoCompleteList(updatedAutoCompleteList != null ? updatedAutoCompleteList : new ArrayList<String>());
+							keyboardProperties.setAutoCompleteText(updatedAutoCompleteList != null && !updatedAutoCompleteList.isEmpty() ? updatedAutoCompleteList.get(0) : null);
 							updateKeyboardProperties(null);
 						}
 					});

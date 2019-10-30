@@ -49,6 +49,7 @@ import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.TextField;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
@@ -62,21 +63,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-class PreloadChoicesOperation implements Runnable {
+class PreloadChoicesOperation extends AsynchronousOperation {
 
 	private WeakReference<ISdl> internalInterface;
 	private WeakReference<FileManager> fileManager;
-	private DisplayCapabilities displayCapabilities;
+	private WindowCapability defaultMainWindowCapability;
 	private HashSet<ChoiceCell> cellsToUpload;
 	private CompletionListener completionListener;
 	private boolean isRunning;
 	private boolean isVROptional;
 
-	PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, DisplayCapabilities displayCapabilities,
+	PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, WindowCapability defaultMainWindowCapability,
 								   Boolean isVROptional, HashSet<ChoiceCell> cellsToPreload, CompletionListener listener){
+		super();
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.fileManager = new WeakReference<>(fileManager);
-		this.displayCapabilities = displayCapabilities;
+		this.defaultMainWindowCapability = defaultMainWindowCapability;
 		this.isVROptional = isVROptional;
 		this.cellsToUpload = cellsToPreload;
 		this.completionListener = listener;
@@ -84,6 +86,7 @@ class PreloadChoicesOperation implements Runnable {
 
 	@Override
 	public void run() {
+		PreloadChoicesOperation.super.run();
 		DebugTool.logInfo("Choice Operation: Executing preload choices operation");
 		preloadCellArtworks(new CompletionListener() {
 			@Override
@@ -91,6 +94,7 @@ class PreloadChoicesOperation implements Runnable {
 				preloadCells();
 			}
 		});
+		block();
 	}
 
 	void removeChoicesFromUpload(HashSet<ChoiceCell> choices){
@@ -161,11 +165,15 @@ class PreloadChoicesOperation implements Runnable {
 					isRunning = false;
 					DebugTool.logInfo("Finished pre loading choice cells");
 					completionListener.onComplete(true);
+
+					PreloadChoicesOperation.super.finishOperation();
 				}
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info) {
 					DebugTool.logError("There was an error uploading a choice cell: "+ info + " resultCode: " + resultCode);
+
+					PreloadChoicesOperation.super.finishOperation();
 				}
 
 				@Override
@@ -208,10 +216,10 @@ class PreloadChoicesOperation implements Runnable {
 		choice.setIgnoreAddingVRItems(true);
 
 		if (fileManager.get() != null){
-			if (image != null && fileManager.get().hasUploadedFile(cell.getArtwork())) {
+			if (image != null && (cell.getArtwork().isStaticIcon() || fileManager.get().hasUploadedFile(cell.getArtwork()))) {
 				choice.setImage(image);
 			}
-			if (secondaryImage != null && fileManager.get().hasUploadedFile(cell.getSecondaryArtwork())) {
+			if (secondaryImage != null && (cell.getSecondaryArtwork().isStaticIcon() || fileManager.get().hasUploadedFile(cell.getSecondaryArtwork()))) {
 				choice.setSecondaryImage(secondaryImage);
 			}
 		}
@@ -242,10 +250,10 @@ class PreloadChoicesOperation implements Runnable {
 	}
 
 	boolean hasImageFieldOfName(ImageFieldName name){
-		if (displayCapabilities == null ){ return false; }
-		if (displayCapabilities.getGraphicSupported() == null || !displayCapabilities.getGraphicSupported()) { return false; }
-		if (displayCapabilities.getImageFields() != null){
-			for (ImageField field : displayCapabilities.getImageFields()){
+		if (defaultMainWindowCapability == null ){ return false; }
+		if (defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().isEmpty()) { return false; }
+		if (defaultMainWindowCapability.getImageFields() != null){
+			for (ImageField field : defaultMainWindowCapability.getImageFields()){
 				if (field.getName().equals(name)){
 					return true;
 				}
@@ -255,15 +263,14 @@ class PreloadChoicesOperation implements Runnable {
 	}
 
 	boolean hasTextFieldOfName(TextFieldName name){
-		if (displayCapabilities == null ){ return false; }
-		if (displayCapabilities.getTextFields() != null){
-			for (TextField field : displayCapabilities.getTextFields()){
-				if (field.getName().equals(name)){
+		if (defaultMainWindowCapability == null ){ return false; }
+		if (defaultMainWindowCapability.getTextFields() != null){
+			for (TextField field : defaultMainWindowCapability.getTextFields()){
+				if (field != null && field.getName() != null && field.getName().equals(name)){
 					return true;
 				}
 			}
 		}
 		return false;
 	}
-
 }

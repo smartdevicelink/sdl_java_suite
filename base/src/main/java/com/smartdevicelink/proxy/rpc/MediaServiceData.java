@@ -45,6 +45,7 @@ public class MediaServiceData extends RPCStruct {
 	public static final String KEY_MEDIA_TITLE = "mediaTitle";
 	public static final String KEY_MEDIA_ARTIST = "mediaArtist";
 	public static final String KEY_MEDIA_ALBUM = "mediaAlbum";
+	public static final String KEY_MEDIA_IMAGE = "mediaImage";
 	public static final String KEY_PLAYLIST_NAME = "playlistName";
 	public static final String KEY_IS_EXPLICIT = "isExplicit";
 	public static final String KEY_TRACK_PLAYBACK_PROGRESS = "trackPlaybackProgress";
@@ -136,6 +137,27 @@ public class MediaServiceData extends RPCStruct {
 	 */
 	public String getMediaAlbum() {
 		return getString(KEY_MEDIA_ALBUM);
+	}
+
+	/**
+	 * Sets the media image associated with the currently playing media
+	 * Music: The album art of the current track
+	 * Podcast: The podcast or chapter artwork of the current podcast episode
+	 * Audiobook: The book or chapter artwork of the current audiobook
+	 * @param mediaImage
+	 */
+	public void setMediaImage(Image mediaImage){
+		setValue(KEY_MEDIA_IMAGE, mediaImage);
+	}
+
+	/**
+	 * Returns the media image associated with the currently playing media
+	 * Music: The album art of the current track
+	 * Podcast: The podcast or chapter artwork of the current podcast episode
+	 * Audiobook: The book or chapter artwork of the current audiobook
+	 */
+	public Image getMediaImage(){
+		return (Image) getObject(Image.class, KEY_MEDIA_IMAGE);
 	}
 
 	/**

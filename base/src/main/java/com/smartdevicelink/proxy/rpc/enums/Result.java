@@ -212,6 +212,10 @@ public enum Result {
 	 * The data sent failed to pass CRC check in receiver end
 	 */
 	CORRUPTED_DATA,
+	/**
+	 * The data sent needs to be encrypted
+	 */
+	ENCRYPTION_NEEDED,
 
 	;
 	 /**
