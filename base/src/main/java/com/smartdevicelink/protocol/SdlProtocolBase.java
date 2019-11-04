@@ -1046,27 +1046,31 @@ public class SdlProtocolBase {
                 }
             }
         } else {
-            TransportRecord transportRecord = packet.getTransportRecord();
-            if(transportRecord == null || (requiresHighBandwidth
-                    && TransportType.BLUETOOTH.equals(transportRecord.getType()))){
-                //transport can't support high bandwidth
-                onTransportNotAccepted((transportRecord != null ? transportRecord.getType().toString() : "Transport") + "can't support high bandwidth requirement, and secondary transport not supported in this protocol version");
-                return;
-            }
-            //If version < 5 and transport is acceptable we need to just add these
-            activeTransports.put(SessionType.RPC, transportRecord);
-            activeTransports.put(SessionType.BULK_DATA, transportRecord);
-            activeTransports.put(SessionType.CONTROL, transportRecord);
-            activeTransports.put(SessionType.NAV, transportRecord);
-            activeTransports.put(SessionType.PCM, transportRecord);
-
-            if (protocolVersion.getMajor() > 1){
-                if (packet.payload!= null && packet.dataSize == 4){ //hashid will be 4 bytes in length
-                    hashID = BitConverter.intFromByteArray(packet.payload, 0);
+            if(serviceType.equals(SessionType.RPC)) {
+                TransportRecord transportRecord = packet.getTransportRecord();
+                if (transportRecord == null || (requiresHighBandwidth
+                        && TransportType.BLUETOOTH.equals(transportRecord.getType()))) {
+                    //transport can't support high bandwidth
+                    onTransportNotAccepted((transportRecord != null ? transportRecord.getType().toString() : "Transport ") + "can't support high bandwidth requirement, and secondary transport not supported in this protocol version");
+                    return;
                 }
+                //If version < 5 and transport is acceptable we need to just add these
+                activeTransports.put(SessionType.RPC, transportRecord);
+                activeTransports.put(SessionType.BULK_DATA, transportRecord);
+                activeTransports.put(SessionType.CONTROL, transportRecord);
+                activeTransports.put(SessionType.NAV, transportRecord);
+                activeTransports.put(SessionType.PCM, transportRecord);
+
+                if (protocolVersion.getMajor() > 1) {
+                    if (packet.payload != null && packet.dataSize == 4) { //hashid will be 4 bytes in length
+                        hashID = BitConverter.intFromByteArray(packet.payload, 0);
+                    }
+                }
+            }else if(serviceType.equals(SessionType.NAV)) {
+                //Protocol versions <5 don't support param negotiation
+                iSdlProtocol.setAcceptedVideoParams(iSdlProtocol.getDesiredVideoParams());
             }
         }
-
         iSdlProtocol.onProtocolSessionStarted(serviceType, (byte) packet.getSessionId(), (byte)protocolVersion.getMajor(), "", hashID, packet.isEncrypted());
     }
 

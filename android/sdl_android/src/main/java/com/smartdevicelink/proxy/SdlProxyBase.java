@@ -5296,6 +5296,27 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         }
     }
 
+	/**
+	 * This method will try to start the video service with the requested parameters.
+	 * When it returns it will attempt to store the accepted parameters if available.
+	 * @param isEncrypted if the service should be encrypted
+	 * @param parameters the desiered video streaming parameters
+	 */
+	public void startVideoService(boolean isEncrypted, VideoStreamingParameters parameters) {
+		if (sdlSession == null) {
+			DebugTool.logWarning("SdlSession is not created yet.");
+			return;
+		}
+		if (!sdlSession.getIsConnected()) {
+			DebugTool.logWarning("Connection is not available.");
+			return;
+		}
+
+		sdlSession.setDesiredVideoParams(parameters);
+
+		tryStartVideoStream(isEncrypted, parameters);
+	}
+
     /**
      *Closes the opened video service (serviceType 11)
      *@return true if the video service is closed successfully, return false otherwise

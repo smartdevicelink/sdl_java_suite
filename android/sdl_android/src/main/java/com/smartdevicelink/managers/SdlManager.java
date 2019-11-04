@@ -737,13 +737,18 @@ public class SdlManager extends BaseSdlManager{
 		@Override
 		public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
 			if(proxy.getIsConnected()){
-				proxy.startVideoStream(encrypted,parameters);
+				proxy.startVideoService(encrypted,parameters);
 			}
 		}
 
 		@Override
 		public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters){
-			return proxy.startVideoStream(isEncrypted, parameters);
+			if(proxy.getIsConnected()){
+				return proxy.startVideoStream(isEncrypted, parameters);
+			}else{
+				DebugTool.logError("Unable to start video stream, proxy not connected");
+				return null;
+			}
 		}
 
 		@Override
