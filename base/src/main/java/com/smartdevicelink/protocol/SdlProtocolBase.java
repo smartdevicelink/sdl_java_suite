@@ -1184,16 +1184,44 @@ public class SdlProtocolBase {
             }
 
             if((getTransportForSession(SessionType.RPC) != null && disconnectedTransport.equals(getTransportForSession(SessionType.RPC))) || disconnectedTransport.equals(connectedPrimaryTransport)){
+                //Primary transport has been disconnected. Let's check if we can recover.
                 //transportTypes.remove(type);
                 boolean primaryTransportAvailable = false;
                 if(requestedPrimaryTransports != null && requestedPrimaryTransports.size() > 1){
-                    for (TransportType transportType: requestedPrimaryTransports){ Log.d(TAG, "Checking " + transportType.name());
+                    for (TransportType transportType: requestedPrimaryTransports){
+                        DebugTool.logInfo( "Checking " + transportType.name());
+
                         if(!disconnectedTransport.getType().equals(transportType)
                                 && transportManager != null
                                 && transportManager.isConnected(transportType,null)){
-                            primaryTransportAvailable = true;
-                            transportManager.updateTransportConfig(transportConfig);
-                            break;
+
+                            //There is currently a supported primary transport
+
+                            //See if any high bandwidth transport is available currently
+                            boolean highBandwidthAvailable = transportManager.isHighBandwidthAvailable();
+
+                            if (requiresHighBandwidth) {
+                                if (!highBandwidthAvailable) {
+                                    if (TransportType.BLUETOOTH.equals(transportType)
+                                            && requestedSecondaryTransports != null
+                                            && supportedSecondaryTransports != null) {
+                                        for (TransportType secondaryTransport : requestedSecondaryTransports) {
+                                            DebugTool.logInfo("Checking secondary " + secondaryTransport.name());
+                                            if (supportedSecondaryTransports.contains(secondaryTransport)) {
+                                                //Should only be USB or TCP
+                                                highBandwidthAvailable = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                } // High bandwidth already available
+                            }
+
+                            if(!requiresHighBandwidth  || (requiresHighBandwidth && highBandwidthAvailable )) {
+                                primaryTransportAvailable = true;
+                                transportManager.updateTransportConfig(transportConfig);
+                                break;
+                            }
                         }
                     }
                 }
