@@ -175,7 +175,11 @@ abstract class BaseMenuManager extends BaseSubManager {
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
 			// We are in NONE or the menu is in use, bail out of here
 			waitingOnHMIUpdate = true;
-			waitingUpdateMenuCells = new ArrayList<>(clonedCells);
+			if (clonedCells == null) {
+				waitingUpdateMenuCells = new ArrayList<>();
+			} else {
+				waitingUpdateMenuCells = new ArrayList<>(clonedCells);
+			}
 			return;
 		}
 		waitingOnHMIUpdate = false;
@@ -186,7 +190,11 @@ abstract class BaseMenuManager extends BaseSubManager {
 			oldMenuCells = new ArrayList<>(menuCells);
 		}
 		// copy new list
-		menuCells = new ArrayList<>(clonedCells);
+		if (clonedCells == null) {
+			menuCells = new ArrayList<>();
+		} else {
+			menuCells = new ArrayList<>(clonedCells);
+		}
 
 		// HashSet order doesnt matter / does not allow duplicates
 		HashSet<String> titleCheckSet = new HashSet<>();
