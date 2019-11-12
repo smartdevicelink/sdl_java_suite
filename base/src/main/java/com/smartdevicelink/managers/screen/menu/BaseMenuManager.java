@@ -176,7 +176,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			// We are in NONE or the menu is in use, bail out of here
 			waitingOnHMIUpdate = true;
 			waitingUpdateMenuCells = new ArrayList<>();
-			if (clonedCells != null) {
+			if (clonedCells != null && !clonedCells.isEmpty()) {
 				waitingUpdateMenuCells.addAll(clonedCells);
 			}
 			return;
@@ -190,7 +190,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		}
 		// copy new list
 		menuCells = new ArrayList<>();
-		if (clonedCells != null) {
+		if (clonedCells != null && !clonedCells.isEmpty()) {
 			menuCells.addAll(clonedCells);
 		}
 
