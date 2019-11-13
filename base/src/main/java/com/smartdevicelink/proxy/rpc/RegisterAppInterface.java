@@ -621,15 +621,15 @@ public class RegisterAppInterface extends RPCRequest {
 	 * Gets the detailed information about the registered application
 	 * @return appInfo - detailed information about the registered application
 	 */
-	public String getAppInfo() {
-		return getString(KEY_APP_INFO);
+	public AppInfo getAppInfo() {
+		return (AppInfo) getObject(AppInfo.class, KEY_APP_INFO);
 	}
 
 	/**
 	 * Sets detailed information about the registered application
 	 * @param appInfo - detailed information about the registered application
 	 */
-	public void setAppInfo(String appInfo) {
+	public void setAppInfo(AppInfo appInfo) {
 		setParameters(KEY_APP_INFO, appInfo);
 	}
 
