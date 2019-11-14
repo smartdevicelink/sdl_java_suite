@@ -2598,6 +2598,24 @@ public class Validator{
         return true;
     }
 
+    public static boolean validateAppInfo (AppInfo item1, AppInfo item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        if (item1.getAppDisplayName() != item1.getAppDisplayName()
+        || item1.getAppBundleID() != item2.getAppBundleID()
+        || item1.getAppVersion() != item2.getAppVersion()
+        || item1.getAppIcon() != item2.getAppIcon()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static boolean validateTemplateColorScheme (TemplateColorScheme item1, TemplateColorScheme item2) {
         if (item1 == null) {
             return ( item2 == null );
