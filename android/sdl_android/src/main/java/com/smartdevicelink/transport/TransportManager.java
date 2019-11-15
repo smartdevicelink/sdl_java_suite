@@ -120,7 +120,9 @@ public class TransportManager extends TransportManagerBase{
     @Override
     @Deprecated
     public void resetSession(){
-        transport.resetSession();
+       if(transport != null){
+           transport.resetSession();
+       }
     }
 
     /**

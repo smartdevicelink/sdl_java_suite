@@ -365,7 +365,7 @@ public class SdlManager extends BaseSdlManager{
 			this.audioStreamManager.dispose();
 		}
 
-		if (this.proxy != null) {
+		if (this.proxy != null && !proxy.isDisposed()) {
 			try {
 				this.proxy.dispose();
 			} catch (SdlException e) {
