@@ -38,6 +38,7 @@ import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,6 +80,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 		if (bufferSize == 0) {
 			// fail safe
 			bufferSize = BUFF_READ_SIZE;
+			buffer = new byte[bufferSize];
 		}
 		if(isServiceProtected){ //If our service is encrypted we can only use 1024 as the max buffer size. 
 			bufferSize = BUFF_READ_SIZE;
@@ -147,6 +149,9 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 						frame = byteBufferWithListener.byteBuffer;
 						completionListener = byteBufferWithListener.completionListener;
 					} catch (InterruptedException e) {
+						if(DebugTool.isDebugEnabled()){
+							e.printStackTrace();
+						}
 						Thread.currentThread().interrupt();
 						break;
 					}
@@ -169,7 +174,7 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 						frame.position(frame.position() + len);
 					}
 
-					if (!frame.hasRemaining() && completionListener != null){
+					if (completionListener != null){
 						completionListener.onComplete(true);
 					}
 				}
@@ -187,8 +192,6 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 			}else{
 				_session.endService(_serviceType,_rpcSessionID);
 			}
-
-
 		}
 	}
 
@@ -297,8 +300,8 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 	}
 
 	private class ByteBufferWithListener{
-		ByteBuffer byteBuffer;
-		CompletionListener completionListener;
+		final ByteBuffer byteBuffer;
+		final CompletionListener completionListener;
 		ByteBufferWithListener (ByteBuffer byteBuffer, CompletionListener completionListener){
 			this.byteBuffer = byteBuffer;
 			this.completionListener = completionListener;
