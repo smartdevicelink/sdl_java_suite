@@ -9,7 +9,7 @@ jobs:
     runs-on: macOS-latest
     steps:
 
-    - name: checkout
+    - name: Checkout
       uses: actions/checkout@v1
       with:
         fetch-depth: 1
@@ -18,12 +18,18 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v1
       with:
         api-level: 29
+        arch: x86_64
+        headless: true
+        disable-animations: true
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
 
     - name: Hello Sdl Android Tests
       uses: reactivecircus/android-emulator-runner@v1
       with:
         api-level: 29
+        arch: x86_64
+        headless: true
+        disable-animations: true
         script: ./android/gradlew -p ./android :hello_sdl_android:test
 
     - name: Set up JDK 1.8
