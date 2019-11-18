@@ -45,3 +45,8 @@ jobs:
 
     - name: Sdl JavaEE Tests
       run: ./javaEE/gradlew -p ./javaEE test
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
