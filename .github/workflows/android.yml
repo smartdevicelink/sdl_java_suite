@@ -21,9 +21,7 @@ jobs:
         arch: x86_64
         headless: true
         disable-animations: true
-        script:
-          - ./android/gradlew -p ./android :sdl_android:connectedCheck
-          - ./android/gradlew -p ./android :hello_sdl_android:test
+        script: ./android/gradlew -p ./android :sdl_android:connectedCheck
 
     - name: Hello Sdl Android Tests
       uses: reactivecircus/android-emulator-runner@v1
