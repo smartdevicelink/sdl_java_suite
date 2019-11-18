@@ -32,7 +32,7 @@ jobs:
         disable-animations: true
         script: ./android/gradlew -p ./android :hello_sdl_android:test
 
-    - name: Set up JDK 1.8
+    - name: Setup JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
