@@ -47,4 +47,4 @@ jobs:
       run: ./javaEE/gradlew -p ./javaEE test
 
     - name: Run Codecov
-      run: bash <(curl -s https://codecov.io/bash) -t :${{secrets.CODECOV_TOKEN}}
+      run: bash <(curl -s https://codecov.io/bash) -t ${{secrets.CODECOV_TOKEN}}
