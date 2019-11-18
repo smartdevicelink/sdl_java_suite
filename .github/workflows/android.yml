@@ -45,3 +45,6 @@ jobs:
 
     - name: Sdl JavaEE Tests
       run: ./javaEE/gradlew -p ./javaEE test
+
+    - name: Run Codecov
+      run: bash <(curl -s https://codecov.io/bash)
