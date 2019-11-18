@@ -1,6 +1,6 @@
 # For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
 
-name: AndroidEmulator
+name: CI
 
 on: [push]
 
