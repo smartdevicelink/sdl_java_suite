@@ -128,6 +128,10 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
     }
 
     public void testSoftButtonManagerUpdate() {
+///////////
+        assertEquals(false, true);
+        ///////////
+
         // Reset the boolean variables
         fileManagerUploadArtworksGotCalled = false;
         internalInterfaceSendRPCGotCalled = false;
