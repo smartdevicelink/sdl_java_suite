@@ -153,12 +153,12 @@ public class SdlAppInfo {
                     int versionCompare =  two.routerServiceVersion  - one.routerServiceVersion;
 
                     if(versionCompare == 0){ //Versions are equal so lets use the one that has been updated most recently
-                        int updateTime =  (int)(two.lastUpdateTime - one.lastUpdateTime);
+                        long updateTime =  two.lastUpdateTime - one.lastUpdateTime;
                         if(updateTime == 0){
                             //This is arbitrary, but we want to ensure all lists are sorted in the same order
                             return  one.routerServiceComponentName.getPackageName().compareTo(two.routerServiceComponentName.getPackageName());
                         }else{
-                            return updateTime;
+                            return (updateTime < 0 ? -1 : 1);
                         }
                     }else{
                         return versionCompare;
