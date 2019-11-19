@@ -102,7 +102,13 @@ public class SystemCapabilityManager {
 		WindowTypeCapabilities windowTypeCapabilities = new WindowTypeCapabilities(WindowType.MAIN, 1);
 
 		DisplayCapability displayCapability = new DisplayCapability();
-		displayCapability.setDisplayName(display != null ? display.getDisplayName() : display.getDisplayType().toString());
+		if (display != null){
+			if (display.getDisplayName() != null) {
+				displayCapability.setDisplayName(display.getDisplayName());
+			} else if (display.getDisplayType() != null) {
+				displayCapability.setDisplayName(display.getDisplayType().toString());
+			}
+		}
 		displayCapability.setWindowTypeSupported(Collections.singletonList(windowTypeCapabilities));
 
 		// Create a window capability object for the default MAIN window
@@ -290,7 +296,9 @@ public class SystemCapabilityManager {
                                                     List<AppServiceCapability> appServicesCapabilitiesList = appServicesCapabilities.getAppServices();
                                                     AppServicesCapabilities cachedAppServicesCapabilities = (AppServicesCapabilities) cachedSystemCapabilities.get(systemCapabilityType);
                                                     //Update the cached app services
-                                                    cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
+                                                    if (cachedAppServicesCapabilities != null) {
+                                                    	cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
+                                                    }
                                                     //Set the new capability object to the updated cached capabilities
                                                     capability = cachedAppServicesCapabilities;
                                                 }
@@ -353,56 +361,57 @@ public class SystemCapabilityManager {
 	 * @return if that capability is supported with the current, connected module
 	 */
 	public boolean isCapabilitySupported(SystemCapabilityType type){
-		if(cachedSystemCapabilities.get(type) != null){
+		if (cachedSystemCapabilities.get(type) != null) {
 			//The capability exists in the map and is not null
 			return true;
-		}else if(cachedSystemCapabilities.containsKey(SystemCapabilityType.HMI)){
-			HMICapabilities hmiCapabilities = ((HMICapabilities)cachedSystemCapabilities.get(SystemCapabilityType.HMI));
+		} else if (cachedSystemCapabilities.containsKey(SystemCapabilityType.HMI)) {
+			HMICapabilities hmiCapabilities = ((HMICapabilities) cachedSystemCapabilities.get(SystemCapabilityType.HMI));
 			Version rpcVersion = null;
 			if (callback != null) {
 				SdlMsgVersion version = callback.getSdlMsgVersion();
-				if(version != null){
+				if (version != null) {
 					rpcVersion = new Version(version.getMajorVersion(), version.getMinorVersion(), version.getPatchVersion());
 				}
 			}
-			switch (type) {
-				case NAVIGATION:
-					return hmiCapabilities.isNavigationAvailable();
-				case PHONE_CALL:
-					return hmiCapabilities.isPhoneCallAvailable();
-				case VIDEO_STREAMING:
-					if(rpcVersion != null) {
-						if(rpcVersion.isBetween(new Version(3,0,0), new Version(4,4,0)) >= 0){
-							//This was before the system capability feature was added so check if
-							// graphics are supported instead
-							DisplayCapabilities displayCapabilities = (DisplayCapabilities) getCapability(SystemCapabilityType.DISPLAY);
-							if(displayCapabilities != null){
-								return displayCapabilities.getGraphicSupported() != null && displayCapabilities.getGraphicSupported();
+			if (hmiCapabilities != null) {
+				switch (type) {
+					case NAVIGATION:
+						return hmiCapabilities.isNavigationAvailable();
+					case PHONE_CALL:
+						return hmiCapabilities.isPhoneCallAvailable();
+					case VIDEO_STREAMING:
+						if (rpcVersion != null) {
+							if (rpcVersion.isBetween(new Version(3, 0, 0), new Version(4, 4, 0)) >= 0) {
+								//This was before the system capability feature was added so check if
+								// graphics are supported instead
+								DisplayCapabilities displayCapabilities = (DisplayCapabilities) getCapability(SystemCapabilityType.DISPLAY);
+								if (displayCapabilities != null) {
+									return displayCapabilities.getGraphicSupported() != null && displayCapabilities.getGraphicSupported();
+								}
 							}
 						}
-					}
-					return hmiCapabilities.isVideoStreamingAvailable();
-				case REMOTE_CONTROL:
-					return hmiCapabilities.isRemoteControlAvailable();
-				case APP_SERVICES:
-					if(rpcVersion != null){
-						if(rpcVersion.getMajor() == 5 && rpcVersion.getMinor() == 1){
-							//This is a corner case that the param was not available in 5.1.0, but
-							//the app services feature was available.
-							return true;
+						return hmiCapabilities.isVideoStreamingAvailable();
+					case REMOTE_CONTROL:
+						return hmiCapabilities.isRemoteControlAvailable();
+					case APP_SERVICES:
+						if (rpcVersion != null) {
+							if (rpcVersion.getMajor() == 5 && rpcVersion.getMinor() == 1) {
+								//This is a corner case that the param was not available in 5.1.0, but
+								//the app services feature was available.
+								return true;
+							}
 						}
-					}
-					return hmiCapabilities.isAppServicesAvailable();
-				case DISPLAYS:
-					return hmiCapabilities.isDisplaysCapabilityAvailable();
-				case SEAT_LOCATION:
-					return hmiCapabilities.isSeatLocationAvailable();
-				default:
-					return false;
+						return hmiCapabilities.isAppServicesAvailable();
+					case DISPLAYS:
+						return hmiCapabilities.isDisplaysCapabilityAvailable();
+					case SEAT_LOCATION:
+						return hmiCapabilities.isSeatLocationAvailable();
+					default:
+						return false;
+				}
 			}
-		}else{
-			return false;
 		}
+		return false;
 	}
 	/**
 	 * @param systemCapabilityType Type of capability desired
