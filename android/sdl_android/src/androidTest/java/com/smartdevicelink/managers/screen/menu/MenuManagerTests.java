@@ -425,6 +425,27 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.keepsOld.size(), 3);
 	}
 
+	public void testSettingNullMenu(){
+
+		// Make sure we can send an empty menu with no issues
+		// start fresh
+		menuManager.oldMenuCells = null;
+		menuManager.menuCells = null;
+		menuManager.inProgressUpdate = null;
+		menuManager.waitingUpdateMenuCells = null;
+		menuManager.waitingOnHMIUpdate = false;
+
+		menuManager.currentHMILevel = HMILevel.HMI_FULL;
+		// send new cells. They should set the old way
+		List<MenuCell> oldMenu = createDynamicMenu1();
+		List<MenuCell> newMenu = null;
+		menuManager.setMenuCells(oldMenu);
+		assertEquals(menuManager.menuCells.size(), 4);
+
+		menuManager.setMenuCells(newMenu);
+		assertEquals(menuManager.menuCells.size(), 0);
+	}
+
 	public void testClearingMenu(){
 
 		// Make sure we can send an empty menu with no issues
