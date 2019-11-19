@@ -296,9 +296,9 @@ public class SystemCapabilityManager {
                                                     List<AppServiceCapability> appServicesCapabilitiesList = appServicesCapabilities.getAppServices();
                                                     AppServicesCapabilities cachedAppServicesCapabilities = (AppServicesCapabilities) cachedSystemCapabilities.get(systemCapabilityType);
                                                     //Update the cached app services
-													if (cachedAppServicesCapabilities != null) {
-														cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
-													}
+                                                    if (cachedAppServicesCapabilities != null) {
+                                                    	cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
+                                                    }
                                                     //Set the new capability object to the updated cached capabilities
                                                     capability = cachedAppServicesCapabilities;
                                                 }
