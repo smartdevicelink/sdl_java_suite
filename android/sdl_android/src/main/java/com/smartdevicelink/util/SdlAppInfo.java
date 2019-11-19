@@ -161,7 +161,7 @@ public class SdlAppInfo {
                             return (updateTime < 0 ? -1 : 1);
                         }
                     }else{
-                        return versionCompare;
+                        return (versionCompare < 0 ? -1 : 1);
                     }
 
                 }else{
