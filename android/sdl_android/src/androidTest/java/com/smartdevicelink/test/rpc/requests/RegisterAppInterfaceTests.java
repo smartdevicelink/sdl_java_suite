@@ -3,6 +3,7 @@ package com.smartdevicelink.test.rpc.requests;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.rpc.AppInfo;
 import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
@@ -46,6 +47,7 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 		msg.setAppHMIType(Test.GENERAL_APPHMITYPE_LIST);
 		msg.setIsMediaApplication(Test.GENERAL_BOOLEAN);
 		msg.setDeviceInfo(Test.GENERAL_DEVICEINFO);
+		msg.setAppInfo(Test.GENERAL_APPINFO);
 		msg.setDayColorScheme(Test.GENERAL_DAYCOLORSCHEME);
 		msg.setNightColorScheme(Test.GENERAL_NIGHTCOLORSCHEME);
 
@@ -80,6 +82,7 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 			result.put(RegisterAppInterface.KEY_APP_HMI_TYPE, JsonUtils.createJsonArrayOfJsonNames(Test.GENERAL_APPHMITYPE_LIST, SDL_VERSION_UNDER_TEST));
 			result.put(RegisterAppInterface.KEY_IS_MEDIA_APPLICATION, Test.GENERAL_BOOLEAN);
 			result.put(RegisterAppInterface.KEY_DEVICE_INFO, Test.JSON_DEVICEINFO);
+			result.put(RegisterAppInterface.KEY_APP_INFO, Test.JSON_APPINFO);
 			result.put(RegisterAppInterface.KEY_DAY_COLOR_SCHEME, Test.JSON_DAYCOLORSCHEME);
 			result.put(RegisterAppInterface.KEY_NIGHT_COLOR_SCHEME, Test.JSON_NIGHTCOLORSCHEME);
 		} catch (JSONException e) {
@@ -107,6 +110,7 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 		List<AppHMIType> testApps = ( (RegisterAppInterface) msg).getAppHMIType();
 		Boolean testMedia = ( (RegisterAppInterface) msg).getIsMediaApplication();
 		DeviceInfo testDeviceInfo = ( (RegisterAppInterface) msg).getDeviceInfo();
+		AppInfo testAppInfo = ( (RegisterAppInterface) msg).getAppInfo();
 		TemplateColorScheme testDayColorScheme = ( (RegisterAppInterface) msg).getDayColorScheme();
 		TemplateColorScheme testNightColorScheme = ( (RegisterAppInterface) msg).getNightColorScheme();
 
@@ -124,6 +128,7 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 		assertEquals(Test.MATCH, Test.GENERAL_APPHMITYPE_LIST, testApps);
 		assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, testMedia);
 		assertTrue(Test.TRUE, Validator.validateDeviceInfo(Test.GENERAL_DEVICEINFO, testDeviceInfo));
+		assertTrue(Test.TRUE, Validator.validateAppInfo(Test.GENERAL_APPINFO, testAppInfo));
 		assertTrue(Test.TRUE, Validator.validateTemplateColorScheme(Test.GENERAL_DAYCOLORSCHEME, testDayColorScheme));
 		assertTrue(Test.TRUE, Validator.validateTemplateColorScheme(Test.GENERAL_NIGHTCOLORSCHEME, testNightColorScheme));
 
@@ -145,6 +150,7 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getAppHMIType());
 		assertNull(Test.NULL, msg.getIsMediaApplication());
 		assertNull(Test.NULL, msg.getDeviceInfo());
+		assertNull(Test.NULL, msg.getAppInfo());
 		assertNull(Test.NULL, msg.getDayColorScheme());
 		assertNull(Test.NULL, msg.getNightColorScheme());
 	}
@@ -192,6 +198,10 @@ public class RegisterAppInterfaceTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, RegisterAppInterface.KEY_APP_NAME), cmd.getAppName());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, RegisterAppInterface.KEY_NGN_MEDIA_SCREEN_APP_NAME), cmd.getNgnMediaScreenAppName());
 			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, RegisterAppInterface.KEY_IS_MEDIA_APPLICATION), cmd.getIsMediaApplication());
+
+			JSONObject appInfoObj = JsonUtils.readJsonObjectFromJsonObject(parameters, RegisterAppInterface.KEY_APP_INFO);
+			AppInfo appInfo = new AppInfo(JsonRPCMarshaller.deserializeJSONObject(appInfoObj));
+			assertTrue(Test.TRUE,  Validator.validateAppInfo(appInfo, cmd.getAppInfo()));
 
 			List<String> vrSynonymsList = JsonUtils.readStringListFromJsonObject(parameters, RegisterAppInterface.KEY_VR_SYNONYMS);
 			List<String> testSynonymsList = cmd.getVrSynonyms();

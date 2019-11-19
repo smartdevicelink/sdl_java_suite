@@ -88,7 +88,7 @@ public class RPCConstructorsTests extends AndroidTestCase2 {
                                     rpcName = "OasisAddress";
                                 } else if(rpcName.equals("ShowConstantTBT")) {
                                     rpcName = "ShowConstantTbt";
-                                } else if (rpcName.equals("EncodedSyncPData") || rpcName.equals("OnEncodedSyncPData") || rpcName.equals("EncodedSyncPDataResponse") || rpcName.equals("AppInfo")){
+                                } else if (rpcName.equals("EncodedSyncPData") || rpcName.equals("OnEncodedSyncPData") || rpcName.equals("EncodedSyncPDataResponse")){
                                     ignoreRPC = true;
                                 }
                             // -------------------------------------------------------------------------------------------------------------
