@@ -19,6 +19,7 @@ jobs:
       with:
         api-level: 29
         arch: x86_64
+        profile: Nexus 6
         headless: true
         disable-animations: true
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
@@ -28,6 +29,7 @@ jobs:
       with:
         api-level: 29
         arch: x86_64
+        profile: Nexus 6
         headless: true
         disable-animations: true
         script: ./android/gradlew -p ./android :hello_sdl_android:test
