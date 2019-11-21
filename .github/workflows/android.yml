@@ -45,3 +45,8 @@ jobs:
 
     - name: Sdl JavaEE Tests
       run: ./javaEE/gradlew -p ./javaEE test
+
+    - name: Codecov
+      uses: codecov/codecov-action@v1.0.4
+      with:
+        token: ${{secrets.CODECOV_TOKEN}}
