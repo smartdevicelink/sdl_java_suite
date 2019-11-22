@@ -38,4 +38,3 @@ jobs:
       uses: codecov/codecov-action@v1.0.4
       with:
         token: ${{secrets.CODECOV_TOKEN}}
-        yml: ./codecov.yml
