@@ -17,6 +17,7 @@ jobs:
       with:
         api-level: 29
         arch: x86_64
+        profile: pixel
         headless: true
         disable-animations: true
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
@@ -26,6 +27,7 @@ jobs:
       with:
         api-level: 29
         arch: x86_64
+        profile: pixel
         headless: true
         disable-animations: true
         script: ./android/gradlew -p ./android :hello_sdl_android:test
