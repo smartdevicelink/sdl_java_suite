@@ -33,8 +33,3 @@ jobs:
     
     - name: Hello Sdl JavaSE Tests
       run: ./hello_sdl_java/gradlew -p ./hello_sdl_java test
-
-    - name: Codecov
-      uses: codecov/codecov-action@v1.0.4
-      with:
-        token: ${{secrets.CODECOV_TOKEN}}
