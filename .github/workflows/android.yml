@@ -27,9 +27,9 @@ jobs:
       
     - name: Sdl JavaSE Tests
       run: ./javaSE/gradlew -p ./javaSE test
-
-    - name: Sdl JavaEE Tests
-      run: ./javaEE/gradlew -p ./javaEE test
-    
+      
     - name: Hello Sdl JavaSE Tests
       run: ./hello_sdl_java/gradlew -p ./hello_sdl_java test
+    
+    - name: Sdl JavaEE Tests
+      run: ./javaEE/gradlew -p ./javaEE test
