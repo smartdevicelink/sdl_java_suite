@@ -11,8 +11,6 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
 
     - name: Sdl Android Tests
       uses: reactivecircus/android-emulator-runner@v1
