@@ -11,25 +11,17 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
 
     - name: Sdl Android Tests
       uses: reactivecircus/android-emulator-runner@v1
       with:
-        api-level: 29
-        arch: x86_64
-        profile: pixel
-        headless: true
-        disable-animations: true
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
 
     - name: Hello Sdl Android Tests
       uses: reactivecircus/android-emulator-runner@v1
       with:
-        api-level: 29
-        arch: x86_64
-        profile: pixel
-        headless: true
-        disable-animations: true
         script: ./android/gradlew -p ./android :hello_sdl_android:test
 
     - name: Setup JDK 1.8
