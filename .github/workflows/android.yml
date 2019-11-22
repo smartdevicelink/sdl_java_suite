@@ -11,32 +11,32 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@v1
-  
+      
     - name: Setup JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-
-    - name: Hello Sdl Android Tests
-      uses: reactivecircus/android-emulator-runner@v1
-      with:
-        api-level: 29
-        script: ./android/gradlew -p ./android :hello_sdl_android:build
         
     - name: Sdl Android Tests
       uses: reactivecircus/android-emulator-runner@v1
       with:
         api-level: 29
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
-
-    - name: Hello Sdl JavaSE Tests
-      run: ./hello_sdl_java/gradlew -p ./hello_sdl_java test
+        
+    - name: Hello Sdl Android Tests
+      uses: reactivecircus/android-emulator-runner@v1
+      with:
+        api-level: 29
+        script: ./android/gradlew -p ./android :hello_sdl_android:build
       
     - name: Sdl JavaSE Tests
       run: ./javaSE/gradlew -p ./javaSE test
 
     - name: Sdl JavaEE Tests
       run: ./javaEE/gradlew -p ./javaEE test
+    
+    - name: Hello Sdl JavaSE Tests
+      run: ./hello_sdl_java/gradlew -p ./hello_sdl_java test
 
     - name: Codecov
       uses: codecov/codecov-action@v1.0.4
