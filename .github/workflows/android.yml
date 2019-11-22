@@ -1,5 +1,3 @@
-# For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
-
 name: CI
 
 on: [push]
@@ -12,12 +10,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
       
-    - name: Setup JDK 1.8
+    - name: Setup JDK
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
         
     - name: Sdl Android Tests
+      # For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
       uses: reactivecircus/android-emulator-runner@v1
       with:
         api-level: 29
