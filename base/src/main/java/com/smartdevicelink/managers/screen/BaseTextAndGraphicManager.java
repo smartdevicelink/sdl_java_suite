@@ -778,11 +778,13 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 		List<TextField> textFields = defaultMainWindowCapability.getTextFields();
 		TextFieldName name;
-		for (TextField field : textFields) {
-			if (field.getName() != null) {
-				name = field.getName();
-				if (name == TextFieldName.mainField1 || name == TextFieldName.mainField2 || name == TextFieldName.mainField3 || name == TextFieldName.mainField4) {
-					linesFound += 1;
+		if (textFields != null && !textFields.isEmpty()) {
+			for (TextField field : textFields) {
+				if (field.getName() != null) {
+					name = field.getName();
+					if (name == TextFieldName.mainField1 || name == TextFieldName.mainField2 || name == TextFieldName.mainField3 || name == TextFieldName.mainField4) {
+						linesFound += 1;
+					}
 				}
 			}
 		}
