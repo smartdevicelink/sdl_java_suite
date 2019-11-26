@@ -188,22 +188,24 @@ public class SystemCapabilityManager {
 		DisplayCapability newDefaultDisplayCapabilities = newCapabilities.get(0);
 		List<WindowCapability> newWindowCapabilities = newDefaultDisplayCapabilities.getWindowCapabilities();
 
-		for (WindowCapability newWindow : newWindowCapabilities) {
-			ListIterator<WindowCapability> iterator = copyWindowCapabilities.listIterator();
-			boolean oldFound = false;
-			while (iterator.hasNext()) {
-				WindowCapability oldWindow = iterator.next();
-				int newWindowID = newWindow.getWindowID() != null ? newWindow.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
-				int oldWindowID = oldWindow.getWindowID() != null ? oldWindow.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
-				if (newWindowID == oldWindowID) {
-					iterator.set(newWindow); // replace the old window caps with new ones
-					oldFound = true;
-					break;
+		if (newWindowCapabilities != null && !newWindowCapabilities.isEmpty()) {
+			for (WindowCapability newWindow : newWindowCapabilities) {
+				ListIterator<WindowCapability> iterator = copyWindowCapabilities.listIterator();
+				boolean oldFound = false;
+				while (iterator.hasNext()) {
+					WindowCapability oldWindow = iterator.next();
+					int newWindowID = newWindow.getWindowID() != null ? newWindow.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+					int oldWindowID = oldWindow.getWindowID() != null ? oldWindow.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+					if (newWindowID == oldWindowID) {
+						iterator.set(newWindow); // replace the old window caps with new ones
+						oldFound = true;
+						break;
+					}
 				}
-			}
 
-			if (!oldFound) {
-				copyWindowCapabilities.add(newWindow); // this is a new unknown window
+				if (!oldFound) {
+					copyWindowCapabilities.add(newWindow); // this is a new unknown window
+				}
 			}
 		}
 
