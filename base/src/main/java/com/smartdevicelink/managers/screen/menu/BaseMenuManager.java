@@ -782,9 +782,11 @@ abstract class BaseMenuManager extends BaseSubManager {
 	private boolean supportsImages(){
 		if (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) {
 			List<ImageField> imageFields = defaultMainWindowCapability.getImageFields();
-			for (ImageField field : imageFields) {
-				if (field.getName().equals(ImageFieldName.cmdIcon)) {
-					return true;
+			if (imageFields != null && !imageFields.isEmpty()) {
+				for (ImageField field : imageFields) {
+					if (field != null && field.getName() != null && field.getName().equals(ImageFieldName.cmdIcon)) {
+						return true;
+					}
 				}
 			}
 		}
