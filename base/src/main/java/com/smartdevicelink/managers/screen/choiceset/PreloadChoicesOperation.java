@@ -45,7 +45,6 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.TextField;
@@ -254,7 +253,7 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 		if (defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().isEmpty()) { return false; }
 		if (defaultMainWindowCapability.getImageFields() != null){
 			for (ImageField field : defaultMainWindowCapability.getImageFields()){
-				if (field.getName().equals(name)){
+				if (field != null && field.getName() != null && field.getName().equals(name)){
 					return true;
 				}
 			}
