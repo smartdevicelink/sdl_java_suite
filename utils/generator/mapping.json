@@ -1,0 +1,1081 @@
+{
+  "enums": {
+    "AmbientLightStatus": {
+      "kind": "simple"
+    },
+    "AppHMIType": {
+      "params": {
+        "DEFAULT": {
+          "description": "The App will have default rights."
+        },
+        "COMMUNICATION": {
+          "description": "Communication type of App"
+        },
+        "MEDIA": {
+          "description": "App dealing with Media"
+        },
+        "MESSAGING": {
+          "description": "Messaging App"
+        },
+        "NAVIGATION": {
+          "description": "Navigation App"
+        },
+        "INFORMATION": {
+          "description": "Information App"
+        },
+        "SOCIAL": {
+          "description": "App dealing with social media"
+        },
+        "TESTING": {
+          "description": "App only for Testing purposes"
+        },
+        "SYSTEM": {
+          "description": "System App"
+        },
+        "PROJECTION": {
+          "description": "Custom App Interfaces"
+        }
+      }
+    },
+    "AppInterfaceUnregisteredReason": {
+      "description": "Indicates reason why app interface was unregistered. The application is being disconnected by SDL.",
+      "params": {
+        "IGNITION_OFF": {
+          "since": "1.0"
+        },
+        "USER_EXIT": {}
+      }
+    },
+    "AudioStreamingState": {
+      "description": "Describes whether or not streaming audio is currently audible to the user. Though provided in every OnHMIStatus notification, this information is only relevant for applications that declare themselves as media apps in RegisterAppInterface"
+    },
+    "ButtonName": {
+      "script": "templates/scripts/ButtonName_indexForPresetButton.groovy",
+      "description_file": "templates/description/ButtonName_head.html",
+      "params": {
+        "OK": {
+          "description_file": "templates/description/ButtonName_OK.html",
+          "since": "1.0",
+          "see": "#PLAY_PAUSE"
+        }
+      }
+    },
+    "CarModeStatus": {
+      "kind": "simple"
+    },
+    "ComponentVolumeStatus": {
+      "kind": "simple"
+    },
+    "DisplayType": {
+      "kind": "custom",
+      "valueForString": "templates/scripts/DisplayType_valueForString.groovy",
+      "-imports": [
+        "java.util.EnumSet"
+      ]
+    },
+    "ECallConfirmationStatus": {
+      "kind": "simple"
+    },
+    "EmergencyEventType": {
+      "kind": "simple",
+      "params": {
+        "NO_EVENT": {
+          "description": "No emergency event has happened."
+        }
+      }
+    },
+    "FuelCutoffStatus": {
+      "kind": "simple"
+    },
+    "FunctionID": {
+      "package_name": "com.smartdevicelink.protocol.enums",
+      "params_rename": {
+        "ON_HMISTATUS": "ON_HMI_STATUS",
+        "ON_RCSTATUS": "ON_RC_STATUS",
+        "SYNC_PDATA": "SYNC_P_DATA",
+        "ON_SYNC_PDATA": "ON_SYNC_P_DATA",
+        "ENCODED_SYNC_PDATA": "ENCODED_SYNC_P_DATA",
+        "ON_ENCODED_SYNC_PDATA": "ON_ENCODED_SYNC_P_DATA",
+        "PERFORM_APP_SERVICE_INTERACTION": "PERFORM_APP_SERVICES_INTERACTION",
+        "RELEASE_INTERIOR_VEHICLE_DATA_MODULE": "RELEASE_INTERIOR_VEHICLE_MODULE"
+      },
+      "params": {
+        "ON_LOCK_SCREEN_STATUS": {
+          "value": "-1",
+          "internal": "\"OnLockScreenStatus\""
+        },
+        "ON_SDL_CHOICE_CHOSEN": {
+          "value": "-1",
+          "internal": "\"OnSdlChoiceChosen\""
+        },
+        "ON_STREAM_RPC": {
+          "value": "-1",
+          "internal": "\"OnStreamRPC\""
+        },
+        "STREAM_RPC": {
+          "value": "-1",
+          "internal": "\"StreamRPC\""
+        }
+      }
+    },
+    "GlobalProperty": {
+      "params_rename": {
+        "USER_LOCATION": "USERLOCATION"
+      }
+    },
+    "IgnitionStatus": {
+      "kind": "simple"
+    },
+    "LightName": {
+      "kind": "simple"
+    },
+    "MessageType": {
+      "kind": "custom"
+   },
+    "MetadataType": {
+      "kind": "custom"
+    },
+    "PredefinedLayout": {
+      "kind": "custom"
+    },
+    "PredefinedWindows": {
+      "kind": "custom"
+    },
+    "SpeechCapabilities": {
+      "kind": "simple"
+    },
+    "SystemCapabilityType": {
+      "kind": "custom",
+      "description_file": "templates/description/SystemCapabilityType_head.html",
+      "-imports": [
+        "java.util.EnumSet"
+      ],
+      "params": {
+        "NAVIGATION": {
+          "internal": true
+        },
+        "PHONE_CALL": {
+          "internal": true
+        },
+        "VIDEO_STREAMING": {
+          "internal": true
+        },
+        "REMOTE_CONTROL": {
+          "internal": true
+        },
+        "HMI": {
+          "internal": false
+        },
+        "DISPLAY": {
+          "deprecated": "any",
+          "internal": false
+        },
+        "PRERECORDED_SPEECH": {
+          "internal": false
+        },
+        "AUDIO_PASSTHROUGH": {
+          "internal": false
+        },
+        "PCM_STREAMING": {
+          "internal": false
+        },
+        "BUTTON": {
+          "deprecated": "any",
+          "internal": false
+        },
+        "HMI_ZONE": {
+          "internal": false
+        },
+        "PRESET_BANK": {
+          "deprecated": "any",
+          "internal": false
+        },
+        "SOFTBUTTON": {
+          "deprecated": "any",
+          "internal": false
+        },
+        "SPEECH": {
+          "internal": false
+        },
+        "VOICE_RECOGNITION": {
+          "internal": false
+        },
+        "APP_SERVICES": {
+          "internal": true
+        },
+        "SEAT_LOCATION": {
+          "internal": true
+        },
+        "DISPLAYS": {
+          "internal": true
+        }
+      }
+    },
+    "VehicleDataEventStatus": {
+      "kind": "simple",
+      "params": {
+        "NO_EVENT": {
+          "description": "No event available"
+        }
+      }
+    },
+    "VehicleDataNotificationStatus": {
+      "kind": "simple"
+    },
+    "VehicleDataResultCode": {
+      "kind": "simple",
+      "see": "com.smartdevicelink.proxy.rpc.DIDResult and com.smartdevicelink.proxy.rpc.ReadDID"
+    },
+    "VehicleDataStatus": {
+      "kind": "simple"
+    },
+    "VrCapabilities": {
+      "valueForString": "templates/scripts/VrCapabilities_valueForString.groovy",
+      "kind": "simple",
+      "params": {
+        "Text": {
+          "deprecated": "any",
+          "since": "1.0"
+        }
+      }
+    },
+    "WarningLightStatus": {
+      "kind": "simple"
+    },
+    "HMILevel": {
+      "params": {
+        "HMI_BACKGROUND": {
+          "description_file": "templates/description/HMILevel_HMI_BACKGROUND.html"
+        }
+      }
+    }
+  },
+  "functions": {
+    "AddCommand": {
+      "params": {
+        "menuParams": {
+          "SuppressWarnings": "unchecked"
+        }
+      }
+    },
+    "Alert": {
+      "description_file": "templates/description/Alert_head.html",
+      "params": {
+        "alertText1": {
+          "param_doc": "String Value "
+        },
+        "alertText2": {
+          "param_doc_file": "templates/description/Alert_alertText2.html"
+        }
+      }
+    },
+    "AlertManeuver": {
+      "params": {
+        "ttsChunks": {
+          "SuppressWarnings": "unchecked"
+        },
+        "softButtons": {
+          "SuppressWarnings": "unchecked"
+        }
+      }
+    },
+    "ButtonPress": {
+      "params": {
+        "moduleType": {
+          "param_doc": "Represents module where the button should be pressed"
+        },
+        "buttonName": {
+          "param_doc": "Represents name of supported RC climate or radio button"
+        },
+        "buttonPressMode": {
+          "param_doc": "Indicates whether this is a LONG or SHORT button press event."
+        }
+      }
+    },
+    "ButtonPressResponse": {
+      "script": "templates/scripts/ButtonPressResponse.groovy"
+    },
+    "CancelInteraction": {
+      "params": {
+        "functionID": {
+          "title": "InteractionFunctionID"
+        }
+      },
+      "script": "templates/scripts/CanceInteraction_cancelid.groovy"
+    },
+    "ChangeRegistration": {
+      "params": {
+        "ngnMediaScreenAppName": {
+          "key": "KEY_NGN_MEDIA_SCREEN_NAME"
+        }
+      }
+    },
+    "DeleteCommand": {
+      "params": {
+        "cmdID": {
+          "param_doc": "Integer value representing Command ID that identifies the Command to be deleted from Command Menu\n<p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>"
+        }
+      }
+    },
+    "DeleteFileResponse": {
+      "imports": [
+        "com.smartdevicelink.util.Version"
+      ],
+      "params": {
+        "MAX_VALUE": {
+          "return_type": "Integer",
+          "modifier": "static final",
+          "value": 2000000000
+        }
+      },
+      "script": "templates/scripts/DeleteFileResponse.groovy"
+    },
+    "DiagnosticMessageResponse": {
+      "script": "templates/scripts/DiagnosticMessageResponse.groovy"
+    },
+    "EncodedSyncPData": {
+      "function_id": "ENCODED_SYNC_P_DATA"
+    },
+    "EncodedSyncPDataResponse": {
+      "function_id": "ENCODED_SYNC_P_DATA"
+    },
+    "GetCloudAppPropertiesResponse": {
+      "params": {
+        "properties": {
+          "title": "CloudAppProperties"
+        }
+      }
+    },
+    "GetDTCsResponse": {
+      "script": "templates/scripts/GetDTCsResponse.groovy"
+    },
+    "GetFileResponse": {
+      "params": {
+        "crc": {
+          "title": "CRC"
+        }
+      }
+    },
+    "GetInteriorVehicleDataConsent": {
+      "params": {
+        "moduleIds": {
+          "key": "KEY_MODULE_ID"
+        }
+      }
+    },
+    "GetInteriorVehicleDataConsentResponse": {
+      "params": {
+        "allowed": {
+          "title": "Allowances"
+        }
+      }
+    },
+    "GetInteriorVehicleDataResponse": {
+      "script": "templates/scripts/GetInteriorVehicleDataResponse.groovy"
+    },
+    "GetSystemCapabilityResponse": {
+      "script": "templates/scripts/GetSystemCapabilityResponse.groovy"
+    },
+    "GetVehicleData": {
+      "script": "templates/scripts/GetVehicleData_OEM.groovy"
+    },
+    "GetVehicleDataResponse": {
+      "script": "templates/scripts/GetVehicleDataResponse_OEM.groovy",
+      "params": {
+        "accPedalPosition": {
+          "return_type": "Double"
+        },
+        "engineTorque": {
+          "return_type": "Double"
+        },
+        "externalTemperature": {
+          "return_type": "Double"
+        },
+        "fuelLevel": {
+          "return_type": "Double"
+        },
+        "instantFuelConsumption": {
+          "return_type": "Double"
+        },
+        "speed": {
+          "return_type": "Double"
+        },
+        "steeringWheelAngle": {
+          "return_type": "Double"
+        }
+      }
+    },
+    "ListFilesResponse": {
+      "params": {
+        "MAX_VALUE": {
+          "return_type": "Integer",
+          "modifier": "static final",
+          "value": 2000000000
+        }
+      },
+      "imports": [
+        "com.smartdevicelink.util.Version"
+      ],
+      "script": "templates/scripts/ListFilesResponse_format.groovy"
+    },
+    "OnAudioPassThru": {
+      "script": "templates/scripts/OnAudioPassThru_aptdata.groovy"
+    },
+    "OnButtonPress": {
+      "params": {
+        "customButtonID": {
+          "title": "CustomButtonName"
+        }
+      }
+    },
+    "OnKeyboardInput": {
+      "script": "templates/scripts/OnKeyboardInput_tostring.groovy"
+    },
+    "OnDriverDistraction": {
+      "params": {
+        "lockScreenDismissalEnabled": {
+          "key": "KEY_LOCKSCREEN_DISMISSIBLE",
+          "title": "LockscreenDismissibility"
+        },
+        "lockScreenDismissalWarning": {
+          "key": "KEY_LOCKSCREEN_DISMISSIBLE_MSG",
+          "title": "LockscreenWarningMessage"
+        }
+      }
+    },
+    "OnEncodedSyncPData": {
+      "function_id": "ON_ENCODED_SYNC_P_DATA"
+    },
+    "OnHMIStatus": {
+      "params": {
+        "firstRun": {
+          "return_type": "Boolean"
+        }
+      },
+      "script": "templates/scripts/OnHMIStatus_format.groovy"
+    },
+    "OnRCStatus": {
+      "function_id": "ON_RC_STATUS"
+    },
+    "OnSystemRequest": {
+      "script": "templates/scripts/OnSystemRequest_request.groovy",
+      "imports": [
+        "java.util.List"
+      ],
+      "params": {
+        "offset": {
+          "return_type": "Long"
+        },
+        "length": {
+          "return_type": "Long"
+        }
+      }
+    },
+    "OnVehicleData": {
+      "script": "templates/scripts/OnVehicleData_oem.groovy",
+      "params": {
+        "accPedalPosition": {
+          "return_type": "Double"
+        },
+        "engineTorque": {
+          "return_type": "Double"
+        },
+        "externalTemperature": {
+          "return_type": "Double"
+        },
+        "fuelLevel": {
+          "return_type": "Double"
+        },
+        "instantFuelConsumption": {
+          "return_type": "Double"
+        },
+        "speed": {
+          "return_type": "Double"
+        },
+        "steeringWheelAngle": {
+          "return_type": "Double"
+        }
+      }
+    },
+    "PerformAppServiceInteraction": {
+      "function_id": "PERFORM_APP_SERVICES_INTERACTION"
+    },
+    "PerformAppServiceInteractionResponse": {
+      "function_id": "PERFORM_APP_SERVICES_INTERACTION"
+    },
+    "PerformInteraction": {
+      "params": {
+        "interactionChoiceSetIDList": {
+          "key": "KEY_INTERACTION_CHOICE_SET_ID_LIST"
+        }
+      }
+    },
+    "PublishAppServiceResponse": {
+      "params": {
+        "appServiceRecord": {
+          "title": "ServiceRecord"
+        }
+      }
+    },
+    "PutFile": {
+      "params":{
+        "length": {
+          "return_type": "Long"
+        },
+        "offset": {
+          "return_type": "Long"
+        }
+      },
+      "imports": [
+        "java.util.zip.CRC32",
+        "com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener",
+        "com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener"
+      ],
+      "script": "templates/scripts/PutFile_format.groovy"
+    },
+    "PutFileResponse": {
+      "params": {
+        "MAX_VALUE": {
+          "return_type": "Integer",
+          "modifier": "static final",
+          "value": 2000000000
+        }
+      },
+      "imports": [
+        "com.smartdevicelink.util.Version"
+      ],
+      "script": "templates/scripts/PutFileResponse_format.groovy"
+    },
+    "RegisterAppInterface": {
+      "imports": [
+        "com.smartdevicelink.util.Version"
+      ],
+      "script": "templates/scripts/RegisterAppInterface_format.groovy"
+    },
+    "RegisterAppInterfaceResponse": {
+      "params": {
+        "pcmStreamCapabilities": {
+          "title": "PcmStreamingCapabilities"
+        }
+      },
+      "imports": [
+        "java.util.ArrayList",
+        "com.smartdevicelink.proxy.rpc.enums.ButtonName"
+      ],
+      "script": "templates/scripts/RegisterAppInterfaceResponse_format.groovy"
+    },
+    "ReleaseInteriorVehicleDataModule": {
+      "function_id": "RELEASE_INTERIOR_VEHICLE_MODULE"
+    },
+    "ReleaseInteriorVehicleDataModuleResponse": {
+      "function_id": "RELEASE_INTERIOR_VEHICLE_MODULE"
+    },
+    "SetMediaClockTimer": {
+      "imports": [
+        "android.support.annotation.Nullable"
+      ],
+      "script": "templates/scripts/SetMediaClockTimer_time.groovy"
+    },
+    "SetInteriorVehicleDataResponse": {
+      "script": "templates/scripts/SetInteriorVehicleDataResponse.groovy"
+    },
+    "ShowConstantTBT": {
+      "rename": "ShowConstantTbt",
+      "params": {
+        "distanceToManeuver": {
+          "return_type": "Double",
+          "key": "KEY_MANEUVER_DISTANCE"
+        },
+        "distanceToManeuverScale": {
+          "return_type": "Double",
+          "key": "KEY_MANEUVER_DISTANCE_SCALE"
+        },
+        "navigationText1": {
+          "key": "KEY_TEXT1"
+        },
+        "navigationText2": {
+          "key": "KEY_TEXT2"
+        },
+        "turnIcon": {
+          "key": "KEY_MANEUVER_IMAGE"
+        },
+        "nextTurnIcon": {
+          "key": "KEY_NEXT_MANEUVER_IMAGE"
+        }
+      }
+    },
+    "ShowConstantTBTResponse": {
+      "rename": "ShowConstantTbtResponse"
+    },
+    "SystemRequest": {
+      "imports": [
+        "java.util.List"
+      ],
+      "script": "templates/scripts/SystemRequest_data.groovy"
+    },
+    "SendLocation": {
+      "params": {
+        "latitudeDegrees": {
+          "key": "KEY_LAT_DEGREES",
+          "return_type": "Double"
+        },
+        "longitudeDegrees": {
+          "key": "KEY_LON_DEGREES",
+          "return_type": "Double"
+        }
+      }
+    },
+    "SubscribeVehicleData": {
+      "script": "templates/scripts/SubscribeVehicleData_oem.groovy"
+    },
+    "SubscribeVehicleDataResponse": {
+      "script": "templates/scripts/SubscribeVehicleDataResponse_oem.groovy",
+      "params": {
+        "clusterModes": {
+          "key": "KEY_CLUSTER_MODE_STATUS"
+        }
+      }
+    },
+    "UnsubscribeVehicleData": {
+      "script": "templates/scripts/UnsubscribeVehicleData_oem.groovy"
+    },
+    "UnsubscribeVehicleDataResponse": {
+      "script": "templates/scripts/UnsubscribeVehicleDataResponse_oem.groovy",
+      "params": {
+        "clusterModes": {
+          "key": "KEY_CLUSTER_MODE_STATUS"
+        }
+      }
+    }
+  },
+  "structs": {
+    "AppServicesCapabilities": {
+      "script": "templates/scripts/AppServicesCapabilities_update.groovy",
+      "imports": [
+        "android.support.annotation.NonNull",
+        "com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason",
+        "java.util.ArrayList"
+      ]
+    },
+    "AppServiceCapability": {
+      "script": "templates/scripts/AppServiceCapability_matches.groovy"
+    },
+    "AppServiceManifest": {
+      "params": {
+        "handledRPCs": {
+          "title": "HandledRpcs"
+        }
+      },
+      "imports": [
+        "com.smartdevicelink.protocol.enums.FunctionID",
+        "com.smartdevicelink.proxy.rpc.enums.AppServiceType",
+        "java.util.ArrayList"
+      ],
+      "script": "templates/scripts/AppServiceManifest_rpcs.groovy"
+    },
+    "BeltStatus": {
+      "params": {
+        "leftRow2BuckleBelted": {
+          "key": "KEY_LEFT_ROW_2_BUCKLE_BELTED"
+        },
+        "rightRow2BuckleBelted": {
+          "key": "KEY_RIGHT_ROW_2_BUCKLE_BELTED"
+        },
+        "middleRow2BuckleBelted": {
+          "key": "KEY_MIDDLE_ROW_2_BUCKLE_BELTED"
+        },
+        "middleRow3BuckleBelted": {
+          "key": "KEY_MIDDLE_ROW_3_BUCKLE_BELTED"
+        },
+        "leftRow3BuckleBelted": {
+          "key": "KEY_LEFT_ROW_3_BUCKLE_BELTED"
+        },
+        "rightRow3BuckleBelted": {
+          "key": "KEY_RIGHT_ROW_3_BUCKLE_BELTED"
+        },
+        "middleRow1BeltDeployed": {
+          "key": "KEY_MIDDLE_ROW_1_BELT_DEPLOYED"
+        },
+        "middleRow1BuckleBelted": {
+          "key": "KEY_MIDDLE_ROW_1_BUCKLE_BELTED"
+        }
+      }
+    },
+    "ClimateControlData": {
+      "params": {
+        "heatedWindshieldEnable": {
+          "key": "KEY_HEATED_WIND_SHIELD_ENABLE"
+        }
+      }
+    },
+    "ClimateControlCapabilities": {
+      "params": {
+        "heatedWindshieldAvailable": {
+          "key": "KEY_HEATED_WIND_SHIELD_AVAILABLE"
+        }
+      }
+    },
+    "CloudAppProperties": {
+      "script": "templates/scripts/CloudAppProperties.groovy"
+    },
+    "Choice": {
+      "script": "templates/scripts/Choice_vritems.groovy",
+      "imports": [
+        "java.util.ArrayList",
+        "com.smartdevicelink.util.Version"
+      ]
+    },
+    "DateTime": {
+      "params": {
+        "millisecond": {
+          "title": "MilliSecond"
+        },
+        "tz_hour": {
+          "title": "TzHour"
+        },
+        "tz_minute": {
+          "title": "TzMinute"
+        }
+      }
+    },
+    "DeviceInfo": {
+      "script": "templates/scripts/DeviceInfo_os.groovy"
+    },
+    "DisplayCapabilities": {
+      "script": "templates/scripts/DisplayCapabilities_format.groovy",
+      "imports": [
+        "com.smartdevicelink.util.Version"
+      ]
+    },
+    "ECallInfo": {
+      "params": {
+        "auxECallNotificationStatus": {
+          "key": "KEY_AUX_E_CALL_NOTIFICATION_STATUS"
+        }
+      }
+    },
+    "GPSData": {
+      "script": "templates/scripts/GPSData.groovy",
+      "params": {
+        "altitude": {
+          "return_type": "Double"
+        },
+        "hdop": {
+          "return_type": "Double"
+        },
+        "pdop": {
+          "return_type": "Double"
+        },
+        "vdop": {
+          "return_type": "Double"
+        },
+        "heading": {
+          "return_type": "Double"
+        },
+        "speed": {
+          "return_type": "Double"
+        },
+        "latitudeDegrees": {
+          "return_type": "Double"
+        },
+        "longitudeDegrees": {
+          "return_type": "Double"
+        }
+      }
+    },
+    "Grid": {
+      "params": {
+        "colspan": {
+          "key": "KEY_COL_SPAN",
+          "title": "ColSpan"
+        },
+        "rowspan": {
+          "key": "KEY_ROW_SPAN",
+          "title": "RowSpan"
+        },
+        "levelspan": {
+          "key": "KEY_LEVEL_SPAN",
+          "title": "LevelSpan"
+        }
+      }
+    },
+    "HeadLampStatus": {
+      "params": {
+        "ambientLightSensorStatus": {
+          "title": "AmbientLightStatus"
+        }
+      }
+    },
+    "HMICapabilities": {
+      "script": "templates/scripts/HMICapabilities_is.groovy",
+      "params": {
+        "appServices": {
+          "title": "AppServicesAvailable"
+        },
+        "navigation": {
+          "title": "NavigationAvilable"
+        },
+        "phoneCall": {
+          "title": "PhoneCallAvilable"
+        },
+        "videoStreaming": {
+          "title": "VideoStreamingAvailable"
+        },
+        "remoteControl": {
+          "title": "RemoteControlAvailable"
+        },
+        "displays": {
+          "title": "DisplaysCapabilityAvailable"
+        },
+        "seatLocation": {
+          "title": "SeatLocationAvailable"
+        }
+      }
+    },
+    "ImageResolution": {
+      "script": "templates/scripts/ImageResolution_tostring.groovy"
+    },
+    "LightCapabilities": {
+      "params": {
+        "rgbColorSpaceAvailable": {
+          "title": "RGBColorSpaceAvailable"
+        }
+      }
+    },
+    "MetadataTags": {
+      "params": {
+        "mainField1": {
+          "key": "KEY_MAIN_FIELD_1_TYPE"
+        },
+        "mainField2": {
+          "key": "KEY_MAIN_FIELD_2_TYPE"
+        },
+        "mainField3": {
+          "key": "KEY_MAIN_FIELD_3_TYPE"
+        },
+        "mainField4": {
+          "key": "KEY_MAIN_FIELD_4_TYPE"
+        }
+      },
+      "script": "templates/scripts/MetadataTags_list.groovy",
+      "imports": [
+        "java.util.Collections"
+      ]
+    },
+    "ModuleInfo": {
+      "params": {
+        "location": {
+          "key": "KEY_MODULE_LOCATION",
+          "title": "ModuleLocation"
+        },
+        "serviceArea": {
+          "key": "KEY_MODULE_SERVICE_AREA",
+          "title": "ModuleServiceArea"
+        },
+        "allowMultipleAccess": {
+          "key": "KEY_MULTIPLE_ACCESS_ALLOWED",
+          "title": "MultipleAccessAllowance"
+        }
+      }
+    },
+    "MyKey": {
+      "params": {
+        "e911Override": {
+          "key": "KEY_E_911_OVERRIDE"
+        }
+      }
+    },
+    "NavigationCapability": {
+      "params": {
+        "sendLocationEnabled": {
+          "key": "KEY_LOCATION_ENABLED"
+        },
+        "getWayPointsEnabled": {
+          "key": "KEY_GETWAYPOINTS_ENABLED",
+          "title": "WayPointsEnabled"
+        }
+      }
+    },
+    "NavigationServiceData": {
+      "params": {
+        "timeStamp": {
+          "key": "KEY_TIMESTAMP"
+        }
+      }
+    },
+    "OASISAddress": {
+      "rename": "OasisAddress",
+      "params": {
+        "thoroughfare": {
+          "key": "KEY_THOROUGH_FARE"
+        },
+        "subThoroughfare": {
+          "key": "KEY_SUB_THOROUGH_FARE"
+        }
+      }
+    },
+    "PermissionItem": {
+      "params": {
+        "hmiPermissions": {
+          "title": "HMIPermissions"
+        }
+      }
+    },
+    "PhoneCapability": {
+      "params": {
+        "dialNumberEnabled": {
+          "key": "KEY_DIALNUMBER_ENABLED"
+        }
+      }
+    },
+    "PresetBankCapabilities": {
+      "script": "templates/scripts/PresetBankCapabilities_on.groovy"
+    },
+    "RadioControlCapabilities": {
+      "params": {
+        "siriusxmRadioAvailable": {
+          "key": "KEY_SIRIUS_XM_RADIO_AVAILABLE",
+          "title": "SiriusXMRadioAvailable"
+        }
+      }
+    },
+    "RdsData": {
+      "params": {
+        "TA":{
+          "title": "TrafficAnnouncement"
+        },
+        "TP":{
+          "title": "TrafficProgram"
+        },
+        "PTY":{
+          "title": "ProgramType"
+        },
+        "CT":{
+          "title": "ClockText"
+        },
+        "PI":{
+          "title": "ProgramIdentification"
+        },
+        "PS":{
+          "title": "ProgramService"
+        },
+        "REG":{
+          "title": "Region"
+        },
+        "RT":{
+          "title": "RadioText"
+        }
+      }
+    },
+    "RGBColor": {
+      "script": "templates/scripts/RGBColor.groovy"
+    },
+    "ScreenParams": {
+      "params": {
+        "resolution":{
+          "title": "ImageResolution"
+        }
+      }
+    },
+    "SeatLocationCapability": {
+      "params": {
+        "columns": {
+          "key": "KEY_COLS",
+          "title": "Cols"
+        }
+      },
+      "script": "templates/scripts/SeatLocationCapability_seats.groovy"
+    },
+    "SingleTireStatus": {
+      "params": {
+        "tpms": {
+          "title": "TPMS"
+        }
+      }
+    },
+    "SisData": {
+      "params": {
+        "stationIDNumber": {
+          "key": "KEY_STATION_ID_NUMBER"
+        }
+      }
+    },
+    "SoftButtonCapabilities": {
+      "script": "templates/scripts/SoftButtonCapabilities_format.groovy",
+      "imports": [
+        "com.smartdevicelink.util.Version"
+      ]
+    },
+    "StartTime": {
+      "script": "templates/scripts/StartTime_timeinterval.groovy"
+    },
+    "SyncMsgVersion": {
+      "rename": "SdlMsgVersion",
+      "script": "templates/scripts/SdlMsgVersion_format.groovy",
+      "imports": [
+        "com.smartdevicelink.util.Version"
+      ]
+    },
+    "SystemCapability": {
+      "script": "templates/scripts/SystemCapability_set.groovy"
+    },
+    "TireStatus": {
+      "params": {
+        "pressureTelltale": {
+          "key": "KEY_PRESSURE_TELL_TALE",
+          "title": "PressureTellTale"
+        }
+      }
+    },
+    "TouchEvent": {
+      "imports": [
+        "java.util.ArrayList"
+      ],
+      "script": "templates/scripts/TouchEvent_timestamp.groovy",
+      "params": {
+        "ts": {
+          "return_type": "List<Long>"
+        }
+      }
+    },
+    "Turn": {
+      "params": {
+        "turnIcon": {
+          "key": "KEY_TURN_IMAGE"
+        }
+      }
+    },
+    "VehicleDataResult": {
+      "params": {
+        "oemCustomDataType": {
+          "title": "OEMCustomVehicleDataType"
+        }
+      }
+    },
+    "VideoStreamingFormat": {
+      "script": "templates/scripts/VideoStreamingFormat_equals.groovy"
+    },
+    "VideoStreamingCapability": {
+      "params": {
+        "hapticSpatialDataSupported": {
+          "title": "IsHapticSpatialDataSupported"
+        },
+        "diagonalScreenSize": {
+          "return_type": "Double"
+        },
+        "pixelPerInch": {
+          "return_type": "Double"
+        },
+        "scale": {
+          "return_type": "Double"
+        }
+      }
+    },
+    "WeatherAlert": {
+      "script": "templates/scripts/WeatherAlert.groovy",
+      "imports": [
+        "android.support.annotation.NonNull"
+      ]
+    }
+  }
+}

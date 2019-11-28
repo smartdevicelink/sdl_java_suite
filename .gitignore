@@ -69,8 +69,14 @@ proguard/
 build/
 .gradle
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
 /captures
 .externalNativeBuild
 
+##############################
+# Python
+##############################
+*.venv*
+*__pycache__
+*htmlcov
+*.coverage
+*.pytest_cache

@@ -1,0 +1,17 @@
+<p>
+Defines logical buttons which, on a given SDL unit, would correspond to
+either physical or soft (touchscreen) buttons. These logical buttons present
+a standard functional abstraction which the developer can rely upon,
+independent of the SDL unit. For example, the developer can rely upon the OK
+button having the same meaning to the user across SDL platforms.
+</p>
+<p>
+The preset buttons (0-9) can typically be interpreted by the application as
+corresponding to some user-configured choices, though the application is free
+to interpret these button presses as it sees fit.
+</p>
+<p>
+The application can discover which buttons a given SDL unit implements by
+interrogating the ButtonCapabilities parameter of the
+RegisterAppInterface response.
+</p>
