@@ -529,7 +529,11 @@ public class USBTransport extends SdlTransport {
      * @param accessory Accessory to check
      * @return true if the accessory is right
      */
-    public static boolean isAccessorySupported(UsbAccessory accessory) {
+    public static boolean isAccessorySupported(final UsbAccessory accessory) {
+        if (accessory == null) {
+            return false;
+        }
+
         boolean manufacturerMatches =
                 ACCESSORY_MANUFACTURER.equals(accessory.getManufacturer());
         boolean modelMatches = ACCESSORY_MODEL.equals(accessory.getModel());
@@ -547,6 +551,11 @@ public class USBTransport extends SdlTransport {
      * @param accessory Accessory to connect to
      */
     private void connectToAccessory(UsbAccessory accessory) {
+
+        if (accessory == null) {
+            handleTransportError("Can't connect to null accessory", null);
+        }
+
         final State state = getState();
         switch (state) {
             case LISTENING:

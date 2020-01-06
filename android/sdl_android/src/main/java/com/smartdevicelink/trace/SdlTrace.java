@@ -338,7 +338,7 @@ public class SdlTrace {
 		} else if (hdr.getFrameType() == FrameType.First ) {
 			int totalSize = BitConverter.intFromByteArray(hdr.getPayload(), 0);			
 			int numFrames = BitConverter.intFromByteArray(hdr.getPayload(), 4);
-			sb.append("<total>" + totalSize + "</total><numframes>" + numFrames + "</numframes>");
+			sb.append("<total>").append(totalSize).append("</total><numframes>").append(numFrames).append("</numframes>");
 		} else if (hdr.getFrameType() == FrameType.Single ) {
 			sb.append("<single/>");
 		}
@@ -355,8 +355,8 @@ public class SdlTrace {
 		sb.append("<btn>");
 		sb.append(SdlTrace.B64EncodeForXML(btdn));
 		sb.append("</btn>");
-		sb.append("<bta>" + btDevice.getAddress() + "</bta>");
-		sb.append("<bts>" + btDevice.getBondState() + "</bts>");
+		sb.append("<bta>").append(btDevice.getAddress()).append("</bta>");
+		sb.append("<bts>").append(btDevice.getBondState()).append("</bts>");
 		sb.append("</btp>");
 		return sb.toString();
 	} // end-method
@@ -452,17 +452,17 @@ public class SdlTrace {
 		write.append("<info>");
 		StringBuilder infoBlock = new StringBuilder();
 		String hostInfo = Build.BRAND + Sep + Build.MANUFACTURER + Sep + Build.MODEL + "(" + Build.HOST + ")";
-		infoBlock.append("<host>" + SdlTrace.B64EncodeForXML(hostInfo) + "</host>");
+		infoBlock.append("<host>").append(SdlTrace.B64EncodeForXML(hostInfo)).append("</host>");
 		String osv = Build.VERSION.RELEASE + " (" + Build.VERSION.CODENAME + ")";
-		infoBlock.append("<osv>" + SdlTrace.B64EncodeForXML(osv) + "</osv>");
+		infoBlock.append("<osv>").append(SdlTrace.B64EncodeForXML(osv)).append("</osv>");
 		infoBlock.append(TraceDeviceInfo.getTelephonyHeader());
 
 		long heapSize = Debug.getNativeHeapFreeSize() / 1024;
 		long heapAllocated = Debug.getNativeHeapAllocatedSize() / 1024;
-		infoBlock.append("<mem><hf>" + heapSize + "KB</hf><ha>" + heapAllocated + "KB</ha></mem>");
-		infoBlock.append("<np>" + Runtime.getRuntime().availableProcessors() + "</np>");
-		infoBlock.append("<pid>" + Process.myPid() + "</pid>");
-		infoBlock.append("<tid>" + Thread.currentThread().getId() + "</tid>");
+		infoBlock.append("<mem><hf>").append(heapSize).append("KB</hf><ha>").append(heapAllocated).append("KB</ha></mem>");
+		infoBlock.append("<np>").append(Runtime.getRuntime().availableProcessors()).append("</np>");
+		infoBlock.append("<pid>").append(Process.myPid()).append("</pid>");
+		infoBlock.append("<tid>").append(Thread.currentThread().getId()).append("</tid>");
 
 		// String dateStamp = (String)
 		// DateFormat.format("yy-MM-dd hh:mm:ss SSS", new Timestamp(baseTics));
@@ -470,7 +470,7 @@ public class SdlTrace {
 		String GMTtime = stamp.toGMTString().substring(0, 19);
 		long fracSec = stamp.getNanos() / 1000000; // divide by a million
 		String fracSecStr = String.format("%03d", fracSec);
-		infoBlock.append("<utc>" + GMTtime + "." + fracSecStr + "</utc>");
+		infoBlock.append("<utc>").append(GMTtime).append(".").append(fracSecStr).append("</utc>");
 
 		infoBlock.append(TraceDeviceInfo.getLogHeaderBluetoothPairs());
 		infoBlock.append(getSmartDeviceLinkTraceRoot(dumpReason, seqNo));
@@ -486,12 +486,12 @@ public class SdlTrace {
 				+ "</sequencenum>" + "<dumpreason>" + dumpReason
 				+ "</dumpreason><tracelevel>");
 
-		write.append("<tran>" + DiagLevel.getLevel(Mod.tran) + "</tran>");
-		write.append("<proto>" + DiagLevel.getLevel(Mod.proto) + "</proto>");
-		write.append("<mar>" + DiagLevel.getLevel(Mod.mar) + "</mar>");
-		write.append("<rpc>" + DiagLevel.getLevel(Mod.rpc) + "</rpc>");
-		write.append("<proxy>" + DiagLevel.getLevel(Mod.proxy) + "</proxy>");
-		write.append("<app>" + DiagLevel.getLevel(Mod.app) + "</app>");
+		write.append("<tran>").append(DiagLevel.getLevel(Mod.tran)).append("</tran>");
+		write.append("<proto>").append(DiagLevel.getLevel(Mod.proto)).append("</proto>");
+		write.append("<mar>").append(DiagLevel.getLevel(Mod.mar)).append("</mar>");
+		write.append("<rpc>").append(DiagLevel.getLevel(Mod.rpc)).append("</rpc>");
+		write.append("<proxy>").append(DiagLevel.getLevel(Mod.proxy)).append("</proxy>");
+		write.append("<app>").append(DiagLevel.getLevel(Mod.app)).append("</app>");
 
 		write.append("</tracelevel>");
 		write.append("</SmartDeviceLinktraceroot>");

@@ -361,14 +361,15 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		remoteDisplay = null;
 		parameters = null;
 		virtualDisplayEncoder = null;
-		if(internalInterface!=null){
+		if (internalInterface != null) {
 			internalInterface.stopVideoService();
+			// Remove listeners
+			internalInterface.removeServiceListener(SessionType.NAV, serviceListener);
+			internalInterface.removeOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);
+			internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 		}
 
-		// Remove listeners
-		internalInterface.removeServiceListener(SessionType.NAV, serviceListener);
-		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);
-		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
+
 
 		stateMachine.transitionToState(StreamingStateMachine.NONE);
 		super.dispose();
