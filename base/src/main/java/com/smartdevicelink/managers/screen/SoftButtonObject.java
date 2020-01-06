@@ -65,7 +65,7 @@ public class SoftButtonObject {
     /**
      * Create a new instance of the SoftButtonObject with multiple states
      * @param name a String value represents name of the object
-     * @param states a list of SoftButtonState represents the SoftButtonState values for the object
+     * @param states a list of SoftButtonState represents the SoftButtonState values for the object. <strong>states should be unique for every SoftButtonObject. A SoftButtonState instance cannot be reused for multiple SoftButtonObjects.</strong>
      * @param initialStateName a String value represents the name for the initial state
      * @param onEventListener a listener that has a callback that will be triggered when a button event happens
      * Note: the initialStateName should match exactly the name of one of the states for the object. Otherwise an exception will be thrown.
@@ -235,7 +235,7 @@ public class SoftButtonObject {
 
     /**
      * Set the the SoftButtonState list
-     * @param states a list of the object's soft button states
+     * @param states a list of the object's soft button states. <strong>states should be unique for every SoftButtonObject. A SoftButtonState instance cannot be reused for multiple SoftButtonObjects.</strong>
      */
     public void setStates(@NonNull List<SoftButtonState> states) {
         this.states = states;

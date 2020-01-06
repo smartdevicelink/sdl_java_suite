@@ -263,4 +263,8 @@ public interface ISdl {
      */
     @NonNull Version getProtocolVersion();
 
+    /**
+     * Start encrypted RPC service
+     */
+    void startRPCEncryption();
 }

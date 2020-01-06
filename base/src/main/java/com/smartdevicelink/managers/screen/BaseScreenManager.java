@@ -356,7 +356,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * Gets the title of the new template that will be displayed
 	 * @return title - String value that represents the title of the new template that will be displayed
 	 */
-	public String getTemplateTitle(){
+	public String getTitle(){
 		return this.textAndGraphicManager.getTitle();
 	}
 

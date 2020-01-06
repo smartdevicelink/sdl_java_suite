@@ -12,6 +12,8 @@ import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
+import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
@@ -131,6 +133,12 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         internalInterfaceSendRPCGotCalled = false;
         softButtonMangerUpdateCompleted = false;
 
+        SoftButtonCapabilities softCap = new SoftButtonCapabilities();
+        softCap.setImageSupported(true);
+        WindowCapability defaultCap = new WindowCapability();
+        defaultCap.setSoftButtonCapabilities(Collections.singletonList(softCap));
+        softButtonManager.defaultMainWindowCapability = defaultCap;
+
 
         // Test batch update
         softButtonManager.setBatchUpdates(true);
@@ -151,7 +159,8 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
 
         // Check that everything got called as expected
-        assertTrue("FileManager.uploadArtworks() did not get called", fileManagerUploadArtworksGotCalled);
+
+        assertTrue("FileManager.uploadArtworks() did get called", fileManagerUploadArtworksGotCalled);
         assertTrue("InternalInterface.sendRPC() did not get called", internalInterfaceSendRPCGotCalled);
         assertTrue("SoftButtonManger update onComplete() did not get called", softButtonMangerUpdateCompleted);
 

@@ -88,7 +88,7 @@ public class RPCConstructorsTests extends AndroidTestCase2 {
                                     rpcName = "OasisAddress";
                                 } else if(rpcName.equals("ShowConstantTBT")) {
                                     rpcName = "ShowConstantTbt";
-                                } else if (rpcName.equals("EncodedSyncPData") || rpcName.equals("OnEncodedSyncPData") || rpcName.equals("EncodedSyncPDataResponse") || rpcName.equals("AppInfo")){
+                                } else if (rpcName.equals("EncodedSyncPData") || rpcName.equals("OnEncodedSyncPData") || rpcName.equals("EncodedSyncPDataResponse")){
                                     ignoreRPC = true;
                                 }
                             // -------------------------------------------------------------------------------------------------------------
@@ -308,6 +308,13 @@ public class RPCConstructorsTests extends AndroidTestCase2 {
                     // Find the getter method name by taking the param name, capitalize the first letter, then add thw word "get" to the beginning
                     // for example if the param name is "buttonName" the method name will be "getButtonName"
                     String getterMethodName = "get" + parameters.get(i).name.substring(0, 1).toUpperCase() + parameters.get(i).name.substring(1);
+
+                    // --------------------------------------------- Exceptional cases ---------------------------------------------
+                    if (rpcName.equals("CancelInteraction") && getterMethodName.equals("getFunctionID")){
+                        getterMethodName = "getInteractionFunctionID";
+                    }
+                    // -------------------------------------------------------------------------------------------------------------
+
                     try {
                         Method getterMethod = aClass.getMethod(getterMethodName);
                         Object val = getterMethod.invoke(instance);

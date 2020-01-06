@@ -4,9 +4,12 @@ import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.WindowType;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
+
 import junit.framework.TestCase;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Iterator;
 
 public class WindowTypeCapabilitiesTest extends TestCase {
@@ -18,7 +21,7 @@ public class WindowTypeCapabilitiesTest extends TestCase {
         msg = new WindowTypeCapabilities();
 
         msg.setMaximumNumberOfWindows(Test.GENERAL_INT);
-        msg.setType(Test.GENERAL_WINDOW_TYPE);
+        msg.setType(Test.GENERAL_WINDOWTYPE);
     }
 
     /**
@@ -31,7 +34,7 @@ public class WindowTypeCapabilitiesTest extends TestCase {
 
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_INT, maximumNumberOfWindows);
-        assertEquals(Test.MATCH, Test.GENERAL_WINDOW_TYPE, type);
+        assertEquals(Test.MATCH, Test.GENERAL_WINDOWTYPE, type);
 
         // Invalid/Null Tests
         WindowTypeCapabilities msg = new WindowTypeCapabilities();
@@ -46,7 +49,7 @@ public class WindowTypeCapabilitiesTest extends TestCase {
 
         try {
             reference.put(WindowTypeCapabilities.KEY_MAXIMUM_NUMBER_OF_WINDOWS, Test.GENERAL_INT);
-            reference.put(WindowTypeCapabilities.KEY_TYPE, Test.GENERAL_WINDOW_TYPE);
+            reference.put(WindowTypeCapabilities.KEY_TYPE, Test.GENERAL_WINDOWTYPE);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());

@@ -29,6 +29,12 @@
         "carrier":"nobody",
         "maxNumberRFCOMMPorts":2
       },
+      "appInfo":{
+        "appDisplayName":"Test",
+        "appBundleID":"com.sample.test",
+        "appVersion":"1.0",
+        "appIcon":"icon.png"
+      },
       "appName":"Dumb app",
       "ngnMediaScreenAppName":"DA",
       "isMediaApplication":true,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  2019 Livio, Inc.
+ * Copyright (c) 2019 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,49 +28,18 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
- * Created by brettywhite on 7/12/19 11:37 AM
- *
  */
 
-package com.smartdevicelink.proxy.rpc;
+package com.smartdevicelink.managers.lifecycle;
 
 import android.support.annotation.NonNull;
 
-import com.smartdevicelink.protocol.enums.FunctionID;
-import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.managers.ServiceEncryptionListener;
+import com.smartdevicelink.proxy.interfaces.ISdl;
 
-import java.util.Hashtable;
+class EncryptionLifecycleManager extends BaseEncryptionLifecycleManager {
 
-/**
- * The response to UnpublishAppService
- */
-public class UnpublishAppServiceResponse extends RPCResponse {
-	/**
-	 * Constructs a new UnpublishAppServiceResponse object
-	 */
-	public UnpublishAppServiceResponse() {
-		super(FunctionID.UNPUBLISH_APP_SERVICE.toString());
-	}
-
-	/**
-	 * Constructs a new UnpublishAppServiceResponse object indicated by the Hashtable parameter
-	 *
-	 * @param hash The Hashtable to use
-	 */
-	public UnpublishAppServiceResponse(Hashtable<String, Object> hash) {
-		super(hash);
-	}
-
-	/**
-	 * Constructs a new UnpublishAppServiceResponse object
-	 * @param success whether the request is successfully processed
-	 * @param resultCode whether the request is successfully processed
-	 */
-	public UnpublishAppServiceResponse(@NonNull Boolean success, @NonNull Result resultCode) {
-		this();
-		setSuccess(success);
-		setResultCode(resultCode);
-	}
+    EncryptionLifecycleManager(@NonNull ISdl internalInterface, ServiceEncryptionListener listener) {
+        super(internalInterface, listener);
+    }
 }

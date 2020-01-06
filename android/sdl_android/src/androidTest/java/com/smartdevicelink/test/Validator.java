@@ -5,105 +5,7 @@ import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.rpc.AirbagStatus;
-import com.smartdevicelink.proxy.rpc.AppServiceCapability;
-import com.smartdevicelink.proxy.rpc.AppServiceManifest;
-import com.smartdevicelink.proxy.rpc.AppServiceRecord;
-import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
-import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
-import com.smartdevicelink.proxy.rpc.AudioControlData;
-import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
-import com.smartdevicelink.proxy.rpc.BeltStatus;
-import com.smartdevicelink.proxy.rpc.BodyInformation;
-import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.Choice;
-import com.smartdevicelink.proxy.rpc.ClimateControlCapabilities;
-import com.smartdevicelink.proxy.rpc.ClimateControlData;
-import com.smartdevicelink.proxy.rpc.ClusterModeStatus;
-import com.smartdevicelink.proxy.rpc.Coordinate;
-import com.smartdevicelink.proxy.rpc.DIDResult;
-import com.smartdevicelink.proxy.rpc.DateTime;
-import com.smartdevicelink.proxy.rpc.DeviceInfo;
-import com.smartdevicelink.proxy.rpc.DeviceStatus;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
-import com.smartdevicelink.proxy.rpc.DisplayCapability;
-import com.smartdevicelink.proxy.rpc.ECallInfo;
-import com.smartdevicelink.proxy.rpc.EmergencyEvent;
-import com.smartdevicelink.proxy.rpc.EqualizerSettings;
-import com.smartdevicelink.proxy.rpc.FuelRange;
-import com.smartdevicelink.proxy.rpc.GPSData;
-import com.smartdevicelink.proxy.rpc.Grid;
-import com.smartdevicelink.proxy.rpc.HMICapabilities;
-import com.smartdevicelink.proxy.rpc.HMIPermissions;
-import com.smartdevicelink.proxy.rpc.HMISettingsControlCapabilities;
-import com.smartdevicelink.proxy.rpc.HMISettingsControlData;
-import com.smartdevicelink.proxy.rpc.HeadLampStatus;
-import com.smartdevicelink.proxy.rpc.Headers;
-import com.smartdevicelink.proxy.rpc.Image;
-import com.smartdevicelink.proxy.rpc.ImageField;
-import com.smartdevicelink.proxy.rpc.ImageResolution;
-import com.smartdevicelink.proxy.rpc.KeyboardProperties;
-import com.smartdevicelink.proxy.rpc.LightCapabilities;
-import com.smartdevicelink.proxy.rpc.LightControlCapabilities;
-import com.smartdevicelink.proxy.rpc.LightControlData;
-import com.smartdevicelink.proxy.rpc.LightState;
-import com.smartdevicelink.proxy.rpc.LocationDetails;
-import com.smartdevicelink.proxy.rpc.MassageCushionFirmness;
-import com.smartdevicelink.proxy.rpc.MassageModeData;
-import com.smartdevicelink.proxy.rpc.MediaServiceData;
-import com.smartdevicelink.proxy.rpc.MediaServiceManifest;
-import com.smartdevicelink.proxy.rpc.MenuParams;
-import com.smartdevicelink.proxy.rpc.ModuleData;
-import com.smartdevicelink.proxy.rpc.ModuleInfo;
-import com.smartdevicelink.proxy.rpc.MyKey;
-import com.smartdevicelink.proxy.rpc.NavigationCapability;
-import com.smartdevicelink.proxy.rpc.NavigationInstruction;
-import com.smartdevicelink.proxy.rpc.NavigationServiceData;
-import com.smartdevicelink.proxy.rpc.NavigationServiceManifest;
-import com.smartdevicelink.proxy.rpc.OasisAddress;
-import com.smartdevicelink.proxy.rpc.ParameterPermissions;
-import com.smartdevicelink.proxy.rpc.PermissionItem;
-import com.smartdevicelink.proxy.rpc.PhoneCapability;
-import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
-import com.smartdevicelink.proxy.rpc.RGBColor;
-import com.smartdevicelink.proxy.rpc.RadioControlCapabilities;
-import com.smartdevicelink.proxy.rpc.RadioControlData;
-import com.smartdevicelink.proxy.rpc.RdsData;
-import com.smartdevicelink.proxy.rpc.Rectangle;
-import com.smartdevicelink.proxy.rpc.RemoteControlCapabilities;
-import com.smartdevicelink.proxy.rpc.ScreenParams;
-import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
-import com.smartdevicelink.proxy.rpc.SeatControlCapabilities;
-import com.smartdevicelink.proxy.rpc.SeatControlData;
-import com.smartdevicelink.proxy.rpc.SeatLocation;
-import com.smartdevicelink.proxy.rpc.SeatMemoryAction;
-import com.smartdevicelink.proxy.rpc.SingleTireStatus;
-import com.smartdevicelink.proxy.rpc.SisData;
-import com.smartdevicelink.proxy.rpc.SoftButton;
-import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
-import com.smartdevicelink.proxy.rpc.StartTime;
-import com.smartdevicelink.proxy.rpc.StationIDNumber;
-import com.smartdevicelink.proxy.rpc.TTSChunk;
-import com.smartdevicelink.proxy.rpc.Temperature;
-import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
-import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
-import com.smartdevicelink.proxy.rpc.TextField;
-import com.smartdevicelink.proxy.rpc.TireStatus;
-import com.smartdevicelink.proxy.rpc.TouchCoord;
-import com.smartdevicelink.proxy.rpc.TouchEvent;
-import com.smartdevicelink.proxy.rpc.TouchEventCapabilities;
-import com.smartdevicelink.proxy.rpc.Turn;
-import com.smartdevicelink.proxy.rpc.VehicleDataResult;
-import com.smartdevicelink.proxy.rpc.VehicleType;
-import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
-import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
-import com.smartdevicelink.proxy.rpc.VrHelpItem;
-import com.smartdevicelink.proxy.rpc.WeatherAlert;
-import com.smartdevicelink.proxy.rpc.WeatherData;
-import com.smartdevicelink.proxy.rpc.WeatherServiceData;
-import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
-import com.smartdevicelink.proxy.rpc.WindowCapability;
-import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
+import com.smartdevicelink.proxy.rpc.*;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
 import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
@@ -2447,6 +2349,10 @@ public class Validator{
             return false;
         }
 
+        if(item1.getRequireEncryption() != item2.getRequireEncryption()) {
+            return false;
+        }
+
         return true;
     }
 
@@ -2692,6 +2598,24 @@ public class Validator{
         return true;
     }
 
+    public static boolean validateAppInfo (AppInfo item1, AppInfo item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        if (item1.getAppDisplayName() != item1.getAppDisplayName()
+        || item1.getAppBundleID() != item2.getAppBundleID()
+        || item1.getAppVersion() != item2.getAppVersion()
+        || item1.getAppIcon() != item2.getAppIcon()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static boolean validateTemplateColorScheme (TemplateColorScheme item1, TemplateColorScheme item2) {
         if (item1 == null) {
             return ( item2 == null );
@@ -2840,6 +2764,24 @@ public class Validator{
     	}
     	  	
     	return true;
+    }
+
+    public static boolean validateDisplayCapabilityList(List<DisplayCapability> list1, List<DisplayCapability> list2) {
+        if (list1 == null || list2 == null) {
+            return false;
+        }
+
+        if (list1.size() != list2.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < list1.size(); i++) {
+            if (!validateDisplayCapability(list1.get(i), list2.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static boolean validateDisplayCapability(DisplayCapability item1, DisplayCapability item2) {
@@ -3799,7 +3741,7 @@ public class Validator{
     	if (g2 == null) {
     		return (g1 == null);
 		}
-    	if (g1.getColumn() != g2.getColumn()) {
+    	if (g1.getCol() != g2.getCol()) {
     		log(tag, "Columns do not match");
     		return false;
 		}
@@ -3811,7 +3753,7 @@ public class Validator{
 			log(tag, "Levels do not match");
 			return false;
 		}
-    	if (g1.getColumnSpan() != g2.getColumnSpan()) {
+    	if (g1.getColSpan() != g2.getColSpan()) {
 			log(tag, "Column spans do not match");
     		return false;
 		}

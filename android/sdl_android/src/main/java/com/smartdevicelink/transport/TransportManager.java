@@ -32,6 +32,7 @@
 
 package com.smartdevicelink.transport;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -136,7 +137,9 @@ public class TransportManager extends TransportManagerBase{
     @Override
     @Deprecated
     public void resetSession(){
-        transport.resetSession();
+       if(transport != null){
+           transport.resetSession();
+       }
     }
 
     /**
@@ -430,7 +433,10 @@ public class TransportManager extends TransportManagerBase{
             legacyBluetoothHandler = new LegacyBluetoothHandler(this);
             legacyBluetoothTransport = new MultiplexBluetoothTransport(legacyBluetoothHandler);
             if(contextWeakReference.get() != null){
-                contextWeakReference.get().registerReceiver(legacyDisconnectReceiver,new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED) );
+                IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+                intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+                contextWeakReference.get().registerReceiver(legacyDisconnectReceiver, intentFilter );
             }
         }else{
             new Handler().postDelayed(new Runnable() {
@@ -468,8 +474,15 @@ public class TransportManager extends TransportManagerBase{
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent != null){
-                if(BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(intent.getAction())){
+                String action = intent.getAction();
+                if(BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)){
                     exitLegacyMode("Bluetooth disconnected");
+                }else if(action.equalsIgnoreCase(BluetoothAdapter.ACTION_STATE_CHANGED)){
+                    int bluetoothState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+                    if(bluetoothState == BluetoothAdapter.STATE_TURNING_OFF || bluetoothState == BluetoothAdapter.STATE_OFF){
+                        Log.d(TAG, "Bluetooth is shutting off, exiting legacy mode.");
+                        exitLegacyMode("Bluetooth adapter shutting off");
+                    }
                 }
             }
         }

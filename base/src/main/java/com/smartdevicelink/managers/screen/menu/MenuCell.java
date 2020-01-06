@@ -37,6 +37,7 @@ import android.support.annotation.Nullable;
 
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
+import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -322,33 +323,30 @@ public class MenuCell implements Cloneable{
 
 	/**
 	 * Creates a deep copy of the object
-	 * @return deep copy of the object
+	 * @return deep copy of the object, null if an exception occurred
 	 */
 	@Override
 	public MenuCell clone() {
-		final MenuCell clone;
 		try {
-			clone = (MenuCell) super.clone();
+			MenuCell clone = (MenuCell) super.clone();
+			if(this.icon != null){
+				clone.icon = this.icon.clone();
+			}
+			if(this.subCells != null){
+				ArrayList<MenuCell> cloneSubCells = new ArrayList<>();
+				for(MenuCell subCell : subCells){
+					cloneSubCells.add(subCell.clone());
+				}
+				clone.subCells = cloneSubCells;
+			}
+
+			return clone;
 		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException("superclass messed up", e);
-		}
-		clone.title = this.title;
-		clone.icon = this.icon == null ? null : this.icon.clone();
-		clone.voiceCommands = null;
-		if (this.voiceCommands != null){
-			clone.voiceCommands = new ArrayList<>();
-			clone.voiceCommands.addAll(this.voiceCommands);
-		}
-		clone.subCells = null;
-		if (this.subCells != null) {
-			clone.subCells = new ArrayList<>();
-			for (MenuCell subCell : this.subCells) {
-				clone.subCells.add(subCell == null ? null : subCell.clone());
+			if(DebugTool.isDebugEnabled()){
+				throw new RuntimeException("Clone not supported by super class");
 			}
 		}
-		clone.menuSelectionListener = this.menuSelectionListener;
-		clone.parentCellId = this.parentCellId;
-		clone.cellId = this.cellId;
-		return clone;
+
+		return null;
 	}
 }

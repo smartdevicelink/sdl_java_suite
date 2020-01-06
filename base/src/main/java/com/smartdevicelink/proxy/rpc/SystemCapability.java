@@ -37,7 +37,6 @@ import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 
 import java.util.Hashtable;
-import java.util.List;
 
 /**
  * Struct that indicates the a SystemCapabilityType and houses different structs to describe particular capabilities
@@ -83,46 +82,46 @@ public class SystemCapability extends RPCStruct {
     }
 
     public Object getCapabilityForType(SystemCapabilityType type) {
-        if(type == null) {
+        if (type == null) {
             return null;
-        }else if (type.equals(SystemCapabilityType.NAVIGATION)) {
+        } else if (type.equals(SystemCapabilityType.NAVIGATION)) {
             return getObject(NavigationCapability.class, KEY_NAVIGATION_CAPABILITY);
         } else if (type.equals(SystemCapabilityType.PHONE_CALL)) {
             return getObject(PhoneCapability.class, KEY_PHONE_CAPABILITY);
-        } else if (type.equals(SystemCapabilityType.VIDEO_STREAMING)){
+        } else if (type.equals(SystemCapabilityType.VIDEO_STREAMING)) {
             return getObject(VideoStreamingCapability.class, KEY_VIDEO_STREAMING_CAPABILITY);
-        }else if(type.equals(SystemCapabilityType.REMOTE_CONTROL)){
+        } else if (type.equals(SystemCapabilityType.REMOTE_CONTROL)) {
             return getObject(RemoteControlCapabilities.class, KEY_REMOTE_CONTROL_CAPABILITY);
-        }else if(type.equals(SystemCapabilityType.APP_SERVICES)){
-			return (RPCStruct) getObject(AppServicesCapabilities.class, KEY_APP_SERVICES_CAPABILITIES);
-	}else if(type.equals(SystemCapabilityType.SEAT_LOCATION)){
-            return (RPCStruct) getObject(SeatLocationCapability.class, KEY_SEAT_LOCATION_CAPABILITY);		
-	}else if(type.equals(SystemCapabilityType.DISPLAYS)){
+        } else if (type.equals(SystemCapabilityType.APP_SERVICES)) {
+            return getObject(AppServicesCapabilities.class, KEY_APP_SERVICES_CAPABILITIES);
+        } else if (type.equals(SystemCapabilityType.SEAT_LOCATION)) {
+            return getObject(SeatLocationCapability.class, KEY_SEAT_LOCATION_CAPABILITY);
+        } else if (type.equals(SystemCapabilityType.DISPLAYS)) {
             return getObject(DisplayCapability.class, KEY_DISPLAY_CAPABILITIES);
-        }else{
+        } else {
             return null;
         }
     }
 
-    public void setCapabilityForType(SystemCapabilityType type, Object capability){
-        if(type == null) {
+    public void setCapabilityForType(SystemCapabilityType type, Object capability) {
+        if (type == null) {
             return;
-        }else if(type.equals(SystemCapabilityType.NAVIGATION)){
+        } else if (type.equals(SystemCapabilityType.NAVIGATION)) {
             setValue(KEY_NAVIGATION_CAPABILITY, capability);
-        }else if(type.equals(SystemCapabilityType.PHONE_CALL)){
+        } else if (type.equals(SystemCapabilityType.PHONE_CALL)) {
             setValue(KEY_PHONE_CAPABILITY, capability);
-        }else if(type.equals(SystemCapabilityType.VIDEO_STREAMING)){
+        } else if (type.equals(SystemCapabilityType.VIDEO_STREAMING)) {
             setValue(KEY_VIDEO_STREAMING_CAPABILITY, capability);
-        }else if(type.equals(SystemCapabilityType.REMOTE_CONTROL)){
+        } else if (type.equals(SystemCapabilityType.REMOTE_CONTROL)) {
             setValue(KEY_REMOTE_CONTROL_CAPABILITY, capability);
-        }else if(type.equals(SystemCapabilityType.APP_SERVICES)){
-			setValue(KEY_APP_SERVICES_CAPABILITIES, capability);
-	    }else if(type.equals(SystemCapabilityType.SEAT_LOCATION)){
+        } else if (type.equals(SystemCapabilityType.APP_SERVICES)) {
+            setValue(KEY_APP_SERVICES_CAPABILITIES, capability);
+        } else if (type.equals(SystemCapabilityType.SEAT_LOCATION)) {
             setValue(KEY_SEAT_LOCATION_CAPABILITY, capability);
-        }else if(type.equals(SystemCapabilityType.DISPLAYS)) {
+        } else if (type.equals(SystemCapabilityType.DISPLAYS)) {
             setValue(KEY_DISPLAY_CAPABILITIES, capability);
-        }else{
-	        return;
+        } else {
+            return;
         }
     }
 

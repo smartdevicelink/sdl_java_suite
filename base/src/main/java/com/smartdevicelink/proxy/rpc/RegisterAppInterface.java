@@ -286,6 +286,7 @@ public class RegisterAppInterface extends RPCRequest {
 	public static final String KEY_VR_SYNONYMS = "vrSynonyms";
 	public static final String KEY_SDL_MSG_VERSION = "syncMsgVersion";
 	public static final String KEY_HASH_ID = "hashID";
+	public static final String KEY_APP_INFO = "appInfo";
 	public static final String KEY_DAY_COLOR_SCHEME = "dayColorScheme";
 	public static final String KEY_NIGHT_COLOR_SCHEME = "nightColorScheme";
 	private static final int APP_ID_MAX_LENGTH = 10;
@@ -615,6 +616,22 @@ public class RegisterAppInterface extends RPCRequest {
     public void setHashID(String hashID) {
 		setParameters(KEY_HASH_ID, hashID);
     }
+
+	/**
+	 * Gets the detailed information about the registered application
+	 * @return appInfo - detailed information about the registered application
+	 */
+	public AppInfo getAppInfo() {
+		return (AppInfo) getObject(AppInfo.class, KEY_APP_INFO);
+	}
+
+	/**
+	 * Sets detailed information about the registered application
+	 * @param appInfo - detailed information about the registered application
+	 */
+	public void setAppInfo(AppInfo appInfo) {
+		setParameters(KEY_APP_INFO, appInfo);
+	}
 
 	/**
 	 * Gets the unique ID, which an app will be given when approved

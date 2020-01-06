@@ -11,7 +11,7 @@ import java.util.Hashtable;
  */
 
 public class Grid extends RPCStruct {
-    public static final String KEY_COLUMN = "col";
+    public static final String KEY_COL = "col";
     public static final String KEY_ROW = "row";
     public static final String KEY_LEVEL = "level";
     public static final String KEY_COL_SPAN = "colspan";
@@ -32,23 +32,23 @@ public class Grid extends RPCStruct {
     public Grid(@NonNull Integer row, @NonNull Integer column){
         this();
         setRow(row);
-        setColumn(column);
+        setCol(column);
     }
 
     /**
      * Sets the column of this Grid
      * @param col the column to be set
      */
-    public void setColumn(@NonNull Integer col) {
-        setValue(KEY_COLUMN, col);
+    public void setCol(@NonNull Integer col) {
+        setValue(KEY_COL, col);
     }
 
     /**
      * Get the column value of this Grid
      * @return the column value
      */
-    public Integer getColumn() {
-        return getInteger(KEY_COLUMN);
+    public Integer getCol() {
+        return getInteger(KEY_COL);
     }
 
     /**
@@ -87,7 +87,7 @@ public class Grid extends RPCStruct {
      * Sets the column span of this Grid
      * @param span the span to be set
      */
-    public void setColumnSpan(Integer span) {
+    public void setColSpan(Integer span) {
         setValue(KEY_COL_SPAN, span);
     }
 
@@ -95,7 +95,7 @@ public class Grid extends RPCStruct {
      * Gets the column span of this Grid
      * @return the column span
      */
-    public Integer getColumnSpan() {
+    public Integer getColSpan() {
         return getInteger(KEY_COL_SPAN);
     }
 

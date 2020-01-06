@@ -1,7 +1,9 @@
 package com.smartdevicelink.test.rpc.enums;
 
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
+
 import junit.framework.TestCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

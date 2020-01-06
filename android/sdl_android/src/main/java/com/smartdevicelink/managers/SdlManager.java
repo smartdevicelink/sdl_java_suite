@@ -120,6 +120,7 @@ public class SdlManager extends BaseSdlManager{
 	private SdlManagerListener managerListener;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
 	private LockScreenConfig lockScreenConfig;
+	private ServiceEncryptionListener serviceEncryptionListener;
 
 	// Managers
 	private PermissionManager permissionManager;
@@ -131,7 +132,7 @@ public class SdlManager extends BaseSdlManager{
 
 
 	// Initialize proxyBridge with anonymous lifecycleListener
-	private final ProxyBridge proxyBridge= new ProxyBridge(new ProxyBridge.LifecycleListener() {
+	private final ProxyBridge proxyBridge = new ProxyBridge(new ProxyBridge.LifecycleListener() {
 		@Override
 		public void onProxyConnected() {
 			DebugTool.logInfo("Proxy is connected. Now initializing.");
@@ -242,7 +243,7 @@ public class SdlManager extends BaseSdlManager{
 	protected void checkLifecycleConfiguration(){
 		final Language actualLanguage =  this.getRegisterAppInterfaceResponse().getLanguage();
 
-		if (!actualLanguage.equals(hmiLanguage)) {
+		if (actualLanguage != null && !actualLanguage.equals(hmiLanguage)) {
 
 			final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage);
 
@@ -364,7 +365,7 @@ public class SdlManager extends BaseSdlManager{
 			this.audioStreamManager.dispose();
 		}
 
-		if (this.proxy != null) {
+		if (this.proxy != null && !proxy.isDisposed()) {
 			try {
 				this.proxy.dispose();
 			} catch (SdlException e) {
@@ -680,7 +681,7 @@ public class SdlManager extends BaseSdlManager{
 				proxy.setMinimumProtocolVersion(minimumProtocolVersion);
 				proxy.setMinimumRPCVersion(minimumRPCVersion);
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
-					proxy.setSdlSecurityClassList(sdlSecList);
+					proxy.setSdlSecurity(sdlSecList, serviceEncryptionListener);
 				}
 				//Setup the notification queue
 				initNotificationQueue();
@@ -736,13 +737,18 @@ public class SdlManager extends BaseSdlManager{
 		@Override
 		public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
 			if(proxy.getIsConnected()){
-				proxy.startVideoStream(encrypted,parameters);
+				proxy.startVideoService(encrypted,parameters);
 			}
 		}
 
 		@Override
 		public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters){
-			return proxy.startVideoStream(isEncrypted, parameters);
+			if(proxy.getIsConnected()){
+				return proxy.startVideoStream(isEncrypted, parameters);
+			}else{
+				DebugTool.logError("Unable to start video stream, proxy not connected");
+				return null;
+			}
 		}
 
 		@Override
@@ -897,6 +903,13 @@ public class SdlManager extends BaseSdlManager{
 				return proxy.getProtocolVersion();
 			}else{
 				return new Version(1,0,0);
+			}
+		}
+
+		@Override
+		public void startRPCEncryption() {
+			if (proxy != null) {
+				proxy.startProtectedRPCService();
 			}
 		}
 
@@ -1097,8 +1110,20 @@ public class SdlManager extends BaseSdlManager{
 		 * Sets the Security library
 		 * @param secList The list of security class(es)
 		 */
+		@Deprecated
 		public Builder setSdlSecurity(List<Class<? extends SdlSecurityBase>> secList) {
 			sdlManager.sdlSecList = secList;
+			return this;
+		}
+
+		/**
+		 * Sets the security libraries and a callback to notify caller when there is update to encryption service
+		 * @param secList The list of security class(es)
+		 * @param listener The callback object
+		 */
+		public Builder setSdlSecurity(@NonNull List<Class<? extends SdlSecurityBase>> secList, ServiceEncryptionListener listener) {
+			sdlManager.sdlSecList = secList;
+			sdlManager.serviceEncryptionListener = listener;
 			return this;
 		}
 
@@ -1171,6 +1196,15 @@ public class SdlManager extends BaseSdlManager{
 			sdlManager.transitionToState(BaseSubManager.SETTING_UP);
 
 			return sdlManager;
+		}
+	}
+
+	/**
+	 * Start a secured RPC service
+	 */
+	public void startRPCEncryption() {
+		if (proxy != null) {
+			 proxy.startProtectedRPCService();
 		}
 	}
 }
