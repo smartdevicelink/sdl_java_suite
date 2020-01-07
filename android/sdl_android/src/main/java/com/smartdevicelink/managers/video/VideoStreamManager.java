@@ -148,9 +148,15 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
 					return;
 				}
+				HMILevel prevHMILevel = hmiLevel;
 				hmiLevel = onHMIStatus.getHmiLevel();
 				if(hmiLevel.equals(HMILevel.HMI_FULL)){
 					checkState();
+				}
+				if (hasStarted && (prevHMILevel.equals(HMILevel.HMI_FULL) || prevHMILevel.equals(HMILevel.HMI_LIMITED)) && hmiLevel.equals(HMILevel.HMI_NONE)){
+					stateMachine.transitionToState(StreamingStateMachine.NONE);
+					transitionToState(SETTING_UP);
+					internalInterface.stopVideoService();
 				}
 			}
 		}
