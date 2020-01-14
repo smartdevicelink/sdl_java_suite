@@ -8368,7 +8368,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				return;
 			}
 			VideoStreamingCapability capability = (VideoStreamingCapability)_systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING);
-			if(capability != null && capability.getIsHapticSpatialDataSupported()){
+			if(capability != null && Boolean.TRUE.equals(capability.getIsHapticSpatialDataSupported())){
 				hapticManager = new HapticInterfaceManager(internalInterface);
 			}
 

@@ -113,7 +113,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					return;
 				}
 				VideoStreamingCapability capability = (VideoStreamingCapability) internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING);
-				if(capability != null && capability.getIsHapticSpatialDataSupported()){
+				if(capability != null && Boolean.TRUE.equals(capability.getIsHapticSpatialDataSupported())){
 					hapticManager = new HapticInterfaceManager(internalInterface);
 				}
 				startEncoder();
