@@ -440,7 +440,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 					if(!connected && !list.isEmpty()){
 						SdlRouterStatusProvider provider = new SdlRouterStatusProvider(context,list.poll(), this);
 						if(triggerRouterServicePing){provider.setFlags(TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING);	}
-						provider.checkIsConnected(true);
+						provider.checkIsConnected();
 					}else{
 						if(service!=null){
 							Log.d(TAG, service.getPackageName() + " is connected = " + connected);
@@ -464,7 +464,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 				@Override
 				public void onListObtained(boolean successful) {
 					//This will kick off our check of router services
-					provider.checkIsConnected(true);
+					provider.checkIsConnected();
 				}
 			});
 				

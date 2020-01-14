@@ -352,7 +352,7 @@ public class RouterServiceValidator {
 							}
 						});
 						Log.d(TAG, "about checkIsConnected; thread=" + Thread.currentThread().getName());
-						provider.checkIsConnected(true);
+						provider.checkIsConnected();
 						//provider.cancel();
 					}
 				}
