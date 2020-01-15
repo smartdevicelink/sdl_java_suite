@@ -155,7 +155,10 @@ abstract class BaseSdlManager {
             if (queuedNotifications != null && queuedNotifications.size() > 0) {
                 for (RPCNotification notification : queuedNotifications) {
                     try {
-                        onRPCNotificationListeners.get(notification.getFunctionID()).onNotified(notification);
+                        OnRPCNotificationListener listener = onRPCNotificationListeners.get(notification.getFunctionID());
+                        if (listener != null) {
+                            listener.onNotified(notification);
+                        }
                     } catch (Exception e) {
                         DebugTool.logError("Error going through queued notifications", e);
                     }
