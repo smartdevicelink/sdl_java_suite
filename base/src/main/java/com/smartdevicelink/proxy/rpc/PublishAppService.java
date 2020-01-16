@@ -39,7 +39,8 @@ import com.smartdevicelink.proxy.RPCRequest;
 import java.util.Hashtable;
 
 /**
- * Registers a service offered by this app on the module
+ * Registers a service offered by this app on the module.
+ * Subsequent calls with the same service type will update the manifest for that service.
  */
 public class PublishAppService extends RPCRequest {
 
@@ -75,6 +76,7 @@ public class PublishAppService extends RPCRequest {
 
 	/**
 	 * The manifest of the service that wishes to be published.
+	 * If already published, the updated manifest for this service.
 	 * @param serviceManifest - the App Service Manifest
 	 */
 	public void setAppServiceManifest(@NonNull AppServiceManifest serviceManifest){
@@ -83,6 +85,7 @@ public class PublishAppService extends RPCRequest {
 
 	/**
 	 * The manifest of the service that wishes to be published.
+	 * If already published, the updated manifest for this service.
 	 * @return serviceManifest - the App Service Manifest
 	 */
 	public AppServiceManifest getAppServiceManifest(){

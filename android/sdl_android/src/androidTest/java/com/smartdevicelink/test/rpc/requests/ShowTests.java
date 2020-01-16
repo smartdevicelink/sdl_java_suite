@@ -7,6 +7,7 @@ import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
+import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
@@ -27,23 +28,26 @@ import java.util.List;
  * {@link com.smartdevicelink.proxy.rpc.Show}
  */
 public class ShowTests extends BaseRpcTests {
-    
+
     @Override
 	protected RPCMessage createMessage() {
 		Show msg = new Show();
-		
+
 		msg.setMainField1(Test.GENERAL_STRING);
 		msg.setMainField2(Test.GENERAL_STRING);
 		msg.setMainField3(Test.GENERAL_STRING);
 		msg.setMainField4(Test.GENERAL_STRING);
 		msg.setStatusBar(Test.GENERAL_STRING);
 		msg.setMediaTrack(Test.GENERAL_STRING);
+		msg.setTemplateTitle(Test.GENERAL_STRING);
 		msg.setAlignment(Test.GENERAL_TEXTALIGNMENT);
 		msg.setGraphic(Test.GENERAL_IMAGE);
 		msg.setSecondaryGraphic(Test.GENERAL_IMAGE);
 		msg.setCustomPresets(Test.GENERAL_STRING_LIST);
 		msg.setSoftButtons(Test.GENERAL_SOFTBUTTON_LIST);
 		msg.setMetadataTags(Test.GENERAL_METADATASTRUCT);
+		msg.setWindowID(Test.GENERAL_INT);
+		msg.setTemplateConfiguration(Test.GENERAL_TEMPLATE_CONFIGURATION);
 
 		return msg;
 	}
@@ -62,29 +66,33 @@ public class ShowTests extends BaseRpcTests {
 	protected JSONObject getExpectedParameters(int sdlVersion) {
 		JSONObject result = new JSONObject();
 
-		try { 
+		try {
 			result.put(Show.KEY_MAIN_FIELD_1, Test.GENERAL_STRING);
 			result.put(Show.KEY_MAIN_FIELD_2, Test.GENERAL_STRING);
 			result.put(Show.KEY_MAIN_FIELD_3, Test.GENERAL_STRING);
 			result.put(Show.KEY_MAIN_FIELD_4, Test.GENERAL_STRING);
 			result.put(Show.KEY_STATUS_BAR,  Test.GENERAL_STRING);
 			result.put(Show.KEY_MEDIA_TRACK, Test.GENERAL_STRING);
+			result.put(Show.KEY_TEMPLATE_TITLE, Test.GENERAL_STRING);
 			result.put(Show.KEY_GRAPHIC, Test.JSON_IMAGE);
 			result.put(Show.KEY_SECONDARY_GRAPHIC, Test.JSON_IMAGE);
 			result.put(Show.KEY_ALIGNMENT, Test.GENERAL_TEXTALIGNMENT);
 			result.put(Show.KEY_CUSTOM_PRESETS, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));
 			result.put(Show.KEY_SOFT_BUTTONS, Test.JSON_SOFTBUTTONS);
 			result.put(Show.KEY_METADATA_TAGS, Test.GENERAL_METADATASTRUCT.serializeJSON());
+			result.put(Show.KEY_WINDOW_ID, Test.GENERAL_INT);
+			result.put(Show.KEY_TEMPLATE_CONFIGURATION, Test.GENERAL_TEMPLATE_CONFIGURATION.serializeJSON());
 		} catch (JSONException e) {
 			fail(Test.JSON_FAIL);
 		}
 
 		return result;
 	}
-		
+
 	public void testSoftButtons () {
 		// TestValues
 		String testTrack     = ( (Show) msg ).getMediaTrack();
+		String templateTitle     = ( (Show) msg ).getTemplateTitle();
 		Image  testGraphic2  = ( (Show) msg ).getSecondaryGraphic();
 		Image  testGraphic1  = ( (Show) msg ).getGraphic();
 		String testStatusBar = ( (Show) msg ).getStatusBar();
@@ -96,9 +104,10 @@ public class ShowTests extends BaseRpcTests {
 		List<SoftButton> testSoftButtons   = ( (Show) msg ).getSoftButtons();
 		List<String>     testCustomPresets = ( (Show) msg ).getCustomPresets();
 		MetadataTags testMetadata      = ( (Show) msg ).getMetadataTags();
-		
+
 		// Valid Tests
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testTrack);
+		assertEquals(Test.MATCH, Test.GENERAL_STRING, templateTitle);
 		assertEquals(Test.MATCH, Test.GENERAL_TEXTALIGNMENT, testAlignment);
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testStatusBar);
 		assertEquals(Test.MATCH, Test.GENERAL_STRING, testText1);
@@ -110,7 +119,7 @@ public class ShowTests extends BaseRpcTests {
 		assertTrue(Test.TRUE, Validator.validateSoftButtons(Test.GENERAL_SOFTBUTTON_LIST, testSoftButtons));
 		assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, testGraphic2));
 		assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, testGraphic1));
-	
+
 		// Invalid/Null Tests
 		Show msg = new Show();
 		assertNotNull(Test.NOT_NULL, msg);
@@ -126,8 +135,11 @@ public class ShowTests extends BaseRpcTests {
 		assertNull(Test.NULL, msg.getSecondaryGraphic());
 		assertNull(Test.NULL, msg.getCustomPresets());
 		assertNull(Test.NULL, msg.getMediaTrack());
+		assertNull(Test.NULL, msg.getTemplateTitle());
 		assertNull(Test.NULL, msg.getSoftButtons());
 		assertNull(Test.NULL, msg.getMetadataTags());
+		assertNull(Test.NULL, msg.getWindowID());
+		assertNull(Test.NULL, msg.getTemplateConfiguration());
 	}
 
 	/**
@@ -166,7 +178,13 @@ public class ShowTests extends BaseRpcTests {
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Show.KEY_STATUS_BAR), cmd.getStatusBar());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Show.KEY_ALIGNMENT), cmd.getAlignment().toString());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Show.KEY_MEDIA_TRACK), cmd.getMediaTrack());
+			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Show.KEY_TEMPLATE_TITLE), cmd.getTemplateTitle());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Show.KEY_METADATA_TAGS), cmd.getMetadataTags());
+			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, Show.KEY_WINDOW_ID), cmd.getWindowID());
+
+			JSONObject templateConfiguration = JsonUtils.readJsonObjectFromJsonObject(parameters, Show.KEY_TEMPLATE_CONFIGURATION);
+			TemplateConfiguration refTemplateConfiguration = new TemplateConfiguration(JsonRPCMarshaller.deserializeJSONObject(templateConfiguration));
+			assertTrue(Test.TRUE, Validator.validateTemplateConfiguration(refTemplateConfiguration, cmd.getTemplateConfiguration()));
 
 			JSONObject secondaryGraphic = JsonUtils.readJsonObjectFromJsonObject(parameters, Show.KEY_SECONDARY_GRAPHIC);
 			Image referenceSecondaryGraphic = new Image(JsonRPCMarshaller.deserializeJSONObject(secondaryGraphic));

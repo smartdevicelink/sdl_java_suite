@@ -43,6 +43,7 @@ public class GPSDataTests extends TestCase{
         msg.setUtcSeconds(Test.GENERAL_INT);
         msg.setUtcYear(Test.GENERAL_INT);
         msg.setVdop(Test.GENERAL_DOUBLE);
+        msg.setShifted(Test.GENERAL_BOOLEAN);
     }
 
     /**
@@ -68,6 +69,7 @@ public class GPSDataTests extends TestCase{
         int satellites = msg.getSatellites();
         Dimension dimension = msg.getDimension();
         CompassDirection direction = msg.getCompassDirection();
+        boolean shifted = msg.getShifted();
         
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, actual);
@@ -88,6 +90,7 @@ public class GPSDataTests extends TestCase{
         assertEquals(Test.MATCH, Test.GENERAL_INT, satellites);
         assertEquals(Test.MATCH, Test.GENERAL_DIMENSION, dimension);
         assertEquals(Test.MATCH, Test.GENERAL_COMPASSDIRECTION, direction);
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, shifted);
         
         // Invalid/Null Tests
         GPSData msg = new GPSData();
@@ -111,6 +114,7 @@ public class GPSDataTests extends TestCase{
         assertNull(Test.NULL, msg.getUtcSeconds());
         assertNull(Test.NULL, msg.getUtcYear());
         assertNull(Test.NULL, msg.getVdop());
+        assertNull(Test.NULL, msg.getShifted());
     }
 
     public void testJson(){
@@ -135,6 +139,7 @@ public class GPSDataTests extends TestCase{
             reference.put(GPSData.KEY_SATELLITES, Test.GENERAL_INT);
             reference.put(GPSData.KEY_DIMENSION, Test.GENERAL_DIMENSION);
             reference.put(GPSData.KEY_COMPASS_DIRECTION, Test.GENERAL_COMPASSDIRECTION);
+            reference.put(GPSData.KEY_SHIFTED, Test.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());

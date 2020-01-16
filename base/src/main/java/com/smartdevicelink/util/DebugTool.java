@@ -77,6 +77,7 @@ public class DebugTool {
 		return false;		
 	}
 	
+	@SuppressWarnings("ConstantConditions")
 	private static String prependProxyVersionNumberToString(String string) {
 		if (BuildConfig.VERSION_NAME != null && string != null) {
 			string = BuildConfig.VERSION_NAME + ": " + string;
@@ -163,21 +164,21 @@ public class DebugTool {
 
 	protected static String getLine(Throwable ex) {
 		if (ex == null) { return null; }
-		String toPrint = ex.toString() + " :" + ex.getMessage();
+		StringBuilder toPrint = new StringBuilder(ex.toString() + " :" + ex.getMessage());
 		for (int i=0; i<ex.getStackTrace().length; i++) {
 			StackTraceElement elem = ex.getStackTrace()[i];
-			toPrint += "\n  " + elem.toString();
+			toPrint.append("\n  ").append(elem.toString());
 		}
 		
 		if (ex instanceof SdlException) {
 			SdlException sdlEx = (SdlException) ex;
 			if (sdlEx.getInnerException() != null && sdlEx != sdlEx.getInnerException()) {
-				toPrint += "\n  nested:\n";
-				toPrint += getLine(sdlEx.getInnerException());
+				toPrint.append("\n  nested:\n");
+				toPrint.append(getLine(sdlEx.getInnerException()));
 			}
 		}
 		
-		return toPrint;
+		return toPrint.toString();
 	}
 
 
@@ -378,8 +379,7 @@ public class DebugTool {
 			}
 			if (message.getBulkData() != null) hash.put(RPCStruct.KEY_BULK_DATA, message.getBulkData());
 		} else {
-			final Hashtable<String, Object> mhash = JsonRPCMarshaller.unmarshall(message.getData());
-			hash = mhash;
+			hash = JsonRPCMarshaller.unmarshall(message.getData());
 		}
 		return hash;
 	}

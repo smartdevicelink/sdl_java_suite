@@ -124,8 +124,7 @@ public class OnKeyboardInput extends RPCNotification {
 
     @Override
     public String toString(){
-        String result =  this.getFunctionName() +": " + " data: " + this.getData() + " event:" + this.getEvent().toString();
-        return result;
+        return this.getFunctionName() +": " + " data: " + this.getData() + " event:" + this.getEvent().toString();
     }
 
 }

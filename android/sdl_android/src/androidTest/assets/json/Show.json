@@ -17,10 +17,49 @@
       "mainField2":"Main Field 2",
       "mainField3":"Main Field 3",
       "mainField4":"Main Field 4",
+      "templateTitle":"Template Title",
       "statusBar":"Status",
       "mediaClock":"Media Clock",
       "alignment":"LEFT_ALIGNED",
       "mediaTrack":"Media Track",
+      "windowID":10,
+      "templateConfiguration": {
+        "template": "template",
+        "dayColorScheme": {
+          "backgroundColor": {
+            "blue": 9,
+            "green": 8,
+            "red": 7
+          },
+          "secondaryColor": {
+            "blue": 6,
+            "green": 5,
+            "red": 4
+          },
+          "primaryColor": {
+            "blue": 3,
+            "green": 2,
+            "red": 1
+          }
+        },
+        "nightColorScheme": {
+          "backgroundColor": {
+            "blue": 18,
+            "green": 17,
+            "red": 16
+          },
+          "secondaryColor": {
+            "blue": 15,
+            "green": 14,
+            "red": 13
+          },
+          "primaryColor": {
+            "blue": 12,
+            "green": 11,
+            "red": 10
+          }
+        }
+      },
       "secondaryGraphic":{
         "value":"image2.png",
         "imageType":"STATIC"

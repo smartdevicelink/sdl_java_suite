@@ -33,6 +33,7 @@ package com.smartdevicelink.proxy;
 
 import android.telephony.TelephonyManager;
 
+@Deprecated
 public class SdlProxyConfigurationResources {
 	private String _sdlConfigurationFilePath;
 	private TelephonyManager _telephonyManager;

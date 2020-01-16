@@ -1,0 +1,13 @@
+{
+  "request":{
+    "name":"UnpublishAppService",
+    "correlationID":184,
+    "parameters":{
+      "serviceID":"test"
+    }
+  },
+  "response":{
+    "name":"UnpublishAppServiceResponse",
+    "correlationID":185
+  }
+}

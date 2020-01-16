@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
- * {@link com.smartdevicelink.rpc.DisplayCapabilities}
+ * {@link com.smartdevicelink.proxy.rpc.DisplayCapabilities}
  */
 public class DisplayCapabilitiesTests extends TestCase{
 	
@@ -58,7 +58,7 @@ public class DisplayCapabilitiesTests extends TestCase{
         List<MediaClockFormat> mediaClock = msg.getMediaClockFormats();
         List<TextField> textFields = msg.getTextFields();
         List<ImageField> imageFields = msg.getImageFields();
-        
+
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, graphicSupported);
         assertEquals(Test.MATCH, Test.GENERAL_INT, numPresets);
@@ -69,7 +69,7 @@ public class DisplayCapabilitiesTests extends TestCase{
 		assertEquals(Test.MATCH, Test.GENERAL_MEDIACLOCKFORMAT_LIST.size(), mediaClock.size());
 		assertEquals(Test.MATCH, Test.GENERAL_TEXTFIELD_LIST.size(), textFields.size());
 		assertEquals(Test.MATCH, Test.GENERAL_IMAGEFIELD_LIST.size(), imageFields.size());
-		
+
 		for(int i = 0; i < Test.GENERAL_STRING_LIST.size(); i++){
             assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST.get(i), templatesAvailable.get(i));
         }
@@ -85,6 +85,7 @@ public class DisplayCapabilitiesTests extends TestCase{
         for(int i = 0; i < Test.GENERAL_IMAGEFIELD_LIST.size(); i++){
             assertTrue(Test.TRUE, Validator.validateImageFields(Test.GENERAL_IMAGEFIELD_LIST.get(i), imageFields.get(i)));
         }
+
         
         // Invalid/Null Tests
         DisplayCapabilities msg = new DisplayCapabilities();

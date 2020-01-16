@@ -67,4 +67,26 @@ public class ImageResolutionTests extends TestCase{
         	fail(Test.JSON_FAIL);
         }
     }
+
+    public void testSetResolutionWidth_Odd() {
+        msg.setResolutionWidth(175);
+        assertEquals(176, (int)msg.getResolutionWidth());
+    }
+
+    public void testSetResolutionHeight_Odd() {
+        msg.setResolutionHeight(175);
+        assertEquals(176, (int)msg.getResolutionHeight());
+    }
+
+    public void testSetResolutionWidth_Pair() {
+        msg.setResolutionWidth(176);
+        assertEquals(176, (int)msg.getResolutionWidth());
+
+    }
+
+    public void testSetResolutionHeight_Pair() {
+        msg.setResolutionHeight(176);
+        assertEquals(176, (int)msg.getResolutionHeight());
+
+    }
 }

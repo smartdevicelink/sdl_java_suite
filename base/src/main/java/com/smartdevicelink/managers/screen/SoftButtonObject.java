@@ -52,6 +52,9 @@ import java.util.List;
 public class SoftButtonObject {
 
     private static final String TAG = "SoftButtonObject";
+    static int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
+    static int SOFT_BUTTON_ID_MIN_VALUE = 0;
+    static int SOFT_BUTTON_ID_MAX_VALUE = 65535;
     private String name;
     private List<SoftButtonState> states;
     private String currentStateName;
@@ -62,7 +65,7 @@ public class SoftButtonObject {
     /**
      * Create a new instance of the SoftButtonObject with multiple states
      * @param name a String value represents name of the object
-     * @param states a list of SoftButtonState represents the SoftButtonState values for the object
+     * @param states a list of SoftButtonState represents the SoftButtonState values for the object. <strong>states should be unique for every SoftButtonObject. A SoftButtonState instance cannot be reused for multiple SoftButtonObjects.</strong>
      * @param initialStateName a String value represents the name for the initial state
      * @param onEventListener a listener that has a callback that will be triggered when a button event happens
      * Note: the initialStateName should match exactly the name of one of the states for the object. Otherwise an exception will be thrown.
@@ -78,7 +81,7 @@ public class SoftButtonObject {
         this.name = name;
         this.states = states;
         currentStateName = initialStateName;
-        this.buttonId = 0;
+        this.buttonId = SOFT_BUTTON_ID_NOT_SET_VALUE;
         this.onEventListener = onEventListener;
     }
 
@@ -232,7 +235,7 @@ public class SoftButtonObject {
 
     /**
      * Set the the SoftButtonState list
-     * @param states a list of the object's soft button states
+     * @param states a list of the object's soft button states. <strong>states should be unique for every SoftButtonObject. A SoftButtonState instance cannot be reused for multiple SoftButtonObjects.</strong>
      */
     public void setStates(@NonNull List<SoftButtonState> states) {
         this.states = states;
@@ -264,10 +267,15 @@ public class SoftButtonObject {
 
     /**
      * Sets the id of the SoftButtonObject <br>
-     * <strong>Note: This may be overridden by the Screen Manager</strong>
+     * <strong>Note: If the developer did not set buttonId, the manager will automatically assign an id before the SoftButtons are sent to the head unit.
+     * Please note that the manager may reuse ids from previous batch of SoftButtons that were already sent to the head unit</strong>
      * @param buttonId an int value that represents the id of the SoftButtonObject
      */
     public void setButtonId(int buttonId) {
+        if (buttonId < SOFT_BUTTON_ID_MIN_VALUE){
+            Log.e(TAG, "buttonId has to be equal or more than " + SOFT_BUTTON_ID_MIN_VALUE);
+            return;
+        }
         this.buttonId = buttonId;
     }
 

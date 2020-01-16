@@ -61,6 +61,8 @@ public class ClimateControlCapabilities extends RPCStruct{
     public static final String KEY_HEATED_WIND_SHIELD_AVAILABLE = "heatedWindshieldAvailable";
     public static final String KEY_HEATED_REAR_WINDOW_AVAILABLE = "heatedRearWindowAvailable";
     public static final String KEY_HEATED_MIRRORS_AVAILABLE = "heatedMirrorsAvailable";
+    public static final String KEY_MODULE_INFO = "moduleInfo";
+    public static final String KEY_CLIMATE_ENABLE_AVAILABLE = "climateEnableAvailable";
 
     public ClimateControlCapabilities() {
     }
@@ -402,5 +404,40 @@ public class ClimateControlCapabilities extends RPCStruct{
      */
     public Boolean getHeatedMirrorsAvailable() {
 	    return getBoolean(KEY_HEATED_MIRRORS_AVAILABLE);
+    }
+
+    /**
+     * Sets ModuleInfo for this capability
+     * @param info the ModuleInfo to be set
+     */
+    public void setModuleInfo(ModuleInfo info) {
+        setValue(KEY_MODULE_INFO, info);
+    }
+
+    /**
+     * Gets a ModuleInfo of this capability
+     * @return module info of this capability
+     */
+    public ModuleInfo getModuleInfo() {
+        return (ModuleInfo) getObject(ModuleInfo.class, KEY_MODULE_INFO);
+    }
+    /**
+     * Sets the climateEnableAvailable portion of the ClimateControlCapabilities class
+     *
+     * @param climateEnableAvailable Availability of the control of enable/disable climate control.
+     *                               True: Available, False: Not Available, Not present: Not Available.
+     */
+    public void setClimateEnableAvailable(Boolean climateEnableAvailable) {
+        setValue(KEY_CLIMATE_ENABLE_AVAILABLE, climateEnableAvailable);
+    }
+
+    /**
+     * Gets the climateEnableAvailable portion of the ClimateControlCapabilities class
+     *
+     * @return Boolean - Availability of the control of enable/disable climate control.
+     * True: Available, False: Not Available, Not present: Not Available.
+     */
+    public Boolean getClimateEnableAvailable() {
+        return getBoolean(KEY_CLIMATE_ENABLE_AVAILABLE);
     }
 }

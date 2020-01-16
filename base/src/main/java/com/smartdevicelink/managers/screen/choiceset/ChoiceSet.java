@@ -34,6 +34,7 @@ package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
@@ -53,6 +54,7 @@ public class ChoiceSet {
     private List<VrHelpItem> vrHelpList;
     private ChoiceSetSelectionListener choiceSetSelectionListener;
     private KeyboardProperties customKeyboardConfiguration;
+    ChoiceSetCanceledListener canceledListener;
 
     // defaults
     private Integer defaultTimeout = 10;
@@ -150,6 +152,16 @@ public class ChoiceSet {
         // things to do
         checkChoiceSetParameters();
         setVrHelpList(helpList);
+    }
+
+    /**
+     * Cancels the choice set. If the choice set has not yet been sent to Core, it will not be sent. If the choice set is already presented on Core, the choice set will be immediately dismissed. Canceling an already presented choice set will only work if connected to Core versions 6.0+. On older versions of Core, the choice set will not be dismissed.
+     */
+    public void cancel() {
+        if (canceledListener == null) {
+            return;
+        }
+        canceledListener.onChoiceSetCanceled();
     }
 
     /**

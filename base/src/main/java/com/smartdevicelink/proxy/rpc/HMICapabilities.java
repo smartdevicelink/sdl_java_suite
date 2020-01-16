@@ -40,6 +40,9 @@ public class HMICapabilities extends RPCStruct{
     public static final String KEY_PHONE_CALL = "phoneCall";
     public static final String KEY_VIDEO_STREAMING = "videoStreaming";
     public static final String KEY_REMOTE_CONTROL = "remoteControl";
+    public static final String KEY_APP_SERVICES = "appServices";
+    public static final String KEY_DISPLAYS = "displays";
+    public static final String KEY_SEAT_LOCATION = "seatLocation";
 
 	public HMICapabilities() { }
 	  
@@ -95,5 +98,40 @@ public class HMICapabilities extends RPCStruct{
 		setValue(KEY_REMOTE_CONTROL, available);
 	}
 
+	public boolean isAppServicesAvailable(){
+		Object available = getValue(KEY_APP_SERVICES);
+		if(available == null){
+			return false;
+		}
+		return (Boolean)available;
+	}
+
+	public void setAppServicesAvailable(Boolean available){
+		setValue(KEY_APP_SERVICES, available);
+	}
+
+	public boolean isDisplaysCapabilityAvailable(){
+		Object available = getValue(KEY_DISPLAYS);
+		if(available == null){
+			return false;
+		}
+		return (Boolean)available;
+	}
+
+	public void setDisplaysCapabilityAvailable(Boolean available){
+		setValue(KEY_DISPLAYS, available);
+	}
+
+	public boolean isSeatLocationAvailable(){
+		Object available = getValue(KEY_SEAT_LOCATION);
+		if(available == null){
+			return false;
+		}
+		return (Boolean)available;
+	}
+
+	public void setSeatLocationAvailable(Boolean available){
+		setValue(KEY_SEAT_LOCATION, available);
+	}
 
 }

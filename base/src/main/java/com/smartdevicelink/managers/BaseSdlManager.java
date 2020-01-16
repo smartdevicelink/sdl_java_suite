@@ -63,6 +63,8 @@ abstract class BaseSdlManager {
     final Object STATE_LOCK = new Object();
     int state = -1;
 
+    static final int MAX_RETRY = 3;
+    int changeRegistrationRetry = 0;
     String appId, appName, shortAppName;
     boolean isMediaApp;
     Language hmiLanguage;
@@ -153,7 +155,10 @@ abstract class BaseSdlManager {
             if (queuedNotifications != null && queuedNotifications.size() > 0) {
                 for (RPCNotification notification : queuedNotifications) {
                     try {
-                        onRPCNotificationListeners.get(notification.getFunctionID()).onNotified(notification);
+                        OnRPCNotificationListener listener = onRPCNotificationListeners.get(notification.getFunctionID());
+                        if (listener != null) {
+                            listener.onNotified(notification);
+                        }
                     } catch (Exception e) {
                         DebugTool.logError("Error going through queued notifications", e);
                     }
@@ -179,6 +184,7 @@ abstract class BaseSdlManager {
     abstract void checkState();
 
     protected abstract void initialize();
+    protected abstract void checkLifecycleConfiguration();
 
     //Public abstract API
     public abstract  void start();

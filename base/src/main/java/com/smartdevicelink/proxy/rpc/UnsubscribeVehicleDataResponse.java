@@ -516,4 +516,21 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
     public VehicleDataResult getCloudAppVehicleID(){
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_CLOUD_APP_VEHICLE_ID);
     }
+
+    /**
+     * Sets a value for OEM Custom VehicleData.
+     * @param vehicleDataName a String value
+     * @param vehicleDataState a VehicleDataResult value
+     */
+    public void setOEMCustomVehicleData(String vehicleDataName, VehicleDataResult vehicleDataState){
+        setParameters(vehicleDataName, vehicleDataState);
+    }
+
+    /**
+     * Gets a VehicleDataResult for the vehicle data item.
+     * @return a VehicleDataResult related to the vehicle data
+     */
+    public VehicleDataResult getOEMCustomVehicleData(String vehicleDataName){
+        return (VehicleDataResult) getObject(VehicleDataResult.class, vehicleDataName);
+    }
 }

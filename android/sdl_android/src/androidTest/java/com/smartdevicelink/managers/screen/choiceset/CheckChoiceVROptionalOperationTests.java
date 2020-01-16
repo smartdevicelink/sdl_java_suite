@@ -36,8 +36,6 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.managers.screen.choiceset.CheckChoiceVROptionalInterface;
-import com.smartdevicelink.managers.screen.choiceset.CheckChoiceVROptionalOperation;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;

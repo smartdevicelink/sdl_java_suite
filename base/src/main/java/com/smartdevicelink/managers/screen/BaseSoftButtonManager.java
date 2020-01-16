@@ -42,17 +42,19 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
-import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -62,6 +64,7 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -75,14 +78,13 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
     private static final String TAG = "SoftButtonManager";
     private WeakReference<FileManager> fileManager;
-    private DisplayCapabilities displayCapabilities;
-    private SoftButtonCapabilities softButtonCapabilities;
+    WindowCapability defaultMainWindowCapability;
     private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     private HMILevel currentHMILevel;
     private Show inProgressShowRPC;
     private CompletionListener inProgressListener, queuedUpdateListener, cachedListener;
     private boolean hasQueuedUpdate, batchUpdates, waitingOnHMILevelUpdateToSetButtons;
-    private final OnSystemCapabilityListener onSoftButtonCapabilitiesListener, onDisplayCapabilitiesListener;
+    private final OnSystemCapabilityListener onDisplayCapabilityListener;
     private final OnRPCNotificationListener onHMIStatusListener, onButtonPressListener, onButtonEventListener;
     private final SoftButtonObject.UpdateListener updateListener;
 
@@ -97,7 +99,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
      * @param internalInterface an instance of the ISdl interface that can be used for common SDL operations (sendRpc, addRpcListener, etc)
      * @param fileManager an instance of the FileManager so that button graphics can be sent
      */
-    BaseSoftButtonManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
+    BaseSoftButtonManager(@NonNull final ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
         this.fileManager = new WeakReference<>(fileManager);
         this.softButtonObjects = new CopyOnWriteArrayList<>();
@@ -112,48 +114,40 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
 
         // Add OnSoftButtonCapabilitiesListener to keep softButtonCapabilities updated
-        onSoftButtonCapabilitiesListener = new OnSystemCapabilityListener() {
+        onDisplayCapabilityListener = new OnSystemCapabilityListener() {
             @Override
             public void onCapabilityRetrieved(Object capability) {
-                List<SoftButtonCapabilities> softButtonCapabilitiesList = (List<SoftButtonCapabilities>) capability;
-                if (softButtonCapabilitiesList != null && !softButtonCapabilitiesList.isEmpty()) {
-                    softButtonCapabilities = softButtonCapabilitiesList.get(0);
-                } else {
-                    softButtonCapabilities = null;
+                // instead of using the parameter it's more safe to use the convenience method
+                List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
+                if (capabilities == null || capabilities.size() == 0) {
+                    DebugTool.logError("SoftButton Manager - Capabilities sent here are null or empty");
+                }else {
+                    DisplayCapability display = capabilities.get(0);
+                    for (WindowCapability windowCapability : display.getWindowCapabilities()) {
+                        int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+                        if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+                            defaultMainWindowCapability = windowCapability;
+                        }
+                    }
                 }
             }
 
             @Override
             public void onError(String info) {
-                Log.w(TAG, "SoftButton Capability cannot be retrieved:");
-                softButtonCapabilities = null;
+                DebugTool.logError("Display Capability cannot be retrieved");
+                defaultMainWindowCapability = null;
             }
         };
-        this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.SOFTBUTTON, onSoftButtonCapabilitiesListener);
-
-
-        // Add OnDisplayCapabilitiesListener to keep displayCapabilities updated
-        onDisplayCapabilitiesListener = new OnSystemCapabilityListener() {
-            @Override
-            public void onCapabilityRetrieved(Object capability) {
-                displayCapabilities = (DisplayCapabilities) capability;
-            }
-
-            @Override
-            public void onError(String info) {
-                Log.w(TAG, "Display Capability cannot be retrieved:");
-                displayCapabilities = null;
-            }
-        };
-        this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, onDisplayCapabilitiesListener);
-
+        this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
 
         // Add OnHMIStatusListener to keep currentHMILevel updated
         this.onHMIStatusListener = new OnRPCNotificationListener() {
             @Override
             public void onNotified(RPCNotification notification) {
-
-                OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
+                OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+                if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+                    return;
+                }
                 HMILevel oldHmiLevel = currentHMILevel;
                 currentHMILevel = onHMIStatus.getHmiLevel();
 
@@ -269,17 +263,26 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         }
 
 
+        // Check if two soft button objects have the same name
         if (hasTwoSoftButtonObjectsOfSameName(softButtonObjects)) {
             this.softButtonObjects = new CopyOnWriteArrayList<>();
             Log.e(TAG, "Attempted to set soft button objects, but two buttons had the same name");
             return;
         }
 
-        // Set ids and updateListeners for soft button objects
-        for (int i = 0; i < softButtonObjects.size(); i++) {
-            softButtonObjects.get(i).setButtonId(i * 100);
-            softButtonObjects.get(i).setUpdateListener(updateListener);
+
+        // Set updateListeners for soft button objects
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            softButtonObject.setUpdateListener(updateListener);
         }
+
+
+        if (!checkAndAssignButtonIds(softButtonObjects)) {
+            Log.e(TAG, "Attempted to set soft button objects, but multiple buttons had the same id");
+            return;
+        }
+
+
         this.softButtonObjects = softButtonObjects;
 
 
@@ -368,6 +371,48 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
     }
 
     /**
+     * Check if there is a collision in the ids provided by the developer and assign ids to the SoftButtonObjects that do not have ids
+     * @param softButtonObjects the list of the SoftButtonObject values that should be displayed on the head unit
+     * @return boolean representing whether the ids are unique or not
+     */
+    boolean checkAndAssignButtonIds(List<SoftButtonObject> softButtonObjects) {
+        // Check if multiple soft button objects have the same id
+        HashSet<Integer> buttonIdsSetByDevHashSet = new HashSet<>();
+        int currentSoftButtonId, numberOfButtonIdsSetByDev = 0, maxButtonIdsSetByDev = SoftButtonObject.SOFT_BUTTON_ID_MIN_VALUE;
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            currentSoftButtonId = softButtonObject.getButtonId();
+            if (currentSoftButtonId != SoftButtonObject.SOFT_BUTTON_ID_NOT_SET_VALUE) {
+                numberOfButtonIdsSetByDev++;
+                if (currentSoftButtonId > maxButtonIdsSetByDev){
+                    maxButtonIdsSetByDev = currentSoftButtonId;
+                }
+                buttonIdsSetByDevHashSet.add(softButtonObject.getButtonId());
+            }
+        }
+        if (numberOfButtonIdsSetByDev != buttonIdsSetByDevHashSet.size()){
+            return false;
+        }
+
+
+        // Set ids for soft button objects
+        int generatedSoftButtonId = maxButtonIdsSetByDev;
+        for (SoftButtonObject softButtonObject : softButtonObjects) {
+            // If the dev did not set the buttonId, the manager should set an id on the dev's behalf
+            currentSoftButtonId = softButtonObject.getButtonId();
+            if (currentSoftButtonId == SoftButtonObject.SOFT_BUTTON_ID_NOT_SET_VALUE){
+                do {
+                    if (generatedSoftButtonId >= SoftButtonObject.SOFT_BUTTON_ID_MAX_VALUE){
+                        generatedSoftButtonId = SoftButtonObject.SOFT_BUTTON_ID_MIN_VALUE;
+                    }
+                    generatedSoftButtonId++;
+                } while (buttonIdsSetByDevHashSet.contains(generatedSoftButtonId));
+                softButtonObject.setButtonId(generatedSoftButtonId);
+            }
+        }
+        return true;
+    }
+
+    /**
      * Update the SoftButtonManger by sending a new Show RPC to reflect the changes
      * @param listener a CompletionListener
      */
@@ -444,9 +489,8 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
             public void onError(int correlationId, Result resultCode, String info) {
                 super.onError(correlationId, resultCode, info);
 
-                Log.e(TAG, "Soft button update error");
+                Log.e(TAG, "Soft button update error. resultCode: " + resultCode + ". info: " + info);
                 handleResponse(false);
-
             }
 
             private void handleResponse(boolean success){
@@ -471,11 +515,13 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         });
 
 
-        internalInterface.sendRPCRequest(inProgressShowRPC);
+        internalInterface.sendRPC(inProgressShowRPC);
     }
 
-    private boolean softButtonImagesSupported(){
-        return (displayCapabilities == null || displayCapabilities.getGraphicSupported()) && (softButtonCapabilities == null || softButtonCapabilities.getImageSupported());
+    private boolean softButtonImagesSupported() {
+        return defaultMainWindowCapability == null
+                || defaultMainWindowCapability.getSoftButtonCapabilities() == null
+                || (!defaultMainWindowCapability.getSoftButtonCapabilities().isEmpty() && defaultMainWindowCapability.getSoftButtonCapabilities().get(0).getImageSupported());
     }
 
     /**
@@ -534,8 +580,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, onHMIStatusListener);
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, onButtonPressListener);
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_EVENT, onButtonEventListener);
-        internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.SOFTBUTTON, onSoftButtonCapabilitiesListener);
-        internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, onDisplayCapabilitiesListener);
+        internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
     }
 
     /**

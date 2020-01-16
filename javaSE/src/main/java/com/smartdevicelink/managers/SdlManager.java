@@ -34,8 +34,10 @@ package com.smartdevicelink.managers;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.lifecycle.LifecycleManager;
 import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
@@ -43,22 +45,35 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.rpc.*;
+import com.smartdevicelink.proxy.rpc.ChangeRegistration;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.SetAppIcon;
+import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
-import java.util.*;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 
 /**
@@ -80,6 +95,7 @@ public class SdlManager extends BaseSdlManager{
 	private SdlArtwork appIcon;
 	private SdlManagerListener managerListener;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
+	private ServiceEncryptionListener serviceEncryptionListener;
 
 
 	// Managers
@@ -105,6 +121,8 @@ public class SdlManager extends BaseSdlManager{
 			Log.i(TAG,"Proxy is connected. Now initializing.");
 			synchronized (this){
 				if(!initStarted){
+					changeRegistrationRetry = 0;
+					checkLifecycleConfiguration();
 					initialize();
 					initStarted = true;
 				}
@@ -184,7 +202,7 @@ public class SdlManager extends BaseSdlManager{
 	private void notifyDevListener(String info) {
 		if (managerListener != null) {
 			if (getState() == BaseSubManager.ERROR){
-				managerListener.onError(this,info, null);
+				managerListener.onError(this, info, null);
 			} else {
 				managerListener.onStart(this);
 			}
@@ -207,6 +225,60 @@ public class SdlManager extends BaseSdlManager{
 			} else {
 				SetAppIcon msg = new SetAppIcon(SdlManager.this.appIcon.getName());
 				_internalInterface.sendRPCRequest(msg);
+			}
+		}
+	}
+
+	@Override
+	protected void checkLifecycleConfiguration() {
+		final Language actualLanguage = lifecycleManager.getRegisterAppInterfaceResponse().getLanguage();
+		
+		if (actualLanguage != null && !actualLanguage.equals(hmiLanguage)) {
+
+			final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage);
+
+			if (lcu != null) {
+				ChangeRegistration changeRegistration = new ChangeRegistration(actualLanguage, actualLanguage);
+				changeRegistration.setAppName(lcu.getAppName());
+				changeRegistration.setNgnMediaScreenAppName(lcu.getShortAppName());
+				changeRegistration.setTtsName(lcu.getTtsName());
+				changeRegistration.setVrSynonyms(lcu.getVoiceRecognitionCommandNames());
+				changeRegistration.setOnRPCResponseListener(new OnRPCResponseListener() {
+					@Override
+					public void onResponse(int correlationId, RPCResponse response) {
+						if (response.getSuccess()) {
+							// go through and change sdlManager properties that were changed via the LCU update
+							hmiLanguage = actualLanguage;
+
+							if (lcu.getAppName() != null) {
+								appName = lcu.getAppName();
+							}
+
+							if (lcu.getShortAppName() != null) {
+								shortAppName = lcu.getShortAppName();
+							}
+
+							if (lcu.getTtsName() != null) {
+								ttsChunks = lcu.getTtsName();
+							}
+
+							if (lcu.getVoiceRecognitionCommandNames() != null) {
+								vrSynonyms = lcu.getVoiceRecognitionCommandNames();
+							}
+						}
+						try {
+							Log.v(TAG, response.serializeJSON().toString());
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+
+					@Override
+					public void onError(int correlationId, Result resultCode, String info) {
+						Log.e(TAG, "Change Registration onError: " + resultCode + " | Info: " + info);
+					}
+				});
+				_internalInterface.sendRPC(changeRegistration);
 			}
 		}
 	}
@@ -238,6 +310,10 @@ public class SdlManager extends BaseSdlManager{
 			this.screenManager.dispose();
 		}
 
+		if (this.lifecycleManager != null) {
+			this.lifecycleManager.stop();
+		}
+
 		if(managerListener != null){
 			managerListener.onDestroy(this);
 			managerListener = null;
@@ -248,7 +324,6 @@ public class SdlManager extends BaseSdlManager{
 
 
 	// MANAGER GETTERS
-
 	/**
 	 * Gets the PermissionManager. <br>
 	 * <strong>Note: PermissionManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
@@ -471,7 +546,7 @@ public class SdlManager extends BaseSdlManager{
 				_internalInterface = lifecycleManager.getInternalInterface(SdlManager.this);
 
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
-					lifecycleManager.setSdlSecurityClassList(sdlSecList);
+					lifecycleManager.setSdlSecurity(sdlSecList, serviceEncryptionListener);
 				}
 
 				//Setup the notification queue
@@ -643,8 +718,20 @@ public class SdlManager extends BaseSdlManager{
 		 * Sets the Security libraries
 		 * @param secList The list of security class(es)
 		 */
+		@Deprecated
 		public Builder setSdlSecurity(List<Class<? extends SdlSecurityBase>> secList) {
 			sdlManager.sdlSecList = secList;
+			return this;
+		}
+
+		/**
+		 * Sets the security libraries and a callback to notify caller when there is update to encryption service
+		 * @param secList The list of security class(es)
+		 * @param listener The callback object
+		 */
+		public Builder setSdlSecurity(@NonNull List<Class<? extends SdlSecurityBase>> secList, ServiceEncryptionListener listener) {
+			sdlManager.sdlSecList = secList;
+			sdlManager.serviceEncryptionListener = listener;
 			return this;
 		}
 
@@ -706,4 +793,12 @@ public class SdlManager extends BaseSdlManager{
 		}
 	}
 
+	/**
+	 * Start a secured RPC service
+	 */
+	public void startRPCEncryption() {
+		if (lifecycleManager != null) {
+			lifecycleManager.startRPCEncryption();
+		}
+	}
 }

@@ -32,22 +32,60 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
+
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.SdlManager;
+import com.smartdevicelink.managers.ServiceEncryptionListener;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.MessageType;
 import com.smartdevicelink.protocol.enums.SessionType;
-import com.smartdevicelink.proxy.*;
-import com.smartdevicelink.proxy.interfaces.*;
-import com.smartdevicelink.proxy.rpc.*;
-import com.smartdevicelink.proxy.rpc.enums.*;
-import com.smartdevicelink.proxy.rpc.listeners.*;
+import com.smartdevicelink.proxy.RPCMessage;
+import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.SystemCapabilityManager;
+import com.smartdevicelink.proxy.interfaces.IAudioStreamListener;
+import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
+import com.smartdevicelink.proxy.rpc.OnButtonEvent;
+import com.smartdevicelink.proxy.rpc.OnButtonPress;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.OnSystemRequest;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SubscribeButton;
+import com.smartdevicelink.proxy.rpc.SystemRequest;
+import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
+import com.smartdevicelink.proxy.rpc.UnregisterAppInterface;
+import com.smartdevicelink.proxy.rpc.VehicleType;
+import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
+import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
+import com.smartdevicelink.proxy.rpc.enums.ButtonName;
+import com.smartdevicelink.proxy.rpc.enums.FileType;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.Language;
+import com.smartdevicelink.proxy.rpc.enums.RequestType;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
+import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
@@ -64,7 +102,7 @@ import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * The lifecycle manager creates a centeral point for all SDL session logic to converge. It should only be used by
+ * The lifecycle manager creates a central point for all SDL session logic to converge. It should only be used by
  * the library itself. Usage outside the library is not permitted and will not be protected for in the future.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -72,7 +110,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     private static final String TAG = "Lifecycle Manager";
 
-    public static final Version MAX_SUPPORTED_RPC_VERSION = new Version(5, 1, 0);
+    public static final Version MAX_SUPPORTED_RPC_VERSION = new Version(6, 0, 0);
 
     // Protected Correlation IDs
     private final int 	REGISTER_APP_INTERFACE_CORRELATION_ID = 65529,
@@ -100,6 +138,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     private final HashMap<Integer, CopyOnWriteArrayList<OnRPCRequestListener>> rpcRequestListeners;
 
     protected final SystemCapabilityManager systemCapabilityManager;
+    private EncryptionLifecycleManager encryptionLifecycleManager;
 
     protected RegisterAppInterfaceResponse raiResponse = null;
 
@@ -128,7 +167,6 @@ public class LifecycleManager extends BaseLifecycleManager {
         this.session = new SdlSession(sdlConnectionListener, config);
 
         this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
-
     }
 
     public void start(){
@@ -139,6 +177,15 @@ public class LifecycleManager extends BaseLifecycleManager {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * Start a secured RPC service
+     */
+    public void startRPCEncryption() {
+        if (session != null) {
+            session.startService(SessionType.RPC, session.getSessionId(), true);
+        }
     }
 
     public void stop(){
@@ -419,8 +466,16 @@ public class LifecycleManager extends BaseLifecycleManager {
                         }
                         break;
                     case ON_APP_INTERFACE_UNREGISTERED:
-                        Log.v(TAG, "on app interface unregistered");
-                        cleanProxy();
+
+                        OnAppInterfaceUnregistered onAppInterfaceUnregistered = (OnAppInterfaceUnregistered) message;
+
+                        if (!onAppInterfaceUnregistered.getReason().equals(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE)) {
+                            Log.v(TAG, "on app interface unregistered");
+                            cleanProxy();
+                        }else{
+                            Log.v(TAG, "re-registering for language change");
+                            processLanguageChange();
+                        }
                         break;
                     case UNREGISTER_APP_INTERFACE:
                         Log.v(TAG, "unregister app interface");
@@ -433,6 +488,19 @@ public class LifecycleManager extends BaseLifecycleManager {
 
 
     };
+
+    private void processLanguageChange(){
+        if (session != null) {
+            if (session.getIsConnected()) {
+                session.close();
+            }
+            try {
+                session.startSession();
+            } catch (SdlException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /* *******************************************************************************************************
      ********************************** INTERNAL - RPC LISTENERS !! END !! *********************************
@@ -714,7 +782,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             message.format(rpcSpecVersion,true);
             byte[] msgBytes = JsonRPCMarshaller.marshall(message, (byte)getProtocolVersion().getMajor());
 
-            ProtocolMessage pm = new ProtocolMessage();
+            final ProtocolMessage pm = new ProtocolMessage();
             pm.setData(msgBytes);
             if (session != null){
                 pm.setSessionID(session.getSessionId());
@@ -723,7 +791,24 @@ public class LifecycleManager extends BaseLifecycleManager {
             pm.setMessageType(MessageType.RPC);
             pm.setSessionType(SessionType.RPC);
             pm.setFunctionID(FunctionID.getFunctionId(message.getFunctionName()));
-            pm.setPayloadProtected(message.isPayloadProtected());
+
+            if (encryptionLifecycleManager != null && encryptionLifecycleManager.isEncryptionReady() && encryptionLifecycleManager.getRPCRequiresEncryption(message.getFunctionID())) {
+                pm.setPayloadProtected(true);
+            } else {
+                pm.setPayloadProtected(message.isPayloadProtected());
+            }
+            if (pm.getPayloadProtected() && (encryptionLifecycleManager == null || !encryptionLifecycleManager.isEncryptionReady())){
+                String errorInfo = "Trying to send an encrypted message and there is no secured service";
+                if (message.getMessageType().equals((RPCMessage.KEY_REQUEST))) {
+                    RPCRequest request = (RPCRequest) message;
+                    OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
+                    if (listener != null) {
+                        listener.onError(request.getCorrelationID(), Result.ABORTED,  errorInfo);
+                    }
+                }
+                DebugTool.logWarning(errorInfo);
+                return;
+            }
 
             if(RPCMessage.KEY_REQUEST.equals(message.getMessageType())){ // Request Specifics
                 pm.setRPCType((byte)0x00);
@@ -1092,6 +1177,11 @@ public class LifecycleManager extends BaseLifecycleManager {
         public Version getProtocolVersion() {
             return LifecycleManager.this.getProtocolVersion();
         }
+
+        @Override
+        public void startRPCEncryption() {
+            LifecycleManager.this.startRPCEncryption();
+        }
     };
 
     /* *******************************************************************************************************
@@ -1323,10 +1413,24 @@ public class LifecycleManager extends BaseLifecycleManager {
         if (session != null && session.getIsConnected()) {
             session.close();
         }
+        if (encryptionLifecycleManager != null){
+            encryptionLifecycleManager.dispose();
+        }
     }
 
+    @Deprecated
     public void setSdlSecurityClassList(List<Class<? extends SdlSecurityBase>> list) {
         _secList = list;
+    }
+
+    /**
+     * Sets the security libraries and a callback to notify caller when there is update to encryption service
+     * @param secList The list of security class(es)
+     * @param listener The callback object
+     */
+    public void setSdlSecurity(@NonNull List<Class<? extends SdlSecurityBase>> secList, ServiceEncryptionListener listener) {
+        this._secList = secList;
+        this.encryptionLifecycleManager = new EncryptionLifecycleManager(internalInterface, listener);
     }
 
     private void processRaiResponse(RegisterAppInterfaceResponse rai) {

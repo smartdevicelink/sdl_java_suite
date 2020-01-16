@@ -28,6 +28,8 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.proxy.rpc.SendHapticData;
+import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -59,8 +61,8 @@ public class HapticInterfaceManager {
      */
     public void setHapticData(List<HapticRect> hapticData) {
         userHapticData = hapticData;
-        ISdl proxy = proxyHolder.get();
-        if (proxy != null) {
+        if(proxyHolder.get() != null) {
+            ISdl proxy = proxyHolder.get();
             SendHapticData msg = new SendHapticData();
             msg.setHapticRectData(userHapticData);
             proxy.sendRPCRequest(msg);
@@ -75,21 +77,34 @@ public class HapticInterfaceManager {
      *          the root or parent View
      */
     public void refreshHapticData(View root) {
-        ISdl proxy = proxyHolder.get();
-        if ((userHapticData == null) && (proxy != null)) {
-            List<HapticRect> hapticRects = new ArrayList<>();
-            findHapticRects(root, hapticRects);
+        if(proxyHolder.get() != null) {
+            ISdl proxy = proxyHolder.get();
+            if (userHapticData == null) {
+                List<HapticRect> hapticRects = new ArrayList<>();
+                findHapticRects(root, hapticRects);
 
-            SendHapticData msg = new SendHapticData();
-            msg.setHapticRectData(hapticRects);
+                SendHapticData msg = new SendHapticData();
+                msg.setHapticRectData(hapticRects);
 
-            proxy.sendRPCRequest(msg);
+                proxy.sendRPC(msg);
+            }
         }
     }
 
     private void findHapticRects(View root, final List<HapticRect> hapticRects) {
         List<View> focusables = new ArrayList<>();
         getFocusableViews(root, focusables);
+
+        double scale = 1.0;
+
+        if (proxyHolder.get() != null) {
+            ISdl proxy = proxyHolder.get();
+            VideoStreamingCapability videoStreamingCapability = (VideoStreamingCapability)
+                    proxy.getCapability(SystemCapabilityType.VIDEO_STREAMING);
+            if (videoStreamingCapability != null && videoStreamingCapability.getScale() != null) {
+                scale = videoStreamingCapability.getScale();
+            }
+        }
 
         int [] loc = new int[2];
         int id = 0;
@@ -99,10 +114,10 @@ public class HapticInterfaceManager {
             view.getLocationOnScreen(loc);
 
             Rectangle rect = new Rectangle();
-            rect.setWidth((float) w);
-            rect.setHeight((float) h);
-            rect.setX((float) loc[0]);
-            rect.setY((float) loc[1]);
+            rect.setWidth((float) (w * scale));
+            rect.setHeight((float) (h * scale));
+            rect.setX((float) (loc[0] * scale));
+            rect.setY((float) (loc[1] * scale));
 
             HapticRect hapticRect = new HapticRect();
             hapticRect.setId(id++);

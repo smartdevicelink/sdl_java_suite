@@ -137,7 +137,7 @@ public class RpcConverter {
             }
         }
 
-        if(params.containsKey(RPCMessage.KEY_FUNCTION_NAME)){
+        if(params != null && params.containsKey(RPCMessage.KEY_FUNCTION_NAME)){
             StringBuilder rpcClassName = new StringBuilder();
             String functionName = (String)params.get(RPCMessage.KEY_FUNCTION_NAME);
             if(FunctionID.SHOW_CONSTANT_TBT.toString().equals(functionName)) {

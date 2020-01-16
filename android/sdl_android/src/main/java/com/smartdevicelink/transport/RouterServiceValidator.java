@@ -263,14 +263,14 @@ public class RouterServiceValidator {
 	/**
 	 * This method will find which router service is running. Use that info to find out more about that app and service.
 	 * It will store the found service for later use and return the package name if found. 
-	 * @param context
+	 * @param pm An instance of a package manager. This is no longer used so null can be sent.
 	 * @return
 	 */
 	public ComponentName componentNameForServiceRunning(PackageManager pm){
 		if(context==null){
 			return null;
 		}
-		ActivityManager manager = (ActivityManager) context.getSystemService("activity");
+		ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 		//PackageManager pm = context.getPackageManager();
 		
 		
@@ -470,16 +470,18 @@ public class RouterServiceValidator {
 		final JSONObject object = new JSONObject();
 		JSONArray array = new JSONArray();
 		JSONObject jsonApp;
-		
-		for(SdlApp app: apps){	//Format all the apps into a JSON object and add it to the JSON array
-			try{
-				jsonApp = new JSONObject();
-				jsonApp.put(JSON_APP_PACKAGE_TAG, app.packageName);
-				jsonApp.put(JSON_APP_VERSION_TAG, app.versionCode);
-				array.put(jsonApp);
-			}catch(JSONException e){
-				e.printStackTrace();
-				continue;
+
+		if(apps != null) {
+			for (SdlApp app : apps) {    //Format all the apps into a JSON object and add it to the JSON array
+				try {
+					jsonApp = new JSONObject();
+					jsonApp.put(JSON_APP_PACKAGE_TAG, app.packageName);
+					jsonApp.put(JSON_APP_VERSION_TAG, app.versionCode);
+					array.put(jsonApp);
+				} catch (JSONException e) {
+					e.printStackTrace();
+					continue;
+				}
 			}
 		}
 		
@@ -554,8 +556,7 @@ public class RouterServiceValidator {
 		}
 		try {
 			JSONObject object = new JSONObject(json);
-			JSONObject trustedApps = object.getJSONObject(JSON_RESPONSE_OBJECT_TAG);
-			return trustedApps;
+			return object.getJSONObject(JSON_RESPONSE_OBJECT_TAG);
 			
 		} catch (JSONException e) {
 			e.printStackTrace();

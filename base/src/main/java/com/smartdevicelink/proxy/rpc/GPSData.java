@@ -195,6 +195,7 @@ public class GPSData extends RPCStruct {
 	public static final String KEY_ALTITUDE = "altitude";
 	public static final String KEY_HEADING = "heading";
 	public static final String KEY_SPEED = "speed";
+	public static final String KEY_SHIFTED = "shifted";
 
 	/**
 	 * Constructs a newly allocated GPSData object
@@ -520,5 +521,23 @@ public class GPSData extends RPCStruct {
     public Double getSpeed() {
     	Object object = getValue(KEY_SPEED);
     	return SdlDataTypeConverter.objectToDouble(object);
+    }
+
+    /**
+     * Sets the shifted param for GPSData.
+     * @param shifted True, if GPS lat/long, time, and altitude have been purposefully shifted (requires a proprietary algorithm to unshift).
+     *                False, if the GPS data is raw and un-shifted.
+     *                If not provided, then value is assumed False.
+     */
+    public void setShifted(Boolean shifted) {
+        setValue(KEY_SHIFTED, shifted);
+    }
+
+    /**
+     * Gets the shifted param for GPSData.
+     * @return Boolean - True, if GPS lat/long, time, and altitude have been purposefully shifted (requires a proprietary algorithm to unshift).
+     */
+    public Boolean getShifted() {
+        return getBoolean(KEY_SHIFTED);
     }
 }

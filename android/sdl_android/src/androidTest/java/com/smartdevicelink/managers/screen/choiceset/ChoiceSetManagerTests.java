@@ -52,8 +52,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ChoiceSetManagerTests extends AndroidTestCase2 {
 
@@ -79,7 +85,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		assertNotNull(csm.operationQueue);
 		assertNotNull(csm.executor);
 		assertNotNull(csm.hmiListener);
-		assertNotNull(csm.displayListener);
+		assertNotNull(csm.onDisplayCapabilityListener);
 		assertNull(csm.pendingPresentOperation);
 	}
 
@@ -90,7 +96,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 
 		assertNull(csm.currentHMILevel);
 		assertNull(csm.currentSystemContext);
-		assertNull(csm.displayCapabilities);
+		assertNull(csm.defaultMainWindowCapability);
 		assertNull(csm.pendingPresentationSet);
 		assertNull(csm.pendingPresentOperation);
 
@@ -98,7 +104,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		assertEquals(csm.nextChoiceId, 1);
 
 		assertTrue(csm.executor.isShutdown());
-		assertTrue(csm.isVROptional);
+		assertFalse(csm.isVROptional);
 
 		assertEquals(csm.getState(), BaseSubManager.SHUTDOWN);
 
@@ -232,7 +238,61 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		for (ChoiceCell cell : returnedChoices){
 			assertEquals(cell.getText(), "test2");
 		}
-
 	}
 
+	public void testPresentingKeyboardShouldReturnCancelIDIfKeyboardCanBeSent() {
+		ISdl internalInterface = mock(ISdl.class);
+		FileManager fileManager = mock(FileManager.class);
+
+		ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
+		ChoiceSetManager partialMockCSM = spy(newCSM);
+		when(partialMockCSM.getState()).thenReturn(BaseSubManager.READY);
+
+		Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardProperties.class), mock(KeyboardListener.class));
+		assertNotNull(cancelId);
+	}
+
+	public void testPresentingKeyboardShouldNotReturnCancelIDIfKeyboardCannotBeSent() {
+		ISdl internalInterface = mock(ISdl.class);
+		FileManager fileManager = mock(FileManager.class);
+
+		ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
+		ChoiceSetManager partialMockCSM = spy(newCSM);
+		when(partialMockCSM.getState()).thenReturn(BaseSubManager.ERROR);
+
+		Integer cancelId = partialMockCSM.presentKeyboard("initial text", mock(KeyboardProperties.class), mock(KeyboardListener.class));
+		assertNull(cancelId);
+	}
+
+	public void testDismissingExecutingKeyboard(){
+		Integer testCancelID = 42;
+		PresentKeyboardOperation testKeyboardOp = mock(PresentKeyboardOperation.class);
+		doReturn(testCancelID).when(testKeyboardOp).getCancelID();
+		csm.currentlyPresentedKeyboardOperation = testKeyboardOp;
+		csm.dismissKeyboard(testCancelID);
+		verify(testKeyboardOp, times(1)).dismissKeyboard();
+	}
+
+	public void testDismissingQueuedKeyboard(){
+		Integer testCancelID = 42;
+
+		// Currently executing operation
+		PresentKeyboardOperation testKeyboardOp = mock(PresentKeyboardOperation.class);
+		doReturn(true).when(testKeyboardOp).isExecuting();
+		doReturn(96).when(testKeyboardOp).getCancelID();
+		csm.currentlyPresentedKeyboardOperation = testKeyboardOp;
+
+		// Queued operations
+		PresentKeyboardOperation testKeyboardOp2 = mock(PresentKeyboardOperation.class);
+		doReturn(true).when(testKeyboardOp2).isExecuting();
+		doReturn(testCancelID).when(testKeyboardOp2).getCancelID();
+		LinkedBlockingQueue<Runnable> testOperationQueue = new LinkedBlockingQueue<>();
+		testOperationQueue.add(testKeyboardOp2);
+		csm.operationQueue = testOperationQueue;
+
+		// Queued operation should be canceled
+		csm.dismissKeyboard(testCancelID);
+		verify(testKeyboardOp, times(0)).dismissKeyboard();
+		verify(testKeyboardOp2, times(1)).dismissKeyboard();
+	}
 }
