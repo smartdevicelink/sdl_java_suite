@@ -12,7 +12,7 @@ coverage:
         target: 40%
     patch:
       default:
-        target: 40%
+        target: 60%
     changes: no
 
 parsers:
