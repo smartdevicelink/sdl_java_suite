@@ -765,6 +765,9 @@ public class SdlProtocolBase {
                     listenerList = new ArrayList<>();
                     secondaryTransportListeners.put(secondaryTransportType, listenerList);
                 }
+                else {
+                    listenerList.clear();
+                }
 
                 //Check to see if the primary transport can also be used as a backup
                 final boolean primaryTransportBackup = transportPriorityForServiceMap.get(serviceType).contains(PRIMARY_TRANSPORT_ID);
@@ -1171,6 +1174,13 @@ public class SdlProtocolBase {
                 return;
             } else {
                 Log.d(TAG, "onTransportDisconnected - " + disconnectedTransport.getType().name());
+                if (disconnectedTransport.getType() == TransportType.TCP && secondaryTransportParams != null){
+                    if (activeTransports.containsValue(disconnectedTransport)) {
+                        //If the established TCP connection is disconnected, the corresponding IP and port are invalid and should be removed from the list.
+                        // Otherwise, istransportforserviceavailable is always true after disconnection
+                        secondaryTransportParams.remove(TransportType.TCP);
+                    }
+                }
             }
 
             //In the future we will actually compare the record but at this point we can assume only

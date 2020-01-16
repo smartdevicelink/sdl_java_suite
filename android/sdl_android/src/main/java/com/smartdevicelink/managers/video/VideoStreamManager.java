@@ -33,7 +33,11 @@
 package com.smartdevicelink.managers.video;
 
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.WifiManager;
 import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -95,6 +99,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private IVideoStreamListener streamListener;
 	private boolean isTransportAvailable = false;
 	private boolean hasStarted;
+	private CompletionListener listener = null;
 
 	// INTERNAL INTERFACES
 
@@ -190,10 +195,24 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 	@Override
 	public void start(CompletionListener listener) {
+		this.listener = listener;
 		isTransportAvailable = internalInterface.isTransportForServiceAvailable(SessionType.NAV);
 		getVideoStreamingParams();
 		checkState();
 		super.start(listener);
+	}
+
+	public void start(CompletionListener listener, Context context){
+		registerWifiReceiver(context);
+		start(listener);
+	}
+
+	public void registerWifiReceiver(Context context){
+		this.context = new WeakReference<>(context);
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+		WifiBroadcastReceiver wifiBroadcastReceiver = new WifiBroadcastReceiver();
+		this.context.get().registerReceiver(wifiBroadcastReceiver,intentFilter);
 	}
 
 	private synchronized void checkState(){
@@ -498,6 +517,19 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		if(internalInterface.getProtocolVersion().isNewerThan(new Version(5,1,0)) >= 0){
 			if(videoStreamTransportAvail){
 				checkState();
+				if ((!hasStarted && listener != null && this.getState() == SETTING_UP)) {
+					//Since istransportavailable is false on the first start, try to restart when receiving status updates
+					start(listener);
+				}
+				else if (hasStarted && listener != null && getState() == READY && stateMachine.getState() == StreamingStateMachine.STOPPED) {
+					//When the TCP connection is disconnected, the stateMachine will be set to STOPPED.
+					// When the WiFi is reconnected at the vehicle side, the status will be updated.
+					// Here, it should be reset to the stateMachine status and restart
+					transitionToState(SETTING_UP);
+					stateMachine.transitionToState(StreamingStateMachine.NONE);
+					hasStarted = false;
+					start(listener);
+				}
 			}
 		}else{
 			//The protocol version doesn't support simultaneous transports.
@@ -690,6 +722,25 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 		void removePointerById(int id){
 			pointers.remove(getPointerById(id));
+		}
+	}
+
+	public class WifiBroadcastReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+				int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, -1);
+				if (wifiState == WifiManager.WIFI_STATE_ENABLED){
+					Log.i(TAG,"WifiBroadcastReceiver has receiver state = " + getState() + " machine state = " + currentVideoStreamState() + " hasStarted = " + hasStarted);
+					if (listener != null) {
+						if (getState() == READY && currentVideoStreamState() == StreamingStateMachine.READY && hasStarted == false) {
+							//If you cannot establish a TCP connection with the vehicle because the WiFi on the mobile side is not turned on,
+							// you should try to restart when the WiFi on the mobile side is turned on.
+							start(listener);
+						}
+					}
+				}
+			}
 		}
 	}
 
