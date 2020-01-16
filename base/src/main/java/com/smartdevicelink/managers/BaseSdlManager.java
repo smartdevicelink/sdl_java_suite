@@ -68,6 +68,7 @@ abstract class BaseSdlManager {
     String appId, appName, shortAppName;
     boolean isMediaApp;
     Language hmiLanguage;
+    Language language;
     Vector<AppHMIType> hmiTypes;
     BaseTransportConfig transport;
     Vector<String> vrSynonyms;
@@ -92,6 +93,8 @@ abstract class BaseSdlManager {
     protected Version getMinimumRPCVersion() { return minimumRPCVersion; }
 
     protected Language getHmiLanguage() { return hmiLanguage; }
+
+    protected Language getLanguage() { return language; }
 
     protected TemplateColorScheme getDayColorScheme() { return dayColorScheme; }
 

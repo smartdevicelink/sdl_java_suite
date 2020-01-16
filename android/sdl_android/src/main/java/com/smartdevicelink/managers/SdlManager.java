@@ -242,13 +242,14 @@ public class SdlManager extends BaseSdlManager{
 	@Override
 	protected void checkLifecycleConfiguration(){
 		final Language actualLanguage =  this.getRegisterAppInterfaceResponse().getLanguage();
+		final Language actualHMILanguage =  this.getRegisterAppInterfaceResponse().getHmiDisplayLanguage();
 
-		if (actualLanguage != null && !actualLanguage.equals(hmiLanguage)) {
+		if ((actualLanguage != null && !actualLanguage.equals(language)) || (actualHMILanguage != null && !actualHMILanguage.equals(hmiLanguage))) {
 
-			final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage);
+			final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage, actualHMILanguage);
 
 			if (lcu != null) {
-				ChangeRegistration changeRegistration = new ChangeRegistration(actualLanguage, actualLanguage);
+				ChangeRegistration changeRegistration = new ChangeRegistration(actualLanguage, actualHMILanguage);
 				changeRegistration.setAppName(lcu.getAppName());
 				changeRegistration.setNgnMediaScreenAppName(lcu.getShortAppName());
 				changeRegistration.setTtsName(lcu.getTtsName());
@@ -258,7 +259,8 @@ public class SdlManager extends BaseSdlManager{
 					public void onResponse(int correlationId, RPCResponse response) {
 						if (response.getSuccess()){
 							// go through and change sdlManager properties that were changed via the LCU update
-							hmiLanguage = actualLanguage;
+							hmiLanguage = actualHMILanguage;
+							language = actualLanguage;
 
 							if (lcu.getAppName() != null) {
 								appName = lcu.getAppName();
@@ -675,7 +677,7 @@ public class SdlManager extends BaseSdlManager{
 					}
 				}
 
-				proxy = new SdlProxyBase(proxyBridge, context, appName, shortAppName, isMediaApp, hmiLanguage,
+				proxy = new SdlProxyBase(proxyBridge, context, appName, shortAppName, isMediaApp, language,
 						hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
 						nightColorScheme) {};
 				proxy.setMinimumProtocolVersion(minimumProtocolVersion);
@@ -999,10 +1001,19 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
-		 * Sets the Language of the App
+		 * Sets the VR+TTS Language of the App
+		 * @param language the desired language to be used on the VR+TTS of the connected module
+		 */
+		public Builder setLanguage(final Language language){
+			sdlManager.language = language;
+			return this;
+		}
+
+		/**
+		 * Sets the display/HMI Language of the App
 		 * @param hmiLanguage the desired language to be used on the display/HMI of the connected module
 		 */
-		public Builder setLanguage(final Language hmiLanguage){
+		public Builder setHMILanguage(final Language hmiLanguage){
 			sdlManager.hmiLanguage = hmiLanguage;
 			return this;
 		}
@@ -1181,8 +1192,15 @@ public class SdlManager extends BaseSdlManager{
 				sdlManager.lockScreenConfig = new LockScreenConfig();
 			}
 
-			if (sdlManager.hmiLanguage == null){
+			if (sdlManager.hmiLanguage == null && sdlManager.language == null){
 				sdlManager.hmiLanguage = Language.EN_US;
+				sdlManager.language = Language.EN_US;
+			} else if (sdlManager.hmiLanguage == null && sdlManager.language != null) {
+				sdlManager.hmiLanguage = sdlManager.language;
+			} else if (sdlManager.hmiLanguage != null && sdlManager.language == null) {
+				sdlManager.language = sdlManager.hmiLanguage;
+			} else {
+				// do nothing when language and hmiLanguage are set
 			}
 
 			if (sdlManager.minimumProtocolVersion == null){
