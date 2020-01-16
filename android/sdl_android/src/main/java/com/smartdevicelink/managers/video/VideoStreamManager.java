@@ -125,10 +125,11 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		@Override
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if(SessionType.NAV.equals(type)){
-				stateMachine.transitionToState(StreamingStateMachine.NONE);
 				if(remoteDisplay!=null){
 					stopStreaming();
 				}
+				stateMachine.transitionToState(StreamingStateMachine.NONE);
+				transitionToState(SETTING_UP);
 			}
 		}
 
@@ -154,8 +155,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					checkState();
 				}
 				if (hasStarted && (prevHMILevel == HMILevel.HMI_FULL || prevHMILevel == HMILevel.HMI_LIMITED) && (hmiLevel == HMILevel.HMI_NONE || hmiLevel == HMILevel.HMI_BACKGROUND)){
-					stateMachine.transitionToState(StreamingStateMachine.NONE);
-					transitionToState(SETTING_UP);
 					internalInterface.stopVideoService();
 				}
 			}
