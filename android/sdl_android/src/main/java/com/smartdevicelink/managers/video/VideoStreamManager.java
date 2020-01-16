@@ -153,7 +153,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				if(hmiLevel.equals(HMILevel.HMI_FULL)){
 					checkState();
 				}
-				if (hasStarted && (prevHMILevel.equals(HMILevel.HMI_FULL) || prevHMILevel.equals(HMILevel.HMI_LIMITED)) && (hmiLevel.equals(HMILevel.HMI_NONE) || hmiLevel.equals(HMILevel.HMI_BACKGROUND))){
+				if (hasStarted && (prevHMILevel == HMILevel.HMI_FULL || prevHMILevel == HMILevel.HMI_LIMITED) && (hmiLevel == HMILevel.HMI_NONE || hmiLevel == HMILevel.HMI_BACKGROUND)){
 					stateMachine.transitionToState(StreamingStateMachine.NONE);
 					transitionToState(SETTING_UP);
 					internalInterface.stopVideoService();
