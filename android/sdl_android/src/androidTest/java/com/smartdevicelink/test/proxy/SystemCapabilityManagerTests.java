@@ -19,6 +19,7 @@ import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
+import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
@@ -57,18 +58,37 @@ import com.smartdevicelink.test.utl.AppServiceFactory;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.Version;
 
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 	public static final String TAG = "SystemCapabilityManagerTests";
 	public static SystemCapabilityManager systemCapabilityManager;
+	private SystemCapability systemCapability;
+	private VideoStreamingCapability videoStreamingCapability;
 
 	@Override
 	protected void setUp() throws Exception{
 		super.setUp();
+
+		systemCapability = new SystemCapability(SystemCapabilityType.VIDEO_STREAMING);
+		videoStreamingCapability = new VideoStreamingCapability();
+		videoStreamingCapability.setMaxBitrate(Test.GENERAL_INT);
+		videoStreamingCapability.setPreferredResolution(Test.GENERAL_IMAGERESOLUTION);
+		videoStreamingCapability.setSupportedFormats(Test.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+		systemCapability.setCapabilityForType(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
 	}
 
 	@Override
@@ -187,11 +207,14 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		systemCapabilityManager = new SystemCapabilityManager(new InternalSDLInterface() {
 			@Override
-			public void sendRPCRequest(RPCRequest message) {
+			public void sendRPC(RPCMessage message) {
 				GetSystemCapabilityResponse response = new GetSystemCapabilityResponse();
 				response.setSystemCapability(referenceCapability);
 				response.setSuccess(true);
-				message.getOnRPCResponseListener().onResponse(CorrelationIdGenerator.generateId(), response);
+				if (message instanceof RPCRequest) {
+					RPCRequest request = (RPCRequest) message;
+					request.getOnRPCResponseListener().onResponse(CorrelationIdGenerator.generateId(), response);
+				}
 			}
 		});
 
@@ -209,6 +232,120 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 				assertTrue(false);
 			}
 		});
+	}
+
+	private Answer<Void> createOnSendGetSystemCapabilityAnswer (final boolean success, final Boolean subscribe) {
+		Answer<Void> onSendGetSystemCapabilityAnswer = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				GetSystemCapability getSystemCapability = (GetSystemCapability) args[0];
+				assertEquals((Boolean) Boolean.TRUE.equals(subscribe), getSystemCapability.getSubscribe());
+				GetSystemCapabilityResponse response;
+				if (success) {
+					response = new GetSystemCapabilityResponse(Result.SUCCESS, true);
+				} else {
+					response = new GetSystemCapabilityResponse(Result.REJECTED, false);
+				}
+				response.setSystemCapability(systemCapability);
+				getSystemCapability.getOnRPCResponseListener().onResponse(CorrelationIdGenerator.generateId(), response);
+				return null;
+			}
+		};
+		return onSendGetSystemCapabilityAnswer;
+	}
+
+	public void testGetCapability() {
+		ISdl internalInterface;
+		SystemCapabilityManager scm;
+		OnSystemCapabilityListener onSystemCapabilityListener;
+		VideoStreamingCapability retrievedCapability;
+		Boolean subscribe;
+		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(6, 0); // This version supports capability subscriptions
+		sdlMsgVersion.setPatchVersion(0);
+
+
+		// Test case 1 (capability not cached, listener not null, subscribe false)
+		internalInterface = mock(ISdl.class);
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		scm = new SystemCapabilityManager(internalInterface);
+		onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
+		subscribe = false;
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, subscribe)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, null);
+		retrievedCapability = (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, subscribe);
+		assertNull(retrievedCapability);
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Test case 2 (capability cached, listener not null, subscribe true)
+		internalInterface = mock(ISdl.class);
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		scm = new SystemCapabilityManager(internalInterface);
+		onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
+		subscribe = false;
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, subscribe)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
+		retrievedCapability =  (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, subscribe);
+		assertTrue(Test.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Test case 3 (capability cached, listener not null, subscribe true)
+		internalInterface = mock(ISdl.class);
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		scm = new SystemCapabilityManager(internalInterface);
+		onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
+		subscribe = true;
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, subscribe)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
+		retrievedCapability =  (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, subscribe);
+		assertTrue(Test.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Test case 4 (capability cached, listener null, subscribe true)
+		internalInterface = mock(ISdl.class);
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		scm = new SystemCapabilityManager(internalInterface);
+		onSystemCapabilityListener = null;
+		subscribe = true;
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, subscribe)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
+		retrievedCapability =  (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, subscribe);
+		assertTrue(Test.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+
+
+		// Test case 5 (capability not cached, listener not null, subscribe null)
+		internalInterface = mock(ISdl.class);
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		scm = new SystemCapabilityManager(internalInterface);
+		onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
+		subscribe = null;
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, subscribe)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, null);
+		retrievedCapability =  (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, subscribe);
+		assertNull(retrievedCapability);
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Test case 6 (capability cached, listener not null, subscribe null)
+		internalInterface = mock(ISdl.class);
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		scm = new SystemCapabilityManager(internalInterface);
+		onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
+		subscribe = null;
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, subscribe)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
+		retrievedCapability =  (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, subscribe);
+		assertTrue(Test.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener, times(1)).onCapabilityRetrieved(any(Object.class));
 	}
 
 	public void testListConversion(){
