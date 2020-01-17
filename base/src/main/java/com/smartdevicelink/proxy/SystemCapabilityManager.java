@@ -509,7 +509,7 @@ public class SystemCapabilityManager {
 	 * @param listener callback to execute upon retrieving capability
 	 */
 	public void addOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener){
-		getCapability(systemCapabilityType, listener);
+		getCapability(systemCapabilityType, listener, true);
 		synchronized(LISTENER_LOCK){
 			if (systemCapabilityType != null && listener != null) {
 				if (onSystemCapabilityListeners.get(systemCapabilityType) == null) {
@@ -526,15 +526,20 @@ public class SystemCapabilityManager {
 	 * @param listener the listener that should be removed
 	 */
 	public boolean removeOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener){
+		boolean success = false;
 		synchronized(LISTENER_LOCK){
-			if(onSystemCapabilityListeners!= null
+			if(onSystemCapabilityListeners != null
 					&& systemCapabilityType != null
 					&& listener != null
 					&& onSystemCapabilityListeners.get(systemCapabilityType) != null){
-				return onSystemCapabilityListeners.get(systemCapabilityType).remove(listener);
+				success = onSystemCapabilityListeners.get(systemCapabilityType).remove(listener);
+				// If the last listener for the supplied capability type is removed, unsubscribe from the capability type
+				if (success && onSystemCapabilityListeners.get(systemCapabilityType).isEmpty() && isSubscribedToSystemCapability(systemCapabilityType)) {
+					retrieveCapability(systemCapabilityType, null, false);
+				}
 			}
 		}
-		return false;
+		return success;
 	}
 
 	/**
