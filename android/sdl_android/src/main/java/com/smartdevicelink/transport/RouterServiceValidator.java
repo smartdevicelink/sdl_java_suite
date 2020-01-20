@@ -52,6 +52,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.util.AndroidTools;
+import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.HttpRequestTask;
 import com.smartdevicelink.util.HttpRequestTask.HttpRequestTaskCallback;
 import com.smartdevicelink.util.ServiceFinder;
@@ -156,6 +157,7 @@ public class RouterServiceValidator {
 	 * Due to SDL 0220 proposal, we should use validateAsync always.
 	 * This function remains only for backward compatibility.
 	 */
+	@Deprecated
 	public boolean validate(){
 		
 		if(securityLevel == -1){
@@ -241,17 +243,17 @@ public class RouterServiceValidator {
 		}
 
 		if(this.service == null){
-			Log.d(TAG, "about finding the best Router by using retrieveBestRouterServiceName");
+			DebugTool.logInfo("about finding the best Router by using retrieveBestRouterServiceName");
 			new FindRouterTask(new FindConnectedRouterCallback() {
 				@Override
 				public void onFound(ComponentName component) {
-					Log.d(TAG, "FindConnectedRouterCallback.onFound got called. Package=" + component);
+					DebugTool.logInfo("FindConnectedRouterCallback.onFound got called. Package=" + component);
 					checkTrustedRouter(callback, pm, component);
 				}
 
 				@Override
 				public void onFailed() {
-					Log.d(TAG, "FindConnectedRouterCallback.onFailed was called");
+					DebugTool.logInfo("FindConnectedRouterCallback.onFailed was called");
 					if (callback != null) {
 						callback.onFinishedValidation(false, null);
 					}
@@ -274,9 +276,9 @@ public class RouterServiceValidator {
 	 */
 	private void checkTrustedRouter(final ValidationStatusCallback callback, final PackageManager pm, final ComponentName component) {
 		String packageName = appPackageForComponentName(component, pm);
-		boolean valid = false;
+		boolean valid = (securityLevel == MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
 
-		if(packageName!=null){//Make sure there is a service running
+		if(!valid && packageName!=null){//Make sure there is a service running
 			if(wasInstalledByAppStore(packageName)){ //Was this package installed from a trusted app store
 				if( isTrustedPackage(packageName, pm)){//Is this package on the list of trusted apps.
 					valid = true;
@@ -341,19 +343,18 @@ public class RouterServiceValidator {
 									public void run() {
 										_counter.incrementAndGet();
 										if (connected) {
-											Log.d(TAG, "We found the connected service (" + service + "); currentThread is " + Thread.currentThread().getName());
+											DebugTool.logInfo("We found the connected service (" + service + "); currentThread is " + Thread.currentThread().getName());
 											serviceQueue.add(service);
 										} else if (_counter.get() == numServices) {
-											Log.d(TAG, "SdlRouterStatusProvider returns service=" + service + "; connected=" + connected);
+											DebugTool.logInfo("SdlRouterStatusProvider returns service=" + service + "; connected=" + connected);
 											_currentThread.interrupt();
 										}
 									}
 								});
 							}
 						});
-						Log.d(TAG, "about checkIsConnected; thread=" + Thread.currentThread().getName());
+						DebugTool.logInfo("about checkIsConnected; thread=" + Thread.currentThread().getName());
 						provider.checkIsConnected();
-						//provider.cancel();
 					}
 				}
 			});
@@ -362,18 +363,17 @@ public class RouterServiceValidator {
 				ComponentName found = serviceQueue.poll(TIMEOUT_MSEC, TimeUnit.MILLISECONDS);
 				return found;
 			} catch(InterruptedException e) {
-				Log.d(TAG, "FindRouterTask was interrupted because connected Router cannot be found");
+				DebugTool.logInfo("FindRouterTask was interrupted because connected Router cannot be found");
 			}
 			return null;
 		}
 
 		@Override
-		@TargetApi(9)
 		protected void onPostExecute(ComponentName componentName) {
-			Log.d(TAG, "onPostExecute componentName=" + componentName);
+			DebugTool.logInfo("onPostExecute componentName=" + componentName);
 			super.onPostExecute(componentName);
 			if (mCallback != null) {
-				if (componentName != null && componentName.getPackageName() != null && !componentName.getPackageName().isEmpty()) {
+				if (componentName != null && componentName.getPackageName() != null && componentName.getPackageName().length() != 0) {
 					mCallback.onFound(componentName);
 				} else {
 					mCallback.onFailed();
@@ -392,8 +392,8 @@ public class RouterServiceValidator {
 		void onFailed();
 	}
 
-	public interface ValidationStatusCallback {
-		public void onFinishedValidation(boolean valid, ComponentName name);
+	interface ValidationStatusCallback {
+		void onFinishedValidation(boolean valid, ComponentName name);
 	}
 
 	/**

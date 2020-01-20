@@ -440,7 +440,20 @@ public class RSVTestCase extends AndroidTestCase2 {
 			@Override
 			public void onFinishedValidation(boolean valid, ComponentName name) {
 				Log.d(TAG, "onFinishedValidation: valid=" + valid + "; componentName=" + name);
-				//assertTrue(valid); // valid would be always false when running on TravisCI... Ignore this param in Unit Test.
+				assertFalse(valid); // expected valid = false for this (bogus) APP_ID..
+				cond.open();
+			}
+		});
+		cond.block();
+
+		// next, test for FLAG_MULTI_SECURITY_OFF
+		config = new MultiplexTransportConfig(mContext, APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
+		cond.close();
+		validator.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+			@Override
+			public void onFinishedValidation(boolean valid, ComponentName name) {
+				Log.d(TAG, "onFinishedValidation: valid=" + valid + "; componentName=" + name);
+				// return value does not matter when security is off.
 				cond.open();
 			}
 		});

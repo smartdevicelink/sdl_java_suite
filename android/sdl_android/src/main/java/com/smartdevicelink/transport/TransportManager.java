@@ -61,8 +61,6 @@ public class TransportManager extends TransportManagerBase{
     private static final String TAG = "TransportManager";
 
     TransportBrokerImpl transport;
-    final List<TransportRecord> transportStatus;
-    final TransportEventListener transportListener;
 
     //Legacy Transport
     MultiplexBluetoothTransport legacyBluetoothTransport;
@@ -70,7 +68,6 @@ public class TransportManager extends TransportManagerBase{
 
     final WeakReference<Context> contextWeakReference;
     final MultiplexTransportConfig mConfig;
-    final Object TRANSPORT_STATUS_LOCK;
 
 
     /**
@@ -82,12 +79,7 @@ public class TransportManager extends TransportManagerBase{
     public TransportManager(MultiplexTransportConfig config, TransportEventListener listener){
         super(config,listener);
 
-        this.transportListener = listener;
-        this.TRANSPORT_STATUS_LOCK = new Object();
         this.mConfig = config;
-        synchronized (TRANSPORT_STATUS_LOCK){
-            this.transportStatus = new ArrayList<>();
-        }
 
         if(config.service == null) {
             config.service = SdlBroadcastReceiver.consumeQueuedRouterService();
@@ -105,11 +97,11 @@ public class TransportManager extends TransportManagerBase{
         validator.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
             @Override
             public void onFinishedValidation(boolean valid, ComponentName name) {
-                Log.d(TAG, "onFinishedValidation valid=" + valid + "; name=" + ((name == null)? "null" : name.getPackageName()));
+                DebugTool.logInfo("onFinishedValidation valid=" + valid + "; name=" + ((name == null)? "null" : name.getPackageName()));
                 if (valid) {
                     mConfig.service = name;
                     transport = new TransportBrokerImpl(contextWeakReference.get(), mConfig.appId, mConfig.service);
-                    Log.d(TAG, "TransportManager start got called; transport=" + transport);
+                    DebugTool.logInfo("TransportManager start got called; transport=" + transport);
                     if(transport != null){
                         transport.start();
                     }
