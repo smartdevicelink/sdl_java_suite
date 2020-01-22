@@ -442,7 +442,7 @@ public class SystemCapabilityManager {
 		return Boolean.TRUE.equals(systemCapabilitiesSubscriptionStatus.get(systemCapabilityType));
 	}
 
-	/** Gets the capability object that corresponds to the supplied capability type
+	/** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately (or null) as well as calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds. Depending on the state of the subscription to this capability type, setting the `subscribe` flag will change your current subscription state and may setup the listener to retrieve updated values if the subscription succeeds.
 	 * <strong>If capability is not cached, the method will return null and trigger the supplied listener when the capability becomes available</strong>
 	 * @param systemCapabilityType type of capability desired
 	 * @param scListener callback to execute upon retrieving capability
@@ -462,7 +462,7 @@ public class SystemCapabilityManager {
 		- The capability is not cached
 		- The capability subscription needs to be updated
 		 */
-		boolean shouldUpdateSystemCapabilitySubscription = subscribe != null && subscribe != isSubscribedToSystemCapability(systemCapabilityType) && supportsSubscriptions();
+		boolean shouldUpdateSystemCapabilitySubscription = (subscribe != null) && (subscribe != isSubscribedToSystemCapability(systemCapabilityType)) && supportsSubscriptions();
 		if (capability == null || shouldUpdateSystemCapabilitySubscription) {
 			retrieveCapability(systemCapabilityType, listener, subscribe);
 		}
@@ -559,7 +559,7 @@ public class SystemCapabilityManager {
 		}
 		final GetSystemCapability request = new GetSystemCapability();
 		request.setSystemCapabilityType(systemCapabilityType);
-		request.setSubscribe(subscribe != null ? subscribe : isSubscribedToSystemCapability(systemCapabilityType)); // If subscribe is null, then don't change the current subscription status
+		request.setSubscribe((subscribe != null) ? subscribe : isSubscribedToSystemCapability(systemCapabilityType)); // If subscribe is null, then don't change the current subscription status
 		request.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
