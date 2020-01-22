@@ -31,7 +31,6 @@
  */
 package com.smartdevicelink.transport;
 
-import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.bluetooth.BluetoothAdapter;
@@ -228,11 +227,11 @@ public class RouterServiceValidator {
 		//Grab the package for the currently running router service. We need this call regardless of if we are in debug mode or not.
 
 		if(this.service != null){
-			Log.i(TAG, "Supplied service name of " + this.service.getClassName());
+			DebugTool.logInfo("Supplied service name of " + this.service.getClassName());
 			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O && !isServiceRunning(context,this.service)){
 				//This means our service isn't actually running, so set to null. Hopefully we can find a real router service after this.
 				service = null;
-				Log.w(TAG, "Supplied service is not actually running.");
+				DebugTool.logWarning("Supplied service is not actually running.");
 			} else {
 				// If the running router service is created by this app, the validation is good by default
 				if (this.service.getPackageName().equals(context.getPackageName()) && callback != null) {

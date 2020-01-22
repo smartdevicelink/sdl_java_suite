@@ -433,7 +433,7 @@ public class RSVTestCase extends AndroidTestCase2 {
 	 * Unit test for validateAsync.
 	 */
 	public void testValidateAsync() {
-		MultiplexTransportConfig config = new MultiplexTransportConfig(mContext, APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
+		final MultiplexTransportConfig config = new MultiplexTransportConfig(mContext, APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
 		final RouterServiceValidator validator = new RouterServiceValidator(config);
 		final ConditionVariable cond = new ConditionVariable();
 		validator.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
@@ -447,9 +447,10 @@ public class RSVTestCase extends AndroidTestCase2 {
 		cond.block();
 
 		// next, test for FLAG_MULTI_SECURITY_OFF
-		config = new MultiplexTransportConfig(mContext, APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
+		final MultiplexTransportConfig config2 = new MultiplexTransportConfig(mContext, APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
+		final RouterServiceValidator validator2 = new RouterServiceValidator(config2);
 		cond.close();
-		validator.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+		validator2.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
 			@Override
 			public void onFinishedValidation(boolean valid, ComponentName name) {
 				Log.d(TAG, "onFinishedValidation: valid=" + valid + "; componentName=" + name);
