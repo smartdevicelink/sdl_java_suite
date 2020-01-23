@@ -305,4 +305,25 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         assertEquals("SoftButtonObject id doesn't match the expected value", 100, sbo4.getButtonId());
         assertEquals("SoftButtonObject id doesn't match the expected value", 103, sbo5.getButtonId());
     }
+
+    public void testSoftButtonEq(){
+        SoftButtonObject softButtonObject1;
+        SoftButtonObject softButtonObject2;
+        //Case 1 should call the created equals method in softButtonObject and compare them by name and return True
+        softButtonObject1 = new SoftButtonObject( "test", softButtonState1, null);
+        softButtonObject2 = new SoftButtonObject( "test", softButtonState2, null);
+
+        assertTrue(softButtonObject1.equals(softButtonObject2));
+
+        //Case 2 should return false, the names of both softButtonObjects is are not the same
+        softButtonObject1 = new SoftButtonObject( "test", softButtonState1, null);
+        softButtonObject2 = new SoftButtonObject( "test23123", softButtonState2, null);
+        assertFalse(softButtonObject1.equals(softButtonObject2));
+
+        //Case 3 should return false because one of the objects is false
+        softButtonObject1 = new SoftButtonObject( "test", softButtonState1, null);
+        softButtonObject2 = null;
+        assertFalse(softButtonObject1.equals(softButtonObject2));
+    }
+
 }

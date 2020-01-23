@@ -316,7 +316,10 @@ public class SoftButtonObject {
      */
     @Override
     public boolean equals(Object o) {
-         SoftButtonObject softButtonObject = (SoftButtonObject) o;
+        if(o == null){
+            return false;
+        }
+        SoftButtonObject softButtonObject = (SoftButtonObject) o;
         if (softButtonObject.getName().equals(this.getName())) {
             return true;
         }
