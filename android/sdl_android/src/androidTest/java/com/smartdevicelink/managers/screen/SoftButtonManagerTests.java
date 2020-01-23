@@ -315,7 +315,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
         assertTrue(softButtonObject1.equals(softButtonObject2));
 
-        //Case 2 should return false, the names of both softButtonObjects is are not the same
+        //Case 2 should return false, the names of both softButtonObjects are not the same
         softButtonObject1 = new SoftButtonObject( "test", softButtonState1, null);
         softButtonObject2 = new SoftButtonObject( "test23123", softButtonState2, null);
         assertFalse(softButtonObject1.equals(softButtonObject2));
