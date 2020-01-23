@@ -343,7 +343,7 @@ public class SystemCapabilityManager {
 	}
 
 	/**
-	 * Notify listners in the list about the new retrieved capability
+	 * Notifies listeners in the list about the new retrieved capability
 	 * @param systemCapabilityType the system capability type that was retrieved
 	 * @param capability the system capability value that was retrieved
 	 */
@@ -442,32 +442,42 @@ public class SystemCapabilityManager {
 		return Boolean.TRUE.equals(systemCapabilitiesSubscriptionStatus.get(systemCapabilityType));
 	}
 
-	/** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately (or null) as well as calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds. Depending on the state of the subscription to this capability type, setting the `subscribe` flag will change your current subscription state and may setup the listener to retrieve updated values if the subscription succeeds.
+	/** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately (or null) as well as calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds.
 	 * <strong>If capability is not cached, the method will return null and trigger the supplied listener when the capability becomes available</strong>
 	 * @param systemCapabilityType type of capability desired
 	 * @param scListener callback to execute upon retrieving capability
 	 * @param subscribe flag to subscribe to updates of the supplied capability type. True means subscribe; false means cancel subscription; null means don't change current subscription status.
+	 * @param forceUpdate flag to force getting a new fresh copy of the capability from the head unit even if it is cached
 	 * @return desired capability if it is cached in the manager, otherwise returns a null object and works in the background to retrieve the capability for the next call
 	 */
-	public Object getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe) {
-		Object capability = cachedSystemCapabilities.get(systemCapabilityType);
+	private Object getCapabilityPrivate(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe, final boolean forceUpdate) {
+		Object cachedCapability = cachedSystemCapabilities.get(systemCapabilityType);
 		OnSystemCapabilityListener listener = scListener;
 
-		if (capability != null && listener != null) {
-			listener.onCapabilityRetrieved(capability);
-			listener = null; // listener shouldn't be called twice if we end up sending GetSystemCapability request
+		boolean shouldUpdateSystemCapabilitySubscription = (subscribe != null) && (subscribe != isSubscribedToSystemCapability(systemCapabilityType)) && supportsSubscriptions();
+		boolean shouldSendGetSystemCapabilityRequest = forceUpdate || (cachedCapability == null) || shouldUpdateSystemCapabilitySubscription;
+
+		if (!shouldSendGetSystemCapabilityRequest && listener != null) {
+			listener.onCapabilityRetrieved(cachedCapability);
+			listener = null;
 		}
 
-		/* GetSystemCapability request should be sent only if:
-		- The capability is not cached
-		- The capability subscription needs to be updated
-		 */
-		boolean shouldUpdateSystemCapabilitySubscription = (subscribe != null) && (subscribe != isSubscribedToSystemCapability(systemCapabilityType)) && supportsSubscriptions();
-		if (capability == null || shouldUpdateSystemCapabilitySubscription) {
+		if (shouldSendGetSystemCapabilityRequest) {
 			retrieveCapability(systemCapabilityType, listener, subscribe);
 		}
 
-		return capability;
+		return cachedCapability;
+	}
+
+	/** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately (or null) as well as calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds.
+	 * <strong>If capability is not cached, the method will return null and trigger the supplied listener when the capability becomes available</strong>
+	 * @param systemCapabilityType type of capability desired
+	 * @param scListener callback to execute upon retrieving capability
+	 * @param forceUpdate flag to force getting a new fresh copy of the capability from the head unit even if it is cached
+	 * @return desired capability if it is cached in the manager, otherwise returns a null object
+	 */
+	public Object getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final boolean forceUpdate) {
+		return getCapabilityPrivate(systemCapabilityType, scListener, null, forceUpdate);
 	}
 
 	/** Gets the capability object that corresponds to the supplied capability type by calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds.
@@ -476,27 +486,25 @@ public class SystemCapabilityManager {
 	 */
 	@Deprecated
 	public void getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener) {
-		getCapability(systemCapabilityType, scListener, null);
+		getCapabilityPrivate(systemCapabilityType, scListener, null, false);
 	}
 
 	/** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately if available. Otherwise returns a null object and works in the background to retrieve the capability for the next call
 	 * @param systemCapabilityType Type of capability desired
-	 * @return Desired capability if it is cached in the manager, otherwise returns a null object
-	 * and works in the background to retrieve the capability for the next call
+	 * @return Desired capability if it is cached in the manager, otherwise returns null
 	 */
 	@Deprecated
 	public Object getCapability(final SystemCapabilityType systemCapabilityType) {
-		return getCapability(systemCapabilityType, null, null);
+		return getCapabilityPrivate(systemCapabilityType, null, null, false);
 	}
 
 	/**
-	 * Add a listener to be called whenever a new capability is retrieved.
-	 * This method automatically subscribes to the supplied capability type and may call the listener multiple times if there are future updates unlike getCapability() that only calls the listener one time.
+	 * Adds a listener to be called whenever a new capability is retrieved. This method automatically subscribes to the supplied capability type and may call the listener multiple times if there are future updates unlike getCapability() that only calls the listener one time.
 	 * @param systemCapabilityType Type of capability desired
 	 * @param listener callback to execute upon retrieving capability
 	 */
 	public void addOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener) {
-		getCapability(systemCapabilityType, listener, true);
+		getCapabilityPrivate(systemCapabilityType, listener, true, false);
 		synchronized(LISTENER_LOCK) {
 			if (systemCapabilityType != null && listener != null) {
 				if (onSystemCapabilityListeners.get(systemCapabilityType) == null) {
@@ -508,7 +516,7 @@ public class SystemCapabilityManager {
 	}
 
 	/**
-	 * Remove an OnSystemCapabilityListener that was previously added
+	 * Removes an OnSystemCapabilityListener that was previously added
 	 * @param systemCapabilityType Type of capability
 	 * @param listener the listener that should be removed
 	 * @return boolean that represents whether the removal was successful or not
@@ -530,7 +538,7 @@ public class SystemCapabilityManager {
 		return success;
 	}
 
-	/** Send GetSystemCapability request for the supplied SystemCapabilityType and call the listener's callback if the systemCapabilityType is queryable
+	/** Sends GetSystemCapability request for the supplied SystemCapabilityType and call the listener's callback if the systemCapabilityType is queryable
 	 * @param systemCapabilityType Type of capability desired
 	 * @param subscribe flag to subscribe to updates of the supplied capability type. True means subscribe; false means cancel subscription; null means don't change current subscription status.
 	 */
