@@ -476,15 +476,7 @@ public class SystemCapabilityManager {
 	 */
 	@Deprecated
 	public void getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener){
-		Object capability = cachedSystemCapabilities.get(systemCapabilityType);
-		if(capability != null && scListener != null){
-			scListener.onCapabilityRetrieved(capability);
-			return;
-		} else if(scListener == null){
-			return;
-		}
-
-		retrieveCapability(systemCapabilityType, scListener, null);
+		getCapability(systemCapabilityType, scListener, null);
 	}
 
 	/** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately if available. Otherwise returns a null object and works in the background to retrieve the capability for the next call
@@ -494,13 +486,7 @@ public class SystemCapabilityManager {
 	 */
 	@Deprecated
 	public Object getCapability(final SystemCapabilityType systemCapabilityType){
-		Object capability = cachedSystemCapabilities.get(systemCapabilityType);
-		if(capability != null){
-			return capability;
-		}
-
-		retrieveCapability(systemCapabilityType, null, null);
-		return null;
+		return getCapability(systemCapabilityType, null, null);
 	}
 
 	/**
