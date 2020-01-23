@@ -530,11 +530,9 @@ public class SystemCapabilityManager {
 		return success;
 	}
 
-	/**
+	/** Send GetSystemCapability request for the supplied SystemCapabilityType and call the listener's callback if the systemCapabilityType is queryable
 	 * @param systemCapabilityType Type of capability desired
-	 * passes GetSystemCapabilityType request to `callback` to be sent by proxy.
 	 * @param subscribe flag to subscribe to updates of the supplied capability type. True means subscribe; false means cancel subscription; null means don't change current subscription status.
-	 * this method will send RPC and call the listener's callback only if the systemCapabilityType is queryable
 	 */
 	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe) {
 		if (!systemCapabilityType.isQueryable()) {
