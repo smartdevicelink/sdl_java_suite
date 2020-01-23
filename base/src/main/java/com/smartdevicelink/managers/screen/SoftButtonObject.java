@@ -309,4 +309,17 @@ public class SoftButtonObject {
          */
         void onUpdate();
     }
+
+    /**
+     * @param o
+     * @return true if two SoftButtonObjects have the same name.
+     */
+    @Override
+    public boolean equals(Object o) {
+         SoftButtonObject softButtonObject = (SoftButtonObject) o;
+        if (softButtonObject.getName().equals(this.getName())) {
+            return true;
+        }
+        return false;
+    }
 }
