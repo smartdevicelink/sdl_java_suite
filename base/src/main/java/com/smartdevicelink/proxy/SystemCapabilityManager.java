@@ -452,15 +452,13 @@ public class SystemCapabilityManager {
 		Object cachedCapability = cachedSystemCapabilities.get(systemCapabilityType);
 		OnSystemCapabilityListener listener = scListener;
 
-		boolean shouldUpdateSystemCapabilitySubscription = (subscribe != null) && (subscribe != isSubscribedToSystemCapability(systemCapabilityType)) && supportsSubscriptions();
-		boolean shouldSendGetSystemCapabilityRequest = forceUpdate || (cachedCapability == null) || shouldUpdateSystemCapabilitySubscription;
-
-		if (!shouldSendGetSystemCapabilityRequest && listener != null) {
+		if (!forceUpdate && cachedCapability != null && listener != null) {
 			listener.onCapabilityRetrieved(cachedCapability);
 			listener = null;
 		}
 
-		if (shouldSendGetSystemCapabilityRequest) {
+		boolean shouldUpdateSystemCapabilitySubscription = (subscribe != null) && (subscribe != isSubscribedToSystemCapability(systemCapabilityType)) && supportsSubscriptions();
+		if (forceUpdate || (cachedCapability == null) || shouldUpdateSystemCapabilitySubscription) {
 			retrieveCapability(systemCapabilityType, listener, subscribe);
 		}
 
