@@ -79,7 +79,7 @@ public class SystemCapabilityManager {
 	private OnRPCListener rpcListener;
 	private boolean shouldConvertDeprecatedDisplayCapabilities;
 
-	public SystemCapabilityManager(ISdl callback){
+	public SystemCapabilityManager(ISdl callback) {
 		this.callback = callback;
 		this.LISTENER_LOCK = new Object();
 		this.onSystemCapabilityListeners = new HashMap<>();
@@ -104,7 +104,7 @@ public class SystemCapabilityManager {
 		WindowTypeCapabilities windowTypeCapabilities = new WindowTypeCapabilities(WindowType.MAIN, 1);
 
 		DisplayCapability displayCapability = new DisplayCapability();
-		if (display != null){
+		if (display != null) {
 			if (display.getDisplayName() != null) {
 				displayCapability.setDisplayName(display.getDisplayName());
 			} else if (display.getDisplayType() != null) {
@@ -237,8 +237,8 @@ public class SystemCapabilityManager {
 		return getWindowCapability(PredefinedWindows.DEFAULT_WINDOW.getValue());
 	}
 
-	public void parseRAIResponse(RegisterAppInterfaceResponse response){
-		if(response!=null && response.getSuccess()) {
+	public void parseRAIResponse(RegisterAppInterfaceResponse response) {
+		if (response != null && response.getSuccess()) {
 			this.shouldConvertDeprecatedDisplayCapabilities = true; // reset the flag
 			setCapability(SystemCapabilityType.DISPLAYS, createDisplayCapabilityList(response));
 			setCapability(SystemCapabilityType.HMI, response.getHmiCapabilities());
@@ -337,7 +337,7 @@ public class SystemCapabilityManager {
 	 * @param systemCapabilityType the system capability type that will be set
 	 * @param capability the value of the capability that will be set
 	 */
-	public synchronized void setCapability(SystemCapabilityType systemCapabilityType, Object capability){
+	public synchronized void setCapability(SystemCapabilityType systemCapabilityType, Object capability) {
 			cachedSystemCapabilities.put(systemCapabilityType, capability);
 			notifyListeners(systemCapabilityType, capability);
 	}
@@ -348,9 +348,9 @@ public class SystemCapabilityManager {
 	 * @param capability the system capability value that was retrieved
 	 */
 	private void notifyListeners(SystemCapabilityType systemCapabilityType, Object capability) {
-		synchronized(LISTENER_LOCK){
+		synchronized(LISTENER_LOCK) {
 			CopyOnWriteArrayList<OnSystemCapabilityListener> listeners = onSystemCapabilityListeners.get(systemCapabilityType);
-			if(listeners != null && listeners.size() > 0) {
+			if (listeners != null && listeners.size() > 0) {
 				for (OnSystemCapabilityListener listener : listeners) {
 					listener.onCapabilityRetrieved(capability);
 				}
@@ -364,7 +364,7 @@ public class SystemCapabilityManager {
 	 * @param type the SystemCapabilityType that is to be checked
 	 * @return if that capability is supported with the current, connected module
 	 */
-	public boolean isCapabilitySupported(SystemCapabilityType type){
+	public boolean isCapabilitySupported(SystemCapabilityType type) {
 		if (cachedSystemCapabilities.get(type) != null) {
 			//The capability exists in the map and is not null
 			return true;
@@ -422,7 +422,7 @@ public class SystemCapabilityManager {
 	 * Checks is subscriptions are available on the connected head unit.
 	 * @return True if subscriptions are supported. False if not.
 	 */
-	public boolean supportsSubscriptions(){
+	public boolean supportsSubscriptions() {
 		if (callback != null && callback.getSdlMsgVersion() != null) {
 			com.smartdevicelink.util.Version onSystemCapabilityNotificationRPCVersion = new com.smartdevicelink.util.Version(5, 1, 0);
 			com.smartdevicelink.util.Version headUnitRPCVersion = new com.smartdevicelink.util.Version(callback.getSdlMsgVersion());
@@ -449,11 +449,11 @@ public class SystemCapabilityManager {
 	 * @param subscribe flag to subscribe to updates of the supplied capability type. True means subscribe; false means cancel subscription; null means don't change current subscription status.
 	 * @return desired capability if it is cached in the manager, otherwise returns a null object and works in the background to retrieve the capability for the next call
 	 */
-	public Object getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe){
+	public Object getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe) {
 		Object capability = cachedSystemCapabilities.get(systemCapabilityType);
 		OnSystemCapabilityListener listener = scListener;
 
-		if(capability != null && listener != null) {
+		if (capability != null && listener != null) {
 			listener.onCapabilityRetrieved(capability);
 			listener = null; // listener shouldn't be called twice if we end up sending GetSystemCapability request
 		}
@@ -475,7 +475,7 @@ public class SystemCapabilityManager {
 	 * @param scListener callback to execute upon retrieving capability
 	 */
 	@Deprecated
-	public void getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener){
+	public void getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener) {
 		getCapability(systemCapabilityType, scListener, null);
 	}
 
@@ -485,7 +485,7 @@ public class SystemCapabilityManager {
 	 * and works in the background to retrieve the capability for the next call
 	 */
 	@Deprecated
-	public Object getCapability(final SystemCapabilityType systemCapabilityType){
+	public Object getCapability(final SystemCapabilityType systemCapabilityType) {
 		return getCapability(systemCapabilityType, null, null);
 	}
 
@@ -495,9 +495,9 @@ public class SystemCapabilityManager {
 	 * @param systemCapabilityType Type of capability desired
 	 * @param listener callback to execute upon retrieving capability
 	 */
-	public void addOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener){
+	public void addOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener) {
 		getCapability(systemCapabilityType, listener, true);
-		synchronized(LISTENER_LOCK){
+		synchronized(LISTENER_LOCK) {
 			if (systemCapabilityType != null && listener != null) {
 				if (onSystemCapabilityListeners.get(systemCapabilityType) == null) {
 					onSystemCapabilityListeners.put(systemCapabilityType, new CopyOnWriteArrayList<OnSystemCapabilityListener>());
@@ -513,13 +513,13 @@ public class SystemCapabilityManager {
 	 * @param listener the listener that should be removed
 	 * @return boolean that represents whether the removal was successful or not
 	 */
-	public boolean removeOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener){
+	public boolean removeOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener) {
 		boolean success = false;
-		synchronized(LISTENER_LOCK){
-			if(onSystemCapabilityListeners != null
+		synchronized(LISTENER_LOCK) {
+			if (onSystemCapabilityListeners != null
 					&& systemCapabilityType != null
 					&& listener != null
-					&& onSystemCapabilityListeners.get(systemCapabilityType) != null){
+					&& onSystemCapabilityListeners.get(systemCapabilityType) != null) {
 				success = onSystemCapabilityListeners.get(systemCapabilityType).remove(listener);
 				// If the last listener for the supplied capability type is removed, unsubscribe from the capability type
 				if (success && onSystemCapabilityListeners.get(systemCapabilityType).isEmpty() && isSubscribedToSystemCapability(systemCapabilityType)) {
@@ -536,11 +536,11 @@ public class SystemCapabilityManager {
 	 * @param subscribe flag to subscribe to updates of the supplied capability type. True means subscribe; false means cancel subscription; null means don't change current subscription status.
 	 * this method will send RPC and call the listener's callback only if the systemCapabilityType is queryable
 	 */
-	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe){
-		if (!systemCapabilityType.isQueryable()){
+	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe) {
+		if (!systemCapabilityType.isQueryable()) {
 			String message = "This systemCapabilityType cannot be queried for";
 			DebugTool.logError(message);
-			if( scListener != null){
+			if (scListener != null) {
 				scListener.onError(message);
 			}
 			return;
@@ -569,12 +569,14 @@ public class SystemCapabilityManager {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				if(scListener!=null){scListener.onError(info);}
+				if (scListener != null) {
+					scListener.onError(info);
+				}
 			}
 		});
 		request.setCorrelationID(CorrelationIdGenerator.generateId());
 
-		if(callback!=null){
+		if (callback != null) {
 			callback.sendRPC(request);
 		}
 	}
@@ -586,23 +588,23 @@ public class SystemCapabilityManager {
 	 * @return a List of capabilities if object is instance of List, otherwise it will return null.
 	 */
 	@SuppressWarnings({"unchecked"})
-	public static <T> List<T> convertToList(Object object, Class<T> classType){
-		if(classType!=null && object!=null && object instanceof List ){
-			List list = (List)object;
-			if(!list.isEmpty()){
-				if(classType.isInstance(list.get(0))){
-					return (List<T>)object;
-				}else{
+	public static <T> List<T> convertToList(Object object, Class<T> classType) {
+		if (classType != null && object != null && object instanceof List) {
+			List list = (List) object;
+			if (!list.isEmpty()) {
+				if (classType.isInstance(list.get(0))) {
+					return (List<T>) object;
+				} else {
 					//The list is not of the correct list type
 					return null;
 				}
-			}else {
+			} else {
 				//We return a new list of type T instead of null because while we don't know if
 				//the original list was of type T we want to ensure that we don't throw a cast class exception
 				//but still
 				return new ArrayList<T>();
 			}
-		}else{
+		} else {
 			return null;
 		}
 	}
