@@ -324,6 +324,10 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         softButtonObject1 = new SoftButtonObject( "test", softButtonState1, null);
         softButtonObject2 = null;
         assertFalse(softButtonObject1.equals(softButtonObject2));
+
+        //Case4 should return false because a softButtonObject was not passed to this method{
+        assertFalse(softButtonObject1.equals(softButtonState1));
+
     }
 
 }
