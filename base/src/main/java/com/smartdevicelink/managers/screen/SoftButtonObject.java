@@ -320,10 +320,12 @@ public class SoftButtonObject {
             return false;
         }
         if(o instanceof SoftButtonObject) {
-            SoftButtonObject softButtonObject = (SoftButtonObject) o;
-            if (softButtonObject.getName().equals(this.getName())) {
-                return true;
-            }
+                SoftButtonObject softButtonObject = (SoftButtonObject) o;
+                if(softButtonObject.getName() != null){
+                    if (softButtonObject.getName().equals(this.getName())) {
+                        return true;
+                    }
+                }
         }
         return false;
     }

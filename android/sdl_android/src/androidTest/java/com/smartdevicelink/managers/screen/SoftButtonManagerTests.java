@@ -320,13 +320,20 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         softButtonObject2 = new SoftButtonObject( "test23123", softButtonState2, null);
         assertFalse(softButtonObject1.equals(softButtonObject2));
 
-        //Case 3 should return false because one of the objects is false
+        //Case 3 should return false because one of the objects is null
         softButtonObject1 = new SoftButtonObject( "test", softButtonState1, null);
         softButtonObject2 = null;
         assertFalse(softButtonObject1.equals(softButtonObject2));
 
-        //Case4 should return false because a softButtonObject was not passed to this method{
+        //Case4 should return false because a softButtonObject was not passed to this method
+        softButtonObject1 = new SoftButtonObject( "test", softButtonState1, null);
         assertFalse(softButtonObject1.equals(softButtonState1));
+
+        //Case5 if SoftButton object name is null that you are trying to compare
+        softButtonObject1 = new SoftButtonObject( "test", softButtonState1, null);
+        softButtonObject2 = new SoftButtonObject( null, softButtonState2, null);
+        assertFalse(softButtonObject1.equals(softButtonObject2));
+
 
     }
 
