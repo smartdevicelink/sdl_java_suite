@@ -470,7 +470,7 @@ public class SystemCapabilityManager {
 		return capability;
 	}
 
-	/**
+	/** Gets the capability object that corresponds to the supplied capability type by calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds.
 	 * @param systemCapabilityType Type of capability desired
 	 * @param scListener callback to execute upon retrieving capability
 	 */
@@ -487,7 +487,7 @@ public class SystemCapabilityManager {
 		retrieveCapability(systemCapabilityType, scListener, null);
 	}
 
-	/**
+	/** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately if available. Otherwise returns a null object and works in the background to retrieve the capability for the next call
 	 * @param systemCapabilityType Type of capability desired
 	 * @return Desired capability if it is cached in the manager, otherwise returns a null object
 	 * and works in the background to retrieve the capability for the next call
@@ -504,7 +504,8 @@ public class SystemCapabilityManager {
 	}
 
 	/**
-	 * Add a listener to be called whenever a new capability is retrieved
+	 * Add a listener to be called whenever a new capability is retrieved.
+	 * This method automatically subscribes to the supplied capability type and may call the listener multiple times if there are future updates unlike getCapability() that only calls the listener one time.
 	 * @param systemCapabilityType Type of capability desired
 	 * @param listener callback to execute upon retrieving capability
 	 */
@@ -524,6 +525,7 @@ public class SystemCapabilityManager {
 	 * Remove an OnSystemCapabilityListener that was previously added
 	 * @param systemCapabilityType Type of capability
 	 * @param listener the listener that should be removed
+	 * @return boolean that represents whether the removal was successful or not
 	 */
 	public boolean removeOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener){
 		boolean success = false;
