@@ -67,7 +67,7 @@ public class FileManager extends BaseFileManager {
 	int artworkRetryCount, fileRetryCount;
 
 	public FileManager(ISdl internalInterface, Context context, FileManagerConfig fileManagerConfig) {
-		super(internalInterface);
+		super(internalInterface, fileManagerConfig);
 
 		// setup
 		artworkRetryCount = fileManagerConfig.getArtworkRetryCount();
