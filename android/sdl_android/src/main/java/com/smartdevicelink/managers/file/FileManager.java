@@ -64,11 +64,15 @@ import java.lang.ref.WeakReference;
 public class FileManager extends BaseFileManager {
 
 	private final WeakReference<Context> context;
+	int artworkRetryCount, fileRetryCount;
 
-	public FileManager(ISdl internalInterface, Context context) {
+	public FileManager(ISdl internalInterface, Context context, FileManagerConfig fileManagerConfig) {
+		super(internalInterface);
 
 		// setup
-		super(internalInterface);
+		artworkRetryCount = fileManagerConfig.getArtworkRetryCount();
+		fileRetryCount = fileManagerConfig.getFileRetryCount();
+
 		this.context = new WeakReference<>(context);
 	}
 
