@@ -1046,7 +1046,7 @@ public class SdlManager extends BaseSdlManager{
 		/**
 		 * Sets the FileManagerConfig for the session. <br>
 		 * <strong>Note: If not set, the default configuration will be used.</strong>
-		 * @param FileManagerConfig - configuration options
+		 * @param fileManagerConfig - configuration options
 		 */
 		public Builder setFileManagerConfig (final FileManagerConfig fileManagerConfig){
 			sdlManager.fileManagerConfig = fileManagerConfig;
