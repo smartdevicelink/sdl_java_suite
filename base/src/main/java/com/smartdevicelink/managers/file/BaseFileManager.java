@@ -59,6 +59,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -83,11 +84,15 @@ abstract class BaseFileManager extends BaseSubManager {
 	final static int SPACE_AVAILABLE_MAX_VALUE = 2000000000;
 	private List<String> remoteFiles, uploadedEphemeralFileNames;
 	private int bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
+	private FileManagerConfig fileManagerConfig;
+	Hashtable<String, Integer> fileRetryDictionary
+			= new Hashtable<String, Integer>();
 
-	BaseFileManager(ISdl internalInterface) {
+	BaseFileManager(ISdl internalInterface, FileManagerConfig fileManagerConfig) {
 
 		// setup
 		super(internalInterface);
+		this.fileManagerConfig = fileManagerConfig;
 		uploadedEphemeralFileNames = new ArrayList<>();
 	}
 
@@ -299,9 +304,28 @@ abstract class BaseFileManager extends BaseSubManager {
 
 					remoteFiles.add(file.getName());
 					uploadedEphemeralFileNames.add(file.getName());
+
+					if(listener != null){
+						listener.onComplete(putFileResponse.getSuccess());
+					}
 				}
-				if(listener != null){
-					listener.onComplete(putFileResponse.getSuccess());
+				else{   //If Not success check if File can be re-uploaded according to FileManagerConfig retry attempts
+					if(!fileRetryDictionary.containsKey(file.getName())){
+							if(file instanceof SdlArtwork){
+								fileRetryDictionary.put(file.getName(),fileManagerConfig.getArtworkRetryCount());
+							}
+							else{
+								fileRetryDictionary.put(file.getName(),fileManagerConfig.getFileRetryCount());
+							}
+					}
+					if(fileRetryDictionary.get(file.getName())>0){
+						int tempForSubtraction = fileRetryDictionary.get(file.getName());
+						tempForSubtraction = tempForSubtraction-1;
+						fileRetryDictionary.put(file.getName(),tempForSubtraction);
+						uploadFile(file,listener);
+					}else if (listener != null){
+						listener.onComplete(putFileResponse.getSuccess());
+					}
 				}
 			}
 
