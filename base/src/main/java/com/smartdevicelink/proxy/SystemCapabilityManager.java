@@ -424,8 +424,8 @@ public class SystemCapabilityManager {
 	 */
 	public boolean supportsSubscriptions() {
 		if (callback != null && callback.getSdlMsgVersion() != null) {
-			com.smartdevicelink.util.Version onSystemCapabilityNotificationRPCVersion = new com.smartdevicelink.util.Version(5, 1, 0);
-			com.smartdevicelink.util.Version headUnitRPCVersion = new com.smartdevicelink.util.Version(callback.getSdlMsgVersion());
+			Version onSystemCapabilityNotificationRPCVersion = new Version(5, 1, 0);
+			Version headUnitRPCVersion = new Version(callback.getSdlMsgVersion());
 			return headUnitRPCVersion.isNewerThan(onSystemCapabilityNotificationRPCVersion) >= 0;
 		}
 		return false;
