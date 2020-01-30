@@ -495,7 +495,7 @@ public class SystemCapabilityManager {
 	}
 
 	/**
-	 * Adds a listener to be called whenever a new capability is retrieved. This method automatically subscribes to the supplied capability type and may call the listener multiple times if there are future updates unlike getCapability() that only calls the listener one time.
+	 * Adds a listener to be called whenever a new capability is retrieved. This method automatically subscribes to the supplied capability type and may call the listener multiple times if there are future updates, unlike getCapability() methods, which only call the listener one time.
 	 * @param systemCapabilityType Type of capability desired
 	 * @param listener callback to execute upon retrieving capability
 	 */
