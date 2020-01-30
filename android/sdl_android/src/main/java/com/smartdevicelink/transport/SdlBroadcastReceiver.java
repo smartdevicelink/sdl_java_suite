@@ -303,7 +303,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * main looper to continue forward. This still leaves the SdlRouterService killed, but prevents
 	 * an ANR to the app that makes the startForegroundService call.
 	 */
-	static private void setForegroundExceptionHandler() {
+	static protected void setForegroundExceptionHandler() {
 		final Thread.UncaughtExceptionHandler defaultUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
 		if(defaultUncaughtExceptionHandler != foregroundExceptionHandler){
 			foregroundExceptionHandler = new Thread.UncaughtExceptionHandler() {

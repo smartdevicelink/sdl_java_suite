@@ -133,13 +133,14 @@ public class SdlRouterStatusProvider {
 			context.startService(bindingIntent);
 		}else {
 			bindingIntent.putExtra(FOREGROUND_EXTRA, true);
+			SdlBroadcastReceiver.setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
 			context.startForegroundService(bindingIntent);
 
 		}
 		bindingIntent.setAction( TransportConstants.BIND_REQUEST_TYPE_STATUS);
 		return context.bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
 	}
-	
+
 	private void unBindFromService(){
 		try{
 			if(context!=null && routerConnection!=null){
