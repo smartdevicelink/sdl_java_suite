@@ -534,7 +534,7 @@ public class SystemCapabilityManager {
 		return success;
 	}
 
-	/** Sends GetSystemCapability request for the supplied SystemCapabilityType and call the listener's callback if the systemCapabilityType is queryable
+	/** Sends a GetSystemCapability request for the supplied SystemCapabilityType and call the listener's callback if the systemCapabilityType is queryable
 	 * @param systemCapabilityType Type of capability desired
 	 * @param subscribe flag to subscribe to updates of the supplied capability type. True means subscribe; false means cancel subscription; null means don't change current subscription status.
 	 */
