@@ -289,20 +289,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		verify(onSystemCapabilityListener, times(1)).onCapabilityRetrieved(any(Object.class));
 
 
-		// Test case 3 (capability cached, listener not null, forceUpdate true)
-		internalInterface = mock(ISdl.class);
-		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
-		scm = new SystemCapabilityManager(internalInterface);
-		onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
-		doAnswer(createOnSendGetSystemCapabilityAnswer(true)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
-		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
-		retrievedCapability =  (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, true);
-		assertTrue(Test.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
-		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
-		verify(onSystemCapabilityListener, times(1)).onCapabilityRetrieved(any(Object.class));
-
-
-		// Test case 4 (capability cached, listener null, forceUpdate true)
+		// Test case 3 (capability cached, listener null, forceUpdate true)
 		internalInterface = mock(ISdl.class);
 		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
 		scm = new SystemCapabilityManager(internalInterface);
@@ -314,7 +301,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
 
 
-		// Test case 5 (capability cached, listener null, forceUpdate false)
+		// Test case 4 (capability cached, listener null, forceUpdate false)
 		internalInterface = mock(ISdl.class);
 		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
 		scm = new SystemCapabilityManager(internalInterface);
