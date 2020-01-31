@@ -257,18 +257,15 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		return onSendGetSystemCapabilityAnswer;
 	}
 
-	public void testGetCapabilityWithSubscriptionsSupported() {
+	public void testGetCapability() {
 		ISdl internalInterface;
 		SystemCapabilityManager scm;
 		OnSystemCapabilityListener onSystemCapabilityListener;
 		VideoStreamingCapability retrievedCapability;
-		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(6, 0); // This version supports capability subscriptions
-		sdlMsgVersion.setPatchVersion(0);
 
 
 		// Test case 1 (capability not cached, listener not null, forceUpdate false)
 		internalInterface = mock(ISdl.class);
-		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
 		scm = new SystemCapabilityManager(internalInterface);
 		onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
 		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
@@ -281,7 +278,6 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		// Test case 2 (capability cached, listener not null, forceUpdate true)
 		internalInterface = mock(ISdl.class);
-		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
 		scm = new SystemCapabilityManager(internalInterface);
 		onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
 		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
@@ -294,7 +290,6 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		// Test case 3 (capability cached, listener null, forceUpdate true)
 		internalInterface = mock(ISdl.class);
-		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
 		scm = new SystemCapabilityManager(internalInterface);
 		onSystemCapabilityListener = null;
 		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
@@ -306,7 +301,6 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		// Test case 4 (capability cached, listener null, forceUpdate false)
 		internalInterface = mock(ISdl.class);
-		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
 		scm = new SystemCapabilityManager(internalInterface);
 		onSystemCapabilityListener = null;
 		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
@@ -316,7 +310,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
 	}
 
-	public void testAddOnSystemCapabilityListenerWithSubscriptionsSupported() {
+	public void testAddOnSystemCapabilityListenerWithSubscriptionsSupportedAndCapabilityCached() {
 		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(6, 0); // This version supports capability subscriptions
 		sdlMsgVersion.setPatchVersion(0);
 		ISdl internalInterface = mock(ISdl.class);
@@ -359,6 +353,141 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
 		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
 		verify(internalInterface, times(2)).sendRPC(any(GetSystemCapability.class));
+	}
+
+	public void testAddOnSystemCapabilityListenerWithSubscriptionsSupportedAndCapabilityNotCached() {
+		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(6, 0); // This version supports capability subscriptions
+		sdlMsgVersion.setPatchVersion(0);
+		ISdl internalInterface = mock(ISdl.class);
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		SystemCapabilityManager scm = new SystemCapabilityManager(internalInterface);
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, null);
+
+
+		// Add listener1
+		// When the first listener is added, GetSystemCapability request should go out with subscribe=true
+		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, true)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener2
+		OnSystemCapabilityListener onSystemCapabilityListener2 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+		verify(onSystemCapabilityListener2, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener3
+		OnSystemCapabilityListener onSystemCapabilityListener3 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(onSystemCapabilityListener3, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Remove listener1
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+
+
+		// Remove listener2
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+
+
+		// Remove listener3
+		// When the last listener is removed, GetSystemCapability request should go out with subscribe=false
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(internalInterface, times(2)).sendRPC(any(GetSystemCapability.class));
+	}
+
+	public void testAddOnSystemCapabilityListenerWithSubscriptionsNotSupportedAndCapabilityCached() {
+		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(5, 0); // This version doesn't support capability subscriptions
+		sdlMsgVersion.setPatchVersion(0);
+		ISdl internalInterface = mock(ISdl.class);
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		SystemCapabilityManager scm = new SystemCapabilityManager(internalInterface);
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
+
+
+		// Add listener1
+		// When the first listener is added, GetSystemCapability request should not go out because subscription is not supported and the capability is cached
+		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, true)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener2
+		OnSystemCapabilityListener onSystemCapabilityListener2 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+		verify(onSystemCapabilityListener2, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener3
+		OnSystemCapabilityListener onSystemCapabilityListener3 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(onSystemCapabilityListener3, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Remove listener1
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+
+
+		// Remove listener2
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+
+
+		// Remove listener3
+		// When the last listener is removed, GetSystemCapability request should not go out because subscription is not supported
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+	}
+
+	public void testAddOnSystemCapabilityListenerWithSubscriptionsNotSupportedAndCapabilityNotCached() {
+		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(5, 0); // This version doesn't support capability subscriptions
+		sdlMsgVersion.setPatchVersion(0);
+		ISdl internalInterface = mock(ISdl.class);
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		SystemCapabilityManager scm = new SystemCapabilityManager(internalInterface);
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, null);
+
+
+		// Add listener1
+		// When the first listener is added, GetSystemCapability request should out because because capability is not cached
+		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, true)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener2
+		OnSystemCapabilityListener onSystemCapabilityListener2 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+		verify(onSystemCapabilityListener2, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener3
+		OnSystemCapabilityListener onSystemCapabilityListener3 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(onSystemCapabilityListener3, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Remove listener1
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+
+
+		// Remove listener2
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+
+
+		// Remove listener3
+		// When the last listener is removed, GetSystemCapability request should not go out because subscription is not supported
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
 	}
 
 	public void testListConversion(){
