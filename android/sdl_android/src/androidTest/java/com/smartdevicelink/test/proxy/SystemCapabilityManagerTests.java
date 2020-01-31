@@ -257,7 +257,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		return onSendGetSystemCapabilityAnswer;
 	}
 
-	public void testGetCapability() {
+	public void testGetCapabilityWithSubscriptionsSupported() {
 		ISdl internalInterface;
 		SystemCapabilityManager scm;
 		OnSystemCapabilityListener onSystemCapabilityListener;
