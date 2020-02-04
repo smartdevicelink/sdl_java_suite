@@ -52,23 +52,23 @@ public class SdlArtwork extends SdlFile implements Cloneable{
 
     /**
      * Creates a new instance of SdlArtwork
-     * @param fileName a String value representing the name that will be used to store the file in the head unit
+     * @param fileName a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
      * @param fileType a FileType enum value representing the type of the file
      * @param filePath a String value representing the the location of the file
      * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
      */
-    public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, String filePath, boolean persistentFile) {
+    public SdlArtwork(String fileName, @NonNull FileType fileType, String filePath, boolean persistentFile) {
         super(fileName, fileType, filePath, persistentFile);
     }
 
     /**
      * Creates a new instance of SdlArtwork
-     * @param fileName a String value representing the name that will be used to store the file in the head unit
+     * @param fileName a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
      * @param fileType a FileType enum value representing the type of the file
      * @param data a byte array representing the data of the file
      * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
      */
-    public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, byte[] data, boolean persistentFile) {
+    public SdlArtwork(String fileName, @NonNull FileType fileType, byte[] data, boolean persistentFile) {
         super(fileName, fileType, data, persistentFile);
     }
 

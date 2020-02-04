@@ -116,7 +116,7 @@ public class SdlFile{
      * Sets the name of the file
      * @param fileName a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
      */
-    public void setName(String fileName){
+    public void setName(String fileName) {
         if (fileName != null) {
             this.shouldAutoGenerateName = false;
             this.fileName = fileName;
@@ -124,10 +124,10 @@ public class SdlFile{
             this.shouldAutoGenerateName = true;
             if (this.getFileData() != null) {
                 this.fileName = generateFileNameFromData(this.getFileData());
-            } else if (this.getUri() != null){
-                this.fileName = generateFileNameFromUri(uri);
-            } else if (this.getResourceId() != 0){
-                this.fileName = generateFileNameFromResourceId(this.id);
+            } else if (this.getUri() != null) {
+                this.fileName = generateFileNameFromUri(this.getUri());
+            } else if (this.getResourceId() != 0) {
+                this.fileName = generateFileNameFromResourceId(this.getResourceId());
             }
         }
     }
@@ -273,7 +273,7 @@ public class SdlFile{
     }
 
     /**
-     * Generates a file name from data by hashing the uri and returning the last 16 chars
+     * Generates a file name from uri by hashing the uri string and returning the last 16 chars
      * @param uri a URI value representing a file's location
      * @return a String value representing the name that will be used to store the file in the head unit
      */
@@ -282,7 +282,7 @@ public class SdlFile{
     }
 
     /**
-     * Generates a file name from data by hashing the id and returning the last 16 chars
+     * Generates a file name from resourceId by hashing the id and returning the last 16 chars
      * @param id an int value representing the android resource id of the file
      * @return a String value representing the name that will be used to store the file in the head unit
      */
