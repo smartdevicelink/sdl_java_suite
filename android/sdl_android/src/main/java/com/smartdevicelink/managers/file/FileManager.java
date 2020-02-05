@@ -64,18 +64,18 @@ import java.lang.ref.WeakReference;
 public class FileManager extends BaseFileManager {
 
 	private final WeakReference<Context> context;
-	int artworkRetryCount, fileRetryCount;
 
-	public FileManager(ISdl internalInterface, Context context, FileManagerConfig fileManagerConfig) {
-		super(internalInterface, fileManagerConfig);
-
-		// setup
-		artworkRetryCount = fileManagerConfig.getArtworkRetryCount();
-		fileRetryCount = fileManagerConfig.getFileRetryCount();
+	@Deprecated
+	public FileManager(ISdl internalInterface, Context context) {
+		super(internalInterface);
 
 		this.context = new WeakReference<>(context);
 	}
 
+	public FileManager(ISdl internalInterface, Context context, FileManagerConfig fileManagerConfig) {
+		super(internalInterface, fileManagerConfig);
+		this.context = new WeakReference<>(context);
+	}
 	/**
 	 * Creates and returns a PutFile request that would upload a given SdlFile
 	 * @param file SdlFile with fileName and one of A) fileData, B) Uri, or C) resourceID set
