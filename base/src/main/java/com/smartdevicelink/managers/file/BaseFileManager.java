@@ -49,6 +49,7 @@ import com.smartdevicelink.proxy.rpc.ListFiles;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
 import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
+import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
@@ -86,7 +87,7 @@ abstract class BaseFileManager extends BaseSubManager {
 	private List<String> remoteFiles, uploadedEphemeralFileNames;
 	private int bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
 	private FileManagerConfig fileManagerConfig;
-	Hashtable<String, Integer> fileRetryDictionary
+	Hashtable<String, Integer> failedFileUploadsIndex
 			= new Hashtable<String, Integer>();
 
 	@Deprecated
@@ -271,17 +272,17 @@ abstract class BaseFileManager extends BaseSubManager {
 							for (RPCRequest req : requests) {
 								if (key.equals(((PutFile) req).getSdlFileName())) {
 									// file failed to upload
-									if (!fileRetryDictionary.containsKey(key)) {
+									if (!failedFileUploadsIndex.containsKey(key)) {
 										if (((PutFile) req).getFileType().toString().equals("GRAPHIC_BMP") ||
 												((PutFile) req).getFileType().toString().equals("GRAPHIC_JPEG") || (
 												(PutFile) req).getFileType().toString().equals("GRAPHIC_PNG")) {
-											fileRetryDictionary.put(key, fileManagerConfig.getArtworkRetryCount());
+											failedFileUploadsIndex.put(key, fileManagerConfig.getArtworkRetryCount());
 										} else {
-											fileRetryDictionary.put(key, fileManagerConfig.getFileRetryCount());
+											failedFileUploadsIndex.put(key, fileManagerConfig.getFileRetryCount());
 										}
 									}
-									if (fileRetryDictionary != null && fileRetryDictionary.get(key) > 0) {
-										fileRetryDictionary.put(key, fileRetryDictionary.get(key) - 1);
+									if (failedFileUploadsIndex != null && failedFileUploadsIndex.get(key) > 0) {
+										failedFileUploadsIndex.put(key, failedFileUploadsIndex.get(key) - 1);
 										req.setOnRPCResponseListener(null);
 										reRequest.add(req); //add request to new list
 										break;
@@ -292,7 +293,6 @@ abstract class BaseFileManager extends BaseSubManager {
 							}
 						}
 						if (!reRequest.isEmpty()) { // if there are files to be sent.
-							Log.i("Julian", "onFinished: this is were we are resending files " + ((PutFile) reRequest.get(0)).getSdlFileName());
 							sendMultipleFileOperations(reRequest, listener, customErrors);
 						} else {
 							if (listener != null) { // no more retries available send all errors back.
@@ -349,7 +349,6 @@ abstract class BaseFileManager extends BaseSubManager {
 			return;
 		}
 		PutFile putFile = createPutFile(file);
-
 		putFile.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
@@ -364,30 +363,25 @@ abstract class BaseFileManager extends BaseSubManager {
 						listener.onComplete(putFileResponse.getSuccess());
 					}
 				}
-				else{   //If Not success check if File can be re-uploaded according to FileManagerConfig retry attempts
-					if(!fileRetryDictionary.containsKey(file.getName())){
-							if(file instanceof SdlArtwork){
-								fileRetryDictionary.put(file.getName(),fileManagerConfig.getArtworkRetryCount());
-							}
-							else{
-								fileRetryDictionary.put(file.getName(),fileManagerConfig.getFileRetryCount());
-							}
-					}
-					if(fileRetryDictionary.get(file.getName())>0){
-						int tempForSubtraction = fileRetryDictionary.get(file.getName());
-						tempForSubtraction = tempForSubtraction-1;
-						fileRetryDictionary.put(file.getName(),tempForSubtraction);
-						uploadFile(file,listener);
-					}else if (listener != null){
-						listener.onComplete(putFileResponse.getSuccess());
-					}
-				}
 			}
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
 				super.onError(correlationId, resultCode, info);
-				if(listener != null){
+				//Checking if file has already made an attempt at uploading
+				if(!failedFileUploadsIndex.containsKey(file.getName())){
+					if(file.getType().equals(FileType.GRAPHIC_JPEG) || file.getType().equals(FileType.GRAPHIC_BMP) || (file.getType().equals(FileType.GRAPHIC_PNG))){
+						failedFileUploadsIndex.put(file.getName(),fileManagerConfig.getArtworkRetryCount());
+					}
+					else{
+						failedFileUploadsIndex.put(file.getName(),fileManagerConfig.getFileRetryCount());
+					}
+				}
+				//checking file retry upload attempts, if re upload allowed upload, if not completed the listener.
+				if(failedFileUploadsIndex.get(file.getName())>0){
+					failedFileUploadsIndex.put(file.getName(), failedFileUploadsIndex.get(file.getName()) - 1);
+					uploadFile(file,listener);
+				}else if (listener != null){
 					listener.onComplete(false);
 				}
 			}
