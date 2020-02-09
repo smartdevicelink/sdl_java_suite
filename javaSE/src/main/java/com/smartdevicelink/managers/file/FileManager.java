@@ -55,11 +55,19 @@ import com.smartdevicelink.util.FileUtls;
  */
 public class FileManager extends BaseFileManager {
 
+	@Deprecated
 	public FileManager(ISdl internalInterface) {
 
 		// setup
 		super(internalInterface);
 	}
+
+	public FileManager(ISdl internalInterface, FileManagerConfig fileManagerConfig) {
+
+		// setup
+		super(internalInterface, fileManagerConfig);
+	}
+
 
 	/**
 	 * Creates and returns a PutFile request that would upload a given SdlFile
