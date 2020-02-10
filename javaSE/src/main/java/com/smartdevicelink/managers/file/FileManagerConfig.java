@@ -20,9 +20,7 @@ public class FileManagerConfig {
     }
     public void setArtworkRetryCount(int artworkRetryCount) { this.artworkRetryCount = artworkRetryCount; }
 
-    public int getArtworkRetryCount() {
-        return artworkRetryCount;
-    }
+    public int getArtworkRetryCount() { return artworkRetryCount; }
 
     public void setFileRetryCount(int fileRetryCount) { this.fileRetryCount = fileRetryCount; }
 
