@@ -44,6 +44,7 @@ import android.util.Log;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.audio.AudioStreamManager;
 import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.managers.file.FileManagerConfig;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
@@ -124,6 +125,7 @@ public class SdlManager extends BaseSdlManager{
 
 	// Managers
 	private PermissionManager permissionManager;
+	private FileManagerConfig fileManagerConfig;
 	private FileManager fileManager;
 	private LockScreenManager lockScreenManager;
     private ScreenManager screenManager;
@@ -308,7 +310,7 @@ public class SdlManager extends BaseSdlManager{
 	protected void initialize(){
 		// Instantiate sub managers
 		this.permissionManager = new PermissionManager(_internalInterface);
-		this.fileManager = new FileManager(_internalInterface, context);
+		this.fileManager = new FileManager(_internalInterface, context, fileManagerConfig);
 		if (lockScreenConfig.isEnabled()) {
 			this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
 		}
@@ -512,6 +514,8 @@ public class SdlManager extends BaseSdlManager{
 	// PROTECTED GETTERS
 
 	protected LockScreenConfig getLockScreenConfig() { return lockScreenConfig; }
+
+	protected FileManagerConfig getFileManagerConfig() { return fileManagerConfig; }
 
 	// SENDING REQUESTS
 
@@ -1030,6 +1034,16 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
+		 * Sets the FileManagerConfig for the session. <br>
+		 * <strong>Note: If not set, the default configuration will be used.</strong>
+		 * @param fileManagerConfig - configuration options
+		 */
+		public Builder setFileManagerConfig (final FileManagerConfig fileManagerConfig){
+			sdlManager.fileManagerConfig = fileManagerConfig;
+			return this;
+		}
+
+		/**
 		 * Sets the LockScreenConfig for the session. <br>
 		 * <strong>Note: If not set, the default configuration will be used.</strong>
 		 * @param lockScreenConfig - configuration options
@@ -1179,6 +1193,11 @@ public class SdlManager extends BaseSdlManager{
 			if (sdlManager.lockScreenConfig == null){
 				// if lock screen params are not set, use default
 				sdlManager.lockScreenConfig = new LockScreenConfig();
+			}
+
+			if(sdlManager.fileManagerConfig == null){
+				//if FileManagerConfig is not set use default
+				sdlManager.fileManagerConfig = new FileManagerConfig();
 			}
 
 			if (sdlManager.hmiLanguage == null){

@@ -83,12 +83,22 @@ abstract class BaseFileManager extends BaseSubManager {
 	final static int SPACE_AVAILABLE_MAX_VALUE = 2000000000;
 	private List<String> remoteFiles, uploadedEphemeralFileNames;
 	private int bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
+	private FileManagerConfig fileManagerConfig;
 
+	@Deprecated
 	BaseFileManager(ISdl internalInterface) {
 
 		// setup
 		super(internalInterface);
 		uploadedEphemeralFileNames = new ArrayList<>();
+	}
+
+	BaseFileManager(ISdl internalInterface, FileManagerConfig fileManagerConfig) {
+
+		// setup
+		super(internalInterface);
+		uploadedEphemeralFileNames = new ArrayList<>();
+		this.fileManagerConfig = fileManagerConfig;
 	}
 
 	@Override
