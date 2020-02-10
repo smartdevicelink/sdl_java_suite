@@ -379,7 +379,6 @@ abstract class BaseFileManager extends BaseSubManager {
 			public void onError(int correlationId, Result resultCode, String info) {
 				super.onError(correlationId, resultCode, info);
 				if(checkFileForReUpload(file)){
-					Log.i("Julian", "onError: ReUploading file");
 					uploadFile(file, listener);
 				}else if (listener != null){
 					listener.onComplete(false);
