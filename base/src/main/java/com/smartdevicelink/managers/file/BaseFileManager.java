@@ -263,8 +263,10 @@ abstract class BaseFileManager extends BaseSubManager {
 					}
 				} else if (!deletionOperation) {
 					final List<RPCRequest> reRequest = new ArrayList<>();
-					if (errors.isEmpty() && customErrors.isEmpty() && listener != null) {
-						listener.onComplete(null); //if first time no errors and listener is not null
+					if (errors.isEmpty() && !customErrors.isEmpty()) {
+						if(listener != null){
+							listener.onComplete(customErrors); //last file uploaded successfully, had another file in list run out of attempts first.
+						}
 					} else {
 						Set<String> keys = errors.keySet();
 						for (String key : keys) {

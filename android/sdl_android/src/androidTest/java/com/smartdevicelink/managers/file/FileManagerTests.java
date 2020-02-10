@@ -261,7 +261,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 
 		FileManagerConfig fileManagerConfig = new FileManagerConfig();
 		fileManagerConfig.setArtworkRetryCount(2);
-		validFile.setType(FileType.GRAPHIC_PNG);
+		validFile.setType(FileType.GRAPHIC_JPEG);
 		final FileManager fileManager = new FileManager(internalInterface, mTestContext,fileManagerConfig);
 		fileManager.start(new CompletionListener() {
 			@Override
@@ -663,5 +663,12 @@ public class FileManagerTests extends AndroidTestCase2 {
 				assertTrue(fileManager.hasUploadedFile(file));
 			}
 		});
+	}
+	public void testFileManagerConfig(){
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		fileManagerConfig.setFileRetryCount(2);
+		fileManagerConfig.setArtworkRetryCount(2);
+		assertEquals(fileManagerConfig.getArtworkRetryCount(), 2);
+		assertEquals(fileManagerConfig.getFileRetryCount(), 2);
 	}
 }
