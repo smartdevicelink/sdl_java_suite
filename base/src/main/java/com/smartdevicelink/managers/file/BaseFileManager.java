@@ -272,18 +272,9 @@ abstract class BaseFileManager extends BaseSubManager {
 							for (RPCRequest req : requests) {
 								if (key.equals(((PutFile) req).getSdlFileName())) {
 									// file failed to upload
-									if (!failedFileUploadsIndex.containsKey(key)) {
-										if (((PutFile) req).getFileType().toString().equals("GRAPHIC_BMP") ||
-												((PutFile) req).getFileType().toString().equals("GRAPHIC_JPEG") || (
-												(PutFile) req).getFileType().toString().equals("GRAPHIC_PNG")) {
-											failedFileUploadsIndex.put(key, fileManagerConfig.getArtworkRetryCount());
-										} else {
-											failedFileUploadsIndex.put(key, fileManagerConfig.getFileRetryCount());
-										}
-									}
-									if (failedFileUploadsIndex != null && failedFileUploadsIndex.get(key) > 0) {
-										failedFileUploadsIndex.put(key, failedFileUploadsIndex.get(key) - 1);
+									if(checkRequestForReUpload((PutFile) req)){
 										req.setOnRPCResponseListener(null);
+
 										reRequest.add(req); //add request to new list
 										break;
 									} else {
@@ -330,13 +321,32 @@ abstract class BaseFileManager extends BaseSubManager {
 							uploadedEphemeralFileNames.add(fileNameMap.get(correlationId));
 						}
 					}
-				}else if(fileNameMap != null && fileNameMap.get(correlationId) != null){
-					errors.put(fileNameMap.get(correlationId),putFileResponse.getSuccess().toString());
 				}
 			}
 		};
 
 		internalInterface.sendRequests(requests, onMultipleRequestListener);
+	}
+
+	 /**
+	  *  Check to see if PutFile Request can be reUploaded
+	 * @param req PutFile req is a failed file upload
+	 */
+	private boolean checkRequestForReUpload(PutFile req){
+		if (!failedFileUploadsIndex.containsKey(req.getSdlFileName())) {
+			if (req.getFileType().toString().equals("GRAPHIC_BMP") ||
+					 req.getFileType().toString().equals("GRAPHIC_JPEG") ||
+					 req.getFileType().toString().equals("GRAPHIC_PNG")){
+				failedFileUploadsIndex.put(req.getSdlFileName(), fileManagerConfig.getArtworkRetryCount());
+			} else {
+				failedFileUploadsIndex.put(req.getSdlFileName(), fileManagerConfig.getFileRetryCount());
+			}
+		}
+		if (failedFileUploadsIndex != null && failedFileUploadsIndex.get(req.getSdlFileName()) > 0) {
+			failedFileUploadsIndex.put(req.getSdlFileName(), failedFileUploadsIndex.get(req.getSdlFileName()) - 1);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -357,17 +367,12 @@ abstract class BaseFileManager extends BaseSubManager {
 				PutFileResponse putFileResponse = (PutFileResponse) response;
 				if(putFileResponse.getSuccess()){
 					bytesAvailable = putFileResponse.getSpaceAvailable() != null ? putFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
+
 					remoteFiles.add(file.getName());
 					uploadedEphemeralFileNames.add(file.getName());
-					if(listener != null){
-						listener.onComplete(putFileResponse.getSuccess());
-					}
-				}else if(checkFileForReUpload(file)){
-					uploadFile(file, listener);
-				}else{
-					if(listener != null){
-						listener.onComplete(putFileResponse.getSuccess());
-					}
+				}
+				if(listener != null){
+					listener.onComplete(putFileResponse.getSuccess());
 				}
 			}
 
@@ -375,6 +380,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			public void onError(int correlationId, Result resultCode, String info) {
 				super.onError(correlationId, resultCode, info);
 				if(checkFileForReUpload(file)){
+					Log.i("Julian", "onError: ReUploading file");
 					uploadFile(file, listener);
 				}else if (listener != null){
 					listener.onComplete(false);
@@ -392,7 +398,9 @@ abstract class BaseFileManager extends BaseSubManager {
 	private boolean checkFileForReUpload(SdlFile file) {
 		//Checking if file has already made an attempt at uploading
 		if(!failedFileUploadsIndex.containsKey(file.getName())){
-			if(file.getType().equals(FileType.GRAPHIC_JPEG) || file.getType().equals(FileType.GRAPHIC_BMP) || (file.getType().equals(FileType.GRAPHIC_PNG))){
+			if(file.getType().equals(FileType.GRAPHIC_JPEG) ||
+					file.getType().equals(FileType.GRAPHIC_BMP) ||
+					file.getType().equals(FileType.GRAPHIC_PNG)){
 				failedFileUploadsIndex.put(file.getName(),fileManagerConfig.getArtworkRetryCount());
 			}
 			else{
