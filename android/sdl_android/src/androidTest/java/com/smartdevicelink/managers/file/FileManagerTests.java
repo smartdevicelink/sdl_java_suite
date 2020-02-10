@@ -309,10 +309,10 @@ public class FileManagerTests extends AndroidTestCase2 {
 	public void testFileUploadSuccess(){
 		ISdl internalInterface = mock(ISdl.class);
 
-		doAnswer(onListFilesSuccess).when(internalInterface).sendRPCRequest(any(ListFiles.class));
-		doAnswer(onPutFileSuccess).when(internalInterface).sendRPCRequest(any(PutFile.class));
-
-		final FileManager fileManager = new FileManager(internalInterface, mTestContext);
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
+		doAnswer(onPutFileSuccess).when(internalInterface).sendRPC(any(PutFile.class));
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
 		fileManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
