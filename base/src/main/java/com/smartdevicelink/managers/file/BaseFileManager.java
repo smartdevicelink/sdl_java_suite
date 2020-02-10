@@ -249,7 +249,6 @@ abstract class BaseFileManager extends BaseSubManager {
 					fileNameMap.put(correlationid, ((DeleteFile) requests.get(fileNum++)).getSdlFileName());
 				}else{
 					fileNameMap.put(correlationid, ((PutFile) requests.get(fileNum++)).getSdlFileName());
-
 				}
 			}
 

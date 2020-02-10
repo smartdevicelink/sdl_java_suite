@@ -57,13 +57,11 @@ public class FileManager extends BaseFileManager {
 
 	@Deprecated
 	public FileManager(ISdl internalInterface) {
-
 		// setup
 		super(internalInterface);
 	}
 
 	public FileManager(ISdl internalInterface, FileManagerConfig fileManagerConfig) {
-
 		// setup
 		super(internalInterface, fileManagerConfig);
 	}
