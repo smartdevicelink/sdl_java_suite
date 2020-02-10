@@ -49,6 +49,7 @@ import com.smartdevicelink.proxy.rpc.ListFiles;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
 import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.proxy.rpc.PutFileResponse;
+import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
@@ -361,7 +362,6 @@ abstract class BaseFileManager extends BaseSubManager {
 			return;
 		}
 		PutFile putFile = createPutFile(file);
-
 		putFile.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
@@ -380,7 +380,9 @@ abstract class BaseFileManager extends BaseSubManager {
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
 				super.onError(correlationId, resultCode, info);
-				if(listener != null){
+				if(checkFileForReUpload(file)){
+					uploadFile(file, listener);
+				}else if (listener != null){
 					listener.onComplete(false);
 				}
 			}
@@ -388,6 +390,31 @@ abstract class BaseFileManager extends BaseSubManager {
 
 		internalInterface.sendRPC(putFile);
 	}
+
+	/**
+	 * Check to see if file can be reuploaded
+	 * @param file SdlFile with file name and one of A) fileData, B) Uri, or C) resourceID set
+	 */
+	private boolean checkFileForReUpload(SdlFile file) {
+		//Checking if file has already made an attempt at uploading
+		if(!failedFileUploadsIndex.containsKey(file.getName())){
+			if(file.getType().equals(FileType.GRAPHIC_JPEG) ||
+					file.getType().equals(FileType.GRAPHIC_BMP) ||
+					file.getType().equals(FileType.GRAPHIC_PNG)){
+				failedFileUploadsIndex.put(file.getName(),fileManagerConfig.getArtworkRetryCount());
+			}
+			else{
+				failedFileUploadsIndex.put(file.getName(),fileManagerConfig.getFileRetryCount());
+			}
+		}
+		//checking file retry upload attempts, if re upload allowed upload, if not completed the listener.
+		if(failedFileUploadsIndex.get(file.getName())>0){
+			failedFileUploadsIndex.put(file.getName(), failedFileUploadsIndex.get(file.getName()) - 1);
+			return true;
+		}
+		return false;
+	}
+
 
 	/**
 	 * Attempts to upload a list of SdlFiles to core
