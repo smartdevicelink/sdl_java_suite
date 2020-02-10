@@ -8,6 +8,7 @@ import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
+import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.ListFiles;
@@ -30,6 +31,8 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
@@ -56,6 +59,45 @@ public class FileManagerTests extends AndroidTestCase2 {
 	public void tearDown() throws Exception {
 		super.tearDown();
 	}
+
+	private Answer<Void> onPutFileFailureOnError = new Answer<Void>() {
+		@Override
+		public Void answer(InvocationOnMock invocation) throws Throwable {
+			Object[] args = invocation.getArguments();
+			RPCRequest message = (RPCRequest) args[0];
+			if(message instanceof PutFile){
+				int correlationId = message.getCorrelationID();
+				Result resultCode = Result.REJECTED;
+				PutFileResponse putFileResponse = new PutFileResponse();
+				putFileResponse.setSuccess(false);
+				message.getOnRPCResponseListener().onError(correlationId, resultCode,"Binary data empty");
+			}
+
+
+			return null;
+		}
+	};
+
+	private Answer<Void> onSendRequestsFailOnError = new Answer<Void>() {
+		@Override
+		public Void answer(InvocationOnMock invocation) throws Throwable {
+			Object[] args = invocation.getArguments();
+			List<RPCRequest> rpcs = (List<RPCRequest>) args[0];
+			OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
+			if(rpcs.get(0) instanceof PutFile){
+				Result resultCode = Result.REJECTED;
+				for(RPCRequest message : rpcs){
+					int correlationId = message.getCorrelationID();
+					listener.addCorrelationId(correlationId);
+					PutFileResponse putFileResponse = new PutFileResponse();
+					putFileResponse.setSuccess(true);
+					listener.onError(correlationId, resultCode,"Binary data empty");
+				}
+				listener.onFinished();
+			}
+			return null;
+		}
+	};
 
 	private Answer<Void> onListFilesSuccess = new Answer<Void>() {
 		@Override
@@ -141,6 +183,120 @@ public class FileManagerTests extends AndroidTestCase2 {
 
 	// TESTS
 
+	public void testFileUploadRetry(){
+		final ISdl internalInterface = mock(ISdl.class);
+
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
+		doAnswer(onPutFileFailureOnError).when(internalInterface).sendRPC(any(PutFile.class));
+
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		fileManagerConfig.setFileRetryCount(2);
+		validFile.setType(FileType.AUDIO_MP3);
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext,fileManagerConfig);
+		fileManager.start(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				assertTrue(success);
+				fileManager.uploadFile(validFile, new CompletionListener() {
+					@Override
+					public void onComplete(boolean success) {
+						assertFalse(success);
+						verify(internalInterface, times(4)).sendRPC(any(RPCMessage.class));
+					}
+				});
+			}
+		});
+	}
+
+	public void testArtworkUploadRetry(){
+		final ISdl internalInterface = mock(ISdl.class);
+
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
+		doAnswer(onPutFileFailureOnError).when(internalInterface).sendRPC(any(PutFile.class));
+		final SdlFile validFile2 = new SdlFile();
+		validFile2.setName(Test.GENERAL_STRING + "2");
+		validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile2.setPersistent(false);
+		validFile2.setType(FileType.GRAPHIC_PNG);
+
+		final SdlFile validFile3 = new SdlFile();
+		validFile3.setName(Test.GENERAL_STRING + "3");
+		validFile3.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile3.setPersistent(false);
+		validFile3.setType(FileType.GRAPHIC_BMP);
+
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		fileManagerConfig.setArtworkRetryCount(2);
+		validFile.setType(FileType.GRAPHIC_JPEG);
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext,fileManagerConfig);
+		fileManager.start(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				assertTrue(success);
+				fileManager.uploadFile(validFile, new CompletionListener() {
+					@Override
+					public void onComplete(boolean success) {
+						assertFalse(success);
+						verify(internalInterface, times(4)).sendRPC(any(RPCMessage.class));
+					}
+				});
+
+				fileManager.uploadFile(validFile2, new CompletionListener() {
+					@Override
+					public void onComplete(boolean success) {
+						assertFalse(success);
+						verify(internalInterface, times(7)).sendRPC(any(RPCMessage.class));
+					}
+				});
+
+				fileManager.uploadFile(validFile3, new CompletionListener() {
+					@Override
+					public void onComplete(boolean success) {
+						assertFalse(success);
+						verify(internalInterface, times(10)).sendRPC(any(RPCMessage.class));
+					}
+				});
+			}
+		});
+	}
+
+
+	public void testListFilesUploadRetry(){
+		final ISdl internalInterface = mock(ISdl.class);
+
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
+		doAnswer(onSendRequestsFailOnError).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		SdlFile validFile2 = new SdlFile();
+		validFile2.setName(Test.GENERAL_STRING + "2");
+		validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile2.setPersistent(false);
+		validFile2.setType(FileType.GRAPHIC_JPEG);
+
+		validFile.setType(FileType.AUDIO_WAVE);
+
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		fileManagerConfig.setArtworkRetryCount(2);
+		fileManagerConfig.setFileRetryCount(4);
+
+		final List<SdlFile> list = new ArrayList<>();
+		list.add(validFile);
+		list.add(validFile2);
+
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext,fileManagerConfig);
+		fileManager.start(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				fileManager.uploadFiles(list, new MultipleFileCompletionListener() {
+					@Override
+					public void onComplete(Map<String, String> errors) {
+						assertTrue(errors.size() == 2); // We need to make sure it kept track of both Files
+						verify(internalInterface, times(5)).sendRequests(any(List.class),any(OnMultipleRequestListener.class));
+					}
+				});
+
+			}
+		});
+	}
 	public void testInitializationSuccess(){
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -177,10 +333,11 @@ public class FileManagerTests extends AndroidTestCase2 {
 	public void testFileUploadSuccess(){
 		ISdl internalInterface = mock(ISdl.class);
 
-		doAnswer(onListFilesSuccess).when(internalInterface).sendRPCRequest(any(ListFiles.class));
-		doAnswer(onPutFileSuccess).when(internalInterface).sendRPCRequest(any(PutFile.class));
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
+		doAnswer(onPutFileSuccess).when(internalInterface).sendRPC(any(PutFile.class));
 
-		final FileManager fileManager = new FileManager(internalInterface, mTestContext);
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
 		fileManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
@@ -504,5 +661,13 @@ public class FileManagerTests extends AndroidTestCase2 {
 				assertTrue(fileManager.hasUploadedFile(file));
 			}
 		});
+	}
+
+	public void testFileManagerConfig(){
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		fileManagerConfig.setFileRetryCount(2);
+		fileManagerConfig.setArtworkRetryCount(2);
+		assertEquals(fileManagerConfig.getArtworkRetryCount(), 2);
+		assertEquals(fileManagerConfig.getFileRetryCount(), 2);
 	}
 }
