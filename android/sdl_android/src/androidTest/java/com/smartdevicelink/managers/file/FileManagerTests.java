@@ -247,6 +247,17 @@ public class FileManagerTests extends AndroidTestCase2 {
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
 		doAnswer(onPutFileFailureOnError).when(internalInterface).sendRPC(any(PutFile.class));
+		final SdlFile validFile2 = new SdlFile();
+		validFile2.setName(Test.GENERAL_STRING + "2");
+		validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile2.setPersistent(false);
+		validFile2.setType(FileType.GRAPHIC_PNG);
+
+		final SdlFile validFile3 = new SdlFile();
+		validFile3.setName(Test.GENERAL_STRING + "3");
+		validFile3.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile3.setPersistent(false);
+		validFile3.setType(FileType.GRAPHIC_BMP);
 
 		FileManagerConfig fileManagerConfig = new FileManagerConfig();
 		fileManagerConfig.setArtworkRetryCount(2);
@@ -261,6 +272,22 @@ public class FileManagerTests extends AndroidTestCase2 {
 					public void onComplete(boolean success) {
 						assertFalse(success);
 						verify(internalInterface, times(4)).sendRPC(any(RPCMessage.class));
+					}
+				});
+
+				fileManager.uploadFile(validFile2, new CompletionListener() {
+					@Override
+					public void onComplete(boolean success) {
+						assertFalse(success);
+						verify(internalInterface, times(7)).sendRPC(any(RPCMessage.class));
+					}
+				});
+
+				fileManager.uploadFile(validFile3, new CompletionListener() {
+					@Override
+					public void onComplete(boolean success) {
+						assertFalse(success);
+						verify(internalInterface, times(10)).sendRPC(any(RPCMessage.class));
 					}
 				});
 			}
