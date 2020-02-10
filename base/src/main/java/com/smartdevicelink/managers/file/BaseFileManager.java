@@ -293,6 +293,7 @@ abstract class BaseFileManager extends BaseSubManager {
 							}
 						}
 						if (!reRequest.isEmpty()) { // if there are files to be sent.
+							errors.clear();
 							sendMultipleFileOperations(reRequest, listener, customErrors);
 						} else {
 							if (listener != null) { // no more retries available send all errors back.
@@ -311,8 +312,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			public void onError(int correlationId, Result resultCode, String info) {
 				if(fileNameMap != null && fileNameMap.get(correlationId) != null){
 					errors.put(fileNameMap.get(correlationId), buildErrorString(resultCode, info));
-					//	fileNameMap.remove((fileNameMap.))
-				}// else no fileName for given correlation ID
+				}
 			}
 
 			@Override
@@ -330,6 +330,8 @@ abstract class BaseFileManager extends BaseSubManager {
 							uploadedEphemeralFileNames.add(fileNameMap.get(correlationId));
 						}
 					}
+				}else if(fileNameMap != null && fileNameMap.get(correlationId) != null){
+					errors.put(fileNameMap.get(correlationId),putFileResponse.getSuccess().toString());
 				}
 			}
 		};
