@@ -1444,8 +1444,9 @@ public class SdlRouterService extends Service{
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 		builder.setContentIntent(pendingIntent);
 
-        if(chronometerLength > 0 && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if(chronometerLength > (FOREGROUND_TIMEOUT/1000) && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         	//The countdown method is only available in SDKs >= 24
+        	// Only add countdown if it is over the min timeout
         	builder.setWhen(chronometerLength + System.currentTimeMillis());
         	builder.setUsesChronometer(true);
         	builder.setChronometerCountDown(true);
