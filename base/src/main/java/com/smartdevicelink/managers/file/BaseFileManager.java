@@ -338,7 +338,6 @@ abstract class BaseFileManager extends BaseSubManager {
 				PutFileResponse putFileResponse = (PutFileResponse) response;
 				if (putFileResponse.getSuccess()) {
 					bytesAvailable = putFileResponse.getSpaceAvailable() != null ? putFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
-
 					remoteFiles.add(file.getName());
 					uploadedEphemeralFileNames.add(file.getName());
 				}
