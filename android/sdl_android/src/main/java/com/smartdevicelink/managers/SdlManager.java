@@ -121,11 +121,11 @@ public class SdlManager extends BaseSdlManager{
 	private SdlManagerListener managerListener;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
 	private LockScreenConfig lockScreenConfig;
+	private FileManagerConfig fileManagerConfig;
 	private ServiceEncryptionListener serviceEncryptionListener;
 
 	// Managers
 	private PermissionManager permissionManager;
-	private FileManagerConfig fileManagerConfig;
 	private FileManager fileManager;
 	private LockScreenManager lockScreenManager;
     private ScreenManager screenManager;
@@ -1034,8 +1034,9 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
-		 * Sets the FileManagerConfig for the session. <br>
-		 * <strong>Note: If not set, the default configuration will be used.</strong>
+		 * Sets the FileManagerConfig for the session.<br>
+		 * <strong>Note: If not set, the default configuration value of 1 will be set for
+		 * artworkRetryCount and fileRetryCount in FileManagerConfig</strong>
 		 * @param fileManagerConfig - configuration options
 		 */
 		public Builder setFileManagerConfig (final FileManagerConfig fileManagerConfig){
