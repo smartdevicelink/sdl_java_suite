@@ -397,7 +397,7 @@ class TestEnumsProducer(unittest.TestCase):
             'class_name': 'Dimension',
             'params': (
                 self.producer.params(deprecated=None, value=None, description=['No GPS at all'],
-                                     name='NO_FIX', origin=None, since=None, internal='"NO_FIX"'),),
+                                     name='NO_FIX', origin='NO_FIX', since=None, internal='"NO_FIX"'),),
             'since': None,
             'deprecated': None,
             'imports': {'java.util.EnumSet'}

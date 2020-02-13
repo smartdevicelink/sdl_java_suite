@@ -44,7 +44,10 @@
           "since": "1.0"
         },
         "USER_EXIT": {}
-      }
+      },
+      "-params": [
+        "UNSUPPORTED_HMI_RESOURCE"
+      ]
     },
     "AudioStreamingState": {
       "description": "Describes whether or not streaming audio is currently audible to the user. Though provided in every OnHMIStatus notification, this information is only relevant for applications that declare themselves as media apps in RegisterAppInterface"
@@ -99,6 +102,9 @@
         "PERFORM_APP_SERVICE_INTERACTION": "PERFORM_APP_SERVICES_INTERACTION",
         "RELEASE_INTERIOR_VEHICLE_DATA_MODULE": "RELEASE_INTERIOR_VEHICLE_MODULE"
       },
+      "-params": [
+        "RESERVED"
+      ],
       "params": {
         "ON_LOCK_SCREEN_STATUS": {
           "value": "-1",
@@ -140,6 +146,11 @@
     },
     "PredefinedWindows": {
       "kind": "custom"
+    },
+    "Result": {
+      "-params": [
+        "CHAR_LIMIT_EXCEEDED"
+      ]
     },
     "SpeechCapabilities": {
       "kind": "simple"
