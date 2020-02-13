@@ -96,6 +96,11 @@ abstract class BaseFileManager extends BaseSubManager {
 		uploadedEphemeralFileNames = new ArrayList<>();
 	}
 
+	/**
+	 * Constructor for BaseFileManager
+	 * @param internalInterface ISDL
+	 * @param fileManagerConfig FileManagerConfig
+	 */
 	BaseFileManager(ISdl internalInterface, FileManagerConfig fileManagerConfig) {
 
 		// setup

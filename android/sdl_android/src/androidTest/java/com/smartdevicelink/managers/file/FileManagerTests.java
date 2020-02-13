@@ -72,8 +72,6 @@ public class FileManagerTests extends AndroidTestCase2 {
 				putFileResponse.setSuccess(false);
 				message.getOnRPCResponseListener().onError(correlationId, resultCode,"Binary data empty");
 			}
-
-
 			return null;
 		}
 	};
