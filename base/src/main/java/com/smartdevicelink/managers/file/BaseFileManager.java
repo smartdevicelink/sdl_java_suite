@@ -63,7 +63,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * <strong>FileManager</strong> <br>
@@ -87,8 +86,7 @@ abstract class BaseFileManager extends BaseSubManager {
 	private List<String> remoteFiles, uploadedEphemeralFileNames;
 	private int bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
 	private FileManagerConfig fileManagerConfig;
-	Hashtable<String, Integer> failedFileUploadsIndex
-			= new Hashtable<String, Integer>();
+	private Hashtable<String, Integer> failedFileUploadsIndex;
 
 	@Deprecated
 	BaseFileManager(ISdl internalInterface) {
@@ -104,6 +102,7 @@ abstract class BaseFileManager extends BaseSubManager {
 		super(internalInterface);
 		uploadedEphemeralFileNames = new ArrayList<>();
 		this.fileManagerConfig = fileManagerConfig;
+		failedFileUploadsIndex = new Hashtable<>();
 	}
 
 	@Override
@@ -209,7 +208,8 @@ abstract class BaseFileManager extends BaseSubManager {
 			deleteFile.setSdlFileName(fileName);
 			deleteFileRequests.add(deleteFile);
 		}
-		sendMultipleFileOperations(deleteFileRequests, listener, null);
+		final Map<String,String>  errors = new HashMap<>();
+		sendMultipleFileOperations(deleteFileRequests, listener, errors);
 	}
 
 	// UPLOAD FILES / ARTWORK
@@ -224,19 +224,20 @@ abstract class BaseFileManager extends BaseSubManager {
 	/**
 	 * Sends list of provided requests (strictly PutFile or DeleteFile) asynchronously through internalInterface,
 	 * calls listener on conclusion of sending requests.
+	 *
 	 * @param requests Non-empty list of PutFile or DeleteFile requests
 	 * @param listener MultipleFileCompletionListener that is called upon conclusion of sending requests
 	 */
-	private void sendMultipleFileOperations(final List<? extends RPCRequest> requests, final MultipleFileCompletionListener listener, final Map<String, String> customErrors ){
-		final Map<String, String> errors = new HashMap<>();
-		final HashMap<Integer,String> fileNameMap = new HashMap<>();
+	private void sendMultipleFileOperations(final List<? extends RPCRequest> requests, final MultipleFileCompletionListener listener, final Map<String, String> errors) {
+		final HashMap<Integer, RPCRequest> requestMap = new HashMap<>();
+		final List<RPCRequest> requestsToResend = new ArrayList<>();
 		final boolean deletionOperation;
-		if(requests.get(0) instanceof PutFile){
+		if (requests.get(0) instanceof PutFile) {
 			deletionOperation = false;
-		}else if(requests.get(0) instanceof DeleteFile){
+		} else if (requests.get(0) instanceof DeleteFile) {
 			deletionOperation = true;
-		}else{
-			return; // requests are not DeleteFile or PutFile
+		} else {
+			return;
 		}
 
 		OnMultipleRequestListener onMultipleRequestListener = new OnMultipleRequestListener() {
@@ -245,109 +246,73 @@ abstract class BaseFileManager extends BaseSubManager {
 			@Override
 			public void addCorrelationId(int correlationid) {
 				super.addCorrelationId(correlationid);
-				if(deletionOperation){
-					fileNameMap.put(correlationid, ((DeleteFile) requests.get(fileNum++)).getSdlFileName());
-				}else{
-					fileNameMap.put(correlationid, ((PutFile) requests.get(fileNum++)).getSdlFileName());
+				if (deletionOperation) {
+					requestMap.put(correlationid, requests.get(fileNum++));
+				} else {
+					requestMap.put(correlationid, requests.get(fileNum++));
 				}
 			}
 
 			@Override
-			public void onUpdate(int remainingRequests) {}
+			public void onUpdate(int remainingRequests) {
+			}
 
 			@Override
-			public void onFinished() { ///tomorrow add logic for delete operations and test!!!
-				if (errors.isEmpty() && customErrors.isEmpty()) {
+			public void onFinished() {
+				if (errors.isEmpty() && requestsToResend.isEmpty()) {
 					if (listener != null) {
-						listener.onComplete(null); //if first time no errors and listener is not null
+						listener.onComplete(null);
 					}
-				} else if (!deletionOperation) {
-					final List<RPCRequest> reRequest = new ArrayList<>();
-					if (errors.isEmpty() && !customErrors.isEmpty()) {
-						if(listener != null){
-							listener.onComplete(customErrors); //last file uploaded successfully, had another file in list run out of attempts first.
-						}
-					} else {
-						Set<String> keys = errors.keySet();
-						for (String key : keys) {
-							for (RPCRequest req : requests) {
-								if (key.equals(((PutFile) req).getSdlFileName())) {
-									// file failed to upload
-									if(checkRequestForReUpload((PutFile) req)){
-										req.setOnRPCResponseListener(null);
-
-										reRequest.add(req); //add request to new list
-										break;
-									} else {
-										customErrors.put(key, errors.get(key));
-									}
-								}
-							}
-						}
-						if (!reRequest.isEmpty()) { // if there are files to be sent.
-							errors.clear();
-							sendMultipleFileOperations(reRequest, listener, customErrors);
-						} else {
-							if (listener != null) { // no more retries available send all errors back.
-								listener.onComplete(customErrors); //custom errors list
-							}
-						}
-					}
-				} else {
+				} else if (deletionOperation) {
 					if (listener != null) {
 						listener.onComplete(errors);
+					}
+				} else {
+					if (!requestsToResend.isEmpty()) {
+						sendMultipleFileOperations(requestsToResend, listener, errors);
+					} else {
+						if (listener != null) {
+							listener.onComplete(errors);
+						}
 					}
 				}
 			}
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				if(fileNameMap != null && fileNameMap.get(correlationId) != null){
-					errors.put(fileNameMap.get(correlationId), buildErrorString(resultCode, info));
+				if (requestMap != null && requestMap.get(correlationId) != null) {
+					if (!deletionOperation) {
+						if (shouldReuploadFile(((PutFile) requestMap.get(correlationId)).getSdlFileName(), ((PutFile) requestMap.get(correlationId)).getFileType())) {
+							requestMap.get(correlationId).setOnRPCResponseListener(null);
+							requestsToResend.add(requestMap.get(correlationId));
+						} else {
+							errors.put(((PutFile) requestMap.get(correlationId)).getSdlFileName(), buildErrorString(resultCode, info));
+						}
+					} else {
+						errors.put(((DeleteFile) requestMap.get(correlationId)).getSdlFileName(), buildErrorString(resultCode, info));
+					}
 				}
 			}
 
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				PutFileResponse putFileResponse = (PutFileResponse) response;
-				if(putFileResponse.getSuccess()){
+				if (putFileResponse.getSuccess()) {
 					bytesAvailable = putFileResponse.getSpaceAvailable() != null ? putFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
 
-					if(fileNameMap.get(correlationId) != null){
-						if(deletionOperation){
-							remoteFiles.remove(fileNameMap.get(correlationId));
-							uploadedEphemeralFileNames.remove(fileNameMap.get(correlationId));
-						}else{
-							remoteFiles.add(fileNameMap.get(correlationId));
-							uploadedEphemeralFileNames.add(fileNameMap.get(correlationId));
+					if (requestMap.get(correlationId) != null) {
+						if (deletionOperation) {
+							remoteFiles.remove(((DeleteFile) requestMap.get(correlationId)).getSdlFileName());
+							uploadedEphemeralFileNames.remove(((DeleteFile) requestMap.get(correlationId)).getSdlFileName());
+						} else {
+							remoteFiles.add(((PutFile) requestMap.get(correlationId)).getSdlFileName());
+							uploadedEphemeralFileNames.add(((PutFile) requestMap.get(correlationId)).getSdlFileName());
 						}
 					}
 				}
 			}
 		};
-
 		internalInterface.sendRequests(requests, onMultipleRequestListener);
-	}
-
-	/**
-	 *  Check to see if PutFile Request can be reUploaded
-	 * @param req PutFile req is a failed file upload
-	 */
-	private boolean checkRequestForReUpload(PutFile req){
-		if (!failedFileUploadsIndex.containsKey(req.getSdlFileName())) {
-			if (req.getFileType().toString().equals("GRAPHIC_BMP") ||
-					req.getFileType().toString().equals("GRAPHIC_JPEG") ||
-					req.getFileType().toString().equals("GRAPHIC_PNG")){
-				failedFileUploadsIndex.put(req.getSdlFileName(), fileManagerConfig.getArtworkRetryCount());
-			} else {
-				failedFileUploadsIndex.put(req.getSdlFileName(), fileManagerConfig.getFileRetryCount());
-			}
-		}
-		if (failedFileUploadsIndex != null && failedFileUploadsIndex.get(req.getSdlFileName()) > 0) {
-			failedFileUploadsIndex.put(req.getSdlFileName(), failedFileUploadsIndex.get(req.getSdlFileName()) - 1);
-			return true;
-		}
-		return false;
 	}
 
 	/**
@@ -355,8 +320,8 @@ abstract class BaseFileManager extends BaseSubManager {
 	 * @param file SdlFile with file name and one of A) fileData, B) Uri, or C) resourceID set
 	 * @param listener called when core responds to the attempt to upload the file
 	 */
-	public void uploadFile(@NonNull final SdlFile file, final CompletionListener listener){
-		if (file.isStaticIcon()){
+	public void uploadFile(@NonNull final SdlFile file, final CompletionListener listener) {
+		if (file.isStaticIcon()) {
 			Log.w(TAG, "Static icons don't need to be uploaded");
 			listener.onComplete(true);
 			return;
@@ -366,13 +331,13 @@ abstract class BaseFileManager extends BaseSubManager {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				PutFileResponse putFileResponse = (PutFileResponse) response;
-				if(putFileResponse.getSuccess()){
+				if (putFileResponse.getSuccess()) {
 					bytesAvailable = putFileResponse.getSpaceAvailable() != null ? putFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
 
 					remoteFiles.add(file.getName());
 					uploadedEphemeralFileNames.add(file.getName());
 				}
-				if(listener != null){
+				if (listener != null) {
 					listener.onComplete(putFileResponse.getSuccess());
 				}
 			}
@@ -380,41 +345,38 @@ abstract class BaseFileManager extends BaseSubManager {
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
 				super.onError(correlationId, resultCode, info);
-				if(checkFileForReUpload(file)){
+				if (shouldReuploadFile(file.getName(), file.getType())) {
 					uploadFile(file, listener);
-				}else if (listener != null){
+				} else if (listener != null) {
 					listener.onComplete(false);
 				}
 			}
 		});
-
 		internalInterface.sendRPC(putFile);
 	}
 
 	/**
-	 * Check to see if file can be reuploaded
-	 * @param file SdlFile with file name and one of A) fileData, B) Uri, or C) resourceID set
+	 * Check to see if file can be re-uploaded
+	 * @param fileName SdlFile with file name
+	 * @param fileType passes FileType
+	 * @return true or false deepening on if file with given type and name can be re-uploaded
 	 */
-	private boolean checkFileForReUpload(SdlFile file) {
-		//Checking if file has already made an attempt at uploading
-		if(!failedFileUploadsIndex.containsKey(file.getName())){
-			if(file.getType().equals(FileType.GRAPHIC_JPEG) ||
-					file.getType().equals(FileType.GRAPHIC_BMP) ||
-					file.getType().equals(FileType.GRAPHIC_PNG)){
-				failedFileUploadsIndex.put(file.getName(),fileManagerConfig.getArtworkRetryCount());
-			}
-			else{
-				failedFileUploadsIndex.put(file.getName(),fileManagerConfig.getFileRetryCount());
+	private boolean shouldReuploadFile(String fileName, FileType fileType) {
+		if (!failedFileUploadsIndex.containsKey(fileName)) {
+			if (fileType.equals(FileType.GRAPHIC_JPEG) ||
+					fileType.equals(FileType.GRAPHIC_BMP) ||
+					fileType.equals(FileType.GRAPHIC_PNG)) {
+				failedFileUploadsIndex.put(fileName, fileManagerConfig.getArtworkRetryCount());
+			} else {
+				failedFileUploadsIndex.put(fileName, fileManagerConfig.getFileRetryCount());
 			}
 		}
-		//checking file retry upload attempts, if re upload allowed upload, if not completed the listener.
-		if(failedFileUploadsIndex.get(file.getName())>0){
-			failedFileUploadsIndex.put(file.getName(), failedFileUploadsIndex.get(file.getName()) - 1);
+		if (failedFileUploadsIndex.get(fileName) > 0) {
+			failedFileUploadsIndex.put(fileName, failedFileUploadsIndex.get(fileName) - 1);
 			return true;
 		}
 		return false;
 	}
-
 
 	/**
 	 * Attempts to upload a list of SdlFiles to core
@@ -429,8 +391,8 @@ abstract class BaseFileManager extends BaseSubManager {
 		for(SdlFile file : files){
 			putFileRequests.add(createPutFile(file));
 		}
-		final Map<String,String>  customErrors = new HashMap<>();
-		sendMultipleFileOperations(putFileRequests, listener, customErrors);
+		final Map<String,String>  errors = new HashMap<>();
+		sendMultipleFileOperations(putFileRequests, listener, errors);
 	}
 
 	/**
