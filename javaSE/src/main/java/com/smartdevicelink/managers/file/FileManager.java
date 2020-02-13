@@ -62,8 +62,12 @@ public class FileManager extends BaseFileManager {
 		super(internalInterface);
 	}
 
+	/**
+	 * Constructor for FileManager
+	 * @param internalInterface ISdl
+	 * @param fileManagerConfig FileManagerConfig
+	 */
 	public FileManager(ISdl internalInterface, FileManagerConfig fileManagerConfig) {
-
 		// setup
 		super(internalInterface, fileManagerConfig);
 	}

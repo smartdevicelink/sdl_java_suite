@@ -64,6 +64,7 @@ import java.lang.ref.WeakReference;
 public class FileManager extends BaseFileManager {
 
 	private final WeakReference<Context> context;
+
 	@Deprecated
 	public FileManager(ISdl internalInterface, Context context) {
 
@@ -72,8 +73,13 @@ public class FileManager extends BaseFileManager {
 		this.context = new WeakReference<>(context);
 	}
 
-	public FileManager(ISdl internalInterface, Context context,FileManagerConfig fileManagerConfig) {
-
+	/**
+	 * Constructor for FileManager
+	 * @param internalInterface ISdl
+	 * @param context Context
+	 * @param fileManagerConfig FileManagerConfig
+	 */
+	public FileManager(ISdl internalInterface, Context context, FileManagerConfig fileManagerConfig) {
 		// setup
 		super(internalInterface, fileManagerConfig);
 		this.context = new WeakReference<>(context);
