@@ -3,7 +3,7 @@
 public class {{class_name}} extends {{extends_class}} {
     {%- if params is defined %}
     {%- for p in params %}
-    {%- if p.description is defined and p.description|length or p.since is defined or p.see is defined or p.deprecated is defined %}
+    {%- if p.description is defined and p.description|length or p.since is defined or p.see is defined or p.deprecated is not none %}
     /**
      {%- if p.description is defined %}
      {%- for d in p.description %}

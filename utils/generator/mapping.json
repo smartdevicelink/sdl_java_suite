@@ -641,22 +641,18 @@
     },
     "SubscribeVehicleDataResponse": {
       "script": "templates/scripts/SubscribeVehicleDataResponse_oem.groovy",
-      "params": {
-        "clusterModes": {
-          "key": "KEY_CLUSTER_MODE_STATUS"
-        }
-      }
+      "-params": [
+        "clusterModes"
+      ]
     },
     "UnsubscribeVehicleData": {
       "script": "templates/scripts/UnsubscribeVehicleData_oem.groovy"
     },
     "UnsubscribeVehicleDataResponse": {
       "script": "templates/scripts/UnsubscribeVehicleDataResponse_oem.groovy",
-      "params": {
-        "clusterModes": {
-          "key": "KEY_CLUSTER_MODE_STATUS"
-        }
-      }
+      "-params": [
+        "clusterModes"
+      ]
     }
   },
   "structs": {

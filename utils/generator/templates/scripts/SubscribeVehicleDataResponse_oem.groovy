@@ -15,6 +15,8 @@
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_LEVEL_STATE);
     }
 
+	public static final String KEY_CLUSTER_MODE_STATUS = "clusterModeStatus";
+
     public void setClusterModeStatus(VehicleDataResult clusterModeStatus) {
         setParameters(KEY_CLUSTER_MODE_STATUS, clusterModeStatus);
     }
