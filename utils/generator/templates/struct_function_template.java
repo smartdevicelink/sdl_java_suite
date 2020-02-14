@@ -34,11 +34,13 @@ public class {{class_name}} extends {{extends_class}} {
     {%- endfor %}
     {%- endif %}
 
+    {%- if remove_constructor is not defined %}
     /**
      * Constructs a new {{class_name}} object
      */
     {%- block constructor_simple %}
     {% endblock %}
+    {%- endif %}
 
     /**
      * Constructs a new {{class_name}} object indicated by the Hashtable parameter\

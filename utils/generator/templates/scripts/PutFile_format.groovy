@@ -1,3 +1,27 @@
+    public static final String KEY_OFFSET = "offset";
+    public static final String KEY_LENGTH = "length";
+
+	/**
+	 * @param offset Optional offset in bytes for resuming partial data chunks
+	 */
+    public void setOffset(Long offset) {
+        setParameters(KEY_OFFSET, offset);
+    }
+
+    public Long getOffset() {
+        final Object o = getParameters(KEY_OFFSET);
+        if (o == null){
+        	return null;
+        }
+        if (o instanceof Integer) {
+            return ((Integer) o).longValue();
+        }else if(o instanceof Long){
+        	return (Long) o;
+        }
+
+
+        return null;
+    }
 
     /**
      * @deprecated as of SmartDeviceLink 4.0
@@ -11,6 +35,27 @@
         }
     }
 
+	/**
+	 * @param length Optional length in bytes for resuming partial data chunks. If offset is set to 0, then length is
+	 *               the total length of the file to be downloaded
+	 */
+    public void setLength(Long length) {
+        setParameters(KEY_LENGTH, length);
+    }
+
+    public Long getLength() {
+        final Object o = getParameters(KEY_LENGTH);
+        if (o == null){
+        	return null;
+        }
+        if (o instanceof Integer) {
+            return ((Integer) o).longValue();
+        }else if(o instanceof Long){
+        	return (Long) o;
+        }
+
+        return null;
+    }
     /**
      * @deprecated as of SmartDeviceLink 4.0
      * @param length Optional length in bytes for resuming partial data chunks. If offset is set to 0, then length is

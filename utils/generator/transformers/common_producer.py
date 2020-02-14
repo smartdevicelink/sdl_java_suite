@@ -142,6 +142,8 @@ class InterfaceProducerCommon(ABC):
                 render[name] = custom[name]
         if 'rename' in custom:
             render['class_name'] = custom['rename']
+        if '-constructor' in custom:
+            render['remove_constructor'] = 'simple'
         if 'imports' in custom:
             if 'imports' in render:
                 render['imports'].update(custom['imports'])

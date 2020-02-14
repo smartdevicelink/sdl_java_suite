@@ -529,14 +529,10 @@
       }
     },
     "PutFile": {
-      "params":{
-        "length": {
-          "return_type": "Long"
-        },
-        "offset": {
-          "return_type": "Long"
-        }
-      },
+      "-params": [
+        "offset",
+        "length"
+      ],
       "imports": [
         "java.util.zip.CRC32",
         "com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener",
@@ -560,6 +556,10 @@
     "RegisterAppInterface": {
       "imports": [
         "com.smartdevicelink.util.Version"
+      ],
+      "-params": [
+        "appID",
+        "fullAppID"
       ],
       "script": "templates/scripts/RegisterAppInterface_format.groovy"
     },
@@ -840,7 +840,17 @@
       }
     },
     "ImageResolution": {
-      "script": "templates/scripts/ImageResolution_tostring.groovy"
+      "script": "templates/scripts/ImageResolution_tostring.groovy",
+      "-params": [
+        "resolutionWidth",
+        "resolutionHeight"
+      ]
+    },
+    "KeyboardProperties": {
+      "script": "templates/scripts/KeyboardProperties_mode.groovy",
+      "-params": [
+        "keypressMode"
+      ]
     },
     "LightCapabilities": {
       "params": {
@@ -975,7 +985,13 @@
       }
     },
     "RGBColor": {
-      "script": "templates/scripts/RGBColor.groovy"
+      "script": "templates/scripts/RGBColor.groovy",
+      "-params": [
+        "red",
+        "green",
+        "blue"
+      ],
+      "-constructor": "simple"
     },
     "ScreenParams": {
       "params": {
