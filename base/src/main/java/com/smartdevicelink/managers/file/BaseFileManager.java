@@ -301,21 +301,28 @@ abstract class BaseFileManager extends BaseSubManager {
 
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				PutFileResponse putFileResponse = (PutFileResponse) response;
-				if (putFileResponse.getSuccess()) {
-					bytesAvailable = putFileResponse.getSpaceAvailable() != null ? putFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
+				if (response.getSuccess()) {
+					if (response instanceof PutFileResponse) {
+						PutFileResponse putFileResponse = (PutFileResponse) response;
+						bytesAvailable = putFileResponse.getSpaceAvailable() != null ? putFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
 
-					if (requestMap.get(correlationId) != null) {
-						if (deletionOperation) {
-							remoteFiles.remove(((DeleteFile) requestMap.get(correlationId)).getSdlFileName());
-							uploadedEphemeralFileNames.remove(((DeleteFile) requestMap.get(correlationId)).getSdlFileName());
-						} else {
+						if (requestMap.get(correlationId) != null) {
 							remoteFiles.add(((PutFile) requestMap.get(correlationId)).getSdlFileName());
 							uploadedEphemeralFileNames.add(((PutFile) requestMap.get(correlationId)).getSdlFileName());
+						}
+
+					} else if (response instanceof DeleteFileResponse) {
+						DeleteFileResponse deleteFileResponse = (DeleteFileResponse) response;
+						bytesAvailable = deleteFileResponse.getSpaceAvailable() != null ? deleteFileResponse.getSpaceAvailable() : SPACE_AVAILABLE_MAX_VALUE;
+
+						if (requestMap.get(correlationId) != null) {
+							remoteFiles.remove(((DeleteFile) requestMap.get(correlationId)).getSdlFileName());
+							uploadedEphemeralFileNames.remove(((DeleteFile) requestMap.get(correlationId)).getSdlFileName());
 						}
 					}
 				}
 			}
+
 		};
 		internalInterface.sendRequests(requests, onMultipleRequestListener);
 	}
