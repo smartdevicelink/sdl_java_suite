@@ -450,16 +450,17 @@ public class SystemCapabilityManager {
 	 */
 	private Object getCapabilityPrivate(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe, final boolean forceUpdate) {
 		Object cachedCapability = cachedSystemCapabilities.get(systemCapabilityType);
-		OnSystemCapabilityListener listener = scListener;
-
-		if (!forceUpdate && cachedCapability != null && listener != null) {
-			listener.onCapabilityRetrieved(cachedCapability);
-			listener = null;
-		}
 
 		boolean shouldUpdateSystemCapabilitySubscription = (subscribe != null) && (subscribe != isSubscribedToSystemCapability(systemCapabilityType)) && supportsSubscriptions();
-		if (forceUpdate || (cachedCapability == null) || shouldUpdateSystemCapabilitySubscription) {
-			retrieveCapability(systemCapabilityType, listener, subscribe);
+		boolean shouldSendGetCapabilityRequest = forceUpdate || (cachedCapability == null) || shouldUpdateSystemCapabilitySubscription;
+		boolean shouldCallListenerWithCachedValue = (cachedCapability != null) && (scListener != null) && !shouldSendGetCapabilityRequest;
+
+		if (shouldCallListenerWithCachedValue) {
+			scListener.onCapabilityRetrieved(cachedCapability);
+		}
+
+		if (shouldSendGetCapabilityRequest) {
+			retrieveCapability(systemCapabilityType, scListener, subscribe);
 		}
 
 		return cachedCapability;
@@ -500,7 +501,6 @@ public class SystemCapabilityManager {
 	 * @param listener callback to execute upon retrieving capability
 	 */
 	public void addOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener) {
-		getCapabilityPrivate(systemCapabilityType, listener, true, false);
 		synchronized(LISTENER_LOCK) {
 			if (systemCapabilityType != null && listener != null) {
 				if (onSystemCapabilityListeners.get(systemCapabilityType) == null) {
@@ -509,6 +509,7 @@ public class SystemCapabilityManager {
 				onSystemCapabilityListeners.get(systemCapabilityType).add(listener);
 			}
 		}
+		getCapabilityPrivate(systemCapabilityType, listener, true, false);
 	}
 
 	/**
@@ -549,18 +550,27 @@ public class SystemCapabilityManager {
 		}
 		final GetSystemCapability request = new GetSystemCapability();
 		request.setSystemCapabilityType(systemCapabilityType);
-		request.setSubscribe((subscribe != null) ? subscribe : isSubscribedToSystemCapability(systemCapabilityType)); // If subscribe is null, then don't change the current subscription status
+		// If subscribe is null, then don't change the current subscription status
+		final boolean shouldSubscribe = ((subscribe != null) ? subscribe : isSubscribedToSystemCapability(systemCapabilityType)) && supportsSubscriptions();
+		request.setSubscribe(shouldSubscribe);
 		request.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()) {
 					Object retrievedCapability = ((GetSystemCapabilityResponse) response).getSystemCapability().getCapabilityForType(systemCapabilityType);
-					cachedSystemCapabilities.put(systemCapabilityType, retrievedCapability);
+					setCapability(systemCapabilityType, retrievedCapability);
+					// If the listener is not included in the onSystemCapabilityListeners map, then notify it
 					if (scListener != null) {
-						scListener.onCapabilityRetrieved(retrievedCapability);
+						synchronized (LISTENER_LOCK) {
+							CopyOnWriteArrayList<OnSystemCapabilityListener> notifiedListeners = onSystemCapabilityListeners.get(systemCapabilityType);
+							boolean listenerAlreadyNotified = notifiedListeners != null && notifiedListeners.contains(scListener);
+							if (!listenerAlreadyNotified) {
+								scListener.onCapabilityRetrieved(retrievedCapability);
+							}
+						}
 					}
 					if (supportsSubscriptions()) {
-						systemCapabilitiesSubscriptionStatus.put(systemCapabilityType, subscribe);
+						systemCapabilitiesSubscriptionStatus.put(systemCapabilityType, shouldSubscribe);
 					}
 				} else {
 					if (scListener != null) {
