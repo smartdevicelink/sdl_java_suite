@@ -92,7 +92,7 @@ The package definition for `FunctionID` class also is different:
 package com.smartdevicelink.protocol.enums;
 ``` 
 
-Each Struct or Function class should be stored as a single script file in the folder named `com/smartdevicelink/proxy/rpc` and the name of the script file should be equal to the value from the `"name"` attribute of `<struct>` or `<function>` (followed by additional suffix `Response` if the `"messagetype"` attribute is set to `response`) followed by the extension `.java`.
+Each Struct or Function class should be stored as a single script file in the folder named `com/smartdevicelink/proxy/rpc` and the name of the script file should be equal to the value from the `"name"` attribute of `<struct>` or `<function>` (followed by additional suffix `Response` if the `"name"` doesn't end with it and the `"messagetype"` attribute is set to `response`) followed by the extension `.java`.
 
 Example:
 ```shell script
@@ -1696,7 +1696,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.RPCNotification;
 ```
 
-The name of the class is the value from the `"name"` attribute of `<function>` (followed by additional suffix `Response` if the `"messagetype"` attribute is set to `response`).
+The name of the class is the value from the `"name"` attribute of `<function>` (followed by additional suffix `Response` if the `"name"` doesn't end with it and `"messagetype"` attribute is set to `response`.
 
 The script should import `FunctionID` Enum class to get the `functionID` hex value of the current RPC function. The key of the required `<element>` of `FunctionID` enum is the value of the `"functionID"` attribute of `<function>`.
 ```java
