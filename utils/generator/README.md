@@ -390,7 +390,7 @@ The private constructor should be defined to accept the value from the constant 
 ```
 Where `[enum_name]` is the `"name"` attribute of `<enum>`.
 
-The `toString` 1method should be overridden to return the private field instead of the constant name.
+The `toString` method should be overridden to return the private field instead of the constant name.
 ```java
     @Override
     public String toString() {
@@ -544,7 +544,7 @@ The private constructor should be defined to accept the value from the constant 
 ```
 Where `[enum_name]` is the `"name"` attribute of `<enum>`.
 
-The `getValue` 1method should be defined to return the private field value.
+The `getValue` method should be defined to return the private field value.
 ```java
     public int getValue(){
         return VALUE;
@@ -553,7 +553,7 @@ The `getValue` 1method should be defined to return the private field value.
 
 The additional `valueForInt` should be defined. It should return the Enum constant based on the private field above, or `null` if the constant is not found.
 ```java
-    public static [enum_name] valueForString(int value) {
+    public static [enum_name] valueForInt(int value) {
         for ([enum_name] anEnum : EnumSet.allOf([enum_name].class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;
@@ -919,7 +919,7 @@ public enum FunctionID {
 
 ## `<struct>`
 
-The Struct class should should extend the base `RPCStruct` class:
+The Struct class should extend the base `RPCStruct` class:
 ```java
 import com.smartdevicelink.proxy.RPCStruct;
 ```
