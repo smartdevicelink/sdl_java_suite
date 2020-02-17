@@ -335,11 +335,11 @@ public class SystemCapabilityManager {
 	 * Sets a capability in the cached map. This should only be done when an RPC is received and contains updates to the capability
 	 * that is being cached in the SystemCapabilityManager.
 	 * @param systemCapabilityType the system capability type that will be set
-	 * @param capability the value of the capability that will be set
+	 * @param capability           the value of the capability that will be set
 	 */
 	public synchronized void setCapability(SystemCapabilityType systemCapabilityType, Object capability) {
-			cachedSystemCapabilities.put(systemCapabilityType, capability);
-			notifyListeners(systemCapabilityType, capability);
+		cachedSystemCapabilities.put(systemCapabilityType, capability);
+		notifyListeners(systemCapabilityType, capability);
 	}
 
 	/**
