@@ -44,7 +44,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         extends_class = None
         if item.message_type.name == 'response':
             extends_class = self.response_class
-            if class_name != "GenericResponse":
+            if not class_name.endswith("Response"):
                 class_name += 'Response'
             imports.add('com.smartdevicelink.proxy.rpc.enums.Result')
             imports.add('android.support.annotation.NonNull')
