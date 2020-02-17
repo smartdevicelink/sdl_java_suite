@@ -457,7 +457,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		// Add listener1
 		// When the first listener is added, GetSystemCapability request should out because because capability is not cached
 		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
-		doAnswer(createOnSendGetSystemCapabilityAnswer(true, true)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
 		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
 		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
 		verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
