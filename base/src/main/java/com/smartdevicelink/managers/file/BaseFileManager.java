@@ -232,6 +232,7 @@ abstract class BaseFileManager extends BaseSubManager {
 	 *
 	 * @param requests Non-empty list of PutFile or DeleteFile requests
 	 * @param listener MultipleFileCompletionListener that is called upon conclusion of sending requests
+	 * @param errors a hashMap that keeps track of RPCRequest that have failed to upload and returns to developer if listener is not null
 	 */
 	private void sendMultipleFileOperations(final List<? extends RPCRequest> requests, final MultipleFileCompletionListener listener, final Map<String, String> errors) {
 		final HashMap<Integer, RPCRequest> requestMap = new HashMap<>();
