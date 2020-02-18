@@ -287,7 +287,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			public void onError(int correlationId, Result resultCode, String info) {
 				if (requestMap != null && requestMap.get(correlationId) != null) {
 					if (!deletionOperation) {
-						if (shouldReuploadFile(((PutFile) requestMap.get(correlationId)).getSdlFileName(), ((PutFile) requestMap.get(correlationId)).getFileType())) {
+						if (shouldReUploadFile(((PutFile) requestMap.get(correlationId)).getSdlFileName(), ((PutFile) requestMap.get(correlationId)).getFileType())) {
 							requestMap.get(correlationId).setOnRPCResponseListener(null);
 							requestsToResend.add(requestMap.get(correlationId));
 						} else {
@@ -356,7 +356,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
 				super.onError(correlationId, resultCode, info);
-				if (shouldReuploadFile(file.getName(), file.getType())) {
+				if (shouldReUploadFile(file.getName(), file.getType())) {
 					uploadFile(file, listener);
 				} else if (listener != null) {
 					listener.onComplete(false);
@@ -368,11 +368,11 @@ abstract class BaseFileManager extends BaseSubManager {
 
 	/**
 	 * Check to see if file can be re-uploaded
-	 * @param fileName SdlFile with file name
-	 * @param fileType passes FileType
-	 * @return true or false deepening on if file with given type and name can be re-uploaded
+	 * @param fileName  a String that represents an SdlFile's name
+	 * @param fileType an instances of FileType that represents a type of File
+	 * @return true or false depending on if file with given type and name can be re-uploaded
 	 */
-	private boolean shouldReuploadFile(String fileName, FileType fileType) {
+	private boolean shouldReUploadFile(String fileName, FileType fileType) {
 		if (!failedFileUploadsIndex.containsKey(fileName)) {
 			if (fileType.equals(FileType.GRAPHIC_JPEG) ||
 					fileType.equals(FileType.GRAPHIC_BMP) ||
@@ -382,8 +382,9 @@ abstract class BaseFileManager extends BaseSubManager {
 				failedFileUploadsIndex.put(fileName, fileManagerConfig.getFileRetryCount());
 			}
 		}
-		if (failedFileUploadsIndex.get(fileName) > 0) {
-			failedFileUploadsIndex.put(fileName, failedFileUploadsIndex.get(fileName) - 1);
+		Integer fileRetryValue = failedFileUploadsIndex.get(fileName);
+		if (fileRetryValue != null && fileRetryValue > 0) {
+			failedFileUploadsIndex.put(fileName, fileRetryValue - 1);
 			return true;
 		}
 		return false;
