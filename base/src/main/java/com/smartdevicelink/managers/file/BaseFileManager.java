@@ -282,16 +282,17 @@ abstract class BaseFileManager extends BaseSubManager {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				if (requestMap != null && requestMap.get(correlationId) != null) {
+				final RPCRequest request = requestMap.get(correlationId);
+				if (request != null) {
 					if (!deletionOperation) {
-						if (shouldReUploadFile(((PutFile) requestMap.get(correlationId)).getSdlFileName(), ((PutFile) requestMap.get(correlationId)).getFileType())) {
-							requestMap.get(correlationId).setOnRPCResponseListener(null);
-							requestsToResend.add(requestMap.get(correlationId));
+						if (shouldReUploadFile(((PutFile) request).getSdlFileName(), ((PutFile) request).getFileType())) {
+							request.setOnRPCResponseListener(null);
+							requestsToResend.add(request);
 						} else {
-							errors.put(((PutFile) requestMap.get(correlationId)).getSdlFileName(), buildErrorString(resultCode, info));
+							errors.put(((PutFile) request).getSdlFileName(), buildErrorString(resultCode, info));
 						}
 					} else {
-						errors.put(((DeleteFile) requestMap.get(correlationId)).getSdlFileName(), buildErrorString(resultCode, info));
+						errors.put(((DeleteFile) request).getSdlFileName(), buildErrorString(resultCode, info));
 					}
 				}
 			}
