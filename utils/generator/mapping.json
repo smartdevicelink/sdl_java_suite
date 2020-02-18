@@ -50,7 +50,7 @@
       "description": "Describes whether or not streaming audio is currently audible to the user. Though provided in every OnHMIStatus notification, this information is only relevant for applications that declare themselves as media apps in RegisterAppInterface"
     },
     "ButtonName": {
-      "script": "templates/scripts/ButtonName_indexForPresetButton.groovy",
+      "script": "templates/scripts/ButtonName_indexForPresetButton.java",
       "description_file": "templates/description/ButtonName_head.html",
       "params": {
         "OK": {
@@ -68,7 +68,7 @@
     },
     "DisplayType": {
       "kind": "custom",
-      "valueForString": "templates/scripts/DisplayType_valueForString.groovy",
+      "valueForString": "templates/scripts/DisplayType_valueForString.java",
       "-imports": [
         "java.util.EnumSet"
       ]
@@ -230,7 +230,7 @@
       "kind": "simple"
     },
     "VrCapabilities": {
-      "valueForString": "templates/scripts/VrCapabilities_valueForString.groovy",
+      "valueForString": "templates/scripts/VrCapabilities_valueForString.java",
       "kind": "simple",
       "params": {
         "Text": {
@@ -293,7 +293,7 @@
       }
     },
     "ButtonPressResponse": {
-      "script": "templates/scripts/ButtonPressResponse.groovy"
+      "script": "templates/scripts/ButtonPressResponse.java"
     },
     "CancelInteraction": {
       "params": {
@@ -301,7 +301,7 @@
           "title": "InteractionFunctionID"
         }
       },
-      "script": "templates/scripts/CanceInteraction_cancelid.groovy"
+      "script": "templates/scripts/CanceInteraction_cancelid.java"
     },
     "ChangeRegistration": {
       "params": {
@@ -328,10 +328,10 @@
           "value": 2000000000
         }
       },
-      "script": "templates/scripts/DeleteFileResponse.groovy"
+      "script": "templates/scripts/DeleteFileResponse.java"
     },
     "DiagnosticMessageResponse": {
-      "script": "templates/scripts/DiagnosticMessageResponse.groovy"
+      "script": "templates/scripts/DiagnosticMessageResponse.java"
     },
     "EncodedSyncPData": {
       "function_id": "ENCODED_SYNC_P_DATA"
@@ -347,7 +347,7 @@
       }
     },
     "GetDTCsResponse": {
-      "script": "templates/scripts/GetDTCsResponse.groovy"
+      "script": "templates/scripts/GetDTCsResponse.java"
     },
     "GetFileResponse": {
       "params": {
@@ -371,16 +371,16 @@
       }
     },
     "GetInteriorVehicleDataResponse": {
-      "script": "templates/scripts/GetInteriorVehicleDataResponse.groovy"
+      "script": "templates/scripts/GetInteriorVehicleDataResponse.java"
     },
     "GetSystemCapabilityResponse": {
-      "script": "templates/scripts/GetSystemCapabilityResponse.groovy"
+      "script": "templates/scripts/GetSystemCapabilityResponse.java"
     },
     "GetVehicleData": {
-      "script": "templates/scripts/GetVehicleData_OEM.groovy"
+      "script": "templates/scripts/GetVehicleData_OEM.java"
     },
     "GetVehicleDataResponse": {
-      "script": "templates/scripts/GetVehicleDataResponse_OEM.groovy",
+      "script": "templates/scripts/GetVehicleDataResponse_OEM.java",
       "params": {
         "accPedalPosition": {
           "return_type": "Double"
@@ -416,10 +416,10 @@
       "imports": [
         "com.smartdevicelink.util.Version"
       ],
-      "script": "templates/scripts/ListFilesResponse_format.groovy"
+      "script": "templates/scripts/ListFilesResponse_format.java"
     },
     "OnAudioPassThru": {
-      "script": "templates/scripts/OnAudioPassThru_aptdata.groovy"
+      "script": "templates/scripts/OnAudioPassThru_aptdata.java"
     },
     "OnButtonPress": {
       "params": {
@@ -429,7 +429,7 @@
       }
     },
     "OnKeyboardInput": {
-      "script": "templates/scripts/OnKeyboardInput_tostring.groovy"
+      "script": "templates/scripts/OnKeyboardInput_tostring.java"
     },
     "OnDriverDistraction": {
       "params": {
@@ -452,13 +452,13 @@
           "return_type": "Boolean"
         }
       },
-      "script": "templates/scripts/OnHMIStatus_format.groovy"
+      "script": "templates/scripts/OnHMIStatus_format.java"
     },
     "OnRCStatus": {
       "function_id": "ON_RC_STATUS"
     },
     "OnSystemRequest": {
-      "script": "templates/scripts/OnSystemRequest_request.groovy",
+      "script": "templates/scripts/OnSystemRequest_request.java",
       "imports": [
         "java.util.List"
       ],
@@ -472,7 +472,7 @@
       }
     },
     "OnVehicleData": {
-      "script": "templates/scripts/OnVehicleData_oem.groovy",
+      "script": "templates/scripts/OnVehicleData_oem.java",
       "params": {
         "accPedalPosition": {
           "return_type": "Double"
@@ -527,7 +527,7 @@
         "com.smartdevicelink.proxy.rpc.listeners.OnPutFileUpdateListener",
         "com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener"
       ],
-      "script": "templates/scripts/PutFile_format.groovy"
+      "script": "templates/scripts/PutFile_format.java"
     },
     "PutFileResponse": {
       "params": {
@@ -540,7 +540,7 @@
       "imports": [
         "com.smartdevicelink.util.Version"
       ],
-      "script": "templates/scripts/PutFileResponse_format.groovy"
+      "script": "templates/scripts/PutFileResponse_format.java"
     },
     "RegisterAppInterface": {
       "imports": [
@@ -550,7 +550,7 @@
         "appID",
         "fullAppID"
       ],
-      "script": "templates/scripts/RegisterAppInterface_format.groovy"
+      "script": "templates/scripts/RegisterAppInterface_format.java"
     },
     "RegisterAppInterfaceResponse": {
       "params": {
@@ -562,7 +562,7 @@
         "java.util.ArrayList",
         "com.smartdevicelink.proxy.rpc.enums.ButtonName"
       ],
-      "script": "templates/scripts/RegisterAppInterfaceResponse_format.groovy"
+      "script": "templates/scripts/RegisterAppInterfaceResponse_format.java"
     },
     "ReleaseInteriorVehicleDataModule": {
       "function_id": "RELEASE_INTERIOR_VEHICLE_MODULE"
@@ -574,10 +574,10 @@
       "imports": [
         "android.support.annotation.Nullable"
       ],
-      "script": "templates/scripts/SetMediaClockTimer_time.groovy"
+      "script": "templates/scripts/SetMediaClockTimer_time.java"
     },
     "SetInteriorVehicleDataResponse": {
-      "script": "templates/scripts/SetInteriorVehicleDataResponse.groovy"
+      "script": "templates/scripts/SetInteriorVehicleDataResponse.java"
     },
     "ShowConstantTBT": {
       "rename": "ShowConstantTbt",
@@ -611,7 +611,7 @@
       "imports": [
         "java.util.List"
       ],
-      "script": "templates/scripts/SystemRequest_data.groovy"
+      "script": "templates/scripts/SystemRequest_data.java"
     },
     "SendLocation": {
       "params": {
@@ -626,19 +626,19 @@
       }
     },
     "SubscribeVehicleData": {
-      "script": "templates/scripts/SubscribeVehicleData_oem.groovy"
+      "script": "templates/scripts/SubscribeVehicleData_oem.java"
     },
     "SubscribeVehicleDataResponse": {
-      "script": "templates/scripts/SubscribeVehicleDataResponse_oem.groovy",
+      "script": "templates/scripts/SubscribeVehicleDataResponse_oem.java",
       "-params": [
         "clusterModes"
       ]
     },
     "UnsubscribeVehicleData": {
-      "script": "templates/scripts/UnsubscribeVehicleData_oem.groovy"
+      "script": "templates/scripts/UnsubscribeVehicleData_oem.java"
     },
     "UnsubscribeVehicleDataResponse": {
-      "script": "templates/scripts/UnsubscribeVehicleDataResponse_oem.groovy",
+      "script": "templates/scripts/UnsubscribeVehicleDataResponse_oem.java",
       "-params": [
         "clusterModes"
       ]
@@ -646,7 +646,7 @@
   },
   "structs": {
     "AppServicesCapabilities": {
-      "script": "templates/scripts/AppServicesCapabilities_update.groovy",
+      "script": "templates/scripts/AppServicesCapabilities_update.java",
       "imports": [
         "android.support.annotation.NonNull",
         "com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason",
@@ -654,7 +654,7 @@
       ]
     },
     "AppServiceCapability": {
-      "script": "templates/scripts/AppServiceCapability_matches.groovy"
+      "script": "templates/scripts/AppServiceCapability_matches.java"
     },
     "AppServiceManifest": {
       "params": {
@@ -667,7 +667,7 @@
         "com.smartdevicelink.proxy.rpc.enums.AppServiceType",
         "java.util.ArrayList"
       ],
-      "script": "templates/scripts/AppServiceManifest_rpcs.groovy"
+      "script": "templates/scripts/AppServiceManifest_rpcs.java"
     },
     "BeltStatus": {
       "params": {
@@ -712,10 +712,10 @@
       }
     },
     "CloudAppProperties": {
-      "script": "templates/scripts/CloudAppProperties.groovy"
+      "script": "templates/scripts/CloudAppProperties.java"
     },
     "Choice": {
-      "script": "templates/scripts/Choice_vritems.groovy",
+      "script": "templates/scripts/Choice_vritems.java",
       "imports": [
         "java.util.ArrayList",
         "com.smartdevicelink.util.Version"
@@ -735,10 +735,10 @@
       }
     },
     "DeviceInfo": {
-      "script": "templates/scripts/DeviceInfo_os.groovy"
+      "script": "templates/scripts/DeviceInfo_os.java"
     },
     "DisplayCapabilities": {
-      "script": "templates/scripts/DisplayCapabilities_format.groovy",
+      "script": "templates/scripts/DisplayCapabilities_format.java",
       "imports": [
         "com.smartdevicelink.util.Version"
       ]
@@ -751,7 +751,7 @@
       }
     },
     "GPSData": {
-      "script": "templates/scripts/GPSData.groovy",
+      "script": "templates/scripts/GPSData.java",
       "params": {
         "altitude": {
           "return_type": "Double"
@@ -803,7 +803,7 @@
       }
     },
     "HMICapabilities": {
-      "script": "templates/scripts/HMICapabilities_is.groovy",
+      "script": "templates/scripts/HMICapabilities_is.java",
       "params": {
         "appServices": {
           "title": "AppServicesAvailable"
@@ -829,14 +829,14 @@
       }
     },
     "ImageResolution": {
-      "script": "templates/scripts/ImageResolution_tostring.groovy",
+      "script": "templates/scripts/ImageResolution_tostring.java",
       "-params": [
         "resolutionWidth",
         "resolutionHeight"
       ]
     },
     "KeyboardProperties": {
-      "script": "templates/scripts/KeyboardProperties_mode.groovy",
+      "script": "templates/scripts/KeyboardProperties_mode.java",
       "-params": [
         "keypressMode"
       ]
@@ -863,7 +863,7 @@
           "key": "KEY_MAIN_FIELD_4_TYPE"
         }
       },
-      "script": "templates/scripts/MetadataTags_list.groovy",
+      "script": "templates/scripts/MetadataTags_list.java",
       "imports": [
         "java.util.Collections"
       ]
@@ -935,7 +935,7 @@
       }
     },
     "PresetBankCapabilities": {
-      "script": "templates/scripts/PresetBankCapabilities_on.groovy"
+      "script": "templates/scripts/PresetBankCapabilities_on.java"
     },
     "RadioControlCapabilities": {
       "params": {
@@ -974,7 +974,7 @@
       }
     },
     "RGBColor": {
-      "script": "templates/scripts/RGBColor.groovy",
+      "script": "templates/scripts/RGBColor.java",
       "-params": [
         "red",
         "green",
@@ -996,7 +996,7 @@
           "title": "Cols"
         }
       },
-      "script": "templates/scripts/SeatLocationCapability_seats.groovy"
+      "script": "templates/scripts/SeatLocationCapability_seats.java"
     },
     "SingleTireStatus": {
       "params": {
@@ -1013,23 +1013,23 @@
       }
     },
     "SoftButtonCapabilities": {
-      "script": "templates/scripts/SoftButtonCapabilities_format.groovy",
+      "script": "templates/scripts/SoftButtonCapabilities_format.java",
       "imports": [
         "com.smartdevicelink.util.Version"
       ]
     },
     "StartTime": {
-      "script": "templates/scripts/StartTime_timeinterval.groovy"
+      "script": "templates/scripts/StartTime_timeinterval.java"
     },
     "SyncMsgVersion": {
       "rename": "SdlMsgVersion",
-      "script": "templates/scripts/SdlMsgVersion_format.groovy",
+      "script": "templates/scripts/SdlMsgVersion_format.java",
       "imports": [
         "com.smartdevicelink.util.Version"
       ]
     },
     "SystemCapability": {
-      "script": "templates/scripts/SystemCapability_set.groovy"
+      "script": "templates/scripts/SystemCapability_set.java"
     },
     "TireStatus": {
       "params": {
@@ -1043,7 +1043,7 @@
       "imports": [
         "java.util.ArrayList"
       ],
-      "script": "templates/scripts/TouchEvent_timestamp.groovy",
+      "script": "templates/scripts/TouchEvent_timestamp.java",
       "params": {
         "ts": {
           "return_type": "List<Long>"
@@ -1065,7 +1065,7 @@
       }
     },
     "VideoStreamingFormat": {
-      "script": "templates/scripts/VideoStreamingFormat_equals.groovy"
+      "script": "templates/scripts/VideoStreamingFormat_equals.java"
     },
     "VideoStreamingCapability": {
       "params": {
@@ -1084,7 +1084,7 @@
       }
     },
     "WeatherAlert": {
-      "script": "templates/scripts/WeatherAlert.groovy",
+      "script": "templates/scripts/WeatherAlert.java",
       "imports": [
         "android.support.annotation.NonNull"
       ]
