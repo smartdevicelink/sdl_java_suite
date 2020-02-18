@@ -64,8 +64,8 @@ public class FileManager extends BaseFileManager {
 
 	/**
 	 * Constructor for FileManager
-	 * @param internalInterface ISdl
-	 * @param fileManagerConfig FileManagerConfig
+	 * @param internalInterface an instance of the ISdl interface that can be used for common SDL operations (sendRpc, addRpcListener, etc)
+	 * @param fileManagerConfig an instance of the FileManagerConfig gives access to artworkRetryCount and fileRetryCount to let us if those file types can be re-upload if they fail
 	 */
 	public FileManager(ISdl internalInterface, FileManagerConfig fileManagerConfig) {
 		// setup
