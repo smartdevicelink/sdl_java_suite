@@ -403,7 +403,7 @@ abstract class BaseFileManager extends BaseSubManager {
 		for(SdlFile file : files){
 			putFileRequests.add(createPutFile(file));
 		}
-		final Map<String,String>  errors = new HashMap<>();
+		final Map<String, String> errors = new HashMap<>();
 		sendMultipleFileOperations(putFileRequests, listener, errors);
 	}
 
