@@ -261,21 +261,15 @@ abstract class BaseFileManager extends BaseSubManager {
 
 			@Override
 			public void onFinished() {
-				if (errors.isEmpty() && requestsToResend.isEmpty()) {
-					if (listener != null) {
-						listener.onComplete(null);
-					}
-				} else if (deletionOperation) {
-					if (listener != null) {
-						listener.onComplete(errors);
-					}
-				} else {
+				if (!deletionOperation) {
 					if (!requestsToResend.isEmpty()) {
 						sendMultipleFileOperations(requestsToResend, listener, errors);
-					} else {
-						if (listener != null) {
-							listener.onComplete(errors);
-						}
+					} else if (listener != null) {
+						listener.onComplete(errors.isEmpty() ? null : errors);
+					}
+				} else {
+					if (listener != null) {
+						listener.onComplete(errors.isEmpty() ? null : errors);
 					}
 				}
 			}
