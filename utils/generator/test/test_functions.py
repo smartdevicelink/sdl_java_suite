@@ -69,7 +69,7 @@ class TestFunctionsProducer(unittest.TestCase):
                 'imports': [
                     'com.smartdevicelink.util.Version'
                 ],
-                'script': 'templates/scripts/RegisterAppInterface_format.groovy'
+                'script': 'templates/scripts/RegisterAppInterface_format.java'
             },
             'RegisterAppInterfaceResponse': {
                 'params': {
@@ -81,7 +81,7 @@ class TestFunctionsProducer(unittest.TestCase):
                     'java.util.ArrayList',
                     'com.smartdevicelink.proxy.rpc.enums.ButtonName'
                 ],
-                'script': 'templates/scripts/RegisterAppInterfaceResponse_format.groovy'
+                'script': 'templates/scripts/RegisterAppInterfaceResponse_format.java'
             },
             'Alert': {
                 'description_file': 'templates/description/Alert_head.html',

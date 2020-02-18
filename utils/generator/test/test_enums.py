@@ -37,7 +37,7 @@ class TestEnumsProducer(unittest.TestCase):
             },
             'DisplayType': {
                 'kind': 'custom',
-                'valueForString': 'templates/scripts/DisplayType_valueForString.groovy',
+                'valueForString': 'templates/scripts/DisplayType_valueForString.java',
                 '-imports': [
                     'java.util.EnumSet'
                 ]
@@ -46,7 +46,7 @@ class TestEnumsProducer(unittest.TestCase):
                 'kind': 'simple'
             },
             'VrCapabilities': {
-                'valueForString': 'templates/scripts/VrCapabilities_valueForString.groovy',
+                'valueForString': 'templates/scripts/VrCapabilities_valueForString.java',
                 'kind': 'simple',
                 'params': {
                     'Text': {
@@ -77,7 +77,7 @@ class TestEnumsProducer(unittest.TestCase):
                 }
             },
             'ButtonName': {
-                'script': 'templates/scripts/ButtonName_indexForPresetButton.groovy',
+                'script': 'templates/scripts/ButtonName_indexForPresetButton.java',
                 'description_file': 'templates/description/ButtonName_head.html',
                 'params': {
                     'OK': {

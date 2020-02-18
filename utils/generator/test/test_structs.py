@@ -39,7 +39,7 @@ class TestStructsProducer(unittest.TestCase):
     def mapping(self):
         return {
             'CloudAppProperties': {
-                'script': 'templates/scripts/CloudAppProperties.groovy'
+                'script': 'templates/scripts/CloudAppProperties.java'
             }, 'OASISAddress': {
                 'rename': 'OasisAddress'
             },
