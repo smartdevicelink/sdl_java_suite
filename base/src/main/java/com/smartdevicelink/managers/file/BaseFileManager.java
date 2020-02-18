@@ -213,7 +213,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			deleteFile.setSdlFileName(fileName);
 			deleteFileRequests.add(deleteFile);
 		}
-		final Map<String,String>  errors = new HashMap<>();
+		final Map<String, String> errors = new HashMap<>();
 		sendMultipleFileOperations(deleteFileRequests, listener, errors);
 	}
 
