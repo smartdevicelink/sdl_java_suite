@@ -86,7 +86,7 @@ abstract class BaseFileManager extends BaseSubManager {
 	private List<String> remoteFiles, uploadedEphemeralFileNames;
 	private int bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
 	private FileManagerConfig fileManagerConfig;
-	private Hashtable<String, Integer> failedFileUploadsIndex;
+	private HashMap<String, Integer> failedFileUploadsIndex;
 
 	@Deprecated
 	BaseFileManager(ISdl internalInterface) {
@@ -107,7 +107,7 @@ abstract class BaseFileManager extends BaseSubManager {
 		super(internalInterface);
 		uploadedEphemeralFileNames = new ArrayList<>();
 		this.fileManagerConfig = fileManagerConfig;
-		failedFileUploadsIndex = new Hashtable<>();
+		failedFileUploadsIndex = new HashMap<>();
 	}
 
 	@Override
