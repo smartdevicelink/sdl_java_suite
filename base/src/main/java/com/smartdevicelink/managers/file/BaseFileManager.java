@@ -252,11 +252,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			@Override
 			public void addCorrelationId(int correlationid) {
 				super.addCorrelationId(correlationid);
-				if (deletionOperation) {
-					requestMap.put(correlationid, requests.get(fileNum++));
-				} else {
-					requestMap.put(correlationid, requests.get(fileNum++));
-				}
+				requestMap.put(correlationid, requests.get(fileNum++));
 			}
 
 			@Override
