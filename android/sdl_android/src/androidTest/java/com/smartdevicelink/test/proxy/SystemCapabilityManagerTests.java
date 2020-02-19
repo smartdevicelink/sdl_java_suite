@@ -500,7 +500,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 
 		// Add listener1
-		// When the first listener is added, GetSystemCapability request should go out with subscribe=true
+		// When the first listener is added, GetSystemCapability request should go out with subscribe=false
 		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
 		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
 		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
