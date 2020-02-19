@@ -550,7 +550,13 @@ public class SystemCapabilityManager {
 		}
 		final GetSystemCapability request = new GetSystemCapability();
 		request.setSystemCapabilityType(systemCapabilityType);
-		// If subscribe is null, then don't change the current subscription status
+
+		/*
+		The subscription flag in the request should be set based on multiple variables:
+		- if subscribe is null (no change), shouldSubscribe = current subscription status
+		- if subscribe is false, then shouldSubscribe = false
+		- if subscribe is true and the HU supports subscriptions, then shouldSubscribe = true
+		*/
 		final boolean shouldSubscribe = ((subscribe != null) ? subscribe : isSubscribedToSystemCapability(systemCapabilityType)) && supportsSubscriptions();
 		request.setSubscribe(shouldSubscribe);
 		request.setOnRPCResponseListener(new OnRPCResponseListener() {
