@@ -38,7 +38,6 @@ class EnumsProducer(InterfaceProducerCommon):
         return_type = 'String'
 
         for param in getattr(item, self.container_name).values():
-            param.name = self.replace_sync(param.name)
             (t, p) = self.extract_param(param, item.name)
             if t == 'complex':
                 kind = t
@@ -53,7 +52,7 @@ class EnumsProducer(InterfaceProducerCommon):
         render['kind'] = kind
         render['return_type'] = return_type
         render['package_name'] = self.package_name
-        render['class_name'] = self.replace_sync(item.name[:1].upper() + item.name[1:])
+        render['class_name'] = item.name[:1].upper() + item.name[1:]
         render['params'] = params
         render['since'] = item.since
         render['deprecated'] = item.deprecated
