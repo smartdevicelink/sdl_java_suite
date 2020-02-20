@@ -289,7 +289,7 @@ class Generator:
                 intermediate = file.readlines()
             return loads(''.join(intermediate))
         except (FileNotFoundError, JSONDecodeError) as message1:
-            self.logger.error(message1)
+            self.logger.warning(message1)
             return OrderedDict()
 
     def write_file(self, file_name, template, data):
@@ -359,10 +359,11 @@ class Generator:
         """
         enum_names = list(enum_names)
         struct_names = list(struct_names)
-        enum_names = [mappings['enums'][element]['rename'] if element in mappings['enums']
-                                and 'rename' in mappings['enums'][element] else element for element in enum_names]
-        struct_names = [mappings['structs'][element]['rename'] if element in mappings['structs']
-                                and 'rename' in mappings['structs'][element] else element for element in struct_names]
+        enum_names = [mappings['enums'][element]['rename'] if 'enums' in mappings and element in mappings['enums']
+                      and 'rename' in mappings['enums'][element] else element for element in enum_names]
+        struct_names = [mappings['structs'][element]['rename'] if 'structs' in mappings
+                        and element in mappings['structs'] and 'rename' in mappings['structs'][element]
+                        else element for element in struct_names]
         return tuple(enum_names), tuple(struct_names)
 
     def parser(self, xml, xsd, pattern=None):
