@@ -1025,7 +1025,7 @@ import java.util.Hashtable;
 Template:
 ```java
     /**
-     * Constructs a new [name] object indicated by the Hashtable parameter\
+     * Constructs a new [name] object indicated by the Hashtable parameter
      *
      * @param hash The Hashtable to use
      */
@@ -1287,7 +1287,7 @@ public class VehicleDataResult extends RPCStruct {
     
 
     /**
-     * Constructs a new VehicleDataResult object indicated by the Hashtable parameter\
+     * Constructs a new VehicleDataResult object indicated by the Hashtable parameter
      *
      * @param hash The Hashtable to use
      */
@@ -1472,7 +1472,7 @@ public class HMIPermissions extends RPCStruct {
     
 
     /**
-     * Constructs a new HMIPermissions object indicated by the Hashtable parameter\
+     * Constructs a new HMIPermissions object indicated by the Hashtable parameter
      *
      * @param hash The Hashtable to use
      */
@@ -1635,7 +1635,7 @@ public class FuelRange extends RPCStruct {
     
 
     /**
-     * Constructs a new FuelRange object indicated by the Hashtable parameter\
+     * Constructs a new FuelRange object indicated by the Hashtable parameter
      *
      * @param hash The Hashtable to use
      */
@@ -1811,7 +1811,7 @@ import java.util.Hashtable;
 Template:
 ```java
     /**
-     * Constructs a new [name] object indicated by the Hashtable parameter\
+     * Constructs a new [name] object indicated by the Hashtable parameter
      *
      * @param hash The Hashtable to use
      */
@@ -2121,7 +2121,7 @@ public class AddCommand extends RPCRequest {
     
 
     /**
-     * Constructs a new AddCommand object indicated by the Hashtable parameter\
+     * Constructs a new AddCommand object indicated by the Hashtable parameter
      *
      * @param hash The Hashtable to use
      */
@@ -2386,7 +2386,7 @@ public class PerformInteractionResponse extends RPCResponse {
     
 
     /**
-     * Constructs a new PerformInteractionResponse object indicated by the Hashtable parameter\
+     * Constructs a new PerformInteractionResponse object indicated by the Hashtable parameter
      *
      * @param hash The Hashtable to use
      */
@@ -2575,7 +2575,7 @@ public class OnLanguageChange extends RPCNotification {
     
 
     /**
-     * Constructs a new OnLanguageChange object indicated by the Hashtable parameter\
+     * Constructs a new OnLanguageChange object indicated by the Hashtable parameter
      *
      * @param hash The Hashtable to use
      */
