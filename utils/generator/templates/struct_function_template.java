@@ -43,7 +43,7 @@ public class {{class_name}} extends {{extends_class}} {
     {%- endif %}
 
     /**
-     * Constructs a new {{class_name}} object indicated by the Hashtable parameter\
+     * Constructs a new {{class_name}} object indicated by the Hashtable parameter
      *
      * @param hash The Hashtable to use
      */
