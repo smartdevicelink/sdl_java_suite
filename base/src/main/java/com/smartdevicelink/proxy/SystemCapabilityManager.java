@@ -312,6 +312,7 @@ public class SystemCapabilityManager {
                                                 // this notification can return only affected windows (hence not all windows)
                                                 List<DisplayCapability> newCapabilities = (List<DisplayCapability>) capability;
                                                 updateCachedDisplayCapabilityList(newCapabilities);
+                                                systemCapabilitiesSubscriptionStatus.put(SystemCapabilityType.DISPLAYS, true);
                                         }
                                     }
                                     if (capability != null) {
@@ -527,7 +528,7 @@ public class SystemCapabilityManager {
 					&& onSystemCapabilityListeners.get(systemCapabilityType) != null) {
 				success = onSystemCapabilityListeners.get(systemCapabilityType).remove(listener);
 				// If the last listener for the supplied capability type is removed, unsubscribe from the capability type
-				if (success && onSystemCapabilityListeners.get(systemCapabilityType).isEmpty() && isSubscribedToSystemCapability(systemCapabilityType)) {
+				if (success && onSystemCapabilityListeners.get(systemCapabilityType).isEmpty() && isSubscribedToSystemCapability(systemCapabilityType) && systemCapabilityType != SystemCapabilityType.DISPLAYS) {
 					retrieveCapability(systemCapabilityType, null, false);
 				}
 			}
@@ -540,7 +541,7 @@ public class SystemCapabilityManager {
 	 * @param subscribe flag to subscribe to updates of the supplied capability type. True means subscribe; false means cancel subscription; null means don't change current subscription status.
 	 */
 	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe) {
-		if (!systemCapabilityType.isQueryable()) {
+		if (!systemCapabilityType.isQueryable() || systemCapabilityType == SystemCapabilityType.DISPLAYS) {
 			String message = "This systemCapabilityType cannot be queried for";
 			DebugTool.logError(message);
 			if (scListener != null) {
