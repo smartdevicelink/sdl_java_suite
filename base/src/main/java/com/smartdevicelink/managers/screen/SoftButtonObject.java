@@ -311,22 +311,41 @@ public class SoftButtonObject {
     }
 
     /**
-     * @param o
-     * @return true if two SoftButtonObjects have the same name.
+     * Used to compile hashcode for SoftButtonsObjects for use to compare in equals method
+     *
+     * @return Custom hashcode of SoftButtonObjects variables
+     */
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result += ((getName() == null) ? 0 : Integer.rotateLeft(getName().hashCode(), 1));
+        result += ((getCurrentStateName() == null) ? 0 : Integer.rotateLeft(getCurrentState().hashCode(), 2));
+        result += ((getOnEventListener() == null) ? 0 : Integer.rotateLeft(getOnEventListener().hashCode(), 3));
+        return result;
+    }
+
+    /**
+     * Uses our custom hashCode for SoftButtonObject objects
+     * @param o - The object to compare
+     * @return boolean of whether the objects are the same or not
      */
     @Override
     public boolean equals(Object o) {
-        if(o == null){
-            return false;
+        if (o == null) return false;
+        // if this is the same memory address, its the same
+        if (this == o) return true;
+        // if this is not an instance of this class, not the same
+        if (!(o instanceof SoftButtonObject)) return false;
+        //Casting object to compare SoftButtonStates
+        SoftButtonObject softButtonObject = (SoftButtonObject) o;
+        //if List<SoftButtonsStates> are not the same size, not the same
+        if (softButtonObject.getStates().size() != this.states.size()) return false;
+        // Comparing List<SoftButtonStates> to see if all states are the same
+        for(int i = 0; i < this.states.size(); i++){
+            // if both List<SoftButtonStates> are not the same, they are not the same
+            if(!(this.states.contains(softButtonObject.getStates().get(i)))) return false;
         }
-        if(o instanceof SoftButtonObject) {
-                SoftButtonObject softButtonObject = (SoftButtonObject) o;
-                if(softButtonObject.getName() != null){
-                    if (softButtonObject.getName().equals(this.getName())) {
-                        return true;
-                    }
-                }
-        }
-        return false;
+        // return comparison
+        return hashCode() == o.hashCode();
     }
 }
