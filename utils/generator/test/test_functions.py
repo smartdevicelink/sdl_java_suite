@@ -32,7 +32,7 @@ class TestFunctionsProducer(unittest.TestCase):
         self.expected_template['since'] = None
         self.expected_template['deprecated'] = None
         enum_names = ('FileType', 'Language')
-        struct_names = ('SyncMsgVersion', 'TemplateColorScheme', 'TTSChunk', 'Choice')
+        struct_names = ('SdlMsgVersion', 'TemplateColorScheme', 'TTSChunk', 'Choice')
         self.producer = FunctionsProducer(paths, enum_names, struct_names, {"functions": self.mapping})
 
     def comparison(self, expected, actual):
@@ -167,7 +167,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['params'] = (
             self.producer.params(deprecated=None, key='KEY_SDL_MSG_VERSION',
                                  last='sdlMsgVersion', mandatory=True, SuppressWarnings=None,
-                                 origin='syncMsgVersion', return_type='SyncMsgVersion',
+                                 origin='syncMsgVersion', return_type='SdlMsgVersion',
                                  since=None, title='SdlMsgVersion', description=None, param_doc=None, name=None),
             self.producer.params(SuppressWarnings='unchecked', deprecated=None,
                                  key='KEY_TTS_NAME', last='ttsName',

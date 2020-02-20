@@ -38,7 +38,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         :param item: particular element from initial Model
         :return: dictionary to be applied to jinja2 template
         """
-        class_name = item.name[:1].upper() + item.name[1:]
+        class_name = self.replace_sync(item.name[:1].upper() + item.name[1:])
 
         imports = {'java.util.Hashtable', 'com.smartdevicelink.protocol.enums.FunctionID'}
         extends_class = None
@@ -62,9 +62,9 @@ class FunctionsProducer(InterfaceProducerCommon):
             param.origin = param.name
             param.name = self.replace_sync(param.name)
             if isinstance(item, Function) and item.message_type.name == 'response' and \
-                            param.name in ('success', 'resultCode', 'info'):
+                    param.name in ('success', 'resultCode', 'info'):
                 self.logger.warning('%s of return_type %s/%s - skip parameter "%s"',
-                                    item.name, type(item).__name__, item.message_type.name, param.name)
+                                    self.replace_sync(item.name), type(item).__name__, item.message_type.name, param.name)
                 continue
             i, p = self.extract_param(param)
             imports.update(i)
@@ -74,7 +74,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         render['kind'] = item.message_type.name
         render['package_name'] = self.package_name
         render['imports'] = imports
-        render['function_id'] = self.key(item.name)
+        render['function_id'] = self.key(self.replace_sync(item.name))
         render['class_name'] = class_name
         render['extends_class'] = extends_class
         render['since'] = item.since
@@ -143,7 +143,7 @@ class FunctionsProducer(InterfaceProducerCommon):
             tr = t.replace('List<', '').rstrip('>')
         if t.startswith('Float'):
             imports.add('com.smartdevicelink.util.SdlDataTypeConverter')
-        p['return_type'] = t
+        p['return_type'] = self.replace_sync(t)
 
         if tr in self.enum_names:
             imports.add('{}.{}'.format(self.enums_package, tr))
