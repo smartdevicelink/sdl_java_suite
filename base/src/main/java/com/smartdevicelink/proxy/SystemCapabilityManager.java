@@ -566,6 +566,7 @@ public class SystemCapabilityManager {
 					Object retrievedCapability = ((GetSystemCapabilityResponse) response).getSystemCapability().getCapabilityForType(systemCapabilityType);
 					setCapability(systemCapabilityType, retrievedCapability);
 					// If the listener is not included in the onSystemCapabilityListeners map, then notify it
+					// This will be triggered if we are just getting capability without adding a listener to the map
 					if (scListener != null) {
 						synchronized (LISTENER_LOCK) {
 							CopyOnWriteArrayList<OnSystemCapabilityListener> notifiedListeners = onSystemCapabilityListeners.get(systemCapabilityType);
