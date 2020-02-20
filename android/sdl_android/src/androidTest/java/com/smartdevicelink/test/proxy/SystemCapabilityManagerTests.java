@@ -578,6 +578,41 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		verify(onSystemCapabilityListener3, times(4)).onCapabilityRetrieved(any(Object.class));
 	}
 
+	public void testGetAndAddListenerForDisplaysCapability() {
+		ISdl internalInterface;
+		SystemCapabilityManager scm;
+		OnSystemCapabilityListener onSystemCapabilityListener;
+		DisplayCapabilities retrievedCapability;
+
+
+		// Test case 1 (capability cached, listener not null, forceUpdate true)
+		// Force updating DISPLAYS capability should call onError()
+		internalInterface = mock(ISdl.class);
+		scm = new SystemCapabilityManager(internalInterface);
+		onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.DISPLAYS, new DisplayCapabilities());
+		retrievedCapability = (DisplayCapabilities) scm.getCapability(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener, true);
+		assertNotNull(retrievedCapability);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener, times(0)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener, times(1)).onError(any(String.class));
+
+
+		// Test case 2 (Add listener)
+		// When the first DISPLAYS listener is added, GetSystemCapability request should not go out
+		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener1);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Test case 3 (Remove listener)
+		// When the last DISPLAY listener is removed, GetSystemCapability request should not go out
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener1);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+	}
+
 	public void testListConversion(){
 		SystemCapabilityManager systemCapabilityManager = createSampleManager();
 		Object capability = systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON);
