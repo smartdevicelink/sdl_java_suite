@@ -608,7 +608,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 
 		// Test case 3 (Remove listener)
-		// When the last DISPLAY listener is removed, GetSystemCapability request should not go out
+		// When the last DISPLAYS listener is removed, GetSystemCapability request should not go out
 		scm.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener1);
 		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
 	}
