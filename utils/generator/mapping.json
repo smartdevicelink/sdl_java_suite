@@ -1021,8 +1021,7 @@
     "StartTime": {
       "script": "templates/scripts/StartTime_timeinterval.java"
     },
-    "SyncMsgVersion": {
-      "rename": "SdlMsgVersion",
+    "SdlMsgVersion": {
       "script": "templates/scripts/SdlMsgVersion_format.java",
       "imports": [
         "com.smartdevicelink.util.Version"
