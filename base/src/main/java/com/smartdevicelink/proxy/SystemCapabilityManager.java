@@ -558,8 +558,9 @@ public class SystemCapabilityManager {
 		- if subscribe is false, then shouldSubscribe = false
 		- if subscribe is true and the HU supports subscriptions, then shouldSubscribe = true
 		*/
-		final boolean shouldSubscribe = ((subscribe != null) ? subscribe : isSubscribedToSystemCapability(systemCapabilityType)) && supportsSubscriptions();
-		request.setSubscribe(shouldSubscribe);
+		boolean shouldSubscribe = (subscribe != null) ? subscribe : isSubscribedToSystemCapability(systemCapabilityType);
+		final boolean willSubscribe = shouldSubscribe && supportsSubscriptions();
+		request.setSubscribe(willSubscribe);
 		request.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
@@ -578,7 +579,7 @@ public class SystemCapabilityManager {
 						}
 					}
 					if (supportsSubscriptions()) {
-						systemCapabilitiesSubscriptionStatus.put(systemCapabilityType, shouldSubscribe);
+						systemCapabilitiesSubscriptionStatus.put(systemCapabilityType, willSubscribe);
 					}
 				} else {
 					if (scListener != null) {
