@@ -221,7 +221,6 @@ public class SdlFile{
         return isStaticIcon;
     }
 
-
     /**
      * Used to compile hashcode for SdlFile for use to compare in equals method
      *
