@@ -3,15 +3,8 @@
 public class {{class_name}} extends {{extends_class}} {
     {%- if params is defined %}
     {%- for p in params %}
-    {%- if p.description is defined and p.description|length or p.since is defined or p.see is defined or p.deprecated is not none %}
+    {%- if p.since is defined or p.see is defined or p.deprecated is not none %}
     /**
-     {%- if p.description is defined %}
-     {%- for d in p.description %}
-     * {{d}}
-     {%- endfor %}{% endif -%}
-     {%- if p.description is defined and (p.since is defined or p.see is defined) %}
-     *
-     {%- endif %}
      {%- if p.deprecated is not none %}
      * @deprecated
      {%- endif %}
@@ -34,7 +27,7 @@ public class {{class_name}} extends {{extends_class}} {
     {%- endfor %}
     {%- endif %}
 
-    {%- if remove_constructor is not defined %}
+    {% if remove_constructor is not defined %}
     /**
      * Constructs a new {{class_name}} object
      */
@@ -62,6 +55,10 @@ public class {{class_name}} extends {{extends_class}} {
      {% for p in params|selectattr('mandatory') -%}
      {% if p.param_doc is not defined -%}
      * @param {{p.last}}
+     {%- if p.description is defined %}
+     {%- for d in p.description %}
+     * {{d}}
+     {%- endfor %}{%- endif %}
      {% else -%}
      {% set l = p.last|length + 8 -%}
      * {% for v in p.param_doc -%}
