@@ -161,6 +161,7 @@ public class SoftButtonState {
 
     /**
      * Used to compile hashcode for SoftButtonState for use to compare in equals method
+     *
      * @return Custom hashcode of SoftButtonState variables
      */
     @Override
@@ -172,19 +173,20 @@ public class SoftButtonState {
 
     /**
      * Uses our custom hashCode for SoftButtonState objects
+     *
      * @param o - The object to compare
      * @return boolean of whether the objects are the same or not
      */
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
-        // if this is the same memory address, its the same
+        // if this is the same memory address, it's the same
         if (this == o) return true;
         // if this is not an instance of this class, not the same
         if (!(o instanceof SoftButtonState)) return false;
-        //Cast o to SoftButtonState
+        // Cast o to SoftButtonState
         SoftButtonState softButtonState = (SoftButtonState) o;
-        //If SdlArtwork is not the same, they are not the same
+        // if SdlArtwork is not the same, they are not the same
         if (!(this.artwork != null && softButtonState.getArtwork().equals(this.artwork))) {
             return false;
         }

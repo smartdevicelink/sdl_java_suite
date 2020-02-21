@@ -326,24 +326,25 @@ public class SoftButtonObject {
 
     /**
      * Uses our custom hashCode for SoftButtonObject objects
+     *
      * @param o - The object to compare
      * @return boolean of whether the objects are the same or not
      */
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
-        // if this is the same memory address, its the same
+        // if this is the same memory address, it's the same
         if (this == o) return true;
         // if this is not an instance of this class, not the same
         if (!(o instanceof SoftButtonObject)) return false;
-        //Casting object to compare SoftButtonStates
+        // Casting o to compare SoftButtonStates
         SoftButtonObject softButtonObject = (SoftButtonObject) o;
-        //if List<SoftButtonsStates> are not the same size, not the same
+        // if List<SoftButtonsStates> are not the same size, not the same
         if (softButtonObject.getStates().size() != this.states.size()) return false;
         // Comparing List<SoftButtonStates> to see if all states are the same
-        for(int i = 0; i < this.states.size(); i++){
+        for (int i = 0; i < this.states.size(); i++) {
             // if both List<SoftButtonStates> are not the same, they are not the same
-            if(!(this.states.contains(softButtonObject.getStates().get(i)))) return false;
+            if (!(this.states.contains(softButtonObject.getStates().get(i)))) return false;
         }
         // return comparison
         return hashCode() == o.hashCode();
