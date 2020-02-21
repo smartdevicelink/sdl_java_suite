@@ -59,7 +59,6 @@ import java.util.List;
 public class TransportManager extends TransportManagerBase{
     private static final String TAG = "TransportManager";
 
-
     TransportBrokerImpl transport;
 
     //Legacy Transport
@@ -67,6 +66,7 @@ public class TransportManager extends TransportManagerBase{
     LegacyBluetoothHandler legacyBluetoothHandler;
 
     final WeakReference<Context> contextWeakReference;
+    final MultiplexTransportConfig mConfig;
 
 
     /**
@@ -78,32 +78,40 @@ public class TransportManager extends TransportManagerBase{
     public TransportManager(MultiplexTransportConfig config, TransportEventListener listener){
         super(config,listener);
 
+        this.mConfig = config;
+
         if(config.service == null) {
             config.service = SdlBroadcastReceiver.consumeQueuedRouterService();
         }
 
         contextWeakReference = new WeakReference<>(config.context);
-
-        RouterServiceValidator validator = new RouterServiceValidator(config);
-        if(validator.validate()){
-            transport = new TransportBrokerImpl(config.context, config.appId,config.service);
-        }else{
-            enterLegacyMode("Router service is not trusted. Entering legacy mode");
-        }
     }
 
+    /**
+     * start internally validates the target ROuterService, which was done in ctor before.
+     */
     @Override
-    public void start(){
-        if(transport != null){
-            if (!transport.start()){
-                //Unable to connect to a router service
-                if(transportListener != null){
-                    transportListener.onError("Unable to connect with the router service");
+    public void start() {
+        final RouterServiceValidator validator = new RouterServiceValidator(mConfig);
+        validator.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+            @Override
+            public void onFinishedValidation(boolean valid, ComponentName name) {
+                DebugTool.logInfo("onFinishedValidation valid=" + valid + "; name=" + ((name == null)? "null" : name.getPackageName()));
+                if (valid) {
+                    mConfig.service = name;
+                    transport = new TransportBrokerImpl(contextWeakReference.get(), mConfig.appId, mConfig.service);
+                    DebugTool.logInfo("TransportManager start got called; transport=" + transport);
+                    if(transport != null){
+                        transport.start();
+                    }
+                } else {
+                    enterLegacyMode("Router service is not trusted. Entering legacy mode");
+                    if(legacyBluetoothTransport != null){
+                        legacyBluetoothTransport.start();
+                    }
                 }
             }
-        }else if(legacyBluetoothTransport != null){
-            legacyBluetoothTransport.start();
-        }
+        });
     }
 
     @Override
