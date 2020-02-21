@@ -490,7 +490,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
 	}
 
-	public void testAddOnSystemCapabilityListenerThenGetCapability() {
+	public void testAddOnSystemCapabilityListenerThenGetCapabilityWhenSubscriptionsAreNotSupported() {
 		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(5, 0); // This version doesn't support capability subscriptions
 		sdlMsgVersion.setPatchVersion(0);
 		ISdl internalInterface = mock(ISdl.class);
