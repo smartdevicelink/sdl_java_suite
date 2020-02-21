@@ -319,7 +319,7 @@ public class SoftButtonObject {
     public int hashCode() {
         int result = 1;
         result += ((getName() == null) ? 0 : Integer.rotateLeft(getName().hashCode(), 1));
-        result += ((getCurrentStateName() == null) ? 0 : Integer.rotateLeft(getCurrentState().hashCode(), 2));
+        result += ((getCurrentStateName() == null) ? 0 : Integer.rotateLeft(getCurrentStateName().hashCode(), 2));
         result += ((getOnEventListener() == null) ? 0 : Integer.rotateLeft(getOnEventListener().hashCode(), 3));
         return result;
     }
