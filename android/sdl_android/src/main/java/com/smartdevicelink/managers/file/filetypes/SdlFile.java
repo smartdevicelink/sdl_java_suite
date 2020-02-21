@@ -222,7 +222,7 @@ public class SdlFile{
     }
 
     /**
-     * Used to compile hashcode for SdlFile for use to compare in equals method
+     * Used to compile hashcode for SdlFile for use to compare in overridden equals method
      *
      * @return Custom hashcode of SdlFile variables
      */
