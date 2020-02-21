@@ -6,9 +6,12 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
+import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Image;
+import com.smartdevicelink.proxy.rpc.OnButtonEvent;
+import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.SoftButton;
@@ -25,6 +28,7 @@ import com.smartdevicelink.test.Validator;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -306,35 +310,95 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         assertEquals("SoftButtonObject id doesn't match the expected value", 103, sbo5.getButtonId());
     }
 
-    public void testSoftButtonEq(){
+    /**
+     * Test custom overridden softButtonObject equals method
+     */
+    public void testSoftButtonEq() {
         SoftButtonObject softButtonObject1;
         SoftButtonObject softButtonObject2;
-        //Case 1 should call the created equals method in softButtonObject and compare them by name and return True
-        softButtonObject1 = new SoftButtonObject( "test", softButtonState1, null);
-        softButtonObject2 = new SoftButtonObject( "test", softButtonState2, null);
+
+        SoftButtonObject.OnEventListener testOnEventList1 = new SoftButtonObject.OnEventListener() {
+            @Override
+            public void onPress(SoftButtonObject softButtonObject, OnButtonPress onButtonPress) {
+            }
+
+            @Override
+            public void onEvent(SoftButtonObject softButtonObject, OnButtonEvent onButtonEvent) {
+            }
+        };
+
+        SoftButtonObject.OnEventListener testOnEventList2 = new SoftButtonObject.OnEventListener() {
+            @Override
+            public void onPress(SoftButtonObject softButtonObject, OnButtonPress onButtonPress) {
+            }
+
+            @Override
+            public void onEvent(SoftButtonObject softButtonObject, OnButtonEvent onButtonEvent) {
+            }
+        };
+
+        // Case 1: object is null, assertFalse
+        softButtonObject1 = new SoftButtonObject("test", softButtonState1, null);
+        softButtonObject2 = null;
+
+        assertFalse(softButtonObject1.equals(softButtonObject2));
+
+        // Case 2 SoftButtonObjects are the same, assertTrue
+        assertTrue(softButtonObject1.equals(softButtonObject1));
+
+        // Case 3: object is not an instance of SoftButtonObject assertFalse
+        SdlArtwork artwork = new SdlArtwork("image1", FileType.GRAPHIC_PNG, 1, true);
+
+        assertFalse(softButtonObject1.equals(artwork));
+
+        // Case 4: SoftButtonObjectState List are not same size, assertFalse
+        List<SoftButtonState> softButtonStateList = new ArrayList<>();
+        List<SoftButtonState> softButtonStateList2 = new ArrayList<>();
+
+        softButtonStateList.add(softButtonState1);
+
+        softButtonStateList2.add(softButtonState1);
+        softButtonStateList2.add(softButtonState2);
+
+        softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, "Hi", null);
+        softButtonObject2 = new SoftButtonObject("hi", softButtonStateList2, "Hi", null);
+
+        assertFalse(softButtonObject1.equals(softButtonObject2));
+
+        // Case 5: SoftButtonStates are not the same, assertFalse
+        softButtonObject1 = new SoftButtonObject("test", softButtonState1, null);
+        softButtonObject2 = new SoftButtonObject("test", softButtonState2, null);
+
+        assertFalse(softButtonObject1.equals(softButtonObject2));
+
+        // Case 6: SoftButtonObject names are not same, assertFalse
+        softButtonObject1 = new SoftButtonObject("test", softButtonState1, null);
+        softButtonObject2 = new SoftButtonObject("test23123", softButtonState1, null);
+        assertFalse(softButtonObject1.equals(softButtonObject2));
+
+        // Case 7: SoftButtonObject currentStateName not same, assertFalse
+        softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, "Hi", null);
+        softButtonObject2 = new SoftButtonObject("hi", softButtonStateList, "Hi2", null);
+
+        assertFalse(softButtonObject1.equals(softButtonObject2));
+
+        // Case 8: SoftButtonObject onEventListener are same, assert false
+        softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, "Hi", testOnEventList1);
+        softButtonObject2 = new SoftButtonObject("hi", softButtonStateList, "Hi", testOnEventList2);
+
+        assertFalse(softButtonObject1.equals(softButtonObject2));
+
+        // Case 9: onEventListeners not null, everything same, assertTrue
+        softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, "Hi", testOnEventList1);
+        softButtonObject2 = new SoftButtonObject("hi", softButtonStateList, "Hi", testOnEventList1);
 
         assertTrue(softButtonObject1.equals(softButtonObject2));
 
-        //Case 2 should return false, the names of both softButtonObjects are not the same
-        softButtonObject1 = new SoftButtonObject( "test", softButtonState1, null);
-        softButtonObject2 = new SoftButtonObject( "test23123", softButtonState2, null);
-        assertFalse(softButtonObject1.equals(softButtonObject2));
+        // Case10: onEventListeners null, everything same, assertTrue
+        softButtonObject1 = new SoftButtonObject("test", softButtonState1, null);
+        softButtonObject2 = new SoftButtonObject("test", softButtonState1, null);
 
-        //Case 3 should return false because one of the objects is null
-        softButtonObject1 = new SoftButtonObject( "test", softButtonState1, null);
-        softButtonObject2 = null;
-        assertFalse(softButtonObject1.equals(softButtonObject2));
-
-        //Case4 should return false because a softButtonObject was not passed to this method
-        softButtonObject1 = new SoftButtonObject( "test", softButtonState1, null);
-        assertFalse(softButtonObject1.equals(softButtonState1));
-
-        //Case5 if SoftButton object name is null that you are trying to compare
-        softButtonObject1 = new SoftButtonObject( "test", softButtonState1, null);
-        softButtonObject2 = new SoftButtonObject( null, softButtonState2, null);
-        assertFalse(softButtonObject1.equals(softButtonObject2));
-
+        assertTrue(softButtonObject1.equals(softButtonObject2));
 
     }
-
 }
