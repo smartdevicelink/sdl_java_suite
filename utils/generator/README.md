@@ -980,8 +980,6 @@ The set of `<param>` should be mapped to the `public static final String` fields
 Field definition template:
 ```java
 /**
- * [description]
- *
  * @deprecated
  * @since SmartDeviceLink [since_version]
  * @see [see_reference]
@@ -1049,6 +1047,7 @@ Template:
      * Constructs a new [name] object
      *
      * @param [param_name]
+     * [description]
      */
     public [name](@NonNull [param_type|List<[param_type]>] [param_name]) {
         this();
@@ -1082,9 +1081,9 @@ Setter template:
 ```java
     /**
      * Sets the [name].
-     * [description]
      *
      * @param [name]
+     * [description]
      */
     public void [setter_name]([type|List<[type]>] [name]) {
         setValue([field_name], [name]);
@@ -1104,6 +1103,7 @@ Where:
      * Gets the [name].
      *
      * @return [type|List<[type]>]
+     * [description]
      */
     @SuppressWarnings("unchecked")
     public [type|List<[type]>] [getter_name]() {
@@ -1124,6 +1124,7 @@ Where:
      * Gets the [name].
      *
      * @return [Float|List<Float>]
+     * [description]
      */
     @SuppressWarnings("unchecked")
     public Float|List<Float> [getter_name]() {
@@ -1144,6 +1145,7 @@ Where:
      * Gets the [name].
      *
      * @return [type|List<[type]>]
+     * [description]
      */
     @SuppressWarnings("unchecked")
     public [type|List<[type]>] [getter_name]() {
