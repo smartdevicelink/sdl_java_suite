@@ -382,7 +382,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
         assertFalse(softButtonObject1.equals(softButtonObject2));
 
-        // Case 8: SoftButtonObject onEventListener are same, assert false
+        // Case 8: SoftButtonObject onEventListener not same, assert false
         softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, "Hi", testOnEventList1);
         softButtonObject2 = new SoftButtonObject("hi", softButtonStateList, "Hi", testOnEventList2);
 

@@ -335,7 +335,7 @@ public class SoftButtonObject {
         if (o == null) return false;
         // if this is the same memory address, it's the same
         if (this == o) return true;
-        // if this is not an instance of this class, not the same
+        // if this is not an instance of SoftButtonObject, not the same
         if (!(o instanceof SoftButtonObject)) return false;
         // Casting o to compare SoftButtonStates
         SoftButtonObject softButtonObject = (SoftButtonObject) o;

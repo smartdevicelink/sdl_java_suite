@@ -212,7 +212,7 @@ public class SdlFile{
         if (o == null) return false;
         // if this is the same memory address, it's the same
         if (this == o) return true;
-        // if this is not an instance of this class, not the same
+        // if this is not an instance of SdlFile, not the same
         if (!(o instanceof SdlFile)) return false;
         // Cast o to SdlFile
         SdlFile sdlFile = (SdlFile) o;
