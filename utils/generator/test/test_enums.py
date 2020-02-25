@@ -69,19 +69,10 @@ class TestEnumsProducer(unittest.TestCase):
                     'RPC': {}
                 }
             },
-            'HMILevel': {
-                'params': {
-                    'HMI_BACKGROUND': {
-                        'description_file': 'templates/description/HMILevel_HMI_BACKGROUND.html'
-                    }
-                }
-            },
             'ButtonName': {
                 'script': 'templates/scripts/ButtonName_indexForPresetButton.java',
-                'description_file': 'templates/description/ButtonName_head.html',
                 'params': {
                     'OK': {
-                        'description_file': 'templates/description/ButtonName_OK.html',
                         'since': '1.0',
                         'see': '#PLAY_PAUSE'
                     }
@@ -114,7 +105,6 @@ class TestEnumsProducer(unittest.TestCase):
             },
             'SystemCapabilityType': {
                 'kind': 'custom',
-                'description_file': 'templates/description/SystemCapabilityType_head.html',
                 '-imports': [
                     'java.util.EnumSet'
                 ],
@@ -168,9 +158,8 @@ class TestEnumsProducer(unittest.TestCase):
             'package_name': 'com.smartdevicelink.protocol.enums',
             'class_name': 'FunctionID',
             'description': [
-                'Enumeration linking function names with function IDs in SmartDeviceLink protocol. Assumes '
-                'enumeration starts at',
-                'value 0.'],
+                'Enumeration linking function names with function IDs in SmartDeviceLink protocol. Assumes',
+                'enumeration starts at value 0.'],
             'imports': {'java.util.EnumSet', 'java.util.HashMap', 'java.util.Iterator', 'java.util.Map.Entry'},
             'params': (
                 self.producer.params(name='RESERVED', origin='RESERVED', internal=None, description=None, since=None,
@@ -374,13 +363,10 @@ class TestEnumsProducer(unittest.TestCase):
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'ButtonName',
             'params': (
-                self.producer.params(deprecated=None, value=None, description=self.producer.get_file_content(
-                    self.mapping['ButtonName']['params']['OK']['description_file']).splitlines(),
+                self.producer.params(deprecated=None, value=None, description=None,
                                      name='OK', origin='OK', since='1.0', internal=None),),
             'since': None,
-            'deprecated': None,
-            'description': self.producer.get_file_content(
-                self.mapping['ButtonName']['description_file']).splitlines()
+            'deprecated': None
         }
         actual = self.producer.transform(item)
 
@@ -446,9 +432,7 @@ class TestEnumsProducer(unittest.TestCase):
                                      name='DISPLAY', origin=None, since=None, internal='false')),
             'since': None,
             'deprecated': None,
-            'imports': set(),
-            'description': self.producer.get_file_content(
-                self.mapping['SystemCapabilityType']['description_file']).splitlines()
+            'imports': set()
         }
         actual = self.producer.transform(item)
 
