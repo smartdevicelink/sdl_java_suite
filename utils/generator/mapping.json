@@ -51,10 +51,8 @@
     },
     "ButtonName": {
       "script": "templates/scripts/ButtonName_indexForPresetButton.java",
-      "description_file": "templates/description/ButtonName_head.html",
       "params": {
         "OK": {
-          "description_file": "templates/description/ButtonName_OK.html",
           "since": "1.0",
           "see": "#PLAY_PAUSE"
         }
@@ -131,7 +129,7 @@
     },
     "MessageType": {
       "kind": "custom"
-   },
+    },
     "MetadataType": {
       "kind": "custom"
     },
@@ -146,7 +144,6 @@
     },
     "SystemCapabilityType": {
       "kind": "custom",
-      "description_file": "templates/description/SystemCapabilityType_head.html",
       "-imports": [
         "java.util.EnumSet"
       ],
@@ -241,13 +238,6 @@
     },
     "WarningLightStatus": {
       "kind": "simple"
-    },
-    "HMILevel": {
-      "params": {
-        "HMI_BACKGROUND": {
-          "description_file": "templates/description/HMILevel_HMI_BACKGROUND.html"
-        }
-      }
     }
   },
   "functions": {
@@ -255,17 +245,6 @@
       "params": {
         "menuParams": {
           "SuppressWarnings": "unchecked"
-        }
-      }
-    },
-    "Alert": {
-      "description_file": "templates/description/Alert_head.html",
-      "params": {
-        "alertText1": {
-          "param_doc": "String Value "
-        },
-        "alertText2": {
-          "param_doc_file": "templates/description/Alert_alertText2.html"
         }
       }
     },
@@ -447,11 +426,6 @@
       "function_id": "ON_ENCODED_SYNC_P_DATA"
     },
     "OnHMIStatus": {
-      "params": {
-        "firstRun": {
-          "return_type": "Boolean"
-        }
-      },
       "script": "templates/scripts/OnHMIStatus_format.java"
     },
     "OnRCStatus": {

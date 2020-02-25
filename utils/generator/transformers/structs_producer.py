@@ -73,7 +73,7 @@ class StructsProducer(InterfaceProducerCommon):
         if params:
             render['params'] = tuple(render['params'].values())
         if 'description' in render and isinstance(render['description'], str):
-            render['description'] = textwrap.wrap(render['description'], 113)
+            render['description'] = textwrap.wrap(render['description'], 90)
 
         return render
 
@@ -111,7 +111,7 @@ class StructsProducer(InterfaceProducerCommon):
 
         d = self.extract_description(param.description)
         if d:
-            p['description'] = textwrap.wrap(d, 113)
+            p['description'] = textwrap.wrap(d, 90)
         t = self.extract_type(param)
         tr = t
         if t.startswith('List'):

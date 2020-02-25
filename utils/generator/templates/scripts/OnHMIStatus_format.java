@@ -1,4 +1,6 @@
 
+    private Boolean firstRun;
+
     @Override
     public void format(com.smartdevicelink.util.Version rpcVersion, boolean formatParams) {
         if (rpcVersion.getMajor() < 5) {

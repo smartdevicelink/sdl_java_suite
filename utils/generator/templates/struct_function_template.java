@@ -1,15 +1,13 @@
 {% extends "base_template.java" %}
+
 {% block body %}
 public class {{class_name}} extends {{extends_class}} {
     {%- if params is defined %}
     {%- for p in params %}
-    {%- if p.since is defined or p.see is defined or p.deprecated is not none %}
+    {%- if p.see is defined or p.deprecated is not none %}
     /**
      {%- if p.deprecated is not none %}
      * @deprecated
-     {%- endif %}
-     {%- if p.since is defined %}
-     * @since SmartDeviceLink {{p.since}}
      {%- endif %}
      {%- if p.see is defined %}
      * @see {{p.see}}
@@ -52,23 +50,9 @@ public class {{class_name}} extends {{extends_class}} {
     /**
      * Constructs a new {{class_name}} object
      *
-     {% for p in params|selectattr('mandatory') -%}
-     {% if p.param_doc is not defined -%}
-     * @param {{p.last}}
-     {%- if p.description is defined %}
-     {%- for d in p.description %}
-     * {{d}}
-     {%- endfor %}{%- endif %}
-     {% else -%}
-     {% set l = p.last|length + 8 -%}
-     * {% for v in p.param_doc -%}
-     {% if loop.index == 1 -%}
-     @param {{p.last}} {{v}}
-     {% else -%}
-     * {{v|indent(l,True)}}
-     {% endif -%} {% endfor -%}
-     {% endif -%}
-     {% endfor -%}
+     {%- for p in params|selectattr('mandatory') %}
+     {% include "javadoc_template.java" %}
+     {%- endfor %}
      */
     public {{class_name}}({{ constructor|join(', ') }}) {
         this();

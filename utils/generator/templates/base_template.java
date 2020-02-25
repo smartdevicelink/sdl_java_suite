@@ -33,18 +33,18 @@ package {{package_name}};
 {% for i in imports %}
 {%- if i != '' %}
 import {{i}};{{ '\n' if loop.last }}
-    {%- else %}
+{%- else %}
 {{''}}
-    {%- endif %}
-    {%- endfor %}
-    {%- if description is defined or since is defined or see is defined or deprecated is defined %}
+{%- endif %}
+{%- endfor %}
+{%- if description is defined or since is defined or see is defined or deprecated is defined %}
 /**
  {%- if description is defined %}
  {%- for d in description %}
  * {{d}}
  {%- endfor %}{%- endif %}
- *
  {%- if params is defined and return_type is not defined %}
+ *
  * <p><b>Parameter List</b></p>
  *
  * <table border="1" rules="all">
@@ -64,7 +64,6 @@ import {{i}};{{ '\n' if loop.last }}
  *      <td>{%- if param.since is defined %}SmartDeviceLink {{param.since}}{%- endif %}</td>
  *  </tr>
  {%- endfor %}
- *
  * </table>
  {%- endif %}
  {%- if description is defined and (see is defined or since is defined) %}
@@ -80,9 +79,9 @@ import {{i}};{{ '\n' if loop.last }}
  * @since SmartDeviceLink {{since}}
  {%- endif %}
  */
-    {%- endif %}
-    {%- if deprecated is not none %}
+{%- endif %}
+{%- if deprecated is not none %}
 @Deprecated
-    {%- endif %}
-    {%- block body %}
-    {% endblock -%}
+{%- endif %}
+{%- block body %}
+{% endblock -%}

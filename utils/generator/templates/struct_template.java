@@ -2,7 +2,7 @@
 
     {%- block constructor_simple %}
     public {{class_name}}() { }
-    {% endblock -%}
+    {%- endblock -%}
 
     {%- block setter %}
     {%- for p in params|rejectattr('name') %}
@@ -10,21 +10,7 @@
     /**
      * Sets the {{p.origin}}.
      *
-     {% if p.param_doc is not defined -%}
-     * @param {{p.last}}
-     {%- if p.description is defined %}
-     {%- for d in p.description %}
-     * {{d}}
-     {%- endfor %}{%- endif %}
-     {% else -%}
-     {% set l = p.last|length + 8 -%}
-     * {% for v in p.param_doc -%}
-     {% if loop.index == 1 -%}
-     @param {{p.last}} {{v}}
-     {% else -%}
-     * {{v|indent(l,True)}}
-     {% endif -%} {% endfor -%}
-     {% endif -%}
+     {% include "javadoc_template.java" %}
      */
     public void set{{p.title}}({% if p.mandatory %}@NonNull {% endif %}{{p.return_type}} {{p.last}}) {
         setValue({{p.key}}, {{p.last}});
@@ -33,21 +19,7 @@
     /**
      * Gets the {{p.origin}}.
      *
-     {% if p.param_doc is not defined -%}
-     * @return {{p.return_type}}
-     {%- if p.description is defined %}
-     {%- for d in p.description %}
-     * {{d}}
-     {%- endfor %}{%- endif %}
-     {% else -%}
-     {% set l = p.last|length + 8 -%}
-     * {% for v in p.param_doc -%}
-     {% if loop.index == 1 -%}
-     @return {{p.return_type}} {{v}}
-     {% else -%}
-     * {{v|indent(l,True)}}
-     {% endif -%} {% endfor -%}
-     {% endif -%}
+     {% include "javadoc_return.java" %}
      */
     {%- if p.SuppressWarnings is defined %}
     @SuppressWarnings("{{p.SuppressWarnings}}")

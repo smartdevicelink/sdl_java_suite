@@ -178,7 +178,7 @@ class InterfaceProducerCommon(ABC):
                             value[k] = str(v).lower()
                     d = render['params'][name]._asdict()
                     if 'description' in value:
-                        d['description'] = textwrap.wrap(value['description'], 113)
+                        d['description'] = textwrap.wrap(value['description'], 90)
                         del value['description']
                     if 'title' in value:
                         d['title'] = value['title']
@@ -201,6 +201,6 @@ class InterfaceProducerCommon(ABC):
                             value[k] = str(v).lower()
                     value['name'] = name
                     if 'description' in value:
-                        value['description'] = textwrap.wrap(value['description'], 113)
+                        value['description'] = textwrap.wrap(value['description'], 90)
                     Params = namedtuple('Params', sorted(value))
                     render['params'][name] = Params(**value)
