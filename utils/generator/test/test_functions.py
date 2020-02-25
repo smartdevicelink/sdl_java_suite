@@ -83,14 +83,7 @@ class TestFunctionsProducer(unittest.TestCase):
                 ],
                 'script': 'templates/scripts/RegisterAppInterfaceResponse_format.java'
             },
-            'Alert': {
-                'description_file': 'templates/description/Alert_head.html',
-                'params': {
-                    'alertText2': {
-                        'param_doc_file': 'templates/description/Alert_alertText2.html'
-                    }
-                }
-            }}
+        }
 
     def test_Version(self):
         version = self.producer.get_version
@@ -265,11 +258,9 @@ class TestFunctionsProducer(unittest.TestCase):
                                'com.smartdevicelink.proxy.RPCRequest', '', 'java.util.Hashtable']
         expected['params'] = (
             self.producer.params(deprecated=None, key='KEY_ALERT_TEXT_2', last='alertText2',
-                                 mandatory=True, origin='alertText2', param_doc=self.producer.get_file_content(
-                    self.mapping['Alert']['params']['alertText2']['param_doc_file']).splitlines(),
+                                 mandatory=True, origin='alertText2', param_doc=None,
                                  return_type='String', since=None, title='AlertText2', description=None,
                                  SuppressWarnings=None, name=None),)
-        expected['description'] = self.producer.get_file_content(self.mapping['Alert']['description_file']).splitlines()
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
 
