@@ -66,7 +66,7 @@ class EnumsProducer(InterfaceProducerCommon):
         self.custom_mapping(render)
         render['params'] = tuple(render['params'].values())
         if 'description' in render and isinstance(render['description'], str):
-            render['description'] = textwrap.wrap(render['description'], 113)
+            render['description'] = textwrap.wrap(render['description'], 90)
 
         return render
 
@@ -97,7 +97,7 @@ class EnumsProducer(InterfaceProducerCommon):
         if getattr(param, 'deprecated', None):
             d['deprecated'] = param.deprecated
         if getattr(param, 'description', None):
-            d['description'] = textwrap.wrap(self.extract_description(param.description), 113)
+            d['description'] = textwrap.wrap(self.extract_description(param.description), 90)
         Params = namedtuple('Params', sorted(d))
         return kind, Params(**d)
 
