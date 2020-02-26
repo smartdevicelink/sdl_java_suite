@@ -16,16 +16,14 @@ class FunctionsProducer(InterfaceProducerCommon):
     Functions transformation
     """
 
-    def __init__(self, paths, enum_names, struct_names, mapping=None):
+    def __init__(self, paths, enum_names, struct_names):
         super(FunctionsProducer, self).__init__(
             container_name='params',
             enums_package=paths.enums_package,
             structs_package=paths.structs_package,
             enum_names=enum_names,
             struct_names=struct_names,
-            package_name=paths.functions_package,
-            mapping=mapping['functions'] if mapping and 'functions' in mapping else {},
-            all_mapping=mapping if mapping else {})
+            package_name=paths.functions_package)
         self.logger = logging.getLogger('FunctionsProducer')
         self.request_class = paths.request_class
         self.response_class = paths.response_class
@@ -88,7 +86,6 @@ class FunctionsProducer(InterfaceProducerCommon):
         if params:
             render['params'] = params
 
-        self.custom_mapping(render)
         if 'imports' in render:
             render['imports'] = self.sort_imports(render['imports'])
         if params:
@@ -154,8 +151,3 @@ class FunctionsProducer(InterfaceProducerCommon):
 
         Params = namedtuple('Params', sorted(p))
         return imports, Params(**p)
-
-    def custom_mapping(self, render):
-        if not render['class_name'] in self.mapping:
-            return
-        super(FunctionsProducer, self).custom_mapping(render)

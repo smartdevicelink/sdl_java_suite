@@ -4,10 +4,8 @@ Common transformation
 
 import logging
 import re
-import textwrap
 from abc import ABC
 from collections import namedtuple, OrderedDict
-from pathlib import Path
 
 from model.array import Array
 from model.enum import Enum
@@ -113,94 +111,3 @@ class InterfaceProducerCommon(ABC):
             return 'List<{}>'.format(evaluate(param.param_type.element_type))
         else:
             return evaluate(param.param_type)
-
-    def get_file_content(self, file: str):
-        """
-        Used for getting content of custom scripts used in custom mapping
-        :param file: relational path custom scripts
-        :return: string with content of custom scripts
-        """
-        file = Path(__file__).absolute().parents[1].joinpath(file)
-        try:
-            with file.open('r') as f:
-                s = f.readlines()
-            return ''.join(s)
-        except FileNotFoundError as e:
-            self.logger.error(e)
-            return ''
-
-    def custom_mapping(self, render):
-        """
-        To be moved into parent class
-        :param render: dictionary with moder ready for jinja template
-        :return: None
-        """
-        custom = self.mapping[render['class_name']]
-
-        for name in ('description', 'see', 'since', 'package_name'):
-            if name in custom:
-                render[name] = custom[name]
-        if 'rename' in custom:
-            render['class_name'] = custom['rename']
-        if '-constructor' in custom:
-            render['remove_constructor'] = 'simple'
-        if 'imports' in custom:
-            if 'imports' in render:
-                render['imports'].update(custom['imports'])
-        if '-imports' in custom:
-            for i in custom['-imports']:
-                if 'imports' in render:
-                    render['imports'].remove(i)
-        if '-params' in custom:
-            for name in custom['-params']:
-                if name in render['params']:
-                    self.logger.warning('deleting parameter %s', render['params'][name])
-                    del render['params'][name]
-        if 'params_rename' in custom:
-            for name, new_name in custom['params_rename'].items():
-                if name in render['params']:
-                    render['params'][new_name] = render['params'][name]._replace(name=new_name)
-                    del render['params'][name]
-        if 'script' in custom:
-            script = self.get_file_content(custom['script'])
-            if script:
-                render['scripts'] = [script]
-        if 'description_file' in custom:
-            render['description'] = self.get_file_content(custom['description_file']).split('\n')
-        if 'function_id' in custom:
-            render['function_id'] = custom['function_id']
-        if 'params' in custom:
-            for name, value in custom['params'].items():
-                if name in render['params']:
-                    for k, v in value.items():
-                        if isinstance(v, bool):
-                            render['return_type'] = 'bool'
-                            value[k] = str(v).lower()
-                    d = render['params'][name]._asdict()
-                    if 'description' in value:
-                        d['description'] = textwrap.wrap(value['description'], 90)
-                        del value['description']
-                    if 'title' in value:
-                        d['title'] = value['title']
-                        del value['title']
-                    if 'description_file' in value:
-                        d['description'] = self.get_file_content(value['description_file']).split('\n')
-                        del value['description_file']
-                    if 'param_doc_file' in value:
-                        d['param_doc'] = self.get_file_content(value['param_doc_file']).split('\n')
-                        del value['param_doc_file']
-                    if 'param_doc' in value:
-                        d['param_doc'] = textwrap.wrap(value['param_doc'], 100)  # len(d['last'])
-                        del value['param_doc']
-                    d.update(value)
-                    Params = namedtuple('Params', sorted(d))
-                    render['params'][name] = Params(**d)
-                else:
-                    for k, v in value.items():
-                        if isinstance(v, bool):
-                            value[k] = str(v).lower()
-                    value['name'] = name
-                    if 'description' in value:
-                        value['description'] = textwrap.wrap(value['description'], 90)
-                    Params = namedtuple('Params', sorted(value))
-                    render['params'][name] = Params(**value)

@@ -16,13 +16,12 @@ class EnumsProducer(InterfaceProducerCommon):
     Enums transformation
     """
 
-    def __init__(self, paths, mapping=None):
+    def __init__(self, paths):
         super(EnumsProducer, self).__init__(
             container_name='elements',
             enums_package=None,
             structs_package=None,
-            package_name=paths.enums_package,
-            mapping=mapping['enums'] if mapping and 'enums' in mapping else {})
+            package_name=paths.enums_package)
         self.logger = logging.getLogger('EnumsProducer')
         self._params = namedtuple('params', 'origin name internal description since value deprecated')
 
@@ -63,7 +62,6 @@ class EnumsProducer(InterfaceProducerCommon):
         if imports:
             render['imports'] = imports
 
-        self.custom_mapping(render)
         render['params'] = tuple(render['params'].values())
         if 'description' in render and isinstance(render['description'], str):
             render['description'] = textwrap.wrap(render['description'], 90)
@@ -122,51 +120,3 @@ class EnumsProducer(InterfaceProducerCommon):
             return 'int'
         else:
             return 'String'
-
-    def custom_mapping(self, render):
-        if not render['class_name'] in self.mapping:
-            return
-        custom = self.mapping[render['class_name']]
-        if 'kind' in custom:
-            if custom['kind'] == 'simple':
-                self.logger.warning('for %s changing kind to %s', render['class_name'], custom['kind'])
-                params = OrderedDict()
-                for name, value in render['params'].items():
-                    d = value._asdict()
-                    if 'origin' in d:
-                        d['name'] = d['origin']
-                    if 'internal' in d:
-                        del d['internal']
-                    if 'value' in d:
-                        del d['value']
-                    Params = namedtuple('Params', sorted(d))
-                    d = Params(**d)
-                    params[d.name] = d
-                render['kind'] = custom['kind']
-                render['params'] = params
-                render['imports'].clear()
-            if custom['kind'] == 'custom':
-                self.logger.warning('for %s changing kind to %s', render['class_name'], custom['kind'])
-                params = OrderedDict()
-                for name, value in render['params'].items():
-                    d = value._asdict()
-                    if 'value' in d:
-                        d['internal'] = d['value']
-                    elif 'internal' not in d:
-                        d['internal'] = '"{}"'.format(d['name'])
-                    d['name'] = self.key(d['name'])
-                    Params = namedtuple('Params', sorted(d))
-                    d = Params(**d)
-                    params[d.name] = d
-                render['kind'] = custom['kind']
-                render['params'] = params
-                render['imports'] = set()
-                if render['return_type'] != 'bool':
-                    render['imports'].add('java.util.EnumSet')
-
-        if 'valueForString' in custom:
-            script = self.get_file_content(custom['valueForString'])
-            if script:
-                render['valueForString'] = script
-
-        super(EnumsProducer, self).custom_mapping(render)

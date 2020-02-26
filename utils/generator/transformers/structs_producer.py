@@ -16,16 +16,14 @@ class StructsProducer(InterfaceProducerCommon):
     Structs transformation
     """
 
-    def __init__(self, paths, enum_names, struct_names, mapping=None):
+    def __init__(self, paths, enum_names, struct_names):
         super(StructsProducer, self).__init__(
             container_name='members',
             enums_package=paths.enums_package,
             structs_package=paths.structs_package,
             enum_names=enum_names,
             struct_names=struct_names,
-            package_name=paths.structs_package,
-            mapping=mapping['structs'] if mapping and 'structs' in mapping else {},
-            all_mapping=mapping if mapping else {})
+            package_name=paths.structs_package)
         self.logger = logging.getLogger('StructsProducer')
         self.struct_class = paths.struct_class
 
@@ -67,7 +65,6 @@ class StructsProducer(InterfaceProducerCommon):
         if params:
             render['params'] = params
 
-        self.custom_mapping(render)
         if 'imports' in render:
             render['imports'] = self.sort_imports(render['imports'])
         if params:
@@ -131,8 +128,3 @@ class StructsProducer(InterfaceProducerCommon):
 
         Params = namedtuple('Params', sorted(p))
         return imports, Params(**p)
-
-    def custom_mapping(self, render):
-        if not render['class_name'] in self.mapping:
-            return
-        super(StructsProducer, self).custom_mapping(render)

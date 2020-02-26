@@ -8,7 +8,6 @@ import datetime
 from argparse import ArgumentParser
 from collections import namedtuple, OrderedDict
 from inspect import getfile
-from json import JSONDecodeError, loads
 from os.path import basename
 from pprint import pformat
 from time import sleep
@@ -277,21 +276,6 @@ class Generator:
         Paths = namedtuple('Paths', ' '.join(fields))
         return Paths(**intermediate)
 
-    def get_mappings(self, file_name=ROOT.joinpath('mapping.json')):
-        """
-        The key name in *.json is equal to property named in jinja2 templates
-        :param file_name: path to file with manual mappings
-        :return: dictionary with custom manual mappings
-        """
-
-        try:
-            with file_name.open('r') as file:
-                intermediate = file.readlines()
-            return loads(''.join(intermediate))
-        except (FileNotFoundError, JSONDecodeError) as message1:
-            self.logger.warning(message1)
-            return OrderedDict()
-
     def write_file(self, file_name, template, data):
         """
         Calling producer/transformer instance to transform initial Model to dict used in jinja2 templates.
@@ -351,21 +335,6 @@ class Generator:
                 self.logger.info('Writing new %s', file)
                 self.write_file(file, template, data)
 
-    @staticmethod
-    def rename_elements(enum_names, struct_names, mappings):
-        """
-        Rename elements according to rename mapping
-        :return: list of elements with rename mapping applied
-        """
-        enum_names = list(enum_names)
-        struct_names = list(struct_names)
-        enum_names = [mappings['enums'][element]['rename'] if 'enums' in mappings and element in mappings['enums']
-                      and 'rename' in mappings['enums'][element] else element for element in enum_names]
-        struct_names = [mappings['structs'][element]['rename'] if 'structs' in mappings
-                        and element in mappings['structs'] and 'rename' in mappings['structs'][element]
-                        else element for element in struct_names]
-        return tuple(enum_names), tuple(struct_names)
-
     def parser(self, xml, xsd, pattern=None):
         """
         Validate xml to match with xsd. Calling parsers to get Model from xml. If provided pattern, filtering Model.
@@ -424,19 +393,16 @@ class Generator:
                                                           pattern=args.regex_pattern)
 
         paths = self.get_paths()
-        mappings = self.get_mappings()
-
-        enum_names, struct_names = self.rename_elements(enum_names, struct_names, mappings)
 
         if args.enums and interface.enums:
             self.process(args.output_directory, args.skip, args.overwrite, tuple(interface.enums.values()),
-                         EnumsProducer(paths, mappings))
+                         EnumsProducer(paths))
         if args.structs and interface.structs:
             self.process(args.output_directory, args.skip, args.overwrite, tuple(interface.structs.values()),
-                         StructsProducer(paths, enum_names, struct_names, mappings))
+                         StructsProducer(paths, enum_names, struct_names))
         if args.functions and interface.functions:
             self.process(args.output_directory, args.skip, args.overwrite, tuple(interface.functions.values()),
-                         FunctionsProducer(paths, enum_names, struct_names, mappings))
+                         FunctionsProducer(paths, enum_names, struct_names))
 
 
 if __name__ == '__main__':
