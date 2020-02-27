@@ -607,6 +607,10 @@ public class FileManagerTests extends AndroidTestCase2 {
 		assertTrue(error);
 	}
 
+	/**
+	 * Test Invalid SdlArtWork FileTypes
+	 * SdlArtwork FileTypes can only be: GRAPHIC_BMP, GRAPHIC_PNG or GRAPHIC_JPEG
+	 */
 	public void testInvalidSdlArtworkInput(){
 		SdlArtwork sdlArtwork = new SdlArtwork();
 		// Set invalid type
