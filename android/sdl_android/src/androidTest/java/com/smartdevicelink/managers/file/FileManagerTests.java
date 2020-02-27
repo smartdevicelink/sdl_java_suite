@@ -436,12 +436,16 @@ public class FileManagerTests extends AndroidTestCase2 {
 		verify(internalInterface, times(5)).sendRequests(any(List.class),any(OnMultipleRequestListener.class));
 	}
 
-	public void testInitializationSuccess(){
+	/**
+	 * Testing the initialization of FileManager
+	 */
+	public void testInitializationSuccess() {
 		ISdl internalInterface = mock(ISdl.class);
 
-		doAnswer(onListFilesSuccess).when(internalInterface).sendRPCRequest(any(ListFiles.class));
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
 
-		final FileManager fileManager = new FileManager(internalInterface, mTestContext);
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
 		fileManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
