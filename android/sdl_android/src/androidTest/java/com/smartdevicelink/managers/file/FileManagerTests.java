@@ -546,12 +546,16 @@ public class FileManagerTests extends AndroidTestCase2 {
 		});
 	}
 
-	public void testInvalidSdlFileInput(){
+	/**
+	 * Test to make sure you cannot upload an SdlFile with invalid data
+	 */
+	public void testInvalidSdlFileInput() {
 		ISdl internalInterface = mock(ISdl.class);
 
-		doAnswer(onListFilesSuccess).when(internalInterface).sendRPCRequest(any(ListFiles.class));
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
 
-		final FileManager fileManager = new FileManager(internalInterface, mTestContext);
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
 		fileManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
@@ -582,6 +586,12 @@ public class FileManagerTests extends AndroidTestCase2 {
 		});
 	}
 
+	/**
+	 * Used to try and upload SdlFiles with invalid data, throw an assert error if file uploads
+	 *
+	 * @param fileManager - FileManager used to manage and upload files
+	 * @param sdlFile     - SdlFile with invalid data to test uploading
+	 */
 	private void checkForUploadFailure(FileManager fileManager, SdlFile sdlFile){
 		boolean error = false;
 
