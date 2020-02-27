@@ -242,6 +242,39 @@ public class FileManagerTests extends AndroidTestCase2 {
 		}
 	};
 
+	/**
+	 * Flips between calling onError and onResponse.
+	 * simulating uploading files, with some failing to upload
+	 */
+	private Answer<Void> onSendRequestsFailPartialOnError = new Answer<Void>() {
+		@Override
+		public Void answer(InvocationOnMock invocation) throws Throwable {
+			Object[] args = invocation.getArguments();
+			List<RPCRequest> rpcs = (List<RPCRequest>) args[0];
+			OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
+			if (rpcs.get(0) instanceof PutFile) {
+				Result resultCode = Result.REJECTED;
+				boolean flip = false;
+				for (RPCRequest message : rpcs) {
+					int correlationId = message.getCorrelationID();
+					listener.addCorrelationId(correlationId);
+					PutFileResponse putFileResponse = new PutFileResponse();
+					if (flip) {
+						putFileResponse.setSuccess(true);
+						flip = false;
+						listener.onResponse(correlationId, putFileResponse);
+					} else {
+						flip = true;
+						putFileResponse.setSuccess(false);
+						listener.onError(correlationId, resultCode, "Binary data empty");
+					}
+				}
+				listener.onFinished();
+			}
+			return null;
+		}
+	};
+
 	// TESTS
 
 	/**
@@ -733,90 +766,52 @@ public class FileManagerTests extends AndroidTestCase2 {
 		});
 	}
 
-	public void testMultipleFileUploadPartialFailure(){
-		final String failureReason = "No space available";
-
+	/**
+	 * Testing uploading multiple files with some failing.
+	 */
+	public void testMultipleFileUploadPartialFailure() {
 		ISdl internalInterface = mock(ISdl.class);
 
-		doAnswer(onListFilesSuccess).when(internalInterface).sendRPCRequest(any(ListFiles.class));
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
+		doAnswer(onSendRequestsFailPartialOnError).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
-		Answer<Void> onSendRequestsFailure = new Answer<Void>() {
-			private int responseNum = 0;
-			@Override
-			public Void answer(InvocationOnMock invocation) {
-				Object[] args = invocation.getArguments();
-				List<RPCRequest> rpcs = (List<RPCRequest>) args[0];
-				OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
-				if(rpcs.get(0) instanceof PutFile){
-					for(RPCRequest message : rpcs){
-						int correlationId = message.getCorrelationID();
-						listener.addCorrelationId(correlationId);
-						PutFileResponse putFileResponse = new PutFileResponse();
-						if(responseNum++ % 2 == 0){
-							listener.onError(correlationId, Result.OUT_OF_MEMORY, failureReason);
-						}else{
-							putFileResponse.setSuccess(true);
-							listener.onResponse(correlationId, putFileResponse);
-						}
-					}
-				}
-				return null;
-			}
-		};
-		doAnswer(onSendRequestsFailure).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		SdlFile validFile2 = new SdlFile();
+		validFile2.setName(Test.GENERAL_STRING + "2");
+		validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile2.setPersistent(false);
+		validFile2.setType(FileType.GRAPHIC_JPEG);
 
-		final FileManager fileManager = new FileManager(internalInterface, mTestContext);
+		SdlFile validFile3 = new SdlFile();
+		validFile3.setName(Test.GENERAL_STRING + "3");
+		validFile3.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile3.setPersistent(false);
+		validFile3.setType(FileType.GRAPHIC_JPEG);
+
+		validFile.setType(FileType.AUDIO_WAVE);
+
+		final List<SdlFile> filesToUpload = new ArrayList<>();
+		filesToUpload.add(validFile);
+		filesToUpload.add(validFile2);
+		filesToUpload.add(validFile3);
+
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		fileManagerConfig.setArtworkRetryCount(0);
+		fileManagerConfig.setFileRetryCount(0);
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
 		fileManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
-				assertTrue(success);
-				final String baseFileName = "file";
-				int fileNum = 0;
-				final List<SdlFile> filesToUpload = new ArrayList<>();
-				SdlFile sdlFile = new SdlFile();
-				sdlFile.setName(baseFileName + fileNum++);
-				Uri uri = Uri.parse("android.resource://" + mTestContext.getPackageName() + "/drawable/ic_sdl");
-				sdlFile.setUri(uri);
-				filesToUpload.add(sdlFile);
-
-				sdlFile = new SdlFile();
-				sdlFile.setName(baseFileName + fileNum++);
-				sdlFile.setResourceId(com.smartdevicelink.test.R.drawable.ic_sdl);
-				filesToUpload.add(sdlFile);
-
-				sdlFile = new SdlFile();
-				sdlFile.setName(baseFileName + fileNum++);
-				sdlFile.setFileData(Test.GENERAL_BYTE_ARRAY);
-				sdlFile.setPersistent(true);
-				sdlFile.setType(FileType.BINARY);
-				filesToUpload.add(sdlFile);
-
 				fileManager.uploadFiles(filesToUpload,
 						new MultipleFileCompletionListener() {
 							@Override
 							public void onComplete(Map<String, String> errors) {
-								assertNotNull(errors);
-								for(int i = 0; i < filesToUpload.size(); i++){
-									if(i % 2 == 0){
-										assertTrue(errors.containsKey(filesToUpload.get(i).getName()));
-										assertEquals(FileManager.buildErrorString(Result.OUT_OF_MEMORY,
-												failureReason), errors.get(filesToUpload.get(i).getName()));
-									}else{
-										assertFalse(errors.containsKey(filesToUpload.get(i).getName()));
-									}
-								}
-								List <String> uploadedFileNames = fileManager.getRemoteFileNames();
-								for(int i = 0; i < filesToUpload.size(); i++){
-									if(i % 2 == 0){
-										assertFalse(uploadedFileNames.contains(filesToUpload.get(i).getName()));
-									}else{
-										assertTrue(uploadedFileNames.contains(filesToUpload.get(i).getName()));
-									}
-								}
+								assertTrue(errors.size() == 2);
 							}
 						});
 			}
 		});
+		assertFalse(fileManager.hasUploadedFile(validFile) && fileManager.hasUploadedFile(validFile3));
+		assertTrue(fileManager.hasUploadedFile(validFile2));
 	}
 
 	public void testMultipleArtworkUploadSuccess(){
