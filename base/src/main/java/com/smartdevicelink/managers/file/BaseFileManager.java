@@ -383,7 +383,7 @@ abstract class BaseFileManager extends BaseSubManager {
 
 	/**
 	 * Attempts to upload a list of SdlFiles to core
-	 * @param files    list of SdlFiles with file name and one of A) fileData, B) Uri, or C) resourceID set
+	 * @param files list of SdlFiles with file name and one of A) fileData, B) Uri, or C) resourceID set
 	 * @param listener callback that is called once core responds to all upload requests
 	 */
 	public void uploadFiles(@NonNull List<? extends SdlFile> files, final MultipleFileCompletionListener listener) {
