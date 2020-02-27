@@ -535,13 +535,17 @@ public class FileManagerTests extends AndroidTestCase2 {
 		assertEquals(Test.GENERAL_INT, fileManager.getBytesAvailable());
 	}
 
+	/**
+	 * Testing failed file upload.
+	 */
 	public void testFileUploadFailure() {
 		ISdl internalInterface = mock(ISdl.class);
 
-		doAnswer(onListFilesSuccess).when(internalInterface).sendRPCRequest(any(ListFiles.class));
-		doAnswer(onPutFileFailure).when(internalInterface).sendRPCRequest(any(PutFile.class));
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
+		doAnswer(onPutFileFailure).when(internalInterface).sendRPC(any(PutFile.class));
 
-		final FileManager fileManager = new FileManager(internalInterface, mTestContext);
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
 		fileManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
