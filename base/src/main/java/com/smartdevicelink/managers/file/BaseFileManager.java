@@ -386,16 +386,24 @@ abstract class BaseFileManager extends BaseSubManager {
 	 * @param files list of SdlFiles with file name and one of A) fileData, B) Uri, or C) resourceID set
 	 * @param listener callback that is called once core responds to all upload requests
 	 */
-	public void uploadFiles(@NonNull List<? extends SdlFile> files, final MultipleFileCompletionListener listener){
-		if(files.isEmpty()){
+	public void uploadFiles(@NonNull List<? extends SdlFile> files, final MultipleFileCompletionListener listener) {
+		if (files.isEmpty()) {
 			return;
 		}
 		final List<PutFile> putFileRequests = new ArrayList<>();
-		for(SdlFile file : files){
-			putFileRequests.add(createPutFile(file));
+		for (SdlFile file : files) {
+			if (!file.isStaticIcon()) {
+				putFileRequests.add(createPutFile(file));
+			}
 		}
-		final Map<String, String> errors = new HashMap<>();
-		sendMultipleFileOperations(putFileRequests, listener, errors);
+		// if all files are static icons we complete listener with no errors
+		if (putFileRequests.isEmpty()) {
+			Log.w(TAG, "Static icons don't need to be uploaded");
+			listener.onComplete(null);
+		} else {
+			final Map<String, String> errors = new HashMap<>();
+			sendMultipleFileOperations(putFileRequests, listener, errors);
+		}
 	}
 
 	/**

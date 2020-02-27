@@ -502,7 +502,7 @@ public class FileManagerTests extends AndroidTestCase2 {
 		assertEquals(Test.GENERAL_INT, fileManager.getBytesAvailable());
 	}
 
-	public void testFileUploadFailure(){
+	public void testFileUploadFailure() {
 		ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPCRequest(any(ListFiles.class));
@@ -525,12 +525,16 @@ public class FileManagerTests extends AndroidTestCase2 {
 		});
 	}
 
-	public void testFileUploadForStaticIcon(){
+	/**
+	 * Testing uploadFile for a staticIcon, verifying that it doesn't actually upload.
+	 */
+	public void testFileUploadForStaticIcon() {
 		ISdl internalInterface = mock(ISdl.class);
 
-		doAnswer(onListFilesSuccess).when(internalInterface).sendRPCRequest(any(ListFiles.class));
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
 
-		final FileManager fileManager = new FileManager(internalInterface, mTestContext);
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
 		fileManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
@@ -544,6 +548,70 @@ public class FileManagerTests extends AndroidTestCase2 {
 				});
 			}
 		});
+		verify(internalInterface, times(1)).sendRPC(any(RPCMessage.class));
+	}
+
+	/**
+	 * Testing uploadFiles for staticIcons, verifying that it doesn't actually upload.
+	 */
+	public void testMultipleFileUploadsForStaticIcon() {
+		ISdl internalInterface = mock(ISdl.class);
+
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
+		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
+		fileManager.start(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				assertTrue(success);
+				SdlArtwork artwork = new SdlArtwork(StaticIconName.ALBUM);
+				SdlArtwork artwork2 = new SdlArtwork(StaticIconName.FILENAME);
+				List<SdlArtwork> testStaticIconUpload = new ArrayList<>();
+				testStaticIconUpload.add(artwork);
+				testStaticIconUpload.add(artwork2);
+				fileManager.uploadFiles(testStaticIconUpload, new MultipleFileCompletionListener() {
+					@Override
+					public void onComplete(Map<String, String> errors) {
+						assertTrue(errors == null);
+					}
+				});
+			}
+		});
+		verify(internalInterface, times(0)).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+	}
+
+	/**
+	 * Testing uploadFiles for static icons and nonStatic icons in the same list.
+	 */
+	public void testMultipleFileUploadsForPartialStaticIcon() {
+		ISdl internalInterface = mock(ISdl.class);
+
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
+		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
+		fileManager.start(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				assertTrue(success);
+				SdlArtwork artwork = new SdlArtwork(StaticIconName.ALBUM);
+				SdlArtwork artwork2 = new SdlArtwork(StaticIconName.FILENAME);
+				List<SdlFile> testFileuploads = new ArrayList<>();
+				testFileuploads.add(artwork);
+				testFileuploads.add(artwork2);
+				testFileuploads.add(validFile);
+				fileManager.uploadFiles(testFileuploads, new MultipleFileCompletionListener() {
+					@Override
+					public void onComplete(Map<String, String> errors) {
+						assertTrue(errors == null);
+					}
+				});
+			}
+		});
+		verify(internalInterface, times(1)).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 	}
 
 	/**
