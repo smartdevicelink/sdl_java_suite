@@ -814,13 +814,17 @@ public class FileManagerTests extends AndroidTestCase2 {
 		assertTrue(fileManager.hasUploadedFile(validFile2));
 	}
 
+	/**
+	 * Testing uploading multiple SdlArtwork files.
+	 */
 	public void testMultipleArtworkUploadSuccess(){
 		ISdl internalInterface = mock(ISdl.class);
 
-		doAnswer(onListFilesSuccess).when(internalInterface).sendRPCRequest(any(ListFiles.class));
-		doAnswer(onSendRequestsSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
+		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
-		final FileManager fileManager = new FileManager(internalInterface, mTestContext);
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
 		fileManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
