@@ -860,16 +860,20 @@ public class FileManagerTests extends AndroidTestCase2 {
 		});
 	}
 
+	/**
+	 * Testing uploading persistent SdlFile
+	 */
 	public void testPersistentFileUploaded(){
 		ISdl internalInterface = mock(ISdl.class);
 
-		doAnswer(onListFilesSuccess).when(internalInterface).sendRPCRequest(any(ListFiles.class));
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
 
 		final SdlFile file = new SdlFile();
 		file.setName(Test.GENERAL_STRING_LIST.get(0));
 		file.setPersistent(true);
 
-		final FileManager fileManager = new FileManager(internalInterface, mTestContext);
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
 		fileManager.start(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
