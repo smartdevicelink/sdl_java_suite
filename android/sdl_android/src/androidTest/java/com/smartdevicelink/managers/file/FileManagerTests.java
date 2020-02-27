@@ -136,21 +136,6 @@ public class FileManagerTests extends AndroidTestCase2 {
 		}
 	};
 
-	private Answer<Void> onListFilesFailure = new Answer<Void>() {
-		@Override
-		public Void answer(InvocationOnMock invocation) {
-			Object[] args = invocation.getArguments();
-			RPCRequest message = (RPCRequest) args[0];
-			if(message instanceof ListFiles){
-				int correlationId = message.getCorrelationID();
-				ListFilesResponse listFilesResponse = new ListFilesResponse();
-				listFilesResponse.setSuccess(false);
-				message.getOnRPCResponseListener().onResponse(correlationId, listFilesResponse);
-			}
-			return null;
-		}
-	};
-
 	private Answer<Void> onPutFileSuccess = new Answer<Void>() {
 		@Override
 		public Void answer(InvocationOnMock invocation) {
@@ -177,25 +162,6 @@ public class FileManagerTests extends AndroidTestCase2 {
 				PutFileResponse putFileResponse = new PutFileResponse();
 				putFileResponse.setSuccess(false);
 				message.getOnRPCResponseListener().onResponse(correlationId, putFileResponse);
-			}
-			return null;
-		}
-	};
-
-	private Answer<Void> onSendRequestsSuccess = new Answer<Void>() {
-		@Override
-		public Void answer(InvocationOnMock invocation) {
-			Object[] args = invocation.getArguments();
-			List<RPCRequest> rpcs = (List<RPCRequest>) args[0];
-			OnMultipleRequestListener listener = (OnMultipleRequestListener) args[1];
-			if(rpcs.get(0) instanceof PutFile){
-				for(RPCRequest message : rpcs){
-					int correlationId = message.getCorrelationID();
-					listener.addCorrelationId(correlationId);
-					PutFileResponse putFileResponse = new PutFileResponse();
-					putFileResponse.setSuccess(true);
-					listener.onResponse(correlationId, putFileResponse);
-				}
 			}
 			return null;
 		}
@@ -242,10 +208,6 @@ public class FileManagerTests extends AndroidTestCase2 {
 		}
 	};
 
-	/**
-	 * Flips between calling onError and onResponse.
-	 * simulating uploading files, with some failing to upload
-	 */
 	private Answer<Void> onSendRequestsFailPartialOnError = new Answer<Void>() {
 		@Override
 		public Void answer(InvocationOnMock invocation) throws Throwable {
@@ -486,22 +448,6 @@ public class FileManagerTests extends AndroidTestCase2 {
 				assertEquals(fileManager.getState(), BaseSubManager.READY);
 				assertEquals(fileManager.getRemoteFileNames(), Test.GENERAL_STRING_LIST);
 				assertEquals(Test.GENERAL_INT, fileManager.getBytesAvailable());
-			}
-		});
-	}
-
-	public void testInitializationFailure(){
-		ISdl internalInterface = mock(ISdl.class);
-
-		doAnswer(onListFilesFailure).when(internalInterface).sendRPCRequest(any(ListFiles.class));
-
-		final FileManager fileManager = new FileManager(internalInterface, mTestContext);
-		fileManager.start(new CompletionListener() {
-			@Override
-			public void onComplete(boolean success) {
-				assertFalse(success);
-				assertEquals(fileManager.getState(), BaseSubManager.ERROR);
-				assertEquals(BaseFileManager.SPACE_AVAILABLE_MAX_VALUE, fileManager.getBytesAvailable());
 			}
 		});
 	}
