@@ -306,6 +306,8 @@ class Generator:
         template = type(items[0]).__name__.lower() + '_template.java'
         year = datetime.datetime.utcnow().year
         for item in items:
+            if item.name == 'FunctionID':
+                continue  # Skip FunctionID generation
             data = transformer.transform(item)
             data['year'] = year
             file = data['class_name'] + '.java'

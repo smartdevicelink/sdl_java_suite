@@ -38,9 +38,7 @@ class EnumsProducer(InterfaceProducerCommon):
 
         for param in getattr(item, self.container_name).values():
             (t, p) = self.extract_param(param, item.name)
-            if t == 'complex':
-                kind = t
-            elif t == 'custom' and kind != 'complex':
+            if t == 'custom':
                 kind = t
             return_type = self.extract_type(param)
 
@@ -76,7 +74,7 @@ class EnumsProducer(InterfaceProducerCommon):
             d['name'] = self.key(n)
             d['value'] = param.value
             d['internal'] = '"{}"'.format(n)
-            kind = 'complex'
+            kind = 'custom'
         elif getattr(param, 'internal_name', None) is not None:
             if param.internal_name.startswith(item_name):
                 n = param.internal_name[len(item_name):]
@@ -108,8 +106,7 @@ class EnumsProducer(InterfaceProducerCommon):
             imports.append('java.util.EnumSet')
         return imports
 
-    @staticmethod
-    def extract_type(param: EnumElement) -> str:
+    def extract_type(self, param: EnumElement) -> str:
         """
         Override
         Evaluate and extract type
