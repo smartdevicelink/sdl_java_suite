@@ -52,14 +52,14 @@ public enum SoftButtonType {
 	 */
 	SBT_BOTH("BOTH");
 
-	private final String INTERNAL_NAME;
+	private final String VALUE;
     
-    private SoftButtonType(String internalName) {
-        this.INTERNAL_NAME = internalName;
+    private SoftButtonType(String value) {
+        this.VALUE = value;
     }
     
     public String toString() {
-        return this.INTERNAL_NAME;
+        return this.VALUE;
     }
     
     public static SoftButtonType valueForString(String value) {
