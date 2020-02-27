@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
- * software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -31,51 +31,27 @@
  */
 package com.smartdevicelink.proxy.rpc.enums;
 
-import java.util.EnumSet;
-
 /**
- * The supported dimensions of the GPS.
- * @since SmartDeviceLink 2.0
+ * Reflects the status of a vehicle maintenance mode.
+ *
+ * @since SmartDeviceLink 2.0.0
  */
-public enum Dimension {
-	/**
-	 * No GPS at all
-	 */
-    NO_FIX("NO_FIX"),
-    /**
-     * Longitude and latitude
-     */
-    _2D("2D"),
-    /**
-     * Longitude and latitude and altitude
-     */
-    _3D("3D");
-    
-    private final String VALUE;
+public enum MaintenanceModeStatus {
+    NORMAL,
+    NEAR,
+    ACTIVE,
+    FEATURE_NOT_PRESENT;
 
-    private Dimension(String value) {
-    	this.VALUE = value;
-    }
-    
-    public String toString() {
-        return this.VALUE;
-    }
-    
     /**
-     * Convert String to Dimension
+     * Convert String to MaintenanceModeStatus
      * @param value String
-     * @return Dimension
-     */    
-    public static Dimension valueForString(String value) {
-        if(value == null){
+     * @return MaintenanceModeStatus
+     */
+    public static MaintenanceModeStatus valueForString(String value) {
+        try {
+            return valueOf(value);
+        } catch (Exception e) {
             return null;
         }
-        
-    	for (Dimension anEnum : EnumSet.allOf(Dimension.class)) {
-            if (anEnum.toString().equals(value)) {
-                return anEnum;
-            }
-        }
-        return null;
     }
 }

@@ -53,14 +53,14 @@ public enum TriggerSource {
 	
 	TS_KEYBOARD("KEYBOARD");
 
-	private final String INTERNAL_NAME;
+	private final String VALUE;
     
-    private TriggerSource(String internalName) {
-        this.INTERNAL_NAME = internalName;
+    private TriggerSource(String value) {
+        this.VALUE = value;
     }
     
     public String toString() {
-        return this.INTERNAL_NAME;
+        return this.VALUE;
     }
     
     public static TriggerSource valueForString(String value) {

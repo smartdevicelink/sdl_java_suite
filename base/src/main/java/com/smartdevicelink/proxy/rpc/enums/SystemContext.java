@@ -73,14 +73,14 @@ public enum SystemContext {
 	 */
 	SYSCTXT_ALERT("ALERT");
 
-	private final String INTERNAL_NAME;
+	private final String VALUE;
     
-    private SystemContext(String internalName) {
-        this.INTERNAL_NAME = internalName;
+    private SystemContext(String value) {
+        this.VALUE = value;
     }
     
     public String toString() {
-        return this.INTERNAL_NAME;
+        return this.VALUE;
     }
     
     public static SystemContext valueForString(String value) {

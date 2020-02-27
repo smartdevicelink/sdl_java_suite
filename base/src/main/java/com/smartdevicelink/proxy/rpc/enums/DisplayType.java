@@ -99,10 +99,10 @@ public enum DisplayType {
     
     ;
 
-    private final String INTERNAL_NAME;
+    private final String VALUE;
 
-    private DisplayType(String internalName) {
-        this.INTERNAL_NAME = internalName;
+    private DisplayType(String value) {
+        this.VALUE = value;
     }
 
     public static DisplayType valueForString(String value) {
@@ -121,6 +121,6 @@ public enum DisplayType {
 
     @Override
     public String toString() {
-        return INTERNAL_NAME;
+        return VALUE;
     }
 }
