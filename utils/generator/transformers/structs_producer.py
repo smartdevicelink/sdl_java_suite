@@ -60,8 +60,6 @@ class StructsProducer(InterfaceProducerCommon):
         description = self.extract_description(item.description)
         if description:
             render['description'] = description
-        if imports:
-            render['imports'] = imports
         if params:
             render['params'] = params
 

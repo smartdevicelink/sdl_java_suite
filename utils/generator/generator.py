@@ -280,9 +280,9 @@ class Generator:
         """
         Calling producer/transformer instance to transform initial Model to dict used in jinja2 templates.
         Applying transformed dict to jinja2 templates and writing to appropriate file
-        :param file_name: output js file
+        :param file_name: output java file
         :param template: name of template
-        :param data: transformed moder ready for apply to Jinja2 template
+        :param data: transformed model ready for apply to Jinja2 template
         """
         file_name.parents[0].mkdir(parents=True, exist_ok=True)
         try:

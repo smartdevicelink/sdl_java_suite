@@ -24,6 +24,8 @@ public enum {{class_name}} {
     {%- endif %}
     {%- if kind == "simple" %}
     {{param.name}}{{ "," if not loop.last }}
+    {%- elif kind == "complex" %}
+    {{param.name}}({{param.value}}){{ "," if not loop.last }}
     {%- elif kind == "custom" %}
     {{param.name}}({{param.internal}}){{ "," if not loop.last }}
     {%- endif %}
@@ -44,11 +46,14 @@ public enum {{class_name}} {
             return null;
         }
     }
-    {%- elif kind == "custom" %}
+    {%- elif kind == "complex" or kind == "custom" %}
     {%- if return_type == "String" %}
 
     private final String INTERNAL_NAME;
 
+    /**
+     * Private constructor
+     */
     private {{class_name}}(String internalName) {
         this.INTERNAL_NAME = internalName;
     }
@@ -72,6 +77,11 @@ public enum {{class_name}} {
         return null;
     }
 
+    /**
+     * Return String value of element
+     *
+     * @return String
+     */
     @Override
     public String toString() {
         return INTERNAL_NAME;
@@ -79,6 +89,7 @@ public enum {{class_name}} {
     {%- elif return_type == "int" %}
 
     private final int VALUE;
+
     /**
      * Private constructor
      */
@@ -86,6 +97,12 @@ public enum {{class_name}} {
         this.VALUE = value;
     }
 
+    /**
+     * Convert int to {{class_name}}
+     *
+     * @param value int
+     * @return {{class_name}}
+     */
     public static {{class_name}} valueForInt(int value) {
         for ({{class_name}} anEnum : EnumSet.allOf({{class_name}}.class)) {
             if (anEnum.getValue() == value) {
@@ -95,27 +112,13 @@ public enum {{class_name}} {
         return null;
     }
 
+    /**
+     * Return value of element
+     *
+     * @return int
+     */
     public int getValue(){
         return VALUE;
-    }
-    {%- elif return_type == "bool" %}
-
-    boolean IS_QUERYABLE;
-
-    {{class_name}}(boolean isQueryable) {
-        this.IS_QUERYABLE = isQueryable;
-    }
-
-    public boolean isQueryable() {
-        return IS_QUERYABLE;
-    }
-
-    public static {{class_name}} valueForString(String value) {
-        try {
-            return valueOf(value);
-        } catch (Exception e) {
-            return null;
-        }
     }
     {%- endif %}
     {%- endif %}

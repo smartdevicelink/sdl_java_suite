@@ -20,17 +20,13 @@ class InterfaceProducerCommon(ABC):
     version = '1.0.0'
 
     def __init__(self, container_name, enums_package, structs_package, package_name,
-                 enum_names=(), struct_names=(), mapping=None, all_mapping=None):
-        if all_mapping is None:
-            all_mapping = OrderedDict()
+                 enum_names=(), struct_names=()):
         self.logger = logging.getLogger('Generator.InterfaceProducerCommon')
         self.container_name = container_name
         self.enum_names = enum_names
         self.struct_names = struct_names
         self.enums_package = enums_package
         self.structs_package = structs_package
-        self.mapping = mapping
-        self.all_mapping = all_mapping
         self.package_name = package_name
         self._params = namedtuple('params', 'deprecated description key last mandatory origin return_type since title '
                                             'param_doc name')
@@ -99,10 +95,6 @@ class InterfaceProducerCommon(ABC):
         def evaluate(t1):
             if isinstance(t1, Struct) or isinstance(t1, Enum):
                 name = t1.name
-                element_type = 'enums' if isinstance(t1, Enum) else 'structs'
-                if element_type in self.all_mapping and name in self.all_mapping[element_type] \
-                        and 'rename' in self.all_mapping[element_type][name]:
-                    name = self.all_mapping[element_type][name]['rename']
                 return name
             else:
                 return type(t1).__name__

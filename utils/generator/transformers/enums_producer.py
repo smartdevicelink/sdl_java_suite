@@ -38,7 +38,9 @@ class EnumsProducer(InterfaceProducerCommon):
 
         for param in getattr(item, self.container_name).values():
             (t, p) = self.extract_param(param, item.name)
-            if t == 'custom':
+            if t == 'complex':
+                kind = t
+            elif t == 'custom' and kind != 'complex':
                 kind = t
             return_type = self.extract_type(param)
 
@@ -74,7 +76,7 @@ class EnumsProducer(InterfaceProducerCommon):
             d['name'] = self.key(n)
             d['value'] = param.value
             d['internal'] = '"{}"'.format(n)
-            kind = 'custom'
+            kind = 'complex'
         elif getattr(param, 'internal_name', None) is not None:
             if param.internal_name.startswith(item_name):
                 n = param.internal_name[len(item_name):]
@@ -100,9 +102,7 @@ class EnumsProducer(InterfaceProducerCommon):
     @staticmethod
     def extract_imports(param):
         imports = []
-        if getattr(param, 'value', None):
-            imports.extend(['java.util.EnumSet', 'java.util.HashMap', 'java.util.Iterator', 'java.util.Map.Entry'])
-        elif getattr(param, 'internal_name', None):
+        if getattr(param, 'value', None) or getattr(param, 'internal_name', None):
             imports.append('java.util.EnumSet')
         return imports
 
@@ -113,7 +113,7 @@ class EnumsProducer(InterfaceProducerCommon):
         :param param: sub-element (EnumElement) of element from initial Model
         :return: string with sub-element type
         """
-        if getattr(param, 'hex_value') is not None or getattr(param, 'value') is not None:
+        if getattr(param, 'value') is not None:
             return 'int'
         else:
             return 'String'

@@ -12,7 +12,7 @@
      * Constructs a new {{class_name}} object
      *
      * @param success    whether the request is successfully processed
-     * @param resultCode whether the request is successfully processed
+     * @param resultCode result code of processed request
      */
     public {{class_name}}(@NonNull Boolean success, @NonNull Result resultCode) {
         this();
