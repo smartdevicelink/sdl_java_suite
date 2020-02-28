@@ -5,7 +5,7 @@ Common transformation
 import logging
 import re
 from abc import ABC
-from collections import namedtuple, OrderedDict
+from collections import namedtuple
 
 from model.array import Array
 from model.enum import Enum

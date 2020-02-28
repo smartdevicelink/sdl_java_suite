@@ -62,7 +62,8 @@ class FunctionsProducer(InterfaceProducerCommon):
             if isinstance(item, Function) and item.message_type.name == 'response' and \
                     param.name in ('success', 'resultCode', 'info'):
                 self.logger.warning('%s of return_type %s/%s - skip parameter "%s"',
-                                    self.replace_sync(item.name), type(item).__name__, item.message_type.name, param.name)
+                                    self.replace_sync(item.name), type(item).__name__,
+                                    item.message_type.name, param.name)
                 continue
             i, p = self.extract_param(param)
             imports.update(i)

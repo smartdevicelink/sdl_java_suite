@@ -121,8 +121,8 @@ The third party software included and used by this project is:
 * Licensed under MIT License
 * See [https://pypi.org/project/pathlib2/](https://pypi.org/project/pathlib2/)
 
-**pylint**
+**flake8**
 
-* Licensed under GNU General Public License (GPL)
-* See [https://pypi.org/project/pylint/](https://pypi.org/project/pylint/)
+* Licensed under MIT License
+* See [https://pypi.org/project/flake8/](https://pypi.org/project/flake8/)
 

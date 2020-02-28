@@ -2,4 +2,4 @@ xmlschema
 Jinja2
 coverage
 pathlib2
-pylint
+flake8
