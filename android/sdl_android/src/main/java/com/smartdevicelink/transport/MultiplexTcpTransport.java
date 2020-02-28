@@ -61,6 +61,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 	private static final int READ_BUFFER_SIZE = 4096;
 	private static final int RECONNECT_DELAY = 5000;
 	private static final int RECONNECT_RETRY_COUNT = 30;
+    private static final int MAXDATACOUNT = 10000;
 
     private final String ipAddress;
 	private final int port;
@@ -408,7 +409,9 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 				count = msgBytes.length - offset;
 			}
 			packetQueue.add(new OutPacket(msgBytes, offset, count));
-
+            if (packetQueue.size() > MAXDATACOUNT) {
+                packetQueue.clear();
+            }
 		}
 
 		public synchronized void cancel() {
