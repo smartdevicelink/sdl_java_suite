@@ -82,7 +82,7 @@ class InterfaceProducerCommon(ABC):
         :return: string with replaced 'sync' to 'Sdl'
         """
         if name:
-            return re.sub(r'^(s|S)ync(.+)$', r'\1dl\2', name)
+            return re.sub(r'^([sS])ync(.+)$', r'\1dl\2', name)
         return name
 
     def extract_type(self, param):

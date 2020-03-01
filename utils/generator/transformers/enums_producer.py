@@ -33,19 +33,21 @@ class EnumsProducer(InterfaceProducerCommon):
         """
         imports = set()
         params = OrderedDict()
+        param_types = []
         kind = 'simple'
         return_type = 'String'
 
         for param in getattr(item, self.container_name).values():
             (t, p) = self.extract_param(param, item.name)
-            if t == 'complex':
-                kind = t
-            elif t == 'custom' and kind != 'complex':
-                kind = t
             return_type = self.extract_type(param)
-
+            param_types.append(t)
             params[p.name] = p
             imports.update(self.extract_imports(param))
+
+        if param_types.count('complex') == len(param_types):
+            kind = 'complex'
+        elif param_types.count('custom') == len(param_types) and kind != 'complex':
+            kind = 'custom'
 
         render = OrderedDict()
         render['kind'] = kind

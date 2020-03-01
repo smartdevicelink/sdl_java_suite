@@ -2,7 +2,7 @@
 
 {% block body %}
 public class {{class_name}} extends {{extends_class}} {
-    {%- if params is defined %}
+    {%- if params is defined and ((kind is defined and kind != "response") or kind is not defined) %}
     {%- for p in params %}
     {%- if p.see is defined or p.deprecated is not none %}
     /**
@@ -25,13 +25,11 @@ public class {{class_name}} extends {{extends_class}} {
     {%- endfor %}
     {%- endif %}
 
-    {% if remove_constructor is not defined %}
     /**
      * Constructs a new {{class_name}} object
      */
     {%- block constructor_simple %}
     {% endblock %}
-    {%- endif %}
 
     /**
      * Constructs a new {{class_name}} object indicated by the Hashtable parameter
@@ -63,18 +61,10 @@ public class {{class_name}} extends {{extends_class}} {
     {%- endif %}
     {%- endif %}
 
-    {%- block constructor_complex %}
-    {% endblock -%}
-
-    {%- if params is defined %}
+    {%- if params is defined and ((kind is defined and kind != "response") or kind is not defined) %}
     {%- block setter %}
     {% endblock -%}
     {%- endif %}
 
-    {%- if scripts is defined %}
-    {%- for s in scripts %}
-{{s}}
-    {% endfor %}
-    {%- endif %}
 }
 {% endblock -%}

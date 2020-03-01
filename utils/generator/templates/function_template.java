@@ -5,23 +5,6 @@
         super(FunctionID.{{function_id}}.toString());
     }{% endblock -%}
 
-    {%- block constructor_complex %}
-    {%- if kind is defined and kind == "response" %}
-
-    /**
-     * Constructs a new {{class_name}} object
-     *
-     * @param success    whether the request is successfully processed
-     * @param resultCode result code of processed request
-     */
-    public {{class_name}}(@NonNull Boolean success, @NonNull Result resultCode) {
-        this();
-        setSuccess(success);
-        setResultCode(resultCode);
-    }
-    {%- endif %}
-    {% endblock -%}
-
     {%- block setter %}
     {%- for p in params|rejectattr('name') %}
 

@@ -59,12 +59,6 @@ class FunctionsProducer(InterfaceProducerCommon):
         for param in getattr(item, self.container_name).values():
             param.origin = param.name
             param.name = self.replace_sync(param.name)
-            if isinstance(item, Function) and item.message_type.name == 'response' and \
-                    param.name in ('success', 'resultCode', 'info'):
-                self.logger.warning('%s of return_type %s/%s - skip parameter "%s"',
-                                    self.replace_sync(item.name), type(item).__name__,
-                                    item.message_type.name, param.name)
-                continue
             i, p = self.extract_param(param)
             imports.update(i)
             params.update({param.name: p})
@@ -129,9 +123,15 @@ class FunctionsProducer(InterfaceProducerCommon):
         p['deprecated'] = param.deprecated
         p['origin'] = param.origin
         d = self.extract_description(param.description)
+        if param.name == 'success':
+            d = 'whether the request is successfully processed'
+        if param.name == 'resultCode':
+            d = 'additional information about a response returning a failed outcome'
         if d:
             p['description'] = textwrap.wrap(d, 90)
         t = self.extract_type(param)
+        if t == 'EnumSubset' and param.name == 'resultCode':
+            t = 'Result'
         tr = t
         if t.startswith('List'):
             imports.add('java.util.List')
