@@ -33,57 +33,17 @@ class TestFunctionsProducer(unittest.TestCase):
         self.expected_template['deprecated'] = None
         enum_names = ('FileType', 'Language')
         struct_names = ('SdlMsgVersion', 'TemplateColorScheme', 'TTSChunk', 'Choice')
-        self.producer = FunctionsProducer(paths, enum_names, struct_names, {"functions": self.mapping})
+        self.producer = FunctionsProducer(paths, enum_names, struct_names)
 
     def comparison(self, expected, actual):
-        for key in ('valueForString', 'scripts'):
-            if key == 'scripts':
-                key = 'script'
-            if key in actual:
-                content = self.producer.get_file_content(self.mapping[actual['class_name']][key])
-                self.assertSequenceEqual(content, actual[key])
         actual_params = dict(zip(map(lambda k: k.title, actual['params']), actual['params']))
         for param in expected['params']:
             for field in self.producer.params._fields:
                 self.assertEqual(getattr(param, field), getattr(actual_params[param.title], field, None))
         expected_filtered = dict(filter(lambda e: e[0] != 'params', expected.items()))
-        actual_filtered = dict(filter(lambda e: e[0] not in ('params', 'valueForString', 'scripts'), actual.items()))
+        actual_filtered = dict(filter(lambda e: e[0] != 'params', actual.items()))
 
         self.assertDictEqual(expected_filtered, actual_filtered)
-
-    @property
-    def mapping(self):
-        return {
-            'ReleaseInteriorVehicleDataModule': {
-                'function_id': 'RELEASE_INTERIOR_VEHICLE_MODULE'
-            },
-            'DeleteCommand': {
-                'params': {
-                    'cmdID': {
-                        'param_doc': 'Integer value representing Command ID that identifies the Command to be deleted '
-                                     'from Command Menu\n<p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>'
-                    }
-                }
-            },
-            'RegisterAppInterface': {
-                'imports': [
-                    'com.smartdevicelink.util.Version'
-                ],
-                'script': 'templates/scripts/RegisterAppInterface_format.java'
-            },
-            'RegisterAppInterfaceResponse': {
-                'params': {
-                    'pcmStreamCapabilities': {
-                        'title': 'PcmStreamingCapabilities'
-                    }
-                },
-                'imports': [
-                    'java.util.ArrayList',
-                    'com.smartdevicelink.proxy.rpc.enums.ButtonName'
-                ],
-                'script': 'templates/scripts/RegisterAppInterfaceResponse_format.java'
-            },
-        }
 
     def test_Version(self):
         version = self.producer.get_version
@@ -126,17 +86,12 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['extends_class'] = 'RPCResponse'
         expected['imports'] = ['android.support.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID', 'com.smartdevicelink.proxy.RPCResponse',
-                               'com.smartdevicelink.proxy.rpc.enums.ButtonName',
                                'com.smartdevicelink.proxy.rpc.enums.Language',
-                               'com.smartdevicelink.proxy.rpc.enums.Result', '', 'java.util.Hashtable',
-                               'java.util.ArrayList']
+                               'com.smartdevicelink.proxy.rpc.enums.Result', '', 'java.util.Hashtable']
         expected['params'] = (
             self.producer.params(deprecated=None, key='KEY_LANGUAGE', last='language', mandatory=True,
                                  origin='language', return_type='Language', since=None, title='Language',
-                                 description=None, SuppressWarnings=None, param_doc=None, name=None),
-            self.producer.params(title='PcmStreamingCapabilities', origin=None,
-                                 deprecated=None, key=None, last=None, mandatory=None, return_type=None, since=None,
-                                 description=None, SuppressWarnings=None, param_doc=None, name='pcmStreamCapabilities'))
+                                 description=None, SuppressWarnings=None, param_doc=None, name=None),)
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
 
@@ -154,9 +109,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected['imports'] = ['android.support.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID',
                                'com.smartdevicelink.proxy.RPCRequest',
-                               'com.smartdevicelink.util.Version', '',
-                               'java.util.Hashtable',
-                               'java.util.List']
+                               '', 'java.util.Hashtable', 'java.util.List']
         expected['params'] = (
             self.producer.params(deprecated=None, key='KEY_SDL_MSG_VERSION',
                                  last='sdlMsgVersion', mandatory=True, SuppressWarnings=None,
@@ -201,8 +154,8 @@ class TestFunctionsProducer(unittest.TestCase):
     def test_OnEncodedSyncPDataNotification(self):
         item = Function(name='OnEncodedSyncPData', function_id=None, description=['\n           Callback including \n'],
                         message_type=EnumElement(name='notification'), params={
-                'URL': Param(name='URL', param_type=String(), description=['\n                If '])
-            })
+                        'URL': Param(name='URL', param_type=String(), description=['\n                If '])
+                        })
         expected = self.expected_template.copy()
         expected['kind'] = 'notification'
         expected['function_id'] = 'ON_ENCODED_SYNC_PDATA'
@@ -222,8 +175,8 @@ class TestFunctionsProducer(unittest.TestCase):
     def test_DeleteCommand(self):
         item = Function(name='DeleteCommand', function_id=None,
                         message_type=EnumElement(name='request'), params={
-                'cmdID': Param(name='cmdID', param_type=Integer(max_value=2000000000, min_value=0))
-            })
+                            'cmdID': Param(name='cmdID', param_type=Integer(max_value=2000000000, min_value=0))
+                        })
         expected = self.expected_template.copy()
         expected['kind'] = 'request'
         expected['function_id'] = 'DELETE_COMMAND'
@@ -234,20 +187,16 @@ class TestFunctionsProducer(unittest.TestCase):
                                '', 'java.util.Hashtable']
         expected['params'] = (
             self.producer.params(deprecated=None, key='KEY_CMD_ID', last='cmdID', mandatory=True, origin='cmdID',
-                                 param_doc=[
-                                     'Integer value representing Command ID that identifies the Command to be deleted '
-                                     'from Command Menu',
-                                     '<p><b>Notes: </b>Min Value: 0; Max Value: 2000000000</p>'],
                                  return_type='Integer', since=None, title='CmdID', description=None,
-                                 SuppressWarnings=None, name=None),)
+                                 SuppressWarnings=None, param_doc=None, name=None),)
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
 
     def test_Alert(self):
         item = Function(name='Alert', function_id=None,
                         message_type=EnumElement(name='request'), params={
-                'alertText2': Param(name='alertText2', param_type=String(max_length=500))
-            })
+                            'alertText2': Param(name='alertText2', param_type=String(max_length=500))
+                        })
         expected = self.expected_template.copy()
         expected['kind'] = 'request'
         expected['function_id'] = 'ALERT'
@@ -267,11 +216,11 @@ class TestFunctionsProducer(unittest.TestCase):
     def test_ReleaseInteriorVehicleDataModule(self):
         item = Function(name='ReleaseInteriorVehicleDataModule', function_id=None,
                         message_type=EnumElement(name='request'), params={
-                'moduleType': Param(name='moduleType', param_type=Enum(name='ModuleType'))
-            })
+                            'moduleType': Param(name='moduleType', param_type=Enum(name='ModuleType'))
+                        })
         expected = self.expected_template.copy()
         expected['kind'] = 'request'
-        expected['function_id'] = 'RELEASE_INTERIOR_VEHICLE_MODULE'
+        expected['function_id'] = 'RELEASE_INTERIOR_VEHICLE_DATA_MODULE'
         expected['class_name'] = 'ReleaseInteriorVehicleDataModule'
         expected['extends_class'] = 'RPCRequest'
         expected['imports'] = ['android.support.annotation.NonNull', '',

@@ -17,39 +17,17 @@ class TestStructsProducer(unittest.TestCase):
         paths = Paths(enums_package='com.smartdevicelink.proxy.rpc.enums',
                       structs_package='com.smartdevicelink.proxy.rpc',
                       struct_class='com.smartdevicelink.proxy.RPCStruct')
-        self.producer = StructsProducer(paths, ['SamplingRate'], ('Image',), {'structs': self.mapping})
+        self.producer = StructsProducer(paths, ['SamplingRate'], ('Image',))
 
     def comparison(self, expected, actual):
-        for key in ('valueForString', 'scripts'):
-            if key == 'scripts':
-                key = 'script'
-            if key in actual:
-                content = self.producer.get_file_content(self.mapping[actual['class_name']][key])
-                self.assertSequenceEqual(content, actual[key])
         actual_params = dict(zip(map(lambda k: k.origin, actual['params']), actual['params']))
         for param in expected['params']:
             for field in self.producer.params._fields:
                 self.assertEqual(getattr(param, field), getattr(actual_params[param.origin], field, None))
         expected_filtered = dict(filter(lambda e: e[0] != 'params', expected.items()))
-        actual_filtered = dict(filter(lambda e: e[0] not in ('params', 'valueForString', 'scripts'), actual.items()))
+        actual_filtered = dict(filter(lambda e: e[0] != 'params', actual.items()))
 
         self.assertDictEqual(expected_filtered, actual_filtered)
-
-    @property
-    def mapping(self):
-        return {
-            'CloudAppProperties': {
-                'script': 'templates/scripts/CloudAppProperties.java'
-            }, 'OASISAddress': {
-                'rename': 'OasisAddress'
-            },
-            'SingleTireStatus': {
-                'params': {
-                    'tpms': {
-                        'title': 'TPMS'
-                    }
-                }
-            }}
 
     def test_AudioPassThruCapabilities(self):
         members = OrderedDict()
@@ -129,7 +107,7 @@ class TestStructsProducer(unittest.TestCase):
             'package_name': 'com.smartdevicelink.proxy.rpc',
             'imports': ['android.support.annotation.NonNull', '', 'com.smartdevicelink.proxy.RPCStruct', '',
                         'java.util.Hashtable'],
-            'class_name': 'OasisAddress',
+            'class_name': 'OASISAddress',
             'extends_class': 'RPCStruct',
             'since': None,
             'deprecated': None,
@@ -155,7 +133,7 @@ class TestStructsProducer(unittest.TestCase):
             'deprecated': None,
             'params': (
                 self.producer.params(deprecated=None, key='KEY_SEARCH_ADDRESS', last='searchAddress', mandatory=True,
-                                     origin='searchAddress', return_type='OasisAddress', since=None,
+                                     origin='searchAddress', return_type='OASISAddress', since=None,
                                      title='SearchAddress', description=None, param_doc=None, name=None),)
         }
         actual = self.producer.transform(item)
@@ -175,12 +153,8 @@ class TestStructsProducer(unittest.TestCase):
             'deprecated': None,
             'params': (
                 self.producer.params(deprecated=None, key='KEY_TPMS', last='tpms', mandatory=True, origin='tpms',
-                                     return_type='TPMS', since=None, title='TPMS', description=None, param_doc=None,
+                                     return_type='TPMS', since=None, title='Tpms', description=None, param_doc=None,
                                      name=None),)
         }
         actual = self.producer.transform(item)
         self.comparison(expected, actual)
-
-    def test_get_file_content(self):
-        content = self.producer.get_file_content('not_exist')
-        self.assertSequenceEqual('', content)
