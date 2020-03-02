@@ -18,15 +18,14 @@ class CodeFormatAndQuality(unittest.TestCase):
         """
         self.list_of_files = []
         for (directory, _, filenames) in walk(Path(__file__).absolute().parents[1].as_posix()):
-            self.list_of_files += [join(directory, file) for file in filenames if file.endswith('.py')
-                                   and not file.startswith('test') and not file.startswith('runner')
-                                   and 'rpc_spec' not in directory]
+            self.list_of_files += [join(directory, file) for file in filenames
+                                   if file.endswith('.py') and 'rpc_spec' not in directory]
 
     def test_check(self):
         """Performing checks by flake8
 
         """
-        style_guide = flake8.get_style_guide(max_line_length=120)
+        style_guide = flake8.get_style_guide(max_line_length=120, ignore=['N802'])
         report = style_guide.check_files(self.list_of_files)
         self.assertEqual(report.total_errors, 0)
 

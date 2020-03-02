@@ -42,12 +42,13 @@ class EnumsProducer(InterfaceProducerCommon):
             return_type = self.extract_type(param)
             param_types.append(t)
             params[p.name] = p
-            imports.update(self.extract_imports(param))
 
         if param_types.count('complex') == len(param_types):
             kind = 'complex'
+            imports.add('java.util.EnumSet')
         elif param_types.count('custom') == len(param_types) and kind != 'complex':
             kind = 'custom'
+            imports.add('java.util.EnumSet')
 
         render = OrderedDict()
         render['kind'] = kind
@@ -100,13 +101,6 @@ class EnumsProducer(InterfaceProducerCommon):
             d['description'] = textwrap.wrap(self.extract_description(param.description), 90)
         Params = namedtuple('Params', sorted(d))
         return kind, Params(**d)
-
-    @staticmethod
-    def extract_imports(param):
-        imports = []
-        if getattr(param, 'value', None) or getattr(param, 'internal_name', None):
-            imports.append('java.util.EnumSet')
-        return imports
 
     def extract_type(self, param: EnumElement) -> str:
         """

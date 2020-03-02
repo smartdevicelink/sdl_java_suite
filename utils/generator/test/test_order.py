@@ -11,8 +11,6 @@ sys.path.append(PATH.parents[1].as_posix())
 
 try:
     from parsers.sdl_rpc_v2 import Parser
-    from model.enum import Enum
-    from model.enum_element import EnumElement
     from transformers.structs_producer import StructsProducer
     from transformers.functions_producer import FunctionsProducer
 except ImportError as message:
