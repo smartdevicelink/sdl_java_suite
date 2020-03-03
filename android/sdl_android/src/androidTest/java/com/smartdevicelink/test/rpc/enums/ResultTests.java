@@ -28,6 +28,8 @@ public class ResultTests extends TestCase {
 		Result enumOutOfMemory = Result.valueForString(example);
 		example = "TOO_MANY_PENDING_REQUESTS";
 		Result enumTooManyPendingRequests = Result.valueForString(example);
+		example = "CHAR_LIMIT_EXCEEDED";
+		Result enumCharLimitExceeded = Result.valueForString(example);
 		example = "INVALID_ID";
 		Result enumInvalidId = Result.valueForString(example);
 		example = "DUPLICATE_NAME";
@@ -96,6 +98,7 @@ public class ResultTests extends TestCase {
 		assertNotNull("UNSUPPORTED_REQUEST returned null", enumUnsupportedRequest);
 		assertNotNull("OUT_OF_MEMORY returned null", enumOutOfMemory);
 		assertNotNull("TOO_MANY_PENDING_REQUESTS returned null", enumTooManyPendingRequests);
+		assertNotNull("CHAR_LIMIT_EXCEEDED returned null", enumCharLimitExceeded);
 		assertNotNull("INVALID_ID returned null", enumInvalidId);
 		assertNotNull("DUPLICATE_NAME returned null", enumDuplicateName);
 		assertNotNull("TOO_MANY_APPLICATIONS returned null", enumTooManyApplications);
@@ -169,6 +172,7 @@ public class ResultTests extends TestCase {
 		enumTestList.add(Result.UNSUPPORTED_REQUEST);
 		enumTestList.add(Result.OUT_OF_MEMORY);
 		enumTestList.add(Result.TOO_MANY_PENDING_REQUESTS);
+		enumTestList.add(Result.CHAR_LIMIT_EXCEEDED);
 		enumTestList.add(Result.INVALID_ID);		
 		enumTestList.add(Result.DUPLICATE_NAME);
 		enumTestList.add(Result.TOO_MANY_APPLICATIONS);	

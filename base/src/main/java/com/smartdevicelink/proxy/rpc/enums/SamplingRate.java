@@ -64,14 +64,14 @@ public enum SamplingRate {
 	 */
 	_44KHZ("44KHZ");
 
-	private final String INTERNAL_NAME;
+	private final String VALUE;
     
-    private SamplingRate(String internalName) {
-        this.INTERNAL_NAME = internalName;
+    private SamplingRate(String value) {
+        this.VALUE = value;
     }
     
     public String toString() {
-        return this.INTERNAL_NAME;
+        return this.VALUE;
     }
     
     public static SamplingRate valueForString(String value) {

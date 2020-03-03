@@ -25,6 +25,7 @@ public class RpcConverterTest extends AndroidTestCase2 {
         FunctionID[] functionIDs = FunctionID.values();
         for(FunctionID functionID : functionIDs) {
             switch (functionID){
+                case RESERVED:
                 case SYNC_P_DATA:
                 case ON_SYNC_P_DATA:
                 case ENCODED_SYNC_P_DATA:
@@ -54,6 +55,7 @@ public class RpcConverterTest extends AndroidTestCase2 {
             rpcClassName.append(RPC_PACKAGE);
 
             switch (functionID) {
+                case RESERVED:
                 case SYNC_P_DATA:
                 case ON_SYNC_P_DATA:
                 case ENCODED_SYNC_P_DATA:
@@ -91,6 +93,7 @@ public class RpcConverterTest extends AndroidTestCase2 {
 
         for(FunctionID functionID : functionIDs){
             switch (functionID){
+                case RESERVED:
                 case SYNC_P_DATA:
                 case ON_SYNC_P_DATA:
                 case ENCODED_SYNC_P_DATA:
