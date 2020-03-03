@@ -56,8 +56,7 @@ import java.util.List;
 
 abstract class BaseVoiceCommandManager extends BaseSubManager {
 
-	List<VoiceCommand> voiceCommands;
-	List<VoiceCommand> oldVoiceCommands;
+	List<VoiceCommand> voiceCommands, oldVoiceCommands;
 
 	List<AddCommand> inProgressUpdate;
 
@@ -127,7 +126,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 		waitingOnHMIUpdate = false;
 		lastVoiceCommandId = voiceCommandIdMin;
 		updateIdsOnVoiceCommands(voiceCommands);
-		oldVoiceCommands = new ArrayList<>(voiceCommands);
+		this.oldVoiceCommands = new ArrayList<>(this.voiceCommands);
 		this.voiceCommands = new ArrayList<>(voiceCommands);
 
 		update();
