@@ -126,7 +126,10 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 		waitingOnHMIUpdate = false;
 		lastVoiceCommandId = voiceCommandIdMin;
 		updateIdsOnVoiceCommands(voiceCommands);
-		this.oldVoiceCommands = new ArrayList<>(this.voiceCommands);
+		this.oldVoiceCommands = new ArrayList<>();
+		if (this.voiceCommands != null && !this.voiceCommands.isEmpty()) {
+			this.oldVoiceCommands.addAll(this.voiceCommands);
+		}
 		this.voiceCommands = new ArrayList<>(voiceCommands);
 
 		update();
