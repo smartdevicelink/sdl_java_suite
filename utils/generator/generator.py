@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """This is main runner of generator
 
 """

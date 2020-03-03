@@ -6,13 +6,16 @@ This script provides the possibility to auto-generate Java code based on a given
 
 ## Requirements
 
-The script requires Python 3.5 pre-installed in the system. This is the minimal Python 3 version that has not reached the end-of-life (https://devguide.python.org/devcycle/#end-of-life-branches).
+The script requires Python 3.5 or later pre-installed in the system. This is the minimal Python 3 version that has not reached the end-of-life (https://devguide.python.org/devcycle/#end-of-life-branches).
 
-Some required libraries are described in `requirements.txt` and should be pre-installed by the command:
+Required libraries are described in `requirements.txt` and should be pre-installed by the command:
 ```shell script
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 Please also make sure before usage the 'utils/generator/rpc_spec' Git submodule is successfully initialized, because the script uses the XML parser provided there.
+```shell script
+git submodule update --init
+```
 
 ## Usage
 ```shell script
@@ -61,18 +64,14 @@ The generator script creates corresponding RPC classes for `<enum>`, `<struct>` 
 According to existing structure of Java Suite the output directory will contain following folders and files:
 
 * com
-    * smartdevicelink
-        * protocol
-            * enums
-                * FunctionID.java
     * proxy
         * rpc
             * enums
-                * `[- all <enum> classes except FunctionID and MessageType -]`
+                * `[- all <enum> classes except FunctionID -]`
             * `[- all <struct> classes -]`
             * `[- all <function> classes -]`
 
-Each Enum class should be stored as a single script file in the folder named `com/smartdevicelink/rpc/enums` and the name of the script file should be equal to the value from the `"name"` attribute of `<enum>` followed by the extension `.java`.
+Each Enum class should be stored as a single script file in the folder named `com/smartdevicelink/rpc/enums` and the name of the script file should be equal to the value from the `"name"` attribute of `<enum>` followed by the extension `.java`. FunctionID enum generation is skipped as discussed due to high complexity of structure. 
 
 Example:
 ```shell script
@@ -83,13 +82,6 @@ com/smartdevicelink/proxy/rpc/enums/ImageType.java
 Each Enum class should include the package definition:
 ```java
 package com.smartdevicelink.proxy.rpc.enums;
-``` 
-
-The only exception is the `<enum>` named `FunctionID`. This class should be stored in `com/smartdevicelink/protocol/enums` folder, as defined in the directory structure above.
-
-The package definition for `FunctionID` class also is different:
-```java
-package com.smartdevicelink.protocol.enums;
 ``` 
 
 Each Struct or Function class should be stored as a single script file in the folder named `com/smartdevicelink/proxy/rpc` and the name of the script file should be equal to the value from the `"name"` attribute of `<struct>` or `<function>` (followed by additional suffix `Response` if the `"name"` doesn't end with it and the `"messagetype"` attribute is set to `response`) followed by the extension `.java`.
@@ -169,7 +161,7 @@ Where:
 * `[description]` is `<description>` of the current `<enum>`, if exists.
 * `@deprecated` indicates the deprecation state if the `"deprecated"` attribute exists and is "true".
 * `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
-* `@see` shows the custom reference in `[see_reference]`, if it's defined in the custom mapping.
+* `@see` shows the custom reference in `[see_reference]`.
 
 The class should have the `@Deprecated` decorator if the `"deprecated"` attribute of the `<enum>` exists and is "true".
 
@@ -191,7 +183,7 @@ The constant definition could have the next JavaDoc comment:
 Where:
 * `[description]` is `<description>` of the current `<element>`, if exists.
 * `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
-* `@see` shows the custom reference in `[see_reference]`, if it's defined in the custom mapping.
+* `@see` shows the custom reference in `[see_reference]`.
 
 The constant definition should have the `@Deprecated` decorator if the `"deprecated"` attribute exists and is "true".
 
@@ -359,7 +351,6 @@ public enum GlobalProperty {
 This type of enums is divided into 3 additional types:
 * field based on `"internal_name"` and `"name"` attributes of `<element>`
 * field based on `"value"` attribute of `<element>`
-* Special `FunctionID` Enum class
 
 #### Constants with field based on `"internal_name"` and `"name"` attributes
 
@@ -400,6 +391,12 @@ The `toString` method should be overridden to return the private field instead o
 
 The additional `valueForString` should be defined. It should return the Enum constant based on the private field above, or `null` if the constant is not found.
 ```java
+    /**
+     * Convert String to [enum_name]
+     *
+     * @param value String
+     * @return [enum_name]
+     */
     public static [enum_name] valueForString(String value) {
         if (value == null) {
             return null;
@@ -497,10 +494,19 @@ public enum Dimension {
 
     private final String INTERNAL_NAME;
 
+    /**
+     * Private constructor
+     */
     private Dimension(String internalName) {
         this.INTERNAL_NAME = internalName;
     }
 
+    /**
+     * Convert String to Dimension
+     *
+     * @param value String
+     * @return Dimension
+     */
     public static Dimension valueForString(String value) {
         if (value == null) {
             return null;
@@ -514,6 +520,11 @@ public enum Dimension {
         return null;
     }
 
+    /**
+     * Return String value of element
+     *
+     * @return String
+     */
     @Override
     public String toString() {
         return INTERNAL_NAME;
@@ -538,6 +549,9 @@ Private field:
 
 The private constructor should be defined to accept the value from the constant and and set the private field.
 ```java
+    /**
+     * Private constructor
+     */
     private [enum_name](int value) {
         this.VALUE = value;
     }
@@ -546,6 +560,11 @@ Where `[enum_name]` is the `"name"` attribute of `<enum>`.
 
 The `getValue` method should be defined to return the private field value.
 ```java
+    /**
+     * Return value of element
+     *
+     * @return int
+     */
     public int getValue(){
         return VALUE;
     }
@@ -553,6 +572,12 @@ The `getValue` method should be defined to return the private field value.
 
 The additional `valueForInt` should be defined. It should return the Enum constant based on the private field above, or `null` if the constant is not found.
 ```java
+    /**
+     * Convert int to {{class_name}}
+     *
+     * @param value int
+     * @return {{class_name}}
+     */
     public static [enum_name] valueForInt(int value) {
         for ([enum_name] anEnum : EnumSet.allOf([enum_name].class)) {
             if (anEnum.toString().equals(value)) {
@@ -642,6 +667,12 @@ public enum PredefinedWindows {
         this.VALUE = value;
     }
 
+    /**
+     * Convert int to PredefinedWindows
+     *
+     * @param value int
+     * @return PredefinedWindows
+     */
     public static PredefinedWindows valueForInt(int value) {
         for (PredefinedWindows anEnum : EnumSet.allOf(PredefinedWindows.class)) {
             if (anEnum.getValue() == value) {
@@ -651,268 +682,13 @@ public enum PredefinedWindows {
         return null;
     }
 
+    /**
+     * Return value of element
+     *
+     * @return int
+     */
     public int getValue(){
         return VALUE;
-    }
-}
-```
-
-### `FunctionID` Enum class
-
-Additionally to general rules for constant names and its fields there are some rules for the `FunctionID` Enum class:
-  1. Uses of the `"name"` attribute shall be normalized by the removal of the ID suffix, e.g. `RegisterAppInterfaceID -> RegisterAppInterface`. 
-  1. The constant name should be `SCREAMING_SNIKE_CASE` formatted;
-  1. The constant has 2 fields, the first is the `int` value of the `"value"` attribute and the second is the `String` value of normalized `"name"` attribute.
-
-Constant definition:
-```java
-    [constant_name]([value], "[name]")
-```
-Where `[constant_name]` is the normalized and `SCREAMING_SNIKE_CASE` formatted `"name"` attribute of `<element>`, `[name]` is the just normalized `"name"` attribute, `[value]` is the `"value"` attribute.
-
-Private fields:
-```java
-    private final int ID;
-    private final String JSON_NAME;
-```
-
-The private constructor should be defined to accept the value and name from the constant and and set the private fields.
-```java
-    private FunctionID(int id, String jsonName) {
-        this.ID = id;
-        this.JSON_NAME = jsonName;
-    }
-```
-
-The next custom imports, fields and methods are required for `FunctionID` Enum class:
-
-Imports:
-```java
-import java.util.EnumSet;
-import java.util.Map.Entry;
-import java.util.Iterator;
-import java.util.HashMap;
-```
-
-Fields:
-```java
-    // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)
-    ON_LOCK_SCREEN_STATUS(-1, "OnLockScreenStatus"),
-    ON_SDL_CHOICE_CHOSEN(-1, "OnSdlChoiceChosen"),
-    ON_STREAM_RPC(-1, "OnStreamRPC"),
-    STREAM_RPC(-1, "StreamRPC");
-
-    public static final int INVALID_ID = -1;
-```
-
-Methods:
-```java
-    public int getId(){
-        return this.ID;
-    }
-
-    @Override
-    public String toString() {
-        return this.JSON_NAME;
-    }
-
-    private static void initFunctionMap() {
-        functionMap = new HashMap<String, Integer>(values().length);
-
-        for(FunctionID value : EnumSet.allOf(FunctionID.class)) {
-            functionMap.put(value.toString(), value.getId());
-        }
-    }
-
-    public static String getFunctionName(int i) {
-        if(functionMap == null) {
-            initFunctionMap();
-        }
-
-        Iterator<Entry<String, Integer>> iterator = functionMap.entrySet().iterator();
-        while(iterator.hasNext()) {
-            Entry<String, Integer> thisEntry = iterator.next();
-            if(Integer.valueOf(i).equals(thisEntry.getValue())) {
-                return thisEntry.getKey();
-            }
-        }
-
-        return null;
-    }
-
-    public static int getFunctionId(String functionName) {
-        if(functionMap == null) {
-            initFunctionMap();
-        }
-
-        Integer result = functionMap.get(functionName);
-        return ( result == null ) ? INVALID_ID : result;
-    }
-
-    /**
-     * This method gives the corresponding FunctionID enum value for a string RPC
-     *
-     * @param name String value represents the name of the RPC
-     * @return FunctionID represents the equivalent enum value for the provided string
-     */
-    public static FunctionID getEnumForString(String name) {
-        for(FunctionID value : EnumSet.allOf(FunctionID.class)) {
-            if(value.JSON_NAME.equals(name)){
-                return value;
-            }
-        }
-        return null;
-    }
-```
-
-
-
-Full example:
-
-XML:
-```xml
-<enum name="FunctionID" internal_scope="base" since="1.0">
-    <description>Enumeration linking function names with function IDs in SmartDeviceLink protocol. Assumes enumeration starts at value 0.</description>
-    <element name="RESERVED" value="0" since="1.0" />
-    <element name="RegisterAppInterfaceID" value="1" hexvalue="1" since="1.0" />
-    <element name="SliderID" value="26" hexvalue="1A" since="2.0" />
-</enum>
-```
-
-Output:
-```java
-/*
- * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following
- * disclaimer in the documentation and/or other materials provided with the
- * distribution.
- *
- * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
- * its contributors may be used to endorse or promote products derived
- * from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
-package com.smartdevicelink.protocol.enums;
-
-import java.util.EnumSet;
-import java.util.Map.Entry;
-import java.util.Iterator;
-import java.util.HashMap;
-
-/**
- * Enumeration linking function names with function IDs in SmartDeviceLink protocol. Assumes enumeration starts at
- * value 0.
- *
- *
- * @since SmartDeviceLink 1.0.0
- */
-public enum FunctionID {
-    /**
-     * @since SmartDeviceLink 1.0.0
-     */
-    RESERVED(0, "RESERVED"),
-    /**
-     * @since SmartDeviceLink 1.0.0
-     */
-    REGISTER_APP_INTERFACE(1, "RegisterAppInterface");
-    /**
-     * @since SmartDeviceLink 2.0.0
-     */
-    SLIDER(26, "Slider"),
-
-    // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)
-    ON_LOCK_SCREEN_STATUS(-1, "OnLockScreenStatus"),
-    ON_SDL_CHOICE_CHOSEN(-1, "OnSdlChoiceChosen"),
-    ON_STREAM_RPC(-1, "OnStreamRPC"),
-    STREAM_RPC(-1, "StreamRPC");
-
-    public static final int                 INVALID_ID = -1;
-
-    private static HashMap<String, Integer> functionMap;
-
-    private final int                       ID;
-    private final String                    JSON_NAME;
-
-    private FunctionID(int id, String jsonName) {
-        this.ID = id;
-        this.JSON_NAME = jsonName;
-    }
-
-    public int getId(){
-        return this.ID;
-    }
-
-    @Override
-    public String toString() {
-        return this.JSON_NAME;
-    }
-
-    private static void initFunctionMap() {
-        functionMap = new HashMap<String, Integer>(values().length);
-
-        for(FunctionID value : EnumSet.allOf(FunctionID.class)) {
-            functionMap.put(value.toString(), value.getId());
-        }
-    }
-
-    public static String getFunctionName(int i) {
-        if(functionMap == null) {
-            initFunctionMap();
-        }
-
-        Iterator<Entry<String, Integer>> iterator = functionMap.entrySet().iterator();
-        while(iterator.hasNext()) {
-            Entry<String, Integer> thisEntry = iterator.next();
-            if(Integer.valueOf(i).equals(thisEntry.getValue())) {
-                return thisEntry.getKey();
-            }
-        }
-
-        return null;
-    }
-
-    public static int getFunctionId(String functionName) {
-        if(functionMap == null) {
-            initFunctionMap();
-        }
-
-        Integer result = functionMap.get(functionName);
-        return ( result == null ) ? INVALID_ID : result;
-    }
-
-    /**
-     * This method gives the corresponding FunctionID enum value for a string RPC
-     *
-     * @param name String value represents the name of the RPC
-     * @return FunctionID represents the equivalent enum value for the provided string
-     */
-    public static FunctionID getEnumForString(String name) {
-        for(FunctionID value : EnumSet.allOf(FunctionID.class)) {
-            if(value.JSON_NAME.equals(name)){
-                return value;
-            }
-        }
-        return null;
     }
 }
 ```
@@ -959,7 +735,7 @@ Where:
 * `[description]` is `<description>` of the current `<struct>`, if exists.
 * `@deprecated` indicates the deprecation state if the `"deprecated"` attribute exists and is "true".
 * `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
-* `@see` shows the custom reference in `[see_reference]`, if it's defined in the custom mapping.
+* `@see` shows the custom reference in `[see_reference]`.
 * The `Parameter List` table should include all set of `<param>`.
 * `[param_name]` is `"name"` attribute of the `<param>`.
 * `[param_type]` is `"type"` attribute of the `<param>`, `[List<[param_type]>]` applied if `"array"` attribute of `<param>` is "true".
@@ -981,7 +757,6 @@ Field definition template:
 ```java
 /**
  * @deprecated
- * @since SmartDeviceLink [since_version]
  * @see [see_reference]
  */
 @Deprecated
@@ -990,10 +765,8 @@ public static final String [normalized_name] = "[name]";
 Where:
 * `[normalized_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`.
 * `[name]` is the `"name"` attribute of `<param>`.
-* `[description]` is `<description>` of the `<param>`, if exists.
 * `@deprecated` indicates the deprecation state if the `"deprecated"` attribute exists and is "true".
-* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
-* `@see` shows the custom reference in `[see_reference]`, if it's defined in the custom mapping.
+* `@see` shows the custom reference in `[see_reference]`.
 
 The field definition should have the `@Deprecated` decorator if the `"deprecated"` attribute of the `<param>` exists and is "true".
 
@@ -1046,7 +819,7 @@ Template:
     /**
      * Constructs a new [name] object
      *
-     * @param [param_name]
+     * @param [param_name] [description]
      * [description]
      */
     public [name](@NonNull [param_type|List<[param_type]>] [param_name]) {
@@ -1058,6 +831,8 @@ Where:
 * `[name]` is the value from the `"name"` attribute of `<struct>`.
 * `[param_name]` is `"name"` attribute of the `<param>`.
 * `[param_type]` is `"type"` attribute of the `<param>`, `[List<[param_type]>]` applied if `"array"` attribute of `<param>` is "true".
+* `[description]` is `<description>` of the `<param>`, if exists.
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
 * `[setter_name]` is the name of the corresponding setter method
 
 For each `<param>` the getter and setter methods should be defined in the class:
@@ -1082,8 +857,9 @@ Setter template:
     /**
      * Sets the [name].
      *
-     * @param [name]
+     * @param [name] [description]
      * [description]
+     * @since SmartDeviceLink [since_version]
      */
     public void [setter_name]([type|List<[type]>] [name]) {
         setValue([field_name], [name]);
@@ -1094,6 +870,8 @@ Where:
 * `[name]` is `"name"` attribute of the `<param>`.
 * `[type]` is `"type"` attribute of the `<param>`, `[List<[type]>]` applied if `"array"` attribute is "true".
 * `[setter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `set` prefix.
+* `[description]` is `<description>` of the `<param>`, if exists.
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
 * `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
 
 
@@ -1102,8 +880,9 @@ Where:
      /**
      * Gets the [name].
      *
-     * @return [type|List<[type]>]
+     * @return [type|List<[type]>] [description]
      * [description]
+     * @since SmartDeviceLink [since_version]
      */
     @SuppressWarnings("unchecked")
     public [type|List<[type]>] [getter_name]() {
@@ -1115,6 +894,8 @@ Where:
 * `[getter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `get` prefix.
 * `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
 * `[type]` is `"type"` attribute of the `<param>`, `[List<[type]>]` applied if `"array"` attribute is "true".
+* `[description]` is `<description>` of the `<param>`, if exists.
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
 * `@SuppressWarnings("unchecked")` applied if `"array"` attribute is "true".
 
 
@@ -1123,8 +904,9 @@ Where:
      /**
      * Gets the [name].
      *
-     * @return [Float|List<Float>]
+     * @return [Float|List<Float>] [description]
      * [description]
+     * @since SmartDeviceLink [since_version]
      */
     @SuppressWarnings("unchecked")
     public Float|List<Float> [getter_name]() {
@@ -1137,6 +919,8 @@ Where:
 * `[getter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `get` prefix.
 * `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
 * `[List<Float>]` applied if `"array"` attribute is "true".
+* `[description]` is `<description>` of the `<param>`, if exists.
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
 * `@SuppressWarnings("unchecked")` applied if `"array"` attribute is "true".
 
 `<enum>` or `<struct>` type getter template:
@@ -1144,8 +928,9 @@ Where:
      /**
      * Gets the [name].
      *
-     * @return [type|List<[type]>]
+     * @return [type|List<[type]>] [description]
      * [description]
+     * @since SmartDeviceLink [since_version]
      */
     @SuppressWarnings("unchecked")
     public [type|List<[type]>] [getter_name]() {
@@ -1155,6 +940,8 @@ Where:
 Where:
 * `[name]` is `"name"` attribute of the `<param>`.
 * `[type]` is `"type"` attribute of the `<param>`, `[List<[type]>]` applied if `"array"` attribute is "true".
+* `[description]` is `<description>` of the `<param>`, if exists.
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
 * `@SuppressWarnings("unchecked")` applied if `"array"` attribute is "true".
 * `[getter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `get` prefix.
 * `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
@@ -1259,34 +1046,19 @@ import java.util.Hashtable;
  *      <td>N</td>
  *      <td>SmartDeviceLink 6.0.0</td>
  *  </tr>
- *
  * </table>
  *
  * @since SmartDeviceLink 2.0.0
  */
 public class VehicleDataResult extends RPCStruct {
-    /**
-     * Defined published data element type.
-     *
-     */
     public static final String KEY_DATA_TYPE = "dataType";
-    /**
-     * Published data result code.
-     *
-     */
     public static final String KEY_RESULT_CODE = "resultCode";
-    /**
-     * Type of requested oem specific parameter
-     *
-     * @since SmartDeviceLink 6.0.0
-     */
     public static final String KEY_OEM_CUSTOM_DATA_TYPE = "oemCustomDataType";
 
     /**
      * Constructs a new VehicleDataResult object
      */
     public VehicleDataResult() { }
-    
 
     /**
      * Constructs a new VehicleDataResult object indicated by the Hashtable parameter
@@ -1300,73 +1072,72 @@ public class VehicleDataResult extends RPCStruct {
     /**
      * Constructs a new VehicleDataResult object
      *
-     * @param dataType
-     * @param resultCode
+     * @param dataType Defined published data element type.
+     * @param resultCode Published data result code.
      */
     public VehicleDataResult(@NonNull VehicleDataType dataType, @NonNull VehicleDataResultCode resultCode) {
         this();
         setDataType(dataType);
         setResultCode(resultCode);
     }
-    
 
     /**
      * Sets the dataType.
-     * Defined published data element type.
      *
-     * @param dataType
+     * @param dataType Defined published data element type.
      */
     public void setDataType(@NonNull VehicleDataType dataType) {
         setValue(KEY_DATA_TYPE, dataType);
     }
 
-     /**
+    /**
      * Gets the dataType.
      *
-     * @return VehicleDataType
-    */
+     * @return dataType Defined published data element type.
+     */
     public VehicleDataType getDataType() {
         return (VehicleDataType) getObject(VehicleDataType.class, KEY_DATA_TYPE);
     }
 
     /**
      * Sets the resultCode.
-     * Published data result code.
      *
-     * @param resultCode
+     * @param resultCode Published data result code.
      */
     public void setResultCode(@NonNull VehicleDataResultCode resultCode) {
         setValue(KEY_RESULT_CODE, resultCode);
     }
 
-     /**
+    /**
      * Gets the resultCode.
      *
-     * @return VehicleDataResultCode
-    */
+     * @return resultCode Published data result code.
+     */
     public VehicleDataResultCode getResultCode() {
         return (VehicleDataResultCode) getObject(VehicleDataResultCode.class, KEY_RESULT_CODE);
     }
 
     /**
      * Sets the oemCustomDataType.
-     * Type of requested oem specific parameter
      *
-     * @param oemCustomDataType
+     * @param oemCustomDataType Type of requested oem specific parameter
+     * @since SmartDeviceLink 6.0.0
      */
-    public void setOEMCustomVehicleDataType(String oemCustomDataType) {
+    public void setOemCustomDataType(String oemCustomDataType) {
         setValue(KEY_OEM_CUSTOM_DATA_TYPE, oemCustomDataType);
     }
 
-     /**
+    /**
      * Gets the oemCustomDataType.
      *
-     * @return String
-    */
-    public String getOEMCustomVehicleDataType() {
+     * @return oemCustomDataType Type of requested oem specific parameter
+     * @since SmartDeviceLink 6.0.0
+     */
+    public String getOemCustomDataType() {
         return getString(KEY_OEM_CUSTOM_DATA_TYPE);
     }
     
+
 }
 ```
 
@@ -1446,32 +1217,26 @@ import java.util.List;
  *      <td>List<HMILevel></td>
  *      <td>A set of all HMI levels that are permitted for this given RPC.</td>
  *      <td>Y</td>
+ *      <td></td>
  *  </tr>
  *  <tr>
  *      <td>userDisallowed</td>
  *      <td>List<HMILevel></td>
  *      <td>A set of all HMI levels that are prohibited for this given RPC.</td>
  *      <td>Y</td>
+ *      <td></td>
  *  </tr>
- *
  * </table>
  * @since SmartDeviceLink 2.0.0
  */
 public class HMIPermissions extends RPCStruct {
-    /**
-     * A set of all HMI levels that are permitted for this given RPC.
-     */
     public static final String KEY_ALLOWED = "allowed";
-    /**
-     * A set of all HMI levels that are prohibited for this given RPC.
-     */
     public static final String KEY_USER_DISALLOWED = "userDisallowed";
 
     /**
      * Constructs a new HMIPermissions object
      */
     public HMIPermissions() { }
-    
 
     /**
      * Constructs a new HMIPermissions object indicated by the Hashtable parameter
@@ -1485,31 +1250,29 @@ public class HMIPermissions extends RPCStruct {
     /**
      * Constructs a new HMIPermissions object
      *
-     * @param allowed
-     * @param userDisallowed
+     * @param allowed A set of all HMI levels that are permitted for this given RPC.
+     * @param userDisallowed A set of all HMI levels that are prohibited for this given RPC.
      */
     public HMIPermissions(@NonNull List<HMILevel> allowed, @NonNull List<HMILevel> userDisallowed) {
         this();
         setAllowed(allowed);
         setUserDisallowed(userDisallowed);
     }
-    
 
     /**
      * Sets the allowed.
-     * A set of all HMI levels that are permitted for this given RPC.
      *
-     * @param allowed
+     * @param allowed A set of all HMI levels that are permitted for this given RPC.
      */
     public void setAllowed(@NonNull List<HMILevel> allowed) {
         setValue(KEY_ALLOWED, allowed);
     }
 
-     /**
+    /**
      * Gets the allowed.
      *
-     * @return List<HMILevel>
-    */
+     * @return allowed A set of all HMI levels that are permitted for this given RPC.
+     */
     @SuppressWarnings("unchecked")
     public List<HMILevel> getAllowed() {
         return (List<HMILevel>) getObject(HMILevel.class, KEY_ALLOWED);
@@ -1517,24 +1280,24 @@ public class HMIPermissions extends RPCStruct {
 
     /**
      * Sets the userDisallowed.
-     * A set of all HMI levels that are prohibited for this given RPC.
      *
-     * @param userDisallowed
+     * @param userDisallowed A set of all HMI levels that are prohibited for this given RPC.
      */
     public void setUserDisallowed(@NonNull List<HMILevel> userDisallowed) {
         setValue(KEY_USER_DISALLOWED, userDisallowed);
     }
 
-     /**
+    /**
      * Gets the userDisallowed.
      *
-     * @return List<HMILevel>
-    */
+     * @return userDisallowed A set of all HMI levels that are prohibited for this given RPC.
+     */
     @SuppressWarnings("unchecked")
     public List<HMILevel> getUserDisallowed() {
         return (List<HMILevel>) getObject(HMILevel.class, KEY_USER_DISALLOWED);
     }
     
+
 }
 ```
 
@@ -1610,31 +1373,26 @@ import java.util.Hashtable;
  *      <td>FuelType</td>
  *      <td></td>
  *      <td>N</td>
+ *      <td></td>
  *  </tr>
  *  <tr>
  *      <td>range</td>
  *      <td>Float</td>
  *      <td>The estimate range in KM the vehicle can travel based on fuel level and consumption.</td>
  *      <td>N</td>
+ *      <td></td>
  *  </tr>
- *
  * </table>
  * @since SmartDeviceLink 5.0.0
  */
 public class FuelRange extends RPCStruct {
-    /**
-     */
     public static final String KEY_TYPE = "type";
-    /**
-     * The estimate range in KM the vehicle can travel based on fuel level and consumption.
-     */
     public static final String KEY_RANGE = "range";
 
     /**
      * Constructs a new FuelRange object
      */
     public FuelRange() { }
-    
 
     /**
      * Constructs a new FuelRange object indicated by the Hashtable parameter
@@ -1644,46 +1402,47 @@ public class FuelRange extends RPCStruct {
     public FuelRange(Hashtable<String, Object> hash) {
         super(hash);
     }
-    
 
     /**
      * Sets the type.
      *
+     
      * @param type
      */
     public void setType(FuelType type) {
         setValue(KEY_TYPE, type);
     }
 
-     /**
+    /**
      * Gets the type.
      *
-     * @return FuelType
-    */
+     
+     * @return type
+     */
     public FuelType getType() {
         return (FuelType) getObject(FuelType.class, KEY_TYPE);
     }
 
     /**
      * Sets the range.
-     * The estimate range in KM the vehicle can travel based on fuel level and consumption.
      *
-     * @param range
+     * @param range The estimate range in KM the vehicle can travel based on fuel level and consumption.
      */
     public void setRange(Float range) {
         setValue(KEY_RANGE, range);
     }
 
-     /**
+    /**
      * Gets the range.
      *
-     * @return Float
-    */
+     * @return range The estimate range in KM the vehicle can travel based on fuel level and consumption.
+     */
     public Float getRange() {
         Object object = getValue(KEY_RANGE);
         return SdlDataTypeConverter.objectToFloat(object);
     }
     
+
 }
 ```
 
@@ -1738,7 +1497,7 @@ Where:
 * `[description]` is `<description>` of the current `<struct>`, if exists.
 * `@deprecated` indicates the deprecation state if the `"deprecated"` attribute exists and is "true".
 * `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
-* `@see` shows the custom reference in `[see_reference]`, if it's defined in the custom mapping.
+* `@see` shows the custom reference in `[see_reference]`.
 * The `Parameter List` table should include all set of `<param>`.
 * `[param_name]` is `"name"` attribute of the `<param>`.
 * `[param_type]` is `"type"` attribute of the `<param>`, `[List<[param_type]>]` applied if `"array"` attribute of `<param>` is "true".
@@ -1760,10 +1519,7 @@ The set of `<param>` should be mapped to the `public static final String` fields
 Field definition template:
 ```java
 /**
- * [description]
- *
  * @deprecated
- * @since SmartDeviceLink [since_version]
  * @see [see_reference]
  */
 @Deprecated
@@ -1772,10 +1528,8 @@ public static final String [normalized_name] = "[name]";
 Where:
 * `[normalized_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`.
 * `[name]` is the `"name"` attribute of `<param>`.
-* `[description]` is `<description>` of the `<param>`, if exists.
 * `@deprecated` indicates the deprecation state if the `"deprecated"` attribute exists and is "true".
-* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
-* `@see` shows the custom reference in `[see_reference]`, if it's defined in the custom mapping.
+* `@see` shows the custom reference in `[see_reference]`.
 
 The field definition should have the `@Deprecated` decorator if the `"deprecated"` attribute of the `<param>` exists and is "true".
 
@@ -1784,7 +1538,7 @@ The Function class contains 3 different constructors:
 * with `Hashtable` parameter.
 * with all required parameters, based on `"mandatory"` attribute of the `<param>`
 
-The `response` Function class has additional constructor with `success` and `resultCode` parameters.
+The `response` Function class has additional constructor with `success` and `resultCode` mandatory parameters. Order of this parameters is dependent of order in XML. 
 
 ### Constructor without parameters
 
@@ -1836,7 +1590,9 @@ Template:
     /**
      * Constructs a new [name] object
      *
-     * @param [param_name]
+     * @param [param_name] [description]
+     * [description]
+     * @since SmartDeviceLink [since_version]
      */
     public [name](@NonNull [param_type|List<[param_type]>] [param_name]) {
         this();
@@ -1846,25 +1602,10 @@ Template:
 Where:
 * `[name]` is the value from the `"name"` attribute of `<function>`.
 * `[param_name]` is `"name"` attribute of the `<param>`.
+* `[description]` is `<description>` of the `<param>`, if exists.
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
 * `[param_type]` is `"type"` attribute of the `<param>`, `[List<[param_type]>]` applied if `"array"` attribute of `<param>` is "true".
 * `[setter_name]` is the name of the corresponding setter method
-
-### Additional constructor of the `response` Function class
-
-```java
-    /**
-     * Constructs a new [name] object
-     *
-     * @param success    whether the request is successfully processed
-     * @param resultCode whether the request is successfully processed
-     */
-    public [name](@NonNull Boolean success, @NonNull Result resultCode) {
-        this();
-        setSuccess(success);
-        setResultCode(resultCode);
-    }
-```
-Where `[name]` is the value from the `"name"` attribute of `<function>`.
 
 For each `<param>` the getter and setter methods should be defined in the class:
 
@@ -1888,17 +1629,19 @@ Setter template:
 ```java
     /**
      * Sets the [name].
-     * [description]
      *
-     * @param [name]
+     * @param [name] [description]
+     * [description]
+     * @since SmartDeviceLink [since_version]
      */
     public void [setter_name]([type|List<[type]>] [name]) {
         setParameters([field_name], [name]);
     }
 ```
 Where:
-* `[description]` is `<description>` of the `<param>`, if exists.
 * `[name]` is `"name"` attribute of the `<param>`.
+* `[description]` is `<description>` of the `<param>`, if exists.
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
 * `[type]` is `"type"` attribute of the `<param>`, `[List<[type]>]` applied if `"array"` attribute is "true".
 * `[setter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `set` prefix.
 * `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
@@ -1909,7 +1652,9 @@ Where:
      /**
      * Gets the [name].
      *
-     * @return [type|List<[type]>]
+     * @return [type|List<[type]>] [description]
+     * [description]
+     * @since SmartDeviceLink [since_version]
      */
     @SuppressWarnings("unchecked")
     public [type|List<[type]>] [getter_name]() {
@@ -1918,6 +1663,8 @@ Where:
 ```
 Where:
 * `[name]` is `"name"` attribute of the `<param>`.
+* `[description]` is `<description>` of the `<param>`, if exists.
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
 * `[getter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `get` prefix.
 * `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
 * `[type]` is `"type"` attribute of the `<param>`, `[List<[type]>]` applied if `"array"` attribute is "true".
@@ -1929,7 +1676,9 @@ Where:
      /**
      * Gets the [name].
      *
-     * @return [Float|List<Float>]
+     * @return [Float|List<Float>] [description]
+     * [description]
+     * @since SmartDeviceLink [since_version]
      */
     @SuppressWarnings("unchecked")
     public Float|List<Float> [getter_name]() {
@@ -1939,6 +1688,8 @@ Where:
 ```
 Where:
 * `[name]` is `"name"` attribute of the `<param>`.
+* `[description]` is `<description>` of the `<param>`, if exists.
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
 * `[getter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `get` prefix.
 * `[field_name]` is the normalized and `SCREAMING_SNAKE_CASE` formatted `"name"` attribute of `<param>`, `[name]` is the `"name"` attribute.
 * `[List<Float>]` applied if `"array"` attribute is "true".
@@ -1949,7 +1700,9 @@ Where:
      /**
      * Gets the [name].
      *
-     * @return [type|List<[type]>]
+     * @return [type|List<[type]>] [description]
+     * [description]
+     * @since SmartDeviceLink [since_version]
      */
     @SuppressWarnings("unchecked")
     public [type|List<[type]>] [getter_name]() {
@@ -1958,6 +1711,8 @@ Where:
 ```
 Where:
 * `[name]` is `"name"` attribute of the `<param>`.
+* `[description]` is `<description>` of the `<param>`, if exists.
+* `@since` should be present, if the `"since"` attribute exists, and `[since_version]` is the `Major.Minor.Patch` formatted value of this attribute.
 * `[type]` is `"type"` attribute of the `<param>`, `[List<[type]>]` applied if `"array"` attribute is "true".
 * `@SuppressWarnings("unchecked")` applied if `"array"` attribute is "true".
 * `[getter_name]` is the `PascalCase` formatted `"name"` attribute of the `<param>` with the `get` prefix.
@@ -2048,7 +1803,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
- * Adds a command to the in application menu. Either menuParams or vrCommands must be provided.
+ * Adds a command to the in application menu. Either menuParams or vrCommands must be
+ * provided.
  *
  * <p><b>Parameter List</b></p>
  *
@@ -2065,53 +1821,37 @@ import java.util.List;
  *      <td>Integer</td>
  *      <td>unique ID of the command to add.</td>
  *      <td>Y</td>
- *      <td>SmartDeviceLink </td>
+ *      <td></td>
  *  </tr>
  *  <tr>
  *      <td>menuParams</td>
  *      <td>MenuParams</td>
  *      <td>Optional sub value containing menu parameters</td>
  *      <td>N</td>
- *      <td>SmartDeviceLink </td>
+ *      <td></td>
  *  </tr>
  *  <tr>
  *      <td>vrCommands</td>
  *      <td>List<String></td>
- *      <td>An array of strings to be used as VR synonyms for this command. If this array is provided, it may not be empty.</td>
+ *      <td>An array of strings to be used as VR synonyms for this command. If this array is provided,it may not be empty.</td>
  *      <td>N</td>
- *      <td>SmartDeviceLink </td>
+ *      <td></td>
  *  </tr>
  *  <tr>
  *      <td>cmdIcon</td>
  *      <td>Image</td>
- *      <td>Image struct determining whether static or dynamic icon. If omitted on supported displays, no (or the default ifapplicable) icon shall be displayed.</td>
+ *      <td>Image struct determining whether static or dynamic icon. If omitted on supported displays,no (or the default if applicable) icon shall be displayed.</td>
  *      <td>N</td>
  *      <td>SmartDeviceLink 2.0.0</td>
  *  </tr>
- *
  * </table>
  *
  * @since SmartDeviceLink 1.0.0
  */
 public class AddCommand extends RPCRequest {
-    /**
-     * unique ID of the command to add.
-     */
     public static final String KEY_CMD_ID = "cmdID";
-    /**
-     * Optional sub value containing menu parameters
-     */
     public static final String KEY_MENU_PARAMS = "menuParams";
-    /**
-     * An array of strings to be used as VR synonyms for this command. If this array is provided, it may not be empty.
-     */
     public static final String KEY_VR_COMMANDS = "vrCommands";
-    /**
-     * Image struct determining whether static or dynamic icon. If omitted on supported displays, no (or the default if
-     * applicable) icon shall be displayed.
-     *
-     * @since SmartDeviceLink 2.0.0
-     */
     public static final String KEY_CMD_ICON = "cmdIcon";
 
     /**
@@ -2120,7 +1860,6 @@ public class AddCommand extends RPCRequest {
     public AddCommand() {
         super(FunctionID.ADD_COMMAND.toString());
     }
-    
 
     /**
      * Constructs a new AddCommand object indicated by the Hashtable parameter
@@ -2134,68 +1873,65 @@ public class AddCommand extends RPCRequest {
     /**
      * Constructs a new AddCommand object
      *
-     * @param cmdID
+     * @param cmdID unique ID of the command to add.
      */
     public AddCommand(@NonNull Integer cmdID) {
         this();
         setCmdID(cmdID);
     }
-    
 
     /**
      * Sets the cmdID.
-     * unique ID of the command to add.
      *
-     * @param cmdID
+     * @param cmdID unique ID of the command to add.
      */
     public void setCmdID(@NonNull Integer cmdID) {
         setParameters(KEY_CMD_ID, cmdID);
     }
 
-     /**
+    /**
      * Gets the cmdID.
      *
-     * @return Integer
-    */
+     * @return Integer unique ID of the command to add.
+     */
     public Integer getCmdID() {
         return getInteger(KEY_CMD_ID);
     }
 
     /**
      * Sets the menuParams.
-     * Optional sub value containing menu parameters
      *
-     * @param menuParams
+     * @param menuParams Optional sub value containing menu parameters
      */
     public void setMenuParams(MenuParams menuParams) {
         setParameters(KEY_MENU_PARAMS, menuParams);
     }
 
-     /**
+    /**
      * Gets the menuParams.
      *
-     * @return MenuParams
-    */
-    @SuppressWarnings("unchecked")
+     * @return MenuParams Optional sub value containing menu parameters
+     */
     public MenuParams getMenuParams() {
         return (MenuParams) getObject(MenuParams.class, KEY_MENU_PARAMS);
     }
 
     /**
      * Sets the vrCommands.
-     * An array of strings to be used as VR synonyms for this command. If this array is provided, it may not be empty.
      *
-     * @param vrCommands
+     * @param vrCommands An array of strings to be used as VR synonyms for this command. If this array is provided,
+     * it may not be empty.
      */
     public void setVrCommands(List<String> vrCommands) {
         setParameters(KEY_VR_COMMANDS, vrCommands);
     }
 
-     /**
+    /**
      * Gets the vrCommands.
      *
-     * @return List<String>
-    */
+     * @return List<String> An array of strings to be used as VR synonyms for this command. If this array is provided,
+     * it may not be empty.
+     */
     @SuppressWarnings("unchecked")
     public List<String> getVrCommands() {
         return (List<String>) getObject(String.class, KEY_VR_COMMANDS);
@@ -2203,24 +1939,26 @@ public class AddCommand extends RPCRequest {
 
     /**
      * Sets the cmdIcon.
-     * Image struct determining whether static or dynamic icon. If omitted on supported displays, no (or the default if
-     * applicable) icon shall be displayed.
      *
-     * @param cmdIcon
+     * @param cmdIcon Image struct determining whether static or dynamic icon. If omitted on supported displays,
+     * no (or the default if applicable) icon shall be displayed.
+     * @since SmartDeviceLink 2.0.0
      */
     public void setCmdIcon(Image cmdIcon) {
         setParameters(KEY_CMD_ICON, cmdIcon);
     }
 
-     /**
+    /**
      * Gets the cmdIcon.
      *
-     * @return Image
-    */
+     * @return Image Image struct determining whether static or dynamic icon. If omitted on supported displays,
+     * no (or the default if applicable) icon shall be displayed.
+     * @since SmartDeviceLink 2.0.0
+     */
     public Image getCmdIcon() {
         return (Image) getObject(Image.class, KEY_CMD_ICON);
     }
-    
+
 }
 ```
 
@@ -2325,59 +2063,9 @@ import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import java.util.Hashtable;
 
 /**
- *
- * <p><b>Parameter List</b></p>
- *
- * <table border="1" rules="all">
- *  <tr>
- *      <th>Param Name</th>
- *      <th>Type</th>
- *      <th>Description</th>
- *      <th>Required</th>
- *      <th>Version Available</th>
- *  </tr>
- *  <tr>
- *      <td>choiceID</td>
- *      <td>Integer</td>
- *      <td>ID of the choice that was selected in response to PerformInteraction. Only is valid if general result is"success:true".</td>
- *      <td>N</td>
- *      <td>SmartDeviceLink </td>
- *  </tr>
- *  <tr>
- *      <td>manualTextEntry</td>
- *      <td>String</td>
- *      <td>Manually entered text selection, e.g. through keyboard Can be returned in lieu of choiceID, depending on triggersource</td>
- *      <td>N</td>
- *      <td>SmartDeviceLink 3.0.0</td>
- *  </tr>
- *  <tr>
- *      <td>triggerSource</td>
- *      <td>TriggerSource</td>
- *      <td>See TriggerSource Only is valid if resultCode is SUCCESS.</td>
- *      <td>N</td>
- *      <td>SmartDeviceLink </td>
- *  </tr>
- *
- * </table>
  * @since SmartDeviceLink 1.0.0
  */
 public class PerformInteractionResponse extends RPCResponse {
-    /**
-     * ID of the choice that was selected in response to PerformInteraction. Only is valid if general result is
-     * "success:true".
-     */
-    public static final String KEY_CHOICE_ID = "choiceID";
-    /**
-     * Manually entered text selection, e.g. through keyboard Can be returned in lieu of choiceID, depending on trigger
-     * source
-     *
-     * @since SmartDeviceLink 3.0.0
-     */
-    public static final String KEY_MANUAL_TEXT_ENTRY = "manualTextEntry";
-    /**
-     * See TriggerSource Only is valid if resultCode is SUCCESS.
-     */
-    public static final String KEY_TRIGGER_SOURCE = "triggerSource";
 
     /**
      * Constructs a new PerformInteractionResponse object
@@ -2385,7 +2073,6 @@ public class PerformInteractionResponse extends RPCResponse {
     public PerformInteractionResponse() {
         super(FunctionID.PERFORM_INTERACTION.toString());
     }
-    
 
     /**
      * Constructs a new PerformInteractionResponse object indicated by the Hashtable parameter
@@ -2399,75 +2086,15 @@ public class PerformInteractionResponse extends RPCResponse {
     /**
      * Constructs a new PerformInteractionResponse object
      *
-     * @param success    whether the request is successfully processed
-     * @param resultCode whether the request is successfully processed
+     * @param success whether the request is successfully processed
+     * @param resultCode additional information about a response returning a failed outcome
      */
     public PerformInteractionResponse(@NonNull Boolean success, @NonNull Result resultCode) {
         this();
         setSuccess(success);
         setResultCode(resultCode);
     }
-    
 
-    /**
-     * Sets the choiceID.
-     * ID of the choice that was selected in response to PerformInteraction. Only is valid if general result is
-     * "success:true".
-     *
-     * @param choiceID
-     */
-    public void setChoiceID(Integer choiceID) {
-        setParameters(KEY_CHOICE_ID, choiceID);
-    }
-
-     /**
-     * Gets the choiceID.
-     *
-     * @return Integer
-    */
-    public Integer getChoiceID() {
-        return getInteger(KEY_CHOICE_ID);
-    }
-
-    /**
-     * Sets the manualTextEntry.
-     * Manually entered text selection, e.g. through keyboard Can be returned in lieu of choiceID, depending on trigger
-     * source
-     *
-     * @param manualTextEntry
-     */
-    public void setManualTextEntry(String manualTextEntry) {
-        setParameters(KEY_MANUAL_TEXT_ENTRY, manualTextEntry);
-    }
-
-     /**
-     * Gets the manualTextEntry.
-     *
-     * @return String
-    */
-    public String getManualTextEntry() {
-        return getString(KEY_MANUAL_TEXT_ENTRY);
-    }
-
-    /**
-     * Sets the triggerSource.
-     * See TriggerSource Only is valid if resultCode is SUCCESS.
-     *
-     * @param triggerSource
-     */
-    public void setTriggerSource(TriggerSource triggerSource) {
-        setParameters(KEY_TRIGGER_SOURCE, triggerSource);
-    }
-
-     /**
-     * Gets the triggerSource.
-     *
-     * @return TriggerSource
-    */
-    public TriggerSource getTriggerSource() {
-        return (TriggerSource) getObject(TriggerSource.class, KEY_TRIGGER_SOURCE);
-    }
-    
 }
 ```
 
@@ -2545,27 +2172,20 @@ import java.util.Hashtable;
  *      <td>Language</td>
  *      <td>Current SDL voice engine (VR+TTS) language</td>
  *      <td>Y</td>
- *      <td>SmartDeviceLink </td>
+ *      <td></td>
  *  </tr>
  *  <tr>
  *      <td>hmiDisplayLanguage</td>
  *      <td>Language</td>
  *      <td>Current display language</td>
  *      <td>Y</td>
- *      <td>SmartDeviceLink </td>
+ *      <td></td>
  *  </tr>
- *
  * </table>
  * @since SmartDeviceLink 2.0.0
  */
 public class OnLanguageChange extends RPCNotification {
-    /**
-     * Current SDL voice engine (VR+TTS) language
-     */
     public static final String KEY_LANGUAGE = "language";
-    /**
-     * Current display language
-     */
     public static final String KEY_HMI_DISPLAY_LANGUAGE = "hmiDisplayLanguage";
 
     /**
@@ -2574,7 +2194,6 @@ public class OnLanguageChange extends RPCNotification {
     public OnLanguageChange() {
         super(FunctionID.ON_LANGUAGE_CHANGE.toString());
     }
-    
 
     /**
      * Constructs a new OnLanguageChange object indicated by the Hashtable parameter
@@ -2588,53 +2207,50 @@ public class OnLanguageChange extends RPCNotification {
     /**
      * Constructs a new OnLanguageChange object
      *
-     * @param language
-     * @param hmiDisplayLanguage
+     * @param language Current SDL voice engine (VR+TTS) language
+     * @param hmiDisplayLanguage Current display language
      */
     public OnLanguageChange(@NonNull Language language, @NonNull Language hmiDisplayLanguage) {
         this();
         setLanguage(language);
         setHmiDisplayLanguage(hmiDisplayLanguage);
     }
-    
 
     /**
      * Sets the language.
-     * Current SDL voice engine (VR+TTS) language
      *
-     * @param language
+     * @param language Current SDL voice engine (VR+TTS) language
      */
     public void setLanguage(@NonNull Language language) {
         setParameters(KEY_LANGUAGE, language);
     }
 
-     /**
+    /**
      * Gets the language.
      *
-     * @return Language
-    */
+     * @return Language Current SDL voice engine (VR+TTS) language
+     */
     public Language getLanguage() {
         return (Language) getObject(Language.class, KEY_LANGUAGE);
     }
 
     /**
      * Sets the hmiDisplayLanguage.
-     * Current display language
      *
-     * @param hmiDisplayLanguage
+     * @param hmiDisplayLanguage Current display language
      */
     public void setHmiDisplayLanguage(@NonNull Language hmiDisplayLanguage) {
         setParameters(KEY_HMI_DISPLAY_LANGUAGE, hmiDisplayLanguage);
     }
 
-     /**
+    /**
      * Gets the hmiDisplayLanguage.
      *
-     * @return Language
-    */
+     * @return Language Current display language
+     */
     public Language getHmiDisplayLanguage() {
         return (Language) getObject(Language.class, KEY_HMI_DISPLAY_LANGUAGE);
     }
-    
+
 }
 ```

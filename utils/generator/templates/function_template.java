@@ -11,7 +11,7 @@
     /**
      * Sets the {{p.origin}}.
      *
-     {% include "javadoc_template.java" %}
+     {%- include "javadoc_template.java" %}
      */
     public void set{{p.title}}({% if p.mandatory %}@NonNull {% endif %}{{p.return_type}} {{p.last}}) {
         setParameters({{p.key}}, {{p.last}});
@@ -20,7 +20,7 @@
     /**
      * Gets the {{p.origin}}.
      *
-     {% include "javadoc_return.java" %}
+     {%- include "javadoc_return.java" %}
      */
     {%- if p.SuppressWarnings is defined %}
     @SuppressWarnings("{{p.SuppressWarnings}}")
@@ -42,4 +42,4 @@
     }
 
     {%- endfor %}
-    {% endblock -%}
+    {%- endblock %}

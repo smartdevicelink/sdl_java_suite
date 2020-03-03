@@ -49,7 +49,7 @@ public class {{class_name}} extends {{extends_class}} {
      * Constructs a new {{class_name}} object
      *
      {%- for p in params|selectattr('mandatory') %}
-     {% include "javadoc_template.java" %}
+     {%- include "javadoc_template.java" %}
      {%- endfor %}
      */
     public {{class_name}}({{ constructor|join(', ') }}) {
@@ -63,7 +63,7 @@ public class {{class_name}} extends {{extends_class}} {
 
     {%- if params is defined and ((kind is defined and kind != "response") or kind is not defined) %}
     {%- block setter %}
-    {% endblock -%}
+    {%- endblock%}
     {%- endif %}
 
 }

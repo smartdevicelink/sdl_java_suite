@@ -1,13 +1,13 @@
      {%- if p.description is defined %}
      {%- for d in p.description %}
-     {%- if loop.index == 1 -%}
+     {%- if loop.index == 1 %}
      * @param {{p.last}} {{d}}
-     {%- else -%}
+     {%- else %}
      * {{d}}
-     {%- endif -%}{%- endfor -%}
+     {%- endif %}{%- endfor %}
      {%- else %}
      * @param {{p.last}}
-     {%- endif -%}
+     {%- endif %}
      {%- if p.since is defined %}
      * @since SmartDeviceLink {{p.since}}
      {%- endif %}
