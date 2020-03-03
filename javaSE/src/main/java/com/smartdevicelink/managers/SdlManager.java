@@ -36,6 +36,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.managers.file.FileManagerConfig;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.lifecycle.LifecycleManager;
@@ -96,7 +97,7 @@ public class SdlManager extends BaseSdlManager{
 	private SdlManagerListener managerListener;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
 	private ServiceEncryptionListener serviceEncryptionListener;
-
+	private FileManagerConfig fileManagerConfig;
 
 	// Managers
 	private LifecycleManager lifecycleManager;
@@ -287,7 +288,7 @@ public class SdlManager extends BaseSdlManager{
 	protected void initialize(){
 		// Instantiate sub managers
 		this.permissionManager = new PermissionManager(_internalInterface);
-		this.fileManager = new FileManager(_internalInterface);
+		this.fileManager = new FileManager(_internalInterface, fileManagerConfig);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
 
 		// Start sub managers
@@ -401,6 +402,8 @@ public class SdlManager extends BaseSdlManager{
 	}
 
 	// PROTECTED GETTERS
+
+	protected FileManagerConfig getFileManagerConfig() { return fileManagerConfig; }
 
 	/**
 	 * Retrieves the auth token, if any, that was attached to the StartServiceACK for the RPC
@@ -684,6 +687,17 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
+		 * Sets the FileManagerConfig for the session.<br>
+		 * <strong>Note: If not set, the default configuration value of 1 will be set for
+		 * artworkRetryCount and fileRetryCount in FileManagerConfig</strong>
+		 * @param fileManagerConfig - configuration options
+		 */
+		public Builder setFileManagerConfig (final FileManagerConfig fileManagerConfig){
+			sdlManager.fileManagerConfig = fileManagerConfig;
+			return this;
+		}
+
+		/**
 		 * Sets the voice recognition synonyms that can be used to identify this application.
 		 * @param vrSynonyms a vector of Strings that can be associated with this app. For example the app's name should
 		 *                   be included as well as any phonetic spellings of the app name that might help the on-board
@@ -773,6 +787,10 @@ public class SdlManager extends BaseSdlManager{
 				hmiTypesDefault.add(AppHMIType.DEFAULT);
 				sdlManager.hmiTypes = hmiTypesDefault;
 				sdlManager.isMediaApp = false;
+			}
+			if(sdlManager.fileManagerConfig == null){
+				//if FileManagerConfig is not set use default
+				sdlManager.fileManagerConfig = new FileManagerConfig();
 			}
 
 			if (sdlManager.hmiLanguage == null){

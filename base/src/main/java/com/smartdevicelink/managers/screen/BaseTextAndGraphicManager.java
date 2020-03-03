@@ -743,13 +743,12 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	private boolean shouldUpdatePrimaryImage() {
 		if (defaultMainWindowCapability == null || defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().size() > 0) {
-			if (currentScreenData.getGraphic() == null && primaryGraphic != null) {
-				return true;
-			} else if (currentScreenData.getGraphic() == null && primaryGraphic == null) {
-				return false;
+			if (currentScreenData.getGraphic() == null) {
+				return primaryGraphic != null;
+			} else {
+				return currentScreenData != null
+						&& (primaryGraphic != null && !CompareUtils.areStringsEqual(currentScreenData.getGraphic().getValue(), primaryGraphic.getName(), true, true));
 			}
-			return currentScreenData != null
-					&& (primaryGraphic != null  && !CompareUtils.areStringsEqual(currentScreenData.getGraphic().getValue(), primaryGraphic.getName(), true, true) );
 		}
 		return false;
 	}
@@ -757,13 +756,12 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private boolean shouldUpdateSecondaryImage() {
 		// Cannot detect if there is a secondary image, so we'll just try to detect if there's a primary image and allow it if there is.
 		if (defaultMainWindowCapability == null || defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().size() > 0) {
-			if (currentScreenData.getGraphic() == null && secondaryGraphic != null) {
-				return true;
-			} else if (currentScreenData.getGraphic() == null && secondaryGraphic == null) {
-				return false;
+			if (currentScreenData.getGraphic() == null) {
+				return secondaryGraphic != null;
+			} else {
+				return currentScreenData != null
+						&& (secondaryGraphic != null && !CompareUtils.areStringsEqual(currentScreenData.getGraphic().getValue(), secondaryGraphic.getName(), true, true));
 			}
-			return currentScreenData != null
-					&& (secondaryGraphic != null && !CompareUtils.areStringsEqual(currentScreenData.getGraphic().getValue(), secondaryGraphic.getName(),true,true));
 		}
 		return false;
 	}
@@ -778,11 +776,13 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 		List<TextField> textFields = defaultMainWindowCapability.getTextFields();
 		TextFieldName name;
-		for (TextField field : textFields) {
-			if (field.getName() != null) {
-				name = field.getName();
-				if (name == TextFieldName.mainField1 || name == TextFieldName.mainField2 || name == TextFieldName.mainField3 || name == TextFieldName.mainField4) {
-					linesFound += 1;
+		if (textFields != null && !textFields.isEmpty()) {
+			for (TextField field : textFields) {
+				if (field.getName() != null) {
+					name = field.getName();
+					if (name == TextFieldName.mainField1 || name == TextFieldName.mainField2 || name == TextFieldName.mainField3 || name == TextFieldName.mainField4) {
+						linesFound += 1;
+					}
 				}
 			}
 		}

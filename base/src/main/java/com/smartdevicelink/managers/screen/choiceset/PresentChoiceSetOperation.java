@@ -277,7 +277,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 				@Override
 				public void onError(int correlationId, Result resultCode, String info){
 					DebugTool.logError("Error canceling the presented choice set " + resultCode + " " + info);
-				};
+				}
 			});
 
 			if (internalInterface.get() != null){

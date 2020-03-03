@@ -69,6 +69,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.utl.TransportRecord;
+import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
 import java.lang.ref.WeakReference;
@@ -101,17 +102,18 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
 			if(SessionType.NAV.equals(type)){
-				if(session != null && session.getAcceptedVideoParams() != null){
+				if (session != null && session.getAcceptedVideoParams() != null) {
 					parameters = session.getAcceptedVideoParams();
+					VideoStreamManager.this.streamListener = session.startVideoStream();
 				}
-				VideoStreamManager.this.streamListener = internalInterface.startVideoStream(isEncrypted, parameters);
-				if(streamListener == null){
-					Log.e(TAG, "Error starting video service");
+
+				if (VideoStreamManager.this.streamListener == null) {
+					Log.e(TAG, "Error starting video stream");
 					stateMachine.transitionToState(StreamingStateMachine.ERROR);
 					return;
 				}
 				VideoStreamingCapability capability = (VideoStreamingCapability) internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING);
-				if(capability != null && capability.getIsHapticSpatialDataSupported()){
+				if(capability != null && Boolean.TRUE.equals(capability.getIsHapticSpatialDataSupported())){
 					hapticManager = new HapticInterfaceManager(internalInterface);
 				}
 				startEncoder();
@@ -123,15 +125,17 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		@Override
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if(SessionType.NAV.equals(type)){
-				stateMachine.transitionToState(StreamingStateMachine.NONE);
 				if(remoteDisplay!=null){
 					stopStreaming();
 				}
+				stateMachine.transitionToState(StreamingStateMachine.NONE);
+				transitionToState(SETTING_UP);
 			}
 		}
 
 		@Override
 		public void onServiceError(SdlSession session, SessionType type, String reason) {
+			DebugTool.logError("Unable to start video service: " + reason);
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			transitionToState(BaseSubManager.ERROR);
 		}
@@ -145,9 +149,13 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
 					return;
 				}
+				HMILevel prevHMILevel = hmiLevel;
 				hmiLevel = onHMIStatus.getHmiLevel();
 				if(hmiLevel.equals(HMILevel.HMI_FULL)){
 					checkState();
+				}
+				if (hasStarted && (prevHMILevel == HMILevel.HMI_FULL || prevHMILevel == HMILevel.HMI_LIMITED) && (hmiLevel == HMILevel.HMI_NONE || hmiLevel == HMILevel.HMI_BACKGROUND)){
+					internalInterface.stopVideoService();
 				}
 			}
 		}
@@ -301,7 +309,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		}
 		//Start the video service
 		this.internalInterface.startVideoService(parameters, encrypted);
-
 
 	}
 
@@ -477,10 +484,14 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				}
 			} ));
 			Thread showPresentation = new Thread(fTask);
+			showPresentation.setName("RmtDispThread");
 
 			showPresentation.start();
 		} catch (Exception ex) {
 			Log.e(TAG, "Unable to create Virtual Display.");
+			if(DebugTool.isDebugEnabled()){
+				ex.printStackTrace();
+			}
 		}
 	}
 

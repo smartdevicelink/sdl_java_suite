@@ -1,5 +1,6 @@
 # For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
 
+
 name: GitHub CI
 
 on: [push, pull_request]
@@ -35,9 +36,4 @@ jobs:
     
     - name: Sdl JavaEE Tests
       run: ./javaEE/gradlew -p ./javaEE test
-      
-    - name: Codecov	
-      uses: codecov/codecov-action@v1.0.4	
-      with:	
-        token: ${{secrets.CODECOV_TOKEN}}
-        yml: ./codecov.yml
+     

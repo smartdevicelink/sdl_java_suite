@@ -16,6 +16,7 @@ import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.TTSChunkFactory;
+import com.smartdevicelink.proxy.rpc.AppInfo;
 import com.smartdevicelink.proxy.rpc.AppServiceCapability;
 import com.smartdevicelink.proxy.rpc.AppServiceData;
 import com.smartdevicelink.proxy.rpc.AppServiceManifest;
@@ -262,6 +263,7 @@ public class Test {
 	public static final VrHelpItem                     GENERAL_VRHELPITEM                     = new VrHelpItem();
 	public static final ImageField                     GENERAL_IMAGEFIELD                     = new ImageField();
 	public static final DeviceInfo	                   GENERAL_DEVICEINFO	                  = new DeviceInfo();
+	public static final AppInfo                        GENERAL_APPINFO	                      = new AppInfo();
 	public static final LayoutMode                     GENERAL_LAYOUTMODE                     = LayoutMode.LIST_ONLY;
 	public static final MenuParams                     GENERAL_MENUPARAMS                     = new MenuParams();
 	public static final SoftButton                     GENERAL_SOFTBUTTON                     = new SoftButton();
@@ -535,6 +537,7 @@ public class Test {
 	public static final JSONObject JSON_SOFTBUTTON                = new JSONObject();
 	public static final JSONObject JSON_MENUPARAMS                = new JSONObject();
 	public static final JSONObject JSON_DEVICEINFO                = new JSONObject();
+	public static final JSONObject JSON_APPINFO                   = new JSONObject();
 	public static final JSONObject JSON_VRHELPITEM                = new JSONObject();
 	public static final JSONObject JSON_SCREENPARAMS              = new JSONObject();
 	public static final JSONObject JSON_SDLMSGVERSION             = new JSONObject();

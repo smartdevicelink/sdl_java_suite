@@ -622,9 +622,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 			if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1){
 				Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
-				endService(sessionType);
 				try {
-					cleanProxy(SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED);
+					disposeInternal(SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED);
 				} catch (SdlException e) {
 					e.printStackTrace();
 				}
@@ -1748,12 +1747,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	@SuppressWarnings("UnusedParameters")
 	private void cleanProxy(SdlDisconnectedReason disconnectedReason) throws SdlException {
-		if (disconnectedReason == SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED || disconnectedReason == SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED){
-			notifyProxyClosed(disconnectedReason.toString(), null,  disconnectedReason);
-			sdlSession.resetSession();
-		}
 		try {
-			
+
 			// ALM Specific Cleanup
 			if (_advancedLifecycleManagementEnabled) {
 				_sdlConnectionState = SdlConnectionState.SDL_DISCONNECTED;
@@ -1791,18 +1786,36 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			// Clean up SDL Connection
 			synchronized(CONNECTION_REFERENCE_LOCK) {
-				if (sdlSession != null) sdlSession.close();
+				if (sdlSession != null) {
+					sdlSession.close();
+				}
 			}		
 		} finally {
 			SdlTrace.logProxyEvent("SdlProxy cleaned.", SDL_LIB_TRACE_KEY);
 		}
 	}
-	
+
+	/**
+	 * Check to see if the proxy has already been disposed
+	 * @return if the proxy has been disposed
+	 */
+	public synchronized boolean isDisposed(){
+		return _proxyDisposed;
+	}
+
 	/**
 	 * Terminates the App's Interface Registration, closes the transport connection, ends the protocol session, and frees any resources used by the proxy.
 	 */
-	public void dispose() throws SdlException
-	{		
+	public void dispose() throws SdlException {
+		SdlTrace.logProxyEvent("Application called dispose() method.", SDL_LIB_TRACE_KEY);
+		disposeInternal(SdlDisconnectedReason.APPLICATION_REQUESTED_DISCONNECT);
+	}
+	/**
+	 * Terminates the App's Interface Registration, closes the transport connection, ends the protocol session, and frees any resources used by the proxy.
+	 * @param sdlDisconnectedReason the reason the proxy should be disposed.
+	 */
+	private synchronized void disposeInternal(SdlDisconnectedReason sdlDisconnectedReason) throws SdlException
+	{
 		if (_proxyDisposed) {
 			throw new SdlException("This object has been disposed, it is no long capable of executing methods.", SdlExceptionCause.SDL_PROXY_DISPOSED);
 		}
@@ -1811,12 +1824,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		rpcSecuredServiceStarted = false;
 		encryptionRequiredRPCs.clear();
 		serviceEncryptionListener = null;
-		
-		SdlTrace.logProxyEvent("Application called dispose() method.", SDL_LIB_TRACE_KEY);
-		
+
 		try{
 			// Clean the proxy
-			cleanProxy(SdlDisconnectedReason.APPLICATION_REQUESTED_DISCONNECT);
+			cleanProxy(sdlDisconnectedReason);
+
+			if (sdlDisconnectedReason == SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED
+					|| sdlDisconnectedReason == SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED){
+				//We want to notify listeners for this case before disposing the dispatchers
+				notifyProxyClosed(sdlDisconnectedReason.toString(), null,  sdlDisconnectedReason);
+			}
 		
 			// Close IncomingProxyMessageDispatcher thread
 			synchronized(INCOMING_MESSAGE_QUEUE_THREAD_LOCK) {
@@ -2152,6 +2169,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private ISdlServiceListener securedServiceListener = new ISdlServiceListener() {
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
+			if(_proxyDisposed){
+				DebugTool.logInfo("Ignoring start service packet, proxy is disposed");
+				return;
+			}
 			if(SessionType.RPC.equals(type)){
 				rpcSecuredServiceStarted = isEncrypted;
 			}
@@ -2163,6 +2184,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onServiceEnded(SdlSession session, SessionType type) {
+			if(_proxyDisposed){
+				DebugTool.logInfo("Ignoring end service packet, proxy is disposed");
+				return;
+			}
 			if (SessionType.RPC.equals(type)) {
 				rpcSecuredServiceStarted = false;
 			}
@@ -2174,6 +2199,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void onServiceError(SdlSession session, SessionType type, String reason) {
+			if(_proxyDisposed){
+				DebugTool.logInfo("Ignoring start service error, proxy is disposed");
+				return;
+			}
 			if (SessionType.RPC.equals(type)) {
 				rpcSecuredServiceStarted = false;
 			}
@@ -2653,21 +2682,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}else{
 						rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
 					}
-
-					if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1){
-						Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
-						try {
-							unregisterAppInterfacePrivate(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
-						} catch (SdlException e) {
-							e.printStackTrace();
-						}
-                        try {
-                            cleanProxy(SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED);
-                        } catch (SdlException e) {
-                            e.printStackTrace();
-                        }
-                        return;
-					}
+					DebugTool.logInfo("Negotiated RPC Spec version = " + rpcSpecVersion);
 
 					_vehicleType = msg.getVehicleType();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
@@ -2714,7 +2729,19 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						notifyProxyClosed("Unable to register app interface. Review values passed to the SdlProxy constructor. RegisterAppInterface result code: ", 
 								new SdlException("Unable to register app interface. Review values passed to the SdlProxy constructor. RegisterAppInterface result code: " + msg.getResultCode(), SdlExceptionCause.SDL_REGISTRATION_ERROR), SdlDisconnectedReason.SDL_REGISTRATION_ERROR);
 					}
-					
+
+					//If the RPC version is too low we should simply dispose this proxy
+					if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1) {
+						Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+						try {
+							disposeInternal(SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED);
+						} catch (SdlException e) {
+							e.printStackTrace();
+						}
+						return;
+					}
+
+
 					if (_callbackToUIThread) {
 						// Run in UI thread
 						_mainUIHandler.post(new Runnable() {
@@ -2819,7 +2846,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				_sdlLanguage = msg.getLanguage();
 				_hmiDisplayLanguage = msg.getHmiDisplayLanguage();
 				_sdlMsgVersion = msg.getSdlMsgVersion();
-				rpcSpecVersion = new com.smartdevicelink.util.Version(_sdlMsgVersion.getMajorVersion(),_sdlMsgVersion.getMinorVersion(), _sdlMsgVersion.getPatchVersion());
+				if(_sdlMsgVersion != null){
+					rpcSpecVersion = new com.smartdevicelink.util.Version(_sdlMsgVersion.getMajorVersion(),_sdlMsgVersion.getMinorVersion(), _sdlMsgVersion.getPatchVersion());
+				} else {
+					rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
+				}
+				DebugTool.logInfo("Negotiated RPC Spec version = " + rpcSpecVersion);
+
 				_vehicleType = msg.getVehicleType();
 				_systemSoftwareVersion = msg.getSystemSoftwareVersion();
 				_proxyVersionInfo = BuildConfig.VERSION_NAME;
@@ -2856,6 +2889,16 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					if (!msg.getSuccess()) {
 						notifyProxyClosed("Unable to register app interface. Review values passed to the SdlProxy constructor. RegisterAppInterface result code: ", 
 								new SdlException("Unable to register app interface. Review values passed to the SdlProxy constructor. RegisterAppInterface result code: " + msg.getResultCode(), SdlExceptionCause.SDL_REGISTRATION_ERROR), SdlDisconnectedReason.SDL_REGISTRATION_ERROR);
+					}
+					//If the RPC version is too low we should simply dispose this proxy
+					if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1) {
+						Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+						try {
+							disposeInternal(SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED);
+						} catch (SdlException e) {
+							e.printStackTrace();
+						}
+						return;
 					}
 				} else {	
 					if (_callbackToUIThread) {
@@ -5295,6 +5338,27 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             return null;
         }
     }
+
+	/**
+	 * This method will try to start the video service with the requested parameters.
+	 * When it returns it will attempt to store the accepted parameters if available.
+	 * @param isEncrypted if the service should be encrypted
+	 * @param parameters the desiered video streaming parameters
+	 */
+	public void startVideoService(boolean isEncrypted, VideoStreamingParameters parameters) {
+		if (sdlSession == null) {
+			DebugTool.logWarning("SdlSession is not created yet.");
+			return;
+		}
+		if (!sdlSession.getIsConnected()) {
+			DebugTool.logWarning("Connection is not available.");
+			return;
+		}
+
+		sdlSession.setDesiredVideoParams(parameters);
+
+		tryStartVideoStream(isEncrypted, parameters);
+	}
 
     /**
      *Closes the opened video service (serviceType 11)
@@ -8304,7 +8368,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				return;
 			}
 			VideoStreamingCapability capability = (VideoStreamingCapability)_systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING);
-			if(capability != null && capability.getIsHapticSpatialDataSupported()){
+			if(capability != null && Boolean.TRUE.equals(capability.getIsHapticSpatialDataSupported())){
 				hapticManager = new HapticInterfaceManager(internalInterface);
 			}
 
