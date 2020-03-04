@@ -65,6 +65,5 @@ public class {{class_name}} extends {{extends_class}} {
     {%- block setter %}
     {%- endblock%}
     {%- endif %}
-
 }
 {% endblock -%}
