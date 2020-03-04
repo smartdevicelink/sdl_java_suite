@@ -42,18 +42,22 @@ import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
  * A class representing data to be uploaded to core
  */
 public class SdlFile{
-    private String      fileName;
-    private int         id = -1;
-    private Uri         uri;
-    private byte[]      fileData;
-    private FileType    fileType;
-    private boolean     persistentFile;
-    private boolean     isStaticIcon;
+    private String fileName;
+    private int id = -1;
+    private Uri uri;
+    private byte[] fileData;
+    private FileType fileType;
+    private boolean persistentFile;
+    private boolean isStaticIcon;
+    // Overwrite property by default is set to true in SdlFile constructors indicating that a file can be overwritten
+    private boolean overwrite;
 
     /**
      * Creates a new instance of SdlFile
      */
-    public SdlFile(){}
+    public SdlFile(){
+        overwrite = true;
+    }
 
     /**
      * Creates a new instance of SdlFile
@@ -67,6 +71,7 @@ public class SdlFile{
         this.fileType = fileType;
         this.id = id;
         this.persistentFile = persistentFile;
+        overwrite = true;
     }
 
     /**
@@ -81,6 +86,7 @@ public class SdlFile{
         this.fileType = fileType;
         this.uri = uri;
         this.persistentFile = persistentFile;
+        overwrite = true;
     }
 
     /**
@@ -95,6 +101,7 @@ public class SdlFile{
         this.fileType = fileType;
         this.fileData = data;
         this.persistentFile = persistentFile;
+        overwrite = true;
     }
 
     /**
@@ -106,6 +113,7 @@ public class SdlFile{
         this.fileData = staticIconName.toString().getBytes();
         this.persistentFile = false;
         this.isStaticIcon = true;
+        overwrite = true;
     }
 
     /**
@@ -218,5 +226,21 @@ public class SdlFile{
      */
     public boolean isStaticIcon() {
         return isStaticIcon;
+    }
+
+    /**
+     * Gets the overwrite property for an SdlFile by default its set to true
+     * @return a boolean value that indicates if a file can be overwritten.
+     */
+    public boolean isOverwrite() {
+        return overwrite;
+    }
+
+    /**
+     * Sets the overwrite property for an SdlFile by default its set to true
+     * @param overwrite a boolean value that indicates if a file can be overwritten
+     */
+    public void setOverwrite(boolean overwrite) {
+        this.overwrite = overwrite;
     }
 }
