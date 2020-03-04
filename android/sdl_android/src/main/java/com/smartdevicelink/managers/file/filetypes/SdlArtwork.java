@@ -51,7 +51,9 @@ public class SdlArtwork extends SdlFile implements Cloneable{
     /**
      * Creates a new instance of SdlArtwork
      */
-    public SdlArtwork(){}
+    public SdlArtwork(){
+        super();
+    }
 
     /**
      * Creates a new instance of SdlArtwork
