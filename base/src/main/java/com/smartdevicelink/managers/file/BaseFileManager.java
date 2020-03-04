@@ -402,13 +402,23 @@ abstract class BaseFileManager extends BaseSubManager {
 		}
 		final List<PutFile> putFileRequests = new ArrayList<>();
 		for (SdlFile file : files) {
-			if (!file.isStaticIcon()) {
-				putFileRequests.add(createPutFile(file));
+			if (file.isStaticIcon()) {
+				Log.w(TAG, "Static icons don't need to be uploaded");
+				continue;
 			}
+			// In sdl_ios: HAX: [#827](https://github.com/smartdevicelink/sdl_ios/issues/827) Older versions of Core had a bug where list files would cache incorrectly.
+			// This led to attempted uploads failing due to the system thinking they were already there when they were not.
+			if (!file.isPersistent() && !hasUploadedFile(file)) {
+				file.setOverwrite(true);
+			}
+			if (!file.isOverwrite() && hasUploadedFile(file)) {
+				Log.w(TAG, "Files that have already uploaded and have an Overwrite property set to false will now upload re-Upload");
+				continue;
+			}
+			putFileRequests.add(createPutFile(file));
 		}
 		// if all files are static icons we complete listener with no errors
 		if (putFileRequests.isEmpty()) {
-			Log.w(TAG, "Static icons don't need to be uploaded");
 			listener.onComplete(null);
 		} else {
 			final Map<String, String> errors = new HashMap<>();
