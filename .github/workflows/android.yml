@@ -35,7 +35,7 @@ jobs:
       run: ./javaEE/gradlew -p ./javaEE test
       
     - name: Codecov	
-      uses: codecov/codecov-action@v1.0.4	
+      uses: codecov/codecov-action@v1.0.5	
       with:	
         token: ${{secrets.CODECOV_TOKEN}}
         yml: ./codecov.yml
