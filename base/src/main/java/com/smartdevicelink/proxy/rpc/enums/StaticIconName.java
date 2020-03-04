@@ -913,10 +913,10 @@ public enum StaticIconName {
 
 	;
 
-	private final String INTERNAL_NAME;
+	private final String VALUE;
 
-	private StaticIconName(String internalName) {
-		this.INTERNAL_NAME = internalName;
+	private StaticIconName(String value) {
+		this.VALUE = value;
 	}
 
 	public static StaticIconName valueForString(String value) {
@@ -939,7 +939,7 @@ public enum StaticIconName {
 	 */
 	@Override
 	public String toString() {
-		return INTERNAL_NAME;
+		return VALUE;
 	}
 
 }

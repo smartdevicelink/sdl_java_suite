@@ -71,14 +71,14 @@ public enum HMILevel {
      */
     HMI_NONE("NONE");
 
-    private final String INTERNAL_NAME;
+    private final String VALUE;
     
-    private HMILevel(String internalName) {
-        this.INTERNAL_NAME = internalName;
+    private HMILevel(String value) {
+        this.VALUE = value;
     }
     
     public String toString() {
-        return this.INTERNAL_NAME;
+        return this.VALUE;
     }
     
     /**

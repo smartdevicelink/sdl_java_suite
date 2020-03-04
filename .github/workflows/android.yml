@@ -1,6 +1,6 @@
 name: GitHub CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   test:
@@ -42,7 +42,7 @@ jobs:
         python3 ./utils/generator/test/runner.py
       
     - name: Codecov	
-      uses: codecov/codecov-action@v1.0.4	
+      uses: codecov/codecov-action@v1.0.5	
       with:	
         token: ${{secrets.CODECOV_TOKEN}}
         yml: ./codecov.yml

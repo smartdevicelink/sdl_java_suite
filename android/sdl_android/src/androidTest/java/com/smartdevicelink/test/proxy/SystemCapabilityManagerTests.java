@@ -457,7 +457,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		// Add listener1
 		// When the first listener is added, GetSystemCapability request should out because because capability is not cached
 		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
-		doAnswer(createOnSendGetSystemCapabilityAnswer(true, true)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
 		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
 		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
 		verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
@@ -488,6 +488,129 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
 		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
 		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+	}
+
+	public void testAddOnSystemCapabilityListenerThenGetCapabilityWhenSubscriptionsAreNotSupported() {
+		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(5, 0); // This version doesn't support capability subscriptions
+		sdlMsgVersion.setPatchVersion(0);
+		ISdl internalInterface = mock(ISdl.class);
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		SystemCapabilityManager scm = new SystemCapabilityManager(internalInterface);
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
+
+
+		// Add listener1
+		// When the first listener is added, GetSystemCapability request should go out with subscribe=false
+		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Get Capability (should notify listener1 again)
+		scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(2)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener2
+		OnSystemCapabilityListener onSystemCapabilityListener2 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+		verify(onSystemCapabilityListener2, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Get Capability (should notify listener1 & listener2 again)
+		scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
+		verify(internalInterface, times(2)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(3)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener2, times(2)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener3
+		OnSystemCapabilityListener onSystemCapabilityListener3 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(onSystemCapabilityListener3, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Get Capability (should notify listener1 & listener2 & listener3 again)
+		scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
+		verify(internalInterface, times(3)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(4)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener2, times(3)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener3, times(2)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Remove listener1
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+
+
+		// Get Capability (should notify listener2 & listener3 again)
+		scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
+		verify(internalInterface, times(4)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(4)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener2, times(4)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener3, times(3)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Remove listener2
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+
+
+		// Get Capability (should notify listener3 again)
+		scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
+		verify(internalInterface, times(5)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(4)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener2, times(4)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener3, times(4)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Remove listener3
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(internalInterface, times(5)).sendRPC(any(GetSystemCapability.class));
+
+
+		// Get Capability (should not notify any listener again because they are all removed)
+		scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
+		verify(internalInterface, times(6)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(4)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener2, times(4)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener3, times(4)).onCapabilityRetrieved(any(Object.class));
+	}
+
+	public void testGetAndAddListenerForDisplaysCapability() {
+		ISdl internalInterface;
+		SystemCapabilityManager scm;
+		OnSystemCapabilityListener onSystemCapabilityListener;
+		DisplayCapabilities retrievedCapability;
+
+
+		// Test case 1 (capability cached, listener not null, forceUpdate true)
+		// Force updating DISPLAYS capability should call onError()
+		internalInterface = mock(ISdl.class);
+		scm = new SystemCapabilityManager(internalInterface);
+		onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.DISPLAYS, new DisplayCapabilities());
+		retrievedCapability = (DisplayCapabilities) scm.getCapability(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener, true);
+		assertNotNull(retrievedCapability);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener, times(0)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener, times(1)).onError(any(String.class));
+
+
+		// Test case 2 (Add listener)
+		// When the first DISPLAYS listener is added, GetSystemCapability request should not go out
+		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener1);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Test case 3 (Remove listener)
+		// When the last DISPLAYS listener is removed, GetSystemCapability request should not go out
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener1);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
 	}
 
 	public void testListConversion(){

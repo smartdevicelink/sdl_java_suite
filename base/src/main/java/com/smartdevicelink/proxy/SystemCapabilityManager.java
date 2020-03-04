@@ -312,6 +312,7 @@ public class SystemCapabilityManager {
                                                 // this notification can return only affected windows (hence not all windows)
                                                 List<DisplayCapability> newCapabilities = (List<DisplayCapability>) capability;
                                                 updateCachedDisplayCapabilityList(newCapabilities);
+                                                systemCapabilitiesSubscriptionStatus.put(SystemCapabilityType.DISPLAYS, true);
                                         }
                                     }
                                     if (capability != null) {
@@ -338,8 +339,8 @@ public class SystemCapabilityManager {
 	 * @param capability the value of the capability that will be set
 	 */
 	public synchronized void setCapability(SystemCapabilityType systemCapabilityType, Object capability) {
-			cachedSystemCapabilities.put(systemCapabilityType, capability);
-			notifyListeners(systemCapabilityType, capability);
+		cachedSystemCapabilities.put(systemCapabilityType, capability);
+		notifyListeners(systemCapabilityType, capability);
 	}
 
 	/**
@@ -450,16 +451,17 @@ public class SystemCapabilityManager {
 	 */
 	private Object getCapabilityPrivate(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe, final boolean forceUpdate) {
 		Object cachedCapability = cachedSystemCapabilities.get(systemCapabilityType);
-		OnSystemCapabilityListener listener = scListener;
-
-		if (!forceUpdate && cachedCapability != null && listener != null) {
-			listener.onCapabilityRetrieved(cachedCapability);
-			listener = null;
-		}
 
 		boolean shouldUpdateSystemCapabilitySubscription = (subscribe != null) && (subscribe != isSubscribedToSystemCapability(systemCapabilityType)) && supportsSubscriptions();
-		if (forceUpdate || (cachedCapability == null) || shouldUpdateSystemCapabilitySubscription) {
-			retrieveCapability(systemCapabilityType, listener, subscribe);
+		boolean shouldSendGetCapabilityRequest = forceUpdate || (cachedCapability == null) || shouldUpdateSystemCapabilitySubscription;
+		boolean shouldCallListenerWithCachedValue = (cachedCapability != null) && (scListener != null) && !shouldSendGetCapabilityRequest;
+
+		if (shouldCallListenerWithCachedValue) {
+			scListener.onCapabilityRetrieved(cachedCapability);
+		}
+
+		if (shouldSendGetCapabilityRequest) {
+			retrieveCapability(systemCapabilityType, scListener, subscribe);
 		}
 
 		return cachedCapability;
@@ -500,7 +502,6 @@ public class SystemCapabilityManager {
 	 * @param listener callback to execute upon retrieving capability
 	 */
 	public void addOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener) {
-		getCapabilityPrivate(systemCapabilityType, listener, true, false);
 		synchronized(LISTENER_LOCK) {
 			if (systemCapabilityType != null && listener != null) {
 				if (onSystemCapabilityListeners.get(systemCapabilityType) == null) {
@@ -509,6 +510,7 @@ public class SystemCapabilityManager {
 				onSystemCapabilityListeners.get(systemCapabilityType).add(listener);
 			}
 		}
+		getCapabilityPrivate(systemCapabilityType, listener, true, false);
 	}
 
 	/**
@@ -526,7 +528,7 @@ public class SystemCapabilityManager {
 					&& onSystemCapabilityListeners.get(systemCapabilityType) != null) {
 				success = onSystemCapabilityListeners.get(systemCapabilityType).remove(listener);
 				// If the last listener for the supplied capability type is removed, unsubscribe from the capability type
-				if (success && onSystemCapabilityListeners.get(systemCapabilityType).isEmpty() && isSubscribedToSystemCapability(systemCapabilityType)) {
+				if (success && onSystemCapabilityListeners.get(systemCapabilityType).isEmpty() && isSubscribedToSystemCapability(systemCapabilityType) && systemCapabilityType != SystemCapabilityType.DISPLAYS) {
 					retrieveCapability(systemCapabilityType, null, false);
 				}
 			}
@@ -539,7 +541,7 @@ public class SystemCapabilityManager {
 	 * @param subscribe flag to subscribe to updates of the supplied capability type. True means subscribe; false means cancel subscription; null means don't change current subscription status.
 	 */
 	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe) {
-		if (!systemCapabilityType.isQueryable()) {
+		if (!systemCapabilityType.isQueryable() || systemCapabilityType == SystemCapabilityType.DISPLAYS) {
 			String message = "This systemCapabilityType cannot be queried for";
 			DebugTool.logError(message);
 			if (scListener != null) {
@@ -549,18 +551,35 @@ public class SystemCapabilityManager {
 		}
 		final GetSystemCapability request = new GetSystemCapability();
 		request.setSystemCapabilityType(systemCapabilityType);
-		request.setSubscribe((subscribe != null) ? subscribe : isSubscribedToSystemCapability(systemCapabilityType)); // If subscribe is null, then don't change the current subscription status
+
+		/*
+		The subscription flag in the request should be set based on multiple variables:
+		- if subscribe is null (no change), shouldSubscribe = current subscription status, or false if the HU does not support subscriptions
+		- if subscribe is false, then shouldSubscribe = false
+		- if subscribe is true and the HU supports subscriptions, then shouldSubscribe = true
+		*/
+		boolean shouldSubscribe = (subscribe != null) ? subscribe : isSubscribedToSystemCapability(systemCapabilityType);
+		final boolean willSubscribe = shouldSubscribe && supportsSubscriptions();
+		request.setSubscribe(willSubscribe);
 		request.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()) {
 					Object retrievedCapability = ((GetSystemCapabilityResponse) response).getSystemCapability().getCapabilityForType(systemCapabilityType);
-					cachedSystemCapabilities.put(systemCapabilityType, retrievedCapability);
+					setCapability(systemCapabilityType, retrievedCapability);
+					// If the listener is not included in the onSystemCapabilityListeners map, then notify it
+					// This will be triggered if we are just getting capability without adding a listener to the map
 					if (scListener != null) {
-						scListener.onCapabilityRetrieved(retrievedCapability);
+						synchronized (LISTENER_LOCK) {
+							CopyOnWriteArrayList<OnSystemCapabilityListener> notifiedListeners = onSystemCapabilityListeners.get(systemCapabilityType);
+							boolean listenerAlreadyNotified = (notifiedListeners != null) && notifiedListeners.contains(scListener);
+							if (!listenerAlreadyNotified) {
+								scListener.onCapabilityRetrieved(retrievedCapability);
+							}
+						}
 					}
 					if (supportsSubscriptions()) {
-						systemCapabilitiesSubscriptionStatus.put(systemCapabilityType, subscribe);
+						systemCapabilitiesSubscriptionStatus.put(systemCapabilityType, willSubscribe);
 					}
 				} else {
 					if (scListener != null) {

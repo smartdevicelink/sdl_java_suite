@@ -6721,7 +6721,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		DeviceInfo deviceInfo = new DeviceInfo();
 		deviceInfo.setHardware(android.os.Build.MODEL);
-		deviceInfo.setOs(DeviceInfo.DEVICE_OS);
+		deviceInfo.setOs("Android");
 		deviceInfo.setOsVersion(Build.VERSION.RELEASE);
 		deviceInfo.setCarrier(carrierName);
 

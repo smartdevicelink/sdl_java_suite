@@ -41,14 +41,14 @@ public enum Jingle{
     LISTEN("LISTEN_JINGLE"),
     HELP("HELP_JINGLE");
     
-    private final String INTERNAL_NAME;
+    private final String VALUE;
     
-    private Jingle(String name){
-        this.INTERNAL_NAME = name;
+    private Jingle(String value){
+        this.VALUE = value;
     }
     
     public String toString() {
-        return this.INTERNAL_NAME;
+        return this.VALUE;
     }
     
     public static Jingle valueForString(String value) {          
