@@ -331,10 +331,10 @@ abstract class BaseFileManager extends BaseSubManager {
 		}
 		// In sdl_ios: HAX: [#827](https://github.com/smartdevicelink/sdl_ios/issues/827) Older versions of Core had a bug where list files would cache incorrectly.
 		// This led to attempted uploads failing due to the system thinking they were already there when they were not.
-		if(!file.isPersistent() && !hasUploadedFile(file)){
+		if (!file.isPersistent() && !hasUploadedFile(file)) {
 			file.setOverwrite(true);
 		}
-		if(!file.isOverwrite() && hasUploadedFile(file)){
+		if (!file.isOverwrite() && hasUploadedFile(file)) {
 			Log.w(TAG, "Files that have already uploaded and have an Overwrite property set to false will now upload re-Upload");
 			listener.onComplete(true);
 			return;
