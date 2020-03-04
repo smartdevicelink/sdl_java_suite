@@ -319,6 +319,7 @@ class Generator:
                     continue
                 if overwrite:
                     self.logger.info('Overriding %s', file)
+                    file.unlink()
                     self.write_file(file, template, data)
                 else:
                     while True:
@@ -326,6 +327,7 @@ class Generator:
                             confirm = input('File already exists {}. Overwrite? Y/Enter = yes, N = no\n'.format(file))
                             if confirm.lower() == 'y' or not confirm:
                                 self.logger.info('Overriding %s', file)
+                                file.unlink()
                                 self.write_file(file, template, data)
                                 break
                             if confirm.lower() == 'n':
