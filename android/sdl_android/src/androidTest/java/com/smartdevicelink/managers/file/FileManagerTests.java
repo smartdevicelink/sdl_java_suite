@@ -873,8 +873,8 @@ public class FileManagerTests extends AndroidTestCase2 {
 	}
 
 	/**
-	 * Testing Overwrite property for uploading a file.
-	 * Checks to make sure file does not overwrite itself
+	 * Tests overwrite property for uploading a file.
+	 * Checks to make sure file does not overwrite itself if overwrite property is set to false
 	 */
 	public void testOverwriteFileProperty() {
 		ISdl internalInterface = mock(ISdl.class);
@@ -906,5 +906,52 @@ public class FileManagerTests extends AndroidTestCase2 {
 			}
 		});
 		verify(internalInterface, times(2)).sendRPC(any(RPCMessage.class));
+	}
+
+	/**
+	 * Tests overwrite property for uploading a list of files.
+	 * Checks to make sure files do not overwrite themselves if overwrite property is set to false.
+	 */
+	public void testOverWriteFilePropertyListFiles() {
+		final ISdl internalInterface = mock(ISdl.class);
+
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
+		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
+
+		final SdlFile validFile2 = new SdlFile();
+		validFile2.setName(Test.GENERAL_STRING + "2");
+		validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile2.setPersistent(false);
+		validFile2.setType(FileType.GRAPHIC_JPEG);
+
+		final List<SdlFile> list = new ArrayList<>();
+		list.add(validFile);
+		list.add(validFile2);
+
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+		fileManagerConfig.setArtworkRetryCount(2);
+		fileManagerConfig.setFileRetryCount(4);
+
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
+		fileManager.start(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				fileManager.uploadFiles(list, new MultipleFileCompletionListener() {
+					@Override
+					public void onComplete(Map<String, String> errors) {
+						validFile.setOverwrite(false);
+						validFile2.setOverwrite(false);
+						fileManager.uploadFiles(list, new MultipleFileCompletionListener() {
+							@Override
+							public void onComplete(Map<String, String> errors) {
+								assertNull(errors);
+							}
+						});
+					}
+				});
+
+			}
+		});
+		verify(internalInterface, times(1)).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 	}
 }
