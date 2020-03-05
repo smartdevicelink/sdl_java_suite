@@ -335,7 +335,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			file.setOverwrite(true);
 		}
 		if (!file.isOverwrite() && hasUploadedFile(file)) {
-			Log.w(TAG, "Files that have already uploaded and have an Overwrite property set to false will now upload re-Upload");
+			Log.w(TAG, "Files that have already uploaded and have an Overwrite property set to false will not be re-Upload");
 			listener.onComplete(true);
 			return;
 		}
@@ -412,7 +412,7 @@ abstract class BaseFileManager extends BaseSubManager {
 				file.setOverwrite(true);
 			}
 			if (!file.isOverwrite() && hasUploadedFile(file)) {
-				Log.w(TAG, "Files that have already uploaded and have an Overwrite property set to false will now upload re-Upload");
+				Log.w(TAG, "Files that have already uploaded and have an Overwrite property set to false will not be re-Upload");
 				continue;
 			}
 			putFileRequests.add(createPutFile(file));
