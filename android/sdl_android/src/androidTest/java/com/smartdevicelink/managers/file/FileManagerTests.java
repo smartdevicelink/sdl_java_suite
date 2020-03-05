@@ -871,4 +871,40 @@ public class FileManagerTests extends AndroidTestCase2 {
 		assertEquals(fileManagerConfig.getArtworkRetryCount(), 2);
 		assertEquals(fileManagerConfig.getFileRetryCount(), 2);
 	}
+
+	/**
+	 * Testing Overwrite property for uploading a file.
+	 * Checks to make sure file does not overwrite itself
+	 */
+	public void testOverwriteFileProperty() {
+		ISdl internalInterface = mock(ISdl.class);
+
+		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
+		doAnswer(onPutFileSuccess).when(internalInterface).sendRPC(any(PutFile.class));
+
+		FileManagerConfig fileManagerConfig = new FileManagerConfig();
+
+		final FileManager fileManager = new FileManager(internalInterface, mTestContext, fileManagerConfig);
+		fileManager.start(new CompletionListener() {
+			@Override
+			public void onComplete(boolean success) {
+				assertTrue(success);
+				fileManager.uploadFile(validFile, new CompletionListener() {
+					@Override
+					public void onComplete(boolean success) {
+						assertTrue(success);
+						validFile.setOverwrite(false);
+						fileManager.uploadFile(validFile, new CompletionListener() {
+							@Override
+							public void onComplete(boolean success) {
+								assertTrue(success);
+							}
+						});
+
+					}
+				});
+			}
+		});
+		verify(internalInterface, times(2)).sendRPC(any(RPCMessage.class));
+	}
 }
