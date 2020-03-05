@@ -50,14 +50,12 @@ public class SdlFile{
     private boolean persistentFile;
     private boolean isStaticIcon;
     // Overwrite property by default is set to true in SdlFile constructors indicating that a file can be overwritten
-    private boolean overwrite;
+    private boolean overwrite = true;
 
     /**
      * Creates a new instance of SdlFile
      */
-    public SdlFile(){
-        overwrite = true;
-    }
+    public SdlFile() { }
 
     /**
      * Creates a new instance of SdlFile
@@ -71,7 +69,6 @@ public class SdlFile{
         this.fileType = fileType;
         this.id = id;
         this.persistentFile = persistentFile;
-        overwrite = true;
     }
 
     /**
@@ -86,7 +83,6 @@ public class SdlFile{
         this.fileType = fileType;
         this.uri = uri;
         this.persistentFile = persistentFile;
-        overwrite = true;
     }
 
     /**
@@ -101,7 +97,6 @@ public class SdlFile{
         this.fileType = fileType;
         this.fileData = data;
         this.persistentFile = persistentFile;
-        overwrite = true;
     }
 
     /**
@@ -113,7 +108,6 @@ public class SdlFile{
         this.fileData = staticIconName.toString().getBytes();
         this.persistentFile = false;
         this.isStaticIcon = true;
-        overwrite = true;
     }
 
     /**
