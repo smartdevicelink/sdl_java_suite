@@ -1,7 +1,7 @@
 {% extends "struct_function_template.java" %}
 
     {%- block constructor_simple %}
-    public {{value}}() { }
+    public {{class_name}}() { }
     {%- endblock -%}
 
     {%- block setter %}

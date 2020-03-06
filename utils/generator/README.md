@@ -375,8 +375,8 @@ Private field:
 
 The private constructor should be defined to accept the value from the constant and and set the private field.
 ```java
-    private [enum_name](String internalName) {
-        this.VALUE = internalName;
+    private [enum_name](String value) {
+        this.VALUE = value;
     }
 ```
 Where `[enum_name]` is the `"name"` attribute of `<enum>`.
@@ -497,8 +497,8 @@ public enum Dimension {
     /**
      * Private constructor
      */
-    private Dimension(String internalName) {
-        this.VALUE = internalName;
+    private Dimension(String value) {
+        this.VALUE = value;
     }
 
     /**
@@ -573,10 +573,10 @@ The `getValue` method should be defined to return the private field value.
 The additional `valueForInt` should be defined. It should return the Enum constant based on the private field above, or `null` if the constant is not found.
 ```java
     /**
-     * Convert int to {{value}}
+     * Convert int to {{class_name}}
      *
      * @param value int
-     * @return {{value}}
+     * @return {{class_name}}
      */
     public static [enum_name] valueForInt(int value) {
         for ([enum_name] anEnum : EnumSet.allOf([enum_name].class)) {

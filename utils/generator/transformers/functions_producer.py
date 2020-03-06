@@ -36,14 +36,14 @@ class FunctionsProducer(InterfaceProducerCommon):
         :param item: particular element from initial Model
         :return: dictionary to be applied to jinja2 template
         """
-        value = self.replace_sync(item.name[:1].upper() + item.name[1:])
+        class_name = self.replace_sync(item.name[:1].upper() + item.name[1:])
 
         imports = {'java.util.Hashtable', 'com.smartdevicelink.protocol.enums.FunctionID'}
         extends_class = None
         if item.message_type.name == 'response':
             extends_class = self.response_class
-            if not value.endswith("Response"):
-                value += 'Response'
+            if not class_name.endswith("Response"):
+                class_name += 'Response'
             imports.add('com.smartdevicelink.proxy.rpc.enums.Result')
             imports.add('android.support.annotation.NonNull')
         elif item.message_type.name == 'request':
@@ -68,7 +68,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         render['package_name'] = self.package_name
         render['imports'] = imports
         render['function_id'] = self.key(self.replace_sync(item.name))
-        render['value'] = value
+        render['class_name'] = class_name
         render['extends_class'] = extends_class
         render['since'] = item.since
         render['deprecated'] = item.deprecated

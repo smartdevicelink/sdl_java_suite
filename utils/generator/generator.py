@@ -312,7 +312,7 @@ class Generator:
                 continue  # Skip FunctionID generation
             data = transformer.transform(item)
             data['year'] = year
-            file = data['value'] + '.java'
+            file = data['class_name'] + '.java'
             file = directory.joinpath(data['package_name'].replace('.', '/')).joinpath(file)
             if file.is_file():
                 if skip:

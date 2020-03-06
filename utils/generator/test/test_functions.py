@@ -58,7 +58,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected = self.expected_template.copy()
         expected['kind'] = 'response'
         expected['function_id'] = 'GET_VEHICLE_DATA'
-        expected['value'] = 'GetVehicleDataResponse'
+        expected['class_name'] = 'GetVehicleDataResponse'
         expected['extends_class'] = 'RPCResponse'
         expected['imports'] = ['android.support.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID',
@@ -82,7 +82,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected = self.expected_template.copy()
         expected['kind'] = 'response'
         expected['function_id'] = 'REGISTER_APP_INTERFACE'
-        expected['value'] = 'RegisterAppInterfaceResponse'
+        expected['class_name'] = 'RegisterAppInterfaceResponse'
         expected['extends_class'] = 'RPCResponse'
         expected['imports'] = ['android.support.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID', 'com.smartdevicelink.proxy.RPCResponse',
@@ -104,7 +104,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected = self.expected_template.copy()
         expected['kind'] = 'request'
         expected['function_id'] = 'REGISTER_APP_INTERFACE'
-        expected['value'] = 'RegisterAppInterface'
+        expected['class_name'] = 'RegisterAppInterface'
         expected['extends_class'] = 'RPCRequest'
         expected['imports'] = ['android.support.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID',
@@ -135,7 +135,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected = self.expected_template.copy()
         expected['kind'] = 'request'
         expected['function_id'] = 'PUT_FILE'
-        expected['value'] = 'PutFile'
+        expected['class_name'] = 'PutFile'
         expected['extends_class'] = 'RPCRequest'
         expected['imports'] = ['android.support.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID', 'com.smartdevicelink.proxy.RPCRequest',
@@ -159,7 +159,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected = self.expected_template.copy()
         expected['kind'] = 'notification'
         expected['function_id'] = 'ON_ENCODED_SYNC_PDATA'
-        expected['value'] = 'OnEncodedSyncPData'
+        expected['class_name'] = 'OnEncodedSyncPData'
         expected['extends_class'] = 'RPCNotification'
         expected['imports'] = ['android.support.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID',
@@ -180,7 +180,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected = self.expected_template.copy()
         expected['kind'] = 'request'
         expected['function_id'] = 'DELETE_COMMAND'
-        expected['value'] = 'DeleteCommand'
+        expected['class_name'] = 'DeleteCommand'
         expected['extends_class'] = 'RPCRequest'
         expected['imports'] = ['android.support.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID', 'com.smartdevicelink.proxy.RPCRequest',
@@ -200,7 +200,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected = self.expected_template.copy()
         expected['kind'] = 'request'
         expected['function_id'] = 'ALERT'
-        expected['value'] = 'Alert'
+        expected['class_name'] = 'Alert'
         expected['extends_class'] = 'RPCRequest'
         expected['imports'] = ['android.support.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID',
@@ -221,7 +221,7 @@ class TestFunctionsProducer(unittest.TestCase):
         expected = self.expected_template.copy()
         expected['kind'] = 'request'
         expected['function_id'] = 'RELEASE_INTERIOR_VEHICLE_DATA_MODULE'
-        expected['value'] = 'ReleaseInteriorVehicleDataModule'
+        expected['class_name'] = 'ReleaseInteriorVehicleDataModule'
         expected['extends_class'] = 'RPCRequest'
         expected['imports'] = ['android.support.annotation.NonNull', '',
                                'com.smartdevicelink.protocol.enums.FunctionID',

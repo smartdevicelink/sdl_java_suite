@@ -1,7 +1,7 @@
 {% extends "base_template.java" %}
 
 {% block body %}
-public class {{value}} extends {{extends_class}} {
+public class {{class_name}} extends {{extends_class}} {
     {%- if params is defined and ((kind is defined and kind != "response") or kind is not defined) %}
     {%- for p in params %}
     {%- if p.see is defined or p.deprecated is not none %}
@@ -26,17 +26,17 @@ public class {{value}} extends {{extends_class}} {
     {%- endif %}
 
     /**
-     * Constructs a new {{value}} object
+     * Constructs a new {{class_name}} object
      */
     {%- block constructor_simple %}
     {% endblock %}
 
     /**
-     * Constructs a new {{value}} object indicated by the Hashtable parameter
+     * Constructs a new {{class_name}} object indicated by the Hashtable parameter
      *
      * @param hash The Hashtable to use
      */
-    public {{value}}(Hashtable<String, Object> hash) {
+    public {{class_name}}(Hashtable<String, Object> hash) {
         super(hash);
     }
     {%- if params is defined %}
@@ -46,13 +46,13 @@ public class {{value}} extends {{extends_class}} {
     {%- if constructor|length > 0 %}
 
     /**
-     * Constructs a new {{value}} object
+     * Constructs a new {{class_name}} object
      *
      {%- for p in params|selectattr('mandatory') %}
      {%- include "javadoc_template.java" %}
      {%- endfor %}
      */
-    public {{value}}({{ constructor|join(', ') }}) {
+    public {{class_name}}({{ constructor|join(', ') }}) {
         this();
         {%- for p in params|selectattr('mandatory') %}
         set{{p.title}}({{p.last}});
