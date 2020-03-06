@@ -2,10 +2,10 @@
 """This is main runner of generator
 
 """
+import datetime
 import logging
 import re
 import sys
-import datetime
 from argparse import ArgumentParser
 from collections import namedtuple, OrderedDict
 from inspect import getfile
@@ -308,6 +308,7 @@ class Generator:
         year = datetime.datetime.utcnow().year
         for item in items:
             if item.name == 'FunctionID':
+                self.logger.warning('%s will be skipped', item.name)
                 continue  # Skip FunctionID generation
             data = transformer.transform(item)
             data['year'] = year

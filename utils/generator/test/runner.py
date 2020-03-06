@@ -12,7 +12,6 @@ sys.path.append(PATH.parents[1].joinpath('rpc_spec/InterfaceParser').as_posix())
 sys.path.append(PATH.parents[1].as_posix())
 
 try:
-    from test_order import TestOrder
     from test_enums import TestEnumsProducer
     from test_functions import TestFunctionsProducer
     from test_structs import TestStructsProducer
@@ -28,7 +27,6 @@ def main():
     """
 
     suite = TestSuite()
-    suite.addTests(TestLoader().loadTestsFromTestCase(TestOrder))
     suite.addTests(TestLoader().loadTestsFromTestCase(TestFunctionsProducer))
     suite.addTests(TestLoader().loadTestsFromTestCase(TestEnumsProducer))
     suite.addTests(TestLoader().loadTestsFromTestCase(TestStructsProducer))

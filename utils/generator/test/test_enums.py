@@ -15,13 +15,18 @@ class TestEnumsProducer(unittest.TestCase):
 
     def comparison(self, expected, actual):
         actual_params = dict(zip(map(lambda k: k.name, actual['params']), actual['params']))
-        for param in expected['params']:
-            for field in self.producer.params._fields:
-                self.assertEqual(getattr(param, field), getattr(actual_params[param.name], field, None))
-        expected_filtered = dict(filter(lambda e: e[0] != 'params', expected.items()))
-        actual_filtered = dict(filter(lambda e: e[0] != 'params', actual.items()))
+        expected_params = dict(zip(map(lambda k: k.name, expected['params']), expected['params']))
+        for key, param in actual_params.copy().items():
+            self.assertTrue(key in expected_params)
+        for key, param in expected_params.copy().items():
+            self.assertTrue(key in actual_params)
+            keys = actual_params[key]._asdict()
+            Params = namedtuple('Params', sorted(keys))
+            p = {name: getattr(param, name) for name in keys.keys()}
+            expected_params[key] = Params(**p)
+        expected['params'] = tuple(expected_params.values())
 
-        self.assertDictEqual(expected_filtered, actual_filtered)
+        self.assertDictEqual(expected, actual)
 
     def test_deprecated(self):
         item = Enum(name='TestDeprecated', deprecated=True, elements={
@@ -29,14 +34,14 @@ class TestEnumsProducer(unittest.TestCase):
                                           deprecated=True)
         })
         expected = {
-            'kind': 'complex',
+            'kind': 'custom',
             'return_type': 'int',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'TestDeprecated',
             'imports': {'java.util.EnumSet'},
             'params': (
                 self.producer.params(name='PRIMARY_WIDGET', origin='PRIMARY_WIDGET', deprecated=True,
-                                     internal='"PRIMARY_WIDGET"', description=None, since=None, value=1),),
+                                     internal=1, description=None, since=None, value=None),),
             'since': None,
             'deprecated': True
         }
@@ -53,12 +58,12 @@ class TestEnumsProducer(unittest.TestCase):
             'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'Language',
-            'imports': {'java.util.EnumSet'},
             'params': (
-                self.producer.params(name='EN-US', origin='EN-US', internal='"EN-US"', description=None, since=None,
+                self.producer.params(name='EN_US', origin='EN-US', internal='"EN-US"', description=None, since=None,
                                      value=None, deprecated=None),),
             'since': None,
-            'deprecated': None
+            'deprecated': None,
+            'imports': {'java.util.EnumSet'}
         }
         actual = self.producer.transform(item)
 
@@ -70,16 +75,16 @@ class TestEnumsProducer(unittest.TestCase):
         elements['PRIMARY_WIDGET'] = EnumElement(name='PRIMARY_WIDGET', value=1)
         item = Enum(name='PredefinedWindows', elements=elements)
         expected = {
-            'kind': 'complex',
+            'kind': 'custom',
             'return_type': 'int',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'PredefinedWindows',
             'imports': {'java.util.EnumSet'},
             'params': (self.producer.params(name='DEFAULT_WINDOW', origin='DEFAULT_WINDOW',
-                                            internal='"DEFAULT_WINDOW"', description=None, since=None, value=0,
+                                            internal=0, description=None, since=None, value=None,
                                             deprecated=None),
                        self.producer.params(name='PRIMARY_WIDGET', origin='PRIMARY_WIDGET',
-                                            internal='"PRIMARY_WIDGET"', description=None, since=None, value=1,
+                                            internal=1, description=None, since=None, value=None,
                                             deprecated=None)),
             'since': None,
             'deprecated': None
@@ -156,14 +161,13 @@ class TestEnumsProducer(unittest.TestCase):
             'TEXT': EnumElement(name='TEXT', internal_name='SC_TEXT')
         })
         expected = {
-            'kind': 'custom',
+            'kind': 'simple',
             'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'SpeechCapabilities',
-            'imports': {'java.util.EnumSet'},
             'params': (
-                self.producer.params(name='SC_TEXT', origin='TEXT', description=None,
-                                     since=None, value=None, deprecated=None, internal='"TEXT"'),),
+                self.producer.params(name='TEXT', origin='TEXT', description=None,
+                                     since=None, value=None, deprecated=None, internal=None),),
             'since': '1.0.0',
             'deprecated': None
         }
@@ -176,14 +180,13 @@ class TestEnumsProducer(unittest.TestCase):
             'TEXT': EnumElement(name='TEXT', internal_name='VR_TEXT')
         })
         expected = {
-            'kind': 'custom',
+            'kind': 'simple',
             'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'VrCapabilities',
-            'imports': {'java.util.EnumSet'},
             'params': (
-                self.producer.params(name='VR_TEXT', origin='TEXT', description=None,
-                                     since=None, value=None, deprecated=None, internal='"TEXT"'),),
+                self.producer.params(name='TEXT', origin='TEXT', description=None,
+                                     since=None, value=None, deprecated=None, internal=None),),
             'since': None,
             'deprecated': None
         }
@@ -212,7 +215,8 @@ class TestEnumsProducer(unittest.TestCase):
 
     def test_Dimension(self):
         item = Enum(name='Dimension', elements={
-            'NO_FIX': EnumElement(name='NO_FIX', internal_name='Dimension_NO_FIX')
+            'NO_FIX': EnumElement(name='NO_FIX', internal_name='Dimension_NO_FIX'),
+            '2D': EnumElement(name='2D', internal_name='Dimension_2D')
         })
         expected = {
             'kind': 'custom',
@@ -221,7 +225,9 @@ class TestEnumsProducer(unittest.TestCase):
             'class_name': 'Dimension',
             'params': (
                 self.producer.params(deprecated=None, value=None, description=None,
-                                     name='NO_FIX', origin='NO_FIX', since=None, internal='"NO_FIX"'),),
+                                     name='NO_FIX', origin='NO_FIX', since=None, internal='"NO_FIX"'),
+                self.producer.params(deprecated=None, value=None, description=None,
+                                     name='_2D', origin='2D', since=None, internal='"2D"'),),
             'since': None,
             'deprecated': None,
             'imports': {'java.util.EnumSet'}
@@ -235,16 +241,15 @@ class TestEnumsProducer(unittest.TestCase):
             'NO_EVENT': EnumElement(name='NO_EVENT', internal_name='VDES_NO_EVENT')
         })
         expected = {
-            'kind': 'custom',
+            'kind': 'simple',
             'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'VehicleDataEventStatus',
             'params': (
                 self.producer.params(deprecated=None, value=None, description=None,
-                                     name='VDES_NO_EVENT', origin='NO_EVENT', since=None, internal='"NO_EVENT"'),),
+                                     name='NO_EVENT', origin='NO_EVENT', since=None, internal=None),),
             'since': None,
             'deprecated': None,
-            'imports': {'java.util.EnumSet'}
         }
         actual = self.producer.transform(item)
 

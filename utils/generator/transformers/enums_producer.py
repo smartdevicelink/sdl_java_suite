@@ -25,6 +25,14 @@ class EnumsProducer(InterfaceProducerCommon):
         self.logger = logging.getLogger('EnumsProducer')
         self._params = namedtuple('params', 'origin name internal description since value deprecated')
 
+    @staticmethod
+    def converted(name):
+        if name[0].isdigit():
+            name = '_' + name
+        if '-' in name:
+            name = name.replace('-', '_')
+        return name
+
     def transform(self, item: Enum) -> dict:
         """
         Override
@@ -33,22 +41,23 @@ class EnumsProducer(InterfaceProducerCommon):
         """
         imports = set()
         params = OrderedDict()
-        param_types = []
-        kind = 'simple'
+        if any(map(lambda l: l.name != self.converted(l.name) and getattr(l, 'value', None) is not None,
+                   getattr(item, self.container_name).values())):
+            kind = 'complex'
+            imports.add('java.util.EnumSet')
+        elif any(map(lambda l:
+                     l.name != self.converted(l.name) or l.name[0].isdigit() or getattr(l, 'value', None) is not None,
+                     getattr(item, self.container_name).values())):
+            kind = 'custom'
+            imports.add('java.util.EnumSet')
+        else:
+            kind = 'simple'
         return_type = 'String'
 
         for param in getattr(item, self.container_name).values():
-            (t, p) = self.extract_param(param, item.name)
+            p = self.extract_param(param, kind)
             return_type = self.extract_type(param)
-            param_types.append(t)
             params[p.name] = p
-
-        if param_types.count('complex') == len(param_types):
-            kind = 'complex'
-            imports.add('java.util.EnumSet')
-        elif param_types.count('custom') == len(param_types) and kind != 'complex':
-            kind = 'custom'
-            imports.add('java.util.EnumSet')
 
         render = OrderedDict()
         render['kind'] = kind
@@ -71,27 +80,21 @@ class EnumsProducer(InterfaceProducerCommon):
 
         return render
 
-    def extract_param(self, param: EnumElement, item_name):
+    def extract_param(self, param: EnumElement, kind):
         d = {'origin': param.name}
-        kind = 'simple'
-        if getattr(param, 'value', None) is not None:
+        if kind == 'complex':
             n = self.ending_cutter(param.name)
             d['name'] = self.key(n)
             d['value'] = param.value
             d['internal'] = '"{}"'.format(n)
-            kind = 'complex'
-        elif getattr(param, 'internal_name', None) is not None:
-            if param.internal_name.startswith(item_name):
-                n = param.internal_name[len(item_name):]
+        elif kind == 'custom':
+            d['name'] = self.converted(param.name)
+            if getattr(param, 'value', None) is not None:
+                d['internal'] = param.value
             else:
-                n = param.internal_name
-            if n.startswith('_') and n[1].isalpha():
-                n = n[1:]
-            d['name'] = n
-            d['internal'] = '"{}"'.format(param.name)
-            kind = 'custom'
-        else:
-            d['name'] = param.name
+                d['internal'] = '"{}"'.format(param.name)
+        elif kind == 'simple':
+            d['name'] = self.converted(param.name)
 
         if getattr(param, 'since', None):
             d['since'] = param.since
@@ -100,7 +103,7 @@ class EnumsProducer(InterfaceProducerCommon):
         if getattr(param, 'description', None):
             d['description'] = textwrap.wrap(self.extract_description(param.description), 90)
         Params = namedtuple('Params', sorted(d))
-        return kind, Params(**d)
+        return Params(**d)
 
     def extract_type(self, param: EnumElement) -> str:
         """
