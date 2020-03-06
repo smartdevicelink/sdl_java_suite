@@ -33,7 +33,7 @@ class StructsProducer(InterfaceProducerCommon):
         :param item: particular element from initial Model
         :return: dictionary to be applied to jinja2 template
         """
-        class_name = self.replace_sync(item.name[:1].upper() + item.name[1:])
+        value = self.replace_sync(item.name[:1].upper() + item.name[1:])
 
         imports = {'java.util.Hashtable'}
         extends_class = self.struct_class
@@ -50,7 +50,7 @@ class StructsProducer(InterfaceProducerCommon):
             params[param.name] = p
 
         render = OrderedDict()
-        render['class_name'] = class_name
+        render['value'] = value
         render['extends_class'] = extends_class
         render['package_name'] = self.package_name
         render['imports'] = imports

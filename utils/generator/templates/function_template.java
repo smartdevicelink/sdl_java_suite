@@ -1,7 +1,7 @@
 {% extends "struct_function_template.java" %}
 
     {%- block constructor_simple %}
-    public {{class_name}}() {
+    public {{value}}() {
         super(FunctionID.{{function_id}}.toString());
     }{% endblock -%}
 

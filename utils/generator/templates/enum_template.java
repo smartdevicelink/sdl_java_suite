@@ -1,6 +1,6 @@
 {% extends "base_template.java" %}
 {% block body %}
-public enum {{class_name}} {
+public enum {{value}} {
     {%- for param in params %}
     {%- if param.description is defined or param.since is defined %}
     /**
@@ -34,12 +34,12 @@ public enum {{class_name}} {
     {%- if kind == "simple" %}
 
     /**
-     * Convert String to {{class_name}}
+     * Convert String to {{value}}
      *
      * @param value String
-     * @return {{class_name}}
+     * @return {{value}}
      */
-    public static {{class_name}} valueForString(String value) {
+    public static {{value}} valueForString(String value) {
         try {
             return valueOf(value);
         } catch (Exception e) {
@@ -49,27 +49,27 @@ public enum {{class_name}} {
     {%- elif kind == "complex" or kind == "custom" %}
     {%- if return_type == "String" %}
 
-    private final String INTERNAL_NAME;
+    private final String VALUE;
 
     /**
      * Private constructor
      */
-    private {{class_name}}(String internalName) {
-        this.INTERNAL_NAME = internalName;
+    private {{value}}(String internalName) {
+        this.VALUE = internalName;
     }
 
     /**
-     * Convert String to {{class_name}}
+     * Convert String to {{value}}
      *
      * @param value String
-     * @return {{class_name}}
+     * @return {{value}}
      */
-    public static {{class_name}} valueForString(String value) {
+    public static {{value}} valueForString(String value) {
         if (value == null) {
             return null;
         }
 
-        for ({{class_name}} anEnum : EnumSet.allOf({{class_name}}.class)) {
+        for ({{value}} anEnum : EnumSet.allOf({{value}}.class)) {
             if (anEnum.toString().equals(value)) {
                 return anEnum;
             }
@@ -84,7 +84,7 @@ public enum {{class_name}} {
      */
     @Override
     public String toString() {
-        return INTERNAL_NAME;
+        return VALUE;
     }
     {%- elif return_type == "int" %}
 
@@ -93,18 +93,18 @@ public enum {{class_name}} {
     /**
      * Private constructor
      */
-    private {{class_name}} (int value) {
+    private {{value}} (int value) {
         this.VALUE = value;
     }
 
     /**
-     * Convert int to {{class_name}}
+     * Convert int to {{value}}
      *
      * @param value int
-     * @return {{class_name}}
+     * @return {{value}}
      */
-    public static {{class_name}} valueForInt(int value) {
-        for ({{class_name}} anEnum : EnumSet.allOf({{class_name}}.class)) {
+    public static {{value}} valueForInt(int value) {
+        for ({{value}} anEnum : EnumSet.allOf({{value}}.class)) {
             if (anEnum.getValue() == value) {
                 return anEnum;
             }

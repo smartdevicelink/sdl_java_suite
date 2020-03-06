@@ -63,7 +63,7 @@ class EnumsProducer(InterfaceProducerCommon):
         render['kind'] = kind
         render['return_type'] = return_type
         render['package_name'] = self.package_name
-        render['class_name'] = item.name[:1].upper() + item.name[1:]
+        render['value'] = item.name[:1].upper() + item.name[1:]
         render['params'] = params
         render['since'] = item.since
         render['deprecated'] = item.deprecated

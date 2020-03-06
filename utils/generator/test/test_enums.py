@@ -37,7 +37,7 @@ class TestEnumsProducer(unittest.TestCase):
             'kind': 'custom',
             'return_type': 'int',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
-            'class_name': 'TestDeprecated',
+            'value': 'TestDeprecated',
             'imports': {'java.util.EnumSet'},
             'params': (
                 self.producer.params(name='PRIMARY_WIDGET', origin='PRIMARY_WIDGET', deprecated=True,
@@ -57,7 +57,7 @@ class TestEnumsProducer(unittest.TestCase):
             'kind': 'custom',
             'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
-            'class_name': 'Language',
+            'value': 'Language',
             'params': (
                 self.producer.params(name='EN_US', origin='EN-US', internal='"EN-US"', description=None, since=None,
                                      value=None, deprecated=None),),
@@ -78,7 +78,7 @@ class TestEnumsProducer(unittest.TestCase):
             'kind': 'custom',
             'return_type': 'int',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
-            'class_name': 'PredefinedWindows',
+            'value': 'PredefinedWindows',
             'imports': {'java.util.EnumSet'},
             'params': (self.producer.params(name='DEFAULT_WINDOW', origin='DEFAULT_WINDOW',
                                             internal=0, description=None, since=None, value=None,
@@ -101,7 +101,7 @@ class TestEnumsProducer(unittest.TestCase):
             'kind': 'custom',
             'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
-            'class_name': 'SamplingRate',
+            'value': 'SamplingRate',
             'imports': {'java.util.EnumSet'},
             'params': (
                 self.producer.params(name='_8KHZ', origin='8KHZ', internal='"8KHZ"', description=None, since=None,
@@ -123,7 +123,7 @@ class TestEnumsProducer(unittest.TestCase):
             'kind': 'simple',
             'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
-            'class_name': 'Result',
+            'value': 'Result',
             'params': (
                 self.producer.params(name='SUCCESS', origin='SUCCESS', internal=None,
                                      description=['The request succeeded'],
@@ -145,7 +145,7 @@ class TestEnumsProducer(unittest.TestCase):
             'kind': 'simple',
             'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
-            'class_name': 'DisplayType',
+            'value': 'DisplayType',
             'params': (
                 self.producer.params(name='CID', origin='CID', internal=None, description=None,
                                      since='3.0.0', value=None, deprecated=None),),
@@ -164,7 +164,7 @@ class TestEnumsProducer(unittest.TestCase):
             'kind': 'simple',
             'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
-            'class_name': 'SpeechCapabilities',
+            'value': 'SpeechCapabilities',
             'params': (
                 self.producer.params(name='TEXT', origin='TEXT', description=None,
                                      since=None, value=None, deprecated=None, internal=None),),
@@ -183,7 +183,7 @@ class TestEnumsProducer(unittest.TestCase):
             'kind': 'simple',
             'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
-            'class_name': 'VrCapabilities',
+            'value': 'VrCapabilities',
             'params': (
                 self.producer.params(name='TEXT', origin='TEXT', description=None,
                                      since=None, value=None, deprecated=None, internal=None),),
@@ -202,7 +202,7 @@ class TestEnumsProducer(unittest.TestCase):
             'kind': 'simple',
             'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
-            'class_name': 'ButtonName',
+            'value': 'ButtonName',
             'params': (
                 self.producer.params(deprecated=None, value=None, description=None,
                                      name='OK', origin='OK', since=None, internal=None),),
@@ -222,7 +222,7 @@ class TestEnumsProducer(unittest.TestCase):
             'kind': 'custom',
             'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
-            'class_name': 'Dimension',
+            'value': 'Dimension',
             'params': (
                 self.producer.params(deprecated=None, value=None, description=None,
                                      name='NO_FIX', origin='NO_FIX', since=None, internal='"NO_FIX"'),
@@ -244,7 +244,7 @@ class TestEnumsProducer(unittest.TestCase):
             'kind': 'simple',
             'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
-            'class_name': 'VehicleDataEventStatus',
+            'value': 'VehicleDataEventStatus',
             'params': (
                 self.producer.params(deprecated=None, value=None, description=None,
                                      name='NO_EVENT', origin='NO_EVENT', since=None, internal=None),),
@@ -265,7 +265,7 @@ class TestEnumsProducer(unittest.TestCase):
             'kind': 'simple',
             'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
-            'class_name': 'SystemCapabilityType',
+            'value': 'SystemCapabilityType',
             'params': (
                 self.producer.params(deprecated=None, value=None, description=None,
                                      name='DISPLAYS', origin='DISPLAYS', since=None, internal=None),

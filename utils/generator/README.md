@@ -370,13 +370,13 @@ Where `[internal_name]` is the normalized `"internal_name"` attribute of `<eleme
 
 Private field:
 ```java
-    private final String INTERNAL_NAME;
+    private final String VALUE;
 ```
 
 The private constructor should be defined to accept the value from the constant and and set the private field.
 ```java
     private [enum_name](String internalName) {
-        this.INTERNAL_NAME = internalName;
+        this.VALUE = internalName;
     }
 ```
 Where `[enum_name]` is the `"name"` attribute of `<enum>`.
@@ -385,7 +385,7 @@ The `toString` method should be overridden to return the private field instead o
 ```java
     @Override
     public String toString() {
-        return INTERNAL_NAME;
+        return VALUE;
     }
 ```
 
@@ -492,13 +492,13 @@ public enum Dimension {
      */
     NO_FIX("NO_FIX");
 
-    private final String INTERNAL_NAME;
+    private final String VALUE;
 
     /**
      * Private constructor
      */
     private Dimension(String internalName) {
-        this.INTERNAL_NAME = internalName;
+        this.VALUE = internalName;
     }
 
     /**
@@ -527,7 +527,7 @@ public enum Dimension {
      */
     @Override
     public String toString() {
-        return INTERNAL_NAME;
+        return VALUE;
     }
 }
 ```
@@ -573,10 +573,10 @@ The `getValue` method should be defined to return the private field value.
 The additional `valueForInt` should be defined. It should return the Enum constant based on the private field above, or `null` if the constant is not found.
 ```java
     /**
-     * Convert int to {{class_name}}
+     * Convert int to {{value}}
      *
      * @param value int
-     * @return {{class_name}}
+     * @return {{value}}
      */
     public static [enum_name] valueForInt(int value) {
         for ([enum_name] anEnum : EnumSet.allOf([enum_name].class)) {
