@@ -18,7 +18,7 @@ public class {{class_name}} extends {{extends_class}} {
     @Deprecated
     {%- endif %}
     {%- if p.name is defined %}
-    private {% if p.modifier is defined %}{{p.modifier}} {% endif %}{{p.return_type}} {{p.name}}{% if p.value is defined %} = {{p.value}}{% endif %};
+    private {{p.return_type}} {{p.name}}{% if p.value is defined %} = {{p.value}}{% endif %};
     {%- else %}
     public static final String {{p.key}} = "{{p.origin}}";
     {%- endif %}
@@ -61,9 +61,7 @@ public class {{class_name}} extends {{extends_class}} {
     {%- endif %}
     {%- endif %}
 
-    {%- if params is defined and ((kind is defined and kind != "response") or kind is not defined) %}
     {%- block setter %}
     {%- endblock%}
-    {%- endif %}
 }
 {% endblock -%}

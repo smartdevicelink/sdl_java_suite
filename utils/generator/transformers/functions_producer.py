@@ -36,6 +36,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         :param item: particular element from initial Model
         :return: dictionary to be applied to jinja2 template
         """
+        list(map(item.params.__delitem__, filter(item.params.__contains__, ['success', 'resultCode', 'info'])))
         class_name = self.replace_sync(item.name[:1].upper() + item.name[1:])
 
         imports = {'java.util.Hashtable', 'com.smartdevicelink.protocol.enums.FunctionID'}
@@ -66,7 +67,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         render = OrderedDict()
         render['kind'] = item.message_type.name
         render['package_name'] = self.package_name
-        render['imports'] = imports
+        render['imports'] = self.sort_imports(imports)
         render['function_id'] = self.key(self.replace_sync(item.name))
         render['class_name'] = class_name
         render['extends_class'] = extends_class
@@ -76,13 +77,9 @@ class FunctionsProducer(InterfaceProducerCommon):
         description = self.extract_description(item.description)
         if description:
             render['description'] = description
-        if params:
-            render['params'] = params
 
-        if 'imports' in render:
-            render['imports'] = self.sort_imports(render['imports'])
         if params:
-            render['params'] = tuple(render['params'].values())
+            render['params'] = tuple(params.values())
         if 'description' in render and isinstance(render['description'], str):
             render['description'] = textwrap.wrap(render['description'], 90)
 

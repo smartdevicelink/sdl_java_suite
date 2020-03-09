@@ -41,13 +41,8 @@ class EnumsProducer(InterfaceProducerCommon):
         """
         imports = set()
         params = OrderedDict()
-        if any(map(lambda l: l.name != self.converted(l.name) and getattr(l, 'value', None) is not None,
+        if any(map(lambda l: l.name != self.converted(l.name) or getattr(l, 'value', None) is not None,
                    getattr(item, self.container_name).values())):
-            kind = 'complex'
-            imports.add('java.util.EnumSet')
-        elif any(map(lambda l:
-                     l.name != self.converted(l.name) or l.name[0].isdigit() or getattr(l, 'value', None) is not None,
-                     getattr(item, self.container_name).values())):
             kind = 'custom'
             imports.add('java.util.EnumSet')
         else:
