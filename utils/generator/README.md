@@ -6,7 +6,7 @@ This script provides the possibility to auto-generate Java code based on a given
 
 ## Requirements
 
-The script requires Python 3.5 or later pre-installed in the system. This is the minimal Python 3 version that has not reached the end-of-life (https://devguide.python.org/devcycle/#end-of-life-branches).
+The script requires **Python 3** pre-installed on the host system. The minimal supported Python 3 version is **3.7.6**. It may work on versions back to 3.5 (the minimal version that has not yet reached [the end-of-life](https://devguide.python.org/devcycle/#end-of-life-branches)), but this is not supported and may break in the future.
 
 Required libraries are described in `requirements.txt` and should be pre-installed by the command:
 ```shell script
