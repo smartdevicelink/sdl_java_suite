@@ -169,6 +169,8 @@ The set of `<element>` should be mapped to the set of Enum constants. Based on t
 
 The following list are general rules for constant names and its fields:
 1. The `"name"` attribute of `<element>` is the default name of the constant.
+    * if the name starts from digit, the leading `_` (underscore) symbol should be added.
+    * if the name starts with `_` (underscore) symbol and the next character is a letter of alphabet, the leading `_` (underscore) symbol should be removed.
 1. Uses of the "sync" prefix shall be replaced with "sdl" (where it would not break functionality). E.g. `SyncMsgVersion -> SdlMsgVersion`. This applies to member variables and their accessors. The key used when creating the RPC message JSON should match that of the RPC Spec.
 
 The constant definition could have the next JavaDoc comment:
@@ -187,7 +189,7 @@ Where:
 
 The constant definition should have the `@Deprecated` decorator if the `"deprecated"` attribute exists and is "true".
 
-### Constants without fields:
+### Constants without field:
 
 This type of enums doesn't require constructor and requires additional method `valueForString` to be defined. It should return the Enum constant based on its string name, or `null` if the constant is not found.
 ```java
@@ -278,7 +280,6 @@ package com.smartdevicelink.proxy.rpc.enums;
 /**
  * The different global properties.
  *
- *
  * @since SmartDeviceLink 1.0.0
  */
 public enum GlobalProperty {
@@ -346,195 +347,12 @@ public enum GlobalProperty {
     }
 }
 ```
-### Constants with fields
 
-This type of enums is divided into 3 additional types:
-* field based on `"internal_name"` and `"name"` attributes of `<element>`
-* field based on `"value"` attribute of `<element>`
+### Constants with field based on `"value"` attribute
 
-#### Constants with field based on `"internal_name"` and `"name"` attributes
+This type of enums has field based on `"value"` attribute of `<element>`. In case if the `"value"` attribute exists, this attribute should be passed as the `int` or `String` constant field.
 
-In case if the `"internal_name"` attribute exists, this should be used for the constant name and the `"name"` attribute should be passed as a `String` field into Enum constant.
-
-The `"internal_name"` attribute should be normalized by following rules:
-* If it starts with the same prefix as `<enum>` name, this prefix should be removed.
-* After the prefix removal:
-    * if the value starts from digit, the leading `_` (underscore) symbol should be added.
-    * if the value starts with `_` (underscore) symbol and the next character is a letter of alphabet, the leading `_` (underscore) symbol should be removed.
-
-Constant definition:
-```java
-    [internal_name]("[name]")
-```
-Where `[internal_name]` is the normalized `"internal_name"` attribute of `<element>`, `[name]` is the `"name"` attribute.
-
-Private field:
-```java
-    private final String VALUE;
-```
-
-The private constructor should be defined to accept the value from the constant and and set the private field.
-```java
-    private [enum_name](String value) {
-        this.VALUE = value;
-    }
-```
-Where `[enum_name]` is the `"name"` attribute of `<enum>`.
-
-The `toString` method should be overridden to return the private field instead of the constant name.
-```java
-    @Override
-    public String toString() {
-        return VALUE;
-    }
-```
-
-The additional `valueForString` should be defined. It should return the Enum constant based on the private field above, or `null` if the constant is not found.
-```java
-    /**
-     * Convert String to [enum_name]
-     *
-     * @param value String
-     * @return [enum_name]
-     */
-    public static [enum_name] valueForString(String value) {
-        if (value == null) {
-            return null;
-        }
-
-        for ([enum_name] anEnum : EnumSet.allOf([enum_name].class)) {
-            if (anEnum.toString().equals(value)) {
-                return anEnum;
-            }
-        }
-        return null;
-    }
-```
-Where `[enum_name]` is the `"name"` attribute of `<enum>`.
-
-The `valueForString` method requires the import of `EnumSet` collection:
-```java
-import java.util.EnumSet;
-```
-
-Full example:
-
-XML:
-```xml
-    <enum name="Dimension" since="2.0">
-        <description>The supported dimensions of the GPS</description>
-        <element name="NO_FIX" internal_name="Dimension_NO_FIX">
-            <description>No GPS at all</description>
-        </element>
-        <element name="2D" internal_name="Dimension_2D">
-            <description>Longitude and latitude</description>
-        </element>
-        <element name="3D" internal_name="Dimension_3D">
-            <description>Longitude and latitude and altitude</description>
-        </element>
-    </enum>
-```
-
-Output:
-```java
-/*
- * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following
- * disclaimer in the documentation and/or other materials provided with the
- * distribution.
- *
- * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
- * its contributors may be used to endorse or promote products derived
- * from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
-package com.smartdevicelink.proxy.rpc.enums;
-
-import java.util.EnumSet;
-
-/**
- * The supported dimensions of the GPS
- *
- *
- * @since SmartDeviceLink 2.0.0
- */
-public enum Dimension {
-    /**
-     * Longitude and latitude
-     */
-    _2D("2D"),
-    /**
-     * Longitude and latitude and altitude
-     */
-    _3D("3D"),
-    /**
-     * No GPS at all
-     */
-    NO_FIX("NO_FIX");
-
-    private final String VALUE;
-
-    /**
-     * Private constructor
-     */
-    private Dimension(String value) {
-        this.VALUE = value;
-    }
-
-    /**
-     * Convert String to Dimension
-     *
-     * @param value String
-     * @return Dimension
-     */
-    public static Dimension valueForString(String value) {
-        if (value == null) {
-            return null;
-        }
-
-        for (Dimension anEnum : EnumSet.allOf(Dimension.class)) {
-            if (anEnum.toString().equals(value)) {
-                return anEnum;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Return String value of element
-     *
-     * @return String
-     */
-    @Override
-    public String toString() {
-        return VALUE;
-    }
-}
-```
-
-#### Constants with field based on `"value"` attribute
-
-In case if the `"value"` attribute exists, this attribute should be passed as the `int` constant field.
+#### Constants with `int` value type
 
 Constant definition:
 ```java
@@ -646,7 +464,6 @@ package com.smartdevicelink.proxy.rpc.enums;
 import java.util.EnumSet;
 
 /**
- *
  * @since SmartDeviceLink 6.0.0
  */
 public enum PredefinedWindows {
@@ -660,6 +477,7 @@ public enum PredefinedWindows {
     PRIMARY_WIDGET(1);
 
     private final int VALUE;
+
     /**
      * Private constructor
      */
@@ -688,6 +506,177 @@ public enum PredefinedWindows {
      * @return int
      */
     public int getValue(){
+        return VALUE;
+    }
+}
+```
+
+#### Constants with `String` value type
+
+Constant definition:
+```java
+    [name]("[value]")
+```
+Where `[name]` is the `"name"` attribute of `<element>`, `[value]` is the `"value"` attribute.
+
+Private field:
+```java
+    private final String VALUE;
+```
+
+The private constructor should be defined to accept the value from the constant and and set the private field.
+```java
+    private [enum_name](String value) {
+        this.VALUE = value;
+    }
+```
+Where `[enum_name]` is the `"name"` attribute of `<enum>`.
+
+The `toString` method should be overridden to return the private field instead of the constant name.
+```java
+    @Override
+    public String toString() {
+        return VALUE;
+    }
+```
+
+The additional `valueForString` should be defined. It should return the Enum constant based on the private field above, or `null` if the constant is not found.
+```java
+    /**
+     * Convert String to [enum_name]
+     *
+     * @param value String
+     * @return [enum_name]
+     */
+    public static [enum_name] valueForString(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        for ([enum_name] anEnum : EnumSet.allOf([enum_name].class)) {
+            if (anEnum.toString().equals(value)) {
+                return anEnum;
+            }
+        }
+        return null;
+    }
+```
+Where `[enum_name]` is the `"name"` attribute of `<enum>`.
+
+The `valueForString` method requires the import of `EnumSet` collection:
+```java
+import java.util.EnumSet;
+```
+
+Full example:
+
+XML:
+```xml
+    <enum name="Dimension" since="2.0">
+        <description>The supported dimensions of the GPS</description>
+        <element name="NO_FIX" internal_name="Dimension_NO_FIX">
+            <description>No GPS at all</description>
+        </element>
+        <element name="2D" internal_name="Dimension_2D">
+            <description>Longitude and latitude</description>
+        </element>
+        <element name="3D" internal_name="Dimension_3D">
+            <description>Longitude and latitude and altitude</description>
+        </element>
+    </enum>
+```
+
+Output:
+```java
+/*
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.smartdevicelink.proxy.rpc.enums;
+
+import java.util.EnumSet;
+
+/**
+ * The supported dimensions of the GPS
+ *
+ * @since SmartDeviceLink 2.0.0
+ */
+public enum Dimension {
+    /**
+     * No GPS at all
+     */
+    NO_FIX("NO_FIX"),
+    /**
+     * Longitude and latitude
+     */
+    _2D("2D"),
+    /**
+     * Longitude and latitude and altitude
+     */
+    _3D("3D");
+
+    private final String VALUE;
+
+    /**
+     * Private constructor
+     */
+    private Dimension(String value) {
+        this.VALUE = value;
+    }
+
+    /**
+     * Convert String to Dimension
+     *
+     * @param value String
+     * @return Dimension
+     */
+    public static Dimension valueForString(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        for (Dimension anEnum : EnumSet.allOf(Dimension.class)) {
+            if (anEnum.toString().equals(value)) {
+                return anEnum;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Return String value of element
+     *
+     * @return String
+     */
+    @Override
+    public String toString() {
         return VALUE;
     }
 }
