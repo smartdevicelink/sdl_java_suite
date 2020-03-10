@@ -77,12 +77,7 @@ class EnumsProducer(InterfaceProducerCommon):
 
     def extract_param(self, param: EnumElement, kind):
         d = {'origin': param.name}
-        if kind == 'complex':
-            n = self.ending_cutter(param.name)
-            d['name'] = self.key(n)
-            d['value'] = param.value
-            d['internal'] = '"{}"'.format(n)
-        elif kind == 'custom':
+        if kind == 'custom':
             d['name'] = self.converted(param.name)
             if getattr(param, 'value', None) is not None:
                 d['internal'] = param.value

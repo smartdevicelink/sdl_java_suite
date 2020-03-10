@@ -17,11 +17,7 @@ public class {{class_name}} extends {{extends_class}} {
     {%- if p.deprecated is not none %}
     @Deprecated
     {%- endif %}
-    {%- if p.name is defined %}
-    private {{p.return_type}} {{p.name}}{% if p.value is defined %} = {{p.value}}{% endif %};
-    {%- else %}
     public static final String {{p.key}} = "{{p.origin}}";
-    {%- endif %}
     {%- endfor %}
     {%- endif %}
 
