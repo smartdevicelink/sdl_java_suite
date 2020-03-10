@@ -24,8 +24,6 @@ public enum {{class_name}} {
     {%- endif %}
     {%- if kind == "simple" %}
     {{param.name}}{{ "," if not loop.last }}
-    {%- elif kind == "complex" %}
-    {{param.name}}({{param.value}}){{ "," if not loop.last }}
     {%- elif kind == "custom" %}
     {{param.name}}({{param.internal}}){{ "," if not loop.last }}
     {%- endif %}
@@ -46,7 +44,7 @@ public enum {{class_name}} {
             return null;
         }
     }
-    {%- elif kind == "complex" or kind == "custom" %}
+    {%- elif kind == "custom" %}
     {%- if return_type == "String" %}
 
     private final String VALUE;

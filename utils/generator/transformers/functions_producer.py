@@ -36,7 +36,6 @@ class FunctionsProducer(InterfaceProducerCommon):
         :param item: particular element from initial Model
         :return: dictionary to be applied to jinja2 template
         """
-        list(map(item.params.__delitem__, filter(item.params.__contains__, ['success', 'resultCode', 'info'])))
         class_name = self.replace_sync(item.name[:1].upper() + item.name[1:])
 
         imports = {'java.util.Hashtable', 'com.smartdevicelink.protocol.enums.FunctionID'}

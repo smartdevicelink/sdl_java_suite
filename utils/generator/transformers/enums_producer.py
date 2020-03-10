@@ -76,15 +76,12 @@ class EnumsProducer(InterfaceProducerCommon):
         return render
 
     def extract_param(self, param: EnumElement, kind):
-        d = {'origin': param.name}
+        d = {'origin': param.name, 'name': self.key(self.converted(param.name))}
         if kind == 'custom':
-            d['name'] = self.converted(param.name)
             if getattr(param, 'value', None) is not None:
                 d['internal'] = param.value
             else:
                 d['internal'] = '"{}"'.format(param.name)
-        elif kind == 'simple':
-            d['name'] = self.converted(param.name)
 
         if getattr(param, 'since', None):
             d['since'] = param.since

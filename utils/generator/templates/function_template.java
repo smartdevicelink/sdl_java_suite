@@ -1,5 +1,28 @@
 {% extends "struct_function_template.java" %}
 
+    {%- block params %}
+    {%- if params is defined %}
+    {%- for p in params %}
+    {%- if p.origin not in ('success', 'resultCode', 'info') or kind != "response" %}
+    {%- if p.see is defined or p.deprecated is not none %}
+    /**
+     {%- if p.deprecated is not none %}
+     * @deprecated
+     {%- endif %}
+     {%- if p.see is defined %}
+     * @see {{p.see}}
+     {%- endif %}
+     */
+    {%- endif %}
+    {%- if p.deprecated is not none %}
+    @Deprecated
+    {%- endif %}
+    public static final String {{p.key}} = "{{p.origin}}";
+    {%- endif %}
+    {%- endfor %}
+    {%- endif %}
+    {%- endblock %}
+
     {%- block constructor_simple %}
     public {{class_name}}() {
         super(FunctionID.{{function_id}}.toString());
@@ -7,6 +30,7 @@
 
     {%- block setter %}
     {%- for p in params|rejectattr('name') %}
+    {%- if p.origin not in ('success', 'resultCode', 'info') or kind != "response" %}
 
     /**
      * Sets the {{p.origin}}.
@@ -41,5 +65,6 @@
         {%- endif %}
     }
 
+    {%- endif %}
     {%- endfor %}
     {%- endblock %}

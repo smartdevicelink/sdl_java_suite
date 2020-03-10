@@ -2,24 +2,8 @@
 
 {% block body %}
 public class {{class_name}} extends {{extends_class}} {
-    {%- if params is defined and ((kind is defined and kind != "response") or kind is not defined) %}
-    {%- for p in params %}
-    {%- if p.see is defined or p.deprecated is not none %}
-    /**
-     {%- if p.deprecated is not none %}
-     * @deprecated
-     {%- endif %}
-     {%- if p.see is defined %}
-     * @see {{p.see}}
-     {%- endif %}
-     */
-    {%- endif %}
-    {%- if p.deprecated is not none %}
-    @Deprecated
-    {%- endif %}
-    public static final String {{p.key}} = "{{p.origin}}";
-    {%- endfor %}
-    {%- endif %}
+    {%- block params %}
+    {%- endblock %}
 
     /**
      * Constructs a new {{class_name}} object
@@ -57,7 +41,9 @@ public class {{class_name}} extends {{extends_class}} {
     {%- endif %}
     {%- endif %}
 
+    {%- if params is defined %}
     {%- block setter %}
     {%- endblock%}
+    {%- endif %}
 }
 {% endblock -%}
