@@ -303,7 +303,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 */
 	protected void startStreaming(VideoStreamingParameters parameters, boolean encrypted){
 		this.parameters = parameters;
-		if(hmiLevel != HMILevel.HMI_FULL){
+		if(hmiLevel != HMILevel.HMI_FULL || hmiLevel != HMILevel.HMI_LIMITED){
 			Log.e(TAG, "Cannot start video service if HMILevel is not FULL.");
 			return;
 		}
