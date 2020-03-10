@@ -14,6 +14,9 @@ class TestEnumsProducer(unittest.TestCase):
         self.producer = EnumsProducer(paths)
 
     def comparison(self, expected, actual):
+        actual = OrderedDict(sorted(actual.items()))
+        actual['params'] = tuple(sorted(actual['params'], key=lambda x: x.name))
+        expected = OrderedDict(sorted(expected.items()))
         actual_params = dict(zip(map(lambda k: k.name, actual['params']), actual['params']))
         expected_params = dict(zip(map(lambda k: k.name, expected['params']), expected['params']))
         for key, param in actual_params.copy().items():
@@ -24,7 +27,7 @@ class TestEnumsProducer(unittest.TestCase):
             Params = namedtuple('Params', sorted(keys))
             p = {name: getattr(param, name) for name in keys.keys()}
             expected_params[key] = Params(**p)
-        expected['params'] = tuple(expected_params.values())
+        expected['params'] = tuple(sorted(expected_params.values(), key=lambda x: x.name))
 
         self.assertDictEqual(expected, actual)
 
