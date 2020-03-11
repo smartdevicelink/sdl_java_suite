@@ -170,7 +170,7 @@ The set of `<element>` should be mapped to the set of Enum constants. Based on t
 The following list are general rules for constant names and its fields:
 1. The `"name"` attribute of `<element>` is the default name of the constant.
     * if the name starts from digit, the leading `_` (underscore) symbol should be added.
-    * if the name consists of `-` (dash) then it replaced with `_` (underscore)
+    * if the name contains a `-` (dash) then it should be replaced with `_` (underscore)
 1. Uses of the "sync" prefix shall be replaced with "sdl" (where it would not break functionality). E.g. `SyncMsgVersion -> SdlMsgVersion`. This applies to member variables and their accessors. The key used when creating the RPC message JSON should match that of the RPC Spec.
 
 The constant definition could have the next JavaDoc comment:
