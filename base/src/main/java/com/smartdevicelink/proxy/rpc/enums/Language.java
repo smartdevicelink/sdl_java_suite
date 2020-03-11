@@ -249,16 +249,16 @@ public enum Language {
 
     TH_TH("TH-TH");
 
-    private final String INTERNAL_NAME;
+    private final String VALUE;
     
-    private Language(String internalName) {
-        this.INTERNAL_NAME = internalName;
+    private Language(String value) {
+        this.VALUE = value;
     }
     /**
      * Returns a String representing a kind of Language
      */
     public String toString() {
-        return this.INTERNAL_NAME;
+        return this.VALUE;
     }
     
     /**

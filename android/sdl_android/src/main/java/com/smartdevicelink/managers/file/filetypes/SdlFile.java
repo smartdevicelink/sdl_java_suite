@@ -45,19 +45,21 @@ import java.security.NoSuchAlgorithmException;
  * A class representing data to be uploaded to core
  */
 public class SdlFile{
-    private String      fileName;
-    private int         id = -1;
-    private Uri         uri;
-    private byte[]      fileData;
-    private FileType    fileType;
-    private boolean     persistentFile;
-    private boolean     isStaticIcon;
-    private boolean     shouldAutoGenerateName;
+    private String fileName;
+    private int id = -1;
+    private Uri uri;
+    private byte[] fileData;
+    private FileType fileType;
+    private boolean persistentFile;
+    private boolean isStaticIcon;
+    private boolean shouldAutoGenerateName;
+    // Overwrite property by default is set to true in SdlFile constructors indicating that a file can be overwritten
+    private boolean overwrite = true;
 
     /**
      * Creates a new instance of SdlFile
      */
-    public SdlFile(){}
+    public SdlFile() { }
 
     /**
      * Creates a new instance of SdlFile
@@ -243,6 +245,22 @@ public class SdlFile{
      */
     public boolean isStaticIcon() {
         return isStaticIcon;
+    }
+
+    /**
+     * Gets the overwrite property for an SdlFile by default its set to true
+     * @return a boolean value that indicates if a file can be overwritten.
+     */
+    public boolean getOverwrite() {
+        return overwrite;
+    }
+
+    /**
+     * Sets the overwrite property for an SdlFile by default its set to true
+     * @param overwrite a boolean value that indicates if a file can be overwritten
+     */
+    public void setOverwrite(boolean overwrite) {
+        this.overwrite = overwrite;
     }
 
     /**

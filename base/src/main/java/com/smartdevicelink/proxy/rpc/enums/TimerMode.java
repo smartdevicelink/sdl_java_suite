@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+ * Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@
  * disclaimer in the documentation and/or other materials provided with the
  * distribution.
  *
- * Neither the name of the SmartDeviceLink Consortium, Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from this 
- * software without specific prior written permission.
+ * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -31,51 +31,34 @@
  */
 package com.smartdevicelink.proxy.rpc.enums;
 
-import java.util.EnumSet;
-
 /**
- * The supported dimensions of the GPS.
- * @since SmartDeviceLink 2.0
+ * @since SmartDeviceLink 1.0.0
  */
-public enum Dimension {
-	/**
-	 * No GPS at all
-	 */
-    NO_FIX("NO_FIX"),
+public enum TimerMode {
     /**
-     * Longitude and latitude
+     * Causes the media clock timer to update from 0:00 to a specified time
      */
-    _2D("2D"),
+    UP,
     /**
-     * Longitude and latitude and altitude
+     * Causes the media clock timer to update from a specified time to 0:00
      */
-    _3D("3D");
-    
-    private final String VALUE;
+    DOWN,
+    /**
+     * Indicates to not use the media clock timer
+     */
+    NONE;
 
-    private Dimension(String value) {
-    	this.VALUE = value;
-    }
-    
-    public String toString() {
-        return this.VALUE;
-    }
-    
     /**
-     * Convert String to Dimension
+     * Convert String to TimerMode
+     *
      * @param value String
-     * @return Dimension
-     */    
-    public static Dimension valueForString(String value) {
-        if(value == null){
+     * @return TimerMode
+     */
+    public static TimerMode valueForString(String value) {
+        try {
+            return valueOf(value);
+        } catch (Exception e) {
             return null;
         }
-        
-    	for (Dimension anEnum : EnumSet.allOf(Dimension.class)) {
-            if (anEnum.toString().equals(value)) {
-                return anEnum;
-            }
-        }
-        return null;
     }
 }
