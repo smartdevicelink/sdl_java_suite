@@ -325,7 +325,12 @@ abstract class BaseFileManager extends BaseSubManager {
 	 */
 	public void uploadFile(@NonNull final SdlFile file, final CompletionListener listener) {
 		if (file.isStaticIcon()) {
-			Log.w(TAG, "Static icons don't need to be uploaded");
+			Log.w(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
+			listener.onComplete(true);
+			return;
+		}
+		if (!file.getOverwrite() && hasUploadedFile(file)) {
+			Log.w(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
 			listener.onComplete(true);
 			return;
 		}
@@ -392,13 +397,18 @@ abstract class BaseFileManager extends BaseSubManager {
 		}
 		final List<PutFile> putFileRequests = new ArrayList<>();
 		for (SdlFile file : files) {
-			if (!file.isStaticIcon()) {
-				putFileRequests.add(createPutFile(file));
+			if (file.isStaticIcon()) {
+				Log.w(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
+				continue;
 			}
+			if (!file.getOverwrite() && hasUploadedFile(file)) {
+				Log.w(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
+				continue;
+			}
+			putFileRequests.add(createPutFile(file));
 		}
 		// if all files are static icons we complete listener with no errors
 		if (putFileRequests.isEmpty()) {
-			Log.w(TAG, "Static icons don't need to be uploaded");
 			listener.onComplete(null);
 		} else {
 			final Map<String, String> errors = new HashMap<>();
