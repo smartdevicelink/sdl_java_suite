@@ -325,12 +325,12 @@ abstract class BaseFileManager extends BaseSubManager {
 	 */
 	public void uploadFile(@NonNull final SdlFile file, final CompletionListener listener) {
 		if (file.isStaticIcon()) {
-			Log.w(TAG, "Static icons don't need to be uploaded");
+			Log.w(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
 			listener.onComplete(true);
 			return;
 		}
 		if (!file.isOverwrite() && hasUploadedFile(file)) {
-			Log.w(TAG, "Files that have already uploaded and have an Overwrite property set to false will not be re-Upload");
+			Log.w(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
 			listener.onComplete(true);
 			return;
 		}
@@ -398,11 +398,11 @@ abstract class BaseFileManager extends BaseSubManager {
 		final List<PutFile> putFileRequests = new ArrayList<>();
 		for (SdlFile file : files) {
 			if (file.isStaticIcon()) {
-				Log.w(TAG, "Static icons don't need to be uploaded");
+				Log.w(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
 				continue;
 			}
 			if (!file.isOverwrite() && hasUploadedFile(file)) {
-				Log.w(TAG, "Files that have already uploaded and have an Overwrite property set to false will not be re-Upload");
+				Log.w(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
 				continue;
 			}
 			putFileRequests.add(createPutFile(file));
