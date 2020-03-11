@@ -312,7 +312,6 @@ public class SoftButtonObject {
 
     /**
      * Used to compile hashcode for SoftButtonsObjects for use to compare in equals method
-     *
      * @return Custom hashcode of SoftButtonObjects variables
      */
     @Override
@@ -320,12 +319,14 @@ public class SoftButtonObject {
         int result = 1;
         result += ((getName() == null) ? 0 : Integer.rotateLeft(getName().hashCode(), 1));
         result += ((getCurrentStateName() == null) ? 0 : Integer.rotateLeft(getCurrentStateName().hashCode(), 2));
+        for (int i = 0; i < this.states.size(); i++) {
+            result += ((getStates().get(i) == null) ? 0 : Integer.rotateLeft(getStates().get(i).hashCode(), i + 2));
+        }
         return result;
     }
 
     /**
      * Uses our custom hashCode for SoftButtonObject objects
-     *
      * @param o - The object to compare
      * @return boolean of whether the objects are the same or not
      */
@@ -336,15 +337,6 @@ public class SoftButtonObject {
         if (this == o) return true;
         // if this is not an instance of SoftButtonObject, not the same
         if (!(o instanceof SoftButtonObject)) return false;
-        // Casting o to compare SoftButtonStates
-        SoftButtonObject softButtonObject = (SoftButtonObject) o;
-        // if List<SoftButtonsStates> are not the same size, not the same
-        if (softButtonObject.getStates().size() != this.states.size()) return false;
-        // Comparing List<SoftButtonStates> to see if all states are the same
-        for (int i = 0; i < this.states.size(); i++) {
-            // if both List<SoftButtonStates> are not the same, they are not the same
-            if (!(this.states.contains(softButtonObject.getStates().get(i)))) return false;
-        }
         // return comparison
         return hashCode() == o.hashCode();
     }
