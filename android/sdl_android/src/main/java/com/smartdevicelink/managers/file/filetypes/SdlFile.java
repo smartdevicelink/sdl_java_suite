@@ -233,6 +233,9 @@ public class SdlFile{
         result += ((getUri() == null) ? 0 : Integer.rotateLeft(getUri().hashCode(), 2));
         result += ((getFileData() == null) ? 0 : Integer.rotateLeft(getFileData().hashCode(), 3));
         result += ((getType() == null) ? 0 : Integer.rotateLeft(getType().hashCode(), 4));
+        result += ((Boolean.valueOf(isStaticIcon) == null) ? 0 : Integer.rotateLeft(Boolean.valueOf(isStaticIcon).hashCode(), 5));
+        result += ((Boolean.valueOf(isPersistent()) == null) ? 0 : Integer.rotateLeft(Boolean.valueOf(isPersistent()).hashCode(), 6));
+        result += ((Integer.valueOf(getResourceId()) == null) ? 0 : Integer.rotateLeft(Integer.valueOf(getResourceId()).hashCode(), 7));
         return result;
     }
 
@@ -249,12 +252,6 @@ public class SdlFile{
         if (this == o) return true;
         // if this is not an instance of SdlFile, not the same
         if (!(o instanceof SdlFile)) return false;
-        // Cast o to SdlFile
-        SdlFile sdlFile = (SdlFile) o;
-        // if isStaticIcon and isPersistent are not the same for each object, they are not the same
-        if (!(this.isStaticIcon == sdlFile.isStaticIcon && this.isPersistent() == sdlFile.isPersistent())) {
-            return false;
-        }
         // return comparison
         return hashCode() == o.hashCode();
     }
