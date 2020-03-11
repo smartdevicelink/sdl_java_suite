@@ -17,7 +17,7 @@ jobs:
         
     - name: Sdl Android Tests
       # For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
-      uses: reactivecircus/android-emulator-runner@v1
+      uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
