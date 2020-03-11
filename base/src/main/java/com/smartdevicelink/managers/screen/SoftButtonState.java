@@ -167,7 +167,7 @@ public class SoftButtonState {
     public int hashCode() {
         int result = 1;
         result += ((getName() == null) ? 0 : Integer.rotateLeft(getName().hashCode(), 1));
-        result += ((getArtwork() == null) ? 0 : getArtwork().hashCode());
+        result += ((getArtwork() == null) ? 0 : Integer.rotateLeft(getArtwork().hashCode(),2));
         return result;
     }
 
