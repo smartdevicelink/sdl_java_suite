@@ -8,7 +8,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Setup JDK
       uses: actions/setup-java@v1
@@ -17,7 +17,7 @@ jobs:
         
     - name: Sdl Android Tests
       # For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
-      uses: reactivecircus/android-emulator-runner@v1
+      uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
@@ -34,8 +34,12 @@ jobs:
     - name: Sdl JavaEE Tests
       run: ./javaEE/gradlew -p ./javaEE test
 
+    - name: RPC Generator Tests
+      run: |
+        python3 -m pip install -r ./utils/generator/requirements.txt
+        python3 ./utils/generator/test/runner.py
+
     - name: Codecov	
-      uses: codecov/codecov-action@v1.0.5	
-      with:	
-        token: ${{secrets.CODECOV_TOKEN}}
+      uses: codecov/codecov-action@v1.0.6
+      with:
         yml: ./codecov.yml
