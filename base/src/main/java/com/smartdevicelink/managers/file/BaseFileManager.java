@@ -329,7 +329,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			listener.onComplete(true);
 			return;
 		}
-		if (!file.isOverwrite() && hasUploadedFile(file)) {
+		if (!file.getOverwrite() && hasUploadedFile(file)) {
 			Log.w(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
 			listener.onComplete(true);
 			return;
@@ -401,7 +401,7 @@ abstract class BaseFileManager extends BaseSubManager {
 				Log.w(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
 				continue;
 			}
-			if (!file.isOverwrite() && hasUploadedFile(file)) {
+			if (!file.getOverwrite() && hasUploadedFile(file)) {
 				Log.w(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
 				continue;
 			}

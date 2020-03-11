@@ -192,7 +192,7 @@ public class SdlFile{
      * Gets the overwrite property for an SdlFile by default its set to true
      * @return a boolean value that indicates if a file can be overwritten.
      */
-    public boolean isOverwrite() {
+    public boolean getOverwrite() {
         return overwrite;
     }
 
