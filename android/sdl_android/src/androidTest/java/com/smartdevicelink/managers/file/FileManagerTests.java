@@ -818,7 +818,6 @@ public class FileManagerTests extends AndroidTestCase2 {
 		assertTrue(artwork1.equals(artwork1));
 
 		// Case 3: object is not an instance of SoftButtonObject, assertFalse
-
 		assertFalse(artwork1.equals("Test"));
 
 		// Case 4: different StaticIcon status, assertFalse
@@ -846,7 +845,6 @@ public class FileManagerTests extends AndroidTestCase2 {
 		artwork2 = new SdlFile("image1", FileType.GRAPHIC_PNG, uri2, false);
 
 		assertFalse(artwork1.equals(artwork2));
-
 
 		// Case 8: different FileData
 		artwork1 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
