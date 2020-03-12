@@ -139,16 +139,16 @@ public enum PredefinedLayout {
 	LARGE_GRAPHIC_ONLY("LARGE_GRAPHIC_ONLY"),
 	;
 
-	private final String INTERNAL_NAME;
+	private final String VALUE;
 
-	private PredefinedLayout(String internalName) {
-		this.INTERNAL_NAME = internalName;
+	private PredefinedLayout(String value) {
+		this.VALUE = value;
 	}
 	/**
 	 * Returns a String representing a PredefinedLayout
 	 */
 	public String toString() {
-		return this.INTERNAL_NAME;
+		return this.VALUE;
 	}
 
 	/**

@@ -325,7 +325,12 @@ abstract class BaseFileManager extends BaseSubManager {
 	 */
 	public void uploadFile(@NonNull final SdlFile file, final CompletionListener listener) {
 		if (file.isStaticIcon()) {
-			Log.w(TAG, "Static icons don't need to be uploaded");
+			Log.w(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
+			listener.onComplete(true);
+			return;
+		}
+		if (!file.getOverwrite() && hasUploadedFile(file)) {
+			Log.w(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
 			listener.onComplete(true);
 			return;
 		}
@@ -386,16 +391,29 @@ abstract class BaseFileManager extends BaseSubManager {
 	 * @param files list of SdlFiles with file name and one of A) fileData, B) Uri, or C) resourceID set
 	 * @param listener callback that is called once core responds to all upload requests
 	 */
-	public void uploadFiles(@NonNull List<? extends SdlFile> files, final MultipleFileCompletionListener listener){
-		if(files.isEmpty()){
+	public void uploadFiles(@NonNull List<? extends SdlFile> files, final MultipleFileCompletionListener listener) {
+		if (files.isEmpty()) {
 			return;
 		}
 		final List<PutFile> putFileRequests = new ArrayList<>();
-		for(SdlFile file : files){
+		for (SdlFile file : files) {
+			if (file.isStaticIcon()) {
+				Log.w(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
+				continue;
+			}
+			if (!file.getOverwrite() && hasUploadedFile(file)) {
+				Log.w(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
+				continue;
+			}
 			putFileRequests.add(createPutFile(file));
 		}
-		final Map<String, String> errors = new HashMap<>();
-		sendMultipleFileOperations(putFileRequests, listener, errors);
+		// if all files are static icons we complete listener with no errors
+		if (putFileRequests.isEmpty()) {
+			listener.onComplete(null);
+		} else {
+			final Map<String, String> errors = new HashMap<>();
+			sendMultipleFileOperations(putFileRequests, listener, errors);
+		}
 	}
 
 	/**

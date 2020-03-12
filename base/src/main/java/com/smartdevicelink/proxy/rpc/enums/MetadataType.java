@@ -102,14 +102,14 @@ public enum MetadataType {
 
 	;
 
-	private final String internalName;
+	private final String VALUE;
 
-	private MetadataType(String internalName) {
-		this.internalName = internalName;
+	private MetadataType(String value) {
+		this.VALUE = value;
 	}
 
 	public String toString() {
-		return this.internalName;
+		return this.VALUE;
 	}
 
 	public static MetadataType valueForString(String value) {

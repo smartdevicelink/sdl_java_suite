@@ -69,6 +69,7 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.os.RemoteException;
+import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -138,7 +139,7 @@ public class SdlRouterService extends Service{
 	/**
 	 * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
 	 */
-	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 10;
+	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 11;
 
 	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 	
@@ -1443,8 +1444,9 @@ public class SdlRouterService extends Service{
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 		builder.setContentIntent(pendingIntent);
 
-        if(chronometerLength > 0 && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if(chronometerLength > (FOREGROUND_TIMEOUT/1000) && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         	//The countdown method is only available in SDKs >= 24
+        	// Only add countdown if it is over the min timeout
         	builder.setWhen(chronometerLength + System.currentTimeMillis());
         	builder.setUsesChronometer(true);
         	builder.setChronometerCountDown(true);
@@ -1516,6 +1518,27 @@ public class SdlRouterService extends Service{
 		synchronized (NOTIFICATION_LOCK) {
 			if (isForeground && !isPrimaryTransportConnected()) {	//Ensure that the service is in the foreground and no longer connected to a transport
 				this.stopForeground(true);
+				NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+				if (notificationManager!= null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+					try {
+						boolean notificationHasDisplayed = false;
+						StatusBarNotification[] notifications = notificationManager.getActiveNotifications();
+						for (StatusBarNotification notification : notifications) {
+							if(notification != null && FOREGROUND_SERVICE_ID == notification.getId()){
+								DebugTool.logInfo("Service notification is being displayed");
+								notificationHasDisplayed = true;
+								break;
+							}
+						}
+						if (notificationHasDisplayed) {
+							notificationManager.deleteNotificationChannel(SDL_NOTIFICATION_CHANNEL_ID);
+						}
+						//else leave the notification channel alone to avoid deleting it before the
+						//foreground service notification has a chance to be displayed.
+					} catch (Exception e){
+						DebugTool.logError("Issue when deleting notification channel", e);
+					}
+				}
 				isForeground = false;
 			}
 		}
