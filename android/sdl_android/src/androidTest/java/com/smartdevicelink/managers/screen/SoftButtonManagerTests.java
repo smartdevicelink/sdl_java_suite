@@ -312,7 +312,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
     /**
      * Test custom overridden softButtonObject equals method
      */
-    public void testSoftButtonEquals() {
+    public void testSoftButtonObjectEquals() {
         SoftButtonObject softButtonObject1;
         SoftButtonObject softButtonObject2;
 
