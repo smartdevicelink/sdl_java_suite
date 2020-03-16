@@ -205,7 +205,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		if(this.getState() == SETTING_UP
 				&& isTransportAvailable
 				&& hmiLevel != null
-				&& hmiLevel.equals(HMILevel.HMI_FULL)
+				&& (hmiLevel.equals(HMILevel.HMI_FULL) || hmiLevel.equals(HMILevel.HMI_LIMITED))
 				&& parameters != null){
 			stateMachine.transitionToState(StreamingStateMachine.READY);
 			transitionToState(READY);
@@ -303,7 +303,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 */
 	protected void startStreaming(VideoStreamingParameters parameters, boolean encrypted){
 		this.parameters = parameters;
-		if(hmiLevel != HMILevel.HMI_FULL || hmiLevel != HMILevel.HMI_LIMITED){
+		if(hmiLevel != HMILevel.HMI_FULL && hmiLevel != HMILevel.HMI_LIMITED){
 			Log.e(TAG, "Cannot start video service if HMILevel is not FULL.");
 			return;
 		}
