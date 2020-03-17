@@ -1344,6 +1344,7 @@ public class SdlRouterService extends Service{
 				// If this is the first time the service has ever connected to this device we want
 				// to ensure we have a record of it
 				setSDLConnectedStatus(address, false);
+				return FOREGROUND_TIMEOUT;
 			}
 		}
 		// If this is a new device or hasn't connected through SDL we want to limit the exposure
