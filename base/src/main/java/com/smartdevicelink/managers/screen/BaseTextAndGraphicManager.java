@@ -742,7 +742,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	}
 
 	private boolean shouldUpdatePrimaryImage() {
-		if (defaultMainWindowCapability.getImageFields() == null || defaultMainWindowCapability.getImageFields().size() == 0 || defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().size() > 0) {
+		if (defaultMainWindowCapability.getImageFields() == null || defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().size() > 0) {
 			if (currentScreenData.getGraphic() == null) {
 				return primaryGraphic != null;
 			} else {
@@ -755,7 +755,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	private boolean shouldUpdateSecondaryImage() {
 		// Cannot detect if there is a secondary image, so we'll just try to detect if there's a primary image and allow it if there is.
-		if (defaultMainWindowCapability.getImageFields() == null || defaultMainWindowCapability.getImageFields().size() == 0 || defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().size() > 0) {
+		if (defaultMainWindowCapability.getImageFields() == null || defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().size() > 0) {
 			if (currentScreenData.getGraphic() == null) {
 				return secondaryGraphic != null;
 			} else {
