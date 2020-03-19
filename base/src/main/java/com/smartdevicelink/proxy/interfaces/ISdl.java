@@ -6,6 +6,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
@@ -217,6 +218,12 @@ public interface ISdl {
      *                   will be called immediately
      */
     void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener);
+
+    /**
+     * Get RegisterAppInterfaceResponse
+     * @return the RegisterAppInterfaceResponse if available, null if not
+     */
+    RegisterAppInterfaceResponse getRegisterAppInterfaceResponse();
 
     /**
      * Check if capability is supported
