@@ -1519,11 +1519,15 @@ public class SdlRouterService extends Service{
 		synchronized (NOTIFICATION_LOCK) {
 			if (isForeground && !isPrimaryTransportConnected()) {	//Ensure that the service is in the foreground and no longer connected to a transport
 				DebugTool.logInfo("SdlRouterService to exit foreground");
-				this.stopForeground(false); //false is used because some phones have issues when trying to clear the notification at the same time
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+					this.stopForeground(Service.STOP_FOREGROUND_DETACH);
+				}else{
+					stopForeground(false);
+				}
 				NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 				if (notificationManager!= null){
 					try {
-						notificationManager.cancel(FOREGROUND_SERVICE_ID);
+						notificationManager.cancelAll();
 						if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 							notificationManager.deleteNotificationChannel(SDL_NOTIFICATION_CHANNEL_ID);
 						}
