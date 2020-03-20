@@ -90,6 +90,16 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		return windowCapability;
 	}
 
+	/**
+	 * Used to simulate WindowCapability having no capabilities set
+	 * @return windowCapability that has no capabilities set
+	 */
+	private WindowCapability getNullVarWindowCapability() {
+
+		WindowCapability windowCapability = new WindowCapability();
+		return windowCapability;
+	}
+
 	public void testInstantiation(){
 
 		assertNull(textAndGraphicManager.getTextField1());
@@ -117,9 +127,13 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertNotNull(textAndGraphicManager.getBlankArtwork());
 	}
 
+	/**
+	 * Test getting number of lines available to be set based off of windowCapability
+	 */
 	public void testGetMainLines(){
 
 		// We want to test that the looping works. By default, it will return 4 if display cap is null
+		textAndGraphicManager.defaultMainWindowCapability = getNullVarWindowCapability();
 
 		// Null test
 		assertEquals(textAndGraphicManager.getNumberOfLines(), 4);
