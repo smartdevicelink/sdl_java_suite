@@ -131,6 +131,7 @@ public class VideoStreamingParameters {
      * Update the values contained in the capability that should have been returned through the SystemCapabilityManager.
      * This update will use the most preferred streaming format from the module.
      * @param capability the video streaming capability returned from the SystemCapabilityManager
+     * @param vehicleMake the vehicle make from the RegisterAppInterfaceResponse
      * @see com.smartdevicelink.proxy.SystemCapabilityManager
      * @see VideoStreamingCapability
      */
