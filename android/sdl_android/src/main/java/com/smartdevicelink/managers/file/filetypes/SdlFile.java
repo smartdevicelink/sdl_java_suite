@@ -265,7 +265,6 @@ public class SdlFile{
 
     /**
      * Generates a file name from data by hashing the data and returning the last 16 chars
-     *
      * @param data a byte array representing the data of the file
      * @return a String value representing the name that will be used to store the file in the head unit
      */
@@ -293,7 +292,6 @@ public class SdlFile{
 
     /**
      * Generates a file name from uri by hashing the uri string and returning the last 16 chars
-     *
      * @param uri a URI value representing a file's location
      * @return a String value representing the name that will be used to store the file in the head unit
      */
@@ -303,7 +301,6 @@ public class SdlFile{
 
     /**
      * Generates a file name from resourceId by hashing the id and returning the last 16 chars
-     *
      * @param id an int value representing the android resource id of the file
      * @return a String value representing the name that will be used to store the file in the head unit
      */

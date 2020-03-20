@@ -254,7 +254,6 @@ public class SdlFile{
 
     /**
      * Generates a file name from filePath by hashing the filePath and returning the last 16 chars
-     *
      * @param filePath a String value representing the the location of the file
      * @return a String value representing the name that will be used to store the file in the head unit
      */
