@@ -925,4 +925,60 @@ public class FileManagerTests extends AndroidTestCase2 {
 		});
 		verify(internalInterface, times(1)).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 	}
+
+	/**
+	 * 	Test custom overridden SdlFile equals method
+	 */
+	public void testSdlFileEquals() {
+		// Case 1: object is null, assertFalse
+		SdlFile artwork1 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, true);
+		SdlFile artwork2 = null;
+		assertFalse(artwork1.equals(artwork2));
+
+		// Case 2 SoftButtonObjects are the same, assertTrue
+		assertTrue(artwork1.equals(artwork1));
+
+		// Case 3: object is not an instance of SoftButtonObject, assertFalse
+		assertFalse(artwork1.equals("Test"));
+
+		// Case 4: different StaticIcon status, assertFalse
+		artwork1.setStaticIcon(true);
+		artwork2 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, true);
+		artwork2.setStaticIcon(false);
+		assertFalse(artwork1.equals(artwork2));
+
+		// Case 5: different Persistent status, assertFalse
+		artwork1 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
+		artwork2 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, true);
+		assertFalse(artwork1.equals(artwork2));
+
+		// Case 6: different name, assertFalse
+		artwork2 = new SdlFile("image2", FileType.GRAPHIC_PNG, 1, false);
+		assertFalse(artwork1.equals(artwork2));
+
+		// Case 7: different Uri
+		Uri uri1 = Uri.parse("testUri1");
+		Uri uri2 = Uri.parse("testUri2");
+		artwork1 = new SdlFile("image1", FileType.GRAPHIC_PNG, uri1, false);
+		artwork2 = new SdlFile("image1", FileType.GRAPHIC_PNG, uri2, false);
+		assertFalse(artwork1.equals(artwork2));
+
+		// Case 8: different FileData
+		artwork1 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
+		artwork2 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
+		byte[] GENERAL_BYTE_ARRAY2 = new byte[2];
+		artwork1.setFileData(Test.GENERAL_BYTE_ARRAY);
+		artwork2.setFileData(GENERAL_BYTE_ARRAY2);
+		assertFalse(artwork1.equals(artwork2));
+
+		// Case 9 different FileType, assertFalse
+		artwork1 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
+		artwork2 = new SdlFile("image1", FileType.AUDIO_WAVE, 1, false);
+		assertFalse(artwork1.equals(artwork2));
+
+		// Case 10: they are equal, assertTrue
+		artwork1 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
+		artwork2 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
+		assertTrue(artwork1.equals(artwork2));
+	}
 }
