@@ -265,6 +265,7 @@ public class SdlFile{
 
     /**
      * Generates a file name from data by hashing the data and returning the last 16 chars
+     *
      * @param data a byte array representing the data of the file
      * @return a String value representing the name that will be used to store the file in the head unit
      */
@@ -292,6 +293,7 @@ public class SdlFile{
 
     /**
      * Generates a file name from uri by hashing the uri string and returning the last 16 chars
+     *
      * @param uri a URI value representing a file's location
      * @return a String value representing the name that will be used to store the file in the head unit
      */
@@ -301,10 +303,44 @@ public class SdlFile{
 
     /**
      * Generates a file name from resourceId by hashing the id and returning the last 16 chars
+     *
      * @param id an int value representing the android resource id of the file
      * @return a String value representing the name that will be used to store the file in the head unit
      */
     private String generateFileNameFromResourceId(int id) {
         return generateFileNameFromData("ResourceId".concat(String.valueOf(id)).getBytes());
+    }
+
+    /**
+     * Used to compile hashcode for SdlFile for use to compare in overridden equals method
+     * @return Custom hashcode of SdlFile variables
+     */
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result += ((getName() == null) ? 0 : Integer.rotateLeft(getName().hashCode(), 1));
+        result += ((getUri() == null) ? 0 : Integer.rotateLeft(getUri().hashCode(), 2));
+        result += ((getFileData() == null) ? 0 : Integer.rotateLeft(getFileData().hashCode(), 3));
+        result += ((getType() == null) ? 0 : Integer.rotateLeft(getType().hashCode(), 4));
+        result += Integer.rotateLeft(Boolean.valueOf(isStaticIcon()).hashCode(), 5);
+        result += Integer.rotateLeft(Boolean.valueOf(isPersistent()).hashCode(), 6);
+        result += Integer.rotateLeft(Integer.valueOf(getResourceId()).hashCode(), 7);
+        return result;
+    }
+
+    /**
+     * Uses our custom hashCode for SdlFile objects
+     * @param o - The object to compare
+     * @return boolean of whether the objects are the same or not
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        // if this is the same memory address, it's the same
+        if (this == o) return true;
+        // if this is not an instance of SdlFile, not the same
+        if (!(o instanceof SdlFile)) return false;
+        // return comparison
+        return hashCode() == o.hashCode();
     }
 }
