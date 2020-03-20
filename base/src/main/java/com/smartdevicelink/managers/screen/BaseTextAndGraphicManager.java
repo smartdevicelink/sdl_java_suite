@@ -768,7 +768,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 	int getNumberOfLines() {
 
-		if (defaultMainWindowCapability == null || defaultMainWindowCapability.getTextFields() == null){
+		if (defaultMainWindowCapability.getTextFields() == null){
 			return 4;
 		}
 
