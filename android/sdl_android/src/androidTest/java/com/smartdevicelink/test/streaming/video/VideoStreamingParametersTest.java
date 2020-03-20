@@ -81,6 +81,66 @@ public class VideoStreamingParametersTest extends AndroidTestCase2 {
         assertEquals(380, height);
     }
 
+    public void testUpdateScale_1_0_Ford_Resolution_800_354() {
+        preferredResolution = new ImageResolution(800, 354);
+
+        capability.setScale(1.0);
+        capability.setPreferredResolution(preferredResolution);
+
+        params.update(capability, "Ford");
+
+        int width = params.getResolution().getResolutionWidth();
+        int height = params.getResolution().getResolutionHeight();
+
+        assertEquals(800, width);
+        assertEquals(354, height);
+    }
+
+    public void testUpdateScale_1_3_Lincoln_Resolution_600_900() {
+        preferredResolution = new ImageResolution(600, 900);
+
+        capability.setScale(1.0);
+        capability.setPreferredResolution(preferredResolution);
+
+        params.update(capability, "Lincoln");
+
+        int width = params.getResolution().getResolutionWidth();
+        int height = params.getResolution().getResolutionHeight();
+
+        assertEquals(450, width);
+        assertEquals(676, height);
+    }
+
+    public void testUpdateScale_1_3_Ford_Resolution_900_600() {
+        preferredResolution = new ImageResolution(900, 600);
+
+        capability.setScale(1.0);
+        capability.setPreferredResolution(preferredResolution);
+
+        params.update(capability, "Ford");
+
+        int width = params.getResolution().getResolutionWidth();
+        int height = params.getResolution().getResolutionHeight();
+
+        assertEquals(676, width);
+        assertEquals(450, height);
+    }
+
+    public void testUpdateScale_1_0_Toyota_Resolution_900_600() {
+        preferredResolution = new ImageResolution(900, 600);
+
+        capability.setScale(1.0);
+        capability.setPreferredResolution(preferredResolution);
+
+        params.update(capability, "Toyota");
+
+        int width = params.getResolution().getResolutionWidth();
+        int height = params.getResolution().getResolutionHeight();
+
+        assertEquals(900, width);
+        assertEquals(600, height);
+    }
+
     public void testUpdateCapabilityFormat(){
         VideoStreamingCapability capability = new VideoStreamingCapability();
         capability.setMaxBitrate(10000);
