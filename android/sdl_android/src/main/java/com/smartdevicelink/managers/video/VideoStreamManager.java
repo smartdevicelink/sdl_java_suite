@@ -60,6 +60,7 @@ import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
@@ -95,7 +96,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private IVideoStreamListener streamListener;
 	private boolean isTransportAvailable = false;
 	private boolean hasStarted;
-	private String vehicleMake;
+	private String vehicleMake = null;
 
 	// INTERNAL INTERFACES
 
@@ -180,7 +181,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	public VideoStreamManager(ISdl internalInterface){
 		super(internalInterface);
 
-		vehicleMake = internalInterface.getRegisterAppInterfaceResponse().getVehicleType().getMake();
+		if(internalInterface.getRegisterAppInterfaceResponse().getVehicleType() != null) {
+			vehicleMake = internalInterface.getRegisterAppInterfaceResponse().getVehicleType().getMake();
+		}
 		virtualDisplayEncoder = new VirtualDisplayEncoder();
 		hmiLevel = HMILevel.HMI_NONE;
 

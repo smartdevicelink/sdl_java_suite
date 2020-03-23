@@ -142,8 +142,10 @@ public class VideoStreamingParameters {
         ImageResolution resolution = capability.getPreferredResolution();
         if(resolution!=null){
 
-            if((vehicleMake.contains("Ford") || vehicleMake.contains("Lincoln")) && ((resolution.getResolutionHeight()!=null && resolution.getResolutionHeight() > 800) || (resolution.getResolutionWidth() !=null && resolution.getResolutionWidth() > 800))) {
-                scale = 1.0 / 0.75;
+            if (vehicleMake != null) {
+                if ((vehicleMake.contains("Ford") || vehicleMake.contains("Lincoln")) && ((resolution.getResolutionHeight() != null && resolution.getResolutionHeight() > 800) || (resolution.getResolutionWidth() != null && resolution.getResolutionWidth() > 800))) {
+                    scale = 1.0 / 0.75;
+                }
             }
 
             if(resolution.getResolutionHeight()!=null && resolution.getResolutionHeight() > 0){ this.resolution.setResolutionHeight((int)(resolution.getResolutionHeight() / scale)); }
