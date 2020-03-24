@@ -97,8 +97,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private IVideoStreamListener streamListener;
 	private boolean isTransportAvailable = false;
 	private boolean hasStarted;
-	private List<HMILevel> streamableLevels = new ArrayList<>(Arrays.asList(HMILevel.HMI_FULL, HMILevel.HMI_LIMITED));
-	private List<HMILevel> nonStreamableLevels = new ArrayList<>(Arrays.asList(HMILevel.HMI_NONE, HMILevel.HMI_BACKGROUND));
+	private List<HMILevel> streamableLevels = Arrays.asList(HMILevel.HMI_FULL, HMILevel.HMI_LIMITED);
 
 	// INTERNAL INTERFACES
 
@@ -158,7 +157,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				if (streamableLevels.contains(hmiLevel)) {
 					checkState();
 				}
-				if (hasStarted && (streamableLevels.contains(prevHMILevel)) && (nonStreamableLevels.contains(hmiLevel))) {
+				if (hasStarted && (streamableLevels.contains(prevHMILevel)) && (!streamableLevels.contains(hmiLevel))) {
 					internalInterface.stopVideoService();
 				}
 			}
@@ -307,7 +306,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 */
 	protected void startStreaming(VideoStreamingParameters parameters, boolean encrypted){
 		this.parameters = parameters;
-		if (nonStreamableLevels.contains(hmiLevel)) {
+		if (!streamableLevels.contains(hmiLevel)) {
 			Log.e(TAG, "Cannot start video service if HMILevel is not FULL or LIMITED.");
 			return;
 		}
@@ -411,7 +410,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @return boolean (true = not paused, false = paused)
 	 */
 	public boolean isPaused(){
-		return (hasStarted && stateMachine.getState() == StreamingStateMachine.STOPPED) || (nonStreamableLevels.contains(hmiLevel));
+		return (hasStarted && stateMachine.getState() == StreamingStateMachine.STOPPED) || (!streamableLevels.contains(hmiLevel));
 	}
 
 	/**
