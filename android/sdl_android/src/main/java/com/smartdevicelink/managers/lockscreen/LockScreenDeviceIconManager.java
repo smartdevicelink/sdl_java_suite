@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
@@ -24,49 +25,67 @@ public class LockScreenDeviceIconManager {
         this.context = context;
     }
 
-    boolean updateCachedImage(String iconIUrl) throws JSONException {
+    boolean updateCachedImage(String iconIUrl) {
         SharedPreferences sharedPref = this.context.getSharedPreferences("sdl", Context.MODE_PRIVATE);
         String iconParameters = sharedPref.getString(iconIUrl, null);
         if(iconParameters == null) {
             return true;
         } else {
-            JSONObject jsonObject = new JSONObject(iconParameters);
-            long lastUpdatedTime = (long) jsonObject.get("lastUpdatedTime");
-            long currentTime = System.currentTimeMillis();
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(iconParameters);
+                long lastUpdatedTime = 0;
+                lastUpdatedTime = (long) jsonObject.get("lastUpdatedTime");
+                long currentTime = System.currentTimeMillis();
 
-            long timeDifference = currentTime - lastUpdatedTime;
-            long daysBetweenLastUpdate = timeDifference / (1000 * 60 * 60 * 24);
+                long timeDifference = currentTime - lastUpdatedTime;
+                long daysBetweenLastUpdate = timeDifference / (1000 * 60 * 60 * 24);
 
-            return daysBetweenLastUpdate >= 30;
+                return daysBetweenLastUpdate >= 30;
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return true;
+            }
         }
     }
 
-    void saveFileToCache(Bitmap icon, String iconUrl) throws IOException, JSONException {
+    void saveFileToCache(Bitmap icon, String iconUrl) {
         File f = new File(this.context.getCacheDir(), iconUrl);
-        f.createNewFile();
+        try {
+            f.createNewFile();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            icon.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+            byte[] bitmapdata = bos.toByteArray();
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        icon.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-        byte[] bitmapdata = bos.toByteArray();
+            FileOutputStream fos = null;
+            fos = new FileOutputStream(f);
+            fos.write(bitmapdata);
+            fos.flush();
+            fos.close();
+            JSONObject iconParams;
 
-        FileOutputStream fos = new FileOutputStream(f);
-        fos.write(bitmapdata);
-        fos.flush();
-        fos.close();
-
-        JSONObject iconParams = buildDeviceIconParameters(f.getAbsolutePath());
-        writeDeviceIconParametersToSystemPreferences(iconUrl, iconParams);
+            iconParams = buildDeviceIconParameters(f.getAbsolutePath());
+            writeDeviceIconParametersToSystemPreferences(iconUrl, iconParams);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    Bitmap getFileFromCache(String iconUrl) throws JSONException {
+    Bitmap getFileFromCache(String iconUrl) {
         SharedPreferences sharedPref = this.context.getSharedPreferences("sdl", Context.MODE_PRIVATE);
         String iconParameters = sharedPref.getString(iconUrl, null);
 
         if (iconParameters != null) {
-            JSONObject jsonObject = new JSONObject("storedUrl");
-            String storedUrl = jsonObject.getString("storedUrl");
-            Bitmap bitmap = BitmapFactory.decodeFile(storedUrl);
-            return bitmap;
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject("storedUrl");
+                String storedUrl = jsonObject.getString("storedUrl");
+                return BitmapFactory.decodeFile(storedUrl);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
         } else {
             return null;
         }

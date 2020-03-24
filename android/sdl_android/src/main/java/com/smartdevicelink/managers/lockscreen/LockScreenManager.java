@@ -82,11 +82,14 @@ public class LockScreenManager extends BaseSubManager {
 	private boolean mLockScreenHasBeenDismissed, lockscreenDismissReceiverRegistered, receivedFirstDDNotification;
 	private String mLockscreenWarningMsg;
 	private BroadcastReceiver mLockscreenDismissedReceiver;
+	private LockScreenDeviceIconManager mLockScreenDeviceIconManager;
 
 	public LockScreenManager(LockScreenConfig lockScreenConfig, Context context, ISdl internalInterface){
 
 		super(internalInterface);
 		this.context = new WeakReference<>(context);
+		this.mLockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
+
 
 		// set initial class variables
 		hmiLevel = HMILevel.HMI_NONE;
@@ -376,7 +379,12 @@ public class LockScreenManager extends BaseSubManager {
 			@Override
 			public void run(){
 				try{
-					deviceLogo = AndroidTools.downloadImage(url);
+					if(mLockScreenDeviceIconManager.updateCachedImage(url)) {
+						deviceLogo = AndroidTools.downloadImage(url);
+						mLockScreenDeviceIconManager.saveFileToCache(deviceLogo, url);
+					} else {
+						deviceLogo = mLockScreenDeviceIconManager.getFileFromCache(url);
+					}
 					Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_DOWNLOADED);
 					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
 					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);
