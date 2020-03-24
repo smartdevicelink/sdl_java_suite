@@ -73,7 +73,6 @@ import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
