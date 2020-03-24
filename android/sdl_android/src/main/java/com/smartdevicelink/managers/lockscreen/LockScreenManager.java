@@ -380,11 +380,14 @@ public class LockScreenManager extends BaseSubManager {
 			public void run(){
 				try{
 					if(mLockScreenDeviceIconManager.updateCachedImage(url)) {
+						Log.d(TAG, "Image Update Needed");
 						deviceLogo = AndroidTools.downloadImage(url);
 						mLockScreenDeviceIconManager.saveFileToCache(deviceLogo, url);
 					} else {
+						Log.d(TAG, "Image Is Up To Date");
 						deviceLogo = mLockScreenDeviceIconManager.getFileFromCache(url);
 					}
+
 					Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_DOWNLOADED);
 					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
 					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);
@@ -393,6 +396,7 @@ public class LockScreenManager extends BaseSubManager {
 					}
 				}catch(IOException e){
 					Log.e(TAG, "device Icon Error Downloading");
+					Log.e(TAG, e.toString());
 				}
 			}
 		}).start();
