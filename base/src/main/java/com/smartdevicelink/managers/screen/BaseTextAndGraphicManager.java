@@ -52,6 +52,7 @@ import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.Result;
@@ -396,11 +397,11 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 		show = setBlankTextFields(show);
 
-		if (mediaTrackTextField != null){
+		if (mediaTrackTextField != null && shouldUpdateMediaTrackField()) {
 			show.setMediaTrack(mediaTrackTextField);
 		}
 
-		if (title != null){
+		if (title != null && shouldUpdateTitleField()) {
 			show.setTemplateTitle(title);
 		}
 
@@ -409,7 +410,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			return show;
 		}
 
-		int numberOfLines = getNumberOfLines();
+		int numberOfLines = (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? defaultMainWindowCapability.getMaxNumberOfMainFieldLines() : 4;
 
 		switch (numberOfLines) {
 			case 1: show = assembleOneLineShowText(show, nonNullFields);
@@ -741,34 +742,59 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		return false;
 	}
 
+	/**
+	 * Check to see if primaryGraphic should be updated
+	 * @return true if primaryGraphic should be updated, false if not
+	 */
 	private boolean shouldUpdatePrimaryImage() {
-		if (defaultMainWindowCapability.getImageFields() == null || defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().size() > 0) {
-			if (currentScreenData.getGraphic() == null) {
-				return primaryGraphic != null;
-			} else {
-				return currentScreenData != null
-						&& (primaryGraphic != null && !CompareUtils.areStringsEqual(currentScreenData.getGraphic().getValue(), primaryGraphic.getName(), true, true));
-			}
+		boolean templateSupportsPrimaryArtwork = (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? defaultMainWindowCapability.hasImageFieldOfName(ImageFieldName.graphic) : true;
+
+		if (currentScreenData.getGraphic() == null) {
+			return templateSupportsPrimaryArtwork && primaryGraphic != null;
+		} else {
+			return templateSupportsPrimaryArtwork
+					&& primaryGraphic != null
+					&& !CompareUtils.areStringsEqual(currentScreenData.getGraphic().getValue(), primaryGraphic.getName(), true, true);
 		}
-		return false;
 	}
 
+	/**
+	 * Check to see if secondaryGraphic should be updated
+	 * @return true if secondaryGraphic should be updated, false if not
+	 */
 	private boolean shouldUpdateSecondaryImage() {
-		// Cannot detect if there is a secondary image, so we'll just try to detect if there's a primary image and allow it if there is.
-		if (defaultMainWindowCapability.getImageFields() == null || defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().size() > 0) {
-			if (currentScreenData.getGraphic() == null) {
-				return secondaryGraphic != null;
-			} else {
-				return currentScreenData != null
-						&& (secondaryGraphic != null && !CompareUtils.areStringsEqual(currentScreenData.getGraphic().getValue(), secondaryGraphic.getName(), true, true));
-			}
+		boolean templateSupportsSecondaryArtwork = (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? defaultMainWindowCapability.hasImageFieldOfName(ImageFieldName.secondaryGraphic) : true;
+
+		if (currentScreenData.getSecondaryGraphic() == null) {
+			return templateSupportsSecondaryArtwork && secondaryGraphic != null;
+		} else {
+			return templateSupportsSecondaryArtwork
+					&& secondaryGraphic != null
+					&& !CompareUtils.areStringsEqual(currentScreenData.getSecondaryGraphic().getValue(), secondaryGraphic.getName(), true, true);
 		}
-		return false;
 	}
 
+	/**
+	 * Check to see if mediaTrackTextField should be updated
+	 * @return true if mediaTrackTextField should be updated, false if not
+	 */
+	private boolean shouldUpdateMediaTrackField(){
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? defaultMainWindowCapability.hasTextFieldOfName(TextFieldName.mediaTrack) : true;
+	}
+
+	/**
+	 * Check to see if title textField should be updated
+	 * @return true if title textField should be updated, false if not
+	 */
+	private boolean shouldUpdateTitleField(){
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? defaultMainWindowCapability.hasTextFieldOfName(TextFieldName.templateTitle) : true;
+	}
+
+
+	@Deprecated
 	int getNumberOfLines() {
 
-		if (defaultMainWindowCapability.getTextFields() == null){
+		if (defaultMainWindowCapability == null){
 			return 4;
 		}
 
