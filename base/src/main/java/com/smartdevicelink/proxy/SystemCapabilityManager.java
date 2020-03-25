@@ -452,8 +452,10 @@ public class SystemCapabilityManager {
 	private Object getCapabilityPrivate(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe, final boolean forceUpdate) {
 		Object cachedCapability = cachedSystemCapabilities.get(systemCapabilityType);
 
+		// No need to force update if the app is subscribed to that type because updated values will be received via notifications anyway
+		boolean shouldForceUpdate = forceUpdate && !isSubscribedToSystemCapability(systemCapabilityType);
 		boolean shouldUpdateSystemCapabilitySubscription = (subscribe != null) && (subscribe != isSubscribedToSystemCapability(systemCapabilityType)) && supportsSubscriptions();
-		boolean shouldSendGetCapabilityRequest = forceUpdate || (cachedCapability == null) || shouldUpdateSystemCapabilitySubscription;
+		boolean shouldSendGetCapabilityRequest = shouldForceUpdate || (cachedCapability == null) || shouldUpdateSystemCapabilitySubscription;
 		boolean shouldCallListenerWithCachedValue = (cachedCapability != null) && (scListener != null) && !shouldSendGetCapabilityRequest;
 
 		if (shouldCallListenerWithCachedValue) {
