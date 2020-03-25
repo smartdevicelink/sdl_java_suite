@@ -25,6 +25,7 @@ import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -59,6 +60,8 @@ public class SdlManagerTests extends AndroidTestCase2 {
 	@Override
 	public void setUp() throws Exception{
 		super.setUp();
+
+		mTestContext = Mockito.mock(Context.class);
 
 		// set transport
 		transport = new TCPTransportConfig(TCP_PORT, DEV_MACHINE_IP_ADDRESS, true);
@@ -125,6 +128,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		builder.setLockScreenConfig(lockScreenConfig);
 		builder.setMinimumProtocolVersion(Test.GENERAL_VERSION);
 		builder.setMinimumRPCVersion(Test.GENERAL_VERSION);
+		builder.setContext(mTestContext);
 		manager = builder.build();
 
 		// mock SdlProxyBase and set it manually

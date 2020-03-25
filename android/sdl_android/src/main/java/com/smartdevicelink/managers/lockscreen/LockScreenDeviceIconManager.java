@@ -19,7 +19,8 @@ import java.security.NoSuchAlgorithmException;
 class LockScreenDeviceIconManager {
 
     private Context context;
-    protected static final String SDL_DEVICE_STATUS_SHARED_PREFS = "sdl";
+    private static final String SDL_DEVICE_STATUS_SHARED_PREFS = "sdl.lockScreenIcon";
+    private static final String STORED_ICON_PATH = "sdl/lock_screen_icon/";
     private static final String LAST_UPDATED_TIME = "lastUpdatedTime";
     private static final String STORED_URL = "storedUrl";
     private static final String TAG = "LockScreenManager";
@@ -27,6 +28,8 @@ class LockScreenDeviceIconManager {
 
     LockScreenDeviceIconManager(Context context) {
         this.context = context;
+        File lockScreenDirectory = new File(context.getCacheDir(), STORED_ICON_PATH);
+        lockScreenDirectory.mkdirs();
     }
 
     boolean updateCachedImage(String iconUrl) {
@@ -49,7 +52,6 @@ class LockScreenDeviceIconManager {
                 long daysBetweenLastUpdate = timeDifference / (1000 * 60 * 60 * 24);
                 Log.d(TAG, "Time since last update: " + daysBetweenLastUpdate);
                 return daysBetweenLastUpdate >= 30;
-
             } catch (JSONException e) {
                 e.printStackTrace();
                 Log.d(TAG, "Exception Trying to read system preferences");
@@ -62,46 +64,33 @@ class LockScreenDeviceIconManager {
 
         String iconHash = getMD5HashFromIconUrl(iconUrl);
 
-        File f = new File(this.context.getCacheDir(), iconHash);
-        try {
-            Log.d(TAG, "Attempting to save to cache");
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            icon.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-            byte[] bitmapdata = bos.toByteArray();
+        File f = new File(this.context.getCacheDir() + "/" + STORED_ICON_PATH, iconHash);
+        Log.d(TAG, "Attempting to save to cache");
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        icon.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+        byte[] bitmapdata = bos.toByteArray();
 
-            FileOutputStream fos = null;
+        FileOutputStream fos = null;
+        try {
             fos = new FileOutputStream(f);
             fos.write(bitmapdata);
             fos.flush();
             fos.close();
-            JSONObject iconParams;
+        } catch (Exception e) {
+            Log.d(TAG, "Failed to save to Icon to Cache");
+            e.printStackTrace();
+        }
 
-            Log.d(TAG, "Attempting to save to system preferences");
+        JSONObject iconParams;
+        Log.d(TAG, "Attempting to save to system preferences");
+        try {
             iconParams = buildDeviceIconParameters(f.getAbsolutePath());
             writeDeviceIconParametersToSystemPreferences(iconHash, iconParams);
-        } catch (Exception e) {
-            Log.d(TAG, "Failed to save to cache or system preferences");
+        } catch (JSONException e) {
+            Log.d(TAG, "Failed to save to system preferences, clearing cache icon directory");
+            clearIconDirectory();
             e.printStackTrace();
         }
-    }
-
-    private String getMD5HashFromIconUrl(String iconUrl) {
-        String iconHash = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(iconUrl.getBytes());
-            BigInteger no = new BigInteger(1, messageDigest);
-            String hashtext = no.toString(16);
-            while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
-            }
-            iconHash = hashtext;
-        } catch (NoSuchAlgorithmException e) {
-            Log.d(TAG, "Unable to Hash URL");
-            e.printStackTrace();
-        }
-        Log.d(TAG, "icon hash: " + iconHash);
-        return iconHash;
     }
 
     Bitmap getFileFromCache(String iconUrl) {
@@ -116,9 +105,17 @@ class LockScreenDeviceIconManager {
                 Log.d(TAG, "Attempting to get file from cache");
                 jsonObject = new JSONObject(iconParameters);
                 String storedUrl = jsonObject.getString(STORED_URL);
-                return BitmapFactory.decodeFile(storedUrl);
+                Bitmap cachedIcon = BitmapFactory.decodeFile(storedUrl);
+                if(cachedIcon == null) {
+                    Log.d(TAG, "Failed to get Bitmap from decoding file cache");
+                    clearIconDirectory();
+                    return null;
+                } else {
+                    return cachedIcon;
+                }
             } catch (JSONException e) {
-                Log.d(TAG, "Failed to get file from cache");
+                Log.d(TAG, "Failed to get file from cache, removing from shared pref");
+                sharedPref.edit().remove(iconHash).commit();
                 e.printStackTrace();
                 return null;
             }
@@ -142,5 +139,31 @@ class LockScreenDeviceIconManager {
         parametersJson.put(STORED_URL, storedUrl);
         parametersJson.put(LAST_UPDATED_TIME, System.currentTimeMillis());
         return parametersJson;
+    }
+
+    private String getMD5HashFromIconUrl(String iconUrl) {
+        String iconHash = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(iconUrl.getBytes());
+            BigInteger no = new BigInteger(1, messageDigest);
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            iconHash = hashtext;
+        } catch (NoSuchAlgorithmException e) {
+            Log.d(TAG, "Unable to Hash URL");
+            e.printStackTrace();
+        }
+        Log.d(TAG, "icon hash: " + iconHash);
+        return iconHash;
+    }
+
+    private void clearIconDirectory() {
+        File iconDir = new File(context.getCacheDir() + "/" + STORED_ICON_PATH);
+        for (File child : iconDir.listFiles()) {
+            child.delete();
+        }
     }
 }
