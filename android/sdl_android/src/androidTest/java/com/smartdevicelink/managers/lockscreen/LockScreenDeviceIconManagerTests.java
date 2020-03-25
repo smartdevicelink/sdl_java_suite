@@ -155,9 +155,30 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         assertNull(cachedIcon);
     }
 
-    //TODO Add test for passing getFileFromCache
+    public void testGetFileFromCacheShouldReturnNullIfFailedToFindIcon() {
+        final SharedPreferences sharedPrefs = Mockito.mock(SharedPreferences.class);
+        final SharedPreferences.Editor sharedPrefsEditor = Mockito.mock(SharedPreferences.Editor.class);
+        final Context context = Mockito.mock(Context.class);
+        Mockito.when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs);
+        Mockito.when(sharedPrefs.edit()).thenReturn(sharedPrefsEditor);
+        Mockito.when(sharedPrefsEditor.remove(anyString())).thenReturn(sharedPrefsEditor);
+        Mockito.when(sharedPrefsEditor.commit()).thenReturn(true);
+        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(buildJSONAsString(15));
 
-    //TODO Add test for failing to read file from cache
+        try {
+            tempFolder.create();
+            Mockito.when(context.getCacheDir()).thenReturn(tempFolder.newFolder());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
+        Bitmap cachedIcon = lockScreenDeviceIconManager.getFileFromCache(ICON_URL);
+        assertNull(cachedIcon);
+    }
+
+    //TODO Add test for passing getFileFromCache
 
     private String buildJSONAsString(long DaysOld) {
         JSONObject jsonObject = new JSONObject();
