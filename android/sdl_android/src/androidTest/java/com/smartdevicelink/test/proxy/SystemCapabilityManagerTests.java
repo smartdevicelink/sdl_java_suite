@@ -244,6 +244,21 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		});
 	}
 
+	private Answer<Void> createOnHMIStatusAnswer(final HMILevel hmiLevel){
+		Answer<Void> onHMIStatusAnswer = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				OnRPCListener onHMIStatusListener = (OnRPCListener) args[1];
+				OnHMIStatus onHMIStatusFakeNotification = new OnHMIStatus();
+				onHMIStatusFakeNotification.setHmiLevel(hmiLevel);
+				onHMIStatusListener.onReceived(onHMIStatusFakeNotification);
+				return null;
+			}
+		};
+		return onHMIStatusAnswer;
+	}
+
 	private Answer<Void> createOnSendGetSystemCapabilityAnswer (final boolean success, final Boolean subscribe) {
 		Answer<Void> onSendGetSystemCapabilityAnswer = new Answer<Void>() {
 			@Override
@@ -322,6 +337,20 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		retrievedCapability =  (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, false);
 		assertTrue(Test.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
 		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+	}
+
+	public void testGetCapabilityHmiNone() {
+		ISdl internalInterface = mock(ISdl.class);
+		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_NONE)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
+		SystemCapabilityManager scm = new SystemCapabilityManager(internalInterface);
+		OnSystemCapabilityListener onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, null);
+		VideoStreamingCapability retrievedCapability = (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, false);
+		assertNull(retrievedCapability);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener, times(0)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener, times(1)).onError(any(String.class));
 	}
 
 	public void testAddOnSystemCapabilityListenerWithSubscriptionsSupportedAndCapabilityCached() {
@@ -1016,20 +1045,5 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		@Override
 		public void startRPCEncryption() {}
-	}
-
-	private Answer<Void> createOnHMIStatusAnswer(final HMILevel hmiLevel){
-		Answer<Void> onHMIStatusAnswer = new Answer<Void>() {
-			@Override
-			public Void answer(InvocationOnMock invocation) {
-				Object[] args = invocation.getArguments();
-				OnRPCListener onHMIStatusListener = (OnRPCListener) args[1];
-				OnHMIStatus onHMIStatusFakeNotification = new OnHMIStatus();
-				onHMIStatusFakeNotification.setHmiLevel(hmiLevel);
-				onHMIStatusListener.onReceived(onHMIStatusFakeNotification);
-				return null;
-			}
-		};
-		return onHMIStatusAnswer;
 	}
 }
