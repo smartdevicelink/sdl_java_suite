@@ -10,8 +10,10 @@ import com.smartdevicelink.util.AndroidTools;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
+import java.io.File;
 import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -22,6 +24,7 @@ import static org.mockito.Mockito.verify;
 
 public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
 
+    TemporaryFolder tempFolder = new TemporaryFolder();
     private LockScreenDeviceIconManager lockScreenDeviceIconManager;
     private static final String ICON_URL = "http://i.imgur.com/TgkvOIZ.png";
     private static final String LAST_UPDATED_TIME = "lastUpdatedTime";
@@ -100,7 +103,30 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         }
     }
 
-    //TODO Add Test For Passing saveFileToCache
+    public void testSaveFileToCacheShouldWriteToSharedPrefsIfSaveIconIsSuccessful() {
+        final SharedPreferences sharedPrefs = Mockito.mock(SharedPreferences.class);
+        final SharedPreferences.Editor sharedPrefsEditor = Mockito.mock(SharedPreferences.Editor.class);
+        final Context context = Mockito.mock(Context.class);
+        Mockito.when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs);
+        Mockito.when(sharedPrefs.edit()).thenReturn(sharedPrefsEditor);
+        try {
+            tempFolder.create();
+            Mockito.when(context.getCacheDir()).thenReturn(tempFolder.newFolder());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Bitmap deviceLogo = null;
+        try {
+            deviceLogo = AndroidTools.downloadImage(ICON_URL);
+            lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
+            lockScreenDeviceIconManager.saveFileToCache(deviceLogo, ICON_URL);
+            verify(sharedPrefs, times(1)).edit();
+            verify(sharedPrefsEditor, times(1)).putString(anyString(), anyString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void testGetFileFromCacheShouldReturnNullIfFailedToGetSystemPref() {
         final SharedPreferences sharedPrefs = Mockito.mock(SharedPreferences.class);
