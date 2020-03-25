@@ -126,7 +126,7 @@ class LockScreenDeviceIconManager {
         }
     }
 
-    private void writeDeviceIconParametersToSystemPreferences(String iconHash, JSONObject jsonObject) throws JSONException {
+    private void writeDeviceIconParametersToSystemPreferences(String iconHash, JSONObject jsonObject) {
         Log.d(TAG, "Attempting to write to system preferences");
         SharedPreferences sharedPref = this.context.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();

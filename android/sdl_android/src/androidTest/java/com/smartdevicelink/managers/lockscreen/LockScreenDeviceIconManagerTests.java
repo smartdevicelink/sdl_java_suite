@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.util.AndroidTools;
@@ -15,6 +16,9 @@ import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -66,7 +70,7 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         final SharedPreferences sharedPrefs = Mockito.mock(SharedPreferences.class);
         final Context context = Mockito.mock(Context.class);
         Mockito.when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs);
-        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(buildJSONAsString(35));
+        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(buildJSONAsString(35, ""));
 
         lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
         boolean shouldUpdate = lockScreenDeviceIconManager.updateCachedImage(ICON_URL);
@@ -77,7 +81,7 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         final SharedPreferences sharedPrefs = Mockito.mock(SharedPreferences.class);
         final Context context = Mockito.mock(Context.class);
         Mockito.when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs);
-        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(buildJSONAsString(15));
+        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(buildJSONAsString(15, ""));
 
         lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
         boolean shouldUpdate = lockScreenDeviceIconManager.updateCachedImage(ICON_URL);
@@ -163,7 +167,7 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         Mockito.when(sharedPrefs.edit()).thenReturn(sharedPrefsEditor);
         Mockito.when(sharedPrefsEditor.remove(anyString())).thenReturn(sharedPrefsEditor);
         Mockito.when(sharedPrefsEditor.commit()).thenReturn(true);
-        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(buildJSONAsString(15));
+        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(buildJSONAsString(15, ""));
 
         try {
             tempFolder.create();
@@ -178,12 +182,36 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         assertNull(cachedIcon);
     }
 
-    //TODO Add test for passing getFileFromCache
+    public void testGetFileFromCacheShouldReturnBitmapIfIconFoundInCache() {
+        final SharedPreferences sharedPrefs = Mockito.mock(SharedPreferences.class);
+        final SharedPreferences.Editor sharedPrefsEditor = Mockito.mock(SharedPreferences.Editor.class);
+        final Context context = Mockito.mock(Context.class);
+        Mockito.when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs);
+        Mockito.when(sharedPrefs.edit()).thenReturn(sharedPrefsEditor);
+        Mockito.when(sharedPrefsEditor.remove(anyString())).thenReturn(sharedPrefsEditor);
+        Mockito.when(sharedPrefsEditor.commit()).thenReturn(true);
+        Bitmap deviceLogo = null;
 
-    private String buildJSONAsString(long DaysOld) {
+        try {
+            tempFolder.create();
+            File newFolder = tempFolder.newFolder();
+            Mockito.when(context.getCacheDir()).thenReturn(newFolder);
+            deviceLogo = AndroidTools.downloadImage(ICON_URL);
+            Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(buildJSONAsString(15, newFolder.getPath() + "/sdl/lock_screen_icon/" + getMD5HashFromIconUrl(ICON_URL)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
+        lockScreenDeviceIconManager.saveFileToCache(deviceLogo, ICON_URL);
+        Bitmap cachedIcon = lockScreenDeviceIconManager.getFileFromCache(ICON_URL);
+        assertNotNull(cachedIcon);
+    }
+
+    private String buildJSONAsString(long DaysOld, String cahceIconUrl) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(STORED_URL, "STORED_URL");
+            jsonObject.put(STORED_URL, cahceIconUrl);
             long timeDifferenceInMilliSeconds = DaysOld * 1000 * 60 * 60 * 24;
             jsonObject.put(LAST_UPDATED_TIME, System.currentTimeMillis() - timeDifferenceInMilliSeconds);
             return jsonObject.toString();
@@ -191,6 +219,23 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private String getMD5HashFromIconUrl(String iconUrl) {
+        String iconHash = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(iconUrl.getBytes());
+            BigInteger no = new BigInteger(1, messageDigest);
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            iconHash = hashtext;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return iconHash;
     }
 
 
