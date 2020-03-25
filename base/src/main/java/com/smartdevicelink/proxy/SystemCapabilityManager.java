@@ -42,6 +42,7 @@ import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
@@ -51,6 +52,7 @@ import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
@@ -78,6 +80,7 @@ public class SystemCapabilityManager {
 	private final ISdl callback;
 	private OnRPCListener rpcListener;
 	private boolean shouldConvertDeprecatedDisplayCapabilities;
+	private HMILevel currentHMILevel;
 
 	public SystemCapabilityManager(ISdl callback) {
 		this.callback = callback;
@@ -86,6 +89,7 @@ public class SystemCapabilityManager {
 		this.cachedSystemCapabilities = new HashMap<>();
 		this.systemCapabilitiesSubscriptionStatus = new HashMap<>();
 		this.shouldConvertDeprecatedDisplayCapabilities = true;
+		this.currentHMILevel = HMILevel.HMI_NONE;
 
 		setupRpcListeners();
 	}
@@ -284,6 +288,13 @@ public class SystemCapabilityManager {
                         }
                     } else if (RPCMessage.KEY_NOTIFICATION.equals(message.getMessageType())) {
                         switch (message.getFunctionID()) {
+							case ON_HMI_STATUS:
+								OnHMIStatus onHMIStatus = (OnHMIStatus) message;
+								if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+									return;
+								}
+								currentHMILevel = onHMIStatus.getHmiLevel();
+								break;
                             case ON_SYSTEM_CAPABILITY_UPDATED:
                                 OnSystemCapabilityUpdated onSystemCapabilityUpdated = (OnSystemCapabilityUpdated) message;
                                 if (onSystemCapabilityUpdated.getSystemCapability() != null) {
@@ -329,6 +340,7 @@ public class SystemCapabilityManager {
         	callback.addOnRPCListener(FunctionID.GET_SYSTEM_CAPABILITY, rpcListener);
             callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
             callback.addOnRPCListener(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED, rpcListener);
+			callback.addOnRPCListener(FunctionID.ON_HMI_STATUS, rpcListener);
         }
     }
 
@@ -543,6 +555,15 @@ public class SystemCapabilityManager {
 	 * @param subscribe flag to subscribe to updates of the supplied capability type. True means subscribe; false means cancel subscription; null means don't change current subscription status.
 	 */
 	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe) {
+		if (currentHMILevel != null && currentHMILevel.equals(HMILevel.HMI_NONE)) {
+			String message = String.format("Attempted to update type: %s in HMI level NONE, which is not allowed. " +
+					"Please wait until you are in HMI BACKGROUND, LIMITED, or FULL before attempting to update any SystemCapabilityType", systemCapabilityType);
+			DebugTool.logError(message);
+			if (scListener != null) {
+				scListener.onError(message);
+			}
+			return;
+		}
 		if (!systemCapabilityType.isQueryable() || systemCapabilityType == SystemCapabilityType.DISPLAYS) {
 			String message = "This systemCapabilityType cannot be queried for";
 			DebugTool.logError(message);
