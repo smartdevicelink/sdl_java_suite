@@ -79,6 +79,7 @@ class LockScreenDeviceIconManager {
         } catch (Exception e) {
             Log.d(TAG, "Failed to save to Icon to Cache");
             e.printStackTrace();
+            return;
         }
 
         JSONObject iconParams;
