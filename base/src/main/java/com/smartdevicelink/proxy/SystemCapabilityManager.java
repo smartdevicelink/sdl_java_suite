@@ -554,9 +554,9 @@ public class SystemCapabilityManager {
 
 		/*
 		The subscription flag in the request should be set based on multiple variables:
-		- if subscribe is null (no change), shouldSubscribe = current subscription status, or false if the HU does not support subscriptions
-		- if subscribe is false, then shouldSubscribe = false
-		- if subscribe is true and the HU supports subscriptions, then shouldSubscribe = true
+		- if subscribe is null (no change), willSubscribe = current subscription status, or false if the HU does not support subscriptions
+		- if subscribe is false, then willSubscribe = false
+		- if subscribe is true and the HU supports subscriptions, then willSubscribe = true
 		*/
 		boolean shouldSubscribe = (subscribe != null) ? subscribe : isSubscribedToSystemCapability(systemCapabilityType);
 		final boolean willSubscribe = shouldSubscribe && supportsSubscriptions();
