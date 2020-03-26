@@ -1146,6 +1146,11 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
 
         @Override
+        public Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate) {
+            return LifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, scListener, forceUpdate);
+        }
+
+        @Override
         public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType) {
             return LifecycleManager.this.systemCapabilityManager.isCapabilitySupported(systemCapabilityType);
         }
