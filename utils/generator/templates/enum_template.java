@@ -45,7 +45,6 @@ public enum {{class_name}} {
         }
     }
     {%- elif kind == "custom" %}
-    {%- if return_type == "String" %}
 
     private final String VALUE;
 
@@ -84,41 +83,6 @@ public enum {{class_name}} {
     public String toString() {
         return VALUE;
     }
-    {%- elif return_type == "int" %}
-
-    private final int VALUE;
-
-    /**
-     * Private constructor
-     */
-    private {{class_name}} (int value) {
-        this.VALUE = value;
-    }
-
-    /**
-     * Convert int to {{class_name}}
-     *
-     * @param value int
-     * @return {{class_name}}
-     */
-    public static {{class_name}} valueForInt(int value) {
-        for ({{class_name}} anEnum : EnumSet.allOf({{class_name}}.class)) {
-            if (anEnum.getValue() == value) {
-                return anEnum;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Return value of element
-     *
-     * @return int
-     */
-    public int getValue(){
-        return VALUE;
-    }
-    {%- endif %}
     {%- endif %}
 }
 {% endblock -%}

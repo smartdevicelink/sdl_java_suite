@@ -41,22 +41,18 @@ class EnumsProducer(InterfaceProducerCommon):
         """
         imports = set()
         params = OrderedDict()
-        if any(map(lambda l: l.name != self.converted(l.name) or getattr(l, 'value', None) is not None,
-                   getattr(item, self.container_name).values())):
+        if any(map(lambda l: l.name != self.converted(l.name), getattr(item, self.container_name).values())):
             kind = 'custom'
             imports.add('java.util.EnumSet')
         else:
             kind = 'simple'
-        return_type = 'String'
 
         for param in getattr(item, self.container_name).values():
             p = self.extract_param(param, kind)
-            return_type = self.extract_type(param)
             params[p.name] = p
 
         render = OrderedDict()
         render['kind'] = kind
-        render['return_type'] = return_type
         render['package_name'] = self.package_name
         render['class_name'] = item.name[:1].upper() + item.name[1:]
         render['params'] = params
@@ -78,10 +74,7 @@ class EnumsProducer(InterfaceProducerCommon):
     def extract_param(self, param: EnumElement, kind):
         d = {'origin': param.name, 'name': self.key(self.converted(param.name))}
         if kind == 'custom':
-            if getattr(param, 'value', None) is not None:
-                d['internal'] = param.value
-            else:
-                d['internal'] = '"{}"'.format(param.name)
+            d['internal'] = '"{}"'.format(param.name)
 
         if getattr(param, 'since', None):
             d['since'] = param.since
@@ -91,15 +84,3 @@ class EnumsProducer(InterfaceProducerCommon):
             d['description'] = textwrap.wrap(self.extract_description(param.description), 90)
         Params = namedtuple('Params', sorted(d))
         return Params(**d)
-
-    def extract_type(self, param: EnumElement) -> str:
-        """
-        Override
-        Evaluate and extract type
-        :param param: sub-element (EnumElement) of element from initial Model
-        :return: string with sub-element type
-        """
-        if getattr(param, 'value') is not None:
-            return 'int'
-        else:
-            return 'String'
