@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.smartdevicelink.util.DebugTool;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,10 +39,10 @@ class LockScreenDeviceIconManager {
         SharedPreferences sharedPref = this.context.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
         String iconParameters = sharedPref.getString(iconHash, null);
         if(iconParameters == null) {
-            Log.d(TAG, "No Image Details Found In Preferences");
+            DebugTool.logInfo("No Icon Details Found In Shared Preferences");
             return true;
         } else {
-            Log.d(TAG, "Image Details Found");
+            DebugTool.logInfo("Icon Details Found");
             JSONObject jsonObject = null;
             try {
                 jsonObject = new JSONObject(iconParameters);
@@ -50,11 +52,10 @@ class LockScreenDeviceIconManager {
 
                 long timeDifference = currentTime - lastUpdatedTime;
                 long daysBetweenLastUpdate = timeDifference / (1000 * 60 * 60 * 24);
-                Log.d(TAG, "Time since last update: " + daysBetweenLastUpdate);
                 return daysBetweenLastUpdate >= 30;
             } catch (JSONException e) {
                 e.printStackTrace();
-                Log.d(TAG, "Exception Trying to read system preferences");
+                DebugTool.logError("Exception Trying to read shared preferences");
                 return true;
             }
         }
@@ -65,7 +66,6 @@ class LockScreenDeviceIconManager {
         String iconHash = getMD5HashFromIconUrl(iconUrl);
 
         File f = new File(this.context.getCacheDir() + "/" + STORED_ICON_PATH, iconHash);
-        Log.d(TAG, "Attempting to save to cache");
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         icon.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
         byte[] bitmapdata = bos.toByteArray();
@@ -77,18 +77,17 @@ class LockScreenDeviceIconManager {
             fos.flush();
             fos.close();
         } catch (Exception e) {
-            Log.d(TAG, "Failed to save to Icon to Cache");
+            DebugTool.logError("Failed to save icon to cache");
             e.printStackTrace();
             return;
         }
 
         JSONObject iconParams;
-        Log.d(TAG, "Attempting to save to system preferences");
         try {
             iconParams = buildDeviceIconParameters(f.getAbsolutePath());
             writeDeviceIconParametersToSystemPreferences(iconHash, iconParams);
         } catch (JSONException e) {
-            Log.d(TAG, "Failed to save to system preferences, clearing cache icon directory");
+            DebugTool.logError("Failed to save to shared preferences, clearing cache icon directory");
             clearIconDirectory();
             e.printStackTrace();
         }
@@ -100,34 +99,31 @@ class LockScreenDeviceIconManager {
         String iconParameters = sharedPref.getString(iconHash, null);
 
         if (iconParameters != null) {
-            Log.d(TAG, "System Preferences Found");
             JSONObject jsonObject = null;
             try {
-                Log.d(TAG, "Attempting to get file from cache");
                 jsonObject = new JSONObject(iconParameters);
                 String storedUrl = jsonObject.getString(STORED_URL);
                 Bitmap cachedIcon = BitmapFactory.decodeFile(storedUrl);
                 if(cachedIcon == null) {
-                    Log.d(TAG, "Failed to get Bitmap from decoding file cache");
+                    DebugTool.logError("Failed to get Bitmap from decoding file cache");
                     clearIconDirectory();
                     return null;
                 } else {
                     return cachedIcon;
                 }
             } catch (JSONException e) {
-                Log.d(TAG, "Failed to get file from cache, removing from shared pref");
+                DebugTool.logError("Failed to get file from cache, removing shared pref");
                 sharedPref.edit().remove(iconHash).commit();
                 e.printStackTrace();
                 return null;
             }
         } else {
-            Log.d(TAG, "Failed to get system preferences");
+            DebugTool.logError("Failed to get system preferences");
             return null;
         }
     }
 
     private void writeDeviceIconParametersToSystemPreferences(String iconHash, JSONObject jsonObject) {
-        Log.d(TAG, "Attempting to write to system preferences");
         SharedPreferences sharedPref = this.context.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(iconHash, jsonObject.toString());
@@ -135,7 +131,6 @@ class LockScreenDeviceIconManager {
     }
 
     private JSONObject buildDeviceIconParameters(String storedUrl) throws JSONException {
-        Log.d(TAG, "Attempting to write JSON");
         JSONObject parametersJson = new JSONObject();
         parametersJson.put(STORED_URL, storedUrl);
         parametersJson.put(LAST_UPDATED_TIME, System.currentTimeMillis());
@@ -154,10 +149,9 @@ class LockScreenDeviceIconManager {
             }
             iconHash = hashtext;
         } catch (NoSuchAlgorithmException e) {
-            Log.d(TAG, "Unable to Hash URL");
+            DebugTool.logError("Unable to hash icon url");
             e.printStackTrace();
         }
-        Log.d(TAG, "icon hash: " + iconHash);
         return iconHash;
     }
 
