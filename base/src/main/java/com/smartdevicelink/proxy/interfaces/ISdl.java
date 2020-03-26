@@ -208,6 +208,7 @@ public interface ISdl {
      * @param systemCapabilityType a system capability type that should be retrieved
      * @return the system capability provided if available, null if not
      */
+    @Deprecated
     Object getCapability(SystemCapabilityType systemCapabilityType);
 
     /**
@@ -216,7 +217,17 @@ public interface ISdl {
      * @param scListener listener that will be called when the system capability is retrieved. If already cached, it
      *                   will be called immediately
      */
+    @Deprecated
     void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener);
+
+    /** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately (or null) as well as calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds.
+     * <strong>If capability is not cached, the method will return null and trigger the supplied listener when the capability becomes available</strong>
+     * @param systemCapabilityType type of capability desired
+     * @param scListener callback to execute upon retrieving capability
+     * @param forceUpdate flag to force getting a new fresh copy of the capability from the head unit even if it is cached
+     * @return desired capability if it is cached in the manager, otherwise returns a null object
+     */
+    Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate);
 
     /**
      * Check if capability is supported

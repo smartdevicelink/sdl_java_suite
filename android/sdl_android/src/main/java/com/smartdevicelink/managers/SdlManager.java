@@ -867,6 +867,14 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		@Override
+		public Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate) {
+			if (proxy.getSystemCapabilityManager() != null) {
+				return proxy.getSystemCapabilityManager().getCapability(systemCapabilityType, scListener, forceUpdate);
+			}
+			return null;
+		}
+
+		@Override
 		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
 			return proxy.isCapabilitySupported(systemCapabilityType);
 		}

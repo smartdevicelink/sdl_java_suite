@@ -999,6 +999,11 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) { }
 
 		@Override
+		public Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate) {
+			return null;
+		}
+
+		@Override
 		public SdlMsgVersion getSdlMsgVersion(){
 			return null;
 		}
