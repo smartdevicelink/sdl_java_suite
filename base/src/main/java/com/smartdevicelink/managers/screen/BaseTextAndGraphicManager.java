@@ -747,7 +747,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if primaryGraphic should be updated, false if not
 	 */
 	private boolean shouldUpdatePrimaryImage() {
-		boolean templateSupportsPrimaryArtwork = (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? defaultMainWindowCapability.hasImageFieldOfName(ImageFieldName.graphic) : true;
+		boolean templateSupportsPrimaryArtwork = (defaultMainWindowCapability != null) ? defaultMainWindowCapability.hasImageFieldOfName(ImageFieldName.graphic) : true;
 
 		if (currentScreenData.getGraphic() == null) {
 			return templateSupportsPrimaryArtwork && primaryGraphic != null;
@@ -763,7 +763,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if secondaryGraphic should be updated, false if not
 	 */
 	private boolean shouldUpdateSecondaryImage() {
-		boolean templateSupportsSecondaryArtwork = (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? defaultMainWindowCapability.hasImageFieldOfName(ImageFieldName.secondaryGraphic) : true;
+		boolean templateSupportsSecondaryArtwork = (defaultMainWindowCapability != null) ? defaultMainWindowCapability.hasImageFieldOfName(ImageFieldName.secondaryGraphic) : true;
 
 		if (currentScreenData.getSecondaryGraphic() == null) {
 			return templateSupportsSecondaryArtwork && secondaryGraphic != null;
@@ -779,7 +779,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if mediaTrackTextField should be updated, false if not
 	 */
 	private boolean shouldUpdateMediaTrackField(){
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? defaultMainWindowCapability.hasTextFieldOfName(TextFieldName.mediaTrack) : true;
+		return (defaultMainWindowCapability != null) ? defaultMainWindowCapability.hasTextFieldOfName(TextFieldName.mediaTrack) : true;
 	}
 
 	/**
@@ -787,7 +787,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if title textField should be updated, false if not
 	 */
 	private boolean shouldUpdateTitleField(){
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? defaultMainWindowCapability.hasTextFieldOfName(TextFieldName.templateTitle) : true;
+		return (defaultMainWindowCapability != null) ? defaultMainWindowCapability.hasTextFieldOfName(TextFieldName.templateTitle) : true;
 	}
 
 

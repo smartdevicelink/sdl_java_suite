@@ -214,9 +214,6 @@ public class WindowCapability extends RPCStruct {
      * @return true if name exist in WindowCapability else false
      */
     public boolean hasImageFieldOfName(ImageFieldName name) {
-        if (this == null) {
-            return false;
-        }
         if (this.getImageTypeSupported() == null || this.getImageTypeSupported().isEmpty()) {
             return false;
         }
@@ -236,9 +233,6 @@ public class WindowCapability extends RPCStruct {
      * @return true if name exist in WindowCapability else false
      */
     public boolean hasTextFieldOfName(TextFieldName name) {
-        if (this == null) {
-            return false;
-        }
         if (this.getTextFields() != null) {
             for (TextField field : this.getTextFields()) {
                 if (field != null && field.getName() != null && field.getName().equals(name)) {
