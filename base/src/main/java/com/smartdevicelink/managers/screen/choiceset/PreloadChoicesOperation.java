@@ -197,17 +197,18 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 			vrCommands = cell.getVoiceCommands();
 		}
 
-		String menuName = ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(TextFieldName.menuName, defaultMainWindowCapability) ? cell.getText() : null;
+		String menuName = shouldSendChoiceText() ? cell.getText() : null;
+
 		if (menuName == null){
 			DebugTool.logError("Could not convert Choice Cell to CreateInteractionChoiceSet. It will not be shown. Cell: "+ cell.toString());
 			return null;
 		}
 
-		String secondaryText = ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(TextFieldName.secondaryText, defaultMainWindowCapability) ? cell.getSecondaryText() : null;
-		String tertiaryText = ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(TextFieldName.tertiaryText, defaultMainWindowCapability) ? cell.getTertiaryText() : null;
+		String secondaryText = shouldSendChoiceSecondaryText() ? cell.getSecondaryText() : null;
+		String tertiaryText = shouldSendChoiceTertiaryText() ? cell.getTertiaryText() : null;
 
-		Image image = ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.choiceImage, defaultMainWindowCapability) && cell.getArtwork() != null ? cell.getArtwork().getImageRPC() : null;
-		Image secondaryImage = ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.choiceSecondaryImage, defaultMainWindowCapability) && cell.getSecondaryArtwork() != null ? cell.getSecondaryArtwork().getImageRPC() : null;
+		Image image = shouldSendChoicePrimaryImage() && cell.getArtwork() != null ? cell.getArtwork().getImageRPC() : null;
+		Image secondaryImage = shouldSendChoiceSecondaryImage() && cell.getSecondaryArtwork() != null ? cell.getSecondaryArtwork().getImageRPC() : null;
 
 		Choice choice = new Choice(cell.getChoiceId(), menuName);
 		choice.setVrCommands(vrCommands);
@@ -229,6 +230,47 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 
 	// HELPERS
 
+	/**
+	 * Check WindowCapability for setting MenuName
+	 * @return true if capability is null or capability exist, false if capability is not there
+	 */
+	boolean shouldSendChoiceText() {
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(TextFieldName.menuName, defaultMainWindowCapability) : true;
+	}
+
+	/**
+	 * Check WindowCapability for setting MenuName
+	 * @return true if capability is null or capability exist, false if capability is not there
+	 */
+	boolean shouldSendChoiceSecondaryText() {
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(TextFieldName.secondaryText, defaultMainWindowCapability) : true;
+	}
+
+	/**
+	 * Check WindowCapability for setting tertiaryText
+	 * @return true if capability is null or capability exist, false if capability is not there
+	 */
+	boolean shouldSendChoiceTertiaryText() {
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(TextFieldName.tertiaryText, defaultMainWindowCapability) : true;
+	}
+
+	/**
+	 * Check WindowCapability for setting choiceImage
+	 * @return true if capability is null or capability exist, false if capability is not there
+	 */
+	boolean shouldSendChoicePrimaryImage() {
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.choiceImage, defaultMainWindowCapability) : true;
+
+	}
+
+	/**
+	 * Check WindowCapability for setting choiceSecondaryImage
+	 * @return true if capability is null or capability exist, false if capability is not there
+	 */
+	boolean shouldSendChoiceSecondaryImage() {
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.choiceSecondaryImage, defaultMainWindowCapability) : true;
+
+	}
 	List<SdlArtwork> artworksToUpload(){
 		List<SdlArtwork> artworksToUpload = new ArrayList<>(cellsToUpload.size());
 		for (ChoiceCell cell : cellsToUpload){
