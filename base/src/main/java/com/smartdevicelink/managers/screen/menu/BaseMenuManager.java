@@ -52,6 +52,7 @@ import com.smartdevicelink.proxy.rpc.DeleteCommand;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.ImageField;
+import com.smartdevicelink.proxy.rpc.ManagerUtility;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
@@ -791,7 +792,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean supportsImages(){
-		return defaultMainWindowCapability != null && defaultMainWindowCapability.hasImageFieldOfName(ImageFieldName.cmdIcon);
+		return ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.cmdIcon, defaultMainWindowCapability);
 	}
 
 	private boolean artworkNeedsUpload(SdlArtwork artwork){
