@@ -88,6 +88,7 @@ public class SystemCapabilityManager {
 		this.onSystemCapabilityListeners = new HashMap<>();
 		this.cachedSystemCapabilities = new HashMap<>();
 		this.systemCapabilitiesSubscriptionStatus = new HashMap<>();
+		this.systemCapabilitiesSubscriptionStatus.put(SystemCapabilityType.DISPLAYS, true);
 		this.shouldConvertDeprecatedDisplayCapabilities = true;
 		this.currentHMILevel = HMILevel.HMI_NONE;
 
@@ -323,7 +324,6 @@ public class SystemCapabilityManager {
                                                 // this notification can return only affected windows (hence not all windows)
                                                 List<DisplayCapability> newCapabilities = (List<DisplayCapability>) capability;
                                                 updateCachedDisplayCapabilityList(newCapabilities);
-                                                systemCapabilitiesSubscriptionStatus.put(SystemCapabilityType.DISPLAYS, true);
                                         }
                                     }
                                     if (capability != null) {
