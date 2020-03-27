@@ -336,12 +336,12 @@ public class SystemCapabilityManager {
             }
         };
 
-        if (callback != null) {
-        	callback.addOnRPCListener(FunctionID.GET_SYSTEM_CAPABILITY, rpcListener);
-            callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
-            callback.addOnRPCListener(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED, rpcListener);
+		if (callback != null) {
+			callback.addOnRPCListener(FunctionID.GET_SYSTEM_CAPABILITY, rpcListener);
+			callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
+			callback.addOnRPCListener(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED, rpcListener);
 			callback.addOnRPCListener(FunctionID.ON_HMI_STATUS, rpcListener);
-        }
+		}
     }
 
 	/**
