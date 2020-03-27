@@ -230,9 +230,6 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @param primaryGraphic an SdlArtwork object represents the primaryGraphic
 	 */
 	public void setPrimaryGraphic(SdlArtwork primaryGraphic) {
-		if (primaryGraphic == null){
-			primaryGraphic = textAndGraphicManager.getBlankArtwork();
-		}
 		this.textAndGraphicManager.setPrimaryGraphic(primaryGraphic);
 	}
 
@@ -249,9 +246,6 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 * @param secondaryGraphic an SdlArtwork object represents the secondaryGraphic
 	 */
 	public void setSecondaryGraphic(SdlArtwork secondaryGraphic) {
-		if (secondaryGraphic == null){
-			secondaryGraphic = textAndGraphicManager.getBlankArtwork();
-		}
 		this.textAndGraphicManager.setSecondaryGraphic(secondaryGraphic);
 	}
 

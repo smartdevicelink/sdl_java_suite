@@ -114,7 +114,6 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertEquals(textAndGraphicManager.currentHMILevel, HMILevel.HMI_NONE);
 		assertFalse(textAndGraphicManager.isDirty);
 		assertEquals(textAndGraphicManager.getState(), BaseSubManager.SETTING_UP);
-		assertNotNull(textAndGraphicManager.getBlankArtwork());
 	}
 
 	public void testGetMainLines(){
@@ -543,7 +542,6 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertNull(textAndGraphicManager.getTextField3Type());
 		assertNull(textAndGraphicManager.getTextField4Type());
 		assertNull(textAndGraphicManager.getTitle());
-		assertNotNull(textAndGraphicManager.getBlankArtwork());
 		assertNull(textAndGraphicManager.currentScreenData);
 		assertNull(textAndGraphicManager.inProgressUpdate);
 		assertNull(textAndGraphicManager.queuedImageUpdate);

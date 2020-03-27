@@ -88,10 +88,9 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertEquals(screenManager.getPrimaryGraphic(), testArtwork);
 	}
 
-	public void testSetPrimaryGraphicWithBlankImage() {
+	public void testSetPrimaryGraphicWithNullArtwork() {
 		screenManager.setPrimaryGraphic(null);
-		assertNotNull(screenManager.getPrimaryGraphic());
-		assertEquals(screenManager.getPrimaryGraphic().getName(), "blankArtwork");
+		assertNull(screenManager.getPrimaryGraphic());
 	}
 
 	public void testSetSecondaryGraphic() {
@@ -99,10 +98,9 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertEquals(screenManager.getSecondaryGraphic(), testArtwork);
 	}
 
-	public void testSetSecondaryGraphicWithBlankImage() {
+	public void testSetSecondaryGraphicWithNullArtwork() {
 		screenManager.setSecondaryGraphic(null);
-		assertNotNull(screenManager.getSecondaryGraphic());
-		assertEquals(screenManager.getSecondaryGraphic().getName(), "blankArtwork");
+		assertNull(screenManager.getSecondaryGraphic());
 	}
 
 	public void testAlignment() {

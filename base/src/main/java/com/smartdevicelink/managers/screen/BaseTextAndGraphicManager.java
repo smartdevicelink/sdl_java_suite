@@ -46,12 +46,14 @@ import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
+import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.Result;
@@ -89,7 +91,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private final WeakReference<FileManager> fileManager;
 	private final WeakReference<SoftButtonManager> softButtonManager;
 	private CompletionListener queuedUpdateListener, inProgressListener, pendingHMIListener;
-	SdlArtwork blankArtwork;
 	private OnRPCNotificationListener hmiListener;
 	private OnSystemCapabilityListener onDisplaysCapabilityListener;
 	private SdlArtwork primaryGraphic, secondaryGraphic;
@@ -111,7 +112,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		currentHMILevel = HMILevel.HMI_NONE;
 		currentScreenData = new Show();
 		addListeners();
-		getBlankArtwork();
 	}
 
 	@Override
@@ -136,7 +136,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		textAlignment = null;
 		primaryGraphic = null;
 		secondaryGraphic = null;
-		blankArtwork = null;
 		defaultMainWindowCapability = null;
 		inProgressUpdate = null;
 		queuedImageUpdate = null;
@@ -267,7 +266,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			inProgressUpdate = extractTextFromShow(fullShow);
 			sendShow();
 
-		}else if (!sdlArtworkNeedsUpload(primaryGraphic) && (secondaryGraphic == blankArtwork || !sdlArtworkNeedsUpload(secondaryGraphic))){
+		}else if (!sdlArtworkNeedsUpload(primaryGraphic) && (secondaryGraphic == null || !sdlArtworkNeedsUpload(secondaryGraphic))){
 
 			//Images already uploaded, sending full update
 			// The files to be updated are already uploaded, send the full show immediately
@@ -380,11 +379,21 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private Show assembleShowImages(Show show){
 
 		if (shouldUpdatePrimaryImage()){
-			show.setGraphic(primaryGraphic.getImageRPC());
+			if (primaryGraphic == null) {
+				show.setMainField1("removing graphic");
+				show.setGraphic(new Image("", ImageType.DYNAMIC));
+			} else {
+				show.setGraphic(primaryGraphic.getImageRPC());
+			}
 		}
 
 		if (shouldUpdateSecondaryImage()){
-			show.setSecondaryGraphic(secondaryGraphic.getImageRPC());
+			if (secondaryGraphic == null) {
+				show.setMainField1("removing graphic");
+				show.setGraphic(new Image("", ImageType.DYNAMIC));
+			} else {
+				show.setSecondaryGraphic(secondaryGraphic.getImageRPC());
+			}
 		}
 
 		return show;
@@ -730,8 +739,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 		return array;
 	}
-
-	abstract SdlArtwork getBlankArtwork();
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean sdlArtworkNeedsUpload(SdlArtwork artwork){
