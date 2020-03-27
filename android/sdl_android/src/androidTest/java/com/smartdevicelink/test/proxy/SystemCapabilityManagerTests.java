@@ -634,7 +634,6 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 
 		// Test case 1 (capability cached, listener not null, forceUpdate true)
-		// Force updating DISPLAYS capability should call onError()
 		internalInterface = mock(ISdl.class);
 		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_FULL)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
 		scm = new SystemCapabilityManager(internalInterface);
@@ -644,8 +643,8 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		retrievedCapability = (DisplayCapabilities) scm.getCapability(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener, true);
 		assertNotNull(retrievedCapability);
 		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
-		verify(onSystemCapabilityListener, times(0)).onCapabilityRetrieved(any(Object.class));
-		verify(onSystemCapabilityListener, times(1)).onError(any(String.class));
+		verify(onSystemCapabilityListener, times(1)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener, times(0)).onError(any(String.class));
 
 
 		// Test case 2 (Add listener)
