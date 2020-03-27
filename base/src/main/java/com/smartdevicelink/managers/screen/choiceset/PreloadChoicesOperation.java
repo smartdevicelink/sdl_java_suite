@@ -47,7 +47,7 @@ import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.ImageField;
-import com.smartdevicelink.proxy.rpc.ManagerUtility;
+import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
