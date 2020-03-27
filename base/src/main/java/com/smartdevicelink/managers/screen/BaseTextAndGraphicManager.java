@@ -46,6 +46,7 @@ import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
+import com.smartdevicelink.proxy.rpc.ManagerUtility;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
@@ -410,7 +411,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			return show;
 		}
 
-		int numberOfLines = (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? defaultMainWindowCapability.getMaxNumberOfMainFieldLines() : 4;
+		int numberOfLines = (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ?  ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(defaultMainWindowCapability) : 4;
 
 		switch (numberOfLines) {
 			case 1: show = assembleOneLineShowText(show, nonNullFields);
@@ -747,7 +748,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if primaryGraphic should be updated, false if not
 	 */
 	private boolean shouldUpdatePrimaryImage() {
-		boolean templateSupportsPrimaryArtwork = (defaultMainWindowCapability != null) ? defaultMainWindowCapability.hasImageFieldOfName(ImageFieldName.graphic) : true;
+		boolean templateSupportsPrimaryArtwork = (defaultMainWindowCapability != null) ? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.graphic, defaultMainWindowCapability) : true;
 
 		if (currentScreenData.getGraphic() == null) {
 			return templateSupportsPrimaryArtwork && primaryGraphic != null;
@@ -763,7 +764,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if secondaryGraphic should be updated, false if not
 	 */
 	private boolean shouldUpdateSecondaryImage() {
-		boolean templateSupportsSecondaryArtwork = (defaultMainWindowCapability != null) ? defaultMainWindowCapability.hasImageFieldOfName(ImageFieldName.secondaryGraphic) : true;
+		boolean templateSupportsSecondaryArtwork = (defaultMainWindowCapability != null) ?  ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.secondaryGraphic, defaultMainWindowCapability) : true;
 
 		if (currentScreenData.getSecondaryGraphic() == null) {
 			return templateSupportsSecondaryArtwork && secondaryGraphic != null;
@@ -779,7 +780,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if mediaTrackTextField should be updated, false if not
 	 */
 	private boolean shouldUpdateMediaTrackField(){
-		return (defaultMainWindowCapability != null) ? defaultMainWindowCapability.hasTextFieldOfName(TextFieldName.mediaTrack) : true;
+		return (defaultMainWindowCapability != null) ?  ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(TextFieldName.mediaTrack, defaultMainWindowCapability) : true;
 	}
 
 	/**
@@ -787,7 +788,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if title textField should be updated, false if not
 	 */
 	private boolean shouldUpdateTitleField(){
-		return (defaultMainWindowCapability != null) ? defaultMainWindowCapability.hasTextFieldOfName(TextFieldName.templateTitle) : true;
+		return (defaultMainWindowCapability != null) ?  ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(TextFieldName.templateTitle, defaultMainWindowCapability) : true;
 	}
 
 
