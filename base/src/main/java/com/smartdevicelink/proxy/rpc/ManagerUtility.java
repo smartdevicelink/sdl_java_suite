@@ -15,6 +15,7 @@ public class ManagerUtility {
          * @return true if name exist in WindowCapability else false
          */
         public static boolean hasImageFieldOfName(ImageFieldName name, WindowCapability windowCapability) {
+            if (windowCapability == null ){ return false; }
             if (windowCapability.getImageFields() != null) {
                 for (ImageField field : windowCapability.getImageFields()) {
                     if (field != null && field.getName() != null && field.getName().equals(name)) {
@@ -31,6 +32,7 @@ public class ManagerUtility {
          * @return true if name exist in WindowCapability else false
          */
         public static boolean hasTextFieldOfName(TextFieldName name, WindowCapability windowCapability) {
+            if (windowCapability == null ){ return false; }
             if (windowCapability.getTextFields() != null) {
                 for (TextField field : windowCapability.getTextFields()) {
                     if (field != null && field.getName() != null && field.getName().equals(name)) {
