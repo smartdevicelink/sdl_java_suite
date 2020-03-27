@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -136,12 +137,12 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		textAndGraphicManager.defaultMainWindowCapability = getNullVarWindowCapability();
 
 		// Null test
-		assertEquals(textAndGraphicManager.getNumberOfLines(), 4);
+		assertEquals(ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(textAndGraphicManager.defaultMainWindowCapability), 4);
 
 		// The tests.java class has an example of this, but we must build it to do what
 		// we need it to do. Build display cap w/ 3 main fields and test that it returns 3
 		textAndGraphicManager.defaultMainWindowCapability = getWindowCapability(3);
-		assertEquals(textAndGraphicManager.getNumberOfLines(), 3);
+		assertEquals(ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(textAndGraphicManager.defaultMainWindowCapability), 3);
 	}
 
 	public void testAssemble1Line(){

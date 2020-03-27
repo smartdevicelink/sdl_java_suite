@@ -51,6 +51,10 @@ public class ManagerUtility {
          * @return linesFound - Number of textFields found in WindowCapability
          */
         public static int getMaxNumberOfMainFieldLines(WindowCapability windowCapability) {
+            // if Window capability is null, we assume that it is an error and all mainTextFields are enable
+            if(windowCapability == null || windowCapability.getTextFields() == null){
+                return 4;
+            }
             int linesFound = 0;
 
             List<TextField> textFields = windowCapability.getTextFields();
