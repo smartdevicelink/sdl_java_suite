@@ -249,11 +249,6 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 		return false;
 	}
 
-	boolean shouldSendChoiceText(){
-	return false;
-	}
-
-
 	@Deprecated
 	boolean hasImageFieldOfName(ImageFieldName name){
 		if (defaultMainWindowCapability == null ){ return false; }
