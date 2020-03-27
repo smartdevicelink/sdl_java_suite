@@ -106,42 +106,7 @@ package com.smartdevicelink.proxy.rpc;
 
 ## The License Header
 
-All files should start from the comment with the license information.
-
-```java
-/*
- * Copyright (c) 2017 - [year], SmartDeviceLink Consortium, Inc.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following
- * disclaimer in the documentation and/or other materials provided with the
- * distribution.
- *
- * Neither the name of the SmartDeviceLink Consortium Inc. nor the names of
- * its contributors may be used to endorse or promote products derived
- * from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
-```
-Where `[year]` in the copyright line is the current year.
+All files should start from the comment with the license information which includes dynamic `[year]` field in the copyright line with the current year.
 
 ## `<enum>`
 
@@ -209,6 +174,34 @@ This type of enums doesn't require constructor and requires additional method `v
 ```
 Where `[enum_name]` is the `"name"` attribute of `<enum>`
 
+Example:
+
+XML:
+```xml
+    <enum name="TemperatureUnit" since="4.5">
+        <element name="FAHRENHEIT"/>
+        <element name="CELSIUS"/>
+    </enum>
+```
+
+Output (javadoc comments skipped):
+```java
+package com.smartdevicelink.proxy.rpc.enums;
+
+public enum TemperatureUnit {
+    FAHRENHEIT,
+    CELSIUS;
+
+    public static TemperatureUnit valueForString(String value) {
+        try {
+            return valueOf(value);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+}
+```
+
 ### Constants with field:
 
 In case of at least one name of constant was modified according the rules described below (by adding `_` before digit, replacing `-` with `_` and replacing `sync`) then original name is passed as parameter to constant.
@@ -266,6 +259,61 @@ Where `[enum_name]` is the `"name"` attribute of `<enum>`.
 The `valueForString` method requires the import of `EnumSet` collection:
 ```java
 import java.util.EnumSet;
+```
+
+Example:
+
+XML:
+```xml
+    <enum name="Dimension" since="2.0">
+        <description>The supported dimensions of the GPS</description>
+        <element name="NO_FIX" internal_name="Dimension_NO_FIX">
+            <description>No GPS at all</description>
+        </element>
+        <element name="2D" internal_name="Dimension_2D">
+            <description>Longitude and latitude</description>
+        </element>
+        <element name="3D" internal_name="Dimension_3D">
+            <description>Longitude and latitude and altitude</description>
+        </element>
+    </enum>
+```
+
+Output (javadoc comments skipped):
+```java
+package com.smartdevicelink.proxy.rpc.enums;
+
+import java.util.EnumSet;
+
+public enum Dimension {
+    NO_FIX("NO_FIX"),
+    _2D("2D"),
+    _3D("3D");
+
+    private final String VALUE;
+
+    private Dimension(String value) {
+        this.VALUE = value;
+    }
+
+    public static Dimension valueForString(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        for (Dimension anEnum : EnumSet.allOf(Dimension.class)) {
+            if (anEnum.toString().equals(value)) {
+                return anEnum;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return VALUE;
+    }
+}
 ```
 
 ## `<struct>`
@@ -524,6 +572,68 @@ Where:
 Take a note if some parameters have `"array"` attribute is true, the class requires the `List` collection to be imported:
 ```java
 import java.util.List;
+```
+
+Example:
+
+XML:
+```xml
+    <struct name="Temperature" since="4.5">
+        <param name="unit" type="TemperatureUnit" mandatory="true">
+            <description>Temperature Unit</description>
+        </param>
+        <param name="value" type="Float" mandatory="true">
+            <description>Temperature Value in TemperatureUnit specified unit. Range depends on OEM and is not checked by SDL.</description>
+        </param>
+    </struct>
+```
+
+Output (javadoc comments skipped):
+```java
+package com.smartdevicelink.proxy.rpc;
+
+import android.support.annotation.NonNull;
+
+import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.enums.TemperatureUnit;
+import com.smartdevicelink.util.SdlDataTypeConverter;
+
+import java.util.Hashtable;
+
+public class Temperature extends RPCStruct {
+    public static final String KEY_UNIT = "unit";
+    public static final String KEY_VALUE = "value";
+
+    public Temperature() { }
+
+    public Temperature(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    public Temperature(@NonNull TemperatureUnit unit, @NonNull Float value) {
+        this();
+        setUnit(unit);
+        setValue(value);
+    }
+
+    public void setUnit(@NonNull TemperatureUnit unit) {
+        setValue(KEY_UNIT, unit);
+    }
+
+    public TemperatureUnit getUnit() {
+        return (TemperatureUnit) getObject(TemperatureUnit.class, KEY_UNIT);
+    }
+
+    public void setValue(@NonNull Float value) {
+        setValue(KEY_VALUE, value);
+    }
+
+    public Float getValue() {
+        Object object = getValue(KEY_VALUE);
+        return SdlDataTypeConverter.objectToFloat(object);
+    }
+}
+
 ```
 
 ## `<function>`
@@ -801,4 +911,167 @@ Where:
 Take a note if some parameters have `"array"` attribute is true, the class requires the `List` collection to be imported:
 ```java
 import java.util.List;
+```
+
+Example Request:
+
+XML:
+```xml
+    <function name="UpdateTurnList" functionID="UpdateTurnListID" messagetype="request" since="2.0">
+        <param name="turnList" type="Turn" minsize="1" maxsize="100" array="true" mandatory="false">
+        </param>
+        <param name="softButtons" type="SoftButton" minsize="0" maxsize="1" array="true" mandatory="false">
+            <description>If omitted on supported displays, app-defined SoftButton will be left blank.</description>
+        </param>
+    </function>
+```
+
+Output (javadoc comments skipped):
+```java
+package com.smartdevicelink.proxy.rpc;
+
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCRequest;
+
+import java.util.Hashtable;
+import java.util.List;
+
+public class UpdateTurnList extends RPCRequest {
+    public static final String KEY_TURN_LIST = "turnList";
+    public static final String KEY_SOFT_BUTTONS = "softButtons";
+
+    public UpdateTurnList() {
+        super(FunctionID.UPDATE_TURN_LIST.toString());
+    }
+
+    public UpdateTurnList(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    public void setTurnList(List<Turn> turnList) {
+        setParameters(KEY_TURN_LIST, turnList);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Turn> getTurnList() {
+        return (List<Turn>) getObject(Turn.class, KEY_TURN_LIST);
+    }
+
+    public void setSoftButtons(List<SoftButton> softButtons) {
+        setParameters(KEY_SOFT_BUTTONS, softButtons);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<SoftButton> getSoftButtons() {
+        return (List<SoftButton>) getObject(SoftButton.class, KEY_SOFT_BUTTONS);
+    }
+}
+```
+
+Example Response:
+
+XML:
+```xml
+    <function name="UpdateTurnList" functionID="UpdateTurnListID" messagetype="response" since="2.0">
+        <param name="success" type="Boolean" platform="documentation" mandatory="true">
+            <description> true, if successful; false, if failed </description>
+        </param>
+        <param name="resultCode" type="Result" platform="documentation" mandatory="true">
+            <description>See Result</description>
+            <element name="SUCCESS"/>
+            <element name="INVALID_DATA"/>
+            <element name="OUT_OF_MEMORY"/>
+            <element name="TOO_MANY_PENDING_REQUESTS"/>
+            <element name="APPLICATION_NOT_REGISTERED"/>
+            <element name="GENERIC_ERROR"/>
+            <element name="REJECTED"/>
+            <element name="DISALLOWED"/>
+            <element name="UNSUPPORTED_REQUEST"/>
+            <element name="UNSUPPORTED_RESOURCE"/>
+        </param>
+        <param name="info" type="String" maxlength="1000" mandatory="false" platform="documentation">
+            <description>Provides additional human readable info regarding the result.</description>
+        </param>
+    </function>
+```
+
+Output (javadoc comments skipped):
+```java
+package com.smartdevicelink.proxy.rpc;
+
+import android.support.annotation.NonNull;
+
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.rpc.enums.Result;
+
+import java.util.Hashtable;
+
+public class UpdateTurnListResponse extends RPCResponse {
+
+    public UpdateTurnListResponse() {
+        super(FunctionID.UPDATE_TURN_LIST.toString());
+    }
+
+    public UpdateTurnListResponse(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    public UpdateTurnListResponse(@NonNull Boolean success, @NonNull Result resultCode) {
+        this();
+        setSuccess(success);
+        setResultCode(resultCode);
+    }
+}
+```
+
+Example Notification:
+
+XML:
+```xml
+    <function name="OnWayPointChange" functionID="OnWayPointChangeID" messagetype="notification" since="4.1">
+        <description>Notification which provides the entire LocationDetails when there is a change to any waypoints or destination.</description>
+        <param name="wayPoints" type="LocationDetails" mandatory="true" array="true" minsize="1" maxsize="10">
+            <description>See LocationDetails</description>
+        </param>
+    </function>
+```
+
+Output (javadoc comments skipped):
+```java
+package com.smartdevicelink.proxy.rpc;
+
+import android.support.annotation.NonNull;
+
+import com.smartdevicelink.protocol.enums.FunctionID;
+import com.smartdevicelink.proxy.RPCNotification;
+
+import java.util.Hashtable;
+import java.util.List;
+
+public class OnWayPointChange extends RPCNotification {
+    public static final String KEY_WAY_POINTS = "wayPoints";
+
+    public OnWayPointChange() {
+        super(FunctionID.ON_WAY_POINT_CHANGE.toString());
+    }
+
+    public OnWayPointChange(Hashtable<String, Object> hash) {
+        super(hash);
+    }
+
+    public OnWayPointChange(@NonNull List<LocationDetails> wayPoints) {
+        this();
+        setWayPoints(wayPoints);
+    }
+
+    public void setWayPoints(@NonNull List<LocationDetails> wayPoints) {
+        setParameters(KEY_WAY_POINTS, wayPoints);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<LocationDetails> getWayPoints() {
+        return (List<LocationDetails>) getObject(LocationDetails.class, KEY_WAY_POINTS);
+    }
+}
 ```

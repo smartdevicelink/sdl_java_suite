@@ -43,7 +43,7 @@ import {{i}};{{ '\n' if loop.last }}
  {%- for d in description %}
  * {{d}}
  {%- endfor %}{%- endif %}
- {%- if params is defined and return_type is not defined and ((kind is defined and kind != "response") or kind is not defined) %}
+ {%- if params is defined and ((kind is defined and kind not in ["response", "simple", "custom"]) or kind is not defined) %}
  *
  * <p><b>Parameter List</b></p>
  *
