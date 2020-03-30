@@ -145,22 +145,6 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 		super.tearDown();
 	}
 
-	public void testHasTextFieldOfName(){
-		boolean test = preloadChoicesOperation.hasTextFieldOfName(TextFieldName.secondaryText);
-		assertFalse(test);
-
-		boolean test2 = preloadChoicesOperation.hasTextFieldOfName(TextFieldName.menuName);
-		assertTrue(test2);
-	}
-
-	public void testHasImageFieldOfName(){
-		boolean test = preloadChoicesOperation.hasImageFieldOfName(ImageFieldName.choiceImage);
-		assertTrue(test);
-
-		boolean test2 = preloadChoicesOperation.hasImageFieldOfName(ImageFieldName.appIcon);
-		assertFalse(test2);
-	}
-
 	public void testArtworkNeedsUpload(){
 		boolean test = preloadChoicesOperation.artworkNeedsUpload(Test.GENERAL_ARTWORK);
 		assertTrue(test);
@@ -175,7 +159,7 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 	/**
 	 * Testing shouldSend method's with varying WindowCapability set.
 	 */
-	public void testsShouldSendText() {
+	public void testShouldSendText() {
 		setUpNullWindowCapability();
 		assertTrue(preloadChoicesOperationNullCapability.shouldSendChoicePrimaryImage());
 		assertTrue(preloadChoicesOperationNullCapability.shouldSendChoiceSecondaryImage());
