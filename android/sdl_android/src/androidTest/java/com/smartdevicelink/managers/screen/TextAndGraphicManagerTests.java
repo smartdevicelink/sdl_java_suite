@@ -390,8 +390,28 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 
 		Show inputShow = new Show();
 
-		// Force it to return display with support for only 4 lines of text
 		textAndGraphicManager.defaultMainWindowCapability = getWindowCapability(4);
+		TextField tx1 = new TextField();
+		TextField tx2 = new TextField();
+		TextField tx3 = new TextField();
+		TextField tx4 = new TextField();
+		TextField tx5 = new TextField();
+		TextField tx6 = new TextField();
+
+		tx1.setName(TextFieldName.mainField1);
+		tx2.setName(TextFieldName.mainField2);
+		tx3.setName(TextFieldName.mainField3);
+		tx4.setName(TextFieldName.mainField4);
+		tx5.setName(TextFieldName.mediaTrack);
+		tx6.setName(TextFieldName.templateTitle);
+
+		List<TextField> textFieldNames = Arrays.asList(tx1,tx2,tx3,tx4,tx5,tx6);
+		textAndGraphicManager.defaultMainWindowCapability.setTextFields(textFieldNames);
+
+		textAndGraphicManager.setMediaTrackTextField("HI");
+		textAndGraphicManager.setTitle("bye");
+
+		// Force it to return display with support for only 4 lines of text
 
 		textAndGraphicManager.setTextField1("It is");
 		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
@@ -402,6 +422,8 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertEquals(assembledShow.getMainField2(), "");
 		assertEquals(assembledShow.getMainField3(), "");
 		assertEquals(assembledShow.getMainField4(), "");
+		assertEquals(assembledShow.getMediaTrack(), "HI");
+		assertEquals(assembledShow.getTemplateTitle(), "bye");
 
 		// test tags
 		MetadataTags tags = assembledShow.getMetadataTags();
@@ -494,28 +516,12 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertEquals(tags.getMainField4(), tagsList4);
 	}
 
-	public void testAssemble4LinesNullCapability() {
+	public void testAssemble4LinesNullWindowCapability() {
 
 		Show inputShow = new Show();
-
-		// AddingCapability
-		textAndGraphicManager.defaultMainWindowCapability = getWindowCapability(4);
-		TextField tx1 = new TextField();
-		TextField tx2 = new TextField();
-		TextField tx3 = new TextField();
-		TextField tx4 = new TextField();
-		TextField tx5 = new TextField();
-		TextField tx6 = new TextField();
-
-		tx1.setName(TextFieldName.mainField1);
-		tx2.setName(TextFieldName.mainField2);
-		tx3.setName(TextFieldName.mainField3);
-		tx4.setName(TextFieldName.mainField4);
-		tx5.setName(TextFieldName.mediaTrack);
-		tx6.setName(TextFieldName.templateTitle);
-
-		List<TextField> textFieldNames = Arrays.asList(tx1,tx2,tx3,tx4,tx5,tx6);
-		textAndGraphicManager.defaultMainWindowCapability.setTextFields(textFieldNames);
+		
+		textAndGraphicManager.setMediaTrackTextField("HI");
+		textAndGraphicManager.setTitle("bye");
 
 		textAndGraphicManager.setTextField1("It is");
 		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
@@ -526,6 +532,8 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertEquals(assembledShow.getMainField2(), "");
 		assertEquals(assembledShow.getMainField3(), "");
 		assertEquals(assembledShow.getMainField4(), "");
+		assertEquals(assembledShow.getMediaTrack(), "HI");
+		assertEquals(assembledShow.getTemplateTitle(), "bye");
 
 		// test tags
 		MetadataTags tags = assembledShow.getMetadataTags();
