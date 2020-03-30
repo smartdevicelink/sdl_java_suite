@@ -242,6 +242,35 @@ class Generator:
         self.logger.info('Parser type: %s, version %s,\tGenerator version %s',
                          basename(getfile(Parser().__class__)), parser_origin, self.get_version)
 
+    def get_file_content(self, file_name: Path) -> list:
+        """
+
+        :param file_name:
+        :return:
+        """
+        try:
+            with file_name.open('r') as file:
+                content = file.readlines()
+            return content
+        except FileNotFoundError as message1:
+            self.logger.error(message1)
+            return []
+
+    def get_key_words(self, file_name=ROOT.joinpath('rpc_spec/RpcParser/RESERVED_KEYWORDS')):
+        """
+        :param file_name:
+        :return:
+        """
+        content = self.get_file_content(file_name)
+        content = tuple(map(lambda e: re.sub(r'\n', r'', e).strip().casefold(), content))
+        try:
+            content = tuple(filter(lambda e: not re.search(r'^#+\s+.+|^$', e), content))
+            self.logger.debug('key_words: %s', ', '.join(content))
+            return content
+        except (IndexError, ValueError, StopIteration) as error1:
+            self.logger.error('Error while getting key_words, %s %s', type(error1).__name__, error1)
+            return []
+
     def get_paths(self, file_name=ROOT.joinpath('paths.ini')):
         """
         :param file_name: path to file with Paths
@@ -249,33 +278,30 @@ class Generator:
         """
         fields = ('struct_class', 'request_class', 'response_class',
                   'notification_class', 'enums_package', 'structs_package', 'functions_package')
-        intermediate = OrderedDict()
-        try:
-            with file_name.open('r') as file:
-                for line in file:
-                    if line.startswith('#'):
-                        self.logger.warning('commented property %s, which will be skipped', line.strip())
-                        continue
-                    if re.match(r'^(\w+)\s?=\s?(.+)', line):
-                        if len(line.split('=')) > 2:
-                            self.logger.critical('can not evaluate value, too many separators %s', str(line))
-                            sys.exit(1)
-                        name, var = line.partition('=')[::2]
-                        if name.strip() in intermediate:
-                            self.logger.critical('duplicate key %s', name)
-                            sys.exit(1)
-                        intermediate[name.strip().lower()] = var.strip()
-        except FileNotFoundError as message1:
-            self.logger.critical(message1)
-            sys.exit(1)
+        data = OrderedDict()
+        content = self.get_file_content(file_name)
+
+        for line in content:
+            if line.startswith('#'):
+                self.logger.warning('commented property %s, which will be skipped', line.strip())
+                continue
+            if re.match(r'^(\w+)\s?=\s?(.+)', line):
+                if len(line.split('=')) > 2:
+                    self.logger.critical('can not evaluate value, too many separators %s', str(line))
+                    sys.exit(1)
+                name, var = line.partition('=')[::2]
+                if name.strip() in data:
+                    self.logger.critical('duplicate key %s', name)
+                    sys.exit(1)
+                data[name.strip().lower()] = var.strip()
 
         for line in fields:
-            if line not in intermediate:
-                self.logger.critical('in %s missed fields: %s ', file, str(line))
+            if line not in data:
+                self.logger.critical('in %s missed fields: %s ', content, str(line))
                 sys.exit(1)
 
         Paths = namedtuple('Paths', ' '.join(fields))
-        return Paths(**intermediate)
+        return Paths(**data)
 
     def write_file(self, file_name, template, data):
         """
@@ -399,16 +425,17 @@ class Generator:
                                                           pattern=args.regex_pattern)
 
         paths = self.get_paths()
+        key_words = self.get_key_words()
 
         if args.enums and interface.enums:
             self.process(args.output_directory, args.skip, args.overwrite, tuple(interface.enums.values()),
-                         EnumsProducer(paths))
+                         EnumsProducer(paths, key_words))
         if args.structs and interface.structs:
             self.process(args.output_directory, args.skip, args.overwrite, tuple(interface.structs.values()),
-                         StructsProducer(paths, enum_names, struct_names))
+                         StructsProducer(paths, enum_names, struct_names, key_words))
         if args.functions and interface.functions:
             self.process(args.output_directory, args.skip, args.overwrite, tuple(interface.functions.values()),
-                         FunctionsProducer(paths, enum_names, struct_names))
+                         FunctionsProducer(paths, enum_names, struct_names, key_words))
 
 
 if __name__ == '__main__':

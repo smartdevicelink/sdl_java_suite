@@ -16,14 +16,15 @@ class FunctionsProducer(InterfaceProducerCommon):
     Functions transformation
     """
 
-    def __init__(self, paths, enum_names, struct_names):
+    def __init__(self, paths, enum_names, struct_names, key_words):
         super(FunctionsProducer, self).__init__(
             container_name='params',
             enums_package=paths.enums_package,
             structs_package=paths.structs_package,
             enum_names=enum_names,
             struct_names=struct_names,
-            package_name=paths.functions_package)
+            package_name=paths.functions_package,
+            key_words=key_words)
         self.logger = logging.getLogger('FunctionsProducer')
         self.request_class = paths.request_class
         self.response_class = paths.response_class
@@ -36,7 +37,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         :param item: particular element from initial Model
         :return: dictionary to be applied to jinja2 template
         """
-        class_name = self.replace_sync(item.name[:1].upper() + item.name[1:])
+        class_name = self.replace_keywords(item.name[:1].upper() + item.name[1:])
 
         imports = {'java.util.Hashtable', 'com.smartdevicelink.protocol.enums.FunctionID'}
         extends_class = None
@@ -58,7 +59,7 @@ class FunctionsProducer(InterfaceProducerCommon):
 
         for param in getattr(item, self.container_name).values():
             param.origin = param.name
-            param.name = self.replace_sync(param.name)
+            param.name = self.replace_keywords(param.name)
             i, p = self.extract_param(param)
             imports.update(i)
             params.update({param.name: p})
@@ -67,7 +68,7 @@ class FunctionsProducer(InterfaceProducerCommon):
         render['kind'] = item.message_type.name
         render['package_name'] = self.package_name
         render['imports'] = self.sort_imports(imports)
-        render['function_id'] = self.key(self.replace_sync(item.name))
+        render['function_id'] = self.key(self.replace_keywords(item.name))
         render['class_name'] = class_name
         render['extends_class'] = extends_class
         render['since'] = item.since
@@ -135,7 +136,7 @@ class FunctionsProducer(InterfaceProducerCommon):
             tr = t.replace('List<', '').rstrip('>')
         if t.startswith('Float'):
             imports.add('com.smartdevicelink.util.SdlDataTypeConverter')
-        p['return_type'] = self.replace_sync(t)
+        p['return_type'] = self.replace_keywords(t)
 
         if tr in self.enum_names:
             imports.add('{}.{}'.format(self.enums_package, tr))
