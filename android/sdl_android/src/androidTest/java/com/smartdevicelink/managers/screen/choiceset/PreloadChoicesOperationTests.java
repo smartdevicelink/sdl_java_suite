@@ -160,6 +160,7 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 	 * Testing shouldSend method's with varying WindowCapability set.
 	 */
 	public void testShouldSendText() {
+
 		setUpNullWindowCapability();
 		assertTrue(preloadChoicesOperationNullCapability.shouldSendChoicePrimaryImage());
 		assertTrue(preloadChoicesOperationNullCapability.shouldSendChoiceSecondaryImage());

@@ -1,10 +1,8 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
-import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
-import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 
 import java.util.Hashtable;
 import java.util.List;
