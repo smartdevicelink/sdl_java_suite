@@ -260,7 +260,6 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	 */
 	boolean shouldSendChoicePrimaryImage() {
 		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.choiceImage, defaultMainWindowCapability) : true;
-
 	}
 
 	/**
@@ -269,7 +268,6 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	 */
 	boolean shouldSendChoiceSecondaryImage() {
 		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.choiceSecondaryImage, defaultMainWindowCapability) : true;
-
 	}
 	List<SdlArtwork> artworksToUpload(){
 		List<SdlArtwork> artworksToUpload = new ArrayList<>(cellsToUpload.size());
