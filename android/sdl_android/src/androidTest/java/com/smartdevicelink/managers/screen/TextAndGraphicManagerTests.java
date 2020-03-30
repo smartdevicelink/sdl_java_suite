@@ -516,6 +516,9 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertEquals(tags.getMainField4(), tagsList4);
 	}
 
+	/**
+	 * Testing if WindowCapability is null, TextFields should still update.
+	 */
 	public void testAssemble4LinesNullWindowCapability() {
 
 		Show inputShow = new Show();

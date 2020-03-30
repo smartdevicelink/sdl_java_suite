@@ -7,7 +7,12 @@ import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 
 import java.util.List;
-
+/**
+ * <strong>ManagerUtility</strong> <br>
+ *
+ *  Static Methods to be used throughout the Manager classes <br>
+ *
+ */
 public class ManagerUtility {
 
     public static class WindowCapabilityUtility {
