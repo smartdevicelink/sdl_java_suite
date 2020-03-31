@@ -55,6 +55,7 @@ import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.AndroidTools;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -379,13 +380,12 @@ public class LockScreenManager extends BaseSubManager {
 			@Override
 			public void run(){
 				try{
-					if(mLockScreenDeviceIconManager.updateCachedImage(url)) {
-						Log.d(TAG, "URL: " + url);
-						Log.d(TAG, "Image Update Needed");
+					if(mLockScreenDeviceIconManager.shouldUpdateCachedImage(url)) {
+						DebugTool.logInfo("Lock Screen Icon Update Needed");
 						deviceLogo = AndroidTools.downloadImage(url);
 						mLockScreenDeviceIconManager.saveFileToCache(deviceLogo, url);
 					} else {
-						Log.d(TAG, "Image Is Up To Date");
+						DebugTool.logInfo("Image Is Up To Date");
 						deviceLogo = mLockScreenDeviceIconManager.getFileFromCache(url);
 						if (deviceLogo == null) {
 							deviceLogo = AndroidTools.downloadImage(url);
@@ -393,9 +393,7 @@ public class LockScreenManager extends BaseSubManager {
 						}
 					}
 				} catch(IOException e){
-					Log.e(TAG, "device Icon Error Downloading");
-					Log.e(TAG, e.toString());
-					Log.e(TAG, "Attempt to grab Cached image even if expired");
+					Log.e(TAG, "device Icon Error Downloading, Will attempt to grab cached Icon even if expired: \n" + e.toString());
 					deviceLogo = mLockScreenDeviceIconManager.getFileFromCache(url);
 				}
 				if(deviceLogo != null) {

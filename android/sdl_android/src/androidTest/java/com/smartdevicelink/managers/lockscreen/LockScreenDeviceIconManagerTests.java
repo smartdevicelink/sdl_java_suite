@@ -3,8 +3,6 @@ package com.smartdevicelink.managers.lockscreen;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.util.AndroidTools;
@@ -32,7 +30,7 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
     private LockScreenDeviceIconManager lockScreenDeviceIconManager;
     private static final String ICON_URL = "http://i.imgur.com/TgkvOIZ.png";
     private static final String LAST_UPDATED_TIME = "lastUpdatedTime";
-    private static final String STORED_URL = "storedUrl";
+    private static final String STORED_PATH = "storedPath";
     private static final String INVALID_JSON_STRING = "Invalid JSON";
 
     public void setup() throws Exception {
@@ -50,19 +48,24 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(null);
 
         lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
-        boolean shouldUpdate = lockScreenDeviceIconManager.updateCachedImage(ICON_URL);
+        boolean shouldUpdate = lockScreenDeviceIconManager.shouldUpdateCachedImage(ICON_URL);
         assertTrue(shouldUpdate);
     }
 
     public void testUpdateCacheImageShouldReturnTrueWhenUnableToReadSharedPreference() {
         final SharedPreferences sharedPrefs = Mockito.mock(SharedPreferences.class);
+        final SharedPreferences.Editor sharedPrefsEditor = Mockito.mock(SharedPreferences.Editor.class);
         final Context context = Mockito.mock(Context.class);
         Mockito.when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs);
-        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(INVALID_JSON_STRING);
+        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn("");
+        Mockito.when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs);
+        Mockito.when(sharedPrefs.edit()).thenReturn(sharedPrefsEditor);
+        Mockito.when(sharedPrefsEditor.remove(anyString())).thenReturn(sharedPrefsEditor);
+        Mockito.when(sharedPrefsEditor.commit()).thenReturn(true);
 
 
         lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
-        boolean shouldUpdate = lockScreenDeviceIconManager.updateCachedImage(ICON_URL);
+        boolean shouldUpdate = lockScreenDeviceIconManager.shouldUpdateCachedImage(ICON_URL);
         assertTrue(shouldUpdate);
     }
 
@@ -70,10 +73,10 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         final SharedPreferences sharedPrefs = Mockito.mock(SharedPreferences.class);
         final Context context = Mockito.mock(Context.class);
         Mockito.when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs);
-        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(buildJSONAsString(35, ""));
+        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(daysToMillisecondsAsString(35));
 
         lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
-        boolean shouldUpdate = lockScreenDeviceIconManager.updateCachedImage(ICON_URL);
+        boolean shouldUpdate = lockScreenDeviceIconManager.shouldUpdateCachedImage(ICON_URL);
         assertTrue(shouldUpdate);
     }
 
@@ -81,10 +84,10 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         final SharedPreferences sharedPrefs = Mockito.mock(SharedPreferences.class);
         final Context context = Mockito.mock(Context.class);
         Mockito.when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs);
-        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(buildJSONAsString(15, ""));
+        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(daysToMillisecondsAsString(15));
 
         lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
-        boolean shouldUpdate = lockScreenDeviceIconManager.updateCachedImage(ICON_URL);
+        boolean shouldUpdate = lockScreenDeviceIconManager.shouldUpdateCachedImage(ICON_URL);
         assertFalse(shouldUpdate);
     }
 
@@ -151,7 +154,7 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         Mockito.when(sharedPrefs.edit()).thenReturn(sharedPrefsEditor);
         Mockito.when(sharedPrefsEditor.remove(anyString())).thenReturn(sharedPrefsEditor);
         Mockito.when(sharedPrefsEditor.commit()).thenReturn(true);
-        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(INVALID_JSON_STRING);
+        Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn("");
 
 
         lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
@@ -208,10 +211,10 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         assertNotNull(cachedIcon);
     }
 
-    private String buildJSONAsString(long DaysOld, String cahceIconUrl) {
+    private String buildJSONAsString(long DaysOld, String cahceIconPath) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(STORED_URL, cahceIconUrl);
+            jsonObject.put(STORED_PATH, cahceIconPath);
             long timeDifferenceInMilliSeconds = DaysOld * 1000 * 60 * 60 * 24;
             jsonObject.put(LAST_UPDATED_TIME, System.currentTimeMillis() - timeDifferenceInMilliSeconds);
             return jsonObject.toString();
@@ -236,6 +239,12 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
             e.printStackTrace();
         }
         return iconHash;
+    }
+
+    private String daysToMillisecondsAsString(int days) {
+        long milliSeconds = (long) days * 24 * 60 * 60 * 1000;
+        long previousDay = System.currentTimeMillis() - milliSeconds;
+        return previousDay + "";
     }
 
 
