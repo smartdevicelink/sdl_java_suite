@@ -68,7 +68,7 @@ class LockScreenDeviceIconManager {
         File f = new File(this.context.getCacheDir() + "/" + STORED_ICON_PATH, iconHash);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         icon.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-        byte[] bitmapdata = bos.toByteArray();
+        byte[] bitmapData = bos.toByteArray();
 
         FileOutputStream fos = null;
         try {
