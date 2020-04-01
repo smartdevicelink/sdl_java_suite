@@ -7,9 +7,6 @@ import android.graphics.BitmapFactory;
 
 import com.smartdevicelink.util.DebugTool;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,10 +19,6 @@ class LockScreenDeviceIconManager {
     private Context context;
     private static final String SDL_DEVICE_STATUS_SHARED_PREFS = "sdl.lockScreenIcon";
     private static final String STORED_ICON_PATH = "sdl/lock_screen_icon/";
-    private static final String LAST_UPDATED_TIME = "lastUpdatedTime";
-    private static final String STORED_PATH = "storedPath";
-    private static final String TAG = "LockScreenManager";
-
 
     LockScreenDeviceIconManager(Context context) {
         this.context = context;
@@ -33,18 +26,18 @@ class LockScreenDeviceIconManager {
         lockScreenDirectory.mkdirs();
     }
 
-    boolean shouldUpdateCachedImage(String iconUrl) {
+    boolean isIconCachedAndValid(String iconUrl) {
         String iconHash = getMD5HashFromIconUrl(iconUrl);
         SharedPreferences sharedPref = this.context.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
-        String iconParameters = sharedPref.getString(iconHash, null);
-        if(iconParameters == null) {
+        String iconLastUpdatedTime = sharedPref.getString(iconHash, null);
+        if(iconLastUpdatedTime == null) {
             DebugTool.logInfo("No Icon Details Found In Shared Preferences");
-            return true;
+            return false;
         } else {
             DebugTool.logInfo("Icon Details Found");
             long lastUpdatedTime = 0;
             try {
-                lastUpdatedTime = Long.parseLong(iconParameters);
+                lastUpdatedTime = Long.parseLong(iconLastUpdatedTime);
             } catch (NumberFormatException e) {
                 DebugTool.logInfo("Invalid time stamp stored to shared preferences, clearing cache and share preferences");
                 clearIconDirectory();
@@ -54,7 +47,7 @@ class LockScreenDeviceIconManager {
 
             long timeDifference = currentTime - lastUpdatedTime;
             long daysBetweenLastUpdate = timeDifference / (1000 * 60 * 60 * 24);
-            return daysBetweenLastUpdate >= 30;
+            return daysBetweenLastUpdate < 30;
         }
     }
 
@@ -77,15 +70,15 @@ class LockScreenDeviceIconManager {
             return;
         }
 
-        writeDeviceIconParametersToSystemPreferences(iconHash);
+        writeDeviceIconParametersToSharedPreferences(iconHash);
     }
 
     Bitmap getFileFromCache(String iconUrl) {
         String iconHash = getMD5HashFromIconUrl(iconUrl);
         SharedPreferences sharedPref = this.context.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
-        String iconParameters = sharedPref.getString(iconHash, null);
+        String iconLastUpdatedTime = sharedPref.getString(iconHash, null);
 
-        if (iconParameters != null) {
+        if (iconLastUpdatedTime != null) {
             Bitmap cachedIcon = BitmapFactory.decodeFile(this.context.getCacheDir() + "/" + STORED_ICON_PATH + "/" + iconHash);
             if(cachedIcon == null) {
                 DebugTool.logError("Failed to get Bitmap from decoding file cache");
@@ -101,10 +94,10 @@ class LockScreenDeviceIconManager {
         }
     }
 
-    private void writeDeviceIconParametersToSystemPreferences(String iconHash) {
+    private void writeDeviceIconParametersToSharedPreferences(String iconHash) {
         SharedPreferences sharedPref = this.context.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(iconHash, System.currentTimeMillis() + "");
+        editor.putString(iconHash, String.valueOf(System.currentTimeMillis()));
         editor.commit();
     }
 
