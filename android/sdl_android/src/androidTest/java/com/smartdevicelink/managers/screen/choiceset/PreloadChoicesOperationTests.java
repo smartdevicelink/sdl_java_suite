@@ -93,7 +93,7 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
-		preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, windowCapability, true, cellsToPreload, null);
+		preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, null,windowCapability, true, cellsToPreload, null);
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
-		preloadChoicesOperationNullCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, true, cellsToPreload, null);
+		preloadChoicesOperationNullCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, null, true, cellsToPreload, null);
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
-		preloadChoicesOperationEmptyCapability = new PreloadChoicesOperation(internalInterface, fileManager, windowCapability, true, cellsToPreload, null);
+		preloadChoicesOperationEmptyCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
 	}
 
 
