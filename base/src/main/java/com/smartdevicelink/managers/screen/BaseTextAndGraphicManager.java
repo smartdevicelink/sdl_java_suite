@@ -36,6 +36,7 @@ import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -46,11 +47,9 @@ import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
-import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
-import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
@@ -411,7 +410,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			return show;
 		}
 
-		int numberOfLines = ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(defaultMainWindowCapability);
+		int numberOfLines = (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(defaultMainWindowCapability) : 4;
 
 		switch (numberOfLines) {
 			case 1: show = assembleOneLineShowText(show, nonNullFields);
@@ -789,32 +788,6 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 */
 	private boolean shouldUpdateTitleField(){
 		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ?  ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(TextFieldName.templateTitle, defaultMainWindowCapability) : true;
-	}
-
-
-	@Deprecated
-	int getNumberOfLines() {
-
-		if (defaultMainWindowCapability == null){
-			return 4;
-		}
-
-		int linesFound = 0;
-
-		List<TextField> textFields = defaultMainWindowCapability.getTextFields();
-		TextFieldName name;
-		if (textFields != null && !textFields.isEmpty()) {
-			for (TextField field : textFields) {
-				if (field.getName() != null) {
-					name = field.getName();
-					if (name == TextFieldName.mainField1 || name == TextFieldName.mainField2 || name == TextFieldName.mainField3 || name == TextFieldName.mainField4) {
-						linesFound += 1;
-					}
-				}
-			}
-		}
-
-		return linesFound;
 	}
 
 	// SCREEN ITEM SETTERS AND GETTERS

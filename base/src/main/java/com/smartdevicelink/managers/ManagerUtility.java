@@ -5,8 +5,6 @@ import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
-
-import java.util.List;
 /**
  * <strong>ManagerUtility</strong> <br>
  *
@@ -56,25 +54,24 @@ public class ManagerUtility {
          * @return linesFound - Number of textFields found in WindowCapability
          */
         public static int getMaxNumberOfMainFieldLines(WindowCapability windowCapability) {
-            // if Window capability is null, we assume that it is an error and all mainTextFields are enable
-            if(windowCapability == null || windowCapability.getTextFields() == null){
+            if (windowCapability == null || windowCapability.getTextFields() == null) {
                 return 4;
             }
-            int linesFound = 0;
-
-            List<TextField> textFields = windowCapability.getTextFields();
+            int highestFound = 0;
             TextFieldName name;
-            if (textFields != null && !textFields.isEmpty()) {
-                for (TextField field : textFields) {
-                    if (field.getName() != null) {
-                        name = field.getName();
-                        if (name == TextFieldName.mainField1 || name == TextFieldName.mainField2 || name == TextFieldName.mainField3 || name == TextFieldName.mainField4) {
-                            linesFound += 1;
+            for (TextField field : windowCapability.getTextFields()) {
+                if (field.getName() != null) {
+                    name = field.getName();
+                    if (name == TextFieldName.mainField1 || name == TextFieldName.mainField2 || name == TextFieldName.mainField3 || name == TextFieldName.mainField4) {
+                        int fieldNumber = Integer.parseInt(name.toString().substring(name.toString().length() - 1));
+                        highestFound = Math.max(highestFound, fieldNumber);
+                        if (highestFound == 4) {
+                            break;
                         }
                     }
                 }
             }
-            return linesFound;
+            return highestFound;
         }
     }
 
