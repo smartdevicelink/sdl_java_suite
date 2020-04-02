@@ -5,11 +5,11 @@ import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
+
 /**
  * <strong>ManagerUtility</strong> <br>
- *
- *  Static Methods to be used throughout the Manager classes <br>
- *
+ * <p>
+ * Static Methods to be used throughout the Manager classes <br>
  */
 public class ManagerUtility {
 
@@ -17,11 +17,15 @@ public class ManagerUtility {
 
         /**
          * Check to see if WindowCapability has an ImageFieldName of a given name.
+         *
+         * @param windowCapability WindowCapability representing the capabilities of the desired window
          * @param name ImageFieldName representing a name of a given Image field that would be stored in WindowCapability
          * @return true if name exist in WindowCapability else false
          */
-        public static boolean hasImageFieldOfName(ImageFieldName name, WindowCapability windowCapability) {
-            if (windowCapability == null ){ return false; }
+        public static boolean hasImageFieldOfName(WindowCapability windowCapability, ImageFieldName name) {
+            if (windowCapability == null) {
+                return false;
+            }
             if (windowCapability.getImageFields() != null) {
                 for (ImageField field : windowCapability.getImageFields()) {
                     if (field != null && field.getName() != null && field.getName().equals(name)) {
@@ -34,11 +38,15 @@ public class ManagerUtility {
 
         /**
          * Check to see if WindowCapability has a textField of a given name.
-         * @param name - TextFieldName representing a name of a given text field that would be stored in WindowCapability
+         *
+         * @param windowCapability WindowCapability representing the capabilities of the desired window
+         * @param name TextFieldName representing a name of a given text field that would be stored in WindowCapability
          * @return true if name exist in WindowCapability else false
          */
-        public static boolean hasTextFieldOfName(TextFieldName name, WindowCapability windowCapability) {
-            if (windowCapability == null ){ return false; }
+        public static boolean hasTextFieldOfName(WindowCapability windowCapability, TextFieldName name) {
+            if (windowCapability == null) {
+                return false;
+            }
             if (windowCapability.getTextFields() != null) {
                 for (TextField field : windowCapability.getTextFields()) {
                     if (field != null && field.getName() != null && field.getName().equals(name)) {
@@ -51,7 +59,9 @@ public class ManagerUtility {
 
         /**
          * Method to get number of textFields allowed to be set according to WindowCapability
-         * @return linesFound - Number of textFields found in WindowCapability
+         *
+         * @param windowCapability WindowCapability representing the capabilities of the desired window
+         * @return linesFound Number of textFields found in WindowCapability
          */
         public static int getMaxNumberOfMainFieldLines(WindowCapability windowCapability) {
             if (windowCapability == null || windowCapability.getTextFields() == null) {
@@ -74,5 +84,4 @@ public class ManagerUtility {
             return highestFound;
         }
     }
-
 }

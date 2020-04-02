@@ -791,7 +791,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean supportsImages(){
-		return ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.cmdIcon, defaultMainWindowCapability);
+		return ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.cmdIcon);
 	}
 
 	private boolean artworkNeedsUpload(SdlArtwork artwork){

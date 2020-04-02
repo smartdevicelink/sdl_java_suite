@@ -747,7 +747,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if primaryGraphic should be updated, false if not
 	 */
 	private boolean shouldUpdatePrimaryImage() {
-		boolean templateSupportsPrimaryArtwork = (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.graphic, defaultMainWindowCapability) : true;
+		boolean templateSupportsPrimaryArtwork = (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.graphic) : true;
 
 		if (currentScreenData.getGraphic() == null) {
 			return templateSupportsPrimaryArtwork && primaryGraphic != null;
@@ -763,7 +763,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if secondaryGraphic should be updated, false if not
 	 */
 	private boolean shouldUpdateSecondaryImage() {
-		boolean templateSupportsSecondaryArtwork = (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ?  ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.secondaryGraphic, defaultMainWindowCapability) : true;
+		boolean templateSupportsSecondaryArtwork = (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ?  ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.secondaryGraphic) : true;
 
 		if (currentScreenData.getSecondaryGraphic() == null) {
 			return templateSupportsSecondaryArtwork && secondaryGraphic != null;
@@ -779,7 +779,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if mediaTrackTextField should be updated, false if not
 	 */
 	private boolean shouldUpdateMediaTrackField(){
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ?  ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(TextFieldName.mediaTrack, defaultMainWindowCapability) : true;
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ?  ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.mediaTrack) : true;
 	}
 
 	/**
@@ -787,7 +787,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if title textField should be updated, false if not
 	 */
 	private boolean shouldUpdateTitleField(){
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ?  ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(TextFieldName.templateTitle, defaultMainWindowCapability) : true;
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ?  ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.templateTitle) : true;
 	}
 
 	// SCREEN ITEM SETTERS AND GETTERS

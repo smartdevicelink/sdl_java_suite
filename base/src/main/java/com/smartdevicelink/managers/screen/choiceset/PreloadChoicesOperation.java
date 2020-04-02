@@ -235,7 +235,7 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	 * @return true if capability is null or capability exist, false if capability is not there
 	 */
 	boolean shouldSendChoiceText() {
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(TextFieldName.menuName, defaultMainWindowCapability) : true;
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.menuName) : true;
 	}
 
 	/**
@@ -243,7 +243,7 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	 * @return true if capability is null or capability exist, false if capability is not there
 	 */
 	boolean shouldSendChoiceSecondaryText() {
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(TextFieldName.secondaryText, defaultMainWindowCapability) : true;
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.secondaryText) : true;
 	}
 
 	/**
@@ -251,7 +251,7 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	 * @return true if capability is null or capability exist, false if capability is not there
 	 */
 	boolean shouldSendChoiceTertiaryText() {
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(TextFieldName.tertiaryText, defaultMainWindowCapability) : true;
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.tertiaryText) : true;
 	}
 
 	/**
@@ -259,7 +259,7 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	 * @return true if capability is null or capability exist, false if capability is not there
 	 */
 	boolean shouldSendChoicePrimaryImage() {
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.choiceImage, defaultMainWindowCapability) : true;
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.choiceImage) : true;
 	}
 
 	/**
@@ -267,15 +267,15 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	 * @return true if capability is null or capability exist, false if capability is not there
 	 */
 	boolean shouldSendChoiceSecondaryImage() {
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.choiceSecondaryImage, defaultMainWindowCapability) : true;
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.choiceSecondaryImage) : true;
 	}
 	List<SdlArtwork> artworksToUpload(){
 		List<SdlArtwork> artworksToUpload = new ArrayList<>(cellsToUpload.size());
 		for (ChoiceCell cell : cellsToUpload){
-			if (ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.choiceImage, defaultMainWindowCapability) && artworkNeedsUpload(cell.getArtwork())){
+			if (ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.choiceImage) && artworkNeedsUpload(cell.getArtwork())){
 				artworksToUpload.add(cell.getArtwork());
 			}
-			if (ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(ImageFieldName.choiceSecondaryImage, defaultMainWindowCapability) && artworkNeedsUpload(cell.getSecondaryArtwork())){
+			if (ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.choiceSecondaryImage) && artworkNeedsUpload(cell.getSecondaryArtwork())){
 				artworksToUpload.add(cell.getSecondaryArtwork());
 			}
 		}
