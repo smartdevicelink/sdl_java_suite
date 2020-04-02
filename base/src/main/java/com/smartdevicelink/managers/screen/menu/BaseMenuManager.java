@@ -363,17 +363,6 @@ abstract class BaseMenuManager extends BaseSubManager {
             return;
         }
 
-		if (defaultMainWindowCapability == null || defaultMainWindowCapability.getMenuLayoutsAvailable() == null) {
-			DebugTool.logError("Could not set the main menu configuration. Which menu layouts can be used is not available");
-			return;
-		}
-
-		if ((menuConfiguration.getMenuLayout() != null && !defaultMainWindowCapability.getMenuLayoutsAvailable().contains(menuConfiguration.getMenuLayout())) ||
-				(menuConfiguration.getSubMenuLayout() != null && !defaultMainWindowCapability.getMenuLayoutsAvailable().contains(menuConfiguration.getMenuLayout()))) {
-			DebugTool.logError("One or more of the set menu layouts are not available on this system. The menu configuration will not be set. Available menu layouts: " + defaultMainWindowCapability.getMenuLayoutsAvailable() + " set menu layouts: " + menuConfiguration);
-			return;
-		}
-
         if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
             // We are in NONE or the menu is in use, bail out of here
             DebugTool.logError("Could not set main menu configuration, HMI level: "+currentHMILevel+", required: 'Not-NONE', system context: "+currentSystemContext+", required: 'Not MENU'");
