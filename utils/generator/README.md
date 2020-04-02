@@ -12,7 +12,7 @@ Required libraries are described in `requirements.txt` and should be pre-install
 ```shell script
 python3 -m pip install -r requirements.txt
 ```
-Please also make sure before usage the 'utils/generator/rpc_spec' Git submodule is successfully initialized, because the script uses the XML parser provided there.
+Please also make sure before usage the `utils/generator/rpc_spec` Git submodule is successfully initialized, because the script uses the XML parser provided there.
 ```shell script
 git submodule update --init
 ```
@@ -54,9 +54,7 @@ optional arguments:
 ## Overview
 These are the general transformation rules for RPC classes of SDL Java Suite Library. The description of base classes, already included in the library, is not provided here, for details please view the source code. 
 
-The JavaDoc is used for inline documentation of generated code. All non-XML values should follow Contributing to SDL Projects [CONTRIBUTING.md](ttps://github.com/smartdevicelink/sdl_android/blob/master/.github/CONTRIBUTING.md)
-
-These rules based on the current `develop` branch state (commit:`7e6a16c027bcdd0fb523a9993dc59b0171167aea`) of [`smartdevicelink/sdl_java_suite`](https://github.com/smartdevicelink/sdl_java_suite) repository.
+The JavaDoc is used for inline documentation of generated code. All non-XML values should follow Contributing to SDL Projects [CONTRIBUTING.md](https://github.com/smartdevicelink/sdl_android/blob/master/.github/CONTRIBUTING.md)
 
 ## Output Directory Structure and Package definitions
 
@@ -71,7 +69,7 @@ According to existing structure of Java Suite the output directory will contain 
             * `[- all <struct> classes -]`
             * `[- all <function> classes -]`
 
-Each Enum class should be stored as a single script file in the folder named `com/smartdevicelink/rpc/enums` and the name of the script file should be equal to the value from the `"name"` attribute of `<enum>` followed by the extension `.java`. FunctionID enum generation is skipped as discussed due to high complexity of structure. 
+Each Enum class should be stored as a single file in the folder named `com/smartdevicelink/rpc/enums` and the name of the file should be equal to the value from the `"name"` attribute of `<enum>` followed by the extension `.java`. FunctionID enum generation is skipped due to the high complexity of structure. 
 
 Example:
 ```shell script
@@ -84,7 +82,7 @@ Each Enum class should include the package definition:
 package com.smartdevicelink.proxy.rpc.enums;
 ``` 
 
-Each Struct or Function class should be stored as a single script file in the folder named `com/smartdevicelink/proxy/rpc` and the name of the script file should be equal to the value from the `"name"` attribute of `<struct>` or `<function>` (followed by additional suffix `Response` if the `"name"` doesn't end with it and the `"messagetype"` attribute is set to `response`) followed by the extension `.java`.
+Each Struct or Function class should be stored as a single file in the folder named `com/smartdevicelink/proxy/rpc` and the name of the file should be equal to the value from the `"name"` attribute of `<struct>` or `<function>` (followed by additional suffix `Response` if the `"name"` doesn't end with it and the `"messagetype"` attribute is set to `response`) followed by the extension `.java`.
 
 Example:
 ```shell script
