@@ -747,15 +747,15 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if primaryGraphic should be updated, false if not
 	 */
 	private boolean shouldUpdatePrimaryImage() {
-		boolean templateSupportsPrimaryArtwork = (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.graphic) : true;
+		boolean templateSupportsPrimaryArtwork = (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null)
+				? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.graphic)
+				: true;
 
-		if (currentScreenData.getGraphic() == null) {
-			return templateSupportsPrimaryArtwork && primaryGraphic != null;
-		} else {
-			return templateSupportsPrimaryArtwork
-					&& primaryGraphic != null
-					&& !CompareUtils.areStringsEqual(currentScreenData.getGraphic().getValue(), primaryGraphic.getName(), true, true);
-		}
+		String currentScreenDataPrimaryGraphicName = (currentScreenData != null && currentScreenData.getGraphic() != null) ? currentScreenData.getGraphic().getValue() : null;
+		String primaryGraphicName = primaryGraphic != null ? primaryGraphic.getName() : null;
+		return templateSupportsPrimaryArtwork
+				&& !CompareUtils.areStringsEqual(currentScreenDataPrimaryGraphicName, primaryGraphicName, true, true)
+				&& primaryGraphic != null;
 	}
 
 	/**
@@ -763,15 +763,15 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if secondaryGraphic should be updated, false if not
 	 */
 	private boolean shouldUpdateSecondaryImage() {
-		boolean templateSupportsSecondaryArtwork = (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null) ?  ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.secondaryGraphic) : true;
+		boolean templateSupportsSecondaryArtwork = (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null)
+				? (ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.graphic) || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.secondaryGraphic))
+				: true;
 
-		if (currentScreenData.getSecondaryGraphic() == null) {
-			return templateSupportsSecondaryArtwork && secondaryGraphic != null;
-		} else {
-			return templateSupportsSecondaryArtwork
-					&& secondaryGraphic != null
-					&& !CompareUtils.areStringsEqual(currentScreenData.getSecondaryGraphic().getValue(), secondaryGraphic.getName(), true, true);
-		}
+		String currentScreenDataSecondaryGraphicName = (currentScreenData != null && currentScreenData.getSecondaryGraphic() != null) ? currentScreenData.getSecondaryGraphic().getValue() : null;
+		String secondaryGraphicName = secondaryGraphic != null ? secondaryGraphic.getName() : null;
+		return templateSupportsSecondaryArtwork
+				&& !CompareUtils.areStringsEqual(currentScreenDataSecondaryGraphicName, secondaryGraphicName, true, true)
+				&& secondaryGraphic != null;
 	}
 
 	/**
@@ -779,15 +779,19 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if mediaTrackTextField should be updated, false if not
 	 */
 	private boolean shouldUpdateMediaTrackField(){
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ?  ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.mediaTrack) : true;
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null)
+				?  ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.mediaTrack)
+				: true;
 	}
 
 	/**
-	 * Check to see if title textField should be updated
-	 * @return true if title textField should be updated, false if not
+	 * Check to see if title should be updated
+	 * @return true if title should be updated, false if not
 	 */
 	private boolean shouldUpdateTitleField(){
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ?  ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.templateTitle) : true;
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null)
+				? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.templateTitle)
+				: true;
 	}
 
 	// SCREEN ITEM SETTERS AND GETTERS

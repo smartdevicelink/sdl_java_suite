@@ -138,7 +138,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		textAndGraphicManager.defaultMainWindowCapability = getNullVarWindowCapability();
 
 		// Null test
-		assertEquals(ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(textAndGraphicManager.defaultMainWindowCapability), 4);
+		assertEquals(0, ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(textAndGraphicManager.defaultMainWindowCapability));
 
 		// The tests.java class has an example of this, but we must build it to do what
 		// we need it to do. Build display cap w/ 3 main fields and test that it returns 3
