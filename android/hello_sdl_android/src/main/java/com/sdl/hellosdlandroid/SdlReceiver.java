@@ -41,9 +41,7 @@ public class SdlReceiver  extends SdlBroadcastReceiver {
 			String action = intent.getAction();
 			if (action != null){
 				if(action.equalsIgnoreCase(TransportConstants.START_ROUTER_SERVICE_ACTION)) {
-					if (intent.getBooleanExtra(RECONNECT_LANG_CHANGE, false)) {
-						onSdlEnabled(context, intent);
-					}
+					onSdlEnabled(context, intent);
 				}
 			}
 		}
