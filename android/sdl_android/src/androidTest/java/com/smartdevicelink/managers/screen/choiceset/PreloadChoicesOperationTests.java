@@ -93,7 +93,7 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
-		preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, null,windowCapability, true, cellsToPreload, null);
+		preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
 	}
 
 	/**
