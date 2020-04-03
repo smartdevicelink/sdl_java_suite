@@ -1344,6 +1344,7 @@ public class SdlRouterService extends Service{
 				// If this is the first time the service has ever connected to this device we want
 				// to ensure we have a record of it
 				setSDLConnectedStatus(address, false);
+				return FOREGROUND_TIMEOUT;
 			}
 		}
 		// If this is a new device or hasn't connected through SDL we want to limit the exposure
@@ -1517,26 +1518,21 @@ public class SdlRouterService extends Service{
 	private void exitForeground(){
 		synchronized (NOTIFICATION_LOCK) {
 			if (isForeground && !isPrimaryTransportConnected()) {	//Ensure that the service is in the foreground and no longer connected to a transport
-				this.stopForeground(true);
+				DebugTool.logInfo("SdlRouterService to exit foreground");
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+					this.stopForeground(Service.STOP_FOREGROUND_DETACH);
+				}else{
+					stopForeground(false);
+				}
 				NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-				if (notificationManager!= null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				if (notificationManager!= null){
 					try {
-						boolean notificationHasDisplayed = false;
-						StatusBarNotification[] notifications = notificationManager.getActiveNotifications();
-						for (StatusBarNotification notification : notifications) {
-							if(notification != null && FOREGROUND_SERVICE_ID == notification.getId()){
-								DebugTool.logInfo("Service notification is being displayed");
-								notificationHasDisplayed = true;
-								break;
-							}
-						}
-						if (notificationHasDisplayed) {
+						notificationManager.cancelAll();
+						if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 							notificationManager.deleteNotificationChannel(SDL_NOTIFICATION_CHANNEL_ID);
 						}
-						//else leave the notification channel alone to avoid deleting it before the
-						//foreground service notification has a chance to be displayed.
-					} catch (Exception e){
-						DebugTool.logError("Issue when deleting notification channel", e);
+					} catch (Exception e) {
+						DebugTool.logError("Issue when removing notification and channel", e);
 					}
 				}
 				isForeground = false;
