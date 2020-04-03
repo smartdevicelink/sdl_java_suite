@@ -289,13 +289,13 @@ public class SystemCapabilityManager {
                         }
                     } else if (RPCMessage.KEY_NOTIFICATION.equals(message.getMessageType())) {
                         switch (message.getFunctionID()) {
-							case ON_HMI_STATUS:
-								OnHMIStatus onHMIStatus = (OnHMIStatus) message;
-								if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
-									return;
-								}
-								currentHMILevel = onHMIStatus.getHmiLevel();
-								break;
+                            case ON_HMI_STATUS:
+                                OnHMIStatus onHMIStatus = (OnHMIStatus) message;
+                                if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+                                    return;
+                                }
+                                currentHMILevel = onHMIStatus.getHmiLevel();
+                                break;
                             case ON_SYSTEM_CAPABILITY_UPDATED:
                                 OnSystemCapabilityUpdated onSystemCapabilityUpdated = (OnSystemCapabilityUpdated) message;
                                 if (onSystemCapabilityUpdated.getSystemCapability() != null) {
