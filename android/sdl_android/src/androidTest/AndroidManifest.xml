@@ -13,8 +13,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
-        android:debuggable="true"
-        android:usesCleartextTraffic="true">
+        android:debuggable="true">
         <uses-library android:name="android.test.runner" />
     </application>
 

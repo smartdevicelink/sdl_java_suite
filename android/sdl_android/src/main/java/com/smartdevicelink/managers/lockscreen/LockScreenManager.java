@@ -379,23 +379,17 @@ public class LockScreenManager extends BaseSubManager {
 		new Thread(new Runnable(){
 			@Override
 			public void run(){
-				try{
-					if(mLockScreenDeviceIconManager.isIconCachedAndValid(url)) {
-						DebugTool.logInfo("Image Is Up To Date");
-						deviceLogo = mLockScreenDeviceIconManager.getFileFromCache(url);
-						if (deviceLogo == null) {
-							deviceLogo = AndroidTools.downloadImage(url);
-							mLockScreenDeviceIconManager.saveFileToCache(deviceLogo, url);
-						}
-					} else {
-						DebugTool.logInfo("Lock Screen Icon Update Needed");
-						deviceLogo = AndroidTools.downloadImage(url);
-						mLockScreenDeviceIconManager.saveFileToCache(deviceLogo, url);
+				mLockScreenDeviceIconManager.retrieveIcon(url, new LockScreenDeviceIconManager.OnIconRetrievedListener() {
+					@Override
+					public void onImageRetrieved(Bitmap icon) {
+						deviceLogo = icon;
 					}
-				} catch(IOException e){
-					Log.e(TAG, "device Icon Error Downloading, Will attempt to grab cached Icon even if expired: \n" + e.toString());
-					deviceLogo = mLockScreenDeviceIconManager.getFileFromCache(url);
-				}
+
+					@Override
+					public void onError(String info) {
+						DebugTool.logError(info);
+					}
+				});
 				if(deviceLogo != null) {
 					Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_DOWNLOADED);
 					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
