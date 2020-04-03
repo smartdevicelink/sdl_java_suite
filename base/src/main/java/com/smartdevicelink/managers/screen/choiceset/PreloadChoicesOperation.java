@@ -230,7 +230,7 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	}
 
 	// HELPERS
-	private boolean shouldSendChoiceText() {
+	boolean shouldSendChoiceText() {
 		if (this.displayName != null && this.displayName.equals(DisplayType.GEN3_8_INCH)){
 			return true;
 		}
@@ -239,25 +239,25 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 				: true;
 	}
 
-	private boolean shouldSendChoiceSecondaryText() {
+	boolean shouldSendChoiceSecondaryText() {
 		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null)
 				? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.secondaryText)
 				: true;
 	}
 
-	private boolean shouldSendChoiceTertiaryText() {
+	boolean shouldSendChoiceTertiaryText() {
 		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null)
 				? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.tertiaryText)
 				: true;
 	}
 
-	private boolean shouldSendChoicePrimaryImage() {
+	boolean shouldSendChoicePrimaryImage() {
 		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null)
 				? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.choiceImage)
 				: true;
 	}
 
-	private boolean shouldSendChoiceSecondaryImage() {
+	boolean shouldSendChoiceSecondaryImage() {
 		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null)
 				? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.choiceSecondaryImage)
 				: true;
