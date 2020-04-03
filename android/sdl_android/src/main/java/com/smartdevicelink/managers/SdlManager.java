@@ -867,6 +867,11 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		@Override
+		public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
+			return proxy.getRegisterAppInterfaceResponse();
+		}
+
+		@Override
 		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
 			return proxy.isCapabilitySupported(systemCapabilityType);
 		}
