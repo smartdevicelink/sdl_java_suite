@@ -300,6 +300,7 @@ public class OnSystemRequest extends RPCNotification {
     }
 
     public void setUrl(String url) {
+        url = url.replace("http://", "https://");
         setParameters(KEY_URL, url);
     }
 
