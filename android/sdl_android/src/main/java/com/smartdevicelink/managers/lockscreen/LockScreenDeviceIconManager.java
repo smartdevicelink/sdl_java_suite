@@ -71,7 +71,11 @@ class LockScreenDeviceIconManager {
         } catch (IOException e) {
             iconRetrievedListener.onError("device Icon Error Downloading, Will attempt to grab cached Icon even if expired: \n" + e.toString());
             icon = getFileFromCache(iconURL);
-            iconRetrievedListener.onImageRetrieved(icon);
+            if (icon != null) {
+                iconRetrievedListener.onImageRetrieved(icon);
+            } else {
+                iconRetrievedListener.onError("Unable to retrieve icon from cache");
+            }
         }
     }
 
