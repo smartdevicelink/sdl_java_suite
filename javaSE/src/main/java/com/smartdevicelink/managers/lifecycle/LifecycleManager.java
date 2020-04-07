@@ -1146,6 +1146,11 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
 
         @Override
+        public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
+            return raiResponse;
+        }
+
+        @Override
         public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType) {
             return LifecycleManager.this.systemCapabilityManager.isCapabilitySupported(systemCapabilityType);
         }
