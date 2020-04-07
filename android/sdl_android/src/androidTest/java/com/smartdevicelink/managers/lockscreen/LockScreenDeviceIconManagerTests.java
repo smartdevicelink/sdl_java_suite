@@ -41,7 +41,7 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         super.tearDown();
     }
 
-    public void testRetrieveIconShouldCallOnErrorAndOnImageRetrievedWithNullWhenGivenURLThatCannotDownloadAndIconIsNotCached() {
+    public void testRetrieveIconShouldCallOnErrorTwiceWhenGivenURLThatCannotDownloadAndIconIsNotCached() {
         final SharedPreferences sharedPrefs = Mockito.mock(SharedPreferences.class);
         final Context context = Mockito.mock(Context.class);
         final LockScreenDeviceIconManager.OnIconRetrievedListener listener = Mockito.mock(LockScreenDeviceIconManager.OnIconRetrievedListener.class);
@@ -51,8 +51,7 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
 
         lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
         lockScreenDeviceIconManager.retrieveIcon("", listener);
-        verify(listener, times(1)).onError(anyString());
-        verify(listener, times(1)).onImageRetrieved(null);
+        verify(listener, times(2)).onError(anyString());
     }
 
     public void testRetrieveIconShouldCallOnImageOnImageRetrievedWithIconWhenIconUpdateTimeIsNullFromSharedPref() {
