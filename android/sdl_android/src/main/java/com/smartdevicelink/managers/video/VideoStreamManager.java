@@ -97,6 +97,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private boolean isTransportAvailable = false;
 	private boolean hasStarted;
 	private List<HMILevel> streamableLevels = Arrays.asList(HMILevel.HMI_FULL, HMILevel.HMI_LIMITED);
+	private String vehicleMake = null;
 
 	// INTERNAL INTERFACES
 
@@ -178,10 +179,12 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	};
 
 	// MANAGER APIs
-
 	public VideoStreamManager(ISdl internalInterface){
 		super(internalInterface);
 
+		if(internalInterface.getRegisterAppInterfaceResponse().getVehicleType() != null) {
+			vehicleMake = internalInterface.getRegisterAppInterfaceResponse().getVehicleType().getMake();
+		}
 		virtualDisplayEncoder = new VirtualDisplayEncoder();
 		hmiLevel = HMILevel.HMI_NONE;
 
@@ -220,7 +223,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				@Override
 				public void onCapabilityRetrieved(Object capability) {
 					VideoStreamingParameters params = new VideoStreamingParameters();
-					params.update((VideoStreamingCapability)capability);	//Streaming parameters are ready time to stream
+					params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
 					VideoStreamManager.this.parameters = params;
 
 					checkState();
@@ -272,7 +275,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					@Override
 					public void onCapabilityRetrieved(Object capability) {
 						VideoStreamingParameters params = new VideoStreamingParameters();
-						params.update((VideoStreamingCapability)capability);	//Streaming parameters are ready time to stream
+						params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
 						startStreaming(params, encrypted);
 					}
 

@@ -299,7 +299,7 @@ public class MenuCell implements Cloneable{
 	public int hashCode() {
 		int result = 1;
 		result += ((getTitle() == null) ? 0 : Integer.rotateLeft(getTitle().hashCode(), 1));
-		result += ((getIcon() == null || getIcon().getName() == null) ? 0 : Integer.rotateLeft(getIcon().getName().hashCode(), 2));
+		result += ((getIcon() == null) ? 0 : Integer.rotateLeft(getIcon().hashCode(), 2));
 		result += ((getVoiceCommands() == null) ? 0 : Integer.rotateLeft(getVoiceCommands().hashCode(), 3));
 		result += ((getSubCells() == null) ? 0 : Integer.rotateLeft(1, 4));
 		return result;
