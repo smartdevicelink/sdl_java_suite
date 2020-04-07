@@ -236,6 +236,7 @@ public class LockScreenManager extends BaseSubManager {
 							msg.getUrl() != null) {
 						// send intent to activity to download icon from core
 						deviceIconUrl = msg.getUrl();
+						deviceIconUrl = deviceIconUrl.replace("http://", "https://");
 						downloadDeviceIcon(deviceIconUrl);
 					}
 				}

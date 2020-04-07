@@ -91,7 +91,7 @@ public class LockScreenDeviceIconManagerTests extends AndroidTestCase2 {
         Mockito.when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs);
         Mockito.when(sharedPrefs.getString(anyString(), (String) isNull())).thenReturn(daysToMillisecondsAsString(15));
         Mockito.when(sharedPrefs.edit()).thenReturn(sharedPrefsEditor);
-        Mockito.when(sharedPrefsEditor.remove(anyString())).thenReturn(sharedPrefsEditor);
+        Mockito.when(sharedPrefsEditor.clear()).thenReturn(sharedPrefsEditor);
 
         lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
         lockScreenDeviceIconManager.retrieveIcon(ICON_URL, listener);

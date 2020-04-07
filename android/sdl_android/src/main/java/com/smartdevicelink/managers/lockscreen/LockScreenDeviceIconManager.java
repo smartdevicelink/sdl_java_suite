@@ -16,6 +16,12 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * <strong>LockScreenDeviceIconManager</strong> <br>
+ *
+ * The LockScreenDeviceIconManager handles the logic of caching and retrieving cached lock screen icons <br>
+ *
+ */
 class LockScreenDeviceIconManager {
 
     private Context context;
@@ -33,6 +39,12 @@ class LockScreenDeviceIconManager {
         lockScreenDirectory.mkdirs();
     }
 
+    /**
+     * Will try to return a lock screen icon either from cache or downloaded
+     * if it fails iconRetrievedListener.OnError will be called with corresponding error message
+     * @param iconURL url that the lock screen icon is downloaded from
+     * @param iconRetrievedListener an interface that will implement onIconReceived and OnError methods
+     */
     void retrieveIcon(String iconURL, OnIconRetrievedListener iconRetrievedListener) {
         Bitmap icon = null;
         try {
@@ -46,10 +58,15 @@ class LockScreenDeviceIconManager {
                 }
                 iconRetrievedListener.onImageRetrieved(icon);
             } else {
+                // The icon is unknown or expired. Download the image, save it to the cache, and update the archive file
                 DebugTool.logInfo("Lock Screen Icon Update Needed");
                 icon = AndroidTools.downloadImage(iconURL);
-                saveFileToCache(icon, iconURL);
-                iconRetrievedListener.onImageRetrieved(icon);
+                if (icon != null) {
+                    saveFileToCache(icon, iconURL);
+                    iconRetrievedListener.onImageRetrieved(icon);
+                } else {
+                    iconRetrievedListener.onError("Icon downloaded was null");
+                }
             }
         } catch (IOException e) {
             iconRetrievedListener.onError("device Icon Error Downloading, Will attempt to grab cached Icon even if expired: \n" + e.toString());
@@ -58,6 +75,11 @@ class LockScreenDeviceIconManager {
         }
     }
 
+    /**
+     * Will decide if a cached icon is available and up to date
+     * @param iconUrl url will be hashed and used to look up last updated timestamp in shared preferences
+     * @return True when icon details are in shared preferences and less than 30 days old, False if icon details are too old or not found
+     */
     private boolean isIconCachedAndValid(String iconUrl) {
         String iconHash = getMD5HashFromIconUrl(iconUrl);
         SharedPreferences sharedPref = this.context.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
@@ -73,7 +95,7 @@ class LockScreenDeviceIconManager {
             } catch (NumberFormatException e) {
                 DebugTool.logInfo("Invalid time stamp stored to shared preferences, clearing cache and share preferences");
                 clearIconDirectory();
-                sharedPref.edit().remove(iconHash).commit();
+                sharedPref.edit().clear().commit();
             }
             long currentTime = System.currentTimeMillis();
 
@@ -83,6 +105,11 @@ class LockScreenDeviceIconManager {
         }
     }
 
+    /**
+     * Will try to save icon to cache
+     * @param icon the icon bitmap that should be saved to cache
+     * @param iconUrl the url where the icon was retrieved will be hashed and used for file and file details lookup
+     */
     private void saveFileToCache(Bitmap icon, String iconUrl) {
         String iconHash = getMD5HashFromIconUrl(iconUrl);
         File f = new File(this.context.getCacheDir() + "/" + STORED_ICON_DIRECTORY_PATH, iconHash);
@@ -96,15 +123,18 @@ class LockScreenDeviceIconManager {
             fos.write(bitmapData);
             fos.flush();
             fos.close();
+            writeDeviceIconParametersToSharedPreferences(iconHash);
         } catch (Exception e) {
             DebugTool.logError("Failed to save icon to cache");
             e.printStackTrace();
-            return;
         }
-
-        writeDeviceIconParametersToSharedPreferences(iconHash);
     }
 
+    /**
+     * Will try to retrieve icon bitmap from cached directory
+     * @param iconUrl the url where the icon was retrieved will be hashed and used to look up file location
+     * @return bitmap of device icon or null if it fails to find the icon or read from shared preferences
+     */
     private Bitmap getFileFromCache(String iconUrl) {
         String iconHash = getMD5HashFromIconUrl(iconUrl);
         SharedPreferences sharedPref = this.context.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
@@ -115,17 +145,22 @@ class LockScreenDeviceIconManager {
             if(cachedIcon == null) {
                 DebugTool.logError("Failed to get Bitmap from decoding file cache");
                 clearIconDirectory();
-                sharedPref.edit().remove(iconHash).commit();
+                sharedPref.edit().clear().commit();
                 return null;
             } else {
                 return cachedIcon;
             }
         } else {
-            DebugTool.logError("Failed to get system preferences");
+            DebugTool.logError("Failed to get shared preferences");
             return null;
         }
     }
 
+    /**
+     * Will write information about the icon to shared preferences
+     * icon information will have a look up key of the hashed icon url and the current timestamp to indicated when the icon was last updated.
+     * @param iconHash the url where the icon was retrieved will be hashed and used lookup key
+     */
     private void writeDeviceIconParametersToSharedPreferences(String iconHash) {
         SharedPreferences sharedPref = this.context.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -133,6 +168,11 @@ class LockScreenDeviceIconManager {
         editor.commit();
     }
 
+    /**
+     * Create an MD5 hash of the icon url for file storage and lookup/shared preferences look up
+     * @param iconUrl the url where the icon was retrieved
+     * @return MD5 hash of the icon URL
+     */
     private String getMD5HashFromIconUrl(String iconUrl) {
         String iconHash = null;
         try {
@@ -151,6 +191,9 @@ class LockScreenDeviceIconManager {
         return iconHash;
     }
 
+    /**
+     * Clears all files in the directory where lock screen icons are cached
+     */
     private void clearIconDirectory() {
         File iconDir = new File(context.getCacheDir() + "/" + STORED_ICON_DIRECTORY_PATH);
         if (iconDir.listFiles() != null) {
