@@ -92,7 +92,7 @@ class PoliciesFetcher {
         }
 
         try {
-            url = new URL(sURLString);
+            url = new URL(sURLString.replaceFirst("http://", "https://"));
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setConnectTimeout(CONNECTION_TIMEOUT);
             urlConnection.setDoOutput(bDoOutput);

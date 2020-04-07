@@ -1294,6 +1294,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		} else {
 			sURLString = msg.getUrl();
 		}
+		sURLString = sURLString.replaceFirst("http://", "https://");
 
 		Integer iTimeout = msg.getTimeout();
 
@@ -4113,7 +4114,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						onRPCNotificationReceived(msg);
 					}
 				} else {
-					updateBroadcastIntent(sendIntent, "COMMENT1", "Sending to cloud: " + msg.getUrl());
+					updateBroadcastIntent(sendIntent, "COMMENT1", "Sending to cloud: " + msg.getUrl().replaceFirst("http://", "https://"));
 					sendBroadcastIntent(sendIntent);				
 					
 					Log.i("pt", "send to url");
@@ -4290,10 +4291,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						Thread handleOffBoardTransmissionThread = new Thread() {
 							@Override
 							public void run() {
-								byte[] file = FileUtls.downloadFile(msg.getUrl());
+								byte[] file = FileUtls.downloadFile(msg.getUrl().replaceFirst("http://", "https://"));
 								if (file != null) {
 									SystemRequest systemRequest = new SystemRequest();
-									systemRequest.setFileName(msg.getUrl());
+									systemRequest.setFileName(msg.getUrl().replaceFirst("http://", "https://"));
 									systemRequest.setBulkData(file);
 									systemRequest.setRequestType(RequestType.ICON_URL);
 									try {
@@ -4302,7 +4303,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 										e.printStackTrace();
 									}
 								} else {
-									DebugTool.logError("File was null at: " + msg.getUrl());
+									DebugTool.logError("File was null at: " + msg.getUrl().replaceFirst("http://", "https://"));
 								}
 							}
 						};
@@ -5829,7 +5830,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	        l.onLockScreenIconDownloaded(bitmap);
 	    }
 	    else{
-    	    String url = lockScreenIconRequest.getUrl();
+    	    String url = lockScreenIconRequest.getUrl().replaceFirst("http://", "https://");
     	    sdlSession.getLockScreenMan().downloadLockScreenIcon(url, l);
 	    }
 	}
