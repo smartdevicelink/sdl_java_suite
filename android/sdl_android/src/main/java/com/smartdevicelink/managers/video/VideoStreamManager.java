@@ -151,7 +151,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				}
 				HMILevel prevHMILevel = hmiLevel;
 				hmiLevel = onHMIStatus.getHmiLevel();
-				if (!hmiLevel.equals(HMILevel.HMI_NONE) && VideoStreamManager.this.parameters == null) {
+				if (!HMILevel.HMI_NONE.equals(hmiLevel) && VideoStreamManager.this.parameters == null) {
 					getVideoStreamingParams();
 				}
 				if(hmiLevel.equals(HMILevel.HMI_FULL)){
