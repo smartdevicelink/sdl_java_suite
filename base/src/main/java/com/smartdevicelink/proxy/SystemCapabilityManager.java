@@ -495,6 +495,7 @@ public class SystemCapabilityManager {
 	/** Gets the capability object that corresponds to the supplied capability type by calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds.
 	 * @param systemCapabilityType Type of capability desired
 	 * @param scListener callback to execute upon retrieving capability
+	 * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
 	 */
 	@Deprecated
 	public void getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener) {
@@ -504,6 +505,7 @@ public class SystemCapabilityManager {
 	/** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately if available. Otherwise returns a null object and works in the background to retrieve the capability for the next call
 	 * @param systemCapabilityType Type of capability desired
 	 * @return Desired capability if it is cached in the manager, otherwise returns null
+	 * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
 	 */
 	@Deprecated
 	public Object getCapability(final SystemCapabilityType systemCapabilityType) {

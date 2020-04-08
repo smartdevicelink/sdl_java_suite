@@ -207,6 +207,7 @@ public interface ISdl {
      * Get SystemCapability Object
      * @param systemCapabilityType a system capability type that should be retrieved
      * @return the system capability provided if available, null if not
+     * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
      */
     @Deprecated
     Object getCapability(SystemCapabilityType systemCapabilityType);
@@ -216,6 +217,7 @@ public interface ISdl {
      * @param systemCapabilityType a system capability type that should be retrieved
      * @param scListener listener that will be called when the system capability is retrieved. If already cached, it
      *                   will be called immediately
+     * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
      */
     @Deprecated
     void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener);
