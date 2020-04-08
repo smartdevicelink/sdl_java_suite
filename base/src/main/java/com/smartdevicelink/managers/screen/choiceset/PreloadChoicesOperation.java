@@ -254,15 +254,11 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	}
 
 	boolean templateSupportsTextField(TextFieldName name) {
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null)
-				? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name)
-				: true;
+		return (defaultMainWindowCapability == null || defaultMainWindowCapability.getTextFields() == null) || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
 	}
 
 	boolean templateSupportsImageField(ImageFieldName name) {
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null)
-				? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name)
-				: true;
+		return (defaultMainWindowCapability == null || defaultMainWindowCapability.getImageFields() == null) || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name);
 	}
 
 	List<SdlArtwork> artworksToUpload(){
