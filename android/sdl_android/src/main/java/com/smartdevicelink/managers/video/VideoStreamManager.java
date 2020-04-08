@@ -74,6 +74,7 @@ import com.smartdevicelink.util.Version;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.FutureTask;
@@ -95,6 +96,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private IVideoStreamListener streamListener;
 	private boolean isTransportAvailable = false;
 	private boolean hasStarted;
+	private List<HMILevel> streamableLevels = Arrays.asList(HMILevel.HMI_FULL, HMILevel.HMI_LIMITED);
+	private String vehicleMake = null;
 
 	// INTERNAL INTERFACES
 
@@ -154,10 +157,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				if (!HMILevel.HMI_NONE.equals(hmiLevel) && VideoStreamManager.this.parameters == null) {
 					getVideoStreamingParams();
 				}
-				if(hmiLevel.equals(HMILevel.HMI_FULL)){
+				if (streamableLevels.contains(hmiLevel)) {
 					checkState();
 				}
-				if (hasStarted && (prevHMILevel == HMILevel.HMI_FULL || prevHMILevel == HMILevel.HMI_LIMITED) && (hmiLevel == HMILevel.HMI_NONE || hmiLevel == HMILevel.HMI_BACKGROUND)){
+				if (hasStarted && (streamableLevels.contains(prevHMILevel)) && (!streamableLevels.contains(hmiLevel))) {
 					internalInterface.stopVideoService();
 				}
 			}
@@ -179,10 +182,12 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	};
 
 	// MANAGER APIs
-
 	public VideoStreamManager(ISdl internalInterface){
 		super(internalInterface);
 
+		if(internalInterface.getRegisterAppInterfaceResponse().getVehicleType() != null) {
+			vehicleMake = internalInterface.getRegisterAppInterfaceResponse().getVehicleType().getMake();
+		}
 		virtualDisplayEncoder = new VirtualDisplayEncoder();
 		hmiLevel = HMILevel.HMI_NONE;
 
@@ -207,7 +212,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		if(this.getState() == SETTING_UP
 				&& isTransportAvailable
 				&& hmiLevel != null
-				&& hmiLevel.equals(HMILevel.HMI_FULL)
+				&& streamableLevels.contains(hmiLevel)
 				&& parameters != null){
 			stateMachine.transitionToState(StreamingStateMachine.READY);
 			transitionToState(READY);
@@ -220,7 +225,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				@Override
 				public void onCapabilityRetrieved(Object capability) {
 					VideoStreamingParameters params = new VideoStreamingParameters();
-					params.update((VideoStreamingCapability)capability);	//Streaming parameters are ready time to stream
+					params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
 					VideoStreamManager.this.parameters = params;
 
 					checkState();
@@ -272,7 +277,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					@Override
 					public void onCapabilityRetrieved(Object capability) {
 						VideoStreamingParameters params = new VideoStreamingParameters();
-						params.update((VideoStreamingCapability)capability);	//Streaming parameters are ready time to stream
+						params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
 						startStreaming(params, encrypted);
 					}
 
@@ -305,8 +310,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 */
 	protected void startStreaming(VideoStreamingParameters parameters, boolean encrypted){
 		this.parameters = parameters;
-		if(hmiLevel != HMILevel.HMI_FULL){
-			Log.e(TAG, "Cannot start video service if HMILevel is not FULL.");
+		if (!streamableLevels.contains(hmiLevel)) {
+			Log.e(TAG, "Cannot start video service if HMILevel is not FULL or LIMITED.");
 			return;
 		}
 		//Start the video service
@@ -401,7 +406,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @return boolean (true = yes, false = no)
 	 */
 	public boolean isStreaming(){
-		return (stateMachine.getState() == StreamingStateMachine.STARTED) && (hmiLevel == HMILevel.HMI_FULL);
+		return (stateMachine.getState() == StreamingStateMachine.STARTED) && (streamableLevels.contains(hmiLevel));
 	}
 
 	/**
@@ -409,7 +414,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @return boolean (true = not paused, false = paused)
 	 */
 	public boolean isPaused(){
-		return (hasStarted && stateMachine.getState() == StreamingStateMachine.STOPPED) || (hmiLevel != HMILevel.HMI_FULL);
+		return (hasStarted && stateMachine.getState() == StreamingStateMachine.STOPPED) || (!streamableLevels.contains(hmiLevel));
 	}
 
 	/**

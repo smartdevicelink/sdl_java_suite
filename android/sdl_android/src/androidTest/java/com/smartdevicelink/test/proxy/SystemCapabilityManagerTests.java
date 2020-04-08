@@ -995,7 +995,13 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		public Object getCapability(SystemCapabilityType systemCapabilityType){return null;}
 
 		@Override
-		public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) { }
+		public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
+		}
+
+		@Override
+		public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
+			return null;
+		}
 
 		@Override
 		public Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate) {
@@ -1003,7 +1009,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		}
 
 		@Override
-		public SdlMsgVersion getSdlMsgVersion(){
+		public SdlMsgVersion getSdlMsgVersion() {
 			return null;
 		}
 
