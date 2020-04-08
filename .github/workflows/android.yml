@@ -38,8 +38,8 @@ jobs:
 
     - name: RPC Generator Tests
       run: |
-        python3 -m pip install -r ./utils/generator/requirements.txt
-        python3 ./utils/generator/test/runner.py
+        python3 -m pip install -r ./generator/requirements.txt
+        python3 ./generator/test/runner.py
 
     - name: Codecov	
       uses: codecov/codecov-action@v1.0.6
