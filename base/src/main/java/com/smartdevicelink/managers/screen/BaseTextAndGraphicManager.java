@@ -747,9 +747,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if primaryGraphic should be updated, false if not
 	 */
 	private boolean shouldUpdatePrimaryImage() {
-		boolean templateSupportsPrimaryArtwork = (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null)
-				? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.graphic)
-				: true;
+		boolean templateSupportsPrimaryArtwork = templateSupportsImageField(ImageFieldName.graphic);
 
 		String currentScreenDataPrimaryGraphicName = (currentScreenData != null && currentScreenData.getGraphic() != null) ? currentScreenData.getGraphic().getValue() : null;
 		String primaryGraphicName = primaryGraphic != null ? primaryGraphic.getName() : null;
@@ -763,9 +761,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if secondaryGraphic should be updated, false if not
 	 */
 	private boolean shouldUpdateSecondaryImage() {
-		boolean templateSupportsSecondaryArtwork = (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null)
-				? (ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.graphic) || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.secondaryGraphic))
-				: true;
+		boolean templateSupportsSecondaryArtwork = (templateSupportsImageField(ImageFieldName.graphic) || templateSupportsImageField(ImageFieldName.secondaryGraphic));
 
 		String currentScreenDataSecondaryGraphicName = (currentScreenData != null && currentScreenData.getSecondaryGraphic() != null) ? currentScreenData.getSecondaryGraphic().getValue() : null;
 		String secondaryGraphicName = secondaryGraphic != null ? secondaryGraphic.getName() : null;
@@ -775,22 +771,38 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	}
 
 	/**
+	 * Check to see if template supports the specified image field
+	 * @return true if image field is supported, false if not
+	 */
+	private boolean templateSupportsImageField(ImageFieldName name) {
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null)
+				? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name)
+				: true;
+	}
+
+	/**
 	 * Check to see if mediaTrackTextField should be updated
 	 * @return true if mediaTrackTextField should be updated, false if not
 	 */
-	private boolean shouldUpdateMediaTrackField(){
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null)
-				?  ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.mediaTrack)
-				: true;
+	private boolean shouldUpdateMediaTrackField() {
+		return shouldUpdateField(TextFieldName.mediaTrack);
 	}
 
 	/**
 	 * Check to see if title should be updated
 	 * @return true if title should be updated, false if not
 	 */
-	private boolean shouldUpdateTitleField(){
+	private boolean shouldUpdateTitleField() {
+		return shouldUpdateField(TextFieldName.templateTitle);
+	}
+
+	/**
+	 * Check to see if field should be updated
+	 * @return true if field should be updated, false if not
+	 */
+	private boolean shouldUpdateField(TextFieldName name) {
 		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null)
-				? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.templateTitle)
+				? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name)
 				: true;
 	}
 
