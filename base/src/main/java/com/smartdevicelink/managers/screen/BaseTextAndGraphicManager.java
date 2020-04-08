@@ -785,7 +785,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if mediaTrackTextField should be updated, false if not
 	 */
 	private boolean shouldUpdateMediaTrackField() {
-		return shouldUpdateField(TextFieldName.mediaTrack);
+		return templateSupportsTextField(TextFieldName.mediaTrack);
 	}
 
 	/**
@@ -793,14 +793,14 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if title should be updated, false if not
 	 */
 	private boolean shouldUpdateTitleField() {
-		return shouldUpdateField(TextFieldName.templateTitle);
+		return templateSupportsTextField(TextFieldName.templateTitle);
 	}
 
 	/**
 	 * Check to see if field should be updated
 	 * @return true if field should be updated, false if not
 	 */
-	private boolean shouldUpdateField(TextFieldName name) {
+	private boolean templateSupportsTextField(TextFieldName name) {
 		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null)
 				? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name)
 				: true;

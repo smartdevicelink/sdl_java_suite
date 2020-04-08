@@ -234,32 +234,34 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 		if (this.displayName != null && this.displayName.equals(DisplayType.GEN3_8_INCH)){
 			return true;
 		}
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null)
-				? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.menuName)
-				: true;
+		return templateSupportsTextField(TextFieldName.menuName);
 	}
 
 	boolean shouldSendChoiceSecondaryText() {
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null)
-				? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.secondaryText)
-				: true;
+		return templateSupportsTextField(TextFieldName.secondaryText);
 	}
 
 	boolean shouldSendChoiceTertiaryText() {
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null)
-				? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, TextFieldName.tertiaryText)
-				: true;
+		return templateSupportsTextField(TextFieldName.tertiaryText);
 	}
 
 	boolean shouldSendChoicePrimaryImage() {
-		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null)
-				? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.choiceImage)
-				: true;
+		return templateSupportsImageField(ImageFieldName.choiceImage);
 	}
 
 	boolean shouldSendChoiceSecondaryImage() {
+		return templateSupportsImageField(ImageFieldName.choiceSecondaryImage);
+	}
+
+	boolean templateSupportsTextField(TextFieldName name) {
+		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null)
+				? ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name)
+				: true;
+	}
+
+	boolean templateSupportsImageField(ImageFieldName name) {
 		return (defaultMainWindowCapability != null && defaultMainWindowCapability.getImageFields() != null)
-				? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.choiceSecondaryImage)
+				? ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name)
 				: true;
 	}
 
