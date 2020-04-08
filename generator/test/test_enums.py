@@ -37,11 +37,9 @@ class TestEnumsProducer(unittest.TestCase):
                                           deprecated=True)
         })
         expected = {
-            'kind': 'custom',
-            'return_type': 'int',
+            'kind': 'simple',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'TestDeprecated',
-            'imports': {'java.util.EnumSet'},
             'params': (
                 self.producer.params(name='PRIMARY_WIDGET', origin='PRIMARY_WIDGET', deprecated=True,
                                      internal=1, description=None, since=None, value=None),),
@@ -58,7 +56,6 @@ class TestEnumsProducer(unittest.TestCase):
         })
         expected = {
             'kind': 'custom',
-            'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'Language',
             'params': (
@@ -78,11 +75,9 @@ class TestEnumsProducer(unittest.TestCase):
         elements['PRIMARY_WIDGET'] = EnumElement(name='PRIMARY_WIDGET', value=1)
         item = Enum(name='PredefinedWindows', elements=elements)
         expected = {
-            'kind': 'custom',
-            'return_type': 'int',
+            'kind': 'simple',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'PredefinedWindows',
-            'imports': {'java.util.EnumSet'},
             'params': (self.producer.params(name='DEFAULT_WINDOW', origin='DEFAULT_WINDOW',
                                             internal=0, description=None, since=None, value=None,
                                             deprecated=None),
@@ -102,7 +97,6 @@ class TestEnumsProducer(unittest.TestCase):
         })
         expected = {
             'kind': 'custom',
-            'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'SamplingRate',
             'imports': {'java.util.EnumSet'},
@@ -124,7 +118,6 @@ class TestEnumsProducer(unittest.TestCase):
         item = Enum(name='Result', elements=elements)
         expected = {
             'kind': 'simple',
-            'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'Result',
             'params': (
@@ -146,7 +139,6 @@ class TestEnumsProducer(unittest.TestCase):
         })
         expected = {
             'kind': 'simple',
-            'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'DisplayType',
             'params': (
@@ -165,7 +157,6 @@ class TestEnumsProducer(unittest.TestCase):
         })
         expected = {
             'kind': 'simple',
-            'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'SpeechCapabilities',
             'params': (
@@ -184,7 +175,6 @@ class TestEnumsProducer(unittest.TestCase):
         })
         expected = {
             'kind': 'simple',
-            'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'VrCapabilities',
             'params': (
@@ -203,7 +193,6 @@ class TestEnumsProducer(unittest.TestCase):
         })
         expected = {
             'kind': 'simple',
-            'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'ButtonName',
             'params': (
@@ -223,7 +212,6 @@ class TestEnumsProducer(unittest.TestCase):
         })
         expected = {
             'kind': 'custom',
-            'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'Dimension',
             'params': (
@@ -245,7 +233,6 @@ class TestEnumsProducer(unittest.TestCase):
         })
         expected = {
             'kind': 'simple',
-            'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'VehicleDataEventStatus',
             'params': (
@@ -266,7 +253,6 @@ class TestEnumsProducer(unittest.TestCase):
         item = Enum(name='SystemCapabilityType', elements=elements)
         expected = {
             'kind': 'simple',
-            'return_type': 'String',
             'package_name': 'com.smartdevicelink.proxy.rpc.enums',
             'class_name': 'SystemCapabilityType',
             'params': (
