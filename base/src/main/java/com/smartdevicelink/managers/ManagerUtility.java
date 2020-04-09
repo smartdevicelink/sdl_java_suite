@@ -28,7 +28,7 @@ public class ManagerUtility {
             }
             if (windowCapability.getImageFields() != null) {
                 for (ImageField field : windowCapability.getImageFields()) {
-                    if (field != null && field.getName() != null && field.getName().equals(name)) {
+                    if (field != null && name.equals(field.getName())) {
                         return true;
                     }
                 }
