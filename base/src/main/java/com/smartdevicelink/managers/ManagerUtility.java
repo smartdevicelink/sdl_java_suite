@@ -49,7 +49,7 @@ public class ManagerUtility {
             }
             if (windowCapability.getTextFields() != null) {
                 for (TextField field : windowCapability.getTextFields()) {
-                    if (field != null && field.getName() != null && field.getName().equals(name)) {
+                    if (field != null && name.equals(field.getName())) {
                         return true;
                     }
                 }
