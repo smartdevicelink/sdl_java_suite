@@ -54,7 +54,12 @@ class LockScreenDeviceIconManager {
                 if (icon == null) {
                     DebugTool.logInfo("Icon from cache was null, attempting to re-download");
                     icon = AndroidTools.downloadImage(iconURL);
-                    saveFileToCache(icon, iconURL);
+                    if (icon != null) {
+                        saveFileToCache(icon, iconURL);
+                    } else {
+                        iconRetrievedListener.onError("Icon downloaded was null");
+                        return;
+                    }
                 }
                 iconRetrievedListener.onImageRetrieved(icon);
             } else {
