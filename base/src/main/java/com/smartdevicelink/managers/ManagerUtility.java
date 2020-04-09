@@ -65,17 +65,27 @@ public class ManagerUtility {
          */
         public static int getMaxNumberOfMainFieldLines(WindowCapability windowCapability) {
             int highestFound = 0;
-            TextFieldName name;
             if (windowCapability != null && windowCapability.getTextFields() != null) {
                 for (TextField field : windowCapability.getTextFields()) {
-                    if (field.getName() != null) {
-                        name = field.getName();
-                        if (name == TextFieldName.mainField1 || name == TextFieldName.mainField2 || name == TextFieldName.mainField3 || name == TextFieldName.mainField4) {
-                            int fieldNumber = Integer.parseInt(name.toString().substring(name.toString().length() - 1));
-                            highestFound = Math.max(highestFound, fieldNumber);
-                            if (highestFound == 4) {
-                                break;
-                            }
+                    int fieldNumber = 0;
+                    switch (field.getName()) {
+                        case mainField1:
+                            fieldNumber = 1;
+                            break;
+                        case mainField2:
+                            fieldNumber = 2;
+                            break;
+                        case mainField3:
+                            fieldNumber = 3;
+                            break;
+                        case mainField4:
+                            fieldNumber = 4;
+                            break;
+                    }
+                    if (fieldNumber > 0) {
+                        highestFound = Math.max(highestFound, fieldNumber);
+                        if (highestFound == 4) {
+                            break;
                         }
                     }
                 }
