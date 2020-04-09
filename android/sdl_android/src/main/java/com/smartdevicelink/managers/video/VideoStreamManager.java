@@ -154,6 +154,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				}
 				HMILevel prevHMILevel = hmiLevel;
 				hmiLevel = onHMIStatus.getHmiLevel();
+				if (!HMILevel.HMI_NONE.equals(hmiLevel) && VideoStreamManager.this.parameters == null) {
+					getVideoStreamingParams();
+				}
 				if (streamableLevels.contains(hmiLevel)) {
 					checkState();
 				}
@@ -201,7 +204,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	@Override
 	public void start(CompletionListener listener) {
 		isTransportAvailable = internalInterface.isTransportForServiceAvailable(SessionType.NAV);
-		getVideoStreamingParams();
 		checkState();
 		super.start(listener);
 	}

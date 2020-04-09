@@ -1136,13 +1136,27 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         @Override
         public Object getCapability(SystemCapabilityType systemCapabilityType) {
-            return LifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType);
+            if (LifecycleManager.this.systemCapabilityManager != null) {
+                return LifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType);
+            } else {
+                return null;
+            }
         }
 
         @Override
         public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
-            LifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType,scListener);
+            if (LifecycleManager.this.systemCapabilityManager != null) {
+                LifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, scListener);
+            }
+        }
 
+        @Override
+        public Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate) {
+            if (LifecycleManager.this.systemCapabilityManager != null) {
+                return LifecycleManager.this.systemCapabilityManager.getCapability(systemCapabilityType, scListener, forceUpdate);
+            } else {
+                return null;
+            }
         }
 
         @Override
@@ -1152,18 +1166,27 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         @Override
         public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType) {
-            return LifecycleManager.this.systemCapabilityManager.isCapabilitySupported(systemCapabilityType);
+            if (LifecycleManager.this.systemCapabilityManager != null) {
+                return LifecycleManager.this.systemCapabilityManager.isCapabilitySupported(systemCapabilityType);
+            } else {
+                return false;
+            }
         }
 
         @Override
         public void addOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
-            LifecycleManager.this.systemCapabilityManager.addOnSystemCapabilityListener(systemCapabilityType,listener);
-
+            if (LifecycleManager.this.systemCapabilityManager != null) {
+                LifecycleManager.this.systemCapabilityManager.addOnSystemCapabilityListener(systemCapabilityType, listener);
+            }
         }
 
         @Override
         public boolean removeOnSystemCapabilityListener(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener listener) {
-            return LifecycleManager.this.systemCapabilityManager.removeOnSystemCapabilityListener(systemCapabilityType,listener);
+            if (LifecycleManager.this.systemCapabilityManager != null) {
+                return LifecycleManager.this.systemCapabilityManager.removeOnSystemCapabilityListener(systemCapabilityType, listener);
+            } else {
+                return false;
+            }
         }
 
         @Override
