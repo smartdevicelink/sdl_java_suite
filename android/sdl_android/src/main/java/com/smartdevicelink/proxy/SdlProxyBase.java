@@ -455,6 +455,14 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
+		public Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate) {
+			if (_systemCapabilityManager != null) {
+				return _systemCapabilityManager.getCapability(systemCapabilityType, scListener, forceUpdate);
+			}
+			return null;
+		}
+
+		@Override
 		public SdlMsgVersion getSdlMsgVersion(){
 			try {
 				return SdlProxyBase.this.getSdlMsgVersion();

@@ -147,12 +147,15 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		@Override
 		public void onNotified(RPCNotification notification) {
 			if(notification != null){
-				OnHMIStatus onHMIStatus = (OnHMIStatus)notification;
+				OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
 				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
 					return;
 				}
 				OnHMIStatus prevOnHMIStatus = currentOnHMIStatus;
 				currentOnHMIStatus = onHMIStatus;
+				if (!HMILevel.HMI_NONE.equals(currentOnHMIStatus.getHmiLevel()) && VideoStreamManager.this.parameters == null) {
+					getVideoStreamingParams();
+				}
 				checkState();
 				if (hasStarted && (isHMIStateVideoStreamCapable(prevOnHMIStatus)) && (!isHMIStateVideoStreamCapable(currentOnHMIStatus))) {
 					internalInterface.stopVideoService();
@@ -198,7 +201,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	@Override
 	public void start(CompletionListener listener) {
 		isTransportAvailable = internalInterface.isTransportForServiceAvailable(SessionType.NAV);
-		getVideoStreamingParams();
 		checkState();
 		super.start(listener);
 	}
