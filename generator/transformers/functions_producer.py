@@ -136,7 +136,7 @@ class FunctionsProducer(InterfaceProducerCommon):
             tr = t.replace('List<', '').rstrip('>')
         if t.startswith('Float'):
             imports.add('com.smartdevicelink.util.SdlDataTypeConverter')
-        p['return_type'] = self.replace_keywords(t)
+        p['return_type'] = self.replace_sync(t)
 
         if tr in self.enum_names:
             imports.add('{}.{}'.format(self.enums_package, tr))

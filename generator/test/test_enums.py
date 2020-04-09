@@ -4,6 +4,7 @@ from collections import namedtuple, OrderedDict
 from model.enum import Enum
 from model.enum_element import EnumElement
 from transformers.enums_producer import EnumsProducer
+from generator import Generator
 
 
 class TestEnumsProducer(unittest.TestCase):
@@ -11,7 +12,8 @@ class TestEnumsProducer(unittest.TestCase):
         self.maxDiff = None
         Paths = namedtuple('Prop', 'enums_package')
         paths = Paths(enums_package='com.smartdevicelink.proxy.rpc.enums')
-        self.producer = EnumsProducer(paths)
+        keywords = Generator().get_key_words()
+        self.producer = EnumsProducer(paths, keywords)
 
     def comparison(self, expected, actual):
         actual = OrderedDict(sorted(actual.items()))
