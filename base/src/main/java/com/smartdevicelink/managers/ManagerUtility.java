@@ -44,7 +44,7 @@ public class ManagerUtility {
          * @return true if name exist in WindowCapability else false
          */
         public static boolean hasTextFieldOfName(WindowCapability windowCapability, TextFieldName name) {
-            if (windowCapability == null) {
+            if (windowCapability == null || name == null) {
                 return false;
             }
             if (windowCapability.getTextFields() != null) {
