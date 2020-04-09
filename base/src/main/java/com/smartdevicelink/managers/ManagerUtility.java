@@ -23,7 +23,7 @@ public class ManagerUtility {
          * @return true if name exist in WindowCapability else false
          */
         public static boolean hasImageFieldOfName(WindowCapability windowCapability, ImageFieldName name) {
-            if (windowCapability == null) {
+            if (windowCapability == null || name == null) {
                 return false;
             }
             if (windowCapability.getImageFields() != null) {
