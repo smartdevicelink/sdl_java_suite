@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2017 - 2019, SmartDeviceLink Consortium, Inc.
+* Copyright (c) 2017 - 2020, SmartDeviceLink Consortium, Inc.
 * All rights reserved.
 * 
 * Redistribution and use in source and binary forms, with or without
@@ -32,5 +32,5 @@ package com.smartdevicelink;
 
 // THIS FILE IS AUTO GENERATED, DO NOT MODIFY!!
 public final class BuildConfig {
-    public static final String VERSION_NAME = "4.10.1";
+    public static final String VERSION_NAME = "RC1-4.11.0";
 }
