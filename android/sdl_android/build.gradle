@@ -3,10 +3,10 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         minSdkVersion 8
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 11
         versionName new File(projectDir.path, ('/../../VERSION')).text.trim()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
