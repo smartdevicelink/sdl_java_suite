@@ -27,6 +27,7 @@ import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingState;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -531,4 +532,39 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
         assertEquals(Math.round(e1x / scale), Math.round(motionEvent.getX(0)));
         assertEquals(Math.round(e1y / scale), Math.round(motionEvent.getY(0)));
     }
+
+	public void testIsHMIStateVideoStreamCapable() {
+		VideoStreamManager videoStreamManager = new VideoStreamManager(mock(ISdl.class));
+
+		// Case 1 (VideoStreamingState = STREAMABLE)
+		assertTrue(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_FULL, VideoStreamingState.STREAMABLE)));
+		assertTrue(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_LIMITED, VideoStreamingState.STREAMABLE)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_BACKGROUND, VideoStreamingState.STREAMABLE)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_NONE, VideoStreamingState.STREAMABLE)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(null, VideoStreamingState.STREAMABLE)));
+
+		// Case 2 (VideoStreamingState = NOT_STREAMABLE)
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_FULL, VideoStreamingState.NOT_STREAMABLE)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_LIMITED, VideoStreamingState.NOT_STREAMABLE)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_BACKGROUND, VideoStreamingState.NOT_STREAMABLE)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_NONE, VideoStreamingState.NOT_STREAMABLE)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(null, VideoStreamingState.NOT_STREAMABLE)));
+
+		// Case 3 (VideoStreamingState = NULL)
+		assertTrue(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_FULL, null)));
+		assertTrue(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_LIMITED, null)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_BACKGROUND, null)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_NONE, null)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(null, null)));
+
+		// Case 4 (onHMIStatus = NULL)
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(null));
+	}
+
+	private OnHMIStatus createOnHMIStatus(HMILevel hmiLevel, VideoStreamingState videoStreamingState) {
+		OnHMIStatus onHMIStatus = new OnHMIStatus();
+		onHMIStatus.setHmiLevel(hmiLevel);
+		onHMIStatus.setVideoStreamingState(videoStreamingState);
+		return onHMIStatus;
+	}
 }
