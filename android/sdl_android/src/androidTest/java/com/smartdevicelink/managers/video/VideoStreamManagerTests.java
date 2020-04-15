@@ -19,11 +19,15 @@ import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
+import com.smartdevicelink.proxy.rpc.VehicleType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
+import com.smartdevicelink.proxy.rpc.enums.VideoStreamingState;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
@@ -99,6 +103,12 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 		ISdl internalInterface = mock(ISdl.class);
 		when(internalInterface.getProtocolVersion()).thenReturn(new Version(5,1,0));
 
+		RegisterAppInterfaceResponse mockRegisterAppInterfaceResponse = new RegisterAppInterfaceResponse();
+		VehicleType mockVehicleType = new VehicleType();
+		mockVehicleType.setMake("Ford");
+		mockRegisterAppInterfaceResponse.setVehicleType(mockVehicleType);
+		when(internalInterface.getRegisterAppInterfaceResponse()).thenReturn(mockRegisterAppInterfaceResponse);
+
 		Answer<Void> onAddServiceListener = new Answer<Void>() {
 			@Override
 			public Void answer(InvocationOnMock invocation) {
@@ -126,6 +136,13 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 		final ISdl internalInterface = mock(ISdl.class);
 
 		when(internalInterface.getProtocolVersion()).thenReturn((new Version(5,0,0)));
+
+		RegisterAppInterfaceResponse mockRegisterAppInterfaceResponse = new RegisterAppInterfaceResponse();
+		VehicleType mockVehicleType = new VehicleType();
+		mockVehicleType.setMake("Ford");
+		mockRegisterAppInterfaceResponse.setVehicleType(mockVehicleType);
+		when(internalInterface.getRegisterAppInterfaceResponse()).thenReturn(mockRegisterAppInterfaceResponse);
+
 		when(internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(true);
 
 		final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
@@ -142,6 +159,12 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 
 	public void testRemoteDisplayStream(){
 		ISdl internalInterface = mock(ISdl.class);
+
+		RegisterAppInterfaceResponse mockRegisterAppInterfaceResponse = new RegisterAppInterfaceResponse();
+		VehicleType mockVehicleType = new VehicleType();
+		mockVehicleType.setMake("Ford");
+		mockRegisterAppInterfaceResponse.setVehicleType(mockVehicleType);
+		when(internalInterface.getRegisterAppInterfaceResponse()).thenReturn(mockRegisterAppInterfaceResponse);
 
 		final Set<Object> listenerSet = new HashSet<>();
 
@@ -252,6 +275,13 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 
 	public void testConvertTouchEvent() {
 		ISdl internalInterface = mock(ISdl.class);
+
+		RegisterAppInterfaceResponse mockRegisterAppInterfaceResponse = new RegisterAppInterfaceResponse();
+		VehicleType mockVehicleType = new VehicleType();
+		mockVehicleType.setMake("Ford");
+		mockRegisterAppInterfaceResponse.setVehicleType(mockVehicleType);
+		when(internalInterface.getRegisterAppInterfaceResponse()).thenReturn(mockRegisterAppInterfaceResponse);
+
 		VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
 		List<MotionEvent> motionEventList;
 		long e1TS = 1558124390L, e2TS = 1558125390L, e3TS = 1558126390L;
@@ -467,6 +497,12 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
     private void assertMotionEventWithScale(int width, int height, float scale) {
         ISdl internalInterface = mock(ISdl.class);
 
+		RegisterAppInterfaceResponse mockRegisterAppInterfaceResponse = new RegisterAppInterfaceResponse();
+		VehicleType mockVehicleType = new VehicleType();
+		mockVehicleType.setMake("Ford");
+		mockRegisterAppInterfaceResponse.setVehicleType(mockVehicleType);
+		when(internalInterface.getRegisterAppInterfaceResponse()).thenReturn(mockRegisterAppInterfaceResponse);
+
         // Preferred Resolution capability
         ImageResolution resolution = new ImageResolution(width, height);
 
@@ -496,4 +532,39 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
         assertEquals(Math.round(e1x / scale), Math.round(motionEvent.getX(0)));
         assertEquals(Math.round(e1y / scale), Math.round(motionEvent.getY(0)));
     }
+
+	public void testIsHMIStateVideoStreamCapable() {
+		VideoStreamManager videoStreamManager = new VideoStreamManager(mock(ISdl.class));
+
+		// Case 1 (VideoStreamingState = STREAMABLE)
+		assertTrue(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_FULL, VideoStreamingState.STREAMABLE)));
+		assertTrue(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_LIMITED, VideoStreamingState.STREAMABLE)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_BACKGROUND, VideoStreamingState.STREAMABLE)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_NONE, VideoStreamingState.STREAMABLE)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(null, VideoStreamingState.STREAMABLE)));
+
+		// Case 2 (VideoStreamingState = NOT_STREAMABLE)
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_FULL, VideoStreamingState.NOT_STREAMABLE)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_LIMITED, VideoStreamingState.NOT_STREAMABLE)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_BACKGROUND, VideoStreamingState.NOT_STREAMABLE)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_NONE, VideoStreamingState.NOT_STREAMABLE)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(null, VideoStreamingState.NOT_STREAMABLE)));
+
+		// Case 3 (VideoStreamingState = NULL)
+		assertTrue(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_FULL, null)));
+		assertTrue(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_LIMITED, null)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_BACKGROUND, null)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(HMILevel.HMI_NONE, null)));
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(createOnHMIStatus(null, null)));
+
+		// Case 4 (onHMIStatus = NULL)
+		assertFalse(videoStreamManager.isHMIStateVideoStreamCapable(null));
+	}
+
+	private OnHMIStatus createOnHMIStatus(HMILevel hmiLevel, VideoStreamingState videoStreamingState) {
+		OnHMIStatus onHMIStatus = new OnHMIStatus();
+		onHMIStatus.setHmiLevel(hmiLevel);
+		onHMIStatus.setVideoStreamingState(videoStreamingState);
+		return onHMIStatus;
+	}
 }

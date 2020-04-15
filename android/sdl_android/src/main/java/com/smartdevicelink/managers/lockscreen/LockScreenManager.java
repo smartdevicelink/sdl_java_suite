@@ -54,9 +54,8 @@ import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
-import com.smartdevicelink.util.AndroidTools;
+import com.smartdevicelink.util.DebugTool;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 /**
@@ -82,11 +81,14 @@ public class LockScreenManager extends BaseSubManager {
 	private boolean mLockScreenHasBeenDismissed, lockscreenDismissReceiverRegistered, receivedFirstDDNotification;
 	private String mLockscreenWarningMsg;
 	private BroadcastReceiver mLockscreenDismissedReceiver;
+	private LockScreenDeviceIconManager mLockScreenDeviceIconManager;
 
 	public LockScreenManager(LockScreenConfig lockScreenConfig, Context context, ISdl internalInterface){
 
 		super(internalInterface);
 		this.context = new WeakReference<>(context);
+		this.mLockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
+
 
 		// set initial class variables
 		hmiLevel = HMILevel.HMI_NONE;
@@ -231,7 +233,7 @@ public class LockScreenManager extends BaseSubManager {
 					if (msg.getRequestType() == RequestType.LOCK_SCREEN_ICON_URL &&
 							msg.getUrl() != null) {
 						// send intent to activity to download icon from core
-						deviceIconUrl = msg.getUrl();
+						deviceIconUrl = msg.getUrl().replace("http://", "https://");
 						downloadDeviceIcon(deviceIconUrl);
 					}
 				}
@@ -375,17 +377,25 @@ public class LockScreenManager extends BaseSubManager {
 		new Thread(new Runnable(){
 			@Override
 			public void run(){
-				try{
-					deviceLogo = AndroidTools.downloadImage(url);
-					Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_DOWNLOADED);
-					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
-					intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);
-					if (context.get() != null) {
-						context.get().sendBroadcast(intent);
+				mLockScreenDeviceIconManager.retrieveIcon(url, new LockScreenDeviceIconManager.OnIconRetrievedListener() {
+					@Override
+					public void onImageRetrieved(Bitmap icon) {
+						deviceLogo = icon;
+						if(deviceLogo != null) {
+							Intent intent = new Intent(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_DOWNLOADED);
+							intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_EXTRA, deviceLogoEnabled);
+							intent.putExtra(SDLLockScreenActivity.LOCKSCREEN_DEVICE_LOGO_BITMAP, deviceLogo);
+							if (context.get() != null) {
+								context.get().sendBroadcast(intent);
+							}
+						}
 					}
-				}catch(IOException e){
-					Log.e(TAG, "device Icon Error Downloading");
-				}
+
+					@Override
+					public void onError(String info) {
+						DebugTool.logError(info);
+					}
+				});
 			}
 		}).start();
 	}

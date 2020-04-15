@@ -1,6 +1,7 @@
 package com.smartdevicelink.test;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.util.Log;
 
 import com.smartdevicelink.R;
@@ -264,6 +265,7 @@ public class Test {
 	public static final ImageField                     GENERAL_IMAGEFIELD                     = new ImageField();
 	public static final DeviceInfo	                   GENERAL_DEVICEINFO	                  = new DeviceInfo();
 	public static final AppInfo                        GENERAL_APPINFO	                      = new AppInfo();
+	public static final Uri                            GENERAL_URI   	                      = Uri.parse("http://www.google.com");;
 	public static final LayoutMode                     GENERAL_LAYOUTMODE                     = LayoutMode.LIST_ONLY;
 	public static final MenuParams                     GENERAL_MENUPARAMS                     = new MenuParams();
 	public static final SoftButton                     GENERAL_SOFTBUTTON                     = new SoftButton();

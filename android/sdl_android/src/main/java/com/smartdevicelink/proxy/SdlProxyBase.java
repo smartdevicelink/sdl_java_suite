@@ -445,8 +445,21 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
+		public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
+			return SdlProxyBase.this.getRegisterAppInterfaceResponse();
+		}
+
+		@Override
 		public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
 			SdlProxyBase.this.getCapability(systemCapabilityType, scListener);
+		}
+
+		@Override
+		public Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate) {
+			if (_systemCapabilityManager != null) {
+				return _systemCapabilityManager.getCapability(systemCapabilityType, scListener, forceUpdate);
+			}
+			return null;
 		}
 
 		@Override
