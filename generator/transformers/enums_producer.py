@@ -16,12 +16,13 @@ class EnumsProducer(InterfaceProducerCommon):
     Enums transformation
     """
 
-    def __init__(self, paths):
+    def __init__(self, paths, key_words):
         super(EnumsProducer, self).__init__(
             container_name='elements',
             enums_package=None,
             structs_package=None,
-            package_name=paths.enums_package)
+            package_name=paths.enums_package,
+            key_words=key_words)
         self.logger = logging.getLogger('EnumsProducer')
         self._params = namedtuple('params', 'origin name internal description since value deprecated')
 

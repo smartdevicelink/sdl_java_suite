@@ -8,6 +8,7 @@ from model.param import Param
 from model.string import String
 from model.struct import Struct
 from transformers.structs_producer import StructsProducer
+from generator import Generator
 
 
 class TestStructsProducer(unittest.TestCase):
@@ -17,7 +18,8 @@ class TestStructsProducer(unittest.TestCase):
         paths = Paths(enums_package='com.smartdevicelink.proxy.rpc.enums',
                       structs_package='com.smartdevicelink.proxy.rpc',
                       struct_class='com.smartdevicelink.proxy.RPCStruct')
-        self.producer = StructsProducer(paths, ['SamplingRate'], ('Image',))
+        keywords = Generator().get_key_words()
+        self.producer = StructsProducer(paths, ['SamplingRate'], ('Image',), keywords)
 
     def comparison(self, expected, actual):
         actual_params = dict(zip(map(lambda k: k.origin, actual['params']), actual['params']))

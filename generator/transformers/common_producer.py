@@ -20,11 +20,12 @@ class InterfaceProducerCommon(ABC):
     version = '1.0.0'
 
     def __init__(self, container_name, enums_package, structs_package, package_name,
-                 enum_names=(), struct_names=()):
+                 enum_names=(), struct_names=(), key_words=()):
         self.logger = logging.getLogger('Generator.InterfaceProducerCommon')
         self.container_name = container_name
         self.enum_names = enum_names
         self.struct_names = struct_names
+        self.key_words = key_words
         self.enums_package = enums_package
         self.structs_package = structs_package
         self.package_name = package_name
@@ -84,6 +85,20 @@ class InterfaceProducerCommon(ABC):
         if name:
             return re.sub(r'^([sS])ync(.+)$', r'\1dl\2', name)
         return name
+
+    def replace_keywords(self, name: str = '') -> str:
+        """
+        if :param name in self.key_words, :return: name += 'Param'
+        :param name: string with item name
+        """
+        if any(map(lambda k: re.search(r'^(get|set|key_)?{}$'.format(name.casefold()), k), self.key_words)):
+            origin = name
+            if name.isupper():
+                name += '_PARAM'
+            else:
+                name += 'Param'
+            self.logger.debug('Replacing %s with %s', origin, name)
+        return self.replace_sync(name)
 
     def extract_type(self, param):
         """

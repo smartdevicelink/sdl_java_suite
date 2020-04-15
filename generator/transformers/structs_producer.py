@@ -16,14 +16,15 @@ class StructsProducer(InterfaceProducerCommon):
     Structs transformation
     """
 
-    def __init__(self, paths, enum_names, struct_names):
+    def __init__(self, paths, enum_names, struct_names, key_words):
         super(StructsProducer, self).__init__(
             container_name='members',
             enums_package=paths.enums_package,
             structs_package=paths.structs_package,
             enum_names=enum_names,
             struct_names=struct_names,
-            package_name=paths.structs_package)
+            package_name=paths.structs_package,
+            key_words=key_words)
         self.logger = logging.getLogger('StructsProducer')
         self.struct_class = paths.struct_class
 
@@ -33,7 +34,7 @@ class StructsProducer(InterfaceProducerCommon):
         :param item: particular element from initial Model
         :return: dictionary to be applied to jinja2 template
         """
-        class_name = self.replace_sync(item.name[:1].upper() + item.name[1:])
+        class_name = self.replace_keywords(item.name[:1].upper() + item.name[1:])
 
         imports = {'java.util.Hashtable'}
         extends_class = self.struct_class
@@ -44,7 +45,7 @@ class StructsProducer(InterfaceProducerCommon):
         params = OrderedDict()
 
         for param in getattr(item, self.container_name).values():
-            param.name = self.replace_sync(param.name)
+            param.name = self.replace_keywords(param.name)
             i, p = self.extract_param(param)
             imports.update(i)
             params[param.name] = p

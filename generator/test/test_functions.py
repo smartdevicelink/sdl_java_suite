@@ -13,6 +13,7 @@ from model.param import Param
 from model.string import String
 from model.struct import Struct
 from transformers.functions_producer import FunctionsProducer
+from generator import Generator
 
 
 class TestFunctionsProducer(unittest.TestCase):
@@ -33,7 +34,8 @@ class TestFunctionsProducer(unittest.TestCase):
         self.expected_template['deprecated'] = None
         enum_names = ('FileType', 'Language')
         struct_names = ('SdlMsgVersion', 'TemplateColorScheme', 'TTSChunk', 'Choice')
-        self.producer = FunctionsProducer(paths, enum_names, struct_names)
+        keywords = Generator().get_key_words()
+        self.producer = FunctionsProducer(paths, enum_names, struct_names, keywords)
 
     def comparison(self, expected, actual):
         actual_params = dict(zip(map(lambda k: k.title, actual['params']), actual['params']))
