@@ -45,6 +45,7 @@ class StructsProducer(InterfaceProducerCommon):
         params = OrderedDict()
 
         for param in getattr(item, self.container_name).values():
+            param.origin = param.name
             param.name = self.replace_keywords(param.name)
             i, p = self.extract_param(param)
             imports.update(i)
@@ -103,7 +104,7 @@ class StructsProducer(InterfaceProducerCommon):
         if param.since:
             p['since'] = param.since
         p['deprecated'] = param.deprecated
-        p['origin'] = param.name
+        p['origin'] = param.origin
 
         d = self.extract_description(param.description)
         if d:
