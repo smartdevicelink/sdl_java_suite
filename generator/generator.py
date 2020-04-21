@@ -148,7 +148,7 @@ class Generator:
         xml = Paths('source_xml', ROOT.joinpath('rpc_spec/MOBILE_API.xml'))
         required_source = not xml.path.exists()
 
-        out = Paths('output_directory', ROOT.parents[1].joinpath('base/src/main/java/'))
+        out = Paths('output_directory', ROOT.parents[0].joinpath('base/src/main/java/'))
         output_required = not out.path.exists()
 
         parser = ArgumentParser(description='Proxy Library RPC Generator')
