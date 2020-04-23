@@ -91,7 +91,7 @@ class InterfaceProducerCommon(ABC):
         if :param name in self.key_words, :return: name += 'Param'
         :param name: string with item name
         """
-        if any(map(lambda k: re.search(r'^(get|set|key_)?{}$'.format(name), k), self.key_words)):
+        if any(map(lambda k: re.search(r'^(get|set|key_)?{}$'.format(name.casefold()), k), self.key_words)):
             origin = name
             if name.isupper():
                 name += '_PARAM'

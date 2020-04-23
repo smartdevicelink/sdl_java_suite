@@ -262,7 +262,7 @@ class Generator:
         :return:
         """
         content = self.get_file_content(file_name)
-        content = tuple(map(lambda e: re.sub(r'\n', r'', e).strip(), content))
+        content = tuple(map(lambda e: re.sub(r'\n', r'', e).strip().casefold(), content))
         try:
             content = tuple(filter(lambda e: not re.search(r'^#+\s+.+|^$', e), content))
             self.logger.debug('key_words: %s', ', '.join(content))
