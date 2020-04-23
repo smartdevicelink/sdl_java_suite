@@ -53,7 +53,9 @@ class InterfaceProducerCommon(ABC):
         if re.match(r'^[A-Z_\d]+$', param):
             return param
         else:
-            return re.sub(r'([a-z]|[A-Z]{2,})([A-Z]|\d$)', r'\1_\2', param).upper()
+            result = re.sub(r'([a-z]|[A-Z]{2,})([A-Z]|\d$)', r'\1_\2', param).upper()
+            result = re.sub('IDPARAM', 'ID_PARAM', result)
+            return result
 
     @staticmethod
     def ending_cutter(n: str):
