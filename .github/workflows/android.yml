@@ -9,7 +9,9 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@v2
-      
+      with:
+        submodules: true
+
     - name: Setup JDK
       uses: actions/setup-java@v1
       with:
@@ -33,8 +35,13 @@ jobs:
     
     - name: Sdl JavaEE Tests
       run: ./javaEE/gradlew -p ./javaEE test
-      
+
+    - name: RPC Generator Tests
+      run: |
+        python3 -m pip install -r ./generator/requirements.txt
+        python3 ./generator/test/runner.py
+
     - name: Codecov	
       uses: codecov/codecov-action@v1.0.6
-      with:	
+      with:
         yml: ./codecov.yml

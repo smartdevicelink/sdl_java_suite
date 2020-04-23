@@ -1,6 +1,6 @@
 ### Introduction
 
-This file is broken into three Parts: SDL Base, SDL Android, and SDL Java. SDL Android and SDL Java are sub projects of SDL Base. Additionally, SDL Java contains two sub-projects: SDL JavaSE and SDL JavaEE.
+This file is broken into four Parts: SDL Base, SDL Android, SDL Java and Utils/Generator. SDL Android and SDL Java are sub projects of SDL Base. Additionally, SDL Java contains two sub-projects: SDL JavaSE and SDL JavaEE. Utils/Generator is Proxy Library RPC Generator for SDL BASE.
 
 ## SDL BASE
 
@@ -86,4 +86,43 @@ The third party software included and used by this project is:
 SDL JavaEE inherits any license defined in SDL JavaSE.
 
 
+## Utils
+
+### Generator
+
+Proxy Library RPC Generator inherits any license defined in SDL BASE.
+
+#### Third Party Licenses
+
+Both the source and binary distributions of this software contain
+some third party software. All the third party software included
+or linked is redistributed under the terms and conditions of their 
+original licenses.
+
+The third party software included and used by this project is:
+
+**xmlschema**
+
+* Licensed under MIT License
+* See [https://pypi.org/project/xmlschema/](https://pypi.org/project/xmlschema/)
+
+**Jinja2**
+
+* Licensed under BSD License (BSD-3-Clause)
+* See [https://pypi.org/project/Jinja2/](https://pypi.org/project/Jinja2/)
+
+**coverage**
+
+* Licensed under Apache Software License (Apache 2.0)
+* See [https://pypi.org/project/coverage/](https://pypi.org/project/coverage/)
+
+**pathlib2**
+
+* Licensed under MIT License
+* See [https://pypi.org/project/pathlib2/](https://pypi.org/project/pathlib2/)
+
+**flake8**
+
+* Licensed under MIT License
+* See [https://pypi.org/project/flake8/](https://pypi.org/project/flake8/)
 
