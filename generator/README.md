@@ -14,7 +14,7 @@ python3 -m pip install -r requirements.txt
 ```
 Please also make sure before usage the `utils/generator/rpc_spec` Git submodule is successfully initialized, because the script uses the XML parser provided there.
 ```shell script
-git submodule update --init --recursive --remote
+git submodule update --init --recursive
 ```
 
 ## Usage
