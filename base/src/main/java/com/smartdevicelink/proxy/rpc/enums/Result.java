@@ -69,6 +69,7 @@ public enum Result {
 	 * delivered yet). There is a limit of 1000 pending requests at a time
 	 */    
 	TOO_MANY_PENDING_REQUESTS,
+	CHAR_LIMIT_EXCEEDED,
 	/**
 	 * <p>One of the provided IDs is not valid. For example:</p>
 	 * <ul>

@@ -42,6 +42,7 @@ import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
@@ -51,6 +52,7 @@ import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
@@ -72,18 +74,23 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SystemCapabilityManager {
 	private final HashMap<SystemCapabilityType, Object> cachedSystemCapabilities;
+	private final HashMap<SystemCapabilityType, Boolean> systemCapabilitiesSubscriptionStatus;
 	private final HashMap<SystemCapabilityType, CopyOnWriteArrayList<OnSystemCapabilityListener>> onSystemCapabilityListeners;
 	private final Object LISTENER_LOCK;
 	private final ISdl callback;
 	private OnRPCListener rpcListener;
 	private boolean shouldConvertDeprecatedDisplayCapabilities;
+	private HMILevel currentHMILevel;
 
-	public SystemCapabilityManager(ISdl callback){
+	public SystemCapabilityManager(ISdl callback) {
 		this.callback = callback;
 		this.LISTENER_LOCK = new Object();
 		this.onSystemCapabilityListeners = new HashMap<>();
 		this.cachedSystemCapabilities = new HashMap<>();
+		this.systemCapabilitiesSubscriptionStatus = new HashMap<>();
+		this.systemCapabilitiesSubscriptionStatus.put(SystemCapabilityType.DISPLAYS, true);
 		this.shouldConvertDeprecatedDisplayCapabilities = true;
+		this.currentHMILevel = HMILevel.HMI_NONE;
 
 		setupRpcListeners();
 	}
@@ -102,7 +109,7 @@ public class SystemCapabilityManager {
 		WindowTypeCapabilities windowTypeCapabilities = new WindowTypeCapabilities(WindowType.MAIN, 1);
 
 		DisplayCapability displayCapability = new DisplayCapability();
-		if (display != null){
+		if (display != null) {
 			if (display.getDisplayName() != null) {
 				displayCapability.setDisplayName(display.getDisplayName());
 			} else if (display.getDisplayType() != null) {
@@ -188,22 +195,24 @@ public class SystemCapabilityManager {
 		DisplayCapability newDefaultDisplayCapabilities = newCapabilities.get(0);
 		List<WindowCapability> newWindowCapabilities = newDefaultDisplayCapabilities.getWindowCapabilities();
 
-		for (WindowCapability newWindow : newWindowCapabilities) {
-			ListIterator<WindowCapability> iterator = copyWindowCapabilities.listIterator();
-			boolean oldFound = false;
-			while (iterator.hasNext()) {
-				WindowCapability oldWindow = iterator.next();
-				int newWindowID = newWindow.getWindowID() != null ? newWindow.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
-				int oldWindowID = oldWindow.getWindowID() != null ? oldWindow.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
-				if (newWindowID == oldWindowID) {
-					iterator.set(newWindow); // replace the old window caps with new ones
-					oldFound = true;
-					break;
+		if (newWindowCapabilities != null && !newWindowCapabilities.isEmpty()) {
+			for (WindowCapability newWindow : newWindowCapabilities) {
+				ListIterator<WindowCapability> iterator = copyWindowCapabilities.listIterator();
+				boolean oldFound = false;
+				while (iterator.hasNext()) {
+					WindowCapability oldWindow = iterator.next();
+					int newWindowID = newWindow.getWindowID() != null ? newWindow.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+					int oldWindowID = oldWindow.getWindowID() != null ? oldWindow.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+					if (newWindowID == oldWindowID) {
+						iterator.set(newWindow); // replace the old window caps with new ones
+						oldFound = true;
+						break;
+					}
 				}
-			}
 
-			if (!oldFound) {
-				copyWindowCapabilities.add(newWindow); // this is a new unknown window
+				if (!oldFound) {
+					copyWindowCapabilities.add(newWindow); // this is a new unknown window
+				}
 			}
 		}
 
@@ -233,8 +242,8 @@ public class SystemCapabilityManager {
 		return getWindowCapability(PredefinedWindows.DEFAULT_WINDOW.getValue());
 	}
 
-	public void parseRAIResponse(RegisterAppInterfaceResponse response){
-		if(response!=null && response.getSuccess()) {
+	public void parseRAIResponse(RegisterAppInterfaceResponse response) {
+		if (response != null && response.getSuccess()) {
 			this.shouldConvertDeprecatedDisplayCapabilities = true; // reset the flag
 			setCapability(SystemCapabilityType.DISPLAYS, createDisplayCapabilityList(response));
 			setCapability(SystemCapabilityType.HMI, response.getHmiCapabilities());
@@ -251,81 +260,89 @@ public class SystemCapabilityManager {
 		}
 	}
 
-    private void setupRpcListeners() {
-        rpcListener = new OnRPCListener() {
-            @Override
-            public void onReceived(RPCMessage message) {
-                if (message != null) {
-                    if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) {
-                        switch (message.getFunctionID()) {
-                            case SET_DISPLAY_LAYOUT:
-                                SetDisplayLayoutResponse response = (SetDisplayLayoutResponse) message;
-                                setCapability(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
-                                setCapability(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
-                                setCapability(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
-                                setCapability(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
-                                if (shouldConvertDeprecatedDisplayCapabilities) {
-                                    setCapability(SystemCapabilityType.DISPLAYS, createDisplayCapabilityList(response));
-                                }
-                                break;
-                            case GET_SYSTEM_CAPABILITY:
-                                GetSystemCapabilityResponse systemCapabilityResponse = (GetSystemCapabilityResponse) message;
-                                SystemCapability systemCapability = systemCapabilityResponse.getSystemCapability();
-                                if (systemCapabilityResponse.getSuccess() && SystemCapabilityType.DISPLAYS.equals(systemCapability.getSystemCapabilityType())) {
-                                    shouldConvertDeprecatedDisplayCapabilities = false; // Successfully got DISPLAYS data. No conversion needed anymore
-                                    List<DisplayCapability> newCapabilities = (List<DisplayCapability>) systemCapability.getCapabilityForType(SystemCapabilityType.DISPLAYS);
-                                    updateCachedDisplayCapabilityList(newCapabilities);
-                                }
-                                break;
-                        }
-                    } else if (RPCMessage.KEY_NOTIFICATION.equals(message.getMessageType())) {
-                        switch (message.getFunctionID()) {
-                            case ON_SYSTEM_CAPABILITY_UPDATED:
-                                OnSystemCapabilityUpdated onSystemCapabilityUpdated = (OnSystemCapabilityUpdated) message;
-                                if (onSystemCapabilityUpdated.getSystemCapability() != null) {
-                                    SystemCapability systemCapability = onSystemCapabilityUpdated.getSystemCapability();
-                                    SystemCapabilityType systemCapabilityType = systemCapability.getSystemCapabilityType();
-                                    Object capability = systemCapability.getCapabilityForType(systemCapabilityType);
-                                    if (cachedSystemCapabilities.containsKey(systemCapabilityType)) { //The capability already exists
-                                        switch (systemCapabilityType) {
-                                            case APP_SERVICES:
-                                                // App services only updates what was changed so we need
-                                                // to update the capability rather than override it
-                                                AppServicesCapabilities appServicesCapabilities = (AppServicesCapabilities) capability;
-                                                if (capability != null) {
-                                                    List<AppServiceCapability> appServicesCapabilitiesList = appServicesCapabilities.getAppServices();
-                                                    AppServicesCapabilities cachedAppServicesCapabilities = (AppServicesCapabilities) cachedSystemCapabilities.get(systemCapabilityType);
-                                                    //Update the cached app services
-                                                    if (cachedAppServicesCapabilities != null) {
-                                                    	cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
-                                                    }
-                                                    //Set the new capability object to the updated cached capabilities
-                                                    capability = cachedAppServicesCapabilities;
-                                                }
-                                                break;
-                                            case DISPLAYS:
-                                                shouldConvertDeprecatedDisplayCapabilities = false; // Successfully got DISPLAYS data. No conversion needed anymore
-                                                // this notification can return only affected windows (hence not all windows)
-                                                List<DisplayCapability> newCapabilities = (List<DisplayCapability>) capability;
-                                                updateCachedDisplayCapabilityList(newCapabilities);
-                                        }
-                                    }
-                                    if (capability != null) {
-                                        setCapability(systemCapabilityType, capability);
-                                    }
-                                }
-                        }
-                    }
-                }
-            }
-        };
+	private void setupRpcListeners() {
+		rpcListener = new OnRPCListener() {
+			@Override
+			public void onReceived(RPCMessage message) {
+				if (message != null) {
+					if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) {
+						switch (message.getFunctionID()) {
+							case SET_DISPLAY_LAYOUT:
+								SetDisplayLayoutResponse response = (SetDisplayLayoutResponse) message;
+								setCapability(SystemCapabilityType.DISPLAY, response.getDisplayCapabilities());
+								setCapability(SystemCapabilityType.BUTTON, response.getButtonCapabilities());
+								setCapability(SystemCapabilityType.PRESET_BANK, response.getPresetBankCapabilities());
+								setCapability(SystemCapabilityType.SOFTBUTTON, response.getSoftButtonCapabilities());
+								if (shouldConvertDeprecatedDisplayCapabilities) {
+									setCapability(SystemCapabilityType.DISPLAYS, createDisplayCapabilityList(response));
+								}
+								break;
+							case GET_SYSTEM_CAPABILITY:
+								GetSystemCapabilityResponse systemCapabilityResponse = (GetSystemCapabilityResponse) message;
+								SystemCapability systemCapability = systemCapabilityResponse.getSystemCapability();
+								if (systemCapabilityResponse.getSuccess() && SystemCapabilityType.DISPLAYS.equals(systemCapability.getSystemCapabilityType())) {
+									shouldConvertDeprecatedDisplayCapabilities = false; // Successfully got DISPLAYS data. No conversion needed anymore
+									List<DisplayCapability> newCapabilities = (List<DisplayCapability>) systemCapability.getCapabilityForType(SystemCapabilityType.DISPLAYS);
+									updateCachedDisplayCapabilityList(newCapabilities);
+								}
+								break;
+						}
+					} else if (RPCMessage.KEY_NOTIFICATION.equals(message.getMessageType())) {
+						switch (message.getFunctionID()) {
+							case ON_HMI_STATUS:
+								OnHMIStatus onHMIStatus = (OnHMIStatus) message;
+								if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+									return;
+								}
+								currentHMILevel = onHMIStatus.getHmiLevel();
+								break;
+							case ON_SYSTEM_CAPABILITY_UPDATED:
+								OnSystemCapabilityUpdated onSystemCapabilityUpdated = (OnSystemCapabilityUpdated) message;
+								if (onSystemCapabilityUpdated.getSystemCapability() != null) {
+									SystemCapability systemCapability = onSystemCapabilityUpdated.getSystemCapability();
+									SystemCapabilityType systemCapabilityType = systemCapability.getSystemCapabilityType();
+									Object capability = systemCapability.getCapabilityForType(systemCapabilityType);
+									if (cachedSystemCapabilities.containsKey(systemCapabilityType)) { //The capability already exists
+										switch (systemCapabilityType) {
+											case APP_SERVICES:
+												// App services only updates what was changed so we need
+												// to update the capability rather than override it
+												AppServicesCapabilities appServicesCapabilities = (AppServicesCapabilities) capability;
+												if (capability != null) {
+													List<AppServiceCapability> appServicesCapabilitiesList = appServicesCapabilities.getAppServices();
+													AppServicesCapabilities cachedAppServicesCapabilities = (AppServicesCapabilities) cachedSystemCapabilities.get(systemCapabilityType);
+													//Update the cached app services
+													if (cachedAppServicesCapabilities != null) {
+														cachedAppServicesCapabilities.updateAppServices(appServicesCapabilitiesList);
+													}
+													//Set the new capability object to the updated cached capabilities
+													capability = cachedAppServicesCapabilities;
+												}
+												break;
+											case DISPLAYS:
+												shouldConvertDeprecatedDisplayCapabilities = false; // Successfully got DISPLAYS data. No conversion needed anymore
+												// this notification can return only affected windows (hence not all windows)
+												List<DisplayCapability> newCapabilities = (List<DisplayCapability>) capability;
+												updateCachedDisplayCapabilityList(newCapabilities);
+										}
+									}
+									if (capability != null) {
+										setCapability(systemCapabilityType, capability);
+									}
+								}
+						}
+					}
+				}
+			}
+		};
 
-        if (callback != null) {
-        	callback.addOnRPCListener(FunctionID.GET_SYSTEM_CAPABILITY, rpcListener);
-            callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
-            callback.addOnRPCListener(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED, rpcListener);
-        }
-    }
+		if (callback != null) {
+			callback.addOnRPCListener(FunctionID.GET_SYSTEM_CAPABILITY, rpcListener);
+			callback.addOnRPCListener(FunctionID.SET_DISPLAY_LAYOUT, rpcListener);
+			callback.addOnRPCListener(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED, rpcListener);
+			callback.addOnRPCListener(FunctionID.ON_HMI_STATUS, rpcListener);
+		}
+	}
 
 	/**
 	 * Sets a capability in the cached map. This should only be done when an RPC is received and contains updates to the capability
@@ -333,20 +350,20 @@ public class SystemCapabilityManager {
 	 * @param systemCapabilityType the system capability type that will be set
 	 * @param capability the value of the capability that will be set
 	 */
-	public synchronized void setCapability(SystemCapabilityType systemCapabilityType, Object capability){
-			cachedSystemCapabilities.put(systemCapabilityType, capability);
-			notifyListeners(systemCapabilityType, capability);
+	public synchronized void setCapability(SystemCapabilityType systemCapabilityType, Object capability) {
+		cachedSystemCapabilities.put(systemCapabilityType, capability);
+		notifyListeners(systemCapabilityType, capability);
 	}
 
 	/**
-	 * Notify listners in the list about the new retrieved capability
+	 * Notifies listeners in the list about the new retrieved capability
 	 * @param systemCapabilityType the system capability type that was retrieved
 	 * @param capability the system capability value that was retrieved
 	 */
 	private void notifyListeners(SystemCapabilityType systemCapabilityType, Object capability) {
-		synchronized(LISTENER_LOCK){
+		synchronized(LISTENER_LOCK) {
 			CopyOnWriteArrayList<OnSystemCapabilityListener> listeners = onSystemCapabilityListeners.get(systemCapabilityType);
-			if(listeners != null && listeners.size() > 0) {
+			if (listeners != null && listeners.size() > 0) {
 				for (OnSystemCapabilityListener listener : listeners) {
 					listener.onCapabilityRetrieved(capability);
 				}
@@ -360,7 +377,7 @@ public class SystemCapabilityManager {
 	 * @param type the SystemCapabilityType that is to be checked
 	 * @return if that capability is supported with the current, connected module
 	 */
-	public boolean isCapabilitySupported(SystemCapabilityType type){
+	public boolean isCapabilitySupported(SystemCapabilityType type) {
 		if (cachedSystemCapabilities.get(type) != null) {
 			//The capability exists in the map and is not null
 			return true;
@@ -413,45 +430,95 @@ public class SystemCapabilityManager {
 		}
 		return false;
 	}
+
 	/**
+	 * Checks is subscriptions are available on the connected head unit.
+	 * @return True if subscriptions are supported. False if not.
+	 */
+	public boolean supportsSubscriptions() {
+		if (callback != null && callback.getSdlMsgVersion() != null) {
+			Version onSystemCapabilityNotificationRPCVersion = new Version(5, 1, 0);
+			Version headUnitRPCVersion = new Version(callback.getSdlMsgVersion());
+			return headUnitRPCVersion.isNewerThan(onSystemCapabilityNotificationRPCVersion) >= 0;
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the supplied capability type is currently subscribed for or not
+	 * @param systemCapabilityType type of capability desired
+	 * @return true if subscribed and false if not
+	 */
+	private boolean isSubscribedToSystemCapability(SystemCapabilityType systemCapabilityType) {
+		return Boolean.TRUE.equals(systemCapabilitiesSubscriptionStatus.get(systemCapabilityType));
+	}
+
+	/** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately (or null) as well as calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds.
+	 * <strong>If capability is not cached, the method will return null and trigger the supplied listener when the capability becomes available</strong>
+	 * @param systemCapabilityType type of capability desired
+	 * @param scListener callback to execute upon retrieving capability
+	 * @param subscribe flag to subscribe to updates of the supplied capability type. True means subscribe; false means cancel subscription; null means don't change current subscription status.
+	 * @param forceUpdate flag to force getting a new fresh copy of the capability from the head unit even if it is cached
+	 * @return desired capability if it is cached in the manager, otherwise returns a null object and works in the background to retrieve the capability for the next call
+	 */
+	private Object getCapabilityPrivate(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe, final boolean forceUpdate) {
+		Object cachedCapability = cachedSystemCapabilities.get(systemCapabilityType);
+
+		// No need to force update if the app is subscribed to that type because updated values will be received via notifications anyway
+		boolean shouldForceUpdate = forceUpdate && !isSubscribedToSystemCapability(systemCapabilityType);
+		boolean shouldUpdateSystemCapabilitySubscription = (subscribe != null) && (subscribe != isSubscribedToSystemCapability(systemCapabilityType)) && supportsSubscriptions();
+		boolean shouldSendGetCapabilityRequest = shouldForceUpdate || (cachedCapability == null) || shouldUpdateSystemCapabilitySubscription;
+		boolean shouldCallListenerWithCachedValue = (cachedCapability != null) && (scListener != null) && !shouldSendGetCapabilityRequest;
+
+		if (shouldCallListenerWithCachedValue) {
+			scListener.onCapabilityRetrieved(cachedCapability);
+		}
+
+		if (shouldSendGetCapabilityRequest) {
+			retrieveCapability(systemCapabilityType, scListener, subscribe);
+		}
+
+		return cachedCapability;
+	}
+
+	/** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately (or null) as well as calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds.
+	 * <strong>If capability is not cached, the method will return null and trigger the supplied listener when the capability becomes available</strong>
+	 * @param systemCapabilityType type of capability desired
+	 * @param scListener callback to execute upon retrieving capability
+	 * @param forceUpdate flag to force getting a new fresh copy of the capability from the head unit even if it is cached
+	 * @return desired capability if it is cached in the manager, otherwise returns a null object
+	 */
+	public Object getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final boolean forceUpdate) {
+		return getCapabilityPrivate(systemCapabilityType, scListener, null, forceUpdate);
+	}
+
+	/** Gets the capability object that corresponds to the supplied capability type by calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds.
 	 * @param systemCapabilityType Type of capability desired
 	 * @param scListener callback to execute upon retrieving capability
+	 * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
 	 */
-	public void getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener){
-		Object capability = cachedSystemCapabilities.get(systemCapabilityType);
-		if(capability != null){
-			scListener.onCapabilityRetrieved(capability);
-			return;
-		}else if(scListener == null){
-			return;
-		}
-
-		retrieveCapability(systemCapabilityType, scListener);
+	@Deprecated
+	public void getCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener) {
+		getCapabilityPrivate(systemCapabilityType, scListener, null, false);
 	}
 
-	/**
+	/** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately if available. Otherwise returns a null object and works in the background to retrieve the capability for the next call
 	 * @param systemCapabilityType Type of capability desired
-	 * @return Desired capability if it is cached in the manager, otherwise returns a null object
-	 * and works in the background to retrieve the capability for the next call
+	 * @return Desired capability if it is cached in the manager, otherwise returns null
+	 * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
 	 */
-	public Object getCapability(final SystemCapabilityType systemCapabilityType){
-		Object capability = cachedSystemCapabilities.get(systemCapabilityType);
-		if(capability != null){
-			return capability;
-		}
-
-		retrieveCapability(systemCapabilityType, null);
-		return null;
+	@Deprecated
+	public Object getCapability(final SystemCapabilityType systemCapabilityType) {
+		return getCapabilityPrivate(systemCapabilityType, null, null, false);
 	}
 
 	/**
-	 * Add a listener to be called whenever a new capability is retrieved
+	 * Adds a listener to be called whenever a new capability is retrieved. This method automatically subscribes to the supplied capability type and may call the listener multiple times if there are future updates, unlike getCapability() methods, which only call the listener one time.
 	 * @param systemCapabilityType Type of capability desired
 	 * @param listener callback to execute upon retrieving capability
 	 */
-	public void addOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener){
-		getCapability(systemCapabilityType, listener);
-		synchronized(LISTENER_LOCK){
+	public void addOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener) {
+		synchronized(LISTENER_LOCK) {
 			if (systemCapabilityType != null && listener != null) {
 				if (onSystemCapabilityListeners.get(systemCapabilityType) == null) {
 					onSystemCapabilityListeners.put(systemCapabilityType, new CopyOnWriteArrayList<OnSystemCapabilityListener>());
@@ -459,62 +526,104 @@ public class SystemCapabilityManager {
 				onSystemCapabilityListeners.get(systemCapabilityType).add(listener);
 			}
 		}
+		getCapabilityPrivate(systemCapabilityType, listener, true, false);
 	}
 
 	/**
-	 * Remove an OnSystemCapabilityListener that was previously added
+	 * Removes an OnSystemCapabilityListener that was previously added
 	 * @param systemCapabilityType Type of capability
 	 * @param listener the listener that should be removed
+	 * @return boolean that represents whether the removal was successful or not
 	 */
-	public boolean removeOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener){
-		synchronized(LISTENER_LOCK){
-			if(onSystemCapabilityListeners!= null
+	public boolean removeOnSystemCapabilityListener(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener listener) {
+		boolean success = false;
+		synchronized(LISTENER_LOCK) {
+			if (onSystemCapabilityListeners != null
 					&& systemCapabilityType != null
 					&& listener != null
-					&& onSystemCapabilityListeners.get(systemCapabilityType) != null){
-				return onSystemCapabilityListeners.get(systemCapabilityType).remove(listener);
+					&& onSystemCapabilityListeners.get(systemCapabilityType) != null) {
+				success = onSystemCapabilityListeners.get(systemCapabilityType).remove(listener);
+				// If the last listener for the supplied capability type is removed, unsubscribe from the capability type
+				if (success && onSystemCapabilityListeners.get(systemCapabilityType).isEmpty() && isSubscribedToSystemCapability(systemCapabilityType) && systemCapabilityType != SystemCapabilityType.DISPLAYS) {
+					retrieveCapability(systemCapabilityType, null, false);
+				}
 			}
 		}
-		return false;
+		return success;
 	}
 
-	/**
+	/** Sends a GetSystemCapability request for the supplied SystemCapabilityType and call the listener's callback if the systemCapabilityType is queryable
 	 * @param systemCapabilityType Type of capability desired
-	 * passes GetSystemCapabilityType request to `callback` to be sent by proxy.
-	 * this method will send RPC and call the listener's callback only if the systemCapabilityType is queryable
+	 * @param subscribe flag to subscribe to updates of the supplied capability type. True means subscribe; false means cancel subscription; null means don't change current subscription status.
 	 */
-	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener){
-		if (!systemCapabilityType.isQueryable()){
+	private void retrieveCapability(final SystemCapabilityType systemCapabilityType, final OnSystemCapabilityListener scListener, final Boolean subscribe) {
+		if (currentHMILevel != null && currentHMILevel.equals(HMILevel.HMI_NONE)) {
+			String message = String.format("Attempted to update type: %s in HMI level NONE, which is not allowed. " +
+					"Please wait until you are in HMI BACKGROUND, LIMITED, or FULL before attempting to update any SystemCapabilityType", systemCapabilityType);
+			DebugTool.logError(message);
+			if (scListener != null) {
+				scListener.onError(message);
+			}
+			return;
+		}
+		if (!systemCapabilityType.isQueryable() || systemCapabilityType == SystemCapabilityType.DISPLAYS) {
 			String message = "This systemCapabilityType cannot be queried for";
 			DebugTool.logError(message);
-			if( scListener != null){
+			if (scListener != null) {
 				scListener.onError(message);
 			}
 			return;
 		}
 		final GetSystemCapability request = new GetSystemCapability();
 		request.setSystemCapabilityType(systemCapabilityType);
+
+		/*
+		The subscription flag in the request should be set based on multiple variables:
+		- if subscribe is null (no change), willSubscribe = current subscription status, or false if the HU does not support subscriptions
+		- if subscribe is false, then willSubscribe = false
+		- if subscribe is true and the HU supports subscriptions, then willSubscribe = true
+		*/
+		boolean shouldSubscribe = (subscribe != null) ? subscribe : isSubscribedToSystemCapability(systemCapabilityType);
+		final boolean willSubscribe = shouldSubscribe && supportsSubscriptions();
+		request.setSubscribe(willSubscribe);
 		request.setOnRPCResponseListener(new OnRPCResponseListener() {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
-				if(response.getSuccess()){
+				if (response.getSuccess()) {
 					Object retrievedCapability = ((GetSystemCapabilityResponse) response).getSystemCapability().getCapabilityForType(systemCapabilityType);
-					cachedSystemCapabilities.put(systemCapabilityType, retrievedCapability);
-					if(scListener!=null){scListener.onCapabilityRetrieved(retrievedCapability);	}
-				}else{
-					if(scListener!=null){scListener.onError(response.getInfo());}
+					setCapability(systemCapabilityType, retrievedCapability);
+					// If the listener is not included in the onSystemCapabilityListeners map, then notify it
+					// This will be triggered if we are just getting capability without adding a listener to the map
+					if (scListener != null) {
+						synchronized (LISTENER_LOCK) {
+							CopyOnWriteArrayList<OnSystemCapabilityListener> notifiedListeners = onSystemCapabilityListeners.get(systemCapabilityType);
+							boolean listenerAlreadyNotified = (notifiedListeners != null) && notifiedListeners.contains(scListener);
+							if (!listenerAlreadyNotified) {
+								scListener.onCapabilityRetrieved(retrievedCapability);
+							}
+						}
+					}
+					if (supportsSubscriptions()) {
+						systemCapabilitiesSubscriptionStatus.put(systemCapabilityType, willSubscribe);
+					}
+				} else {
+					if (scListener != null) {
+						scListener.onError(response.getInfo());
+					}
 				}
 			}
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				if(scListener!=null){scListener.onError(info);}
+				if (scListener != null) {
+					scListener.onError(info);
+				}
 			}
 		});
 		request.setCorrelationID(CorrelationIdGenerator.generateId());
 
-		if(callback!=null){
-			callback.sendRPCRequest(request);
+		if (callback != null) {
+			callback.sendRPC(request);
 		}
 	}
 
@@ -525,23 +634,23 @@ public class SystemCapabilityManager {
 	 * @return a List of capabilities if object is instance of List, otherwise it will return null.
 	 */
 	@SuppressWarnings({"unchecked"})
-	public static <T> List<T> convertToList(Object object, Class<T> classType){
-		if(classType!=null && object!=null && object instanceof List ){
-			List list = (List)object;
-			if(!list.isEmpty()){
-				if(classType.isInstance(list.get(0))){
-					return (List<T>)object;
-				}else{
+	public static <T> List<T> convertToList(Object object, Class<T> classType) {
+		if (classType != null && object != null && object instanceof List) {
+			List list = (List) object;
+			if (!list.isEmpty()) {
+				if (classType.isInstance(list.get(0))) {
+					return (List<T>) object;
+				} else {
 					//The list is not of the correct list type
 					return null;
 				}
-			}else {
+			} else {
 				//We return a new list of type T instead of null because while we don't know if
 				//the original list was of type T we want to ensure that we don't throw a cast class exception
 				//but still
 				return new ArrayList<T>();
 			}
-		}else{
+		} else {
 			return null;
 		}
 	}

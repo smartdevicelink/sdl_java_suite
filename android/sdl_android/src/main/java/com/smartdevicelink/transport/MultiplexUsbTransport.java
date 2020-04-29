@@ -249,7 +249,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                         if(!stateProgress){//We are trying to weed through the bad packet info until we get something
                             //Log.w(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
                             psm.reset();
-                            buffer = new byte[READ_BUFFER_SIZE];
+                            continue; //Move to the next iteration of the loop
                         }
 
                         if(psm.getState() == SdlPsm.FINISHED_STATE){
@@ -259,9 +259,11 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                                 packet.setTransportRecord(getTransportRecord());
                                 handler.obtainMessage(SdlRouterService.MESSAGE_READ, packet).sendToTarget();
                             }
-                            //We put a trace statement in the message read so we can avoid all the extra bytes
+                            //Reset the PSM now that we have a finished packet.
+                            //We will continue to loop through the data to see if any other packet
+                            //is present.
                             psm.reset();
-                            buffer = new byte[READ_BUFFER_SIZE]; //FIXME just do an array copy and send off
+                            continue; //Move to the next iteration of the loop
                         }
                     }
                 } catch (IOException e) {

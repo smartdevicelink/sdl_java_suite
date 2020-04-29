@@ -1,0 +1,47 @@
+name: GitHub CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: macOS-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Setup JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+        
+    - name: Sdl Android Tests
+      # For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 29
+        script: ./android/gradlew -p ./android :sdl_android:connectedCheck
+        
+    - name: Hello Sdl Android Tests
+      run: ./android/gradlew -p ./android :hello_sdl_android:build
+      
+    - name: Sdl JavaSE Tests
+      run: ./javaSE/gradlew -p ./javaSE test
+      
+    - name: Hello Sdl JavaSE Tests
+      run: ./hello_sdl_java/gradlew -p ./hello_sdl_java test
+    
+    - name: Sdl JavaEE Tests
+      run: ./javaEE/gradlew -p ./javaEE test
+
+    - name: RPC Generator Tests
+      run: |
+        python3 -m pip install -r ./generator/requirements.txt
+        python3 ./generator/test/runner.py
+
+    - name: Codecov	
+      uses: codecov/codecov-action@v1.0.6
+      with:
+        yml: ./codecov.yml

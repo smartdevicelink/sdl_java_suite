@@ -43,6 +43,8 @@ public enum FunctionID{
     ENCODED_SYNC_P_DATA(65536, "EncodedSyncPData"),
     ON_ENCODED_SYNC_P_DATA(98304, "OnEncodedSyncPData"),
 
+    RESERVED(0, "RESERVED"),
+
     // REQUESTS & RESPONSES
     REGISTER_APP_INTERFACE(1, "RegisterAppInterface"),
     UNREGISTER_APP_INTERFACE(2, "UnregisterAppInterface"),

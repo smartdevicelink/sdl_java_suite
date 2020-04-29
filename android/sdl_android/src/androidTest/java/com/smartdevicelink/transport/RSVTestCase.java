@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.ConditionVariable;
 import android.util.Log;
 
 import com.smartdevicelink.AndroidTestCase2;
@@ -28,6 +29,7 @@ public class RSVTestCase extends AndroidTestCase2 {
 	private static final long REFRESH_TRUSTED_APP_LIST_TIME_MONTH 	= REFRESH_TRUSTED_APP_LIST_TIME_DAY * 30; // A ~month in ms
 	private static final String TEST =  "{\"response\": {\"com.livio.sdl\" : { \"versionBlacklist\":[] }, \"com.lexus.tcapp\" : { \"versionBlacklist\":[] }, \"com.toyota.tcapp\" : { \"versionBlacklist\": [] } , \"com.sdl.router\":{\"versionBlacklist\": [] },\"com.ford.fordpass\" : { \"versionBlacklist\":[] } }}";
 	RouterServiceValidator rsvp;
+	private static final String APP_ID = "com.smartdevicelink.test.RSVTestCase";
 	/**
 	 * Set this boolean if you want to test the actual validation of router service
 	 */
@@ -427,5 +429,36 @@ public class RSVTestCase extends AndroidTestCase2 {
 		assertTrue(rsvpPass.validate());
 	}
 
-	 
+	/**
+	 * Unit test for validateAsync.
+	 */
+	public void testValidateAsync() {
+		final MultiplexTransportConfig config = new MultiplexTransportConfig(mContext, APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_HIGH);
+		final RouterServiceValidator validator = new RouterServiceValidator(config);
+		final ConditionVariable cond = new ConditionVariable();
+		validator.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+			@Override
+			public void onFinishedValidation(boolean valid, ComponentName name) {
+				Log.d(TAG, "onFinishedValidation: valid=" + valid + "; componentName=" + name);
+				assertFalse(valid); // expected valid = false for this (bogus) APP_ID..
+				cond.open();
+			}
+		});
+		cond.block();
+
+		// next, test for FLAG_MULTI_SECURITY_OFF
+		final MultiplexTransportConfig config2 = new MultiplexTransportConfig(mContext, APP_ID, MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
+		final RouterServiceValidator validator2 = new RouterServiceValidator(config2);
+		cond.close();
+		validator2.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+			@Override
+			public void onFinishedValidation(boolean valid, ComponentName name) {
+				Log.d(TAG, "onFinishedValidation: valid=" + valid + "; componentName=" + name);
+				// return value does not matter when security is off.
+				cond.open();
+			}
+		});
+		cond.block();
+	}
+
 }
