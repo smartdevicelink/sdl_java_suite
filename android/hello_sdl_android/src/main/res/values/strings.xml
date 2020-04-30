@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SDL with_scale_on_new_coordinates_and_current_scale_support</string>
+    <string name="app_name">SDL with_hardcoded_2k_remote_display</string>
     <string name="hello_world">Hello SDL!</string>
     <string name="action_settings">Settings</string>
 

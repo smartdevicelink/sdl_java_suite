@@ -113,13 +113,11 @@ public class VirtualDisplayEncoder {
     @SuppressWarnings("unused")
     public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format) {
         VideoStreamingParameters newParams = new VideoStreamingParameters(displayDensity, frameRate, bitrate, interval, resolution, format);
-        processDisplayUpdate(newParams);
         this.streamingParams = newParams;
     }
 
     @SuppressWarnings("unused")
     public void setStreamingParams(VideoStreamingParameters streamingParams) {
-        processDisplayUpdate(streamingParams);
         this.streamingParams = streamingParams;
     }
 
@@ -177,7 +175,7 @@ public class VirtualDisplayEncoder {
                 else {
                     // recreate after stop in most of cases
                     virtualDisplay = mDisplayManager.createVirtualDisplay(TAG,
-                            streamingParams.getResolution().getResolutionWidth(), streamingParams.getResolution().getResolutionHeight(),
+                            1920, 1080,
                             streamingParams.getDisplayDensity(), inputSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
                 }
 

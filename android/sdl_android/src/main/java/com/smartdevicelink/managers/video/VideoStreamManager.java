@@ -205,9 +205,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			public void onCapabilityRetrieved(Object capability) {
 				VideoStreamingParameters params = new VideoStreamingParameters();
 				params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
-				if (VideoStreamManager.this.parameters.getScale() != params.getScale()) {
-					VideoStreamManager.this.scaleHasChanged = true;
-				}
 				VideoStreamManager.this.parameters = params;
 				virtualDisplayEncoder.setStreamingParams(params);
 				if (isStreaming()) {
@@ -351,7 +348,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		Log.d("MyTagLog", "startEncoder was called");
 
 		try {
-			if (sdlRemoteDisplay != null && scaleHasChanged) {
+			if (sdlRemoteDisplay != null) {
 				sdlRemoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
 				sdlRemoteDisplay.invalidate();
 			}
