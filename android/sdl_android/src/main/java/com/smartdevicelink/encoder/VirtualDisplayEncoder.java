@@ -35,12 +35,14 @@ package com.smartdevicelink.encoder;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
@@ -66,6 +68,9 @@ public class VirtualDisplayEncoder {
     private IVideoStreamListener mOutputListener;
     private Boolean initPassed = false;
     private final Object STREAMING_LOCK = new Object();
+
+    private int predefined_width = 1920;
+    private int predefined_height = 1080;
 
     // Codec-specific data (SPS and PPS)
     private byte[] mH264CodecSpecificData = null;
@@ -101,6 +106,14 @@ public class VirtualDisplayEncoder {
 //        Log.d("MyTagLogEncoderParamsH", String.valueOf(streamingParams.getResolution().getResolutionHeight()));
 
         mOutputListener = outputListener;
+
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
+
+        predefined_width = p.getInt("pre_def_w", predefined_width);
+        predefined_height = p.getInt("pre_def_h", predefined_height);
+
+        Log.d("MyTagLogPreW", String.valueOf(predefined_width));
+        Log.d("MyTagLogPreH", String.valueOf(predefined_height));
 
         initPassed = true;
     }
@@ -175,7 +188,7 @@ public class VirtualDisplayEncoder {
                 else {
                     // recreate after stop in most of cases
                     virtualDisplay = mDisplayManager.createVirtualDisplay(TAG,
-                            1920, 1080,
+                            predefined_width, predefined_height,
                             streamingParams.getDisplayDensity(), inputSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
                 }
 
@@ -218,11 +231,6 @@ public class VirtualDisplayEncoder {
         } catch (Exception ex) {
             Log.e(TAG, "shutDown() failed");
         }
-    }
-
-    @SuppressLint("NewApi")
-    public void resize(VideoStreamingParameters parameters){
-        this.streamingParams = parameters;
     }
 
     private Surface prepareVideoEncoder() {

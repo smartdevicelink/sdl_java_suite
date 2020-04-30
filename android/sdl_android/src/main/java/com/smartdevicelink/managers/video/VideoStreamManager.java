@@ -350,7 +350,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		try {
 			if (sdlRemoteDisplay != null) {
 				sdlRemoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
-				sdlRemoteDisplay.invalidate();
 			}
 
 			virtualDisplayEncoder.init(this.context.get(), streamListener, parameters);
@@ -516,6 +515,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 						Log.d("MyTagLogDispMetr", displayMetrics.toString());
                     }
 
+					sdlRemoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
 				}
 
 				@Override

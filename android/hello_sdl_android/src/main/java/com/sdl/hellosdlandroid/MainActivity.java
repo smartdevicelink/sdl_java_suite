@@ -1,7 +1,9 @@
 package com.sdl.hellosdlandroid;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,10 +21,17 @@ public class MainActivity extends AppCompatActivity {
 	public static final String COMMAND_START_PROXY = "c_start_proxy";
 	public static final String COMMAND_START_STREAM = "c_start_stream";
 
+	public static final String PREDEFINED_WIDTH = "pre_def_w";
+	public static final String PREDEFINED_HEIGHT = "pre_def_h";
+	SharedPreferences preferences;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
 
 		Button startStreaming = findViewById(R.id.start_streaming);
 		Button startStreamingUI = findViewById(R.id.start_streaming_ui);
@@ -30,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
 
 		final EditText ip = findViewById(R.id.machine_ip);
 		final EditText port = findViewById(R.id.machine_port);
+
+		final EditText preConfWidth = findViewById(R.id.pre_conf_width);
+		final EditText preConfHeight = findViewById(R.id.pre_conf_height);
 
 		startProxy.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -62,14 +74,27 @@ public class MainActivity extends AppCompatActivity {
 		startStreaming.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				SdlService.relay.accept(STREAM_ENUM.START_STREAMING);
+				if (!preConfWidth.getText().toString().isEmpty() && !preConfHeight.getText().toString().isEmpty()) {
+					preferences.edit().putInt(PREDEFINED_WIDTH, Integer.parseInt(preConfWidth.getText().toString())).commit();
+					preferences.edit().putInt(PREDEFINED_HEIGHT, Integer.parseInt(preConfHeight.getText().toString())).commit();
+					SdlService.relay.accept(STREAM_ENUM.START_STREAMING);
+				} else {
+					Toast.makeText(MainActivity.this, "Configure display width and height", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 
 		startStreamingUI.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				SdlService.relay.accept(STREAM_ENUM.START_STREAMING_UI);
+
+				if (!preConfWidth.getText().toString().isEmpty() && !preConfHeight.getText().toString().isEmpty()) {
+					preferences.edit().putInt(PREDEFINED_WIDTH, Integer.parseInt(preConfWidth.getText().toString())).commit();
+					preferences.edit().putInt(PREDEFINED_HEIGHT, Integer.parseInt(preConfHeight.getText().toString())).commit();
+					SdlService.relay.accept(STREAM_ENUM.START_STREAMING_UI);
+				} else {
+					Toast.makeText(MainActivity.this, "Configure display width and height", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 	}

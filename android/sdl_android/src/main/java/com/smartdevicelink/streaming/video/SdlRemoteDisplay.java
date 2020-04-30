@@ -130,10 +130,13 @@ public abstract class SdlRemoteDisplay extends Presentation {
             @Override
             public void run() {
                 try {
+                    Log.d("MyTagLogResizeW", String.valueOf(newWidth));
+                    Log.d("MyTagLogResizeH", String.valueOf(newHeight));
                     Constructor<? extends ViewGroup.LayoutParams> ctor =
                             mainView.getLayoutParams().getClass().getDeclaredConstructor(int.class, int.class);
                     mainView.setLayoutParams(ctor.newInstance(newWidth, newHeight));
                     mainView.requestLayout();
+                    invalidate();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
