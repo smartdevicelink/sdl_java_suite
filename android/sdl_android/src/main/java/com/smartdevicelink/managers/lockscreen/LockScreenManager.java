@@ -56,7 +56,6 @@ import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 /**
