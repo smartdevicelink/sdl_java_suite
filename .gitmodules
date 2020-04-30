@@ -1,0 +1,4 @@
+[submodule "generator/rpc_spec"]
+	path = generator/rpc_spec
+	url = https://github.com/smartdevicelink/rpc_spec.git
+	branch = master

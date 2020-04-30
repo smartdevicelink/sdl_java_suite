@@ -46,6 +46,7 @@ import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
@@ -57,6 +58,7 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -495,6 +497,10 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		menuManager.currentHMILevel = HMILevel.HMI_FULL;
 		menuManager.currentSystemContext = SystemContext.SYSCTXT_MAIN;
 		menuManager.sdlMsgVersion = new SdlMsgVersion(6,0);
+		menuManager.defaultMainWindowCapability = new WindowCapability();
+
+		List<MenuLayout> menuLayouts = Arrays.asList(MenuLayout.LIST, MenuLayout.TILES);
+		menuManager.defaultMainWindowCapability.setMenuLayoutsAvailable(menuLayouts);
 
 		MenuConfiguration menuConfigurationTest = new MenuConfiguration(MenuLayout.LIST, MenuLayout.LIST);
 		menuManager.setMenuConfiguration(menuConfigurationTest);

@@ -38,6 +38,7 @@ package com.smartdevicelink.managers.screen.choiceset;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -46,9 +47,8 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Choice;
 import com.smartdevicelink.proxy.rpc.CreateInteractionChoiceSet;
 import com.smartdevicelink.proxy.rpc.Image;
-import com.smartdevicelink.proxy.rpc.ImageField;
-import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
@@ -67,16 +67,18 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	private WeakReference<ISdl> internalInterface;
 	private WeakReference<FileManager> fileManager;
 	private WindowCapability defaultMainWindowCapability;
+	private String displayName;
 	private HashSet<ChoiceCell> cellsToUpload;
 	private CompletionListener completionListener;
 	private boolean isRunning;
 	private boolean isVROptional;
 
-	PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, WindowCapability defaultMainWindowCapability,
+	PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultMainWindowCapability,
 								   Boolean isVROptional, HashSet<ChoiceCell> cellsToPreload, CompletionListener listener){
 		super();
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.fileManager = new WeakReference<>(fileManager);
+		this.displayName = displayName;
 		this.defaultMainWindowCapability = defaultMainWindowCapability;
 		this.isVROptional = isVROptional;
 		this.cellsToUpload = cellsToPreload;
@@ -196,17 +198,18 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 			vrCommands = cell.getVoiceCommands();
 		}
 
-		String menuName = hasTextFieldOfName(TextFieldName.menuName) ? cell.getText() : null;
+		String menuName = shouldSendChoiceText() ? cell.getText() : null;
+
 		if (menuName == null){
 			DebugTool.logError("Could not convert Choice Cell to CreateInteractionChoiceSet. It will not be shown. Cell: "+ cell.toString());
 			return null;
 		}
 
-		String secondaryText = hasTextFieldOfName(TextFieldName.secondaryText) ? cell.getSecondaryText() : null;
-		String tertiaryText = hasTextFieldOfName(TextFieldName.tertiaryText) ? cell.getTertiaryText() : null;
+		String secondaryText = shouldSendChoiceSecondaryText() ? cell.getSecondaryText() : null;
+		String tertiaryText = shouldSendChoiceTertiaryText() ? cell.getTertiaryText() : null;
 
-		Image image = hasImageFieldOfName(ImageFieldName.choiceImage) && cell.getArtwork() != null ? cell.getArtwork().getImageRPC() : null;
-		Image secondaryImage = hasImageFieldOfName(ImageFieldName.choiceSecondaryImage) && cell.getSecondaryArtwork() != null ? cell.getSecondaryArtwork().getImageRPC() : null;
+		Image image = shouldSendChoicePrimaryImage() && cell.getArtwork() != null ? cell.getArtwork().getImageRPC() : null;
+		Image secondaryImage = shouldSendChoiceSecondaryImage() && cell.getSecondaryArtwork() != null ? cell.getSecondaryArtwork().getImageRPC() : null;
 
 		Choice choice = new Choice(cell.getChoiceId(), menuName);
 		choice.setVrCommands(vrCommands);
@@ -227,14 +230,44 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	}
 
 	// HELPERS
+	boolean shouldSendChoiceText() {
+		if (this.displayName != null && this.displayName.equals(DisplayType.GEN3_8_INCH)){
+			return true;
+		}
+		return templateSupportsTextField(TextFieldName.menuName);
+	}
+
+	boolean shouldSendChoiceSecondaryText() {
+		return templateSupportsTextField(TextFieldName.secondaryText);
+	}
+
+	boolean shouldSendChoiceTertiaryText() {
+		return templateSupportsTextField(TextFieldName.tertiaryText);
+	}
+
+	boolean shouldSendChoicePrimaryImage() {
+		return templateSupportsImageField(ImageFieldName.choiceImage);
+	}
+
+	boolean shouldSendChoiceSecondaryImage() {
+		return templateSupportsImageField(ImageFieldName.choiceSecondaryImage);
+	}
+
+	boolean templateSupportsTextField(TextFieldName name) {
+		return (defaultMainWindowCapability == null || defaultMainWindowCapability.getTextFields() == null) || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
+	}
+
+	boolean templateSupportsImageField(ImageFieldName name) {
+		return (defaultMainWindowCapability == null || defaultMainWindowCapability.getImageFields() == null) || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name);
+	}
 
 	List<SdlArtwork> artworksToUpload(){
-		List<SdlArtwork> artworksToUpload = new ArrayList<>(cellsToUpload.size());
+		List<SdlArtwork> artworksToUpload = new ArrayList<>();
 		for (ChoiceCell cell : cellsToUpload){
-			if (hasImageFieldOfName(ImageFieldName.choiceImage) && artworkNeedsUpload(cell.getArtwork())){
+			if (shouldSendChoicePrimaryImage() && artworkNeedsUpload(cell.getArtwork())){
 				artworksToUpload.add(cell.getArtwork());
 			}
-			if (hasImageFieldOfName(ImageFieldName.choiceSecondaryImage) && artworkNeedsUpload(cell.getSecondaryArtwork())){
+			if (shouldSendChoiceSecondaryImage() && artworkNeedsUpload(cell.getSecondaryArtwork())){
 				artworksToUpload.add(cell.getSecondaryArtwork());
 			}
 		}
@@ -244,31 +277,6 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	boolean artworkNeedsUpload(SdlArtwork artwork){
 		if (fileManager.get() != null){
 			return (artwork != null && !fileManager.get().hasUploadedFile(artwork) && !artwork.isStaticIcon());
-		}
-		return false;
-	}
-
-	boolean hasImageFieldOfName(ImageFieldName name){
-		if (defaultMainWindowCapability == null ){ return false; }
-		if (defaultMainWindowCapability.getImageTypeSupported() == null || defaultMainWindowCapability.getImageTypeSupported().isEmpty()) { return false; }
-		if (defaultMainWindowCapability.getImageFields() != null){
-			for (ImageField field : defaultMainWindowCapability.getImageFields()){
-				if (field != null && field.getName() != null && field.getName().equals(name)){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	boolean hasTextFieldOfName(TextFieldName name){
-		if (defaultMainWindowCapability == null ){ return false; }
-		if (defaultMainWindowCapability.getTextFields() != null){
-			for (TextField field : defaultMainWindowCapability.getTextFields()){
-				if (field != null && field.getName() != null && field.getName().equals(name)){
-					return true;
-				}
-			}
 		}
 		return false;
 	}

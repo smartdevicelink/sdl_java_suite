@@ -84,6 +84,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     OnSystemCapabilityListener onDisplayCapabilityListener;
     HMILevel currentHMILevel;
     WindowCapability defaultMainWindowCapability;
+    String displayName;
     SystemContext currentSystemContext;
     HashSet<ChoiceCell> preloadedChoices, pendingPreloadChoices;
     ChoiceSet pendingPresentationSet;
@@ -208,7 +209,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         pendingPreloadChoices.addAll(choicesToUpload);
 
         if (fileManager.get() != null) {
-            PreloadChoicesOperation preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager.get(), defaultMainWindowCapability, isVROptional, choicesToUpload, new CompletionListener() {
+            PreloadChoicesOperation preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
                     if (success){
@@ -520,6 +521,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                     DebugTool.logError("SoftButton Manager - Capabilities sent here are null or empty");
                 }else {
                     DisplayCapability display = capabilities.get(0);
+                    displayName = display.getDisplayName();
                     for (WindowCapability windowCapability : display.getWindowCapabilities()) {
                         int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
                         if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
