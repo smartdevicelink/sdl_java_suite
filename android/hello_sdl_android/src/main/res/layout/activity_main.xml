@@ -13,4 +13,47 @@
         android:layout_height="wrap_content"
         android:text="@string/hello_world" />
 
+    <Button
+        android:id="@+id/start_proxy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Start Proxy" />
+
+    <Button
+        android:layout_below="@+id/start_proxy"
+        android:id="@+id/start_streaming"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Start streaming" />
+
+    <Button
+        android:layout_below="@+id/start_streaming"
+        android:id="@+id/start_streaming_ui"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Start streaming ui" />
+
+    <EditText
+        android:layout_below="@+id/start_streaming_ui"
+        android:id="@+id/machine_ip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_centerInParent="true"
+        android:hint="Ip"
+        android:text="192.168.0.101" />
+
+    <EditText
+        android:layout_below="@+id/machine_ip"
+        android:id="@+id/machine_port"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_centerInParent="true"
+        android:hint="Port"
+        android:text="12345" />
+
 </RelativeLayout>

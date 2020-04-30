@@ -39,10 +39,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -123,6 +125,22 @@ public abstract class SdlRemoteDisplay extends Presentation {
         }
     }
 
+    public void resizeView(final int newWidth, final int newHeight) {
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Constructor<? extends ViewGroup.LayoutParams> ctor =
+                            mainView.getLayoutParams().getClass().getDeclaredConstructor(int.class, int.class);
+                    mainView.setLayoutParams(ctor.newInstance(newWidth, newHeight));
+                    mainView.requestLayout();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     public void handleMotionEvent(final MotionEvent motionEvent){
         uiHandler.post(new Runnable() {
             @Override
@@ -176,11 +194,15 @@ public abstract class SdlRemoteDisplay extends Presentation {
                 public void run() {
                     // Want to create presentation on UI thread so it finds the right Looper
                     // when setting up the Dialog.
+                    Log.d("MyTagLog", "call is called");
                     if((mDisplay!=null) && (remoteDisplay == null || remoteDisplay.getDisplay() != mDisplay))
                     {
+                        Log.d("MyTagLog", "creator if");
                         try {
                             Constructor constructor = remoteDisplayClass.getConstructor(Context.class, Display.class);
                             remoteDisplay = (SdlRemoteDisplay) constructor.newInstance(context, mDisplay);
+                            Log.d("MyTagLog", "constructed another time");
+
                         } catch (Exception e) {
                             e.printStackTrace();
                             Log.e(TAG, "Unable to create Presentation Class");
@@ -206,6 +228,5 @@ public abstract class SdlRemoteDisplay extends Presentation {
 
             return presentationShowError;
         }
-
     }
 }

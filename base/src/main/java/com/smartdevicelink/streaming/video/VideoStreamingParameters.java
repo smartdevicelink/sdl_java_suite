@@ -32,6 +32,8 @@
 
 package com.smartdevicelink.streaming.video;
 
+import android.util.Log;
+
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
@@ -60,6 +62,7 @@ public class VideoStreamingParameters {
 	private int frameRate;
 	private int bitrate;
 	private int interval;
+	private double scale = DEFAULT_SCALE;
 	private ImageResolution resolution;
 	private VideoStreamingFormat format;
 
@@ -137,16 +140,18 @@ public class VideoStreamingParameters {
      */
     public void update(VideoStreamingCapability capability, String vehicleMake){
         if(capability.getMaxBitrate()!=null){ this.bitrate = capability.getMaxBitrate() * 1000; } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
-        double scale = DEFAULT_SCALE;
         if(capability.getScale() != null) { scale = capability.getScale(); }
         ImageResolution resolution = capability.getPreferredResolution();
         if(resolution!=null){
 
-            if (vehicleMake != null) {
-                if ((vehicleMake.contains("Ford") || vehicleMake.contains("Lincoln")) && ((resolution.getResolutionHeight() != null && resolution.getResolutionHeight() > 800) || (resolution.getResolutionWidth() != null && resolution.getResolutionWidth() > 800))) {
-                    scale = 1.0 / 0.75;
-                }
-            }
+//            if (vehicleMake != null) {
+//                if ((vehicleMake.contains("Ford") || vehicleMake.contains("Lincoln")) &&
+//                        ((resolution.getResolutionHeight() != null && resolution.getResolutionHeight() > 800) ||
+//                                (resolution.getResolutionWidth() != null && resolution.getResolutionWidth() > 800))) {
+//                    Log.d("MyTagLog", "specific case");
+//                    scale = 1.0 / 0.75;
+//                }
+//            }
 
             if(resolution.getResolutionHeight()!=null && resolution.getResolutionHeight() > 0){ this.resolution.setResolutionHeight((int)(resolution.getResolutionHeight() / scale)); }
             if(resolution.getResolutionWidth()!=null && resolution.getResolutionWidth() > 0){ this.resolution.setResolutionWidth((int)(resolution.getResolutionWidth() / scale)); }
@@ -257,6 +262,8 @@ public class VideoStreamingParameters {
 	public ImageResolution getResolution() {
 		return resolution;
 	}
+
+    public double getScale() { return scale; }
 
     @Override
     public String toString() {

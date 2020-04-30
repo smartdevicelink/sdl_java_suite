@@ -179,7 +179,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	public static final com.smartdevicelink.util.Version MAX_SUPPORTED_RPC_VERSION = new com.smartdevicelink.util.Version("6.0.0");
 
-	private SdlSession sdlSession = null;
+	public SdlSession sdlSession = null;
 	private proxyListenerType _proxyListener = null;
 	
 	protected Service _appService = null;
@@ -354,6 +354,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
 			if(isConnected()){
+				Log.d("MyTagLogProxyStartW", String.valueOf(parameters.getResolution().getResolutionWidth()));
+				Log.d("MyTagLogProxyStartH", String.valueOf(parameters.getResolution().getResolutionHeight()));
 				sdlSession.setDesiredVideoParams(parameters);
 				sdlSession.startService(SessionType.NAV,sdlSession.getSessionId(),encrypted);
 				addNavListener();
@@ -527,6 +529,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void startRPCEncryption() {
 			SdlProxyBase.this.startProtectedRPCService();
+		}
+
+		@Override
+		public SdlSession getSessions() {
+			return sdlSession;
 		}
 	};
 	
@@ -8390,7 +8397,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				//We are all set so we can start streaming at at this point
 				encoder.start();
 				//Encoder should be up and running
-				createRemoteDisplay(encoder.getVirtualDisplay());
+				createRemoteDisplay(encoder.getDisplay());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -8452,6 +8459,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						if(resolution == null){ //Either the protocol version is too low to access video streaming caps, or they were null
 							DisplayCapabilities dispCap = (DisplayCapabilities) internalInterface.getCapability(SystemCapabilityType.DISPLAY);
 							if (dispCap != null) {
+								Log.d("MyTagLogProxyW", resolution.getResolutionWidth().toString());
+								Log.d("MyTagLogProxyH", resolution.getResolutionHeight().toString());
 								resolution = (dispCap.getScreenParams().getImageResolution());
 							}
 						}

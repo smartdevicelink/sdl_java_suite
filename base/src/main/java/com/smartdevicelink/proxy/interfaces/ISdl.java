@@ -2,6 +2,7 @@ package com.smartdevicelink.proxy.interfaces;
 
 import android.support.annotation.NonNull;
 
+import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
@@ -287,4 +288,6 @@ public interface ISdl {
      * Start encrypted RPC service
      */
     void startRPCEncryption();
+
+    SdlSession getSessions();
 }

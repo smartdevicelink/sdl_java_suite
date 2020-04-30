@@ -41,6 +41,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.audio.AudioStreamManager;
 import com.smartdevicelink.managers.file.FileManager;
@@ -930,6 +931,10 @@ public class SdlManager extends BaseSdlManager{
 			}
 		}
 
+		@Override
+		public SdlSession getSessions() {
+			return proxy.sdlSession;
+		}
 	};
 
 

@@ -37,7 +37,7 @@ public class SdlRemoteDisplayTest extends TestCase {
         assertNotNull(encoder);
 
 
-        SdlRemoteDisplay.Creator creator = new SdlRemoteDisplay.Creator(InstrumentationRegistry.getContext(), encoder.getVirtualDisplay(), null, MockRemoteDisplay.class, rdCallback);
+        SdlRemoteDisplay.Creator creator = new SdlRemoteDisplay.Creator(InstrumentationRegistry.getContext(), encoder.getDisplay(), null, MockRemoteDisplay.class, rdCallback);
         assertNotNull(creator);
         FutureTask<Boolean> fTask = new FutureTask<Boolean>(creator);
         Thread showPresentation = new Thread(fTask);
@@ -48,7 +48,7 @@ public class SdlRemoteDisplayTest extends TestCase {
     public void testConstructor(){
         VirtualDisplayEncoder encoder = createVDE();
         assertNotNull(encoder);
-        MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getContext(), encoder.getVirtualDisplay());
+        MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getContext(), encoder.getDisplay());
         assertNotNull(remoteDisplay);
 
         encoder.shutDown();
@@ -59,7 +59,7 @@ public class SdlRemoteDisplayTest extends TestCase {
     public void testTouchEvents(){
         VirtualDisplayEncoder encoder = createVDE();
         assertNotNull(encoder);
-        MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getContext(), encoder.getVirtualDisplay());
+        MockRemoteDisplay remoteDisplay = new MockRemoteDisplay(InstrumentationRegistry.getContext(), encoder.getDisplay());
         assertNotNull(remoteDisplay);
         remoteDisplay.show();
 

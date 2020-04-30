@@ -32,6 +32,7 @@
 
 package com.smartdevicelink.encoder;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.hardware.display.DisplayManager;
@@ -96,6 +97,9 @@ public class VirtualDisplayEncoder {
 
         this.streamingParams.update(streamingParams);
 
+//        Log.d("MyTagLogEncoderParamsW", String.valueOf(streamingParams.getResolution().getResolutionHeight()));
+//        Log.d("MyTagLogEncoderParamsH", String.valueOf(streamingParams.getResolution().getResolutionHeight()));
+
         mOutputListener = outputListener;
 
         initPassed = true;
@@ -108,12 +112,33 @@ public class VirtualDisplayEncoder {
 
     @SuppressWarnings("unused")
     public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format) {
-        this.streamingParams = new VideoStreamingParameters(displayDensity, frameRate, bitrate, interval, resolution, format);
+        VideoStreamingParameters newParams = new VideoStreamingParameters(displayDensity, frameRate, bitrate, interval, resolution, format);
+        processDisplayUpdate(newParams);
+        this.streamingParams = newParams;
     }
 
     @SuppressWarnings("unused")
     public void setStreamingParams(VideoStreamingParameters streamingParams) {
+        processDisplayUpdate(streamingParams);
         this.streamingParams = streamingParams;
+    }
+
+    private void processDisplayUpdate(VideoStreamingParameters newParameters) {
+        ImageResolution prevResolution = this.streamingParams.getResolution();
+
+        ImageResolution newResolution = newParameters.getResolution();
+        if (resolutionHasChanged(prevResolution, newResolution)) {
+            resizeVirtualDisplay(newResolution);
+        }
+    }
+
+    private boolean resolutionHasChanged(ImageResolution previousResolution, ImageResolution newResolution) {
+        boolean shouldResizeVirtualDisp = false;
+        if (!previousResolution.getResolutionWidth().equals(newResolution.getResolutionWidth()) ||
+                !previousResolution.getResolutionHeight().equals(newResolution.getResolutionHeight())) {
+            shouldResizeVirtualDisp = true;
+        }
+        return shouldResizeVirtualDisp;
     }
 
     /**
@@ -135,9 +160,27 @@ public class VirtualDisplayEncoder {
                 inputSurface = prepareVideoEncoder();
 
                 // Create a virtual display that will output to our encoder.
-                virtualDisplay = mDisplayManager.createVirtualDisplay(TAG,
-                        streamingParams.getResolution().getResolutionWidth(), streamingParams.getResolution().getResolutionHeight(),
-                        streamingParams.getDisplayDensity(), inputSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
+                Log.d("MyTagResolutionW", String.valueOf(streamingParams.getResolution().getResolutionWidth()));
+                Log.d("MyTagResolutionH", String.valueOf(streamingParams.getResolution().getResolutionHeight()));
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && virtualDisplay != null) {
+                    Log.d("MyTagLog", "in if");
+                    virtualDisplay.setSurface(null);
+                    Display mdisp = virtualDisplay.getDisplay();
+
+                    Log.d("MyTagValidity", String.valueOf(mdisp.isValid()));
+
+                    //virtualDisplay.release();
+                    //virtualDisplay = null;
+                    virtualDisplay.setSurface(inputSurface);
+                }
+                else {
+                    // recreate after stop in most of cases
+                    virtualDisplay = mDisplayManager.createVirtualDisplay(TAG,
+                            streamingParams.getResolution().getResolutionWidth(), streamingParams.getResolution().getResolutionHeight(),
+                            streamingParams.getDisplayDensity(), inputSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
+                }
+
 
                 startEncoder();
 
@@ -165,11 +208,11 @@ public class VirtualDisplayEncoder {
                 mVideoEncoder = null;
             }
 
-            if (virtualDisplay != null) {
-                virtualDisplay.release();
-                virtualDisplay = null;
-            }
-
+//            if (virtualDisplay != null) {
+//                virtualDisplay.release();
+//                virtualDisplay = null;
+//            }
+//
             if (inputSurface != null) {
                 inputSurface.release();
                 inputSurface = null;
@@ -177,6 +220,11 @@ public class VirtualDisplayEncoder {
         } catch (Exception ex) {
             Log.e(TAG, "shutDown() failed");
         }
+    }
+
+    @SuppressLint("NewApi")
+    public void resize(VideoStreamingParameters parameters){
+        this.streamingParams = parameters;
     }
 
     private Surface prepareVideoEncoder() {
@@ -203,6 +251,14 @@ public class VirtualDisplayEncoder {
         // Create a MediaCodec encoder and configure it. Get a Surface we can use for recording into.
         try {
             mVideoEncoder = MediaCodec.createEncoderByType(videoMimeType);
+//            Surface surface = null;
+//            if (inputSurface != null) {
+//                mVideoEncoder.configure(format, inputSurface, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+//            }
+//            else {
+//                mVideoEncoder.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+//                surface = mVideoEncoder.createInputSurface(); //prepared
+//            }
             mVideoEncoder.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
             Surface surface = mVideoEncoder.createInputSurface(); //prepared
 
@@ -286,8 +342,16 @@ public class VirtualDisplayEncoder {
         }
     }
 
-    public Display getVirtualDisplay() {
+    public Display getDisplay() {
         return virtualDisplay.getDisplay();
+    }
+
+    public void resizeVirtualDisplay(ImageResolution resolution) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            virtualDisplay.resize(resolution.getResolutionWidth(), resolution.getResolutionHeight(), streamingParams.getDisplayDensity());
+        }else {
+            // TODO handle?
+        }
     }
 
     private String getMimeForFormat(VideoStreamingFormat format) {

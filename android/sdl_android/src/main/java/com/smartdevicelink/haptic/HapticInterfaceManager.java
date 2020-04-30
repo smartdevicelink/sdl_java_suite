@@ -21,6 +21,7 @@
  **************************************************************************************************/
 package com.smartdevicelink.haptic;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -118,6 +119,12 @@ public class HapticInterfaceManager {
             rect.setHeight((float) (h * scale));
             rect.setX((float) (loc[0] * scale));
             rect.setY((float) (loc[1] * scale));
+
+            Log.d("HapticRectLogW", String.valueOf(rect.getWidth()));
+            Log.d("HapticRectLogH", String.valueOf(rect.getHeight()));
+            Log.d("HapticRectLogY", String.valueOf(rect.getY()));
+            Log.d("HapticRectLogX", String.valueOf(rect.getX()));
+            Log.d("HapticRectLog", "=========================");
 
             HapticRect hapticRect = new HapticRect();
             hapticRect.setId(id++);
