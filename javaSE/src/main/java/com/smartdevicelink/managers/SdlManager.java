@@ -90,7 +90,6 @@ import java.util.Vector;
  * 4. Helper methods
  */
 public class SdlManager extends BaseSdlManager{
-
 	private static final String TAG = "SdlManager";
 
 	private SdlArtwork appIcon;
@@ -105,14 +104,12 @@ public class SdlManager extends BaseSdlManager{
 	private FileManager fileManager;
     private ScreenManager screenManager;
 
-
 	// INTERNAL INTERFACE
 	/**
 	 * This is from the LifeCycleManager directly. In the future if there is a reason to be a man in the middle
 	 * the SdlManager could create it's own, however right now it was only a duplication of logic tied to the LCM.
 	 */
 	private ISdl _internalInterface;
-
 
 	// Initialize proxyBridge with anonymous lifecycleListener
 	private final LifecycleManager.LifecycleListener lifecycleListener = new LifecycleManager.LifecycleListener() {
@@ -524,6 +521,14 @@ public class SdlManager extends BaseSdlManager{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void start(){
+
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				dispose();
+			}
+		});
+
 		Log.i(TAG, "start");
 		if (lifecycleManager == null) {
 			if (transport != null
