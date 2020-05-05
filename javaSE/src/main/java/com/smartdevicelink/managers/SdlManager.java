@@ -92,6 +92,7 @@ import java.util.Vector;
 public class SdlManager extends BaseSdlManager{
 	private static final String TAG = "SdlManager";
 
+
 	private SdlArtwork appIcon;
 	private SdlManagerListener managerListener;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
@@ -104,6 +105,7 @@ public class SdlManager extends BaseSdlManager{
 	private FileManager fileManager;
     private ScreenManager screenManager;
 
+
 	// INTERNAL INTERFACE
 	/**
 	 * This is from the LifeCycleManager directly. In the future if there is a reason to be a man in the middle
@@ -111,6 +113,7 @@ public class SdlManager extends BaseSdlManager{
 	 */
 	private ISdl _internalInterface;
 
+	
 	// Initialize proxyBridge with anonymous lifecycleListener
 	private final LifecycleManager.LifecycleListener lifecycleListener = new LifecycleManager.LifecycleListener() {
 		boolean initStarted = false;
