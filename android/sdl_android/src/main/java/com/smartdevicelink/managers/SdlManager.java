@@ -757,9 +757,22 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		@Override
-		public void stopVideoService() {
+		public void stopVideoService(boolean withPendingRestart) {
+			Log.d("MyTagLog", "Manager stop video service");
+
 			if(proxy.getIsConnected()){
-				proxy.endVideoStream();
+				boolean success = proxy.endVideoStream();
+				Log.d("MyTagLogParamsB", String.valueOf(success));
+
+			}
+
+			Log.d("MyTagLogParams", String.valueOf(withPendingRestart));
+			Log.d("MyTagLogParams", String.valueOf(videoStreamManager != null));
+			Log.d("MyTagLogParams", String.valueOf(proxy.getIsConnected()));
+			if (withPendingRestart && videoStreamManager != null && proxy.getIsConnected()){
+				Log.d("MyTagLog", "pending restart");
+				proxy.startVideoService(videoStreamManager.getLastCachedIsEncrypted(),
+						videoStreamManager.getLastCachedStreamingParameters());
 			}
 		}
 

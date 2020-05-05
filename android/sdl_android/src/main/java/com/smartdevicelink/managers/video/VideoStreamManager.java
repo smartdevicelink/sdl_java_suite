@@ -98,7 +98,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private boolean hasStarted;
 	private List<HMILevel> streamableLevels = Arrays.asList(HMILevel.HMI_FULL, HMILevel.HMI_LIMITED);
 	private String vehicleMake = null;
-	private boolean scaleHasChanged = false;
+	private boolean isEncrypted = false;
 
 	// INTERNAL INTERFACES
 
@@ -106,6 +106,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
 			if(SessionType.NAV.equals(type)){
+				Log.d("MyTagStarted", "service started");
 				if (session != null && session.getAcceptedVideoParams() != null) {
 					parameters = session.getAcceptedVideoParams();
 					VideoStreamManager.this.streamListener = session.startVideoStream();
@@ -120,6 +121,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				if(capability != null && Boolean.TRUE.equals(capability.getIsHapticSpatialDataSupported())){
 					hapticManager = new HapticInterfaceManager(internalInterface);
 				}
+				checkState();
 				startEncoder();
 				stateMachine.transitionToState(StreamingStateMachine.STARTED);
 				hasStarted = true;
@@ -129,6 +131,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		@Override
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if(SessionType.NAV.equals(type)){
+				Log.d("MyTagEnded", "service ended");
 				if(sdlRemoteDisplay !=null){
 					stopStreaming();
 				}
@@ -162,7 +165,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					checkState();
 				}
 				if (hasStarted && (streamableLevels.contains(prevHMILevel)) && (!streamableLevels.contains(hmiLevel))) {
-					internalInterface.stopVideoService();
+					internalInterface.stopVideoService(false);
 				}
 			}
 		}
@@ -207,10 +210,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
 				VideoStreamManager.this.parameters = params;
 				virtualDisplayEncoder.setStreamingParams(params);
-				if (isStreaming()) {
-					stopStreaming();
-				}
-				resumeStreaming();
+				stopStreaming();
+				//resumeStreaming();
 			}
 
 			@Override
@@ -286,6 +287,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		Log.d("MyTagLog", "startRemoteDisplay was called");
 		this.context = new WeakReference<>(context);
 		this.remoteDisplayClass = remoteDisplayClass;
+		this.isEncrypted = encrypted;
 		int majorProtocolVersion = internalInterface.getProtocolVersion().getMajor();
 		if(majorProtocolVersion >= 5 && !internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			Log.e(TAG, "Video streaming not supported on this module");
@@ -299,7 +301,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					public void onCapabilityRetrieved(Object capability) {
 						VideoStreamingParameters params = new VideoStreamingParameters();
 						params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
-						startStreaming(params, encrypted);
+						startStreaming(params, isEncrypted);
 					}
 
 					@Override
@@ -378,10 +380,15 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 //		if(remoteDisplay!=null){
 //			remoteDisplay.stop();
 //		}
-		if(virtualDisplayEncoder!=null){
-			virtualDisplayEncoder.shutDown();
+		if (this.isStreaming()) {
+			if(virtualDisplayEncoder!=null){
+				virtualDisplayEncoder.shutDown();
+			}
+			stateMachine.transitionToState(StreamingStateMachine.STOPPED);
+
+			this.internalInterface.stopVideoService(true);
 		}
-		stateMachine.transitionToState(StreamingStateMachine.STOPPED);
+
 	}
 
 	/**
@@ -409,7 +416,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		parameters = null;
 		virtualDisplayEncoder = null;
 		if (internalInterface != null) {
-			internalInterface.stopVideoService();
+			internalInterface.stopVideoService(false);
 			// Remove listeners
 			internalInterface.removeServiceListener(SessionType.NAV, serviceListener);
 			internalInterface.removeOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);
@@ -439,6 +446,13 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @return boolean (true = yes, false = no)
 	 */
 	public boolean isStreaming(){
+
+		Log.d("MyTagLogStreamingStatus", String.valueOf(stateMachine.getState() == StreamingStateMachine.STARTED));
+		Log.d("MyTagLogStreamingStatus", String.valueOf(streamableLevels.contains(hmiLevel)));
+		Log.d("MyTagLogStreamingStatus", String.valueOf(stateMachine.getState()));
+		Log.d("MyTagLogStreamingStatus", hmiLevel.toString());
+		Log.d("MyTagLogStreamingStatus", "===========================");
+
 		return (stateMachine.getState() == StreamingStateMachine.STARTED) && (streamableLevels.contains(hmiLevel));
 	}
 
@@ -660,6 +674,14 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		}
 
 		return motionEventList;
+	}
+
+	public VideoStreamingParameters getLastCachedStreamingParameters() {
+		return parameters;
+	}
+
+	public boolean getLastCachedIsEncrypted() {
+		return isEncrypted;
 	}
 
 	/**

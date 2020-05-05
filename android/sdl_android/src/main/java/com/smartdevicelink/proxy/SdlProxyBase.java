@@ -206,6 +206,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	private boolean navServiceStartResponseReceived = false;
 	private boolean navServiceStartResponse = false;
+	private boolean navServiceStarted = false;
 	private List<String> navServiceStartRejectedParams = null;
 	private boolean pcmServiceStartResponseReceived = false;
 	private boolean pcmServiceStartResponse = false;
@@ -363,8 +364,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void stopVideoService() {
+		public void stopVideoService(boolean withPendingRestart) {
+			Log.d("MyTagLog", "Proxy stop video service");
 			if(isConnected()){
+				navServiceStarted = false;
 				sdlSession.endService(SessionType.NAV,sdlSession.getSessionId());
 			}
 		}
@@ -5377,6 +5380,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		sdlSession.setDesiredVideoParams(parameters);
 
+//		if (navServiceStartResponseReceived && navServiceStartResponse) {
+//			navServiceStartResponseReceived = false;
+//			navServiceStartResponse = false;
+//		}
+
 		tryStartVideoStream(isEncrypted, parameters);
 	}
 
@@ -5390,6 +5398,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
         navServiceEndResponseReceived = false;
         navServiceEndResponse = false;
+        navServiceStarted = false;
         sdlSession.stopVideoStream();
 
         FutureTask<Void> fTask =  createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
@@ -5548,10 +5557,18 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             return null;
         }
 
+        Log.d("MyTagResponses", String.valueOf(navServiceStartResponseReceived));
+        Log.d("MyTagResponses", String.valueOf(navServiceStartResponse));
+        Log.d("MyTagResponses", String.valueOf(navServiceStartResponse && isEncrypted && !sdlSession.isServiceProtected(SessionType.NAV)));
+        Log.d("MyTagResponses", String.valueOf(sdlSession.isServiceProtected(SessionType.NAV)));
+        Log.d("MyTagResponses", String.valueOf(navServiceStarted));
+
+
 		if(!navServiceStartResponseReceived || !navServiceStartResponse //If we haven't started the service before
-				|| (navServiceStartResponse && isEncrypted && !sdlSession.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
+				|| (navServiceStartResponse && isEncrypted && !sdlSession.isServiceProtected(SessionType.NAV)) || !navServiceStarted) { //Or the service has been started but we'd like to start an encrypted one
 			sdlSession.setDesiredVideoParams(parameters);
 
+			navServiceStarted = true;
 			navServiceStartResponseReceived = false;
 			navServiceStartResponse = false;
 			navServiceStartRejectedParams = null;
@@ -8404,7 +8421,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			Log.d(TAG, parameters.toString());
 		}
 
-		public void stopStreaming(){
+		public void stopStreaming(boolean withPendingRestart){
 			if(remoteDisplay!=null){
 				remoteDisplay.stop();
 				remoteDisplay = null;
@@ -8413,12 +8430,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				encoder.shutDown();
 			}
 			if(internalInterface!=null){
-				internalInterface.stopVideoService();
+			    Log.d("MyTagLog", "Proxy pending");
+				internalInterface.stopVideoService(withPendingRestart);
 			}
 		}
 
 		public void dispose(){
-			stopStreaming();
+			stopStreaming(false);
 			internalInterface.removeServiceListener(SessionType.NAV,this);
 		}
 
@@ -8511,7 +8529,8 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if(SessionType.NAV.equals(type)){
 				if(remoteDisplay!=null){
-					stopStreaming();
+					// change to true if need
+					stopStreaming(false);
 				}
 			}
 		}

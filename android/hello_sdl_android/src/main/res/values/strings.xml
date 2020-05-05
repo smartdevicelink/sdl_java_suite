@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SDL with_ability_to_reconfigure_remote_display_size_on_stream_start</string>
+    <string name="app_name">SDL with_restart_service_and_reconfigure_displays</string>
     <string name="hello_world">Hello SDL!</string>
     <string name="action_settings">Settings</string>
 

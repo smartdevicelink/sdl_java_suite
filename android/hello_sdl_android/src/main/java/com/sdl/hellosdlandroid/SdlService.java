@@ -303,6 +303,7 @@ public class SdlService extends Service {
 					if (status != null && status.getHmiLevel() == HMILevel.HMI_NONE) {
 						//Stop the stream
 						if (sdlManager.getVideoStreamManager() != null && sdlManager.getVideoStreamManager().isStreaming()) {
+							Log.d("OnHmiStatus", "stop streaming");
 							sdlManager.getVideoStreamManager().stopStreaming();
 						}
 					}
