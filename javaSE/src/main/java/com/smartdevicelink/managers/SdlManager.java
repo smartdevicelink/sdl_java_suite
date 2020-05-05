@@ -90,8 +90,8 @@ import java.util.Vector;
  * 4. Helper methods
  */
 public class SdlManager extends BaseSdlManager{
-	private static final String TAG = "SdlManager";
 
+	private static final String TAG = "SdlManager";
 
 	private SdlArtwork appIcon;
 	private SdlManagerListener managerListener;
@@ -113,7 +113,7 @@ public class SdlManager extends BaseSdlManager{
 	 */
 	private ISdl _internalInterface;
 
-	
+
 	// Initialize proxyBridge with anonymous lifecycleListener
 	private final LifecycleManager.LifecycleListener lifecycleListener = new LifecycleManager.LifecycleListener() {
 		boolean initStarted = false;
