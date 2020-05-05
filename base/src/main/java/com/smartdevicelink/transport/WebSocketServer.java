@@ -80,7 +80,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
     @Override
     public void stop(){
         try {
-            super.stop(500);
+            this.stop(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
