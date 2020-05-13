@@ -3655,7 +3655,8 @@ public class SdlRouterService extends Service{
 	 * notifySppError: utilize notification channel to notify the SPP out-of-resource error.
 	 */
 	@TargetApi(11)
-	public void notifySppError() {
+	@SuppressLint("NewApi")
+	private void notifySppError() {
 		Notification.Builder builder;
 		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
 			builder = new Notification.Builder(getApplicationContext());
@@ -3681,7 +3682,7 @@ public class SdlRouterService extends Service{
 		builder.setOngoing(false);
 
 		Log.e(TAG, "Notification: notifySppError entering");
-		synchronized (NOTIFICATION_LOCK) {
+		// @REVIEW: do we need "synchronized (NOTIFICATION_LOCK) {" here??
 			final String tag = "SDL";
 			//Now we need to add a notification channel
 			final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -3700,6 +3701,6 @@ public class SdlRouterService extends Service{
 			} else {
 				Log.e(TAG, "notifySppError: Unable to retrieve notification Manager service");
 			}
-		}
+		// need to uncomment if NOTIFICATION_LOCK is needed.
 	}
 }

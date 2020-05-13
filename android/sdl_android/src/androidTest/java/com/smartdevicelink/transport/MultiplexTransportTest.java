@@ -88,16 +88,15 @@ public class MultiplexTransportTest extends AndroidTestCase2 {
 
 	// test for setting error state.
 	public void testSetState() {
+		final Bundle bundle = new Bundle();
 		MultiplexBluetoothTransport btTransport = new MultiplexBluetoothTransport(new Handler(Looper.getMainLooper()) {
 			@Override
 			public void handleMessage(Message message) {
-				// do nothing.
+				assertTrue(message.getData().equals(bundle));
 			}
 		});
 		btTransport.start();
-		Bundle bundle = new Bundle();
 		bundle.putByte(MultiplexBaseTransport.ERROR_REASON_KEY, MultiplexBaseTransport.REASON_SPP_ERROR);
 		btTransport.setState(MultiplexBaseTransport.STATE_ERROR, bundle);
-		assertTrue(true); // succeeded
 	}
 }
