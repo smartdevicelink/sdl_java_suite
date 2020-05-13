@@ -4127,7 +4127,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						onRPCNotificationReceived(msg);
 					}
 				} else {
-					updateBroadcastIntent(sendIntent, "COMMENT1", "Sending to cloud: " + msg.getUrl().replaceFirst("http://", "https://"));
+					updateBroadcastIntent(sendIntent, "COMMENT1", "Sending to cloud: " + msg.getUrl());
 					sendBroadcastIntent(sendIntent);				
 					
 					Log.i("pt", "send to url");
@@ -4304,10 +4304,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						Thread handleOffBoardTransmissionThread = new Thread() {
 							@Override
 							public void run() {
-								byte[] file = FileUtls.downloadFile(msg.getUrl().replaceFirst("http://", "https://"));
+								String urlHttps = msg.getUrl().replaceFirst("http://", "https://");
+								byte[] file = FileUtls.downloadFile(urlHttps);
 								if (file != null) {
 									SystemRequest systemRequest = new SystemRequest();
-									systemRequest.setFileName(msg.getUrl().replaceFirst("http://", "https://"));
+									systemRequest.setFileName(urlHttps);
 									systemRequest.setBulkData(file);
 									systemRequest.setRequestType(RequestType.ICON_URL);
 									try {
@@ -4316,7 +4317,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 										e.printStackTrace();
 									}
 								} else {
-									DebugTool.logError("File was null at: " + msg.getUrl().replaceFirst("http://", "https://"));
+									DebugTool.logError("File was null at: " + urlHttps);
 								}
 							}
 						};

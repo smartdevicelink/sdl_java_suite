@@ -430,7 +430,8 @@ public class LifecycleManager extends BaseLifecycleManager {
                         break;
                     case ON_SYSTEM_REQUEST:
                         final OnSystemRequest onSystemRequest = (OnSystemRequest) message;
-                        if ((onSystemRequest.getUrl() != null) &&
+                        String urlHttps = onSystemRequest.getUrl().replaceFirst("http://", "https://");
+                        if ((urlHttps != null) &&
                                 (((onSystemRequest.getRequestType() == RequestType.PROPRIETARY) && (onSystemRequest.getFileType() == FileType.JSON))
                                         || ((onSystemRequest.getRequestType() == RequestType.HTTP) && (onSystemRequest.getFileType() == FileType.BINARY)))) {
                             Thread handleOffboardTransmissionThread = new Thread() {
@@ -448,17 +449,17 @@ public class LifecycleManager extends BaseLifecycleManager {
                             Thread handleOffBoardTransmissionThread = new Thread() {
                                 @Override
                                 public void run() {
-                                    byte[] file = FileUtls.downloadFile(onSystemRequest.getUrl());
+                                    byte[] file = FileUtls.downloadFile(urlHttps);
                                     if (file != null) {
                                         SystemRequest systemRequest = new SystemRequest();
-                                        systemRequest.setFileName(onSystemRequest.getUrl());
+                                        systemRequest.setFileName(urlHttps);
                                         systemRequest.setBulkData(file);
                                         systemRequest.setRequestType(RequestType.ICON_URL);
                                         if (isConnected()) {
                                             sendRPCMessagePrivate(systemRequest);
                                         }
                                     } else {
-                                        DebugTool.logError("File was null at: " + onSystemRequest.getUrl());
+                                        DebugTool.logError("File was null at: " + urlHttps);
                                     }
                                 }
                             };
