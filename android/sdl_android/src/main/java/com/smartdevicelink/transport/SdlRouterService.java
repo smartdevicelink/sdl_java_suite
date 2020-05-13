@@ -69,7 +69,9 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.os.RemoteException;
+import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
@@ -137,7 +139,7 @@ public class SdlRouterService extends Service{
 	/**
 	 * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
 	 */
-	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 9;
+	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 11;
 
 	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 	
@@ -195,6 +197,7 @@ public class SdlRouterService extends Service{
 
     private boolean wrongProcess = false;
 	private boolean initPassed = false;
+	private boolean hasCalledStartForeground = false;
 
 	public static HashMap<String,RegisteredApp> registeredApps;
 	private SparseArray<String> bluetoothSessionMap, usbSessionMap, tcpSessionMap;
@@ -1098,14 +1101,16 @@ public class SdlRouterService extends Service{
 		super.onCreate();
 		//This must be done regardless of if this service shuts down or not
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			hasCalledStartForeground = false;
 			enterForeground("Waiting for connection...", FOREGROUND_TIMEOUT/1000, false);
+			hasCalledStartForeground = true;
 			resetForegroundTimeOut(FOREGROUND_TIMEOUT/1000);
 		}
 
 
 		if(!initCheck()){ // Run checks on process and permissions
 			deployNextRouterService();
-			stopSelf();
+			closeSelf();
 			return;
 		}
 		initPassed = true;
@@ -1169,9 +1174,7 @@ public class SdlRouterService extends Service{
 		disconnectFilter.addAction(BluetoothDevice.ACTION_CLASS_CHANGED);
 		disconnectFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
 		disconnectFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
-			disconnectFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
-		}
+		disconnectFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
 		registerReceiver(mListenForDisconnect,disconnectFilter );
 		
 		IntentFilter filter = new IntentFilter();
@@ -1197,17 +1200,11 @@ public class SdlRouterService extends Service{
 	@SuppressLint({"NewApi", "MissingPermission"})
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		if(!initPassed) {
-			return super.onStartCommand(intent, flags, startId);
-		}
-		if(registeredApps == null){
-			synchronized(REGISTERED_APPS_LOCK){
-				registeredApps = new HashMap<String,RegisteredApp>();
-			}
-		}
 		if(intent != null ){
 			if(intent.getBooleanExtra(FOREGROUND_EXTRA, false)){
-				if(!this.isPrimaryTransportConnected()) {	//If there is no transport connected we need to ensure the service is moved to the foreground
+				hasCalledStartForeground = false;
+
+				if (!this.isPrimaryTransportConnected()) {	//If there is no transport connected we need to ensure the service is moved to the foreground
 					String address = null;
 					if(intent.hasExtra(BluetoothDevice.EXTRA_DEVICE)){
 						BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -1218,10 +1215,13 @@ public class SdlRouterService extends Service{
 					int timeout = getNotificationTimeout(address);
 					enterForeground("Waiting for connection...", timeout, false);
 					resetForegroundTimeOut(timeout);
-				}else{
+				} else {
 					enterForeground(createConnectedNotificationText(),0,true);
 				}
+
+				hasCalledStartForeground = true;
 			}
+
 			if(intent.hasExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA)){
 				//Make sure we are listening on RFCOMM
 				if(startSequenceComplete){ //We only check if we are sure we are already through the start up process
@@ -1230,10 +1230,17 @@ public class SdlRouterService extends Service{
 				}
 			}
 		}
+
 		if(!shouldServiceRemainOpen(intent)){
 			closeSelf();
 		}
-		return super.onStartCommand(intent, flags, startId);
+
+		if(registeredApps == null){
+			synchronized(REGISTERED_APPS_LOCK){
+				registeredApps = new HashMap<String,RegisteredApp>();
+			}
+		}
+		return START_REDELIVER_INTENT;
 	}
 
 	@SuppressWarnings("ConstantConditions")
@@ -1337,6 +1344,7 @@ public class SdlRouterService extends Service{
 				// If this is the first time the service has ever connected to this device we want
 				// to ensure we have a record of it
 				setSDLConnectedStatus(address, false);
+				return FOREGROUND_TIMEOUT;
 			}
 		}
 		// If this is a new device or hasn't connected through SDL we want to limit the exposure
@@ -1386,6 +1394,7 @@ public class SdlRouterService extends Service{
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
 	private void enterForeground(String content, long chronometerLength, boolean ongoing) {
+		DebugTool.logInfo("Attempting to enter the foreground - " + System.currentTimeMillis());
 		if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB){
 			Log.w(TAG, "Unable to start service as foreground due to OS SDK version being lower than 11");
 			isForeground = false;
@@ -1436,8 +1445,9 @@ public class SdlRouterService extends Service{
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 		builder.setContentIntent(pendingIntent);
 
-        if(chronometerLength > 0 && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if(chronometerLength > (FOREGROUND_TIMEOUT/1000) && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         	//The countdown method is only available in SDKs >= 24
+        	// Only add countdown if it is over the min timeout
         	builder.setWhen(chronometerLength + System.currentTimeMillis());
         	builder.setUsesChronometer(true);
         	builder.setChronometerCountDown(true);
@@ -1459,6 +1469,7 @@ public class SdlRouterService extends Service{
 					} else {
 						Log.e(TAG, "Unable to retrieve notification Manager service");
 						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+							safeStartForeground(FOREGROUND_SERVICE_ID, builder.build());
 							stopSelf();	//A valid notification channel must be supplied for SDK 27+
 						}
 					}
@@ -1467,21 +1478,63 @@ public class SdlRouterService extends Service{
 				notification = builder.build();
 			}
 			if (notification == null) {
+				safeStartForeground(FOREGROUND_SERVICE_ID, builder.build());
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
 					stopSelf(); //A valid notification must be supplied for SDK 27+
 				}
 				return;
 			}
-			startForeground(FOREGROUND_SERVICE_ID, notification);
+			safeStartForeground(FOREGROUND_SERVICE_ID, notification);
 			isForeground = true;
+
 		}
  
     }
 
+	/**
+	 * This is a simple wrapper around the startForeground method. In the case that the notification
+	 * is null, or a notification was unable to be created we will still attempt to call the
+	 * startForeground method in hopes that Android will not throw the System Exception.
+	 * @param id notification channel id
+	 * @param notification the notification to display when in the foreground
+	 */
+	private void safeStartForeground(int id, Notification notification){
+		try{
+			if(notification == null){
+				//Try the NotificationCompat this time in case there was a previous error
+				NotificationCompat.Builder builder =
+						new NotificationCompat.Builder(this, SDL_NOTIFICATION_CHANNEL_ID)
+								.setContentTitle("SmartDeviceLink")
+								.setContentText("Service Running");
+				notification = builder.build();
+			}
+			startForeground(id, notification);
+			DebugTool.logInfo("Entered the foreground - " + System.currentTimeMillis());
+		}catch (Exception e){
+			DebugTool.logError("Unable to start service in foreground", e);
+		}
+	}
+
 	private void exitForeground(){
 		synchronized (NOTIFICATION_LOCK) {
 			if (isForeground && !isPrimaryTransportConnected()) {	//Ensure that the service is in the foreground and no longer connected to a transport
-				this.stopForeground(true);
+				DebugTool.logInfo("SdlRouterService to exit foreground");
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+					this.stopForeground(Service.STOP_FOREGROUND_DETACH);
+				}else{
+					stopForeground(false);
+				}
+				NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+				if (notificationManager!= null){
+					try {
+						notificationManager.cancelAll();
+						if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+							notificationManager.deleteNotificationChannel(SDL_NOTIFICATION_CHANNEL_ID);
+						}
+					} catch (Exception e) {
+						DebugTool.logError("Issue when removing notification and channel", e);
+					}
+				}
 				isForeground = false;
 			}
 		}
@@ -1613,8 +1666,13 @@ public class SdlRouterService extends Service{
 	 */
 	public void closeSelf(){
 		closing = true;
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !hasCalledStartForeground ){
+			//This must be called before stopping self
+			safeStartForeground(FOREGROUND_SERVICE_ID, null);
+			exitForeground();
+		}
 
-		if(getBaseContext()!=null){
+		if(getBaseContext()!= null){
 			stopSelf();
 		}
 
@@ -1754,40 +1812,42 @@ public class SdlRouterService extends Service{
 				master.alert();
 			}
 		}
-		//Ensure the associated transport is dealt with
-		switch (record.getType()){
-			case BLUETOOTH:
-				synchronized(SESSION_LOCK){
-					if(bluetoothSessionMap!= null){
-						bluetoothSessionMap.clear();
+		if(record != null) {
+			//Ensure the associated transport is dealt with
+			switch (record.getType()) {
+				case BLUETOOTH:
+					synchronized (SESSION_LOCK) {
+						if (bluetoothSessionMap != null) {
+							bluetoothSessionMap.clear();
+						}
 					}
-				}
-				if(!connectAsClient ){
-					if(!legacyModeEnabled && !closing){
-						initBluetoothSerialService();
+					if (!connectAsClient) {
+						if (!legacyModeEnabled && !closing) {
+							initBluetoothSerialService();
+						}
 					}
-				}
-				break;
-			case USB:
-				if(usbTransport != null){
-					usbTransport = null;
-				}
-				synchronized(SESSION_LOCK){
-					if(usbSessionMap!= null){
-						usbSessionMap.clear();
+					break;
+				case USB:
+					if (usbTransport != null) {
+						usbTransport = null;
 					}
-				}
-				break;
-			case TCP:
-				if(tcpTransport != null){
-					tcpTransport = null;
-				}
-				synchronized(SESSION_LOCK){
-					if(tcpSessionMap!=null){
-						tcpSessionMap.clear();
+					synchronized (SESSION_LOCK) {
+						if (usbSessionMap != null) {
+							usbSessionMap.clear();
+						}
 					}
-				}
-				break;
+					break;
+				case TCP:
+					if (tcpTransport != null) {
+						tcpTransport = null;
+					}
+					synchronized (SESSION_LOCK) {
+						if (tcpSessionMap != null) {
+							tcpSessionMap.clear();
+						}
+					}
+					break;
+			}
 		}
 
 		if(!getConnectedTransports().isEmpty()){
@@ -1934,26 +1994,28 @@ public class SdlRouterService extends Service{
 			int offset = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_OFFSET, 0); //If nothing, start at the beginning of the array
 			int count = bundle.getInt(TransportConstants.BYTES_TO_SEND_EXTRA_COUNT, packet.length);  //In case there isn't anything just send the whole packet.
 			TransportType transportType = TransportType.valueForString(bundle.getString(TransportConstants.TRANSPORT_TYPE));
-			switch ((transportType)){
-				case BLUETOOTH:
-					if(bluetoothTransport !=null && bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
-						bluetoothTransport.write(packet, offset, count);
-						return true;
-					}
-				case USB:
-					if(usbTransport != null && usbTransport.getState() ==  MultiplexBaseTransport.STATE_CONNECTED) {
-						usbTransport.write(packet, offset, count);
-						return true;
-					}
-				case TCP:
-					if(tcpTransport != null && tcpTransport.getState() ==  MultiplexBaseTransport.STATE_CONNECTED) {
-						tcpTransport.write(packet, offset, count);
-						return true;
-					}
-					default:
-						if(sendThroughAltTransport(bundle)){
+			if(transportType != null) {
+				switch ((transportType)) {
+					case BLUETOOTH:
+						if (bluetoothTransport != null && bluetoothTransport.getState() == MultiplexBluetoothTransport.STATE_CONNECTED) {
+							bluetoothTransport.write(packet, offset, count);
 							return true;
 						}
+					case USB:
+						if (usbTransport != null && usbTransport.getState() == MultiplexBaseTransport.STATE_CONNECTED) {
+							usbTransport.write(packet, offset, count);
+							return true;
+						}
+					case TCP:
+						if (tcpTransport != null && tcpTransport.getState() == MultiplexBaseTransport.STATE_CONNECTED) {
+							tcpTransport.write(packet, offset, count);
+							return true;
+						}
+					default:
+						if (sendThroughAltTransport(bundle)) {
+							return true;
+						}
+				}
 			}
 			Log.e(TAG, "Can't send data, no transport  of specified type connected");
 			return false;
@@ -3141,9 +3203,11 @@ public class SdlRouterService extends Service{
 		}
 
 		protected boolean unregisterTransport(int sessionId, @NonNull TransportType transportType){
-			if(queues != null && queues.containsValue(transportType)){
+			if(queues != null && queues.containsKey(transportType)){
 				PacketWriteTaskBlockingQueue queue = queues.remove(transportType);
-				queue.clear();
+				if(queue != null){
+					queue.clear();
+				}
 			}
 			synchronized (TRANSPORT_LOCK){
 				if(sessionId == -1){

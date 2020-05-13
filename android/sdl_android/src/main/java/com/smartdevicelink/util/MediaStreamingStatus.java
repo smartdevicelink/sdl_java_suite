@@ -125,16 +125,8 @@ public class MediaStreamingStatus {
             return false;
         }
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE
-                && android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-
-            return audioManager.isBluetoothA2dpOn();
-        }
-
-        //If an acceptable audio device hasn't been found or the API level is too low, then only a
-        //value of false can be returned as there is not enough information to determine if an audio
-        //device is available.
-        return false;
+        //This means the SDK version is < M, and our min is 8 so this API is always available
+        return audioManager.isBluetoothA2dpOn();
     }
 
     /**
@@ -203,7 +195,11 @@ public class MediaStreamingStatus {
 
     private void setupBluetoothBroadcastReceiver(){
         String[] actions = new String[4];
-        actions[0] = BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            actions[0] = BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED;
+        }else{
+            actions[0] = "android.bluetooth.adapter.action.CONNECTION_STATE_CHANGED";
+        }
         actions[1] = BluetoothAdapter.ACTION_STATE_CHANGED;
         actions[2] = BluetoothDevice.ACTION_ACL_DISCONNECTED;
         actions[3] = BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED;
@@ -213,7 +209,11 @@ public class MediaStreamingStatus {
 
     private void setupHeadsetBroadcastReceiver(){
         String[] actions = new String[1];
-        actions[0] = AudioManager.ACTION_HEADSET_PLUG;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            actions[0] = AudioManager.ACTION_HEADSET_PLUG;
+        }else{
+            actions[0] =  "android.intent.action.HEADSET_PLUG";
+        }
 
         listenForIntents(actions);
     }

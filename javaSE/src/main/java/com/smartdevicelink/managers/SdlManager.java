@@ -34,7 +34,9 @@ package com.smartdevicelink.managers;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+
 import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.managers.file.FileManagerConfig;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.lifecycle.LifecycleManager;
@@ -47,7 +49,12 @@ import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.rpc.*;
+import com.smartdevicelink.proxy.rpc.ChangeRegistration;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
+import com.smartdevicelink.proxy.rpc.SetAppIcon;
+import com.smartdevicelink.proxy.rpc.TTSChunk;
+import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.Result;
@@ -61,9 +68,13 @@ import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
+
 import org.json.JSONException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 
 /**
@@ -85,7 +96,8 @@ public class SdlManager extends BaseSdlManager{
 	private SdlArtwork appIcon;
 	private SdlManagerListener managerListener;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
-
+	private ServiceEncryptionListener serviceEncryptionListener;
+	private FileManagerConfig fileManagerConfig;
 
 	// Managers
 	private LifecycleManager lifecycleManager;
@@ -191,7 +203,7 @@ public class SdlManager extends BaseSdlManager{
 	private void notifyDevListener(String info) {
 		if (managerListener != null) {
 			if (getState() == BaseSubManager.ERROR){
-				managerListener.onError(this,info, null);
+				managerListener.onError(this, info, null);
 			} else {
 				managerListener.onStart(this);
 			}
@@ -222,7 +234,7 @@ public class SdlManager extends BaseSdlManager{
 	protected void checkLifecycleConfiguration() {
 		final Language actualLanguage = lifecycleManager.getRegisterAppInterfaceResponse().getLanguage();
 		
-		if (!actualLanguage.equals(hmiLanguage)) {
+		if (actualLanguage != null && !actualLanguage.equals(hmiLanguage)) {
 
 			final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage);
 
@@ -276,7 +288,7 @@ public class SdlManager extends BaseSdlManager{
 	protected void initialize(){
 		// Instantiate sub managers
 		this.permissionManager = new PermissionManager(_internalInterface);
-		this.fileManager = new FileManager(_internalInterface);
+		this.fileManager = new FileManager(_internalInterface, fileManagerConfig);
 		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
 
 		// Start sub managers
@@ -299,6 +311,10 @@ public class SdlManager extends BaseSdlManager{
 			this.screenManager.dispose();
 		}
 
+		if (this.lifecycleManager != null) {
+			this.lifecycleManager.stop();
+		}
+
 		if(managerListener != null){
 			managerListener.onDestroy(this);
 			managerListener = null;
@@ -309,7 +325,6 @@ public class SdlManager extends BaseSdlManager{
 
 
 	// MANAGER GETTERS
-
 	/**
 	 * Gets the PermissionManager. <br>
 	 * <strong>Note: PermissionManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
@@ -387,6 +402,8 @@ public class SdlManager extends BaseSdlManager{
 	}
 
 	// PROTECTED GETTERS
+
+	protected FileManagerConfig getFileManagerConfig() { return fileManagerConfig; }
 
 	/**
 	 * Retrieves the auth token, if any, that was attached to the StartServiceACK for the RPC
@@ -507,6 +524,14 @@ public class SdlManager extends BaseSdlManager{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void start(){
+
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				dispose();
+			}
+		});
+
 		Log.i(TAG, "start");
 		if (lifecycleManager == null) {
 			if (transport != null
@@ -532,7 +557,7 @@ public class SdlManager extends BaseSdlManager{
 				_internalInterface = lifecycleManager.getInternalInterface(SdlManager.this);
 
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
-					lifecycleManager.setSdlSecurityClassList(sdlSecList);
+					lifecycleManager.setSdlSecurity(sdlSecList, serviceEncryptionListener);
 				}
 
 				//Setup the notification queue
@@ -670,6 +695,17 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
+		 * Sets the FileManagerConfig for the session.<br>
+		 * <strong>Note: If not set, the default configuration value of 1 will be set for
+		 * artworkRetryCount and fileRetryCount in FileManagerConfig</strong>
+		 * @param fileManagerConfig - configuration options
+		 */
+		public Builder setFileManagerConfig (final FileManagerConfig fileManagerConfig){
+			sdlManager.fileManagerConfig = fileManagerConfig;
+			return this;
+		}
+
+		/**
 		 * Sets the voice recognition synonyms that can be used to identify this application.
 		 * @param vrSynonyms a vector of Strings that can be associated with this app. For example the app's name should
 		 *                   be included as well as any phonetic spellings of the app name that might help the on-board
@@ -704,8 +740,20 @@ public class SdlManager extends BaseSdlManager{
 		 * Sets the Security libraries
 		 * @param secList The list of security class(es)
 		 */
+		@Deprecated
 		public Builder setSdlSecurity(List<Class<? extends SdlSecurityBase>> secList) {
 			sdlManager.sdlSecList = secList;
+			return this;
+		}
+
+		/**
+		 * Sets the security libraries and a callback to notify caller when there is update to encryption service
+		 * @param secList The list of security class(es)
+		 * @param listener The callback object
+		 */
+		public Builder setSdlSecurity(@NonNull List<Class<? extends SdlSecurityBase>> secList, ServiceEncryptionListener listener) {
+			sdlManager.sdlSecList = secList;
+			sdlManager.serviceEncryptionListener = listener;
 			return this;
 		}
 
@@ -748,6 +796,10 @@ public class SdlManager extends BaseSdlManager{
 				sdlManager.hmiTypes = hmiTypesDefault;
 				sdlManager.isMediaApp = false;
 			}
+			if(sdlManager.fileManagerConfig == null){
+				//if FileManagerConfig is not set use default
+				sdlManager.fileManagerConfig = new FileManagerConfig();
+			}
 
 			if (sdlManager.hmiLanguage == null){
 				sdlManager.hmiLanguage = Language.EN_US;
@@ -767,4 +819,12 @@ public class SdlManager extends BaseSdlManager{
 		}
 	}
 
+	/**
+	 * Start a secured RPC service
+	 */
+	public void startRPCEncryption() {
+		if (lifecycleManager != null) {
+			lifecycleManager.startRPCEncryption();
+		}
+	}
 }

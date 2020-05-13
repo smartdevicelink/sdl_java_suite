@@ -4,7 +4,6 @@ apply plugin: 'maven'
 
 def siteUrl = 'https://github.com/smartdevicelink/sdl_java_suite'      // Homepage URL of the library
 def gitUrl = 'https://github.com/smartdevicelink/sdl_java_suite.git'   // Git repository URL
-group = "com.smartdevicelink" // Maven Group ID for the artifact
 def libDescription = 'SmartDeviceLink mobile library'
 def libVersion = new File(projectDir.path, ('/../VERSION')).text.trim()
 
@@ -37,7 +36,7 @@ bintray {
 
     pkg {
         repo = props.getProperty("bintray.repo")
-        name = props.getProperty("bintray.artifact")
+        name = props.getProperty("bintray.package")
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         userOrg = props.getProperty("bintray.userorg")
@@ -82,7 +81,7 @@ publishing {
             artifact javadocJar {
                 classifier "javadoc"
             }
-            groupId props.getProperty("bintray.userorg")
+            groupId props.getProperty("bintray.group")
             artifactId props.getProperty("bintray.artifact")
             version libVersion
             pom.withXml {

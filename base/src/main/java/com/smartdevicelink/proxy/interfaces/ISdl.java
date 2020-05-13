@@ -6,6 +6,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
+import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
@@ -207,7 +208,9 @@ public interface ISdl {
      * Get SystemCapability Object
      * @param systemCapabilityType a system capability type that should be retrieved
      * @return the system capability provided if available, null if not
+     * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
      */
+    @Deprecated
     Object getCapability(SystemCapabilityType systemCapabilityType);
 
     /**
@@ -215,8 +218,25 @@ public interface ISdl {
      * @param systemCapabilityType a system capability type that should be retrieved
      * @param scListener listener that will be called when the system capability is retrieved. If already cached, it
      *                   will be called immediately
+     * @deprecated use {@link #getCapability(SystemCapabilityType, OnSystemCapabilityListener, boolean)} instead.
      */
+    @Deprecated
     void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener);
+
+    /** Gets the capability object that corresponds to the supplied capability type by returning the currently cached value immediately (or null) as well as calling the listener immediately with the cached value, if available. If not available, the listener will retrieve a new value and return that when the head unit responds.
+     * <strong>If capability is not cached, the method will return null and trigger the supplied listener when the capability becomes available</strong>
+     * @param systemCapabilityType type of capability desired
+     * @param scListener callback to execute upon retrieving capability
+     * @param forceUpdate flag to force getting a new fresh copy of the capability from the head unit even if it is cached
+     * @return desired capability if it is cached in the manager, otherwise returns a null object
+     */
+    Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate);
+
+    /**
+     * Get RegisterAppInterfaceResponse
+     * @return the RegisterAppInterfaceResponse if available, null if not
+     */
+    RegisterAppInterfaceResponse getRegisterAppInterfaceResponse();
 
     /**
      * Check if capability is supported
@@ -263,4 +283,8 @@ public interface ISdl {
      */
     @NonNull Version getProtocolVersion();
 
+    /**
+     * Start encrypted RPC service
+     */
+    void startRPCEncryption();
 }

@@ -107,6 +107,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
     StreamPacketizer mAudioPacketizer = null;
     SdlEncoder mSdlEncoder = null;
     VirtualDisplayEncoder virtualDisplayEncoder = null;
+    boolean sdlSecurityInitializing = false;
 
     public static SdlSession createSession(byte wiproVersion, ISdlConnectionListener listener, BaseTransportConfig btConfig) {
 
@@ -450,9 +451,12 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
                 if (!serviceList.contains(serviceType))
                     serviceList.add(serviceType);
 
-                sdlSecurity.initialize();
+                if (!sdlSecurityInitializing) {
+                    sdlSecurityInitializing = true;
+                    sdlSecurity.initialize();
+                    return;
+                }
             }
-            return;
         }
         _sdlConnection.startService(serviceType, sessionID, isEncrypted);
     }

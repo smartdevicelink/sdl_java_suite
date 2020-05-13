@@ -24,6 +24,7 @@ public class OnPermissionsChangeTests extends BaseRpcTests{
         OnPermissionsChange msg = new OnPermissionsChange();
 
         msg.setPermissionItem(Test.GENERAL_PERMISSIONITEM_LIST);
+        msg.setRequireEncryption(Test.GENERAL_BOOLEAN);
         
         return msg;
     }
@@ -44,6 +45,7 @@ public class OnPermissionsChangeTests extends BaseRpcTests{
 
         try{
             result.put(OnPermissionsChange.KEY_PERMISSION_ITEM, Test.JSON_PERMISSIONITEMS);
+            result.put(OnPermissionsChange.KEY_REQUIRE_ENCRYPTION, Test.GENERAL_BOOLEAN);
         }catch(JSONException e){
         	fail(Test.JSON_FAIL);
         }
@@ -57,17 +59,19 @@ public class OnPermissionsChangeTests extends BaseRpcTests{
     public void testRpcValues () {       	
     	// Test Values
         List<PermissionItem> data = ( (OnPermissionsChange) msg ).getPermissionItem();
-
+        boolean isRequired = ((OnPermissionsChange)msg).getRequireEncryption();
         // Valid Tests
         assertEquals(Test.MATCH, Test.GENERAL_PERMISSIONITEM_LIST.size(), data.size());
         for(int i=0; i<data.size(); i++){
             assertTrue(Test.TRUE, Validator.validatePermissionItem(Test.GENERAL_PERMISSIONITEM_LIST.get(i), data.get(i)));
         }
+        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, isRequired);
     
         // Invalid/Null Tests
         OnPermissionsChange msg = new OnPermissionsChange();
         assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
+        assertNull(Test.NULL, msg.getRequireEncryption());
 
         assertNull(Test.NULL, msg.getPermissionItem());
     }

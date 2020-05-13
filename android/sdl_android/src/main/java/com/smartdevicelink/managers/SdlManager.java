@@ -44,6 +44,7 @@ import android.util.Log;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.audio.AudioStreamManager;
 import com.smartdevicelink.managers.file.FileManager;
+import com.smartdevicelink.managers.file.FileManagerConfig;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
@@ -120,6 +121,8 @@ public class SdlManager extends BaseSdlManager{
 	private SdlManagerListener managerListener;
 	private List<Class<? extends SdlSecurityBase>> sdlSecList;
 	private LockScreenConfig lockScreenConfig;
+	private FileManagerConfig fileManagerConfig;
+	private ServiceEncryptionListener serviceEncryptionListener;
 
 	// Managers
 	private PermissionManager permissionManager;
@@ -131,7 +134,7 @@ public class SdlManager extends BaseSdlManager{
 
 
 	// Initialize proxyBridge with anonymous lifecycleListener
-	private final ProxyBridge proxyBridge= new ProxyBridge(new ProxyBridge.LifecycleListener() {
+	private final ProxyBridge proxyBridge = new ProxyBridge(new ProxyBridge.LifecycleListener() {
 		@Override
 		public void onProxyConnected() {
 			DebugTool.logInfo("Proxy is connected. Now initializing.");
@@ -242,7 +245,7 @@ public class SdlManager extends BaseSdlManager{
 	protected void checkLifecycleConfiguration(){
 		final Language actualLanguage =  this.getRegisterAppInterfaceResponse().getLanguage();
 
-		if (!actualLanguage.equals(hmiLanguage)) {
+		if (actualLanguage != null && !actualLanguage.equals(hmiLanguage)) {
 
 			final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage);
 
@@ -307,7 +310,7 @@ public class SdlManager extends BaseSdlManager{
 	protected void initialize(){
 		// Instantiate sub managers
 		this.permissionManager = new PermissionManager(_internalInterface);
-		this.fileManager = new FileManager(_internalInterface, context);
+		this.fileManager = new FileManager(_internalInterface, context, fileManagerConfig);
 		if (lockScreenConfig.isEnabled()) {
 			this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
 		}
@@ -362,6 +365,14 @@ public class SdlManager extends BaseSdlManager{
 		// SuppressLint("NewApi") is used because audioStreamManager is only available on android >= jelly bean
 		if (this.audioStreamManager != null) {
 			this.audioStreamManager.dispose();
+		}
+
+		if (this.proxy != null && !proxy.isDisposed()) {
+			try {
+				this.proxy.dispose();
+			} catch (SdlException e) {
+				DebugTool.logError("Issue disposing proxy in SdlManager", e);
+			}
 		}
 
 		if(managerListener != null){
@@ -503,6 +514,8 @@ public class SdlManager extends BaseSdlManager{
 	// PROTECTED GETTERS
 
 	protected LockScreenConfig getLockScreenConfig() { return lockScreenConfig; }
+
+	protected FileManagerConfig getFileManagerConfig() { return fileManagerConfig; }
 
 	// SENDING REQUESTS
 
@@ -672,7 +685,7 @@ public class SdlManager extends BaseSdlManager{
 				proxy.setMinimumProtocolVersion(minimumProtocolVersion);
 				proxy.setMinimumRPCVersion(minimumRPCVersion);
 				if (sdlSecList != null && !sdlSecList.isEmpty()) {
-					proxy.setSdlSecurityClassList(sdlSecList);
+					proxy.setSdlSecurity(sdlSecList, serviceEncryptionListener);
 				}
 				//Setup the notification queue
 				initNotificationQueue();
@@ -728,13 +741,18 @@ public class SdlManager extends BaseSdlManager{
 		@Override
 		public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
 			if(proxy.getIsConnected()){
-				proxy.startVideoStream(encrypted,parameters);
+				proxy.startVideoService(encrypted,parameters);
 			}
 		}
 
 		@Override
 		public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters){
-			return proxy.startVideoStream(isEncrypted, parameters);
+			if(proxy.getIsConnected()){
+				return proxy.startVideoStream(isEncrypted, parameters);
+			}else{
+				DebugTool.logError("Unable to start video stream, proxy not connected");
+				return null;
+			}
 		}
 
 		@Override
@@ -849,6 +867,19 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		@Override
+		public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
+			return proxy.getRegisterAppInterfaceResponse();
+		}
+
+		@Override
+		public Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate) {
+			if (proxy != null && proxy.getSystemCapabilityManager() != null) {
+				return proxy.getSystemCapabilityManager().getCapability(systemCapabilityType, scListener, forceUpdate);
+			}
+			return null;
+		}
+
+		@Override
 		public boolean isCapabilitySupported(SystemCapabilityType systemCapabilityType){
 			return proxy.isCapabilitySupported(systemCapabilityType);
 		}
@@ -889,6 +920,13 @@ public class SdlManager extends BaseSdlManager{
 				return proxy.getProtocolVersion();
 			}else{
 				return new Version(1,0,0);
+			}
+		}
+
+		@Override
+		public void startRPCEncryption() {
+			if (proxy != null) {
+				proxy.startProtectedRPCService();
 			}
 		}
 
@@ -1009,6 +1047,17 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
+		 * Sets the FileManagerConfig for the session.<br>
+		 * <strong>Note: If not set, the default configuration value of 1 will be set for
+		 * artworkRetryCount and fileRetryCount in FileManagerConfig</strong>
+		 * @param fileManagerConfig - configuration options
+		 */
+		public Builder setFileManagerConfig (final FileManagerConfig fileManagerConfig){
+			sdlManager.fileManagerConfig = fileManagerConfig;
+			return this;
+		}
+
+		/**
 		 * Sets the LockScreenConfig for the session. <br>
 		 * <strong>Note: If not set, the default configuration will be used.</strong>
 		 * @param lockScreenConfig - configuration options
@@ -1089,8 +1138,20 @@ public class SdlManager extends BaseSdlManager{
 		 * Sets the Security library
 		 * @param secList The list of security class(es)
 		 */
+		@Deprecated
 		public Builder setSdlSecurity(List<Class<? extends SdlSecurityBase>> secList) {
 			sdlManager.sdlSecList = secList;
+			return this;
+		}
+
+		/**
+		 * Sets the security libraries and a callback to notify caller when there is update to encryption service
+		 * @param secList The list of security class(es)
+		 * @param listener The callback object
+		 */
+		public Builder setSdlSecurity(@NonNull List<Class<? extends SdlSecurityBase>> secList, ServiceEncryptionListener listener) {
+			sdlManager.sdlSecList = secList;
+			sdlManager.serviceEncryptionListener = listener;
 			return this;
 		}
 
@@ -1148,6 +1209,11 @@ public class SdlManager extends BaseSdlManager{
 				sdlManager.lockScreenConfig = new LockScreenConfig();
 			}
 
+			if(sdlManager.fileManagerConfig == null){
+				//if FileManagerConfig is not set use default
+				sdlManager.fileManagerConfig = new FileManagerConfig();
+			}
+
 			if (sdlManager.hmiLanguage == null){
 				sdlManager.hmiLanguage = Language.EN_US;
 			}
@@ -1163,6 +1229,15 @@ public class SdlManager extends BaseSdlManager{
 			sdlManager.transitionToState(BaseSubManager.SETTING_UP);
 
 			return sdlManager;
+		}
+	}
+
+	/**
+	 * Start a secured RPC service
+	 */
+	public void startRPCEncryption() {
+		if (proxy != null) {
+			 proxy.startProtectedRPCService();
 		}
 	}
 }

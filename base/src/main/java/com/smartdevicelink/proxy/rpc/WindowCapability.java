@@ -2,6 +2,8 @@ package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
+import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
+
 import java.util.Hashtable;
 import java.util.List;
 
@@ -17,6 +19,7 @@ public class WindowCapability extends RPCStruct {
     public static final String KEY_NUM_CUSTOM_PRESETS_AVAILABLE = "numCustomPresetsAvailable";
     public static final String KEY_BUTTON_CAPABILITIES = "buttonCapabilities";
     public static final String KEY_SOFT_BUTTON_CAPABILITIES = "softButtonCapabilities";
+    public static final String KEY_MENU_LAYOUTS_AVAILABLE = "menuLayoutsAvailable";
 
     public WindowCapability() {
     }
@@ -182,5 +185,24 @@ public class WindowCapability extends RPCStruct {
     @SuppressWarnings("unchecked")
     public List<SoftButtonCapabilities> getSoftButtonCapabilities() {
         return (List<SoftButtonCapabilities>) getObject(SoftButtonCapabilities.class, KEY_SOFT_BUTTON_CAPABILITIES);
+    }
+
+    /**
+     * An array of available menu layouts. If this parameter is not provided, only the `LIST` layout
+     * is assumed to be available
+     * @param menuLayout - An array of MenuLayouts
+     */
+    public void setMenuLayoutsAvailable(List<MenuLayout> menuLayout) {
+        setValue(KEY_MENU_LAYOUTS_AVAILABLE, menuLayout);
+    }
+
+    /**
+     * An array of available menu layouts. If this parameter is not provided, only the `LIST` layout
+     * is assumed to be available
+     * @return MenuLayout[]
+     */
+    @SuppressWarnings("unchecked")
+    public List<MenuLayout> getMenuLayoutsAvailable() {
+        return (List<MenuLayout>) getObject(MenuLayout.class, KEY_MENU_LAYOUTS_AVAILABLE);
     }
 }

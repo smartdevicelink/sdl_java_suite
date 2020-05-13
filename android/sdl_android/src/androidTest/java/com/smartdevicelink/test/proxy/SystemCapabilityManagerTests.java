@@ -18,22 +18,37 @@ import com.smartdevicelink.proxy.rpc.AppServicesCapabilities;
 import com.smartdevicelink.proxy.rpc.AudioPassThruCapabilities;
 import com.smartdevicelink.proxy.rpc.ButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
+import com.smartdevicelink.proxy.rpc.GetSystemCapability;
 import com.smartdevicelink.proxy.rpc.GetSystemCapabilityResponse;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
+import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnSystemCapabilityUpdated;
 import com.smartdevicelink.proxy.rpc.PhoneCapability;
 import com.smartdevicelink.proxy.rpc.PresetBankCapabilities;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+import com.smartdevicelink.proxy.rpc.SetDisplayLayoutResponse;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AppServiceType;
+import com.smartdevicelink.proxy.rpc.enums.AudioStreamingState;
+import com.smartdevicelink.proxy.rpc.enums.DisplayType;
+import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
+import com.smartdevicelink.proxy.rpc.enums.MediaClockFormat;
+import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.ServiceUpdateReason;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.proxy.rpc.enums.SystemContext;
+import com.smartdevicelink.proxy.rpc.enums.WindowType;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
@@ -47,17 +62,38 @@ import com.smartdevicelink.test.utl.AppServiceFactory;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.Version;
 
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 	public static final String TAG = "SystemCapabilityManagerTests";
 	public static SystemCapabilityManager systemCapabilityManager;
+	private SystemCapability systemCapability;
+	private VideoStreamingCapability videoStreamingCapability;
 
 	@Override
 	protected void setUp() throws Exception{
 		super.setUp();
+
+		systemCapability = new SystemCapability(SystemCapabilityType.VIDEO_STREAMING);
+		videoStreamingCapability = new VideoStreamingCapability();
+		videoStreamingCapability.setMaxBitrate(Test.GENERAL_INT);
+		videoStreamingCapability.setPreferredResolution(Test.GENERAL_IMAGERESOLUTION);
+		videoStreamingCapability.setSupportedFormats(Test.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+		systemCapability.setCapabilityForType(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
 	}
 
 	@Override
@@ -89,9 +125,58 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		return systemCapabilityManager;
 	}
 
+	private List<DisplayCapability> createDisplayCapabilityList(DisplayCapabilities display, List<ButtonCapabilities> button, List<SoftButtonCapabilities> softButton) {
+		WindowTypeCapabilities windowTypeCapabilities = new WindowTypeCapabilities(WindowType.MAIN, 1);
+
+		DisplayCapability displayCapability = new DisplayCapability();
+		displayCapability.setDisplayName(display != null ? display.getDisplayName() : null);
+		displayCapability.setWindowTypeSupported(Collections.singletonList(windowTypeCapabilities));
+
+		WindowCapability defaultWindowCapability = new WindowCapability();
+		defaultWindowCapability.setWindowID(PredefinedWindows.DEFAULT_WINDOW.getValue());
+		defaultWindowCapability.setButtonCapabilities(button);
+		defaultWindowCapability.setSoftButtonCapabilities(softButton);
+
+		if (display == null) {
+			displayCapability.setWindowCapabilities(Collections.singletonList(defaultWindowCapability));
+			return Collections.singletonList(displayCapability);
+		}
+
+		defaultWindowCapability.setTemplatesAvailable(display.getTemplatesAvailable());
+		defaultWindowCapability.setNumCustomPresetsAvailable(display.getNumCustomPresetsAvailable());
+		defaultWindowCapability.setTextFields(display.getTextFields());
+		defaultWindowCapability.setImageFields(display.getImageFields());
+		ArrayList<ImageType> imageTypeSupported = new ArrayList<>();
+		imageTypeSupported.add(ImageType.STATIC);
+		if (display.getGraphicSupported()) {
+			imageTypeSupported.add(ImageType.DYNAMIC);
+		}
+		defaultWindowCapability.setImageTypeSupported(imageTypeSupported);
+
+		displayCapability.setWindowCapabilities(Collections.singletonList(defaultWindowCapability));
+		return Collections.singletonList(displayCapability);
+	}
+
+	private DisplayCapabilities createDisplayCapabilities(String displayName, WindowCapability defaultMainWindow) {
+		DisplayCapabilities convertedCapabilities = new DisplayCapabilities();
+		convertedCapabilities.setDisplayType(DisplayType.SDL_GENERIC); //deprecated but it is mandatory...
+		convertedCapabilities.setDisplayName(displayName);
+		convertedCapabilities.setTextFields(defaultMainWindow.getTextFields());
+		convertedCapabilities.setImageFields(defaultMainWindow.getImageFields());
+		convertedCapabilities.setTemplatesAvailable(defaultMainWindow.getTemplatesAvailable());
+		convertedCapabilities.setNumCustomPresetsAvailable(defaultMainWindow.getNumCustomPresetsAvailable());
+		convertedCapabilities.setMediaClockFormats(new ArrayList<MediaClockFormat>()); // mandatory field but can be empty
+		convertedCapabilities.setGraphicSupported(defaultMainWindow.getImageTypeSupported().contains(ImageType.DYNAMIC));
+
+		return convertedCapabilities;
+	}
+
 	public void testParseRAI() {
 		systemCapabilityManager = createSampleManager();
 
+		List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(Test.GENERAL_DISPLAYCAPABILITIES, Test.GENERAL_BUTTONCAPABILITIES_LIST, Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
+		assertTrue(Test.TRUE,
+				Validator.validateDisplayCapabilityList(displayCapabilityList, (List<DisplayCapability>) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS)));
 		assertTrue(Test.TRUE,
 				Validator.validateHMICapabilities(Test.GENERAL_HMICAPABILITIES, (HMICapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.HMI)));
 		assertTrue(Test.TRUE,
@@ -127,11 +212,19 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		systemCapabilityManager = new SystemCapabilityManager(new InternalSDLInterface() {
 			@Override
-			public void sendRPCRequest(RPCRequest message) {
+			public void sendRPC(RPCMessage message) {
 				GetSystemCapabilityResponse response = new GetSystemCapabilityResponse();
 				response.setSystemCapability(referenceCapability);
 				response.setSuccess(true);
-				message.getOnRPCResponseListener().onResponse(CorrelationIdGenerator.generateId(), response);
+				if (message instanceof RPCRequest) {
+					RPCRequest request = (RPCRequest) message;
+					request.getOnRPCResponseListener().onResponse(CorrelationIdGenerator.generateId(), response);
+				}
+			}
+
+			@Override
+			public void addOnRPCListener(FunctionID messageId, OnRPCListener listener) {
+				listener.onReceived(new OnHMIStatus(HMILevel.HMI_FULL, AudioStreamingState.NOT_AUDIBLE, SystemContext.SYSCTXT_MAIN));
 			}
 		});
 
@@ -151,13 +244,429 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		});
 	}
 
+	private Answer<Void> createOnHMIStatusAnswer(final HMILevel hmiLevel){
+		Answer<Void> onHMIStatusAnswer = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				OnRPCListener onHMIStatusListener = (OnRPCListener) args[1];
+				OnHMIStatus onHMIStatusFakeNotification = new OnHMIStatus();
+				onHMIStatusFakeNotification.setHmiLevel(hmiLevel);
+				onHMIStatusListener.onReceived(onHMIStatusFakeNotification);
+				return null;
+			}
+		};
+		return onHMIStatusAnswer;
+	}
+
+	private Answer<Void> createOnSendGetSystemCapabilityAnswer (final boolean success, final Boolean subscribe) {
+		Answer<Void> onSendGetSystemCapabilityAnswer = new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) {
+				Object[] args = invocation.getArguments();
+				GetSystemCapability getSystemCapability = (GetSystemCapability) args[0];
+				if (subscribe != null) {
+					assertEquals(subscribe, getSystemCapability.getSubscribe());
+				}
+				GetSystemCapabilityResponse response;
+				if (success) {
+					response = new GetSystemCapabilityResponse(Result.SUCCESS, true);
+				} else {
+					response = new GetSystemCapabilityResponse(Result.REJECTED, false);
+				}
+				response.setSystemCapability(systemCapability);
+				getSystemCapability.getOnRPCResponseListener().onResponse(CorrelationIdGenerator.generateId(), response);
+				return null;
+			}
+		};
+		return onSendGetSystemCapabilityAnswer;
+	}
+
+	public void testGetCapability() {
+		ISdl internalInterface;
+		SystemCapabilityManager scm;
+		OnSystemCapabilityListener onSystemCapabilityListener;
+		VideoStreamingCapability retrievedCapability;
+
+
+		// Test case 1 (capability not cached, listener not null, forceUpdate false)
+		internalInterface = mock(ISdl.class);
+		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_FULL)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
+		scm = new SystemCapabilityManager(internalInterface);
+		onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, null);
+		retrievedCapability = (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, false);
+		assertNull(retrievedCapability);
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Test case 2 (capability cached, listener not null, forceUpdate true)
+		internalInterface = mock(ISdl.class);
+		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_FULL)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
+		scm = new SystemCapabilityManager(internalInterface);
+		onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
+		retrievedCapability =  (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, true);
+		assertTrue(Test.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Test case 3 (capability cached, listener null, forceUpdate true)
+		internalInterface = mock(ISdl.class);
+		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_FULL)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
+		scm = new SystemCapabilityManager(internalInterface);
+		onSystemCapabilityListener = null;
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
+		retrievedCapability =  (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, true);
+		assertTrue(Test.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+
+
+		// Test case 4 (capability cached, listener null, forceUpdate false)
+		internalInterface = mock(ISdl.class);
+		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_FULL)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
+		scm = new SystemCapabilityManager(internalInterface);
+		onSystemCapabilityListener = null;
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
+		retrievedCapability =  (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, false);
+		assertTrue(Test.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+	}
+
+	public void testGetCapabilityHmiNone() {
+		ISdl internalInterface = mock(ISdl.class);
+		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_NONE)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
+		SystemCapabilityManager scm = new SystemCapabilityManager(internalInterface);
+		OnSystemCapabilityListener onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, null);
+		VideoStreamingCapability retrievedCapability = (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, false);
+		assertNull(retrievedCapability);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener, times(0)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener, times(1)).onError(any(String.class));
+	}
+
+	public void testAddOnSystemCapabilityListenerWithSubscriptionsSupportedAndCapabilityCached() {
+		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(6, 0); // This version supports capability subscriptions
+		sdlMsgVersion.setPatchVersion(0);
+		ISdl internalInterface = mock(ISdl.class);
+		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_FULL)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		SystemCapabilityManager scm = new SystemCapabilityManager(internalInterface);
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
+
+
+		// Add listener1
+		// When the first listener is added, GetSystemCapability request should go out with subscribe=true
+		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, true)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener2
+		OnSystemCapabilityListener onSystemCapabilityListener2 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+		verify(onSystemCapabilityListener2, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener3
+		OnSystemCapabilityListener onSystemCapabilityListener3 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(onSystemCapabilityListener3, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Remove listener1
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+
+
+		// Remove listener2
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+
+
+		// Remove listener3
+		// When the last listener is removed, GetSystemCapability request should go out with subscribe=false
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(internalInterface, times(2)).sendRPC(any(GetSystemCapability.class));
+	}
+
+	public void testAddOnSystemCapabilityListenerWithSubscriptionsSupportedAndCapabilityNotCached() {
+		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(6, 0); // This version supports capability subscriptions
+		sdlMsgVersion.setPatchVersion(0);
+		ISdl internalInterface = mock(ISdl.class);
+		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_FULL)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		SystemCapabilityManager scm = new SystemCapabilityManager(internalInterface);
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, null);
+
+
+		// Add listener1
+		// When the first listener is added, GetSystemCapability request should go out with subscribe=true
+		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, true)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener2
+		OnSystemCapabilityListener onSystemCapabilityListener2 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+		verify(onSystemCapabilityListener2, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener3
+		OnSystemCapabilityListener onSystemCapabilityListener3 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(onSystemCapabilityListener3, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Remove listener1
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+
+
+		// Remove listener2
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+
+
+		// Remove listener3
+		// When the last listener is removed, GetSystemCapability request should go out with subscribe=false
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(internalInterface, times(2)).sendRPC(any(GetSystemCapability.class));
+	}
+
+	public void testAddOnSystemCapabilityListenerWithSubscriptionsNotSupportedAndCapabilityCached() {
+		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(5, 0); // This version doesn't support capability subscriptions
+		sdlMsgVersion.setPatchVersion(0);
+		ISdl internalInterface = mock(ISdl.class);
+		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_FULL)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		SystemCapabilityManager scm = new SystemCapabilityManager(internalInterface);
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
+
+
+		// Add listener1
+		// When the first listener is added, GetSystemCapability request should not go out because subscription is not supported and the capability is cached
+		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, true)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener2
+		OnSystemCapabilityListener onSystemCapabilityListener2 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+		verify(onSystemCapabilityListener2, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener3
+		OnSystemCapabilityListener onSystemCapabilityListener3 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(onSystemCapabilityListener3, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Remove listener1
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+
+
+		// Remove listener2
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+
+
+		// Remove listener3
+		// When the last listener is removed, GetSystemCapability request should not go out because subscription is not supported
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+	}
+
+	public void testAddOnSystemCapabilityListenerWithSubscriptionsNotSupportedAndCapabilityNotCached() {
+		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(5, 0); // This version doesn't support capability subscriptions
+		sdlMsgVersion.setPatchVersion(0);
+		ISdl internalInterface = mock(ISdl.class);
+		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_FULL)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		SystemCapabilityManager scm = new SystemCapabilityManager(internalInterface);
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, null);
+
+
+		// Add listener1
+		// When the first listener is added, GetSystemCapability request should out because because capability is not cached
+		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener2
+		OnSystemCapabilityListener onSystemCapabilityListener2 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+		verify(onSystemCapabilityListener2, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener3
+		OnSystemCapabilityListener onSystemCapabilityListener3 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(onSystemCapabilityListener3, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Remove listener1
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+
+
+		// Remove listener2
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+
+
+		// Remove listener3
+		// When the last listener is removed, GetSystemCapability request should not go out because subscription is not supported
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+	}
+
+	public void testAddOnSystemCapabilityListenerThenGetCapabilityWhenSubscriptionsAreNotSupported() {
+		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(5, 0); // This version doesn't support capability subscriptions
+		sdlMsgVersion.setPatchVersion(0);
+		ISdl internalInterface = mock(ISdl.class);
+		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_FULL)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
+		when(internalInterface.getSdlMsgVersion()).thenReturn(sdlMsgVersion);
+		SystemCapabilityManager scm = new SystemCapabilityManager(internalInterface);
+		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
+
+
+		// Add listener1
+		// When the first listener is added, GetSystemCapability request should go out with subscribe=false
+		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, false)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Get Capability (should notify listener1 again)
+		scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
+		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(2)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener2
+		OnSystemCapabilityListener onSystemCapabilityListener2 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+		verify(onSystemCapabilityListener2, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Get Capability (should notify listener1 & listener2 again)
+		scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
+		verify(internalInterface, times(2)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(3)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener2, times(2)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Add listener3
+		OnSystemCapabilityListener onSystemCapabilityListener3 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(onSystemCapabilityListener3, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Get Capability (should notify listener1 & listener2 & listener3 again)
+		scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
+		verify(internalInterface, times(3)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(4)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener2, times(3)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener3, times(2)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Remove listener1
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener1);
+
+
+		// Get Capability (should notify listener2 & listener3 again)
+		scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
+		verify(internalInterface, times(4)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(4)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener2, times(4)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener3, times(3)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Remove listener2
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener2);
+
+
+		// Get Capability (should notify listener3 again)
+		scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
+		verify(internalInterface, times(5)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(4)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener2, times(4)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener3, times(4)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Remove listener3
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener3);
+		verify(internalInterface, times(5)).sendRPC(any(GetSystemCapability.class));
+
+
+		// Get Capability (should not notify any listener again because they are all removed)
+		scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, null, true);
+		verify(internalInterface, times(6)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(4)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener2, times(4)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener3, times(4)).onCapabilityRetrieved(any(Object.class));
+	}
+
+	public void testGetAndAddListenerForDisplaysCapability() {
+		ISdl internalInterface;
+		SystemCapabilityManager scm;
+		OnSystemCapabilityListener onSystemCapabilityListener;
+		DisplayCapabilities retrievedCapability;
+
+
+		// Test case 1 (capability cached, listener not null, forceUpdate true)
+		internalInterface = mock(ISdl.class);
+		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_FULL)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
+		scm = new SystemCapabilityManager(internalInterface);
+		onSystemCapabilityListener = mock(OnSystemCapabilityListener.class);
+		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
+		scm.setCapability(SystemCapabilityType.DISPLAYS, new DisplayCapabilities());
+		retrievedCapability = (DisplayCapabilities) scm.getCapability(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener, true);
+		assertNotNull(retrievedCapability);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener, times(1)).onCapabilityRetrieved(any(Object.class));
+		verify(onSystemCapabilityListener, times(0)).onError(any(String.class));
+
+
+		// Test case 2 (Add listener)
+		// When the first DISPLAYS listener is added, GetSystemCapability request should not go out
+		OnSystemCapabilityListener onSystemCapabilityListener1 = mock(OnSystemCapabilityListener.class);
+		scm.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener1);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+		verify(onSystemCapabilityListener1, times(1)).onCapabilityRetrieved(any(Object.class));
+
+
+		// Test case 3 (Remove listener)
+		// When the last DISPLAYS listener is removed, GetSystemCapability request should not go out
+		scm.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener1);
+		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
+	}
+
 	public void testListConversion(){
 		SystemCapabilityManager systemCapabilityManager = createSampleManager();
 		Object capability = systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON);
 		assertNotNull(capability);
 		List<SoftButtonCapabilities> list = SystemCapabilityManager.convertToList(capability, SoftButtonCapabilities.class);
 		assertNotNull(list);
-
 	}
 
 	public void testFalsePositive(){
@@ -189,11 +698,39 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		scmRpcListener.onReceived(onSystemCapabilityUpdated);
 
 		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES));
+	}
 
+	public void testOnSystemCapabilityUpdatedForDISPLAYS() {
+		InternalSDLInterface iSDL = new InternalSDLInterface();
+		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
+		OnRPCListener scmRpcListener = iSDL.rpcListeners.get(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED.getId()).get(0);
+		assertNotNull(scmRpcListener);
+
+		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS));
+		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY));
+
+		List<DisplayCapability> newCaps = createDisplayCapabilityList(Test.GENERAL_DISPLAYCAPABILITIES, Test.GENERAL_BUTTONCAPABILITIES_LIST, Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);;
+
+		SystemCapability systemCapability = new SystemCapability();
+		systemCapability.setSystemCapabilityType(SystemCapabilityType.DISPLAYS);
+		systemCapability.setCapabilityForType(SystemCapabilityType.DISPLAYS, newCaps);
+
+		OnSystemCapabilityUpdated onSystemCapabilityUpdated = new OnSystemCapabilityUpdated();
+		onSystemCapabilityUpdated.setSystemCapability(systemCapability);
+
+		scmRpcListener.onReceived(onSystemCapabilityUpdated);
+
+		List<DisplayCapability> appliedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
+		assertNotNull(appliedCaps);
+		assertTrue(Validator.validateDisplayCapabilityList(newCaps, appliedCaps));
+
+		DisplayCapabilities appliedConvertedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
+		assertNotNull(appliedConvertedCaps);
+		DisplayCapabilities testConvertedCaps = createDisplayCapabilities(newCaps.get(0).getDisplayName(), newCaps.get(0).getWindowCapabilities().get(0));
+		assertTrue(Validator.validateDisplayCapabilities(appliedConvertedCaps, testConvertedCaps));
 	}
 
 	public void testOnSystemCapabilityUpdated(){
-
 		InternalSDLInterface iSDL = new InternalSDLInterface();
 		String baseName = "NavTest", baseID = "37F98053AE";
 		AppServiceCapability capability1 = AppServiceFactory.createAppServiceCapability(AppServiceType.NAVIGATION, baseName, null, true, null);
@@ -329,6 +866,46 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		assertEquals(phoneCapability, phoneCapabilityUpdated);
 	}
 
+	public void testOnSetDisplayLayout() {
+		InternalSDLInterface iSDL = new InternalSDLInterface();
+		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
+		OnRPCListener dlRpcListener = iSDL.rpcListeners.get(FunctionID.SET_DISPLAY_LAYOUT.getId()).get(0);
+		assertNotNull(dlRpcListener);
+
+		SetDisplayLayoutResponse newLayout = new SetDisplayLayoutResponse();
+		newLayout.setDisplayCapabilities(Test.GENERAL_DISPLAYCAPABILITIES);
+		newLayout.setButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES_LIST);
+		newLayout.setSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
+		newLayout.setPresetBankCapabilities(Test.GENERAL_PRESETBANKCAPABILITIES);
+		newLayout.setSuccess(true);
+		newLayout.setResultCode(Result.SUCCESS);
+
+		dlRpcListener.onReceived(newLayout);
+
+
+		DisplayCapabilities appliedCaps = (DisplayCapabilities)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY);
+		assertNotNull(appliedCaps);
+		assertTrue(Validator.validateDisplayCapabilities(newLayout.getDisplayCapabilities(), appliedCaps));
+
+		List<DisplayCapability> convertedCaps = (List<DisplayCapability>)systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS);
+		assertNotNull(convertedCaps);
+		List<DisplayCapability> testCaps = createDisplayCapabilityList(newLayout.getDisplayCapabilities(), newLayout.getButtonCapabilities(), newLayout.getSoftButtonCapabilities());
+		assertTrue(Validator.validateDisplayCapabilityList(convertedCaps, testCaps));
+
+		WindowCapability matchWindowCapability = testCaps.get(0).getWindowCapabilities().get(0);
+		WindowCapability testWindowCapability = systemCapabilityManager.getDefaultMainWindowCapability();
+		assertTrue(Validator.validateWindowCapability(matchWindowCapability, testWindowCapability));
+		assertNull(systemCapabilityManager.getWindowCapability(42));
+	}
+
+	public void testManagerBeforeDisplayUpdate() {
+		InternalSDLInterface iSDL = new InternalSDLInterface();
+		SystemCapabilityManager systemCapabilityManager = new SystemCapabilityManager(iSDL);
+		assertNull(systemCapabilityManager.getDefaultMainWindowCapability());
+		assertNull(systemCapabilityManager.getWindowCapability(PredefinedWindows.DEFAULT_WINDOW.getValue()));
+		assertNull(systemCapabilityManager.getWindowCapability(PredefinedWindows.PRIMARY_WIDGET.getValue()));
+	}
+
 	private class InternalSDLInterface implements ISdl{
 		private final Object RPC_LISTENER_LOCK = new Object();
 		SparseArray<CopyOnWriteArrayList<OnRPCListener>> rpcListeners = new SparseArray<>();
@@ -418,10 +995,21 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		public Object getCapability(SystemCapabilityType systemCapabilityType){return null;}
 
 		@Override
-		public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) { }
+		public void getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener) {
+		}
 
 		@Override
-		public SdlMsgVersion getSdlMsgVersion(){
+		public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
+			return null;
+		}
+
+		@Override
+		public Object getCapability(SystemCapabilityType systemCapabilityType, OnSystemCapabilityListener scListener, boolean forceUpdate) {
+			return null;
+		}
+
+		@Override
+		public SdlMsgVersion getSdlMsgVersion() {
 			return null;
 		}
 
@@ -465,7 +1053,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		@Override
 		public void startAudioService(boolean encrypted){}
 
+		@Override
+		public void startRPCEncryption() {}
 	}
-
-
 }

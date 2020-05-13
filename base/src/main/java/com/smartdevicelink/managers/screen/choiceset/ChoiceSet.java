@@ -34,6 +34,7 @@ package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.TTSChunk;

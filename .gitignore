@@ -73,4 +73,15 @@ build/
 /.idea/libraries
 /captures
 .externalNativeBuild
+gradle/
+gradlew
+gradlew.bat
 
+##############################
+# Python
+##############################
+*.venv*
+*__pycache__
+*htmlcov
+*.coverage
+*.pytest_cache

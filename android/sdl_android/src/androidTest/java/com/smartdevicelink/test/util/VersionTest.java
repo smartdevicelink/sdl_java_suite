@@ -5,10 +5,11 @@ import com.smartdevicelink.util.Version;
 
 public class VersionTest extends AndroidTestCase2 {
 
-    private static final String TEST_VERSION = "1.2.3";
+    private static final String TEST_VERSION_STRING = "1.2.3";
+    private static final Version TEST_VERSION = new Version(1,2,3);
 
     public void testConstructorCorrect(){
-        Version version = new Version(TEST_VERSION);
+        Version version = new Version(TEST_VERSION_STRING);
         assertEquals(1, version.getMajor());
         assertEquals(2, version.getMinor());
         assertEquals(3, version.getPatch());
@@ -24,8 +25,8 @@ public class VersionTest extends AndroidTestCase2 {
     }
 
     public void testToString(){
-        Version version = new Version(TEST_VERSION);
-        assertEquals(version.toString(), TEST_VERSION);
+        Version version = new Version(TEST_VERSION_STRING);
+        assertEquals(version.toString(), TEST_VERSION_STRING);
     }
 
     public void testisNewerThan(){
@@ -43,6 +44,19 @@ public class VersionTest extends AndroidTestCase2 {
 
         //Supplied  version is equal
         assertEquals(0,version1.isNewerThan( new Version(5,0,0)));
+
+    }
+
+    public void testIsBetween(){
+
+        assertEquals(TEST_VERSION.isBetween(new Version(1,0,0), new Version (2,0,0)), 1);
+        assertEquals(TEST_VERSION.isBetween(new Version(2,0,0), new Version (1,0,0)), -1);
+        assertEquals(TEST_VERSION.isBetween(new Version(2,0,0), new Version (3,0,0)), -1);
+
+        assertEquals(TEST_VERSION.isBetween(new Version(1,0,0), new Version (1,2,3)), 0);
+        assertEquals(TEST_VERSION.isBetween(new Version(1,2,3), new Version (3,2,3)), 0);
+
+        assertEquals(TEST_VERSION.isBetween(new Version(1,2,3), new Version (1,2,3)), 0);
 
     }
 }

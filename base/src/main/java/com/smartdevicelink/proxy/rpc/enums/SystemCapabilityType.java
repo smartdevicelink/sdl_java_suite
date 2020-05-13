@@ -288,6 +288,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
+	@Deprecated
 	DISPLAY (false),
 
 
@@ -399,6 +400,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
+	@Deprecated
     BUTTON (false),
 
 	/**
@@ -441,6 +443,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
+	@Deprecated
     PRESET_BANK (false),
 
 	/**
@@ -464,6 +467,7 @@ public enum SystemCapabilityType {
 	 * 		</tr>
 	 * 	</table>
 	 */
+	@Deprecated
     SOFTBUTTON (false),
 
 	/**

@@ -52,14 +52,14 @@ public enum BitsPerSample {
 	 */
 	_16_BIT("16_BIT");
 
-    private final String INTERNAL_NAME;
+    private final String VALUE;
     
-    private BitsPerSample(String internalName) {
-        this.INTERNAL_NAME = internalName;
+    private BitsPerSample(String value) {
+        this.VALUE = value;
     }
     
     public String toString() {
-        return this.INTERNAL_NAME;
+        return this.VALUE;
     }
     
     public static BitsPerSample valueForString(String value) {

@@ -127,15 +127,17 @@ public abstract class AbstractProtocol {
 	protected void handlePacketToSend(SdlPacket header) {
 	//FIXME	SdlTrace.logProtocolEvent(InterfaceActivityDirection.Transmit, header, data, 
 	//			offset, length, SDL_LIB_TRACE_KEY);
-	resetOutgoingHeartbeat(SessionType.valueOf((byte)header.getServiceType()), (byte)header.getSessionId());
+		if(header == null){
+			return;
+		}
+
+		resetOutgoingHeartbeat(SessionType.valueOf((byte)header.getServiceType()), (byte)header.getSessionId());
 
 		synchronized(_frameLock) {
 			
 			//byte[] frameHeader = header.constructPacket();
-			if(header!=null){
-				_protocolListener.onProtocolMessageBytesToSend(header);
-			}//TODO else log out error
-			
+			_protocolListener.onProtocolMessageBytesToSend(header);
+
 		}
 	}
 

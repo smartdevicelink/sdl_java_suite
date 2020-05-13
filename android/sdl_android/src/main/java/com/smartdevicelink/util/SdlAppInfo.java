@@ -35,6 +35,7 @@ package com.smartdevicelink.util;
 import android.content.ComponentName;
 import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -80,11 +81,13 @@ public class SdlAppInfo {
             }
         }
 
-        if(packageInfo != null){
+        if(packageInfo != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD){
             this.lastUpdateTime = packageInfo.lastUpdateTime;
             if(this.lastUpdateTime <= 0){
                 this.lastUpdateTime = packageInfo.firstInstallTime;
             }
+        }else{
+            this.lastUpdateTime = 0;
         }
     }
 
@@ -150,15 +153,15 @@ public class SdlAppInfo {
                     int versionCompare =  two.routerServiceVersion  - one.routerServiceVersion;
 
                     if(versionCompare == 0){ //Versions are equal so lets use the one that has been updated most recently
-                        int updateTime =  (int)(two.lastUpdateTime - one.lastUpdateTime);
+                        long updateTime =  two.lastUpdateTime - one.lastUpdateTime;
                         if(updateTime == 0){
                             //This is arbitrary, but we want to ensure all lists are sorted in the same order
                             return  one.routerServiceComponentName.getPackageName().compareTo(two.routerServiceComponentName.getPackageName());
                         }else{
-                            return updateTime;
+                            return (updateTime < 0 ? -1 : 1);
                         }
                     }else{
-                        return versionCompare;
+                        return (versionCompare < 0 ? -1 : 1);
                     }
 
                 }else{

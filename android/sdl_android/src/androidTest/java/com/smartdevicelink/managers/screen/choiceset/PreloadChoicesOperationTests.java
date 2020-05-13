@@ -38,15 +38,14 @@ package com.smartdevicelink.managers.screen.choiceset;
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
-import com.smartdevicelink.managers.screen.choiceset.PreloadChoicesOperation;
 import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.TextField;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
+import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.test.Test;
 
@@ -60,6 +59,9 @@ import static org.mockito.Mockito.mock;
 public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 
 	private PreloadChoicesOperation preloadChoicesOperation;
+	private PreloadChoicesOperation preloadChoicesOperationNullCapability;
+	private PreloadChoicesOperation preloadChoicesOperationEmptyCapability;
+
 
 	@Override
 	public void setUp() throws Exception{
@@ -73,51 +75,74 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 		cellsToPreload.add(cell2);
 
 		ImageField imageField = new ImageField(ImageFieldName.choiceImage, Arrays.asList(FileType.GRAPHIC_PNG, FileType.GRAPHIC_JPEG));
+		ImageField imageField2 = new ImageField();
+		imageField2.setName(ImageFieldName.choiceSecondaryImage);
 		TextField textField = new TextField(TextFieldName.menuName, CharacterSet.CID1SET, 2, 2);
 
-		DisplayCapabilities displayCapabilities = new DisplayCapabilities();
-		displayCapabilities.setGraphicSupported(true);
-		displayCapabilities.setImageFields(Collections.singletonList(imageField));
-		displayCapabilities.setTextFields(Collections.singletonList(textField));
+		TextField textField2 = new TextField();
+		TextField textField3 = new TextField();
+
+		textField2.setName(TextFieldName.secondaryText);
+		textField3.setName(TextFieldName.tertiaryText);
+
+
+		WindowCapability windowCapability = new WindowCapability();
+		windowCapability.setImageFields(Arrays.asList(imageField, imageField2));
+		windowCapability.setImageTypeSupported(Arrays.asList(ImageType.STATIC, ImageType.DYNAMIC));
+		windowCapability.setTextFields(Arrays.asList(textField, textField2, textField3));
 
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
-		preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, displayCapabilities, true, cellsToPreload, null);
+		preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
 	}
+
+	/**
+	 * Sets up PreloadChoicesOperation with WindowCapability being null
+	 */
+	public void setUpNullWindowCapability() {
+
+		ChoiceCell cell1 = new ChoiceCell("cell 1");
+		ChoiceCell cell2 = new ChoiceCell("cell 2", null, Test.GENERAL_ARTWORK);
+		HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+		cellsToPreload.add(cell1);
+		cellsToPreload.add(cell2);
+
+		ISdl internalInterface = mock(ISdl.class);
+		FileManager fileManager = mock(FileManager.class);
+		preloadChoicesOperationNullCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, null, true, cellsToPreload, null);
+	}
+
+	/**
+	 * Sets up PreloadChoicesOperation with an Capability not being set
+	 * certain imageFields and TextFields
+	 */
+	public void setUpEmptyWindowCapability() {
+
+		ChoiceCell cell1 = new ChoiceCell("cell 1");
+		ChoiceCell cell2 = new ChoiceCell("cell 2", null, Test.GENERAL_ARTWORK);
+		HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
+		cellsToPreload.add(cell1);
+		cellsToPreload.add(cell2);
+
+		ImageField imageField = new ImageField();
+		imageField.setName(ImageFieldName.alertIcon);
+
+		TextField textField = new TextField();
+		textField.setName(TextFieldName.mainField1);
+
+		WindowCapability windowCapability = new WindowCapability();
+		windowCapability.setImageFields(Collections.singletonList(imageField));
+		windowCapability.setTextFields(Collections.singletonList(textField));
+
+		ISdl internalInterface = mock(ISdl.class);
+		FileManager fileManager = mock(FileManager.class);
+		preloadChoicesOperationEmptyCapability = new PreloadChoicesOperation(internalInterface, fileManager, null, windowCapability, true, cellsToPreload, null);
+	}
+
 
 	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
-	}
-
-	public void testHasTextFieldOfName(){
-
-		TextField textField = new TextField();
-		textField.setName(TextFieldName.secondaryText);
-
-		DisplayCapabilities capabilities = new DisplayCapabilities();
-		capabilities.setTextFields(Collections.singletonList(textField));
-
-		boolean test = preloadChoicesOperation.hasTextFieldOfName(TextFieldName.secondaryText);
-		assertFalse(test);
-
-		boolean test2 = preloadChoicesOperation.hasTextFieldOfName(TextFieldName.menuName);
-		assertTrue(test2);
-	}
-
-	public void testHasImageFieldOfName(){
-
-		ImageField imageField = new ImageField();
-		imageField.setName(ImageFieldName.choiceImage);
-
-		DisplayCapabilities capabilities = new DisplayCapabilities();
-		capabilities.setImageFields(Collections.singletonList(imageField));
-
-		boolean test = preloadChoicesOperation.hasImageFieldOfName(ImageFieldName.choiceImage);
-		assertTrue(test);
-
-		boolean test2 = preloadChoicesOperation.hasImageFieldOfName(ImageFieldName.appIcon);
-		assertFalse(test2);
 	}
 
 	public void testArtworkNeedsUpload(){
@@ -129,6 +154,33 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 		List<SdlArtwork> artworksToUpload = preloadChoicesOperation.artworksToUpload();
 		assertNotNull(artworksToUpload);
 		assertEquals(artworksToUpload.size(), 1);
+	}
+
+	/**
+	 * Testing shouldSend method's with varying WindowCapability set.
+	 */
+	public void testShouldSendText() {
+
+		setUpNullWindowCapability();
+		assertTrue(preloadChoicesOperationNullCapability.shouldSendChoicePrimaryImage());
+		assertTrue(preloadChoicesOperationNullCapability.shouldSendChoiceSecondaryImage());
+		assertTrue(preloadChoicesOperationNullCapability.shouldSendChoiceSecondaryText());
+		assertTrue(preloadChoicesOperationNullCapability.shouldSendChoiceTertiaryText());
+		assertTrue(preloadChoicesOperationNullCapability.shouldSendChoiceText());
+
+
+		assertTrue(preloadChoicesOperation.shouldSendChoicePrimaryImage());
+		assertTrue(preloadChoicesOperation.shouldSendChoiceSecondaryImage());
+		assertTrue(preloadChoicesOperation.shouldSendChoiceSecondaryText());
+		assertTrue(preloadChoicesOperation.shouldSendChoiceTertiaryText());
+		assertTrue(preloadChoicesOperation.shouldSendChoiceText());
+
+		setUpEmptyWindowCapability();
+		assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoicePrimaryImage());
+		assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceSecondaryImage());
+		assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceSecondaryText());
+		assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceTertiaryText());
+		assertFalse(preloadChoicesOperationEmptyCapability.shouldSendChoiceText());
 	}
 
 }

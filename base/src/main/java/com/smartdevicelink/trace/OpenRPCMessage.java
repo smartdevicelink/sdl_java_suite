@@ -51,7 +51,7 @@ class OpenRPCMessage extends RPCMessage {
 	public String msgDump() {
 		StringBuilder pd = new StringBuilder();
 		
-		pd.append(this.getFunctionName() + " " + this.getMessageType());
+		pd.append(this.getFunctionName()).append(" ").append(this.getMessageType());
 		
 		msgDump(pd);
 

@@ -176,6 +176,9 @@ public class AndroidTools {
 	 */
 	public static boolean isUSBCableConnected(Context context) {
 		Intent intent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+		if (intent == null ) {
+			return false;
+		}
 		int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
 		return plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB;
 	}

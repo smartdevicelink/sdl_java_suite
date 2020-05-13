@@ -45,13 +45,16 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.hardware.usb.UsbManager;
 import android.os.Build;
+import android.os.Looper;
 import android.os.Parcelable;
+import android.util.AndroidRuntimeException;
 import android.util.Log;
 
 import com.smartdevicelink.R;
 import com.smartdevicelink.transport.RouterServiceValidator.TrustedListCallback;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.AndroidTools;
+import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.SdlAppInfo;
 import com.smartdevicelink.util.ServiceFinder;
 
@@ -81,7 +84,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 
     private static final Object QUEUED_SERVICE_LOCK = new Object();
     private static ComponentName queuedService = null;
-	
+	private static Thread.UncaughtExceptionHandler foregroundExceptionHandler = null;
+
 	public int getRouterServiceVersion(){
 		return SdlRouterService.ROUTER_SERVICE_VERSION_NUMBER;	
 	}
@@ -90,6 +94,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	public void onReceive(Context context, Intent intent) {
 		//Log.i(TAG, "Sdl Receiver Activated");
 		final String action = intent.getAction();
+		if(action == null){
+			return;
+		}
+
 		BluetoothDevice device = null;
 
 		if(action.equalsIgnoreCase(Intent.ACTION_PACKAGE_ADDED)
@@ -216,7 +224,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	}
 
 	private boolean wakeUpRouterService(final Context context, final boolean ping, final boolean altTransportWake, final BluetoothDevice device){
-			new ServiceFinder(context, context.getPackageName(), new ServiceFinder.ServiceFinderCallback() {
+		new ServiceFinder(context, context.getPackageName(), new ServiceFinder.ServiceFinderCallback() {
 				@Override
 				public void onComplete(Vector<ComponentName> routerServices) {
 					runningBluetoothServicePackage = new Vector<ComponentName>();
@@ -245,6 +253,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 								context.startService(serviceIntent);
 							}else {
 								serviceIntent.putExtra(FOREGROUND_EXTRA, true);
+								DebugTool.logInfo("Attempting to startForegroundService - " + System.currentTimeMillis());
+								setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
 								context.startForegroundService(serviceIntent);
 
 							}
@@ -281,6 +291,37 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			serviceIntent.setComponent(compName);
 			context.startService(serviceIntent);
 
+		}
+	}
+
+	/**
+	 * This method will set a new UncaughtExceptionHandler for the current thread. The only
+	 * purpose of the custom UncaughtExceptionHandler is to catch the rare occurrence that the
+	 * SdlRouterService can't be started fast enough by the system after calling
+	 * startForegroundService so the onCreate method doesn't get called before the foreground promise
+	 * timer expires. The new UncaughtExceptionHandler will catch that specific exception and tell the
+	 * main looper to continue forward. This still leaves the SdlRouterService killed, but prevents
+	 * an ANR to the app that makes the startForegroundService call.
+	 */
+	static protected void setForegroundExceptionHandler() {
+		final Thread.UncaughtExceptionHandler defaultUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
+		if(defaultUncaughtExceptionHandler != foregroundExceptionHandler){
+			foregroundExceptionHandler = new Thread.UncaughtExceptionHandler() {
+				@Override
+				public void uncaughtException(Thread t, Throwable e) {
+					if (e != null
+							&& e instanceof AndroidRuntimeException
+							&& "android.app.RemoteServiceException".equals(e.getClass().getName())  //android.app.RemoteServiceException is a private class
+							&& e.getMessage().contains("SdlRouterService")) {
+
+						Log.i(TAG, "Handling failed startForegroundService call");
+						Looper.loop();
+					} else if (defaultUncaughtExceptionHandler != null) { //No other exception should be handled
+						defaultUncaughtExceptionHandler.uncaughtException(t, e);
+					}
+				}
+			};
+			Thread.setDefaultUncaughtExceptionHandler(foregroundExceptionHandler);
 		}
 	}
 
@@ -340,6 +381,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
 			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
 				intent.putExtra(FOREGROUND_EXTRA, true);
+				DebugTool.logInfo("Attempting to startForegroundService - " + System.currentTimeMillis());
+				setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
 				context.startForegroundService(intent);
 			}else {
 				context.startService(intent);

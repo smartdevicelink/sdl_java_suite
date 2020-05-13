@@ -44,11 +44,21 @@ import java.nio.file.Files;
 public class FileUtls {
 
 
-
+    /**
+     * When using on Android, this method should only be used for Android Oreo and newer
+     * @param file the path to the file
+     * @return a byte array representation of the file if one exists
+     */
     public static byte[] getFileData(String file){
         return getFileData(file,null);
     }
 
+    /**
+     * When using on Android, this method should only be used for Android Oreo and newer
+     * @param filePath the path to the file
+     * @param fileName the name of the file
+     * @return a byte array representation of the file if one exists
+     */
     public static byte[] getFileData(String filePath, String fileName){
         if(filePath != null && filePath.length() > 0) {
             File file;

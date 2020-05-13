@@ -913,10 +913,10 @@ public enum StaticIconName {
 
 	;
 
-	private final String INTERNAL_NAME;
+	private final String VALUE;
 
-	private StaticIconName(String internalName) {
-		this.INTERNAL_NAME = internalName;
+	private StaticIconName(String value) {
+		this.VALUE = value;
 	}
 
 	public static StaticIconName valueForString(String value) {
@@ -933,9 +933,13 @@ public enum StaticIconName {
 		return null;
 	}
 
+	/**
+	 * Returns the string representation of the hex value associated with this static icon
+	 * @return string of the hex value representation of this static icon
+	 */
 	@Override
 	public String toString() {
-		return INTERNAL_NAME;
+		return VALUE;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.smartdevicelink.test;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.util.Log;
 
 import com.smartdevicelink.R;
@@ -16,6 +17,7 @@ import com.smartdevicelink.protocol.SdlProtocol;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.SdlProxyBase;
 import com.smartdevicelink.proxy.TTSChunkFactory;
+import com.smartdevicelink.proxy.rpc.AppInfo;
 import com.smartdevicelink.proxy.rpc.AppServiceCapability;
 import com.smartdevicelink.proxy.rpc.AppServiceData;
 import com.smartdevicelink.proxy.rpc.AppServiceManifest;
@@ -262,6 +264,8 @@ public class Test {
 	public static final VrHelpItem                     GENERAL_VRHELPITEM                     = new VrHelpItem();
 	public static final ImageField                     GENERAL_IMAGEFIELD                     = new ImageField();
 	public static final DeviceInfo	                   GENERAL_DEVICEINFO	                  = new DeviceInfo();
+	public static final AppInfo                        GENERAL_APPINFO	                      = new AppInfo();
+	public static final Uri                            GENERAL_URI   	                      = Uri.parse("http://www.google.com");;
 	public static final LayoutMode                     GENERAL_LAYOUTMODE                     = LayoutMode.LIST_ONLY;
 	public static final MenuParams                     GENERAL_MENUPARAMS                     = new MenuParams();
 	public static final SoftButton                     GENERAL_SOFTBUTTON                     = new SoftButton();
@@ -430,7 +434,7 @@ public class Test {
 	public static final Grid                           GENERAL_GRID                           = new Grid();
 	public static final SeatLocation                   GENERAL_SEAT_LOCATION                  = new SeatLocation();
 	public static final ModuleInfo                     GENERAL_MODULE_INFO                    = new ModuleInfo();
-	public static final WindowType                     GENERAL_WINDOW_TYPE                    = WindowType.MAIN;
+	public static final WindowType                     GENERAL_WINDOWTYPE                     = WindowType.MAIN;
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
 	public static final List<Choice>                    GENERAL_CHOICE_LIST                    = new ArrayList<Choice>();
@@ -535,6 +539,7 @@ public class Test {
 	public static final JSONObject JSON_SOFTBUTTON                = new JSONObject();
 	public static final JSONObject JSON_MENUPARAMS                = new JSONObject();
 	public static final JSONObject JSON_DEVICEINFO                = new JSONObject();
+	public static final JSONObject JSON_APPINFO                   = new JSONObject();
 	public static final JSONObject JSON_VRHELPITEM                = new JSONObject();
 	public static final JSONObject JSON_SCREENPARAMS              = new JSONObject();
 	public static final JSONObject JSON_SDLMSGVERSION             = new JSONObject();
@@ -706,7 +711,7 @@ public class Test {
 		GENERAL_IMAGEFIELD.setImageTypeSupported(GENERAL_FILETYPE_LIST);
 		GENERAL_IMAGEFIELD_LIST.add(GENERAL_IMAGEFIELD);
 
-		GENERAL_WINDOW_TYPE_CAPABILITIES.setType(GENERAL_WINDOW_TYPE);
+		GENERAL_WINDOW_TYPE_CAPABILITIES.setType(GENERAL_WINDOWTYPE);
 		GENERAL_WINDOW_TYPE_CAPABILITIES.setMaximumNumberOfWindows(GENERAL_INT);
 		GENERAL_WINDOW_TYPE_CAPABILITIES_LIST.add(GENERAL_WINDOW_TYPE_CAPABILITIES);
 
@@ -861,6 +866,7 @@ public class Test {
         GENERAL_PERMISSIONITEM.setRpcName(GENERAL_STRING);
         GENERAL_PERMISSIONITEM.setHMIPermissions(GENERAL_HMIPERMISSIONS);
         GENERAL_PERMISSIONITEM.setParameterPermissions(GENERAL_PARAMETERPERMISSIONS);
+        GENERAL_PERMISSIONITEM.setRequireEncryption(GENERAL_BOOLEAN);
         GENERAL_PERMISSIONITEM_LIST.add(GENERAL_PERMISSIONITEM);
 
 		GENERAL_SYSTEMCAPABILITY.setSystemCapabilityType(GENERAL_SYSTEMCAPABILITYTYPE);
@@ -1148,6 +1154,7 @@ public class Test {
 			JSON_PERMISSIONITEM.put(PermissionItem.KEY_HMI_PERMISSIONS, JSON_HMIPERMISSIONS);
 			JSON_PERMISSIONITEM.put(PermissionItem.KEY_PARAMETER_PERMISSIONS, JSON_PARAMETERPERMISSIONS);
 			JSON_PERMISSIONITEM.put(PermissionItem.KEY_RPC_NAME, GENERAL_STRING);
+			JSON_PERMISSIONITEM.put(PermissionItem.KEY_REQUIRE_ENCRYPTION, GENERAL_BOOLEAN);
 			JSON_PERMISSIONITEMS.put(JSON_PERMISSIONITEM);
 
 			JSON_IMAGE.put(Image.KEY_IMAGE_TYPE, GENERAL_IMAGETYPE);
@@ -1284,7 +1291,7 @@ public class Test {
 			JSON_IMAGEFIELD.put(ImageField.KEY_NAME, ImageFieldName.graphic);
 			JSON_IMAGEFIELDS.put(JSON_IMAGEFIELD);
 
-			JSON_WINDOW_TYPE_CAPABILITIES.put(WindowTypeCapabilities.KEY_TYPE, GENERAL_WINDOW_TYPE);
+			JSON_WINDOW_TYPE_CAPABILITIES.put(WindowTypeCapabilities.KEY_TYPE, GENERAL_WINDOWTYPE);
 			JSON_WINDOW_TYPE_CAPABILITIES.put(WindowTypeCapabilities.KEY_MAXIMUM_NUMBER_OF_WINDOWS, GENERAL_INT);
 			JSON_WINDOW_TYPE_CAPABILITIES_LIST.put(JSON_WINDOW_TYPE_CAPABILITIES);
 

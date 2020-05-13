@@ -5,13 +5,14 @@ import android.net.Uri;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.BaseSubManager;
+import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.interfaces.ISdl;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.MetadataTags;
 import com.smartdevicelink.proxy.rpc.Show;
 import com.smartdevicelink.proxy.rpc.TextField;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
@@ -21,6 +22,7 @@ import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
@@ -58,7 +60,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		super.tearDown();
 	}
 
-	private DisplayCapabilities getDisplayCapability(int numberOfMainFields){
+	private WindowCapability getWindowCapability(int numberOfMainFields){
 
 		TextField mainField1 = new TextField();
 		mainField1.setName(TextFieldName.mainField1);
@@ -84,10 +86,20 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 			}
 		}
 
-		DisplayCapabilities displayCapabilities = new DisplayCapabilities();
-		displayCapabilities.setTextFields(returnList);
+		WindowCapability windowCapability = new WindowCapability();
+		windowCapability.setTextFields(returnList);
 
-		return displayCapabilities;
+		return windowCapability;
+	}
+
+	/**
+	 * Used to simulate WindowCapability having no capabilities set
+	 * @return windowCapability that has no capabilities set
+	 */
+	private WindowCapability getNullVarWindowCapability() {
+
+		WindowCapability windowCapability = new WindowCapability();
+		return windowCapability;
 	}
 
 	public void testInstantiation(){
@@ -96,7 +108,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertNull(textAndGraphicManager.getTextField2());
 		assertNull(textAndGraphicManager.getTextField3());
 		assertNull(textAndGraphicManager.getTextField4());
-		assertNull(textAndGraphicManager.getTemplateTitle());
+		assertNull(textAndGraphicManager.getTitle());
 		assertNull(textAndGraphicManager.getMediaTrackTextField());
 		assertNull(textAndGraphicManager.getPrimaryGraphic());
 		assertNull(textAndGraphicManager.getSecondaryGraphic());
@@ -110,24 +122,28 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertNull(textAndGraphicManager.inProgressUpdate);
 		assertNull(textAndGraphicManager.queuedImageUpdate);
 		assertFalse(textAndGraphicManager.hasQueuedUpdate);
-		assertNull(textAndGraphicManager.displayCapabilities);
+		assertNull(textAndGraphicManager.defaultMainWindowCapability);
 		assertEquals(textAndGraphicManager.currentHMILevel, HMILevel.HMI_NONE);
 		assertFalse(textAndGraphicManager.isDirty);
 		assertEquals(textAndGraphicManager.getState(), BaseSubManager.SETTING_UP);
 		assertNotNull(textAndGraphicManager.getBlankArtwork());
 	}
 
+	/**
+	 * Test getting number of lines available to be set based off of windowCapability
+	 */
 	public void testGetMainLines(){
 
 		// We want to test that the looping works. By default, it will return 4 if display cap is null
+		textAndGraphicManager.defaultMainWindowCapability = getNullVarWindowCapability();
 
 		// Null test
-		assertEquals(textAndGraphicManager.getNumberOfLines(), 4);
+		assertEquals(0, ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(textAndGraphicManager.defaultMainWindowCapability));
 
 		// The tests.java class has an example of this, but we must build it to do what
 		// we need it to do. Build display cap w/ 3 main fields and test that it returns 3
-		textAndGraphicManager.displayCapabilities = getDisplayCapability(3);
-		assertEquals(textAndGraphicManager.getNumberOfLines(), 3);
+		textAndGraphicManager.defaultMainWindowCapability = getWindowCapability(3);
+		assertEquals(ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(textAndGraphicManager.defaultMainWindowCapability), 3);
 	}
 
 	public void testAssemble1Line(){
@@ -135,7 +151,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		Show inputShow = new Show();
 
 		// Force it to return display with support for only 1 line of text
-		textAndGraphicManager.displayCapabilities = getDisplayCapability(1);
+		textAndGraphicManager.defaultMainWindowCapability = getWindowCapability(1);
 
 		textAndGraphicManager.setTextField1("It is");
 		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
@@ -185,7 +201,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		Show inputShow = new Show();
 
 		// Force it to return display with support for only 2 lines of text
-		textAndGraphicManager.displayCapabilities = getDisplayCapability(2);
+		textAndGraphicManager.defaultMainWindowCapability = getWindowCapability(2);
 
 		textAndGraphicManager.setTextField1("It is");
 		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
@@ -282,7 +298,7 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		Show inputShow = new Show();
 
 		// Force it to return display with support for only 3 lines of text
-		textAndGraphicManager.displayCapabilities = getDisplayCapability(3);
+		textAndGraphicManager.defaultMainWindowCapability = getWindowCapability(3);
 
 		textAndGraphicManager.setTextField1("It is");
 		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
@@ -374,8 +390,28 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 
 		Show inputShow = new Show();
 
+		textAndGraphicManager.defaultMainWindowCapability = getWindowCapability(4);
+		TextField tx1 = new TextField();
+		TextField tx2 = new TextField();
+		TextField tx3 = new TextField();
+		TextField tx4 = new TextField();
+		TextField tx5 = new TextField();
+		TextField tx6 = new TextField();
+
+		tx1.setName(TextFieldName.mainField1);
+		tx2.setName(TextFieldName.mainField2);
+		tx3.setName(TextFieldName.mainField3);
+		tx4.setName(TextFieldName.mainField4);
+		tx5.setName(TextFieldName.mediaTrack);
+		tx6.setName(TextFieldName.templateTitle);
+
+		List<TextField> textFieldNames = Arrays.asList(tx1,tx2,tx3,tx4,tx5,tx6);
+		textAndGraphicManager.defaultMainWindowCapability.setTextFields(textFieldNames);
+
+		textAndGraphicManager.setMediaTrackTextField("HI");
+		textAndGraphicManager.setTitle("bye");
+
 		// Force it to return display with support for only 4 lines of text
-		textAndGraphicManager.displayCapabilities = getDisplayCapability(4);
 
 		textAndGraphicManager.setTextField1("It is");
 		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
@@ -386,6 +422,121 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertEquals(assembledShow.getMainField2(), "");
 		assertEquals(assembledShow.getMainField3(), "");
 		assertEquals(assembledShow.getMainField4(), "");
+		assertEquals(assembledShow.getMediaTrack(), "HI");
+		assertEquals(assembledShow.getTemplateTitle(), "bye");
+
+		// test tags
+		MetadataTags tags = assembledShow.getMetadataTags();
+		List<MetadataType> tagsList = new ArrayList<>();
+		tagsList.add(MetadataType.HUMIDITY);
+		assertEquals(tags.getMainField1(), tagsList);
+
+		textAndGraphicManager.setTextField2("Wednesday");
+		textAndGraphicManager.setTextField2Type(MetadataType.CURRENT_TEMPERATURE);
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "Wednesday");
+		assertEquals(assembledShow.getMainField3(), "");
+		assertEquals(assembledShow.getMainField4(), "");
+
+		// test tags
+		tags = assembledShow.getMetadataTags();
+		tagsList = new ArrayList<>();
+		List<MetadataType> tagsList2 = new ArrayList<>();
+		tagsList.add(MetadataType.HUMIDITY);
+		tagsList2.add(MetadataType.CURRENT_TEMPERATURE);
+		assertEquals(tags.getMainField1(), tagsList);
+		assertEquals(tags.getMainField2(), tagsList2);
+
+		textAndGraphicManager.setTextField3("My");
+		textAndGraphicManager.setTextField3Type(MetadataType.MEDIA_ALBUM);
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "Wednesday");
+		assertEquals(assembledShow.getMainField3(), "My");
+		assertEquals(assembledShow.getMainField4(), "");
+
+		// test tags
+		tags = assembledShow.getMetadataTags();
+		tagsList = new ArrayList<>();
+		tagsList2 = new ArrayList<>();
+		List<MetadataType> tagsList3 = new ArrayList<>();
+		tagsList.add(MetadataType.HUMIDITY);
+		tagsList2.add(MetadataType.CURRENT_TEMPERATURE);
+		tagsList3.add(MetadataType.MEDIA_ALBUM);
+		assertEquals(tags.getMainField1(), tagsList);
+		assertEquals(tags.getMainField2(), tagsList2);
+		assertEquals(tags.getMainField3(), tagsList3);
+
+		textAndGraphicManager.setTextField4("Dudes");
+		textAndGraphicManager.setTextField4Type(MetadataType.MEDIA_STATION);
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "Wednesday");
+		assertEquals(assembledShow.getMainField3(), "My");
+		assertEquals(assembledShow.getMainField4(), "Dudes");
+
+		// test tags
+		tags = assembledShow.getMetadataTags();
+		tagsList = new ArrayList<>();
+		tagsList2 = new ArrayList<>();
+		tagsList3 = new ArrayList<>();
+		List<MetadataType> tagsList4 = new ArrayList<>();
+		tagsList.add(MetadataType.HUMIDITY);
+		tagsList2.add(MetadataType.CURRENT_TEMPERATURE);
+		tagsList3.add(MetadataType.MEDIA_ALBUM);
+		tagsList4.add(MetadataType.MEDIA_STATION);
+		assertEquals(tags.getMainField1(), tagsList);
+		assertEquals(tags.getMainField2(), tagsList2);
+		assertEquals(tags.getMainField3(), tagsList3);
+		assertEquals(tags.getMainField4(), tagsList4);
+
+		// try just setting line 1 and 4
+		textAndGraphicManager.setTextField2(null);
+		textAndGraphicManager.setTextField3(null);
+		textAndGraphicManager.setTextField2Type(null);
+		textAndGraphicManager.setTextField3Type(null);
+
+		assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "");
+		assertEquals(assembledShow.getMainField3(), "");
+		assertEquals(assembledShow.getMainField4(), "Dudes");
+
+		// test tags
+		tags = assembledShow.getMetadataTags();
+		tagsList = new ArrayList<>();
+		tagsList4 = new ArrayList<>();
+		tagsList.add(MetadataType.HUMIDITY);
+		tagsList4.add(MetadataType.MEDIA_STATION);
+		assertEquals(tags.getMainField1(), tagsList);
+		assertEquals(tags.getMainField4(), tagsList4);
+	}
+
+	/**
+	 * Testing if WindowCapability is null, TextFields should still update.
+	 */
+	public void testAssemble4LinesNullWindowCapability() {
+
+		Show inputShow = new Show();
+		
+		textAndGraphicManager.setMediaTrackTextField("HI");
+		textAndGraphicManager.setTitle("bye");
+
+		textAndGraphicManager.setTextField1("It is");
+		textAndGraphicManager.setTextField1Type(MetadataType.HUMIDITY);
+
+		Show assembledShow = textAndGraphicManager.assembleShowText(inputShow);
+
+		assertEquals(assembledShow.getMainField1(), "It is");
+		assertEquals(assembledShow.getMainField2(), "");
+		assertEquals(assembledShow.getMainField3(), "");
+		assertEquals(assembledShow.getMainField4(), "");
+		assertEquals(assembledShow.getMediaTrack(), "HI");
+		assertEquals(assembledShow.getTemplateTitle(), "bye");
 
 		// test tags
 		MetadataTags tags = assembledShow.getMetadataTags();
@@ -488,8 +639,8 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 	public void testTemplateTitle() {
 
 		String title = "template title";
-		textAndGraphicManager.setTemplateTitle(title);
-		assertEquals(textAndGraphicManager.getTemplateTitle(), title);
+		textAndGraphicManager.setTitle(title);
+		assertEquals(textAndGraphicManager.getTitle(), title);
 	}
 
 	public void testAlignment() {
@@ -542,13 +693,13 @@ public class TextAndGraphicManagerTests extends AndroidTestCase2 {
 		assertNull(textAndGraphicManager.getTextField2Type());
 		assertNull(textAndGraphicManager.getTextField3Type());
 		assertNull(textAndGraphicManager.getTextField4Type());
-		assertNull(textAndGraphicManager.getTemplateTitle());
+		assertNull(textAndGraphicManager.getTitle());
 		assertNotNull(textAndGraphicManager.getBlankArtwork());
 		assertNull(textAndGraphicManager.currentScreenData);
 		assertNull(textAndGraphicManager.inProgressUpdate);
 		assertNull(textAndGraphicManager.queuedImageUpdate);
 		assertFalse(textAndGraphicManager.hasQueuedUpdate);
-		assertNull(textAndGraphicManager.displayCapabilities);
+		assertNull(textAndGraphicManager.defaultMainWindowCapability);
 		assertFalse(textAndGraphicManager.isDirty);
 		assertEquals(textAndGraphicManager.getState(), BaseSubManager.SHUTDOWN);
 	}

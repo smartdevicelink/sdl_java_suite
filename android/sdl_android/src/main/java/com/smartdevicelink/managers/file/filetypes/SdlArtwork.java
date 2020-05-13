@@ -39,6 +39,7 @@ import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
+import com.smartdevicelink.util.DebugTool;
 
 /**
  * A class that extends SdlFile, representing artwork (JPEG, PNG, or BMP) to be uploaded to core
@@ -50,38 +51,38 @@ public class SdlArtwork extends SdlFile implements Cloneable{
     /**
      * Creates a new instance of SdlArtwork
      */
-    public SdlArtwork(){}
+    public SdlArtwork() {}
 
     /**
      * Creates a new instance of SdlArtwork
-     * @param fileName a String value representing the name that will be used to store the file in the head unit
+     * @param fileName a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
      * @param fileType a FileType enum value representing the type of the file
      * @param id an int value representing the android resource id of the file
      * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
      */
-    public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, int id, boolean persistentFile) {
+    public SdlArtwork(String fileName, @NonNull FileType fileType, int id, boolean persistentFile) {
         super(fileName, fileType, id, persistentFile);
     }
 
     /**
      * Creates a new instance of SdlArtwork
-     * @param fileName a String value representing the name that will be used to store the file in the head unit
+     * @param fileName a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
      * @param fileType a FileType enum value representing the type of the file
      * @param uri a URI value representing a file's location. Currently, it only supports local files
      * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
      */
-    public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, Uri uri, boolean persistentFile) {
+    public SdlArtwork(String fileName, @NonNull FileType fileType, Uri uri, boolean persistentFile) {
         super(fileName, fileType, uri, persistentFile);
     }
 
     /**
      * Creates a new instance of SdlArtwork
-     * @param fileName a String value representing the name that will be used to store the file in the head unit
+     * @param fileName a String value representing the name that will be used to store the file in the head unit. You can pass null if you want the library to auto generate the name
      * @param fileType a FileType enum value representing the type of the file
      * @param data a byte array representing the data of the file
      * @param persistentFile a boolean value that indicates if the file is meant to persist between sessions / ignition cycles
      */
-    public SdlArtwork(@NonNull String fileName, @NonNull FileType fileType, byte[] data, boolean persistentFile) {
+    public SdlArtwork(String fileName, @NonNull FileType fileType, byte[] data, boolean persistentFile) {
         super(fileName, fileType, data, persistentFile);
     }
 
@@ -110,8 +111,8 @@ public class SdlArtwork extends SdlFile implements Cloneable{
     }
 
     @Override
-    public void setType(@NonNull FileType fileType) {
-        if(fileType.equals(FileType.GRAPHIC_JPEG) || fileType.equals(FileType.GRAPHIC_PNG)
+    public void setType(FileType fileType) {
+        if(fileType == null || fileType.equals(FileType.GRAPHIC_JPEG) || fileType.equals(FileType.GRAPHIC_PNG)
                 || fileType.equals(FileType.GRAPHIC_BMP)){
             super.setType(fileType);
         }else{
@@ -144,31 +145,21 @@ public class SdlArtwork extends SdlFile implements Cloneable{
 
     /**
      * Creates a deep copy of the object
-     * @return deep copy of the object
+     * @return deep copy of the object, null if an exception occurred
      */
     @Override
     public SdlArtwork clone() {
-        final SdlArtwork clone;
-        try {
-            clone = (SdlArtwork) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("superclass messed up", e);
-        }
-        clone.setName(this.getName());
-        clone.setResourceId(this.getResourceId());
-        clone.setUri(this.getUri() == null ? null : Uri.parse(this.getUri().toString()));
-        if (this.getFileData() != null){
-            byte[] data = new byte[this.getFileData().length];
-            for (int i = 0; i < this.getFileData().length; i++) {
-                data[i] = this.getFileData()[i];
+        try{
+            SdlArtwork artwork = (SdlArtwork) super.clone();
+            if(artwork != null){
+               artwork.imageRPC = artwork.createImageRPC();
             }
-            clone.setFileData(data);
+            return artwork;
+        } catch (CloneNotSupportedException e) {
+            if(DebugTool.isDebugEnabled()){
+                throw new RuntimeException("Clone not supported by super class");
+            }
         }
-        clone.setType(this.getType());
-        clone.setPersistent(this.isPersistent());
-        clone.setStaticIcon(this.isStaticIcon());
-        clone.isTemplate = this.isTemplate;
-        clone.imageRPC = this.createImageRPC();
-        return clone;
+        return null;
     }
 }

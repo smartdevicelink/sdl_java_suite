@@ -4,12 +4,12 @@
                 android:layout_height="fill_parent"
                 android:background="#2c3d4d">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:id="@+id/lockscreen_linear_layout"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:orientation="vertical"
-                  android:gravity="center_horizontal|center_vertical">
+    <LinearLayout
+        android:id="@+id/lockscreen_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal|center_vertical">
 
         <ImageView
             android:id="@+id/lockscreen_image"

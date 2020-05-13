@@ -19,6 +19,7 @@
 
 package com.smartdevicelink.transport;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -28,6 +29,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.RequiresPermission;
 import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
@@ -40,6 +42,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -146,6 +149,8 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     /**
      * Start the chat service. Specifically start AcceptThread to begin a
      * session in listening (server) mode. Called by the Activity onResume() */
+    @SuppressLint("MissingPermission")
+    @RequiresPermission(Manifest.permission.BLUETOOTH)
     public synchronized void start() {
     	//Log.d(TAG, "Starting up Bluetooth Server to Listen");
         // Cancel any thread attempting to make a connection
@@ -202,6 +207,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
      * @param socket  The BluetoothSocket on which the connection was made
      * @param device  The BluetoothDevice that has been connected
      */
+    @RequiresPermission(Manifest.permission.BLUETOOTH)
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
         // Cancel the thread that completed the connection
         if (mConnectThread != null) {
@@ -296,7 +302,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     /**
      * Write to the ConnectedThread in an unsynchronized manner
      * @param out The bytes to write
-     * @see ConnectedThread#write(byte[])
+     * @see ConnectedWriteThread#write(byte[],int,int)
      */
     public void write(byte[] out,  int offset, int count) {
         // Create temporary object
@@ -368,7 +374,8 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
        final BluetoothServerSocket mmServerSocket;
         
         @SuppressLint("NewApi")
-		public AcceptThread(boolean secure) {
+        @RequiresPermission(Manifest.permission.BLUETOOTH)
+        public AcceptThread(boolean secure) {
         	synchronized(THREAD_LOCK){
             	//Log.d(TAG, "Creating an Accept Thread");
             	BluetoothServerSocket tmp = null;
@@ -392,7 +399,8 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             	//Log.d(TAG, "Accepting Connections on SDP Server Port Number: " + getChannel(mySock) + "\r\n");
             }
         }
-        
+
+        @RequiresPermission(Manifest.permission.BLUETOOTH)
         public void run() {
             synchronized(THREAD_LOCK){
             	Log.d(TAG, "Socket Type: " + mSocketType +
@@ -467,7 +475,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             	}
             	
             } catch (IOException e) {
-                Log.e(TAG, mState + " Socket Type " + mSocketType + " close() of server failed "+ e.getStackTrace());
+                Log.e(TAG, mState + " Socket Type " + mSocketType + " close() of server failed "+ Arrays.toString(e.getStackTrace()));
             }
         }
     }
@@ -488,6 +496,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 
         }
 
+        @RequiresPermission(Manifest.permission.BLUETOOTH_ADMIN)
         public void attemptCancelDiscovery(){
         	try{
         		mAdapter.cancelDiscovery();
@@ -495,7 +504,8 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         		Log.e(TAG, "Don't have required permision to cancel discovery. Moving on");
         	}
         }
-        
+
+        @RequiresPermission(Manifest.permission.BLUETOOTH_ADMIN)
         public void run() {
             setName("ConnectThread");
             // Always cancel discovery because it will slow down a connection
@@ -538,7 +548,9 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 	    						//Looper.loop();
 	    						mmSocket.connect();
 	    						timeOutHandler.removeCallbacks(socketRunable);
-	    						Looper.myLooper().quit();
+	    						if(Looper.myLooper() != null){
+	    						    Looper.myLooper().quit();
+	    						}
 	    						success=true;
 	    						SdlRouterService.setBluetoothPrefs(1,SHARED_PREFS);
 	    	                	break;
@@ -567,7 +579,9 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 	    						//Looper.loop();
 	    						mmSocket.connect();
 	    						timeOutHandler.removeCallbacks(socketRunable);
-	    						Looper.myLooper().quit();
+	    						if(Looper.myLooper() != null){
+	    						    Looper.myLooper().quit();
+	    						}
 	    						success=true;
 	    						SdlRouterService.setBluetoothPrefs(2,SHARED_PREFS);
 	    	                	break;
@@ -596,7 +610,9 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     						//Looper.loop();
     						mmSocket.connect();
     						timeOutHandler.removeCallbacks(socketRunable);
-    						Looper.myLooper().quit();
+    						if(Looper.myLooper() != null){
+    						    Looper.myLooper().quit();
+    						}
     						success=true;
 		                	tryInsecure = false;
 		                	SdlRouterService.setBluetoothPrefs(3,SHARED_PREFS);
@@ -621,7 +637,9 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
     						//Looper.loop();
     						mmSocket.connect();
     						timeOutHandler.removeCallbacks(socketRunable);
-    						Looper.myLooper().quit();
+    						if(Looper.myLooper() != null){
+    						    Looper.myLooper().quit();
+    						}
     						success=true;
     						SdlRouterService.setBluetoothPrefs(4,SHARED_PREFS);
 		                	break;

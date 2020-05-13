@@ -32,6 +32,10 @@
 package com.smartdevicelink.util;
 
 
+import android.support.annotation.NonNull;
+
+import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
+
 public class Version {
 
     final int major,minor,patch;
@@ -46,6 +50,12 @@ public class Version {
         this.major = major;
         this.minor = minor;
         this.patch = patch;
+    }
+
+    public Version(SdlMsgVersion sdlMsgVersion){
+        this.major = sdlMsgVersion.getMajorVersion();
+        this.minor = sdlMsgVersion.getMinorVersion();
+        this.patch = sdlMsgVersion.getPatchVersion();
     }
 
     public Version(String versionString){
@@ -93,6 +103,32 @@ public class Version {
         return -1;
     }
 
+    /**
+     *
+     * @param minVersion the lowest version to be used in the comparison
+     * @param maxVersion the highest version to be used in the comparison
+     * @return -1 if this number is not between minVersion and maxVersion or if minVersion is greater than maxVersion, <br> 0 if the number is
+     * equal to either minVersion or maxVersion <br> 1 if the number is between the minVersion and maxVersion
+     */
+    public int isBetween(@NonNull Version minVersion, @NonNull Version maxVersion){
+        if(minVersion.isNewerThan(maxVersion) == 1){
+            return -1;
+        }
+
+        int resultsForMin = this.isNewerThan(minVersion);
+        int resultsForMax = this.isNewerThan(maxVersion);
+
+        if(resultsForMin == 0 || resultsForMax == 0){
+            return 0;
+            //return resultsForMin >= 0 && resultsForMax <=0;
+        }else if (resultsForMin == 1 && resultsForMax == -1 ){
+            return 1;
+        }else{
+            return -1;
+        }
+
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -103,4 +139,6 @@ public class Version {
         builder.append(patch);
         return builder.toString();
     }
+
+
 }

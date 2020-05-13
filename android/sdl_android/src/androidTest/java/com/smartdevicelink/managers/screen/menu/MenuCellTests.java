@@ -33,9 +33,13 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.managers.file.SdlArtworkTests;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.test.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MenuCellTests extends AndroidTestCase2 {
@@ -114,6 +118,48 @@ public class MenuCellTests extends AndroidTestCase2 {
 
 		// these should be different
 		assertFalse(menuCell.equals(menuCell3));
+	}
+
+	public void testClone(){
+		MenuCell original = new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST, menuSelectionListener);
+		MenuCell clone = original.clone();
+
+		assertNotNull(clone);
+		assertNotSame(original, clone);
+
+		assertEquals(original.getTitle(), clone.getTitle());
+		assertEquals(original.getCellId(), clone.getCellId());
+		assertEquals(original.getParentCellId(), clone.getParentCellId());
+
+		SdlArtworkTests.equalTest(original.getIcon(), clone.getIcon());
+
+		//Test subcells
+		List<MenuCell> subcells = new ArrayList<>();
+		subcells.add(original.clone());
+		subcells.add(clone.clone());
+
+		original = new MenuCell(Test.GENERAL_STRING, MenuLayout.LIST, Test.GENERAL_ARTWORK,subcells);
+		clone = original.clone();
+
+		assertNotNull(original.getSubCells());
+		assertNotNull(clone.getSubCells());
+		assertNotSame(original.getSubCells(), clone.getSubCells());
+
+		List<MenuCell> originalSubCells = original.getSubCells();
+		List<MenuCell> cloneSubCells = clone.getSubCells();
+
+		assertEquals(originalSubCells.size(), cloneSubCells.size());
+
+		for(int i = 0; i < originalSubCells.size(); i++){
+
+			assertNotNull(originalSubCells.get(i));
+			assertNotNull(cloneSubCells.get(i));
+
+			assertNotSame(originalSubCells.get(i), cloneSubCells.get(i));
+		}
+
+
+
 	}
 
 }

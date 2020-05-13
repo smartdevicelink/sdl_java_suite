@@ -154,9 +154,12 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
                 if (!serviceList.contains(serviceType))
                     serviceList.add(serviceType);
 
-                sdlSecurity.initialize();
+                if (!sdlSecurityInitializing) {
+                    sdlSecurityInitializing = true;
+                    sdlSecurity.initialize();
+                    return;
+                }
             }
-            return;
         }
         sdlProtocol.startService(serviceType, sessionID, isEncrypted);
     }
@@ -254,8 +257,10 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
                 sessionID, version, correlationID, rejectedParams);
         if(serviceListeners != null && serviceListeners.containsKey(sessionType)){
             CopyOnWriteArrayList<ISdlServiceListener> listeners = serviceListeners.get(sessionType);
-            for(ISdlServiceListener listener:listeners){
-                listener.onServiceError(this, sessionType, "Start "+ sessionType.toString() +" Service NAKed");
+            if(listeners != null) {
+                for (ISdlServiceListener listener : listeners) {
+                    listener.onServiceError(this, sessionType, "Start " + sessionType.toString() + " Service NAKed");
+                }
             }
         }
     }

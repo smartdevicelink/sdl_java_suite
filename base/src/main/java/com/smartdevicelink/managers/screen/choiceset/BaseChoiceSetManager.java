@@ -42,11 +42,13 @@ import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
+import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
@@ -60,7 +62,6 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -80,9 +81,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     final WeakReference<FileManager> fileManager;
 
     OnRPCNotificationListener hmiListener;
-    OnSystemCapabilityListener displayListener;
+    OnSystemCapabilityListener onDisplayCapabilityListener;
     HMILevel currentHMILevel;
-    DisplayCapabilities displayCapabilities;
+    WindowCapability defaultMainWindowCapability;
+    String displayName;
     SystemContext currentSystemContext;
     HashSet<ChoiceCell> preloadedChoices, pendingPreloadChoices;
     ChoiceSet pendingPresentationSet;
@@ -139,7 +141,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         currentHMILevel = null;
         currentSystemContext = null;
-        displayCapabilities = null;
+        defaultMainWindowCapability = null;
 
         pendingPresentationSet = null;
         pendingPresentOperation = null;
@@ -149,7 +151,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         // remove listeners
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
-        internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, displayListener);
+        internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
 
         super.dispose();
     }
@@ -207,7 +209,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         pendingPreloadChoices.addAll(choicesToUpload);
 
         if (fileManager.get() != null) {
-            PreloadChoicesOperation preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager.get(), displayCapabilities, isVROptional, choicesToUpload, new CompletionListener() {
+            PreloadChoicesOperation preloadChoicesOperation = new PreloadChoicesOperation(internalInterface, fileManager.get(), displayName, defaultMainWindowCapability, isVROptional, choicesToUpload, new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
                     if (success){
@@ -509,19 +511,33 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     // LISTENERS
 
     private void addListeners(){
-        // DISPLAY CAPABILITIES - via SCM
-        displayListener = new OnSystemCapabilityListener() {
+        // DISPLAY/WINDOW CAPABILITIES - via SCM
+        onDisplayCapabilityListener = new OnSystemCapabilityListener() {
             @Override
             public void onCapabilityRetrieved(Object capability) {
-                displayCapabilities = (DisplayCapabilities) capability;
+                // instead of using the parameter it's more safe to use the convenience method
+                List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
+                if (capabilities == null || capabilities.size() == 0) {
+                    DebugTool.logError("SoftButton Manager - Capabilities sent here are null or empty");
+                }else {
+                    DisplayCapability display = capabilities.get(0);
+                    displayName = display.getDisplayName();
+                    for (WindowCapability windowCapability : display.getWindowCapabilities()) {
+                        int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+                        if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+                            defaultMainWindowCapability = windowCapability;
+                        }
+                    }
+                }
             }
 
             @Override
             public void onError(String info) {
                 DebugTool.logError("Unable to retrieve display capabilities. Many things will probably break. Info: "+ info);
+                defaultMainWindowCapability = null;
             }
         };
-        internalInterface.getCapability(SystemCapabilityType.DISPLAY, displayListener);
+        this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplayCapabilityListener);
 
         // HMI UPDATES
         hmiListener = new OnRPCNotificationListener() {

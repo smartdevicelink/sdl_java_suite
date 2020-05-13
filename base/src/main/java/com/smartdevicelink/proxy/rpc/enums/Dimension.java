@@ -51,14 +51,14 @@ public enum Dimension {
      */
     _3D("3D");
     
-    private final String INTERNAL_NAME;
+    private final String VALUE;
 
-    private Dimension(String internalName) {
-    	this.INTERNAL_NAME = internalName;
+    private Dimension(String value) {
+    	this.VALUE = value;
     }
     
     public String toString() {
-        return this.INTERNAL_NAME;
+        return this.VALUE;
     }
     
     /**

@@ -32,6 +32,7 @@
 
 package com.smartdevicelink.transport;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -58,7 +59,6 @@ import java.util.List;
 public class TransportManager extends TransportManagerBase{
     private static final String TAG = "TransportManager";
 
-
     TransportBrokerImpl transport;
 
     //Legacy Transport
@@ -66,6 +66,7 @@ public class TransportManager extends TransportManagerBase{
     LegacyBluetoothHandler legacyBluetoothHandler;
 
     final WeakReference<Context> contextWeakReference;
+    final MultiplexTransportConfig mConfig;
 
 
     /**
@@ -77,32 +78,40 @@ public class TransportManager extends TransportManagerBase{
     public TransportManager(MultiplexTransportConfig config, TransportEventListener listener){
         super(config,listener);
 
+        this.mConfig = config;
+
         if(config.service == null) {
             config.service = SdlBroadcastReceiver.consumeQueuedRouterService();
         }
 
         contextWeakReference = new WeakReference<>(config.context);
-
-        RouterServiceValidator validator = new RouterServiceValidator(config);
-        if(validator.validate()){
-            transport = new TransportBrokerImpl(config.context, config.appId,config.service);
-        }else{
-            enterLegacyMode("Router service is not trusted. Entering legacy mode");
-        }
     }
 
+    /**
+     * start internally validates the target ROuterService, which was done in ctor before.
+     */
     @Override
-    public void start(){
-        if(transport != null){
-            if (!transport.start()){
-                //Unable to connect to a router service
-                if(transportListener != null){
-                    transportListener.onError("Unable to connect with the router service");
+    public void start() {
+        final RouterServiceValidator validator = new RouterServiceValidator(mConfig);
+        validator.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
+            @Override
+            public void onFinishedValidation(boolean valid, ComponentName name) {
+                DebugTool.logInfo("onFinishedValidation valid=" + valid + "; name=" + ((name == null)? "null" : name.getPackageName()));
+                if (valid) {
+                    mConfig.service = name;
+                    transport = new TransportBrokerImpl(contextWeakReference.get(), mConfig.appId, mConfig.service);
+                    DebugTool.logInfo("TransportManager start got called; transport=" + transport);
+                    if(transport != null){
+                        transport.start();
+                    }
+                } else {
+                    enterLegacyMode("Router service is not trusted. Entering legacy mode");
+                    if(legacyBluetoothTransport != null){
+                        legacyBluetoothTransport.start();
+                    }
                 }
             }
-        }else if(legacyBluetoothTransport != null){
-            legacyBluetoothTransport.start();
-        }
+        });
     }
 
     @Override
@@ -119,7 +128,9 @@ public class TransportManager extends TransportManagerBase{
     @Override
     @Deprecated
     public void resetSession(){
-        transport.resetSession();
+       if(transport != null){
+           transport.resetSession();
+       }
     }
 
     /**
@@ -413,7 +424,10 @@ public class TransportManager extends TransportManagerBase{
             legacyBluetoothHandler = new LegacyBluetoothHandler(this);
             legacyBluetoothTransport = new MultiplexBluetoothTransport(legacyBluetoothHandler);
             if(contextWeakReference.get() != null){
-                contextWeakReference.get().registerReceiver(legacyDisconnectReceiver,new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED) );
+                IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+                intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+                contextWeakReference.get().registerReceiver(legacyDisconnectReceiver, intentFilter );
             }
         }else{
             new Handler().postDelayed(new Runnable() {
@@ -451,8 +465,15 @@ public class TransportManager extends TransportManagerBase{
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent != null){
-                if(BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(intent.getAction())){
+                String action = intent.getAction();
+                if(BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)){
                     exitLegacyMode("Bluetooth disconnected");
+                }else if(action.equalsIgnoreCase(BluetoothAdapter.ACTION_STATE_CHANGED)){
+                    int bluetoothState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+                    if(bluetoothState == BluetoothAdapter.STATE_TURNING_OFF || bluetoothState == BluetoothAdapter.STATE_OFF){
+                        Log.d(TAG, "Bluetooth is shutting off, exiting legacy mode.");
+                        exitLegacyMode("Bluetooth adapter shutting off");
+                    }
                 }
             }
         }

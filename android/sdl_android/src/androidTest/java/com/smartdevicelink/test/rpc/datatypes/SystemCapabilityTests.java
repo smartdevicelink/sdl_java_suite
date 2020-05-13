@@ -13,10 +13,13 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
+
 import junit.framework.TestCase;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;

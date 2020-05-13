@@ -171,13 +171,16 @@ public class SdlProtocolBase {
      * @return the max transfer unit
      */
     public int getMtu(){
-        return mtus.get(SessionType.RPC).intValue();
+        return Long.valueOf(getMtu(SessionType.RPC)).intValue();
     }
 
     public long getMtu(SessionType type){
         Long mtu = mtus.get(type);
-        if(mtu == null){
+        if (mtu == null) {
             mtu = mtus.get(SessionType.RPC);
+        }
+        if (mtu == null) { //If MTU is still null, use the oldest/smallest
+            mtu = (long) V1_V2_MTU_SIZE;
         }
         return mtu;
     }
@@ -306,13 +309,16 @@ public class SdlProtocolBase {
                         // If this service type has extra information from the RPC StartServiceACK
                         // parse through it to find which transport should be used to start this
                         // specific service type
-                        for(int transportNum : transportPriorityForServiceMap.get(secondaryService)){
-                            if(transportNum == PRIMARY_TRANSPORT_ID){
-                                break; // Primary is favored for this service type, break out...
-                            }else if(transportNum == SECONDARY_TRANSPORT_ID){
-                                // The secondary transport can be used to start this service
-                                activeTransports.put(secondaryService, transportRecord);
-                                break;
+                        List<Integer> transportNumList = transportPriorityForServiceMap.get(secondaryService);
+                        if (transportNumList != null){
+                            for (int transportNum : transportNumList) {
+                                if (transportNum == PRIMARY_TRANSPORT_ID) {
+                                    break; // Primary is favored for this service type, break out...
+                                } else if (transportNum == SECONDARY_TRANSPORT_ID) {
+                                    // The secondary transport can be used to start this service
+                                    activeTransports.put(secondaryService, transportRecord);
+                                    break;
+                                }
                             }
                         }
                     }
@@ -601,7 +607,7 @@ public class SdlProtocolBase {
         }
 
         synchronized(messageLock) {
-            if (data.length > getMtu(sessionType)) {
+            if (data != null && data.length > getMtu(sessionType)) {
 
                 messageID++;
 
@@ -1040,27 +1046,31 @@ public class SdlProtocolBase {
                 }
             }
         } else {
-            TransportRecord transportRecord = packet.getTransportRecord();
-            if(transportRecord == null || (requiresHighBandwidth
-                    && TransportType.BLUETOOTH.equals(transportRecord.getType()))){
-                //transport can't support high bandwidth
-                onTransportNotAccepted((transportRecord != null ? transportRecord.getType().toString() : "Transport") + "can't support high bandwidth requirement, and secondary transport not supported in this protocol version");
-                return;
-            }
-            //If version < 5 and transport is acceptable we need to just add these
-            activeTransports.put(SessionType.RPC, transportRecord);
-            activeTransports.put(SessionType.BULK_DATA, transportRecord);
-            activeTransports.put(SessionType.CONTROL, transportRecord);
-            activeTransports.put(SessionType.NAV, transportRecord);
-            activeTransports.put(SessionType.PCM, transportRecord);
-
-            if (protocolVersion.getMajor() > 1){
-                if (packet.payload!= null && packet.dataSize == 4){ //hashid will be 4 bytes in length
-                    hashID = BitConverter.intFromByteArray(packet.payload, 0);
+            if(serviceType.equals(SessionType.RPC)) {
+                TransportRecord transportRecord = packet.getTransportRecord();
+                if (transportRecord == null || (requiresHighBandwidth
+                        && TransportType.BLUETOOTH.equals(transportRecord.getType()))) {
+                    //transport can't support high bandwidth
+                    onTransportNotAccepted((transportRecord != null ? transportRecord.getType().toString() : "Transport ") + "can't support high bandwidth requirement, and secondary transport not supported in this protocol version");
+                    return;
                 }
+                //If version < 5 and transport is acceptable we need to just add these
+                activeTransports.put(SessionType.RPC, transportRecord);
+                activeTransports.put(SessionType.BULK_DATA, transportRecord);
+                activeTransports.put(SessionType.CONTROL, transportRecord);
+                activeTransports.put(SessionType.NAV, transportRecord);
+                activeTransports.put(SessionType.PCM, transportRecord);
+
+                if (protocolVersion.getMajor() > 1) {
+                    if (packet.payload != null && packet.dataSize == 4) { //hashid will be 4 bytes in length
+                        hashID = BitConverter.intFromByteArray(packet.payload, 0);
+                    }
+                }
+            }else if(serviceType.equals(SessionType.NAV)) {
+                //Protocol versions <5 don't support param negotiation
+                iSdlProtocol.setAcceptedVideoParams(iSdlProtocol.getDesiredVideoParams());
             }
         }
-
         iSdlProtocol.onProtocolSessionStarted(serviceType, (byte) packet.getSessionId(), (byte)protocolVersion.getMajor(), "", hashID, packet.isEncrypted());
     }
 
@@ -1178,16 +1188,44 @@ public class SdlProtocolBase {
             }
 
             if((getTransportForSession(SessionType.RPC) != null && disconnectedTransport.equals(getTransportForSession(SessionType.RPC))) || disconnectedTransport.equals(connectedPrimaryTransport)){
+                //Primary transport has been disconnected. Let's check if we can recover.
                 //transportTypes.remove(type);
                 boolean primaryTransportAvailable = false;
                 if(requestedPrimaryTransports != null && requestedPrimaryTransports.size() > 1){
-                    for (TransportType transportType: requestedPrimaryTransports){ Log.d(TAG, "Checking " + transportType.name());
+                    for (TransportType transportType: requestedPrimaryTransports){
+                        DebugTool.logInfo( "Checking " + transportType.name());
+
                         if(!disconnectedTransport.getType().equals(transportType)
                                 && transportManager != null
                                 && transportManager.isConnected(transportType,null)){
-                            primaryTransportAvailable = true;
-                            transportManager.updateTransportConfig(transportConfig);
-                            break;
+
+                            //There is currently a supported primary transport
+
+                            //See if any high bandwidth transport is available currently
+                            boolean highBandwidthAvailable = transportManager.isHighBandwidthAvailable();
+
+                            if (requiresHighBandwidth) {
+                                if (!highBandwidthAvailable) {
+                                    if (TransportType.BLUETOOTH.equals(transportType)
+                                            && requestedSecondaryTransports != null
+                                            && supportedSecondaryTransports != null) {
+                                        for (TransportType secondaryTransport : requestedSecondaryTransports) {
+                                            DebugTool.logInfo("Checking secondary " + secondaryTransport.name());
+                                            if (supportedSecondaryTransports.contains(secondaryTransport)) {
+                                                //Should only be USB or TCP
+                                                highBandwidthAvailable = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                } // High bandwidth already available
+                            }
+
+                            if(!requiresHighBandwidth  || (requiresHighBandwidth && highBandwidthAvailable )) {
+                                primaryTransportAvailable = true;
+                                transportManager.updateTransportConfig(transportConfig);
+                                break;
+                            }
                         }
                     }
                 }

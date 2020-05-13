@@ -1,8 +1,10 @@
 package com.smartdevicelink.proxy.rpc;
 
 import android.support.annotation.NonNull;
+
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.WindowType;
+
 import java.util.Hashtable;
 
 /**

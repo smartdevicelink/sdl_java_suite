@@ -39,8 +39,6 @@ import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 
-import java.util.List;
-
 /**
  * <strong>SoftButtonState</strong> <br>
  * Defines an individual state for SoftButtonObject.<br>
@@ -159,5 +157,33 @@ public class SoftButtonState {
      */
     public SdlArtwork getArtwork() {
         return artwork;
+    }
+
+    /**
+     * Used to compile hashcode for SoftButtonState for use to compare in equals method
+     * @return Custom hashcode of SoftButtonState variables
+     */
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result += ((getName() == null) ? 0 : Integer.rotateLeft(getName().hashCode(), 1));
+        result += ((getArtwork() == null) ? 0 : Integer.rotateLeft(getArtwork().hashCode(),2));
+        return result;
+    }
+
+    /**
+     * Uses our custom hashCode for SoftButtonState objects
+     * @param o - The object to compare
+     * @return boolean of whether the objects are the same or not
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        // if this is the same memory address, it's the same
+        if (this == o) return true;
+        // if this is not an instance of SoftButtonState, not the same
+        if (!(o instanceof SoftButtonState)) return false;
+        // return comparison
+        return hashCode() == o.hashCode();
     }
 }

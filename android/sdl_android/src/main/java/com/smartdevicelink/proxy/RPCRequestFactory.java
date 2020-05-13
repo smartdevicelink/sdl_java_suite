@@ -1022,7 +1022,7 @@ public class RPCRequestFactory {
 	{
 		DeviceInfo msg = new DeviceInfo();
 		msg.setHardware(android.os.Build.MODEL);
-		msg.setOs(DeviceInfo.DEVICE_OS);
+		msg.setOs("Android");
 		msg.setOsVersion(Build.VERSION.RELEASE);
 		msg.setCarrier(carrierName);
 		return msg;

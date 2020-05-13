@@ -36,8 +36,6 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
-import com.smartdevicelink.managers.screen.choiceset.DeleteChoicesOperation;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
 

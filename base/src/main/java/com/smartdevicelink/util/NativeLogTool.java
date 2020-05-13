@@ -113,7 +113,6 @@ public class NativeLogTool {
 
 		int bytesWritten = 0;
 		int substrSize = 0;
-		String tag = source;
 		String chunk = null;
 		try {
 			for (int idx=0;idx < logMsg.length();idx += substrSize) {
@@ -121,13 +120,13 @@ public class NativeLogTool {
 				chunk = logMsg.substring(idx, idx + substrSize);
 				switch (ltarg) {
 					case Info:
-						bytesWritten = Log.i(tag, chunk);
+						bytesWritten = Log.i(source, chunk);
 						break;
 					case Warning:
-						bytesWritten = Log.w(tag, chunk);
+						bytesWritten = Log.w(source, chunk);
 						break;
 					case Error:
-						bytesWritten = Log.e(tag, chunk);
+						bytesWritten = Log.e(source, chunk);
 						break;
 				}
 				if (bytesWritten < chunk.length()) {

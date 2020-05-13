@@ -43,24 +43,25 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
+import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.AddCommand;
 import com.smartdevicelink.proxy.rpc.AddSubMenu;
 import com.smartdevicelink.proxy.rpc.DeleteCommand;
 import com.smartdevicelink.proxy.rpc.DeleteSubMenu;
-import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
-import com.smartdevicelink.proxy.rpc.ImageField;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
+import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.proxy.rpc.MenuParams;
 import com.smartdevicelink.proxy.rpc.OnCommand;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.SdlMsgVersion;
 import com.smartdevicelink.proxy.rpc.ShowAppMenu;
 import com.smartdevicelink.proxy.rpc.SetGlobalProperties;
+import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.DisplayType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
-import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.PredefinedWindows;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
@@ -91,15 +92,15 @@ abstract class BaseMenuManager extends BaseSubManager {
 	DynamicMenuUpdatesMode dynamicMenuUpdatesMode;
 	MenuConfiguration menuConfiguration;
 	SdlMsgVersion sdlMsgVersion;
-	private DisplayType displayType;
+	private String displayType;
 
 	boolean waitingOnHMIUpdate;
 	private boolean hasQueuedUpdate;
 	HMILevel currentHMILevel;
 
 	OnRPCNotificationListener hmiListener, commandListener;
-	OnSystemCapabilityListener displayListener;
-	DisplayCapabilities displayCapabilities;
+	OnSystemCapabilityListener onDisplaysCapabilityListener;
+	WindowCapability defaultMainWindowCapability;
 
 	private static final int MAX_ID = 2000000000;
 	private static final int parentIdNotFound = MAX_ID;
@@ -138,7 +139,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		currentHMILevel = null;
 		currentSystemContext = SystemContext.SYSCTXT_MAIN;
 		dynamicMenuUpdatesMode = DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE;
-		displayCapabilities = null;
+		defaultMainWindowCapability = null;
 		inProgressUpdate = null;
 		hasQueuedUpdate = false;
 		waitingOnHMIUpdate = false;
@@ -151,7 +152,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		// remove listeners
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, hmiListener);
 		internalInterface.removeOnRPCNotificationListener(FunctionID.ON_COMMAND, commandListener);
-		internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAY, displayListener);
+		internalInterface.removeOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
 
 		super.dispose();
 	}
@@ -174,7 +175,10 @@ abstract class BaseMenuManager extends BaseSubManager {
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
 			// We are in NONE or the menu is in use, bail out of here
 			waitingOnHMIUpdate = true;
-			waitingUpdateMenuCells = new ArrayList<>(clonedCells);
+			waitingUpdateMenuCells = new ArrayList<>();
+			if (clonedCells != null && !clonedCells.isEmpty()) {
+				waitingUpdateMenuCells.addAll(clonedCells);
+			}
 			return;
 		}
 		waitingOnHMIUpdate = false;
@@ -185,7 +189,10 @@ abstract class BaseMenuManager extends BaseSubManager {
 			oldMenuCells = new ArrayList<>(menuCells);
 		}
 		// copy new list
-		menuCells = new ArrayList<>(clonedCells);
+		menuCells = new ArrayList<>();
+		if (clonedCells != null && !clonedCells.isEmpty()) {
+			menuCells.addAll(clonedCells);
+		}
 
 		// HashSet order doesnt matter / does not allow duplicates
 		HashSet<String> titleCheckSet = new HashSet<>();
@@ -450,13 +457,13 @@ abstract class BaseMenuManager extends BaseSubManager {
 		}
 	}
 
-	private boolean checkUpdateMode(DynamicMenuUpdatesMode updateMode, DisplayType displayType){
+	private boolean checkUpdateMode(DynamicMenuUpdatesMode updateMode, String displayType){
 
 		if (updateMode.equals(DynamicMenuUpdatesMode.ON_WITH_COMPAT_MODE)){
 			if (displayType == null){
 				return true;
 			}
-			return (!displayType.equals(DisplayType.GEN3_8_INCH));
+			return (!displayType.equals(DisplayType.GEN3_8_INCH.toString()));
 
 		} else if (updateMode.equals(DynamicMenuUpdatesMode.FORCE_OFF)){
 			return false;
@@ -773,15 +780,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private boolean supportsImages(){
-		if (displayCapabilities != null && displayCapabilities.getImageFields() != null) {
-			List<ImageField> imageFields = displayCapabilities.getImageFields();
-			for (ImageField field : imageFields) {
-				if (field.getName().equals(ImageFieldName.cmdIcon)) {
-					return true;
-				}
-			}
-		}
-		return false;
+		return (defaultMainWindowCapability == null || defaultMainWindowCapability.getImageFields() == null) || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, ImageFieldName.cmdIcon);
 	}
 
 	private boolean artworkNeedsUpload(SdlArtwork artwork){
@@ -1004,25 +1003,34 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 	// LISTENERS
 
-	@SuppressWarnings("deprecation")
 	private void addListeners(){
-
 		// DISPLAY CAPABILITIES - via SCM
-		displayListener = new OnSystemCapabilityListener() {
+		onDisplaysCapabilityListener = new OnSystemCapabilityListener() {
 			@Override
 			public void onCapabilityRetrieved(Object capability) {
-				displayCapabilities = (DisplayCapabilities) capability;
-				if (displayCapabilities != null) {
-					displayType = displayCapabilities.getDisplayType();
+				// instead of using the parameter it's more safe to use the convenience method
+				List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
+				if (capabilities == null || capabilities.size() == 0) {
+					DebugTool.logError("SoftButton Manager - Capabilities sent here are null or empty");
+				}else {
+					DisplayCapability display = capabilities.get(0);
+					displayType = display.getDisplayName();
+					for (WindowCapability windowCapability : display.getWindowCapabilities()) {
+						int currentWindowID = windowCapability.getWindowID() != null ? windowCapability.getWindowID() : PredefinedWindows.DEFAULT_WINDOW.getValue();
+						if (currentWindowID == PredefinedWindows.DEFAULT_WINDOW.getValue()) {
+							defaultMainWindowCapability = windowCapability;
+						}
+					}
 				}
 			}
 
 			@Override
 			public void onError(String info) {
-				DebugTool.logError("Unable to retrieve display capabilities: "+ info);
+				DebugTool.logError("Display Capability cannot be retrieved");
+				defaultMainWindowCapability = null;
 			}
 		};
-		internalInterface.getCapability(SystemCapabilityType.DISPLAY, displayListener);
+		this.internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onDisplaysCapabilityListener);
 
 		// HMI UPDATES
 		hmiListener = new OnRPCNotificationListener() {

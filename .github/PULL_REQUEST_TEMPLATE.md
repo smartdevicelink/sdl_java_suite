@@ -10,7 +10,19 @@ This PR is **[ready / not ready]** for review.
 This PR makes **[no / minor / major]** API changes.
 
 ### Testing Plan
-[Describe how you plan to unit test the changes in this PR]
+- [ ] I have verified that I have not introduced new warnings in this PR (or explain why below)
+- [ ] I have run the unit tests with this PR
+- [ ] I have tested this PR against Core and verified behavior (if applicable, if not applicable, explain why below).
+- [ ] I have tested Android, Java SE, and Java EE
+
+#### Unit Tests
+[Describe the unit tests and behaviors added in this PR]
+
+#### Core Tests
+[List of tests performed against Core and behaviors verified]
+
+Core version / branch / commit hash / module tested against: [INSERT]
+HMI name / version / branch / commit hash / module tested against: [INSERT]
 
 ### Summary
 [Summary of PR changes]
