@@ -3747,24 +3747,23 @@ public class SdlRouterService extends Service{
 
 		Log.e(TAG, "Notification: notifySppError entering");
 		// @REVIEW: do we need "synchronized (NOTIFICATION_LOCK) {" here??
-			final String tag = "SDL";
-			//Now we need to add a notification channel
-			final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			if (notificationManager != null) {
-				notificationManager.cancel(tag, TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID_INT);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-					NotificationChannel notificationChannel = new NotificationChannel(TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID, getString(R.string.sdl_error_notification_channel_name), NotificationManager.IMPORTANCE_HIGH);
-					notificationChannel.enableLights(true);
-					notificationChannel.enableVibration(true);
-					notificationChannel.setShowBadge(false);
-					notificationManager.createNotificationChannel(notificationChannel);
-					builder.setChannelId(notificationChannel.getId());
-				}
-				Notification notification = builder.build();
-				notificationManager.notify(tag, TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID_INT, notification);
-			} else {
-				Log.e(TAG, "notifySppError: Unable to retrieve notification Manager service");
+		final String tag = "SDL";
+		//Now we need to add a notification channel
+		final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		if (notificationManager != null) {
+			notificationManager.cancel(tag, TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID_INT);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				NotificationChannel notificationChannel = new NotificationChannel(TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID, getString(R.string.sdl_error_notification_channel_name), NotificationManager.IMPORTANCE_HIGH);
+				notificationChannel.enableLights(true);
+				notificationChannel.enableVibration(true);
+				notificationChannel.setShowBadge(false);
+				notificationManager.createNotificationChannel(notificationChannel);
+				builder.setChannelId(notificationChannel.getId());
 			}
-		// need to uncomment if NOTIFICATION_LOCK is needed.
+			Notification notification = builder.build();
+			notificationManager.notify(tag, TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID_INT, notification);
+		} else {
+			Log.e(TAG, "notifySppError: Unable to retrieve notification Manager service");
+		}
 	}
 }
