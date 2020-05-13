@@ -430,7 +430,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                         break;
                     case ON_SYSTEM_REQUEST:
                         final OnSystemRequest onSystemRequest = (OnSystemRequest) message;
-                        String urlHttps = onSystemRequest.getUrl().replaceFirst("http://", "https://");
+                        final String urlHttps = onSystemRequest.getUrl().replaceFirst("http://", "https://");
                         if ((urlHttps != null) &&
                                 (((onSystemRequest.getRequestType() == RequestType.PROPRIETARY) && (onSystemRequest.getFileType() == FileType.JSON))
                                         || ((onSystemRequest.getRequestType() == RequestType.HTTP) && (onSystemRequest.getFileType() == FileType.BINARY)))) {
