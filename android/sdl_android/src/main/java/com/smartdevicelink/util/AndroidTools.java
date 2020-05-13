@@ -244,15 +244,18 @@ public class AndroidTools {
 	 * before trying to call startForegroundService.
 	 * @param context a context instance
 	 * @param intent the foreground service intent
+	 * @return a ComponentName, an identifier for the started service, will return null is service
+	 * was unable to start
 	 */
-	public static void safeStartForegroundService(Context context, Intent intent){
+	public static ComponentName safeStartForegroundService(Context context, Intent intent){
+		ComponentName name = null;
 		int permission = PackageManager.PERMISSION_GRANTED;
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
 			permission = context.checkPermission(Manifest.permission.FOREGROUND_SERVICE, android.os.Process.myPid(), android.os.Process.myUid());
 		}
 		try{
 			if (permission != PackageManager.PERMISSION_DENIED) {
-				context.startForegroundService(intent);
+				name = context.startForegroundService(intent);
 				DebugTool.logInfo("Entered the foreground - " + System.currentTimeMillis());
 			} else {
 				DebugTool.logError("App missing FOREGROUND_SERVICE Permissions");
@@ -260,5 +263,6 @@ public class AndroidTools {
 		}catch (Exception e){
 			DebugTool.logError("Unable to start service in foreground", e);
 		}
+		return name;
 	}
 }

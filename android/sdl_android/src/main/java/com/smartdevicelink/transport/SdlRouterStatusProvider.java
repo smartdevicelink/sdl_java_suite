@@ -138,7 +138,7 @@ public class SdlRouterStatusProvider {
 			SdlBroadcastReceiver.setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
 			int permission = context.checkPermission(Manifest.permission.FOREGROUND_SERVICE, android.os.Process.myPid(), android.os.Process.myUid());
 			if (permission != -1) {
-				context.startForegroundService(bindingIntent);
+				AndroidTools.safeStartForegroundService(context, bindingIntent);
 			} else {
 				DebugTool.logError("Foreground Permissions Not Enabled: will not start foreground permissions");
 			}

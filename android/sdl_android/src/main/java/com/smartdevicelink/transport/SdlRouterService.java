@@ -1151,7 +1151,7 @@ public class SdlRouterService extends Service{
 						startService(serviceIntent);
 					}else{
 						try{
-							startForegroundService(serviceIntent);
+							AndroidTools.safeStartForegroundService(this, serviceIntent);
 						}catch (Exception e){
 							Log.e(TAG, "Unable to start next SDL router service. " + e.getMessage());
 						}

@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.smartdevicelink.transport.SdlBroadcastReceiver;
 import com.smartdevicelink.transport.SdlRouterService;
+import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
 
 public class SdlReceiver  extends SdlBroadcastReceiver {
@@ -22,12 +23,7 @@ public class SdlReceiver  extends SdlBroadcastReceiver {
 		// This will prevent apps in the background from crashing when they try to start SdlService
 		// Because Android O doesn't allow background apps to start background services
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			int permission = context.checkPermission(Manifest.permission.FOREGROUND_SERVICE, android.os.Process.myPid(), android.os.Process.myUid());
-			if (permission != -1) {
-				context.startForegroundService(intent);
-			} else {
-				DebugTool.logError("Foreground Permissions Not Enabled: will not start foreground permissions");
-			}
+			AndroidTools.safeStartForegroundService(context, intent);
 		} else {
 			context.startService(intent);
 		}
