@@ -6,6 +6,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
@@ -105,7 +106,11 @@ public class SdlService extends Service {
 						.setContentTitle("Connected through SDL")
 						.setSmallIcon(R.drawable.ic_sdl)
 						.build();
-				startForeground(FOREGROUND_SERVICE_ID, serviceNotification);
+				try {
+					startForeground(FOREGROUND_SERVICE_ID, serviceNotification);
+				} catch (Exception e){
+					DebugTool.logError("Unable to start notification service in the foreground", e);
+				}
 			}
 		}
 	}

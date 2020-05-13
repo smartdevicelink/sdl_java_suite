@@ -31,6 +31,7 @@
  */
 package com.smartdevicelink.transport;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +46,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.smartdevicelink.util.AndroidTools;
+import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 
@@ -134,8 +136,12 @@ public class SdlRouterStatusProvider {
 		}else {
 			bindingIntent.putExtra(FOREGROUND_EXTRA, true);
 			SdlBroadcastReceiver.setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
-			context.startForegroundService(bindingIntent);
-
+			int permission = context.checkPermission(Manifest.permission.FOREGROUND_SERVICE, android.os.Process.myPid(), android.os.Process.myUid());
+			if (permission != -1) {
+				context.startForegroundService(bindingIntent);
+			} else {
+				DebugTool.logError("Foreground Permissions Not Enabled: will not start foreground permissions");
+			}
 		}
 		bindingIntent.setAction( TransportConstants.BIND_REQUEST_TYPE_STATUS);
 		return context.bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
