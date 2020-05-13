@@ -42,6 +42,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
+import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
 
 import java.util.ArrayList;
@@ -107,7 +108,7 @@ public class SdlService extends Service {
 						.setSmallIcon(R.drawable.ic_sdl)
 						.build();
 				try {
-					startForeground(FOREGROUND_SERVICE_ID, serviceNotification);
+					AndroidTools.safeStartForeground(this, this, FOREGROUND_SERVICE_ID, serviceNotification);
 				} catch (Exception e){
 					DebugTool.logError("Unable to start notification service in the foreground", e);
 				}
