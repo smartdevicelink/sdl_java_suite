@@ -69,7 +69,6 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.os.RemoteException;
-import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -204,7 +203,7 @@ public class SdlRouterService extends Service{
 	private SparseIntArray sessionHashIdMap;
 	private SparseIntArray cleanedSessionMap;
 	private final Object SESSION_LOCK = new Object(), REGISTERED_APPS_LOCK = new Object(),
-			PING_COUNT_LOCK = new Object(), NOTIFICATION_LOCK = new Object();
+			PING_COUNT_LOCK = new Object(), FOREGROUND_NOTIFICATION_LOCK = new Object();
 	
 	private static Messenger altTransportService = null;
 	
@@ -1356,7 +1355,7 @@ public class SdlRouterService extends Service{
 		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2){
 			return;
 		}
-		synchronized (NOTIFICATION_LOCK) {
+		synchronized (FOREGROUND_NOTIFICATION_LOCK) {
 			if (foregroundTimeoutHandler == null) {
 				foregroundTimeoutHandler = new Handler();
 			}
@@ -1383,7 +1382,7 @@ public class SdlRouterService extends Service{
 	}
 
 	public void cancelForegroundTimeOut(){
-		synchronized (NOTIFICATION_LOCK) {
+		synchronized (FOREGROUND_NOTIFICATION_LOCK) {
 			if (foregroundTimeoutHandler != null && foregroundTimeoutRunnable != null) {
 				foregroundTimeoutHandler.removeCallbacks(foregroundTimeoutRunnable);
 			}
@@ -1452,7 +1451,7 @@ public class SdlRouterService extends Service{
         	builder.setUsesChronometer(true);
         	builder.setChronometerCountDown(true);
         }
-        synchronized (NOTIFICATION_LOCK) {
+        synchronized (FOREGROUND_NOTIFICATION_LOCK) {
 			Notification notification;
 			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
 				notification = builder.getNotification();
@@ -1516,7 +1515,7 @@ public class SdlRouterService extends Service{
 	}
 
 	private void exitForeground(){
-		synchronized (NOTIFICATION_LOCK) {
+		synchronized (FOREGROUND_NOTIFICATION_LOCK) {
 			if (isForeground && !isPrimaryTransportConnected()) {	//Ensure that the service is in the foreground and no longer connected to a transport
 				DebugTool.logInfo("SdlRouterService to exit foreground");
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -3737,6 +3736,7 @@ public class SdlRouterService extends Service{
 		builder.setContentText(getString(R.string.spp_out_of_resource));
 
 		//We should use icon from library resources if available
+		// @TODO: The icon will be updated later (icon resource will be provided by Livio).
 		int trayId = getResources().getIdentifier("sdl_tray_icon", "drawable", getPackageName());
 
 		builder.setSmallIcon(trayId);
@@ -3746,7 +3746,6 @@ public class SdlRouterService extends Service{
 		builder.setOngoing(false);
 
 		Log.e(TAG, "Notification: notifySppError entering");
-		// @REVIEW: do we need "synchronized (NOTIFICATION_LOCK) {" here??
 		final String tag = "SDL";
 		//Now we need to add a notification channel
 		final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
