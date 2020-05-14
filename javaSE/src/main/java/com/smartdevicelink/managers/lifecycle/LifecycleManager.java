@@ -430,8 +430,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                         break;
                     case ON_SYSTEM_REQUEST:
                         final OnSystemRequest onSystemRequest = (OnSystemRequest) message;
-                        final String urlHttps = onSystemRequest.getUrl().replaceFirst("http://", "https://");
-                        if ((urlHttps != null) &&
+                        if ((onSystemRequest.getUrl() != null) &&
                                 (((onSystemRequest.getRequestType() == RequestType.PROPRIETARY) && (onSystemRequest.getFileType() == FileType.JSON))
                                         || ((onSystemRequest.getRequestType() == RequestType.HTTP) && (onSystemRequest.getFileType() == FileType.BINARY)))) {
                             Thread handleOffboardTransmissionThread = new Thread() {
@@ -444,15 +443,16 @@ public class LifecycleManager extends BaseLifecycleManager {
                                 }
                             };
                             handleOffboardTransmissionThread.start();
-                        }else if (onSystemRequest.getRequestType() == RequestType.ICON_URL) {
+                        }else if (onSystemRequest.getRequestType() == RequestType.ICON_URL && onSystemRequest.getUrl() != null) {
                             //Download the icon file and send SystemRequest RPC
                             Thread handleOffBoardTransmissionThread = new Thread() {
                                 @Override
                                 public void run() {
+                                    final String urlHttps = onSystemRequest.getUrl().replaceFirst("http://", "https://");
                                     byte[] file = FileUtls.downloadFile(urlHttps);
                                     if (file != null) {
                                         SystemRequest systemRequest = new SystemRequest();
-                                        systemRequest.setFileName(urlHttps);
+                                        systemRequest.setFileName(onSystemRequest.getUrl());
                                         systemRequest.setBulkData(file);
                                         systemRequest.setRequestType(RequestType.ICON_URL);
                                         if (isConnected()) {

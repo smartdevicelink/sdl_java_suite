@@ -4308,7 +4308,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								byte[] file = FileUtls.downloadFile(urlHttps);
 								if (file != null) {
 									SystemRequest systemRequest = new SystemRequest();
-									systemRequest.setFileName(urlHttps);
+									systemRequest.setFileName(msg.getUrl());
 									systemRequest.setBulkData(file);
 									systemRequest.setRequestType(RequestType.ICON_URL);
 									try {
