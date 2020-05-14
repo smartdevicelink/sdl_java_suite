@@ -4300,28 +4300,30 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						//Cache this for when the lockscreen is displayed
 						lockScreenIconRequest = msg;
 					} else if (requestType == RequestType.ICON_URL) {
-						//Download the icon file and send SystemRequest RPC
-						Thread handleOffBoardTransmissionThread = new Thread() {
-							@Override
-							public void run() {
-								String urlHttps = msg.getUrl().replaceFirst("http://", "https://");
-								byte[] file = FileUtls.downloadFile(urlHttps);
-								if (file != null) {
-									SystemRequest systemRequest = new SystemRequest();
-									systemRequest.setFileName(msg.getUrl());
-									systemRequest.setBulkData(file);
-									systemRequest.setRequestType(RequestType.ICON_URL);
-									try {
-										sendRPCMessagePrivate(systemRequest);
-									} catch (SdlException e) {
-										e.printStackTrace();
+						if (msg.getUrl() != null) {
+							//Download the icon file and send SystemRequest RPC
+							Thread handleOffBoardTransmissionThread = new Thread() {
+								@Override
+								public void run() {
+									String urlHttps = msg.getUrl().replaceFirst("http://", "https://");
+									byte[] file = FileUtls.downloadFile(urlHttps);
+									if (file != null) {
+										SystemRequest systemRequest = new SystemRequest();
+										systemRequest.setFileName(msg.getUrl());
+										systemRequest.setBulkData(file);
+										systemRequest.setRequestType(RequestType.ICON_URL);
+										try {
+											sendRPCMessagePrivate(systemRequest);
+										} catch (SdlException e) {
+											e.printStackTrace();
+										}
+									} else {
+										DebugTool.logError("File was null at: " + urlHttps);
 									}
-								} else {
-									DebugTool.logError("File was null at: " + urlHttps);
 								}
-							}
-						};
-						handleOffBoardTransmissionThread.start();
+							};
+							handleOffBoardTransmissionThread.start();
+						}
 					}
 				}
 
