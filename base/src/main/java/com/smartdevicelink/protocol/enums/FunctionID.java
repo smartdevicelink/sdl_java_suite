@@ -133,9 +133,13 @@ public enum FunctionID{
     ON_SYSTEM_CAPABILITY_UPDATED(32787, "OnSystemCapabilityUpdated"),
 
     // MOCKED FUNCTIONS (NOT SENT FROM HEAD-UNIT)
+    @Deprecated
     ON_LOCK_SCREEN_STATUS(-1, "OnLockScreenStatus"),
+    @Deprecated
     ON_SDL_CHOICE_CHOSEN(-1, "OnSdlChoiceChosen"),
+    @Deprecated
     ON_STREAM_RPC(-1, "OnStreamRPC"),
+    @Deprecated
     STREAM_RPC(-1, "StreamRPC"),
 
     ;

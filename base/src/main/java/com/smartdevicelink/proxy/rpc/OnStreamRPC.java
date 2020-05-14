@@ -34,6 +34,7 @@ package com.smartdevicelink.proxy.rpc;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 
+@Deprecated
 public class OnStreamRPC extends RPCNotification {
 	public static final String KEY_FILENAME = "fileName";
 	public static final String KEY_BYTESCOMPLETE = "bytesComplete";
