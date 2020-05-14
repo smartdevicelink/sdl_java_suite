@@ -187,6 +187,7 @@ public class OnButtonPress extends RPCNotification {
     public void setCustomButtonName(Integer customButtonID) {
         setParameters(KEY_CUSTOM_BUTTON_ID, customButtonID);
     }
+
     @Deprecated
     /**
      * @deprecated use {@link #getCustomButtonID()} ()} instead.
