@@ -36,6 +36,7 @@ import com.smartdevicelink.proxy.RPCResponse;
 
 import java.util.Hashtable;
 
+@Deprecated
 public class StreamRPCResponse extends RPCResponse {
 	public static final String KEY_FILENAME = "fileName";
 	public static final String KEY_FILESIZE = "fileSize";
