@@ -23,7 +23,7 @@ public class OnButtonPressTests extends BaseRpcTests{
 
         msg.setButtonName(Test.GENERAL_BUTTONNAME);
         msg.setButtonPressMode(Test.GENERAL_BUTTONPRESSMODE);
-        msg.setCustomButtonName(Test.GENERAL_INT);
+        msg.setCustomButtonID(Test.GENERAL_INT);
 
         return msg;
     }
@@ -58,7 +58,7 @@ public class OnButtonPressTests extends BaseRpcTests{
 	 */
     public void testRpcValues () { 
     	// Test Values
-        int customName = ( (OnButtonPress) msg ).getCustomButtonName();
+        int customName = ( (OnButtonPress) msg ).getCustomButtonID();
         ButtonName buttonName = ( (OnButtonPress) msg ).getButtonName();
         ButtonPressMode buttonPressMode = ( (OnButtonPress) msg ).getButtonPressMode();
         
@@ -72,7 +72,7 @@ public class OnButtonPressTests extends BaseRpcTests{
         assertNotNull(Test.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getCustomButtonName());
+        assertNull(Test.NULL, msg.getCustomButtonID());
         assertNull(Test.NULL, msg.getButtonName());
         assertNull(Test.NULL, msg.getButtonPressMode());
     }
