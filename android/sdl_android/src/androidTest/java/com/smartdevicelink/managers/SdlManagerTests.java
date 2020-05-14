@@ -107,6 +107,11 @@ public class SdlManagerTests extends AndroidTestCase2 {
 			}
 
 			@Override
+			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language){
+				return null;
+			}
+
+			@Override
 			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage){
 				return null;
 			}
@@ -118,7 +123,6 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		builder.setAppTypes(appType);
 		builder.setTransportType(transport);
 		builder.setLanguage(Language.EN_US);
-		builder.setHMILanguage(Language.EN_US);
 		builder.setDayColorScheme(templateColorScheme);
 		builder.setNightColorScheme(templateColorScheme);
 		builder.setVrSynonyms(Test.GENERAL_VECTOR_STRING);

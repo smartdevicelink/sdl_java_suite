@@ -1001,20 +1001,12 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		/**
-		 * Sets the VR+TTS Language of the App
-		 * @param language the desired language to be used on the VR+TTS of the connected module
-		 */
-		public Builder setLanguage(final Language language){
-			sdlManager.language = language;
-			return this;
-		}
-
-		/**
-		 * Sets the display/HMI Language of the App
+		 * Sets the Language of the App
 		 * @param hmiLanguage the desired language to be used on the display/HMI of the connected module
 		 */
-		public Builder setHMILanguage(final Language hmiLanguage){
+		public Builder setLanguage(final Language hmiLanguage){
 			sdlManager.hmiLanguage = hmiLanguage;
+			sdlManager.language = hmiLanguage;
 			return this;
 		}
 
@@ -1192,15 +1184,9 @@ public class SdlManager extends BaseSdlManager{
 				sdlManager.lockScreenConfig = new LockScreenConfig();
 			}
 
-			if (sdlManager.hmiLanguage == null && sdlManager.language == null){
+			if (sdlManager.hmiLanguage == null){
 				sdlManager.hmiLanguage = Language.EN_US;
 				sdlManager.language = Language.EN_US;
-			} else if (sdlManager.hmiLanguage == null && sdlManager.language != null) {
-				sdlManager.hmiLanguage = sdlManager.language;
-			} else if (sdlManager.hmiLanguage != null && sdlManager.language == null) {
-				sdlManager.language = sdlManager.hmiLanguage;
-			} else {
-				// do nothing when language and hmiLanguage are set
 			}
 
 			if (sdlManager.minimumProtocolVersion == null){
