@@ -1469,7 +1469,7 @@ public class SdlRouterService extends Service{
 					} else {
 						Log.e(TAG, "Unable to retrieve notification Manager service");
 						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-							AndroidTools.safeStartForeground(this, this, FOREGROUND_SERVICE_ID, builder.build());
+							safeStartForeground(FOREGROUND_SERVICE_ID, builder.build());
 							stopSelf();	//A valid notification channel must be supplied for SDK 27+
 						}
 					}
@@ -1478,14 +1478,14 @@ public class SdlRouterService extends Service{
 				notification = builder.build();
 			}
 			if (notification == null) {
-				AndroidTools.safeStartForeground(this, this, FOREGROUND_SERVICE_ID, builder.build());
+				safeStartForeground(FOREGROUND_SERVICE_ID, builder.build());
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
 					stopSelf(); //A valid notification must be supplied for SDK 27+
 				}
 				return;
 			}
 
-			AndroidTools.safeStartForeground(this, this, FOREGROUND_SERVICE_ID, builder.build());
+			safeStartForeground(FOREGROUND_SERVICE_ID, builder.build());
 			isForeground = true;
 
 		}
@@ -1517,6 +1517,29 @@ public class SdlRouterService extends Service{
 		}
 	}
 
+	/**
+	 * This is a simple wrapper around the startForeground method. In the case that the notification
+	 * is null, or a notification was unable to be created we will still attempt to call the
+	 * startForeground method in hopes that Android will not throw the System Exception.
+	 * @param id notification channel id
+	 * @param notification the notification to display when in the foreground
+	 */
+	private void safeStartForeground(int id, Notification notification){
+		try{
+			if(notification == null){
+				//Try the NotificationCompat this time in case there was a previous error
+				NotificationCompat.Builder builder =
+						new NotificationCompat.Builder(this, SDL_NOTIFICATION_CHANNEL_ID)
+								.setContentTitle("SmartDeviceLink")
+								.setContentText("Service Running");
+				notification = builder.build();
+			}
+			AndroidTools.safeStartForeground(this, this, id, notification);
+			DebugTool.logInfo("Entered the foreground - " + System.currentTimeMillis());
+		}catch (Exception e){
+			DebugTool.logError("Unable to start service in foreground", e);
+		}
+	}
 
 	/**
 	 * Creates a notification message to attach to the foreground service notification.
@@ -1645,7 +1668,7 @@ public class SdlRouterService extends Service{
 		closing = true;
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !hasCalledStartForeground ){
 			//This must be called before stopping self
-			AndroidTools.safeStartForeground(this, this, FOREGROUND_SERVICE_ID, null);
+			safeStartForeground(FOREGROUND_SERVICE_ID, null);
 			exitForeground();
 		}
 

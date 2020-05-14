@@ -219,14 +219,6 @@ public class AndroidTools {
 			permission = context.checkPermission(Manifest.permission.FOREGROUND_SERVICE, android.os.Process.myPid(), android.os.Process.myUid());
 		}
 		try{
-			if(notification == null){
-				//Try the NotificationCompat this time in case there was a previous error
-				NotificationCompat.Builder builder =
-						new NotificationCompat.Builder(context, SDL_NOTIFICATION_CHANNEL_ID)
-								.setContentTitle("SmartDeviceLink")
-								.setContentText("Service Running");
-				notification = builder.build();
-			}
 			if (permission != PackageManager.PERMISSION_DENIED) {
 				service.startForeground(id, notification);
 				DebugTool.logInfo("Entered the foreground - " + System.currentTimeMillis());
