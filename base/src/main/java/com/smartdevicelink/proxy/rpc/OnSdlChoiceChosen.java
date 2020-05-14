@@ -38,7 +38,6 @@ import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import java.util.Hashtable;
 import java.util.List;
 
-@Deprecated
 public class OnSdlChoiceChosen extends RPCNotification {
 	public static final String KEY_SDL_CHOICE = "sdlChoice";
 	public static final String KEY_TRIGGER_SOURCE = "triggerSource";
