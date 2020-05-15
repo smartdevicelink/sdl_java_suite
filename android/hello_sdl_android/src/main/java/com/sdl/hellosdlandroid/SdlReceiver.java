@@ -5,10 +5,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
-import com.smartdevicelink.transport.BaseBroadcastReceiver;
 import com.smartdevicelink.transport.BaseRouterService;
 
-public class SdlReceiver  extends BaseBroadcastReceiver {
+public class SdlReceiver  extends BaseRouterService {
 	private static final String TAG = "SdlBroadcastReciever";
 
 	@Override
@@ -27,8 +26,8 @@ public class SdlReceiver  extends BaseBroadcastReceiver {
 	}
 
 	@Override
-	public Class<? extends BaseRouterService> defineLocalSdlRouterClass() {
-		return com.sdl.hellosdlandroid.BaseRouterService.class;
+	public Class<? extends SdlRouterService> defineLocalSdlRouterClass() {
+		return com.sdl.hellosdlandroid.SdlRouterService.class;
 	}
 
 	@Override
