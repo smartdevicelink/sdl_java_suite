@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_out_of_resource">너무 많은 앱이 블루투스를 사용하고 있습니다</string>
+    <string name="sdl_error_notification_channel_name">SDL 오류</string>
+</resources>
