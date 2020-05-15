@@ -76,7 +76,7 @@ public abstract class MultiplexBaseTransport {
 
         // Give the new state to the Handler so the UI Activity can update
         //Also sending the previous state so we know if we lost a connection
-        handler.obtainMessage(SdlRouterService.MESSAGE_STATE_CHANGE, state, previousState, getTransportRecord()).sendToTarget();
+        handler.obtainMessage(BaseRouterService.MESSAGE_STATE_CHANGE, state, previousState, getTransportRecord()).sendToTarget();
     }
 
     public String getAddress(){

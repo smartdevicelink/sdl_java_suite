@@ -132,6 +132,7 @@ import static com.smartdevicelink.transport.TransportConstants.TRANSPORT_DISCONN
  * @author Joey Grover
  *
  */
+@Deprecated
 @SuppressWarnings({"UnusedReturnValue", "WeakerAccess", "Convert2Diamond", "deprecation"})
 public class SdlRouterService extends Service{
 	

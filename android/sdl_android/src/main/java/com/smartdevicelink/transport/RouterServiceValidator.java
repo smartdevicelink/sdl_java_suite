@@ -472,7 +472,7 @@ public class RouterServiceValidator {
 		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 			//Log.d(TAG, service.service.getClassName());
 			//We will check to see if it contains this name, should be pretty specific
-			if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SdlBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME)){ 
+			if ((service.service.getClassName()).toLowerCase(Locale.US).contains(BaseBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME)){
 				//this.service = service.service; //This is great
 				if(service.started && service.restarting==0){ //If this service has been started and is not crashed
 					return service.service; //appPackageForComponenetName(service.service,pm);

@@ -114,7 +114,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
         writerThread.start();
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
+        Message msg = handler.obtainMessage(BaseRouterService.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
         bundle.putString(DEVICE_NAME, connectedDeviceName);
         bundle.putString(DEVICE_ADDRESS, connectedDeviceAddress);
@@ -176,7 +176,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
      */
     private void connectionFailed() {
         // Send a failure message back to the Activity
-        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_LOG);
+        Message msg = handler.obtainMessage(BaseRouterService.MESSAGE_LOG);
         Bundle bundle = new Bundle();
         bundle.putString(LOG, "Unable to connect device");
         msg.setData(bundle);
@@ -191,7 +191,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
      */
     private void connectionLost() {
         // Send a failure message back to the Activity
-        Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_LOG);
+        Message msg = handler.obtainMessage(BaseRouterService.MESSAGE_LOG);
         Bundle bundle = new Bundle();
         bundle.putString(LOG, "Device connection was lost");
         msg.setData(bundle);
@@ -257,7 +257,7 @@ public class MultiplexUsbTransport extends MultiplexBaseTransport{
                                 //Log.d(TAG, "Packet formed, sending off");
                                 SdlPacket packet = psm.getFormedPacket();
                                 packet.setTransportRecord(getTransportRecord());
-                                handler.obtainMessage(SdlRouterService.MESSAGE_READ, packet).sendToTarget();
+                                handler.obtainMessage(BaseRouterService.MESSAGE_READ, packet).sendToTarget();
                             }
                             //Reset the PSM now that we have a finished packet.
                             //We will continue to loop through the data to see if any other packet

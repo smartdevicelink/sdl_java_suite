@@ -42,7 +42,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.smartdevicelink.transport.SdlRouterService;
+import com.smartdevicelink.transport.BaseRouterService;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -162,7 +162,7 @@ public class ServiceFinder {
 
     private static Intent createQueryIntent(String receiverLocation) {
         Intent intent = new Intent();
-        intent.setAction(SdlRouterService.REGISTER_WITH_ROUTER_ACTION);
+        intent.setAction(BaseRouterService.REGISTER_WITH_ROUTER_ACTION);
         intent.putExtra(SEND_PACKET_TO_APP_LOCATION_EXTRA_NAME, receiverLocation);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);

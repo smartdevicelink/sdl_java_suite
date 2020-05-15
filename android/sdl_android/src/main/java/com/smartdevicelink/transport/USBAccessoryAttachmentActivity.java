@@ -190,10 +190,10 @@ public class USBAccessoryAttachmentActivity extends Activity {
                         }
 
                         //Make sure to send this out for old apps to close down
-                        SdlRouterService.LocalRouterService self = SdlRouterService.getLocalRouterService(serviceIntent, serviceIntent.getComponent());
-                        Intent restart = new Intent(SdlRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION);
-                        restart.putExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_EXTRA, self);
-                        restart.putExtra(SdlBroadcastReceiver.LOCAL_ROUTER_SERVICE_DID_START_OWN, true);
+                        BaseRouterService.LocalRouterService self = BaseRouterService.getLocalRouterService(serviceIntent, serviceIntent.getComponent());
+                        Intent restart = new Intent(BaseRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION);
+                        restart.putExtra(BaseBroadcastReceiver.LOCAL_ROUTER_SERVICE_EXTRA, self);
+                        restart.putExtra(BaseBroadcastReceiver.LOCAL_ROUTER_SERVICE_DID_START_OWN, true);
                         context.sendBroadcast(restart);
 
                         if (usbAccessory!=null) {

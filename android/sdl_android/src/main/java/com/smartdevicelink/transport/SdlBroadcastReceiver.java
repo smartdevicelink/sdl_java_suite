@@ -65,6 +65,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static com.smartdevicelink.transport.TransportConstants.FOREGROUND_EXTRA;
 
+@Deprecated
 public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	
 	private static final String TAG = "Sdl Broadcast Receiver";
@@ -87,7 +88,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	private static Thread.UncaughtExceptionHandler foregroundExceptionHandler = null;
 
 	public int getRouterServiceVersion(){
-		return SdlRouterService.ROUTER_SERVICE_VERSION_NUMBER;	
+		return BaseRouterService.ROUTER_SERVICE_VERSION_NUMBER;
 	}
 	
 	@Override
@@ -158,7 +159,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			}
 		}
 
-		if(localRouterClass != null && localRouterClass.getName().equalsIgnoreCase(com.smartdevicelink.transport.SdlRouterService.class.getName())){
+		if(localRouterClass != null && localRouterClass.getName().equalsIgnoreCase(com.smartdevicelink.transport.BaseRouterService
+				.class.getName())){
 			Log.e(TAG, "You cannot use the default SdlRouterService class, it must be extended in your project. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
 		}
 
@@ -215,8 +217,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	    	//We will send it an intent with the version number of the local instance and an intent to start this instance
 	    	
 	    	Intent serviceIntent =  new Intent(context, localRouterClass);
-	    	SdlRouterService.LocalRouterService self = SdlRouterService.getLocalRouterService(serviceIntent, serviceIntent.getComponent());
-	    	Intent restart = new Intent(SdlRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION);
+			BaseRouterService.LocalRouterService self = BaseRouterService.getLocalRouterService(serviceIntent, serviceIntent.getComponent());
+	    	Intent restart = new Intent(BaseRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION);
 	    	restart.putExtra(LOCAL_ROUTER_SERVICE_EXTRA, self);
 	    	restart.putExtra(LOCAL_ROUTER_SERVICE_DID_START_OWN, didStart);
 	    	context.sendBroadcast(restart);
@@ -259,8 +261,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 
 							}
 							//Make sure to send this out for old apps to close down
-							SdlRouterService.LocalRouterService self = SdlRouterService.getLocalRouterService(serviceIntent, serviceIntent.getComponent());
-							Intent restart = new Intent(SdlRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION);
+							BaseRouterService.LocalRouterService self = BaseRouterService.getLocalRouterService(serviceIntent, serviceIntent.getComponent());
+							Intent restart = new Intent(BaseRouterService.REGISTER_NEWER_SERVER_INSTANCE_ACTION);
 							restart.putExtra(LOCAL_ROUTER_SERVICE_EXTRA, self);
 							restart.putExtra(LOCAL_ROUTER_SERVICE_DID_START_OWN, true);
 							context.sendBroadcast(restart);
@@ -514,7 +516,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 	 * @return Return the local copy of SdlRouterService.class
 	 * {@inheritDoc}
 	 */
-	public abstract Class<? extends SdlRouterService> defineLocalSdlRouterClass();
+	public abstract Class<? extends BaseRouterService> defineLocalSdlRouterClass();
 
 	
 	
