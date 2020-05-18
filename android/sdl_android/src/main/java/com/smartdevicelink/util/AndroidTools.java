@@ -33,12 +33,11 @@
 package com.smartdevicelink.util;
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -48,7 +47,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.BatteryManager;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
+import android.support.annotation.RequiresApi;
 
 import com.smartdevicelink.transport.TransportConstants;
 
@@ -62,11 +61,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.smartdevicelink.transport.TransportConstants.SDL_NOTIFICATION_CHANNEL_ID;
-
 public class AndroidTools {
-
-	public static final String SDL_NOTIFICATION_CHANNEL_ID 						= "sdl_notification_channel";
 
 	/**
 	 * Check to see if a component is exported
@@ -203,34 +198,6 @@ public class AndroidTools {
 	}
 
 	/**
-	 * This is a wrapper around the startForeground method. In the case that the notification
-	 * is null, or a notification was unable to be created we will still attempt to call the
-	 * startForeground method in hopes that Android will not throw the System Exception. In the
-	 * event that the user is on Android 28+ it will check the FOREGROUND_SERVICE permissions
-	 * before trying to call startForeground.
-	 * @param service a service instance
-	 * @param context a context instance
-	 * @param id notification channel id
-	 * @param notification the notification to display when in the foreground
-	 */
-	public static void safeStartForeground(Service service, Context context, int id, Notification notification){
-		int permission = PackageManager.PERMISSION_GRANTED;
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-			permission = context.checkPermission(Manifest.permission.FOREGROUND_SERVICE, android.os.Process.myPid(), android.os.Process.myUid());
-		}
-		try{
-			if (permission != PackageManager.PERMISSION_DENIED) {
-				service.startForeground(id, notification);
-				DebugTool.logInfo("Entered the foreground - " + System.currentTimeMillis());
-			} else {
-				DebugTool.logError("App missing FOREGROUND_SERVICE Permissions");
-			}
-		}catch (Exception e){
-			DebugTool.logError("Unable to start service in foreground", e);
-		}
-	}
-
-	/**
 	 * This is a wrapper around the startForegroundService method. In the
 	 * event that the user is on Android 28+ it will check the FOREGROUND_SERVICE permissions
 	 * before trying to call startForegroundService.
@@ -239,22 +206,21 @@ public class AndroidTools {
 	 * @return a ComponentName, an identifier for the started service, will return null is service
 	 * was unable to start
 	 */
-	public static ComponentName safeStartForegroundService(Context context, Intent intent){
-		ComponentName name = null;
-		int permission = PackageManager.PERMISSION_GRANTED;
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-			permission = context.checkPermission(Manifest.permission.FOREGROUND_SERVICE, android.os.Process.myPid(), android.os.Process.myUid());
-		}
-		try{
-			if (permission != PackageManager.PERMISSION_DENIED) {
-				name = context.startForegroundService(intent);
-				DebugTool.logInfo("Entered the foreground - " + System.currentTimeMillis());
+	@RequiresApi(api = Build.VERSION_CODES.O)
+	public static ComponentName safeStartForegroundService(Context context, Intent intent) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+			boolean inDebugMode = (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+			boolean permissionGranted = PackageManager.PERMISSION_GRANTED == context.checkPermission(Manifest.permission.FOREGROUND_SERVICE, android.os.Process.myPid(), android.os.Process.myUid());
+			if (inDebugMode || permissionGranted) {
+				return context.startForegroundService(intent);
 			} else {
 				DebugTool.logError("App missing FOREGROUND_SERVICE Permissions");
 			}
-		}catch (Exception e){
-			DebugTool.logError("Unable to start service in foreground", e);
+		} else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
+			return context.startForegroundService(intent);
+		} else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+			DebugTool.logError("startForegroundService() call requires Android Oreo or newer");
 		}
-		return name;
+		return null;
 	}
 }
