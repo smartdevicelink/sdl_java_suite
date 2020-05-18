@@ -1526,7 +1526,7 @@ public class SdlRouterService extends Service{
 				NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 				if (notificationManager!= null){
 					try {
-						notificationManager.cancelAll();
+						notificationManager.cancel(FOREGROUND_SERVICE_ID);
 						if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 							notificationManager.deleteNotificationChannel(SDL_NOTIFICATION_CHANNEL_ID);
 						}
@@ -3736,11 +3736,11 @@ public class SdlRouterService extends Service{
 		builder.setContentText(getString(R.string.spp_out_of_resource));
 
 		//We should use icon from library resources if available
-		// @TODO: The icon will be updated later (icon resource will be provided by Livio).
+		// @REVIEW: large icon uses SPP error specific icon, but can we reuse the small icon with the default tray icon?
 		int trayId = getResources().getIdentifier("sdl_tray_icon", "drawable", getPackageName());
 
 		builder.setSmallIcon(trayId);
-		Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_sdl);
+		Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.spp_error);
 		builder.setLargeIcon(icon);
 
 		builder.setOngoing(false);
