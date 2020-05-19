@@ -38,9 +38,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -64,6 +69,9 @@ public class SDLLockScreenActivity extends Activity {
 	private static final int MIN_SWIPE_DISTANCE = 200;
 	private boolean mIsDismissible;
 	private GestureDetector mGestureDetector;
+	private int backgroundColor = Color.parseColor("#394e60");
+	private boolean useWhiteIconAndTextColor;
+
 
 	private final BroadcastReceiver lockScreenBroadcastReceiver = new BroadcastReceiver() {
 		@Override
@@ -137,18 +145,25 @@ public class SDLLockScreenActivity extends Activity {
 			int customIcon = intent.getIntExtra(LOCKSCREEN_ICON_EXTRA, 0);
 			int customView = intent.getIntExtra(LOCKSCREEN_CUSTOM_VIEW_EXTRA, 0);
 			Bitmap deviceIcon = intent.getParcelableExtra(LOCKSCREEN_DEVICE_LOGO_BITMAP);
+			backgroundColor = (customColor != 0) ? customColor : backgroundColor;
 
 			if (customView != 0){
 				setCustomView(customView);
 			} else {
 				setContentView(R.layout.activity_sdllock_screen);
+				setBackgroundColor();
+				useWhiteIconAndTextColor = shouldUseWhiteForegroundForBackgroundColor();
 
-				if (customColor != 0){
-					changeBackgroundColor(customColor);
-				}
-
+				// set Lock Screen Icon
 				if (customIcon != 0){
 					changeIcon(customIcon);
+				} else {
+					setSdlLogo();
+				}
+
+				// Change Text color to White if color contrast is off
+				if(useWhiteIconAndTextColor){
+					setTextColorWhite();
 				}
 
 				if (deviceLogoEnabled && deviceIcon != null){
@@ -163,14 +178,78 @@ public class SDLLockScreenActivity extends Activity {
 		}
 	}
 
-	private void changeBackgroundColor(int customColor) {
-		RelativeLayout layout = findViewById(R.id.lockscreen_relative_layout);
-		layout.setBackgroundColor(getResources().getColor(customColor));
+	/**
+	 *  Sets the lockScreen logo
+	 */
+	private void setSdlLogo() {
+		ImageView lockScreen_iv = findViewById(R.id.lockscreen_image);
+		Drawable sdlIcon = getResources().getDrawable(R.drawable.sdl_logo_black);
+		// Checks color contrast and determines if the logo should be black or white
+		if(useWhiteIconAndTextColor){
+			int color = Color.parseColor("#ffffff");
+
+			int red = (color & 0xFF0000) / 0xFFFF;
+			int green = (color & 0xFF00) / 0xFF;
+			int blue = color & 0xFF;
+
+			float[] matrix = {0, 0, 0, 0, red,
+					0, 0, 0, 0, green,
+					0, 0, 0, 0, blue,
+					0, 0, 0, 1, 0};
+
+			ColorFilter colorFilter = new ColorMatrixColorFilter(matrix);
+			sdlIcon.setColorFilter(colorFilter);
+		}
+		lockScreen_iv.setImageDrawable(sdlIcon);
 	}
 
+	/**
+	 * Changes the text color to white on the lockScreen
+	 */
+	private void setTextColorWhite(){
+		TextView tv = findViewById(R.id.lockscreen_text);
+		tv.setTextColor(Color.parseColor("#ffffff"));
+	}
+
+	/**
+	 *  Calculates the contrast of the background to determine if the Icon and Text color
+	 *  should be white or black
+	 * @return True if Background and Icon should be white, False if black
+	 */
+	private boolean shouldUseWhiteForegroundForBackgroundColor(){
+		float r = Color.red(backgroundColor) / 255f;
+		float b = Color.blue(backgroundColor) / 255f;
+		float g = Color.green(backgroundColor) / 255f;
+
+		// http://stackoverflow.com/a/3943023
+		r = (r<= 0.3928f) ? (r /12.92f) : (float)Math.pow(((r + 0.055f) / 1.055f), 2.4f);
+		g = (g<= 0.3928f) ? (g /12.92f) : (float)Math.pow(((g + 0.055f) / 1.055f), 2.4f);
+		b = (b<= 0.3928f) ? (b /12.92f) : (float)Math.pow(((b + 0.055f) / 1.055f), 2.4f);
+
+		float luminescence = 0.2126f * r +0.7152f * g + 0.0722f * b;
+		return luminescence <= 0.179;
+	}
+
+	/**
+	 * Sets the color of the background
+	 * Will use default color if not set in LockScreenConfig
+	 */
+	private void setBackgroundColor() {
+		RelativeLayout layout = findViewById(R.id.lockscreen_relative_layout);
+		layout.setBackgroundColor(backgroundColor);
+	}
+
+	/**
+	 * Used to change LockScreen default Icon to customIcon set in LockScreenConfig
+	 * @param customIcon
+	 */
 	private void changeIcon(int customIcon) {
-		ImageView lockscreen_iv = findViewById(R.id.lockscreen_image);
-		lockscreen_iv.setBackgroundResource(customIcon);
+		ImageView lockScreen_iv = findViewById(R.id.lockscreen_image);
+		lockScreen_iv.setVisibility(View.GONE);
+
+		ImageView lockScreenCustom_iv = findViewById(R.id.appIcon);
+		lockScreenCustom_iv.setVisibility(View.VISIBLE);
+		lockScreenCustom_iv.setBackgroundResource(customIcon);
 	}
 
 	private void setDeviceLogo(Bitmap deviceLogo) {
