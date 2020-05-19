@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.smartdevicelink.transport.SdlBroadcastReceiver;
 import com.smartdevicelink.transport.SdlRouterService;
+import com.smartdevicelink.util.AndroidTools;
 
 public class SdlReceiver  extends SdlBroadcastReceiver {
 	private static final String TAG = "SdlBroadcastReciever";
@@ -20,7 +21,7 @@ public class SdlReceiver  extends SdlBroadcastReceiver {
 		// This will prevent apps in the background from crashing when they try to start SdlService
 		// Because Android O doesn't allow background apps to start background services
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			context.startForegroundService(intent);
+			AndroidTools.safeStartForegroundService(context, intent);
 		} else {
 			context.startService(intent);
 		}

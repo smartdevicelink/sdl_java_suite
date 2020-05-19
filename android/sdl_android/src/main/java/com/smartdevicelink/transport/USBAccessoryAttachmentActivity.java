@@ -179,7 +179,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
                             startedService = context.startService(serviceIntent);
                         }else {
                             serviceIntent.putExtra(FOREGROUND_EXTRA, true);
-                            startedService = context.startForegroundService(serviceIntent);
+                            startedService = AndroidTools.safeStartForegroundService(context, serviceIntent);
                         }
 
                         if(startedService == null){

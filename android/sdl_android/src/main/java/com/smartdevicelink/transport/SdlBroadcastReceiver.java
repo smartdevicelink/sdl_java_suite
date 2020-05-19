@@ -255,7 +255,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 								serviceIntent.putExtra(FOREGROUND_EXTRA, true);
 								DebugTool.logInfo("Attempting to startForegroundService - " + System.currentTimeMillis());
 								setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
-								context.startForegroundService(serviceIntent);
+								AndroidTools.safeStartForegroundService(context, serviceIntent);
 
 							}
 							//Make sure to send this out for old apps to close down
@@ -383,7 +383,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 				intent.putExtra(FOREGROUND_EXTRA, true);
 				DebugTool.logInfo("Attempting to startForegroundService - " + System.currentTimeMillis());
 				setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
-				context.startForegroundService(intent);
+				AndroidTools.safeStartForegroundService(context, intent);
 			}else {
 				context.startService(intent);
 			}

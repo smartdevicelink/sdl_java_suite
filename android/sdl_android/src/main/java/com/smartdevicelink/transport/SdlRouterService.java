@@ -69,7 +69,6 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.os.RemoteException;
-import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -1151,7 +1150,7 @@ public class SdlRouterService extends Service{
 						startService(serviceIntent);
 					}else{
 						try{
-							startForegroundService(serviceIntent);
+							AndroidTools.safeStartForegroundService(this, serviceIntent);
 						}catch (Exception e){
 							Log.e(TAG, "Unable to start next SDL router service. " + e.getMessage());
 						}
@@ -1484,6 +1483,7 @@ public class SdlRouterService extends Service{
 				}
 				return;
 			}
+
 			safeStartForeground(FOREGROUND_SERVICE_ID, notification);
 			isForeground = true;
 
@@ -1508,7 +1508,7 @@ public class SdlRouterService extends Service{
 								.setContentText("Service Running");
 				notification = builder.build();
 			}
-			startForeground(id, notification);
+			this.startForeground(id, notification);
 			DebugTool.logInfo("Entered the foreground - " + System.currentTimeMillis());
 		}catch (Exception e){
 			DebugTool.logError("Unable to start service in foreground", e);
@@ -1539,7 +1539,6 @@ public class SdlRouterService extends Service{
 			}
 		}
 	}
-
 
 	/**
 	 * Creates a notification message to attach to the foreground service notification.
