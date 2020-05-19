@@ -41,7 +41,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.audio.AudioStreamManager;
 import com.smartdevicelink.managers.file.FileManager;
@@ -758,19 +757,11 @@ public class SdlManager extends BaseSdlManager{
 
 		@Override
 		public void stopVideoService(boolean withPendingRestart) {
-			Log.d("MyTagLog", "Manager stop video service");
-
 			if(proxy.getIsConnected()){
-				boolean success = proxy.endVideoStream();
-				Log.d("MyTagLogParamsB", String.valueOf(success));
+				proxy.endVideoStream();
 
 			}
-
-			Log.d("MyTagLogParams", String.valueOf(withPendingRestart));
-			Log.d("MyTagLogParams", String.valueOf(videoStreamManager != null));
-			Log.d("MyTagLogParams", String.valueOf(proxy.getIsConnected()));
 			if (withPendingRestart && videoStreamManager != null && proxy.getIsConnected()){
-				Log.d("MyTagLog", "pending restart");
 				proxy.startVideoService(videoStreamManager.getLastCachedIsEncrypted(),
 						videoStreamManager.getLastCachedStreamingParameters());
 			}
@@ -944,10 +935,6 @@ public class SdlManager extends BaseSdlManager{
 			}
 		}
 
-		@Override
-		public SdlSession getSessions() {
-			return proxy.sdlSession;
-		}
 	};
 
 

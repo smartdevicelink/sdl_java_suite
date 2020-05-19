@@ -179,7 +179,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 	public static final com.smartdevicelink.util.Version MAX_SUPPORTED_RPC_VERSION = new com.smartdevicelink.util.Version("6.0.0");
 
-	public SdlSession sdlSession = null;
+	private SdlSession sdlSession = null;
 	private proxyListenerType _proxyListener = null;
 	
 	protected Service _appService = null;
@@ -355,8 +355,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
 			if(isConnected()){
-				Log.d("MyTagLogProxyStartW", String.valueOf(parameters.getResolution().getResolutionWidth()));
-				Log.d("MyTagLogProxyStartH", String.valueOf(parameters.getResolution().getResolutionHeight()));
 				sdlSession.setDesiredVideoParams(parameters);
 				sdlSession.startService(SessionType.NAV,sdlSession.getSessionId(),encrypted);
 				addNavListener();
@@ -365,7 +363,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 		@Override
 		public void stopVideoService(boolean withPendingRestart) {
-			Log.d("MyTagLog", "Proxy stop video service");
 			if(isConnected()){
 				navServiceStarted = false;
 				sdlSession.endService(SessionType.NAV,sdlSession.getSessionId());
@@ -532,11 +529,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void startRPCEncryption() {
 			SdlProxyBase.this.startProtectedRPCService();
-		}
-
-		@Override
-		public SdlSession getSessions() {
-			return sdlSession;
 		}
 	};
 	
@@ -5557,13 +5549,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
             return null;
         }
 
-        Log.d("MyTagResponses", String.valueOf(navServiceStartResponseReceived));
-        Log.d("MyTagResponses", String.valueOf(navServiceStartResponse));
-        Log.d("MyTagResponses", String.valueOf(navServiceStartResponse && isEncrypted && !sdlSession.isServiceProtected(SessionType.NAV)));
-        Log.d("MyTagResponses", String.valueOf(sdlSession.isServiceProtected(SessionType.NAV)));
-        Log.d("MyTagResponses", String.valueOf(navServiceStarted));
-
-
 		if(!navServiceStartResponseReceived || !navServiceStartResponse //If we haven't started the service before
 				|| (navServiceStartResponse && isEncrypted && !sdlSession.isServiceProtected(SessionType.NAV)) || !navServiceStarted) { //Or the service has been started but we'd like to start an encrypted one
 			sdlSession.setDesiredVideoParams(parameters);
@@ -8427,10 +8412,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				remoteDisplay = null;
 			}
 			if(encoder!=null){
-				encoder.shutDown();
+				encoder.shutDown(withPendingRestart);
 			}
 			if(internalInterface!=null){
-			    Log.d("MyTagLog", "Proxy pending");
 				internalInterface.stopVideoService(withPendingRestart);
 			}
 		}

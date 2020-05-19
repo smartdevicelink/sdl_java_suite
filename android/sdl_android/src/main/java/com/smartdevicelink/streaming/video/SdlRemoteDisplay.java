@@ -130,8 +130,6 @@ public abstract class SdlRemoteDisplay extends Presentation {
             @Override
             public void run() {
                 try {
-                    Log.d("MyTagLogResizeW", String.valueOf(newWidth));
-                    Log.d("MyTagLogResizeH", String.valueOf(newHeight));
                     Constructor<? extends ViewGroup.LayoutParams> ctor =
                             mainView.getLayoutParams().getClass().getDeclaredConstructor(int.class, int.class);
                     mainView.setLayoutParams(ctor.newInstance(newWidth, newHeight));
@@ -197,15 +195,11 @@ public abstract class SdlRemoteDisplay extends Presentation {
                 public void run() {
                     // Want to create presentation on UI thread so it finds the right Looper
                     // when setting up the Dialog.
-                    Log.d("MyTagLog", "call is called");
                     if((mDisplay!=null) && (remoteDisplay == null || remoteDisplay.getDisplay() != mDisplay))
                     {
-                        Log.d("MyTagLog", "creator if");
                         try {
                             Constructor constructor = remoteDisplayClass.getConstructor(Context.class, Display.class);
                             remoteDisplay = (SdlRemoteDisplay) constructor.newInstance(context, mDisplay);
-                            Log.d("MyTagLog", "constructed another time");
-
                         } catch (Exception e) {
                             e.printStackTrace();
                             Log.e(TAG, "Unable to create Presentation Class");
@@ -231,5 +225,6 @@ public abstract class SdlRemoteDisplay extends Presentation {
 
             return presentationShowError;
         }
+
     }
 }

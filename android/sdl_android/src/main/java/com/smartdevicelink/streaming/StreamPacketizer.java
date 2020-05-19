@@ -281,10 +281,6 @@ public class StreamPacketizer extends AbstractPacketizer implements IVideoStream
 		}
 	}
 
-	public boolean isRunning() {
-		return !mPaused;
-	}
-
 	private void sendByteBufferData(ByteBuffer data, CompletionListener completionListener) {
 		if (data == null || data.remaining() == 0) {
 			return;

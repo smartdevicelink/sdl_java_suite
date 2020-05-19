@@ -202,9 +202,6 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
             // protocol is fixed to RAW
             StreamPacketizer packetizer = new StreamPacketizer(this, is, sType, rpcSessionID, this);
             packetizer.sdlConnection = this.getSdlConnection();
-//            if (mVideoPacketizer != null) {
-//                mVideoPacketizer.stop();
-//            }
             mVideoPacketizer = packetizer;
             mVideoPacketizer.start();
         }
@@ -252,7 +249,6 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         byte rpcSessionID = getSessionId();
         VideoStreamingProtocol protocol = getAcceptedProtocol();
         try {
-            Log.d("MyTagLogIVidList", "startVideoStream");
             switch (protocol) {
                 case RAW: {
                     StreamPacketizer packetizer = new StreamPacketizer(this, null, SessionType.NAV, rpcSessionID, this);

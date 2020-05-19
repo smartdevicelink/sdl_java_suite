@@ -106,7 +106,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
 			if(SessionType.NAV.equals(type)){
-				Log.d("MyTagStarted", "service started");
 				if (session != null && session.getAcceptedVideoParams() != null) {
 					parameters = session.getAcceptedVideoParams();
 					VideoStreamManager.this.streamListener = session.startVideoStream();
@@ -131,9 +130,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		@Override
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if(SessionType.NAV.equals(type)){
-				Log.d("MyTagEnded", "service ended");
 				if(sdlRemoteDisplay !=null){
-					stopStreaming();
+					stopStreaming(false);
 				}
 				stateMachine.transitionToState(StreamingStateMachine.NONE);
 				transitionToState(SETTING_UP);
@@ -210,8 +208,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
 				VideoStreamManager.this.parameters = params;
 				virtualDisplayEncoder.setStreamingParams(params);
-				stopStreaming();
-				//resumeStreaming();
+				stopStreaming(true);
 			}
 
 			@Override
@@ -223,7 +220,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 	@Override
 	public void start(CompletionListener listener) {
-		Log.d("MyTagLog", "start was called");
 		isTransportAvailable = internalInterface.isTransportForServiceAvailable(SessionType.NAV);
 		checkState();
 		super.start(listener);
@@ -284,7 +280,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @param encrypted a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
 	 */
 	public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted){
-		Log.d("MyTagLog", "startRemoteDisplay was called");
 		this.context = new WeakReference<>(context);
 		this.remoteDisplayClass = remoteDisplayClass;
 		this.isEncrypted = encrypted;
@@ -332,7 +327,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @param encrypted Specify true if packets on this service have to be encrypted
 	 */
 	protected void startStreaming(VideoStreamingParameters parameters, boolean encrypted){
-		Log.d("MyTagLogState", String.valueOf(stateMachine.getState()));
 		this.parameters = parameters;
 		if (!streamableLevels.contains(hmiLevel)) {
 			Log.e(TAG, "Cannot start video service if HMILevel is not FULL or LIMITED.");
@@ -347,8 +341,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * Initializes and starts the virtual display encoder and creates the remote display
 	 */
 	private void startEncoder(){
-		Log.d("MyTagLog", "startEncoder was called");
-
 		try {
 			if (sdlRemoteDisplay != null) {
 				sdlRemoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
@@ -360,12 +352,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			//Encoder should be up and running
 			Display display = virtualDisplayEncoder.getDisplay();
 			createRemoteDisplay(display);
-			internalInterface.getSessions().setDesiredVideoParams(parameters);
 
 			stateMachine.transitionToState(StreamingStateMachine.STARTED);
 			hasStarted = true;
-			Log.d("MyTagLog", "has started == true");
-
 		} catch (Exception e) {
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			e.printStackTrace();
@@ -376,26 +365,25 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * Stops streaming from the remote display. To restart, call
 	 * @see #resumeStreaming()
 	 */
-	public void stopStreaming(){
-//		if(remoteDisplay!=null){
-//			remoteDisplay.stop();
-//		}
+	public void stopStreaming(boolean withPendingRestart){
+		if(sdlRemoteDisplay!=null && !withPendingRestart){
+			sdlRemoteDisplay.stop();
+		}
 		if (this.isStreaming()) {
 			if(virtualDisplayEncoder!=null){
-				virtualDisplayEncoder.shutDown();
+				virtualDisplayEncoder.shutDown(withPendingRestart);
 			}
 			stateMachine.transitionToState(StreamingStateMachine.STOPPED);
 
 			this.internalInterface.stopVideoService(true);
 		}
-
 	}
 
 	/**
 	 * Resumes streaming after calling
 	 * @see #startRemoteDisplayStream(android.content.Context, Class, com.smartdevicelink.streaming.video.VideoStreamingParameters, boolean)
 	 * followed by a call to
-	 * @see #stopStreaming()
+	 * @see #stopStreaming(boolean withPendingRestart)
 	 */
 	public void resumeStreaming(){
 		if(stateMachine.getState() != StreamingStateMachine.STOPPED){
@@ -409,7 +397,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 */
 	@Override
 	public void dispose(){
-		stopStreaming();
+		stopStreaming(false);
 
 		hapticManager = null;
 		sdlRemoteDisplay = null;
@@ -446,13 +434,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @return boolean (true = yes, false = no)
 	 */
 	public boolean isStreaming(){
-
-		Log.d("MyTagLogStreamingStatus", String.valueOf(stateMachine.getState() == StreamingStateMachine.STARTED));
-		Log.d("MyTagLogStreamingStatus", String.valueOf(streamableLevels.contains(hmiLevel)));
-		Log.d("MyTagLogStreamingStatus", String.valueOf(stateMachine.getState()));
-		Log.d("MyTagLogStreamingStatus", hmiLevel.toString());
-		Log.d("MyTagLogStreamingStatus", "===========================");
-
 		return (stateMachine.getState() == StreamingStateMachine.STARTED) && (streamableLevels.contains(hmiLevel));
 	}
 
@@ -477,21 +458,17 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private void createRemoteDisplay(final Display disp){
 		try{
 			if (disp == null){
-				Log.d("MyTagLog", "disp is null");
 				return;
 			}
 
 			// Dismiss the current presentation if the display has changed.
 			if (sdlRemoteDisplay != null && sdlRemoteDisplay.getDisplay() != disp) {
 				sdlRemoteDisplay.dismissPresentation();
-				Log.d("MyTagLog", "dismiss presentation");
 			}
 
 			FutureTask<Boolean> fTask =  new FutureTask<Boolean>( new SdlRemoteDisplay.Creator(context.get(), disp, sdlRemoteDisplay, remoteDisplayClass, new SdlRemoteDisplay.Callback(){
 				@Override
 				public void onCreated(final SdlRemoteDisplay remoteDisplay) {
-					Log.d("MyTagLog", "future task on created");
-
 					//Remote display has been created.
 					//Now is a good time to do parsing for spatial data
 					VideoStreamManager.this.sdlRemoteDisplay = remoteDisplay;
@@ -507,11 +484,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					ImageResolution resolution = null;
 					if(internalInterface.getProtocolVersion().getMajor() >= 5){ //At this point we should already have the capability
 						VideoStreamingCapability capability = (VideoStreamingCapability) internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING);
-						Log.d("MyTagLog", "img resolution");
 						if(capability != null){
 							resolution = capability.getPreferredResolution();
-							Log.d("MyTagFutureW", resolution.getResolutionWidth().toString());
-							Log.d("MyTagFutureH", resolution.getResolutionHeight().toString());
 						}
 					}
 
@@ -526,7 +500,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 						DisplayMetrics displayMetrics = new DisplayMetrics();
 						disp.getMetrics(displayMetrics);
 						createTouchScalar(resolution, displayMetrics);
-						Log.d("MyTagLogDispMetr", displayMetrics.toString());
                     }
 
 					sdlRemoteDisplay.resizeView(parameters.getResolution().getResolutionWidth(), parameters.getResolution().getResolutionHeight());
@@ -586,13 +559,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
     void createTouchScalar(ImageResolution resolution, DisplayMetrics displayMetrics) {
         touchScalar[0] = ((float)displayMetrics.widthPixels) / resolution.getResolutionWidth();
         touchScalar[1] = ((float)displayMetrics.heightPixels) / resolution.getResolutionHeight();
-
-        Log.d("MyTagTouchScalar", String.valueOf(touchScalar[0]));
-        Log.d("MyTagTouchScalar", String.valueOf(touchScalar[1]));
-        Log.d("MyTagTouchScalarResW", String.valueOf(resolution.getResolutionWidth()));
-        Log.d("MyTagTouchScalarResH", String.valueOf(resolution.getResolutionHeight()));
-		Log.d("MyTagLogDispMetrC", displayMetrics.toString());
-	}
+    }
 
 	List<MotionEvent> convertTouchEvent(OnTouchEvent onTouchEvent){
 		List<MotionEvent> motionEventList = new ArrayList<MotionEvent>();
@@ -636,11 +603,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			if (pointer != null) {
 				pointer.setCoords(touchCoord.getX() / touchScalar[0], touchCoord.getY() / touchScalar[1]);
 			}
-
-			Log.d("MyTagLogPointerTSX", String.valueOf(touchScalar[0]));
-			Log.d("MyTagLogPointerTSY", String.valueOf(touchScalar[1]));
-			Log.d("MyTagLogPointerX", String.valueOf(pointer.x));
-			Log.d("MyTagLogPointerY", String.valueOf(pointer.y));
 
 			MotionEvent.PointerProperties[] pointerProperties = new MotionEvent.PointerProperties[sdlMotionEvent.pointers.size()];
 			MotionEvent.PointerCoords[] pointerCoords = new MotionEvent.PointerCoords[sdlMotionEvent.pointers.size()];
