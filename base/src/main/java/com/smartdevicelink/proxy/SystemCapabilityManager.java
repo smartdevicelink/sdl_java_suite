@@ -133,8 +133,19 @@ public class SystemCapabilityManager {
 		// copy all available display capabilities
 		defaultWindowCapability.setTemplatesAvailable(display.getTemplatesAvailable());
 		defaultWindowCapability.setNumCustomPresetsAvailable(display.getNumCustomPresetsAvailable());
-		defaultWindowCapability.setTextFields(display.getTextFields());
-		defaultWindowCapability.setImageFields(display.getImageFields());
+
+		if (display.getImageFields() == null) {
+			defaultWindowCapability.setImageFields(null);
+		} else {
+			defaultWindowCapability.setImageFields(display.getImageFields());
+		}
+
+		if (display.getTextFields() == null) {
+			defaultWindowCapability.setTextFields(null);
+		} else {
+			defaultWindowCapability.setTextFields(display.getTextFields());
+		}
+
 		ArrayList<ImageType> imageTypeSupported = new ArrayList<>();
 		imageTypeSupported.add(ImageType.STATIC); // static images expected to always work on any head unit
 		if (display.getGraphicSupported()) {
