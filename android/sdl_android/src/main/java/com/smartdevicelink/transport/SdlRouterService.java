@@ -1499,10 +1499,6 @@ public class SdlRouterService extends Service{
 	 * @param notification the notification to display when in the foreground
 	 */
 	private void safeStartForeground(int id, Notification notification){
-		int permission = PackageManager.PERMISSION_GRANTED;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-			permission = this.checkPermission(Manifest.permission.FOREGROUND_SERVICE, android.os.Process.myPid(), android.os.Process.myUid());
-		}
 		try{
 			if(notification == null){
 				//Try the NotificationCompat this time in case there was a previous error
@@ -1512,12 +1508,8 @@ public class SdlRouterService extends Service{
 								.setContentText("Service Running");
 				notification = builder.build();
 			}
-			if (permission != PackageManager.PERMISSION_DENIED) {
-				this.startForeground(id, notification);
-				DebugTool.logInfo("Entered the foreground - " + System.currentTimeMillis());
-			} else {
-				DebugTool.logError("App missing FOREGROUND_SERVICE Permissions");
-			}
+			this.startForeground(id, notification);
+			DebugTool.logInfo("Entered the foreground - " + System.currentTimeMillis());
 		}catch (Exception e){
 			DebugTool.logError("Unable to start service in foreground", e);
 		}
