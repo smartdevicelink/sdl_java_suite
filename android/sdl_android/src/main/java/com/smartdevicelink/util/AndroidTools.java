@@ -214,7 +214,7 @@ public class AndroidTools {
 			if (inDebugMode || permissionGranted) {
 				return context.startForegroundService(intent);
 			} else {
-				DebugTool.logError("App missing FOREGROUND_SERVICE Permissions");
+				DebugTool.logError("App is missing FOREGROUND_SERVICE Permission. Sdl will not work.");
 			}
 		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			return context.startForegroundService(intent);
