@@ -216,10 +216,8 @@ public class AndroidTools {
 			} else {
 				DebugTool.logError("App missing FOREGROUND_SERVICE Permissions");
 			}
-		} else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
+		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			return context.startForegroundService(intent);
-		} else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-			DebugTool.logError("startForegroundService() call requires Android Oreo or newer");
 		}
 		return null;
 	}
