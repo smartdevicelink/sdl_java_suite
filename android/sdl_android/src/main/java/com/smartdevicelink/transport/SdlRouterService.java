@@ -3736,7 +3736,6 @@ public class SdlRouterService extends Service{
 		builder.setContentText(getString(R.string.spp_out_of_resource));
 
 		//We should use icon from library resources if available
-		// @REVIEW: large icon uses SPP error specific icon, but can we reuse the small icon with the default tray icon?
 		int trayId = getResources().getIdentifier("sdl_tray_icon", "drawable", getPackageName());
 
 		builder.setSmallIcon(trayId);
