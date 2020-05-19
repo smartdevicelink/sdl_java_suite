@@ -161,11 +161,6 @@ public class SDLLockScreenActivity extends Activity {
 					setSdlLogo();
 				}
 
-				// Change Text color to White if color contrast is off
-				if(useWhiteIconAndTextColor){
-					setTextColorWhite();
-				}
-
 				if (deviceLogoEnabled && deviceIcon != null){
 					setDeviceLogo(deviceIcon);
 				}
@@ -173,6 +168,8 @@ public class SDLLockScreenActivity extends Activity {
 				String warningMsg = intent.getStringExtra(KEY_LOCKSCREEN_WARNING_MSG);
 				if (mIsDismissible) {
 					setLockscreenWarningMessage(warningMsg);
+				} else if(!useWhiteIconAndTextColor){
+					setTextColorBlack();
 				}
 			}
 		}
@@ -206,9 +203,9 @@ public class SDLLockScreenActivity extends Activity {
 	/**
 	 * Changes the text color to white on the lockScreen
 	 */
-	private void setTextColorWhite(){
+	private void setTextColorBlack(){
 		TextView tv = findViewById(R.id.lockscreen_text);
-		tv.setTextColor(Color.parseColor("#ffffff"));
+		tv.setTextColor(Color.parseColor("#000000"));
 	}
 
 	/**
@@ -262,6 +259,9 @@ public class SDLLockScreenActivity extends Activity {
 	private void setLockscreenWarningMessage(String msg) {
 		TextView tv = findViewById(R.id.lockscreen_text);
 		if (tv != null) {
+			if(!useWhiteIconAndTextColor){
+				tv.setTextColor(Color.parseColor("#000000"));
+			}
 			tv.setText(msg != null ? msg : getString(R.string.default_lockscreen_warning_message));
 		}
 	}
