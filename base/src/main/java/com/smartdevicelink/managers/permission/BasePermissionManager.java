@@ -402,6 +402,9 @@ abstract class BasePermissionManager extends BaseSubManager{
     public UUID addListener(@NonNull List<PermissionElement> permissionElements, @PermissionGroupType int groupType, @NonNull OnPermissionChangeListener listener){
         PermissionFilter filter = new PermissionFilter(null, permissionElements, groupType, listener);
         filters.add(filter);
+        if (groupType == PERMISSION_GROUP_TYPE_ANY || (groupType == PERMISSION_GROUP_TYPE_ALL_ALLOWED && getGroupStatusOfPermissions(permissionElements) == PERMISSION_GROUP_STATUS_ALLOWED)) {
+            notifyListener(filter);
+        }
         return filter.getIdentifier();
     }
 
