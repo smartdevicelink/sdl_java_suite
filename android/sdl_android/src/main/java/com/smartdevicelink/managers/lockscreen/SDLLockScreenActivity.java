@@ -168,7 +168,7 @@ public class SDLLockScreenActivity extends Activity {
 				String warningMsg = intent.getStringExtra(KEY_LOCKSCREEN_WARNING_MSG);
 				if (mIsDismissible) {
 					setLockscreenWarningMessage(warningMsg);
-				} else if(!useWhiteIconAndTextColor){
+				} else if (!useWhiteIconAndTextColor) {
 					setTextColorBlack();
 				}
 			}
@@ -182,7 +182,7 @@ public class SDLLockScreenActivity extends Activity {
 		ImageView lockScreen_iv = findViewById(R.id.lockscreen_image);
 		Drawable sdlIcon = getResources().getDrawable(R.drawable.sdl_logo_black);
 		// Checks color contrast and determines if the logo should be black or white
-		if(useWhiteIconAndTextColor){
+		if (useWhiteIconAndTextColor) {
 			int color = Color.parseColor("#ffffff");
 
 			int red = (color & 0xFF0000) / 0xFFFF;
@@ -203,7 +203,7 @@ public class SDLLockScreenActivity extends Activity {
 	/**
 	 * Changes the text color to white on the lockScreen
 	 */
-	private void setTextColorBlack(){
+	private void setTextColorBlack() {
 		TextView tv = findViewById(R.id.lockscreen_text);
 		tv.setTextColor(Color.parseColor("#000000"));
 	}
@@ -213,17 +213,17 @@ public class SDLLockScreenActivity extends Activity {
 	 *  should be white or black
 	 * @return True if Background and Icon should be white, False if black
 	 */
-	private boolean shouldUseWhiteForegroundForBackgroundColor(){
+	private boolean shouldUseWhiteForegroundForBackgroundColor() {
 		float r = Color.red(backgroundColor) / 255f;
 		float b = Color.blue(backgroundColor) / 255f;
 		float g = Color.green(backgroundColor) / 255f;
 
 		// http://stackoverflow.com/a/3943023
-		r = (r<= 0.3928f) ? (r /12.92f) : (float)Math.pow(((r + 0.055f) / 1.055f), 2.4f);
-		g = (g<= 0.3928f) ? (g /12.92f) : (float)Math.pow(((g + 0.055f) / 1.055f), 2.4f);
-		b = (b<= 0.3928f) ? (b /12.92f) : (float)Math.pow(((b + 0.055f) / 1.055f), 2.4f);
+		r = (r <= 0.3928f) ? (r / 12.92f) : (float) Math.pow(((r + 0.055f) / 1.055f), 2.4f);
+		g = (g <= 0.3928f) ? (g / 12.92f) : (float) Math.pow(((g + 0.055f) / 1.055f), 2.4f);
+		b = (b <= 0.3928f) ? (b / 12.92f) : (float) Math.pow(((b + 0.055f) / 1.055f), 2.4f);
 
-		float luminescence = 0.2126f * r +0.7152f * g + 0.0722f * b;
+		float luminescence = 0.2126f * r + 0.7152f * g + 0.0722f * b;
 		return luminescence <= 0.179;
 	}
 
@@ -259,7 +259,7 @@ public class SDLLockScreenActivity extends Activity {
 	private void setLockscreenWarningMessage(String msg) {
 		TextView tv = findViewById(R.id.lockscreen_text);
 		if (tv != null) {
-			if(!useWhiteIconAndTextColor){
+			if (!useWhiteIconAndTextColor) {
 				tv.setTextColor(Color.parseColor("#000000"));
 			}
 			tv.setText(msg != null ? msg : getString(R.string.default_lockscreen_warning_message));
