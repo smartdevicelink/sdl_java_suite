@@ -32,12 +32,10 @@
 
 package com.smartdevicelink.util;
 
-import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -46,8 +44,6 @@ import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.BatteryManager;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 
 import com.smartdevicelink.transport.TransportConstants;
 
@@ -62,7 +58,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class AndroidTools {
-
 	/**
 	 * Check to see if a component is exported
 	 * @param context object used to retrieve the package manager
@@ -195,30 +190,5 @@ public class AndroidTools {
 		Bitmap result = BitmapFactory.decodeStream(bis);
 		bis.close();
 		return result;
-	}
-
-	/**
-	 * This is a wrapper around the startForegroundService method. In the
-	 * event that the user is on Android 28+ it will check the FOREGROUND_SERVICE permissions
-	 * before trying to call startForegroundService.
-	 * @param context a context instance
-	 * @param intent the foreground service intent
-	 * @return a ComponentName, an identifier for the started service, will return null is service
-	 * was unable to start
-	 */
-	@RequiresApi(api = Build.VERSION_CODES.O)
-	public static ComponentName safeStartForegroundService(Context context, Intent intent) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-			boolean inDebugMode = (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
-			boolean permissionGranted = PackageManager.PERMISSION_GRANTED == context.checkPermission(Manifest.permission.FOREGROUND_SERVICE, android.os.Process.myPid(), android.os.Process.myUid());
-			if (inDebugMode || permissionGranted) {
-				return context.startForegroundService(intent);
-			} else {
-				DebugTool.logError("App is missing FOREGROUND_SERVICE Permission. Sdl will not work.");
-			}
-		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			return context.startForegroundService(intent);
-		}
-		return null;
 	}
 }
