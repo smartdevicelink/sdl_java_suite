@@ -775,7 +775,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if image field is supported, false if not
 	 */
 	private boolean templateSupportsImageField(ImageFieldName name) {
-		return (defaultMainWindowCapability == null || defaultMainWindowCapability.getImageFields() == null) || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name);
+		return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasImageFieldOfName(defaultMainWindowCapability, name);
 	}
 
 	/**
@@ -799,7 +799,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	 * @return true if field should be updated, false if not
 	 */
 	private boolean templateSupportsTextField(TextFieldName name) {
-		return (defaultMainWindowCapability == null || defaultMainWindowCapability.getTextFields() == null) || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
+		return defaultMainWindowCapability == null || ManagerUtility.WindowCapabilityUtility.hasTextFieldOfName(defaultMainWindowCapability, name);
 	}
 
 	// SCREEN ITEM SETTERS AND GETTERS
