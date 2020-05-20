@@ -180,7 +180,7 @@ public class SDLLockScreenActivity extends Activity {
 	 */
 	private void setSdlLogo() {
 		ImageView lockScreen_iv = findViewById(R.id.lockscreen_image);
-		Drawable sdlIcon = getResources().getDrawable(R.drawable.sdl_logo_black);
+		Drawable sdlIcon = getResources().getDrawable(R.drawable.sdl_lockscreen_icon);
 		// Checks color contrast and determines if the logo should be black or white
 		if (useWhiteIconAndTextColor) {
 			int color = Color.parseColor("#ffffff");
