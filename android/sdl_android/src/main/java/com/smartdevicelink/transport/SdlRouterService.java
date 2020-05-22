@@ -1108,7 +1108,7 @@ public class SdlRouterService extends Service{
 	public void onCreate() {
 		super.onCreate();
 		//Add this first to avoid the runtime exceptions for the entire lifecycle of the service
-        setRouterServiceExceptionHandler();
+		setRouterServiceExceptionHandler();
         //This must be done regardless of if this service shuts down or not
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			hasCalledStartForeground = false;
@@ -1231,9 +1231,9 @@ public class SdlRouterService extends Service{
 						// Set the flag to not delete the notification channel to avoid this exception in the future
 						try{
 						    SdlRouterService.this.setSdlRouterServicePrefs(KEY_AVOID_NOTIFICATION_CHANNEL_DELETE, true);
-                        }catch (Exception exception){
+						}catch (Exception exception){
 						    //Unable to save flag for KEY_AVOID_NOTIFICATION_CHANNEL_DELETE
-                        }
+						}
 						Looper.loop();
 					} else if (defaultUncaughtExceptionHandler != null) { //No other exception should be handled
 						defaultUncaughtExceptionHandler.uncaughtException(t, e);
