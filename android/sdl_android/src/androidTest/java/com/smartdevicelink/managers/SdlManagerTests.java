@@ -107,12 +107,12 @@ public class SdlManagerTests extends AndroidTestCase2 {
 			}
 
 			@Override
-			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language){
+			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language) {
 				return null;
 			}
 
 			@Override
-			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage){
+			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
 				return null;
 			}
 		};

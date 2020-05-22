@@ -198,12 +198,12 @@ public class SdlService extends Service {
 				}
 
 				@Override
-				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language){
+				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language) {
 					return null;
 				}
 
 				@Override
-				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage){
+				public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
 					boolean isNeedUpdate = false;
 					String appName = APP_NAME;
 					String ttsName = APP_NAME;
@@ -232,7 +232,7 @@ public class SdlService extends Service {
 							break;
 					}
 					if (isNeedUpdate) {
-						return new LifecycleConfigurationUpdate(appName,null,TTSChunkFactory.createSimpleTTSChunks(ttsName), null);
+						return new LifecycleConfigurationUpdate(appName, null, TTSChunkFactory.createSimpleTTSChunks(ttsName), null);
 					} else {
 						return null;
 					}
