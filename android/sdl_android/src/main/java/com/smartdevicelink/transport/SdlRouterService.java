@@ -1109,7 +1109,7 @@ public class SdlRouterService extends Service{
 		super.onCreate();
 		//Add this first to avoid the runtime exceptions for the entire lifecycle of the service
 		setRouterServiceExceptionHandler();
-        //This must be done regardless of if this service shuts down or not
+		//This must be done regardless of if this service shuts down or not
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			hasCalledStartForeground = false;
 			enterForeground("Waiting for connection...", FOREGROUND_TIMEOUT/1000, false);
