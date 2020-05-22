@@ -396,10 +396,12 @@ public class PutFile extends RPCRequest {
 		super.setOnRPCResponseListener(listener);
 	}
 
+	@Deprecated
 	public void setOnPutFileUpdateListener(OnPutFileUpdateListener listener) {
 		super.setOnRPCResponseListener(listener); //We can use the same method because it get stored as a parent class
 	}
 
+	@Deprecated
 	public OnPutFileUpdateListener getOnPutFileUpdateListener() {
 		return (OnPutFileUpdateListener)getOnRPCResponseListener();
 	}

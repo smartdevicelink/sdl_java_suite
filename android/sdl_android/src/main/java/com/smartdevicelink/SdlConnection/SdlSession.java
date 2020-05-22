@@ -285,6 +285,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         }
     }
 
+    @Deprecated
     public void startRPCStream(InputStream is, RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
         try {
             mRPCPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0, this);
@@ -294,6 +295,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         }
     }
 
+    @Deprecated
     public OutputStream startRPCStream(RPCRequest request, SessionType sType, byte rpcSessionID, byte wiproVersion) {
         try {
             OutputStream os = new PipedOutputStream();
@@ -307,6 +309,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         return null;
     }
 
+    @Deprecated
     public void pauseRPCStream()
     {
         if (mRPCPacketizer != null)
@@ -315,6 +318,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         }
     }
 
+    @Deprecated
     public void resumeRPCStream()
     {
         if (mRPCPacketizer != null)
@@ -323,6 +327,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
         }
     }
 
+    @Deprecated
     public void stopRPCStream()
     {
         if (mRPCPacketizer != null)
