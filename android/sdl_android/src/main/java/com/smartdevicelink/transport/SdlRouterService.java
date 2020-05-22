@@ -1229,7 +1229,11 @@ public class SdlRouterService extends Service{
 							&& e.getMessage().contains("invalid channel for service notification")) { //This is the message received in the exception for notification channel issues
 
 						// Set the flag to not delete the notification channel to avoid this exception in the future
-						SdlRouterService.this.setSdlRouterServicePrefs(KEY_AVOID_NOTIFICATION_CHANNEL_DELETE, true);
+						try{
+						    SdlRouterService.this.setSdlRouterServicePrefs(KEY_AVOID_NOTIFICATION_CHANNEL_DELETE, true);
+                        }catch (Exception exception){
+						    //Unable to save flag for KEY_AVOID_NOTIFICATION_CHANNEL_DELETE
+                        }
 						Looper.loop();
 					} else if (defaultUncaughtExceptionHandler != null) { //No other exception should be handled
 						defaultUncaughtExceptionHandler.uncaughtException(t, e);
