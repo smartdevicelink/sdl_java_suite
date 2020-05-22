@@ -31,6 +31,7 @@
  */
 package com.smartdevicelink.proxy.rpc.enums;
 
+@Deprecated
 public enum SdlConnectionState {
 	SDL_CONNECTED,
 	SDL_DISCONNECTED;
