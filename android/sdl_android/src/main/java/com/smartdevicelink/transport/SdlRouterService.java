@@ -1180,7 +1180,6 @@ public class SdlRouterService extends Service{
 	}
 	
 	public void startUpSequence(){
-
 		IntentFilter disconnectFilter = new IntentFilter();
 		disconnectFilter.addAction(BluetoothDevice.ACTION_CLASS_CHANGED);
 		disconnectFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
