@@ -1107,7 +1107,9 @@ public class SdlRouterService extends Service{
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		//This must be done regardless of if this service shuts down or not
+		//Add this first to avoid the runtime exceptions for the entire lifecycle of the service
+        setRouterServiceExceptionHandler();
+        //This must be done regardless of if this service shuts down or not
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			hasCalledStartForeground = false;
 			enterForeground("Waiting for connection...", FOREGROUND_TIMEOUT/1000, false);
@@ -1178,8 +1180,6 @@ public class SdlRouterService extends Service{
 	}
 	
 	public void startUpSequence(){
-
-		setRouterServiceExceptionHandler();
 
 		IntentFilter disconnectFilter = new IntentFilter();
 		disconnectFilter.addAction(BluetoothDevice.ACTION_CLASS_CHANGED);
