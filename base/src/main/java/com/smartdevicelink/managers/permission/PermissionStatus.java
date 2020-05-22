@@ -96,4 +96,9 @@ public class PermissionStatus {
     protected void setAllowedParameters(Map<String, Boolean> allowedParameters) {
         this.allowedParameters = allowedParameters;
     }
+
+    @Override
+    public String toString() {
+        return "rpcName: " + rpcName + ", allowed: " + isRPCAllowed + ", allowedParameters: " + allowedParameters;
+    }
 }
