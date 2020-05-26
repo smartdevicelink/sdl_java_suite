@@ -5,8 +5,8 @@ import android.os.Looper;
 import android.os.Message;
 
 import com.smartdevicelink.test.util.DeviceUtil;
+import com.smartdevicelink.transport.BaseRouterService;
 import com.smartdevicelink.transport.MultiplexBluetoothTransport;
-import com.smartdevicelink.transport.SdlRouterService;
 
 import junit.framework.TestCase;
 
@@ -34,7 +34,7 @@ public class MultiplexBluetoothTransportTest extends TestCase {
 					return;
 				}
 				switch(msg.what){
-					case SdlRouterService.MESSAGE_STATE_CHANGE:
+					case BaseRouterService.MESSAGE_STATE_CHANGE:
 						if(msg.arg1 == stateDesired){
 							didCorrectThing = true;
 							break;

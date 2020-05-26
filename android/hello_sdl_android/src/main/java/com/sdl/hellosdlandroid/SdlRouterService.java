@@ -1,7 +1,7 @@
 package com.sdl.hellosdlandroid;
 
 
-public class SdlRouterService extends  com.smartdevicelink.transport.SdlRouterService {
+public class SdlRouterService extends  com.smartdevicelink.transport.BaseRouterService {
 
 
 

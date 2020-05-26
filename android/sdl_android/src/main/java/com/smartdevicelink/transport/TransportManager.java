@@ -81,7 +81,7 @@ public class TransportManager extends TransportManagerBase{
         this.mConfig = config;
 
         if(config.service == null) {
-            config.service = SdlBroadcastReceiver.consumeQueuedRouterService();
+            config.service = BaseBroadcastReceiver.consumeQueuedRouterService();
         }
 
         contextWeakReference = new WeakReference<>(config.context);
@@ -496,7 +496,7 @@ public class TransportManager extends TransportManagerBase{
                 return;
             }
             switch (msg.what) {
-                case SdlRouterService.MESSAGE_STATE_CHANGE:
+                case BaseRouterService.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case MultiplexBaseTransport.STATE_CONNECTED:
                             synchronized (service.TRANSPORT_STATUS_LOCK){
@@ -525,7 +525,7 @@ public class TransportManager extends TransportManagerBase{
                     }
                     break;
 
-                case SdlRouterService.MESSAGE_READ:
+                case BaseRouterService.MESSAGE_READ:
                     service.transportListener.onPacketReceived((SdlPacket) msg.obj);
                     break;
             }

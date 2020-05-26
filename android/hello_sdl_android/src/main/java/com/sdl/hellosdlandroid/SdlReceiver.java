@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
-import com.smartdevicelink.transport.SdlBroadcastReceiver;
-import com.smartdevicelink.transport.SdlRouterService;
+import com.smartdevicelink.transport.BaseBroadcastReceiver;
+import com.smartdevicelink.transport.BaseRouterService;
 
-public class SdlReceiver  extends SdlBroadcastReceiver {
+public class SdlReceiver  extends BaseBroadcastReceiver {
 	private static final String TAG = "SdlBroadcastReciever";
 
 	@Override

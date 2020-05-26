@@ -133,7 +133,7 @@ public class SdlRouterStatusProvider {
 			context.startService(bindingIntent);
 		}else {
 			bindingIntent.putExtra(FOREGROUND_EXTRA, true);
-			SdlBroadcastReceiver.setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
+			BaseBroadcastReceiver.setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
 			context.startForegroundService(bindingIntent);
 
 		}

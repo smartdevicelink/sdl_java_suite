@@ -21,7 +21,7 @@ public class LocalRouterServiceTests extends AndroidTestCase2 {
 		p.writeParcelable(new ComponentName(mContext, "test"), 0);
 		p.setDataPosition(0);
 		
-		SdlRouterService.LocalRouterService local = new SdlRouterService.LocalRouterService(p);
+		BaseRouterService.LocalRouterService local = new BaseRouterService.LocalRouterService(p);
 		
 		assertNotNull(local);
 		assertEquals(local.version,4);
@@ -36,8 +36,8 @@ public class LocalRouterServiceTests extends AndroidTestCase2 {
 		p.writeParcelable(new Intent(), 0);
 		p.writeParcelable(new ComponentName(mContext, "test"), 0);
 		p.setDataPosition(0);
-		
-		SdlRouterService.LocalRouterService local = SdlRouterService.LocalRouterService.CREATOR.createFromParcel(p);
+
+		BaseRouterService.LocalRouterService local = BaseRouterService.LocalRouterService.CREATOR.createFromParcel(p);
 		
 		assertNotNull(local);
 		assertEquals(local.version,4);
@@ -45,11 +45,11 @@ public class LocalRouterServiceTests extends AndroidTestCase2 {
 		
 	}
 
-	public SdlRouterService.LocalRouterService getLocalRouterService(int testWith, Parcel p){
+	public BaseRouterService.LocalRouterService getLocalRouterService(int testWith, Parcel p){
 		if(testWith == TEST_WITH_CONSTRUCTOR){
-			return new SdlRouterService.LocalRouterService(p);
+			return new BaseRouterService.LocalRouterService(p);
 		}else{
-			return SdlRouterService.LocalRouterService.CREATOR.createFromParcel(p);
+			return BaseRouterService.LocalRouterService.CREATOR.createFromParcel(p);
 		}
 	}
 	
@@ -60,8 +60,8 @@ public class LocalRouterServiceTests extends AndroidTestCase2 {
 		p.writeParcelable(new ComponentName(mContext, "test"), 0);
 		p.writeParcelable(new Intent(), 0);
 		p.setDataPosition(0);
-		
-		SdlRouterService.LocalRouterService local = getLocalRouterService(testWith, p);
+
+		BaseRouterService.LocalRouterService local = getLocalRouterService(testWith, p);
 
 		assertNotNull(local);
 		assertNull(local.launchIntent);

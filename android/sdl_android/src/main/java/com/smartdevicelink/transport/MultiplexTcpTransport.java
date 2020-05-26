@@ -107,7 +107,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 		}
 
 		// Send the name of the connected device back to the UI Activity
-		Message msg = handler.obtainMessage(SdlRouterService.MESSAGE_DEVICE_NAME);
+		Message msg = handler.obtainMessage(BaseRouterService.MESSAGE_DEVICE_NAME);
 		Bundle bundle = new Bundle();
 		bundle.putString(DEVICE_NAME, connectedDeviceName);
 		bundle.putString(DEVICE_ADDRESS, connectedDeviceAddress);
@@ -317,7 +317,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 								Log.d(TAG, "Packet formed, sending off");
 								SdlPacket packet = psm.getFormedPacket();
 								packet.setTransportRecord(getTransportRecord());
-								handler.obtainMessage(SdlRouterService.MESSAGE_READ, packet).sendToTarget();
+								handler.obtainMessage(BaseRouterService.MESSAGE_READ, packet).sendToTarget();
 							}
 							//We put a trace statement in the message read so we can avoid all the extra bytes
 							psm.reset();

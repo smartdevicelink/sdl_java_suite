@@ -44,12 +44,12 @@ import com.smartdevicelink.protocol.WiProProtocol;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.transport.BTTransport;
 import com.smartdevicelink.transport.BTTransportConfig;
+import com.smartdevicelink.transport.BaseBroadcastReceiver;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.ITransportListener;
 import com.smartdevicelink.transport.MultiplexTransport;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.RouterServiceValidator;
-import com.smartdevicelink.transport.SdlBroadcastReceiver;
 import com.smartdevicelink.transport.SdlTransport;
 import com.smartdevicelink.transport.TCPTransport;
 import com.smartdevicelink.transport.TCPTransportConfig;
@@ -90,7 +90,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		RouterServiceValidator vlad = null;
 		//Let's check if we can even do multiplexing
 		if(transportConfig.getTransportType() == TransportType.MULTIPLEX){
-			ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
+			ComponentName tempCompName = BaseBroadcastReceiver.consumeQueuedRouterService();
 			MultiplexTransportConfig multiConfig = (MultiplexTransportConfig)transportConfig;
 			if(tempCompName!=null){
 				vlad =new RouterServiceValidator(multiConfig.getContext(),tempCompName);
@@ -582,7 +582,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 		if(_transport!=null && (_transport.getTransportType()==TransportType.MULTIPLEX)){ //This is only valid for the multiplex connection
 			MultiplexTransport multi = ((MultiplexTransport)_transport);
 			MultiplexTransportConfig config = multi.getConfig();
-			ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
+			ComponentName tempCompName = BaseBroadcastReceiver.consumeQueuedRouterService();
 			if(config.getService() != null && config.getService().equals(tempCompName)){ //If this is the same service that just connected that we are already looking at. Attempt to reconnect
 				if(!multi.getIsConnected() && multi.isDisconnecting() ){ //If we aren't able to force a connection it means the 
 					_transport = new MultiplexTransport(config,this);
@@ -611,7 +611,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 				&& !_transport.getIsConnected()){
 			if(cachedMultiConfig!=null){
 				//We are in legacy mode, but just received a force connect. The router service should never be pointing us here if we are truely in legacy mode
-				ComponentName tempCompName = SdlBroadcastReceiver.consumeQueuedRouterService();
+				ComponentName tempCompName = BaseBroadcastReceiver.consumeQueuedRouterService();
 				RouterServiceValidator vlad = new RouterServiceValidator(cachedMultiConfig.getContext(),tempCompName);
 				if(vlad.validate()){
 					cachedMultiConfig.setService(tempCompName);

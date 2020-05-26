@@ -23,8 +23,8 @@ public class RegisteredAppTests extends AndroidTestCase2 {
         }
 
         // Instantiate SdlRouterService and Registered App class
-        SdlRouterService router = new SdlRouterService();
-        SdlRouterService.RegisteredApp app = router.new RegisteredApp(APP_ID, messenger);
+        BaseRouterService router = new BaseRouterService();
+        BaseRouterService.RegisteredApp app = router.new RegisteredApp(APP_ID, messenger);
 
         // Call Handle Message
         app.handleMessage(TransportConstants.BYTES_TO_SEND_FLAG_LARGE_PACKET_START,bytes);
@@ -42,8 +42,8 @@ public class RegisteredAppTests extends AndroidTestCase2 {
         }
 
         // Instantiate SdlRouterService and Registered App class
-        SdlRouterService router = new SdlRouterService();
-        SdlRouterService.RegisteredApp app = router.new RegisteredApp(APP_ID, messenger);
+        BaseRouterService router = new BaseRouterService();
+        BaseRouterService.RegisteredApp app = router.new RegisteredApp(APP_ID, messenger);
 
         // Force Null Buffer
         app.buffer = null;

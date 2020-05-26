@@ -561,7 +561,7 @@ public class TransportBroker {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             //We will check to see if it contains this name, should be pretty specific
-            if ((service.service.getClassName()).toLowerCase(Locale.US).contains(SdlBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME)) {
+            if ((service.service.getClassName()).toLowerCase(Locale.US).contains(BaseBroadcastReceiver.SDL_ROUTER_SERVICE_CLASS_NAME)) {
                 this.routerClassName = service.service.getClassName();
                 this.routerPackage = service.service.getPackageName();
                 return true;
@@ -651,7 +651,7 @@ public class TransportBroker {
 
         if (!sendBindingIntent()) {
             Log.e(TAG, "Something went wrong while trying to bind with the router service.");
-            SdlBroadcastReceiver.queryForConnectedService(currentContext);
+            BaseBroadcastReceiver.queryForConnectedService(currentContext);
             return false;
         }
         return true;
