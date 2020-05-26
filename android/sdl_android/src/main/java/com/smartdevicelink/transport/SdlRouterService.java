@@ -63,15 +63,16 @@ import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.IBinder.DeathRecipient;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.os.RemoteException;
-import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.util.AndroidRuntimeException;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
@@ -139,7 +140,7 @@ public class SdlRouterService extends Service{
 	/**
 	 * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
 	 */
-	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 11;
+	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 12;
 
 	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 	
@@ -185,11 +186,18 @@ public class SdlRouterService extends Service{
 	 * Preference location where the service stores known SDL status based on device address
 	 */
 	protected static final String SDL_DEVICE_STATUS_SHARED_PREFS = "sdl.device.status";
+	/**
+	 * Preference location where generic key/values can be stored
+	 */
+	protected static final String SDL_ROUTER_SERVICE_PREFS = "sdl.router.service.prefs";
+	protected static final String KEY_AVOID_NOTIFICATION_CHANNEL_DELETE = "avoidNotificationChannelDelete";
+
 
 
 
 	private static boolean connectAsClient = false;
 	private static boolean closing = false;
+	private static Thread.UncaughtExceptionHandler routerServiceExceptionHandler = null;
 
     private Handler  altTransportTimerHandler, foregroundTimeoutHandler;
     private Runnable  altTransportTimerRunnable, foregroundTimeoutRunnable;
@@ -1099,6 +1107,8 @@ public class SdlRouterService extends Service{
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		//Add this first to avoid the runtime exceptions for the entire lifecycle of the service
+		setRouterServiceExceptionHandler();
 		//This must be done regardless of if this service shuts down or not
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			hasCalledStartForeground = false;
@@ -1194,6 +1204,43 @@ public class SdlRouterService extends Service{
 		}
 		
 		startSequenceComplete= true;
+	}
+
+	/**
+	 * This method will set a new UncaughtExceptionHandler for the current thread. The only
+	 * purpose of the custom UncaughtExceptionHandler is to catch the rare occurrence that the
+	 * a specific mobile device/OS can't properly handle the deletion and creation of the foreground
+	 * notification channel that is necessary for foreground services after Android Oreo.
+	 * The new UncaughtExceptionHandler will catch that specific exception and tell the
+	 * main looper to continue forward. This still leaves the SdlRouterService killed, but prevents
+	 * an ANR to the app that makes the startForegroundService call. It will set a flag that will
+	 * prevent the channel from being deleted in the future and therefore avoiding this exception.
+	 */
+	protected void setRouterServiceExceptionHandler() {
+		final Thread.UncaughtExceptionHandler defaultUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
+		if (defaultUncaughtExceptionHandler != routerServiceExceptionHandler) {
+			routerServiceExceptionHandler = new Thread.UncaughtExceptionHandler() {
+				@Override
+				public void uncaughtException(Thread t, Throwable e) {
+					if (e != null
+							&& e instanceof AndroidRuntimeException
+							&& "android.app.RemoteServiceException".equals(e.getClass().getName())  //android.app.RemoteServiceException is a private class
+							&& e.getMessage().contains("invalid channel for service notification")) { //This is the message received in the exception for notification channel issues
+
+						// Set the flag to not delete the notification channel to avoid this exception in the future
+						try{
+						    SdlRouterService.this.setSdlRouterServicePrefs(KEY_AVOID_NOTIFICATION_CHANNEL_DELETE, true);
+						}catch (Exception exception){
+						    //Unable to save flag for KEY_AVOID_NOTIFICATION_CHANNEL_DELETE
+						}
+						Looper.loop();
+					} else if (defaultUncaughtExceptionHandler != null) { //No other exception should be handled
+						defaultUncaughtExceptionHandler.uncaughtException(t, e);
+					}
+				}
+			};
+			Thread.setDefaultUncaughtExceptionHandler(routerServiceExceptionHandler);
+		}
 	}
 
 
@@ -1528,7 +1575,7 @@ public class SdlRouterService extends Service{
 				if (notificationManager!= null){
 					try {
 						notificationManager.cancelAll();
-						if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+						if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !getBooleanPref(KEY_AVOID_NOTIFICATION_CHANNEL_DELETE,false)) {
 							notificationManager.deleteNotificationChannel(SDL_NOTIFICATION_CHANNEL_ID);
 						}
 					} catch (Exception e) {
@@ -2445,6 +2492,33 @@ public class SdlRouterService extends Service{
 		return preferences.contains(address) && preferences.getBoolean(address,false);
 	}
 
+	/**
+	 * Set specific settings through key/value to the SDL_ROUTER_SERVICE_PREFS
+	 * @param key the key of the pair to set in the preferences
+	 * @param value boolean to attach to key in the preferences
+	 */
+	protected void setSdlRouterServicePrefs(String key, boolean value){
+		SharedPreferences preferences = this.getSharedPreferences(SDL_ROUTER_SERVICE_PREFS, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putBoolean(key,value);
+		editor.commit();
+		Log.d(TAG, "Preference set: " + key + " : " + value);
+	}
+
+	/**
+	 * Retrieves a boolean value for the given key in the SDL_ROUTER_SERVICE_PREFS
+	 * @param key the string key that will be used to retrieve the boolean value
+	 * @param defaultValue if they key does not exist or there is no value to be found, this is the
+	 *                     value that will be returned
+	 * @return the value associated with the supplied key or defaultValue if one does not exist
+	 */
+	protected boolean getBooleanPref(String key, boolean defaultValue){
+		SharedPreferences preferences = this.getSharedPreferences(SDL_ROUTER_SERVICE_PREFS, Context.MODE_PRIVATE);
+		if(preferences != null){
+			return preferences.getBoolean(key, defaultValue);
+		}
+		return false;
+	}
 
 	
 	/* ***********************************************************************************************************************************************************************
