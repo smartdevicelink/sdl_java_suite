@@ -410,7 +410,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 			return show;
 		}
 
-		int numberOfLines = (defaultMainWindowCapability != null && defaultMainWindowCapability.getTextFields() != null) ? ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(defaultMainWindowCapability) : 4;
+		int numberOfLines = defaultMainWindowCapability != null ? ManagerUtility.WindowCapabilityUtility.getMaxNumberOfMainFieldLines(defaultMainWindowCapability) : 4;
 
 		switch (numberOfLines) {
 			case 1: show = assembleOneLineShowText(show, nonNullFields);
