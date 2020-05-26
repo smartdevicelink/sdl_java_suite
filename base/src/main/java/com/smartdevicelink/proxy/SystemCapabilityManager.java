@@ -136,9 +136,8 @@ public class SystemCapabilityManager {
 		// copy all available display capabilities
 		defaultWindowCapability.setTemplatesAvailable(display.getTemplatesAvailable());
 		defaultWindowCapability.setNumCustomPresetsAvailable(display.getNumCustomPresetsAvailable());
-		defaultWindowCapability.setImageFields(display.getImageFields());
 		defaultWindowCapability.setTextFields(display.getTextFields());
-
+		defaultWindowCapability.setImageFields(display.getImageFields());
 		ArrayList<ImageType> imageTypeSupported = new ArrayList<>();
 		imageTypeSupported.add(ImageType.STATIC); // static images expected to always work on any head unit
 		if (display.getGraphicSupported()) {
