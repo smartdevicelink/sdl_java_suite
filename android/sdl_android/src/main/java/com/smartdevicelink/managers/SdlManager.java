@@ -818,7 +818,7 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		@Override
-		public void sendRPCs(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+		public void sendRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
 			try {
 				proxy.sendRequests(rpcs, listener);
 			} catch (SdlException e) {

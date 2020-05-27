@@ -158,7 +158,7 @@ public interface ISdl {
      * @param rpcs List of RPC requests
      * @param listener OnMultipleRequestListener that is called between requests and after all are processed
      */
-    void sendRPCs(List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener);
+    void sendRPCs(List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener);
 
     /**
      * Takes a list of RPCMessages and sends it to SDL in a synchronous fashion. Responses are captured through callback on OnMultipleRequestListener.

@@ -946,7 +946,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		}
 
 		@Override
-		public void sendRPCs(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+		public void sendRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
 
 		}
 

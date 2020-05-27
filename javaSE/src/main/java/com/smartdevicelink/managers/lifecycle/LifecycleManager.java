@@ -1101,7 +1101,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
 
         @Override
-        public void sendRPCs(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+        public void sendRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
             LifecycleManager.this.sendRPCs(rpcs,listener);
         }
 

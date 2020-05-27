@@ -401,7 +401,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void sendRPCs(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+		public void sendRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
 			try {
 				SdlProxyBase.this.sendRequests(rpcs, listener);
 			} catch (SdlException e) {
