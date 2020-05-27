@@ -99,6 +99,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private List<HMILevel> streamableLevels = Arrays.asList(HMILevel.HMI_FULL, HMILevel.HMI_LIMITED);
 	private String vehicleMake = null;
 	private boolean isEncrypted = false;
+	private boolean withPendingRestart = false;
 
 	// INTERNAL INTERFACES
 
@@ -131,7 +132,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if(SessionType.NAV.equals(type)){
 				if(sdlRemoteDisplay !=null){
-					stopStreaming(false);
+				    Log.d("MyTagLog", "onServiceEnded");
+				    Log.d("MyTagLog", "false");
+				    // TODO set withPendingRestart to default in proper place
+					stopStreaming(withPendingRestart);
 				}
 				stateMachine.transitionToState(StreamingStateMachine.NONE);
 				transitionToState(SETTING_UP);
@@ -163,7 +167,9 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					checkState();
 				}
 				if (hasStarted && (streamableLevels.contains(prevHMILevel)) && (!streamableLevels.contains(hmiLevel))) {
-					internalInterface.stopVideoService(false);
+                    Log.d("MyTagLog", "onHmiStatus");
+                    Log.d("MyTagLog", "false");
+                    internalInterface.stopVideoService(false);
 				}
 			}
 		}
@@ -207,6 +213,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				VideoStreamingParameters params = new VideoStreamingParameters();
 				params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
 				VideoStreamManager.this.parameters = params;
+				VideoStreamManager.this.withPendingRestart = true;
 				virtualDisplayEncoder.setStreamingParams(params);
 				stopStreaming(true);
 			}
