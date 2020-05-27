@@ -1,10 +1,12 @@
-# 4.10.1 Release Notes
+# 4.11.1 Release Notes
+
+### Summary:
+||Version|
+|--|--|
+|**Protocol** |5.2.0
+| **RPC** |6.0.0
+| **Tested Targeting** |Android 29
 
 ## Hotfix
 
-- [Fix issue with video streaming stability](https://github.com/smartdevicelink/sdl_java_suite/pull/1214)
-- [Fix potential overflow issue in BestRouterComparator ](https://github.com/smartdevicelink/sdl_java_suite/pull/1229)
-- [Fix NPL in TransportBrokerImpl.resetSession() ](https://github.com/smartdevicelink/sdl_java_suite/pull/1226)
-- [Fix some potential NPEs in SystemCapabilityManager](https://github.com/smartdevicelink/sdl_java_suite/pull/1222)
-- [Fix potential NPEs in BaseMenuManager](https://github.com/smartdevicelink/sdl_java_suite/pull/1216)
-- [Add AppInfo to RegisterAppInterface RPC](https://github.com/smartdevicelink/sdl_java_suite/pull/1220)
+- [Samsung devices not properly managing notification channels](https://github.com/smartdevicelink/sdl_java_suite/issues/1351)

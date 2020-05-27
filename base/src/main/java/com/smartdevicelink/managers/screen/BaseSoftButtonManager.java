@@ -171,7 +171,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
             public void onNotified(RPCNotification notification) {
                 OnButtonPress onButtonPress = (OnButtonPress) notification;
                 if (onButtonPress!= null && onButtonPress.getButtonName() == ButtonName.CUSTOM_BUTTON) {
-                    Integer buttonId = onButtonPress.getCustomButtonName();
+                    Integer buttonId = onButtonPress.getCustomButtonID();
                     if (getSoftButtonObjects() != null) {
                         for (SoftButtonObject softButtonObject : getSoftButtonObjects()) {
                             if (softButtonObject.getButtonId() == buttonId && softButtonObject.getOnEventListener() != null) {

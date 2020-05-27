@@ -524,6 +524,14 @@ public class SdlManager extends BaseSdlManager{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void start(){
+
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				dispose();
+			}
+		});
+
 		Log.i(TAG, "start");
 		if (lifecycleManager == null) {
 			if (transport != null

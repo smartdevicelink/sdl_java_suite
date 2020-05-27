@@ -46,6 +46,7 @@ import static com.smartdevicelink.proxy.rpc.OnHMIStatus.KEY_HMI_LEVEL;
  * 
  *
  */
+@Deprecated
 public class OnLockScreenStatus extends RPCNotification {
 	public static final String KEY_DRIVER_DISTRACTION = "driverDistraction";
 	public static final String KEY_SHOW_LOCK_SCREEN = "showLockScreen";
