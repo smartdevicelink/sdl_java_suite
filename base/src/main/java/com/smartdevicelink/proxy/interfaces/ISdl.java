@@ -154,8 +154,8 @@ public interface ISdl {
     void sendRequests(List<? extends RPCRequest> rpcs, final OnMultipleRequestListener listener);
 
     /**
-     * Pass a list of RPC requests through the proxy to be sent to core
-     * @param rpcs List of RPC requests
+     * Pass a list of RPC messages through the proxy to be sent to core
+     * @param rpcs List of RPC messages
      * @param listener OnMultipleRequestListener that is called between requests and after all are processed
      */
     void sendRPCs(List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener);
