@@ -33,6 +33,7 @@ package com.smartdevicelink.proxy.rpc.listeners;
 
 import com.smartdevicelink.proxy.RPCResponse;
 
+@Deprecated
 public abstract class OnPutFileUpdateListener extends OnRPCResponseListener{
 
 	long totalSize = 0;

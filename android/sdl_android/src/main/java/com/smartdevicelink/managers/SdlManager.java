@@ -818,6 +818,15 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		@Override
+		public void sendRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
+			try {
+				proxy.sendRequests(rpcs, listener);
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
 		public void sendSequentialRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
 			try {
 				proxy.sendSequentialRequests(rpcs,listener);

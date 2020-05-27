@@ -443,12 +443,13 @@ public class LifecycleManager extends BaseLifecycleManager {
                                 }
                             };
                             handleOffboardTransmissionThread.start();
-                        }else if (onSystemRequest.getRequestType() == RequestType.ICON_URL) {
+                        }else if (onSystemRequest.getRequestType() == RequestType.ICON_URL && onSystemRequest.getUrl() != null) {
                             //Download the icon file and send SystemRequest RPC
                             Thread handleOffBoardTransmissionThread = new Thread() {
                                 @Override
                                 public void run() {
-                                    byte[] file = FileUtls.downloadFile(onSystemRequest.getUrl());
+                                    final String urlHttps = onSystemRequest.getUrl().replaceFirst("http://", "https://");
+                                    byte[] file = FileUtls.downloadFile(urlHttps);
                                     if (file != null) {
                                         SystemRequest systemRequest = new SystemRequest();
                                         systemRequest.setFileName(onSystemRequest.getUrl());
@@ -458,7 +459,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                                             sendRPCMessagePrivate(systemRequest);
                                         }
                                     } else {
-                                        DebugTool.logError("File was null at: " + onSystemRequest.getUrl());
+                                        DebugTool.logError("File was null at: " + urlHttps);
                                     }
                                 }
                             };
@@ -1096,6 +1097,11 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         @Override
         public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
+            LifecycleManager.this.sendRPCs(rpcs,listener);
+        }
+
+        @Override
+        public void sendRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
             LifecycleManager.this.sendRPCs(rpcs,listener);
         }
 

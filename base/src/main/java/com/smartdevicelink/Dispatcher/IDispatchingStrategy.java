@@ -31,6 +31,7 @@
  */
 package com.smartdevicelink.Dispatcher;
 
+@Deprecated
 public interface IDispatchingStrategy<T> {
 	public void dispatch(T message);
 	

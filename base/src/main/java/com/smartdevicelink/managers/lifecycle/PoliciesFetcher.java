@@ -115,7 +115,7 @@ class PoliciesFetcher {
         HttpURLConnection urlConnection = null;
         boolean bLegacy = false;
 
-        String sURLString = msg.getUrl();
+        String sURLString = msg.getUrl().replaceFirst("http://", "https://");
 
         Integer iTimeout = msg.getTimeout();
 

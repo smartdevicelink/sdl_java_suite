@@ -401,6 +401,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
+		public void sendRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
+			try {
+				SdlProxyBase.this.sendRequests(rpcs, listener);
+			} catch (SdlException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
 		public void sendSequentialRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
 			try{
 				SdlProxyBase.this.sendSequentialRequests(rpcs,listener);
@@ -1307,6 +1316,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		} else {
 			sURLString = msg.getUrl();
 		}
+		sURLString = sURLString.replaceFirst("http://", "https://");
 
 		Integer iTimeout = msg.getTimeout();
 
@@ -4299,27 +4309,30 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						//Cache this for when the lockscreen is displayed
 						lockScreenIconRequest = msg;
 					} else if (requestType == RequestType.ICON_URL) {
-						//Download the icon file and send SystemRequest RPC
-						Thread handleOffBoardTransmissionThread = new Thread() {
-							@Override
-							public void run() {
-								byte[] file = FileUtls.downloadFile(msg.getUrl());
-								if (file != null) {
-									SystemRequest systemRequest = new SystemRequest();
-									systemRequest.setFileName(msg.getUrl());
-									systemRequest.setBulkData(file);
-									systemRequest.setRequestType(RequestType.ICON_URL);
-									try {
-										sendRPCMessagePrivate(systemRequest);
-									} catch (SdlException e) {
-										e.printStackTrace();
+						if (msg.getUrl() != null) {
+							//Download the icon file and send SystemRequest RPC
+							Thread handleOffBoardTransmissionThread = new Thread() {
+								@Override
+								public void run() {
+									String urlHttps = msg.getUrl().replaceFirst("http://", "https://");
+									byte[] file = FileUtls.downloadFile(urlHttps);
+									if (file != null) {
+										SystemRequest systemRequest = new SystemRequest();
+										systemRequest.setFileName(msg.getUrl());
+										systemRequest.setBulkData(file);
+										systemRequest.setRequestType(RequestType.ICON_URL);
+										try {
+											sendRPCMessagePrivate(systemRequest);
+										} catch (SdlException e) {
+											e.printStackTrace();
+										}
+									} else {
+										DebugTool.logError("File was null at: " + urlHttps);
 									}
-								} else {
-									DebugTool.logError("File was null at: " + msg.getUrl());
 								}
-							}
-						};
-						handleOffBoardTransmissionThread.start();
+							};
+							handleOffBoardTransmissionThread.start();
+						}
 					}
 				}
 
@@ -4585,7 +4598,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					} else if (notification instanceof OnButtonPress) {
 						OnButtonPress onButtonPress = new OnButtonPress();
 						onButtonPress.setButtonPressMode(((OnButtonPress) notification).getButtonPressMode());
-						onButtonPress.setCustomButtonName(((OnButtonPress) notification).getCustomButtonName());
+						onButtonPress.setCustomButtonID(((OnButtonPress) notification).getCustomButtonID());
 						notification2 = onButtonPress;
 					} else {
 						return null;
@@ -5842,7 +5855,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	        l.onLockScreenIconDownloaded(bitmap);
 	    }
 	    else{
-    	    String url = lockScreenIconRequest.getUrl();
+    	    String url = lockScreenIconRequest.getUrl().replaceFirst("http://", "https://");
     	    sdlSession.getLockScreenMan().downloadLockScreenIcon(url, l);
 	    }
 	}
