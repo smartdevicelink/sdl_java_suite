@@ -35,6 +35,7 @@ import com.smartdevicelink.util.DebugTool;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+@Deprecated
 public class ProxyMessageDispatcher<T> {
 	LinkedBlockingQueue<T> _queue = null;
 	private Thread _messageDispatchingThread = null;

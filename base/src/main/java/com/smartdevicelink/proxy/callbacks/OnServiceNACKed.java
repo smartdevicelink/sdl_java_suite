@@ -33,6 +33,7 @@ package com.smartdevicelink.proxy.callbacks;
 
 import com.smartdevicelink.protocol.enums.SessionType;
 
+@Deprecated
 public class OnServiceNACKed extends InternalProxyMessage {
 	private SessionType sessionType;
 
