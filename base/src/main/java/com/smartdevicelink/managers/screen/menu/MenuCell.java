@@ -189,11 +189,7 @@ public class MenuCell implements Cloneable{
 	 * @param voiceCommands - the string list used by the IVI system for voice commands
 	 */
 	public void setVoiceCommands(List<String> voiceCommands) {
-		if (voiceCommands != null && !voiceCommands.isEmpty()) {
-			this.voiceCommands = voiceCommands;
-		} else {
-			this.voiceCommands = null;
-		}
+		this.voiceCommands = voiceCommands;
 	}
 
 	/**
