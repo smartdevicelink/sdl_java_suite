@@ -468,6 +468,33 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.menuCells.size(), 0);
 	}
 
+	public void testSettingMenuWithEmptyVoiceCommands(){
+
+		// Make sure we can send an empty menu with no issues
+		// start fresh
+		menuManager.oldMenuCells = null;
+		menuManager.menuCells = null;
+		menuManager.inProgressUpdate = null;
+		menuManager.waitingUpdateMenuCells = null;
+		menuManager.waitingOnHMIUpdate = false;
+
+
+		MenuSelectionListener menuSelectionListener = mock(MenuSelectionListener.class);
+
+		MenuCell A = new MenuCell("A", null, Collections.EMPTY_LIST, menuSelectionListener);
+
+		menuManager.currentHMILevel = HMILevel.HMI_FULL;
+		// send new cells. They should set the old way
+		List<MenuCell> oldMenu = createDynamicMenu1();
+		List<MenuCell> newMenu = Collections.singletonList(A);
+		menuManager.setMenuCells(oldMenu);
+		assertEquals(menuManager.menuCells.size(), 4);
+
+		menuManager.setMenuCells(newMenu);
+		assertEquals(menuManager.menuCells.size(), 1);
+	}
+
+
 	public void testOpeningMainMenu(){
 		// call open Menu
 		MenuManager mockMenuManager = mock(MenuManager.class);
