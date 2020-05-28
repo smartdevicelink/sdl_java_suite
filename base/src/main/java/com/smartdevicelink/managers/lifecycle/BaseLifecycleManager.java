@@ -127,12 +127,12 @@ abstract class BaseLifecycleManager {
     protected Version rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
 
 
-    private final HashMap<Integer, CopyOnWriteArrayList<OnRPCListener>> rpcListeners;
-    private final HashMap<Integer, OnRPCResponseListener> rpcResponseListeners;
-    private final HashMap<Integer, CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners;
-    private final HashMap<Integer, CopyOnWriteArrayList<OnRPCRequestListener>> rpcRequestListeners;
+    HashMap<Integer, CopyOnWriteArrayList<OnRPCListener>> rpcListeners;
+    HashMap<Integer, OnRPCResponseListener> rpcResponseListeners;
+    HashMap<Integer, CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners;
+    HashMap<Integer, CopyOnWriteArrayList<OnRPCRequestListener>> rpcRequestListeners;
 
-    protected final SystemCapabilityManager systemCapabilityManager;
+    SystemCapabilityManager systemCapabilityManager;
     private EncryptionLifecycleManager encryptionLifecycleManager;
 
     protected RegisterAppInterfaceResponse raiResponse = null;
@@ -140,29 +140,12 @@ abstract class BaseLifecycleManager {
     private OnHMIStatus currentHMIStatus;
     protected boolean firstTimeFull = true;
 
-    final LifecycleListener lifecycleListener;
+    LifecycleListener lifecycleListener;
 
     private List<Class<? extends SdlSecurityBase>> _secList = null;
     private String authToken;
-    private Version minimumProtocolVersion;
-    private Version minimumRPCVersion;
-
-    public BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
-
-        this.lifecycleListener = listener;
-
-        this.rpcListeners = new HashMap<>();
-        this.rpcResponseListeners = new HashMap<>();
-        this.rpcNotificationListeners = new HashMap<>();
-        this.rpcRequestListeners = new HashMap<>();
-
-        this.appConfig = appConfig;
-        this.minimumProtocolVersion = appConfig.minimumProtocolVersion;
-        this.minimumRPCVersion = appConfig.minimumRPCVersion;
-        this.session = new SdlSession(sdlConnectionListener, config);
-
-        this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
-    }
+    Version minimumProtocolVersion;
+    Version minimumRPCVersion;
 
     public void start(){
         try {
@@ -351,7 +334,7 @@ abstract class BaseLifecycleManager {
     private void onClose(String info, Exception e){
         Log.i(TAG, "onClose");
         if(lifecycleListener != null){
-            lifecycleListener.onProxyClosed(this, info,e,null);
+            lifecycleListener.onProxyClosed((LifecycleManager) this, info,e,null);
         }
     }
 
@@ -418,7 +401,7 @@ abstract class BaseLifecycleManager {
                         boolean shouldInit = currentHMIStatus == null;
                         currentHMIStatus = (OnHMIStatus) message;
                         if (lifecycleListener != null && shouldInit) {
-                            lifecycleListener.onProxyConnected(BaseLifecycleManager.this);
+                            lifecycleListener.onProxyConnected((LifecycleManager) BaseLifecycleManager.this);
                         }
                         break;
                     case ON_HASH_CHANGE:
@@ -1216,11 +1199,11 @@ abstract class BaseLifecycleManager {
      *********************************************************************************************************/
 
     public interface LifecycleListener{
-        void onProxyConnected(BaseLifecycleManager lifeCycleManager);
-        void onProxyClosed(BaseLifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason);
+        void onProxyConnected(LifecycleManager lifeCycleManager);
+        void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason);
         void onServiceStarted(SessionType sessionType);
         void onServiceEnded(SessionType sessionType);
-        void onError(BaseLifecycleManager lifeCycleManager, String info, Exception e);
+        void onError(LifecycleManager lifeCycleManager, String info, Exception e);
     }
 
     public static class AppConfig{

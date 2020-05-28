@@ -34,15 +34,10 @@ package com.smartdevicelink.managers.lifecycle;
 
 import android.support.annotation.RestrictTo;
 
-import com.smartdevicelink.transport.BaseTransportConfig;
-
 /**
  * The lifecycle manager creates a central point for all SDL session logic to converge. It should only be used by
  * the library itself. Usage outside the library is not permitted and will not be protected for in the future.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class LifecycleManager extends BaseLifecycleManager {
-    public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
-        super(appConfig, config, listener);
-    }
 }
