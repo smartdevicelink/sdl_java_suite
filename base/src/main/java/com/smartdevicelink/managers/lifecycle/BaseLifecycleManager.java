@@ -170,7 +170,7 @@ abstract class BaseLifecycleManager {
         session.close();
     }
 
-    private Version getProtocolVersion(){
+    Version getProtocolVersion(){
         if (session != null){
             return session.getProtocolVersion();
         }
