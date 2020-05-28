@@ -58,6 +58,7 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -191,7 +192,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		// updating voice commands before HMI is ready
 		assertTrue(menuManager.waitingOnHMIUpdate);
 		// these are the 2 commands we have waiting
-		assertEquals(menuManager.waitingUpdateMenuCells.size(), 5);
+		assertEquals(menuManager.waitingUpdateMenuCells.size(), 4);
 		assertEquals(menuManager.currentHMILevel, HMILevel.HMI_NONE);
 		// The Menu Manager should send new menu once HMI full occurs
 		sendFakeCoreOnHMIFullNotifications();
@@ -468,50 +469,6 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.menuCells.size(), 0);
 	}
 
-	public void testSettingMenuWithEmptyVoiceCommands(){
-		// Make sure we can send an empty menu with no issues
-		// start fresh
-		menuManager.oldMenuCells = null;
-		menuManager.menuCells = null;
-		menuManager.inProgressUpdate = null;
-		menuManager.waitingUpdateMenuCells = null;
-		menuManager.waitingOnHMIUpdate = false;
-
-		MenuSelectionListener menuSelectionListener = mock(MenuSelectionListener.class);
-
-		MenuCell A = new MenuCell("A", null, Collections.EMPTY_LIST, menuSelectionListener);
-
-		menuManager.currentHMILevel = HMILevel.HMI_FULL;
-		List<MenuCell> newMenu = Collections.singletonList(A);
-
-		menuManager.setMenuCells(newMenu);
-		assertEquals(menuManager.menuCells.get(0).getVoiceCommands(), Collections.EMPTY_LIST);
-	}
-
-	public void testSettingMenuWithVoiceCommands(){
-		// Make sure we can send an empty menu with no issues
-		// start fresh
-		menuManager.oldMenuCells = null;
-		menuManager.menuCells = null;
-		menuManager.inProgressUpdate = null;
-		menuManager.waitingUpdateMenuCells = null;
-		menuManager.waitingOnHMIUpdate = false;
-
-
-		MenuSelectionListener menuSelectionListener = mock(MenuSelectionListener.class);
-
-		List<String> voiceCommandList = Collections.singletonList("Hello There");
-
-		MenuCell A = new MenuCell("A", null, voiceCommandList, menuSelectionListener);
-
-		menuManager.currentHMILevel = HMILevel.HMI_FULL;
-		List<MenuCell> newMenu = Collections.singletonList(A);
-
-		menuManager.setMenuCells(newMenu);
-		assertEquals(menuManager.menuCells.get(0).getVoiceCommands(), voiceCommandList);
-	}
-
-
 	public void testOpeningMainMenu(){
 		// call open Menu
 		MenuManager mockMenuManager = mock(MenuManager.class);
@@ -568,7 +525,6 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		MenuSelectionListener menuSelectionListener1 = mock(MenuSelectionListener.class);
 		MenuSelectionListener menuSelectionListener2 = mock(MenuSelectionListener.class);
 		MenuSelectionListener menuSelectionListener3 = mock(MenuSelectionListener.class);
-		MenuSelectionListener menuSelectionListener4 = mock(MenuSelectionListener.class);
 		MenuSelectionListener menuSelectionListenerSub1 = mock(MenuSelectionListener.class);
 		MenuSelectionListener menuSelectionListenerSub2 = mock(MenuSelectionListener.class);
 
@@ -578,12 +534,9 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		// some menu cells
 		List<String> voice2 = Collections.singletonList("Cell two");
 
-		List<String> voice3 = Collections.EMPTY_LIST;
-
 		mainCell1 = new MenuCell("Test Cell 1", livio, null, menuSelectionListener1);
 		MenuCell mainCell2 = new MenuCell("Test Cell 2", livio, voice2, menuSelectionListener2);
 		MenuCell mainCell3 = new MenuCell("Test Cell 3",null, null,  menuSelectionListener3);
-		MenuCell mainCell5 = new MenuCell("Test Cell 5", null, voice3, menuSelectionListener4);
 
 		// SUB MENU
 		MenuCell subCell1 = new MenuCell("SubCell 1",null, null, menuSelectionListenerSub1);
@@ -592,7 +545,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		mainCell4 = new MenuCell("Test Cell 4", null, livio, Arrays.asList(subCell1,subCell2)); // sub menu parent cell
 		mainCell4.setCellId(4);
 
-		return Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5);
+		return Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4);
 	}
 
 	private List<MenuCell> createDynamicMenu1(){
