@@ -263,29 +263,41 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
      * Stop all threads
      */
     public synchronized void stop() {
-    	stop(STATE_NONE);
+	    stop(STATE_NONE, REASON_NONE);
     }
-    protected synchronized void stop(int stateToTransitionTo) {
-    	//Log.d(TAG, "Attempting to close the bluetooth serial server");
-        if (mConnectThread != null) {
-        	mConnectThread.cancel();
-        	mConnectThread = null;
-        }
 
-        if (mConnectedThread != null) {
-        	mConnectedThread.cancel(); 
-        	mConnectedThread = null;
-        }
-        if (mConnectedWriteThread != null) {mConnectedWriteThread.cancel(); mConnectedWriteThread = null;}
+	protected synchronized void stop(int stateToTransitionTo) {
+		this.stop(stateToTransitionTo, REASON_NONE);
+	}
+	@Override
+	protected synchronized void stop(int stateToTransitionTo, byte error) {
+		super.stop(stateToTransitionTo, error);
+		Log.d(TAG, "Attempting to close the bluetooth serial server");
+		if (mConnectThread != null) {
+			mConnectThread.cancel();
+			mConnectThread = null;
+		}
 
-        if (mSecureAcceptThread != null) {
-            mSecureAcceptThread.cancel();
-            mSecureAcceptThread = null;
-        }
+		if (mConnectedThread != null) {
+			mConnectedThread.cancel();
+			mConnectedThread = null;
+		}
+		if (mConnectedWriteThread != null) {mConnectedWriteThread.cancel(); mConnectedWriteThread = null;}
 
-        setState(stateToTransitionTo);
-    }
-    
+		if (mSecureAcceptThread != null) {
+			mSecureAcceptThread.cancel();
+			mSecureAcceptThread = null;
+		}
+
+		if (stateToTransitionTo == MultiplexBaseTransport.STATE_ERROR) {
+			Bundle bundle = new Bundle();
+			bundle.putByte(ERROR_REASON_KEY, error);
+			setState(stateToTransitionTo, bundle);
+		} else {
+			setState(stateToTransitionTo, null);
+		}
+	}
+
 
     /**
      * Write to the ConnectedThread in an unsynchronized manner
@@ -375,6 +387,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                 	}
             	} catch (IOException e) {
                 	//Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
+		            MultiplexBluetoothTransport.this.stop(STATE_ERROR, REASON_SPP_ERROR);
                 	 //Let's try to shut down this thead
             	}catch(SecurityException e2){
             		//Log.e(TAG, "<LIVIO> Security Exception in Accept Thread - "+e2.toString());
@@ -402,7 +415,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                 try {
                 	if(listenAttempts>=5){
                 		Log.e(TAG, "Complete failure in attempting to listen for Bluetooth connection, erroring out.");
-                		MultiplexBluetoothTransport.this.stop(STATE_ERROR);
+		                MultiplexBluetoothTransport.this.stop(STATE_ERROR, REASON_NONE);
                 		return;
                 	}
                 	listenAttempts++;
@@ -417,12 +430,12 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                 	}
                 	else{
                 		Log.e(TAG, "Listening Socket was null, stopping the bluetooth serial server.");
-                		MultiplexBluetoothTransport.this.stop(STATE_ERROR);
+		                MultiplexBluetoothTransport.this.stop(STATE_ERROR, REASON_NONE);
                 		return;
                 	}
                 } catch (IOException e) {
                     Log.e(TAG, "Socket Type: " + mSocketType + "accept() failed");
-                    MultiplexBluetoothTransport.this.stop(STATE_ERROR);
+	                MultiplexBluetoothTransport.this.stop(STATE_ERROR, REASON_SPP_ERROR);
                     return;
                 }
 

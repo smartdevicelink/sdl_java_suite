@@ -212,7 +212,7 @@ public class SdlRouterService extends Service{
 	private SparseIntArray sessionHashIdMap;
 	private SparseIntArray cleanedSessionMap;
 	private final Object SESSION_LOCK = new Object(), REGISTERED_APPS_LOCK = new Object(),
-			PING_COUNT_LOCK = new Object(), NOTIFICATION_LOCK = new Object();
+			PING_COUNT_LOCK = new Object(), FOREGROUND_NOTIFICATION_LOCK = new Object();
 	
 	private static Messenger altTransportService = null;
 	
@@ -1403,7 +1403,7 @@ public class SdlRouterService extends Service{
 		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2){
 			return;
 		}
-		synchronized (NOTIFICATION_LOCK) {
+		synchronized (FOREGROUND_NOTIFICATION_LOCK) {
 			if (foregroundTimeoutHandler == null) {
 				foregroundTimeoutHandler = new Handler();
 			}
@@ -1430,7 +1430,7 @@ public class SdlRouterService extends Service{
 	}
 
 	public void cancelForegroundTimeOut(){
-		synchronized (NOTIFICATION_LOCK) {
+		synchronized (FOREGROUND_NOTIFICATION_LOCK) {
 			if (foregroundTimeoutHandler != null && foregroundTimeoutRunnable != null) {
 				foregroundTimeoutHandler.removeCallbacks(foregroundTimeoutRunnable);
 			}
@@ -1499,7 +1499,7 @@ public class SdlRouterService extends Service{
         	builder.setUsesChronometer(true);
         	builder.setChronometerCountDown(true);
         }
-        synchronized (NOTIFICATION_LOCK) {
+        synchronized (FOREGROUND_NOTIFICATION_LOCK) {
 			Notification notification;
 			if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
 				notification = builder.getNotification();
@@ -1563,7 +1563,7 @@ public class SdlRouterService extends Service{
 	}
 
 	private void exitForeground(){
-		synchronized (NOTIFICATION_LOCK) {
+		synchronized (FOREGROUND_NOTIFICATION_LOCK) {
 			if (isForeground && !isPrimaryTransportConnected()) {	//Ensure that the service is in the foreground and no longer connected to a transport
 				DebugTool.logInfo("SdlRouterService to exit foreground");
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -1574,7 +1574,7 @@ public class SdlRouterService extends Service{
 				NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 				if (notificationManager!= null){
 					try {
-						notificationManager.cancelAll();
+						notificationManager.cancel(FOREGROUND_SERVICE_ID);
 						if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !getBooleanPref(KEY_AVOID_NOTIFICATION_CHANNEL_DELETE,false)) {
 							notificationManager.deleteNotificationChannel(SDL_NOTIFICATION_CHANNEL_ID);
 						}
@@ -1929,16 +1929,24 @@ public class SdlRouterService extends Service{
 
 	@Deprecated
 	public void onTransportError(TransportType transportType){
-	    onTransportError(new TransportRecord(transportType,null));
-    }
+		onTransportError(new TransportRecord(transportType,null), null);
+	}
 
-	public void onTransportError(TransportRecord transport){
+	@Deprecated
+	public void onTransportError(TransportRecord record) {
+		onTransportError(record, null);
+	}
+
+	public void onTransportError(TransportRecord transport, Bundle errorBundle){
         switch (transport.getType()){
             case BLUETOOTH:
                 if(bluetoothTransport !=null){
                     bluetoothTransport.setStateManually(MultiplexBluetoothTransport.STATE_NONE);
                     bluetoothTransport = null;
                 }
+	            if (errorBundle != null && errorBundle.getByte(MultiplexBaseTransport.ERROR_REASON_KEY) == MultiplexBaseTransport.REASON_SPP_ERROR) {
+		            notifySppError();
+	            }
                 break;
             case USB:
                 break;
@@ -2007,9 +2015,9 @@ public class SdlRouterService extends Service{
 	            			// We've just lost the connection
                             service.onTransportDisconnected(transportRecord);
 	            			break;
-	            		case MultiplexBaseTransport.STATE_ERROR:
-                            service.onTransportError(transportRecord);
-	            			break;
+				        case MultiplexBaseTransport.STATE_ERROR:
+					        service.onTransportError(transportRecord, msg.getData());
+					        break;
 	            		}
 	                break;
 
@@ -3781,5 +3789,54 @@ public class SdlRouterService extends Service{
 		 }
 	}
 
+	/**
+	 * notifySppError: utilize notification channel to notify the SPP out-of-resource error.
+	 */
+	@TargetApi(11)
+	@SuppressLint("NewApi")
+	private void notifySppError() {
+		Notification.Builder builder;
+		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
+			builder = new Notification.Builder(getApplicationContext());
+		} else {
+			builder = new Notification.Builder(getApplicationContext(), TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID);
+		}
+		ComponentName name = new ComponentName(this, this.getClass());
+		if(0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) { //If we are in debug mode, include what app has the router service open
+			builder.setContentTitle("SDL: " + name.getPackageName());
+		} else {
+			builder.setContentTitle(getString(R.string.notification_title));
+		}
+		builder.setTicker(getString(R.string.sdl_error_notification_channel_name));
+		builder.setContentText(getString(R.string.spp_out_of_resource));
 
+		//We should use icon from library resources if available
+		int trayId = getResources().getIdentifier("sdl_tray_icon", "drawable", getPackageName());
+
+		builder.setSmallIcon(trayId);
+		Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.spp_error);
+		builder.setLargeIcon(icon);
+
+		builder.setOngoing(false);
+
+		Log.e(TAG, "Notification: notifySppError entering");
+		final String tag = "SDL";
+		//Now we need to add a notification channel
+		final NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		if (notificationManager != null) {
+			notificationManager.cancel(tag, TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID_INT);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				NotificationChannel notificationChannel = new NotificationChannel(TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID, getString(R.string.sdl_error_notification_channel_name), NotificationManager.IMPORTANCE_HIGH);
+				notificationChannel.enableLights(true);
+				notificationChannel.enableVibration(true);
+				notificationChannel.setShowBadge(false);
+				notificationManager.createNotificationChannel(notificationChannel);
+				builder.setChannelId(notificationChannel.getId());
+			}
+			Notification notification = builder.build();
+			notificationManager.notify(tag, TransportConstants.SDL_ERROR_NOTIFICATION_CHANNEL_ID_INT, notification);
+		} else {
+			Log.e(TAG, "notifySppError: Unable to retrieve notification Manager service");
+		}
+	}
 }
