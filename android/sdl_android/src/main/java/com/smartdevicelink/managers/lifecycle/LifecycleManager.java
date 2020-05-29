@@ -47,6 +47,7 @@ import java.util.HashMap;
 /**
  * The lifecycle manager creates a central point for all SDL session logic to converge. It should only be used by
  * the library itself. Usage outside the library is not permitted and will not be protected for in the future.
+ * @author Bilal Alsharifi.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class LifecycleManager extends BaseLifecycleManager {
