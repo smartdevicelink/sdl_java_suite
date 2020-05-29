@@ -36,13 +36,10 @@ import android.support.annotation.RestrictTo;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.SdlConnection.SdlSession2;
-import com.smartdevicelink.proxy.SystemCapabilityManager;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
-
-import java.util.HashMap;
 
 /**
  * The lifecycle manager creates a central point for all SDL session logic to converge. It should only be used by
@@ -52,17 +49,7 @@ import java.util.HashMap;
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class LifecycleManager extends BaseLifecycleManager {
     public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
-
-        this.lifecycleListener = listener;
-
-        this.rpcListeners = new HashMap<>();
-        this.rpcResponseListeners = new HashMap<>();
-        this.rpcNotificationListeners = new HashMap<>();
-        this.rpcRequestListeners = new HashMap<>();
-
-        this.appConfig = appConfig;
-        this.minimumProtocolVersion = appConfig.getMinimumProtocolVersion();
-        this.minimumRPCVersion = appConfig.getMinimumRPCVersion();
+        super(appConfig, config, listener);
 
         if (config != null && config.getTransportType().equals(TransportType.MULTIPLEX)) {
             this.session = new SdlSession2(sdlConnectionListener, (MultiplexTransportConfig) config);
@@ -71,7 +58,5 @@ public class LifecycleManager extends BaseLifecycleManager {
         }else {
             this.session = SdlSession.createSession((byte)getProtocolVersion().getMajor(),sdlConnectionListener, config);
         }
-
-        this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
     }
 }

@@ -74,23 +74,79 @@ public class SdlManager extends BaseSdlManager{
 	private Context context;
 	private LockScreenConfig lockScreenConfig;
 
-
 	// Managers
 	private LockScreenManager lockScreenManager;
 	private VideoStreamManager videoStreamManager;
 	private AudioStreamManager audioStreamManager;
 
+	/**
+	 * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
+	 */
+	@Override
+	public void start(){
+		if (lifecycleManager == null) {
+			if(transport!= null  && transport.getTransportType() == TransportType.MULTIPLEX){
+				//Do the thing
+				MultiplexTransportConfig multiplexTransportConfig = (MultiplexTransportConfig)(transport);
+				final MultiplexTransportConfig.TransportListener devListener = multiplexTransportConfig.getTransportListener();
+				multiplexTransportConfig.setTransportListener(new MultiplexTransportConfig.TransportListener() {
+					@Override
+					public void onTransportEvent(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail) {
+
+						//Pass to submanagers that need it
+						if(videoStreamManager != null){
+							videoStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
+						}
+
+						if(audioStreamManager != null){
+							audioStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
+						}
+						//If the developer supplied a listener to start, it is time to call that
+						if(devListener != null){
+							devListener.onTransportEvent(connectedTransports,audioStreamTransportAvail,videoStreamTransportAvail);
+						}
+					}
+				});
+
+				//If the requires audio support has not been set, it should be set to true if the
+				//app is a media app, and false otherwise
+				if(multiplexTransportConfig.requiresAudioSupport() == null){
+					multiplexTransportConfig.setRequiresAudioSupport(isMediaApp);
+				}
+			}
+
+			super.start();
+		}
+	}
 
 	@Override
-	void onProxyClosed(SdlDisconnectedReason reason) {
-		Log.i(TAG,"Proxy is closed.");
-		if(managerListener != null){
-			managerListener.onDestroy();
+	protected void initialize(){
+		// Instantiate sub managers
+		this.permissionManager = new PermissionManager(_internalInterface);
+		this.fileManager = new FileManager(_internalInterface, context, fileManagerConfig);
+		if (lockScreenConfig.isEnabled()) {
+			this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
+		}
+		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
+		if(getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)){
+			this.videoStreamManager = new VideoStreamManager(_internalInterface);
+		} else {
+			this.videoStreamManager = null;
+		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+				&& (getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)) ) {
+			this.audioStreamManager = new AudioStreamManager(_internalInterface, context);
+		} else {
+			this.audioStreamManager = null;
 		}
 
-		if (!reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)){
-			dispose();
+		// Start sub managers
+		this.permissionManager.start(subManagerListener);
+		this.fileManager.start(subManagerListener);
+		if (lockScreenConfig.isEnabled()){
+			this.lockScreenManager.start(subManagerListener);
 		}
+		this.screenManager.start(subManagerListener);
 	}
 
 	@Override
@@ -153,33 +209,15 @@ public class SdlManager extends BaseSdlManager{
 	}
 
 	@Override
-	protected void initialize(){
-		// Instantiate sub managers
-		this.permissionManager = new PermissionManager(_internalInterface);
-		this.fileManager = new FileManager(_internalInterface, context, fileManagerConfig);
-		if (lockScreenConfig.isEnabled()) {
-			this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
-		}
-		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-		if(getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)){
-			this.videoStreamManager = new VideoStreamManager(_internalInterface);
-		} else {
-			this.videoStreamManager = null;
-		}
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-				&& (getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)) ) {
-			this.audioStreamManager = new AudioStreamManager(_internalInterface, context);
-		} else {
-			this.audioStreamManager = null;
+	void onProxyClosed(SdlDisconnectedReason reason) {
+		Log.i(TAG,"Proxy is closed.");
+		if(managerListener != null){
+			managerListener.onDestroy();
 		}
 
-		// Start sub managers
-		this.permissionManager.start(subManagerListener);
-		this.fileManager.start(subManagerListener);
-		if (lockScreenConfig.isEnabled()){
-			this.lockScreenManager.start(subManagerListener);
+		if (!reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)){
+			dispose();
 		}
-		this.screenManager.start(subManagerListener);
 	}
 
 	/** Dispose SdlManager and clean its resources
@@ -226,8 +264,6 @@ public class SdlManager extends BaseSdlManager{
 	}
 
 	// MANAGER GETTERS
-
-
     /**
      * Gets the VideoStreamManager. <br>
 	 * The VideoStreamManager returned will only be not null if the registered app type is
@@ -255,7 +291,6 @@ public class SdlManager extends BaseSdlManager{
 		return audioStreamManager;
 	}
 
-
 	/**
 	 * Gets the LockScreenManager. <br>
 	 * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
@@ -269,58 +304,8 @@ public class SdlManager extends BaseSdlManager{
 		return lockScreenManager;
 	}
 
-
-
 	// PROTECTED GETTERS
-
 	protected LockScreenConfig getLockScreenConfig() { return lockScreenConfig; }
-
-
-
-	// LIFECYCLE / OTHER
-
-	// STARTUP
-
-	/**
-	 * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
-	 */
-	@Override
-	public void start(){
-		if (lifecycleManager == null) {
-			if(transport!= null  && transport.getTransportType() == TransportType.MULTIPLEX){
-				//Do the thing
-				MultiplexTransportConfig multiplexTransportConfig = (MultiplexTransportConfig)(transport);
-				final MultiplexTransportConfig.TransportListener devListener = multiplexTransportConfig.getTransportListener();
-				multiplexTransportConfig.setTransportListener(new MultiplexTransportConfig.TransportListener() {
-					@Override
-					public void onTransportEvent(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail) {
-
-						//Pass to submanagers that need it
-						if(videoStreamManager != null){
-							videoStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
-						}
-
-						if(audioStreamManager != null){
-							audioStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
-						}
-						//If the developer supplied a listener to start, it is time to call that
-						if(devListener != null){
-							devListener.onTransportEvent(connectedTransports,audioStreamTransportAvail,videoStreamTransportAvail);
-						}
-					}
-				});
-
-				//If the requires audio support has not been set, it should be set to true if the
-				//app is a media app, and false otherwise
-				if(multiplexTransportConfig.requiresAudioSupport() == null){
-					multiplexTransportConfig.setRequiresAudioSupport(isMediaApp);
-				}
-			}
-
-			super.start();
-		}
-	}
-
 
 	// BUILDER
 	public static class Builder extends BaseSdlManager.Builder{
@@ -358,7 +343,6 @@ public class SdlManager extends BaseSdlManager{
 			return this;
 		}
 
-
 		/**
 		 * Sets the Context
 		 * @param context
@@ -367,7 +351,6 @@ public class SdlManager extends BaseSdlManager{
 			sdlManager.context = context;
 			return this;
 		}
-
 
 		/**
 		 * Build SdlManager ang get it ready to be started

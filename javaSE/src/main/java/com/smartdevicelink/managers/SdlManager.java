@@ -42,7 +42,6 @@ import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
-
 /**
  * <strong>SDLManager</strong> <br>
  *
@@ -57,13 +56,40 @@ import com.smartdevicelink.util.DebugTool;
  */
 public class SdlManager extends BaseSdlManager {
 
+    /**
+     * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
+     */
+    @SuppressWarnings("unchecked")
+    public void start() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                dispose();
+            }
+        });
+
+        Log.i(TAG, "start");
+        if (lifecycleManager == null) {
+            if (transport != null
+                    && (transport.getTransportType().equals(TransportType.WEB_SOCKET_SERVER) || transport.getTransportType().equals(TransportType.CUSTOM))) {
+                super.start();
+            } else {
+                throw new RuntimeException("No transport provided");
+            }
+        }
+    }
 
     @Override
-    void onProxyClosed(SdlDisconnectedReason reason) {
-        Log.i(TAG,"Proxy is closed.");
-        if(managerListener != null){
-            managerListener.onDestroy(SdlManager.this);
-        }
+    protected void initialize(){
+        // Instantiate sub managers
+        this.permissionManager = new PermissionManager(_internalInterface);
+        this.fileManager = new FileManager(_internalInterface, fileManagerConfig);
+        this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
+
+        // Start sub managers
+        this.permissionManager.start(subManagerListener);
+        this.fileManager.start(subManagerListener);
+        this.screenManager.start(subManagerListener);
     }
 
     @Override
@@ -116,16 +142,11 @@ public class SdlManager extends BaseSdlManager {
     }
 
     @Override
-    protected void initialize(){
-        // Instantiate sub managers
-        this.permissionManager = new PermissionManager(_internalInterface);
-        this.fileManager = new FileManager(_internalInterface, fileManagerConfig);
-        this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-
-        // Start sub managers
-        this.permissionManager.start(subManagerListener);
-        this.fileManager.start(subManagerListener);
-        this.screenManager.start(subManagerListener);
+    void onProxyClosed(SdlDisconnectedReason reason) {
+        Log.i(TAG,"Proxy is closed.");
+        if(managerListener != null){
+            managerListener.onDestroy(SdlManager.this);
+        }
     }
 
     @Override
@@ -152,29 +173,6 @@ public class SdlManager extends BaseSdlManager {
         }
 
         transitionToState(BaseSubManager.SHUTDOWN);
-    }
-
-    /**
-     * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
-     */
-    @SuppressWarnings("unchecked")
-    public void start() {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                dispose();
-            }
-        });
-
-        Log.i(TAG, "start");
-        if (lifecycleManager == null) {
-            if (transport != null
-                    && (transport.getTransportType().equals(TransportType.WEB_SOCKET_SERVER) || transport.getTransportType().equals(TransportType.CUSTOM))) {
-                super.start();
-            } else {
-                throw new RuntimeException("No transport provided");
-            }
-        }
     }
 
     // BUILDER

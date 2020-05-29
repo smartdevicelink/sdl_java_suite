@@ -104,13 +104,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 abstract class BaseLifecycleManager {
 
     private static final String TAG = "Lifecycle Manager";
-
     public static final Version MAX_SUPPORTED_RPC_VERSION = new Version(6, 0, 0);
 
     // Protected Correlation IDs
-    private final int 	REGISTER_APP_INTERFACE_CORRELATION_ID = 65529,
+    private final int REGISTER_APP_INTERFACE_CORRELATION_ID = 65529,
             UNREGISTER_APP_INTERFACE_CORRELATION_ID = 65530;
-
 
     // Sdl Synchronization Objects
     private static final Object  RPC_LISTENER_LOCK = new Object(),
@@ -118,34 +116,38 @@ abstract class BaseLifecycleManager {
             ON_REQUEST_LISTENER_LOCK = new Object(),
             ON_NOTIFICATION_LISTENER_LOCK = new Object();
 
-
-
     SdlSession session;
     AppConfig appConfig;
-
-    //protected Version protocolVersion = new Version(1,0,0);
-    protected Version rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
-
-
+    Version rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
     HashMap<Integer, CopyOnWriteArrayList<OnRPCListener>> rpcListeners;
     HashMap<Integer, OnRPCResponseListener> rpcResponseListeners;
     HashMap<Integer, CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners;
     HashMap<Integer, CopyOnWriteArrayList<OnRPCRequestListener>> rpcRequestListeners;
-
     SystemCapabilityManager systemCapabilityManager;
     private EncryptionLifecycleManager encryptionLifecycleManager;
-
-    protected RegisterAppInterfaceResponse raiResponse = null;
-
+    RegisterAppInterfaceResponse raiResponse = null;
     private OnHMIStatus currentHMIStatus;
-    protected boolean firstTimeFull = true;
-
+    boolean firstTimeFull = true;
     LifecycleListener lifecycleListener;
-
     private List<Class<? extends SdlSecurityBase>> _secList = null;
     private String authToken;
     Version minimumProtocolVersion;
     Version minimumRPCVersion;
+
+    BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
+        this.lifecycleListener = listener;
+
+        this.rpcListeners = new HashMap<>();
+        this.rpcResponseListeners = new HashMap<>();
+        this.rpcNotificationListeners = new HashMap<>();
+        this.rpcRequestListeners = new HashMap<>();
+
+        this.appConfig = appConfig;
+        this.minimumProtocolVersion = appConfig.getMinimumProtocolVersion();
+        this.minimumRPCVersion = appConfig.getMinimumRPCVersion();
+
+        this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
+    }
 
     public void start(){
         try {
@@ -154,7 +156,6 @@ abstract class BaseLifecycleManager {
         } catch (SdlException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -322,7 +323,6 @@ abstract class BaseLifecycleManager {
         return this.raiResponse;
     }
 
-
     /**
      * Get the current OnHMIStatus
      * @return OnHMIStatus object represents the current OnHMIStatus
@@ -353,7 +353,6 @@ abstract class BaseLifecycleManager {
         return null;
     }
 
-
     /* *******************************************************************************************************
      ********************************** INTERNAL - RPC LISTENERS !! START !! *********************************
      *********************************************************************************************************/
@@ -366,7 +365,6 @@ abstract class BaseLifecycleManager {
         addRpcListener(FunctionID.ON_APP_INTERFACE_UNREGISTERED, rpcListener);
         addRpcListener(FunctionID.UNREGISTER_APP_INTERFACE, rpcListener);
     }
-
 
     private OnRPCListener rpcListener = new OnRPCListener() {
         @Override
@@ -723,8 +721,6 @@ abstract class BaseLifecycleManager {
      **************************************** RPC LISTENERS !! END !! ****************************************
      *********************************************************************************************************/
 
-
-
     private void sendRPCMessagePrivate(RPCMessage message){
         try {
             //FIXME this is temporary until the next major release of the library where OK is removed
@@ -756,7 +752,6 @@ abstract class BaseLifecycleManager {
 
                 }
             }
-
 
             message.format(rpcSpecVersion,true);
             byte[] msgBytes = JsonRPCMarshaller.marshall(message, (byte)getProtocolVersion().getMajor());
@@ -832,8 +827,6 @@ abstract class BaseLifecycleManager {
             e.printStackTrace();
         }
     }
-
-
 
     /* *******************************************************************************************************
      *************************************** ISdlConnectionListener START ************************************
@@ -1353,7 +1346,6 @@ abstract class BaseLifecycleManager {
             this.minimumRPCVersion = minimumRPCVersion;
         }
     }
-
 
     /**
      * Temporary method to bridge the new PLAY_PAUSE and OKAY button functionality with the old

@@ -110,14 +110,12 @@ abstract class BaseSdlManager {
     FileManager fileManager;
     ScreenManager screenManager;
 
-
     // INTERNAL INTERFACE
     /**
      * This is from the LifeCycleManager directly. In the future if there is a reason to be a man in the middle
      * the SdlManager could create it's own, however right now it was only a duplication of logic tied to the LCM.
      */
     ISdl _internalInterface;
-
 
     // Initialize with anonymous lifecycleListener
     final LifecycleManager.LifecycleListener lifecycleListener = new LifecycleManager.LifecycleListener() {
@@ -149,7 +147,6 @@ abstract class BaseSdlManager {
             BaseSdlManager.this.onProxyClosed(reason);
         }
 
-
         @Override
         public void onError(LifecycleManager lifeCycleManager, String info, Exception e) {
 
@@ -167,30 +164,12 @@ abstract class BaseSdlManager {
         }
     };
 
-    // PROTECTED GETTERS
-    protected String getAppName() { return appName; }
-
-    protected String getAppId() { return appId; }
-
-    protected String getShortAppName() { return shortAppName; }
-
-    protected Version getMinimumProtocolVersion() { return minimumProtocolVersion; }
-
-    protected Version getMinimumRPCVersion() { return minimumRPCVersion; }
-
-    protected Language getHmiLanguage() { return hmiLanguage; }
-
-    protected TemplateColorScheme getDayColorScheme() { return dayColorScheme; }
-
-    protected TemplateColorScheme getNightColorScheme() { return nightColorScheme; }
-
-    protected Vector<AppHMIType> getAppTypes() { return hmiTypes; }
-
-    protected Vector<String> getVrSynonyms() { return vrSynonyms; }
-
-    protected Vector<TTSChunk> getTtsChunks() { return ttsChunks; }
-
-    protected BaseTransportConfig getTransport() { return transport; }
+    // ABSTRACT METHODS
+    abstract void retryChangeRegistration();
+    abstract void onProxyClosed(SdlDisconnectedReason reason);
+    abstract void checkState();
+    abstract void initialize();
+    public abstract void dispose();
 
     protected void checkLifecycleConfiguration() {
         final Language actualLanguage = lifecycleManager.getRegisterAppInterfaceResponse().getLanguage();
@@ -321,14 +300,6 @@ abstract class BaseSdlManager {
         }
     }
 
-    abstract void retryChangeRegistration();
-    abstract void onProxyClosed(SdlDisconnectedReason reason);
-    abstract void checkState();
-    abstract void initialize();
-    public abstract void dispose();
-
-
-
     /**
      * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
      */
@@ -362,7 +333,6 @@ abstract class BaseSdlManager {
         lifecycleManager.start();
     }
 
-
     void onReady(){
         // Set the app icon
         if (BaseSdlManager.this.appIcon != null && BaseSdlManager.this.appIcon.getName() != null) {
@@ -383,11 +353,32 @@ abstract class BaseSdlManager {
         }
     }
 
+    // PROTECTED GETTERS
+    protected String getAppName() { return appName; }
 
+    protected String getAppId() { return appId; }
 
+    protected String getShortAppName() { return shortAppName; }
 
+    protected Version getMinimumProtocolVersion() { return minimumProtocolVersion; }
 
+    protected Version getMinimumRPCVersion() { return minimumRPCVersion; }
 
+    protected Language getHmiLanguage() { return hmiLanguage; }
+
+    protected TemplateColorScheme getDayColorScheme() { return dayColorScheme; }
+
+    protected TemplateColorScheme getNightColorScheme() { return nightColorScheme; }
+
+    protected Vector<AppHMIType> getAppTypes() { return hmiTypes; }
+
+    protected Vector<String> getVrSynonyms() { return vrSynonyms; }
+
+    protected Vector<TTSChunk> getTtsChunks() { return ttsChunks; }
+
+    protected BaseTransportConfig getTransport() { return transport; }
+
+    protected FileManagerConfig getFileManagerConfig() { return fileManagerConfig; }
 
     // MANAGER GETTERS
     /**
@@ -464,10 +455,6 @@ abstract class BaseSdlManager {
         return null;
     }
 
-    // PROTECTED GETTERS
-
-    protected FileManagerConfig getFileManagerConfig() { return fileManagerConfig; }
-
     /**
      * Retrieves the auth token, if any, that was attached to the StartServiceACK for the RPC
      * service from the module. For example, this should be used to login to a user account.
@@ -499,7 +486,6 @@ abstract class BaseSdlManager {
      * @param listener listener for updates and completions
      */
     public void sendSequentialRPCs(final List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener){
-
         List<RPCRequest> rpcRequestList = new ArrayList<>();
         for (int i = 0; i < rpcs.size(); i++) {
             if (rpcs.get(i) instanceof RPCRequest){
@@ -524,7 +510,6 @@ abstract class BaseSdlManager {
      * @param listener listener for updates and completions
      */
     public void sendRPCs(List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) {
-
         List<RPCRequest> rpcRequestList = new ArrayList<>();
         for (int i = 0; i < rpcs.size(); i++) {
             if (rpcs.get(i) instanceof RPCRequest){
@@ -568,10 +553,6 @@ abstract class BaseSdlManager {
     public void removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
         _internalInterface.removeOnRPCRequestListener(requestId, listener);
     }
-
-    // LIFECYCLE / OTHER
-
-
 
     // BUILDER
     public static class Builder {
@@ -677,7 +658,6 @@ abstract class BaseSdlManager {
          *                 MEDIA HMIType should be included.
          */
         public Builder setAppTypes(final Vector<AppHMIType> hmiTypes){
-
             sdlManager.hmiTypes = hmiTypes;
 
             if (hmiTypes != null) {
@@ -770,7 +750,6 @@ abstract class BaseSdlManager {
         }
 
         public SdlManager build() {
-
             if (sdlManager.appName == null) {
                 throw new IllegalArgumentException("You must specify an app name by calling setAppName");
             }
@@ -820,5 +799,4 @@ abstract class BaseSdlManager {
             lifecycleManager.startRPCEncryption();
         }
     }
-
 }
