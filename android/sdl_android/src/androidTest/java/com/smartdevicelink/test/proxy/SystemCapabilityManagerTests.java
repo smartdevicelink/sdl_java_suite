@@ -3,6 +3,7 @@ package com.smartdevicelink.test.proxy;
 import android.util.SparseArray;
 
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
@@ -138,6 +139,8 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		defaultWindowCapability.setSoftButtonCapabilities(softButton);
 
 		if (display == null) {
+			defaultWindowCapability.setTextFields(ManagerUtility.WindowCapabilityUtility.getAllTextFields());
+			defaultWindowCapability.setImageFields(ManagerUtility.WindowCapabilityUtility.getAllImageFields());
 			displayCapability.setWindowCapabilities(Collections.singletonList(defaultWindowCapability));
 			return Collections.singletonList(displayCapability);
 		}
@@ -196,6 +199,12 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		assertTrue(Test.TRUE,
 				Validator.validatePreRecordedSpeechCapabilities(Test.GENERAL_PRERECORDEDSPEECH_LIST, (List<PrerecordedSpeech>) systemCapabilityManager.getCapability(SystemCapabilityType.PRERECORDED_SPEECH)));
 
+	}
+
+	public void testNullDisplayCapabilitiesEnablesAllTextAndImageFields() {
+		List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(null, Test.GENERAL_BUTTONCAPABILITIES_LIST, Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
+		assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getTextFields().size(), 29);
+		assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getImageFields().size(), 14);
 	}
 
 	public void testGetVSCapability(){
