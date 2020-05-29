@@ -3,8 +3,14 @@ package com.smartdevicelink.managers;
 import com.smartdevicelink.proxy.rpc.ImageField;
 import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
+import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <strong>ManagerUtility</strong> <br>
@@ -91,6 +97,33 @@ public class ManagerUtility {
                 }
             }
             return highestFound;
+        }
+
+        /**
+         * Method to get a list of all available text fields
+         *
+         * @return list of all available text fields with CID1SET Character Set
+         */
+        public static List<TextField> getAllTextFields() {
+            List<TextField> allTextFields = new ArrayList<>();
+            for (TextFieldName name : TextFieldName.values()) {
+                allTextFields.add(new TextField(name, CharacterSet.CID1SET, 500, 8));
+            }
+            return allTextFields;
+        }
+
+        /**
+         * Method to get a list of all available Image fields
+         *
+         * @return list of all available Image fields with GRAPHIC_BMP, GRAPHIC_JPEG, GRAPHIC_PNG File Types
+         */
+        public static List<ImageField> getAllImageFields() {
+            List<ImageField> allImageFields = new ArrayList<>();
+            List<FileType> allImageFileTypes = Arrays.asList(FileType.GRAPHIC_BMP, FileType.GRAPHIC_JPEG, FileType.GRAPHIC_PNG);
+            for (ImageFieldName name : ImageFieldName.values()) {
+                allImageFields.add(new ImageField(name, allImageFileTypes));
+            }
+            return allImageFields;
         }
     }
 }
