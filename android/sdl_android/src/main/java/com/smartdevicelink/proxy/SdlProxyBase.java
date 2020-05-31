@@ -8465,8 +8465,6 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						if(resolution == null){ //Either the protocol version is too low to access video streaming caps, or they were null
 							DisplayCapabilities dispCap = (DisplayCapabilities) internalInterface.getCapability(SystemCapabilityType.DISPLAY);
 							if (dispCap != null) {
-								Log.d("MyTagLogProxyW", resolution.getResolutionWidth().toString());
-								Log.d("MyTagLogProxyH", resolution.getResolutionHeight().toString());
 								resolution = (dispCap.getScreenParams().getImageResolution());
 							}
 						}

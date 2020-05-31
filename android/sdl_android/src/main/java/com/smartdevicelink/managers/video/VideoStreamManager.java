@@ -131,8 +131,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if(SessionType.NAV.equals(type)){
 				if(sdlRemoteDisplay !=null){
-				    Log.d("MyTagLog", "onServiceEnded");
-				    Log.d("MyTagLog", "false");
 				    // TODO set withPendingRestart to default in proper place
 					stopStreaming(withPendingRestart);
 				}
