@@ -215,7 +215,7 @@ public class SdlManager extends BaseSdlManager{
 			managerListener.onDestroy();
 		}
 
-		if (!reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)){
+		if (reason == null || !reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)){
 			dispose();
 		}
 	}
