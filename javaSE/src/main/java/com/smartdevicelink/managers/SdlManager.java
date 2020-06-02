@@ -59,7 +59,7 @@ public class SdlManager extends BaseSdlManager {
     /**
      * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
      */
-    @SuppressWarnings("unchecked")
+    @Override
     public void start() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override

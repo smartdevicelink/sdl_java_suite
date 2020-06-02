@@ -272,8 +272,7 @@ public class SdlManager extends BaseSdlManager{
      * <br><br><strong>Note: VideoStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
      * @return a VideoStreamManager object attached to this SdlManager instance
      */
-	public @Nullable
-    VideoStreamManager getVideoStreamManager() {
+	public @Nullable VideoStreamManager getVideoStreamManager() {
 		checkSdlManagerState();
 		return videoStreamManager;
 	}
@@ -345,7 +344,7 @@ public class SdlManager extends BaseSdlManager{
 
 		/**
 		 * Sets the Context
-		 * @param context
+		 * @param context the current context
 		 */
 		public Builder setContext(Context context){
 			sdlManager.context = context;
