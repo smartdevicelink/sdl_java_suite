@@ -35,11 +35,14 @@ package com.smartdevicelink.managers.lifecycle;
 import android.support.annotation.NonNull;
 
 import com.smartdevicelink.managers.ServiceEncryptionListener;
+import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 
 class EncryptionLifecycleManager extends BaseEncryptionLifecycleManager {
 
     EncryptionLifecycleManager(@NonNull ISdl internalInterface, ServiceEncryptionListener listener) {
         super(internalInterface, listener);
+        internalInterface.addServiceListener(SessionType.NAV, securedServiceListener);
+        internalInterface.addServiceListener(SessionType.PCM, securedServiceListener);
     }
 }
