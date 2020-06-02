@@ -99,7 +99,11 @@ import com.smartdevicelink.util.Version;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ScheduledExecutorService;
 
 abstract class BaseLifecycleManager {
 
@@ -133,6 +137,22 @@ abstract class BaseLifecycleManager {
     private String authToken;
     Version minimumProtocolVersion;
     Version minimumRPCVersion;
+
+    private static final int RESPONSE_WAIT_TIME = 2000;
+    private ISdlServiceListener navServiceListener;
+    private boolean navServiceStartResponseReceived = false;
+    private boolean navServiceStartResponse = false;
+    private List<String> navServiceStartRejectedParams = null;
+    private boolean pcmServiceStartResponseReceived = false;
+    private boolean pcmServiceStartResponse = false;
+    private List<String> pcmServiceStartRejectedParams = null;
+    private boolean navServiceEndResponseReceived = false;
+    private boolean navServiceEndResponse = false;
+    private boolean pcmServiceEndResponseReceived = false;
+    private boolean pcmServiceEndResponse = false;
+    private boolean rpcProtectedResponseReceived = false;
+    private boolean rpcProtectedStartResponse = false;
+
 
     BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
         this.lifecycleListener = listener;
@@ -897,7 +917,14 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onProtocolSessionStartedNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-            Log.w(TAG, "onProtocolSessionStartedNACKed " + sessionID);
+            Log.w(TAG, sessionType + " onProtocolSessionStartedNACKed " + sessionID + " RejectedParams: " + rejectedParams);
+
+            if (sessionType.eq(SessionType.NAV)) {
+                NavServiceStartedNACK(rejectedParams);
+            }
+            else if (sessionType.eq(SessionType.PCM)) {
+                AudioServiceStartedNACK(rejectedParams);
+            }
         }
 
         @Override
@@ -943,6 +970,10 @@ abstract class BaseLifecycleManager {
                     }
 
 
+                } else if (sessionType.eq(SessionType.NAV)) {
+                    NavServiceStarted();
+                } else if (sessionType.eq(SessionType.PCM)) {
+                    AudioServiceStarted();
                 } else {
                     lifecycleListener.onServiceStarted(sessionType);
                 }
@@ -951,12 +982,22 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onProtocolSessionEnded(SessionType sessionType, byte sessionID, String correlationID) {
-
+            if (sessionType.eq(SessionType.NAV)) {
+                NavServiceEnded();
+            }
+            else if (sessionType.eq(SessionType.PCM)) {
+                AudioServiceEnded();
+            }
         }
 
         @Override
         public void onProtocolSessionEndedNACKed(SessionType sessionType, byte sessionID, String correlationID) {
-
+            if (sessionType.eq(SessionType.NAV)) {
+                NavServiceEndedNACK();
+            }
+            else if (sessionType.eq(SessionType.PCM)) {
+                AudioServiceEndedNACK();
+            }
         }
 
         @Override
@@ -1014,13 +1055,16 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void startVideoService(VideoStreamingParameters parameters, boolean encrypted) {
-            DebugTool.logWarning("startVideoService is not currently implemented");
+            if(isConnected()){
+                BaseLifecycleManager.this.startVideoService(encrypted,parameters);
+            }
         }
 
         @Override
         public void stopVideoService() {
-            DebugTool.logWarning("stopVideoService is not currently implemented");
-
+            if(isConnected()){
+                BaseLifecycleManager.this.endVideoStream();
+            }
         }
 
         @Override
@@ -1036,13 +1080,16 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void startAudioService(boolean encrypted) {
-            DebugTool.logWarning("startAudioService is not currently implemented");
-
+            if(isConnected()){
+                BaseLifecycleManager.this.startService(SessionType.PCM, encrypted);
+            }
         }
 
         @Override
         public void stopAudioService() {
-            DebugTool.logWarning("stopAudioService is not currently implemented");
+            if(isConnected()){
+                BaseLifecycleManager.this.endAudioStream();
+            }
         }
 
         @Override
@@ -1054,7 +1101,6 @@ abstract class BaseLifecycleManager {
         @Override
         public void sendRPCRequest(RPCRequest message) {
             BaseLifecycleManager.this.sendRPCMessagePrivate(message);
-
         }
 
         @Override
@@ -1468,5 +1514,244 @@ abstract class BaseLifecycleManager {
                 }
             }
         }
+    }
+
+
+
+
+    /////////////////////////////
+
+    /**
+     * Try to open a video service by using the video streaming parameters supplied.
+     * <p>
+     * Only information from codecs, width and height are used during video format negotiation.
+     *
+     * @param isEncrypted Specify true if packets on this service have to be encrypted
+     * @param parameters  VideoStreamingParameters that are desired. Does not guarantee this is what will be accepted.
+     * @return If the service is opened successfully, an instance of VideoStreamingParams is
+     * returned which contains accepted video format. If the service is opened with legacy
+     * mode (i.e. without any negotiation) then an instance of VideoStreamingParams is
+     * returned. If the service was not opened then null is returned.
+     */
+    private VideoStreamingParameters tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
+        if (session == null) {
+            DebugTool.logWarning("SdlSession is not created yet.");
+            return null;
+        }
+        if (getProtocolVersion() != null && getProtocolVersion().getMajor() >= 5 && !systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)) {
+            DebugTool.logWarning("Module doesn't support video streaming.");
+            return null;
+        }
+        if (parameters == null) {
+            DebugTool.logWarning("Video parameters were not supplied.");
+            return null;
+        }
+
+        if (!navServiceStartResponseReceived || !navServiceStartResponse //If we haven't started the service before
+                || (navServiceStartResponse && isEncrypted && !session.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
+            session.setDesiredVideoParams(parameters);
+
+            navServiceStartResponseReceived = false;
+            navServiceStartResponse = false;
+            navServiceStartRejectedParams = null;
+
+            session.startService(SessionType.NAV, session.getSessionId(), isEncrypted);
+            addNavListener();
+            FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+            ScheduledExecutorService scheduler = createScheduler();
+            scheduler.execute(fTask);
+
+            //noinspection StatementWithEmptyBody
+            while (!navServiceStartResponseReceived && !fTask.isDone()) ;
+            scheduler.shutdown();
+        }
+
+        if (navServiceStartResponse) {
+            if (getProtocolVersion() != null && getProtocolVersion().getMajor() < 5) { //Versions 1-4 do not support streaming parameter negotiations
+                session.setAcceptedVideoParams(parameters);
+            }
+            return session.getAcceptedVideoParams();
+        }
+
+        return null;
+    }
+
+    private void addNavListener() {
+        // videos may be started and stopped. Only add this once
+        if (navServiceListener == null) {
+
+            navServiceListener = new ISdlServiceListener() {
+                @Override
+                public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
+                }
+
+                @Override
+                public void onServiceEnded(SdlSession session, SessionType type) {
+                    // reset nav flags so nav can start upon the next transport connection
+                    resetNavStartFlags();
+                    // propagate notification up to proxy listener so the developer will know that the service is ended
+                    if (lifecycleListener != null) {
+                        lifecycleListener.onServiceEnded(type);
+                    }
+                }
+
+                @Override
+                public void onServiceError(SdlSession session, SessionType type, String reason) {
+                    // if there is an error reset the flags so that there is a chance to restart streaming
+                    resetNavStartFlags();
+                }
+            };
+            session.addServiceListener(SessionType.NAV, navServiceListener);
+        }
+    }
+
+    /**
+     * This method will try to start the video service with the requested parameters.
+     * When it returns it will attempt to store the accepted parameters if available.
+     *
+     * @param isEncrypted if the service should be encrypted
+     * @param parameters  the desiered video streaming parameters
+     */
+    private void startVideoService(boolean isEncrypted, VideoStreamingParameters parameters) {
+        if (session == null) {
+            DebugTool.logWarning("SdlSession is not created yet.");
+            return;
+        }
+        if (!session.getIsConnected()) {
+            DebugTool.logWarning("Connection is not available.");
+            return;
+        }
+
+        session.setDesiredVideoParams(parameters);
+
+        tryStartVideoStream(isEncrypted, parameters);
+    }
+
+
+    /**
+     * Closes the opened video service (serviceType 11)
+     *
+     * @return true if the video service is closed successfully, return false otherwise
+     */
+    private boolean endVideoStream() {
+        if (session == null) {
+            return false;
+        }
+
+        navServiceEndResponseReceived = false;
+        navServiceEndResponse = false;
+        session.stopVideoStream();
+
+        FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+        ScheduledExecutorService scheduler = createScheduler();
+        scheduler.execute(fTask);
+
+        //noinspection StatementWithEmptyBody
+        while (!navServiceEndResponseReceived && !fTask.isDone()) ;
+        scheduler.shutdown();
+
+        return navServiceEndResponse;
+    }
+
+    private void startService(SessionType serviceType, boolean isEncrypted) {
+        session.startService(serviceType, session.getSessionId(), isEncrypted);
+    }
+
+
+    /**
+     * Closes the opened audio service (serviceType 10)
+     *
+     * @return true if the audio service is closed successfully, return false otherwise
+     */
+    private boolean endAudioStream() {
+        if (session == null || !session.getIsConnected()) return false;
+
+        pcmServiceEndResponseReceived = false;
+        pcmServiceEndResponse = false;
+        session.stopAudioStream();
+
+        FutureTask<Void> fTask = createFutureTask(new CallableMethod(RESPONSE_WAIT_TIME));
+        ScheduledExecutorService scheduler = createScheduler();
+        scheduler.execute(fTask);
+
+        //noinspection StatementWithEmptyBody
+        while (!pcmServiceEndResponseReceived && !fTask.isDone()) ;
+        scheduler.shutdown();
+
+        return pcmServiceEndResponse;
+    }
+
+    private class CallableMethod implements Callable<Void> {
+        private final long waitTime;
+
+        public CallableMethod(int timeInMillis) {
+            this.waitTime = timeInMillis;
+        }
+
+        @Override
+        public Void call() {
+            try {
+                Thread.sleep(waitTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    private FutureTask<Void> createFutureTask(CallableMethod callMethod) {
+        return new FutureTask<>(callMethod);
+    }
+
+    private ScheduledExecutorService createScheduler() {
+        return Executors.newSingleThreadScheduledExecutor();
+    }
+
+    private void NavServiceStarted() {
+        navServiceStartResponseReceived = true;
+        navServiceStartResponse = true;
+    }
+
+    private void NavServiceStartedNACK(List<String> rejectedParams) {
+        navServiceStartResponseReceived = true;
+        navServiceStartResponse = false;
+        navServiceStartRejectedParams = rejectedParams;
+    }
+
+    private void AudioServiceStarted() {
+        pcmServiceStartResponseReceived = true;
+        pcmServiceStartResponse = true;
+    }
+
+    private void AudioServiceStartedNACK(List<String> rejectedParams) {
+        pcmServiceStartResponseReceived = true;
+        pcmServiceStartResponse = false;
+        pcmServiceStartRejectedParams = rejectedParams;
+    }
+
+    private void NavServiceEnded() {
+        navServiceEndResponseReceived = true;
+        navServiceEndResponse = true;
+    }
+
+    private void NavServiceEndedNACK() {
+        navServiceEndResponseReceived = true;
+        navServiceEndResponse = false;
+    }
+
+    private void AudioServiceEnded() {
+        pcmServiceEndResponseReceived = true;
+        pcmServiceEndResponse = true;
+    }
+
+    private void AudioServiceEndedNACK() {
+        pcmServiceEndResponseReceived = true;
+        pcmServiceEndResponse = false;
+    }
+
+    private void resetNavStartFlags() {
+        navServiceStartResponseReceived = false;
+        navServiceStartResponse = false;
+        navServiceStartRejectedParams = null;
     }
 }
