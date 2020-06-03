@@ -686,8 +686,8 @@ public class SdlManager extends BaseSdlManager{
 					}
 				}
 
-				proxy = new SdlProxyBase(proxyBridge, context, appName, shortAppName, isMediaApp, language,
-						language, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
+				proxy = new SdlProxyBase(proxyBridge, context, appName, shortAppName, isMediaApp, hmiLanguage,
+						hmiLanguage, hmiTypes, appId, transport, vrSynonyms, ttsChunks, dayColorScheme,
 						nightColorScheme) {};
 				proxy.setMinimumProtocolVersion(minimumProtocolVersion);
 				proxy.setMinimumRPCVersion(minimumRPCVersion);
