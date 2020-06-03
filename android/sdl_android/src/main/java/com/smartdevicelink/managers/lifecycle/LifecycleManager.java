@@ -48,15 +48,15 @@ import com.smartdevicelink.transport.enums.TransportType;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class LifecycleManager extends BaseLifecycleManager {
-    public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
-        super(appConfig, config, listener);
+    public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
+        super(appConfig, listener);
 
         if (config != null && config.getTransportType().equals(TransportType.MULTIPLEX)) {
             this.session = new SdlSession2(sdlConnectionListener, (MultiplexTransportConfig) config);
-        }else if(config != null &&config.getTransportType().equals(TransportType.TCP)){
+        } else if (config != null && config.getTransportType().equals(TransportType.TCP)) {
             this.session = new SdlSession2(sdlConnectionListener, (TCPTransportConfig) config);
-        }else {
-            this.session = SdlSession.createSession((byte)getProtocolVersion().getMajor(),sdlConnectionListener, config);
+        } else {
+            this.session = SdlSession.createSession((byte) getProtocolVersion().getMajor(), sdlConnectionListener, config);
         }
     }
 }

@@ -43,8 +43,8 @@ import com.smartdevicelink.transport.BaseTransportConfig;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class LifecycleManager extends BaseLifecycleManager {
-    public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
-        super(appConfig, config, listener);
+    public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
+        super(appConfig, listener);
         this.session = new SdlSession(sdlConnectionListener, config);
     }
 }

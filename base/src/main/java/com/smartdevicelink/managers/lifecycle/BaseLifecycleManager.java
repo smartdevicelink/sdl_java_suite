@@ -150,11 +150,9 @@ abstract class BaseLifecycleManager {
     private boolean navServiceEndResponse = false;
     private boolean pcmServiceEndResponseReceived = false;
     private boolean pcmServiceEndResponse = false;
-    private boolean rpcProtectedResponseReceived = false;
-    private boolean rpcProtectedStartResponse = false;
 
 
-    BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
+    BaseLifecycleManager(AppConfig appConfig, LifecycleListener listener){
         this.lifecycleListener = listener;
 
         this.rpcListeners = new HashMap<>();
