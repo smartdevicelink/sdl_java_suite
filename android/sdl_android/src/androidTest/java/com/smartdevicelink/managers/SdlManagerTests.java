@@ -110,7 +110,12 @@ public class SdlManagerTests extends AndroidTestCase2 {
 			}
 
 			@Override
-			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language){
+			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language) {
+				return null;
+			}
+
+			@Override
+			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
 				return null;
 			}
 		};
@@ -166,6 +171,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		assertEquals("heyApp", sdlManager.getShortAppName());
 		assertEquals(appType, sdlManager.getAppTypes());
 		assertEquals(Language.EN_US, sdlManager.getHmiLanguage());
+		assertEquals(Language.EN_US, sdlManager.getLanguage());
 		assertEquals(transport, sdlManager.getTransport());
 		assertEquals(templateColorScheme, sdlManager.getDayColorScheme());
 		assertEquals(templateColorScheme, sdlManager.getNightColorScheme());
