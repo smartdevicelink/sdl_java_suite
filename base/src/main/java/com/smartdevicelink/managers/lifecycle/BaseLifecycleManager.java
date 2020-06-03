@@ -32,7 +32,6 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
@@ -100,11 +99,7 @@ import com.smartdevicelink.util.Version;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.ScheduledExecutorService;
 
 abstract class BaseLifecycleManager {
 
