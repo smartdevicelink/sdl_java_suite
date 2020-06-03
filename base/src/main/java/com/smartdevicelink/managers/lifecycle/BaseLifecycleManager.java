@@ -962,12 +962,12 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void addServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
-            BaseLifecycleManager.this.session.addServiceListener(serviceType,sdlServiceListener);
+            BaseLifecycleManager.this.session.addServiceListener(serviceType, sdlServiceListener);
         }
 
         @Override
         public void removeServiceListener(SessionType serviceType, ISdlServiceListener sdlServiceListener) {
-            BaseLifecycleManager.this.session.removeServiceListener(serviceType,sdlServiceListener);
+            BaseLifecycleManager.this.session.removeServiceListener(serviceType, sdlServiceListener);
         }
 
         @Override
@@ -1014,34 +1014,34 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void sendRPC(RPCMessage message) {
-            if(isConnected()) {
+            if (isConnected()) {
                 BaseLifecycleManager.this.sendRPCMessagePrivate(message);
             }
         }
 
         @Override
         public void sendRequests(List<? extends RPCRequest> rpcs, OnMultipleRequestListener listener) {
-            BaseLifecycleManager.this.sendRPCs(rpcs,listener);
+            BaseLifecycleManager.this.sendRPCs(rpcs, listener);
         }
 
         @Override
         public void sendRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
-            BaseLifecycleManager.this.sendRPCs(rpcs,listener);
+            BaseLifecycleManager.this.sendRPCs(rpcs, listener);
         }
 
         @Override
         public void sendSequentialRPCs(List<? extends RPCMessage> rpcs, OnMultipleRequestListener listener) {
-            BaseLifecycleManager.this.sendSequentialRPCs(rpcs,listener);
+            BaseLifecycleManager.this.sendSequentialRPCs(rpcs, listener);
         }
 
         @Override
         public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
-            BaseLifecycleManager.this.addOnRPCNotificationListener(notificationId,listener);
+            BaseLifecycleManager.this.addOnRPCNotificationListener(notificationId, listener);
         }
 
         @Override
         public boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
-            return BaseLifecycleManager.this.removeOnRPCNotificationListener(notificationId,listener);
+            return BaseLifecycleManager.this.removeOnRPCNotificationListener(notificationId, listener);
         }
 
         @Override
@@ -1056,12 +1056,12 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void addOnRPCListener(FunctionID responseId, OnRPCListener listener) {
-            BaseLifecycleManager.this.addRpcListener(responseId,listener);
+            BaseLifecycleManager.this.addRpcListener(responseId, listener);
         }
 
         @Override
         public boolean removeOnRPCListener(FunctionID responseId, OnRPCListener listener) {
-            return BaseLifecycleManager.this.removeOnRPCListener(responseId,listener);
+            return BaseLifecycleManager.this.removeOnRPCListener(responseId, listener);
         }
 
         @Override
