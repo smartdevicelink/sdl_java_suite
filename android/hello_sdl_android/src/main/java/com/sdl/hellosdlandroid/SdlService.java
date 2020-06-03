@@ -232,7 +232,7 @@ public class SdlService extends Service {
 							break;
 					}
 					if (isNeedUpdate) {
-						return new LifecycleConfigurationUpdate(appName,null,TTSChunkFactory.createSimpleTTSChunks(appName), null);
+						return new LifecycleConfigurationUpdate(appName,null,TTSChunkFactory.createSimpleTTSChunks(ttsName), null);
 					} else {
 						return null;
 					}
