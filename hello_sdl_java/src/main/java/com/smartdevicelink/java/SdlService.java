@@ -172,11 +172,10 @@ public class SdlService {
                             break;
                     }
                     if (isNeedUpdate) {
-                        return new LifecycleConfigurationUpdate(appName,null,TTSChunkFactory.createSimpleTTSChunks(ttsName), null);
+                        return new LifecycleConfigurationUpdate(appName, null, TTSChunkFactory.createSimpleTTSChunks(ttsName), null);
                     } else {
                         return null;
                     }
-
                 }
             };
 
