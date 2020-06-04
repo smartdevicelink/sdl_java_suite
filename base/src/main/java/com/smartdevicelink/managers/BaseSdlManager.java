@@ -238,60 +238,6 @@ abstract class BaseSdlManager {
         }
     }
 
-    protected void checkLifecycleConfiguration2() {
-        final Language actualLanguage = lifecycleManager.getRegisterAppInterfaceResponse().getLanguage();
-
-        if (actualLanguage != null && !actualLanguage.equals(hmiLanguage)) {
-
-            final LifecycleConfigurationUpdate lcu = managerListener.managerShouldUpdateLifecycle(actualLanguage);
-
-            if (lcu != null) {
-                ChangeRegistration changeRegistration = new ChangeRegistration(actualLanguage, actualLanguage);
-                changeRegistration.setAppName(lcu.getAppName());
-                changeRegistration.setNgnMediaScreenAppName(lcu.getShortAppName());
-                changeRegistration.setTtsName(lcu.getTtsName());
-                changeRegistration.setVrSynonyms(lcu.getVoiceRecognitionCommandNames());
-                changeRegistration.setOnRPCResponseListener(new OnRPCResponseListener() {
-                    @Override
-                    public void onResponse(int correlationId, RPCResponse response) {
-                        if (response.getSuccess()) {
-                            // go through and change sdlManager properties that were changed via the LCU update
-                            hmiLanguage = actualLanguage;
-
-                            if (lcu.getAppName() != null) {
-                                appName = lcu.getAppName();
-                            }
-
-                            if (lcu.getShortAppName() != null) {
-                                shortAppName = lcu.getShortAppName();
-                            }
-
-                            if (lcu.getTtsName() != null) {
-                                ttsChunks = lcu.getTtsName();
-                            }
-
-                            if (lcu.getVoiceRecognitionCommandNames() != null) {
-                                vrSynonyms = lcu.getVoiceRecognitionCommandNames();
-                            }
-                        }
-                        try {
-                            Log.v(TAG, response.serializeJSON().toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(int correlationId, Result resultCode, String info) {
-                        DebugTool.logError("Change Registration onError: " + resultCode + " | Info: " + info);
-                        retryChangeRegistration();
-                    }
-                });
-                _internalInterface.sendRPC(changeRegistration);
-            }
-        }
-    }
-
     /**
      * Get the current state for the SdlManager
      * @return int value that represents the current state
