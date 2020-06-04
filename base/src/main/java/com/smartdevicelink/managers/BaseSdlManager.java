@@ -172,7 +172,6 @@ abstract class BaseSdlManager {
     abstract void initialize();
     public abstract void dispose();
 
-
     protected void checkLifecycleConfiguration(){
         final Language actualLanguage =  this.getRegisterAppInterfaceResponse().getLanguage();
         final Language actualHMILanguage =  this.getRegisterAppInterfaceResponse().getHmiDisplayLanguage();

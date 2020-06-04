@@ -211,10 +211,10 @@ abstract class BaseLifecycleManager {
                             }
                         });
                     }
-                    sendRPCMessagePrivate(request);
+                    sendRPCMessagePrivate(request, false);
                 }else {
                     // Notifications and Responses
-                    sendRPCMessagePrivate(message);
+                    sendRPCMessagePrivate(message, false);
                     if (listener != null){
                         listener.onUpdate(messages.size());
                         if (messages.size() == 0){
@@ -273,10 +273,10 @@ abstract class BaseLifecycleManager {
                         sendSequentialRPCs(messages, listener);
                     }
                 });
-                sendRPCMessagePrivate(request);
+                sendRPCMessagePrivate(request, false);
             } else {
                 // Notifications and Responses
-                sendRPCMessagePrivate(rpc);
+                sendRPCMessagePrivate(rpc, false);
                 if (listener != null) {
                     listener.onUpdate(messages.size());
                 }
@@ -387,7 +387,7 @@ abstract class BaseLifecycleManager {
                             Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
                             UnregisterAppInterface msg = new UnregisterAppInterface();
                             msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
-                            sendRPCMessagePrivate(msg);
+                            sendRPCMessagePrivate(msg, true);
                             cleanProxy();
                             return;
                         }
@@ -414,7 +414,7 @@ abstract class BaseLifecycleManager {
                                 public void run() {
                                     RPCRequest request = PoliciesFetcher.fetchPolicies(onSystemRequest);
                                     if (request != null && isConnected()) {
-                                        sendRPCMessagePrivate(request);
+                                        sendRPCMessagePrivate(request, true);
                                     }
                                 }
                             };
@@ -432,7 +432,7 @@ abstract class BaseLifecycleManager {
                                         systemRequest.setBulkData(file);
                                         systemRequest.setRequestType(RequestType.ICON_URL);
                                         if (isConnected()) {
-                                            sendRPCMessagePrivate(systemRequest);
+                                            sendRPCMessagePrivate(systemRequest, true);
                                         }
                                     } else {
                                         DebugTool.logError("File was null at: " + urlHttps);
@@ -721,8 +721,29 @@ abstract class BaseLifecycleManager {
      **************************************** RPC LISTENERS !! END !! ****************************************
      *********************************************************************************************************/
 
-    private void sendRPCMessagePrivate(RPCMessage message){
+    private void sendRPCMessagePrivate(RPCMessage message, boolean isInternalMessage){
         try {
+            if (!isInternalMessage && message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
+                RPCRequest request = (RPCRequest) message;
+                OnRPCResponseListener listener = request.getOnRPCResponseListener();
+
+                // Test for illegal correlation ID
+                if (request.getCorrelationID() == REGISTER_APP_INTERFACE_CORRELATION_ID || request.getCorrelationID() == UNREGISTER_APP_INTERFACE_CORRELATION_ID || request.getCorrelationID() == PoliciesFetcher.POLICIES_CORRELATION_ID) {
+                    if (listener != null) {
+                        request.getOnRPCResponseListener().onError(request.getCorrelationID(), Result.REJECTED, "Invalid correlation ID. The correlation ID, " + request.getCorrelationID() + " , is a reserved correlation ID.");
+                    }
+                    return;
+                }
+
+                // Prevent developer from sending RAI or UAI manually
+                if (request.getFunctionName().equals(FunctionID.REGISTER_APP_INTERFACE.toString()) || request.getFunctionName().equals(FunctionID.UNREGISTER_APP_INTERFACE.toString())) {
+                    if (listener != null) {
+                        request.getOnRPCResponseListener().onError(request.getCorrelationID(), Result.REJECTED, "The RPCRequest, " + message.getFunctionName() + ", is un-allowed to be sent manually by the developer.");
+                    }
+                    return;
+                }
+            }
+
             //FIXME this is temporary until the next major release of the library where OK is removed
             if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
                 RPCRequest request = (RPCRequest) message;
@@ -744,7 +765,7 @@ abstract class BaseLifecycleManager {
                                 RPCRequest request2 = new RPCRequest(request);
                                 request2.setParameters(SubscribeButton.KEY_BUTTON_NAME, ButtonName.PLAY_PAUSE);
                                 request2.setOnRPCResponseListener(request.getOnRPCResponseListener());
-                                sendRPCMessagePrivate(request2);
+                                sendRPCMessagePrivate(request2, true);
                                 return;
                             }
                         }
@@ -933,8 +954,8 @@ abstract class BaseLifecycleManager {
         public void onAuthTokenReceived(String token, byte sessionID) {
             BaseLifecycleManager.this.authToken = token;
         }
-
     };
+
     /* *******************************************************************************************************
      *************************************** ISdlConnectionListener END ************************************
      *********************************************************************************************************/
@@ -1009,13 +1030,13 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void sendRPCRequest(RPCRequest message) {
-            BaseLifecycleManager.this.sendRPCMessagePrivate(message);
+            BaseLifecycleManager.this.sendRPCMessagePrivate(message, false);
         }
 
         @Override
         public void sendRPC(RPCMessage message) {
             if (isConnected()) {
-                BaseLifecycleManager.this.sendRPCMessagePrivate(message);
+                BaseLifecycleManager.this.sendRPCMessagePrivate(message, false);
             }
         }
 
@@ -1463,7 +1484,7 @@ abstract class BaseLifecycleManager {
                     //Add device/system info in the future
                     //TODO attach previous hash id
 
-                    sendRPCMessagePrivate(rai);
+                    sendRPCMessagePrivate(rai, true);
                 } else {
                     Log.e(TAG, "App config was null, soo...");
                 }
