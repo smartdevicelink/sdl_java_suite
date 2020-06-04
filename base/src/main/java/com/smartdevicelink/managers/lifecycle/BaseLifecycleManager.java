@@ -171,11 +171,11 @@ abstract class BaseLifecycleManager {
         session.close();
     }
 
-    Version getProtocolVersion(){
-        if (session != null){
+    Version getProtocolVersion() {
+        if (session != null && session.getProtocolVersion() != null) {
             return session.getProtocolVersion();
         }
-        return new Version(1,0,0);
+        return new Version(1, 0, 0);
     }
 
     private void sendRPCs(List<? extends RPCMessage> messages, final OnMultipleRequestListener listener){
