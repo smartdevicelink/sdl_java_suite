@@ -86,6 +86,7 @@ abstract class BaseSdlManager {
     String appId, appName, shortAppName;
     boolean isMediaApp;
     Language hmiLanguage;
+    Language language;
     Vector<AppHMIType> hmiTypes;
     BaseTransportConfig transport;
     Vector<String> vrSynonyms;
@@ -171,7 +172,73 @@ abstract class BaseSdlManager {
     abstract void initialize();
     public abstract void dispose();
 
-    protected void checkLifecycleConfiguration() {
+
+    protected void checkLifecycleConfiguration(){
+        final Language actualLanguage =  this.getRegisterAppInterfaceResponse().getLanguage();
+        final Language actualHMILanguage =  this.getRegisterAppInterfaceResponse().getHmiDisplayLanguage();
+
+        if ((actualLanguage != null && !actualLanguage.equals(language)) || (actualHMILanguage != null && !actualHMILanguage.equals(hmiLanguage))) {
+
+            LifecycleConfigurationUpdate lcuNew = managerListener.managerShouldUpdateLifecycle(actualLanguage, actualHMILanguage);
+            LifecycleConfigurationUpdate lcuOld = managerListener.managerShouldUpdateLifecycle(actualLanguage);
+            final LifecycleConfigurationUpdate lcu;
+            ChangeRegistration changeRegistration;
+            if (lcuNew == null) {
+                lcu = lcuOld;
+                changeRegistration = new ChangeRegistration(actualLanguage, actualLanguage);
+            } else {
+                lcu = lcuNew;
+                changeRegistration = new ChangeRegistration(actualLanguage, actualHMILanguage);
+            }
+
+            if (lcu != null) {
+                changeRegistration.setAppName(lcu.getAppName());
+                changeRegistration.setNgnMediaScreenAppName(lcu.getShortAppName());
+                changeRegistration.setTtsName(lcu.getTtsName());
+                changeRegistration.setVrSynonyms(lcu.getVoiceRecognitionCommandNames());
+                changeRegistration.setOnRPCResponseListener(new OnRPCResponseListener() {
+                    @Override
+                    public void onResponse(int correlationId, RPCResponse response) {
+                        if (response.getSuccess()){
+                            // go through and change sdlManager properties that were changed via the LCU update
+                            hmiLanguage = actualHMILanguage;
+                            language = actualLanguage;
+
+                            if (lcu.getAppName() != null) {
+                                appName = lcu.getAppName();
+                            }
+
+                            if (lcu.getShortAppName() != null) {
+                                shortAppName = lcu.getShortAppName();
+                            }
+
+                            if (lcu.getTtsName() != null) {
+                                ttsChunks = lcu.getTtsName();
+                            }
+
+                            if (lcu.getVoiceRecognitionCommandNames() != null) {
+                                vrSynonyms = lcu.getVoiceRecognitionCommandNames();
+                            }
+                        }
+                        try {
+                            DebugTool.logInfo(response.serializeJSON().toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(int correlationId, Result resultCode, String info) {
+                        DebugTool.logError("Change Registration onError: " + resultCode + " | Info: " + info);
+                        retryChangeRegistration();
+                    }
+                });
+                this.sendRPC(changeRegistration);
+            }
+        }
+    }
+
+    protected void checkLifecycleConfiguration2() {
         final Language actualLanguage = lifecycleManager.getRegisterAppInterfaceResponse().getLanguage();
 
         if (actualLanguage != null && !actualLanguage.equals(hmiLanguage)) {
@@ -365,6 +432,8 @@ abstract class BaseSdlManager {
     protected Version getMinimumRPCVersion() { return minimumRPCVersion; }
 
     protected Language getHmiLanguage() { return hmiLanguage; }
+
+    protected Language getLanguage() { return language; }
 
     protected TemplateColorScheme getDayColorScheme() { return dayColorScheme; }
 
@@ -618,6 +687,7 @@ abstract class BaseSdlManager {
          */
         public Builder setLanguage(final Language hmiLanguage){
             sdlManager.hmiLanguage = hmiLanguage;
+            sdlManager.language = hmiLanguage;
             return this;
         }
 
@@ -775,6 +845,7 @@ abstract class BaseSdlManager {
 
             if (sdlManager.hmiLanguage == null){
                 sdlManager.hmiLanguage = Language.EN_US;
+                sdlManager.language = Language.EN_US;
             }
 
             if (sdlManager.minimumProtocolVersion == null){
