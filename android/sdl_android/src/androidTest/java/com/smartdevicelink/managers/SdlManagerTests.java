@@ -1,7 +1,6 @@
 package com.smartdevicelink.managers;
 
 import android.content.Context;
-import android.os.Looper;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
