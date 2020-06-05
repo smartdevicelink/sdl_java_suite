@@ -352,13 +352,13 @@ abstract class BaseSdlManager {
                     public void onComplete(boolean success) {
                         if (success) {
                             SetAppIcon msg = new SetAppIcon(BaseSdlManager.this.appIcon.getName());
-                            _internalInterface.sendRPCRequest(msg);
+                            _internalInterface.sendRPC(msg);
                         }
                     }
                 });
             } else {
                 SetAppIcon msg = new SetAppIcon(BaseSdlManager.this.appIcon.getName());
-                _internalInterface.sendRPCRequest(msg);
+                _internalInterface.sendRPC(msg);
             }
         }
     }
@@ -488,7 +488,7 @@ abstract class BaseSdlManager {
 
     /**
      * Takes a list of RPCMessages and sends it to SDL in a synchronous fashion. Responses are captured through callback on OnMultipleRequestListener.
-     * For sending requests asynchronously, use sendRequests <br>
+     * For sending requests asynchronously, use sendRPCs <br>
      *
      * <strong>NOTE: This will override any listeners on individual RPCs</strong><br>
      *
@@ -530,7 +530,7 @@ abstract class BaseSdlManager {
         }
 
         if (rpcRequestList.size() > 0) {
-            _internalInterface.sendRequests(rpcRequestList,listener);
+            _internalInterface.sendRPCs(rpcRequestList,listener);
         }
     }
 
