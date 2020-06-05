@@ -153,6 +153,11 @@ public class SdlService {
 
                     return new LifecycleConfigurationUpdate(appName,null,TTSChunkFactory.createSimpleTTSChunks(appName), null);
                 }
+
+                @Override
+                public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language language1) {
+                    return null;
+                }
             };
 
 
