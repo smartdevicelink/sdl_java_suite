@@ -1424,6 +1424,8 @@ abstract class BaseLifecycleManager {
 
         if (_secList == null) return;
 
+        setSdlSecurityStaticVars();
+
         SdlSecurityBase sec;
 
         for (Class<? extends SdlSecurityBase> cls : _secList) {
@@ -1505,6 +1507,8 @@ abstract class BaseLifecycleManager {
     void startAudioService(boolean encrypted) {}
 
     boolean endAudioStream() { return false; }
+
+    void setSdlSecurityStaticVars() {};
 
     /* *******************************************************************************************************
      ********************************** Platform specific methods - End *************************************

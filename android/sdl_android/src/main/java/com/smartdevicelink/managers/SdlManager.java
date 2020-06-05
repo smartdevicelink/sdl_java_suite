@@ -116,6 +116,9 @@ public class SdlManager extends BaseSdlManager{
 			}
 
 			super.start();
+
+			lifecycleManager.setContext(context);
+			lifecycleManager.start();
 		}
 	}
 

@@ -32,6 +32,8 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
+import android.app.Service;
+import android.content.Context;
 import android.support.annotation.RestrictTo;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
@@ -39,6 +41,7 @@ import com.smartdevicelink.SdlConnection.SdlSession2;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
+import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
@@ -69,6 +72,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     private boolean pcmServiceStartResponse = false;
     private boolean pcmServiceEndResponseReceived = false;
     private boolean pcmServiceEndResponse = false;
+    private Context context;
 
     public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
         super(appConfig, listener);
@@ -80,6 +84,23 @@ public class LifecycleManager extends BaseLifecycleManager {
         } else {
             this.session = SdlSession.createSession((byte) getProtocolVersion().getMajor(), sdlConnectionListener, config);
         }
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    @Override
+    void setSdlSecurityStaticVars() {
+        super.setSdlSecurityStaticVars();
+
+        Service service = null;
+        if (context != null && context instanceof Service) {
+            service = (Service) context;
+        }
+        SdlSecurityBase.setAppService(service);
+        SdlSecurityBase.setContext(context);
     }
 
     @Override

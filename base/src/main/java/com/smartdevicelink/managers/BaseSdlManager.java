@@ -341,8 +341,6 @@ abstract class BaseSdlManager {
 
         //Setup the notification queue
         initNotificationQueue();
-
-        lifecycleManager.start();
     }
 
     void onReady(){
