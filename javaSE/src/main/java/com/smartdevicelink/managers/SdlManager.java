@@ -70,8 +70,7 @@ public class SdlManager extends BaseSdlManager {
 
         Log.i(TAG, "start");
         if (lifecycleManager == null) {
-            if (transport != null
-                    && (transport.getTransportType().equals(TransportType.WEB_SOCKET_SERVER) || transport.getTransportType().equals(TransportType.CUSTOM))) {
+            if (transport != null && (transport.getTransportType().equals(TransportType.WEB_SOCKET_SERVER) || transport.getTransportType().equals(TransportType.CUSTOM))) {
                 super.start();
             } else {
                 throw new RuntimeException("No transport provided");
