@@ -134,7 +134,7 @@ abstract class BaseLifecycleManager {
     Version minimumProtocolVersion;
     Version minimumRPCVersion;
 
-    BaseLifecycleManager(AppConfig appConfig, LifecycleListener listener){
+    BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
         this.lifecycleListener = listener;
 
         this.rpcListeners = new HashMap<>();
@@ -147,6 +147,8 @@ abstract class BaseLifecycleManager {
         this.minimumRPCVersion = appConfig.getMinimumRPCVersion();
 
         this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
+
+        createSession(config);
     }
 
     public void start(){
@@ -1452,6 +1454,8 @@ abstract class BaseLifecycleManager {
      ********************************** Platform specific methods - START *************************************
      *********************************************************************************************************/
 
+    abstract void createSession(BaseTransportConfig config);
+
     void onProtocolSessionStarted (SessionType sessionType) {
         if (sessionType != null) {
             if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1) {
@@ -1508,7 +1512,7 @@ abstract class BaseLifecycleManager {
 
     boolean endAudioStream() { return false; }
 
-    void setSdlSecurityStaticVars() {};
+    void setSdlSecurityStaticVars() {}
 
     /* *******************************************************************************************************
      ********************************** Platform specific methods - End *************************************

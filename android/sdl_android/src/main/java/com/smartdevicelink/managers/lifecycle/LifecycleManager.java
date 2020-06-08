@@ -73,8 +73,11 @@ public class LifecycleManager extends BaseLifecycleManager {
     private Context context;
 
     public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
-        super(appConfig, listener);
+        super(appConfig, config, listener);
+    }
 
+    @Override
+    void createSession(BaseTransportConfig config) {
         if (config != null && config.getTransportType().equals(TransportType.MULTIPLEX)) {
             this.session = new SdlSession2(sdlConnectionListener, (MultiplexTransportConfig) config);
         } else if (config != null && config.getTransportType().equals(TransportType.TCP)) {
