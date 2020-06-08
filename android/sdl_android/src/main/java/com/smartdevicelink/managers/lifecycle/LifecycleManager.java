@@ -68,8 +68,6 @@ public class LifecycleManager extends BaseLifecycleManager {
     private boolean navServiceStartResponse = false;
     private boolean navServiceEndResponseReceived = false;
     private boolean navServiceEndResponse = false;
-    private boolean pcmServiceStartResponseReceived = false;
-    private boolean pcmServiceStartResponse = false;
     private boolean pcmServiceEndResponseReceived = false;
     private boolean pcmServiceEndResponse = false;
     private Context context;
@@ -109,9 +107,6 @@ public class LifecycleManager extends BaseLifecycleManager {
         if (sessionType.eq(SessionType.NAV)) {
             navServiceStartResponseReceived = true;
             navServiceStartResponse = true;
-        } else if (sessionType.eq(SessionType.PCM)) {
-            pcmServiceStartResponseReceived = true;
-            pcmServiceStartResponse = true;
         }
     }
 
@@ -121,9 +116,6 @@ public class LifecycleManager extends BaseLifecycleManager {
         if (sessionType.eq(SessionType.NAV)) {
             navServiceStartResponseReceived = true;
             navServiceStartResponse = false;
-        } else if (sessionType.eq(SessionType.PCM)) {
-            pcmServiceStartResponseReceived = true;
-            pcmServiceStartResponse = false;
         }
     }
 
