@@ -135,12 +135,15 @@ public abstract class SdlRemoteDisplay extends Presentation {
                     mainView.setLayoutParams(ctor.newInstance(newWidth, newHeight));
                     mainView.requestLayout();
                     invalidate();
+                    onViewResized(newWidth, newHeight);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
     }
+
+    public abstract void onViewResized(int width, int height);
 
     public void handleMotionEvent(final MotionEvent motionEvent){
         uiHandler.post(new Runnable() {

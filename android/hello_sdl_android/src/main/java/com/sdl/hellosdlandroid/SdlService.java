@@ -17,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.jakewharton.rxrelay2.PublishRelay;
@@ -530,6 +531,14 @@ public class SdlService extends Service {
             });
 		}
 
+		@Override
+		public void onViewResized(int width, int height) {
+			Toast.makeText(getContext(),
+					String.format("Remote view new width and height (%s, %s)", width, height),
+					Toast.LENGTH_SHORT
+			).show();
+		}
+
 	}
 
 	public static class MyDisplay extends SdlRemoteDisplay {
@@ -559,6 +568,14 @@ public class SdlService extends Service {
 			});
 			videoView.setVideoURI(Uri.parse(videoUri));
 			videoView.start();
+		}
+
+		@Override
+		public void onViewResized(int width, int height) {
+			Toast.makeText(getContext(),
+					String.format("Remote view new width and height (%s, %s)", width, height),
+					Toast.LENGTH_SHORT
+			).show();
 		}
 	}
 }
