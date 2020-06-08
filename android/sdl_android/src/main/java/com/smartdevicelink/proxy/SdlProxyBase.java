@@ -362,7 +362,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		}
 
 		@Override
-		public void stopVideoService(boolean withPendingRestart) {
+		public void stopVideoService() {
 			if(isConnected()){
 				navServiceStarted = false;
 				sdlSession.endService(SessionType.NAV,sdlSession.getSessionId());
@@ -8419,7 +8419,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				encoder.shutDown(withPendingRestart);
 			}
 			if(internalInterface!=null){
-				internalInterface.stopVideoService(withPendingRestart);
+				internalInterface.stopVideoService();
 			}
 		}
 

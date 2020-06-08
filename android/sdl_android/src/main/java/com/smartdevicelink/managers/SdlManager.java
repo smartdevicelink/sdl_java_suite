@@ -756,14 +756,10 @@ public class SdlManager extends BaseSdlManager{
 		}
 
 		@Override
-		public void stopVideoService(boolean withPendingRestart) {
+		public void stopVideoService() {
 			if(proxy.getIsConnected()){
 				proxy.endVideoStream();
 
-			}
-			if (withPendingRestart && videoStreamManager != null && proxy.getIsConnected()){
-				proxy.startVideoService(videoStreamManager.getLastCachedIsEncrypted(),
-						videoStreamManager.getLastCachedStreamingParameters());
 			}
 		}
 

@@ -136,6 +136,14 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				}
 				stateMachine.transitionToState(StreamingStateMachine.NONE);
 				transitionToState(SETTING_UP);
+
+				if (withPendingRestart){
+					VideoStreamManager manager = VideoStreamManager.this;
+					manager.internalInterface.startVideoService(
+							manager.getLastCachedStreamingParameters(),
+							manager.isEncrypted
+					);
+				}
 			}
 		}
 
@@ -162,7 +170,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				}
 				checkState();
 				if (hasStarted && (isHMIStateVideoStreamCapable(prevOnHMIStatus)) && (!isHMIStateVideoStreamCapable(currentOnHMIStatus))) {
-					internalInterface.stopVideoService(false);
+					internalInterface.stopVideoService();
 				}
 			}
 		}
@@ -372,6 +380,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	public void stopStreaming(boolean withPendingRestart){
 		if(sdlRemoteDisplay!=null && !withPendingRestart){
 			sdlRemoteDisplay.stop();
+			this.withPendingRestart = false;
 		}
 		if (this.isStreaming()) {
 			if(virtualDisplayEncoder!=null){
@@ -379,7 +388,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			}
 			stateMachine.transitionToState(StreamingStateMachine.STOPPED);
 
-			this.internalInterface.stopVideoService(true);
+			this.internalInterface.stopVideoService();
 		}
 	}
 
@@ -408,7 +417,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		parameters = null;
 		virtualDisplayEncoder = null;
 		if (internalInterface != null) {
-			internalInterface.stopVideoService(false);
+			internalInterface.stopVideoService();
 			// Remove listeners
 			internalInterface.removeServiceListener(SessionType.NAV, serviceListener);
 			internalInterface.removeOnRPCNotificationListener(FunctionID.ON_TOUCH_EVENT, touchListener);

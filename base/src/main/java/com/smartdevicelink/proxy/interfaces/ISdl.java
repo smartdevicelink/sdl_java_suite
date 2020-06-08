@@ -94,7 +94,7 @@ public interface ISdl {
     /**
      * Stops the video service if open
      */
-    void stopVideoService(boolean withPendingRestart);
+    void stopVideoService();
 
     /**
      * Starts the video streaming service
