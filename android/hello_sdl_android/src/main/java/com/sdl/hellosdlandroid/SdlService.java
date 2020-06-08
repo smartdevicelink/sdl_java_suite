@@ -256,7 +256,7 @@ public class SdlService extends Service {
 	 * Send some voice commands
 	 */
 	private void setVoiceCommands(){
-		List<String>
+
 		List<String> list1 = Collections.singletonList("Command One");
 		List<String> list2 = Collections.singletonList("Command two");
 
