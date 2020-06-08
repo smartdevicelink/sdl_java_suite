@@ -386,7 +386,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			if(virtualDisplayEncoder!=null){
 				virtualDisplayEncoder.shutDown(withPendingRestart);
 			}
-			stateMachine.transitionToState(StreamingStateMachine.STOPPED);
+			stateMachine.transitionToState(StreamingStateMachine.PAUSED);
 
 			this.internalInterface.stopVideoService();
 		}
@@ -399,10 +399,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 * @see #stopStreaming(boolean withPendingRestart)
 	 */
 	public void resumeStreaming(){
-		if(stateMachine.getState() != StreamingStateMachine.STOPPED){
-			return;
+		int currentState = stateMachine.getState();
+		if (currentState == StreamingStateMachine.STOPPED || currentState == StreamingStateMachine.PAUSED) {
+			startEncoder();
 		}
-		startEncoder();
 	}
 
 	/**
@@ -439,7 +439,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	public boolean isServiceActive(){
 		return (stateMachine.getState() == StreamingStateMachine.READY) ||
 				(stateMachine.getState() == StreamingStateMachine.STARTED) ||
-				(stateMachine.getState() == StreamingStateMachine.STOPPED);
+				(stateMachine.getState() == StreamingStateMachine.STOPPED) ||
+				(stateMachine.getState() == StreamingStateMachine.PAUSED);
 	}
 
 	/**
