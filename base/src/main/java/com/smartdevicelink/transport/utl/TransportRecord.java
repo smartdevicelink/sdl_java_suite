@@ -93,13 +93,11 @@ public class TransportRecord implements Parcelable{
             address = p.readString();
         }
     }
-
-    @Override
+    
     public int describeContents() {
         return 0;
     }
-
-    @Override
+    
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(type!=null? 1 : 0);
         if(type != null){
