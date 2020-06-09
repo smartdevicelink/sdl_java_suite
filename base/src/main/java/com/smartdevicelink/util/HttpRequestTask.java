@@ -67,7 +67,6 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
 		this.cb = hcb; 
 	}
 
-	@Override
 	protected String doInBackground(String... params) {
 		int length = params.length;
 		String urlString = params[0];
