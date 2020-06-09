@@ -35,20 +35,27 @@ package com.smartdevicelink.managers.lifecycle;
 import android.app.Service;
 import android.content.Context;
 import android.support.annotation.RestrictTo;
+import android.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.SdlConnection.SdlSession2;
+import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.interfaces.ISdlServiceListener;
+import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
+import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -77,13 +84,45 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     @Override
-    void createSession(BaseTransportConfig config) {
-        if (config != null && config.getTransportType().equals(TransportType.MULTIPLEX)) {
-            this.session = new SdlSession2(sdlConnectionListener, (MultiplexTransportConfig) config);
-        } else if (config != null && config.getTransportType().equals(TransportType.TCP)) {
-            this.session = new SdlSession2(sdlConnectionListener, (TCPTransportConfig) config);
+    void initializeProxy() {
+        super.initializeProxy();
+
+        //Handle legacy USB connections
+        if (_transportConfig != null && TransportType.USB.equals(_transportConfig.getTransportType())) {
+            //A USB transport config was provided
+            USBTransportConfig usbTransportConfig = (USBTransportConfig) _transportConfig;
+            if (usbTransportConfig.getUsbAccessory() == null) {
+                DebugTool.logInfo("Legacy USB transport config was used, but received null for accessory. Attempting to connect with router service");
+                //The accessory was null which means it came from a router service
+                MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(usbTransportConfig.getUSBContext(), appConfig.getAppID());
+                multiplexTransportConfig.setRequiresHighBandwidth(true);
+                multiplexTransportConfig.setSecurityLevel(MultiplexTransportConfig.FLAG_MULTI_SECURITY_OFF);
+                multiplexTransportConfig.setPrimaryTransports(Collections.singletonList(TransportType.USB));
+                multiplexTransportConfig.setSecondaryTransports(new ArrayList<TransportType>());
+                _transportConfig = multiplexTransportConfig;
+            }
+        }
+
+        if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.MULTIPLEX)) {
+            this.session = new SdlSession2(sdlConnectionListener, (MultiplexTransportConfig) _transportConfig);
+        } else if (_transportConfig != null && _transportConfig.getTransportType().equals(TransportType.TCP)) {
+            this.session = new SdlSession2(sdlConnectionListener, (TCPTransportConfig) _transportConfig);
         } else {
-            this.session = SdlSession.createSession((byte) getProtocolVersion().getMajor(), sdlConnectionListener, config);
+            this.session = SdlSession.createSession((byte) getProtocolVersion().getMajor(), sdlConnectionListener, _transportConfig);
+        }
+    }
+
+    private void cycleProxy(SdlDisconnectedReason disconnectedReason) {
+        cleanProxy();
+        initializeProxy();
+        if(!SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED.equals(disconnectedReason) && !SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST.equals(disconnectedReason)){
+            //We don't want to alert higher if we are just cycling for legacy bluetooth
+            onClose("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED));
+        }
+        try {
+            session.startSession();
+        } catch (SdlException e) {
+            e.printStackTrace();
         }
     }
 
@@ -110,6 +149,18 @@ public class LifecycleManager extends BaseLifecycleManager {
         if (sessionType.eq(SessionType.NAV)) {
             navServiceStartResponseReceived = true;
             navServiceStartResponse = true;
+        }
+    }
+
+    @Override
+    void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig){
+        super.onTransportDisconnected(info, availablePrimary, transportConfig);
+        if (availablePrimary) {
+            _transportConfig = transportConfig;
+            Log.d(TAG, "notifying RPC session ended, but potential primary transport available");
+            cycleProxy(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
+        } else {
+            onClose(info, null);
         }
     }
 

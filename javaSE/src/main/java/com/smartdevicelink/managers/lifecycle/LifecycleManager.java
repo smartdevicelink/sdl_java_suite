@@ -47,7 +47,17 @@ public class LifecycleManager extends BaseLifecycleManager {
         super(appConfig, config, listener);
     }
 
-    void createSession(BaseTransportConfig config) {
-        this.session = new SdlSession(sdlConnectionListener, config);
+    @Override
+    void initializeProxy() {
+        super.initializeProxy();
+        this.session = new SdlSession(sdlConnectionListener, _transportConfig);
+    }
+
+    @Override
+    void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
+        super.onTransportDisconnected(info, availablePrimary, transportConfig);
+        if (!availablePrimary) {
+            onClose(info, null);
+        }
     }
 }

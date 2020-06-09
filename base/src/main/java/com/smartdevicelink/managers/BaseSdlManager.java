@@ -120,17 +120,13 @@ abstract class BaseSdlManager {
 
     // Initialize with anonymous lifecycleListener
     final LifecycleManager.LifecycleListener lifecycleListener = new LifecycleManager.LifecycleListener() {
-        boolean initStarted = false;
         @Override
         public void onProxyConnected(LifecycleManager lifeCycleManager) {
             Log.i(TAG,"Proxy is connected. Now initializing.");
             synchronized (this){
-                if(!initStarted){
-                    changeRegistrationRetry = 0;
-                    checkLifecycleConfiguration();
-                    initialize();
-                    initStarted = true;
-                }
+                changeRegistrationRetry = 0;
+                checkLifecycleConfiguration();
+                initialize();
             }
         }
         @Override

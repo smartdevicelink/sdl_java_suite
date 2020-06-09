@@ -103,7 +103,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 abstract class BaseLifecycleManager {
 
-    private static final String TAG = "Lifecycle Manager";
+    static final String TAG = "Lifecycle Manager";
     public static final Version MAX_SUPPORTED_RPC_VERSION = new Version(6, 0, 0);
 
     // Protected Correlation IDs
@@ -133,27 +133,19 @@ abstract class BaseLifecycleManager {
     private String authToken;
     Version minimumProtocolVersion;
     Version minimumRPCVersion;
+    BaseTransportConfig _transportConfig;
 
     BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
-        this.lifecycleListener = listener;
-
-        this.rpcListeners = new HashMap<>();
-        this.rpcResponseListeners = new HashMap<>();
-        this.rpcNotificationListeners = new HashMap<>();
-        this.rpcRequestListeners = new HashMap<>();
-
         this.appConfig = appConfig;
+        this._transportConfig = config;
+        this.lifecycleListener = listener;
         this.minimumProtocolVersion = appConfig.getMinimumProtocolVersion();
         this.minimumRPCVersion = appConfig.getMinimumRPCVersion();
-
-        this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
-
-        createSession(config);
+        initializeProxy();
     }
 
     public void start(){
         try {
-            setupInternalRpcListeners();
             session.startSession();
         } catch (SdlException e) {
             e.printStackTrace();
@@ -333,7 +325,7 @@ abstract class BaseLifecycleManager {
         return currentHMIStatus;
     }
 
-    private void onClose(String info, Exception e){
+    void onClose(String info, Exception e){
         Log.i(TAG, "onClose");
         if(lifecycleListener != null){
             lifecycleListener.onProxyClosed((LifecycleManager) this, info,e,null);
@@ -864,9 +856,7 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
-            if (!availablePrimary) {
-                onClose(info, null);
-            }
+            BaseLifecycleManager.this.onTransportDisconnected(info, availablePrimary, transportConfig);
 
         }
 
@@ -1377,7 +1367,9 @@ abstract class BaseLifecycleManager {
         return null;
     }
 
-    private void cleanProxy(){
+    void cleanProxy(){
+        firstTimeFull = true;
+        currentHMIStatus = null;
         if (rpcListeners != null) {
             rpcListeners.clear();
         }
@@ -1454,7 +1446,14 @@ abstract class BaseLifecycleManager {
      ********************************** Platform specific methods - START *************************************
      *********************************************************************************************************/
 
-    abstract void createSession(BaseTransportConfig config);
+    void initializeProxy(){
+        this.rpcListeners = new HashMap<>();
+        this.rpcResponseListeners = new HashMap<>();
+        this.rpcNotificationListeners = new HashMap<>();
+        this.rpcRequestListeners = new HashMap<>();
+        this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
+        setupInternalRpcListeners();
+    }
 
     void onProtocolSessionStarted (SessionType sessionType) {
         if (sessionType != null) {
@@ -1497,6 +1496,8 @@ abstract class BaseLifecycleManager {
             }
         }
     }
+
+    void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {}
 
     void onProtocolSessionStartedNACKed (SessionType sessionType) {}
 
