@@ -31,6 +31,8 @@
  */
 package com.smartdevicelink.transport.utl;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.smartdevicelink.transport.enums.TransportType;
 
 public class TransportRecord extends BaseTransportRecord {
@@ -42,4 +44,30 @@ public class TransportRecord extends BaseTransportRecord {
         this.type = transportType;
         this.address = address;
     }
+
+    @Deprecated
+    public TransportRecord(Parcel p) {
+        super(null, "");
+    }
+
+    @Deprecated
+    public int describeContents() {
+        return 0;
+    };
+
+    @Deprecated
+    public void writeToParcel(Parcel dest, int flags) {}
+
+    @Deprecated
+    public static final Parcelable.Creator<TransportRecord> CREATOR = new Parcelable.Creator<TransportRecord>() {
+        public TransportRecord createFromParcel(Parcel in) {
+            return new TransportRecord(in);
+        }
+
+        @Override
+        public TransportRecord[] newArray(int size) {
+            return new TransportRecord[size];
+        }
+
+    };
 }
