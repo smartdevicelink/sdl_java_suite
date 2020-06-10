@@ -3,11 +3,8 @@ package com.smartdevicelink.protocol;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.livio.BSON.BsonEncoder;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
-
-import java.util.HashMap;
 
 public class SdlPacket extends BaseSdlPacket implements Parcelable {
     private static final int EXTRA_PARCEL_DATA_LENGTH 			= 24;
@@ -115,25 +112,4 @@ public class SdlPacket extends BaseSdlPacket implements Parcelable {
         }
 
     };
-
-    public void putTag(String tag, Object data){
-        if(bsonPayload == null){
-            bsonPayload = new HashMap<>();
-        }
-        bsonPayload.put(tag, data);
-    }
-
-    public Object getTag(String tag){
-        if(payload == null){
-            return null;
-        }else if(bsonPayload == null || bsonPayload.isEmpty()){
-            bsonPayload = BsonEncoder.decodeFromBytes(payload);
-        }
-
-        if(bsonPayload == null){
-            return null;
-        }
-
-        return bsonPayload.get(tag);
-    }
 }
