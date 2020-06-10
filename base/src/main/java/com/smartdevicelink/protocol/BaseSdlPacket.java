@@ -47,7 +47,7 @@ import java.util.HashMap;
  * Any other binder transactions must include an additional int flag into their bundle or the parsing
  * of this object will fail.
  */
-public class SdlPacket implements Parcelable{
+public class BaseSdlPacket implements Parcelable{
 
 	/**
 	 * This is the amount of bytes added to the bundle from the router service for a specific int
@@ -122,9 +122,9 @@ public class SdlPacket implements Parcelable{
 	int messagingVersion = 1;
 	TransportRecord transportRecord;
 
-	public SdlPacket(int version, boolean encryption, int frameType,
-			int serviceType, int frameInfo, int sessionId,
-			int dataSize, int messageId, byte[] payload) {
+	public BaseSdlPacket(int version, boolean encryption, int frameType,
+						 int serviceType, int frameInfo, int sessionId,
+						 int dataSize, int messageId, byte[] payload) {
 		this.version = version;
 		this.encryption = encryption;
 		this.frameType = frameType;
@@ -140,9 +140,9 @@ public class SdlPacket implements Parcelable{
 		}
 	}
 
-	public SdlPacket(int version, boolean encryption, int frameType,
-			int serviceType, int frameInfo, int sessionId,
-			int dataSize, int messageId, byte[] payload, int offset,int bytesToWrite) {
+	public BaseSdlPacket(int version, boolean encryption, int frameType,
+						 int serviceType, int frameInfo, int sessionId,
+						 int dataSize, int messageId, byte[] payload, int offset, int bytesToWrite) {
 		this.version = version;
 		this.encryption = encryption;
 		this.frameType = frameType;
@@ -166,7 +166,7 @@ public class SdlPacket implements Parcelable{
 	 * <p>Frame Info
 	 * <p>
 	 */
-	protected SdlPacket(){
+	protected BaseSdlPacket(){
 		//Package only empty constructor
 		this.version = 1;
 		this.encryption = false;
@@ -183,7 +183,7 @@ public class SdlPacket implements Parcelable{
 	 * Creates a new packet based on previous packet definitions. Will not copy payload.
 	 * @param packet an instance of the packet that should be copied.
 	 */
-	protected SdlPacket(SdlPacket packet){
+	protected BaseSdlPacket(BaseSdlPacket packet){
 		this.version = packet.version;
 		this.encryption = packet.encryption;
 		this.frameType = packet.frameType;	
@@ -369,7 +369,7 @@ public class SdlPacket implements Parcelable{
 
 
 	//I think this is FIFO...right?
-	public SdlPacket(Parcel p) {
+	public BaseSdlPacket(Parcel p) {
 		this.version = p.readInt();
 		this.encryption = (p.readInt() == 0) ? false : true;
 		this.frameType = p.readInt();
@@ -434,14 +434,14 @@ public class SdlPacket implements Parcelable{
 
 	}
 	
-	public static final Parcelable.Creator<SdlPacket> CREATOR = new Parcelable.Creator<SdlPacket>() {
-        public SdlPacket createFromParcel(Parcel in) {
-     	   return new SdlPacket(in); 
+	public static final Parcelable.Creator<BaseSdlPacket> CREATOR = new Parcelable.Creator<BaseSdlPacket>() {
+        public BaseSdlPacket createFromParcel(Parcel in) {
+     	   return new BaseSdlPacket(in);
         }
 
 		@Override
-		public SdlPacket[] newArray(int size) {
-			return new SdlPacket[size];
+		public BaseSdlPacket[] newArray(int size) {
+			return new BaseSdlPacket[size];
 		}
 
     };

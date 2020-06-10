@@ -37,12 +37,12 @@ import android.os.Parcelable;
 
 import com.smartdevicelink.transport.enums.TransportType;
 
-public class TransportRecord implements Parcelable{
+public class BaseTransportRecord implements Parcelable{
 
     private TransportType type;
     private String address;
 
-    public TransportRecord(TransportType transportType, String address){
+    public BaseTransportRecord(TransportType transportType, String address){
         this.type = transportType;
         this.address = address;
     }
@@ -61,8 +61,8 @@ public class TransportRecord implements Parcelable{
             return false;
         }
 
-        if (obj instanceof TransportRecord) {
-            TransportRecord record = (TransportRecord) obj;
+        if (obj instanceof BaseTransportRecord) {
+            BaseTransportRecord record = (BaseTransportRecord) obj;
             return record.type != null && record.type.equals(type)  //Transport type is the same
                     && ((record.address == null && address == null) //Both addresses are null
                     || (record.address != null && record.address.equals(address))); //Or they match
@@ -81,7 +81,7 @@ public class TransportRecord implements Parcelable{
         return builder.toString();
     }
 
-    public TransportRecord(Parcel p){
+    public BaseTransportRecord(Parcel p){
         if (p.readInt() == 1) { //We should have a transport type attached
             String transportName = p.readString();
             if(transportName != null){
@@ -112,14 +112,14 @@ public class TransportRecord implements Parcelable{
         }
     }
 
-    public static final Parcelable.Creator<TransportRecord> CREATOR = new Parcelable.Creator<TransportRecord>() {
-        public TransportRecord createFromParcel(Parcel in) {
-            return new TransportRecord(in);
+    public static final Parcelable.Creator<BaseTransportRecord> CREATOR = new Parcelable.Creator<BaseTransportRecord>() {
+        public BaseTransportRecord createFromParcel(Parcel in) {
+            return new BaseTransportRecord(in);
         }
 
         @Override
-        public TransportRecord[] newArray(int size) {
-            return new TransportRecord[size];
+        public BaseTransportRecord[] newArray(int size) {
+            return new BaseTransportRecord[size];
         }
 
     };
