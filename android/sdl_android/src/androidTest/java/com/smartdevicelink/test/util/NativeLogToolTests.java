@@ -23,8 +23,6 @@ public class NativeLogToolTests extends TestCase {
 		
 		// Test Values
 		String testInfo    = "Info";
-		String testVerbose    = "Verbose";
-		String testDebug    = "Debug";
 		String testError   = "Error";
 		String testInvalid = "Invalid";
 		String testWarning = "Warning";
@@ -35,7 +33,7 @@ public class NativeLogToolTests extends TestCase {
 			NativeLogTool.LogTarget expectedErrorEnum      = NativeLogTool.LogTarget.Error;
 			NativeLogTool.LogTarget expectedWarningEnum    = NativeLogTool.LogTarget.Warning;
 			List<NativeLogTool.LogTarget> expectedEnumList = new ArrayList<NativeLogTool.LogTarget>();
-			expectedEnumList.add(NativeLogTool.LogTarget.Info);
+			expectedEnumList.add(NativeLogTool.LogTarget.Info);			
 			expectedEnumList.add(NativeLogTool.LogTarget.Error);
 			expectedEnumList.add(NativeLogTool.LogTarget.Warning);
 			
