@@ -111,7 +111,7 @@ abstract class BaseLifecycleManager {
             UNREGISTER_APP_INTERFACE_CORRELATION_ID = 65530;
 
     // Sdl Synchronization Objects
-    private static final Object  RPC_LISTENER_LOCK = new Object(),
+    private static final Object RPC_LISTENER_LOCK = new Object(),
             ON_UPDATE_LISTENER_LOCK = new Object(),
             ON_REQUEST_LISTENER_LOCK = new Object(),
             ON_NOTIFICATION_LISTENER_LOCK = new Object();
@@ -135,7 +135,7 @@ abstract class BaseLifecycleManager {
     Version minimumRPCVersion;
     BaseTransportConfig _transportConfig;
 
-    BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener){
+    BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
         this.appConfig = appConfig;
         this._transportConfig = config;
         this.lifecycleListener = listener;
@@ -144,7 +144,7 @@ abstract class BaseLifecycleManager {
         initializeProxy();
     }
 
-    public void start(){
+    public void start() {
         try {
             session.startSession();
         } catch (SdlException e) {
@@ -161,7 +161,7 @@ abstract class BaseLifecycleManager {
         }
     }
 
-    public void stop(){
+    public void stop() {
         session.close();
     }
 
@@ -172,11 +172,11 @@ abstract class BaseLifecycleManager {
         return new Version(1, 0, 0);
     }
 
-    private void sendRPCs(List<? extends RPCMessage> messages, final OnMultipleRequestListener listener){
-        if(messages != null ){
-            for(RPCMessage message : messages){
+    private void sendRPCs(List<? extends RPCMessage> messages, final OnMultipleRequestListener listener) {
+        if (messages != null) {
+            for (RPCMessage message : messages) {
                 // Request Specifics
-                if(message instanceof RPCRequest){
+                if (message instanceof RPCRequest) {
                     RPCRequest request = ((RPCRequest) message);
                     final OnRPCResponseListener devOnRPCResponseListener = request.getOnRPCResponseListener();
                     request.setCorrelationID(CorrelationIdGenerator.generateId());
@@ -185,7 +185,7 @@ abstract class BaseLifecycleManager {
                         request.setOnRPCResponseListener(new OnRPCResponseListener() {
                             @Override
                             public void onResponse(int correlationId, RPCResponse response) {
-                                if (devOnRPCResponseListener != null){
+                                if (devOnRPCResponseListener != null) {
                                     devOnRPCResponseListener.onResponse(correlationId, response);
                                 }
                                 if (listener.getSingleRpcResponseListener() != null) {
@@ -196,7 +196,7 @@ abstract class BaseLifecycleManager {
                             @Override
                             public void onError(int correlationId, Result resultCode, String info) {
                                 super.onError(correlationId, resultCode, info);
-                                if (devOnRPCResponseListener != null){
+                                if (devOnRPCResponseListener != null) {
                                     devOnRPCResponseListener.onError(correlationId, resultCode, info);
                                 }
                                 if (listener.getSingleRpcResponseListener() != null) {
@@ -206,12 +206,12 @@ abstract class BaseLifecycleManager {
                         });
                     }
                     sendRPCMessagePrivate(request, false);
-                }else {
+                } else {
                     // Notifications and Responses
                     sendRPCMessagePrivate(message, false);
-                    if (listener != null){
+                    if (listener != null) {
                         listener.onUpdate(messages.size());
-                        if (messages.size() == 0){
+                        if (messages.size() == 0) {
                             listener.onFinished();
                         }
                     }
@@ -220,11 +220,11 @@ abstract class BaseLifecycleManager {
         }
     }
 
-    private void sendSequentialRPCs(final List<? extends RPCMessage> messages, final OnMultipleRequestListener listener){
-        if (messages != null){
+    private void sendSequentialRPCs(final List<? extends RPCMessage> messages, final OnMultipleRequestListener listener) {
+        if (messages != null) {
             // Break out of recursion, we have finished the requests
             if (messages.size() == 0) {
-                if(listener != null){
+                if (listener != null) {
                     listener.onFinished();
                 }
                 return;
@@ -242,7 +242,7 @@ abstract class BaseLifecycleManager {
                 request.setOnRPCResponseListener(new OnRPCResponseListener() {
                     @Override
                     public void onResponse(int correlationId, RPCResponse response) {
-                        if (devOnRPCResponseListener != null){
+                        if (devOnRPCResponseListener != null) {
                             devOnRPCResponseListener.onResponse(correlationId, response);
                         }
                         if (listener != null) {
@@ -255,7 +255,7 @@ abstract class BaseLifecycleManager {
 
                     @Override
                     public void onError(int correlationId, Result resultCode, String info) {
-                        if (devOnRPCResponseListener != null){
+                        if (devOnRPCResponseListener != null) {
                             devOnRPCResponseListener.onError(correlationId, resultCode, info);
                         }
                         if (listener != null) {
@@ -290,17 +290,17 @@ abstract class BaseLifecycleManager {
      * @return the system capability manager.
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    public SystemCapabilityManager getSystemCapabilityManager(SdlManager sdlManager){
-        if(sdlManager != null){
+    public SystemCapabilityManager getSystemCapabilityManager(SdlManager sdlManager) {
+        if (sdlManager != null) {
             return systemCapabilityManager;
         }
         return null;
     }
 
-    private boolean isConnected(){
-        if(session != null){
+    private boolean isConnected() {
+        if (session != null) {
             return session.getIsConnected();
-        }else{
+        } else {
             return false;
         }
     }
@@ -313,22 +313,23 @@ abstract class BaseLifecycleManager {
      * @return RegisterAppInterfaceResponse received from the module or null if the app has not yet
      * registered with the module.
      */
-    public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse(){
+    public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
         return this.raiResponse;
     }
 
     /**
      * Get the current OnHMIStatus
+     *
      * @return OnHMIStatus object represents the current OnHMIStatus
      */
     public OnHMIStatus getCurrentHMIStatus() {
         return currentHMIStatus;
     }
 
-    void onClose(String info, Exception e){
+    void onClose(String info, Exception e) {
         Log.i(TAG, "onClose");
-        if(lifecycleListener != null){
-            lifecycleListener.onProxyClosed((LifecycleManager) this, info,e,null);
+        if (lifecycleListener != null) {
+            lifecycleListener.onProxyClosed((LifecycleManager) this, info, e, null);
         }
     }
 
@@ -351,7 +352,7 @@ abstract class BaseLifecycleManager {
      ********************************** INTERNAL - RPC LISTENERS !! START !! *********************************
      *********************************************************************************************************/
 
-    private void setupInternalRpcListeners(){
+    private void setupInternalRpcListeners() {
         addRpcListener(FunctionID.REGISTER_APP_INTERFACE, rpcListener);
         addRpcListener(FunctionID.ON_HMI_STATUS, rpcListener);
         addRpcListener(FunctionID.ON_HASH_CHANGE, rpcListener);
@@ -413,7 +414,7 @@ abstract class BaseLifecycleManager {
                                 }
                             };
                             handleOffboardTransmissionThread.start();
-                        }else if (onSystemRequest.getRequestType() == RequestType.ICON_URL && onSystemRequest.getUrl() != null) {
+                        } else if (onSystemRequest.getRequestType() == RequestType.ICON_URL && onSystemRequest.getUrl() != null) {
                             //Download the icon file and send SystemRequest RPC
                             Thread handleOffBoardTransmissionThread = new Thread() {
                                 @Override
@@ -443,7 +444,7 @@ abstract class BaseLifecycleManager {
                         if (!onAppInterfaceUnregistered.getReason().equals(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE)) {
                             Log.v(TAG, "on app interface unregistered");
                             cleanProxy();
-                        }else{
+                        } else {
                             Log.v(TAG, "re-registering for language change");
                             processLanguageChange();
                         }
@@ -457,10 +458,9 @@ abstract class BaseLifecycleManager {
         }
 
 
-
     };
 
-    private void processLanguageChange(){
+    private void processLanguageChange() {
         if (session != null) {
             if (session.getIsConnected()) {
                 session.close();
@@ -482,15 +482,15 @@ abstract class BaseLifecycleManager {
      ********************************** METHODS - RPC LISTENERS !! START !! **********************************
      *********************************************************************************************************/
 
-    private boolean onRPCReceived(final RPCMessage message){
-        synchronized(RPC_LISTENER_LOCK){
-            if(message == null || message.getFunctionID() == null){
+    private boolean onRPCReceived(final RPCMessage message) {
+        synchronized (RPC_LISTENER_LOCK) {
+            if (message == null || message.getFunctionID() == null) {
                 return false;
             }
 
             final int id = message.getFunctionID().getId();
             CopyOnWriteArrayList<OnRPCListener> listeners = rpcListeners.get(id);
-            if(listeners!=null && listeners.size()>0) {
+            if (listeners != null && listeners.size() > 0) {
                 for (OnRPCListener listener : listeners) {
                     listener.onReceived(message);
                 }
@@ -500,8 +500,8 @@ abstract class BaseLifecycleManager {
         }
     }
 
-    private void addRpcListener(FunctionID id, OnRPCListener listener){
-        synchronized(RPC_LISTENER_LOCK){
+    private void addRpcListener(FunctionID id, OnRPCListener listener) {
+        synchronized (RPC_LISTENER_LOCK) {
             if (id != null && listener != null) {
                 if (!rpcListeners.containsKey(id.getId())) {
                     rpcListeners.put(id.getId(), new CopyOnWriteArrayList<OnRPCListener>());
@@ -512,12 +512,12 @@ abstract class BaseLifecycleManager {
         }
     }
 
-    private boolean removeOnRPCListener(FunctionID id, OnRPCListener listener){
-        synchronized(RPC_LISTENER_LOCK){
-            if(rpcListeners!= null
+    private boolean removeOnRPCListener(FunctionID id, OnRPCListener listener) {
+        synchronized (RPC_LISTENER_LOCK) {
+            if (rpcListeners != null
                     && id != null
                     && listener != null
-                    && rpcListeners.containsKey(id.getId())){
+                    && rpcListeners.containsKey(id.getId())) {
                 return rpcListeners.get(id.getId()).remove(listener);
             }
         }
@@ -526,16 +526,17 @@ abstract class BaseLifecycleManager {
 
     /**
      * Only call this method for a PutFile response. It will cause a class cast exception if not.
+     *
      * @param correlationId correlation id of the packet being updated
-     * @param bytesWritten how many bytes were written
-     * @param totalSize the total size in bytes
+     * @param bytesWritten  how many bytes were written
+     * @param totalSize     the total size in bytes
      */
     @SuppressWarnings("unused")
-    private void onPacketProgress(int correlationId, long bytesWritten, long totalSize){
-        synchronized(ON_UPDATE_LISTENER_LOCK){
-            if(rpcResponseListeners !=null
-                    && rpcResponseListeners.containsKey(correlationId)){
-                ((OnPutFileUpdateListener)rpcResponseListeners.get(correlationId)).onUpdate(correlationId, bytesWritten, totalSize);
+    private void onPacketProgress(int correlationId, long bytesWritten, long totalSize) {
+        synchronized (ON_UPDATE_LISTENER_LOCK) {
+            if (rpcResponseListeners != null
+                    && rpcResponseListeners.containsKey(correlationId)) {
+                ((OnPutFileUpdateListener) rpcResponseListeners.get(correlationId)).onUpdate(correlationId, bytesWritten, totalSize);
             }
         }
 
@@ -544,19 +545,20 @@ abstract class BaseLifecycleManager {
     /**
      * Will provide callback to the listener either onFinish or onError depending on the RPCResponses result code,
      * <p>Will automatically remove the listener for the list of listeners on completion.
+     *
      * @param msg The RPCResponse message that was received
      * @return if a listener was called or not
      */
     @SuppressWarnings("UnusedReturnValue")
-    private boolean onRPCResponseReceived(RPCResponse msg){
-        synchronized(ON_UPDATE_LISTENER_LOCK){
+    private boolean onRPCResponseReceived(RPCResponse msg) {
+        synchronized (ON_UPDATE_LISTENER_LOCK) {
             int correlationId = msg.getCorrelationID();
-            if(rpcResponseListeners !=null
-                    && rpcResponseListeners.containsKey(correlationId)){
+            if (rpcResponseListeners != null
+                    && rpcResponseListeners.containsKey(correlationId)) {
                 OnRPCResponseListener listener = rpcResponseListeners.get(correlationId);
-                if(msg.getSuccess()){
+                if (msg.getSuccess()) {
                     listener.onResponse(correlationId, msg);
-                }else{
+                } else {
                     listener.onError(correlationId, msg.getResultCode(), msg.getInfo());
                 }
                 rpcResponseListeners.remove(correlationId);
@@ -568,16 +570,17 @@ abstract class BaseLifecycleManager {
 
     /**
      * Add a listener that will receive the response to the specific RPCRequest sent with the corresponding correlation id
-     * @param listener that will get called back when a response is received
+     *
+     * @param listener      that will get called back when a response is received
      * @param correlationId of the RPCRequest that was sent
-     * @param totalSize only include if this is an OnPutFileUpdateListener. Otherwise it will be ignored.
+     * @param totalSize     only include if this is an OnPutFileUpdateListener. Otherwise it will be ignored.
      */
-    private void addOnRPCResponseListener(OnRPCResponseListener listener,int correlationId, int totalSize){
-        synchronized(ON_UPDATE_LISTENER_LOCK){
-            if(rpcResponseListeners!=null
-                    && listener !=null){
-                if(listener.getListenerType() == OnRPCResponseListener.UPDATE_LISTENER_TYPE_PUT_FILE){
-                    ((OnPutFileUpdateListener)listener).setTotalSize(totalSize);
+    private void addOnRPCResponseListener(OnRPCResponseListener listener, int correlationId, int totalSize) {
+        synchronized (ON_UPDATE_LISTENER_LOCK) {
+            if (rpcResponseListeners != null
+                    && listener != null) {
+                if (listener.getListenerType() == OnRPCResponseListener.UPDATE_LISTENER_TYPE_PUT_FILE) {
+                    ((OnPutFileUpdateListener) listener).setTotalSize(totalSize);
                 }
                 listener.onStart(correlationId);
                 rpcResponseListeners.put(correlationId, listener);
@@ -586,8 +589,8 @@ abstract class BaseLifecycleManager {
     }
 
     @SuppressWarnings("unused")
-    private HashMap<Integer, OnRPCResponseListener> getResponseListeners(){
-        synchronized(ON_UPDATE_LISTENER_LOCK){
+    private HashMap<Integer, OnRPCResponseListener> getResponseListeners() {
+        synchronized (ON_UPDATE_LISTENER_LOCK) {
             return this.rpcResponseListeners;
         }
     }
@@ -595,22 +598,23 @@ abstract class BaseLifecycleManager {
     /**
      * Retrieves the auth token, if any, that was attached to the StartServiceACK for the RPC
      * service from the module. For example, this should be used to login to a user account.
+     *
      * @return the string representation of the auth token
      */
-    public String getAuthToken(){
+    public String getAuthToken() {
         return this.authToken;
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    private boolean onRPCNotificationReceived(RPCNotification notification){
-        if(notification == null){
+    private boolean onRPCNotificationReceived(RPCNotification notification) {
+        if (notification == null) {
             DebugTool.logError("onRPCNotificationReceived - Notification was null");
             return false;
         }
-        DebugTool.logInfo("onRPCNotificationReceived - " + notification.getFunctionName() );
+        DebugTool.logInfo("onRPCNotificationReceived - " + notification.getFunctionName());
 
         //Before updating any listeners, make sure to do any final updates to the notification RPC now
-        if(FunctionID.ON_HMI_STATUS.toString().equals(notification.getFunctionName())){
+        if (FunctionID.ON_HMI_STATUS.toString().equals(notification.getFunctionName())) {
             OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
             onHMIStatus.setFirstRun(firstTimeFull);
             if (onHMIStatus.getHmiLevel() == HMILevel.HMI_FULL) {
@@ -618,9 +622,9 @@ abstract class BaseLifecycleManager {
             }
         }
 
-        synchronized(ON_NOTIFICATION_LISTENER_LOCK){
+        synchronized (ON_NOTIFICATION_LISTENER_LOCK) {
             CopyOnWriteArrayList<OnRPCNotificationListener> listeners = rpcNotificationListeners.get(FunctionID.getFunctionId(notification.getFunctionName()));
-            if(listeners!=null && listeners.size()>0) {
+            if (listeners != null && listeners.size() > 0) {
                 for (OnRPCNotificationListener listener : listeners) {
                     listener.onNotified(notification);
                 }
@@ -633,27 +637,28 @@ abstract class BaseLifecycleManager {
     /**
      * This will add a listener for the specific type of notification. As of now it will only allow
      * a single listener per notification function id
+     *
      * @param notificationId The notification type that this listener is designated for
-     * @param listener The listener that will be called when a notification of the provided type is received
+     * @param listener       The listener that will be called when a notification of the provided type is received
      */
     @SuppressWarnings("unused")
-    private void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
-        synchronized(ON_NOTIFICATION_LISTENER_LOCK){
-            if(notificationId != null && listener != null){
-                if(!rpcNotificationListeners.containsKey(notificationId.getId())){
-                    rpcNotificationListeners.put(notificationId.getId(),new CopyOnWriteArrayList<OnRPCNotificationListener>());
+    private void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
+        synchronized (ON_NOTIFICATION_LISTENER_LOCK) {
+            if (notificationId != null && listener != null) {
+                if (!rpcNotificationListeners.containsKey(notificationId.getId())) {
+                    rpcNotificationListeners.put(notificationId.getId(), new CopyOnWriteArrayList<OnRPCNotificationListener>());
                 }
                 rpcNotificationListeners.get(notificationId.getId()).add(listener);
             }
         }
     }
 
-    private boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
-        synchronized(ON_NOTIFICATION_LISTENER_LOCK){
-            if(rpcNotificationListeners!= null
+    private boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
+        synchronized (ON_NOTIFICATION_LISTENER_LOCK) {
+            if (rpcNotificationListeners != null
                     && notificationId != null
                     && listener != null
-                    && rpcNotificationListeners.containsKey(notificationId.getId())){
+                    && rpcNotificationListeners.containsKey(notificationId.getId())) {
                 return rpcNotificationListeners.get(notificationId.getId()).remove(listener);
             }
         }
@@ -661,16 +666,16 @@ abstract class BaseLifecycleManager {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    private boolean onRPCRequestReceived(RPCRequest request){
-        if(request == null){
+    private boolean onRPCRequestReceived(RPCRequest request) {
+        if (request == null) {
             DebugTool.logError("onRPCRequestReceived - request was null");
             return false;
         }
-        DebugTool.logInfo("onRPCRequestReceived - " + request.getFunctionName() );
+        DebugTool.logInfo("onRPCRequestReceived - " + request.getFunctionName());
 
-        synchronized(ON_REQUEST_LISTENER_LOCK){
+        synchronized (ON_REQUEST_LISTENER_LOCK) {
             CopyOnWriteArrayList<OnRPCRequestListener> listeners = rpcRequestListeners.get(FunctionID.getFunctionId(request.getFunctionName()));
-            if(listeners!=null && listeners.size()>0) {
+            if (listeners != null && listeners.size() > 0) {
                 for (OnRPCRequestListener listener : listeners) {
                     listener.onRequest(request);
                 }
@@ -683,15 +688,16 @@ abstract class BaseLifecycleManager {
     /**
      * This will add a listener for the specific type of request. As of now it will only allow
      * a single listener per request function id
+     *
      * @param requestId The request type that this listener is designated for
-     * @param listener The listener that will be called when a request of the provided type is received
+     * @param listener  The listener that will be called when a request of the provided type is received
      */
     @SuppressWarnings("unused")
-    private void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
-        synchronized(ON_REQUEST_LISTENER_LOCK){
-            if(requestId != null && listener != null){
-                if(!rpcRequestListeners.containsKey(requestId.getId())){
-                    rpcRequestListeners.put(requestId.getId(),new CopyOnWriteArrayList<OnRPCRequestListener>());
+    private void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener) {
+        synchronized (ON_REQUEST_LISTENER_LOCK) {
+            if (requestId != null && listener != null) {
+                if (!rpcRequestListeners.containsKey(requestId.getId())) {
+                    rpcRequestListeners.put(requestId.getId(), new CopyOnWriteArrayList<OnRPCRequestListener>());
                 }
                 rpcRequestListeners.get(requestId.getId()).add(listener);
             }
@@ -699,12 +705,12 @@ abstract class BaseLifecycleManager {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    private boolean removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
-        synchronized(ON_REQUEST_LISTENER_LOCK){
-            if(rpcRequestListeners!= null
+    private boolean removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener) {
+        synchronized (ON_REQUEST_LISTENER_LOCK) {
+            if (rpcRequestListeners != null
                     && requestId != null
                     && listener != null
-                    && rpcRequestListeners.containsKey(requestId.getId())){
+                    && rpcRequestListeners.containsKey(requestId.getId())) {
                 return rpcRequestListeners.get(requestId.getId()).remove(listener);
             }
         }
@@ -715,7 +721,7 @@ abstract class BaseLifecycleManager {
      **************************************** RPC LISTENERS !! END !! ****************************************
      *********************************************************************************************************/
 
-    private void sendRPCMessagePrivate(RPCMessage message, boolean isInternalMessage){
+    private void sendRPCMessagePrivate(RPCMessage message, boolean isInternalMessage) {
         try {
             if (!isInternalMessage && message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
                 RPCRequest request = (RPCRequest) message;
@@ -741,7 +747,7 @@ abstract class BaseLifecycleManager {
             //FIXME this is temporary until the next major release of the library where OK is removed
             if (message.getMessageType().equals(RPCMessage.KEY_REQUEST)) {
                 RPCRequest request = (RPCRequest) message;
-                if(FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
+                if (FunctionID.SUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
                         || FunctionID.UNSUBSCRIBE_BUTTON.toString().equals(request.getFunctionName())
                         || FunctionID.BUTTON_PRESS.toString().equals(request.getFunctionName())) {
 
@@ -768,12 +774,12 @@ abstract class BaseLifecycleManager {
                 }
             }
 
-            message.format(rpcSpecVersion,true);
-            byte[] msgBytes = JsonRPCMarshaller.marshall(message, (byte)getProtocolVersion().getMajor());
+            message.format(rpcSpecVersion, true);
+            byte[] msgBytes = JsonRPCMarshaller.marshall(message, (byte) getProtocolVersion().getMajor());
 
             final ProtocolMessage pm = new ProtocolMessage();
             pm.setData(msgBytes);
-            if (session != null){
+            if (session != null) {
                 pm.setSessionID(session.getSessionId());
             }
 
@@ -786,36 +792,36 @@ abstract class BaseLifecycleManager {
             } else {
                 pm.setPayloadProtected(message.isPayloadProtected());
             }
-            if (pm.getPayloadProtected() && (encryptionLifecycleManager == null || !encryptionLifecycleManager.isEncryptionReady())){
+            if (pm.getPayloadProtected() && (encryptionLifecycleManager == null || !encryptionLifecycleManager.isEncryptionReady())) {
                 String errorInfo = "Trying to send an encrypted message and there is no secured service";
                 if (message.getMessageType().equals((RPCMessage.KEY_REQUEST))) {
                     RPCRequest request = (RPCRequest) message;
                     OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
                     if (listener != null) {
-                        listener.onError(request.getCorrelationID(), Result.ABORTED,  errorInfo);
+                        listener.onError(request.getCorrelationID(), Result.ABORTED, errorInfo);
                     }
                 }
                 DebugTool.logWarning(errorInfo);
                 return;
             }
 
-            if(RPCMessage.KEY_REQUEST.equals(message.getMessageType())){ // Request Specifics
-                pm.setRPCType((byte)0x00);
-                Integer corrId = ((RPCRequest)message).getCorrelationID();
-                if( corrId== null) {
+            if (RPCMessage.KEY_REQUEST.equals(message.getMessageType())) { // Request Specifics
+                pm.setRPCType((byte) 0x00);
+                Integer corrId = ((RPCRequest) message).getCorrelationID();
+                if (corrId == null) {
                     Log.e(TAG, "No correlation ID attached to request. Not sending");
                     return;
-                }else{
+                } else {
                     pm.setCorrID(corrId);
 
-                    OnRPCResponseListener listener = ((RPCRequest)message).getOnRPCResponseListener();
-                    if(listener != null){
+                    OnRPCResponseListener listener = ((RPCRequest) message).getOnRPCResponseListener();
+                    if (listener != null) {
                         addOnRPCResponseListener(listener, corrId, msgBytes.length);
                     }
                 }
-            }else if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())){ // Response Specifics
+            } else if (RPCMessage.KEY_RESPONSE.equals(message.getMessageType())) { // Response Specifics
                 RPCResponse response = (RPCResponse) message;
-                pm.setRPCType((byte)0x01);
+                pm.setRPCType((byte) 0x01);
                 if (response.getCorrelationID() == null) {
                     //Log error here
                     //throw new SdlException("CorrelationID cannot be null. RPC: " + response.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
@@ -824,15 +830,15 @@ abstract class BaseLifecycleManager {
                 } else {
                     pm.setCorrID(response.getCorrelationID());
                 }
-            }else if (message.getMessageType().equals(RPCMessage.KEY_NOTIFICATION)) { // Notification Specifics
-                pm.setRPCType((byte)0x02);
+            } else if (message.getMessageType().equals(RPCMessage.KEY_NOTIFICATION)) { // Notification Specifics
+                pm.setRPCType((byte) 0x02);
             }
 
-            if (message.getBulkData() != null){
+            if (message.getBulkData() != null) {
                 pm.setBulkData(message.getBulkData());
             }
 
-            if(message.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.name())){
+            if (message.getFunctionName().equalsIgnoreCase(FunctionID.PUT_FILE.name())) {
                 pm.setPriorityCoefficient(1);
             }
 
@@ -889,7 +895,7 @@ abstract class BaseLifecycleManager {
                         FunctionID functionID = rpc.getFunctionID();
                         if (functionID != null && (functionID.equals(FunctionID.ON_BUTTON_PRESS)) || functionID.equals(FunctionID.ON_BUTTON_EVENT)) {
                             RPCNotification notificationCompat = handleButtonNotificationFormatting(rpc);
-                            if(notificationCompat != null){
+                            if (notificationCompat != null) {
                                 onRPCNotificationReceived((notificationCompat));
                             }
                         }
@@ -1159,15 +1165,19 @@ abstract class BaseLifecycleManager {
      ********************************************* ISdl - END ************************************************
      *********************************************************************************************************/
 
-    public interface LifecycleListener{
+    public interface LifecycleListener {
         void onProxyConnected(LifecycleManager lifeCycleManager);
+
         void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason);
+
         void onServiceStarted(SessionType sessionType);
+
         void onServiceEnded(SessionType sessionType);
+
         void onError(LifecycleManager lifeCycleManager, String info, Exception e);
     }
 
-    public static class AppConfig{
+    public static class AppConfig {
         private String appID, appName, ngnMediaScreenAppName;
         private Vector<TTSChunk> ttsName;
         private Vector<String> vrSynonyms;
@@ -1178,7 +1188,7 @@ abstract class BaseLifecycleManager {
         private Version minimumProtocolVersion;
         private Version minimumRPCVersion;
 
-        private void prepare(){
+        private void prepare() {
             if (getNgnMediaScreenAppName() == null) {
                 setNgnMediaScreenAppName(getAppName());
             }
@@ -1318,22 +1328,23 @@ abstract class BaseLifecycleManager {
     /**
      * Temporary method to bridge the new PLAY_PAUSE and OKAY button functionality with the old
      * OK button name. This should be removed during the next major release
+     *
      * @param notification an RPC message object that should be either an ON_BUTTON_EVENT or ON_BUTTON_PRESS otherwise
      *                     it will be ignored
      */
-    private RPCNotification handleButtonNotificationFormatting(RPCMessage notification){
-        if(FunctionID.ON_BUTTON_EVENT.toString().equals(notification.getFunctionName())
-                || FunctionID.ON_BUTTON_PRESS.toString().equals(notification.getFunctionName())){
+    private RPCNotification handleButtonNotificationFormatting(RPCMessage notification) {
+        if (FunctionID.ON_BUTTON_EVENT.toString().equals(notification.getFunctionName())
+                || FunctionID.ON_BUTTON_PRESS.toString().equals(notification.getFunctionName())) {
 
-            ButtonName buttonName = (ButtonName)notification.getObject(ButtonName.class, OnButtonEvent.KEY_BUTTON_NAME);
+            ButtonName buttonName = (ButtonName) notification.getObject(ButtonName.class, OnButtonEvent.KEY_BUTTON_NAME);
             ButtonName compatBtnName = null;
 
-            if(rpcSpecVersion != null && rpcSpecVersion.getMajor() >= 5){
-                if(ButtonName.PLAY_PAUSE.equals(buttonName)){
-                    compatBtnName =  ButtonName.OK;
+            if (rpcSpecVersion != null && rpcSpecVersion.getMajor() >= 5) {
+                if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
+                    compatBtnName = ButtonName.OK;
                 }
-            }else{ // rpc spec version is either null or less than 5
-                if(ButtonName.OK.equals(buttonName)){
+            } else { // rpc spec version is either null or less than 5
+                if (ButtonName.OK.equals(buttonName)) {
                     compatBtnName = ButtonName.PLAY_PAUSE;
                 }
             }
@@ -1360,14 +1371,14 @@ abstract class BaseLifecycleManager {
                     notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, compatBtnName);
                     return notification2;
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 //Should never get here
             }
         }
         return null;
     }
 
-    void cleanProxy(){
+    void cleanProxy() {
         firstTimeFull = true;
         currentHMIStatus = null;
         if (rpcListeners != null) {
@@ -1385,7 +1396,7 @@ abstract class BaseLifecycleManager {
         if (session != null && session.getIsConnected()) {
             session.close();
         }
-        if (encryptionLifecycleManager != null){
+        if (encryptionLifecycleManager != null) {
             encryptionLifecycleManager.dispose();
         }
     }
@@ -1397,7 +1408,8 @@ abstract class BaseLifecycleManager {
 
     /**
      * Sets the security libraries and a callback to notify caller when there is update to encryption service
-     * @param secList The list of security class(es)
+     *
+     * @param secList  The list of security class(es)
      * @param listener The callback object
      */
     public void setSdlSecurity(@NonNull List<Class<? extends SdlSecurityBase>> secList, ServiceEncryptionListener listener) {
@@ -1446,7 +1458,7 @@ abstract class BaseLifecycleManager {
      ********************************** Platform specific methods - START *************************************
      *********************************************************************************************************/
 
-    void initializeProxy(){
+    void initializeProxy() {
         this.rpcListeners = new HashMap<>();
         this.rpcResponseListeners = new HashMap<>();
         this.rpcNotificationListeners = new HashMap<>();
@@ -1455,7 +1467,7 @@ abstract class BaseLifecycleManager {
         setupInternalRpcListeners();
     }
 
-    void onProtocolSessionStarted (SessionType sessionType) {
+    void onProtocolSessionStarted(SessionType sessionType) {
         if (sessionType != null) {
             if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1) {
                 Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
@@ -1497,23 +1509,34 @@ abstract class BaseLifecycleManager {
         }
     }
 
-    void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {}
+    void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
+    }
 
-    void onProtocolSessionStartedNACKed (SessionType sessionType) {}
+    void onProtocolSessionStartedNACKed(SessionType sessionType) {
+    }
 
-    void onProtocolSessionEnded (SessionType sessionType) {}
+    void onProtocolSessionEnded(SessionType sessionType) {
+    }
 
-    void onProtocolSessionEndedNACKed (SessionType sessionType) {}
+    void onProtocolSessionEndedNACKed(SessionType sessionType) {
+    }
 
-    void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {}
+    void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {
+    }
 
-    boolean endVideoStream() { return false; }
+    boolean endVideoStream() {
+        return false;
+    }
 
-    void startAudioService(boolean encrypted) {}
+    void startAudioService(boolean encrypted) {
+    }
 
-    boolean endAudioStream() { return false; }
+    boolean endAudioStream() {
+        return false;
+    }
 
-    void setSdlSecurityStaticVars() {}
+    void setSdlSecurityStaticVars() {
+    }
 
     /* *******************************************************************************************************
      ********************************** Platform specific methods - End *************************************

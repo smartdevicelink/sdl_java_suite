@@ -356,7 +356,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		testSendMultipleRPCs(true);
 	}
 
-	private void testSendMultipleRPCs(boolean sequentialSend){
+	private void testSendMultipleRPCs(boolean sequentialSend) {
 		listenerCalledCounter = 0;
 
 		// When internalInterface.sendRPCs() is called, call listener.onFinished() to fake the response
@@ -370,7 +370,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 			}
 		};
 
-		if (sequentialSend){
+		if (sequentialSend) {
 			doAnswer(answer).when(internalInterface).sendSequentialRPCs(any(List.class), any(OnMultipleRequestListener.class));
 
 		} else {
@@ -378,12 +378,12 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		}
 
 
-
 		// Test send RPC requests
 		List<RPCMessage> rpcsList = Arrays.asList(new GetVehicleData(), new Show(), new OnAppServiceData(), new GetAppServiceDataResponse());
 		OnMultipleRequestListener onMultipleRequestListener = new OnMultipleRequestListener() {
 			@Override
-			public void onUpdate(int remainingRequests) { }
+			public void onUpdate(int remainingRequests) {
+			}
 
 			@Override
 			public void onFinished() {
@@ -391,10 +391,12 @@ public class SdlManagerTests extends AndroidTestCase2 {
 			}
 
 			@Override
-			public void onError(int correlationId, Result resultCode, String info) {}
+			public void onError(int correlationId, Result resultCode, String info) {
+			}
 
 			@Override
-			public void onResponse(int correlationId, RPCResponse response) {}
+			public void onResponse(int correlationId, RPCResponse response) {
+			}
 		};
 		if (sequentialSend) {
 			sdlManager.sendSequentialRPCs(rpcsList, onMultipleRequestListener);

@@ -44,11 +44,11 @@ import com.smartdevicelink.util.DebugTool;
 
 /**
  * <strong>SDLManager</strong> <br>
- *
+ * <p>
  * This is the main point of contact between an application and SDL <br>
- *
+ * <p>
  * It is broken down to these areas: <br>
- *
+ * <p>
  * 1. SDLManagerBuilder <br>
  * 2. ISdl Interface along with its overridden methods - This can be passed into attached managers <br>
  * 3. Sending Requests <br>
@@ -80,7 +80,7 @@ public class SdlManager extends BaseSdlManager {
     }
 
     @Override
-    protected void initialize(){
+    protected void initialize() {
         // Instantiate sub managers
         this.permissionManager = new PermissionManager(_internalInterface);
         this.fileManager = new FileManager(_internalInterface, fileManagerConfig);
@@ -94,14 +94,14 @@ public class SdlManager extends BaseSdlManager {
 
     @Override
     void checkState() {
-        if (permissionManager != null && fileManager != null && screenManager != null ){
-            if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY){
+        if (permissionManager != null && fileManager != null && screenManager != null) {
+            if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY) {
                 DebugTool.logInfo("Starting sdl manager, all sub managers are in ready state");
                 transitionToState(BaseSubManager.READY);
                 handleQueuedNotifications();
                 notifyDevListener(null);
                 onReady();
-            } else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR){
+            } else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR) {
                 String info = "ERROR starting sdl manager, all sub managers are in error state";
                 Log.e(TAG, info);
                 transitionToState(BaseSubManager.ERROR);
@@ -128,8 +128,8 @@ public class SdlManager extends BaseSdlManager {
 
     private void notifyDevListener(String info) {
         if (managerListener != null) {
-            if (getState() == BaseSubManager.ERROR){
-                managerListener.onError((SdlManager)this, info, null);
+            if (getState() == BaseSubManager.ERROR) {
+                managerListener.onError((SdlManager) this, info, null);
             } else {
                 managerListener.onStart((SdlManager) this);
             }
@@ -143,8 +143,8 @@ public class SdlManager extends BaseSdlManager {
 
     @Override
     void onProxyClosed(SdlDisconnectedReason reason) {
-        Log.i(TAG,"Proxy is closed.");
-        if(managerListener != null){
+        Log.i(TAG, "Proxy is closed.");
+        if (managerListener != null) {
             managerListener.onDestroy(SdlManager.this);
         }
     }
@@ -167,8 +167,8 @@ public class SdlManager extends BaseSdlManager {
             this.lifecycleManager.stop();
         }
 
-        if(managerListener != null){
-            managerListener.onDestroy((SdlManager)this);
+        if (managerListener != null) {
+            managerListener.onDestroy((SdlManager) this);
             managerListener = null;
         }
 
@@ -179,11 +179,12 @@ public class SdlManager extends BaseSdlManager {
     public static class Builder extends BaseSdlManager.Builder {
         /**
          * Builder for the SdlManager. Parameters in the constructor are required.
-         * @param appId the app's ID
-         * @param appName the app's name
+         *
+         * @param appId    the app's ID
+         * @param appName  the app's name
          * @param listener a SdlManagerListener object
          */
-        public Builder(@NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener){
+        public Builder(@NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener) {
             super(appId, appName, listener);
         }
     }

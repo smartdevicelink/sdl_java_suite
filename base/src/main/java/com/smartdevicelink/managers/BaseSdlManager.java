@@ -122,20 +122,21 @@ abstract class BaseSdlManager {
     final LifecycleManager.LifecycleListener lifecycleListener = new LifecycleManager.LifecycleListener() {
         @Override
         public void onProxyConnected(LifecycleManager lifeCycleManager) {
-            Log.i(TAG,"Proxy is connected. Now initializing.");
-            synchronized (this){
+            Log.i(TAG, "Proxy is connected. Now initializing.");
+            synchronized (this) {
                 changeRegistrationRetry = 0;
                 checkLifecycleConfiguration();
                 initialize();
             }
         }
+
         @Override
-        public void onServiceStarted(SessionType sessionType){
+        public void onServiceStarted(SessionType sessionType) {
 
         }
 
         @Override
-        public void onServiceEnded(SessionType sessionType){
+        public void onServiceEnded(SessionType sessionType) {
 
         }
 
@@ -154,7 +155,7 @@ abstract class BaseSdlManager {
     final CompletionListener subManagerListener = new CompletionListener() {
         @Override
         public synchronized void onComplete(boolean success) {
-            if(!success){
+            if (!success) {
                 Log.e(TAG, "Sub manager failed to initialize");
             }
             checkState();
@@ -163,14 +164,18 @@ abstract class BaseSdlManager {
 
     // ABSTRACT METHODS
     abstract void retryChangeRegistration();
+
     abstract void onProxyClosed(SdlDisconnectedReason reason);
+
     abstract void checkState();
+
     abstract void initialize();
+
     public abstract void dispose();
 
-    protected void checkLifecycleConfiguration(){
-        final Language actualLanguage =  this.getRegisterAppInterfaceResponse().getLanguage();
-        final Language actualHMILanguage =  this.getRegisterAppInterfaceResponse().getHmiDisplayLanguage();
+    protected void checkLifecycleConfiguration() {
+        final Language actualLanguage = this.getRegisterAppInterfaceResponse().getLanguage();
+        final Language actualHMILanguage = this.getRegisterAppInterfaceResponse().getHmiDisplayLanguage();
 
         if ((actualLanguage != null && !actualLanguage.equals(language)) || (actualHMILanguage != null && !actualHMILanguage.equals(hmiLanguage))) {
 
@@ -194,7 +199,7 @@ abstract class BaseSdlManager {
                 changeRegistration.setOnRPCResponseListener(new OnRPCResponseListener() {
                     @Override
                     public void onResponse(int correlationId, RPCResponse response) {
-                        if (response.getSuccess()){
+                        if (response.getSuccess()) {
                             // go through and change sdlManager properties that were changed via the LCU update
                             hmiLanguage = actualHMILanguage;
                             language = actualLanguage;
@@ -235,6 +240,7 @@ abstract class BaseSdlManager {
 
     /**
      * Get the current state for the SdlManager
+     *
      * @return int value that represents the current state
      * @see BaseSubManager
      */
@@ -250,13 +256,13 @@ abstract class BaseSdlManager {
         }
     }
 
-    void checkSdlManagerState(){
-        if (getState() != BaseSubManager.READY && getState() != BaseSubManager.LIMITED){
+    void checkSdlManagerState() {
+        if (getState() != BaseSubManager.READY && getState() != BaseSubManager.LIMITED) {
             Log.e(TAG, "SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
         }
     }
 
-    void initNotificationQueue(){
+    void initNotificationQueue() {
         //Setup the notification queue
         if (onRPCNotificationListeners != null) {
             Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
@@ -275,7 +281,7 @@ abstract class BaseSdlManager {
         }
     }
 
-    void handleQueuedNotifications(){
+    void handleQueuedNotifications() {
         //Handle queued notifications and add the listeners
         if (onRPCNotificationListeners != null) {
             Set<FunctionID> functionIDSet = onRPCNotificationListeners.keySet();
@@ -312,7 +318,7 @@ abstract class BaseSdlManager {
      * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
      */
     @SuppressWarnings("unchecked")
-    public void start(){
+    public void start() {
         LifecycleManager.AppConfig appConfig = new LifecycleManager.AppConfig();
         appConfig.setAppName(appName);
         //short app name
@@ -339,7 +345,7 @@ abstract class BaseSdlManager {
         initNotificationQueue();
     }
 
-    void onReady(){
+    void onReady() {
         // Set the app icon
         if (BaseSdlManager.this.appIcon != null && BaseSdlManager.this.appIcon.getName() != null) {
             if (fileManager != null && fileManager.getState() == BaseSubManager.READY && !fileManager.hasUploadedFile(BaseSdlManager.this.appIcon)) {
@@ -360,43 +366,73 @@ abstract class BaseSdlManager {
     }
 
     // PROTECTED GETTERS
-    protected String getAppName() { return appName; }
+    protected String getAppName() {
+        return appName;
+    }
 
-    protected String getAppId() { return appId; }
+    protected String getAppId() {
+        return appId;
+    }
 
-    protected String getShortAppName() { return shortAppName; }
+    protected String getShortAppName() {
+        return shortAppName;
+    }
 
-    protected Version getMinimumProtocolVersion() { return minimumProtocolVersion; }
+    protected Version getMinimumProtocolVersion() {
+        return minimumProtocolVersion;
+    }
 
-    protected Version getMinimumRPCVersion() { return minimumRPCVersion; }
+    protected Version getMinimumRPCVersion() {
+        return minimumRPCVersion;
+    }
 
-    protected Language getHmiLanguage() { return hmiLanguage; }
+    protected Language getHmiLanguage() {
+        return hmiLanguage;
+    }
 
-    protected Language getLanguage() { return language; }
+    protected Language getLanguage() {
+        return language;
+    }
 
-    protected TemplateColorScheme getDayColorScheme() { return dayColorScheme; }
+    protected TemplateColorScheme getDayColorScheme() {
+        return dayColorScheme;
+    }
 
-    protected TemplateColorScheme getNightColorScheme() { return nightColorScheme; }
+    protected TemplateColorScheme getNightColorScheme() {
+        return nightColorScheme;
+    }
 
-    protected Vector<AppHMIType> getAppTypes() { return hmiTypes; }
+    protected Vector<AppHMIType> getAppTypes() {
+        return hmiTypes;
+    }
 
-    protected Vector<String> getVrSynonyms() { return vrSynonyms; }
+    protected Vector<String> getVrSynonyms() {
+        return vrSynonyms;
+    }
 
-    protected Vector<TTSChunk> getTtsChunks() { return ttsChunks; }
+    protected Vector<TTSChunk> getTtsChunks() {
+        return ttsChunks;
+    }
 
-    protected BaseTransportConfig getTransport() { return transport; }
+    protected BaseTransportConfig getTransport() {
+        return transport;
+    }
 
-    protected FileManagerConfig getFileManagerConfig() { return fileManagerConfig; }
+    protected FileManagerConfig getFileManagerConfig() {
+        return fileManagerConfig;
+    }
 
     // MANAGER GETTERS
+
     /**
      * Gets the PermissionManager. <br>
      * <strong>Note: PermissionManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     *
      * @return a PermissionManager object
      */
     public PermissionManager getPermissionManager() {
-        if (permissionManager.getState() != BaseSubManager.READY && permissionManager.getState() != BaseSubManager.LIMITED){
-            Log.e(TAG,"PermissionManager should not be accessed because it is not in READY/LIMITED state");
+        if (permissionManager.getState() != BaseSubManager.READY && permissionManager.getState() != BaseSubManager.LIMITED) {
+            Log.e(TAG, "PermissionManager should not be accessed because it is not in READY/LIMITED state");
         }
         checkSdlManagerState();
         return permissionManager;
@@ -405,10 +441,11 @@ abstract class BaseSdlManager {
     /**
      * Gets the FileManager. <br>
      * <strong>Note: FileManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     *
      * @return a FileManager object
      */
     public FileManager getFileManager() {
-        if (fileManager.getState() != BaseSubManager.READY && fileManager.getState() != BaseSubManager.LIMITED){
+        if (fileManager.getState() != BaseSubManager.READY && fileManager.getState() != BaseSubManager.LIMITED) {
             Log.e(TAG, "FileManager should not be accessed because it is not in READY/LIMITED state");
         }
         checkSdlManagerState();
@@ -418,10 +455,11 @@ abstract class BaseSdlManager {
     /**
      * Gets the ScreenManager. <br>
      * <strong>Note: ScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     *
      * @return a ScreenManager object
      */
     public ScreenManager getScreenManager() {
-        if (screenManager.getState() != BaseSubManager.READY && screenManager.getState() != BaseSubManager.LIMITED){
+        if (screenManager.getState() != BaseSubManager.READY && screenManager.getState() != BaseSubManager.LIMITED) {
             Log.e(TAG, "ScreenManager should not be accessed because it is not in READY/LIMITED state");
         }
         checkSdlManagerState();
@@ -431,9 +469,10 @@ abstract class BaseSdlManager {
     /**
      * Gets the SystemCapabilityManager. <br>
      * <strong>Note: SystemCapabilityManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     *
      * @return a SystemCapabilityManager object
      */
-    public SystemCapabilityManager getSystemCapabilityManager(){
+    public SystemCapabilityManager getSystemCapabilityManager() {
         return lifecycleManager.getSystemCapabilityManager((SdlManager) this);
     }
 
@@ -445,8 +484,8 @@ abstract class BaseSdlManager {
      * @return RegisterAppInterfaceResponse received from the module or null if the app has not yet
      * registered with the module.
      */
-    public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse(){
-        if(lifecycleManager != null){
+    public RegisterAppInterfaceResponse getRegisterAppInterfaceResponse() {
+        if (lifecycleManager != null) {
             return lifecycleManager.getRegisterAppInterfaceResponse();
         }
         return null;
@@ -454,10 +493,11 @@ abstract class BaseSdlManager {
 
     /**
      * Get the current OnHMIStatus
+     *
      * @return OnHMIStatus object represents the current OnHMIStatus
      */
-    public OnHMIStatus getCurrentHMIStatus(){
-        if(this.lifecycleManager !=null ){
+    public OnHMIStatus getCurrentHMIStatus() {
+        if (this.lifecycleManager != null) {
             return lifecycleManager.getCurrentHMIStatus();
         }
         return null;
@@ -466,9 +506,10 @@ abstract class BaseSdlManager {
     /**
      * Retrieves the auth token, if any, that was attached to the StartServiceACK for the RPC
      * service from the module. For example, this should be used to login to a user account.
+     *
      * @return the string representation of the auth token
      */
-    public String getAuthToken(){
+    public String getAuthToken() {
         return this.lifecycleManager.getAuthToken();
     }
 
@@ -476,6 +517,7 @@ abstract class BaseSdlManager {
 
     /**
      * Send RPC Message <br>
+     *
      * @param message RPCMessage
      */
     public void sendRPC(RPCMessage message) {
@@ -490,14 +532,14 @@ abstract class BaseSdlManager {
      *
      * <strong>ADDITIONAL NOTE: This only takes the type of RPCRequest for now, notifications and responses will be thrown out</strong>
      *
-     * @param rpcs is the list of RPCMessages being sent
+     * @param rpcs     is the list of RPCMessages being sent
      * @param listener listener for updates and completions
      */
-    public void sendSequentialRPCs(final List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener){
+    public void sendSequentialRPCs(final List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) {
         List<RPCRequest> rpcRequestList = new ArrayList<>();
         for (int i = 0; i < rpcs.size(); i++) {
-            if (rpcs.get(i) instanceof RPCRequest){
-                rpcRequestList.add((RPCRequest)rpcs.get(i));
+            if (rpcs.get(i) instanceof RPCRequest) {
+                rpcRequestList.add((RPCRequest) rpcs.get(i));
             }
         }
 
@@ -514,51 +556,55 @@ abstract class BaseSdlManager {
      *
      * <strong>ADDITIONAL NOTE: This only takes the type of RPCRequest for now, notifications and responses will be thrown out</strong>
      *
-     * @param rpcs is the list of RPCMessages being sent
+     * @param rpcs     is the list of RPCMessages being sent
      * @param listener listener for updates and completions
      */
     public void sendRPCs(List<? extends RPCMessage> rpcs, final OnMultipleRequestListener listener) {
         List<RPCRequest> rpcRequestList = new ArrayList<>();
         for (int i = 0; i < rpcs.size(); i++) {
-            if (rpcs.get(i) instanceof RPCRequest){
-                rpcRequestList.add((RPCRequest)rpcs.get(i));
+            if (rpcs.get(i) instanceof RPCRequest) {
+                rpcRequestList.add((RPCRequest) rpcs.get(i));
             }
         }
 
         if (rpcRequestList.size() > 0) {
-            _internalInterface.sendRPCs(rpcRequestList,listener);
+            _internalInterface.sendRPCs(rpcRequestList, listener);
         }
     }
 
     /**
      * Add an OnRPCNotificationListener
+     *
      * @param listener listener that will be called when a notification is received
      */
-    public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
-        _internalInterface.addOnRPCNotificationListener(notificationId,listener);
+    public void addOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
+        _internalInterface.addOnRPCNotificationListener(notificationId, listener);
     }
 
     /**
      * Remove an OnRPCNotificationListener
+     *
      * @param listener listener that was previously added
      */
-    public void removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener){
+    public void removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
         _internalInterface.removeOnRPCNotificationListener(notificationId, listener);
     }
 
     /**
      * Add an OnRPCRequestListener
+     *
      * @param listener listener that will be called when a request is received
      */
-    public void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
-        _internalInterface.addOnRPCRequestListener(requestId,listener);
+    public void addOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener) {
+        _internalInterface.addOnRPCRequestListener(requestId, listener);
     }
 
     /**
      * Remove an OnRPCRequestListener
+     *
      * @param listener listener that was previously added
      */
-    public void removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener){
+    public void removeOnRPCRequestListener(FunctionID requestId, OnRPCRequestListener listener) {
         _internalInterface.removeOnRPCRequestListener(requestId, listener);
     }
 
@@ -572,26 +618,30 @@ abstract class BaseSdlManager {
             setAppName(appName);
             setManagerListener(listener);
         }
+
         /**
          * Sets the App ID
+         *
          * @param appId String representation of the App ID retreived from the SDL Developer Portal
          */
-        public Builder setAppId(@NonNull final String appId){
+        public Builder setAppId(@NonNull final String appId) {
             sdlManager.appId = appId;
             return this;
         }
 
         /**
          * Sets the Application Name
+         *
          * @param appName String that will be associated as the app's name
          */
-        public Builder setAppName(@NonNull final String appName){
+        public Builder setAppName(@NonNull final String appName) {
             sdlManager.appName = appName;
             return this;
         }
 
         /**
          * Sets the Short Application Name
+         *
          * @param shortAppName a shorter representation of the app's name for smaller displays
          */
         public Builder setShortAppName(final String shortAppName) {
@@ -603,6 +653,7 @@ abstract class BaseSdlManager {
          * Sets the minimum protocol version that will be permitted to connect.
          * If the protocol version of the head unit connected is below this version,
          * the app will disconnect with an EndService protocol message and will not register.
+         *
          * @param minimumProtocolVersion the minimum Protocol spec version that should be accepted
          */
         public Builder setMinimumProtocolVersion(final Version minimumProtocolVersion) {
@@ -613,6 +664,7 @@ abstract class BaseSdlManager {
         /**
          * The minimum RPC version that will be permitted to connect.
          * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
+         *
          * @param minimumRPCVersion the minimum RPC spec version that should be accepted
          */
         public Builder setMinimumRPCVersion(final Version minimumRPCVersion) {
@@ -622,9 +674,10 @@ abstract class BaseSdlManager {
 
         /**
          * Sets the Language of the App
+         *
          * @param hmiLanguage the desired language to be used on the display/HMI of the connected module
          */
-        public Builder setLanguage(final Language hmiLanguage){
+        public Builder setLanguage(final Language hmiLanguage) {
             sdlManager.hmiLanguage = hmiLanguage;
             sdlManager.language = hmiLanguage;
             return this;
@@ -632,30 +685,33 @@ abstract class BaseSdlManager {
 
         /**
          * Sets the TemplateColorScheme for daytime
+         *
          * @param dayColorScheme color scheme that will be used (if supported) when the display is in a "Day Mode" or
          *                       similar. Should comprise of colors that contrast well during the day under sunlight.
          */
-        public Builder setDayColorScheme(final TemplateColorScheme dayColorScheme){
+        public Builder setDayColorScheme(final TemplateColorScheme dayColorScheme) {
             sdlManager.dayColorScheme = dayColorScheme;
             return this;
         }
 
         /**
          * Sets the TemplateColorScheme for nighttime
+         *
          * @param nightColorScheme color scheme that will be used (if supported) when the display is in a "Night Mode"
          *                         or similar. Should comprise of colors that contrast well during the night and are not
          *                         brighter than average.
          */
-        public Builder setNightColorScheme(final TemplateColorScheme nightColorScheme){
+        public Builder setNightColorScheme(final TemplateColorScheme nightColorScheme) {
             sdlManager.nightColorScheme = nightColorScheme;
             return this;
         }
 
         /**
          * Sets the icon for the app on head unit / In-Vehicle-Infotainment system <br>
+         *
          * @param sdlArtwork the icon that will be used to represent this application on the connected module
          */
-        public Builder setAppIcon(final SdlArtwork sdlArtwork){
+        public Builder setAppIcon(final SdlArtwork sdlArtwork) {
             sdlManager.appIcon = sdlArtwork;
             return this;
         }
@@ -663,10 +719,11 @@ abstract class BaseSdlManager {
         /**
          * Sets the vector of AppHMIType <br>
          * <strong>Note: This should be an ordered list from most -> least relevant</strong>
+         *
          * @param hmiTypes HMI types that represent this application. For example, if the app is a music player, the
          *                 MEDIA HMIType should be included.
          */
-        public Builder setAppTypes(final Vector<AppHMIType> hmiTypes){
+        public Builder setAppTypes(final Vector<AppHMIType> hmiTypes) {
             sdlManager.hmiTypes = hmiTypes;
 
             if (hmiTypes != null) {
@@ -680,15 +737,17 @@ abstract class BaseSdlManager {
          * Sets the FileManagerConfig for the session.<br>
          * <strong>Note: If not set, the default configuration value of 1 will be set for
          * artworkRetryCount and fileRetryCount in FileManagerConfig</strong>
+         *
          * @param fileManagerConfig - configuration options
          */
-        public Builder setFileManagerConfig (final FileManagerConfig fileManagerConfig){
+        public Builder setFileManagerConfig(final FileManagerConfig fileManagerConfig) {
             sdlManager.fileManagerConfig = fileManagerConfig;
             return this;
         }
 
         /**
          * Sets the voice recognition synonyms that can be used to identify this application.
+         *
          * @param vrSynonyms a vector of Strings that can be associated with this app. For example the app's name should
          *                   be included as well as any phonetic spellings of the app name that might help the on-board
          *                   VR system associated a users spoken word with the supplied synonyms.
@@ -701,6 +760,7 @@ abstract class BaseSdlManager {
         /**
          * Sets the Text-To-Speech Name of the application. These TTSChunks might be used by the module as an audio
          * representation of the app's name.
+         *
          * @param ttsChunks the TTS chunks that can represent this app's name
          */
         public Builder setTtsName(final Vector<TTSChunk> ttsChunks) {
@@ -711,15 +771,17 @@ abstract class BaseSdlManager {
         /**
          * This Object type may change with the transport refactor
          * Sets the BaseTransportConfig
+         *
          * @param transport the type of transport that should be used for this SdlManager instance.
          */
-        public Builder setTransportType(@NonNull BaseTransportConfig transport){
+        public Builder setTransportType(@NonNull BaseTransportConfig transport) {
             sdlManager.transport = transport;
             return this;
         }
 
         /**
          * Sets the Security libraries
+         *
          * @param secList The list of security class(es)
          */
         @Deprecated
@@ -730,7 +792,8 @@ abstract class BaseSdlManager {
 
         /**
          * Sets the security libraries and a callback to notify caller when there is update to encryption service
-         * @param secList The list of security class(es)
+         *
+         * @param secList  The list of security class(es)
          * @param listener The callback object
          */
         public Builder setSdlSecurity(@NonNull List<Class<? extends SdlSecurityBase>> secList, ServiceEncryptionListener listener) {
@@ -741,19 +804,21 @@ abstract class BaseSdlManager {
 
         /**
          * Set the SdlManager Listener
+         *
          * @param listener the listener
          */
-        public Builder setManagerListener(@NonNull final SdlManagerListener listener){
+        public Builder setManagerListener(@NonNull final SdlManagerListener listener) {
             sdlManager.managerListener = listener;
             return this;
         }
 
         /**
          * Set RPCNotification listeners. SdlManager will preload these listeners before any RPCs are sent/received.
+         *
          * @param listeners a map of listeners that will be called when a notification is received.
-         * Key represents the FunctionID of the notification and value represents the listener
+         *                  Key represents the FunctionID of the notification and value represents the listener
          */
-        public Builder setRPCNotificationListeners(Map<FunctionID, OnRPCNotificationListener> listeners){
+        public Builder setRPCNotificationListeners(Map<FunctionID, OnRPCNotificationListener> listeners) {
             sdlManager.onRPCNotificationListeners = listeners;
             return this;
         }
@@ -777,21 +842,21 @@ abstract class BaseSdlManager {
                 sdlManager.hmiTypes = hmiTypesDefault;
                 sdlManager.isMediaApp = false;
             }
-            if(sdlManager.fileManagerConfig == null){
+            if (sdlManager.fileManagerConfig == null) {
                 //if FileManagerConfig is not set use default
                 sdlManager.fileManagerConfig = new FileManagerConfig();
             }
 
-            if (sdlManager.hmiLanguage == null){
+            if (sdlManager.hmiLanguage == null) {
                 sdlManager.hmiLanguage = Language.EN_US;
                 sdlManager.language = Language.EN_US;
             }
 
-            if (sdlManager.minimumProtocolVersion == null){
+            if (sdlManager.minimumProtocolVersion == null) {
                 sdlManager.minimumProtocolVersion = new Version("1.0.0");
             }
 
-            if (sdlManager.minimumRPCVersion == null){
+            if (sdlManager.minimumRPCVersion == null) {
                 sdlManager.minimumRPCVersion = new Version("1.0.0");
             }
 

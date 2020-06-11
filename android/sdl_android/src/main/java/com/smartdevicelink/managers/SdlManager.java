@@ -60,318 +60,333 @@ import java.util.List;
 
 /**
  * <strong>SDLManager</strong> <br>
- *
+ * <p>
  * This is the main point of contact between an application and SDL <br>
- *
+ * <p>
  * It is broken down to these areas: <br>
- *
+ * <p>
  * 1. SDLManagerBuilder <br>
  * 2. ISdl Interface along with its overridden methods - This can be passed into attached managers <br>
  * 3. Sending Requests <br>
  * 4. Helper methods
  */
-public class SdlManager extends BaseSdlManager{
-	private Context context;
-	private LockScreenConfig lockScreenConfig;
+public class SdlManager extends BaseSdlManager {
+    private Context context;
+    private LockScreenConfig lockScreenConfig;
 
-	// Managers
-	private LockScreenManager lockScreenManager;
-	private VideoStreamManager videoStreamManager;
-	private AudioStreamManager audioStreamManager;
+    // Managers
+    private LockScreenManager lockScreenManager;
+    private VideoStreamManager videoStreamManager;
+    private AudioStreamManager audioStreamManager;
 
-	/**
-	 * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
-	 */
-	@Override
-	public void start(){
-		if (lifecycleManager == null) {
-			if(transport!= null  && transport.getTransportType() == TransportType.MULTIPLEX){
-				//Do the thing
-				MultiplexTransportConfig multiplexTransportConfig = (MultiplexTransportConfig)(transport);
-				final MultiplexTransportConfig.TransportListener devListener = multiplexTransportConfig.getTransportListener();
-				multiplexTransportConfig.setTransportListener(new MultiplexTransportConfig.TransportListener() {
-					@Override
-					public void onTransportEvent(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail) {
+    /**
+     * Starts up a SdlManager, and calls provided callback called once all BaseSubManagers are done setting up
+     */
+    @Override
+    public void start() {
+        if (lifecycleManager == null) {
+            if (transport != null && transport.getTransportType() == TransportType.MULTIPLEX) {
+                //Do the thing
+                MultiplexTransportConfig multiplexTransportConfig = (MultiplexTransportConfig) (transport);
+                final MultiplexTransportConfig.TransportListener devListener = multiplexTransportConfig.getTransportListener();
+                multiplexTransportConfig.setTransportListener(new MultiplexTransportConfig.TransportListener() {
+                    @Override
+                    public void onTransportEvent(List<TransportRecord> connectedTransports, boolean audioStreamTransportAvail, boolean videoStreamTransportAvail) {
 
-						//Pass to submanagers that need it
-						if(videoStreamManager != null){
-							videoStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
-						}
+                        //Pass to submanagers that need it
+                        if (videoStreamManager != null) {
+                            videoStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
+                        }
 
-						if(audioStreamManager != null){
-							audioStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
-						}
-						//If the developer supplied a listener to start, it is time to call that
-						if(devListener != null){
-							devListener.onTransportEvent(connectedTransports,audioStreamTransportAvail,videoStreamTransportAvail);
-						}
-					}
-				});
+                        if (audioStreamManager != null) {
+                            audioStreamManager.handleTransportUpdated(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
+                        }
+                        //If the developer supplied a listener to start, it is time to call that
+                        if (devListener != null) {
+                            devListener.onTransportEvent(connectedTransports, audioStreamTransportAvail, videoStreamTransportAvail);
+                        }
+                    }
+                });
 
-				//If the requires audio support has not been set, it should be set to true if the
-				//app is a media app, and false otherwise
-				if(multiplexTransportConfig.requiresAudioSupport() == null){
-					multiplexTransportConfig.setRequiresAudioSupport(isMediaApp);
-				}
-			}
+                //If the requires audio support has not been set, it should be set to true if the
+                //app is a media app, and false otherwise
+                if (multiplexTransportConfig.requiresAudioSupport() == null) {
+                    multiplexTransportConfig.setRequiresAudioSupport(isMediaApp);
+                }
+            }
 
-			super.start();
+            super.start();
 
-			lifecycleManager.setContext(context);
-			lifecycleManager.start();
-		}
-	}
+            lifecycleManager.setContext(context);
+            lifecycleManager.start();
+        }
+    }
 
-	@Override
-	protected void initialize(){
-		// Instantiate sub managers
-		this.permissionManager = new PermissionManager(_internalInterface);
-		this.fileManager = new FileManager(_internalInterface, context, fileManagerConfig);
-		if (lockScreenConfig.isEnabled()) {
-			this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
-		}
-		this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
-		if(getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)){
-			this.videoStreamManager = new VideoStreamManager(_internalInterface);
-		} else {
-			this.videoStreamManager = null;
-		}
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-				&& (getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)) ) {
-			this.audioStreamManager = new AudioStreamManager(_internalInterface, context);
-		} else {
-			this.audioStreamManager = null;
-		}
+    @Override
+    protected void initialize() {
+        // Instantiate sub managers
+        this.permissionManager = new PermissionManager(_internalInterface);
+        this.fileManager = new FileManager(_internalInterface, context, fileManagerConfig);
+        if (lockScreenConfig.isEnabled()) {
+            this.lockScreenManager = new LockScreenManager(lockScreenConfig, context, _internalInterface);
+        }
+        this.screenManager = new ScreenManager(_internalInterface, this.fileManager);
+        if (getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION)) {
+            this.videoStreamManager = new VideoStreamManager(_internalInterface);
+        } else {
+            this.videoStreamManager = null;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+                && (getAppTypes().contains(AppHMIType.NAVIGATION) || getAppTypes().contains(AppHMIType.PROJECTION))) {
+            this.audioStreamManager = new AudioStreamManager(_internalInterface, context);
+        } else {
+            this.audioStreamManager = null;
+        }
 
-		// Start sub managers
-		this.permissionManager.start(subManagerListener);
-		this.fileManager.start(subManagerListener);
-		if (lockScreenConfig.isEnabled()){
-			this.lockScreenManager.start(subManagerListener);
-		}
-		this.screenManager.start(subManagerListener);
-	}
+        // Start sub managers
+        this.permissionManager.start(subManagerListener);
+        this.fileManager.start(subManagerListener);
+        if (lockScreenConfig.isEnabled()) {
+            this.lockScreenManager.start(subManagerListener);
+        }
+        this.screenManager.start(subManagerListener);
+    }
 
-	@Override
-	void checkState() {
-		if (permissionManager != null && fileManager != null && screenManager != null && (!lockScreenConfig.isEnabled() || lockScreenManager != null)) {
-			if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.READY)) {
-				DebugTool.logInfo("Starting sdl manager, all sub managers are in ready state");
-				transitionToState(BaseSubManager.READY);
-				handleQueuedNotifications();
-				notifyDevListener(null);
-				onReady();
-			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.ERROR)) {
-				String info = "ERROR starting sdl manager, all sub managers are in error state";
-				Log.e(TAG, info);
-				transitionToState(BaseSubManager.ERROR);
-				notifyDevListener(info);
-			} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP || (lockScreenConfig.isEnabled() && lockScreenManager != null && lockScreenManager.getState() == BaseSubManager.SETTING_UP)) {
-				DebugTool.logInfo("SETTING UP sdl manager, some sub managers are still setting up");
-				transitionToState(BaseSubManager.SETTING_UP);
-				// No need to notify developer here!
-			} else {
-				Log.w(TAG, "LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
-				transitionToState(BaseSubManager.LIMITED);
-				handleQueuedNotifications();
-				notifyDevListener(null);
-				onReady();
-			}
-		} else {
-			// We should never be here, but somehow one of the sub-sub managers is null
-			String info = "ERROR one of the sdl sub managers is null";
-			Log.e(TAG, info);
-			transitionToState(BaseSubManager.ERROR);
-			notifyDevListener(info);
-		}
-	}
+    @Override
+    void checkState() {
+        if (permissionManager != null && fileManager != null && screenManager != null && (!lockScreenConfig.isEnabled() || lockScreenManager != null)) {
+            if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.READY)) {
+                DebugTool.logInfo("Starting sdl manager, all sub managers are in ready state");
+                transitionToState(BaseSubManager.READY);
+                handleQueuedNotifications();
+                notifyDevListener(null);
+                onReady();
+            } else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.ERROR)) {
+                String info = "ERROR starting sdl manager, all sub managers are in error state";
+                Log.e(TAG, info);
+                transitionToState(BaseSubManager.ERROR);
+                notifyDevListener(info);
+            } else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP || (lockScreenConfig.isEnabled() && lockScreenManager != null && lockScreenManager.getState() == BaseSubManager.SETTING_UP)) {
+                DebugTool.logInfo("SETTING UP sdl manager, some sub managers are still setting up");
+                transitionToState(BaseSubManager.SETTING_UP);
+                // No need to notify developer here!
+            } else {
+                Log.w(TAG, "LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
+                transitionToState(BaseSubManager.LIMITED);
+                handleQueuedNotifications();
+                notifyDevListener(null);
+                onReady();
+            }
+        } else {
+            // We should never be here, but somehow one of the sub-sub managers is null
+            String info = "ERROR one of the sdl sub managers is null";
+            Log.e(TAG, info);
+            transitionToState(BaseSubManager.ERROR);
+            notifyDevListener(info);
+        }
+    }
 
-	private void notifyDevListener(String info) {
-		if (managerListener != null) {
-			if (getState() == BaseSubManager.ERROR){
-				managerListener.onError(info, null);
-			} else {
-				managerListener.onStart();
-			}
-		}
-	}
+    private void notifyDevListener(String info) {
+        if (managerListener != null) {
+            if (getState() == BaseSubManager.ERROR) {
+                managerListener.onError(info, null);
+            } else {
+                managerListener.onStart();
+            }
+        }
+    }
 
-	@Override
-	void retryChangeRegistration() {
-		changeRegistrationRetry++;
-		if (changeRegistrationRetry < MAX_RETRY) {
-			final Handler handler = new Handler(Looper.getMainLooper());
-			handler.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					checkLifecycleConfiguration();
-					DebugTool.logInfo("Retry Change Registration Count: " + changeRegistrationRetry);
-				}
-			}, 3000);
-		}
-	}
+    @Override
+    void retryChangeRegistration() {
+        changeRegistrationRetry++;
+        if (changeRegistrationRetry < MAX_RETRY) {
+            final Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    checkLifecycleConfiguration();
+                    DebugTool.logInfo("Retry Change Registration Count: " + changeRegistrationRetry);
+                }
+            }, 3000);
+        }
+    }
 
-	@Override
-	void onProxyClosed(SdlDisconnectedReason reason) {
-		Log.i(TAG,"Proxy is closed.");
-		if(managerListener != null){
-			managerListener.onDestroy();
-		}
+    @Override
+    void onProxyClosed(SdlDisconnectedReason reason) {
+        Log.i(TAG, "Proxy is closed.");
+        if (managerListener != null) {
+            managerListener.onDestroy();
+        }
 
-		if (reason == null || !reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)){
-			dispose();
-		}
-	}
+        if (reason == null || !reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)) {
+            dispose();
+        }
+    }
 
-	/** Dispose SdlManager and clean its resources
-	 * <strong>Note: new instance of SdlManager should be created on every connection. SdlManager cannot be reused after getting disposed.</strong>
-	 */
-	@SuppressLint("NewApi")
-	@Override
-	public void dispose() {
-		if (this.permissionManager != null) {
-			this.permissionManager.dispose();
-		}
+    /**
+     * Dispose SdlManager and clean its resources
+     * <strong>Note: new instance of SdlManager should be created on every connection. SdlManager cannot be reused after getting disposed.</strong>
+     */
+    @SuppressLint("NewApi")
+    @Override
+    public void dispose() {
+        if (this.permissionManager != null) {
+            this.permissionManager.dispose();
+        }
 
-		if (this.fileManager != null) {
-			this.fileManager.dispose();
-		}
+        if (this.fileManager != null) {
+            this.fileManager.dispose();
+        }
 
-		if (this.lockScreenManager != null) {
-			this.lockScreenManager.dispose();
-		}
+        if (this.lockScreenManager != null) {
+            this.lockScreenManager.dispose();
+        }
 
-		if (this.screenManager != null) {
-			this.screenManager.dispose();
-		}
+        if (this.screenManager != null) {
+            this.screenManager.dispose();
+        }
 
-		if(this.videoStreamManager != null) {
-			this.videoStreamManager.dispose();
-		}
+        if (this.videoStreamManager != null) {
+            this.videoStreamManager.dispose();
+        }
 
-		// SuppressLint("NewApi") is used because audioStreamManager is only available on android >= jelly bean
-		if (this.audioStreamManager != null) {
-			this.audioStreamManager.dispose();
-		}
+        // SuppressLint("NewApi") is used because audioStreamManager is only available on android >= jelly bean
+        if (this.audioStreamManager != null) {
+            this.audioStreamManager.dispose();
+        }
 
-		if (this.lifecycleManager != null) {
-			this.lifecycleManager.stop();
-		}
+        if (this.lifecycleManager != null) {
+            this.lifecycleManager.stop();
+        }
 
-		if(managerListener != null){
-			managerListener.onDestroy();
-			managerListener = null;
-		}
+        if (managerListener != null) {
+            managerListener.onDestroy();
+            managerListener = null;
+        }
 
-		transitionToState(BaseSubManager.SHUTDOWN);
-	}
+        transitionToState(BaseSubManager.SHUTDOWN);
+    }
 
-	// MANAGER GETTERS
+    // MANAGER GETTERS
+
     /**
      * Gets the VideoStreamManager. <br>
-	 * The VideoStreamManager returned will only be not null if the registered app type is
-	 * either NAVIGATION or PROJECTION. Once the VideoStreamManager is retrieved, its start()
-	 * method will need to be called before use.
+     * The VideoStreamManager returned will only be not null if the registered app type is
+     * either NAVIGATION or PROJECTION. Once the VideoStreamManager is retrieved, its start()
+     * method will need to be called before use.
      * <br><br><strong>Note: VideoStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     *
      * @return a VideoStreamManager object attached to this SdlManager instance
      */
-	public @Nullable VideoStreamManager getVideoStreamManager() {
-		checkSdlManagerState();
-		return videoStreamManager;
-	}
+    public @Nullable
+    VideoStreamManager getVideoStreamManager() {
+        checkSdlManagerState();
+        return videoStreamManager;
+    }
 
     /**
      * Gets the AudioStreamManager. <br>
-	 * The AudioStreamManager returned will only be not null if the registered app type is
-	 * either NAVIGATION or PROJECTION. Once the AudioStreamManager is retrieved, its start()
-	 * method will need to be called before use.
+     * The AudioStreamManager returned will only be not null if the registered app type is
+     * either NAVIGATION or PROJECTION. Once the AudioStreamManager is retrieved, its start()
+     * method will need to be called before use.
      * <br><strong>Note: AudioStreamManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     *
      * @return a AudioStreamManager object
      */
-	public @Nullable AudioStreamManager getAudioStreamManager() {
-		checkSdlManagerState();
-		return audioStreamManager;
-	}
+    public @Nullable
+    AudioStreamManager getAudioStreamManager() {
+        checkSdlManagerState();
+        return audioStreamManager;
+    }
 
-	/**
-	 * Gets the LockScreenManager. <br>
-	 * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
-	 * @return a LockScreenManager object
-	 */
-	public LockScreenManager getLockScreenManager() {
-		if (lockScreenManager.getState() != BaseSubManager.READY && lockScreenManager.getState() != BaseSubManager.LIMITED){
-			Log.e(TAG, "LockScreenManager should not be accessed because it is not in READY/LIMITED state");
-		}
-		checkSdlManagerState();
-		return lockScreenManager;
-	}
+    /**
+     * Gets the LockScreenManager. <br>
+     * <strong>Note: LockScreenManager should be used only after SdlManager.start() CompletionListener callback is completed successfully.</strong>
+     *
+     * @return a LockScreenManager object
+     */
+    public LockScreenManager getLockScreenManager() {
+        if (lockScreenManager.getState() != BaseSubManager.READY && lockScreenManager.getState() != BaseSubManager.LIMITED) {
+            Log.e(TAG, "LockScreenManager should not be accessed because it is not in READY/LIMITED state");
+        }
+        checkSdlManagerState();
+        return lockScreenManager;
+    }
 
-	// PROTECTED GETTERS
-	protected LockScreenConfig getLockScreenConfig() { return lockScreenConfig; }
+    // PROTECTED GETTERS
+    protected LockScreenConfig getLockScreenConfig() {
+        return lockScreenConfig;
+    }
 
-	// BUILDER
-	public static class Builder extends BaseSdlManager.Builder{
-		/**
-		 * Builder for the SdlManager. Parameters in the constructor are required.
-		 * @param context the current context
-		 * @param appId the app's ID
-		 * @param appName the app's name
-		 * @param listener a SdlManagerListener object
-		 */
-		public Builder(@NonNull Context context, @NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener){
-			super(appId, appName, listener);
-			setContext(context);
-		}
-		/**
-		 * Builder for the SdlManager. Parameters in the constructor are required.
-		 * @param context the current context
-		 * @param appId the app's ID
-		 * @param appName the app's name
-		 * @param listener a SdlManagerListener object
-		 */
-		public Builder(@NonNull Context context, @NonNull final String appId, @NonNull final String appName, @NonNull BaseTransportConfig transport, @NonNull final SdlManagerListener listener){
-			super(appId, appName, listener);
-			setContext(context);
-			setTransportType(transport);
-		}
+    // BUILDER
+    public static class Builder extends BaseSdlManager.Builder {
+        /**
+         * Builder for the SdlManager. Parameters in the constructor are required.
+         *
+         * @param context  the current context
+         * @param appId    the app's ID
+         * @param appName  the app's name
+         * @param listener a SdlManagerListener object
+         */
+        public Builder(@NonNull Context context, @NonNull final String appId, @NonNull final String appName, @NonNull final SdlManagerListener listener) {
+            super(appId, appName, listener);
+            setContext(context);
+        }
 
-		/**
-		 * Sets the LockScreenConfig for the session. <br>
-		 * <strong>Note: If not set, the default configuration will be used.</strong>
-		 * @param lockScreenConfig - configuration options
-		 */
-		public Builder setLockScreenConfig (final LockScreenConfig lockScreenConfig){
-			sdlManager.lockScreenConfig = lockScreenConfig;
-			return this;
-		}
+        /**
+         * Builder for the SdlManager. Parameters in the constructor are required.
+         *
+         * @param context  the current context
+         * @param appId    the app's ID
+         * @param appName  the app's name
+         * @param listener a SdlManagerListener object
+         */
+        public Builder(@NonNull Context context, @NonNull final String appId, @NonNull final String appName, @NonNull BaseTransportConfig transport, @NonNull final SdlManagerListener listener) {
+            super(appId, appName, listener);
+            setContext(context);
+            setTransportType(transport);
+        }
 
-		/**
-		 * Sets the Context
-		 * @param context the current context
-		 */
-		public Builder setContext(Context context){
-			sdlManager.context = context;
-			return this;
-		}
+        /**
+         * Sets the LockScreenConfig for the session. <br>
+         * <strong>Note: If not set, the default configuration will be used.</strong>
+         *
+         * @param lockScreenConfig - configuration options
+         */
+        public Builder setLockScreenConfig(final LockScreenConfig lockScreenConfig) {
+            sdlManager.lockScreenConfig = lockScreenConfig;
+            return this;
+        }
 
-		/**
-		 * Build SdlManager ang get it ready to be started
-		 * <strong>Note: new instance of SdlManager should be created on every connection. SdlManager cannot be reused after getting disposed.</strong>
-		 * @return SdlManager instance that is ready to be started
-		 */
-		public SdlManager build() {
-			if (sdlManager.transport == null) {
-				throw new IllegalArgumentException("You must set a transport type object");
-			}
+        /**
+         * Sets the Context
+         *
+         * @param context the current context
+         */
+        public Builder setContext(Context context) {
+            sdlManager.context = context;
+            return this;
+        }
 
-			if (sdlManager.lockScreenConfig == null){
-				// if lock screen params are not set, use default
-				sdlManager.lockScreenConfig = new LockScreenConfig();
-			}
+        /**
+         * Build SdlManager ang get it ready to be started
+         * <strong>Note: new instance of SdlManager should be created on every connection. SdlManager cannot be reused after getting disposed.</strong>
+         *
+         * @return SdlManager instance that is ready to be started
+         */
+        public SdlManager build() {
+            if (sdlManager.transport == null) {
+                throw new IllegalArgumentException("You must set a transport type object");
+            }
 
-			super.build();
+            if (sdlManager.lockScreenConfig == null) {
+                // if lock screen params are not set, use default
+                sdlManager.lockScreenConfig = new LockScreenConfig();
+            }
 
-			return sdlManager;
-		}
-	}
+            super.build();
+
+            return sdlManager;
+        }
+    }
 }
