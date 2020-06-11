@@ -75,6 +75,7 @@ import com.smartdevicelink.util.Version;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.FutureTask;
@@ -215,6 +216,12 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
 				VideoStreamManager.this.parameters = params;
 				VideoStreamManager.this.withPendingRestart = true;
+				getSupportedCapabilities(
+						sdlRemoteDisplay.getMaxSupportedHeight(),
+						sdlRemoteDisplay.getMinSupportedHeight(),
+						sdlRemoteDisplay.getMaxSupportedWidth(),
+						sdlRemoteDisplay.getMinSupportedWidth(),
+						sdlRemoteDisplay.getMaxScreenDiagonal());
 				virtualDisplayEncoder.setStreamingParams(params);
 				stopStreaming(true);
 			}
@@ -659,6 +666,73 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	public boolean getLastCachedIsEncrypted() {
 		return isEncrypted;
 	}
+
+	List<VideoStreamingCapability> getSupportedCapabilities(
+			int constraintHeightMax,
+			int constraintHeightMin,
+			int constraintWidthMax,
+			int constraintWidthMin,
+			double constraintDiagonalMax
+	){
+		List<VideoStreamingCapability> validCapabilities = new ArrayList<>();
+		for (VideoStreamingCapability capability : getMockedAllCapabilities()) {
+			int resolutionHeight = capability.getPreferredResolution().getResolutionHeight();
+			int resolutionWidth = capability.getPreferredResolution().getResolutionWidth();
+			double diagonal = capability.getDiagonalScreenSize();
+			if (!(resolutionHeight > constraintHeightMin && resolutionHeight < constraintHeightMax)) {
+				continue;
+			}
+
+			if (!(resolutionWidth > constraintWidthMin && resolutionHeight < constraintWidthMax)) {
+				continue;
+			}
+
+			if (!(diagonal > 1 && diagonal < constraintDiagonalMax)) {
+				continue;
+			}
+
+			validCapabilities.add(capability);
+		}
+
+		return validCapabilities;
+	}
+
+	private List<VideoStreamingCapability> getMockedAllCapabilities(){
+		// TODO create separate AdditionalCapability class to avoid class mixing
+		List<VideoStreamingCapability> capabilityList = new ArrayList<>();
+		VideoStreamingCapability preferredCapability = new VideoStreamingCapability();
+		preferredCapability.setDiagonalScreenSize(parameters.getPreferredDiagonal());
+		preferredCapability.setPreferredResolution(new ImageResolution(
+				parameters.getResolution().getResolutionWidth(),
+				parameters.getResolution().getResolutionHeight())
+		);
+		capabilityList.add(preferredCapability);
+
+		ImageResolution preferredResolution = parameters.getResolution();
+		int preferredWidth = preferredResolution.getResolutionWidth();
+		int preferredHeight = preferredResolution.getResolutionHeight();
+		double preferredDiagonal = parameters.getPreferredDiagonal();
+
+		for (int i = 0; i < 10; i++) {
+			VideoStreamingCapability tempCapability = new VideoStreamingCapability();
+			ImageResolution tempResolution = new ImageResolution();
+			int generatedResDeviation = (int) ((Math.random() * 100 - 10) + 10);
+			int generatedDiagDeviation = (int) ((Math.random() * 2.5));
+			if (i % 2 == 0)
+			{
+				generatedDiagDeviation = -generatedDiagDeviation;
+				generatedResDeviation = -generatedResDeviation;
+			}
+
+			tempResolution.setResolutionHeight(preferredHeight + generatedResDeviation);
+			tempResolution.setResolutionWidth(preferredWidth + generatedResDeviation);
+			tempCapability.setPreferredResolution(tempResolution);
+			tempCapability.setDiagonalScreenSize(preferredDiagonal + generatedDiagDeviation);
+			capabilityList.add(tempCapability);
+		}
+		return capabilityList;
+	}
+
 
 	/**
 	 * Keeps track of the current motion event for VPM

@@ -37,10 +37,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 public class StreamingStateMachine {
-	@IntDef({NONE, READY, STARTED, STOPPED, ERROR})
+	@IntDef({NONE, READY, STARTED, STOPPED, ERROR, PAUSED})
 	@Retention(RetentionPolicy.SOURCE)
 	public @interface StreamingState {}
-	public static final int NONE = 0x00, READY = 0x30, STARTED = 0x60, STOPPED = 0x90, ERROR = 0xC0;
+	public static final int NONE = 0x00, READY = 0x30, STARTED = 0x60, STOPPED = 0x90, ERROR = 0xC0, PAUSED = 0xF0;
 
 	private @StreamingState int state = NONE;
 	private final Object STATE_LOCK = new Object();
@@ -49,7 +49,7 @@ public class StreamingStateMachine {
 
 	public void transitionToState(int state) {
 		if(state != NONE && state != READY && state != STARTED
-				&& state != STOPPED && state != ERROR) {
+				&& state != PAUSED && state != STOPPED && state != ERROR) {
 			return;
 		}
 		synchronized (STATE_LOCK) {
@@ -81,7 +81,12 @@ public class StreamingStateMachine {
 				}
 				break;
 			case STARTED:
-				if((next_state == STOPPED) || (next_state == ERROR)){
+				if((next_state == STOPPED) || (next_state == ERROR) || (next_state == PAUSED)){
+					return true;
+				}
+				break;
+			case PAUSED:
+				if((next_state == STARTED) || (next_state == STOPPED) || (next_state == ERROR)){
 					return true;
 				}
 				break;

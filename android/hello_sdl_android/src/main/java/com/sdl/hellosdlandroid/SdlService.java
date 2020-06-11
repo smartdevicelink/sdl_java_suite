@@ -539,6 +539,31 @@ public class SdlService extends Service {
 			).show();
 		}
 
+		@Override
+		public int getMinSupportedWidth() {
+			return 800;
+		}
+
+		@Override
+		public int getMinSupportedHeight() {
+			return 600;
+		}
+
+		@Override
+		public int getMaxSupportedWidth() {
+			return 1600;
+		}
+
+		@Override
+		public int getMaxSupportedHeight() {
+			return 1200;
+		}
+
+		@Override
+		public double getMaxScreenDiagonal() {
+			return 6;
+		}
+
 	}
 
 	public static class MyDisplay extends SdlRemoteDisplay {
@@ -576,6 +601,31 @@ public class SdlService extends Service {
 					String.format("Remote view new width and height (%s, %s)", width, height),
 					Toast.LENGTH_SHORT
 			).show();
+		}
+
+		@Override
+		public int getMinSupportedWidth() {
+			return 800;
+		}
+
+		@Override
+		public int getMinSupportedHeight() {
+			return 600;
+		}
+
+		@Override
+		public int getMaxSupportedWidth() {
+			return 1600;
+		}
+
+		@Override
+		public int getMaxSupportedHeight() {
+			return 1200;
+		}
+
+		@Override
+		public double getMaxScreenDiagonal() {
+			return 6;
 		}
 	}
 }
