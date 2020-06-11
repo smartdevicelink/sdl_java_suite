@@ -54,7 +54,6 @@ import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.util.DebugTool;
-import com.smartdevicelink.util.NativeLogTool;
 
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
@@ -84,18 +83,18 @@ abstract class BaseScreenManager extends BaseSubManager {
 					DebugTool.logInfo("Starting screen manager, all sub managers are in ready state");
 					transitionToState(READY);
 				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR && voiceCommandManager.getState() == BaseSubManager.ERROR && menuManager.getState() == BaseSubManager.ERROR && choiceSetManager.getState() == BaseSubManager.ERROR) {
-					NativeLogTool.logError(TAG, "ERROR starting screen manager, all sub managers are in error state");
+					DebugTool.logError("ERROR starting screen manager, all sub managers are in error state");
 					transitionToState(ERROR);
 				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP || voiceCommandManager.getState() == BaseSubManager.SETTING_UP || menuManager.getState() == BaseSubManager.SETTING_UP || choiceSetManager.getState() == BaseSubManager.SETTING_UP) {
 					DebugTool.logInfo("SETTING UP screen manager, at least one sub manager is still setting up");
 					transitionToState(SETTING_UP);
 				} else {
-					NativeLogTool.logWarning(TAG, "LIMITED starting screen manager, at least one sub manager is in error state and the others are ready");
+					DebugTool.logWarning("LIMITED starting screen manager, at least one sub manager is in error state and the others are ready");
 					transitionToState(LIMITED);
 				}
 			} else {
 				// We should never be here, but somehow one of the sub-sub managers is null
-				NativeLogTool.logError(TAG, "ERROR one of the screen sub managers is null");
+				DebugTool.logError("ERROR one of the screen sub managers is null");
 				transitionToState(ERROR);
 			}
 		}

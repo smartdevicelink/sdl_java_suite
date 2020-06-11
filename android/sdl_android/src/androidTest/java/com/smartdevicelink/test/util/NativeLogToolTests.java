@@ -32,21 +32,15 @@ public class NativeLogToolTests extends TestCase {
 		try {
 			// Comparison Values 
 			NativeLogTool.LogTarget expectedInfoEnum       = NativeLogTool.LogTarget.Info;
-			NativeLogTool.LogTarget expectedVerboseEnum       = NativeLogTool.LogTarget.Verbose;
-			NativeLogTool.LogTarget expectedDebugEnum       = NativeLogTool.LogTarget.Debug;
 			NativeLogTool.LogTarget expectedErrorEnum      = NativeLogTool.LogTarget.Error;
 			NativeLogTool.LogTarget expectedWarningEnum    = NativeLogTool.LogTarget.Warning;
 			List<NativeLogTool.LogTarget> expectedEnumList = new ArrayList<NativeLogTool.LogTarget>();
 			expectedEnumList.add(NativeLogTool.LogTarget.Info);
-			expectedEnumList.add(NativeLogTool.LogTarget.Verbose);
-			expectedEnumList.add(NativeLogTool.LogTarget.Debug);
 			expectedEnumList.add(NativeLogTool.LogTarget.Error);
 			expectedEnumList.add(NativeLogTool.LogTarget.Warning);
 			
 			NativeLogTool.LogTarget actualNullEnum       = NativeLogTool.LogTarget.valueForString(null);
 			NativeLogTool.LogTarget actualInfoEnum       = NativeLogTool.LogTarget.valueForString(testInfo);
-			NativeLogTool.LogTarget actualVerboseEnum       = NativeLogTool.LogTarget.valueForString(testVerbose);
-			NativeLogTool.LogTarget actualDebugEnum       = NativeLogTool.LogTarget.valueForString(testDebug);
 			NativeLogTool.LogTarget actualErrorEnum      = NativeLogTool.LogTarget.valueForString(testError);
 			NativeLogTool.LogTarget actualInvalidEnum    = NativeLogTool.LogTarget.valueForString(testInvalid);
 			NativeLogTool.LogTarget actualWarningEnum    = NativeLogTool.LogTarget.valueForString(testWarning);
@@ -54,8 +48,6 @@ public class NativeLogToolTests extends TestCase {
 			
 			// Valid Tests
 			assertEquals(Test.MATCH, expectedInfoEnum,    actualInfoEnum);
-			assertEquals(Test.MATCH, expectedVerboseEnum,    actualVerboseEnum);
-			assertEquals(Test.MATCH, expectedDebugEnum,    actualDebugEnum);
 			assertEquals(Test.MATCH, expectedErrorEnum,   actualErrorEnum);
 			assertEquals(Test.MATCH, expectedWarningEnum, actualWarningEnum);
 			assertTrue("Contents should match.", expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));

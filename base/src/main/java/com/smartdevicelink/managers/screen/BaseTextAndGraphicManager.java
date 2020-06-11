@@ -62,7 +62,6 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.CompareUtils;
 import com.smartdevicelink.util.DebugTool;
-import com.smartdevicelink.util.NativeLogTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -284,7 +283,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				@Override
 				public void onComplete(boolean success) {
 					if (!success){
-						NativeLogTool.logError(TAG, "Error uploading image");
+						DebugTool.logError("Error uploading image");
 						inProgressUpdate = extractTextFromShow(inProgressUpdate);
 						sendShow();
 					}
@@ -368,7 +367,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				@Override
 				public void onComplete(Map<String, String> errors) {
 					if (errors != null) {
-						NativeLogTool.logError(TAG, "Error Uploading Artworks. Error: " + errors.toString());
+						DebugTool.logError("Error Uploading Artworks. Error: " + errors.toString());
 						listener.onComplete(false);
 					} else {
 						listener.onComplete(true);
@@ -648,7 +647,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private void updateCurrentScreenDataState(Show show){
 
 		if (show == null){
-			NativeLogTool.logError(TAG, "can not updateCurrentScreenDataFromShow from null show");
+			DebugTool.logError("can not updateCurrentScreenDataFromShow from null show");
 			return;
 		}
 

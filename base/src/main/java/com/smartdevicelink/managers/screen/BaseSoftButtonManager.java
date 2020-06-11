@@ -60,7 +60,6 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
-import com.smartdevicelink.util.NativeLogTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -266,7 +265,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         // Check if two soft button objects have the same name
         if (hasTwoSoftButtonObjectsOfSameName(softButtonObjects)) {
             this.softButtonObjects = new CopyOnWriteArrayList<>();
-            NativeLogTool.logError(TAG, "Attempted to set soft button objects, but two buttons had the same name");
+            DebugTool.logError("Attempted to set soft button objects, but two buttons had the same name");
             return;
         }
 
@@ -278,7 +277,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
 
         if (!checkAndAssignButtonIds(softButtonObjects)) {
-            NativeLogTool.logError(TAG, "Attempted to set soft button objects, but multiple buttons had the same id");
+            DebugTool.logError("Attempted to set soft button objects, but multiple buttons had the same id");
             return;
         }
 
@@ -341,7 +340,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null && errors.size() > 0) {
-                        NativeLogTool.logError(TAG, "Error uploading soft button artworks");
+                        DebugTool.logError("Error uploading soft button artworks");
                     }
                     DebugTool.logInfo( "Soft button initial artworks uploaded");
                     update(cachedListener);
@@ -357,7 +356,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null && errors.size() > 0) {
-                        NativeLogTool.logError(TAG, "Error uploading soft button artworks");
+                        DebugTool.logError("Error uploading soft button artworks");
                     }
                     DebugTool.logInfo("Soft button other state artworks uploaded");
                     // In case our soft button states have changed in the meantime
@@ -489,7 +488,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
             public void onError(int correlationId, Result resultCode, String info) {
                 super.onError(correlationId, resultCode, info);
 
-                NativeLogTool.logError(TAG, "Soft button update error. resultCode: " + resultCode + ". info: " + info);
+                DebugTool.logError("Soft button update error. resultCode: " + resultCode + ". info: " + info);
                 handleResponse(false);
             }
 

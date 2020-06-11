@@ -33,7 +33,7 @@ package com.smartdevicelink.protocol;
 
 
 import com.smartdevicelink.util.BitConverter;
-import com.smartdevicelink.util.NativeLogTool;
+import com.smartdevicelink.util.DebugTool;
 
 public class BinaryFrameHeader {
 	private static final String TAG = "BinaryFrameHeader";
@@ -76,7 +76,7 @@ public class BinaryFrameHeader {
 				msg.setBulkData(_bulkData);
 			}
 		} catch (OutOfMemoryError|ArrayIndexOutOfBoundsException e){
-			NativeLogTool.logError(TAG, "Unable to process data to form header");
+			DebugTool.logError("Unable to process data to form header");
 			return null;
 		}
 		

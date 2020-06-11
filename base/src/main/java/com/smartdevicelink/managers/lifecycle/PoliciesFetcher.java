@@ -39,7 +39,6 @@ import com.smartdevicelink.proxy.rpc.SystemRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.util.DebugTool;
-import com.smartdevicelink.util.NativeLogTool;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -150,7 +149,7 @@ class PoliciesFetcher {
             urlConnection = getURLConnection(myHeader, sURLString, iTimeout, length);
 
             if (urlConnection == null) {
-                NativeLogTool.logInfo(TAG, "urlConnection is null, check RPC input parameters");
+                DebugTool.logInfo("urlConnection is null, check RPC input parameters");
                 return null;
             }
 
@@ -172,7 +171,7 @@ class PoliciesFetcher {
             int iResponseCode = urlConnection.getResponseCode();
 
             if (iResponseCode != HttpURLConnection.HTTP_OK) {
-                NativeLogTool.logInfo(TAG, "Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
+                DebugTool.logInfo("Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
                 return null;
             }
 
@@ -206,16 +205,16 @@ class PoliciesFetcher {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             if (jsonArray.get(i) instanceof String) {
                                 cloudDataReceived.add(jsonArray.getString(i));
-                                //NativeLogTool.logInfo("sendSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
+                                //DebugTool.logInfo("sendSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
                             }
                         }
                     } else if (jsonResponse.get(dataKey) instanceof String) {
                         cloudDataReceived.add(jsonResponse.getString(dataKey));
-                        //NativeLogTool.logInfo("sendSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
+                        //DebugTool.logInfo("sendSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
                     }
                 } else {
                     DebugTool.logError("sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
-                    //NativeLogTool.logInfo("sendSystemRequestToUrl", "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
+                    //DebugTool.logInfo("sendSystemRequestToUrl", "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
                     return null;
                 }
 

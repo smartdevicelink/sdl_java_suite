@@ -37,7 +37,6 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.SSLWebSocketFactoryGenerator;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
-import com.smartdevicelink.util.NativeLogTool;
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketServerFactory;
 import org.java_websocket.handshake.ClientHandshake;
@@ -88,7 +87,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
 
     @Override
     public void write(SdlPacket packet){
-        //NativeLogTool.logInfo(TAG, "Atttempt to write packet " + packet);
+        //DebugTool.logInfo("Atttempt to write packet " + packet);
         if(packet != null
                 && this.webSocket != null
                 && this.webSocket.isOpen()) {
@@ -104,7 +103,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
 
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
-        NativeLogTool.logInfo(TAG, "onOpen");
+        DebugTool.logInfo("onOpen");
         this.webSocket = webSocket;
 
         if(callback!=null){
@@ -114,7 +113,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
 
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
-        NativeLogTool.logInfo(TAG, "onClose");
+        DebugTool.logInfo("onClose");
         try{
             DebugTool.logInfo("Closing id - " + i);
             DebugTool.logInfo("Closing string - " + s);
@@ -145,7 +144,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
     @Override
     public void onMessage(WebSocket conn, ByteBuffer message) {
         super.onMessage(conn, message);
-        //NativeLogTool.logInfo(TAG, "on Message - ByteBuffer");
+        //DebugTool.logInfo("on Message - ByteBuffer");
         byte input;
 
         if(message != null){
@@ -156,7 +155,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
                     stateProgress = psm.handleByte(input);
                     if (!stateProgress) {//We are trying to weed through the bad packet info until we get something
 
-                        //NativeLogTool.logWarning(TAG, "Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
+                        //DebugTool.logWarning("Packet State Machine did not move forward from state - "+ psm.getState()+". PSM being Reset.");
                         psm.reset();
                     }
 
@@ -164,7 +163,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
                         synchronized (WebSocketServer.this) {
                             SdlPacket packet = psm.getFormedPacket();
                             if (callback != null && packet != null) {
-                               /// NativeLogTool.logInfo(TAG, "Read a packet: " + packet);
+                               /// DebugTool.logInfo("Read a packet: " + packet);
                                 packet.setTransportRecord(transportRecord);
                                 callback.onPacketReceived(packet);
                             }
@@ -183,7 +182,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
 
     @Override
     public void onError(WebSocket webSocket, Exception e) {
-        NativeLogTool.logError(TAG, "bad", e);
+        DebugTool.logError("bad", e);
         if(callback!=null) {
             callback.onError();
         }
@@ -191,7 +190,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
 
     @Override
     public void onStart() {
-        NativeLogTool.logInfo(TAG, "onStart");
+        DebugTool.logInfo("onStart");
         psm = new SdlPsm();
 
     }

@@ -45,7 +45,6 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.util.DebugTool;
-import com.smartdevicelink.util.NativeLogTool;
 import com.smartdevicelink.util.Version;
 
 import java.util.List;
@@ -127,7 +126,7 @@ abstract class BaseSdlManager {
 
     void checkSdlManagerState(){
         if (getState() != BaseSubManager.READY && getState() != BaseSubManager.LIMITED){
-            NativeLogTool.logError(TAG, "SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
+            DebugTool.logError("SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
         }
     }
 

@@ -119,7 +119,7 @@ public class SdlManager extends BaseSdlManager{
 		boolean initStarted = false;
 		@Override
 		public void onProxyConnected(LifecycleManager lifeCycleManager) {
-			Log.i(TAG,"Proxy is connected. Now initializing.");
+			DebugTool.logInfo("Proxy is connected. Now initializing.");
 			synchronized (this){
 				if(!initStarted){
 					changeRegistrationRetry = 0;
@@ -141,7 +141,7 @@ public class SdlManager extends BaseSdlManager{
 
 		@Override
 		public void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason) {
-			Log.i(TAG,"Proxy is closed.");
+			DebugTool.logInfo("Proxy is closed.");
 			if(managerListener != null){
 				managerListener.onDestroy(SdlManager.this);
 			}
@@ -160,7 +160,7 @@ public class SdlManager extends BaseSdlManager{
 		@Override
 		public synchronized void onComplete(boolean success) {
 			if(!success){
-				Log.e(TAG, "Sub manager failed to initialize");
+				DebugTool.logError("Sub manager failed to initialize");
 			}
 			checkState();
 		}
@@ -177,7 +177,7 @@ public class SdlManager extends BaseSdlManager{
 				onReady();
 			} else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR){
 				String info = "ERROR starting sdl manager, all sub managers are in error state";
-				Log.e(TAG, info);
+				DebugTool.logError(info);
 				transitionToState(BaseSubManager.ERROR);
 				notifyDevListener(info);
 			} else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP) {
@@ -185,7 +185,7 @@ public class SdlManager extends BaseSdlManager{
 				transitionToState(BaseSubManager.SETTING_UP);
 				// No need to notify developer here!
 			} else {
-				Log.w(TAG, "LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
+				DebugTool.logWarning("LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
 				transitionToState(BaseSubManager.LIMITED);
 				handleQueuedNotifications();
 				notifyDevListener(null);
@@ -194,7 +194,7 @@ public class SdlManager extends BaseSdlManager{
 		} else {
 			// We should never be here, but somehow one of the sub-sub managers is null
 			String info = "ERROR one of the sdl sub managers is null";
-			Log.e(TAG, info);
+			DebugTool.logError(info);
 			transitionToState(BaseSubManager.ERROR);
 			notifyDevListener(info);
 		}
@@ -279,7 +279,7 @@ public class SdlManager extends BaseSdlManager{
 							}
 						}
 						try {
-							Log.v(TAG, response.serializeJSON().toString());
+							DebugTool.logInfo(response.serializeJSON().toString());
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
@@ -287,7 +287,7 @@ public class SdlManager extends BaseSdlManager{
 
 					@Override
 					public void onError(int correlationId, Result resultCode, String info) {
-						Log.e(TAG, "Change Registration onError: " + resultCode + " | Info: " + info);
+						DebugTool.logError("Change Registration onError: " + resultCode + " | Info: " + info);
 					}
 				});
 				_internalInterface.sendRPC(changeRegistration);
@@ -343,7 +343,7 @@ public class SdlManager extends BaseSdlManager{
 	 */
 	public PermissionManager getPermissionManager() {
 		if (permissionManager.getState() != BaseSubManager.READY && permissionManager.getState() != BaseSubManager.LIMITED){
-			Log.e(TAG,"PermissionManager should not be accessed because it is not in READY/LIMITED state");
+			DebugTool.logError("PermissionManager should not be accessed because it is not in READY/LIMITED state");
 		}
 		checkSdlManagerState();
 		return permissionManager;
@@ -356,7 +356,7 @@ public class SdlManager extends BaseSdlManager{
 	 */
 	public FileManager getFileManager() {
 		if (fileManager.getState() != BaseSubManager.READY && fileManager.getState() != BaseSubManager.LIMITED){
-			Log.e(TAG, "FileManager should not be accessed because it is not in READY/LIMITED state");
+			DebugTool.logError("FileManager should not be accessed because it is not in READY/LIMITED state");
 		}
 		checkSdlManagerState();
 		return fileManager;
@@ -369,7 +369,7 @@ public class SdlManager extends BaseSdlManager{
 	 */
 	public ScreenManager getScreenManager() {
 		if (screenManager.getState() != BaseSubManager.READY && screenManager.getState() != BaseSubManager.LIMITED){
-			Log.e(TAG, "ScreenManager should not be accessed because it is not in READY/LIMITED state");
+			DebugTool.logError("ScreenManager should not be accessed because it is not in READY/LIMITED state");
 		}
 		checkSdlManagerState();
 		return screenManager;
@@ -543,7 +543,7 @@ public class SdlManager extends BaseSdlManager{
 			}
 		});
 
-		Log.i(TAG, "start");
+		DebugTool.logInfo("start");
 		if (lifecycleManager == null) {
 			if (transport != null
 					&& (transport.getTransportType().equals(TransportType.WEB_SOCKET_SERVER) || transport.getTransportType().equals(TransportType.CUSTOM))) {

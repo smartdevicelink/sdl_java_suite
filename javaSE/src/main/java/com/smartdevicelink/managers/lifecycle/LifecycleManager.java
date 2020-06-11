@@ -354,7 +354,7 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     private void onClose(String info, Exception e){
-        Log.i(TAG, "onClose");
+        DebugTool.logInfo("onClose");
         if(lifecycleListener != null){
             lifecycleListener.onProxyClosed(this, info,e,null);
         }
@@ -399,7 +399,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                 switch (functionID) {
                     case REGISTER_APP_INTERFACE:
                         //We have begun
-                        Log.i(TAG, "RAI Response");
+                        DebugTool.logInfo("RAI Response");
                         raiResponse = (RegisterAppInterfaceResponse) message;
                         SdlMsgVersion rpcVersion = ((RegisterAppInterfaceResponse) message).getSdlMsgVersion();
                         if (rpcVersion != null) {
@@ -408,7 +408,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                             LifecycleManager.this.rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
                         }
                         if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1) {
-                            Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+                            DebugTool.logWarning(String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
                             UnregisterAppInterface msg = new UnregisterAppInterface();
                             msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
                             sendRPCMessagePrivate(msg);
@@ -419,7 +419,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                         systemCapabilityManager.parseRAIResponse(raiResponse);
                         break;
                     case ON_HMI_STATUS:
-                        Log.i(TAG, "on hmi status");
+                        DebugTool.logInfo("on hmi status");
                         boolean shouldInit = currentHMIStatus == null;
                         currentHMIStatus = (OnHMIStatus) message;
                         if (lifecycleListener != null && shouldInit) {
@@ -471,15 +471,15 @@ public class LifecycleManager extends BaseLifecycleManager {
                         OnAppInterfaceUnregistered onAppInterfaceUnregistered = (OnAppInterfaceUnregistered) message;
 
                         if (!onAppInterfaceUnregistered.getReason().equals(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE)) {
-                            Log.v(TAG, "on app interface unregistered");
+                            DebugTool.logInfo("on app interface unregistered");
                             cleanProxy();
                         }else{
-                            Log.v(TAG, "re-registering for language change");
+                            DebugTool.logInfo("re-registering for language change");
                             processLanguageChange();
                         }
                         break;
                     case UNREGISTER_APP_INTERFACE:
-                        Log.v(TAG, "unregister app interface");
+                        DebugTool.logInfo("unregister app interface");
                         cleanProxy();
                         break;
                 }
@@ -815,7 +815,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                 pm.setRPCType((byte)0x00);
                 Integer corrId = ((RPCRequest)message).getCorrelationID();
                 if( corrId== null) {
-                    Log.e(TAG, "No correlation ID attached to request. Not sending");
+                    DebugTool.logError("No correlation ID attached to request. Not sending");
                     return;
                 }else{
                     pm.setCorrID(corrId);
@@ -831,7 +831,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                 if (response.getCorrelationID() == null) {
                     //Log error here
                     //throw new SdlException("CorrelationID cannot be null. RPC: " + response.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
-                    Log.e(TAG, "No correlation ID attached to response. Not sending");
+                    DebugTool.logError("No correlation ID attached to response. Not sending");
                     return;
                 } else {
                     pm.setCorrID(response.getCorrelationID());
@@ -891,7 +891,7 @@ public class LifecycleManager extends BaseLifecycleManager {
                 RPCMessage rpc = RpcConverter.extractRpc(msg, session.getProtocolVersion());
                 if (rpc != null) {
                     String messageType = rpc.getMessageType();
-                    Log.v(TAG, "RPC received - " + messageType);
+                    DebugTool.logInfo("RPC received - " + messageType);
 
                     rpc.format(rpcSpecVersion, true);
 
@@ -918,7 +918,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
                     }
                 } else {
-                    Log.w(TAG, "Shouldn't be here");
+                    DebugTool.logWarning("Shouldn't be here");
                 }
             }
 
@@ -926,16 +926,16 @@ public class LifecycleManager extends BaseLifecycleManager {
 
         @Override
         public void onProtocolSessionStartedNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-            Log.w(TAG, "onProtocolSessionStartedNACKed " + sessionID);
+            DebugTool.logWarning("onProtocolSessionStartedNACKed " + sessionID);
         }
 
         @Override
         public void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
 
-            Log.i(TAG, "on protocol session started");
+            DebugTool.logInfo("on protocol session started");
             if (sessionType != null) {
                 if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1) {
-                    Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
+                    DebugTool.logWarning(String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
                     session.endService(sessionType, session.getSessionId());
                     cleanProxy();
                     return;
@@ -968,7 +968,7 @@ public class LifecycleManager extends BaseLifecycleManager {
 
                         sendRPCMessagePrivate(rai);
                     } else {
-                        Log.e(TAG, "App config was null, soo...");
+                        DebugTool.logError("App config was null, soo...");
                     }
 
 

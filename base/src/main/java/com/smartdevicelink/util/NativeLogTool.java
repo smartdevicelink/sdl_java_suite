@@ -31,8 +31,6 @@
  */
 package com.smartdevicelink.util;
 
-import com.smartdevicelink.util.LogWrapper;
-
 public class NativeLogTool {
 	private static String TAG = "NativeLogTool";
 	static private boolean logToSystemEnabled = true;
@@ -40,8 +38,6 @@ public class NativeLogTool {
 	
 	public enum LogTarget {
 		Info
-		,Verbose
-		,Debug
 		,Warning
 		,Error;
 		
@@ -69,28 +65,6 @@ public class NativeLogTool {
 	public static boolean logInfo(String tag, String message) {
 		if (logToSystemEnabled) {
 			return log(LogTarget.Info, tag, message);
-		}
-		return false;
-	}
-
-	public static boolean logVerbose(String message) {
-		return logVerbose(TAG, message);
-	}
-
-	public static boolean logVerbose(String tag, String message) {
-		if (logToSystemEnabled) {
-			return log(LogTarget.Verbose, tag, message);
-		}
-		return false;
-	}
-
-	public static boolean logDebug(String message) {
-		return logDebug(TAG, message);
-	}
-
-	public static boolean logDebug(String tag, String message) {
-		if (logToSystemEnabled) {
-			return log(LogTarget.Debug, tag, message);
 		}
 		return false;
 	}
@@ -124,7 +98,7 @@ public class NativeLogTool {
 	public static boolean logError(String tag, String message, Throwable t) {
 		// If the call to logError is passed a throwable, write directly to the system log
 		if (logToSystemEnabled) {
-			LogWrapper.e(tag, message, t);
+			Log.e(tag, message, t);
 		}
 		return logToSystemEnabled;
 	}
@@ -144,27 +118,21 @@ public class NativeLogTool {
 				chunk = logMsg.substring(idx, idx + substrSize);
 				switch (ltarg) {
 					case Info:
-						bytesWritten = LogWrapper.i(source, chunk);
-						break;
-					case Verbose:
-						bytesWritten = LogWrapper.v(source, chunk);
-						break;
-					case Debug:
-						bytesWritten = LogWrapper.d(source, chunk);
+						bytesWritten = Log.i(source, chunk);
 						break;
 					case Warning:
-						bytesWritten = LogWrapper.w(source, chunk);
+						bytesWritten = Log.w(source, chunk);
 						break;
 					case Error:
-						bytesWritten = LogWrapper.e(source, chunk);
+						bytesWritten = Log.e(source, chunk, null);
 						break;
 				}
 				if (bytesWritten < chunk.length()) {
-					LogWrapper.e(TAG, "Calling Log.e: msg length=" + chunk.length() + ", bytesWritten=" + bytesWritten);
+					Log.e(TAG, "Calling Log.e: msg length=" + chunk.length() + ", bytesWritten=" + bytesWritten, null);
 				}
 			}			
 		} catch (Exception ex) {
-			LogWrapper.e(TAG, "Failure writing " + ltarg.name() + " fragments to android log:" + ex.toString());
+			Log.e(TAG, "Failure writing " + ltarg.name() + " fragments to android log:" + ex.toString(), null);
 			return false;
 		}		
 		return true;

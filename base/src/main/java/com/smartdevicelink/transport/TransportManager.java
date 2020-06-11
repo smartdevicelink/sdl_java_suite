@@ -36,7 +36,7 @@ package com.smartdevicelink.transport;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
-import com.smartdevicelink.util.NativeLogTool;
+import com.smartdevicelink.util.DebugTool;
 
 import java.util.Collections;
 import java.util.List;
@@ -180,7 +180,7 @@ public class TransportManager extends TransportManagerBase{
 
         @Override
         public void onError() {
-            NativeLogTool.logError(TAG, "Error in the transport manager from the web socket server");
+            DebugTool.logError("Error in the transport manager from the web socket server");
             if(transportListener != null){
                 transportListener.onError("");
             }
@@ -189,9 +189,9 @@ public class TransportManager extends TransportManagerBase{
         @Override
         public void onConnectionTerminated(String reason) {
             if(record != null){
-                NativeLogTool.logDebug(TAG, "Transport disconnected - " + record);
+                DebugTool.logInfo("Transport disconnected - " + record);
             }else{
-                NativeLogTool.logDebug(TAG, "Transport disconnected");
+                DebugTool.logInfo("Transport disconnected");
 
             }
 

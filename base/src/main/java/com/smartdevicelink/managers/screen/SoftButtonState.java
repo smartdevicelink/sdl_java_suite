@@ -37,7 +37,7 @@ import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
-import com.smartdevicelink.util.NativeLogTool;
+import com.smartdevicelink.util.DebugTool;
 
 /**
  * <strong>SoftButtonState</strong> <br>
@@ -62,7 +62,7 @@ public class SoftButtonState {
      */
     public SoftButtonState(@NonNull String name, String text, SdlArtwork artwork) {
         if (text == null && artwork == null) {
-            NativeLogTool.logError(TAG, "Attempted to create an invalid soft button state: text and artwork are both null");
+            DebugTool.logError("Attempted to create an invalid soft button state: text and artwork are both null");
             softButton = null;
             return;
         }

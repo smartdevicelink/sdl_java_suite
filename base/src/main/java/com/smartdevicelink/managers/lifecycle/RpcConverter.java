@@ -37,7 +37,6 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.util.DebugTool;
-import com.smartdevicelink.util.NativeLogTool;
 import com.smartdevicelink.util.Version;
 
 import java.util.Hashtable;
@@ -131,7 +130,7 @@ public class RpcConverter {
             if (params != null) {
                 Set<String> keySet = params.keySet();
                 for (String key : keySet) {
-                    NativeLogTool.logInfo(TAG, key + "  -  " + params.get(key));
+                    DebugTool.logInfo(key + "  -  " + params.get(key));
                 }
             }
         }
