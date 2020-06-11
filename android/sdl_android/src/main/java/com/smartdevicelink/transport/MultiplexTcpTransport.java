@@ -36,11 +36,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.WiFiSocketFactory;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -314,7 +314,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 						if (psm.getState() == SdlPsm.FINISHED_STATE)
 						{
 							synchronized (MultiplexTcpTransport.this) {
-								Log.d(TAG, "Packet formed, sending off");
+								DebugTool.logInfo("Packet formed, sending off");
 								SdlPacket packet = psm.getFormedPacket();
 								packet.setTransportRecord(getTransportRecord());
 								handler.obtainMessage(SdlRouterService.MESSAGE_READ, packet).sendToTarget();
