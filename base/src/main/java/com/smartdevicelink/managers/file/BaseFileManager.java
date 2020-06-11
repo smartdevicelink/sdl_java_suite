@@ -34,7 +34,6 @@ package com.smartdevicelink.managers.file;
 
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -54,6 +53,7 @@ import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.NativeLogTool;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -325,12 +325,12 @@ abstract class BaseFileManager extends BaseSubManager {
 	 */
 	public void uploadFile(@NonNull final SdlFile file, final CompletionListener listener) {
 		if (file.isStaticIcon()) {
-			Log.w(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
+			NativeLogTool.logWarning(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
 			listener.onComplete(true);
 			return;
 		}
 		if (!file.getOverwrite() && hasUploadedFile(file)) {
-			Log.w(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
+			NativeLogTool.logWarning(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
 			listener.onComplete(true);
 			return;
 		}
@@ -398,11 +398,11 @@ abstract class BaseFileManager extends BaseSubManager {
 		final List<PutFile> putFileRequests = new ArrayList<>();
 		for (SdlFile file : files) {
 			if (file.isStaticIcon()) {
-				Log.w(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
+				NativeLogTool.logWarning(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
 				continue;
 			}
 			if (!file.getOverwrite() && hasUploadedFile(file)) {
-				Log.w(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
+				NativeLogTool.logWarning(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
 				continue;
 			}
 			putFileRequests.add(createPutFile(file));
@@ -480,7 +480,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			}
 			return os.toByteArray();
 		} catch (IOException e){
-			Log.e(TAG, "Can't read from InputStream", e);
+			NativeLogTool.logError(TAG, "Can't read from InputStream", e);
 			return null;
 		}
 	}

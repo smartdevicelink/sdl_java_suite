@@ -32,7 +32,6 @@
 package com.smartdevicelink.managers.screen;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -61,6 +60,7 @@ import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.NativeLogTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -266,7 +266,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         // Check if two soft button objects have the same name
         if (hasTwoSoftButtonObjectsOfSameName(softButtonObjects)) {
             this.softButtonObjects = new CopyOnWriteArrayList<>();
-            Log.e(TAG, "Attempted to set soft button objects, but two buttons had the same name");
+            NativeLogTool.logError(TAG, "Attempted to set soft button objects, but two buttons had the same name");
             return;
         }
 
@@ -278,7 +278,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
 
         if (!checkAndAssignButtonIds(softButtonObjects)) {
-            Log.e(TAG, "Attempted to set soft button objects, but multiple buttons had the same id");
+            NativeLogTool.logError(TAG, "Attempted to set soft button objects, but multiple buttons had the same id");
             return;
         }
 
@@ -341,7 +341,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null && errors.size() > 0) {
-                        Log.e(TAG, "Error uploading soft button artworks");
+                        NativeLogTool.logError(TAG, "Error uploading soft button artworks");
                     }
                     DebugTool.logInfo( "Soft button initial artworks uploaded");
                     update(cachedListener);
@@ -357,7 +357,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null && errors.size() > 0) {
-                        Log.e(TAG, "Error uploading soft button artworks");
+                        NativeLogTool.logError(TAG, "Error uploading soft button artworks");
                     }
                     DebugTool.logInfo("Soft button other state artworks uploaded");
                     // In case our soft button states have changed in the meantime
@@ -489,7 +489,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
             public void onError(int correlationId, Result resultCode, String info) {
                 super.onError(correlationId, resultCode, info);
 
-                Log.e(TAG, "Soft button update error. resultCode: " + resultCode + ". info: " + info);
+                NativeLogTool.logError(TAG, "Soft button update error. resultCode: " + resultCode + ". info: " + info);
                 handleResponse(false);
             }
 

@@ -33,7 +33,7 @@
 package com.smartdevicelink.managers;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
+import com.smartdevicelink.util.Log;
 
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.FileManagerConfig;

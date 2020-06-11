@@ -32,7 +32,7 @@
 
 package com.smartdevicelink.SdlConnection;
 
-import android.util.Log;
+import com.smartdevicelink.util.NativeLogTool;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.ISdlProtocol;
@@ -153,7 +153,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
 
 
     public void shutdown(String info){
-        Log.d(TAG, "Shutdown - " + info);
+        NativeLogTool.logDebug(TAG, "Shutdown - " + info);
         this.sessionListener.onTransportDisconnected(info);
 
     }
@@ -261,7 +261,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
     public void onProtocolSessionStarted(SessionType sessionType,
                                          byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
 
-        Log.i(TAG, "Protocol session started");
+        NativeLogTool.logInfo(TAG, "Protocol session started");
 
         this.sessionId = sessionID;
         if (sessionType.eq(SessionType.RPC)){
@@ -295,7 +295,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
     @Override
     public void onProtocolError(String info, Exception e) {
         this.sessionListener.onProtocolError(info, e);
-        Log.e(TAG, "on protocol error", e);
+        NativeLogTool.logError(TAG, "on protocol error", e);
     }
 
 
@@ -397,7 +397,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
      *************************************************************************************************************************************************************************/
 
     public void onProtocolMessageBytesToSend(SdlPacket packet) {
-        //Log.d(TAG, "onProtocolMessageBytesToSend - " + packet.getTransportType());
+        //NativeLogTool.logDebug(TAG, "onProtocolMessageBytesToSend - " + packet.getTransportType());
         sdlProtocol.sendPacket(packet);
     }
 

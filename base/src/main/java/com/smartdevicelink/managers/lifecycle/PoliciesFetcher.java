@@ -31,7 +31,6 @@
  */
 package com.smartdevicelink.managers.lifecycle;
 
-import android.util.Log;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.Headers;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
@@ -40,6 +39,7 @@ import com.smartdevicelink.proxy.rpc.SystemRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.NativeLogTool;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -150,7 +150,7 @@ class PoliciesFetcher {
             urlConnection = getURLConnection(myHeader, sURLString, iTimeout, length);
 
             if (urlConnection == null) {
-                Log.i(TAG, "urlConnection is null, check RPC input parameters");
+                NativeLogTool.logInfo(TAG, "urlConnection is null, check RPC input parameters");
                 return null;
             }
 
@@ -172,7 +172,7 @@ class PoliciesFetcher {
             int iResponseCode = urlConnection.getResponseCode();
 
             if (iResponseCode != HttpURLConnection.HTTP_OK) {
-                Log.i(TAG, "Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
+                NativeLogTool.logInfo(TAG, "Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
                 return null;
             }
 
@@ -206,16 +206,16 @@ class PoliciesFetcher {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             if (jsonArray.get(i) instanceof String) {
                                 cloudDataReceived.add(jsonArray.getString(i));
-                                //Log.i("sendSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
+                                //NativeLogTool.logInfo("sendSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
                             }
                         }
                     } else if (jsonResponse.get(dataKey) instanceof String) {
                         cloudDataReceived.add(jsonResponse.getString(dataKey));
-                        //Log.i("sendSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
+                        //NativeLogTool.logInfo("sendSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
                     }
                 } else {
                     DebugTool.logError("sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
-                    //Log.i("sendSystemRequestToUrl", "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
+                    //NativeLogTool.logInfo("sendSystemRequestToUrl", "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
                     return null;
                 }
 

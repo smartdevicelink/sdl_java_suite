@@ -32,7 +32,6 @@
 package com.smartdevicelink.protocol;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
@@ -54,6 +53,7 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.BitConverter;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.NativeLogTool;
 import com.smartdevicelink.util.Version;
 
 import java.io.ByteArrayOutputStream;
@@ -237,7 +237,7 @@ public class SdlProtocolBase {
                 activeTransportString.append("\n");
             }
         }
-        Log.d(TAG, activeTransportString.toString());
+        NativeLogTool.logDebug(TAG, activeTransportString.toString());
     }
 
     protected void printSecondaryTransportDetails(List<String> secondary, List<Integer> audio, List<Integer> video){
@@ -251,7 +251,7 @@ public class SdlProtocolBase {
             }
             secondaryDetailsBldr.append("\n");
         }else{
-            Log.d(TAG, "Supported secondary transports list is empty!");
+            NativeLogTool.logDebug(TAG, "Supported secondary transports list is empty!");
         }
         if(audio != null){
             secondaryDetailsBldr.append("Supported audio transports: ");
@@ -268,7 +268,7 @@ public class SdlProtocolBase {
             secondaryDetailsBldr.append("\n");
         }
 
-        Log.d(TAG, secondaryDetailsBldr.toString());
+        NativeLogTool.logDebug(TAG, secondaryDetailsBldr.toString());
     }
 
 
@@ -299,7 +299,7 @@ public class SdlProtocolBase {
     private void handleSecondaryTransportRegistration(TransportRecord transportRecord, boolean registered){
         if(registered) {
             //Session has been registered on secondary transport
-            Log.d(TAG, transportRecord.getType().toString() + " transport was registered!");
+            NativeLogTool.logDebug(TAG, transportRecord.getType().toString() + " transport was registered!");
             if (supportedSecondaryTransports.contains(transportRecord.getType())) {
                 // If the transport type that is now available to be used it should be checked
                 // against the list of services that might be able to be started on it
@@ -325,7 +325,7 @@ public class SdlProtocolBase {
                 }
             }
         }else{
-            Log.d(TAG, transportRecord.toString() + " transport was NOT registered!");
+            NativeLogTool.logDebug(TAG, transportRecord.toString() + " transport was NOT registered!");
         }
         //Notify any listeners for this secondary transport
         List<ISecondaryTransportListener> listenerList = secondaryTransportListeners.remove(transportRecord.getType());
@@ -345,7 +345,7 @@ public class SdlProtocolBase {
     }
 
     private void onTransportsConnectedUpdate(List<TransportRecord> transports){
-        //Log.d(TAG, "Connected transport update");
+        //NativeLogTool.logDebug(TAG, "Connected transport update");
 
         //Temporary: this logic should all be changed to handle multiple transports of the same type
         ArrayList<TransportType> connectedTransports = new ArrayList<>();
@@ -783,7 +783,7 @@ public class SdlProtocolBase {
                             header.setTransportRecord(connectedPrimaryTransport);
                             handlePacketToSend(header);
                         }else{
-                            Log.d(TAG, "Failed to connect secondary transport, threw away StartService");
+                            NativeLogTool.logDebug(TAG, "Failed to connect secondary transport, threw away StartService");
                         }
                     }
                 };
@@ -799,13 +799,13 @@ public class SdlProtocolBase {
                         listenerList.add(secondaryListener);
                         transportManager.requestSecondaryTransportConnection(sessionID, secondaryTransportParams.get(secondaryTransportType));
                     } else {
-                        Log.w(TAG, "No params to connect to secondary transport");
+                        NativeLogTool.logWarning(TAG, "No params to connect to secondary transport");
                         //Unable to register or start a secondary connection. Use the callback in case
                         //there is a chance to use the primary transport for this service.
                         secondaryListener.onConnectionFailure();
                     }
                 } else {
-                    Log.e(TAG, "transportManager is null");
+                    NativeLogTool.logError(TAG, "transportManager is null");
                 }
 
             }
@@ -1145,7 +1145,7 @@ public class SdlProtocolBase {
 
         @Override
         public void onTransportConnected(List<TransportRecord> connectedTransports) {
-            Log.d(TAG, "onTransportConnected");
+            NativeLogTool.logDebug(TAG, "onTransportConnected");
             //In the future we should move this logic into the Protocol Layer
             TransportRecord transportRecord = getTransportForSession(SessionType.RPC);
             if(transportRecord == null && !requestedSession){ //There is currently no transport registered
@@ -1163,14 +1163,14 @@ public class SdlProtocolBase {
         @Override
         public void onTransportDisconnected(String info, TransportRecord disconnectedTransport, List<TransportRecord> connectedTransports) {
             if (disconnectedTransport == null) {
-                Log.d(TAG, "onTransportDisconnected");
+                NativeLogTool.logDebug(TAG, "onTransportDisconnected");
                 if (transportManager != null) {
                     transportManager.close(iSdlProtocol.getSessionId());
                 }
                 iSdlProtocol.shutdown("No transports left connected");
                 return;
             } else {
-                Log.d(TAG, "onTransportDisconnected - " + disconnectedTransport.getType().name());
+                NativeLogTool.logDebug(TAG, "onTransportDisconnected - " + disconnectedTransport.getType().name());
             }
 
             //In the future we will actually compare the record but at this point we can assume only
@@ -1258,11 +1258,11 @@ public class SdlProtocolBase {
             //Await a connection from the legacy transport
             if(requestedPrimaryTransports!= null && requestedPrimaryTransports.contains(TransportType.BLUETOOTH)
                     && !SdlProtocolBase.this.requiresHighBandwidth){
-                Log.d(TAG, "Entering legacy mode; creating new protocol instance");
+                NativeLogTool.logDebug(TAG, "Entering legacy mode; creating new protocol instance");
                 reset();
                 return true;
             }else{
-                Log.d(TAG, "Bluetooth is not an acceptable transport; not moving to legacy mode");
+                NativeLogTool.logDebug(TAG, "Bluetooth is not an acceptable transport; not moving to legacy mode");
                 return false;
             }
         }

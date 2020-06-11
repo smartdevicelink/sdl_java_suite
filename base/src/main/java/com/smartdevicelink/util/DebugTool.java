@@ -31,8 +31,6 @@
  */
 package com.smartdevicelink.util;
 
-import android.util.Log;
-
 import com.smartdevicelink.BuildConfig;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -127,6 +125,30 @@ public class DebugTool {
 		}
 	}
 
+	public static void logVerbose(String msg) {
+		Boolean wasWritten = false;
+
+		msg = prependProxyVersionNumberToString(msg);
+
+		wasWritten = logToSiphon(msg);
+
+		if (isInfoEnabled && !wasWritten) {
+			NativeLogTool.logVerbose(TAG, msg);
+		}
+	}
+
+	public static void logDebug(String msg) {
+		Boolean wasWritten = false;
+
+		msg = prependProxyVersionNumberToString(msg);
+
+		wasWritten = logToSiphon(msg);
+
+		if (isInfoEnabled && !wasWritten) {
+			NativeLogTool.logDebug(TAG, msg);
+		}
+	}
+
 	public static void logInfo(String msg) {
 		Boolean wasWritten = false;
 		
@@ -207,21 +229,21 @@ public class DebugTool {
 	
 	public static void logTransport(String msg) {
 		if (isTransportEnabled) {
-			Log.d(TAG, msg);
+			LogWrapper.d(TAG, msg);
 			logInfoToConsole(msg);
 		}
 	}
 
 	public static void logRPCSend(String rpcMsg) {
 		if (isRPCEnabled) {
-			Log.d(TAG, "Sending RPC message: " + rpcMsg);
+			LogWrapper.d(TAG, "Sending RPC message: " + rpcMsg);
 			logRPCSendToConsole(rpcMsg);
 		}
 	}
 
 	public static void logRPCReceive(String rpcMsg) {
 		if (isRPCEnabled) {
-			Log.d(TAG, "Received RPC message: " + rpcMsg);
+			LogWrapper.d(TAG, "Received RPC message: " + rpcMsg);
 			logRPCSendToConsole(rpcMsg);
 		}
 	}
@@ -238,7 +260,7 @@ public class DebugTool {
 			try {
 				consoleListener.logInfo(msg);
 			} catch (Exception ex) {
-				Log.e(TAG, "Failure propagating logInfo: " + ex.toString(), ex);
+				LogWrapper.e(TAG, "Failure propagating logInfo: " + ex.toString(), ex);
 			} // end-catch
 		}
 	}
@@ -254,7 +276,7 @@ public class DebugTool {
 			try {
 				consoleListener.logError(msg);
 			} catch (Exception ex) {
-				Log.e(TAG, "Failure propagating logError: " + ex.toString(), ex);
+				LogWrapper.e(TAG, "Failure propagating logError: " + ex.toString(), ex);
 			} // end-catch
 		}
 	}
@@ -271,7 +293,7 @@ public class DebugTool {
 			try {
 				consoleListener.logError(msg, e);
 			} catch (Exception ex) {
-				Log.e(TAG, "Failure propagating logError: " + ex.toString(), ex);
+				LogWrapper.e(TAG, "Failure propagating logError: " + ex.toString(), ex);
 			} // end-catch
 		}
 	}
@@ -288,7 +310,7 @@ public class DebugTool {
 			try {
 				consoleListener.logRPCSend(msg);
 			} catch (Exception ex) {
-				Log.e(TAG, "Failure propagating logRPCSend: " + ex.toString(), ex);
+				LogWrapper.e(TAG, "Failure propagating logRPCSend: " + ex.toString(), ex);
 			} // end-catch
 		}
 	}
@@ -305,7 +327,7 @@ public class DebugTool {
 			try {
 				consoleListener.logRPCReceive(msg);
 			} catch (Exception ex) {
-				Log.e(TAG, "Failure propagating logRPCReceive: " + ex.toString(), ex);
+				LogWrapper.e(TAG, "Failure propagating logRPCReceive: " + ex.toString(), ex);
 			} // end-catch
 		}
 	}
@@ -320,7 +342,7 @@ public class DebugTool {
 		if(packet == null || 
 				packet.getFrameType().getValue() != SdlPacket.FRAME_TYPE_SINGLE || 
 				packet.getServiceType()!=SdlPacket.SERVICE_TYPE_RPC){
-			Log.w("Debug", "Unable to get hash");
+			LogWrapper.w("Debug", "Unable to get hash");
 			return null;
 		}
 		int version = packet.getVersion();

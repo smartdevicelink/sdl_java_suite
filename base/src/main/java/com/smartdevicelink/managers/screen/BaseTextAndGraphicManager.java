@@ -32,7 +32,6 @@
 package com.smartdevicelink.managers.screen;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -63,6 +62,7 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import com.smartdevicelink.util.CompareUtils;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.NativeLogTool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -284,7 +284,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				@Override
 				public void onComplete(boolean success) {
 					if (!success){
-						Log.e(TAG, "Error uploading image");
+						NativeLogTool.logError(TAG, "Error uploading image");
 						inProgressUpdate = extractTextFromShow(inProgressUpdate);
 						sendShow();
 					}
@@ -368,7 +368,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				@Override
 				public void onComplete(Map<String, String> errors) {
 					if (errors != null) {
-						Log.e(TAG, "Error Uploading Artworks. Error: " + errors.toString());
+						NativeLogTool.logError(TAG, "Error Uploading Artworks. Error: " + errors.toString());
 						listener.onComplete(false);
 					} else {
 						listener.onComplete(true);
@@ -648,7 +648,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private void updateCurrentScreenDataState(Show show){
 
 		if (show == null){
-			Log.e(TAG, "can not updateCurrentScreenDataFromShow from null show");
+			NativeLogTool.logError(TAG, "can not updateCurrentScreenDataFromShow from null show");
 			return;
 		}
 

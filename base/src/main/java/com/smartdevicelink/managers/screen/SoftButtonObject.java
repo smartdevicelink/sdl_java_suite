@@ -32,12 +32,12 @@
 package com.smartdevicelink.managers.screen;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.util.DebugTool;
+import com.smartdevicelink.util.NativeLogTool;
 
 import java.util.Collections;
 import java.util.List;
@@ -74,7 +74,7 @@ public class SoftButtonObject {
 
         // Make sure there aren't two states with the same name
         if (hasTwoStatesOfSameName(states)) {
-            Log.e(TAG, "Two states have the same name in states list for soft button object");
+            NativeLogTool.logError(TAG, "Two states have the same name in states list for soft button object");
             return;
         }
 
@@ -103,7 +103,7 @@ public class SoftButtonObject {
     public boolean transitionToStateByName(@NonNull String newStateName) {
         SoftButtonState newState = getStateByName(newStateName);
         if (newState == null) {
-            Log.e(TAG, String.format("Attempted to transition to state: %s on soft button object: %s but no state with that name was found", newStateName, this.name));
+            NativeLogTool.logError(TAG, String.format("Attempted to transition to state: %s on soft button object: %s but no state with that name was found", newStateName, this.name));
             return false;
         }
         DebugTool.logInfo(String.format("Transitioning soft button object %s to state %s", this.name, newStateName));
@@ -113,7 +113,7 @@ public class SoftButtonObject {
         if (updateListener != null) {
             updateListener.onUpdate();
         } else {
-            Log.e(TAG, String.format("SoftButtonManager is not set for soft button object: %s. Update cannot be triggered", this.name));
+            NativeLogTool.logError(TAG, String.format("SoftButtonManager is not set for soft button object: %s. Update cannot be triggered", this.name));
         }
 
         return true;
@@ -135,7 +135,7 @@ public class SoftButtonObject {
             }
         }
         if (nextStateName == null) {
-            Log.e(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
+            NativeLogTool.logError(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
             return;
         }
         transitionToStateByName(nextStateName);
@@ -148,7 +148,7 @@ public class SoftButtonObject {
     public SoftButtonState getCurrentState() {
         SoftButtonState state = getStateByName(currentStateName);
         if (state == null) {
-            Log.e(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
+            NativeLogTool.logError(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
         }
         return state;
     }
@@ -273,7 +273,7 @@ public class SoftButtonObject {
      */
     public void setButtonId(int buttonId) {
         if (buttonId < SOFT_BUTTON_ID_MIN_VALUE){
-            Log.e(TAG, "buttonId has to be equal or more than " + SOFT_BUTTON_ID_MIN_VALUE);
+            NativeLogTool.logError(TAG, "buttonId has to be equal or more than " + SOFT_BUTTON_ID_MIN_VALUE);
             return;
         }
         this.buttonId = buttonId;
