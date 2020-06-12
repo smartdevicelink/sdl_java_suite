@@ -230,7 +230,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
      * @param altTransportWake if the alt transport flag should be set. Only used in debug
      * @param device the connected bluetooth device
      */
-	private static void startRouterService(Context context, ComponentName componentName, boolean altTransportWake, BluetoothDevice device) {
+	private static void startRouterService(Context context, ComponentName componentName, boolean altTransportWake, BluetoothDevice device, boolean confirmedDevice) {
 		if (componentName == null) {
 			return;
 		}
@@ -245,6 +245,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		if (device != null) {
 			serviceIntent.putExtra(BluetoothDevice.EXTRA_DEVICE, device);
 		}
+
+		if (confirmedDevice) {
+		    serviceIntent.putExtra(TransportConstants.CONFIRMED_SDL_DEVICE, confirmedDevice);
+        }
 
 		try {
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -301,7 +305,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 						}
 
 						if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
-							startRouterService(context, sdlAppInfoList.get(0).getRouterServiceComponentName(), altTransportWake, device);
+							startRouterService(context, sdlAppInfoList.get(0).getRouterServiceComponentName(), altTransportWake, device, false);
 						} else{
 							Log.d(TAG, "No SDL Router Services found");
 							Log.d(TAG, "WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
@@ -562,7 +566,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 								final List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(context, new SdlAppInfo.BestRouterComparator());
 								if(sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
 									ComponentName routerService = sdlAppInfoList.get(0).getRouterServiceComponentName();
-									startRouterService(context, routerService, false, bluetoothDevice);
+									startRouterService(context, routerService, false, bluetoothDevice, true);
 								}
 							}
 						}
