@@ -68,7 +68,7 @@ public class SdlDeviceListener {
     private boolean isRunning = false;
 
 
-    public SdlDeviceListener(Context context, BluetoothDevice device, Callback callback){
+    public SdlDeviceListener(Context context, BluetoothDevice device, Callback callback) {
         this.contextWeakReference = new WeakReference<>(context);
         this.connectedDevice = device;
         this.callback = callback;
@@ -83,8 +83,8 @@ public class SdlDeviceListener {
      * listens for a finite amount of time. If this is the first time the device has been seen, this
      * will listen for 30 seconds, if it is not, this will listen for 15 seconds instead.
      */
-    public void start(){
-        if(hasSDLConnected(contextWeakReference.get(), connectedDevice.getAddress())){
+    public void start() {
+        if (hasSDLConnected(contextWeakReference.get(), connectedDevice.getAddress())) {
             DebugTool.logInfo(TAG + ": Confirmed SDL device, should start router service");
             //This device has connected to SDL previously, it is ok to start the RS right now
             callback.onTransportConnected(contextWeakReference.get(), connectedDevice);
@@ -118,10 +118,11 @@ public class SdlDeviceListener {
 
     /**
      * Check to see if this instance is in the middle of running or not
+     *
      * @return if this is already in the process of running
      */
-    public boolean isRunning(){
-        synchronized (RUNNING_LOCK){
+    public boolean isRunning() {
+        synchronized (RUNNING_LOCK) {
             return isRunning;
         }
     }
@@ -130,13 +131,13 @@ public class SdlDeviceListener {
 
         final WeakReference<SdlDeviceListener> provider;
 
-        TransportHandler(SdlDeviceListener provider){
+        TransportHandler(SdlDeviceListener provider) {
             this.provider = new WeakReference<>(provider);
         }
 
         @Override
         public void handleMessage(@NonNull Message msg) {
-            if(this.provider.get() == null){
+            if (this.provider.get() == null) {
                 return;
             }
             SdlDeviceListener sdlListener = this.provider.get();
@@ -145,9 +146,9 @@ public class SdlDeviceListener {
                 case SdlRouterService.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case MultiplexBaseTransport.STATE_CONNECTED:
-                            sdlListener.setSDLConnectedStatus(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice.getAddress(),true);
+                            sdlListener.setSDLConnectedStatus(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice.getAddress(), true);
                             boolean keepConnectionOpen = sdlListener.callback.onTransportConnected(sdlListener.contextWeakReference.get(), sdlListener.connectedDevice);
-                            if( !keepConnectionOpen ) {
+                            if (!keepConnectionOpen) {
                                 sdlListener.bluetoothTransport.stop();
                                 sdlListener.bluetoothTransport = null;
                                 sdlListener.timeoutHandler.removeCallbacks(sdlListener.timeoutRunner);
@@ -172,15 +173,16 @@ public class SdlDeviceListener {
 
     /**
      * Set the connection establishment status of the particular device
-     * @param address address of the device in quesiton
+     *
+     * @param address         address of the device in quesiton
      * @param hasSDLConnected true if a connection has been established, false if not
      */
-    public static void setSDLConnectedStatus(Context context, String address, boolean hasSDLConnected){
+    public static void setSDLConnectedStatus(Context context, String address, boolean hasSDLConnected) {
         synchronized (LOCK) {
             if (context != null) {
-                DebugTool.logInfo( TAG + ": Saving connected status - " + address + " : " + hasSDLConnected);
+                DebugTool.logInfo(TAG + ": Saving connected status - " + address + " : " + hasSDLConnected);
                 SharedPreferences preferences = context.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
-                if(preferences.contains(address) && hasSDLConnected == preferences.getBoolean(address, false)) {
+                if (preferences.contains(address) && hasSDLConnected == preferences.getBoolean(address, false)) {
                     //The same key/value exists in our shared preferences. No reason to write again.
                     return;
                 }
@@ -193,10 +195,11 @@ public class SdlDeviceListener {
 
     /**
      * Checks to see if a device address has connected to SDL before.
+     *
      * @param address the mac address of the device in quesiton
      * @return if this is the first status check of this device
      */
-    private boolean isFirstStatusCheck(String address){
+    private boolean isFirstStatusCheck(String address) {
         synchronized (LOCK) {
             Context context = contextWeakReference.get();
             if (context != null) {
@@ -206,12 +209,14 @@ public class SdlDeviceListener {
             return false;
         }
     }
+
     /**
      * Checks to see if a device address has connected to SDL before.
+     *
      * @param address the mac address of the device in quesiton
      * @return if an SDL connection has ever been established with this device
      */
-    public static  boolean hasSDLConnected(Context context, String address){
+    public static boolean hasSDLConnected(Context context, String address) {
         synchronized (LOCK) {
             if (context != null) {
                 SharedPreferences preferences = context.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
@@ -226,18 +231,19 @@ public class SdlDeviceListener {
      * feature can be supported. Due to older libraries sending their intents to start the router
      * service right at the bluetooth A2DP/HFS connections, this feature can't be used until all
      * applications are updated to the point they include the feature.
+     *
      * @param sdlAppInfoList current list of SDL enabled applications on the device
      * @return if this feature is supported or not. If it is not, the caller should follow the
-     *         previously used flow, ie start the router service.
+     * previously used flow, ie start the router service.
      */
-    public static boolean isFeatureSupported(List<SdlAppInfo> sdlAppInfoList){
+    public static boolean isFeatureSupported(List<SdlAppInfo> sdlAppInfoList) {
 
         SdlAppInfo appInfo;
-        for(int i = sdlAppInfoList.size() - 1; i >=0; i--){
+        for (int i = sdlAppInfoList.size() - 1; i >= 0; i--) {
             appInfo = sdlAppInfoList.get(i);
-            if(appInfo != null
+            if (appInfo != null
                     && !appInfo.isCustomRouterService()
-                    && appInfo.getRouterServiceVersion() < MIN_VERSION_REQUIRED ){
+                    && appInfo.getRouterServiceVersion() < MIN_VERSION_REQUIRED) {
                 return false;
             }
         }
@@ -250,14 +256,15 @@ public class SdlDeviceListener {
      * connection on the SDL UUID RFCOMM chanel or not. Most of the time the only callback that
      * matters will be the onTransportConnected.
      */
-    public interface Callback{
+    public interface Callback {
         /**
-         *
          * @param bluetoothDevice the BT device that successfully connected to SDL's UUID
          * @return if the RFCOMM connection should stay open. In most cases this should be false
          */
         boolean onTransportConnected(Context context, BluetoothDevice bluetoothDevice);
+
         void onTransportDisconnected(BluetoothDevice bluetoothDevice);
+
         void onTransportError(BluetoothDevice bluetoothDevice);
     }
 }
