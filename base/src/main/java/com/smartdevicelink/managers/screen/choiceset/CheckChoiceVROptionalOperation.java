@@ -35,6 +35,7 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.Choice;
@@ -47,24 +48,23 @@ import com.smartdevicelink.util.DebugTool;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 
-class CheckChoiceVROptionalOperation extends AsynchronousOperation {
+class CheckChoiceVROptionalOperation extends Task {
 
 	private CheckChoiceVROptionalInterface checkChoiceVROptionalInterface;
 	private WeakReference<ISdl> internalInterface;
 	private boolean isVROptional;
 
 	CheckChoiceVROptionalOperation(ISdl internalInterface, CheckChoiceVROptionalInterface checkChoiceVROptionalInterface){
-		super();
+		super("CheckChoiceVROptionalOperation");
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.checkChoiceVROptionalInterface = checkChoiceVROptionalInterface;
 	}
 
 	@Override
-	public void run() {
+	public void onExecute() {
 		CheckChoiceVROptionalOperation.super.run();
 		DebugTool.logInfo("Choice Operation: Executing check vr optional operation");
 		sendTestChoiceNoVR();
-		block();
 	}
 
 	/**
@@ -121,7 +121,7 @@ class CheckChoiceVROptionalOperation extends AsynchronousOperation {
 						checkChoiceVROptionalInterface.onError(response.getInfo());
 					}
 
-					CheckChoiceVROptionalOperation.super.finishOperation();
+					CheckChoiceVROptionalOperation.super.onFinished();
 				}
 			}
 
@@ -133,7 +133,7 @@ class CheckChoiceVROptionalOperation extends AsynchronousOperation {
 					checkChoiceVROptionalInterface.onError(info);
 				}
 
-				CheckChoiceVROptionalOperation.super.finishOperation();
+				CheckChoiceVROptionalOperation.super.onFinished();
 			}
 		});
 
@@ -155,7 +155,7 @@ class CheckChoiceVROptionalOperation extends AsynchronousOperation {
 					checkChoiceVROptionalInterface.onCheckChoiceVROperationComplete(isVROptional);
 				}
 
-				CheckChoiceVROptionalOperation.super.finishOperation();
+				CheckChoiceVROptionalOperation.super.onFinished();
 			}
 
 			@Override
@@ -165,7 +165,7 @@ class CheckChoiceVROptionalOperation extends AsynchronousOperation {
 					checkChoiceVROptionalInterface.onError(info);
 				}
 
-				CheckChoiceVROptionalOperation.super.finishOperation();
+				CheckChoiceVROptionalOperation.super.onFinished();
 			}
 		});
 		if (internalInterface.get() != null){

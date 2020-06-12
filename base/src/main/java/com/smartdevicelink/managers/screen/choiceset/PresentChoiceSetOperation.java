@@ -35,6 +35,7 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -60,7 +61,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-class PresentChoiceSetOperation extends AsynchronousOperation {
+class PresentChoiceSetOperation extends Task {
 
 	private WeakReference<ISdl> internalInterface;
 	private ChoiceSet choiceSet;
@@ -78,7 +79,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 
 	PresentChoiceSetOperation(ISdl internalInterface, ChoiceSet choiceSet, InteractionMode mode,
 									 KeyboardProperties originalKeyboardProperties, KeyboardListener keyboardListener, ChoiceSetSelectionListener choiceSetSelectionListener, Integer cancelID){
-		super();
+		super("PresentChoiceSetOperation");
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.keyboardListener = keyboardListener;
 		this.choiceSet = choiceSet;
@@ -98,16 +99,15 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 	}
 
 	@Override
-	public void run() {
+	public void onExecute() {
 		PresentChoiceSetOperation.super.run();
 		DebugTool.logInfo("Choice Operation: Executing present choice set operation");
 		addListeners();
 		start();
-		block();
 	}
 
 	private void start(){
-		if (isCancelled()) {
+		if (getState() == Task.CANCELED) {
 			finishOperation();
 			return;
 		}
@@ -121,7 +121,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		updateKeyboardProperties(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
-				if (isCancelled()) {
+				if (getState() == Task.CANCELED) {
 					finishOperation();
 					return;
 				}
@@ -228,13 +228,13 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 				public void onResponse(int correlationId, RPCResponse response) {
 					updatedKeyboardProperties = false;
 					DebugTool.logInfo("Successfully reset choice keyboard properties to original config");
-					PresentChoiceSetOperation.super.finishOperation();
+					PresentChoiceSetOperation.super.onFinished();
 				}
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info) {
 					DebugTool.logError("Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
-					PresentChoiceSetOperation.super.finishOperation();
+					PresentChoiceSetOperation.super.onFinished();
 				}
 			});
 
@@ -245,7 +245,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 				DebugTool.logError("Internal Interface null when finishing choice keyboard reset");
 			}
 		} else {
-			PresentChoiceSetOperation.super.finishOperation();
+			PresentChoiceSetOperation.super.onFinished();
 		}
 	}
 
@@ -253,13 +253,13 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 	* Cancels the choice set. If the choice set has not yet been sent to Core, it will not be sent. If the choice set is already presented on Core, the choice set will be dismissed using the `CancelInteraction` RPC.
 	*/
 	private void cancelInteraction() {
-		if (isFinished()) {
+		if ((getState() == Task.FINISHED)) {
 			DebugTool.logInfo("This operation has already finished so it can not be canceled.");
 			return;
-		} else if (isCancelled()) {
+		} else if (getState() == Task.CANCELED) {
 			DebugTool.logInfo("This operation has already been canceled. It will be finished at some point during the operation.");
 			return;
-		} else if (isExecuting()) {
+		} else if ((getState() == Task.IN_PROGRESS)) {
 			if (sdlMsgVersion.getMajorVersion() < 6){
 				DebugTool.logWarning("Canceling a presented choice set is not supported on this head unit");
 				return;
@@ -287,7 +287,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 			}
 		} else {
 			DebugTool.logInfo("Canceling a choice set that has not yet been sent to Core");
-			this.cancel();
+			this.cancelTask();
 		}
 	}
 
@@ -346,7 +346,7 @@ class PresentChoiceSetOperation extends AsynchronousOperation {
 		keyboardRPCListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
-				if (isCancelled()) {
+				if (getState() == Task.CANCELED) {
 					finishOperation();
 					return;
 				}
