@@ -34,12 +34,12 @@ package com.smartdevicelink.transport.utl;
 
 import com.smartdevicelink.transport.enums.TransportType;
 
-public class BaseTransportRecord{
+class BaseTransportRecord{
 
     private TransportType type;
     private String address;
 
-    public BaseTransportRecord(TransportType transportType, String address){
+    BaseTransportRecord(TransportType transportType, String address){
         this.type = transportType;
         this.address = address;
     }

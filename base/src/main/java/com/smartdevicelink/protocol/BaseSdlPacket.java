@@ -47,7 +47,7 @@ import java.util.HashMap;
  * Any other binder transactions must include an additional int flag into their bundle or the parsing
  * of this object will fail.
  */
-public class BaseSdlPacket {
+class BaseSdlPacket {
 
 	/**
 	 * This is the amount of bytes added to the bundle from the router service for a specific int
@@ -122,7 +122,7 @@ public class BaseSdlPacket {
 	int messagingVersion = 1;
 	TransportRecord transportRecord;
 
-	public BaseSdlPacket(int version, boolean encryption, int frameType,
+	BaseSdlPacket(int version, boolean encryption, int frameType,
 						 int serviceType, int frameInfo, int sessionId,
 						 int dataSize, int messageId, byte[] payload) {
 		this.version = version;
@@ -140,7 +140,7 @@ public class BaseSdlPacket {
 		}
 	}
 
-	public BaseSdlPacket(int version, boolean encryption, int frameType,
+	BaseSdlPacket(int version, boolean encryption, int frameType,
 						 int serviceType, int frameInfo, int sessionId,
 						 int dataSize, int messageId, byte[] payload, int offset, int bytesToWrite) {
 		this.version = version;
