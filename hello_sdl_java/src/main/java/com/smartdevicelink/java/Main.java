@@ -68,8 +68,10 @@ public class Main {
     static SdlService.SdlServiceCallback serviceCallback = new SdlService.SdlServiceCallback() {
         @Override
         public void onEnd() {
-            thread.interrupt();
-            thread = null;
+            if (thread != null) {
+                thread.interrupt();
+                thread = null;
+            }
             synchronized (LOCK) {
                 LOCK.notify();
             }
