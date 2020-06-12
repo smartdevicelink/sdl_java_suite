@@ -32,32 +32,17 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
-import android.support.annotation.RestrictTo;
+import android.support.annotation.NonNull;
 
-import com.smartdevicelink.SdlConnection.SdlSession;
-import com.smartdevicelink.transport.BaseTransportConfig;
+import com.smartdevicelink.managers.ServiceEncryptionListener;
+import com.smartdevicelink.protocol.enums.SessionType;
+import com.smartdevicelink.proxy.interfaces.ISdl;
 
-/**
- * The lifecycle manager creates a central point for all SDL session logic to converge. It should only be used by
- * the library itself. Usage outside the library is not permitted and will not be protected for in the future.
- */
-@RestrictTo(RestrictTo.Scope.LIBRARY)
-public class LifecycleManager extends BaseLifecycleManager {
-    public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
-        super(appConfig, config, listener);
-    }
+class EncryptionLifecycleManager extends BaseEncryptionLifecycleManager {
 
-    @Override
-    void initializeProxy() {
-        super.initializeProxy();
-        this.session = new SdlSession(sdlConnectionListener, _transportConfig);
-    }
-
-    @Override
-    void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
-        super.onTransportDisconnected(info, availablePrimary, transportConfig);
-        if (!availablePrimary) {
-            onClose(info, null);
-        }
+    EncryptionLifecycleManager(@NonNull ISdl internalInterface, ServiceEncryptionListener listener) {
+        super(internalInterface, listener);
+        internalInterface.addServiceListener(SessionType.NAV, securedServiceListener);
+        internalInterface.addServiceListener(SessionType.PCM, securedServiceListener);
     }
 }
