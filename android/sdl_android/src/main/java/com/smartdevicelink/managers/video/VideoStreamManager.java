@@ -75,7 +75,6 @@ import com.smartdevicelink.util.Version;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.FutureTask;
@@ -221,7 +220,10 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 						sdlRemoteDisplay.getMinSupportedHeight(),
 						sdlRemoteDisplay.getMaxSupportedWidth(),
 						sdlRemoteDisplay.getMinSupportedWidth(),
-						sdlRemoteDisplay.getMaxScreenDiagonal());
+						sdlRemoteDisplay.getMinScreenDiagonal(),
+						sdlRemoteDisplay.getMinAspectRatio(),
+						sdlRemoteDisplay.getMaxAspectRatio()
+				);
 				virtualDisplayEncoder.setStreamingParams(params);
 				stopStreaming(true);
 			}
@@ -668,27 +670,44 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	}
 
 	List<VideoStreamingCapability> getSupportedCapabilities(
-			int constraintHeightMax,
-			int constraintHeightMin,
-			int constraintWidthMax,
-			int constraintWidthMin,
-			double constraintDiagonalMax
+			Integer constraintHeightMax,
+			Integer constraintHeightMin,
+			Integer constraintWidthMax,
+			Integer constraintWidthMin,
+			Double constraintDiagonalMin,
+			Double aspectRationMin,
+			Double aspectRationMax
 	){
 		List<VideoStreamingCapability> validCapabilities = new ArrayList<>();
-		for (VideoStreamingCapability capability : getMockedAllCapabilities()) {
+		List<VideoStreamingCapability> allCapabilities = getMockedAllCapabilities();
+
+		// get the first one - the Desired resolution to guarantee streaming will start
+		validCapabilities.add(allCapabilities.get(0));
+
+		for (VideoStreamingCapability capability : allCapabilities) {
 			int resolutionHeight = capability.getPreferredResolution().getResolutionHeight();
 			int resolutionWidth = capability.getPreferredResolution().getResolutionWidth();
 			double diagonal = capability.getDiagonalScreenSize();
-			if (!(resolutionHeight > constraintHeightMin && resolutionHeight < constraintHeightMax)) {
+
+			if (diagonal < constraintDiagonalMin) {
 				continue;
 			}
 
-			if (!(resolutionWidth > constraintWidthMin && resolutionHeight < constraintWidthMax)) {
-				continue;
+			if (!(aspectRationMax > aspectRationMin && aspectRationMin > 0)) {
+				if (constraintHeightMax == null && constraintHeightMin == null) {
+					continue;
+				}
 			}
 
-			if (!(diagonal > 1 && diagonal < constraintDiagonalMax)) {
-				continue;
+			if (resolutionHeight > 0 && resolutionWidth > 0 && constraintHeightMax != null && constraintHeightMin != null)
+			{
+				if (!(resolutionHeight > constraintHeightMin && resolutionHeight < constraintHeightMax)) {
+					continue;
+				}
+
+				if (!(resolutionWidth > constraintWidthMin && resolutionHeight < constraintWidthMax)) {
+					continue;
+				}
 			}
 
 			validCapabilities.add(capability);

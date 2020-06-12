@@ -540,30 +540,39 @@ public class SdlService extends Service {
 		}
 
 		@Override
-		public int getMinSupportedWidth() {
+		public Integer getMinSupportedWidth() {
 			return 800;
 		}
 
 		@Override
-		public int getMinSupportedHeight() {
+		public Integer getMinSupportedHeight() {
 			return 600;
 		}
 
 		@Override
-		public int getMaxSupportedWidth() {
+		public Integer getMaxSupportedWidth() {
 			return 1600;
 		}
 
 		@Override
-		public int getMaxSupportedHeight() {
+		public Integer getMaxSupportedHeight() {
 			return 1200;
 		}
 
 		@Override
-		public double getMaxScreenDiagonal() {
+		public double getMinScreenDiagonal() {
 			return 6;
 		}
 
+        @Override
+        public Double getMinAspectRatio() {
+            return 1.;
+        }
+
+        @Override
+        public Double getMaxAspectRatio() {
+            return 4.;
+        }
 	}
 
 	public static class MyDisplay extends SdlRemoteDisplay {
@@ -604,28 +613,38 @@ public class SdlService extends Service {
 		}
 
 		@Override
-		public int getMinSupportedWidth() {
+		public Integer getMinSupportedWidth() {
 			return 800;
 		}
 
 		@Override
-		public int getMinSupportedHeight() {
+		public Integer getMinSupportedHeight() {
 			return 600;
 		}
 
 		@Override
-		public int getMaxSupportedWidth() {
+		public Integer getMaxSupportedWidth() {
 			return 1600;
 		}
 
 		@Override
-		public int getMaxSupportedHeight() {
+		public Integer getMaxSupportedHeight() {
 			return 1200;
 		}
 
 		@Override
-		public double getMaxScreenDiagonal() {
+		public double getMinScreenDiagonal() {
 			return 6;
 		}
-	}
+
+        @Override
+        public Double getMinAspectRatio() {
+            return 1.;
+        }
+
+        @Override
+        public Double getMaxAspectRatio() {
+            return 4.;
+        }
+    }
 }

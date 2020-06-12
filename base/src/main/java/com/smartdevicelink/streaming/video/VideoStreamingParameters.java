@@ -41,6 +41,7 @@ import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.util.DebugTool;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -62,6 +63,7 @@ public class VideoStreamingParameters {
 	private int frameRate;
 	private int bitrate;
 	private int interval;
+	private double preferredDiagonal;
 	private double scale = DEFAULT_SCALE;
 	private ImageResolution resolution;
 	private VideoStreamingFormat format;
@@ -116,6 +118,7 @@ public class VideoStreamingParameters {
             if (params.interval > 0) {
                 this.interval = params.interval;
             }
+
             if (params.resolution != null) {
                 if (params.resolution.getResolutionHeight() != null && params.resolution.getResolutionHeight() > 0) {
                     this.resolution.setResolutionHeight(params.resolution.getResolutionHeight());
@@ -129,6 +132,7 @@ public class VideoStreamingParameters {
             }
         }
     }
+
 
     /**
      * Update the values contained in the capability that should have been returned through the SystemCapabilityManager.
@@ -188,6 +192,7 @@ public class VideoStreamingParameters {
         if(capability.getMaxBitrate()!=null){ this.bitrate = capability.getMaxBitrate() * 1000; } // NOTE: the unit of maxBitrate in getSystemCapability is kbps.
         double scale = DEFAULT_SCALE;
         if(capability.getScale() != null) { scale = capability.getScale(); }
+        if (capability.getDiagonalScreenSize() != null) { preferredDiagonal = capability.getDiagonalScreenSize(); }
         ImageResolution resolution = capability.getPreferredResolution();
         if(resolution!=null){
 
@@ -264,6 +269,8 @@ public class VideoStreamingParameters {
 	}
 
     public double getScale() { return scale; }
+
+    public double getPreferredDiagonal() { return preferredDiagonal; }
 
     @Override
     public String toString() {
