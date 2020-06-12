@@ -55,7 +55,7 @@ import java.util.Vector;
 class PoliciesFetcher {
 
     private static final String TAG = PoliciesFetcher.class.getSimpleName();
-    private static final int POLICIES_CORRELATION_ID = 65535;
+    static final int POLICIES_CORRELATION_ID = 65535;
 
     private static HttpURLConnection getURLConnection(Headers myHeader, String sURLString, int Timeout, int iContentLen) {
         String sContentType = "application/json";
