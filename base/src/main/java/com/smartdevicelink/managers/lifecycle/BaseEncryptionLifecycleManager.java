@@ -57,6 +57,7 @@ abstract class BaseEncryptionLifecycleManager {
     private HMILevel currentHMILevel;
     private Set<String> encryptionRequiredRPCs = new HashSet<>();
     private boolean rpcSecuredServiceStarted;
+    ISdlServiceListener securedServiceListener;
 
     BaseEncryptionLifecycleManager(@NonNull ISdl isdl, ServiceEncryptionListener listener) {
         internalInterface = isdl;
@@ -94,7 +95,7 @@ abstract class BaseEncryptionLifecycleManager {
             }
         };
 
-        ISdlServiceListener securedServiceListener = new ISdlServiceListener() {
+        securedServiceListener = new ISdlServiceListener() {
             @Override
             public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
                 if(SessionType.RPC.equals(type)){
