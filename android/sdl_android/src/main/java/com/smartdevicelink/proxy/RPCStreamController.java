@@ -33,6 +33,7 @@ package com.smartdevicelink.proxy;
 
 import com.smartdevicelink.streaming.StreamRPCPacketizer;
 
+@Deprecated
 public class RPCStreamController {
 	private StreamRPCPacketizer rpcPacketizer;
 	private Integer iCorrelationID;

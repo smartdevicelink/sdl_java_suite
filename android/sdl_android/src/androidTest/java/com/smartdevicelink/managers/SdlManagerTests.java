@@ -3,14 +3,13 @@ package com.smartdevicelink.managers;
 import android.content.Context;
 
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
-import com.smartdevicelink.proxy.SdlProxyBase;
+import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.GetAppServiceDataResponse;
 import com.smartdevicelink.proxy.rpc.GetVehicleData;
 import com.smartdevicelink.proxy.rpc.OnAppServiceData;
@@ -49,7 +48,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 	private TemplateColorScheme templateColorScheme;
 	private int listenerCalledCounter;
 	private SdlManager sdlManager;
-	private SdlProxyBase sdlProxyBase;
+	private ISdl internalInterface;
 
 	// transport related
 	@SuppressWarnings("FieldCanBeLocal")
@@ -110,7 +109,12 @@ public class SdlManagerTests extends AndroidTestCase2 {
 			}
 
 			@Override
-			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language){
+			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language) {
+				return null;
+			}
+
+			@Override
+			public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
 				return null;
 			}
 		};
@@ -131,9 +135,9 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		builder.setContext(mTestContext);
 		manager = builder.build();
 
-		// mock SdlProxyBase and set it manually
-		sdlProxyBase = mock(SdlProxyBase.class);
-		manager.setProxy(sdlProxyBase);
+		// mock internalInterface and set it manually
+		internalInterface = mock(ISdl.class);
+		manager._internalInterface = internalInterface;
 
 		return manager;
 	}
@@ -166,6 +170,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		assertEquals("heyApp", sdlManager.getShortAppName());
 		assertEquals(appType, sdlManager.getAppTypes());
 		assertEquals(Language.EN_US, sdlManager.getHmiLanguage());
+		assertEquals(Language.EN_US, sdlManager.getLanguage());
 		assertEquals(transport, sdlManager.getTransport());
 		assertEquals(templateColorScheme, sdlManager.getDayColorScheme());
 		assertEquals(templateColorScheme, sdlManager.getNightColorScheme());
@@ -178,8 +183,11 @@ public class SdlManagerTests extends AndroidTestCase2 {
 
 	public void testStartingManager(){
 		listenerCalledCounter = 0;
-
-		sdlManager.start();
+		
+		try {
+			sdlManager.start();
+		} catch (Exception e) {
+		}
 
 		// Create and force all sub managers to be ready manually. Because SdlManager will not start until all sub managers are ready.
 		// Note: SdlManager.initialize() will not be called automatically by proxy as in real life because we have mock proxy not a real one
@@ -192,7 +200,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		sdlManager.getLockScreenManager().transitionToState(BaseSubManager.READY);
 
 		// Make sure the listener is called exactly once
-		assertEquals("Listener was not called or called more/less frequently than expected", listenerCalledCounter, 1);
+		assertEquals("Listener was not called or called more/less frequently than expected", 1, listenerCalledCounter);
 	}
 
 	public void testManagerStates() {
@@ -308,7 +316,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 	public void testSendRPC(){
 		listenerCalledCounter = 0;
 
-		// When sdlProxyBase.sendRPCRequest() is called, create a fake success response
+		// When internalInterface.sendRPC() is called, create a fake success response
 		Answer<Void> answer = new Answer<Void>() {
 			@Override
 			public Void answer(InvocationOnMock invocation) {
@@ -320,11 +328,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 				return null;
 			}
 		};
-		try {
-			doAnswer(answer).when(sdlProxyBase).sendRPC(any(RPCMessage.class));
-		} catch (SdlException e) {
-			e.printStackTrace();
-		}
+		doAnswer(answer).when(internalInterface).sendRPC(any(RPCMessage.class));
 
 
 		// Test send RPC request
@@ -341,7 +345,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		sdlManager.sendRPC(request);
 
 		// Make sure the listener is called exactly once
-		assertEquals("Listener was not called or called more/less frequently than expected", listenerCalledCounter, 1);
+		assertEquals("Listener was not called or called more/less frequently than expected", 1, listenerCalledCounter);
 	}
 
 	public void testSendRPCs(){
@@ -352,10 +356,10 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		testSendMultipleRPCs(true);
 	}
 
-	private void testSendMultipleRPCs(boolean sequentialSend){
+	private void testSendMultipleRPCs(boolean sequentialSend) {
 		listenerCalledCounter = 0;
 
-		// When sdlProxyBase.sendRPCRequests() is called, call listener.onFinished() to fake the response
+		// When internalInterface.sendRPCs() is called, call listener.onFinished() to fake the response
 		final Answer<Void> answer = new Answer<Void>() {
 			@Override
 			public Void answer(InvocationOnMock invocation) {
@@ -365,15 +369,12 @@ public class SdlManagerTests extends AndroidTestCase2 {
 				return null;
 			}
 		};
-		try {
-			if (sequentialSend){
-				doAnswer(answer).when(sdlProxyBase).sendSequentialRequests(any(List.class), any(OnMultipleRequestListener.class));
 
-			} else {
-				doAnswer(answer).when(sdlProxyBase).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
-			}
-		} catch (SdlException e) {
-			e.printStackTrace();
+		if (sequentialSend) {
+			doAnswer(answer).when(internalInterface).sendSequentialRPCs(any(List.class), any(OnMultipleRequestListener.class));
+
+		} else {
+			doAnswer(answer).when(internalInterface).sendRPCs(any(List.class), any(OnMultipleRequestListener.class));
 		}
 
 
@@ -381,7 +382,8 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		List<RPCMessage> rpcsList = Arrays.asList(new GetVehicleData(), new Show(), new OnAppServiceData(), new GetAppServiceDataResponse());
 		OnMultipleRequestListener onMultipleRequestListener = new OnMultipleRequestListener() {
 			@Override
-			public void onUpdate(int remainingRequests) { }
+			public void onUpdate(int remainingRequests) {
+			}
 
 			@Override
 			public void onFinished() {
@@ -389,10 +391,12 @@ public class SdlManagerTests extends AndroidTestCase2 {
 			}
 
 			@Override
-			public void onError(int correlationId, Result resultCode, String info) {}
+			public void onError(int correlationId, Result resultCode, String info) {
+			}
 
 			@Override
-			public void onResponse(int correlationId, RPCResponse response) {}
+			public void onResponse(int correlationId, RPCResponse response) {
+			}
 		};
 		if (sequentialSend) {
 			sdlManager.sendSequentialRPCs(rpcsList, onMultipleRequestListener);
@@ -402,7 +406,6 @@ public class SdlManagerTests extends AndroidTestCase2 {
 
 
 		// Make sure the listener is called exactly once
-		assertEquals("Listener was not called or called more/less frequently than expected", listenerCalledCounter, 1);
+		assertEquals("Listener was not called or called more/less frequently than expected", 1, listenerCalledCounter);
 	}
-
 }

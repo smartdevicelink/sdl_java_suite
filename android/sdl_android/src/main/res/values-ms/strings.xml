@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_out_of_resource">Terlalu banyak aplikasi yang menggunakan Bluetooth</string>
+    <string name="sdl_error_notification_channel_name">Ralat SDL</string>
+</resources>

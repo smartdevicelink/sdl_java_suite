@@ -31,6 +31,7 @@
  */
 package com.smartdevicelink.proxy;
 
+import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
@@ -126,6 +127,8 @@ public class SystemCapabilityManager {
 
 		// return if display capabilities don't exist.
 		if (display == null) {
+			defaultWindowCapability.setTextFields(ManagerUtility.WindowCapabilityUtility.getAllTextFields());
+			defaultWindowCapability.setImageFields(ManagerUtility.WindowCapabilityUtility.getAllImageFields());
 			displayCapability.setWindowCapabilities(Collections.singletonList(defaultWindowCapability));
 			return Collections.singletonList(displayCapability);
 		}

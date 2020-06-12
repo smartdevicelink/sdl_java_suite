@@ -1,5 +1,10 @@
 package com.smartdevicelink.transport;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.test.SdlUnitTestContants;
@@ -79,5 +84,19 @@ public class MultiplexTransportTest extends AndroidTestCase2 {
 		} catch (NullPointerException e) {
 			Assert.fail("NPE in MultiplexTransport constructor");
 		}
+	}
+
+	// test for setting error state.
+	public void testSetState() {
+		final Bundle bundle = new Bundle();
+		MultiplexBluetoothTransport btTransport = new MultiplexBluetoothTransport(new Handler(Looper.getMainLooper()) {
+			@Override
+			public void handleMessage(Message message) {
+				assertTrue(message.getData().equals(bundle));
+			}
+		});
+		btTransport.start();
+		bundle.putByte(MultiplexBaseTransport.ERROR_REASON_KEY, MultiplexBaseTransport.REASON_SPP_ERROR);
+		btTransport.setState(MultiplexBaseTransport.STATE_ERROR, bundle);
 	}
 }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spp_out_of_resource">יותר מדי יישומים משתמשים ב- Bluetooth</string>
+    <string name="sdl_error_notification_channel_name">שגיאת SDL</string>
+</resources>

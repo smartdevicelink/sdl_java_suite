@@ -31,6 +31,7 @@
  */
 package com.smartdevicelink.proxy.callbacks;
 
+@Deprecated
 public class OnError extends InternalProxyMessage {
 
 	private String _info;
