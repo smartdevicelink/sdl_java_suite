@@ -49,6 +49,7 @@ public class VideoStreamingCapability extends RPCStruct {
 	public static final String KEY_DIAGONAL_SCREEN_SIZE = "diagonalScreenSize";
 	public static final String KEY_PIXEL_PER_INCH = "pixelPerInch";
 	public static final String KEY_SCALE = "scale";
+	public static final String KEY_PREFERRED_FPS = "preferredFPS";
 
 	public VideoStreamingCapability(){}
 	public VideoStreamingCapability(Hashtable<String, Object> hash){super(hash);}
@@ -141,4 +142,19 @@ public class VideoStreamingCapability extends RPCStruct {
 	public void setScale(Double scale) {
 		setValue(KEY_SCALE, scale);
 	}
+
+	/**
+	 * @return the preferred frame rate per second (FPS) specified by head unit.
+	 */
+	public Integer getPreferredFPS() {
+		return getInteger(KEY_PREFERRED_FPS);
+	}
+
+	/**
+	 * @param preferredFPS preferred frame rate per second
+	 */
+	public void setPreferredFPS(Integer preferredFPS) {
+		setValue(KEY_PREFERRED_FPS, preferredFPS);
+	}
+
 }

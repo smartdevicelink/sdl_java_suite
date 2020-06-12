@@ -151,6 +151,9 @@ public class VideoStreamingParameters {
             if(resolution.getResolutionHeight()!=null && resolution.getResolutionHeight() > 0){ this.resolution.setResolutionHeight((int)(resolution.getResolutionHeight() / scale)); }
             if(resolution.getResolutionWidth()!=null && resolution.getResolutionWidth() > 0){ this.resolution.setResolutionWidth((int)(resolution.getResolutionWidth() / scale)); }
         }
+        if (capability.getPreferredFPS() != null) {
+            this.frameRate = capability.getPreferredFPS();
+        }
 
         // This should be the last call as it will return out once a suitable format is found
         final List<VideoStreamingFormat> formats = capability.getSupportedFormats();
@@ -188,6 +191,9 @@ public class VideoStreamingParameters {
 
             if(resolution.getResolutionHeight()!=null && resolution.getResolutionHeight() > 0){ this.resolution.setResolutionHeight((int)(resolution.getResolutionHeight() / scale)); }
             if(resolution.getResolutionWidth()!=null && resolution.getResolutionWidth() > 0){ this.resolution.setResolutionWidth((int)(resolution.getResolutionWidth() / scale)); }
+        }
+        if (capability.getPreferredFPS() != null) {
+            this.frameRate = capability.getPreferredFPS();
         }
 
         // This should be the last call as it will return out once a suitable format is found

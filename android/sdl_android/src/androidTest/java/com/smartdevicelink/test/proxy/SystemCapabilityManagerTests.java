@@ -94,6 +94,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		videoStreamingCapability.setMaxBitrate(Test.GENERAL_INT);
 		videoStreamingCapability.setPreferredResolution(Test.GENERAL_IMAGERESOLUTION);
 		videoStreamingCapability.setSupportedFormats(Test.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+		videoStreamingCapability.setPreferredFPS(Test.GENERAL_INTEGER);
 		systemCapability.setCapabilityForType(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
 	}
 
@@ -212,6 +213,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		vsCapability.setMaxBitrate(Test.GENERAL_INT);
 		vsCapability.setPreferredResolution(Test.GENERAL_IMAGERESOLUTION);
 		vsCapability.setSupportedFormats(Test.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+		vsCapability.setPreferredFPS(Test.GENERAL_INTEGER);
 
 		SystemCapability cap = new SystemCapability();
 		cap.setSystemCapabilityType(SystemCapabilityType.VIDEO_STREAMING);

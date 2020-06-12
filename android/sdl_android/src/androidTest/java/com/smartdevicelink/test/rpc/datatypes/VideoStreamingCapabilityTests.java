@@ -4,6 +4,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
+import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.test.JsonUtils;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.test.Validator;
@@ -33,6 +34,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
 		msg.setDiagonalScreenSize(Test.GENERAL_DOUBLE);
 		msg.setPixelPerInch(Test.GENERAL_DOUBLE);
 		msg.setScale(Test.GENERAL_DOUBLE);
+		msg.setPreferredFPS(Test.GENERAL_INTEGER);
 	}
 
 	/**
@@ -47,6 +49,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
 		Double diagonalScreenSize = msg.getDiagonalScreenSize();
 		Double pixelPerInch = msg.getPixelPerInch();
 		Double scale = msg.getScale();
+		Integer preferredFPS = msg.getPreferredFPS();
 
 		// Valid Tests
 		assertEquals(Test.MATCH, (List<VideoStreamingFormat>) Test.GENERAL_VIDEOSTREAMINGFORMAT_LIST, format);
@@ -56,6 +59,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
 		assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, diagonalScreenSize);
 		assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, pixelPerInch);
 		assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, scale);
+		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, preferredFPS);
 
 		// Invalid/Null Tests
 		VideoStreamingCapability msg = new VideoStreamingCapability();
@@ -68,6 +72,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
 		assertNull(Test.NULL, msg.getDiagonalScreenSize());
 		assertNull(Test.NULL, msg.getPixelPerInch());
 		assertNull(Test.NULL, msg.getScale());
+		assertNull(Test.NULL, msg.getPreferredFPS());
 	}
 
 	public void testJson() {
@@ -81,6 +86,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
 			reference.put(VideoStreamingCapability.KEY_DIAGONAL_SCREEN_SIZE, Test.GENERAL_DOUBLE);
 			reference.put(VideoStreamingCapability.KEY_PIXEL_PER_INCH, Test.GENERAL_DOUBLE);
 			reference.put(VideoStreamingCapability.KEY_SCALE, Test.GENERAL_DOUBLE);
+			reference.put(VideoStreamingCapability.KEY_PREFERRED_FPS, Test.GENERAL_INTEGER);
 
 			JSONObject underTest = msg.serializeJSON();
 			assertEquals(Test.MATCH, reference.length(), underTest.length());
@@ -89,7 +95,7 @@ public class VideoStreamingCapabilityTests extends TestCase {
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
 
-				if (key.equals(VideoStreamingCapability.KEY_MAX_BITRATE) || key.equals(VideoStreamingCapability.KEY_HAPTIC_SPATIAL_DATA_SUPPORTED)) {
+				if (key.equals(VideoStreamingCapability.KEY_MAX_BITRATE) || key.equals(VideoStreamingCapability.KEY_HAPTIC_SPATIAL_DATA_SUPPORTED) || key.equals(VideoStreamingCapability.KEY_PREFERRED_FPS)) {
 					assertTrue(Test.TRUE, JsonUtils.readIntegerFromJsonObject(reference, key) == JsonUtils.readIntegerFromJsonObject(underTest, key));
 				} else if (key.equals(VideoStreamingCapability.KEY_PREFERRED_RESOLUTION)) {
 					ImageResolution irReference = (ImageResolution) JsonUtils.readObjectFromJsonObject(reference, key);
