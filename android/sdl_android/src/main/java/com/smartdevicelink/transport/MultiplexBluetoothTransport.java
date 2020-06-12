@@ -35,6 +35,7 @@ import android.util.Log;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -802,7 +803,9 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                     }
                 } catch (IOException|NullPointerException e) { // NPE is ONLY to catch error on mmInStream
                 	Log.e(TAG, "Lost connection in the Connected Thread");
-                	e.printStackTrace();
+                	if(DebugTool.isDebugEnabled()){
+                	    e.printStackTrace();
+                    }
                 	connectionLost();                    
                     break;
                 }
