@@ -64,7 +64,6 @@ class DeleteChoicesOperation extends Task {
 
 	@Override
 	public void onExecute() {
-		DeleteChoicesOperation.super.run();
 		DebugTool.logInfo("Choice Operation: Executing delete choices operation");
 		sendDeletions();
 	}

@@ -100,7 +100,6 @@ class PresentChoiceSetOperation extends Task {
 
 	@Override
 	public void onExecute() {
-		PresentChoiceSetOperation.super.run();
 		DebugTool.logInfo("Choice Operation: Executing present choice set operation");
 		addListeners();
 		start();

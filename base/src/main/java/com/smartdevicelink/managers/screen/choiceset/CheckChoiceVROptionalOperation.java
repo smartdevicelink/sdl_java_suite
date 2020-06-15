@@ -62,7 +62,6 @@ class CheckChoiceVROptionalOperation extends Task {
 
 	@Override
 	public void onExecute() {
-		CheckChoiceVROptionalOperation.super.run();
 		DebugTool.logInfo("Choice Operation: Executing check vr optional operation");
 		sendTestChoiceNoVR();
 	}

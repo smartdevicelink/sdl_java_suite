@@ -85,7 +85,6 @@ class PresentKeyboardOperation extends Task {
 
 	@Override
 	public void onExecute() {
-		PresentKeyboardOperation.super.run();
 		DebugTool.logInfo("Keyboard Operation: Executing present keyboard operation");
 		addListeners();
 		start();

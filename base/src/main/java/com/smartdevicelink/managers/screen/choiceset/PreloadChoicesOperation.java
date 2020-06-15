@@ -88,7 +88,6 @@ class PreloadChoicesOperation extends Task {
 
 	@Override
 	public void onExecute() {
-		PreloadChoicesOperation.super.run();
 		DebugTool.logInfo("Choice Operation: Executing preload choices operation");
 		preloadCellArtworks(new CompletionListener() {
 			@Override
