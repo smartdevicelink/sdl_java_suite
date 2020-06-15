@@ -1,8 +1,8 @@
 package com.smartdevicelink.managers;
 
 import android.content.Context;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -24,6 +24,8 @@ import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 
+import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -32,6 +34,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertSame;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -40,7 +46,8 @@ import static org.mockito.Mockito.mock;
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link com.smartdevicelink.managers.SdlManager}
  */
-public class SdlManagerTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class SdlManagerTests {
 
 	public static BaseTransportConfig transport = null;
 	private Context mTestContext;
@@ -56,10 +63,8 @@ public class SdlManagerTests extends AndroidTestCase2 {
 	@SuppressWarnings("FieldCanBeLocal")
 	private String DEV_MACHINE_IP_ADDRESS = "0.0.0.0";
 
-	@Override
+	@Before
 	public void setUp() throws Exception{
-		super.setUp();
-
 		mTestContext = Mockito.mock(Context.class);
 
 		// set transport
@@ -76,11 +81,6 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		templateColorScheme.setSecondaryColor(Test.GENERAL_RGBCOLOR);
 
 		sdlManager = createSampleManager("heyApp", "123456", Test.GENERAL_LOCKSCREENCONFIG);
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
 	}
 
 	// SETUP / HELPERS
@@ -144,10 +144,12 @@ public class SdlManagerTests extends AndroidTestCase2 {
 
 	// TESTS
 
+	@org.junit.Test
 	public void testNotNull(){
 		assertNotNull(createSampleManager("app","123456", Test.GENERAL_LOCKSCREENCONFIG));
 	}
 
+	@org.junit.Test
 	public void testMissingAppName() {
 		try {
 			createSampleManager(null,"123456", Test.GENERAL_LOCKSCREENCONFIG);
@@ -156,6 +158,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		}
 	}
 
+	@org.junit.Test
 	public void testMissingAppId() {
 		try {
 			createSampleManager("app",null, Test.GENERAL_LOCKSCREENCONFIG);
@@ -164,6 +167,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		}
 	}
 
+	@org.junit.Test
 	public void testManagerSetters() {
 		assertEquals("123456", sdlManager.getAppId());
 		assertEquals("heyApp", sdlManager.getAppName());
@@ -181,6 +185,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		assertEquals(Test.GENERAL_VERSION, sdlManager.getMinimumRPCVersion());
 	}
 
+	@org.junit.Test
 	public void testStartingManager(){
 		listenerCalledCounter = 0;
 		
@@ -203,6 +208,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		assertEquals("Listener was not called or called more/less frequently than expected", 1, listenerCalledCounter);
 	}
 
+	@org.junit.Test
 	public void testManagerStates() {
 		SdlManager sdlManager = createSampleManager("test", "00000", new LockScreenConfig());
 		sdlManager.initialize();
@@ -313,6 +319,7 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		assertEquals(BaseSubManager.SHUTDOWN, sdlManager.getState());
 	}
 
+	@org.junit.Test
 	public void testSendRPC(){
 		listenerCalledCounter = 0;
 
@@ -348,10 +355,12 @@ public class SdlManagerTests extends AndroidTestCase2 {
 		assertEquals("Listener was not called or called more/less frequently than expected", 1, listenerCalledCounter);
 	}
 
+	@org.junit.Test
 	public void testSendRPCs(){
 		testSendMultipleRPCs(false);
 	}
 
+	@org.junit.Test
 	public void testSendSequentialRPCs(){
 		testSendMultipleRPCs(true);
 	}

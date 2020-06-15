@@ -32,11 +32,18 @@
 
 package com.smartdevicelink.managers.file.filetypes;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.test.Test;
 
-public class SdlFileTests extends AndroidTestCase2 {
+import org.junit.runner.RunWith;
 
+import static junit.framework.TestCase.assertEquals;
+
+@RunWith(AndroidJUnit4.class)
+public class SdlFileTests {
+
+    @org.junit.Test
     public void testConstructorWithNoParams() {
         SdlFile sdlFile;
 
@@ -80,6 +87,7 @@ public class SdlFileTests extends AndroidTestCase2 {
         assertEquals(sdlFile.isPersistent(), Test.GENERAL_BOOLEAN);
     }
 
+    @org.junit.Test
     public void testConstructorWithResourceId() {
         // Case1 (Set the name manually)
         SdlFile sdlFile1 = new SdlFile(Test.GENERAL_STRING, Test.GENERAL_FILETYPE, Test.GENERAL_INTEGER, Test.GENERAL_BOOLEAN);
@@ -98,6 +106,7 @@ public class SdlFileTests extends AndroidTestCase2 {
         assertEquals(sdlFile2.isPersistent(), Test.GENERAL_BOOLEAN);
     }
 
+    @org.junit.Test
     public void testConstructorWithData() {
         // Case1 (Set the name manually)
         SdlFile sdlFile1 = new SdlFile(Test.GENERAL_STRING, Test.GENERAL_FILETYPE, Test.GENERAL_BYTE_ARRAY, Test.GENERAL_BOOLEAN);
@@ -116,6 +125,7 @@ public class SdlFileTests extends AndroidTestCase2 {
         assertEquals(sdlFile2.isPersistent(), Test.GENERAL_BOOLEAN);
     }
 
+    @org.junit.Test
     public void testConstructorWithUri() {
         // Case1 (Set the name manually)
         SdlFile sdlFile1 = new SdlFile(Test.GENERAL_STRING, Test.GENERAL_FILETYPE, Test.GENERAL_URI, Test.GENERAL_BOOLEAN);

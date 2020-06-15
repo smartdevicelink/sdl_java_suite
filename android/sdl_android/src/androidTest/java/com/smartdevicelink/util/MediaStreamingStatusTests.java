@@ -4,25 +4,33 @@ import android.content.Context;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.os.Build;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 
+import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.util.Vector;
 
+import static android.support.test.InstrumentationRegistry.getContext;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
-public class MediaStreamingStatusTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class MediaStreamingStatusTests {
 
 
 
@@ -48,7 +56,7 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
     };
 
 
-    @Override
+    @Before
     public void setUp() throws Exception{
         mockedContext = mock(Context.class);
         doAnswer(onGetSystemService).when(mockedContext).getSystemService(Context.AUDIO_SERVICE);
@@ -56,6 +64,7 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
     }
 
 
+    @org.junit.Test
     public void testEmptyAudioDeviceInfoList(){
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             assertNotNull(mockedContext);
@@ -77,6 +86,7 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
         }
     }
 
+    @org.junit.Test
     public void testNullAudioDeviceInfoList(){
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             assertNotNull(mockedContext);
@@ -93,6 +103,7 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
     }
 
 
+    @org.junit.Test
     public void testSdlManagerMedia(){
         SdlManager.Builder builder = new SdlManager.Builder(getContext(), Test.GENERAL_FULL_APP_ID, Test.GENERAL_STRING, mock(SdlManagerListener.class));
         Vector<AppHMIType> appType = new Vector<>();
@@ -110,6 +121,7 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
         assertTrue(multiplexTransportConfig.requiresAudioSupport());
     }
 
+    @org.junit.Test
     public void testSdlManagerNonMedia(){
         SdlManager.Builder builder = new SdlManager.Builder(getContext(), Test.GENERAL_FULL_APP_ID, Test.GENERAL_STRING, mock(SdlManagerListener.class));
         Vector<AppHMIType> appType = new Vector<>();
@@ -127,6 +139,7 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
         assertFalse(multiplexTransportConfig.requiresAudioSupport());
     }
 
+    @org.junit.Test
     public void testAcceptedBTDevices(){
         MediaStreamingStatus mediaStreamingStatus = spy(new MediaStreamingStatus(getContext(), mock(MediaStreamingStatus.Callback.class)));
 
@@ -141,6 +154,7 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
         assertTrue(mediaStreamingStatus.isSupportedAudioDevice(AudioDeviceInfo.TYPE_BLUETOOTH_A2DP));
     }
 
+    @org.junit.Test
     public void testAcceptedUSBDevices(){
         MediaStreamingStatus mediaStreamingStatus = spy(new MediaStreamingStatus(getContext(), mock(MediaStreamingStatus.Callback.class)));
 
@@ -158,6 +172,7 @@ public class MediaStreamingStatusTests extends AndroidTestCase2 {
         assertTrue(mediaStreamingStatus.isSupportedAudioDevice(AudioDeviceInfo.TYPE_DOCK));
     }
 
+    @org.junit.Test
     public void testAcceptedLineDevices(){
         assertTrue(defaultMediaStreamingStatus.isSupportedAudioDevice(AudioDeviceInfo.TYPE_LINE_ANALOG));
         assertTrue(defaultMediaStreamingStatus.isSupportedAudioDevice(AudioDeviceInfo.TYPE_LINE_DIGITAL));

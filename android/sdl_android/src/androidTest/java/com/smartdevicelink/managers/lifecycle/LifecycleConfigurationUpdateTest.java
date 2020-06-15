@@ -35,21 +35,18 @@
 
 package com.smartdevicelink.managers.lifecycle;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.test.Test;
 
-public class LifecycleConfigurationUpdateTest extends AndroidTestCase2 {
+import org.junit.runner.RunWith;
 
-	@Override
-	public void setUp() throws Exception {
-		super.setUp();
-	}
+import static junit.framework.TestCase.assertEquals;
 
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
+@RunWith(AndroidJUnit4.class)
+public class LifecycleConfigurationUpdateTest {
 
+	@org.junit.Test
 	public void testIndividualSettersAndGetters(){
 
 		LifecycleConfigurationUpdate lifecycleConfigurationUpdate = new LifecycleConfigurationUpdate();
@@ -65,6 +62,7 @@ public class LifecycleConfigurationUpdateTest extends AndroidTestCase2 {
 		assertEquals(Test.GENERAL_VECTOR_STRING, lifecycleConfigurationUpdate.getVoiceRecognitionCommandNames());
 	}
 
+	@org.junit.Test
 	public void testHelperConstructor(){
 
 		LifecycleConfigurationUpdate lifecycleConfigurationUpdate = new LifecycleConfigurationUpdate(Test.GENERAL_STRING, Test.GENERAL_STRING, Test.GENERAL_VECTOR_TTS_CHUNKS, Test.GENERAL_VECTOR_STRING);

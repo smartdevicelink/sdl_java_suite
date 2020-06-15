@@ -32,17 +32,26 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.managers.file.SdlArtworkTests;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.test.Test;
 
+import org.junit.runner.RunWith;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNotSame;
+import static junit.framework.TestCase.assertTrue;
 
-public class MenuCellTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class MenuCellTests {
 
 	private MenuSelectionListener menuSelectionListener = new MenuSelectionListener() {
 		@Override
@@ -51,16 +60,7 @@ public class MenuCellTests extends AndroidTestCase2 {
 		}
 	};
 
-	@Override
-	public void setUp() throws Exception{
-		super.setUp();
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
-
+	@org.junit.Test
 	public void testSettersAndGetters(){
 
 		// set everything
@@ -80,6 +80,7 @@ public class MenuCellTests extends AndroidTestCase2 {
 		assertEquals(menuCell.getSubMenuLayout(), Test.GENERAL_MENU_LAYOUT);
 	}
 
+	@org.junit.Test
 	public void testConstructors(){
 
 		// first constructor was tested in previous method, use the last two here
@@ -101,6 +102,7 @@ public class MenuCellTests extends AndroidTestCase2 {
 		assertEquals(menuCell5.getSubCells(), Test.GENERAL_MENUCELL_LIST);
 	}
 
+	@org.junit.Test
 	public void testEquality(){
 
 		//We should use assertTrue (or assertFalse) because we want to use the overridden equals() method
@@ -120,6 +122,7 @@ public class MenuCellTests extends AndroidTestCase2 {
 		assertFalse(menuCell.equals(menuCell3));
 	}
 
+	@org.junit.Test
 	public void testClone(){
 		MenuCell original = new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST, menuSelectionListener);
 		MenuCell clone = original.clone();
