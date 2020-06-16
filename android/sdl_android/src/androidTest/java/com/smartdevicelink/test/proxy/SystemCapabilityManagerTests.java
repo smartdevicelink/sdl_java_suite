@@ -868,6 +868,7 @@ public class SystemCapabilityManagerTests {
 	}
 
 
+	@Test
 	public void testOnSystemCapabilityUpdatedOverwrite(){
 		InternalSDLInterface iSDL = new InternalSDLInterface();
 		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);

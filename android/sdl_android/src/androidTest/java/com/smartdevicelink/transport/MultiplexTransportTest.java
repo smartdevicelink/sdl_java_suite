@@ -97,6 +97,7 @@ public class MultiplexTransportTest {
 	}
 
 	// test for setting error state.
+	@Test
 	public void testSetState() {
 		final Bundle bundle = new Bundle();
 		MultiplexBluetoothTransport btTransport = new MultiplexBluetoothTransport(new Handler(Looper.getMainLooper()) {
