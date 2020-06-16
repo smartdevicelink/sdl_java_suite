@@ -32,26 +32,26 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.test.TestValues;
 
-public class ChoiceCellTests extends AndroidTestCase2 {
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+
+@RunWith(AndroidJUnit4.class)
+public class ChoiceCellTests {
 
     private static final int MAX_ID = 2000000000;
     private SdlArtwork artwork = new SdlArtwork("image", FileType.GRAPHIC_PNG, 1, true);
 
-    @Override
-    public void setUp() throws Exception{
-        super.setUp();
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void testSettersAndGetters(){
 
         // set everything
@@ -72,6 +72,7 @@ public class ChoiceCellTests extends AndroidTestCase2 {
         assertEquals(choiceCell.getChoiceId(), MAX_ID);
     }
 
+    @Test
     public void testConstructors() {
         // first constructor was tested in previous method, use the rest here
 
@@ -98,6 +99,7 @@ public class ChoiceCellTests extends AndroidTestCase2 {
         assertEquals(choiceCell.getChoiceId(), MAX_ID);
     }
 
+    @Test
     public void testCellEquality(){
 
         ChoiceCell choiceCell = new ChoiceCell(TestValues.GENERAL_STRING, TestValues.GENERAL_STRING_LIST, artwork);

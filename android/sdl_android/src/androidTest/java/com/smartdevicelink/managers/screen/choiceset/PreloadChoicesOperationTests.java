@@ -35,7 +35,8 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -49,24 +50,31 @@ import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.test.TestValues;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
 
-public class PreloadChoicesOperationTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class PreloadChoicesOperationTests {
 
 	private PreloadChoicesOperation preloadChoicesOperation;
 	private PreloadChoicesOperation preloadChoicesOperationNullCapability;
 	private PreloadChoicesOperation preloadChoicesOperationEmptyCapability;
 
 
-	@Override
+	@Before
 	public void setUp() throws Exception{
-
-		super.setUp();
 
 		ChoiceCell cell1 = new ChoiceCell("cell 1");
 		ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
@@ -140,16 +148,13 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 	}
 
 
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
-
+	@Test
 	public void testArtworkNeedsUpload(){
 		boolean test = preloadChoicesOperation.artworkNeedsUpload(TestValues.GENERAL_ARTWORK);
 		assertTrue(test);
 	}
 
+	@Test
 	public void testArtworksToUpload(){
 		List<SdlArtwork> artworksToUpload = preloadChoicesOperation.artworksToUpload();
 		assertNotNull(artworksToUpload);
@@ -159,6 +164,7 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 	/**
 	 * Testing shouldSend method's with varying WindowCapability set.
 	 */
+	@Test
 	public void testShouldSendText() {
 
 		setUpNullWindowCapability();

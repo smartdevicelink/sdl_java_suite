@@ -35,7 +35,8 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -50,6 +51,9 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
 import com.smartdevicelink.test.TestValues;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -58,6 +62,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -66,7 +74,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class PresentChoiceSetOperationTests {
 
 	private PresentChoiceSetOperation presentChoiceSetOperation;
 	private ChoiceSet choiceSet;
@@ -76,9 +85,8 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 	private ExecutorService executor;
 
-	@Override
+	@Before
 	public void setUp() throws Exception{
-		super.setUp();
 
 		internalInterface = mock(ISdl.class);
 
@@ -92,10 +100,6 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		executor = Executors.newCachedThreadPool();
 	}
 
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
 
 	private KeyboardProperties getKeyBoardProperties(){
 		KeyboardProperties properties = new KeyboardProperties();
@@ -105,6 +109,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		return properties;
 	}
 
+	@Test
     public void testGetLayoutMode(){
 		// First we will check knowing our keyboard listener is NOT NULL
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
@@ -114,6 +119,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		assertEquals(presentChoiceSetOperation.getLayoutMode(), LayoutMode.LIST_ONLY);
 	}
 
+	@Test
 	public void testGetPerformInteraction(){
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 
@@ -127,6 +133,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		assertEquals(presentChoiceSetOperation.getLayoutMode(), LayoutMode.LIST_WITH_SEARCH);
 	}
 
+	@Test
 	public void testSetSelectedCellWithId(){
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 
@@ -135,6 +142,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		assertEquals(presentChoiceSetOperation.selectedCellRow, Integer.valueOf(0));
 	}
 
+	@Test
 	public void testCancelingChoiceSetSuccessfullyIfThreadIsRunning(){
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
@@ -175,6 +183,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		assertFalse(presentChoiceSetOperation.isCancelled());
 	}
 
+	@Test
 	public void testCancelingChoiceSetUnsuccessfullyIfThreadIsRunning(){
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
@@ -214,6 +223,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		assertFalse(presentChoiceSetOperation.isCancelled());
 	}
 
+	@Test
 	public void testCancelingChoiceSetIfThreadHasFinished(){
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
@@ -231,6 +241,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		assertFalse(presentChoiceSetOperation.isCancelled());
 	}
 
+	@Test
 	public void testCancelingChoiceSetIfThreadHasNotYetRun(){
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
 		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
@@ -256,6 +267,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
 	}
 
+	@Test
 	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeature(){
 		// Cancel Interaction is only supported on RPC specs v.6.0.0+
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
@@ -275,6 +287,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		verify(internalInterface, times(1)).sendRPC(any(PerformInteraction.class));
 	}
 
+	@Test
 	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeatureButThreadIsNotRunning(){
 		// Cancel Interaction is only supported on RPC specs v.6.0.0+
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));

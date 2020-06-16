@@ -1,6 +1,7 @@
 package com.smartdevicelink.managers.screen;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -11,22 +12,30 @@ import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.test.TestValues;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link ScreenManager}
  */
-public class ScreenManagerTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class ScreenManagerTests {
 	private ScreenManager screenManager;
 	private SdlArtwork testArtwork;
 
-	@Override
+	@Before
 	public void setUp() throws Exception {
-		super.setUp();
 
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
@@ -35,11 +44,7 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		testArtwork = new SdlArtwork("testFile", FileType.GRAPHIC_PNG, 1, false);
 	}
 
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
-
+	@Test
 	public void testInstantiation(){
 		assertNull(screenManager.getTextField1());
 		assertNull(screenManager.getTextField2());
@@ -63,7 +68,8 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertEquals(screenManager.getState(), BaseSubManager.READY);
 		assertNull(screenManager.getMenuConfiguration());
 	}
-	
+
+	@Test
 	public void testSetTextField() {
 		screenManager.setTextField1("It is");
 		screenManager.setTextField2("Wednesday");
@@ -77,39 +83,46 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertEquals(screenManager.getTitle(), "title");
 	}
 
+	@Test
 	public void testMediaTrackTextFields() {
 		String songTitle = "Wild For The Night";
 		screenManager.setMediaTrackTextField(songTitle);
 		assertEquals(screenManager.getMediaTrackTextField(), songTitle);
 	}
 
+	@Test
 	public void testSetPrimaryGraphic() {
 		screenManager.setPrimaryGraphic(testArtwork);
 		assertEquals(screenManager.getPrimaryGraphic(), testArtwork);
 	}
 
+	@Test
 	public void testSetPrimaryGraphicWithBlankImage() {
 		screenManager.setPrimaryGraphic(null);
 		assertNotNull(screenManager.getPrimaryGraphic());
 		assertEquals(screenManager.getPrimaryGraphic().getName(), "blankArtwork");
 	}
 
+	@Test
 	public void testSetSecondaryGraphic() {
 		screenManager.setSecondaryGraphic(testArtwork);
 		assertEquals(screenManager.getSecondaryGraphic(), testArtwork);
 	}
 
+	@Test
 	public void testSetSecondaryGraphicWithBlankImage() {
 		screenManager.setSecondaryGraphic(null);
 		assertNotNull(screenManager.getSecondaryGraphic());
 		assertEquals(screenManager.getSecondaryGraphic().getName(), "blankArtwork");
 	}
 
+	@Test
 	public void testAlignment() {
 		screenManager.setTextAlignment(TextAlignment.LEFT_ALIGNED);
 		assertEquals(screenManager.getTextAlignment(), TextAlignment.LEFT_ALIGNED);
 	}
 
+	@Test
 	public void testSetTextFieldTypes() {
 		screenManager.setTextField1Type(MetadataType.MEDIA_TITLE);
 		screenManager.setTextField2Type(MetadataType.MEDIA_ALBUM);
@@ -121,6 +134,7 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertEquals(screenManager.getTextField4Type(), MetadataType.MEDIA_GENRE);
 	}
 
+	@Test
 	public void testSetMenuManagerFields(){
 		screenManager.setDynamicMenuUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
 		screenManager.setMenu(TestValues.GENERAL_MENUCELL_LIST);
@@ -132,11 +146,13 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 		assertNull(screenManager.getMenuConfiguration());
 	}
 
+	@Test
 	public void testSetVoiceCommands(){
 		screenManager.setVoiceCommands(TestValues.GENERAL_VOICE_COMMAND_LIST);
 		assertEquals(screenManager.getVoiceCommands(), TestValues.GENERAL_VOICE_COMMAND_LIST);
 	}
 
+	@Test
 	public void testSetSoftButtonObjects(){
 		// Create softButtonObject1
 		SoftButtonState softButtonState1 = new SoftButtonState("object1-state1", "it is", testArtwork);

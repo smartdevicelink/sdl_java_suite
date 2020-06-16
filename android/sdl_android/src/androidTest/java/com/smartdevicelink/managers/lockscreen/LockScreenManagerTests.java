@@ -1,8 +1,8 @@
 package com.smartdevicelink.managers.lockscreen;
 
 import android.content.Context;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
@@ -12,9 +12,17 @@ import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.test.TestValues;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import static android.support.test.InstrumentationRegistry.getContext;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -24,14 +32,14 @@ import static org.mockito.Mockito.mock;
  * This is a unit test class for the SmartDeviceLink library manager class :
  * {@link com.smartdevicelink.managers.lockscreen.LockScreenManager}
  */
-public class LockScreenManagerTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class LockScreenManagerTests {
 
 	private LockScreenManager lockScreenManager;
 	private OnRPCNotificationListener onDDListener;
 
-	@Override
+	@Before
 	public void setUp() throws Exception{
-		super.setUp();
 
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -58,11 +66,7 @@ public class LockScreenManagerTests extends AndroidTestCase2 {
 		lockScreenManager = new LockScreenManager(lockScreenConfig, context, internalInterface);
 	}
 
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
-
+	@Test
 	public void testVariables() {
 		assertEquals(TestValues.GENERAL_INT, lockScreenManager.customView);
 		assertEquals(TestValues.GENERAL_INT, lockScreenManager.lockScreenIcon);
@@ -73,48 +77,56 @@ public class LockScreenManagerTests extends AndroidTestCase2 {
 		assertEquals(LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED, lockScreenManager.displayMode);
 	}
 
+	@Test
 	public void testGetLockScreenStatusHmiNoneDDOff(){
 		lockScreenManager.driverDistStatus = false;
 		lockScreenManager.hmiLevel = HMILevel.HMI_NONE;
 		assertEquals(LockScreenStatus.OFF, lockScreenManager.getLockScreenStatus());
 	}
 
+	@Test
 	public void testGetLockScreenStatusHmiBackgroundDDOff(){
 		lockScreenManager.driverDistStatus = false;
 		lockScreenManager.hmiLevel = HMILevel.HMI_BACKGROUND;
 		assertEquals(LockScreenStatus.OFF, lockScreenManager.getLockScreenStatus());
 	}
 
+	@Test
 	public void testGetLockScreenStatusHmiNoneDDOn(){
 		lockScreenManager.driverDistStatus = true;
 		lockScreenManager.hmiLevel = HMILevel.HMI_BACKGROUND;
 		assertEquals(LockScreenStatus.REQUIRED, lockScreenManager.getLockScreenStatus());
 	}
 
+	@Test
 	public void testGetLockScreenStatusHmiFullDDOff(){
 		lockScreenManager.driverDistStatus = false;
 		lockScreenManager.hmiLevel = HMILevel.HMI_FULL;
 		assertEquals(LockScreenStatus.OPTIONAL, lockScreenManager.getLockScreenStatus());
 	}
 
+	@Test
 	public void testGetLockScreenStatusHmiFullDDOn(){
 		lockScreenManager.driverDistStatus = true;
 		lockScreenManager.hmiLevel = HMILevel.HMI_FULL;
 		assertEquals(LockScreenStatus.REQUIRED, lockScreenManager.getLockScreenStatus());
 	}
 
+	@Test
 	public void testGetLockScreenStatusHmiLimitedDDOff(){
 		lockScreenManager.driverDistStatus = false;
 		lockScreenManager.hmiLevel = HMILevel.HMI_LIMITED;
 		assertEquals(LockScreenStatus.OPTIONAL, lockScreenManager.getLockScreenStatus());
 	}
 
+	@Test
 	public void testGetLockScreenStatusHmiLimitedDDOn(){
 		lockScreenManager.driverDistStatus = true;
 		lockScreenManager.hmiLevel = HMILevel.HMI_LIMITED;
 		assertEquals(LockScreenStatus.REQUIRED, lockScreenManager.getLockScreenStatus());
 	}
 
+	@Test
 	public void testLockScreenDismissibleWithEnableTrueAndDismissibilityTrue(){
 		lockScreenManager.enableDismissGesture = true;
 		OnDriverDistraction onDriverDistraction = new OnDriverDistraction();
@@ -125,6 +137,7 @@ public class LockScreenManagerTests extends AndroidTestCase2 {
 		assertTrue(lockScreenManager.mIsLockscreenDismissible);
 	}
 
+	@Test
 	public void testLockScreenDismissibleWithEnableFalseAndDismissibilityFalse(){
 		lockScreenManager.enableDismissGesture = false;
 		OnDriverDistraction onDriverDistraction = new OnDriverDistraction();
@@ -135,6 +148,7 @@ public class LockScreenManagerTests extends AndroidTestCase2 {
 		assertFalse(lockScreenManager.mIsLockscreenDismissible);
 	}
 
+	@Test
 	public void testLockScreenDismissibleWithEnableTrueAndDismissibilityFalse(){
 		lockScreenManager.enableDismissGesture = true;
 		OnDriverDistraction onDriverDistraction = new OnDriverDistraction();
@@ -145,6 +159,7 @@ public class LockScreenManagerTests extends AndroidTestCase2 {
 		assertFalse(lockScreenManager.mIsLockscreenDismissible);
 	}
 
+	@Test
 	public void testLockScreenDismissibleWithEnableFalseAndDismissibilityTrue(){
 		lockScreenManager.enableDismissGesture = false;
 		OnDriverDistraction onDriverDistraction = new OnDriverDistraction();

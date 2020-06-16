@@ -32,10 +32,17 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.test.TestValues;
 
-public class VoiceCommandTests extends AndroidTestCase2 {
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static junit.framework.TestCase.assertEquals;
+
+@RunWith(AndroidJUnit4.class)
+public class VoiceCommandTests {
 
 	private VoiceCommandSelectionListener voiceCommandSelectionListener = new VoiceCommandSelectionListener() {
 		@Override
@@ -44,16 +51,7 @@ public class VoiceCommandTests extends AndroidTestCase2 {
 		}
 	};
 
-	@Override
-	public void setUp() throws Exception{
-		super.setUp();
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
-
+	@Test
 	public void testSettersAndGetters(){
 		VoiceCommand voiceCommand = new VoiceCommand(TestValues.GENERAL_STRING_LIST, voiceCommandSelectionListener);
 

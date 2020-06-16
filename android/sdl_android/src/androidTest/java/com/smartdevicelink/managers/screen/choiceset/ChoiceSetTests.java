@@ -32,15 +32,23 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.test.TestValues;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
 
-public class ChoiceSetTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class ChoiceSetTests {
 
     private ChoiceSetSelectionListener listener;
     private ChoiceSetLayout layout;
@@ -48,9 +56,8 @@ public class ChoiceSetTests extends AndroidTestCase2 {
     private Integer defaultTimeout;
     private Boolean canceledHandlerCalled;
 
-    @Override
+    @Before
     public void setUp() throws Exception{
-        super.setUp();
 
         listener = mock(ChoiceSetSelectionListener.class);
         layout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
@@ -59,11 +66,8 @@ public class ChoiceSetTests extends AndroidTestCase2 {
         canceledHandlerCalled = false;
     }
 
-    @Override
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
 
+    @Test
     public void testSettersAndGetters(){
 
         // test small constructor
@@ -77,6 +81,7 @@ public class ChoiceSetTests extends AndroidTestCase2 {
         assertEquals(choiceSet.getChoiceSetSelectionListener(), listener);
     }
 
+    @Test
     public void testConstructors() {
 
         // first constructor was tested in previous method, use the rest here
@@ -101,6 +106,7 @@ public class ChoiceSetTests extends AndroidTestCase2 {
         assertEquals(choiceSet2.getChoiceSetSelectionListener(), listener);
     }
 
+    @Test
     public void testCancelingChoiceSet() {
         ChoiceSet choiceSet = new ChoiceSet(TestValues.GENERAL_STRING, choices, listener);
 

@@ -32,21 +32,19 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.test.TestValues;
 
-public class SubCellCommandListTests extends AndroidTestCase2 {
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-	@Override
-	public void setUp() throws Exception{
-		super.setUp();
-	}
+import static junit.framework.TestCase.assertEquals;
 
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
+@RunWith(AndroidJUnit4.class)
+public class SubCellCommandListTests {
 
+	@Test
 	public void testSettersAndGetters() {
 
 		RunScore runScore = new RunScore(TestValues.GENERAL_INT, TestValues.GENERAL_INTEGER_LIST, TestValues.GENERAL_INTEGER_LIST);
