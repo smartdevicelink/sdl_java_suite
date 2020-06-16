@@ -33,7 +33,7 @@
 package com.smartdevicelink.managers.screen.choiceset;
 
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,7 +55,7 @@ public class ChoiceSetTests extends AndroidTestCase2 {
         listener = mock(ChoiceSetSelectionListener.class);
         layout = ChoiceSetLayout.CHOICE_SET_LAYOUT_LIST;
         defaultTimeout = 10;
-        choices = Arrays.asList(new ChoiceCell(Test.GENERAL_STRING), new ChoiceCell(Test.GENERAL_STRING));
+        choices = Arrays.asList(new ChoiceCell(TestValues.GENERAL_STRING), new ChoiceCell(TestValues.GENERAL_STRING));
         canceledHandlerCalled = false;
     }
 
@@ -67,10 +67,10 @@ public class ChoiceSetTests extends AndroidTestCase2 {
     public void testSettersAndGetters(){
 
         // test small constructor
-        ChoiceSet choiceSet = new ChoiceSet(Test.GENERAL_STRING, choices, listener);
+        ChoiceSet choiceSet = new ChoiceSet(TestValues.GENERAL_STRING, choices, listener);
 
         // use getters and assert equality
-        assertEquals(choiceSet.getTitle(), Test.GENERAL_STRING);
+        assertEquals(choiceSet.getTitle(), TestValues.GENERAL_STRING);
         assertEquals(choiceSet.getLayout(), layout);
         assertEquals(choiceSet.getTimeout(), defaultTimeout);
         assertEquals(choiceSet.getChoices(), choices);
@@ -80,29 +80,29 @@ public class ChoiceSetTests extends AndroidTestCase2 {
     public void testConstructors() {
 
         // first constructor was tested in previous method, use the rest here
-        ChoiceSet choiceSet = new ChoiceSet(Test.GENERAL_STRING, layout, Test.GENERAL_INTEGER, Test.GENERAL_STRING, Test.GENERAL_STRING, Test.GENERAL_STRING, Test.GENERAL_VRHELPITEM_LIST, Test.GENERAL_KEYBOARDPROPERTIES, choices, listener);
-        assertEquals(choiceSet.getTitle(), Test.GENERAL_STRING);
-        assertEquals(choiceSet.getInitialPrompt().get(0).getText(),Test.GENERAL_STRING);
-        assertEquals(choiceSet.getHelpPrompt().get(0).getText(), Test.GENERAL_STRING);
-        assertEquals(choiceSet.getTimeoutPrompt().get(0).getText(), Test.GENERAL_STRING);
+        ChoiceSet choiceSet = new ChoiceSet(TestValues.GENERAL_STRING, layout, TestValues.GENERAL_INTEGER, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_STRING, TestValues.GENERAL_VRHELPITEM_LIST, TestValues.GENERAL_KEYBOARDPROPERTIES, choices, listener);
+        assertEquals(choiceSet.getTitle(), TestValues.GENERAL_STRING);
+        assertEquals(choiceSet.getInitialPrompt().get(0).getText(), TestValues.GENERAL_STRING);
+        assertEquals(choiceSet.getHelpPrompt().get(0).getText(), TestValues.GENERAL_STRING);
+        assertEquals(choiceSet.getTimeoutPrompt().get(0).getText(), TestValues.GENERAL_STRING);
         assertEquals(choiceSet.getLayout(), layout);
-        assertEquals(choiceSet.getTimeout(), Test.GENERAL_INTEGER);
+        assertEquals(choiceSet.getTimeout(), TestValues.GENERAL_INTEGER);
         assertEquals(choiceSet.getChoices(), choices);
         assertEquals(choiceSet.getChoiceSetSelectionListener(), listener);
 
-        ChoiceSet choiceSet2 = new ChoiceSet(Test.GENERAL_STRING, layout, Test.GENERAL_INTEGER, Test.GENERAL_TTSCHUNK_LIST, Test.GENERAL_TTSCHUNK_LIST, Test.GENERAL_TTSCHUNK_LIST, Test.GENERAL_VRHELPITEM_LIST, Test.GENERAL_KEYBOARDPROPERTIES, choices, listener);
-        assertEquals(choiceSet2.getTitle(), Test.GENERAL_STRING);
-        assertEquals(choiceSet2.getInitialPrompt(),Test.GENERAL_TTSCHUNK_LIST);
-        assertEquals(choiceSet2.getHelpPrompt(), Test.GENERAL_TTSCHUNK_LIST);
-        assertEquals(choiceSet2.getTimeoutPrompt(), Test.GENERAL_TTSCHUNK_LIST);
+        ChoiceSet choiceSet2 = new ChoiceSet(TestValues.GENERAL_STRING, layout, TestValues.GENERAL_INTEGER, TestValues.GENERAL_TTSCHUNK_LIST, TestValues.GENERAL_TTSCHUNK_LIST, TestValues.GENERAL_TTSCHUNK_LIST, TestValues.GENERAL_VRHELPITEM_LIST, TestValues.GENERAL_KEYBOARDPROPERTIES, choices, listener);
+        assertEquals(choiceSet2.getTitle(), TestValues.GENERAL_STRING);
+        assertEquals(choiceSet2.getInitialPrompt(), TestValues.GENERAL_TTSCHUNK_LIST);
+        assertEquals(choiceSet2.getHelpPrompt(), TestValues.GENERAL_TTSCHUNK_LIST);
+        assertEquals(choiceSet2.getTimeoutPrompt(), TestValues.GENERAL_TTSCHUNK_LIST);
         assertEquals(choiceSet2.getLayout(), layout);
-        assertEquals(choiceSet2.getTimeout(), Test.GENERAL_INTEGER);
+        assertEquals(choiceSet2.getTimeout(), TestValues.GENERAL_INTEGER);
         assertEquals(choiceSet2.getChoices(), choices);
         assertEquals(choiceSet2.getChoiceSetSelectionListener(), listener);
     }
 
     public void testCancelingChoiceSet() {
-        ChoiceSet choiceSet = new ChoiceSet(Test.GENERAL_STRING, choices, listener);
+        ChoiceSet choiceSet = new ChoiceSet(TestValues.GENERAL_STRING, choices, listener);
 
         choiceSet.canceledListener = new ChoiceSetCanceledListener() {
             @Override

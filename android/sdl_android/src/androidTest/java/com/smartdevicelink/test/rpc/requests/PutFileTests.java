@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.rpc.PutFile;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
@@ -26,13 +26,13 @@ public class PutFileTests extends BaseRpcTests {
 	protected RPCMessage createMessage() {
 		PutFile msg = new PutFile();
 
-		msg.setFileType(Test.GENERAL_FILETYPE);
-		msg.setPersistentFile(Test.GENERAL_BOOLEAN);
-		msg.setSystemFile(Test.GENERAL_BOOLEAN);
-		msg.setOffset(Test.GENERAL_LONG);
-		msg.setLength(Test.GENERAL_LONG);
-		msg.setCRC(Test.GENERAL_BYTE_ARRAY);
-		msg.setCRC(Test.GENERAL_LONG);
+		msg.setFileType(TestValues.GENERAL_FILETYPE);
+		msg.setPersistentFile(TestValues.GENERAL_BOOLEAN);
+		msg.setSystemFile(TestValues.GENERAL_BOOLEAN);
+		msg.setOffset(TestValues.GENERAL_LONG);
+		msg.setLength(TestValues.GENERAL_LONG);
+		msg.setCRC(TestValues.GENERAL_BYTE_ARRAY);
+		msg.setCRC(TestValues.GENERAL_LONG);
 
 		return msg;
 	}
@@ -52,14 +52,14 @@ public class PutFileTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(PutFile.KEY_FILE_TYPE, Test.GENERAL_FILETYPE);
-			result.put(PutFile.KEY_PERSISTENT_FILE, Test.GENERAL_BOOLEAN);
-			result.put(PutFile.KEY_SYSTEM_FILE, Test.GENERAL_BOOLEAN);
-			result.put(PutFile.KEY_OFFSET, Test.GENERAL_LONG);
-			result.put(PutFile.KEY_LENGTH, Test.GENERAL_LONG);
-			result.put(PutFile.KEY_CRC, Test.GENERAL_LONG);
+			result.put(PutFile.KEY_FILE_TYPE, TestValues.GENERAL_FILETYPE);
+			result.put(PutFile.KEY_PERSISTENT_FILE, TestValues.GENERAL_BOOLEAN);
+			result.put(PutFile.KEY_SYSTEM_FILE, TestValues.GENERAL_BOOLEAN);
+			result.put(PutFile.KEY_OFFSET, TestValues.GENERAL_LONG);
+			result.put(PutFile.KEY_LENGTH, TestValues.GENERAL_LONG);
+			result.put(PutFile.KEY_CRC, TestValues.GENERAL_LONG);
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 
 		return result;
@@ -78,24 +78,24 @@ public class PutFileTests extends BaseRpcTests {
 		Long     testCRC = ( (PutFile) msg ).getCRC();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_FILETYPE, testFileType);
-		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testPersistentFile);
-		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testSystemFile);
-		assertEquals(Test.MATCH, Test.GENERAL_LONG, testOffset);
-		assertEquals(Test.MATCH, Test.GENERAL_LONG, testLength);
-		assertEquals(Test.MATCH, Test.GENERAL_LONG, testCRC);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_FILETYPE, testFileType);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, testPersistentFile);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, testSystemFile);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_LONG, testOffset);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_LONG, testLength);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_LONG, testCRC);
 
 		// Invalid/Null Tests
 		PutFile msg = new PutFile();
 		assertNotNull("Null object creation failed.", msg);
 		testNullBase(msg);
 
-		assertNull(Test.NULL, msg.getFileType());
-		assertNull(Test.NULL, msg.getPersistentFile());
-		assertNull(Test.NULL, msg.getSystemFile());
-		assertNull(Test.NULL, msg.getOffset());
-		assertNull(Test.NULL, msg.getLength());
-		assertNull(Test.NULL, msg.getCRC());
+		assertNull(TestValues.NULL, msg.getFileType());
+		assertNull(TestValues.NULL, msg.getPersistentFile());
+		assertNull(TestValues.NULL, msg.getSystemFile());
+		assertNull(TestValues.NULL, msg.getOffset());
+		assertNull(TestValues.NULL, msg.getLength());
+		assertNull(TestValues.NULL, msg.getCRC());
 	}
 
 	/**
@@ -104,14 +104,14 @@ public class PutFileTests extends BaseRpcTests {
 	public void testByteArrayCheckSum () {
 		// Test Values
 		PutFile msgCRC = new PutFile();
-		msgCRC.setCRC(Test.GENERAL_BYTE_ARRAY);
+		msgCRC.setCRC(TestValues.GENERAL_BYTE_ARRAY);
 		Long testCRCByteArray = msgCRC.getCRC();
 
 		CRC32 crc = new CRC32();
-		crc.update(Test.GENERAL_BYTE_ARRAY);
+		crc.update(TestValues.GENERAL_BYTE_ARRAY);
 		Long crcValue = crc.getValue();
 
-		assertEquals(Test.MATCH, crcValue, testCRCByteArray);
+		assertEquals(TestValues.MATCH, crcValue, testCRCByteArray);
 	}
 
 
@@ -121,29 +121,29 @@ public class PutFileTests extends BaseRpcTests {
      */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			PutFile cmd = new PutFile(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, PutFile.KEY_PERSISTENT_FILE), cmd.getPersistentFile());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, PutFile.KEY_SYSTEM_FILE), cmd.getSystemFile());
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_FILE_TYPE), cmd.getFileType().toString());
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_SDL_FILE_NAME), cmd.getSdlFileName());
-			assertEquals(Test.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_OFFSET).longValue(), cmd.getOffset());
-			assertEquals(Test.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_LENGTH).longValue(), cmd.getLength());
-			assertEquals(Test.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_CRC).longValue(), cmd.getCRC());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, PutFile.KEY_PERSISTENT_FILE), cmd.getPersistentFile());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, PutFile.KEY_SYSTEM_FILE), cmd.getSystemFile());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_FILE_TYPE), cmd.getFileType().toString());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, PutFile.KEY_SDL_FILE_NAME), cmd.getSdlFileName());
+			assertEquals(TestValues.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_OFFSET).longValue(), cmd.getOffset());
+			assertEquals(TestValues.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_LENGTH).longValue(), cmd.getLength());
+			assertEquals(TestValues.MATCH, (Long) JsonUtils.readIntegerFromJsonObject(parameters, PutFile.KEY_CRC).longValue(), cmd.getCRC());
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}    	
     }
 }

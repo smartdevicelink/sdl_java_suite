@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.ListFilesResponse;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
@@ -26,8 +26,8 @@ public class ListFilesResponseTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         ListFilesResponse msg = new ListFilesResponse();
 
-        msg.setFilenames(Test.GENERAL_STRING_LIST);
-        msg.setSpaceAvailable(Test.GENERAL_INT);
+        msg.setFilenames(TestValues.GENERAL_STRING_LIST);
+        msg.setSpaceAvailable(TestValues.GENERAL_INT);
 
         return msg;
     }
@@ -47,10 +47,10 @@ public class ListFilesResponseTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(ListFilesResponse.KEY_FILENAMES, JsonUtils.createJsonArray(Test.GENERAL_STRING_LIST));
-            result.put(ListFilesResponse.KEY_SPACE_AVAILABLE, Test.GENERAL_INT);
+            result.put(ListFilesResponse.KEY_FILENAMES, JsonUtils.createJsonArray(TestValues.GENERAL_STRING_LIST));
+            result.put(ListFilesResponse.KEY_SPACE_AVAILABLE, TestValues.GENERAL_INT);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -65,17 +65,17 @@ public class ListFilesResponseTests extends BaseRpcTests{
         int spaceAvailable = ( (ListFilesResponse) msg ).getSpaceAvailable();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_STRING_LIST.size(), filenames.size());
-        assertTrue(Test.TRUE, Validator.validateStringList(Test.GENERAL_STRING_LIST, filenames));        
-        assertEquals(Test.MATCH, Test.GENERAL_INT, spaceAvailable);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING_LIST.size(), filenames.size());
+        assertTrue(TestValues.TRUE, Validator.validateStringList(TestValues.GENERAL_STRING_LIST, filenames));
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, spaceAvailable);
     
         // Invalid/Null Tests
         ListFilesResponse msg = new ListFilesResponse();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getFilenames());
-        assertNull(Test.NULL, msg.getSpaceAvailable());
+        assertNull(TestValues.NULL, msg.getFilenames());
+        assertNull(TestValues.NULL, msg.getSpaceAvailable());
     }
 
     /**
@@ -83,26 +83,26 @@ public class ListFilesResponseTests extends BaseRpcTests{
      */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			ListFilesResponse cmd = new ListFilesResponse(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 			
 			List<String> fileNamesList = JsonUtils.readStringListFromJsonObject(parameters, ListFilesResponse.KEY_FILENAMES);
 			List<String> testNamesList = cmd.getFilenames();
-			assertEquals(Test.MATCH, fileNamesList.size(), testNamesList.size());
-			assertTrue(Test.TRUE, Validator.validateStringList(fileNamesList, testNamesList));
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, ListFilesResponse.KEY_SPACE_AVAILABLE), cmd.getSpaceAvailable());
+			assertEquals(TestValues.MATCH, fileNamesList.size(), testNamesList.size());
+			assertTrue(TestValues.TRUE, Validator.validateStringList(fileNamesList, testNamesList));
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, ListFilesResponse.KEY_SPACE_AVAILABLE), cmd.getSpaceAvailable());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}    	

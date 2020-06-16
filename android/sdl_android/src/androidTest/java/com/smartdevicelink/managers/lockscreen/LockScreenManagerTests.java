@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -48,9 +48,9 @@ public class LockScreenManagerTests extends AndroidTestCase2 {
 		Context context =  getContext();
 		// create config
 		LockScreenConfig lockScreenConfig = new LockScreenConfig();
-		lockScreenConfig.setCustomView(Test.GENERAL_INT);
-		lockScreenConfig.setAppIcon(Test.GENERAL_INT);
-		lockScreenConfig.setBackgroundColor(Test.GENERAL_INT);
+		lockScreenConfig.setCustomView(TestValues.GENERAL_INT);
+		lockScreenConfig.setAppIcon(TestValues.GENERAL_INT);
+		lockScreenConfig.setBackgroundColor(TestValues.GENERAL_INT);
 		lockScreenConfig.showDeviceLogo(true);
 		lockScreenConfig.setEnabled(true);
 		lockScreenConfig.setDisplayMode(LockScreenConfig.DISPLAY_MODE_OPTIONAL_OR_REQUIRED);
@@ -64,9 +64,9 @@ public class LockScreenManagerTests extends AndroidTestCase2 {
 	}
 
 	public void testVariables() {
-		assertEquals(Test.GENERAL_INT, lockScreenManager.customView);
-		assertEquals(Test.GENERAL_INT, lockScreenManager.lockScreenIcon);
-		assertEquals(Test.GENERAL_INT, lockScreenManager.lockScreenColor);
+		assertEquals(TestValues.GENERAL_INT, lockScreenManager.customView);
+		assertEquals(TestValues.GENERAL_INT, lockScreenManager.lockScreenIcon);
+		assertEquals(TestValues.GENERAL_INT, lockScreenManager.lockScreenColor);
 		assertTrue(lockScreenManager.deviceLogoEnabled);
 		assertTrue(lockScreenManager.lockScreenEnabled);
 		assertNull(lockScreenManager.deviceLogo);

@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.notifications;
 
 import com.smartdevicelink.proxy.callbacks.InternalProxyMessage;
 import com.smartdevicelink.proxy.callbacks.OnError;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -20,18 +20,18 @@ public class OnErrorTests extends TestCase {
 	public void testValues () {		
 		// Valid Tests
 		OnError testOnError = new OnError();
-		assertEquals(Test.MATCH, InternalProxyMessage.OnProxyError, testOnError.getFunctionName());
+		assertEquals(TestValues.MATCH, InternalProxyMessage.OnProxyError, testOnError.getFunctionName());
 		
 		Exception testE = new Exception();
-		testOnError = new OnError(Test.GENERAL_STRING, testE);
-		assertEquals(Test.MATCH, InternalProxyMessage.OnProxyError, testOnError.getFunctionName());
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testOnError.getInfo());
-		assertEquals(Test.MATCH, testE, testOnError.getException());
+		testOnError = new OnError(TestValues.GENERAL_STRING, testE);
+		assertEquals(TestValues.MATCH, InternalProxyMessage.OnProxyError, testOnError.getFunctionName());
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testOnError.getInfo());
+		assertEquals(TestValues.MATCH, testE, testOnError.getException());
 		
 		// Invalid/Null Tests
 		testOnError = new OnError(null, null);
-		assertEquals(Test.MATCH, InternalProxyMessage.OnProxyError, testOnError.getFunctionName());
-		assertNull(Test.NULL, testOnError.getInfo());
-		assertNull(Test.NULL, testOnError.getException());		
+		assertEquals(TestValues.MATCH, InternalProxyMessage.OnProxyError, testOnError.getFunctionName());
+		assertNull(TestValues.NULL, testOnError.getInfo());
+		assertNull(TestValues.NULL, testOnError.getException());
 	}
 }

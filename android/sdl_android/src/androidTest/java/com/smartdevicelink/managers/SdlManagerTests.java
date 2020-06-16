@@ -20,11 +20,12 @@ import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.TCPTransportConfig;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -76,11 +77,11 @@ public class SdlManagerTests {
 
 		// Color Scheme
 		templateColorScheme = new TemplateColorScheme();
-		templateColorScheme.setBackgroundColor(Test.GENERAL_RGBCOLOR);
-		templateColorScheme.setPrimaryColor(Test.GENERAL_RGBCOLOR);
-		templateColorScheme.setSecondaryColor(Test.GENERAL_RGBCOLOR);
+		templateColorScheme.setBackgroundColor(TestValues.GENERAL_RGBCOLOR);
+		templateColorScheme.setPrimaryColor(TestValues.GENERAL_RGBCOLOR);
+		templateColorScheme.setSecondaryColor(TestValues.GENERAL_RGBCOLOR);
 
-		sdlManager = createSampleManager("heyApp", "123456", Test.GENERAL_LOCKSCREENCONFIG);
+		sdlManager = createSampleManager("heyApp", "123456", TestValues.GENERAL_LOCKSCREENCONFIG);
 	}
 
 	// SETUP / HELPERS
@@ -127,11 +128,11 @@ public class SdlManagerTests {
 		builder.setLanguage(Language.EN_US);
 		builder.setDayColorScheme(templateColorScheme);
 		builder.setNightColorScheme(templateColorScheme);
-		builder.setVrSynonyms(Test.GENERAL_VECTOR_STRING);
-		builder.setTtsName(Test.GENERAL_VECTOR_TTS_CHUNKS);
+		builder.setVrSynonyms(TestValues.GENERAL_VECTOR_STRING);
+		builder.setTtsName(TestValues.GENERAL_VECTOR_TTS_CHUNKS);
 		builder.setLockScreenConfig(lockScreenConfig);
-		builder.setMinimumProtocolVersion(Test.GENERAL_VERSION);
-		builder.setMinimumRPCVersion(Test.GENERAL_VERSION);
+		builder.setMinimumProtocolVersion(TestValues.GENERAL_VERSION);
+		builder.setMinimumRPCVersion(TestValues.GENERAL_VERSION);
 		builder.setContext(mTestContext);
 		manager = builder.build();
 
@@ -144,30 +145,30 @@ public class SdlManagerTests {
 
 	// TESTS
 
-	@org.junit.Test
+	@Test
 	public void testNotNull(){
-		assertNotNull(createSampleManager("app","123456", Test.GENERAL_LOCKSCREENCONFIG));
+		assertNotNull(createSampleManager("app","123456", TestValues.GENERAL_LOCKSCREENCONFIG));
 	}
 
-	@org.junit.Test
+	@Test
 	public void testMissingAppName() {
 		try {
-			createSampleManager(null,"123456", Test.GENERAL_LOCKSCREENCONFIG);
+			createSampleManager(null,"123456", TestValues.GENERAL_LOCKSCREENCONFIG);
 		} catch (IllegalArgumentException ex) {
 			assertSame(ex.getMessage(), "You must specify an app name by calling setAppName");
 		}
 	}
 
-	@org.junit.Test
+	@Test
 	public void testMissingAppId() {
 		try {
-			createSampleManager("app",null, Test.GENERAL_LOCKSCREENCONFIG);
+			createSampleManager("app",null, TestValues.GENERAL_LOCKSCREENCONFIG);
 		} catch (IllegalArgumentException ex) {
 			assertSame(ex.getMessage(), "You must specify an app ID by calling setAppId");
 		}
 	}
 
-	@org.junit.Test
+	@Test
 	public void testManagerSetters() {
 		assertEquals("123456", sdlManager.getAppId());
 		assertEquals("heyApp", sdlManager.getAppName());
@@ -178,14 +179,14 @@ public class SdlManagerTests {
 		assertEquals(transport, sdlManager.getTransport());
 		assertEquals(templateColorScheme, sdlManager.getDayColorScheme());
 		assertEquals(templateColorScheme, sdlManager.getNightColorScheme());
-		assertEquals(Test.GENERAL_VECTOR_STRING, sdlManager.getVrSynonyms());
-		assertEquals(Test.GENERAL_VECTOR_TTS_CHUNKS, sdlManager.getTtsChunks());
-		assertEquals(Test.GENERAL_LOCKSCREENCONFIG, sdlManager.getLockScreenConfig());
-		assertEquals(Test.GENERAL_VERSION, sdlManager.getMinimumProtocolVersion());
-		assertEquals(Test.GENERAL_VERSION, sdlManager.getMinimumRPCVersion());
+		assertEquals(TestValues.GENERAL_VECTOR_STRING, sdlManager.getVrSynonyms());
+		assertEquals(TestValues.GENERAL_VECTOR_TTS_CHUNKS, sdlManager.getTtsChunks());
+		assertEquals(TestValues.GENERAL_LOCKSCREENCONFIG, sdlManager.getLockScreenConfig());
+		assertEquals(TestValues.GENERAL_VERSION, sdlManager.getMinimumProtocolVersion());
+		assertEquals(TestValues.GENERAL_VERSION, sdlManager.getMinimumRPCVersion());
 	}
 
-	@org.junit.Test
+	@Test
 	public void testStartingManager(){
 		listenerCalledCounter = 0;
 		
@@ -208,7 +209,7 @@ public class SdlManagerTests {
 		assertEquals("Listener was not called or called more/less frequently than expected", 1, listenerCalledCounter);
 	}
 
-	@org.junit.Test
+	@Test
 	public void testManagerStates() {
 		SdlManager sdlManager = createSampleManager("test", "00000", new LockScreenConfig());
 		sdlManager.initialize();
@@ -319,7 +320,7 @@ public class SdlManagerTests {
 		assertEquals(BaseSubManager.SHUTDOWN, sdlManager.getState());
 	}
 
-	@org.junit.Test
+	@Test
 	public void testSendRPC(){
 		listenerCalledCounter = 0;
 
@@ -355,12 +356,12 @@ public class SdlManagerTests {
 		assertEquals("Listener was not called or called more/less frequently than expected", 1, listenerCalledCounter);
 	}
 
-	@org.junit.Test
+	@Test
 	public void testSendRPCs(){
 		testSendMultipleRPCs(false);
 	}
 
-	@org.junit.Test
+	@Test
 	public void testSendSequentialRPCs(){
 		testSendMultipleRPCs(true);
 	}

@@ -47,7 +47,7 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.ImageFieldName;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,7 +69,7 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 		super.setUp();
 
 		ChoiceCell cell1 = new ChoiceCell("cell 1");
-		ChoiceCell cell2 = new ChoiceCell("cell 2", null, Test.GENERAL_ARTWORK);
+		ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
 		HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
 		cellsToPreload.add(cell1);
 		cellsToPreload.add(cell2);
@@ -102,7 +102,7 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 	public void setUpNullWindowCapability() {
 
 		ChoiceCell cell1 = new ChoiceCell("cell 1");
-		ChoiceCell cell2 = new ChoiceCell("cell 2", null, Test.GENERAL_ARTWORK);
+		ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
 		HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
 		cellsToPreload.add(cell1);
 		cellsToPreload.add(cell2);
@@ -119,7 +119,7 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 	public void setUpEmptyWindowCapability() {
 
 		ChoiceCell cell1 = new ChoiceCell("cell 1");
-		ChoiceCell cell2 = new ChoiceCell("cell 2", null, Test.GENERAL_ARTWORK);
+		ChoiceCell cell2 = new ChoiceCell("cell 2", null, TestValues.GENERAL_ARTWORK);
 		HashSet<ChoiceCell> cellsToPreload = new HashSet<>();
 		cellsToPreload.add(cell1);
 		cellsToPreload.add(cell2);
@@ -146,7 +146,7 @@ public class PreloadChoicesOperationTests extends AndroidTestCase2 {
 	}
 
 	public void testArtworkNeedsUpload(){
-		boolean test = preloadChoicesOperation.artworkNeedsUpload(Test.GENERAL_ARTWORK);
+		boolean test = preloadChoicesOperation.artworkNeedsUpload(TestValues.GENERAL_ARTWORK);
 		assertTrue(test);
 	}
 

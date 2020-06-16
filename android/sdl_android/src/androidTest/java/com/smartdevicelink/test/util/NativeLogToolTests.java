@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.util;
 
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.util.NativeLogTool;
 
 import junit.framework.TestCase;
@@ -45,14 +45,14 @@ public class NativeLogToolTests extends TestCase {
 			List<NativeLogTool.LogTarget> actualEnumList = Arrays.asList(NativeLogTool.LogTarget.values());
 			
 			// Valid Tests
-			assertEquals(Test.MATCH, expectedInfoEnum,    actualInfoEnum);
-			assertEquals(Test.MATCH, expectedErrorEnum,   actualErrorEnum);
-			assertEquals(Test.MATCH, expectedWarningEnum, actualWarningEnum);
+			assertEquals(TestValues.MATCH, expectedInfoEnum,    actualInfoEnum);
+			assertEquals(TestValues.MATCH, expectedErrorEnum,   actualErrorEnum);
+			assertEquals(TestValues.MATCH, expectedWarningEnum, actualWarningEnum);
 			assertTrue("Contents should match.", expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));
 			
 			// Invalid/Null Tests
-			assertNull(Test.NULL, actualInvalidEnum);
-			assertNull(Test.NULL, actualNullEnum);
+			assertNull(TestValues.NULL, actualInvalidEnum);
+			assertNull(TestValues.NULL, actualNullEnum);
 		
 		} catch (NullPointerException e) {
 			fail("Could not retrieve value for null string, should return null.");

@@ -5,7 +5,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnTBTClientState;
 import com.smartdevicelink.proxy.rpc.enums.TBTState;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +20,7 @@ public class OnTBTClientStateTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         OnTBTClientState msg = new OnTBTClientState();
 
-        msg.setState(Test.GENERAL_TBTSTATE);
+        msg.setState(TestValues.GENERAL_TBTSTATE);
 
         return msg;
     }
@@ -40,9 +40,9 @@ public class OnTBTClientStateTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnTBTClientState.KEY_STATE, Test.GENERAL_TBTSTATE);
+            result.put(OnTBTClientState.KEY_STATE, TestValues.GENERAL_TBTSTATE);
         } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -56,13 +56,13 @@ public class OnTBTClientStateTests extends BaseRpcTests{
         TBTState data = ( (OnTBTClientState) msg ).getState();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_TBTSTATE, data);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_TBTSTATE, data);
     
         // Invalid/Null Tests
         OnTBTClientState msg = new OnTBTClientState();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getState());
+        assertNull(TestValues.NULL, msg.getState());
     }
 }

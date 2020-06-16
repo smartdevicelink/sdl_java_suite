@@ -4,7 +4,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.GetCloudAppProperties;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +15,7 @@ public class GetCloudAppPropertiesTests extends BaseRpcTests {
 	protected RPCMessage createMessage(){
 		GetCloudAppProperties msg = new GetCloudAppProperties();
 
-		msg.setAppID(Test.GENERAL_STRING);
+		msg.setAppID(TestValues.GENERAL_STRING);
 
 		return msg;
 	}
@@ -35,9 +35,9 @@ public class GetCloudAppPropertiesTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try{
-			result.put(GetCloudAppProperties.KEY_APP_ID, Test.GENERAL_STRING);
+			result.put(GetCloudAppProperties.KEY_APP_ID, TestValues.GENERAL_STRING);
 		}catch(JSONException e){
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 
 		return result;

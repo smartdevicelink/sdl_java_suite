@@ -33,7 +33,7 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 public class VoiceCommandTests extends AndroidTestCase2 {
 
@@ -55,9 +55,9 @@ public class VoiceCommandTests extends AndroidTestCase2 {
 	}
 
 	public void testSettersAndGetters(){
-		VoiceCommand voiceCommand = new VoiceCommand(Test.GENERAL_STRING_LIST, voiceCommandSelectionListener);
+		VoiceCommand voiceCommand = new VoiceCommand(TestValues.GENERAL_STRING_LIST, voiceCommandSelectionListener);
 
-		assertEquals(voiceCommand.getVoiceCommands(), Test.GENERAL_STRING_LIST);
+		assertEquals(voiceCommand.getVoiceCommands(), TestValues.GENERAL_STRING_LIST);
 		assertEquals(voiceCommand.getVoiceCommandSelectionListener(), voiceCommandSelectionListener);
 	}
 

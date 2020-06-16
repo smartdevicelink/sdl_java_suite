@@ -19,7 +19,6 @@ import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.OnTouchEvent;
-import com.smartdevicelink.proxy.rpc.RegisterAppInterface;
 import com.smartdevicelink.proxy.rpc.RegisterAppInterfaceResponse;
 import com.smartdevicelink.proxy.rpc.TouchCoord;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
@@ -31,7 +30,7 @@ import com.smartdevicelink.proxy.rpc.enums.VideoStreamingState;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.streaming.video.SdlRemoteDisplay;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.util.Version;
 
 import org.mockito.invocation.InvocationOnMock;
@@ -176,7 +175,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 			public Void answer(InvocationOnMock invocation) {
 				Object[] args = invocation.getArguments();
 				OnSystemCapabilityListener systemCapabilityListener = (OnSystemCapabilityListener) args[1];
-				systemCapabilityListener.onCapabilityRetrieved(Test.GENERAL_VIDEOSTREAMINGCAPABILITY);
+				systemCapabilityListener.onCapabilityRetrieved(TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY);
 				return null;
 			}
 		};
@@ -249,7 +248,7 @@ public class VideoStreamManagerTests extends AndroidTestCase2 {
 			public void sendFrame(ByteBuffer data, long presentationTimeUs) {}
 		});
 
-		when(internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(Test.GENERAL_VIDEOSTREAMINGCAPABILITY);
+		when(internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING)).thenReturn(TestValues.GENERAL_VIDEOSTREAMINGCAPABILITY);
 
 		final VideoStreamManager videoStreamManager = new VideoStreamManager(internalInterface);
 		videoStreamManager.start(new CompletionListener() {

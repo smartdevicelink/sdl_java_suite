@@ -8,7 +8,7 @@ import com.smartdevicelink.proxy.rpc.Turn;
 import com.smartdevicelink.proxy.rpc.UpdateTurnList;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
@@ -30,8 +30,8 @@ public class UpdateTurnListTests extends BaseRpcTests {
     protected RPCMessage createMessage() {
     	UpdateTurnList msg = new UpdateTurnList();
     	
-    	msg.setTurnList(Test.GENERAL_TURN_LIST);
-    	msg.setSoftButtons(Test.GENERAL_SOFTBUTTON_LIST);
+    	msg.setTurnList(TestValues.GENERAL_TURN_LIST);
+    	msg.setSoftButtons(TestValues.GENERAL_SOFTBUTTON_LIST);
     	
     	return msg;
     }
@@ -51,10 +51,10 @@ public class UpdateTurnListTests extends BaseRpcTests {
         JSONObject result = new JSONObject();
         
         try{			
-			result.put(UpdateTurnList.KEY_SOFT_BUTTONS, Test.JSON_SOFTBUTTONS);
-			result.put(UpdateTurnList.KEY_TURN_LIST, Test.JSON_TURNS);			
+			result.put(UpdateTurnList.KEY_SOFT_BUTTONS, TestValues.JSON_SOFTBUTTONS);
+			result.put(UpdateTurnList.KEY_TURN_LIST, TestValues.JSON_TURNS);
         } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -69,19 +69,19 @@ public class UpdateTurnListTests extends BaseRpcTests {
     	List<Turn>       testTurnList       = ( (UpdateTurnList) msg ).getTurnList();
 		
     	// Valid Tests
-		assertNotNull(Test.NOT_NULL, testSoftButtonList);
-		assertNotNull(Test.NOT_NULL, testTurnList);
+		assertNotNull(TestValues.NOT_NULL, testSoftButtonList);
+		assertNotNull(TestValues.NOT_NULL, testTurnList);
 		
-		assertTrue(Test.TRUE, Validator.validateSoftButtons(Test.GENERAL_SOFTBUTTON_LIST, testSoftButtonList));
-		assertTrue(Test.TRUE, Validator.validateTurnList(Test.GENERAL_TURN_LIST, testTurnList));
+		assertTrue(TestValues.TRUE, Validator.validateSoftButtons(TestValues.GENERAL_SOFTBUTTON_LIST, testSoftButtonList));
+		assertTrue(TestValues.TRUE, Validator.validateTurnList(TestValues.GENERAL_TURN_LIST, testTurnList));
 	
 		// Invalid/Null Tests
 		UpdateTurnList msg = new UpdateTurnList();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getTurnList());
-        assertNull(Test.NULL, msg.getSoftButtons());    
+        assertNull(TestValues.NULL, msg.getTurnList());
+        assertNull(TestValues.NULL, msg.getSoftButtons());
     }
     
     /**
@@ -89,17 +89,17 @@ public class UpdateTurnListTests extends BaseRpcTests {
      */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			UpdateTurnList cmd = new UpdateTurnList(hash);
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 			JSONArray softButtonArray = JsonUtils.readJsonArrayFromJsonObject(parameters, UpdateTurnList.KEY_SOFT_BUTTONS);
@@ -108,7 +108,7 @@ public class UpdateTurnListTests extends BaseRpcTests {
 				SoftButton chunk = new SoftButton(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)softButtonArray.get(index)) );
 				softButtonList.add(chunk);
 			}
-			assertTrue(Test.TRUE,  Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
+			assertTrue(TestValues.TRUE,  Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
 			
 			JSONArray turnArray = JsonUtils.readJsonArrayFromJsonObject(parameters, UpdateTurnList.KEY_TURN_LIST);
 			List<Turn> turnList = new ArrayList<Turn>();
@@ -117,9 +117,9 @@ public class UpdateTurnListTests extends BaseRpcTests {
 				if (chunk != null)
 					turnList.add(chunk);
 			}
-			assertTrue(Test.TRUE,  Validator.validateTurnList(turnList, cmd.getTurnList()));
+			assertTrue(TestValues.TRUE,  Validator.validateTurnList(turnList, cmd.getTurnList()));
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
     }
 }

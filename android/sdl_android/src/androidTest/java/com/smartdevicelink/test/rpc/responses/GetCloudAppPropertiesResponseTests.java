@@ -4,7 +4,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.GetCloudAppPropertiesResponse;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONObject;
 
@@ -35,7 +35,7 @@ public class GetCloudAppPropertiesResponseTests extends BaseRpcTests {
 	public void testRpcValues () {
 		// Invalid/Null Tests
 		GetCloudAppPropertiesResponse msg = new GetCloudAppPropertiesResponse();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 		testNullBase(msg);
 	}
 

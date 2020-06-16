@@ -4,7 +4,7 @@ import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.TPMS;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -25,9 +25,9 @@ public class SingleTireStatusTest extends TestCase {
 	public void setUp() {
 		msg = new SingleTireStatus();
 		
-		msg.setStatus(Test.GENERAL_COMPONENTVOLUMESTATUS);
-		msg.setTPMS(Test.GENERAL_TPMS);
-		msg.setPressure(Test.GENERAL_FLOAT);
+		msg.setStatus(TestValues.GENERAL_COMPONENTVOLUMESTATUS);
+		msg.setTPMS(TestValues.GENERAL_TPMS);
+		msg.setPressure(TestValues.GENERAL_FLOAT);
 	}
 
     /**
@@ -40,37 +40,37 @@ public class SingleTireStatusTest extends TestCase {
 		Float pressure = msg.getPressure();
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_COMPONENTVOLUMESTATUS, status);
-		assertEquals(Test.MATCH, Test.GENERAL_TPMS, tpms);
-		assertEquals(Test.MATCH, Test.GENERAL_FLOAT, pressure);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_COMPONENTVOLUMESTATUS, status);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_TPMS, tpms);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, pressure);
 		
 		// Invalid/Null Tests
 		SingleTireStatus msg = new SingleTireStatus();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getStatus());
-		assertNull(Test.NULL, msg.getTPMS());
-		assertNull(Test.NULL, msg.getPressure());
+		assertNull(TestValues.NULL, msg.getStatus());
+		assertNull(TestValues.NULL, msg.getTPMS());
+		assertNull(TestValues.NULL, msg.getPressure());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(SingleTireStatus.KEY_STATUS, Test.GENERAL_COMPONENTVOLUMESTATUS);
-			reference.put(SingleTireStatus.KEY_TPMS, Test.GENERAL_TPMS);
-			reference.put(SingleTireStatus.KEY_PRESSURE, Test.GENERAL_FLOAT);
+			reference.put(SingleTireStatus.KEY_STATUS, TestValues.GENERAL_COMPONENTVOLUMESTATUS);
+			reference.put(SingleTireStatus.KEY_TPMS, TestValues.GENERAL_TPMS);
+			reference.put(SingleTireStatus.KEY_PRESSURE, TestValues.GENERAL_FLOAT);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

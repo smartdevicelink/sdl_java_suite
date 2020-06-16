@@ -4,7 +4,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnHashChange;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +43,7 @@ public class OnHashChangeTests extends BaseRpcTests{
         try{
             result.put(OnHashChange.KEY_HASH_ID, HASH_ID);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -57,13 +57,13 @@ public class OnHashChangeTests extends BaseRpcTests{
         String hashId = ( (OnHashChange) msg ).getHashID();
         
         // Valid Tests
-        assertEquals(Test.MATCH, HASH_ID, hashId);
+        assertEquals(TestValues.MATCH, HASH_ID, hashId);
    
         // Invalid/Null Tests
         OnHashChange msg = new OnHashChange();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getHashID());
+        assertNull(TestValues.NULL, msg.getHashID());
     }
 }

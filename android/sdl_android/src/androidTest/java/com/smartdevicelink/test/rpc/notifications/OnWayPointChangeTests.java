@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.rpc.GetWayPointsResponse;
 import com.smartdevicelink.proxy.rpc.LocationDetails;
 import com.smartdevicelink.proxy.rpc.OnWayPointChange;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,8 +26,8 @@ public class OnWayPointChangeTests extends BaseRpcTests {
         OnWayPointChange msg = new OnWayPointChange();
 
         List<LocationDetails> list = new ArrayList<>();
-        list.add(Test.GENERAL_LOCATIONDETAILS);
-        list.add(Test.GENERAL_LOCATIONDETAILS);
+        list.add(TestValues.GENERAL_LOCATIONDETAILS);
+        list.add(TestValues.GENERAL_LOCATIONDETAILS);
 
         msg.setWayPoints(list);
 
@@ -50,8 +50,8 @@ public class OnWayPointChangeTests extends BaseRpcTests {
 
         JSONArray jsonArray = new JSONArray();
         try {
-            jsonArray.put(JsonRPCMarshaller.serializeHashtable(Test.GENERAL_LOCATIONDETAILS.getStore()));
-            jsonArray.put(JsonRPCMarshaller.serializeHashtable(Test.GENERAL_LOCATIONDETAILS.getStore()));
+            jsonArray.put(JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_LOCATIONDETAILS.getStore()));
+            jsonArray.put(JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_LOCATIONDETAILS.getStore()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -73,14 +73,14 @@ public class OnWayPointChangeTests extends BaseRpcTests {
         List<LocationDetails> list = ((OnWayPointChange) msg).getWayPoints();
 
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_LOCATIONDETAILS, list.get(0));
-        assertEquals(Test.MATCH, Test.GENERAL_LOCATIONDETAILS, list.get(1));
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_LOCATIONDETAILS, list.get(0));
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_LOCATIONDETAILS, list.get(1));
 
         // Invalid/Null Tests
         OnWayPointChange msg = new OnWayPointChange();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getWayPoints());
+        assertNull(TestValues.NULL, msg.getWayPoints());
     }
 }

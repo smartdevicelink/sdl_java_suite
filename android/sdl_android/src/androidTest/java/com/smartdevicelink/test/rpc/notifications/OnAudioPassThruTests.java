@@ -4,7 +4,7 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnAudioPassThru;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONObject;
 
@@ -40,7 +40,7 @@ public class OnAudioPassThruTests extends BaseRpcTests{
     public void testRpcValues () { 
     	// Invalid/Null Tests
         OnAudioPassThru msg = new OnAudioPassThru();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
     }
 }

@@ -9,7 +9,7 @@ import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import java.util.Arrays;
 import java.util.List;
@@ -123,18 +123,18 @@ public class ScreenManagerTests extends AndroidTestCase2 {
 
 	public void testSetMenuManagerFields(){
 		screenManager.setDynamicMenuUpdatesMode(DynamicMenuUpdatesMode.FORCE_ON);
-		screenManager.setMenu(Test.GENERAL_MENUCELL_LIST);
-		screenManager.setMenuConfiguration(Test.GENERAL_MENU_CONFIGURATION);
+		screenManager.setMenu(TestValues.GENERAL_MENUCELL_LIST);
+		screenManager.setMenuConfiguration(TestValues.GENERAL_MENU_CONFIGURATION);
 
-		assertEquals(screenManager.getMenu(), Test.GENERAL_MENUCELL_LIST);
+		assertEquals(screenManager.getMenu(), TestValues.GENERAL_MENUCELL_LIST);
 		assertEquals(screenManager.getDynamicMenuUpdatesMode(), DynamicMenuUpdatesMode.FORCE_ON);
 		// Should not set because of improper RAI response and improper HMI states
 		assertNull(screenManager.getMenuConfiguration());
 	}
 
 	public void testSetVoiceCommands(){
-		screenManager.setVoiceCommands(Test.GENERAL_VOICE_COMMAND_LIST);
-		assertEquals(screenManager.getVoiceCommands(), Test.GENERAL_VOICE_COMMAND_LIST);
+		screenManager.setVoiceCommands(TestValues.GENERAL_VOICE_COMMAND_LIST);
+		assertEquals(screenManager.getVoiceCommands(), TestValues.GENERAL_VOICE_COMMAND_LIST);
 	}
 
 	public void testSetSoftButtonObjects(){

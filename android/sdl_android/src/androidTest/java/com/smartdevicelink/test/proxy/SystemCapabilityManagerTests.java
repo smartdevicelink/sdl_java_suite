@@ -57,13 +57,14 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCRequestListener;
 import com.smartdevicelink.streaming.audio.AudioStreamingCodec;
 import com.smartdevicelink.streaming.audio.AudioStreamingParams;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.utl.AppServiceFactory;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.Version;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -98,9 +99,9 @@ public class SystemCapabilityManagerTests {
 
 		systemCapability = new SystemCapability(SystemCapabilityType.VIDEO_STREAMING);
 		videoStreamingCapability = new VideoStreamingCapability();
-		videoStreamingCapability.setMaxBitrate(Test.GENERAL_INT);
-		videoStreamingCapability.setPreferredResolution(Test.GENERAL_IMAGERESOLUTION);
-		videoStreamingCapability.setSupportedFormats(Test.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+		videoStreamingCapability.setMaxBitrate(TestValues.GENERAL_INT);
+		videoStreamingCapability.setPreferredResolution(TestValues.GENERAL_IMAGERESOLUTION);
+		videoStreamingCapability.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
 		systemCapability.setCapabilityForType(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
 	}
 
@@ -113,15 +114,15 @@ public class SystemCapabilityManagerTests {
 
 		RegisterAppInterfaceResponse raiResponse = new RegisterAppInterfaceResponse();
 
-		raiResponse.setHmiCapabilities(Test.GENERAL_HMICAPABILITIES);
-		raiResponse.setDisplayCapabilities(Test.GENERAL_DISPLAYCAPABILITIES);
-		raiResponse.setAudioPassThruCapabilities(Test.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST);
-		raiResponse.setButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES_LIST);
-		raiResponse.setHmiZoneCapabilities(Test.GENERAL_HMIZONECAPABILITIES_LIST);
-		raiResponse.setPresetBankCapabilities(Test.GENERAL_PRESETBANKCAPABILITIES);
-		raiResponse.setSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
-		raiResponse.setSpeechCapabilities(Test.GENERAL_SPEECHCAPABILITIES_LIST);
-		raiResponse.setPrerecordedSpeech(Test.GENERAL_PRERECORDEDSPEECH_LIST);
+		raiResponse.setHmiCapabilities(TestValues.GENERAL_HMICAPABILITIES);
+		raiResponse.setDisplayCapabilities(TestValues.GENERAL_DISPLAYCAPABILITIES);
+		raiResponse.setAudioPassThruCapabilities(TestValues.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST);
+		raiResponse.setButtonCapabilities(TestValues.GENERAL_BUTTONCAPABILITIES_LIST);
+		raiResponse.setHmiZoneCapabilities(TestValues.GENERAL_HMIZONECAPABILITIES_LIST);
+		raiResponse.setPresetBankCapabilities(TestValues.GENERAL_PRESETBANKCAPABILITIES);
+		raiResponse.setSoftButtonCapabilities(TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
+		raiResponse.setSpeechCapabilities(TestValues.GENERAL_SPEECHCAPABILITIES_LIST);
+		raiResponse.setPrerecordedSpeech(TestValues.GENERAL_PRERECORDEDSPEECH_LIST);
 		raiResponse.setSuccess(true);
 
 		systemCapabilityManager.parseRAIResponse(raiResponse);
@@ -176,47 +177,47 @@ public class SystemCapabilityManagerTests {
 		return convertedCapabilities;
 	}
 
-	@org.junit.Test
+	@Test
 	public void testParseRAI() {
 		systemCapabilityManager = createSampleManager();
 
-		List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(Test.GENERAL_DISPLAYCAPABILITIES, Test.GENERAL_BUTTONCAPABILITIES_LIST, Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
-		assertTrue(Test.TRUE,
+		List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(TestValues.GENERAL_DISPLAYCAPABILITIES, TestValues.GENERAL_BUTTONCAPABILITIES_LIST, TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
+		assertTrue(TestValues.TRUE,
 				Validator.validateDisplayCapabilityList(displayCapabilityList, (List<DisplayCapability>) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS)));
-		assertTrue(Test.TRUE,
-				Validator.validateHMICapabilities(Test.GENERAL_HMICAPABILITIES, (HMICapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.HMI)));
-		assertTrue(Test.TRUE,
-				Validator.validateDisplayCapabilities(Test.GENERAL_DISPLAYCAPABILITIES, (DisplayCapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY)));
-		assertTrue(Test.TRUE,
-				Validator.validateAudioPassThruCapabilities(Test.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST, (List<AudioPassThruCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.AUDIO_PASSTHROUGH)));
-		assertTrue(Test.TRUE,
-				Validator.validateButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES_LIST, (List<ButtonCapabilities> )systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON)));
-		assertTrue(Test.TRUE,
-				Validator.validateHMIZoneCapabilities(Test.GENERAL_HMIZONECAPABILITIES_LIST, (List<HmiZoneCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.HMI_ZONE)));
-		assertTrue(Test.TRUE,
-				Validator.validatePresetBankCapabilities(Test.GENERAL_PRESETBANKCAPABILITIES, (PresetBankCapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.PRESET_BANK)));
-		assertTrue(Test.TRUE,
-				Validator.validateSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST, (List<SoftButtonCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON)));
-		assertTrue(Test.TRUE,
-				Validator.validateSpeechCapabilities(Test.GENERAL_SPEECHCAPABILITIES_LIST, (List<SpeechCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.SPEECH)));
-		assertTrue(Test.TRUE,
-				Validator.validatePreRecordedSpeechCapabilities(Test.GENERAL_PRERECORDEDSPEECH_LIST, (List<PrerecordedSpeech>) systemCapabilityManager.getCapability(SystemCapabilityType.PRERECORDED_SPEECH)));
+		assertTrue(TestValues.TRUE,
+				Validator.validateHMICapabilities(TestValues.GENERAL_HMICAPABILITIES, (HMICapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.HMI)));
+		assertTrue(TestValues.TRUE,
+				Validator.validateDisplayCapabilities(TestValues.GENERAL_DISPLAYCAPABILITIES, (DisplayCapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY)));
+		assertTrue(TestValues.TRUE,
+				Validator.validateAudioPassThruCapabilities(TestValues.GENERAL_AUDIOPASSTHRUCAPABILITIES_LIST, (List<AudioPassThruCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.AUDIO_PASSTHROUGH)));
+		assertTrue(TestValues.TRUE,
+				Validator.validateButtonCapabilities(TestValues.GENERAL_BUTTONCAPABILITIES_LIST, (List<ButtonCapabilities> )systemCapabilityManager.getCapability(SystemCapabilityType.BUTTON)));
+		assertTrue(TestValues.TRUE,
+				Validator.validateHMIZoneCapabilities(TestValues.GENERAL_HMIZONECAPABILITIES_LIST, (List<HmiZoneCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.HMI_ZONE)));
+		assertTrue(TestValues.TRUE,
+				Validator.validatePresetBankCapabilities(TestValues.GENERAL_PRESETBANKCAPABILITIES, (PresetBankCapabilities) systemCapabilityManager.getCapability(SystemCapabilityType.PRESET_BANK)));
+		assertTrue(TestValues.TRUE,
+				Validator.validateSoftButtonCapabilities(TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST, (List<SoftButtonCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON)));
+		assertTrue(TestValues.TRUE,
+				Validator.validateSpeechCapabilities(TestValues.GENERAL_SPEECHCAPABILITIES_LIST, (List<SpeechCapabilities>) systemCapabilityManager.getCapability(SystemCapabilityType.SPEECH)));
+		assertTrue(TestValues.TRUE,
+				Validator.validatePreRecordedSpeechCapabilities(TestValues.GENERAL_PRERECORDEDSPEECH_LIST, (List<PrerecordedSpeech>) systemCapabilityManager.getCapability(SystemCapabilityType.PRERECORDED_SPEECH)));
 
 	}
 
-	@org.junit.Test
+	@Test
 	public void testNullDisplayCapabilitiesEnablesAllTextAndImageFields() {
-		List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(null, Test.GENERAL_BUTTONCAPABILITIES_LIST, Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
+		List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(null, TestValues.GENERAL_BUTTONCAPABILITIES_LIST, TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
 		assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getTextFields().size(), 29);
 		assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getImageFields().size(), 14);
 	}
 
-	@org.junit.Test
+	@Test
 	public void testGetVSCapability(){
 		VideoStreamingCapability vsCapability = new VideoStreamingCapability();
-		vsCapability.setMaxBitrate(Test.GENERAL_INT);
-		vsCapability.setPreferredResolution(Test.GENERAL_IMAGERESOLUTION);
-		vsCapability.setSupportedFormats(Test.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
+		vsCapability.setMaxBitrate(TestValues.GENERAL_INT);
+		vsCapability.setPreferredResolution(TestValues.GENERAL_IMAGERESOLUTION);
+		vsCapability.setSupportedFormats(TestValues.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
 
 		SystemCapability cap = new SystemCapability();
 		cap.setSystemCapabilityType(SystemCapabilityType.VIDEO_STREAMING);
@@ -245,7 +246,7 @@ public class SystemCapabilityManagerTests {
 		systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
 			@Override
 			public void onCapabilityRetrieved(Object capability) {
-				assertTrue(Test.TRUE,
+				assertTrue(TestValues.TRUE,
 						Validator.validateVideoStreamingCapability(
 								(VideoStreamingCapability) referenceCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING),
 								(VideoStreamingCapability) capability));
@@ -296,7 +297,7 @@ public class SystemCapabilityManagerTests {
 		return onSendGetSystemCapabilityAnswer;
 	}
 
-	@org.junit.Test
+	@Test
 	public void testGetCapability() {
 		ISdl internalInterface;
 		SystemCapabilityManager scm;
@@ -325,7 +326,7 @@ public class SystemCapabilityManagerTests {
 		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
 		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
 		retrievedCapability =  (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, true);
-		assertTrue(Test.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
+		assertTrue(TestValues.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
 		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
 		verify(onSystemCapabilityListener, times(1)).onCapabilityRetrieved(any(Object.class));
 
@@ -338,7 +339,7 @@ public class SystemCapabilityManagerTests {
 		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
 		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
 		retrievedCapability =  (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, true);
-		assertTrue(Test.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
+		assertTrue(TestValues.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
 		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
 
 
@@ -350,11 +351,11 @@ public class SystemCapabilityManagerTests {
 		doAnswer(createOnSendGetSystemCapabilityAnswer(true, null)).when(internalInterface).sendRPC(any(GetSystemCapability.class));
 		scm.setCapability(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
 		retrievedCapability =  (VideoStreamingCapability) scm.getCapability(SystemCapabilityType.VIDEO_STREAMING, onSystemCapabilityListener, false);
-		assertTrue(Test.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
+		assertTrue(TestValues.TRUE, Validator.validateVideoStreamingCapability((VideoStreamingCapability) systemCapability.getCapabilityForType(SystemCapabilityType.VIDEO_STREAMING), retrievedCapability));
 		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
 	}
 
-	@org.junit.Test
+	@Test
 	public void testGetCapabilityHmiNone() {
 		ISdl internalInterface = mock(ISdl.class);
 		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_NONE)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
@@ -369,7 +370,7 @@ public class SystemCapabilityManagerTests {
 		verify(onSystemCapabilityListener, times(1)).onError(any(String.class));
 	}
 
-	@org.junit.Test
+	@Test
 	public void testAddOnSystemCapabilityListenerWithSubscriptionsSupportedAndCapabilityCached() {
 		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(6, 0); // This version supports capability subscriptions
 		sdlMsgVersion.setPatchVersion(0);
@@ -416,7 +417,7 @@ public class SystemCapabilityManagerTests {
 		verify(internalInterface, times(2)).sendRPC(any(GetSystemCapability.class));
 	}
 
-	@org.junit.Test
+	@Test
 	public void testAddOnSystemCapabilityListenerWithSubscriptionsSupportedAndCapabilityNotCached() {
 		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(6, 0); // This version supports capability subscriptions
 		sdlMsgVersion.setPatchVersion(0);
@@ -463,7 +464,7 @@ public class SystemCapabilityManagerTests {
 		verify(internalInterface, times(2)).sendRPC(any(GetSystemCapability.class));
 	}
 
-	@org.junit.Test
+	@Test
 	public void testAddOnSystemCapabilityListenerWithSubscriptionsNotSupportedAndCapabilityCached() {
 		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(5, 0); // This version doesn't support capability subscriptions
 		sdlMsgVersion.setPatchVersion(0);
@@ -510,7 +511,7 @@ public class SystemCapabilityManagerTests {
 		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
 	}
 
-	@org.junit.Test
+	@Test
 	public void testAddOnSystemCapabilityListenerWithSubscriptionsNotSupportedAndCapabilityNotCached() {
 		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(5, 0); // This version doesn't support capability subscriptions
 		sdlMsgVersion.setPatchVersion(0);
@@ -557,7 +558,7 @@ public class SystemCapabilityManagerTests {
 		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
 	}
 
-	@org.junit.Test
+	@Test
 	public void testAddOnSystemCapabilityListenerThenGetCapabilityWhenSubscriptionsAreNotSupported() {
 		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(5, 0); // This version doesn't support capability subscriptions
 		sdlMsgVersion.setPatchVersion(0);
@@ -647,7 +648,7 @@ public class SystemCapabilityManagerTests {
 		verify(onSystemCapabilityListener3, times(4)).onCapabilityRetrieved(any(Object.class));
 	}
 
-	@org.junit.Test
+	@Test
 	public void testGetAndAddListenerForDisplaysCapability() {
 		ISdl internalInterface;
 		SystemCapabilityManager scm;
@@ -683,7 +684,7 @@ public class SystemCapabilityManagerTests {
 		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
 	}
 
-	@org.junit.Test
+	@Test
 	public void testListConversion(){
 		SystemCapabilityManager systemCapabilityManager = createSampleManager();
 		Object capability = systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON);
@@ -692,14 +693,14 @@ public class SystemCapabilityManagerTests {
 		assertNotNull(list);
 	}
 
-	@org.junit.Test
+	@Test
 	public void testFalsePositive(){
 		SystemCapabilityManager systemCapabilityManager = createSampleManager();
 		systemCapabilityManager.setCapability(SystemCapabilityType.AUDIO_PASSTHROUGH, null);
 		assertFalse(systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.AUDIO_PASSTHROUGH));
 	}
 
-	@org.junit.Test
+	@Test
 	public void testOnSystemCapabilityUpdateWithNoExistingCap(){
 		InternalSDLInterface iSDL = new InternalSDLInterface();
 		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
@@ -725,7 +726,7 @@ public class SystemCapabilityManagerTests {
 		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES));
 	}
 
-	@org.junit.Test
+	@Test
 	public void testOnSystemCapabilityUpdatedForDISPLAYS() {
 		InternalSDLInterface iSDL = new InternalSDLInterface();
 		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
@@ -735,7 +736,7 @@ public class SystemCapabilityManagerTests {
 		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAYS));
 		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.DISPLAY));
 
-		List<DisplayCapability> newCaps = createDisplayCapabilityList(Test.GENERAL_DISPLAYCAPABILITIES, Test.GENERAL_BUTTONCAPABILITIES_LIST, Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);;
+		List<DisplayCapability> newCaps = createDisplayCapabilityList(TestValues.GENERAL_DISPLAYCAPABILITIES, TestValues.GENERAL_BUTTONCAPABILITIES_LIST, TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);;
 
 		SystemCapability systemCapability = new SystemCapability();
 		systemCapability.setSystemCapabilityType(SystemCapabilityType.DISPLAYS);
@@ -756,7 +757,7 @@ public class SystemCapabilityManagerTests {
 		assertTrue(Validator.validateDisplayCapabilities(appliedConvertedCaps, testConvertedCaps));
 	}
 
-	@org.junit.Test
+	@Test
 	public void testOnSystemCapabilityUpdated(){
 		InternalSDLInterface iSDL = new InternalSDLInterface();
 		String baseName = "NavTest", baseID = "37F98053AE";
@@ -872,13 +873,13 @@ public class SystemCapabilityManagerTests {
 		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
 		OnRPCListener scmRpcListener = iSDL.rpcListeners.get(FunctionID.ON_SYSTEM_CAPABILITY_UPDATED.getId()).get(0);
 		assertNotNull(scmRpcListener);
-		systemCapabilityManager.setCapability(SystemCapabilityType.PHONE_CALL, Test.GENERAL_PHONECAPABILITY);
+		systemCapabilityManager.setCapability(SystemCapabilityType.PHONE_CALL, TestValues.GENERAL_PHONECAPABILITY);
 
 		PhoneCapability phoneCapability = (PhoneCapability)systemCapabilityManager.getCapability(SystemCapabilityType.PHONE_CALL);
 		assertNotNull(phoneCapability);
-		assertEquals(phoneCapability, Test.GENERAL_PHONECAPABILITY);
+		assertEquals(phoneCapability, TestValues.GENERAL_PHONECAPABILITY);
 
-		phoneCapability.setDialNumberEnabled(!Test.GENERAL_PHONECAPABILITY.getDialNumberEnabled()); //Flip it
+		phoneCapability.setDialNumberEnabled(!TestValues.GENERAL_PHONECAPABILITY.getDialNumberEnabled()); //Flip it
 		SystemCapability systemCapability = new SystemCapability();
 		systemCapability.setSystemCapabilityType(SystemCapabilityType.PHONE_CALL);
 		systemCapability.setCapabilityForType(SystemCapabilityType.PHONE_CALL, phoneCapability);
@@ -893,7 +894,7 @@ public class SystemCapabilityManagerTests {
 		assertEquals(phoneCapability, phoneCapabilityUpdated);
 	}
 
-	@org.junit.Test
+	@Test
 	public void testOnSetDisplayLayout() {
 		InternalSDLInterface iSDL = new InternalSDLInterface();
 		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
@@ -901,10 +902,10 @@ public class SystemCapabilityManagerTests {
 		assertNotNull(dlRpcListener);
 
 		SetDisplayLayoutResponse newLayout = new SetDisplayLayoutResponse();
-		newLayout.setDisplayCapabilities(Test.GENERAL_DISPLAYCAPABILITIES);
-		newLayout.setButtonCapabilities(Test.GENERAL_BUTTONCAPABILITIES_LIST);
-		newLayout.setSoftButtonCapabilities(Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
-		newLayout.setPresetBankCapabilities(Test.GENERAL_PRESETBANKCAPABILITIES);
+		newLayout.setDisplayCapabilities(TestValues.GENERAL_DISPLAYCAPABILITIES);
+		newLayout.setButtonCapabilities(TestValues.GENERAL_BUTTONCAPABILITIES_LIST);
+		newLayout.setSoftButtonCapabilities(TestValues.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
+		newLayout.setPresetBankCapabilities(TestValues.GENERAL_PRESETBANKCAPABILITIES);
 		newLayout.setSuccess(true);
 		newLayout.setResultCode(Result.SUCCESS);
 
@@ -926,7 +927,7 @@ public class SystemCapabilityManagerTests {
 		assertNull(systemCapabilityManager.getWindowCapability(42));
 	}
 
-	@org.junit.Test
+	@Test
 	public void testManagerBeforeDisplayUpdate() {
 		InternalSDLInterface iSDL = new InternalSDLInterface();
 		SystemCapabilityManager systemCapabilityManager = new SystemCapabilityManager(iSDL);

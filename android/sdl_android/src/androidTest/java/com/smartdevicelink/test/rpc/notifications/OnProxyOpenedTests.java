@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.notifications;
 
 import com.smartdevicelink.proxy.callbacks.InternalProxyMessage;
 import com.smartdevicelink.proxy.callbacks.OnProxyOpened;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -20,7 +20,7 @@ public class OnProxyOpenedTests extends TestCase {
 	 */
 	public void testMethods () {		
 		OnProxyOpened testOnProxyOpened = new OnProxyOpened();
-		assertNotNull(Test.NOT_NULL, testOnProxyOpened);
-		assertEquals(Test.MATCH, InternalProxyMessage.OnProxyOpened, testOnProxyOpened.getFunctionName());		
+		assertNotNull(TestValues.NOT_NULL, testOnProxyOpened);
+		assertEquals(TestValues.MATCH, InternalProxyMessage.OnProxyOpened, testOnProxyOpened.getFunctionName());
 	}
 }

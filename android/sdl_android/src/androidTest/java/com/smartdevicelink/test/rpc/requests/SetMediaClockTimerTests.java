@@ -9,7 +9,7 @@ import com.smartdevicelink.proxy.rpc.enums.AudioStreamingIndicator;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
@@ -28,10 +28,10 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 	protected RPCMessage createMessage() {
 		SetMediaClockTimer msg = new SetMediaClockTimer();
 
-		msg.setStartTime(Test.GENERAL_STARTTIME);
-		msg.setEndTime(Test.GENERAL_STARTTIME);
-		msg.setUpdateMode(Test.GENERAL_UPDATEMODE);
-		msg.setAudioStreamingIndicator(Test.GENERAL_AUDIO_STREAMING_INDICATOR);
+		msg.setStartTime(TestValues.GENERAL_STARTTIME);
+		msg.setEndTime(TestValues.GENERAL_STARTTIME);
+		msg.setUpdateMode(TestValues.GENERAL_UPDATEMODE);
+		msg.setAudioStreamingIndicator(TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
 
 		return msg;
 	}
@@ -51,12 +51,12 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(SetMediaClockTimer.KEY_START_TIME, Test.JSON_STARTTIME);
-			result.put(SetMediaClockTimer.KEY_END_TIME, Test.JSON_STARTTIME);
-			result.put(SetMediaClockTimer.KEY_UPDATE_MODE, Test.GENERAL_UPDATEMODE);
-			result.put(SetMediaClockTimer.KEY_AUDIO_STREAMING_INDICATOR, Test.GENERAL_AUDIO_STREAMING_INDICATOR);
+			result.put(SetMediaClockTimer.KEY_START_TIME, TestValues.JSON_STARTTIME);
+			result.put(SetMediaClockTimer.KEY_END_TIME, TestValues.JSON_STARTTIME);
+			result.put(SetMediaClockTimer.KEY_UPDATE_MODE, TestValues.GENERAL_UPDATEMODE);
+			result.put(SetMediaClockTimer.KEY_AUDIO_STREAMING_INDICATOR, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 
 		return result;
@@ -73,20 +73,20 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 		AudioStreamingIndicator testAudioStreamingIndicator = ( (SetMediaClockTimer) msg ).getAudioStreamingIndicator();
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_UPDATEMODE, testUpdateMode);
-		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, testAudioStreamingIndicator);
-		assertTrue(Test.TRUE, Validator.validateStartTime(Test.GENERAL_STARTTIME, testStartTime));
-		assertTrue(Test.TRUE, Validator.validateStartTime(Test.GENERAL_STARTTIME, testEndTime));
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_UPDATEMODE, testUpdateMode);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR, testAudioStreamingIndicator);
+		assertTrue(TestValues.TRUE, Validator.validateStartTime(TestValues.GENERAL_STARTTIME, testStartTime));
+		assertTrue(TestValues.TRUE, Validator.validateStartTime(TestValues.GENERAL_STARTTIME, testEndTime));
 		
 		// Invalid/Null Tests
 		SetMediaClockTimer msg = new SetMediaClockTimer();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull(Test.NULL, msg.getStartTime());
-		assertNull(Test.NULL, msg.getEndTime());
-		assertNull(Test.NULL, msg.getUpdateMode());
-		assertNull(Test.NULL, msg.getAudioStreamingIndicator());
+		assertNull(TestValues.NULL, msg.getStartTime());
+		assertNull(TestValues.NULL, msg.getEndTime());
+		assertNull(TestValues.NULL, msg.getUpdateMode());
+		assertNull(TestValues.NULL, msg.getAudioStreamingIndicator());
 	}
 
 	/**
@@ -99,59 +99,59 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
 		StartTime startTime2 = new StartTime(timeInterval2);
 		SetMediaClockTimer msg;
 
-		msg = SetMediaClockTimer.countUpFromStartTimeInterval(timeInterval1, timeInterval2, Test.GENERAL_AUDIO_STREAMING_INDICATOR);
-		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.COUNTUP);
-		assertTrue(Test.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
-		assertTrue(Test.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
-		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+		msg = SetMediaClockTimer.countUpFromStartTimeInterval(timeInterval1, timeInterval2, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(TestValues.MATCH, msg.getUpdateMode(), UpdateMode.COUNTUP);
+		assertTrue(TestValues.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
+		assertTrue(TestValues.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
 
-		msg = SetMediaClockTimer.countUpFromStartTime(startTime1, startTime2, Test.GENERAL_AUDIO_STREAMING_INDICATOR);
-		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.COUNTUP);
-		assertTrue(Test.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
-		assertTrue(Test.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
-		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+		msg = SetMediaClockTimer.countUpFromStartTime(startTime1, startTime2, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(TestValues.MATCH, msg.getUpdateMode(), UpdateMode.COUNTUP);
+		assertTrue(TestValues.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
+		assertTrue(TestValues.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
 
-		msg = SetMediaClockTimer.countDownFromStartTimeInterval(timeInterval1, timeInterval2, Test.GENERAL_AUDIO_STREAMING_INDICATOR);
-		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.COUNTDOWN);
-		assertTrue(Test.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
-		assertTrue(Test.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
-		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+		msg = SetMediaClockTimer.countDownFromStartTimeInterval(timeInterval1, timeInterval2, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(TestValues.MATCH, msg.getUpdateMode(), UpdateMode.COUNTDOWN);
+		assertTrue(TestValues.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
+		assertTrue(TestValues.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
 
-		msg = SetMediaClockTimer.countDownFromStartTime(startTime1, startTime2, Test.GENERAL_AUDIO_STREAMING_INDICATOR);
-		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.COUNTDOWN);
-		assertTrue(Test.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
-		assertTrue(Test.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
-		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+		msg = SetMediaClockTimer.countDownFromStartTime(startTime1, startTime2, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(TestValues.MATCH, msg.getUpdateMode(), UpdateMode.COUNTDOWN);
+		assertTrue(TestValues.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
+		assertTrue(TestValues.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
 
-		msg = SetMediaClockTimer.pauseWithPlayPauseIndicator(Test.GENERAL_AUDIO_STREAMING_INDICATOR);
-		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.PAUSE);
-		assertNull(Test.NULL, msg.getStartTime());
-		assertNull(Test.NULL, msg.getEndTime());
-		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+		msg = SetMediaClockTimer.pauseWithPlayPauseIndicator(TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(TestValues.MATCH, msg.getUpdateMode(), UpdateMode.PAUSE);
+		assertNull(TestValues.NULL, msg.getStartTime());
+		assertNull(TestValues.NULL, msg.getEndTime());
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
 
-		msg = SetMediaClockTimer.updatePauseWithNewStartTimeInterval(timeInterval1, timeInterval2, Test.GENERAL_AUDIO_STREAMING_INDICATOR);
-		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.PAUSE);
-		assertTrue(Test.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
-		assertTrue(Test.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
-		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+		msg = SetMediaClockTimer.updatePauseWithNewStartTimeInterval(timeInterval1, timeInterval2, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(TestValues.MATCH, msg.getUpdateMode(), UpdateMode.PAUSE);
+		assertTrue(TestValues.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
+		assertTrue(TestValues.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
 
-		msg = SetMediaClockTimer.updatePauseWithNewStartTime(startTime1, startTime2, Test.GENERAL_AUDIO_STREAMING_INDICATOR);
-		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.PAUSE);
-		assertTrue(Test.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
-		assertTrue(Test.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
-		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+		msg = SetMediaClockTimer.updatePauseWithNewStartTime(startTime1, startTime2, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(TestValues.MATCH, msg.getUpdateMode(), UpdateMode.PAUSE);
+		assertTrue(TestValues.TRUE, Validator.validateStartTime(startTime1, msg.getStartTime()));
+		assertTrue(TestValues.TRUE, Validator.validateStartTime(startTime2, msg.getEndTime()));
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
 
-		msg = SetMediaClockTimer.resumeWithPlayPauseIndicator(Test.GENERAL_AUDIO_STREAMING_INDICATOR);
-		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.RESUME);
-		assertNull(Test.NULL, msg.getStartTime());
-		assertNull(Test.NULL, msg.getEndTime());
-		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+		msg = SetMediaClockTimer.resumeWithPlayPauseIndicator(TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(TestValues.MATCH, msg.getUpdateMode(), UpdateMode.RESUME);
+		assertNull(TestValues.NULL, msg.getStartTime());
+		assertNull(TestValues.NULL, msg.getEndTime());
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
 
-		msg = SetMediaClockTimer.clearWithPlayPauseIndicator(Test.GENERAL_AUDIO_STREAMING_INDICATOR);
-		assertEquals(Test.MATCH, msg.getUpdateMode(), UpdateMode.CLEAR);
-		assertNull(Test.NULL, msg.getStartTime());
-		assertNull(Test.NULL, msg.getEndTime());
-		assertEquals(Test.MATCH, Test.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
+		msg = SetMediaClockTimer.clearWithPlayPauseIndicator(TestValues.GENERAL_AUDIO_STREAMING_INDICATOR);
+		assertEquals(TestValues.MATCH, msg.getUpdateMode(), UpdateMode.CLEAR);
+		assertNull(TestValues.NULL, msg.getStartTime());
+		assertNull(TestValues.NULL, msg.getEndTime());
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_AUDIO_STREAMING_INDICATOR, msg.getAudioStreamingIndicator());
 	}
 	
 	/**
@@ -159,31 +159,31 @@ public class SetMediaClockTimerTests extends BaseRpcTests {
      */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			SetMediaClockTimer cmd = new SetMediaClockTimer(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 			JSONObject startTime = JsonUtils.readJsonObjectFromJsonObject(parameters, SetMediaClockTimer.KEY_START_TIME);
 			StartTime referenceStartTime = new StartTime(JsonRPCMarshaller.deserializeJSONObject(startTime));
-			assertTrue(Test.TRUE, Validator.validateStartTime(referenceStartTime, cmd.getStartTime()));
+			assertTrue(TestValues.TRUE, Validator.validateStartTime(referenceStartTime, cmd.getStartTime()));
 			
 			JSONObject endTime = JsonUtils.readJsonObjectFromJsonObject(parameters, SetMediaClockTimer.KEY_END_TIME);
 			StartTime referenceEndTime = new StartTime(JsonRPCMarshaller.deserializeJSONObject(endTime));
-			assertTrue(Test.TRUE, Validator.validateStartTime(referenceEndTime, cmd.getEndTime()));
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SetMediaClockTimer.KEY_UPDATE_MODE), cmd.getUpdateMode().toString());
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SetMediaClockTimer.KEY_AUDIO_STREAMING_INDICATOR), cmd.getAudioStreamingIndicator().toString());
+			assertTrue(TestValues.TRUE, Validator.validateStartTime(referenceEndTime, cmd.getEndTime()));
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, SetMediaClockTimer.KEY_UPDATE_MODE), cmd.getUpdateMode().toString());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, SetMediaClockTimer.KEY_AUDIO_STREAMING_INDICATOR), cmd.getAudioStreamingIndicator().toString());
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}    	
     }
 }

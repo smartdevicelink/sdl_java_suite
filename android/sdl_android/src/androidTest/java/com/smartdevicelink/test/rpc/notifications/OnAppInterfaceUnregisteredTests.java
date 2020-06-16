@@ -5,7 +5,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnAppInterfaceUnregistered;
 import com.smartdevicelink.proxy.rpc.enums.AppInterfaceUnregisteredReason;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +20,7 @@ public class OnAppInterfaceUnregisteredTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         OnAppInterfaceUnregistered msg = new OnAppInterfaceUnregistered();
 
-        msg.setReason(Test.GENERAL_APPINTERFACEUNREGISTEREDREASON);
+        msg.setReason(TestValues.GENERAL_APPINTERFACEUNREGISTEREDREASON);
 
         return msg;
     }
@@ -40,9 +40,9 @@ public class OnAppInterfaceUnregisteredTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnAppInterfaceUnregistered.KEY_REASON, Test.GENERAL_APPINTERFACEUNREGISTEREDREASON);
+            result.put(OnAppInterfaceUnregistered.KEY_REASON, TestValues.GENERAL_APPINTERFACEUNREGISTEREDREASON);
         } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -56,13 +56,13 @@ public class OnAppInterfaceUnregisteredTests extends BaseRpcTests{
         AppInterfaceUnregisteredReason reason = ( (OnAppInterfaceUnregistered) msg ).getReason();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_APPINTERFACEUNREGISTEREDREASON, reason);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_APPINTERFACEUNREGISTEREDREASON, reason);
     
         // Invalid/Null tests
         OnAppInterfaceUnregistered msg = new OnAppInterfaceUnregistered();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getReason());
+        assertNull(TestValues.NULL, msg.getReason());
     }
 }

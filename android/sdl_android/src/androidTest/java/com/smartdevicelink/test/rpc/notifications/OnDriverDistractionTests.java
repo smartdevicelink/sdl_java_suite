@@ -5,7 +5,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnDriverDistraction;
 import com.smartdevicelink.proxy.rpc.enums.DriverDistractionState;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,7 +44,7 @@ public class OnDriverDistractionTests extends BaseRpcTests{
         try{
             result.put(OnDriverDistraction.KEY_STATE, STATUS);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -58,13 +58,13 @@ public class OnDriverDistractionTests extends BaseRpcTests{
         DriverDistractionState cmdId = ( (OnDriverDistraction) msg ).getState();
         
         // Valid Tests
-        assertEquals(Test.MATCH, STATUS, cmdId);
+        assertEquals(TestValues.MATCH, STATUS, cmdId);
     
         // Invalid/Null Tests
         OnDriverDistraction msg = new OnDriverDistraction();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-         assertNull(Test.NULL, msg.getState());
+         assertNull(TestValues.NULL, msg.getState());
     }
 }

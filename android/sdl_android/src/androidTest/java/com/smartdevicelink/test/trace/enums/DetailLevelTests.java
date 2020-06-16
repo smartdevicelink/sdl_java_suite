@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.trace.enums;
 
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.trace.enums.DetailLevel;
 
 import junit.framework.TestCase;
@@ -45,14 +45,14 @@ public class DetailLevelTests extends TestCase {
 			List<DetailLevel> actualEnumList = Arrays.asList(DetailLevel.values());
 			
 			// Valid Tests
-			assertEquals(Test.MATCH, expectedOffEnum, actualOffEnum);
-			assertEquals(Test.MATCH, expectedTerseEnum, actualTerseEnum);
-			assertEquals(Test.MATCH, expectedVerboseEnum, actualVerboseEnum);
-			assertTrue(Test.ARRAY, expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));
+			assertEquals(TestValues.MATCH, expectedOffEnum, actualOffEnum);
+			assertEquals(TestValues.MATCH, expectedTerseEnum, actualTerseEnum);
+			assertEquals(TestValues.MATCH, expectedVerboseEnum, actualVerboseEnum);
+			assertTrue(TestValues.ARRAY, expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));
 			
 			// Invalid/Null Tests
-			assertNull(Test.NULL, actualInvalidEnum);
-			assertNull(Test.NULL, actualNullEnum);
+			assertNull(TestValues.NULL, actualInvalidEnum);
+			assertNull(TestValues.NULL, actualNullEnum);
 			
 		}catch (NullPointerException e) {
 			fail("Could not retrieve value for null string, should return null.");

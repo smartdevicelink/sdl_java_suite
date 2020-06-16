@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.GetDTCs;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
@@ -24,8 +24,8 @@ public class GetDTCsTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         GetDTCs msg = new GetDTCs();
 
-        msg.setEcuName(Test.GENERAL_INT);
-        msg.setDtcMask(Test.GENERAL_INT);
+        msg.setEcuName(TestValues.GENERAL_INT);
+        msg.setDtcMask(TestValues.GENERAL_INT);
 
         return msg;
     }
@@ -45,10 +45,10 @@ public class GetDTCsTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(GetDTCs.KEY_ECU_NAME, Test.GENERAL_INT);
-            result.put(GetDTCs.KEY_DTC_MASK, Test.GENERAL_INT);
+            result.put(GetDTCs.KEY_ECU_NAME, TestValues.GENERAL_INT);
+            result.put(GetDTCs.KEY_DTC_MASK, TestValues.GENERAL_INT);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -63,16 +63,16 @@ public class GetDTCsTests extends BaseRpcTests{
     	int testEcuName = ( (GetDTCs) msg ).getEcuName();
     	
     	// Valid Tests
-    	assertEquals(Test.MATCH, Test.GENERAL_INT, testDtcMask);
-    	assertEquals(Test.MATCH, Test.GENERAL_INT, testEcuName);
+    	assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testDtcMask);
+    	assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testEcuName);
     	
     	// Invalid/Null Tests
         GetDTCs msg = new GetDTCs();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getEcuName());
-        assertNull(Test.NULL, msg.getDtcMask());
+        assertNull(TestValues.NULL, msg.getEcuName());
+        assertNull(TestValues.NULL, msg.getDtcMask());
     }
     
     /**
@@ -80,26 +80,26 @@ public class GetDTCsTests extends BaseRpcTests{
      */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			GetDTCs cmd = new GetDTCs(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 			
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, GetDTCs.KEY_DTC_MASK), cmd.getDtcMask());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, GetDTCs.KEY_ECU_NAME), cmd.getEcuName());			
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, GetDTCs.KEY_DTC_MASK), cmd.getDtcMask());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, GetDTCs.KEY_ECU_NAME), cmd.getEcuName());
 		} 
 		catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}    	
     }    
 }

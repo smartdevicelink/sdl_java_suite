@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -20,9 +20,9 @@ public class HMICapabilitiesTests extends TestCase {
     public void setUp(){
         msg = new HMICapabilities();
 
-        msg.setNavigationAvilable(Test.GENERAL_BOOLEAN);
-        msg.setPhoneCallAvilable(Test.GENERAL_BOOLEAN);
-	    msg.setVideoStreamingAvailable(Test.GENERAL_BOOLEAN);
+        msg.setNavigationAvilable(TestValues.GENERAL_BOOLEAN);
+        msg.setPhoneCallAvilable(TestValues.GENERAL_BOOLEAN);
+	    msg.setVideoStreamingAvailable(TestValues.GENERAL_BOOLEAN);
     }
 
     /**
@@ -35,13 +35,13 @@ public class HMICapabilitiesTests extends TestCase {
 	    Boolean vidStreamAvail = msg.isVideoStreamingAvailable();
 
         // Valid Tests
-        assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, navAvail);
-        assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, phoneAvail);
-	    assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, vidStreamAvail);
+        assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, navAvail);
+        assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, phoneAvail);
+	    assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, vidStreamAvail);
 
         // Invalid/Null Tests
         HMICapabilities msg = new HMICapabilities();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
         assertFalse(msg.isNavigationAvailable());
         assertFalse(msg.isPhoneCallAvailable());
@@ -52,23 +52,23 @@ public class HMICapabilitiesTests extends TestCase {
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(KEY_NAVIGATION, Test.GENERAL_BOOLEAN);
-            reference.put(HMICapabilities.KEY_PHONE_CALL, Test.GENERAL_BOOLEAN);
-	        reference.put(HMICapabilities.KEY_VIDEO_STREAMING, Test.GENERAL_BOOLEAN);
+            reference.put(KEY_NAVIGATION, TestValues.GENERAL_BOOLEAN);
+            reference.put(HMICapabilities.KEY_PHONE_CALL, TestValues.GENERAL_BOOLEAN);
+	        reference.put(HMICapabilities.KEY_VIDEO_STREAMING, TestValues.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
-            assertEquals(Test.MATCH, JsonUtils.readStringListFromJsonObject(reference, KEY_NAVIGATION),
+            assertEquals(TestValues.MATCH, JsonUtils.readStringListFromJsonObject(reference, KEY_NAVIGATION),
                     JsonUtils.readStringListFromJsonObject(underTest, KEY_NAVIGATION));
 
-            assertEquals(Test.MATCH, JsonUtils.readStringListFromJsonObject(reference, KEY_PHONE_CALL),
+            assertEquals(TestValues.MATCH, JsonUtils.readStringListFromJsonObject(reference, KEY_PHONE_CALL),
                     JsonUtils.readStringListFromJsonObject(underTest, KEY_PHONE_CALL));
 
-	        assertEquals(Test.MATCH, JsonUtils.readStringListFromJsonObject(reference, KEY_VIDEO_STREAMING),
+	        assertEquals(TestValues.MATCH, JsonUtils.readStringListFromJsonObject(reference, KEY_VIDEO_STREAMING),
 			        JsonUtils.readStringListFromJsonObject(underTest, KEY_VIDEO_STREAMING));
         } catch(JSONException e){
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

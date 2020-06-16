@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.rpc.CreateWindow;
 import com.smartdevicelink.proxy.rpc.enums.WindowType;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
@@ -25,11 +25,11 @@ public class CreateWindowTests extends BaseRpcTests {
     protected RPCMessage createMessage() {
         CreateWindow msg = new CreateWindow();
 
-        msg.setWindowID(Test.GENERAL_INT);
-        msg.setWindowName(Test.GENERAL_STRING);
-        msg.setType(Test.GENERAL_WINDOWTYPE);
-        msg.setAssociatedServiceType(Test.GENERAL_STRING);
-        msg.setDuplicateUpdatesFromWindowID(Test.GENERAL_INT);
+        msg.setWindowID(TestValues.GENERAL_INT);
+        msg.setWindowName(TestValues.GENERAL_STRING);
+        msg.setType(TestValues.GENERAL_WINDOWTYPE);
+        msg.setAssociatedServiceType(TestValues.GENERAL_STRING);
+        msg.setDuplicateUpdatesFromWindowID(TestValues.GENERAL_INT);
 
         return msg;
     }
@@ -49,13 +49,13 @@ public class CreateWindowTests extends BaseRpcTests {
         JSONObject result = new JSONObject();
 
         try {
-            result.put(CreateWindow.KEY_WINDOW_ID, Test.GENERAL_INT);
-            result.put(CreateWindow.KEY_WINDOW_NAME, Test.GENERAL_STRING);
-            result.put(CreateWindow.KEY_TYPE, Test.GENERAL_WINDOWTYPE);
-            result.put(CreateWindow.KEY_ASSOCIATED_SERVICE_TYPE, Test.GENERAL_STRING);
-            result.put(CreateWindow.KEY_DUPLICATE_UPDATES_FROM_WINDOW_ID, Test.GENERAL_INT);
+            result.put(CreateWindow.KEY_WINDOW_ID, TestValues.GENERAL_INT);
+            result.put(CreateWindow.KEY_WINDOW_NAME, TestValues.GENERAL_STRING);
+            result.put(CreateWindow.KEY_TYPE, TestValues.GENERAL_WINDOWTYPE);
+            result.put(CreateWindow.KEY_ASSOCIATED_SERVICE_TYPE, TestValues.GENERAL_STRING);
+            result.put(CreateWindow.KEY_DUPLICATE_UPDATES_FROM_WINDOW_ID, TestValues.GENERAL_INT);
         } catch (JSONException e) {
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -73,22 +73,22 @@ public class CreateWindowTests extends BaseRpcTests {
         int testDuplicateUpdatesFromWindowID = ((CreateWindow) msg).getDuplicateUpdatesFromWindowID();
 
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_INT, testWindowID);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, testWindowName);
-        assertEquals(Test.MATCH, Test.GENERAL_WINDOWTYPE, testType);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, testAssociatedServiceType);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, testDuplicateUpdatesFromWindowID);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testWindowID);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testWindowName);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_WINDOWTYPE, testType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testAssociatedServiceType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testDuplicateUpdatesFromWindowID);
 
         // Invalid/Null Tests
         CreateWindow msg = new CreateWindow();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getWindowID());
-        assertNull(Test.NULL, msg.getWindowName());
-        assertNull(Test.NULL, msg.getType());
-        assertNull(Test.NULL, msg.getAssociatedServiceType());
-        assertNull(Test.NULL, msg.getDuplicateUpdatesFromWindowID());
+        assertNull(TestValues.NULL, msg.getWindowID());
+        assertNull(TestValues.NULL, msg.getWindowName());
+        assertNull(TestValues.NULL, msg.getType());
+        assertNull(TestValues.NULL, msg.getAssociatedServiceType());
+        assertNull(TestValues.NULL, msg.getDuplicateUpdatesFromWindowID());
     }
 
     /**
@@ -96,27 +96,27 @@ public class CreateWindowTests extends BaseRpcTests {
      */
     public void testJsonConstructor() {
         JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-        assertNotNull(Test.NOT_NULL, commandJson);
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
         try {
             Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
             CreateWindow cmd = new CreateWindow(hash);
 
             JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-            assertNotNull(Test.NOT_NULL, body);
+            assertNotNull(TestValues.NOT_NULL, body);
 
             // Test everything in the json body.
-            assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-            assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
             JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-            assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, CreateWindow.KEY_WINDOW_ID), cmd.getWindowID());
-            assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, CreateWindow.KEY_WINDOW_NAME).toString(), cmd.getWindowName().toString());
-            assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, CreateWindow.KEY_TYPE).toString(), cmd.getType().toString());
-            assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(parameters, CreateWindow.KEY_ASSOCIATED_SERVICE_TYPE).toString(), cmd.getAssociatedServiceType().toString());
-            assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, CreateWindow.KEY_DUPLICATE_UPDATES_FROM_WINDOW_ID), cmd.getDuplicateUpdatesFromWindowID());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, CreateWindow.KEY_WINDOW_ID), cmd.getWindowID());
+            assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, CreateWindow.KEY_WINDOW_NAME).toString(), cmd.getWindowName().toString());
+            assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, CreateWindow.KEY_TYPE).toString(), cmd.getType().toString());
+            assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(parameters, CreateWindow.KEY_ASSOCIATED_SERVICE_TYPE).toString(), cmd.getAssociatedServiceType().toString());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, CreateWindow.KEY_DUPLICATE_UPDATES_FROM_WINDOW_ID), cmd.getDuplicateUpdatesFromWindowID());
         } catch (JSONException e) {
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.enums.ButtonEventMode;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,9 +21,9 @@ public class OnButtonEventTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         OnButtonEvent msg = new OnButtonEvent();
 
-        msg.setButtonEventMode(Test.GENERAL_BUTTONEVENTMODE);
-        msg.setButtonName(Test.GENERAL_BUTTONNAME);
-        msg.setCustomButtonID(Test.GENERAL_INT);
+        msg.setButtonEventMode(TestValues.GENERAL_BUTTONEVENTMODE);
+        msg.setButtonName(TestValues.GENERAL_BUTTONNAME);
+        msg.setCustomButtonID(TestValues.GENERAL_INT);
 
         return msg;
     }
@@ -43,11 +43,11 @@ public class OnButtonEventTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnButtonEvent.KEY_BUTTON_EVENT_MODE, Test.GENERAL_BUTTONEVENTMODE);
-            result.put(OnButtonEvent.KEY_BUTTON_NAME, Test.GENERAL_BUTTONNAME);
-            result.put(OnButtonEvent.KEY_CUSTOM_BUTTON_ID, Test.GENERAL_INT);
+            result.put(OnButtonEvent.KEY_BUTTON_EVENT_MODE, TestValues.GENERAL_BUTTONEVENTMODE);
+            result.put(OnButtonEvent.KEY_BUTTON_NAME, TestValues.GENERAL_BUTTONNAME);
+            result.put(OnButtonEvent.KEY_CUSTOM_BUTTON_ID, TestValues.GENERAL_INT);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -63,17 +63,17 @@ public class OnButtonEventTests extends BaseRpcTests{
         ButtonName name = ( (OnButtonEvent) msg ).getButtonName();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_INT, cmdId);
-        assertEquals(Test.MATCH, Test.GENERAL_BUTTONEVENTMODE, mode);
-        assertEquals(Test.MATCH, Test.GENERAL_BUTTONNAME, name);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, cmdId);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BUTTONEVENTMODE, mode);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BUTTONNAME, name);
         
         // Invalid/Null Tests
         OnButtonEvent msg = new OnButtonEvent();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getButtonEventMode());
-        assertNull(Test.NULL, msg.getButtonName());
-        assertNull(Test.NULL, msg.getCustomButtonID());
+        assertNull(TestValues.NULL, msg.getButtonEventMode());
+        assertNull(TestValues.NULL, msg.getButtonName());
+        assertNull(TestValues.NULL, msg.getCustomButtonID());
     }
 }

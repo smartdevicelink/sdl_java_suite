@@ -48,7 +48,7 @@ import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -107,7 +107,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
     public void testGetLayoutMode(){
 		// First we will check knowing our keyboard listener is NOT NULL
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 
 		assertEquals(presentChoiceSetOperation.getLayoutMode(), LayoutMode.LIST_WITH_SEARCH);
 		presentChoiceSetOperation.keyboardListener = null;
@@ -115,7 +115,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 	}
 
 	public void testGetPerformInteraction(){
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 
 		PerformInteraction pi = presentChoiceSetOperation.getPerformInteraction();
 		assertEquals(pi.getInitialText(), "Test");
@@ -123,12 +123,12 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 		assertNull(pi.getTimeoutPrompt());
 		assertNull(pi.getVrHelp());
 		assertEquals(pi.getTimeout(), Integer.valueOf(10000));
-		assertEquals(pi.getCancelID(), Test.GENERAL_INTEGER);
+		assertEquals(pi.getCancelID(), TestValues.GENERAL_INTEGER);
 		assertEquals(presentChoiceSetOperation.getLayoutMode(), LayoutMode.LIST_WITH_SEARCH);
 	}
 
 	public void testSetSelectedCellWithId(){
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, getKeyBoardProperties(), keyboardListener, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 
 		assertNull(presentChoiceSetOperation.selectedCellRow);
 		presentChoiceSetOperation.setSelectedCellWithId(0);
@@ -137,7 +137,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 	public void testCancelingChoiceSetSuccessfullyIfThreadIsRunning(){
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 		executor.execute(presentChoiceSetOperation);
 
 		try {
@@ -155,7 +155,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 				Object[] args = invocation.getArguments();
 				CancelInteraction cancelInteraction = (CancelInteraction) args[0];
 
-				assertEquals(cancelInteraction.getCancelID(), Test.GENERAL_INTEGER);
+				assertEquals(cancelInteraction.getCancelID(), TestValues.GENERAL_INTEGER);
 				assertEquals(cancelInteraction.getInteractionFunctionID().intValue(), FunctionID.PERFORM_INTERACTION.getId());
 
 				RPCResponse response = new RPCResponse(FunctionID.CANCEL_INTERACTION.toString());
@@ -177,7 +177,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 	public void testCancelingChoiceSetUnsuccessfullyIfThreadIsRunning(){
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 		executor.execute(presentChoiceSetOperation);
 		try {
 			executor.awaitTermination(1, TimeUnit.SECONDS);
@@ -194,7 +194,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 				Object[] args = invocation.getArguments();
 				CancelInteraction cancelInteraction = (CancelInteraction) args[0];
 
-				assertEquals(cancelInteraction.getCancelID(), Test.GENERAL_INTEGER);
+				assertEquals(cancelInteraction.getCancelID(), TestValues.GENERAL_INTEGER);
 				assertEquals(cancelInteraction.getInteractionFunctionID().intValue(), FunctionID.PERFORM_INTERACTION.getId());
 
 				RPCResponse response = new RPCResponse(FunctionID.CANCEL_INTERACTION.toString());
@@ -216,7 +216,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 	public void testCancelingChoiceSetIfThreadHasFinished(){
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 		presentChoiceSetOperation.finishOperation();
 
 		assertFalse(presentChoiceSetOperation.isExecuting());
@@ -233,7 +233,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 
 	public void testCancelingChoiceSetIfThreadHasNotYetRun(){
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 
 		assertFalse(presentChoiceSetOperation.isExecuting());
 		assertFalse(presentChoiceSetOperation.isFinished());
@@ -259,7 +259,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeature(){
 		// Cancel Interaction is only supported on RPC specs v.6.0.0+
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 		executor.execute(presentChoiceSetOperation);
 		try {
 			executor.awaitTermination(1, TimeUnit.SECONDS);
@@ -278,7 +278,7 @@ public class PresentChoiceSetOperationTests extends AndroidTestCase2 {
 	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeatureButThreadIsNotRunning(){
 		// Cancel Interaction is only supported on RPC specs v.6.0.0+
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
-		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, Test.GENERAL_INTEGER);
+		presentChoiceSetOperation = new PresentChoiceSetOperation(internalInterface, choiceSet, InteractionMode.MANUAL_ONLY, null, null, choiceSetSelectionListener, TestValues.GENERAL_INTEGER);
 
 		assertFalse(presentChoiceSetOperation.isExecuting());
 		assertFalse(presentChoiceSetOperation.isFinished());

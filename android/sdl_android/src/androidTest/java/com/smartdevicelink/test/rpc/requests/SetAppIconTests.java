@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.SetAppIcon;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
@@ -24,7 +24,7 @@ public class SetAppIconTests extends BaseRpcTests {
 	protected RPCMessage createMessage() {
 		SetAppIcon msg = new SetAppIcon();
 
-		msg.setSdlFileName(Test.GENERAL_STRING);
+		msg.setSdlFileName(TestValues.GENERAL_STRING);
 
 		return msg;
 	}
@@ -44,9 +44,9 @@ public class SetAppIconTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(SetAppIcon.KEY_SDL_FILE_NAME, Test.GENERAL_STRING);			
+			result.put(SetAppIcon.KEY_SDL_FILE_NAME, TestValues.GENERAL_STRING);
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 
 		return result;
@@ -60,14 +60,14 @@ public class SetAppIconTests extends BaseRpcTests {
 		String copy = ( (SetAppIcon) msg ).getSdlFileName();
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, copy);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, copy);
 	
 		// Invalid/Null Tests
 		SetAppIcon msg = new SetAppIcon();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull(Test.NULL, msg.getSdlFileName());
+		assertNull(TestValues.NULL, msg.getSdlFileName());
 	}
 
     /**
@@ -75,24 +75,24 @@ public class SetAppIconTests extends BaseRpcTests {
      */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			SetAppIcon cmd = new SetAppIcon(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SetAppIcon.KEY_SDL_FILE_NAME), cmd.getSdlFileName());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, SetAppIcon.KEY_SDL_FILE_NAME), cmd.getSdlFileName());
 			
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}    	
     }
 }

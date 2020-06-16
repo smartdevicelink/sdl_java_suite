@@ -33,7 +33,7 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 public class SubCellCommandListTests extends AndroidTestCase2 {
 
@@ -49,17 +49,17 @@ public class SubCellCommandListTests extends AndroidTestCase2 {
 
 	public void testSettersAndGetters() {
 
-		RunScore runScore = new RunScore(Test.GENERAL_INT, Test.GENERAL_INTEGER_LIST, Test.GENERAL_INTEGER_LIST);
+		RunScore runScore = new RunScore(TestValues.GENERAL_INT, TestValues.GENERAL_INTEGER_LIST, TestValues.GENERAL_INTEGER_LIST);
 
 		// set everything
-		SubCellCommandList subCellCommandList = new SubCellCommandList(Test.GENERAL_STRING, Test.GENERAL_INTEGER, runScore, Test.GENERAL_MENUCELL_LIST, Test.GENERAL_MENUCELL_LIST);
+		SubCellCommandList subCellCommandList = new SubCellCommandList(TestValues.GENERAL_STRING, TestValues.GENERAL_INTEGER, runScore, TestValues.GENERAL_MENUCELL_LIST, TestValues.GENERAL_MENUCELL_LIST);
 
 		// use getters and assert equality
-		assertEquals(subCellCommandList.getMenuTitle(), Test.GENERAL_STRING);
-		assertEquals(subCellCommandList.getParentId(), Test.GENERAL_INTEGER);
+		assertEquals(subCellCommandList.getMenuTitle(), TestValues.GENERAL_STRING);
+		assertEquals(subCellCommandList.getParentId(), TestValues.GENERAL_INTEGER);
 		assertEquals(runScore, runScore);
-		assertEquals(subCellCommandList.getNewList(), Test.GENERAL_MENUCELL_LIST);
-		assertEquals(subCellCommandList.getOldList(), Test.GENERAL_MENUCELL_LIST);
+		assertEquals(subCellCommandList.getNewList(), TestValues.GENERAL_MENUCELL_LIST);
+		assertEquals(subCellCommandList.getOldList(), TestValues.GENERAL_MENUCELL_LIST);
 
 	}
 }

@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.DiagnosticMessage;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
@@ -26,9 +26,9 @@ public class DiagnosticMessageTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         DiagnosticMessage msg = new DiagnosticMessage();
 
-        msg.setMessageLength(Test.GENERAL_INT);
-        msg.setTargetID(Test.GENERAL_INT);
-        msg.setMessageData(Test.GENERAL_INTEGER_LIST);
+        msg.setMessageLength(TestValues.GENERAL_INT);
+        msg.setTargetID(TestValues.GENERAL_INT);
+        msg.setMessageData(TestValues.GENERAL_INTEGER_LIST);
 
         return msg;
     }
@@ -48,11 +48,11 @@ public class DiagnosticMessageTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(DiagnosticMessage.KEY_TARGET_ID, Test.GENERAL_INT);
-            result.put(DiagnosticMessage.KEY_MESSAGE_LENGTH, Test.GENERAL_INT);
-            result.put(DiagnosticMessage.KEY_MESSAGE_DATA, JsonUtils.createJsonArray(Test.GENERAL_INTEGER_LIST));
+            result.put(DiagnosticMessage.KEY_TARGET_ID, TestValues.GENERAL_INT);
+            result.put(DiagnosticMessage.KEY_MESSAGE_LENGTH, TestValues.GENERAL_INT);
+            result.put(DiagnosticMessage.KEY_MESSAGE_DATA, JsonUtils.createJsonArray(TestValues.GENERAL_INTEGER_LIST));
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -68,22 +68,22 @@ public class DiagnosticMessageTests extends BaseRpcTests{
         List<Integer> testMessageData = ( (DiagnosticMessage) msg ).getMessageData();
 
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_INT, testTargetId);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, testMessageLength);
-        assertEquals(Test.MATCH, Test.GENERAL_INTEGER_LIST.size(), testMessageData.size());
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testTargetId);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testMessageLength);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER_LIST.size(), testMessageData.size());
 
         for(int i = 0; i < testMessageData.size(); i++){
-            assertEquals(Test.MATCH, Test.GENERAL_INTEGER_LIST.get(i), testMessageData.get(i));
+            assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER_LIST.get(i), testMessageData.get(i));
         }
     
         // Invalid/Null Tests
         DiagnosticMessage msg = new DiagnosticMessage();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getTargetID());
-        assertNull(Test.NULL, msg.getMessageLength());
-        assertNull(Test.NULL, msg.getMessageData());
+        assertNull(TestValues.NULL, msg.getTargetID());
+        assertNull(TestValues.NULL, msg.getMessageLength());
+        assertNull(TestValues.NULL, msg.getMessageData());
     }
 
     /**
@@ -91,29 +91,29 @@ public class DiagnosticMessageTests extends BaseRpcTests{
      */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			DiagnosticMessage cmd = new DiagnosticMessage(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, DiagnosticMessage.KEY_TARGET_ID), cmd.getTargetID());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, DiagnosticMessage.KEY_MESSAGE_LENGTH), cmd.getMessageLength());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, DiagnosticMessage.KEY_TARGET_ID), cmd.getTargetID());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, DiagnosticMessage.KEY_MESSAGE_LENGTH), cmd.getMessageLength());
 			
 			List<Integer> messageDataList = JsonUtils.readIntegerListFromJsonObject(parameters, DiagnosticMessage.KEY_MESSAGE_DATA);
 			List<Integer> testDataList = cmd.getMessageData();
-			assertEquals(Test.MATCH, messageDataList.size(), testDataList.size());
-			assertTrue(Test.TRUE, Validator.validateIntegerList(messageDataList, testDataList));
+			assertEquals(TestValues.MATCH, messageDataList.size(), testDataList.size());
+			assertTrue(TestValues.TRUE, Validator.validateIntegerList(messageDataList, testDataList));
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}    	
     }
 }

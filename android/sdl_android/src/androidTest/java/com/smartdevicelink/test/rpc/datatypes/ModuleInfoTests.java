@@ -3,7 +3,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.ModuleInfo;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -19,10 +19,10 @@ public class ModuleInfoTests extends TestCase {
 	@Override
 	public void setUp() {
 		msg = new ModuleInfo();
-		msg.setModuleId(Test.GENERAL_STRING);
-		msg.setModuleLocation(Test.GENERAL_GRID);
-		msg.setModuleServiceArea(Test.GENERAL_GRID);
-		msg.setMultipleAccessAllowance(Test.GENERAL_BOOLEAN);
+		msg.setModuleId(TestValues.GENERAL_STRING);
+		msg.setModuleLocation(TestValues.GENERAL_GRID);
+		msg.setModuleServiceArea(TestValues.GENERAL_GRID);
+		msg.setMultipleAccessAllowance(TestValues.GENERAL_BOOLEAN);
 	}
 
 	public void testRpcValues() {
@@ -32,39 +32,39 @@ public class ModuleInfoTests extends TestCase {
 		boolean isAllowed = msg.getMultipleAccessAllowance();
 
 		//valid tests
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, id);
-		assertEquals(Test.MATCH, Test.GENERAL_GRID, loc);
-		assertEquals(Test.MATCH, Test.GENERAL_GRID, area);
-		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, isAllowed);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, id);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_GRID, loc);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_GRID, area);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, isAllowed);
 
 		//null test
 		ModuleInfo msg = new ModuleInfo();
-		assertNull(Test.NULL, msg.getModuleId());
-		assertNull(Test.NULL, msg.getModuleLocation());
-		assertNull(Test.NULL, msg.getModuleServiceArea());
-		assertNull(Test.NULL, msg.getMultipleAccessAllowance());
+		assertNull(TestValues.NULL, msg.getModuleId());
+		assertNull(TestValues.NULL, msg.getModuleLocation());
+		assertNull(TestValues.NULL, msg.getModuleServiceArea());
+		assertNull(TestValues.NULL, msg.getMultipleAccessAllowance());
 
 		//test required params constructor
-		ModuleInfo msg2 = new ModuleInfo(Test.GENERAL_STRING);
-		assertEquals(Test.MATCH, msg2.getModuleId(), Test.GENERAL_STRING);
+		ModuleInfo msg2 = new ModuleInfo(TestValues.GENERAL_STRING);
+		assertEquals(TestValues.MATCH, msg2.getModuleId(), TestValues.GENERAL_STRING);
 	}
 
 	public void testJson() {
 		JSONObject original = new JSONObject();
 		try {
-			original.put(ModuleInfo.KEY_MODULE_ID, Test.GENERAL_STRING);
-			original.put(ModuleInfo.KEY_MODULE_LOCATION, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_GRID.getStore()));
-			original.put(ModuleInfo.KEY_MODULE_SERVICE_AREA, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_GRID.getStore()));
-			original.put(ModuleInfo.KEY_MULTIPLE_ACCESS_ALLOWED, Test.GENERAL_BOOLEAN);
+			original.put(ModuleInfo.KEY_MODULE_ID, TestValues.GENERAL_STRING);
+			original.put(ModuleInfo.KEY_MODULE_LOCATION, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_GRID.getStore()));
+			original.put(ModuleInfo.KEY_MODULE_SERVICE_AREA, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_GRID.getStore()));
+			original.put(ModuleInfo.KEY_MULTIPLE_ACCESS_ALLOWED, TestValues.GENERAL_BOOLEAN);
 
 			JSONObject serialized = msg.serializeJSON();
-			assertEquals(Test.MATCH, original.length(), serialized.length());
+			assertEquals(TestValues.MATCH, original.length(), serialized.length());
 
 			Hashtable<String, Object> h1 = JsonRPCMarshaller.deserializeJSONObject(original);
 			Hashtable<String, Object> h2 = JsonRPCMarshaller.deserializeJSONObject(serialized);
-			assertTrue(Test.TRUE, Validator.validateModuleInfo(new ModuleInfo(h1), new ModuleInfo(h2)));
+			assertTrue(TestValues.TRUE, Validator.validateModuleInfo(new ModuleInfo(h1), new ModuleInfo(h2)));
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

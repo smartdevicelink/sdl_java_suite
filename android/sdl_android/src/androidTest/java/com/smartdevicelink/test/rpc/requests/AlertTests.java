@@ -9,7 +9,7 @@ import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.TTSChunk;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
@@ -31,16 +31,16 @@ public class AlertTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         Alert msg = new Alert();
 
-        msg.setDuration(Test.GENERAL_INT);
-        msg.setAlertText1(Test.GENERAL_STRING);
-        msg.setAlertText2(Test.GENERAL_STRING);
-        msg.setAlertText3(Test.GENERAL_STRING);
-        msg.setPlayTone(Test.GENERAL_BOOLEAN);
-        msg.setProgressIndicator(Test.GENERAL_BOOLEAN);
-        msg.setTtsChunks(Test.GENERAL_TTSCHUNK_LIST);
-        msg.setSoftButtons(Test.GENERAL_SOFTBUTTON_LIST);
-        msg.setCancelID(Test.GENERAL_INTEGER);
-        msg.setAlertIcon(Test.GENERAL_IMAGE);
+        msg.setDuration(TestValues.GENERAL_INT);
+        msg.setAlertText1(TestValues.GENERAL_STRING);
+        msg.setAlertText2(TestValues.GENERAL_STRING);
+        msg.setAlertText3(TestValues.GENERAL_STRING);
+        msg.setPlayTone(TestValues.GENERAL_BOOLEAN);
+        msg.setProgressIndicator(TestValues.GENERAL_BOOLEAN);
+        msg.setTtsChunks(TestValues.GENERAL_TTSCHUNK_LIST);
+        msg.setSoftButtons(TestValues.GENERAL_SOFTBUTTON_LIST);
+        msg.setCancelID(TestValues.GENERAL_INTEGER);
+        msg.setAlertIcon(TestValues.GENERAL_IMAGE);
         
         return msg;
     }
@@ -60,18 +60,18 @@ public class AlertTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
         
         try{        	
-            result.put(Alert.KEY_DURATION, Test.GENERAL_INT);
-            result.put(Alert.KEY_ALERT_TEXT_1, Test.GENERAL_STRING);
-            result.put(Alert.KEY_ALERT_TEXT_2, Test.GENERAL_STRING);
-            result.put(Alert.KEY_ALERT_TEXT_3, Test.GENERAL_STRING);
-            result.put(Alert.KEY_PLAY_TONE, Test.GENERAL_BOOLEAN);
-            result.put(Alert.KEY_PROGRESS_INDICATOR, Test.GENERAL_BOOLEAN);
-            result.put(Alert.KEY_TTS_CHUNKS, Test.JSON_TTSCHUNKS);
-            result.put(Alert.KEY_SOFT_BUTTONS, Test.JSON_SOFTBUTTONS);
-            result.put(Alert.KEY_CANCEL_ID, Test.GENERAL_INTEGER);
-            result.put(Alert.KEY_ALERT_ICON, Test.JSON_IMAGE);
+            result.put(Alert.KEY_DURATION, TestValues.GENERAL_INT);
+            result.put(Alert.KEY_ALERT_TEXT_1, TestValues.GENERAL_STRING);
+            result.put(Alert.KEY_ALERT_TEXT_2, TestValues.GENERAL_STRING);
+            result.put(Alert.KEY_ALERT_TEXT_3, TestValues.GENERAL_STRING);
+            result.put(Alert.KEY_PLAY_TONE, TestValues.GENERAL_BOOLEAN);
+            result.put(Alert.KEY_PROGRESS_INDICATOR, TestValues.GENERAL_BOOLEAN);
+            result.put(Alert.KEY_TTS_CHUNKS, TestValues.JSON_TTSCHUNKS);
+            result.put(Alert.KEY_SOFT_BUTTONS, TestValues.JSON_SOFTBUTTONS);
+            result.put(Alert.KEY_CANCEL_ID, TestValues.GENERAL_INTEGER);
+            result.put(Alert.KEY_ALERT_ICON, TestValues.JSON_IMAGE);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -94,32 +94,32 @@ public class AlertTests extends BaseRpcTests{
 		Image alertIcon = ( (Alert) msg ).getAlertIcon();
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_INT, testDuration);
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testAlertText1);
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testAlertText2);
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testAlertText3);
-		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testPlayTone);
-		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, testProgressIndicator);
-		assertTrue(Test.TRUE, Validator.validateSoftButtons(Test.GENERAL_SOFTBUTTON_LIST, testSoftButtons));
-		assertTrue(Test.TRUE, Validator.validateTtsChunks(Test.GENERAL_TTSCHUNK_LIST, testTtsChunks));
-		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testCancelID);
-		assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, alertIcon));
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testDuration);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testAlertText1);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testAlertText2);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testAlertText3);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, testPlayTone);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, testProgressIndicator);
+		assertTrue(TestValues.TRUE, Validator.validateSoftButtons(TestValues.GENERAL_SOFTBUTTON_LIST, testSoftButtons));
+		assertTrue(TestValues.TRUE, Validator.validateTtsChunks(TestValues.GENERAL_TTSCHUNK_LIST, testTtsChunks));
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, testCancelID);
+		assertTrue(TestValues.TRUE, Validator.validateImage(TestValues.GENERAL_IMAGE, alertIcon));
 	    	
     	// Invalid/Null Tests
         Alert msg = new Alert();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getAlertText1());
-        assertNull(Test.NULL, msg.getAlertText2());
-        assertNull(Test.NULL, msg.getAlertText3());
-        assertNull(Test.NULL, msg.getDuration());
-        assertNull(Test.NULL, msg.getPlayTone());
-        assertNull(Test.NULL, msg.getProgressIndicator());
-        assertNull(Test.NULL, msg.getTtsChunks());
-        assertNull(Test.NULL, msg.getSoftButtons());
-        assertNull(Test.NULL, msg.getCancelID());
-        assertNull(Test.NULL, msg.getAlertIcon());
+        assertNull(TestValues.NULL, msg.getAlertText1());
+        assertNull(TestValues.NULL, msg.getAlertText2());
+        assertNull(TestValues.NULL, msg.getAlertText3());
+        assertNull(TestValues.NULL, msg.getDuration());
+        assertNull(TestValues.NULL, msg.getPlayTone());
+        assertNull(TestValues.NULL, msg.getProgressIndicator());
+        assertNull(TestValues.NULL, msg.getTtsChunks());
+        assertNull(TestValues.NULL, msg.getSoftButtons());
+        assertNull(TestValues.NULL, msg.getCancelID());
+        assertNull(TestValues.NULL, msg.getAlertIcon());
     }
     
     /**
@@ -127,26 +127,26 @@ public class AlertTests extends BaseRpcTests{
      */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			Alert cmd = new Alert(hash);
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, Alert.KEY_PLAY_TONE), cmd.getPlayTone());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, Alert.KEY_DURATION), cmd.getDuration());
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Alert.KEY_ALERT_TEXT_1), cmd.getAlertText1());
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Alert.KEY_ALERT_TEXT_2), cmd.getAlertText2());
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Alert.KEY_ALERT_TEXT_3), cmd.getAlertText3());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, Alert.KEY_PROGRESS_INDICATOR), cmd.getProgressIndicator());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, Alert.KEY_CANCEL_ID), cmd.getCancelID());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, Alert.KEY_PLAY_TONE), cmd.getPlayTone());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, Alert.KEY_DURATION), cmd.getDuration());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, Alert.KEY_ALERT_TEXT_1), cmd.getAlertText1());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, Alert.KEY_ALERT_TEXT_2), cmd.getAlertText2());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, Alert.KEY_ALERT_TEXT_3), cmd.getAlertText3());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, Alert.KEY_PROGRESS_INDICATOR), cmd.getProgressIndicator());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, Alert.KEY_CANCEL_ID), cmd.getCancelID());
 			
 			JSONArray ttsChunkArray = JsonUtils.readJsonArrayFromJsonObject(parameters, Alert.KEY_TTS_CHUNKS);
 			List<TTSChunk> ttsChunkList = new ArrayList<TTSChunk>();
@@ -154,7 +154,7 @@ public class AlertTests extends BaseRpcTests{
 	        	TTSChunk chunk = new TTSChunk(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)ttsChunkArray.get(index)) );
 	        	ttsChunkList.add(chunk);
 			}
-			assertTrue(Test.TRUE,  Validator.validateTtsChunks(ttsChunkList, cmd.getTtsChunks()));
+			assertTrue(TestValues.TRUE,  Validator.validateTtsChunks(ttsChunkList, cmd.getTtsChunks()));
 			
 			JSONArray softButtonArray = JsonUtils.readJsonArrayFromJsonObject(parameters, Alert.KEY_SOFT_BUTTONS);
 			List<SoftButton> softButtonList = new ArrayList<SoftButton>();
@@ -162,13 +162,13 @@ public class AlertTests extends BaseRpcTests{
 				SoftButton chunk = new SoftButton(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)softButtonArray.get(index)) );
 				softButtonList.add(chunk);
 			}
-			assertTrue(Test.TRUE,  Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
+			assertTrue(TestValues.TRUE,  Validator.validateSoftButtons(softButtonList, cmd.getSoftButtons()));
 
 			JSONObject alertIcon = JsonUtils.readJsonObjectFromJsonObject(parameters, Alert.KEY_ALERT_ICON);
 			Image referenceAlertIcon = new Image(JsonRPCMarshaller.deserializeJSONObject(alertIcon));
-			assertTrue(Test.TRUE, Validator.validateImage(referenceAlertIcon, cmd.getAlertIcon()));
+			assertTrue(TestValues.TRUE, Validator.validateImage(referenceAlertIcon, cmd.getAlertIcon()));
         } catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}    	
     }
 }

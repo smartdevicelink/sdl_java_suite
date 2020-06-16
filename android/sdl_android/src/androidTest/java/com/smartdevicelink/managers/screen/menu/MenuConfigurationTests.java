@@ -36,7 +36,7 @@
 package com.smartdevicelink.managers.screen.menu;
 
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 public class MenuConfigurationTests extends AndroidTestCase2 {
 
@@ -54,10 +54,10 @@ public class MenuConfigurationTests extends AndroidTestCase2 {
 	public void testSettersAndGetters(){
 
 		// set everything - we only use the constructor to set variables in the Menu Manager
-		MenuConfiguration menuConfiguration = new MenuConfiguration(Test.GENERAL_MENU_LAYOUT, Test.GENERAL_MENU_LAYOUT);
+		MenuConfiguration menuConfiguration = new MenuConfiguration(TestValues.GENERAL_MENU_LAYOUT, TestValues.GENERAL_MENU_LAYOUT);
 
 		// use getters and assert equality
-		assertEquals(menuConfiguration.getMenuLayout(), Test.GENERAL_MENU_LAYOUT);
-		assertEquals(menuConfiguration.getSubMenuLayout(), Test.GENERAL_MENU_LAYOUT);
+		assertEquals(menuConfiguration.getMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
+		assertEquals(menuConfiguration.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
 	}
 }

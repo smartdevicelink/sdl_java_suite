@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeButton;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
@@ -25,7 +25,7 @@ public class UnsubscribeButtonTests extends BaseRpcTests {
 	protected RPCMessage createMessage() {
 		UnsubscribeButton msg = new UnsubscribeButton();
 
-		msg.setButtonName(Test.GENERAL_BUTTONNAME);
+		msg.setButtonName(TestValues.GENERAL_BUTTONNAME);
 
 		return msg;
 	}
@@ -45,10 +45,10 @@ public class UnsubscribeButtonTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(UnsubscribeButton.KEY_BUTTON_NAME, Test.GENERAL_BUTTONNAME);
+			result.put(UnsubscribeButton.KEY_BUTTON_NAME, TestValues.GENERAL_BUTTONNAME);
 			
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 
 		return result;
@@ -62,14 +62,14 @@ public class UnsubscribeButtonTests extends BaseRpcTests {
     	ButtonName testButtonName = ( (UnsubscribeButton) msg ).getButtonName();
 		
     	// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_BUTTONNAME, testButtonName);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_BUTTONNAME, testButtonName);
 		
 		// Invalid/Null Tests
 		UnsubscribeButton msg = new UnsubscribeButton();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull(Test.NULL, msg.getButtonName());
+		assertNull(TestValues.NULL, msg.getButtonName());
     }
 	
 	/**
@@ -77,21 +77,21 @@ public class UnsubscribeButtonTests extends BaseRpcTests {
      */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			UnsubscribeButton cmd = new UnsubscribeButton(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, UnsubscribeButton.KEY_BUTTON_NAME), cmd.getButtonName().toString());			
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, UnsubscribeButton.KEY_BUTTON_NAME), cmd.getButtonName().toString());
 		} 
 		catch (JSONException e) {
 			e.printStackTrace();

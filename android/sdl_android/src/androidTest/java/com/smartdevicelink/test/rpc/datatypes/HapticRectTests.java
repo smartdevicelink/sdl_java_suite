@@ -4,7 +4,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -24,8 +24,8 @@ public class HapticRectTests extends TestCase {
 	public void setUp() {
 		msg = new HapticRect();
 
-		msg.setId(Test.GENERAL_INTEGER);
-		msg.setRect(Test.GENERAL_RECTANGLE);
+		msg.setId(TestValues.GENERAL_INTEGER);
+		msg.setRect(TestValues.GENERAL_RECTANGLE);
 	}
 
 	/**
@@ -37,28 +37,28 @@ public class HapticRectTests extends TestCase {
 		Rectangle rect = msg.getRect();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, id);
-		assertEquals(Test.MATCH, Test.GENERAL_RECTANGLE, rect);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, id);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_RECTANGLE, rect);
 
 		// Invalid/Null Tests
 		HapticRect msg = new HapticRect();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getId());
-		assertNull(Test.NULL, msg.getRect());
+		assertNull(TestValues.NULL, msg.getId());
+		assertNull(TestValues.NULL, msg.getRect());
 	}
 
 	public void testJson(){
 		JSONObject reference = new JSONObject();
 
 		try{
-			reference.put(HapticRect.KEY_ID, Test.GENERAL_INTEGER);
-			reference.put(HapticRect.KEY_RECT, Test.GENERAL_RECTANGLE);
+			reference.put(HapticRect.KEY_ID, TestValues.GENERAL_INTEGER);
+			reference.put(HapticRect.KEY_RECT, TestValues.GENERAL_RECTANGLE);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(reference, HapticRect.KEY_ID),
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(reference, HapticRect.KEY_ID),
 					JsonUtils.readIntegerFromJsonObject(underTest, HapticRect.KEY_ID));
 
 			assertTrue(Validator.validateRectangle(
@@ -67,7 +67,7 @@ public class HapticRectTests extends TestCase {
 			);
 
 		} catch(JSONException e){
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

@@ -281,7 +281,7 @@ public class RPCConstructorsTests {
                         if (param.isArray){
                             valueString += "_LIST";
                         }
-                        value = Class.forName("com.smartdevicelink.test.Test").getDeclaredField(valueString).get(null);
+                        value = Class.forName("com.smartdevicelink.test.TestValues").getDeclaredField(valueString).get(null);
                     }
 
                 } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {

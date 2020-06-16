@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.DeleteInteractionChoiceSet;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
@@ -24,7 +24,7 @@ public class DeleteInteractionChoiceSetTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         DeleteInteractionChoiceSet msg = new DeleteInteractionChoiceSet();
 
-        msg.setInteractionChoiceSetID(Test.GENERAL_INT);
+        msg.setInteractionChoiceSetID(TestValues.GENERAL_INT);
 
         return msg;
     }
@@ -44,9 +44,9 @@ public class DeleteInteractionChoiceSetTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(DeleteInteractionChoiceSet.KEY_INTERACTION_CHOICE_SET_ID, Test.GENERAL_INT);
+            result.put(DeleteInteractionChoiceSet.KEY_INTERACTION_CHOICE_SET_ID, TestValues.GENERAL_INT);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -60,14 +60,14 @@ public class DeleteInteractionChoiceSetTests extends BaseRpcTests{
         int testChoiceSetId = ( (DeleteInteractionChoiceSet) msg ).getInteractionChoiceSetID();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_INT, testChoiceSetId);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, testChoiceSetId);
         	
     	// Invalid/Null Tests
         DeleteInteractionChoiceSet msg = new DeleteInteractionChoiceSet();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getInteractionChoiceSetID());
+        assertNull(TestValues.NULL, msg.getInteractionChoiceSetID());
     }
 
     /**
@@ -75,23 +75,23 @@ public class DeleteInteractionChoiceSetTests extends BaseRpcTests{
      */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			DeleteInteractionChoiceSet cmd = new DeleteInteractionChoiceSet(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, DeleteInteractionChoiceSet.KEY_INTERACTION_CHOICE_SET_ID), cmd.getInteractionChoiceSetID());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, DeleteInteractionChoiceSet.KEY_INTERACTION_CHOICE_SET_ID), cmd.getInteractionChoiceSetID());
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}    	
     }    
 }

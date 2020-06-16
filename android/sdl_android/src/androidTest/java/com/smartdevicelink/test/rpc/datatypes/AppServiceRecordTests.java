@@ -4,7 +4,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.AppServiceManifest;
 import com.smartdevicelink.proxy.rpc.AppServiceRecord;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -27,10 +27,10 @@ public class AppServiceRecordTests extends TestCase {
 	public void setUp(){
 
 		msg = new AppServiceRecord();
-		msg.setServicePublished(Test.GENERAL_BOOLEAN);
-		msg.setServiceActive(Test.GENERAL_BOOLEAN);
-		msg.setServiceManifest(Test.GENERAL_APPSERVICEMANIFEST);
-		msg.setServiceID(Test.GENERAL_STRING);
+		msg.setServicePublished(TestValues.GENERAL_BOOLEAN);
+		msg.setServiceActive(TestValues.GENERAL_BOOLEAN);
+		msg.setServiceManifest(TestValues.GENERAL_APPSERVICEMANIFEST);
+		msg.setServiceID(TestValues.GENERAL_STRING);
 
 	}
 
@@ -46,23 +46,23 @@ public class AppServiceRecordTests extends TestCase {
 		String serviceID = msg.getServiceID();
 
 		// Valid Tests
-		assertEquals(Test.GENERAL_BOOLEAN, isServicePublished);
-		assertEquals(Test.GENERAL_BOOLEAN, isServiceActive);
-		assertEquals(Test.GENERAL_APPSERVICEMANIFEST, serviceManifest);
-		assertEquals(Test.GENERAL_STRING, serviceID);
+		assertEquals(TestValues.GENERAL_BOOLEAN, isServicePublished);
+		assertEquals(TestValues.GENERAL_BOOLEAN, isServiceActive);
+		assertEquals(TestValues.GENERAL_APPSERVICEMANIFEST, serviceManifest);
+		assertEquals(TestValues.GENERAL_STRING, serviceID);
 
 		// Invalid/Null Tests
 		AppServiceRecord msg = new AppServiceRecord();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getServicePublished());
-		assertNull(Test.NULL, msg.getServiceActive());
-		assertNull(Test.NULL, msg.getServiceManifest());
-		assertNull(Test.NULL, msg.getServiceID());
+		assertNull(TestValues.NULL, msg.getServicePublished());
+		assertNull(TestValues.NULL, msg.getServiceActive());
+		assertNull(TestValues.NULL, msg.getServiceManifest());
+		assertNull(TestValues.NULL, msg.getServiceID());
 	}
 
 	public void testRequiredParamsConstructor(){
-		msg = new AppServiceRecord(Test.GENERAL_STRING, Test.GENERAL_APPSERVICEMANIFEST, Test.GENERAL_BOOLEAN, Test.GENERAL_BOOLEAN);
+		msg = new AppServiceRecord(TestValues.GENERAL_STRING, TestValues.GENERAL_APPSERVICEMANIFEST, TestValues.GENERAL_BOOLEAN, TestValues.GENERAL_BOOLEAN);
 
 		boolean isServicePublished = msg.getServicePublished();
 		boolean isServiceActive = msg.getServiceActive();
@@ -70,23 +70,23 @@ public class AppServiceRecordTests extends TestCase {
 		String serviceID = msg.getServiceID();
 
 		// Valid Tests
-		assertEquals(Test.GENERAL_BOOLEAN, isServicePublished);
-		assertEquals(Test.GENERAL_BOOLEAN, isServiceActive);
-		assertEquals(Test.GENERAL_APPSERVICEMANIFEST, serviceManifest);
-		assertEquals(Test.GENERAL_STRING, serviceID);
+		assertEquals(TestValues.GENERAL_BOOLEAN, isServicePublished);
+		assertEquals(TestValues.GENERAL_BOOLEAN, isServiceActive);
+		assertEquals(TestValues.GENERAL_APPSERVICEMANIFEST, serviceManifest);
+		assertEquals(TestValues.GENERAL_STRING, serviceID);
 	}
 
 	public void testJson(){
 		JSONObject reference = new JSONObject();
 
 		try{
-			reference.put(AppServiceRecord.KEY_SERVICE_ACTIVE, Test.GENERAL_BOOLEAN);
-			reference.put(AppServiceRecord.KEY_SERVICE_PUBLISHED, Test.GENERAL_BOOLEAN);
-			reference.put(AppServiceRecord.KEY_SERVICE_ID, Test.GENERAL_STRING);
-			reference.put(AppServiceRecord.KEY_SERVICE_MANIFEST, Test.GENERAL_APPSERVICEMANIFEST);
+			reference.put(AppServiceRecord.KEY_SERVICE_ACTIVE, TestValues.GENERAL_BOOLEAN);
+			reference.put(AppServiceRecord.KEY_SERVICE_PUBLISHED, TestValues.GENERAL_BOOLEAN);
+			reference.put(AppServiceRecord.KEY_SERVICE_ID, TestValues.GENERAL_STRING);
+			reference.put(AppServiceRecord.KEY_SERVICE_MANIFEST, TestValues.GENERAL_APPSERVICEMANIFEST);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while(iterator.hasNext()){
@@ -95,13 +95,13 @@ public class AppServiceRecordTests extends TestCase {
 				if(key.equals(AppServiceRecord.KEY_SERVICE_MANIFEST)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateAppServiceManifest( Test.GENERAL_APPSERVICEMANIFEST, new AppServiceManifest(hashTest)));
+					assertTrue(TestValues.TRUE, Validator.validateAppServiceManifest( TestValues.GENERAL_APPSERVICEMANIFEST, new AppServiceManifest(hashTest)));
 				}else {
-					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+					assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}
 			}
 		} catch(JSONException e){
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

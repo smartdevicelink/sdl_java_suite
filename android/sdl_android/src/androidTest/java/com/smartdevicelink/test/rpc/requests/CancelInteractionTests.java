@@ -40,7 +40,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.CancelInteraction;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
@@ -57,8 +57,8 @@ public class CancelInteractionTests extends BaseRpcTests {
     @Override
     protected RPCMessage createMessage() {
         CancelInteraction msg = new CancelInteraction();
-        msg.setInteractionFunctionID(Test.GENERAL_INTEGER);
-        msg.setCancelID(Test.GENERAL_INTEGER);
+        msg.setInteractionFunctionID(TestValues.GENERAL_INTEGER);
+        msg.setCancelID(TestValues.GENERAL_INTEGER);
         return msg;
     }
 
@@ -77,10 +77,10 @@ public class CancelInteractionTests extends BaseRpcTests {
         JSONObject result = new JSONObject();
 
         try {
-            result.put(CancelInteraction.KEY_FUNCTION_ID, Test.GENERAL_INTEGER);
-            result.put(CancelInteraction.KEY_CANCEL_ID, Test.GENERAL_INTEGER);
+            result.put(CancelInteraction.KEY_FUNCTION_ID, TestValues.GENERAL_INTEGER);
+            result.put(CancelInteraction.KEY_CANCEL_ID, TestValues.GENERAL_INTEGER);
         } catch (JSONException e) {
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -95,16 +95,16 @@ public class CancelInteractionTests extends BaseRpcTests {
         Integer testCancelID    = ((CancelInteraction) msg).getCancelID();
 
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testFunctionID);
-        assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testCancelID);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, testFunctionID);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, testCancelID);
 
         // Invalid/Null Tests
         CancelInteraction msg = new CancelInteraction();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getInteractionFunctionID());
-        assertNull(Test.NULL, msg.getCancelID());
+        assertNull(TestValues.NULL, msg.getInteractionFunctionID());
+        assertNull(TestValues.NULL, msg.getCancelID());
     }
 
     /**
@@ -112,24 +112,24 @@ public class CancelInteractionTests extends BaseRpcTests {
      */
     public void testJsonConstructor () {
         JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-        assertNotNull(Test.NOT_NULL, commandJson);
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
         try {
             Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
             CancelInteraction cmd = new CancelInteraction(hash);
             JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-            assertNotNull(Test.NOT_NULL, body);
+            assertNotNull(TestValues.NOT_NULL, body);
 
             // Test everything in the json body.
-            assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-            assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
             JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 
-            assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, CancelInteraction.KEY_FUNCTION_ID), cmd.getInteractionFunctionID());
-            assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, CancelInteraction.KEY_CANCEL_ID), cmd.getCancelID());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, CancelInteraction.KEY_FUNCTION_ID), cmd.getInteractionFunctionID());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, CancelInteraction.KEY_CANCEL_ID), cmd.getCancelID());
         }
         catch (JSONException e) {
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

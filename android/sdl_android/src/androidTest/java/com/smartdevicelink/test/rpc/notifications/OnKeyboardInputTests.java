@@ -5,7 +5,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnKeyboardInput;
 import com.smartdevicelink.proxy.rpc.enums.KeyboardEvent;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,8 +20,8 @@ public class OnKeyboardInputTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         OnKeyboardInput msg = new OnKeyboardInput();
 
-        msg.setData(Test.GENERAL_STRING);
-        msg.setEvent(Test.GENERAL_KEYBOARDEVENT);
+        msg.setData(TestValues.GENERAL_STRING);
+        msg.setEvent(TestValues.GENERAL_KEYBOARDEVENT);
 
         return msg;
     }
@@ -41,10 +41,10 @@ public class OnKeyboardInputTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnKeyboardInput.KEY_DATA, Test.GENERAL_STRING);
-            result.put(OnKeyboardInput.KEY_EVENT, Test.GENERAL_KEYBOARDEVENT);
+            result.put(OnKeyboardInput.KEY_DATA, TestValues.GENERAL_STRING);
+            result.put(OnKeyboardInput.KEY_EVENT, TestValues.GENERAL_KEYBOARDEVENT);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -59,15 +59,15 @@ public class OnKeyboardInputTests extends BaseRpcTests{
         String data = ( (OnKeyboardInput) msg ).getData();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_KEYBOARDEVENT, event);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, data);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_KEYBOARDEVENT, event);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, data);
     
         // Invalid/Null Tests
         OnKeyboardInput msg = new OnKeyboardInput();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getData());
-        assertNull(Test.NULL, msg.getEvent());
+        assertNull(TestValues.NULL, msg.getData());
+        assertNull(TestValues.NULL, msg.getEvent());
     }
 }

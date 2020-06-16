@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.rpc.SetDisplayLayout;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
@@ -27,9 +27,9 @@ public class SetDisplayLayoutTests extends BaseRpcTests {
 	protected RPCMessage createMessage() {
 		SetDisplayLayout msg = new SetDisplayLayout();
 
-		msg.setDisplayLayout(Test.GENERAL_STRING);
-		msg.setDayColorScheme(Test.GENERAL_DAYCOLORSCHEME);
-		msg.setNightColorScheme(Test.GENERAL_NIGHTCOLORSCHEME);
+		msg.setDisplayLayout(TestValues.GENERAL_STRING);
+		msg.setDayColorScheme(TestValues.GENERAL_DAYCOLORSCHEME);
+		msg.setNightColorScheme(TestValues.GENERAL_NIGHTCOLORSCHEME);
 
 		return msg;
 	}
@@ -49,11 +49,11 @@ public class SetDisplayLayoutTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-			result.put(SetDisplayLayout.KEY_DISPLAY_LAYOUT, Test.GENERAL_STRING);
-			result.put(SetDisplayLayout.KEY_DAY_COLOR_SCHEME, Test.JSON_DAYCOLORSCHEME);
-			result.put(SetDisplayLayout.KEY_NIGHT_COLOR_SCHEME, Test.JSON_NIGHTCOLORSCHEME);
+			result.put(SetDisplayLayout.KEY_DISPLAY_LAYOUT, TestValues.GENERAL_STRING);
+			result.put(SetDisplayLayout.KEY_DAY_COLOR_SCHEME, TestValues.JSON_DAYCOLORSCHEME);
+			result.put(SetDisplayLayout.KEY_NIGHT_COLOR_SCHEME, TestValues.JSON_NIGHTCOLORSCHEME);
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 
 		return result;
@@ -69,18 +69,18 @@ public class SetDisplayLayoutTests extends BaseRpcTests {
 		TemplateColorScheme testNightColorScheme = ( (SetDisplayLayout) msg).getNightColorScheme();
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testDisplayLayout);
-		assertTrue(Test.TRUE, Validator.validateTemplateColorScheme(Test.GENERAL_DAYCOLORSCHEME, testDayColorScheme));
-		assertTrue(Test.TRUE, Validator.validateTemplateColorScheme(Test.GENERAL_NIGHTCOLORSCHEME, testNightColorScheme));
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testDisplayLayout);
+		assertTrue(TestValues.TRUE, Validator.validateTemplateColorScheme(TestValues.GENERAL_DAYCOLORSCHEME, testDayColorScheme));
+		assertTrue(TestValues.TRUE, Validator.validateTemplateColorScheme(TestValues.GENERAL_NIGHTCOLORSCHEME, testNightColorScheme));
 		
 		// Invalid/Null Tests
 		SetDisplayLayout msg = new SetDisplayLayout();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull(Test.NULL, msg.getDisplayLayout());
-		assertNull(Test.NULL, msg.getDayColorScheme());
-		assertNull(Test.NULL, msg.getNightColorScheme());
+		assertNull(TestValues.NULL, msg.getDisplayLayout());
+		assertNull(TestValues.NULL, msg.getDayColorScheme());
+		assertNull(TestValues.NULL, msg.getNightColorScheme());
 	}
 	
 	/**
@@ -88,34 +88,34 @@ public class SetDisplayLayoutTests extends BaseRpcTests {
      */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			SetDisplayLayout cmd = new SetDisplayLayout(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.MATCH, body);
+			assertNotNull(TestValues.MATCH, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, SetDisplayLayout.KEY_DISPLAY_LAYOUT), cmd.getDisplayLayout());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, SetDisplayLayout.KEY_DISPLAY_LAYOUT), cmd.getDisplayLayout());
 
 
 			JSONObject dayColorSchemeObj = JsonUtils.readJsonObjectFromJsonObject(parameters, SetDisplayLayout.KEY_DAY_COLOR_SCHEME);
 			TemplateColorScheme dayColorScheme = new TemplateColorScheme(JsonRPCMarshaller.deserializeJSONObject(dayColorSchemeObj));
-			assertTrue(Test.TRUE,  Validator.validateTemplateColorScheme(dayColorScheme, cmd.getDayColorScheme()) );
+			assertTrue(TestValues.TRUE,  Validator.validateTemplateColorScheme(dayColorScheme, cmd.getDayColorScheme()) );
 
 			JSONObject nightColorSchemeObj = JsonUtils.readJsonObjectFromJsonObject(parameters, SetDisplayLayout.KEY_DAY_COLOR_SCHEME);
 			TemplateColorScheme nightColorScheme = new TemplateColorScheme(JsonRPCMarshaller.deserializeJSONObject(nightColorSchemeObj));
-			assertTrue(Test.TRUE,  Validator.validateTemplateColorScheme(nightColorScheme, cmd.getDayColorScheme()) );
+			assertTrue(TestValues.TRUE,  Validator.validateTemplateColorScheme(nightColorScheme, cmd.getDayColorScheme()) );
 
 			
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}    	
     }
 }

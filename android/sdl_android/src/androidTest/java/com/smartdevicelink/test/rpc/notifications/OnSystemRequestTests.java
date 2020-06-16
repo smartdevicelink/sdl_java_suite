@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.rpc.OnSystemRequest;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.RequestType;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import org.json.JSONException;
@@ -23,13 +23,13 @@ public class OnSystemRequestTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         OnSystemRequest msg = new OnSystemRequest();
 
-        msg.setFileType(Test.GENERAL_FILETYPE);
-        msg.setLength(Test.GENERAL_LONG);
-        msg.setOffset(Test.GENERAL_LONG);
-        msg.setRequestType(Test.GENERAL_REQUESTTYPE);
-        msg.setRequestSubType(Test.GENERAL_STRING);
-        msg.setTimeout(Test.GENERAL_INT);
-        msg.setUrl(Test.GENERAL_STRING);
+        msg.setFileType(TestValues.GENERAL_FILETYPE);
+        msg.setLength(TestValues.GENERAL_LONG);
+        msg.setOffset(TestValues.GENERAL_LONG);
+        msg.setRequestType(TestValues.GENERAL_REQUESTTYPE);
+        msg.setRequestSubType(TestValues.GENERAL_STRING);
+        msg.setTimeout(TestValues.GENERAL_INT);
+        msg.setUrl(TestValues.GENERAL_STRING);
 
         return msg;
     }
@@ -49,15 +49,15 @@ public class OnSystemRequestTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnSystemRequest.KEY_FILE_TYPE, Test.GENERAL_FILETYPE);
-            result.put(OnSystemRequest.KEY_LENGTH, Test.GENERAL_LONG);
-            result.put(OnSystemRequest.KEY_TIMEOUT, Test.GENERAL_INT);
-            result.put(OnSystemRequest.KEY_OFFSET, Test.GENERAL_LONG);
-            result.put(OnSystemRequest.KEY_URL, Test.GENERAL_STRING);
-            result.put(OnSystemRequest.KEY_REQUEST_TYPE, Test.GENERAL_REQUESTTYPE);
-            result.put(OnSystemRequest.KEY_REQUEST_SUB_TYPE, Test.GENERAL_STRING);
+            result.put(OnSystemRequest.KEY_FILE_TYPE, TestValues.GENERAL_FILETYPE);
+            result.put(OnSystemRequest.KEY_LENGTH, TestValues.GENERAL_LONG);
+            result.put(OnSystemRequest.KEY_TIMEOUT, TestValues.GENERAL_INT);
+            result.put(OnSystemRequest.KEY_OFFSET, TestValues.GENERAL_LONG);
+            result.put(OnSystemRequest.KEY_URL, TestValues.GENERAL_STRING);
+            result.put(OnSystemRequest.KEY_REQUEST_TYPE, TestValues.GENERAL_REQUESTTYPE);
+            result.put(OnSystemRequest.KEY_REQUEST_SUB_TYPE, TestValues.GENERAL_STRING);
         } catch(JSONException e) {
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -78,28 +78,28 @@ public class OnSystemRequestTests extends BaseRpcTests{
         
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_FILETYPE, fileType);
-        assertEquals(Test.MATCH, Test.GENERAL_LONG, length);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, timeout);
-        assertEquals(Test.MATCH, Test.GENERAL_LONG, offset);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, url);
-        assertEquals(Test.MATCH, Test.GENERAL_REQUESTTYPE, requestType);
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, requestSubType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_FILETYPE, fileType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_LONG, length);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, timeout);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_LONG, offset);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, url);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_REQUESTTYPE, requestType);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, requestSubType);
         
         // Test Body
         OnSystemRequest osr = (OnSystemRequest) msg;
         String body = osr.getBody();
-        assertNull(Test.NULL, body);
+        assertNull(TestValues.NULL, body);
         
         String testBody = "123ABC";        
         osr.setBody(testBody);
         
         String readBody = osr.getBody();
-        assertEquals(Test.MATCH, testBody, readBody);
+        assertEquals(TestValues.MATCH, testBody, readBody);
     
         // Test Headers     
         Headers headers = osr.getHeader();
-        assertNull(Test.NULL, headers);
+        assertNull(TestValues.NULL, headers);
         
         Headers testHeaders = new Headers();
         testHeaders.setCharset("ASCII");
@@ -115,19 +115,19 @@ public class OnSystemRequestTests extends BaseRpcTests{
         osr.setHeaders(testHeaders);
         
         Headers readHeaders = osr.getHeader();
-        assertTrue(Test.TRUE, Validator.validateHeaders(testHeaders, readHeaders));
+        assertTrue(TestValues.TRUE, Validator.validateHeaders(testHeaders, readHeaders));
     
         // Invalid/Null Tests
         OnSystemRequest msg = new OnSystemRequest();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getFileType());
-        assertNull(Test.NULL, msg.getLength());
-        assertNull(Test.NULL, msg.getOffset());
-        assertNull(Test.NULL, msg.getTimeout());
-        assertNull(Test.NULL, msg.getUrl());
-        assertNull(Test.NULL, msg.getRequestType());
-        assertNull(Test.NULL, msg.getRequestSubType());
+        assertNull(TestValues.NULL, msg.getFileType());
+        assertNull(TestValues.NULL, msg.getLength());
+        assertNull(TestValues.NULL, msg.getOffset());
+        assertNull(TestValues.NULL, msg.getTimeout());
+        assertNull(TestValues.NULL, msg.getUrl());
+        assertNull(TestValues.NULL, msg.getRequestType());
+        assertNull(TestValues.NULL, msg.getRequestSubType());
     }
 }

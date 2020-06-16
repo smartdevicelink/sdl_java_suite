@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.rpc.AppServiceRecord;
 import com.smartdevicelink.proxy.rpc.PublishAppServiceResponse;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
@@ -27,7 +27,7 @@ public class PublishAppServiceResponseTests extends BaseRpcTests {
 
 		PublishAppServiceResponse msg = new PublishAppServiceResponse();
 
-		msg.setServiceRecord(Test.GENERAL_APPSERVICERECORD);
+		msg.setServiceRecord(TestValues.GENERAL_APPSERVICERECORD);
 
 		return msg;
 	}
@@ -47,9 +47,9 @@ public class PublishAppServiceResponseTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try{
-			result.put(PublishAppServiceResponse.KEY_APP_SERVICE_RECORD, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_APPSERVICERECORD.getStore()));
+			result.put(PublishAppServiceResponse.KEY_APP_SERVICE_RECORD, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_APPSERVICERECORD.getStore()));
 		}catch(JSONException e){
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 
 		return result;
@@ -63,14 +63,14 @@ public class PublishAppServiceResponseTests extends BaseRpcTests {
 		AppServiceRecord testRecord = ( (PublishAppServiceResponse) msg ).getServiceRecord();
 
 		// Valid Tests
-		assertTrue(Test.TRUE, Validator.validateAppServiceRecord(Test.GENERAL_APPSERVICERECORD, testRecord));
+		assertTrue(TestValues.TRUE, Validator.validateAppServiceRecord(TestValues.GENERAL_APPSERVICERECORD, testRecord));
 
 		// Invalid/Null Tests
 		PublishAppServiceResponse msg = new PublishAppServiceResponse();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull(Test.NULL, msg.getServiceRecord());
+		assertNull(TestValues.NULL, msg.getServiceRecord());
 	}
 
 	/**
@@ -78,24 +78,24 @@ public class PublishAppServiceResponseTests extends BaseRpcTests {
 	 */
 	public void testJsonConstructor () {
 		JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-		assertNotNull(Test.NOT_NULL, commandJson);
+		assertNotNull(TestValues.NOT_NULL, commandJson);
 
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			PublishAppServiceResponse cmd = new PublishAppServiceResponse (hash);
 
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 
 			JSONObject appServiceRecordObject = JsonUtils.readJsonObjectFromJsonObject(parameters, PublishAppServiceResponse.KEY_APP_SERVICE_RECORD);
 			AppServiceRecord recordTest = new AppServiceRecord(JsonRPCMarshaller.deserializeJSONObject(appServiceRecordObject));
-			assertTrue(Test.TRUE,  Validator.validateAppServiceRecord(recordTest, cmd.getServiceRecord()));
+			assertTrue(TestValues.TRUE,  Validator.validateAppServiceRecord(recordTest, cmd.getServiceRecord()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

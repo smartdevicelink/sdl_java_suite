@@ -5,7 +5,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.OnLanguageChange;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,8 +20,8 @@ public class OnLanguageChangeTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         OnLanguageChange msg = new OnLanguageChange();
 
-        msg.setLanguage(Test.GENERAL_LANGUAGE);
-        msg.setHmiDisplayLanguage(Test.GENERAL_LANGUAGE);
+        msg.setLanguage(TestValues.GENERAL_LANGUAGE);
+        msg.setHmiDisplayLanguage(TestValues.GENERAL_LANGUAGE);
 
         return msg;
     }
@@ -41,10 +41,10 @@ public class OnLanguageChangeTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnLanguageChange.KEY_LANGUAGE, Test.GENERAL_LANGUAGE);
-            result.put(OnLanguageChange.KEY_HMI_DISPLAY_LANGUAGE, Test.GENERAL_LANGUAGE);
+            result.put(OnLanguageChange.KEY_LANGUAGE, TestValues.GENERAL_LANGUAGE);
+            result.put(OnLanguageChange.KEY_HMI_DISPLAY_LANGUAGE, TestValues.GENERAL_LANGUAGE);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -59,15 +59,15 @@ public class OnLanguageChangeTests extends BaseRpcTests{
         Language hmiLang = ( (OnLanguageChange) msg ).getHmiDisplayLanguage();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_LANGUAGE, lang);
-        assertEquals(Test.MATCH, Test.GENERAL_LANGUAGE, hmiLang);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_LANGUAGE, lang);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_LANGUAGE, hmiLang);
     
         // Invalid/Null Tests
         OnLanguageChange msg = new OnLanguageChange();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getLanguage());
-        assertNull(Test.NULL, msg.getHmiDisplayLanguage());
+        assertNull(TestValues.NULL, msg.getLanguage());
+        assertNull(TestValues.NULL, msg.getHmiDisplayLanguage());
     }
 }

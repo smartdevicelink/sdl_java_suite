@@ -10,7 +10,7 @@ import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
@@ -32,16 +32,16 @@ public class PerformInteractionTests extends BaseRpcTests {
 	protected RPCMessage createMessage() {
 		PerformInteraction msg = new PerformInteraction();
 
-		msg.setInitialPrompt(Test.GENERAL_TTSCHUNK_LIST);
-		msg.setHelpPrompt(Test.GENERAL_TTSCHUNK_LIST);
-		msg.setTimeoutPrompt(Test.GENERAL_TTSCHUNK_LIST);
-		msg.setVrHelp(Test.GENERAL_VRHELPITEM_LIST);
-		msg.setInteractionChoiceSetIDList(Test.GENERAL_INTEGER_LIST);
-		msg.setInteractionLayout(Test.GENERAL_LAYOUTMODE);
-		msg.setInitialText(Test.GENERAL_STRING);
-		msg.setInteractionMode(Test.GENERAL_INTERACTIONMODE);
-		msg.setTimeout(Test.GENERAL_INT);
-		msg.setCancelID(Test.GENERAL_INTEGER);
+		msg.setInitialPrompt(TestValues.GENERAL_TTSCHUNK_LIST);
+		msg.setHelpPrompt(TestValues.GENERAL_TTSCHUNK_LIST);
+		msg.setTimeoutPrompt(TestValues.GENERAL_TTSCHUNK_LIST);
+		msg.setVrHelp(TestValues.GENERAL_VRHELPITEM_LIST);
+		msg.setInteractionChoiceSetIDList(TestValues.GENERAL_INTEGER_LIST);
+		msg.setInteractionLayout(TestValues.GENERAL_LAYOUTMODE);
+		msg.setInitialText(TestValues.GENERAL_STRING);
+		msg.setInteractionMode(TestValues.GENERAL_INTERACTIONMODE);
+		msg.setTimeout(TestValues.GENERAL_INT);
+		msg.setCancelID(TestValues.GENERAL_INTEGER);
 
 		return msg;
 	}
@@ -61,18 +61,18 @@ public class PerformInteractionTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {			
-			result.put(PerformInteraction.KEY_INITIAL_PROMPT, Test.JSON_TTSCHUNKS);
-			result.put(PerformInteraction.KEY_HELP_PROMPT, Test.JSON_TTSCHUNKS);
-			result.put(PerformInteraction.KEY_TIMEOUT_PROMPT, Test.JSON_TTSCHUNKS);
-			result.put(PerformInteraction.KEY_VR_HELP, Test.JSON_VRHELPITEMS);
-			result.put(PerformInteraction.KEY_INTERACTION_CHOICE_SET_ID_LIST, JsonUtils.createJsonArray(Test.GENERAL_INTEGER_LIST));
-			result.put(PerformInteraction.KEY_INTERACTION_LAYOUT, Test.GENERAL_LAYOUTMODE);
-			result.put(PerformInteraction.KEY_INITIAL_TEXT, Test.GENERAL_STRING);
-			result.put(PerformInteraction.KEY_INTERACTION_MODE, Test.GENERAL_INTERACTIONMODE);
-			result.put(PerformInteraction.KEY_TIMEOUT, Test.GENERAL_INT);
-			result.put(PerformInteraction.KEY_CANCEL_ID, Test.GENERAL_INTEGER);
+			result.put(PerformInteraction.KEY_INITIAL_PROMPT, TestValues.JSON_TTSCHUNKS);
+			result.put(PerformInteraction.KEY_HELP_PROMPT, TestValues.JSON_TTSCHUNKS);
+			result.put(PerformInteraction.KEY_TIMEOUT_PROMPT, TestValues.JSON_TTSCHUNKS);
+			result.put(PerformInteraction.KEY_VR_HELP, TestValues.JSON_VRHELPITEMS);
+			result.put(PerformInteraction.KEY_INTERACTION_CHOICE_SET_ID_LIST, JsonUtils.createJsonArray(TestValues.GENERAL_INTEGER_LIST));
+			result.put(PerformInteraction.KEY_INTERACTION_LAYOUT, TestValues.GENERAL_LAYOUTMODE);
+			result.put(PerformInteraction.KEY_INITIAL_TEXT, TestValues.GENERAL_STRING);
+			result.put(PerformInteraction.KEY_INTERACTION_MODE, TestValues.GENERAL_INTERACTIONMODE);
+			result.put(PerformInteraction.KEY_TIMEOUT, TestValues.GENERAL_INT);
+			result.put(PerformInteraction.KEY_CANCEL_ID, TestValues.GENERAL_INTEGER);
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 
 		return result;
@@ -95,33 +95,33 @@ public class PerformInteractionTests extends BaseRpcTests {
 		Integer testCancelID = ( (PerformInteraction) msg ).getCancelID();
 		
 		// Valid Tests
-		assertTrue(Test.TRUE, Validator.validateTtsChunks(Test.GENERAL_TTSCHUNK_LIST, testInitialPrompt));
-		assertTrue(Test.TRUE, Validator.validateTtsChunks(Test.GENERAL_TTSCHUNK_LIST, testHelpPrompt));
-		assertTrue(Test.TRUE, Validator.validateTtsChunks(Test.GENERAL_TTSCHUNK_LIST, testTimeoutPrompt));
-		assertTrue(Test.TRUE, Validator.validateVrHelpItems(Test.GENERAL_VRHELPITEM_LIST, testVrHelpItems));
-		assertEquals(Test.MATCH, Test.GENERAL_INTEGER_LIST, testChoiceSetIds);
-		assertEquals(Test.MATCH, Test.GENERAL_LAYOUTMODE, testLayout);
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, testInitialText);
-		assertEquals(Test.MATCH, Test.GENERAL_INTERACTIONMODE, testMode);
-		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, testTimeout);
-		assertEquals(Test.MATCH, Test.GENERAL_INTEGER, testCancelID);
+		assertTrue(TestValues.TRUE, Validator.validateTtsChunks(TestValues.GENERAL_TTSCHUNK_LIST, testInitialPrompt));
+		assertTrue(TestValues.TRUE, Validator.validateTtsChunks(TestValues.GENERAL_TTSCHUNK_LIST, testHelpPrompt));
+		assertTrue(TestValues.TRUE, Validator.validateTtsChunks(TestValues.GENERAL_TTSCHUNK_LIST, testTimeoutPrompt));
+		assertTrue(TestValues.TRUE, Validator.validateVrHelpItems(TestValues.GENERAL_VRHELPITEM_LIST, testVrHelpItems));
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER_LIST, testChoiceSetIds);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_LAYOUTMODE, testLayout);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testInitialText);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_INTERACTIONMODE, testMode);
+		assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, testTimeout);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_INTEGER, testCancelID);
 	
 		// Invald/Null Tests
 		PerformInteraction msg = new PerformInteraction();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
 		testNullBase(msg);
 
-		assertNull(Test.NULL, msg.getInitialPrompt());
-		assertNull(Test.NULL, msg.getHelpPrompt());
-		assertNull(Test.NULL, msg.getTimeoutPrompt());
-		assertNull(Test.NULL, msg.getVrHelp());
-		assertNull(Test.NULL, msg.getInteractionChoiceSetIDList());
-		assertNull(Test.NULL, msg.getInteractionLayout());
-		assertNull(Test.NULL, msg.getInitialText());
-		assertNull(Test.NULL, msg.getInteractionMode());
-		assertNull(Test.NULL, msg.getTimeout());
-		assertNull(Test.NULL, msg.getCancelID());
+		assertNull(TestValues.NULL, msg.getInitialPrompt());
+		assertNull(TestValues.NULL, msg.getHelpPrompt());
+		assertNull(TestValues.NULL, msg.getTimeoutPrompt());
+		assertNull(TestValues.NULL, msg.getVrHelp());
+		assertNull(TestValues.NULL, msg.getInteractionChoiceSetIDList());
+		assertNull(TestValues.NULL, msg.getInteractionLayout());
+		assertNull(TestValues.NULL, msg.getInitialText());
+		assertNull(TestValues.NULL, msg.getInteractionMode());
+		assertNull(TestValues.NULL, msg.getTimeout());
+		assertNull(TestValues.NULL, msg.getCancelID());
 	}
 
     /**
@@ -129,30 +129,30 @@ public class PerformInteractionTests extends BaseRpcTests {
      */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			PerformInteraction cmd = new PerformInteraction(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformInteraction.KEY_INITIAL_TEXT), cmd.getInitialText());
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformInteraction.KEY_INTERACTION_MODE), cmd.getInteractionMode().toString());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PerformInteraction.KEY_CANCEL_ID), cmd.getCancelID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformInteraction.KEY_INITIAL_TEXT), cmd.getInitialText());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformInteraction.KEY_INTERACTION_MODE), cmd.getInteractionMode().toString());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PerformInteraction.KEY_CANCEL_ID), cmd.getCancelID());
 
 			List<Integer> interactionIDList = JsonUtils.readIntegerListFromJsonObject(parameters, PerformInteraction.KEY_INTERACTION_CHOICE_SET_ID_LIST);
 			List<Integer> testIDList = cmd.getInteractionChoiceSetIDList();
-			assertEquals(Test.MATCH, interactionIDList.size(), testIDList.size());
-			assertTrue(Test.TRUE, Validator.validateIntegerList(interactionIDList, testIDList));
+			assertEquals(TestValues.MATCH, interactionIDList.size(), testIDList.size());
+			assertTrue(TestValues.TRUE, Validator.validateIntegerList(interactionIDList, testIDList));
 			
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformInteraction.KEY_INTERACTION_LAYOUT), cmd.getInteractionLayout().toString());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, PerformInteraction.KEY_INTERACTION_LAYOUT), cmd.getInteractionLayout().toString());
 			
 			JSONArray initalPromptArray = JsonUtils.readJsonArrayFromJsonObject(parameters, PerformInteraction.KEY_INITIAL_PROMPT);
 			List<TTSChunk> initalPromptList = new ArrayList<TTSChunk>();
@@ -160,7 +160,7 @@ public class PerformInteractionTests extends BaseRpcTests {
 	        	TTSChunk chunk = new TTSChunk(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)initalPromptArray.get(index)) );
 	        	initalPromptList.add(chunk);
 			}
-			assertTrue(Test.TRUE,  Validator.validateTtsChunks(initalPromptList, cmd.getInitialPrompt()));
+			assertTrue(TestValues.TRUE,  Validator.validateTtsChunks(initalPromptList, cmd.getInitialPrompt()));
 			
 			JSONArray helpPromptArray = JsonUtils.readJsonArrayFromJsonObject(parameters, PerformInteraction.KEY_HELP_PROMPT);
 			List<TTSChunk> helpPromptList = new ArrayList<TTSChunk>();
@@ -168,7 +168,7 @@ public class PerformInteractionTests extends BaseRpcTests {
 	        	TTSChunk chunk = new TTSChunk(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)helpPromptArray.get(index)) );
 	        	helpPromptList.add(chunk);
 			}
-			assertTrue(Test.TRUE, Validator.validateTtsChunks(helpPromptList, cmd.getHelpPrompt()));
+			assertTrue(TestValues.TRUE, Validator.validateTtsChunks(helpPromptList, cmd.getHelpPrompt()));
 			
 			JSONArray timeoutPromptArray = JsonUtils.readJsonArrayFromJsonObject(parameters, PerformInteraction.KEY_TIMEOUT_PROMPT);
 			List<TTSChunk> timeoutPromptList = new ArrayList<TTSChunk>();
@@ -176,8 +176,8 @@ public class PerformInteractionTests extends BaseRpcTests {
 	        	TTSChunk chunk = new TTSChunk(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)timeoutPromptArray.get(index)) );
 	        	timeoutPromptList.add(chunk);
 			}
-			assertTrue(Test.TRUE,  Validator.validateTtsChunks(timeoutPromptList, cmd.getTimeoutPrompt()));
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PerformInteraction.KEY_TIMEOUT), cmd.getTimeout());
+			assertTrue(TestValues.TRUE,  Validator.validateTtsChunks(timeoutPromptList, cmd.getTimeoutPrompt()));
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(parameters, PerformInteraction.KEY_TIMEOUT), cmd.getTimeout());
 			
 			JSONArray vrHelpArray = JsonUtils.readJsonArrayFromJsonObject(parameters, PerformInteraction.KEY_VR_HELP);
 			List<VrHelpItem> vrHelpList= new ArrayList<VrHelpItem>();
@@ -185,9 +185,9 @@ public class PerformInteractionTests extends BaseRpcTests {
 				VrHelpItem vrHelpItem = new VrHelpItem(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)vrHelpArray.get(index)) );
 				vrHelpList.add(vrHelpItem);
 			}
-			assertTrue(Test.TRUE,  Validator.validateVrHelpItems(vrHelpList, cmd.getVrHelp()) );
+			assertTrue(TestValues.TRUE,  Validator.validateVrHelpItems(vrHelpList, cmd.getVrHelp()) );
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}    	
     }    
 }

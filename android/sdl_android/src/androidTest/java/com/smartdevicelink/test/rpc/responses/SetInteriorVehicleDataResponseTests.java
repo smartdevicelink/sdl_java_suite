@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.rpc.ModuleData;
 import com.smartdevicelink.proxy.rpc.SetInteriorVehicleDataResponse;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
@@ -27,7 +27,7 @@ public class SetInteriorVehicleDataResponseTests extends BaseRpcTests {
 
         SetInteriorVehicleDataResponse msg = new SetInteriorVehicleDataResponse();
 
-        msg.setModuleData(Test.GENERAL_MODULEDATA);
+        msg.setModuleData(TestValues.GENERAL_MODULEDATA);
 
         return msg;
     }
@@ -47,9 +47,9 @@ public class SetInteriorVehicleDataResponseTests extends BaseRpcTests {
         JSONObject result = new JSONObject();
 
         try{
-            result.put(SetInteriorVehicleDataResponse.KEY_MODULE_DATA, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_MODULEDATA.getStore()));
+            result.put(SetInteriorVehicleDataResponse.KEY_MODULE_DATA, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_MODULEDATA.getStore()));
         }catch(JSONException e){
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -63,14 +63,14 @@ public class SetInteriorVehicleDataResponseTests extends BaseRpcTests {
         ModuleData testModuleData = ( (SetInteriorVehicleDataResponse) msg ).getModuleData();
 
         // Valid Tests
-        assertTrue(Test.TRUE, Validator.validateModuleData(Test.GENERAL_MODULEDATA, testModuleData));
+        assertTrue(TestValues.TRUE, Validator.validateModuleData(TestValues.GENERAL_MODULEDATA, testModuleData));
 
         // Invalid/Null Tests
         SetInteriorVehicleDataResponse msg = new SetInteriorVehicleDataResponse();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getModuleData());
+        assertNull(TestValues.NULL, msg.getModuleData());
     }
 
     /**
@@ -78,25 +78,25 @@ public class SetInteriorVehicleDataResponseTests extends BaseRpcTests {
      */
     public void testJsonConstructor () {
         JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-        assertNotNull(Test.NOT_NULL, commandJson);
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
         try {
             Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
             SetInteriorVehicleDataResponse cmd = new SetInteriorVehicleDataResponse (hash);
 
             JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-            assertNotNull(Test.NOT_NULL, body);
+            assertNotNull(TestValues.NOT_NULL, body);
 
             // Test everything in the json body.
-            assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-            assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
             JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
 
             ModuleData testModuleData = new ModuleData(JsonRPCMarshaller.deserializeJSONObject((JSONObject) JsonUtils.readObjectFromJsonObject(parameters, SetInteriorVehicleDataResponse.KEY_MODULE_DATA)));
             ModuleData cmdModuleData = cmd.getModuleData();
 
-            assertTrue(Test.TRUE, Validator.validateModuleData(testModuleData, cmdModuleData) );
+            assertTrue(TestValues.TRUE, Validator.validateModuleData(testModuleData, cmdModuleData) );
         } catch (JSONException e) {
             e.printStackTrace();
         }

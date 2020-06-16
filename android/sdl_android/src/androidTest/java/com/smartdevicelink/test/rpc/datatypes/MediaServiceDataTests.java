@@ -5,7 +5,7 @@ import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.MediaServiceData;
 import com.smartdevicelink.proxy.rpc.enums.MediaType;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -28,19 +28,19 @@ public class MediaServiceDataTests extends TestCase {
 	public void setUp(){
 
 		msg = new MediaServiceData();
-		msg.setMediaType(Test.GENERAL_MEDIATYPE);
-		msg.setMediaTitle(Test.GENERAL_STRING);
-		msg.setMediaArtist(Test.GENERAL_STRING);
-		msg.setMediaAlbum(Test.GENERAL_STRING);
-		msg.setMediaImage(Test.GENERAL_IMAGE);
-		msg.setPlaylistName(Test.GENERAL_STRING);
-		msg.setIsExplicit(Test.GENERAL_BOOLEAN);
-		msg.setTrackPlaybackProgress(Test.GENERAL_INTEGER);
-		msg.setTrackPlaybackDuration(Test.GENERAL_INTEGER);
-		msg.setQueuePlaybackProgress(Test.GENERAL_INTEGER);
-		msg.setQueuePlaybackDuration(Test.GENERAL_INTEGER);
-		msg.setQueueCurrentTrackNumber(Test.GENERAL_INTEGER);
-		msg.setQueueTotalTrackCount(Test.GENERAL_INTEGER);
+		msg.setMediaType(TestValues.GENERAL_MEDIATYPE);
+		msg.setMediaTitle(TestValues.GENERAL_STRING);
+		msg.setMediaArtist(TestValues.GENERAL_STRING);
+		msg.setMediaAlbum(TestValues.GENERAL_STRING);
+		msg.setMediaImage(TestValues.GENERAL_IMAGE);
+		msg.setPlaylistName(TestValues.GENERAL_STRING);
+		msg.setIsExplicit(TestValues.GENERAL_BOOLEAN);
+		msg.setTrackPlaybackProgress(TestValues.GENERAL_INTEGER);
+		msg.setTrackPlaybackDuration(TestValues.GENERAL_INTEGER);
+		msg.setQueuePlaybackProgress(TestValues.GENERAL_INTEGER);
+		msg.setQueuePlaybackDuration(TestValues.GENERAL_INTEGER);
+		msg.setQueueCurrentTrackNumber(TestValues.GENERAL_INTEGER);
+		msg.setQueueTotalTrackCount(TestValues.GENERAL_INTEGER);
 	}
 
 	/**
@@ -63,59 +63,59 @@ public class MediaServiceDataTests extends TestCase {
 		Integer queueTotalTrackCount = msg.getQueueTotalTrackCount();
 
 		// Valid Tests
-		assertEquals(Test.GENERAL_MEDIATYPE, mediaType);
-		assertEquals(Test.GENERAL_STRING, mediaTitle);
-		assertEquals(Test.GENERAL_STRING, mediaArtist);
-		assertEquals(Test.GENERAL_STRING, mediaAlbum);
-		assertEquals(Test.GENERAL_IMAGE, mediaImage);
-		assertEquals(Test.GENERAL_STRING, playlistName);
-		assertEquals(Test.GENERAL_BOOLEAN, isExplicit);
-		assertEquals(Test.GENERAL_INTEGER, trackPlaybackProgress);
-		assertEquals(Test.GENERAL_INTEGER, trackPlaybackDuration);
-		assertEquals(Test.GENERAL_INTEGER, queuePlaybackProgress);
-		assertEquals(Test.GENERAL_INTEGER, queuePlaybackDuration);
-		assertEquals(Test.GENERAL_INTEGER, queueCurrentTrackNumber);
-		assertEquals(Test.GENERAL_INTEGER, queueTotalTrackCount);
+		assertEquals(TestValues.GENERAL_MEDIATYPE, mediaType);
+		assertEquals(TestValues.GENERAL_STRING, mediaTitle);
+		assertEquals(TestValues.GENERAL_STRING, mediaArtist);
+		assertEquals(TestValues.GENERAL_STRING, mediaAlbum);
+		assertEquals(TestValues.GENERAL_IMAGE, mediaImage);
+		assertEquals(TestValues.GENERAL_STRING, playlistName);
+		assertEquals(TestValues.GENERAL_BOOLEAN, isExplicit);
+		assertEquals(TestValues.GENERAL_INTEGER, trackPlaybackProgress);
+		assertEquals(TestValues.GENERAL_INTEGER, trackPlaybackDuration);
+		assertEquals(TestValues.GENERAL_INTEGER, queuePlaybackProgress);
+		assertEquals(TestValues.GENERAL_INTEGER, queuePlaybackDuration);
+		assertEquals(TestValues.GENERAL_INTEGER, queueCurrentTrackNumber);
+		assertEquals(TestValues.GENERAL_INTEGER, queueTotalTrackCount);
 
 		// Invalid/Null Tests
 		MediaServiceData msg = new MediaServiceData();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getMediaType());
-		assertNull(Test.NULL, msg.getMediaTitle());
-		assertNull(Test.NULL, msg.getMediaArtist());
-		assertNull(Test.NULL, msg.getMediaAlbum());
-		assertNull(Test.NULL, msg.getMediaImage());
-		assertNull(Test.NULL, msg.getPlaylistName());
-		assertNull(Test.NULL, msg.getIsExplicit());
-		assertNull(Test.NULL, msg.getTrackPlaybackProgress());
-		assertNull(Test.NULL, msg.getTrackPlaybackDuration());
-		assertNull(Test.NULL, msg.getQueuePlaybackProgress());
-		assertNull(Test.NULL, msg.getQueuePlaybackDuration());
-		assertNull(Test.NULL, msg.getQueueCurrentTrackNumber());
-		assertNull(Test.NULL, msg.getQueueTotalTrackCount());
+		assertNull(TestValues.NULL, msg.getMediaType());
+		assertNull(TestValues.NULL, msg.getMediaTitle());
+		assertNull(TestValues.NULL, msg.getMediaArtist());
+		assertNull(TestValues.NULL, msg.getMediaAlbum());
+		assertNull(TestValues.NULL, msg.getMediaImage());
+		assertNull(TestValues.NULL, msg.getPlaylistName());
+		assertNull(TestValues.NULL, msg.getIsExplicit());
+		assertNull(TestValues.NULL, msg.getTrackPlaybackProgress());
+		assertNull(TestValues.NULL, msg.getTrackPlaybackDuration());
+		assertNull(TestValues.NULL, msg.getQueuePlaybackProgress());
+		assertNull(TestValues.NULL, msg.getQueuePlaybackDuration());
+		assertNull(TestValues.NULL, msg.getQueueCurrentTrackNumber());
+		assertNull(TestValues.NULL, msg.getQueueTotalTrackCount());
 	}
 
 	public void testJson(){
 		JSONObject reference = new JSONObject();
 
 		try{
-			reference.put(MediaServiceData.KEY_MEDIA_TYPE, Test.GENERAL_MEDIATYPE);
-			reference.put(MediaServiceData.KEY_MEDIA_TITLE, Test.GENERAL_STRING);
-			reference.put(MediaServiceData.KEY_MEDIA_ARTIST, Test.GENERAL_STRING);
-			reference.put(MediaServiceData.KEY_MEDIA_ALBUM, Test.GENERAL_STRING);
-			reference.put(MediaServiceData.KEY_MEDIA_IMAGE, Test.GENERAL_IMAGE);
-			reference.put(MediaServiceData.KEY_PLAYLIST_NAME, Test.GENERAL_STRING);
-			reference.put(MediaServiceData.KEY_IS_EXPLICIT, Test.GENERAL_BOOLEAN);
-			reference.put(MediaServiceData.KEY_TRACK_PLAYBACK_PROGRESS, Test.GENERAL_INTEGER);
-			reference.put(MediaServiceData.KEY_TRACK_PLAYBACK_DURATION, Test.GENERAL_INTEGER);
-			reference.put(MediaServiceData.KEY_QUEUE_PLAYBACK_PROGRESS, Test.GENERAL_INTEGER);
-			reference.put(MediaServiceData.KEY_QUEUE_PLAYBACK_DURATION, Test.GENERAL_INTEGER);
-			reference.put(MediaServiceData.KEY_QUEUE_CURRENT_TRACK_NUMBER, Test.GENERAL_INTEGER);
-			reference.put(MediaServiceData.KEY_QUEUE_TOTAL_TRACK_COUNT, Test.GENERAL_INTEGER);
+			reference.put(MediaServiceData.KEY_MEDIA_TYPE, TestValues.GENERAL_MEDIATYPE);
+			reference.put(MediaServiceData.KEY_MEDIA_TITLE, TestValues.GENERAL_STRING);
+			reference.put(MediaServiceData.KEY_MEDIA_ARTIST, TestValues.GENERAL_STRING);
+			reference.put(MediaServiceData.KEY_MEDIA_ALBUM, TestValues.GENERAL_STRING);
+			reference.put(MediaServiceData.KEY_MEDIA_IMAGE, TestValues.GENERAL_IMAGE);
+			reference.put(MediaServiceData.KEY_PLAYLIST_NAME, TestValues.GENERAL_STRING);
+			reference.put(MediaServiceData.KEY_IS_EXPLICIT, TestValues.GENERAL_BOOLEAN);
+			reference.put(MediaServiceData.KEY_TRACK_PLAYBACK_PROGRESS, TestValues.GENERAL_INTEGER);
+			reference.put(MediaServiceData.KEY_TRACK_PLAYBACK_DURATION, TestValues.GENERAL_INTEGER);
+			reference.put(MediaServiceData.KEY_QUEUE_PLAYBACK_PROGRESS, TestValues.GENERAL_INTEGER);
+			reference.put(MediaServiceData.KEY_QUEUE_PLAYBACK_DURATION, TestValues.GENERAL_INTEGER);
+			reference.put(MediaServiceData.KEY_QUEUE_CURRENT_TRACK_NUMBER, TestValues.GENERAL_INTEGER);
+			reference.put(MediaServiceData.KEY_QUEUE_TOTAL_TRACK_COUNT, TestValues.GENERAL_INTEGER);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while(iterator.hasNext()){
@@ -124,13 +124,13 @@ public class MediaServiceDataTests extends TestCase {
 				if (key.equals(MediaServiceData.KEY_MEDIA_IMAGE)){
 					JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-					assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, new Image(hashTest)));
+					assertTrue(TestValues.TRUE, Validator.validateImage(TestValues.GENERAL_IMAGE, new Image(hashTest)));
 				} else {
-					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+					assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}
 			}
 		} catch(JSONException e){
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 

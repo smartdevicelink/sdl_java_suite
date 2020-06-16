@@ -7,7 +7,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.UnsubscribeVehicleData;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
@@ -25,36 +25,36 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 	protected RPCMessage createMessage() {
 		UnsubscribeVehicleData msg = new UnsubscribeVehicleData();
 
-		msg.setSpeed(Test.GENERAL_BOOLEAN);
-		msg.setRpm(Test.GENERAL_BOOLEAN);
-		msg.setExternalTemperature(Test.GENERAL_BOOLEAN);
-		msg.setFuelLevel(Test.GENERAL_BOOLEAN);
-		msg.setPrndl(Test.GENERAL_BOOLEAN);
-		msg.setTirePressure(Test.GENERAL_BOOLEAN);
-		msg.setEngineTorque(Test.GENERAL_BOOLEAN);
-		msg.setEngineOilLife(Test.GENERAL_BOOLEAN);
-		msg.setOdometer(Test.GENERAL_BOOLEAN);
-		msg.setGps(Test.GENERAL_BOOLEAN);
-		msg.setFuelLevelState(Test.GENERAL_BOOLEAN);
-		msg.setInstantFuelConsumption(Test.GENERAL_BOOLEAN);
-		msg.setBeltStatus(Test.GENERAL_BOOLEAN);
-		msg.setBodyInformation(Test.GENERAL_BOOLEAN);
-		msg.setDeviceStatus(Test.GENERAL_BOOLEAN);
-		msg.setDriverBraking(Test.GENERAL_BOOLEAN);
-		msg.setWiperStatus(Test.GENERAL_BOOLEAN);
-		msg.setHeadLampStatus(Test.GENERAL_BOOLEAN);
-		msg.setAccPedalPosition(Test.GENERAL_BOOLEAN);
-		msg.setSteeringWheelAngle(Test.GENERAL_BOOLEAN);
-		msg.setECallInfo(Test.GENERAL_BOOLEAN);
-		msg.setAirbagStatus(Test.GENERAL_BOOLEAN);
-		msg.setEmergencyEvent(Test.GENERAL_BOOLEAN);
-		msg.setClusterModeStatus(Test.GENERAL_BOOLEAN);
-		msg.setMyKey(Test.GENERAL_BOOLEAN);
-		msg.setFuelRange(Test.GENERAL_BOOLEAN);
-		msg.setTurnSignal(Test.GENERAL_BOOLEAN);
-		msg.setElectronicParkBrakeStatus(Test.GENERAL_BOOLEAN);
-		msg.setCloudAppVehicleID(Test.GENERAL_BOOLEAN);
-		msg.setOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, Test.GENERAL_BOOLEAN);
+		msg.setSpeed(TestValues.GENERAL_BOOLEAN);
+		msg.setRpm(TestValues.GENERAL_BOOLEAN);
+		msg.setExternalTemperature(TestValues.GENERAL_BOOLEAN);
+		msg.setFuelLevel(TestValues.GENERAL_BOOLEAN);
+		msg.setPrndl(TestValues.GENERAL_BOOLEAN);
+		msg.setTirePressure(TestValues.GENERAL_BOOLEAN);
+		msg.setEngineTorque(TestValues.GENERAL_BOOLEAN);
+		msg.setEngineOilLife(TestValues.GENERAL_BOOLEAN);
+		msg.setOdometer(TestValues.GENERAL_BOOLEAN);
+		msg.setGps(TestValues.GENERAL_BOOLEAN);
+		msg.setFuelLevelState(TestValues.GENERAL_BOOLEAN);
+		msg.setInstantFuelConsumption(TestValues.GENERAL_BOOLEAN);
+		msg.setBeltStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setBodyInformation(TestValues.GENERAL_BOOLEAN);
+		msg.setDeviceStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setDriverBraking(TestValues.GENERAL_BOOLEAN);
+		msg.setWiperStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setHeadLampStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setAccPedalPosition(TestValues.GENERAL_BOOLEAN);
+		msg.setSteeringWheelAngle(TestValues.GENERAL_BOOLEAN);
+		msg.setECallInfo(TestValues.GENERAL_BOOLEAN);
+		msg.setAirbagStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setEmergencyEvent(TestValues.GENERAL_BOOLEAN);
+		msg.setClusterModeStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setMyKey(TestValues.GENERAL_BOOLEAN);
+		msg.setFuelRange(TestValues.GENERAL_BOOLEAN);
+		msg.setTurnSignal(TestValues.GENERAL_BOOLEAN);
+		msg.setElectronicParkBrakeStatus(TestValues.GENERAL_BOOLEAN);
+		msg.setCloudAppVehicleID(TestValues.GENERAL_BOOLEAN);
+		msg.setOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 
 		return msg;
 	}
@@ -74,38 +74,38 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 		JSONObject result = new JSONObject();
 
 		try {
-            result.put(UnsubscribeVehicleData.KEY_SPEED, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_RPM, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_EXTERNAL_TEMPERATURE, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_FUEL_LEVEL, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_PRNDL, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_TIRE_PRESSURE, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_ENGINE_TORQUE, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_ENGINE_OIL_LIFE, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_ODOMETER, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_GPS, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_FUEL_LEVEL_STATE, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_INSTANT_FUEL_CONSUMPTION, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_BELT_STATUS, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_BODY_INFORMATION, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_DEVICE_STATUS, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_DRIVER_BRAKING, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_WIPER_STATUS, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_HEAD_LAMP_STATUS, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_ACC_PEDAL_POSITION, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_STEERING_WHEEL_ANGLE, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_E_CALL_INFO, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_AIRBAG_STATUS, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_EMERGENCY_EVENT, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_CLUSTER_MODE_STATUS, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_MY_KEY, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_FUEL_RANGE, Test.GENERAL_BOOLEAN);
-            result.put(UnsubscribeVehicleData.KEY_TURN_SIGNAL, Test.GENERAL_BOOLEAN);
-			result.put(UnsubscribeVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, Test.GENERAL_BOOLEAN);
-			result.put(UnsubscribeVehicleData.KEY_CLOUD_APP_VEHICLE_ID, Test.GENERAL_BOOLEAN);
-			result.put(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, Test.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_SPEED, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_RPM, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_EXTERNAL_TEMPERATURE, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_FUEL_LEVEL, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_PRNDL, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_TIRE_PRESSURE, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_ENGINE_TORQUE, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_ENGINE_OIL_LIFE, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_ODOMETER, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_GPS, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_FUEL_LEVEL_STATE, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_INSTANT_FUEL_CONSUMPTION, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_BELT_STATUS, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_BODY_INFORMATION, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_DEVICE_STATUS, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_DRIVER_BRAKING, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_WIPER_STATUS, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_HEAD_LAMP_STATUS, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_ACC_PEDAL_POSITION, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_STEERING_WHEEL_ANGLE, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_E_CALL_INFO, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_AIRBAG_STATUS, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_EMERGENCY_EVENT, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_CLUSTER_MODE_STATUS, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_MY_KEY, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_FUEL_RANGE, TestValues.GENERAL_BOOLEAN);
+            result.put(UnsubscribeVehicleData.KEY_TURN_SIGNAL, TestValues.GENERAL_BOOLEAN);
+			result.put(UnsubscribeVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, TestValues.GENERAL_BOOLEAN);
+			result.put(UnsubscribeVehicleData.KEY_CLOUD_APP_VEHICLE_ID, TestValues.GENERAL_BOOLEAN);
+			result.put(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, TestValues.GENERAL_BOOLEAN);
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 
 		return result;
@@ -116,72 +116,72 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
 	 */
 	public void testRpcValues(){		
 		// Valid Tests
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getSpeed());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getRpm());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getExternalTemperature());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getFuelLevel());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getPrndl());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getTirePressure());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getEngineTorque());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getEngineOilLife());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getOdometer());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getGps());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getFuelLevelState());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getInstantFuelConsumption());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getBeltStatus());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getBodyInformation());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getDeviceStatus());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getDriverBraking());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getWiperStatus());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getHeadLampStatus());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getAccPedalPosition());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getSteeringWheelAngle());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getECallInfo());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getAirbagStatus());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getEmergencyEvent());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getClusterModeStatus());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getMyKey());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getFuelRange());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getTurnSignal());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getElectronicParkBrakeStatus());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getCloudAppVehicleID());
-		assertTrue(Test.TRUE,( (UnsubscribeVehicleData) msg ).getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getSpeed());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getRpm());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getExternalTemperature());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getFuelLevel());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getPrndl());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getTirePressure());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getEngineTorque());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getEngineOilLife());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getOdometer());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getGps());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getFuelLevelState());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getInstantFuelConsumption());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getBeltStatus());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getBodyInformation());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getDeviceStatus());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getDriverBraking());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getWiperStatus());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getHeadLampStatus());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getAccPedalPosition());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getSteeringWheelAngle());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getECallInfo());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getAirbagStatus());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getEmergencyEvent());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getClusterModeStatus());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getMyKey());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getFuelRange());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getTurnSignal());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getElectronicParkBrakeStatus());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getCloudAppVehicleID());
+		assertTrue(TestValues.TRUE,( (UnsubscribeVehicleData) msg ).getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 		
 		// Invalid/Null Tests
 		UnsubscribeVehicleData msg = new UnsubscribeVehicleData();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 		testNullBase(msg);
 		
-		assertNull(Test.NULL, msg.getAccPedalPosition());
-        assertNull(Test.NULL, msg.getAirbagStatus());
-        assertNull(Test.NULL, msg.getBeltStatus());
-        assertNull(Test.NULL, msg.getDriverBraking());
-        assertNull(Test.NULL, msg.getFuelLevel());
-        assertNull(Test.NULL, msg.getTirePressure());
-        assertNull(Test.NULL, msg.getWiperStatus());
-        assertNull(Test.NULL, msg.getGps());
-        assertNull(Test.NULL, msg.getSpeed());
-        assertNull(Test.NULL, msg.getRpm());
-        assertNull(Test.NULL, msg.getFuelLevelState());
-        assertNull(Test.NULL, msg.getInstantFuelConsumption());
-        assertNull(Test.NULL, msg.getExternalTemperature());
-        assertNull(Test.NULL, msg.getPrndl());
-        assertNull(Test.NULL, msg.getOdometer());
-        assertNull(Test.NULL, msg.getBodyInformation());
-        assertNull(Test.NULL, msg.getDeviceStatus());
-        assertNull(Test.NULL, msg.getHeadLampStatus());
-        assertNull(Test.NULL, msg.getEngineTorque());
-        assertNull(Test.NULL, msg.getEngineOilLife());
-        assertNull(Test.NULL, msg.getSteeringWheelAngle());
-        assertNull(Test.NULL, msg.getECallInfo());
-        assertNull(Test.NULL, msg.getEmergencyEvent());
-        assertNull(Test.NULL, msg.getClusterModeStatus());
-        assertNull(Test.NULL, msg.getMyKey());
-        assertNull(Test.NULL, msg.getFuelRange());
-        assertNull(Test.NULL, msg.getTurnSignal());
-		assertNull(Test.NULL, msg.getElectronicParkBrakeStatus());
-		assertNull(Test.NULL, msg.getCloudAppVehicleID());
-		assertNull(Test.NULL, msg.getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
+		assertNull(TestValues.NULL, msg.getAccPedalPosition());
+        assertNull(TestValues.NULL, msg.getAirbagStatus());
+        assertNull(TestValues.NULL, msg.getBeltStatus());
+        assertNull(TestValues.NULL, msg.getDriverBraking());
+        assertNull(TestValues.NULL, msg.getFuelLevel());
+        assertNull(TestValues.NULL, msg.getTirePressure());
+        assertNull(TestValues.NULL, msg.getWiperStatus());
+        assertNull(TestValues.NULL, msg.getGps());
+        assertNull(TestValues.NULL, msg.getSpeed());
+        assertNull(TestValues.NULL, msg.getRpm());
+        assertNull(TestValues.NULL, msg.getFuelLevelState());
+        assertNull(TestValues.NULL, msg.getInstantFuelConsumption());
+        assertNull(TestValues.NULL, msg.getExternalTemperature());
+        assertNull(TestValues.NULL, msg.getPrndl());
+        assertNull(TestValues.NULL, msg.getOdometer());
+        assertNull(TestValues.NULL, msg.getBodyInformation());
+        assertNull(TestValues.NULL, msg.getDeviceStatus());
+        assertNull(TestValues.NULL, msg.getHeadLampStatus());
+        assertNull(TestValues.NULL, msg.getEngineTorque());
+        assertNull(TestValues.NULL, msg.getEngineOilLife());
+        assertNull(TestValues.NULL, msg.getSteeringWheelAngle());
+        assertNull(TestValues.NULL, msg.getECallInfo());
+        assertNull(TestValues.NULL, msg.getEmergencyEvent());
+        assertNull(TestValues.NULL, msg.getClusterModeStatus());
+        assertNull(TestValues.NULL, msg.getMyKey());
+        assertNull(TestValues.NULL, msg.getFuelRange());
+        assertNull(TestValues.NULL, msg.getTurnSignal());
+		assertNull(TestValues.NULL, msg.getElectronicParkBrakeStatus());
+		assertNull(TestValues.NULL, msg.getCloudAppVehicleID());
+		assertNull(TestValues.NULL, msg.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 	}
 
 	/**
@@ -189,54 +189,54 @@ public class UnsubscribeVehicleDataTests extends BaseRpcTests {
      */
     public void testJsonConstructor () {
     	JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-    	assertNotNull(Test.NOT_NULL, commandJson);
+    	assertNotNull(TestValues.NOT_NULL, commandJson);
     	
 		try {
 			Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
 			UnsubscribeVehicleData cmd = new UnsubscribeVehicleData(hash);
 			
 			JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-			assertNotNull(Test.NOT_NULL, body);
+			assertNotNull(TestValues.NOT_NULL, body);
 			
 			// Test everything in the json body.
-			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-			assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+			assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+			assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
 			JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_SPEED), cmd.getSpeed());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_RPM), cmd.getRpm());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_EXTERNAL_TEMPERATURE), cmd.getExternalTemperature());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_FUEL_LEVEL), cmd.getFuelLevel());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_PRNDL), cmd.getPrndl());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_TIRE_PRESSURE), cmd.getTirePressure());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ENGINE_TORQUE), cmd.getEngineTorque());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ENGINE_OIL_LIFE), cmd.getEngineOilLife());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ODOMETER), cmd.getOdometer());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_GPS), cmd.getGps());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_FUEL_LEVEL_STATE), cmd.getFuelLevelState());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_INSTANT_FUEL_CONSUMPTION), cmd.getInstantFuelConsumption());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_BELT_STATUS), cmd.getBeltStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_BODY_INFORMATION), cmd.getBodyInformation());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_DEVICE_STATUS), cmd.getDeviceStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_DRIVER_BRAKING), cmd.getDriverBraking());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_WIPER_STATUS), cmd.getWiperStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_HEAD_LAMP_STATUS), cmd.getHeadLampStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ACC_PEDAL_POSITION), cmd.getAccPedalPosition());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_STEERING_WHEEL_ANGLE), cmd.getSteeringWheelAngle());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_E_CALL_INFO), cmd.getECallInfo());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_AIRBAG_STATUS), cmd.getAirbagStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_EMERGENCY_EVENT), cmd.getEmergencyEvent());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_CLUSTER_MODE_STATUS), cmd.getClusterModeStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_MY_KEY), cmd.getMyKey());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_FUEL_RANGE), cmd.getFuelRange());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_TURN_SIGNAL), cmd.getTurnSignal());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS), cmd.getElectronicParkBrakeStatus());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_CLOUD_APP_VEHICLE_ID), cmd.getCloudAppVehicleID());
-			assertEquals(Test.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME), cmd.getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_SPEED), cmd.getSpeed());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_RPM), cmd.getRpm());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_EXTERNAL_TEMPERATURE), cmd.getExternalTemperature());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_FUEL_LEVEL), cmd.getFuelLevel());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_PRNDL), cmd.getPrndl());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_TIRE_PRESSURE), cmd.getTirePressure());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ENGINE_TORQUE), cmd.getEngineTorque());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ENGINE_OIL_LIFE), cmd.getEngineOilLife());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ODOMETER), cmd.getOdometer());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_GPS), cmd.getGps());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_FUEL_LEVEL_STATE), cmd.getFuelLevelState());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_INSTANT_FUEL_CONSUMPTION), cmd.getInstantFuelConsumption());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_BELT_STATUS), cmd.getBeltStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_BODY_INFORMATION), cmd.getBodyInformation());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_DEVICE_STATUS), cmd.getDeviceStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_DRIVER_BRAKING), cmd.getDriverBraking());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_WIPER_STATUS), cmd.getWiperStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_HEAD_LAMP_STATUS), cmd.getHeadLampStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ACC_PEDAL_POSITION), cmd.getAccPedalPosition());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_STEERING_WHEEL_ANGLE), cmd.getSteeringWheelAngle());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_E_CALL_INFO), cmd.getECallInfo());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_AIRBAG_STATUS), cmd.getAirbagStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_EMERGENCY_EVENT), cmd.getEmergencyEvent());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_CLUSTER_MODE_STATUS), cmd.getClusterModeStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_MY_KEY), cmd.getMyKey());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_FUEL_RANGE), cmd.getFuelRange());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_TURN_SIGNAL), cmd.getTurnSignal());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS), cmd.getElectronicParkBrakeStatus());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, UnsubscribeVehicleData.KEY_CLOUD_APP_VEHICLE_ID), cmd.getCloudAppVehicleID());
+			assertEquals(TestValues.MATCH, JsonUtils.readBooleanFromJsonObject(parameters, TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME), cmd.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 
 		} 
 		catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}    	
     }	
 }

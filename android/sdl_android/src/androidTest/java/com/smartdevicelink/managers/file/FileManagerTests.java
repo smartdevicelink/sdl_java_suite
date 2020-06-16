@@ -21,9 +21,10 @@ import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import com.smartdevicelink.proxy.rpc.listeners.OnMultipleRequestListener;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -59,8 +60,8 @@ public class FileManagerTests {
 	public void setUp() throws Exception{
 		mTestContext = getContext();
 		validFile = new SdlFile();
-		validFile.setName(Test.GENERAL_STRING);
-		validFile.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile.setName(TestValues.GENERAL_STRING);
+		validFile.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		validFile.setPersistent(false);
 	}
 
@@ -129,8 +130,8 @@ public class FileManagerTests {
 			if(message instanceof ListFiles){
 				int correlationId = message.getCorrelationID();
 				ListFilesResponse listFilesResponse = new ListFilesResponse();
-				listFilesResponse.setFilenames(Test.GENERAL_STRING_LIST);
-				listFilesResponse.setSpaceAvailable(Test.GENERAL_INT);
+				listFilesResponse.setFilenames(TestValues.GENERAL_STRING_LIST);
+				listFilesResponse.setSpaceAvailable(TestValues.GENERAL_INT);
 				listFilesResponse.setSuccess(true);
 				message.getOnRPCResponseListener().onResponse(correlationId, listFilesResponse);
 			}
@@ -147,7 +148,7 @@ public class FileManagerTests {
 				int correlationId = message.getCorrelationID();
 				PutFileResponse putFileResponse = new PutFileResponse();
 				putFileResponse.setSuccess(true);
-				putFileResponse.setSpaceAvailable(Test.GENERAL_INT);
+				putFileResponse.setSpaceAvailable(TestValues.GENERAL_INT);
 				message.getOnRPCResponseListener().onResponse(correlationId, putFileResponse);
 			}
 			return null;
@@ -244,7 +245,7 @@ public class FileManagerTests {
 	/**
 	 * Test deleting list of files, success
 	 */
-	@org.junit.Test
+	@Test
 	public void testDeleteRemoteFilesWithNamesSuccess(){
 		final ISdl internalInterface = mock(ISdl.class);
 
@@ -276,7 +277,7 @@ public class FileManagerTests {
 	/**
 	 * Test deleting list of files, fail
 	 */
-	@org.junit.Test
+	@Test
 	public void testDeleteRemoteFilesWithNamesFail(){
 		final ISdl internalInterface = mock(ISdl.class);
 
@@ -308,7 +309,7 @@ public class FileManagerTests {
 	/**
 	 * Test reUploading failed file
 	 */
-	@org.junit.Test
+	@Test
 	public void testFileUploadRetry(){
 		final ISdl internalInterface = mock(ISdl.class);
 
@@ -340,7 +341,7 @@ public class FileManagerTests {
 	/**
 	 * Test reUploading failed Artwork
 	 */
-	@org.junit.Test
+	@Test
 	public void testArtworkUploadRetry(){
 		final ISdl internalInterface = mock(ISdl.class);
 
@@ -348,14 +349,14 @@ public class FileManagerTests {
 		doAnswer(onPutFileFailureOnError).when(internalInterface).sendRPC(any(PutFile.class));
 
 		final SdlFile validFile2 = new SdlFile();
-		validFile2.setName(Test.GENERAL_STRING + "2");
-		validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile2.setName(TestValues.GENERAL_STRING + "2");
+		validFile2.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		validFile2.setPersistent(false);
 		validFile2.setType(FileType.GRAPHIC_PNG);
 
 		final SdlFile validFile3 = new SdlFile();
-		validFile3.setName(Test.GENERAL_STRING + "3");
-		validFile3.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile3.setName(TestValues.GENERAL_STRING + "3");
+		validFile3.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		validFile3.setPersistent(false);
 		validFile3.setType(FileType.GRAPHIC_BMP);
 
@@ -399,7 +400,7 @@ public class FileManagerTests {
 	/**
 	 * Test retry uploading failed list of files
 	 */
-	@org.junit.Test
+	@Test
 	public void testListFilesUploadRetry(){
 		final ISdl internalInterface = mock(ISdl.class);
 
@@ -407,8 +408,8 @@ public class FileManagerTests {
 		doAnswer(onSendRequestsFailOnError).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		SdlFile validFile2 = new SdlFile();
-		validFile2.setName(Test.GENERAL_STRING + "2");
-		validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile2.setName(TestValues.GENERAL_STRING + "2");
+		validFile2.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		validFile2.setPersistent(false);
 		validFile2.setType(FileType.GRAPHIC_JPEG);
 
@@ -441,7 +442,7 @@ public class FileManagerTests {
 	/**
 	 * Testing the initialization of FileManager
 	 */
-	@org.junit.Test
+	@Test
 	public void testInitializationSuccess() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -454,8 +455,8 @@ public class FileManagerTests {
 			public void onComplete(boolean success) {
 				assertTrue(success);
 				assertEquals(fileManager.getState(), BaseSubManager.READY);
-				assertEquals(fileManager.getRemoteFileNames(), Test.GENERAL_STRING_LIST);
-				assertEquals(Test.GENERAL_INT, fileManager.getBytesAvailable());
+				assertEquals(fileManager.getRemoteFileNames(), TestValues.GENERAL_STRING_LIST);
+				assertEquals(TestValues.GENERAL_INT, fileManager.getBytesAvailable());
 			}
 		});
 	}
@@ -463,7 +464,7 @@ public class FileManagerTests {
 	/**
 	 * Test file upload, success
 	 */
-	@org.junit.Test
+	@Test
 	public void testFileUploadSuccess() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -487,13 +488,13 @@ public class FileManagerTests {
 		});
 		assertTrue(fileManager.getRemoteFileNames().contains(validFile.getName()));
 		assertTrue(fileManager.hasUploadedFile(validFile));
-		assertEquals(Test.GENERAL_INT, fileManager.getBytesAvailable());
+		assertEquals(TestValues.GENERAL_INT, fileManager.getBytesAvailable());
 	}
 
 	/**
 	 * Testing failed file upload.
 	 */
-	@org.junit.Test
+	@Test
 	public void testFileUploadFailure() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -521,7 +522,7 @@ public class FileManagerTests {
 	/**
 	 * Testing uploadFile for a staticIcon, verifying that it doesn't actually upload.
 	 */
-	@org.junit.Test
+	@Test
 	public void testFileUploadForStaticIcon() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -548,7 +549,7 @@ public class FileManagerTests {
 	/**
 	 * Testing uploadFiles for staticIcons, verifying that it doesn't actually upload.
 	 */
-	@org.junit.Test
+	@Test
 	public void testMultipleFileUploadsForStaticIcon() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -580,7 +581,7 @@ public class FileManagerTests {
 	/**
 	 * Testing uploadFiles for static icons and nonStatic icons in the same list.
 	 */
-	@org.junit.Test
+	@Test
 	public void testMultipleFileUploadsForPartialStaticIcon() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -613,7 +614,7 @@ public class FileManagerTests {
 	/**
 	 * Test to make sure you cannot upload an SdlFile with invalid data
 	 */
-	@org.junit.Test
+	@Test
 	public void testInvalidSdlFileInput() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -627,22 +628,22 @@ public class FileManagerTests {
 				assertTrue(success);
 				SdlFile sdlFile = new SdlFile();
 				// Don't set name
-				sdlFile.setFileData(Test.GENERAL_BYTE_ARRAY);
+				sdlFile.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 				checkForUploadFailure(fileManager, sdlFile);
 
 				sdlFile = new SdlFile();
-				sdlFile.setName(Test.GENERAL_STRING);
+				sdlFile.setName(TestValues.GENERAL_STRING);
 				// Don't set data
 				checkForUploadFailure(fileManager, sdlFile);
 
 				sdlFile = new SdlFile();
-				sdlFile.setName(Test.GENERAL_STRING);
+				sdlFile.setName(TestValues.GENERAL_STRING);
 				// Give an invalid resource ID
-				sdlFile.setResourceId(Test.GENERAL_INT);
+				sdlFile.setResourceId(TestValues.GENERAL_INT);
 				checkForUploadFailure(fileManager, sdlFile);
 
 				sdlFile = new SdlFile();
-				sdlFile.setName(Test.GENERAL_STRING);
+				sdlFile.setName(TestValues.GENERAL_STRING);
 				// Set invalid Uri
 				Uri testUri = Uri.parse("http://www.google.com");
 				sdlFile.setUri(testUri);
@@ -676,7 +677,7 @@ public class FileManagerTests {
 	 * Test Invalid SdlArtWork FileTypes
 	 * SdlArtwork FileTypes can only be: GRAPHIC_BMP, GRAPHIC_PNG or GRAPHIC_JPEG
 	 */
-	@org.junit.Test
+	@Test
 	public void testInvalidSdlArtworkInput(){
 		SdlArtwork sdlArtwork = new SdlArtwork();
 		// Set invalid type
@@ -698,7 +699,7 @@ public class FileManagerTests {
 	/**
 	 * Test Multiple File Uploads, success
 	 */
-	@org.junit.Test
+	@Test
 	public void testMultipleFileUpload() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -716,8 +717,8 @@ public class FileManagerTests {
 				filesToUpload.add(validFile);
 
 				SdlFile validFile2 = new SdlFile();
-				validFile2.setName(Test.GENERAL_STRING + "2");
-				validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+				validFile2.setName(TestValues.GENERAL_STRING + "2");
+				validFile2.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 				validFile2.setPersistent(false);
 				validFile2.setType(FileType.GRAPHIC_JPEG);
 				filesToUpload.add(validFile2);
@@ -735,7 +736,7 @@ public class FileManagerTests {
 	/**
 	 * Testing uploading multiple files with some failing.
 	 */
-	@org.junit.Test
+	@Test
 	public void testMultipleFileUploadPartialFailure() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -743,14 +744,14 @@ public class FileManagerTests {
 		doAnswer(onSendRequestsFailPartialOnError).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		SdlFile validFile2 = new SdlFile();
-		validFile2.setName(Test.GENERAL_STRING + "2");
-		validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile2.setName(TestValues.GENERAL_STRING + "2");
+		validFile2.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		validFile2.setPersistent(false);
 		validFile2.setType(FileType.GRAPHIC_JPEG);
 
 		SdlFile validFile3 = new SdlFile();
-		validFile3.setName(Test.GENERAL_STRING + "3");
-		validFile3.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile3.setName(TestValues.GENERAL_STRING + "3");
+		validFile3.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		validFile3.setPersistent(false);
 		validFile3.setType(FileType.GRAPHIC_JPEG);
 
@@ -784,7 +785,7 @@ public class FileManagerTests {
 	/**
 	 * Testing uploading multiple SdlArtwork files.
 	 */
-	@org.junit.Test
+	@Test
 	public void testMultipleArtworkUploadSuccess(){
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -831,14 +832,14 @@ public class FileManagerTests {
 	/**
 	 * Testing uploading persistent SdlFile
 	 */
-	@org.junit.Test
+	@Test
 	public void testPersistentFileUploaded(){
 		ISdl internalInterface = mock(ISdl.class);
 
 		doAnswer(onListFilesSuccess).when(internalInterface).sendRPC(any(ListFiles.class));
 
 		final SdlFile file = new SdlFile();
-		file.setName(Test.GENERAL_STRING_LIST.get(0));
+		file.setName(TestValues.GENERAL_STRING_LIST.get(0));
 		file.setPersistent(true);
 
 		FileManagerConfig fileManagerConfig = new FileManagerConfig();
@@ -854,7 +855,7 @@ public class FileManagerTests {
 	/**
 	 * Test FileManagerConfig
 	 */
-	@org.junit.Test
+	@Test
 	public void testFileManagerConfig() {
 		FileManagerConfig fileManagerConfig = new FileManagerConfig();
 		fileManagerConfig.setFileRetryCount(2);
@@ -867,7 +868,7 @@ public class FileManagerTests {
 	 * Tests overwrite property for uploading a file.
 	 * Checks to make sure file does not overwrite itself if overwrite property is set to false
 	 */
-	@org.junit.Test
+	@Test
 	public void testOverwriteFileProperty() {
 		ISdl internalInterface = mock(ISdl.class);
 
@@ -904,7 +905,7 @@ public class FileManagerTests {
 	 * Tests overwrite property for uploading a list of files.
 	 * Checks to make sure files do not overwrite themselves if overwrite property is set to false.
 	 */
-	@org.junit.Test
+	@Test
 	public void testOverWriteFilePropertyListFiles() {
 		final ISdl internalInterface = mock(ISdl.class);
 
@@ -912,8 +913,8 @@ public class FileManagerTests {
 		doAnswer(onListFileUploadSuccess).when(internalInterface).sendRequests(any(List.class), any(OnMultipleRequestListener.class));
 
 		final SdlFile validFile2 = new SdlFile();
-		validFile2.setName(Test.GENERAL_STRING + "2");
-		validFile2.setFileData(Test.GENERAL_BYTE_ARRAY);
+		validFile2.setName(TestValues.GENERAL_STRING + "2");
+		validFile2.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		validFile2.setPersistent(false);
 		validFile2.setType(FileType.GRAPHIC_JPEG);
 
@@ -951,7 +952,7 @@ public class FileManagerTests {
 	/**
 	 * 	Test custom overridden SdlFile equals method
 	 */
-	@org.junit.Test
+	@Test
 	public void testSdlFileEquals() {
 		// Case 1: object is null, assertFalse
 		SdlFile artwork1 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, true);
@@ -990,7 +991,7 @@ public class FileManagerTests {
 		artwork1 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
 		artwork2 = new SdlFile("image1", FileType.GRAPHIC_PNG, 1, false);
 		byte[] GENERAL_BYTE_ARRAY2 = new byte[2];
-		artwork1.setFileData(Test.GENERAL_BYTE_ARRAY);
+		artwork1.setFileData(TestValues.GENERAL_BYTE_ARRAY);
 		artwork2.setFileData(GENERAL_BYTE_ARRAY2);
 		assertFalse(artwork1.equals(artwork2));
 

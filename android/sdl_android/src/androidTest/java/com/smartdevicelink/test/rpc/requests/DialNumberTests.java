@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.DialNumber;
 import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
@@ -48,7 +48,7 @@ public class DialNumberTests extends BaseRpcTests {
         try{
             result.put(DialNumber.KEY_NUMBER, TEST_NUMBER);
         }catch(JSONException e){
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -62,13 +62,13 @@ public class DialNumberTests extends BaseRpcTests {
         String testNumber = ((DialNumber) msg).getNumber();
 
         // Valid Tests
-        assertEquals(Test.MATCH, TEST_NUMBER, testNumber);
+        assertEquals(TestValues.MATCH, TEST_NUMBER, testNumber);
         // Invalid/Null Tests
         DialNumber msg = new DialNumber();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getNumber());
+        assertNull(TestValues.NULL, msg.getNumber());
     }
 
     /**
@@ -76,22 +76,22 @@ public class DialNumberTests extends BaseRpcTests {
      */
     public void testJsonConstructor () {
         JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
-        assertNotNull(Test.NOT_NULL, commandJson);
+        assertNotNull(TestValues.NOT_NULL, commandJson);
 
         try {
             Hashtable<String, Object> hash = JsonRPCMarshaller.deserializeJSONObject(commandJson);
             DialNumber cmd = new DialNumber(hash);
             JSONObject body = JsonUtils.readJsonObjectFromJsonObject(commandJson, getMessageType());
-            assertNotNull(Test.NOT_NULL, body);
+            assertNotNull(TestValues.NOT_NULL, body);
 
             // Test everything in the json body.
-            assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
-            assertEquals(Test.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(body, RPCMessage.KEY_FUNCTION_NAME), cmd.getFunctionName());
+            assertEquals(TestValues.MATCH, JsonUtils.readIntegerFromJsonObject(body, RPCMessage.KEY_CORRELATION_ID), cmd.getCorrelationID());
 
             JSONObject parameters = JsonUtils.readJsonObjectFromJsonObject(body, RPCMessage.KEY_PARAMETERS);
-            assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, DialNumber.KEY_NUMBER), cmd.getNumber());
+            assertEquals(TestValues.MATCH, JsonUtils.readStringFromJsonObject(parameters, DialNumber.KEY_NUMBER), cmd.getNumber());
         } catch (JSONException e) {
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
     }
 }

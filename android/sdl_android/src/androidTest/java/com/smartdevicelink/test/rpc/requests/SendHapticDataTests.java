@@ -6,7 +6,7 @@ import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.HapticRect;
 import com.smartdevicelink.proxy.rpc.SendHapticData;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +28,7 @@ public class SendHapticDataTests extends BaseRpcTests {
 		msg = new SendHapticData();
 
 		List<HapticRect> list = new ArrayList<>();
-		list.add(Test.GENERAL_HAPTIC_RECT);
+		list.add(TestValues.GENERAL_HAPTIC_RECT);
 
 		msg.setHapticRectData(list);
 
@@ -51,7 +51,7 @@ public class SendHapticDataTests extends BaseRpcTests {
 
 		JSONArray jsonArray = new JSONArray();
 		try {
-			jsonArray.put(JsonRPCMarshaller.serializeHashtable(Test.GENERAL_HAPTIC_RECT.getStore()));
+			jsonArray.put(JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_HAPTIC_RECT.getStore()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -73,14 +73,14 @@ public class SendHapticDataTests extends BaseRpcTests {
 		List<HapticRect> list = msg.getHapticRectData();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_HAPTIC_RECT, list.get(0));
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_HAPTIC_RECT, list.get(0));
 
 		// Invalid/Null Tests
 		SendHapticData msg = new SendHapticData();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 		testNullBase(msg);
 
-		assertNull(Test.NULL, msg.getHapticRectData());
+		assertNull(TestValues.NULL, msg.getHapticRectData());
 	}
 
 }

@@ -5,7 +5,7 @@ import com.smartdevicelink.proxy.rpc.AudioControlData;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
 import com.smartdevicelink.proxy.rpc.enums.PrimaryAudioSource;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -29,10 +29,10 @@ public class AudioControlDataTests extends TestCase {
 	public void setUp() {
 		msg = new AudioControlData();
 
-		msg.setSource(Test.GENERAL_PRIMARYAUDIOSOURCE);
-		msg.setKeepContext(Test.GENERAL_BOOLEAN);
-		msg.setVolume(Test.GENERAL_INT);
-		msg.setEqualizerSettings(Test.GENERAL_EQUALIZERSETTINGS_LIST);
+		msg.setSource(TestValues.GENERAL_PRIMARYAUDIOSOURCE);
+		msg.setKeepContext(TestValues.GENERAL_BOOLEAN);
+		msg.setVolume(TestValues.GENERAL_INT);
+		msg.setEqualizerSettings(TestValues.GENERAL_EQUALIZERSETTINGS_LIST);
 	}
 
 	/**
@@ -46,34 +46,34 @@ public class AudioControlDataTests extends TestCase {
 		List<EqualizerSettings> equalizerSettings = msg.getEqualizerSettings();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_PRIMARYAUDIOSOURCE, source);
-		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) keepContext);
-		assertEquals(Test.MATCH, Test.GENERAL_INT, volume);
-		assertEquals(Test.MATCH, Test.GENERAL_EQUALIZERSETTINGS_LIST.size(), equalizerSettings.size());
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_PRIMARYAUDIOSOURCE, source);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, (boolean) keepContext);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, volume);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_EQUALIZERSETTINGS_LIST.size(), equalizerSettings.size());
 
-		assertTrue(Test.TRUE, Validator.validateEqualizerSettingsList(Test.GENERAL_EQUALIZERSETTINGS_LIST, equalizerSettings));
+		assertTrue(TestValues.TRUE, Validator.validateEqualizerSettingsList(TestValues.GENERAL_EQUALIZERSETTINGS_LIST, equalizerSettings));
 
 		// Invalid/Null Tests
 		AudioControlData msg = new AudioControlData();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getSource());
-		assertNull(Test.NULL, msg.getVolume());
-		assertNull(Test.NULL, msg.getKeepContext());
-		assertNull(Test.NULL, msg.getEqualizerSettings());
+		assertNull(TestValues.NULL, msg.getSource());
+		assertNull(TestValues.NULL, msg.getVolume());
+		assertNull(TestValues.NULL, msg.getKeepContext());
+		assertNull(TestValues.NULL, msg.getEqualizerSettings());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(AudioControlData.KEY_SOURCE, Test.GENERAL_PRIMARYAUDIOSOURCE);
-			reference.put(AudioControlData.KEY_KEEP_CONTEXT, Test.GENERAL_BOOLEAN);
-			reference.put(AudioControlData.KEY_VOLUME, Test.GENERAL_INT);
-			reference.put(AudioControlData.KEY_EQUALIZER_SETTINGS, Test.GENERAL_EQUALIZERSETTINGS_LIST);
+			reference.put(AudioControlData.KEY_SOURCE, TestValues.GENERAL_PRIMARYAUDIOSOURCE);
+			reference.put(AudioControlData.KEY_KEEP_CONTEXT, TestValues.GENERAL_BOOLEAN);
+			reference.put(AudioControlData.KEY_VOLUME, TestValues.GENERAL_INT);
+			reference.put(AudioControlData.KEY_EQUALIZER_SETTINGS, TestValues.GENERAL_EQUALIZERSETTINGS_LIST);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
@@ -87,12 +87,12 @@ public class AudioControlDataTests extends TestCase {
 						assertTrue(Validator.validateEqualizerSettings(es, new EqualizerSettings(JsonRPCMarshaller.deserializeJSONObject(esArray.getJSONObject(i++)))));
 					}
 				} else {
-					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+					assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}
 
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }
