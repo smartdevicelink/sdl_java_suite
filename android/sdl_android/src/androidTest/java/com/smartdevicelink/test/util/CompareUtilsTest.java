@@ -1,11 +1,19 @@
 package com.smartdevicelink.test.util;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.test.Test;
 import com.smartdevicelink.util.CompareUtils;
 
-public class CompareUtilsTest extends AndroidTestCase2 {
+import org.junit.runner.RunWith;
 
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+
+@RunWith(AndroidJUnit4.class)
+public class CompareUtilsTest {
+
+    @org.junit.Test
     public void testAreStringsEqual(){
 
         assertTrue(CompareUtils.areStringsEqual(Test.GENERAL_STRING, Test.GENERAL_STRING, true, true));

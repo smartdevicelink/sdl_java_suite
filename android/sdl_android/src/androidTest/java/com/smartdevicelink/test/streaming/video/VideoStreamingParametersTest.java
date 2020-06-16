@@ -1,26 +1,38 @@
 package com.smartdevicelink.test.streaming.video;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.VideoStreamingCapability;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingCodec;
 import com.smartdevicelink.proxy.rpc.enums.VideoStreamingProtocol;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.Collections;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNull;
 
-public class VideoStreamingParametersTest extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class VideoStreamingParametersTest {
 
     private VideoStreamingParameters params;
     private VideoStreamingCapability capability;
     private ImageResolution preferredResolution;
 
+    @Before
     public void setUp() {
         params = new VideoStreamingParameters();
         capability = new VideoStreamingCapability();
     }
 
+    @Test
     public void testUpdateNullScale() {
         preferredResolution = new ImageResolution(800, 354);
 
@@ -36,6 +48,7 @@ public class VideoStreamingParametersTest extends AndroidTestCase2 {
         assertEquals(354, height);
     }
 
+    @Test
     public void testUpdateScale_1_Resolution_800_354() {
         preferredResolution = new ImageResolution(800, 354);
 
@@ -51,6 +64,7 @@ public class VideoStreamingParametersTest extends AndroidTestCase2 {
         assertEquals(354, height);
     }
 
+    @Test
     public void testUpdateScale_1_25_Resolution_1280_569() {
         preferredResolution = new ImageResolution(1280, 569);
 
@@ -66,6 +80,7 @@ public class VideoStreamingParametersTest extends AndroidTestCase2 {
         assertEquals(456, height);
     }
 
+    @Test
     public void testUpdateScale_1_5_Resolution_1280_569() {
         preferredResolution = new ImageResolution(1280, 569);
 
@@ -81,6 +96,7 @@ public class VideoStreamingParametersTest extends AndroidTestCase2 {
         assertEquals(380, height);
     }
 
+    @Test
     public void testUpdateScale_1_0_Ford_Resolution_800_354() {
         preferredResolution = new ImageResolution(800, 354);
 
@@ -96,6 +112,7 @@ public class VideoStreamingParametersTest extends AndroidTestCase2 {
         assertEquals(354, height);
     }
 
+    @Test
     public void testUpdateScale_1_3_Lincoln_Resolution_600_900() {
         preferredResolution = new ImageResolution(600, 900);
 
@@ -111,6 +128,7 @@ public class VideoStreamingParametersTest extends AndroidTestCase2 {
         assertEquals(676, height);
     }
 
+    @Test
     public void testUpdateScale_1_3_Ford_Resolution_900_600() {
         preferredResolution = new ImageResolution(900, 600);
 
@@ -126,6 +144,7 @@ public class VideoStreamingParametersTest extends AndroidTestCase2 {
         assertEquals(450, height);
     }
 
+    @Test
     public void testUpdateScale_1_0_Toyota_Resolution_900_600() {
         preferredResolution = new ImageResolution(900, 600);
 
@@ -141,6 +160,7 @@ public class VideoStreamingParametersTest extends AndroidTestCase2 {
         assertEquals(600, height);
     }
 
+    @Test
     public void testUpdateCapabilityFormat(){
         VideoStreamingCapability capability = new VideoStreamingCapability();
         capability.setMaxBitrate(10000);

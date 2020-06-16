@@ -1,8 +1,11 @@
 package com.smartdevicelink.test.rpc;
 
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -18,13 +21,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static android.support.test.InstrumentationRegistry.getContext;
+import static junit.framework.TestCase.assertTrue;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project
  * It makes sure that for each RPC, all mandatory parameters are set in a constructor
  */
 
-public class RPCConstructorsTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class RPCConstructorsTests {
 
     private final String XML_FILE_NAME = "xml/MOBILE_API.xml";
     private final String RPC_PACKAGE_PREFIX = "com.smartdevicelink.proxy.rpc.";
@@ -42,13 +48,8 @@ public class RPCConstructorsTests extends AndroidTestCase2 {
         }
     }
 
-    @Override
+    @Before
     public void setUp(){
-        try {
-            super.setUp();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         // Map that has keys correspond to the RPC names and values correspond to the
         // mandatory params for that RPC. All info are loaded from the RPC spec xml file
         rpcMandatoryParamsMapFromXml = getRPCMandatoryParamsMap(XML_FILE_NAME);
@@ -60,7 +61,7 @@ public class RPCConstructorsTests extends AndroidTestCase2 {
     private Map<String, List<Parameter>> getRPCMandatoryParamsMap(String fileName) {
         Map<String, List<Parameter>> rpcMandatoryParamsMap = new HashMap<>();
         try {
-            InputStream stream = this.mContext.getAssets().open(fileName);
+            InputStream stream = getContext().getAssets().open(fileName);
             XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
             XmlPullParser myParser = xmlFactoryObject.newPullParser();
             myParser.setInput(stream, null);
@@ -144,6 +145,7 @@ public class RPCConstructorsTests extends AndroidTestCase2 {
 
     // This method makes sure that for every RPC, there is a constructor that has all the mandatory params
     // It also checks if there are RPC in the XML file that don't exist in the code
+    @Test
     public void testMandatoryParamsMatch() {
         // List of RPC names that don't have a constructor that has all mandatory params
         List<String> rpcsWithInvalidConstructor = new ArrayList<>();
@@ -207,6 +209,7 @@ public class RPCConstructorsTests extends AndroidTestCase2 {
     }
 
     // This method makes sure that for every RPC, the constructor that has the mandatory params is setting the values correctly
+    @Test
     public void testMandatoryParamsValues() {
         // List of RPC names that have a constructor which is not settings the values for the mandatory params correctly
         List<String> rpcsWithInvalidConstructor = new ArrayList<>();

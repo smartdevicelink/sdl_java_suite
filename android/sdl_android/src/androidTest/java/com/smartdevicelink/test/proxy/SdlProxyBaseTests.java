@@ -1,10 +1,10 @@
 package com.smartdevicelink.test.proxy;
 
 import android.content.Context;
+import android.support.test.runner.AndroidJUnit4;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.proxy.RPCMessage;
@@ -28,6 +28,8 @@ import com.smartdevicelink.test.streaming.video.SdlRemoteDisplayTest;
 
 import junit.framework.Assert;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -36,31 +38,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static android.support.test.InstrumentationRegistry.getContext;
 
-
-public class SdlProxyBaseTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class SdlProxyBaseTests {
     public static final String TAG = "SdlProxyBaseTests";
 
     int onUpdateListenerCounter, onFinishedListenerCounter, onResponseListenerCounter, onErrorListenerCounter, remainingRequestsExpected;
 
-    @Override
-    protected void setUp() throws Exception{
-        super.setUp();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        //Nothing here for now
-    }
-
     /**
      * Test SdlProxyBase for handling null SdlProxyConfigurationResources
      */
+    @Test
     public void testNullSdlProxyConfigurationResources() {
         SdlProxyALM proxy = null;
         SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(mock(IProxyListenerALM.class), "appId", "appName", true, getContext());
@@ -127,6 +124,7 @@ public class SdlProxyBaseTests extends AndroidTestCase2 {
         }
     }
 
+    @Test
     public void testRemoteDisplayStreaming(){
         SdlProxyALM proxy = null;
         SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(mock(IProxyListenerALM.class), "appId", "appName", true, getContext());
@@ -144,18 +142,22 @@ public class SdlProxyBaseTests extends AndroidTestCase2 {
         }
     }
 
+    @Test
     public void testSendRPCsAllSucceed(){
         testSendMultipleRPCs(false, 1);
     }
 
+    @Test
     public void testSendRPCsSomeFail(){
         testSendMultipleRPCs(false, 2);
     }
 
+    @Test
     public void testSendSequentialRPCsAllSucceed(){
         testSendMultipleRPCs(true, 1);
     }
 
+    @Test
     public void testSendSequentialRPCsSomeFail(){
         testSendMultipleRPCs(true, 2);
     }

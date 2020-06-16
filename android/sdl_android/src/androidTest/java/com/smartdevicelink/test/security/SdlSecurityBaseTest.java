@@ -1,6 +1,7 @@
 package com.smartdevicelink.test.security;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -10,17 +11,17 @@ import com.smartdevicelink.test.Test;
 import com.smartdevicelink.transport.BTTransportConfig;
 import com.smartdevicelink.transport.BaseTransportConfig;
 
+import org.junit.runner.RunWith;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class SdlSecurityBaseTest extends AndroidTestCase2 {
-		
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-	
-	}
-	
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+
+@RunWith(AndroidJUnit4.class)
+public class SdlSecurityBaseTest {
+
 	private class MockSdlSecurityBase extends SdlSecurityBase {
 
 		@Override
@@ -115,7 +116,8 @@ public class SdlSecurityBaseTest extends AndroidTestCase2 {
 		public void onAuthTokenReceived(String token, byte bytes){}
 
 	}
-	
+
+	@org.junit.Test
 	public void testMakeListSetAndGet(){
 		List<String> makeList = new ArrayList<String>();
 		MockSdlSecurityBase mockSdlSecurityBase = new MockSdlSecurityBase();
@@ -130,7 +132,8 @@ public class SdlSecurityBaseTest extends AndroidTestCase2 {
     	assertNotNull(Test.NOT_NULL, makeList);
     	assertEquals(Test.MATCH, makeList, mockSdlSecurityBase.getMakeList());
 	}
-	
+
+	@org.junit.Test
 	public void testHandleInitResult() {
 		byte testWiproVersion = (byte) 0x0B;
 		boolean testInitResult = true;
@@ -154,7 +157,8 @@ public class SdlSecurityBaseTest extends AndroidTestCase2 {
 		
 		assertEquals(Test.MATCH, testInitResult, mockSdlSecurityBase.getInitSuccess());
 	}
-	
+
+	@org.junit.Test
 	public void testStartServiceListSetAndGet() {
 		List<SessionType> startServiceList = new ArrayList<SessionType>();
 		MockSdlSecurityBase mockSdlSecurityBase = new MockSdlSecurityBase();

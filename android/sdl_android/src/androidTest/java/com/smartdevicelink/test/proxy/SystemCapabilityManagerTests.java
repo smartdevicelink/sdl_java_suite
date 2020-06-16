@@ -1,8 +1,8 @@
 package com.smartdevicelink.test.proxy;
 
+import android.support.test.runner.AndroidJUnit4;
 import android.util.SparseArray;
 
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -63,6 +63,8 @@ import com.smartdevicelink.test.utl.AppServiceFactory;
 import com.smartdevicelink.util.CorrelationIdGenerator;
 import com.smartdevicelink.util.Version;
 
+import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -71,6 +73,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -79,15 +86,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class SystemCapabilityManagerTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class SystemCapabilityManagerTests {
 	public static final String TAG = "SystemCapabilityManagerTests";
 	public static SystemCapabilityManager systemCapabilityManager;
 	private SystemCapability systemCapability;
 	private VideoStreamingCapability videoStreamingCapability;
 
-	@Override
-	protected void setUp() throws Exception{
-		super.setUp();
+	@Before
+	public void setUp() throws Exception{
 
 		systemCapability = new SystemCapability(SystemCapabilityType.VIDEO_STREAMING);
 		videoStreamingCapability = new VideoStreamingCapability();
@@ -95,11 +102,6 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		videoStreamingCapability.setPreferredResolution(Test.GENERAL_IMAGERESOLUTION);
 		videoStreamingCapability.setSupportedFormats(Test.GENERAL_VIDEOSTREAMINGFORMAT_LIST);
 		systemCapability.setCapabilityForType(SystemCapabilityType.VIDEO_STREAMING, videoStreamingCapability);
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
 	}
 
 	public SystemCapabilityManager createSampleManager(){
@@ -174,6 +176,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		return convertedCapabilities;
 	}
 
+	@org.junit.Test
 	public void testParseRAI() {
 		systemCapabilityManager = createSampleManager();
 
@@ -201,12 +204,14 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 	}
 
+	@org.junit.Test
 	public void testNullDisplayCapabilitiesEnablesAllTextAndImageFields() {
 		List<DisplayCapability> displayCapabilityList = createDisplayCapabilityList(null, Test.GENERAL_BUTTONCAPABILITIES_LIST, Test.GENERAL_SOFTBUTTONCAPABILITIES_LIST);
 		assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getTextFields().size(), 29);
 		assertEquals(displayCapabilityList.get(0).getWindowCapabilities().get(0).getImageFields().size(), 14);
 	}
 
+	@org.junit.Test
 	public void testGetVSCapability(){
 		VideoStreamingCapability vsCapability = new VideoStreamingCapability();
 		vsCapability.setMaxBitrate(Test.GENERAL_INT);
@@ -291,6 +296,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		return onSendGetSystemCapabilityAnswer;
 	}
 
+	@org.junit.Test
 	public void testGetCapability() {
 		ISdl internalInterface;
 		SystemCapabilityManager scm;
@@ -348,6 +354,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
 	}
 
+	@org.junit.Test
 	public void testGetCapabilityHmiNone() {
 		ISdl internalInterface = mock(ISdl.class);
 		doAnswer(createOnHMIStatusAnswer(HMILevel.HMI_NONE)).when(internalInterface).addOnRPCListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCListener.class));
@@ -362,6 +369,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		verify(onSystemCapabilityListener, times(1)).onError(any(String.class));
 	}
 
+	@org.junit.Test
 	public void testAddOnSystemCapabilityListenerWithSubscriptionsSupportedAndCapabilityCached() {
 		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(6, 0); // This version supports capability subscriptions
 		sdlMsgVersion.setPatchVersion(0);
@@ -408,6 +416,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		verify(internalInterface, times(2)).sendRPC(any(GetSystemCapability.class));
 	}
 
+	@org.junit.Test
 	public void testAddOnSystemCapabilityListenerWithSubscriptionsSupportedAndCapabilityNotCached() {
 		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(6, 0); // This version supports capability subscriptions
 		sdlMsgVersion.setPatchVersion(0);
@@ -454,6 +463,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		verify(internalInterface, times(2)).sendRPC(any(GetSystemCapability.class));
 	}
 
+	@org.junit.Test
 	public void testAddOnSystemCapabilityListenerWithSubscriptionsNotSupportedAndCapabilityCached() {
 		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(5, 0); // This version doesn't support capability subscriptions
 		sdlMsgVersion.setPatchVersion(0);
@@ -500,6 +510,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
 	}
 
+	@org.junit.Test
 	public void testAddOnSystemCapabilityListenerWithSubscriptionsNotSupportedAndCapabilityNotCached() {
 		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(5, 0); // This version doesn't support capability subscriptions
 		sdlMsgVersion.setPatchVersion(0);
@@ -546,6 +557,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		verify(internalInterface, times(1)).sendRPC(any(GetSystemCapability.class));
 	}
 
+	@org.junit.Test
 	public void testAddOnSystemCapabilityListenerThenGetCapabilityWhenSubscriptionsAreNotSupported() {
 		SdlMsgVersion sdlMsgVersion = new SdlMsgVersion(5, 0); // This version doesn't support capability subscriptions
 		sdlMsgVersion.setPatchVersion(0);
@@ -635,6 +647,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		verify(onSystemCapabilityListener3, times(4)).onCapabilityRetrieved(any(Object.class));
 	}
 
+	@org.junit.Test
 	public void testGetAndAddListenerForDisplaysCapability() {
 		ISdl internalInterface;
 		SystemCapabilityManager scm;
@@ -670,6 +683,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		verify(internalInterface, times(0)).sendRPC(any(GetSystemCapability.class));
 	}
 
+	@org.junit.Test
 	public void testListConversion(){
 		SystemCapabilityManager systemCapabilityManager = createSampleManager();
 		Object capability = systemCapabilityManager.getCapability(SystemCapabilityType.SOFTBUTTON);
@@ -678,12 +692,14 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		assertNotNull(list);
 	}
 
+	@org.junit.Test
 	public void testFalsePositive(){
 		SystemCapabilityManager systemCapabilityManager = createSampleManager();
 		systemCapabilityManager.setCapability(SystemCapabilityType.AUDIO_PASSTHROUGH, null);
 		assertFalse(systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.AUDIO_PASSTHROUGH));
 	}
 
+	@org.junit.Test
 	public void testOnSystemCapabilityUpdateWithNoExistingCap(){
 		InternalSDLInterface iSDL = new InternalSDLInterface();
 		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
@@ -709,6 +725,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		assertNotNull(systemCapabilityManager.getCapability(SystemCapabilityType.APP_SERVICES));
 	}
 
+	@org.junit.Test
 	public void testOnSystemCapabilityUpdatedForDISPLAYS() {
 		InternalSDLInterface iSDL = new InternalSDLInterface();
 		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
@@ -739,6 +756,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		assertTrue(Validator.validateDisplayCapabilities(appliedConvertedCaps, testConvertedCaps));
 	}
 
+	@org.junit.Test
 	public void testOnSystemCapabilityUpdated(){
 		InternalSDLInterface iSDL = new InternalSDLInterface();
 		String baseName = "NavTest", baseID = "37F98053AE";
@@ -875,6 +893,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		assertEquals(phoneCapability, phoneCapabilityUpdated);
 	}
 
+	@org.junit.Test
 	public void testOnSetDisplayLayout() {
 		InternalSDLInterface iSDL = new InternalSDLInterface();
 		SystemCapabilityManager systemCapabilityManager = createSampleManager(iSDL);
@@ -907,6 +926,7 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 		assertNull(systemCapabilityManager.getWindowCapability(42));
 	}
 
+	@org.junit.Test
 	public void testManagerBeforeDisplayUpdate() {
 		InternalSDLInterface iSDL = new InternalSDLInterface();
 		SystemCapabilityManager systemCapabilityManager = new SystemCapabilityManager(iSDL);
