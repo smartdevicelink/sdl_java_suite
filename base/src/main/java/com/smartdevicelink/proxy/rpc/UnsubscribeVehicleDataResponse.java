@@ -74,6 +74,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 
 	/**
 	 * Constructs a new UnsubscribeVehicleDataResponse object
@@ -532,5 +533,21 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public VehicleDataResult getOEMCustomVehicleData(String vehicleDataName){
         return (VehicleDataResult) getObject(VehicleDataResult.class, vehicleDataName);
+    }
+
+    /**
+     * Sets a value for HandsOffSteering VehicleData.
+     * @param vehicleDataResult a VehicleDataResult value
+     */
+    public void setHandsOffSteering(VehicleDataResult vehicleDataResult){
+        setParameters(KEY_HANDS_OFF_STEERING, vehicleDataResult);
+    }
+
+    /**
+     * Gets a VehicleDataResult for the HandsOffSteering.
+     * @return a VehicleDataResult related to the HandsOffSteering
+     */
+    public VehicleDataResult getHandsOffSteering(){
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_HANDS_OFF_STEERING);
     }
 }

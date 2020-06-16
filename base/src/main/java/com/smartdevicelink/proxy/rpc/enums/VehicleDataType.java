@@ -167,6 +167,11 @@ public enum VehicleDataType {
      * @since SmartDeviceLink 6.0
      */
     VEHICLEDATA_OEM_CUSTOM_DATA,
+
+    /**
+     * To know whether or not a driver has his or her hands on the steering wheel.
+     */
+    VEHICLEDATA_HANDSOFFSTEERING
     ;
 
      /**

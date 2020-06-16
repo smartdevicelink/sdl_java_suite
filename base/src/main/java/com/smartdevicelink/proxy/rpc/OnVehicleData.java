@@ -324,6 +324,7 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 
 
     public OnVehicleData() {
@@ -598,5 +599,21 @@ public class OnVehicleData extends RPCNotification {
      */
     public Object getOEMCustomVehicleData(String vehicleDataName){
         return getParameters(vehicleDataName);
+    }
+
+    /**
+     * Gets a boolean value for HandsOffSteering
+     * @return a Boolean value.
+     */
+    public Boolean getHandsOffSteering(){
+        return getBoolean(KEY_HANDS_OFF_STEERING);
+    }
+
+    /**
+     * Sets a boolean value
+     * @param handsOffSteering a boolean value
+     */
+    public void setHandsOffSteering(boolean handsOffSteering){
+        setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
     }
 }

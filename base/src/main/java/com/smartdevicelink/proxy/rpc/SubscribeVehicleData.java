@@ -273,6 +273,14 @@ import java.util.Hashtable;
  *				<td>Subscribable</td>
  * 			<td>SmartDeviceLink 5.1 </td>
  * 		</tr>
+ *		<tr>
+ * 			<td>handsOffSteering</td>
+ * 			<td>Boolean</td>
+ * 			<td>To indicate whether driver hands are off the steering wheel</td>
+ *				<td>N</td>
+ *				<td>Subscribable</td>
+ * 			<td>SmartDeviceLink 5.1 </td>
+ * 		</tr>
  *   </table>
  *  
  * <p> <b>Response</b></p>
@@ -322,6 +330,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
 	public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+	public static final String KEY_HANDS_OFF_STEERING = "handsOffSteering";
 
 	/**
 	 * Constructs a new SubscribeVehicleData object
@@ -880,5 +889,21 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
 	public Boolean getOEMCustomVehicleData(String vehicleDataName){
 		return getBoolean(vehicleDataName);
+	}
+
+	/**
+	 * Gets a boolean value for HandsOffSteering. If true, means the handsOffSteering has been subscribed.
+	 * @return a Boolean value.
+	 */
+	public Boolean getHandsOffSteering(){
+		return getBoolean(KEY_HANDS_OFF_STEERING);
+	}
+
+	/**
+	 * Sets a boolean value for HandsOffSteering.
+	 * @param handsOffSteering a boolean value
+	 */
+	public void setHandsOffSteering(boolean handsOffSteering){
+		setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
 	}
 }
