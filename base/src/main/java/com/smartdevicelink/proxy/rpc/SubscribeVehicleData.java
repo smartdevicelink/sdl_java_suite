@@ -322,6 +322,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
 	public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+	public static final String KEY_WINDOW_STATUS = "windowStatus";
 
 	/**
 	 * Constructs a new SubscribeVehicleData object
@@ -880,5 +881,22 @@ public class SubscribeVehicleData extends RPCRequest {
 	 */
 	public Boolean getOEMCustomVehicleData(String vehicleDataName){
 		return getBoolean(vehicleDataName);
+	}
+
+	/**
+	 * Sets a status value for WindowStatus.
+	 * @param status a WindowStatus value
+	 */
+	public void setWindowStatus(WindowStatus status){
+		setParameters(KEY_WINDOW_STATUS, status);
+	}
+
+	/**
+	 * Gets a boolean value for WindowStatus.
+	 * @return a WindowStatus object value or null.
+	 * If true, means the WindowStatus data has been subscribed.
+	 */
+	public WindowStatus getWindowStatus(){
+		return (WindowStatus) getObject(WindowStatus.class, KEY_WINDOW_STATUS);
 	}
 }

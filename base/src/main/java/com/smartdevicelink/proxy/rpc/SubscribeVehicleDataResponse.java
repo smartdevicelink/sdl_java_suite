@@ -74,6 +74,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_WINDOW_STATUS = "cloudAppVehicleID";
 
 	/**
 	 * Constructs a new SubscribeVehicleDataResponse object
@@ -530,5 +531,22 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      */
     public VehicleDataResult getOEMCustomVehicleData(String vehicleDataName){
         return (VehicleDataResult) getObject(VehicleDataResult.class, vehicleDataName);
+    }
+
+    /**
+     * Sets a vehicleDataResult value for VehicleDataResult.
+     * @param vehicleDataResult a VehicleDataResult value
+     */
+    public void setVehicleDataResult(VehicleDataResult vehicleDataResult){
+        setParameters(KEY_WINDOW_STATUS, vehicleDataResult);
+    }
+
+    /**
+     * Gets a VehicleDataResult value for WindowStatus.
+     * @return a VehicleDataResult object value or null.
+     * If true, means the VehicleDataResult data has been subscribed.
+     */
+    public VehicleDataResult getVehicleDataResult(){
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_WINDOW_STATUS);
     }
 }
