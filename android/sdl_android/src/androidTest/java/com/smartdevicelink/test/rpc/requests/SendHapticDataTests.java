@@ -11,9 +11,14 @@ import com.smartdevicelink.test.TestValues;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
 
 /**
  * Created by brettywhite on 8/9/17.
@@ -68,6 +73,7 @@ public class SendHapticDataTests extends BaseRpcTests {
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
+	@Test
 	public void testRpcValues () {
 		// Test Values
 		List<HapticRect> list = msg.getHapticRectData();

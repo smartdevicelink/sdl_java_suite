@@ -32,10 +32,17 @@ import com.smartdevicelink.test.VehicleDataHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -103,6 +110,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
     /**
 	 * Tests the expected values of the RPC message.
 	 */
+    @Test
     public void testRpcValues () {       	
     	// Test Values
     	Double speed = ( (OnVehicleData) msg).getSpeed();
@@ -204,7 +212,8 @@ public class OnVehicleDataTests extends BaseRpcTests{
         assertNull(TestValues.NULL, msg.getElectronicParkBrakeStatus());
         assertNull(TestValues.NULL, msg.getOEMCustomVehicleData(TestValues.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 	}
-    
+
+	@Test
     public void testJson() {
 		JSONObject reference = new JSONObject();
 		

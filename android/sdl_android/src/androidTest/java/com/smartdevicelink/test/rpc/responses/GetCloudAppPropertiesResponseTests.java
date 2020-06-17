@@ -7,6 +7,9 @@ import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONObject;
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertNotNull;
 
 public class GetCloudAppPropertiesResponseTests extends BaseRpcTests {
 	@Override
@@ -32,6 +35,7 @@ public class GetCloudAppPropertiesResponseTests extends BaseRpcTests {
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
+	@Test
 	public void testRpcValues () {
 		// Invalid/Null Tests
 		GetCloudAppPropertiesResponse msg = new GetCloudAppPropertiesResponse();

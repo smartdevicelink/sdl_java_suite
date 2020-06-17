@@ -46,8 +46,12 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
+import static android.support.test.InstrumentationRegistry.getContext;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 
 public class ShowAppMenuResponseTests extends BaseRpcTests {
 
@@ -74,6 +78,7 @@ public class ShowAppMenuResponseTests extends BaseRpcTests {
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
+	@Test
 	public void testRpcValues () {
 		// Invalid/Null Tests
 		ShowAppMenuResponse msg = new ShowAppMenuResponse();
@@ -84,8 +89,9 @@ public class ShowAppMenuResponseTests extends BaseRpcTests {
 	/**
 	 * Tests a valid JSON construction of this RPC message.
 	 */
+	@Test
 	public void testJsonConstructor () {
-		JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
+		JSONObject commandJson = JsonFileReader.readId(getContext(), getCommandType(), getMessageType());
 		assertNotNull(TestValues.NOT_NULL, commandJson);
 
 		try {

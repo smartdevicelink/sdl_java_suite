@@ -12,9 +12,15 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
 import java.util.List;
+import static android.support.test.InstrumentationRegistry.getContext;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
 
 public class GetInteriorVehicleDataConsentResponseTests extends BaseRpcTests {
 
@@ -47,19 +53,22 @@ public class GetInteriorVehicleDataConsentResponseTests extends BaseRpcTests {
 		return result;
 	}
 
+	@Test
 	public void testRpcValues() {
 		List<Boolean> list = ((GetInteriorVehicleDataConsentResponse) msg).getAllowances();
 		assertEquals(TestValues.MATCH, list, TestValues.GENERAL_BOOLEAN_LIST);
 	}
 
+	@Test
 	public void testRequiredParams(){
 		GetInteriorVehicleDataConsentResponse msg = new GetInteriorVehicleDataConsentResponse(true, Result.SUCCESS);
 		assertTrue(msg.getSuccess());
 		assertEquals(TestValues.MATCH, msg.getResultCode(), Result.SUCCESS);
 	}
 
+	@Test
 	public void testJsonConstructor() {
-		JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
+		JSONObject commandJson = JsonFileReader.readId(getContext(), getCommandType(), getMessageType());
 		assertNotNull(TestValues.NOT_NULL, commandJson);
 
 		try {

@@ -6,6 +6,8 @@ import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
+
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.proxy.callbacks.OnError}
@@ -17,6 +19,7 @@ public class OnErrorTests extends TestCase {
 	 * {@link com.smartdevicelink.proxy.callbacks.OnError#OnError()}
 	 * {@link com.smartdevicelink.proxy.callbacks.OnError#OnError(String, Exception)}
 	 */
+	@Test
 	public void testValues () {		
 		// Valid Tests
 		OnError testOnError = new OnError();

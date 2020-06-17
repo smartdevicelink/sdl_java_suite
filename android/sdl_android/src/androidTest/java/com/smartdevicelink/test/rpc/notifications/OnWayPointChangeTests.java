@@ -12,9 +12,14 @@ import com.smartdevicelink.test.TestValues;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
 
 /**
  * Created by austinkirk on 6/7/17.
@@ -68,6 +73,7 @@ public class OnWayPointChangeTests extends BaseRpcTests {
     /**
      * Tests the expected values of the RPC message.
      */
+    @Test
     public void testRpcValues () {
         // Test Values
         List<LocationDetails> list = ((OnWayPointChange) msg).getWayPoints();

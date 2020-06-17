@@ -13,8 +13,16 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+import static android.support.test.InstrumentationRegistry.getContext;
 
 public class PublishAppServiceTests extends BaseRpcTests {
 
@@ -51,6 +59,7 @@ public class PublishAppServiceTests extends BaseRpcTests {
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
+	@Test
 	public void testRpcValues () {
 		// Test Values
 		AppServiceManifest copy = ( (PublishAppService) msg ).getAppServiceManifest();
@@ -69,6 +78,7 @@ public class PublishAppServiceTests extends BaseRpcTests {
 	/**
 	 * Tests constructor with required params
 	 */
+	@Test
 	public void testRequiredParamsConstructor () {
 
 		PublishAppService msg = new PublishAppService(TestValues.GENERAL_APPSERVICEMANIFEST);
@@ -80,8 +90,9 @@ public class PublishAppServiceTests extends BaseRpcTests {
 	/**
 	 * Tests a valid JSON construction of this RPC message.
 	 */
+	@Test
 	public void testJsonConstructor () {
-		JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
+		JSONObject commandJson = JsonFileReader.readId(getContext(), getCommandType(), getMessageType());
 		assertNotNull(TestValues.NOT_NULL, commandJson);
 
 		try {

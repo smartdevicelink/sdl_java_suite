@@ -13,8 +13,16 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
+import static android.support.test.InstrumentationRegistry.getContext;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class :
@@ -58,6 +66,7 @@ public class SetInteriorVehicleDataResponseTests extends BaseRpcTests {
     /**
      * Tests the expected values of the RPC message.
      */
+    @Test
     public void testRpcValues () {
         // Test Values
         ModuleData testModuleData = ( (SetInteriorVehicleDataResponse) msg ).getModuleData();
@@ -76,8 +85,9 @@ public class SetInteriorVehicleDataResponseTests extends BaseRpcTests {
     /**
      * Tests a valid JSON construction of this RPC message.
      */
+    @Test
     public void testJsonConstructor () {
-        JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
+        JSONObject commandJson = JsonFileReader.readId(getContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 
         try {

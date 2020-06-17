@@ -11,9 +11,14 @@ import com.smartdevicelink.test.TestValues;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
 
 public class OnRCStatusTests extends BaseRpcTests {
 	@Override
@@ -69,6 +74,7 @@ public class OnRCStatusTests extends BaseRpcTests {
 	/**
 	 * Tests the expected values of the RPC message.
 	 */
+	@Test
 	public void testRpcValues() {
 		// Test Values
 		List<ModuleData> listAllocatedModules = ((OnRCStatus) msg).getAllocatedModules();

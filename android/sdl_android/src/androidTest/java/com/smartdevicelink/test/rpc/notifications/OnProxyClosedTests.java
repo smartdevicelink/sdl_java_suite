@@ -7,6 +7,8 @@ import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
+
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
  * {@link com.smartdevicelink.proxy.callbacks.OnProxyClosed}
@@ -18,6 +20,7 @@ public class OnProxyClosedTests extends TestCase {
 	 * {@link com.smartdevicelink.proxy.callbacks.OnProxyClosed#OnProxyClosed()}
 	 * {@link com.smartdevicelink.proxy.callbacks.OnProxyClosed#OnProxyClosed(String, Exception, SdlDisconnectedReason)}
 	 */
+	@Test
 	public void testValues () {
 		// Valid Tests
 		OnProxyClosed testOnProxyClosed = new OnProxyClosed();

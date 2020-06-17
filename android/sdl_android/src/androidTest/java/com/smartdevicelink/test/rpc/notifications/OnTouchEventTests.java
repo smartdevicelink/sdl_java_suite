@@ -11,8 +11,15 @@ import com.smartdevicelink.test.Validator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.List;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -56,6 +63,7 @@ public class OnTouchEventTests extends BaseRpcTests{
     /**
 	 * Tests the expected values of the RPC message.
 	 */
+    @Test
     public void testRpcValues () {       	
     	// Test Values
         TouchType type = ( (OnTouchEvent) msg ).getType();

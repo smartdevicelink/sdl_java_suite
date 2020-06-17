@@ -9,6 +9,8 @@ import com.smartdevicelink.test.TestValues;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static junit.framework.TestCase.fail;
+
 public class SetCloudAppPropertiesTests extends BaseRpcTests {
 
     @Override

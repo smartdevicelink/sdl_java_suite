@@ -12,8 +12,15 @@ import com.smartdevicelink.test.json.rpc.JsonFileReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.Hashtable;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.fail;
+import static android.support.test.InstrumentationRegistry.getContext;
 
 public class ReleaseInteriorVehicleDataModuleTests extends BaseRpcTests {
 
@@ -47,6 +54,7 @@ public class ReleaseInteriorVehicleDataModuleTests extends BaseRpcTests {
 		return RPCMessage.KEY_REQUEST;
 	}
 
+	@Test
 	public void testRpcValues() {
 		ModuleType type = ((ReleaseInteriorVehicleDataModule) msg).getModuleType();
 		String id = ((ReleaseInteriorVehicleDataModule) msg).getModuleId();
@@ -65,8 +73,9 @@ public class ReleaseInteriorVehicleDataModuleTests extends BaseRpcTests {
 		assertEquals(TestValues.MATCH, TestValues.GENERAL_MODULETYPE, msg2.getModuleType());
 	}
 
+	@Test
 	public void testJsonConstructor() {
-		JSONObject commandJson = JsonFileReader.readId(this.mContext, getCommandType(), getMessageType());
+		JSONObject commandJson = JsonFileReader.readId(getContext(), getCommandType(), getMessageType());
 		assertNotNull(TestValues.NOT_NULL, commandJson);
 
 		try {

@@ -8,6 +8,12 @@ import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -52,6 +58,7 @@ public class OnHashChangeTests extends BaseRpcTests{
     /**
 	 * Tests the expected values of the RPC message.
 	 */
+    @Test
     public void testRpcValues () {       	
     	// Test Values
         String hashId = ( (OnHashChange) msg ).getHashID();

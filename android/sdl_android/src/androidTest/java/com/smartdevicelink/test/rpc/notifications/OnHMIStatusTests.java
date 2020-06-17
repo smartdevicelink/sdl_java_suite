@@ -13,6 +13,12 @@ import com.smartdevicelink.util.Version;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -64,6 +70,7 @@ public class OnHMIStatusTests extends BaseRpcTests{
     /**
 	 * Tests the expected values of the RPC message.
 	 */
+    @Test
     public void testRpcValues () {       	
     	// Test Values
         AudioStreamingState audioStreamingState = ( (OnHMIStatus) msg ).getAudioStreamingState();

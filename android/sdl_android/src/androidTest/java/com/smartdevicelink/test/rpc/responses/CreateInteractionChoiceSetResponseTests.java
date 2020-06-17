@@ -7,6 +7,9 @@ import com.smartdevicelink.test.BaseRpcTests;
 import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONObject;
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertNotNull;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -37,6 +40,7 @@ public class CreateInteractionChoiceSetResponseTests extends BaseRpcTests{
     /**
 	 * Tests the expected values of the RPC message.
 	 */
+    @Test
     public void testRpcValues () {    
     	// Invalid/Null Tests
         CreateInteractionChoiceSetResponse msg = new CreateInteractionChoiceSetResponse();
