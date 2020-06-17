@@ -85,7 +85,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		assertNotNull(csm.fileManager);
 		assertNotNull(csm.preloadedChoices);
 		assertNotNull(csm.pendingPreloadChoices);
-		assertNotNull(csm.operationQueue);
+		assertNotNull(csm.transactionQueue);
 		assertNotNull(csm.hmiListener);
 		assertNotNull(csm.onDisplayCapabilityListener);
 		assertNull(csm.pendingPresentOperation);
@@ -102,7 +102,7 @@ public class ChoiceSetManagerTests extends AndroidTestCase2 {
 		assertNull(csm.pendingPresentationSet);
 		assertNull(csm.pendingPresentOperation);
 
-		assertEquals(csm.operationQueue.getTasksAsList().size(), 0);
+		assertEquals(csm.transactionQueue.getTasksAsList().size(), 0);
 		assertEquals(csm.nextChoiceId, 1);
 
 		assertFalse(csm.isVROptional);
