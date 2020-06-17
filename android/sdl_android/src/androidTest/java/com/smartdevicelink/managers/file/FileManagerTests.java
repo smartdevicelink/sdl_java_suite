@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static android.support.test.InstrumentationRegistry.getContext;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -58,7 +58,7 @@ public class FileManagerTests {
 
 	@Before
 	public void setUp() throws Exception{
-		mTestContext = getContext();
+		mTestContext = getTargetContext();
 		validFile = new SdlFile();
 		validFile.setName(TestValues.GENERAL_STRING);
 		validFile.setFileData(TestValues.GENERAL_BYTE_ARRAY);

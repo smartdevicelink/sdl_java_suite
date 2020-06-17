@@ -23,7 +23,7 @@ import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
-import static android.support.test.InstrumentationRegistry.getContext;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -117,7 +117,7 @@ public class SendLocationTests extends BaseRpcTests {
      */
     @Test
     public void testJsonConstructor () {
-    	JSONObject commandJson = JsonFileReader.readId(getContext(), getCommandType(), getMessageType());
+    	JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
     	assertNotNull("Command object is null", commandJson);
     	
     	try {

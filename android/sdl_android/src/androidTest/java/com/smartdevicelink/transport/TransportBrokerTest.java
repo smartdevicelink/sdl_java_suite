@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.InstrumentationRegistry.getContext;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
@@ -26,7 +26,7 @@ public class TransportBrokerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		rsvp = new RouterServiceValidator(getContext());
+		rsvp = new RouterServiceValidator(getTargetContext());
 		rsvp.validate();
 		
 	}
@@ -42,7 +42,7 @@ public class TransportBrokerTest {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
 		}
-		TransportBroker broker = new TransportBroker(getContext(), SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
+		TransportBroker broker = new TransportBroker(getTargetContext(), SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
 		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
 			assertTrue(broker.start());
 		}
@@ -56,7 +56,7 @@ public class TransportBrokerTest {
 			Looper.prepare();
 		}
 
-		TransportBroker broker = new TransportBroker(getContext(), SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
+		TransportBroker broker = new TransportBroker(getTargetContext(), SdlUnitTestContants.TEST_APP_ID,rsvp.getService());
 
 		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
 			assertTrue(broker.start());
@@ -90,7 +90,7 @@ public class TransportBrokerTest {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
 		}
-		TransportBroker broker = new TransportBroker(getContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+		TransportBroker broker = new TransportBroker(getTargetContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
 		if(!DeviceUtil.isEmulator()){ // Cannot perform MBT operations in emulator
 			assertTrue(broker.start());
 		}
@@ -103,7 +103,7 @@ public class TransportBrokerTest {
 			Looper.prepare();
 		}
 
-		TransportBroker broker = new TransportBroker(getContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
+		TransportBroker broker = new TransportBroker(getTargetContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
 		Handler handler = new Handler();
 		Message message = new Message();
 		broker.routerServiceMessenger = null;

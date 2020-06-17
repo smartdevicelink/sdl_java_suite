@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.InstrumentationRegistry.getContext;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
@@ -33,7 +33,7 @@ public class MultiplexTransportTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		rsvp = new RouterServiceValidator(getContext());
+		rsvp = new RouterServiceValidator(getTargetContext());
 		rsvp.setFlags(RouterServiceValidator.FLAG_DEBUG_NONE);
 		rsvp.validate();
 		
@@ -61,7 +61,7 @@ public class MultiplexTransportTest {
 	
 	@Test
 	public void testThreadRecoverability(){
-		MultiplexTransportConfig config = new MultiplexTransportConfig(getContext(),SdlUnitTestContants.TEST_APP_ID);
+		MultiplexTransportConfig config = new MultiplexTransportConfig(getTargetContext(),SdlUnitTestContants.TEST_APP_ID);
 		//	public MultiplexTransport(MultiplexTransportConfig transportConfig, final ITransportListener transportListener){
 		MultiplexTransport trans = new MultiplexTransport(config,transportListener);
 		

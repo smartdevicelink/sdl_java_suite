@@ -49,7 +49,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Hashtable;
-import static android.support.test.InstrumentationRegistry.getContext;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
@@ -91,7 +91,7 @@ public class ShowAppMenuResponseTests extends BaseRpcTests {
 	 */
 	@Test
 	public void testJsonConstructor () {
-		JSONObject commandJson = JsonFileReader.readId(getContext(), getCommandType(), getMessageType());
+		JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
 		assertNotNull(TestValues.NOT_NULL, commandJson);
 
 		try {

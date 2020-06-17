@@ -46,7 +46,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static android.support.test.InstrumentationRegistry.getContext;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 
 @RunWith(AndroidJUnit4.class)
 public class SdlProxyBaseTests {
@@ -60,8 +60,8 @@ public class SdlProxyBaseTests {
     @Test
     public void testNullSdlProxyConfigurationResources() {
         SdlProxyALM proxy = null;
-        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(mock(IProxyListenerALM.class), "appId", "appName", true, getContext());
-        SdlProxyConfigurationResources config = new SdlProxyConfigurationResources("path", (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE));
+        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(mock(IProxyListenerALM.class), "appId", "appName", true, getTargetContext());
+        SdlProxyConfigurationResources config = new SdlProxyConfigurationResources("path", (TelephonyManager) getTargetContext().getSystemService(Context.TELEPHONY_SERVICE));
         //Construct with a non-null SdlProxyConfigurationResources
         builder.setSdlProxyConfigurationResources(config);
         try {
@@ -127,14 +127,14 @@ public class SdlProxyBaseTests {
     @Test
     public void testRemoteDisplayStreaming(){
         SdlProxyALM proxy = null;
-        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(mock(IProxyListenerALM.class), "appId", "appName", true, getContext());
+        SdlProxyBuilder.Builder builder = new SdlProxyBuilder.Builder(mock(IProxyListenerALM.class), "appId", "appName", true, getTargetContext());
         try{
             proxy = builder.build();
             //	public void startRemoteDisplayStream(Context context, final Class<? extends SdlRemoteDisplay> remoteDisplay, final VideoStreamingParameters parameters, final boolean encrypted){
             Method m = SdlProxyALM.class.getDeclaredMethod("startRemoteDisplayStream", Context.class, SdlRemoteDisplay.class, VideoStreamingParameters.class, boolean.class);
             assertNotNull(m);
             m.setAccessible(true);
-            m.invoke(proxy,getContext(), SdlRemoteDisplayTest.MockRemoteDisplay.class, (VideoStreamingParameters)null, false);
+            m.invoke(proxy,getTargetContext(), SdlRemoteDisplayTest.MockRemoteDisplay.class, (VideoStreamingParameters)null, false);
             assert true;
 
         }catch (Exception e){

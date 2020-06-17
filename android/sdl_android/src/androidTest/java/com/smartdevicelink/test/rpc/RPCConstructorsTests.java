@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static android.support.test.InstrumentationRegistry.getContext;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static junit.framework.TestCase.assertTrue;
 
 /**
@@ -61,7 +61,7 @@ public class RPCConstructorsTests {
     private Map<String, List<Parameter>> getRPCMandatoryParamsMap(String fileName) {
         Map<String, List<Parameter>> rpcMandatoryParamsMap = new HashMap<>();
         try {
-            InputStream stream = getContext().getAssets().open(fileName);
+            InputStream stream = getTargetContext().getAssets().open(fileName);
             XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
             XmlPullParser myParser = xmlFactoryObject.newPullParser();
             myParser.setInput(stream, null);

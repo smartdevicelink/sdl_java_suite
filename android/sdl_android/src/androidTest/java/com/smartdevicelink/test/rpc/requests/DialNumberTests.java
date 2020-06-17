@@ -18,7 +18,7 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
-import static android.support.test.InstrumentationRegistry.getContext;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 
 /**
  * Created by austinkirk on 6/6/17.
@@ -83,7 +83,7 @@ public class DialNumberTests extends BaseRpcTests {
      */
     @Test
     public void testJsonConstructor () {
-        JSONObject commandJson = JsonFileReader.readId(getContext(), getCommandType(), getMessageType());
+        JSONObject commandJson = JsonFileReader.readId(getTargetContext(), getCommandType(), getMessageType());
         assertNotNull(TestValues.NOT_NULL, commandJson);
 
         try {

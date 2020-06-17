@@ -10,7 +10,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.InstrumentationRegistry.getContext;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 
 @RunWith(AndroidJUnit4.class)
 public class AndroidToolsTests {
@@ -19,7 +19,7 @@ public class AndroidToolsTests {
 	public void testIsServiceExportedNormal(){
 		
 		try{
-			AndroidTools.isServiceExported(getContext(), new ComponentName(getContext(), "test"));
+			AndroidTools.isServiceExported(getTargetContext(), new ComponentName(getTargetContext(), "test"));
 		}catch(Exception e){
 			Assert.fail("Exception during normal test: " + e.getMessage());
 		}
@@ -29,7 +29,7 @@ public class AndroidToolsTests {
 	public void testIsServiceExportedNull(){
 		
 		try{
-			AndroidTools.isServiceExported(getContext(), null);
+			AndroidTools.isServiceExported(getTargetContext(), null);
 			Assert.fail("Proccessed null data");
 		}catch(Exception e){
 			
