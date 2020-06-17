@@ -21,6 +21,7 @@ import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
+import com.smartdevicelink.proxy.rpc.enums.SystemAction;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.test.Validator;
 
@@ -209,8 +210,9 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         SoftButton softButtonExpectedValue = new SoftButton(SoftButtonType.SBT_BOTH, SoftButtonObject.SOFT_BUTTON_ID_NOT_SET_VALUE);
         softButtonExpectedValue.setText("o1s1");
         softButtonExpectedValue.setImage(new Image(artworkExpectedValue.getName(), ImageType.DYNAMIC));
+        softButtonExpectedValue.setSystemAction(SystemAction.DEFAULT_ACTION);
         SoftButton actual = softButtonState1.getSoftButton();
-        assertTrue("Returned SoftButton doesn't match the expected value", Validator.validateSoftButton(softButtonExpectedValue, softButtonState1.getSoftButton()));
+        assertTrue("Returned SoftButton doesn't match the expected value", Validator.validateSoftButton(softButtonExpectedValue, actual));
     }
 
     public void testSoftButtonObject(){
@@ -233,6 +235,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         // Test SoftButtonObject.getCurrentStateSoftButton()
         SoftButton softButtonExpectedValue = new SoftButton(SoftButtonType.SBT_TEXT, softButtonObject2Id);
         softButtonExpectedValue.setText("o2s1");
+        softButtonExpectedValue.setSystemAction(SystemAction.DEFAULT_ACTION);
         assertTrue("Returned current state SoftButton doesn't match the expected value", Validator.validateSoftButton(softButtonExpectedValue, softButtonObject2.getCurrentStateSoftButton()));
 
 
