@@ -74,8 +74,9 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_GEAR_STATUS = "gearStatus";
 
-	/**
+    /**
 	 * Constructs a new SubscribeVehicleDataResponse object
 	 */
     public SubscribeVehicleDataResponse() {
@@ -530,5 +531,22 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      */
     public VehicleDataResult getOEMCustomVehicleData(String vehicleDataName){
         return (VehicleDataResult) getObject(VehicleDataResult.class, vehicleDataName);
+    }
+
+    /**
+     * Sets a VehicleDataResult value for GearStatus.
+     * @param gearStatus a boolean value
+     */
+    public void setGearStatus(VehicleDataResult gearStatus){
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+    }
+
+    /**
+     * See GearStatus.
+     * @return a VehicleDataResult value.
+     */
+    @SuppressWarnings("unchecked")
+    public VehicleDataResult getGearStatus(){
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_GEAR_STATUS);
     }
 }

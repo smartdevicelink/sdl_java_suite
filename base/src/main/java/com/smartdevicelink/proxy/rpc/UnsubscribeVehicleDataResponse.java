@@ -74,6 +74,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_GEAR_STATUS = "gearStatus";
 
 	/**
 	 * Constructs a new UnsubscribeVehicleDataResponse object
@@ -226,16 +227,20 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_EXTERNAL_TEMPERATURE);
     }
     /**
+     * This parameter is deprecated starting RPC Spec X.x.x, please see gearStatus
      * Gets currently selected gear data
      * @param prndl a VehicleDataResult related to the PRNDL status (automatic transmission gear)
      */
+    @Deprecated
     public void setPrndl(VehicleDataResult prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
     /**
+     * This parameter is deprecated starting RPC Spec X.x.x, please see gearStatus
      * Gets currently selected gear data
      * @return a VehicleDataResult related to the PRNDL status (automatic transmission gear)
      */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public VehicleDataResult getPrndl() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_PRNDL);
@@ -532,5 +537,22 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      */
     public VehicleDataResult getOEMCustomVehicleData(String vehicleDataName){
         return (VehicleDataResult) getObject(VehicleDataResult.class, vehicleDataName);
+    }
+
+    /**
+     * Sets a VehicleDataResult value for GearStatus.
+     * @param gearStatus a boolean value
+     */
+    public void setGearStatus(VehicleDataResult gearStatus){
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+    }
+
+    /**
+     * See GearStatus.
+     * @return a VehicleDataResult value.
+     */
+    @SuppressWarnings("unchecked")
+    public VehicleDataResult getGearStatus(){
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_GEAR_STATUS);
     }
 }

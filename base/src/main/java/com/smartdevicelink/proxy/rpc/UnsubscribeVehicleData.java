@@ -307,6 +307,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
 	public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+	public static final String KEY_GEAR_STATUS = "gearStatus";
 
 	/**
 	 * Constructs a new UnsubscribeVehicleData object
@@ -495,22 +496,26 @@ public class UnsubscribeVehicleData extends RPCRequest {
     }
 
 	/**
+	 * This parameter is deprecated starting RPC Spec X.x.x, please see GearStatus
 	 * Sets a boolean value. If true, unsubscribes Currently selected gear data
 	 * 
 	 * @param prndl
 	 *            a boolean value
 	 */
+	@Deprecated
     public void setPrndl(Boolean prndl) {
 		setParameters(KEY_PRNDL, prndl);
     }
 
 	/**
+	 * This parameter is deprecated starting RPC Spec X.x.x, please see GearStatus
 	 * Gets a boolean value. If true, means the Currently selected gear data has been
 	 * unsubscribed.
 	 * 
 	 * @return Boolean -a Boolean value. If true, means the Currently selected gear data
 	 *         has been unsubscribed.
 	 */
+	@Deprecated
     public Boolean getPrndl() {
         return getBoolean(KEY_PRNDL);
     }
@@ -866,5 +871,21 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 */
 	public Boolean getOEMCustomVehicleData(String vehicleDataName){
 		return getBoolean(vehicleDataName);
+	}
+
+	/**
+	 * Sets a boolean value for GearStatus.
+	 * @param gearStatus a boolean value
+	 */
+	public void setGearStatus(Boolean gearStatus){
+		setParameters(KEY_GEAR_STATUS, gearStatus);
+	}
+
+	/**
+	 * Gets a boolean value for GearStatus.
+	 * @return a Boolean value.
+	 */
+	public Boolean getGearStatus(){
+		return getBoolean(KEY_GEAR_STATUS);
 	}
 }

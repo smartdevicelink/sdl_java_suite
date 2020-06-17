@@ -48,6 +48,9 @@ public enum PRNDL {
      * No gear
      */
     NEUTRAL,
+    /**
+     * Regular Drive mode
+     */
     DRIVE,
     /**
      * Drive Sport mode
@@ -83,6 +86,8 @@ public enum PRNDL {
     SIXTH,
     SEVENTH,
     EIGHTH,
+    NINTH,
+    TENTH,
     UNKNOWN,
     FAULT;
 
