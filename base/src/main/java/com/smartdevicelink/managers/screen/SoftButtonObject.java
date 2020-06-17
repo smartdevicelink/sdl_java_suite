@@ -331,9 +331,8 @@ public class SoftButtonObject {
         int result = 1;
         result += ((getName() == null) ? 0 : Integer.rotateLeft(getName().hashCode(), 1));
         result += ((getCurrentStateName() == null) ? 0 : Integer.rotateLeft(getCurrentStateName().hashCode(), 2));
-        result += Integer.rotateLeft(Integer.valueOf(getButtonId()).hashCode(), 3);
         for (int i = 0; i < this.states.size(); i++) {
-            result += ((getStates().get(i) == null) ? 0 : Integer.rotateLeft(getStates().get(i).hashCode(), i + 4));
+            result += ((getStates().get(i) == null) ? 0 : Integer.rotateLeft(getStates().get(i).hashCode(), i + 3));
         }
         return result;
     }
