@@ -97,7 +97,16 @@ class SoftButtonReplaceOperation extends Task {
                 @Override
                 public void onComplete(boolean success) {
                     DebugTool.logInfo("Finished sending soft buttons with images");
-                    onFinished();
+                    // Upload other images
+                    uploadOtherStateImages(new CompletionListener() {
+                        @Override
+                        public void onComplete(boolean success) {
+                            if (success) {
+                                DebugTool.logInfo("Finished sending other images for soft buttons");
+                            }
+                            onFinished();
+                        }
+                    });
                 }
             });
         }

@@ -70,7 +70,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 abstract class BaseSoftButtonManager extends BaseSubManager {
 
     private final WeakReference<FileManager> fileManager;
-    private SoftButtonCapabilities softButtonCapabilities;
+    SoftButtonCapabilities softButtonCapabilities;
     private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     private HMILevel currentHMILevel;
     private final OnSystemCapabilityListener onDisplayCapabilityListener;
