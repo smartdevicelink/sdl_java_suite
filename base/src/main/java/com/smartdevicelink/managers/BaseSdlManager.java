@@ -142,7 +142,10 @@ abstract class BaseSdlManager {
 
         @Override
         public void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason) {
-            BaseSdlManager.this.onProxyClosed(reason);
+            Log.i(TAG, "Proxy is closed.");
+            if (reason == null || !reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)) {
+                dispose();
+            }
         }
 
         @Override
@@ -164,8 +167,6 @@ abstract class BaseSdlManager {
 
     // ABSTRACT METHODS
     abstract void retryChangeRegistration();
-
-    abstract void onProxyClosed(SdlDisconnectedReason reason);
 
     abstract void checkState();
 

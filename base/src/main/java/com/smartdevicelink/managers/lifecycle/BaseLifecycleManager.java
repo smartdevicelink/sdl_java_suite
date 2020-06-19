@@ -342,10 +342,10 @@ abstract class BaseLifecycleManager {
         return currentHMIStatus;
     }
 
-    void onClose(String info, Exception e) {
+    void onClose(String info, Exception e, SdlDisconnectedReason reason) {
         Log.i(TAG, "onClose");
         if (lifecycleListener != null) {
-            lifecycleListener.onProxyClosed((LifecycleManager) this, info, e, null);
+            lifecycleListener.onProxyClosed((LifecycleManager) this, info, e, reason);
         }
     }
 
@@ -462,7 +462,7 @@ abstract class BaseLifecycleManager {
                             cleanProxy();
                         } else {
                             Log.v(TAG, "re-registering for language change");
-                            processLanguageChange();
+                            cycleProxy(SdlDisconnectedReason.LANGUAGE_CHANGE);
                         }
                         break;
                     case UNREGISTER_APP_INTERFACE:
@@ -475,19 +475,6 @@ abstract class BaseLifecycleManager {
 
 
     };
-
-    private void processLanguageChange() {
-        if (session != null) {
-            if (session.getIsConnected()) {
-                session.close();
-            }
-            try {
-                session.startSession();
-            } catch (SdlException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     /* *******************************************************************************************************
      ********************************** INTERNAL - RPC LISTENERS !! END !! *********************************
@@ -872,7 +859,7 @@ abstract class BaseLifecycleManager {
     final ISdlConnectionListener sdlConnectionListener = new ISdlConnectionListener() {
         @Override
         public void onTransportDisconnected(String info) {
-            onClose(info, null);
+            onClose(info, null, null);
 
         }
 
@@ -884,7 +871,7 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onTransportError(String info, Exception e) {
-            onClose(info, e);
+            onClose(info, e, null);
 
         }
 
@@ -1529,6 +1516,8 @@ abstract class BaseLifecycleManager {
             }
         }
     }
+
+    abstract void cycleProxy(SdlDisconnectedReason disconnectedReason);
 
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
     }

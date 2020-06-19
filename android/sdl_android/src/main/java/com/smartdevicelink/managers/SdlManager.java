@@ -49,7 +49,6 @@ import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
 import com.smartdevicelink.managers.video.VideoStreamManager;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
-import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -208,18 +207,6 @@ public class SdlManager extends BaseSdlManager {
                     DebugTool.logInfo("Retry Change Registration Count: " + changeRegistrationRetry);
                 }
             }, 3000);
-        }
-    }
-
-    @Override
-    void onProxyClosed(SdlDisconnectedReason reason) {
-        Log.i(TAG, "Proxy is closed.");
-        if (managerListener != null) {
-            managerListener.onDestroy();
-        }
-
-        if (reason == null || !reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)) {
-            dispose();
         }
     }
 
