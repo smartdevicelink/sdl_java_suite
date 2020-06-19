@@ -214,10 +214,6 @@ public class SdlManager extends BaseSdlManager {
     @Override
     void onProxyClosed(SdlDisconnectedReason reason) {
         Log.i(TAG, "Proxy is closed.");
-        if (managerListener != null) {
-            managerListener.onDestroy();
-        }
-
         if (reason == null || !reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)) {
             dispose();
         }
