@@ -120,10 +120,12 @@ public class LifecycleManager extends BaseLifecycleManager {
             //We don't want to alert higher if we are just cycling for legacy bluetooth
             onClose("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED), disconnectedReason);
         }
-        try {
-            session.startSession();
-        } catch (SdlException e) {
-            e.printStackTrace();
+        if (session != null) {
+            try {
+                session.startSession();
+            } catch (SdlException e) {
+                e.printStackTrace();
+            }
         }
     }
 

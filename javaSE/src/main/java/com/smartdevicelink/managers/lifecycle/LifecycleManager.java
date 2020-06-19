@@ -57,10 +57,8 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     @Override
     void cycleProxy(SdlDisconnectedReason disconnectedReason) {
+        cleanProxy();
         if (session != null) {
-            if (session.getIsConnected()) {
-                session.close();
-            }
             try {
                 session.startSession();
             } catch (SdlException e) {
