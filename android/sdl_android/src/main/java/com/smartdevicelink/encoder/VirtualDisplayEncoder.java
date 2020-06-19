@@ -34,16 +34,27 @@ package com.smartdevicelink.encoder;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.SurfaceTexture;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
+import android.opengl.GLES20;
 import android.os.Build;
+import android.os.ConditionVariable;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 
+import com.android.grafika.gles.EglCore;
+import com.android.grafika.gles.FullFrameRect;
+import com.android.grafika.gles.OffscreenSurface;
+import com.android.grafika.gles.Texture2dProgram;
+import com.android.grafika.gles.WindowSurface;
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
 import com.smartdevicelink.proxy.rpc.ImageResolution;
 import com.smartdevicelink.proxy.rpc.VideoStreamingFormat;
@@ -72,6 +83,14 @@ public class VirtualDisplayEncoder {
     //For older (<21) OS versions
     private Thread encoderThread;
 
+    private CaptureThread mCaptureThread;
+    private EglCore mEglCore;
+    private OffscreenSurface mDummySurface;
+    private int mTextureId = -1;
+    private SurfaceTexture mInterSurfaceTexture;
+    private Surface mInterSurface;
+    private FullFrameRect mFullFrameBlit;
+    private WindowSurface mEncoderSurface;
 
     /**
      * Initialization method for VirtualDisplayEncoder object. MUST be called before start() or shutdown()
@@ -107,8 +126,8 @@ public class VirtualDisplayEncoder {
     }
 
     @SuppressWarnings("unused")
-    public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format) {
-        this.streamingParams = new VideoStreamingParameters(displayDensity, frameRate, bitrate, interval, resolution, format);
+    public void setStreamingParams(int displayDensity, ImageResolution resolution, int frameRate, int bitrate, int interval, VideoStreamingFormat format, boolean stableFrameRate) {
+        this.streamingParams = new VideoStreamingParameters(displayDensity, frameRate, bitrate, interval, resolution, format, stableFrameRate);
     }
 
     @SuppressWarnings("unused")
@@ -129,17 +148,50 @@ public class VirtualDisplayEncoder {
             return;
         }
 
+        int width = streamingParams.getResolution().getResolutionWidth();
+        int height = streamingParams.getResolution().getResolutionHeight();
+        if (streamingParams.isStableFrameRate()) {
+            setupGLES(width, height);
+        }
+
         synchronized (STREAMING_LOCK) {
 
             try {
-                inputSurface = prepareVideoEncoder();
+                if (streamingParams.isStableFrameRate()) {
+                    // We use WindowSurface for the input of MediaCodec.
+                    mEncoderSurface = new WindowSurface(mEglCore, prepareVideoEncoder(), true);
+                    virtualDisplay = mDisplayManager.createVirtualDisplay(TAG,
+                            width, height, streamingParams.getDisplayDensity(), mInterSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
 
-                // Create a virtual display that will output to our encoder.
-                virtualDisplay = mDisplayManager.createVirtualDisplay(TAG,
-                        streamingParams.getResolution().getResolutionWidth(), streamingParams.getResolution().getResolutionHeight(),
-                        streamingParams.getDisplayDensity(), inputSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
+                    startEncoder();
+                    // also start capture thread.
+                    final ConditionVariable cond = new ConditionVariable();
+                    mCaptureThread = new CaptureThread(mEglCore, mInterSurfaceTexture, mTextureId,
+                            mEncoderSurface, mFullFrameBlit, width, height, streamingParams.getFrameRate(), new Runnable() {
+                        @Override
+                        public void run() {
+                            cond.open();
+                        }
+                    });
+                    mCaptureThread.start();
+                    cond.block(); // make sure Capture thread exists.
 
-                startEncoder();
+                    // setup listener prior to the surface is attached to VirtualDisplay.
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        mInterSurfaceTexture.setOnFrameAvailableListener(mCaptureThread, mCaptureThread.getHandler());
+                    } else {
+                        mInterSurfaceTexture.setOnFrameAvailableListener(mCaptureThread);
+                    }
+                } else {
+                    inputSurface = prepareVideoEncoder();
+
+                    // Create a virtual display that will output to our encoder.
+                    virtualDisplay = mDisplayManager.createVirtualDisplay(TAG,
+                            streamingParams.getResolution().getResolutionWidth(), streamingParams.getResolution().getResolutionHeight(),
+                            streamingParams.getDisplayDensity(), inputSurface, DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION);
+
+                    startEncoder();
+                }
 
             } catch (Exception ex) {
                 Log.e(TAG, "Unable to create Virtual Display.");
@@ -154,6 +206,16 @@ public class VirtualDisplayEncoder {
             return;
         }
         try {
+            // cleanup GLES stuff
+            if (mCaptureThread != null) {
+                mCaptureThread.stopAsync();
+                try {
+                    mCaptureThread.join();
+                } catch(InterruptedException e) {
+
+                }
+                mCaptureThread = null;
+            }
             if (encoderThread != null) {
                 encoderThread.interrupt();
                 encoderThread = null;
@@ -176,6 +238,208 @@ public class VirtualDisplayEncoder {
             }
         } catch (Exception ex) {
             Log.e(TAG, "shutDown() failed");
+        }
+    }
+
+    /**
+     * setupGLES: create offscreen surface and surface texture.
+     * @param Width
+     * @param Height
+     */
+    private void setupGLES(int Width, int Height) {
+        mEglCore = new EglCore(null, 0);
+
+        // This 1x1 offscreen is created just to get the texture name (mTextureId).
+        // (To create a SurfaceTexture, we need a texture name. Texture name can be created by
+        // glGenTextures(), but for this method we need to acquire EGLContext. And to acquire
+        // EGLContext, we need to call eglMakeCurrent() on SurfaceTexture ... which is not created yet!
+        // So here, EGLContext is acquired by calling eglMakeCurrent() on a PBufferSurface which
+        // can be created without a texture name. That's why mDummySurface is not used anywhere.)
+        mDummySurface = new OffscreenSurface(mEglCore, 1, 1);
+        mDummySurface.makeCurrent();
+
+        mFullFrameBlit = new FullFrameRect(new Texture2dProgram(Texture2dProgram.ProgramType.TEXTURE_EXT));
+        mTextureId = mFullFrameBlit.createTextureObject();
+
+        mInterSurfaceTexture = new SurfaceTexture(mTextureId);
+        mInterSurfaceTexture.setDefaultBufferSize(Width, Height);
+        mInterSurface = new Surface(mInterSurfaceTexture);
+
+        // Some devices (e.g. Xperia Z4 with Android 5.0.1) do not allow eglMakeCurrent() called
+        // by multiple threads. (An EGLContext should be bound to a single thread.) Since the
+        // EGLContext will be accessed by CaptureThread from now on, unbind it from current thread.
+        mEglCore.makeNothingCurrent();
+    }
+
+    /**
+     * CatureThread: utilize OpenGl to capture the rendering thru intermediate surface and surface texture.
+     */
+    private final class CaptureThread extends Thread implements SurfaceTexture.OnFrameAvailableListener {
+
+        private static final int MSG_TICK = 1;
+        private static final int MSG_UPDATE_SURFACE = 2;
+        private static final int MSG_TERMINATE = -1;
+
+        private static final long END_MARGIN_NSEC = 1000000;        // 1 msec
+        private static final long LONG_SLEEP_THRES_NSEC = 16000000; // 16 msec
+        private static final long LONG_SLEEP_MSEC = 10;
+
+        private Handler mHandler;
+        private Runnable mStartedCallback;
+
+        private EglCore mEgl;
+        private SurfaceTexture mSourceSurfaceTexture;
+        private int mSourceTextureId;
+        private WindowSurface mDestSurface;
+        private FullFrameRect mBlit;
+        private int mWidth;
+        private int mHeight;
+
+        private long mFrameIntervalNsec;
+        private long mStartNsec;
+        private long mNextTime;
+        private boolean mFirstInput;
+        private final float[] mMatrix = new float[16];
+
+        public CaptureThread(EglCore eglCore, SurfaceTexture sourceSurfaceTexture, int sourceTextureId,
+                             WindowSurface destSurface, FullFrameRect blit, int width, int height, float fps,
+                             Runnable onStarted) {
+            mEgl = eglCore;
+            mSourceSurfaceTexture = sourceSurfaceTexture;
+            mSourceTextureId = sourceTextureId;
+            mDestSurface = destSurface;
+            mBlit = blit;
+            mWidth = width;
+            mHeight = height;
+            mFrameIntervalNsec = (long)(1000000000 / fps);
+            mStartedCallback = onStarted;
+        }
+
+        @Override
+        public void run() {
+            Looper.prepare();
+
+            // create a Handler for this thread
+            mHandler = new Handler() {
+                public void handleMessage(Message msg) {
+                    switch (msg.what) {
+                        case MSG_TICK: {
+                            long now = System.nanoTime();
+                            if (now > mNextTime - END_MARGIN_NSEC) {
+                                drawImage(now);
+                                mNextTime += mFrameIntervalNsec;
+                            }
+
+                            if (mNextTime - END_MARGIN_NSEC - now > LONG_SLEEP_THRES_NSEC) {
+                                mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_TICK), LONG_SLEEP_MSEC);
+                            } else {
+                                mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_TICK), 1);
+                            }
+                            break;
+                        }
+                        // this is for KitKat and below
+                        case MSG_UPDATE_SURFACE:
+                            updateSurface();
+                            break;
+                        case MSG_TERMINATE: {
+                            removeCallbacksAndMessages(null);
+                            Looper looper = Looper.myLooper();
+                            if (looper != null) {
+                                looper.quit();
+                            }
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+                }
+            };
+
+            mStartNsec = -1;
+            mFirstInput = true;
+
+            if (mStartedCallback != null) {
+                mStartedCallback.run();
+            }
+
+            Log.d(TAG, "Starting Capture thread");
+            Looper.loop();
+
+            Log.d(TAG, "Stopping Capture thread");
+            // this is for safe (unbind EGLContext when terminating the thread)
+            mEgl.makeNothingCurrent();
+        }
+
+        // this may return null before mStartedCallback is called
+        public Handler getHandler() {
+            return mHandler;
+        }
+
+        // make sure this is called after mStartedCallback is called
+        public void stopAsync() {
+            if (mHandler != null) {
+                mHandler.sendMessage(mHandler.obtainMessage(MSG_TERMINATE));
+            }
+        }
+
+        @Override
+        public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                // With API level 21 and higher, setOnFrameAvailableListener(listener, handler) is used
+                // so this method is called on the CaptureThread. We can call updateTexImage() directly.
+                updateSurface();
+            } else {
+                // With API level 20 and lower, setOnFrameAvailableListener(listener) is used, and
+                // this method is called on an "arbitrary" thread. (looks like the main thread is
+                // used for the most case.) So switch to CaptureThread before calling updateTexImage().
+                mHandler.sendMessage(mHandler.obtainMessage(MSG_UPDATE_SURFACE));
+            }
+
+            if (mFirstInput) {
+                mFirstInput = false;
+                mNextTime = System.nanoTime();
+                // start the loop
+                mHandler.sendMessage(mHandler.obtainMessage(MSG_TICK));
+            }
+        }
+
+        private void updateSurface() {
+            try {
+                mDestSurface.makeCurrent();
+            } catch (RuntimeException e) {
+                Log.e(TAG, "Runtime exception in updateSurface: " + e);
+                return;
+            }
+            // Workaround for the issue Nexus6,5x(6.0 or 6.0.1) stuck.
+            // See https://github.com/google/grafika/issues/43
+            // As in the comments, the nature of bug is still unclear...
+            // But it seems to have the effect to improve.
+            GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+            // get latest image from VirtualDisplay
+            mSourceSurfaceTexture.updateTexImage();
+            mSourceSurfaceTexture.getTransformMatrix(mMatrix);
+        }
+
+        private void drawImage(long currentTime) {
+            if (mStartNsec < 0) {
+                // first frame
+                mStartNsec = currentTime;
+            }
+
+            try {
+                mDestSurface.makeCurrent();
+                // draw from mInterSurfaceTexture to mEncoderSurface
+                GLES20.glViewport(0, 0, mWidth, mHeight);
+                mBlit.drawFrame(mSourceTextureId, mMatrix);
+            } catch (RuntimeException e) {
+                Log.e(TAG, "Runtime exception in updateSurface: " + e);
+                return;
+            }
+
+            // output to encoder
+            mDestSurface.setPresentationTime(currentTime - mStartNsec);
+            mDestSurface.swapBuffers();
         }
     }
 
