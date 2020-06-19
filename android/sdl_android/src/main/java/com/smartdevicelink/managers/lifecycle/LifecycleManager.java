@@ -112,12 +112,13 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
-    private void cycleProxy(SdlDisconnectedReason disconnectedReason) {
+    @Override
+    void cycleProxy(SdlDisconnectedReason disconnectedReason) {
         cleanProxy();
         initializeProxy();
         if (!SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED.equals(disconnectedReason) && !SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST.equals(disconnectedReason)) {
             //We don't want to alert higher if we are just cycling for legacy bluetooth
-            onClose("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED));
+            onClose("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED), disconnectedReason);
         }
         try {
             session.startSession();
@@ -160,7 +161,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             Log.d(TAG, "notifying RPC session ended, but potential primary transport available");
             cycleProxy(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
         } else {
-            onClose(info, null);
+            onClose(info, null, null);
         }
     }
 
