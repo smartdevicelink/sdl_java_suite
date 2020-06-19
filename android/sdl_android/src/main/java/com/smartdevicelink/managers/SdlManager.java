@@ -211,14 +211,6 @@ public class SdlManager extends BaseSdlManager {
         }
     }
 
-    @Override
-    void onProxyClosed(SdlDisconnectedReason reason) {
-        Log.i(TAG, "Proxy is closed.");
-        if (reason == null || !reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)) {
-            dispose();
-        }
-    }
-
     /**
      * Dispose SdlManager and clean its resources
      * <strong>Note: new instance of SdlManager should be created on every connection. SdlManager cannot be reused after getting disposed.</strong>

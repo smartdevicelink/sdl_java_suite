@@ -1496,8 +1496,7 @@ abstract class BaseLifecycleManager {
         }
     }
 
-    void cycleProxy(SdlDisconnectedReason disconnectedReason) {
-    }
+    abstract void cycleProxy(SdlDisconnectedReason disconnectedReason);
 
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
     }
