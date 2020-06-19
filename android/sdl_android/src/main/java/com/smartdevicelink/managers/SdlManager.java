@@ -49,7 +49,6 @@ import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
 import com.smartdevicelink.managers.video.VideoStreamManager;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
-import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
