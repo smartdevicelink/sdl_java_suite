@@ -404,7 +404,7 @@ public class GetVehicleDataResponse extends RPCResponse {
      * Sets a boolean value
      * @param handsOffSteering a boolean value
      */
-    public void setHandsOffSteering(boolean handsOffSteering){
+    public void setHandsOffSteering(Boolean handsOffSteering){
         setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
     }
 }
