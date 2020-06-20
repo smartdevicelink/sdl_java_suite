@@ -539,16 +539,16 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Sets a status value for WindowStatus.
      * @param status a WindowStatus value
      */
-    public void setWindowStatus(WindowStatus status){
+    public void setWindowStatus(VehicleDataResult status){
         setParameters(KEY_WINDOW_STATUS, status);
     }
 
     /**
-     * Gets a boolean value for WindowStatus.
+     * Gets a VehicleDataResult value for WindowStatus.
      * @return a WindowStatus object value or null.
      * If true, means the WindowStatus data has been subscribed.
      */
-    public WindowStatus getWindowStatus(){
-        return (WindowStatus) getObject(WindowStatus.class, KEY_WINDOW_STATUS);
+    public VehicleDataResult getWindowStatus(){
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_WINDOW_STATUS);
     }
 }

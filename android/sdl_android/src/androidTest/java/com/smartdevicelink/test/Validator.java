@@ -1,6 +1,7 @@
 package com.smartdevicelink.test;
 
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
+import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
@@ -15,6 +16,9 @@ import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
 
+import org.json.JSONObject;
+
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -3801,4 +3805,108 @@ public class Validator{
 		}
 		return validateGrid(cap1.getGrid(), cap2.getGrid());
 	}
+
+    public static boolean validateWindowStatuses (List<WindowStatus> item1, List<WindowStatus> item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        if (item1.size() != item2.size()) {
+            return false;
+        }
+
+        // unmarshalling with setting
+        for (WindowStatus status : item2) {
+            try {
+                Object potentialGrid = status.getStore().get(WindowStatus.KEY_LOCATION);
+                Object potentialState = status.getStore().get(WindowStatus.KEY_WINDOW_STATE);
+
+                if (potentialGrid instanceof Hashtable) {
+
+                    Grid grid = new Grid(JsonRPCMarshaller.deserializeJSONObject(new JSONObject((Hashtable)potentialGrid)));
+                    status.setLocation(grid);
+                }
+
+                if (potentialState instanceof Hashtable) {
+
+                    WindowState state = new WindowState(JsonRPCMarshaller.deserializeJSONObject(new JSONObject((Hashtable)potentialState)));
+                    status.setWindowState(state);
+                }
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        for (int i = 0; i < item1.size(); i++) {
+            Integer col1 = item1.get(i).getLocation().getCol();
+            Integer col2 = item2.get(i).getLocation().getCol();
+
+            Integer row1 = item1.get(i).getLocation().getRow();
+            Integer row2 = item2.get(i).getLocation().getRow();
+
+            Integer approxPosition1 = item1.get(i).getWindowState().getApproximatePosition();
+            Integer approxPosition2 = item2.get(i).getWindowState().getApproximatePosition();
+
+            Integer deviation1 = item1.get(i).getWindowState().getDeviation();
+            Integer deviation2 = item2.get(i).getWindowState().getDeviation();
+
+
+            if (!col1.equals(col2) || !row1.equals(row2)) {
+                return false;
+            }
+            if (!approxPosition1.equals(approxPosition2) || !deviation1.equals(deviation2)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean validateWindowStatuses (WindowStatus item1, WindowStatus item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        Integer col1 = item1.getLocation().getCol();
+        Integer col2 = item2.getLocation().getCol();
+
+        Integer row1 = item1.getLocation().getRow();
+        Integer row2 = item2.getLocation().getRow();
+
+        Integer approxPosition1 = item1.getWindowState().getApproximatePosition();
+        Integer approxPosition2 = item2.getWindowState().getApproximatePosition();
+
+        Integer deviation1 = item1.getWindowState().getDeviation();
+        Integer deviation2 = item2.getWindowState().getDeviation();
+
+
+        if (!col1.equals(col2) || !row1.equals(row2)) {
+            return false;
+        }
+        return approxPosition1.equals(approxPosition2) && deviation1.equals(deviation2);
+    }
+
+    public static boolean validateWindowStates (WindowState item1, WindowState item2) {
+        if (item1 == null) {
+            return ( item2 == null );
+        }
+        if (item2 == null) {
+            return ( item1 == null );
+        }
+
+        Integer approxPosition1 = item1.getApproximatePosition();
+        Integer approxPosition2 = item2.getApproximatePosition();
+
+        Integer deviation1 = item1.getDeviation();
+        Integer deviation2 = item2.getDeviation();
+
+
+        return approxPosition1.equals(approxPosition2) && deviation1.equals(deviation2);
+    }
 }

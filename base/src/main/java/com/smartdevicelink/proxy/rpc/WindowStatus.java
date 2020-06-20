@@ -50,4 +50,5 @@ public class WindowStatus extends RPCStruct {
     public WindowState getWindowState() {
         return (WindowState) getObject(WindowState.class, KEY_WINDOW_STATE);
     }
+
 }

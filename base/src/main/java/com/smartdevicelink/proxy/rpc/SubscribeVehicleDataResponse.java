@@ -74,7 +74,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
-    public static final String KEY_WINDOW_STATUS = "cloudAppVehicleID";
+    public static final String KEY_WINDOW_STATUS = "windowStatus";
 
 	/**
 	 * Constructs a new SubscribeVehicleDataResponse object

@@ -108,6 +108,7 @@ import com.smartdevicelink.proxy.rpc.WeatherData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
+import com.smartdevicelink.proxy.rpc.WindowState;
 import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -435,6 +436,10 @@ public class Test {
 	public static final SeatLocation                   GENERAL_SEAT_LOCATION                  = new SeatLocation();
 	public static final ModuleInfo                     GENERAL_MODULE_INFO                    = new ModuleInfo();
 	public static final WindowType                     GENERAL_WINDOWTYPE                     = WindowType.MAIN;
+	public static final Grid 						   GENERAL_LOCATION_GRID 				  = new Grid(2, 3);
+	public static final WindowState 				   GENERAL_WINDOW_STATE 				  = new WindowState(2, 3);
+	public static final Integer 				   	   GENERAL_APPROX_POSITION 				  = new Integer(3);
+	public static final Integer 				   	   GENERAL_DEVIATION 				  	  = new Integer(2);
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
 	public static final List<Choice>                    GENERAL_CHOICE_LIST                    = new ArrayList<Choice>();

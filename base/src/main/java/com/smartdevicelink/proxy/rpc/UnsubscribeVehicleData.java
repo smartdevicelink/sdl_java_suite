@@ -871,9 +871,9 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a status value for WindowStatus.
-	 * @param status a WindowStatus value
+	 * @param status a Boolean value
 	 */
-	public void setWindowStatus(WindowStatus status){
+	public void setWindowStatus(Boolean status){
 		setParameters(KEY_WINDOW_STATUS, status);
 	}
 
@@ -882,7 +882,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * @return a WindowStatus object value or null.
 	 * If true, means the WindowStatus data has been subscribed.
 	 */
-	public WindowStatus getWindowStatus(){
-		return (WindowStatus) getObject(WindowStatus.class, KEY_WINDOW_STATUS);
+	public Boolean getWindowStatus(){
+		return getBoolean(KEY_WINDOW_STATUS);
 	}
 }
