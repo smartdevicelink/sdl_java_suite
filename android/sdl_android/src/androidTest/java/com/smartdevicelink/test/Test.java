@@ -86,6 +86,7 @@ import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.SisData;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
+import com.smartdevicelink.proxy.rpc.StabilityControlsStatus;
 import com.smartdevicelink.proxy.rpc.StartTime;
 import com.smartdevicelink.proxy.rpc.StationIDNumber;
 import com.smartdevicelink.proxy.rpc.SystemCapability;
@@ -434,6 +435,9 @@ public class Test {
 	public static final Grid                           GENERAL_GRID                           = new Grid();
 	public static final SeatLocation                   GENERAL_SEAT_LOCATION                  = new SeatLocation();
 	public static final ModuleInfo                     GENERAL_MODULE_INFO                    = new ModuleInfo();
+	public static final StabilityControlsStatus		   GENERAL_STABILITY_CONTROL_STATUS       = new StabilityControlsStatus();
+	public static final VehicleDataStatus		   	   GENERAL_ESC_SYSTEM      				  = VehicleDataStatus.ON;
+	public static final VehicleDataStatus		   	   GENERAL_S_WAY_CONTROL      			  = VehicleDataStatus.OFF;
 	public static final WindowType                     GENERAL_WINDOWTYPE                     = WindowType.MAIN;
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
@@ -1115,6 +1119,8 @@ public class Test {
 		GENERAL_MODULE_INFO.setModuleServiceArea(Test.GENERAL_GRID);
 		GENERAL_MODULE_INFO.setMultipleAccessAllowance(Test.GENERAL_BOOLEAN);
 
+		GENERAL_STABILITY_CONTROL_STATUS.setEscSystem(GENERAL_ESC_SYSTEM);
+		GENERAL_STABILITY_CONTROL_STATUS.setTrailerSwayControl(GENERAL_S_WAY_CONTROL);
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

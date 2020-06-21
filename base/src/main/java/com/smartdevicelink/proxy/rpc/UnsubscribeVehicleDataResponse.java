@@ -547,7 +547,7 @@ public class UnsubscribeVehicleDataResponse extends RPCResponse {
      * Gets a VehicleDataResult for the Stability Control Status.
      * @return a VehicleDataResult related to the Stability Control Status
      */
-    public VehicleDataResult getOEMCustomVehicleData(){
+    public VehicleDataResult getStabilityControlsStatus(){
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_STABILITY_CONTROL_STATUS);
     }
 }

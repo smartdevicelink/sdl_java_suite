@@ -542,10 +542,10 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     }
 
     /**
-     * Gets a VehicleDataResult for the Stability Control Status.
+     * Gets a StabilityControlStatus for the Stability Control Status.
      * @return a VehicleDataResult related to the Stability Control Status
      */
-    public VehicleDataResult getOEMCustomVehicleData(){
+    public VehicleDataResult getStabilityControlStatus(){
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_STABILITY_CONTROL_STATUS);
     }
 }

@@ -571,7 +571,7 @@ public class GetVehicleData extends RPCRequest {
      * Gets a boolean value for StabilityControlStatus.
      * @return a Boolean value.
      */
-    public Boolean getStabilityControlStatus(String vehicleDataName){
-        return getBoolean(vehicleDataName);
+    public Boolean getStabilityControlStatus(){
+        return getBoolean(KEY_STABILITY_CONTROL_STATUS);
     }
 }

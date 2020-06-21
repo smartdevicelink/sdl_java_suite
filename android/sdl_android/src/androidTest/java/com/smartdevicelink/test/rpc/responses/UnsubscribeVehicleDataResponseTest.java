@@ -59,6 +59,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 		msg.setFuelRange(Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_FUELRANGE.ordinal()));
 		msg.setTurnSignal(Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TURNSIGNAL.ordinal()));
 		msg.setElectronicParkBrakeStatus(Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ELECTRONICPARKBRAKESTATUS.ordinal()));
+		msg.setStabilityControlsStatus(Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_STABILITYCONTROLSSTATUS.ordinal()));
 		msg.setOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA);
 
 		return msg;
@@ -111,6 +112,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 	        result.put(SubscribeVehicleDataResponse.KEY_MY_KEY, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_MYKEY.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_FUEL_RANGE, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_FUELRANGE.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_TURN_SIGNAL, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_TURNSIGNAL.ordinal()).serializeJSON());
+	        result.put(SubscribeVehicleDataResponse.KEY_STABILITY_CONTROL_STATUS, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_STABILITYCONTROLSSTATUS.ordinal()).serializeJSON());
 	        result.put(SubscribeVehicleDataResponse.KEY_ELECTRONIC_PARK_BRAKE_STATUS, Test.GENERAL_VEHICLEDATARESULT_LIST.get(VehicleDataType.VEHICLEDATA_ELECTRONICPARKBRAKESTATUS.ordinal()).serializeJSON());
 	        result.put(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA.serializeJSON());
 		} catch (JSONException e) {
@@ -154,7 +156,8 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 		VehicleDataResult testTurnSignal     = ( (UnsubscribeVehicleDataResponse) msg ).getTurnSignal();
 		VehicleDataResult testEBrakeStatus   = ( (UnsubscribeVehicleDataResponse) msg ).getElectronicParkBrakeStatus();
 		VehicleDataResult testOemCustomData   = ( (UnsubscribeVehicleDataResponse) msg ).getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
-		
+		VehicleDataResult testStabilityControlStatus   = ( (UnsubscribeVehicleDataResponse) msg ).getStabilityControlsStatus();
+
 		// Valid Tests
 		assertTrue(Test.TRUE, testGps.getDataType().equals(VehicleDataType.VEHICLEDATA_GPS));
 		assertTrue(Test.TRUE, testOdometer.getDataType().equals(VehicleDataType.VEHICLEDATA_ODOMETER));
@@ -184,6 +187,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 	    assertTrue(Test.TRUE, testFuelRange.getDataType().equals(VehicleDataType.VEHICLEDATA_FUELRANGE));
 	    assertTrue(Test.TRUE, testTurnSignal.getDataType().equals(VehicleDataType.VEHICLEDATA_TURNSIGNAL));
 	    assertTrue(Test.TRUE, testEBrakeStatus.getDataType().equals(VehicleDataType.VEHICLEDATA_ELECTRONICPARKBRAKESTATUS));
+	    assertTrue(Test.TRUE, testStabilityControlStatus.getDataType().equals(VehicleDataType.VEHICLEDATA_STABILITYCONTROLSSTATUS));
 	    assertTrue(Test.TRUE, testOemCustomData.getOEMCustomVehicleDataType().equals(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
    
         // Invalid/Null Tests
@@ -219,6 +223,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
         assertNull(Test.NULL, msg.getFuelRange());
         assertNull(Test.NULL, msg.getTurnSignal());
         assertNull(Test.NULL, msg.getElectronicParkBrakeStatus());
+        assertNull(Test.NULL, msg.getStabilityControlsStatus());
         assertNull(Test.NULL, msg.getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
     }
 
@@ -357,6 +362,10 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 			JSONObject oemCustomData = JsonUtils.readJsonObjectFromJsonObject(parameters, Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
 			VehicleDataResult referenceOemCustomData = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(oemCustomData));
 			assertTrue(Test.TRUE, Validator.validateVehicleDataResult(referenceOemCustomData, cmd.getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME)));
+
+			JSONObject stabilityControlStatus = JsonUtils.readJsonObjectFromJsonObject(parameters, SubscribeVehicleDataResponse.KEY_STABILITY_CONTROL_STATUS);
+			VehicleDataResult referenceStabilityControlStatus = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(stabilityControlStatus));
+			assertTrue(Test.TRUE, Validator.validateStabilityControlStatus(referenceStabilityControlStatus, cmd.getStabilityControlsStatus()));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

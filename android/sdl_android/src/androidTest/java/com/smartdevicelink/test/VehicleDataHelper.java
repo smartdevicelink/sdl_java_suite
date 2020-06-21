@@ -14,6 +14,7 @@ import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
+import com.smartdevicelink.proxy.rpc.StabilityControlsStatus;
 import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
@@ -77,6 +78,7 @@ public class VehicleDataHelper{
 	public static final List<FuelRange> FUEL_RANGE_LIST = new ArrayList<FuelRange>(1);
 	public static final TurnSignal TURN_SIGNAL = TurnSignal.OFF;
 	public static final ElectronicParkBrakeStatus ELECTRONIC_PARK_BRAKE_STATUS = ElectronicParkBrakeStatus.CLOSED;
+	public static final StabilityControlsStatus STABILITY_CONTROLS_STATUS = new StabilityControlsStatus(VehicleDataStatus.ON, VehicleDataStatus.OFF);
 	public static final String OEM_CUSTOM_VEHICLE_DATA_STATE = "oemCustomVehicleDataState";
 
 	//other variables inside some of the above objects
@@ -189,6 +191,10 @@ public class VehicleDataHelper{
 	// fuel range
 	public static final FuelType FUEL_RANGE_TYPE = FuelType.GASOLINE;
 	public static final Float FUEL_RANGE_RANGE = Test.GENERAL_FLOAT;
+
+	// stability control status
+	public static final VehicleDataStatus ESC_SYSTEM = VehicleDataStatus.ON;
+	public static final VehicleDataStatus S_WAY_TRAILER = VehicleDataStatus.OFF;
 
 	public static final JSONArray JSON_FUEL_RANGE = new JSONArray();
 
@@ -357,6 +363,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA.setFuelRange(FUEL_RANGE_LIST);
 		VEHICLE_DATA.setTurnSignal(TURN_SIGNAL);
 		VEHICLE_DATA.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
+		VEHICLE_DATA.setStabilityControlStatus(STABILITY_CONTROLS_STATUS);
 		VEHICLE_DATA.setOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, OEM_CUSTOM_VEHICLE_DATA_STATE);
 		
 		//set up the GetVehicleDataResponse object
@@ -389,6 +396,7 @@ public class VehicleDataHelper{
 		VEHICLE_DATA_RESPONSE.setFuelRange(FUEL_RANGE_LIST);
 		VEHICLE_DATA_RESPONSE.setTurnSignal(TURN_SIGNAL);
 		VEHICLE_DATA_RESPONSE.setElectronicParkBrakeStatus(ELECTRONIC_PARK_BRAKE_STATUS);
+		VEHICLE_DATA_RESPONSE.setStabilityControlStatus(STABILITY_CONTROLS_STATUS);
 		VEHICLE_DATA_RESPONSE.setOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, OEM_CUSTOM_VEHICLE_DATA_STATE);
 	}
 	

@@ -3801,4 +3801,24 @@ public class Validator{
 		}
 		return validateGrid(cap1.getGrid(), cap2.getGrid());
 	}
+
+    public static boolean validateStabilityControlStatus(StabilityControlsStatus status1, StabilityControlsStatus status2) {
+        if (status1 == null) {
+            return (status2 == null);
+        }
+        if (status2 == null) {
+            return (status2 == null);
+        }
+        return status1.getEscSystem().equals(status2.getEscSystem()) && status1.getTrailerSWayControl().equals(status2.getTrailerSWayControl());
+    }
+
+    public static boolean validateStabilityControlStatus(VehicleDataResult status1, VehicleDataResult status2) {
+        if (status1 == null) {
+            return (status2 == null);
+        }
+        if (status2 == null) {
+            return (status2 == null);
+        }
+        return status1.getDataType().equals(status2.getDataType()) && status1.getResultCode().equals(status2.getResultCode());
+    }
 }

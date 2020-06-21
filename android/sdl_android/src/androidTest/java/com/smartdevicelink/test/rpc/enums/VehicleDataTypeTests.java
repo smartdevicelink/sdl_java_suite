@@ -184,6 +184,7 @@ public class VehicleDataTypeTests extends TestCase {
 		enumTestList.add(VehicleDataType.VEHICLEDATA_ELECTRONICPARKBRAKESTATUS);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_CLOUDAPPVEHICLEID);
 		enumTestList.add(VehicleDataType.VEHICLEDATA_OEM_CUSTOM_DATA);
+		enumTestList.add(VehicleDataType.VEHICLEDATA_STABILITYCONTROLSSTATUS);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
