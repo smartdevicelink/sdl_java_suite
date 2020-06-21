@@ -92,8 +92,7 @@ public class GearStatus extends RPCStruct {
      * Tells the transmission type
      * @return TransmissionType
      */
-    @SuppressWarnings("unchecked")
     public TransmissionType getTransmissionType(){
-        return (TransmissionType)getObject(TransmissionType.class, KEY_TRANSMISSION_TYPE);
+        return  (TransmissionType)getObject(TransmissionType.class, KEY_TRANSMISSION_TYPE);
     }
 }

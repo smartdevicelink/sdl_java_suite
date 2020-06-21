@@ -12,6 +12,7 @@ import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.EmergencyEvent;
 import com.smartdevicelink.proxy.rpc.FuelRange;
 import com.smartdevicelink.proxy.rpc.GPSData;
+import com.smartdevicelink.proxy.rpc.GearStatus;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
@@ -92,6 +93,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
             result.put(OnVehicleData.KEY_FUEL_RANGE, VehicleDataHelper.JSON_FUEL_RANGE);
 			result.put(OnVehicleData.KEY_TURN_SIGNAL, VehicleDataHelper.TURN_SIGNAL);
 			result.put(OnVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS);
+			result.put(OnVehicleData.KEY_GEAR_STATUS, VehicleDataHelper.GEAR_STATUS);
 			result.put(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE);
         } catch(JSONException e) {
         	fail(Test.JSON_FAIL);
@@ -134,6 +136,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
     	List<FuelRange> fuelRangeList = ( (OnVehicleData) msg).getFuelRange();
     	TurnSignal turnSignal = ( (OnVehicleData) msg).getTurnSignal();
     	ElectronicParkBrakeStatus electronicParkBrakeStatus = ( (OnVehicleData) msg).getElectronicParkBrakeStatus();
+    	GearStatus gearStatus = ( (OnVehicleData) msg).getGearStatus();
     	Object oemCustomVehicleData = ( (OnVehicleData) msg).getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME);
     	
     	// Valid Tests
@@ -166,6 +169,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 	    assertTrue(Test.TRUE, Validator.validateFuelRange(VehicleDataHelper.FUEL_RANGE_LIST, fuelRangeList));
 	    assertEquals(Test.MATCH, VehicleDataHelper.TURN_SIGNAL, turnSignal);
 	    assertEquals(Test.MATCH, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
+	    assertEquals(Test.MATCH, VehicleDataHelper.GEAR_STATUS, gearStatus);
 	    assertEquals(Test.MATCH, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE, oemCustomVehicleData);
     
 	    // Invalid/Null Tests
@@ -202,6 +206,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
         assertNull(Test.NULL, msg.getFuelRange());
         assertNull(Test.NULL, msg.getTurnSignal());
         assertNull(Test.NULL, msg.getElectronicParkBrakeStatus());
+        assertNull(Test.NULL, msg.getGearStatus());
         assertNull(Test.NULL, msg.getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 	}
     
@@ -221,8 +226,9 @@ public class OnVehicleDataTests extends BaseRpcTests{
 		JSONObject clusterModeStatusObj = new JSONObject();
 		JSONObject myKeyObj = new JSONObject();
 		JSONObject fuelRangeObj = new JSONObject();
+		JSONObject gearStatusObj = new JSONObject();
 		JSONArray fuelRangeArrayObj = new JSONArray();
-		
+
 		try {
 			//Set up the JSONObject to represent OnVehicleData:
 			
@@ -348,6 +354,11 @@ public class OnVehicleDataTests extends BaseRpcTests{
 			fuelRangeObj.put(FuelRange.KEY_RANGE, VehicleDataHelper.FUEL_RANGE_RANGE);
 			fuelRangeArrayObj.put(fuelRangeObj);
 
+			// GEAR STATUS
+			gearStatusObj.put(GearStatus.KEY_USER_SELECTED_GEAR, VehicleDataHelper.USER_SELECTED_GEAR);
+			gearStatusObj.put(GearStatus.KEY_TRANSMISSION_TYPE, VehicleDataHelper.TRANSMISSION_TYPE);
+			gearStatusObj.put(GearStatus.KEY_ACTUAL_GEAR, VehicleDataHelper.ACTUAL_GEAR);
+
 			reference.put(OnVehicleData.KEY_SPEED, VehicleDataHelper.SPEED);
 			reference.put(OnVehicleData.KEY_RPM, VehicleDataHelper.RPM);
 			reference.put(OnVehicleData.KEY_EXTERNAL_TEMPERATURE, VehicleDataHelper.EXTERNAL_TEMPERATURE);
@@ -377,6 +388,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 			reference.put(OnVehicleData.KEY_FUEL_RANGE, fuelRangeArrayObj);
 			reference.put(OnVehicleData.KEY_TURN_SIGNAL, VehicleDataHelper.TURN_SIGNAL);
 			reference.put(OnVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS);
+			reference.put(OnVehicleData.KEY_GEAR_STATUS, gearStatusObj);
 			reference.put(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE);
 			
 			JSONObject underTest = msg.serializeJSON();
@@ -471,6 +483,14 @@ public class OnVehicleDataTests extends BaseRpcTests{
 					assertTrue(Test.TRUE, Validator.validateMyKey(
 						new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjReference)),
 						new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObjTest))));
+				}
+				else if (key.equals(OnVehicleData.KEY_GEAR_STATUS)) {
+					JSONObject myKeyObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
+					JSONObject myKeyObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
+
+					assertTrue(Test.TRUE, Validator.validateGearStatuses(
+							new GearStatus(JsonRPCMarshaller.deserializeJSONObject(myKeyObjReference)),
+							new GearStatus(JsonRPCMarshaller.deserializeJSONObject(myKeyObjTest))));
 				}
 				else if (key.equals(OnVehicleData.KEY_ENGINE_OIL_LIFE)) {
 					assertEquals(JsonUtils.readDoubleFromJsonObject(reference, key), JsonUtils.readDoubleFromJsonObject(underTest, key));

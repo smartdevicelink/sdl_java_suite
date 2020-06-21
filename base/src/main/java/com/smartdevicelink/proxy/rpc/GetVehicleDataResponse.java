@@ -84,6 +84,7 @@ public class GetVehicleDataResponse extends RPCResponse {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
+    public static final String KEY_GEAR_STATUS = "gearStatus";
 
 	/** 
 	 * Constructs a new GetVehicleDataResponse object
@@ -389,5 +390,21 @@ public class GetVehicleDataResponse extends RPCResponse {
      */
     public Object getOEMCustomVehicleData(String vehicleDataName){
         return getParameters(vehicleDataName);
+    }
+
+    /**
+     * Sets a value for GearStatus.
+     * @param gearStatus a GearStatus value
+     */
+    public void setGearStatus(GearStatus gearStatus){
+        setParameters(KEY_GEAR_STATUS, gearStatus);
+    }
+
+    /**
+     * Gets a GearStatus value for the GearStatus data item.
+     * @return a GearStatus related to the GearStatus
+     */
+    public GearStatus getGearStatus(){
+        return (GearStatus) getObject(GearStatus.class, KEY_GEAR_STATUS);
     }
 }

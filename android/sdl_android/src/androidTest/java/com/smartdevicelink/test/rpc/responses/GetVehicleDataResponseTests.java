@@ -12,9 +12,11 @@ import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.EmergencyEvent;
 import com.smartdevicelink.proxy.rpc.FuelRange;
 import com.smartdevicelink.proxy.rpc.GPSData;
+import com.smartdevicelink.proxy.rpc.GearStatus;
 import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.MyKey;
+import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.enums.TurnSignal;
@@ -90,6 +92,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
             result.put(GetVehicleDataResponse.KEY_FUEL_RANGE, VehicleDataHelper.JSON_FUEL_RANGE);
             result.put(GetVehicleDataResponse.KEY_TURN_SIGNAL, VehicleDataHelper.TURN_SIGNAL);
             result.put(GetVehicleDataResponse.KEY_ELECTRONIC_PARK_BRAKE_STATUS, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS);
+            result.put(GetVehicleDataResponse.KEY_GEAR_STATUS, VehicleDataHelper.GEAR_STATUS);
             result.put(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE);
         } catch(JSONException e){
         	fail(Test.JSON_FAIL);
@@ -114,6 +117,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 		JSONObject clusterModeStatusObj = new JSONObject();
 		JSONObject myKeyObj = new JSONObject();
 		JSONObject fuelRangeObj = new JSONObject();
+		JSONObject gearStatusObj = new JSONObject();
 		JSONArray  fuelRangeArrayObj = new JSONArray();
 		
 		try {
@@ -240,6 +244,11 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 			fuelRangeObj.put(FuelRange.KEY_RANGE, VehicleDataHelper.FUEL_RANGE_RANGE);
 			fuelRangeArrayObj.put(fuelRangeObj);
 
+			//GEAR_STATUS
+			gearStatusObj.put(GearStatus.KEY_USER_SELECTED_GEAR, VehicleDataHelper.USER_SELECTED_GEAR);
+			gearStatusObj.put(GearStatus.KEY_TRANSMISSION_TYPE, VehicleDataHelper.TRANSMISSION_TYPE);
+			gearStatusObj.put(GearStatus.KEY_ACTUAL_GEAR, VehicleDataHelper.ACTUAL_GEAR);
+
 			reference.put(GetVehicleDataResponse.KEY_SPEED, VehicleDataHelper.SPEED);
 			reference.put(GetVehicleDataResponse.KEY_RPM, VehicleDataHelper.RPM);
 			reference.put(GetVehicleDataResponse.KEY_EXTERNAL_TEMPERATURE, VehicleDataHelper.EXTERNAL_TEMPERATURE);
@@ -268,6 +277,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 			reference.put(GetVehicleDataResponse.KEY_MY_KEY, myKeyObj);
 			reference.put(GetVehicleDataResponse.KEY_FUEL_RANGE, fuelRangeArrayObj);
 			reference.put(GetVehicleDataResponse.KEY_TURN_SIGNAL, TurnSignal.OFF);
+			reference.put(GetVehicleDataResponse.KEY_GEAR_STATUS, gearStatusObj);
 			reference.put(GetVehicleDataResponse.KEY_ELECTRONIC_PARK_BRAKE_STATUS, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS);
 			reference.put(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE);
 			
@@ -387,6 +397,14 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					assertEquals("JSON value didn't match expected value for key \"" + key + "\".",
 							JsonUtils.readDoubleFromJsonObject(reference, key), JsonUtils.readDoubleFromJsonObject(underTest, key));
 				}
+				else if (key.equals(OnVehicleData.KEY_GEAR_STATUS)) {
+					JSONObject myKeyObjReference = JsonUtils.readJsonObjectFromJsonObject(reference, key);
+					JSONObject myKeyObjTest = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
+
+					assertTrue(Test.TRUE, Validator.validateGearStatuses(
+							new GearStatus(JsonRPCMarshaller.deserializeJSONObject(myKeyObjReference)),
+							new GearStatus(JsonRPCMarshaller.deserializeJSONObject(myKeyObjTest))));
+				}
 				else if (key.equals(GetVehicleDataResponse.KEY_FUEL_RANGE)) {
 					JSONArray fuelRangeArrayObjReference = JsonUtils.readJsonArrayFromJsonObject(reference, key);
 					List<FuelRange> fuelRangeRefereceList = new ArrayList<FuelRange>();
@@ -452,6 +470,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 		assertEquals(Test.MATCH, VehicleDataHelper.MY_KEY, ( (GetVehicleDataResponse) msg ).getMyKey());
 		assertEquals(Test.MATCH, VehicleDataHelper.TURN_SIGNAL, ( (GetVehicleDataResponse) msg ).getTurnSignal());
 		assertEquals(Test.MATCH, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS, ( (GetVehicleDataResponse) msg ).getElectronicParkBrakeStatus());
+		assertEquals(Test.MATCH, VehicleDataHelper.GEAR_STATUS, ( (GetVehicleDataResponse) msg ).getGearStatus());
 		assertEquals(Test.MATCH, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE, ( (GetVehicleDataResponse) msg ).getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 		
 		// Invalid/Null Tests
@@ -486,6 +505,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
         assertNull(Test.NULL, msg.getMyKey());
         assertNull(Test.NULL, msg.getTurnSignal());
         assertNull(Test.NULL, msg.getElectronicParkBrakeStatus());
+        assertNull(Test.NULL, msg.getGearStatus());
         assertNull(Test.NULL, msg.getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
     }
     
@@ -568,6 +588,11 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 			JSONObject clusterModeStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_CLUSTER_MODE_STATUS);
 			ClusterModeStatus clusterModeStatus = new ClusterModeStatus(JsonRPCMarshaller.deserializeJSONObject(clusterModeStatusObj));
 			assertTrue(Test.TRUE, Validator.validateClusterModeStatus(clusterModeStatus, cmd.getClusterModeStatus()) );
+
+			JSONObject gearStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_GEAR_STATUS);
+			GearStatus gearStatus = new GearStatus(JsonRPCMarshaller.deserializeJSONObject(gearStatusObj));
+			GearStatus cmdStatus = cmd.getGearStatus();
+			assertTrue(Test.TRUE, Validator.validateGearStatuses(gearStatus, cmdStatus));
 			
 			JSONObject myKeyObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_MY_KEY);
 			MyKey myKey = new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObj));

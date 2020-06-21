@@ -11,8 +11,10 @@ import com.smartdevicelink.proxy.rpc.enums.DefrostZone;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.HmiZoneCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
+import com.smartdevicelink.proxy.rpc.enums.TransmissionType;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
 
 import java.util.Iterator;
@@ -3801,4 +3803,26 @@ public class Validator{
 		}
 		return validateGrid(cap1.getGrid(), cap2.getGrid());
 	}
+
+    public static boolean validateGearStatuses(GearStatus status1, GearStatus status2) {
+        if (status1 == null) {
+            return (status2 == null);
+        }
+        if (status2 == null) {
+            return (status1 == null);
+        }
+
+        PRNDL actualGear1 = status1.getActualGear();
+        PRNDL actualGear2 = status2.getActualGear();
+
+        TransmissionType transmissionType1 = status1.getTransmissionType();
+        TransmissionType transmissionType2 = status2.getTransmissionType();
+
+        PRNDL userSelectedGear1 = status1.getUserSelectedGear();
+        PRNDL userSelectedGear2 = status2.getUserSelectedGear();
+
+        return actualGear1.equals(actualGear2)
+                && transmissionType1.equals(transmissionType2)
+                && userSelectedGear1.equals(userSelectedGear2);
+    }
 }
