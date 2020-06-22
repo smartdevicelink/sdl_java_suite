@@ -32,6 +32,8 @@
 package com.smartdevicelink.proxy.rpc;
 
 import com.smartdevicelink.proxy.RPCStruct;
+import com.smartdevicelink.proxy.rpc.enums.CapacityUnit;
+import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
 import com.smartdevicelink.proxy.rpc.enums.FuelType;
 import com.smartdevicelink.util.SdlDataTypeConverter;
 
@@ -40,6 +42,10 @@ import java.util.Hashtable;
 public class FuelRange extends RPCStruct{
     public static final String KEY_TYPE = "type";
     public static final String KEY_RANGE = "range";
+    public static final String KEY_LEVEL = "level";
+    public static final String KEY_LEVEL_STATE = "levelState";
+    public static final String KEY_CAPACITY = "capacity";
+    public static final String KEY_CAPACITY_UNIT = "capacityUnit";
 
     /**
      * Constructs a new FuelRange object
@@ -95,5 +101,74 @@ public class FuelRange extends RPCStruct{
      */
     public void setRange(Float range) {
         setValue(KEY_RANGE, range);
+    }
+
+    /**
+     * Gets the level of remaining capacity of this fuel type
+     * @return Float - The relative remaining capacity of this fuel type (percentage)
+     */
+    public Float getLevel(){
+        return SdlDataTypeConverter.objectToFloat(getValue(KEY_LEVEL));
+    }
+
+    /**
+     * Sets the level of remaining capacity of this fuel type
+     * @param level
+     * The relative remaining capacity of this fuel type (percentage)
+     */
+    public void setLevel(Float level){
+        setValue(KEY_LEVEL, level);
+    }
+
+    /**
+     * Gets the the fuel level state
+     * @return Float
+     */
+    public ComponentVolumeStatus getLevelState(){
+        return (ComponentVolumeStatus) getObject(ComponentVolumeStatus.class, KEY_LEVEL_STATE);
+    }
+
+    /**
+     * Sets the fuel level state
+     * @param level - the fuel level state
+     */
+    public void setLevelState(ComponentVolumeStatus level){
+        setValue(KEY_LEVEL_STATE, level);
+    }
+
+    /**
+     * Gets the absolute capacity of this fuel type.
+     * @return Float
+     * The absolute capacity of this fuel type.
+     */
+    public Float getCapacity(){
+        Float type = SdlDataTypeConverter.objectToFloat(getValue(KEY_CAPACITY));
+        return type;
+    }
+
+    /**
+     * Sets the absolute capacity of this fuel type.
+     * @param capacity - the absolute capacity of this fuel type.
+     */
+    public void setCapacity(Float capacity){
+        setValue(KEY_CAPACITY, capacity);
+    }
+
+    /**
+     * Gets the capacity unit
+     * @return Float
+     * The unit of the capacity of this fuel type such as liters for gasoline or kWh for batteries.
+     */
+    public CapacityUnit getCapacityUnit(){
+        return (CapacityUnit) getObject(CapacityUnit.class, KEY_CAPACITY_UNIT);
+    }
+
+    /**
+     * Sets the capacity unit
+     * @param capacity - the absolute capacity of this fuel type.
+     * The unit of the capacity of this fuel type such as liters for gasoline or kWh for batteries.
+     */
+    public void setCapacityUnit(CapacityUnit capacity){
+        setValue(KEY_CAPACITY_UNIT, capacity);
     }
 }

@@ -408,6 +408,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 * @param fuelLevel
 	 *            a boolean value
 	 */
+	@Deprecated
     public void setFuelLevel(Boolean fuelLevel) {
 		setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
@@ -419,7 +420,8 @@ public class SubscribeVehicleData extends RPCRequest {
 	 * @return Boolean -a Boolean value. If true, means the FuelLevel data has
 	 *         been subscribed.
 	 */
-    public Boolean getFuelLevel() {
+	@Deprecated
+	public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
 

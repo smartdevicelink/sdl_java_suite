@@ -326,9 +326,11 @@ public class GetVehicleData extends RPCRequest {
     public Boolean getRpm() {
         return getBoolean(KEY_RPM);
     }
+    @Deprecated
     public void setFuelLevel(Boolean fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
+    @Deprecated
     public Boolean getFuelLevel() {
         return getBoolean(KEY_FUEL_LEVEL);
     }
