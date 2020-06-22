@@ -38,4 +38,17 @@ public enum TransmissionType {
      * Direct drive between engine and wheels
      */
 	DIRECT_DRIVE;
+
+    /**
+     * Convert String to PRNDL
+     * @param value String
+     * @return PRNDL
+     */
+    public static TransmissionType valueForString(String value) {
+        try{
+            return valueOf(value);
+        }catch(Exception e){
+            return null;
+        }
+    }
 }
