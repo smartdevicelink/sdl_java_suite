@@ -51,8 +51,8 @@ import static org.mockito.Mockito.when;
 public class SoftButtonManagerTests extends AndroidTestCase2 {
 
     private SoftButtonManager softButtonManager;
-    private boolean fileManagerUploadArtworksGotCalled;
-    private boolean internalInterfaceSendRPCGotCalled;
+    private int fileManagerUploadArtworksListenerCalledCounter;
+    private int internalInterfaceSendRPCListenerCalledCounter;
     private int softButtonObject1Id = 1000, softButtonObject2Id = 2000;
     private SoftButtonObject softButtonObject1, softButtonObject2;
     private SoftButtonState softButtonState1, softButtonState2, softButtonState3, softButtonState4;
@@ -108,7 +108,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         Answer<Void> onFileManagerUploadAnswer = new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) {
-                fileManagerUploadArtworksGotCalled = true;
+                fileManagerUploadArtworksListenerCalledCounter++;
                 Object[] args = invocation.getArguments();
                 MultipleFileCompletionListener multipleFileCompletionListener = (MultipleFileCompletionListener) args[1];
                 multipleFileCompletionListener.onComplete(null);
@@ -131,7 +131,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         Answer<Void> onSendShowRPCAnswer = new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) {
-                internalInterfaceSendRPCGotCalled = true;
+                internalInterfaceSendRPCListenerCalledCounter++;
                 Object[] args = invocation.getArguments();
                 Show show = (Show) args[0];
 
@@ -172,8 +172,8 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
     public void testSoftButtonManagerUpdate() {
         // Reset the boolean variables
-        fileManagerUploadArtworksGotCalled = false;
-        internalInterfaceSendRPCGotCalled = false;
+        fileManagerUploadArtworksListenerCalledCounter = 0;
+        internalInterfaceSendRPCListenerCalledCounter = 0;
 
 
         // Test batch update
@@ -193,8 +193,8 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
 
         // Check that everything got called as expected
-        assertTrue("FileManager.uploadArtworks() did not get called", fileManagerUploadArtworksGotCalled);
-        assertTrue("InternalInterface.sendRPC() did not get called", internalInterfaceSendRPCGotCalled);
+        assertEquals("FileManager.uploadArtworks() did not get called correctly", 1, fileManagerUploadArtworksListenerCalledCounter);
+        assertEquals("InternalInterface.sendRPC() did not get called correctly",2, internalInterfaceSendRPCListenerCalledCounter);
 
 
         // Test getSoftButtonObjects
