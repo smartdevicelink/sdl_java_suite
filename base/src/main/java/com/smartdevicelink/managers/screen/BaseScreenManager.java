@@ -51,9 +51,11 @@ import com.smartdevicelink.managers.screen.menu.VoiceCommand;
 import com.smartdevicelink.managers.screen.menu.VoiceCommandManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.KeyboardProperties;
+import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
 import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
+import com.smartdevicelink.managers.screen.OnButtonListener;
 import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
@@ -74,6 +76,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 	private VoiceCommandManager voiceCommandManager;
 	private MenuManager menuManager;
 	private ChoiceSetManager choiceSetManager;
+	private SubscribeButtonManager subscribeButtonManager;
 
 	// Sub manager listener
 	private final CompletionListener subManagerListener = new CompletionListener() {
@@ -115,6 +118,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 		this.voiceCommandManager.start(subManagerListener);
 		this.menuManager.start(subManagerListener);
 		this.choiceSetManager.start(subManagerListener);
+		this.subscribeButtonManager.start(subManagerListener);
 	}
 
 	private void initialize(){
@@ -124,6 +128,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 			this.menuManager = new MenuManager(internalInterface, fileManager.get());
 			this.choiceSetManager = new ChoiceSetManager(internalInterface, fileManager.get());
 		}
+		this.subscribeButtonManager = new SubscribeButtonManager(internalInterface);
 		this.voiceCommandManager = new VoiceCommandManager(internalInterface);
 	}
 
@@ -589,5 +594,12 @@ abstract class BaseScreenManager extends BaseSubManager {
 				});
 			}
 		});
+	}
+
+	public void addButtonListener(ButtonName buttonName, OnButtonListener listener){
+		subscribeButtonManager.addButtonListener(buttonName,listener);
+	}
+	public void removeButtonListener(ButtonName buttonName, OnButtonListener listener){
+		subscribeButtonManager.removeButtonListener(buttonName, listener);
 	}
 }
