@@ -141,7 +141,7 @@ abstract class BaseLifecycleManager {
         this.lifecycleListener = listener;
         this.minimumProtocolVersion = appConfig.getMinimumProtocolVersion();
         this.minimumRPCVersion = appConfig.getMinimumRPCVersion();
-        initializeProxy();
+        initialize();
     }
 
     public void start() {
@@ -329,7 +329,7 @@ abstract class BaseLifecycleManager {
     void onClose(String info, Exception e, SdlDisconnectedReason reason) {
         Log.i(TAG, "onClose");
         if (lifecycleListener != null) {
-            lifecycleListener.onProxyClosed((LifecycleManager) this, info, e, reason);
+            lifecycleListener.onClosed((LifecycleManager) this, info, e, reason);
         }
     }
 
@@ -383,7 +383,7 @@ abstract class BaseLifecycleManager {
                             UnregisterAppInterface msg = new UnregisterAppInterface();
                             msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
                             sendRPCMessagePrivate(msg, true);
-                            cleanProxy();
+                            clean();
                             return;
                         }
                         processRaiResponse(raiResponse);
@@ -394,7 +394,7 @@ abstract class BaseLifecycleManager {
                         boolean shouldInit = currentHMIStatus == null;
                         currentHMIStatus = (OnHMIStatus) message;
                         if (lifecycleListener != null && shouldInit) {
-                            lifecycleListener.onProxyConnected((LifecycleManager) BaseLifecycleManager.this);
+                            lifecycleListener.onConnected((LifecycleManager) BaseLifecycleManager.this);
                         }
                         break;
                     case ON_HASH_CHANGE:
@@ -443,15 +443,15 @@ abstract class BaseLifecycleManager {
 
                         if (!onAppInterfaceUnregistered.getReason().equals(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE)) {
                             Log.v(TAG, "on app interface unregistered");
-                            cleanProxy();
+                            clean();
                         } else {
                             Log.v(TAG, "re-registering for language change");
-                            cycleProxy(SdlDisconnectedReason.LANGUAGE_CHANGE);
+                            cycle(SdlDisconnectedReason.LANGUAGE_CHANGE);
                         }
                         break;
                     case UNREGISTER_APP_INTERFACE:
                         Log.v(TAG, "unregister app interface");
-                        cleanProxy();
+                        clean();
                         break;
                 }
             }
@@ -1153,9 +1153,9 @@ abstract class BaseLifecycleManager {
      *********************************************************************************************************/
 
     public interface LifecycleListener {
-        void onProxyConnected(LifecycleManager lifeCycleManager);
+        void onConnected(LifecycleManager lifeCycleManager);
 
-        void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason);
+        void onClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason);
 
         void onServiceStarted(SessionType sessionType);
 
@@ -1365,7 +1365,7 @@ abstract class BaseLifecycleManager {
         return null;
     }
 
-    void cleanProxy() {
+    void clean() {
         firstTimeFull = true;
         currentHMIStatus = null;
         if (rpcListeners != null) {
@@ -1445,7 +1445,7 @@ abstract class BaseLifecycleManager {
      ********************************** Platform specific methods - START *************************************
      *********************************************************************************************************/
 
-    void initializeProxy() {
+    void initialize() {
         this.rpcListeners = new HashMap<>();
         this.rpcResponseListeners = new HashMap<>();
         this.rpcNotificationListeners = new HashMap<>();
@@ -1459,7 +1459,7 @@ abstract class BaseLifecycleManager {
             if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1) {
                 Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
                 session.endService(sessionType, session.getSessionId());
-                cleanProxy();
+                clean();
                 return;
             }
 
@@ -1496,7 +1496,7 @@ abstract class BaseLifecycleManager {
         }
     }
 
-    abstract void cycleProxy(SdlDisconnectedReason disconnectedReason);
+    abstract void cycle(SdlDisconnectedReason disconnectedReason);
 
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
     }
