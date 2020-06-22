@@ -1,27 +1,32 @@
 package com.smartdevicelink.managers.screen;
 
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.AndroidTestCase2;
-import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.MultipleFileCompletionListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.interfaces.ISdl;
+import com.smartdevicelink.proxy.interfaces.OnSystemCapabilityListener;
+import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Show;
+import com.smartdevicelink.proxy.rpc.ShowResponse;
 import com.smartdevicelink.proxy.rpc.SoftButton;
 import com.smartdevicelink.proxy.rpc.SoftButtonCapabilities;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.ImageType;
+import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.enums.SoftButtonType;
 import com.smartdevicelink.proxy.rpc.enums.StaticIconName;
 import com.smartdevicelink.proxy.rpc.enums.SystemAction;
+import com.smartdevicelink.proxy.rpc.enums.SystemCapabilityType;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.test.Validator;
 
@@ -37,6 +42,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
@@ -47,10 +53,10 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
     private SoftButtonManager softButtonManager;
     private boolean fileManagerUploadArtworksGotCalled;
     private boolean internalInterfaceSendRPCGotCalled;
-    private boolean softButtonMangerUpdateCompleted;
     private int softButtonObject1Id = 1000, softButtonObject2Id = 2000;
     private SoftButtonObject softButtonObject1, softButtonObject2;
     private SoftButtonState softButtonState1, softButtonState2, softButtonState3, softButtonState4;
+    private Taskmaster taskmaster;
 
 
     @Override
@@ -74,6 +80,28 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         doAnswer(onHMIStatusAnswer).when(internalInterface).addOnRPCNotificationListener(eq(FunctionID.ON_HMI_STATUS), any(OnRPCNotificationListener.class));
 
 
+        // When internalInterface.addOnSystemCapabilityListener(SystemCapabilityType.DISPLAYS, onSystemCapabilityListener) is called
+        // inside SoftButtonManager, respond with a fake response to let the SoftButtonManager continue working.
+        Answer<Void> onSystemCapabilityAnswer = new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                OnSystemCapabilityListener onSystemCapabilityListener = (OnSystemCapabilityListener) args[1];
+                SoftButtonCapabilities softButtonCapabilities = new SoftButtonCapabilities();
+                softButtonCapabilities.setImageSupported(true);
+                softButtonCapabilities.setTextSupported(true);
+                WindowCapability windowCapability = new WindowCapability();
+                windowCapability.setSoftButtonCapabilities(Collections.singletonList(softButtonCapabilities));
+                DisplayCapability displayCapability = new DisplayCapability();
+                displayCapability.setWindowCapabilities(Arrays.asList(windowCapability));
+                List<DisplayCapability> capabilities = Arrays.asList(displayCapability);
+                onSystemCapabilityListener.onCapabilityRetrieved(capabilities);
+                return null;
+            }
+        };
+        doAnswer(onSystemCapabilityAnswer).when(internalInterface).addOnSystemCapabilityListener(eq(SystemCapabilityType.DISPLAYS), any(OnSystemCapabilityListener.class));
+
+
         // When fileManager.uploadArtworks() is called inside the SoftButtonManager, respond with
         // a fake onComplete() callback to let the SoftButtonManager continue working.
         FileManager fileManager = mock(FileManager.class);
@@ -91,6 +119,9 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
 
         // Create softButtonManager
+        taskmaster = new Taskmaster.Builder().build();
+        taskmaster.start();
+        when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
         softButtonManager = new SoftButtonManager(internalInterface, fileManager);
 
 
@@ -104,10 +135,10 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
                 Object[] args = invocation.getArguments();
                 Show show = (Show) args[0];
 
-                show.getOnRPCResponseListener().onResponse(0, null);
+                show.getOnRPCResponseListener().onResponse(0, new ShowResponse(true, Result.SUCCESS));
 
                 assertEquals(show.getMainField1(), softButtonManager.getCurrentMainField1());
-                assertEquals(show.getSoftButtons().size(), softButtonManager.createSoftButtonsForCurrentState().size());
+                assertEquals(show.getSoftButtons().size(), softButtonManager.getSoftButtonObjects().size());
 
                 return null;
             }
@@ -131,17 +162,18 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         super.tearDown();
     }
 
+    private void sleep() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void testSoftButtonManagerUpdate() {
         // Reset the boolean variables
         fileManagerUploadArtworksGotCalled = false;
         internalInterfaceSendRPCGotCalled = false;
-        softButtonMangerUpdateCompleted = false;
-
-        SoftButtonCapabilities softCap = new SoftButtonCapabilities();
-        softCap.setImageSupported(true);
-        WindowCapability defaultCap = new WindowCapability();
-        defaultCap.setSoftButtonCapabilities(Collections.singletonList(softCap));
-        softButtonManager.defaultMainWindowCapability = defaultCap;
 
 
         // Test batch update
@@ -149,12 +181,6 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         List<SoftButtonObject> softButtonObjects = Arrays.asList(softButtonObject1, softButtonObject2);
         softButtonManager.setSoftButtonObjects(Arrays.asList(softButtonObject1, softButtonObject2));
         softButtonManager.setBatchUpdates(false);
-        softButtonManager.update(new CompletionListener() {
-            @Override
-            public void onComplete(boolean success) {
-                softButtonMangerUpdateCompleted = true;
-            }
-        });
 
 
         // Test single update, setCurrentMainField1, and transitionToNextState
@@ -162,11 +188,13 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         softButtonObject1.transitionToNextState();
 
 
-        // Check that everything got called as expected
+        // Sleep to give time to Taskmaster to run the operations
+        sleep();
 
-        assertTrue("FileManager.uploadArtworks() did get called", fileManagerUploadArtworksGotCalled);
+
+        // Check that everything got called as expected
+        assertTrue("FileManager.uploadArtworks() did not get called", fileManagerUploadArtworksGotCalled);
         assertTrue("InternalInterface.sendRPC() did not get called", internalInterfaceSendRPCGotCalled);
-        assertTrue("SoftButtonManger update onComplete() did not get called", softButtonMangerUpdateCompleted);
 
 
         // Test getSoftButtonObjects
