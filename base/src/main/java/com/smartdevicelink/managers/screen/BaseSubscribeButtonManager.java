@@ -22,10 +22,16 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * <strong>SubscribeButtonManager</strong> <br>
+ *
+ * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
+ *
+ */
 abstract class BaseSubscribeButtonManager extends BaseSubManager {
 
     private static final String TAG = "SubscribeButtonManager";
-    private final HashMap<ButtonName, CopyOnWriteArrayList<OnButtonListener>> onButtonListeners;
+    final HashMap<ButtonName, CopyOnWriteArrayList<OnButtonListener>> onButtonListeners;
 
     BaseSubscribeButtonManager(@NonNull ISdl internalInterface) {
         super(internalInterface);
@@ -39,6 +45,13 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
         super.start(listener);
     }
 
+    /***
+     * Checks to see if Button is already subscribed and adds listener to hashmap.
+     * If button is not already subscribed to, it call method:
+     * subscribeButtonRequest to send RPC request
+     * @param buttonName - Is the button that the developer wants to subscribe to
+     * @param listener - Is the listener that was sent by developer
+     */
     void addButtonListener(ButtonName buttonName, OnButtonListener listener) {
 
         if (listener == null) {
@@ -55,6 +68,7 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
             onButtonListeners.put(buttonName, new CopyOnWriteArrayList<OnButtonListener>());
             subscribeButtonRequest(buttonName, listener);
         }
+
         if (onButtonListeners.get(buttonName).contains(listener)) {
             Log.d(TAG, "Subscribe button with name " + buttonName + " is already subscribed");
             return;
@@ -62,6 +76,11 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
         onButtonListeners.get(buttonName).add(listener);
     }
 
+    /**
+     * Unsubscribes form button and/or listener sent by developer
+     * @param buttonName Is the button that the developer wants to unsubscribe from
+     * @param listener - the listener that was sent by developer
+     */
     void removeButtonListener(final ButtonName buttonName, final OnButtonListener listener) {
 
         if (onButtonListeners.get(buttonName) == null) {
@@ -82,6 +101,7 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 Log.d(TAG, "Successfully unsubscribed to subscribe button named " + buttonName);
+                onButtonListeners.remove(buttonName);
             }
 
             @Override
@@ -94,6 +114,11 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
         internalInterface.sendRPC(unsubscribeButtonRequest);
     }
 
+    /**
+     * Send the SubscribeButton RPC
+     * @param buttonName - ButtonName - name of button
+     * @param listener - OnButtonListener - listener to get notified
+     */
     private void subscribeButtonRequest(final ButtonName buttonName, final OnButtonListener listener) {
         SubscribeButton subscribeButtonRequest = new SubscribeButton();
 
@@ -115,6 +140,9 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
         internalInterface.sendRPC(subscribeButtonRequest);
     }
 
+    /**
+     * Sets up RpcNotificationListeners for button presses and events, is setup when manager is created
+     */
     private void setRpcNotificationListeners() {
         internalInterface.addOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, new OnRPCNotificationListener() {
             @Override
