@@ -31,7 +31,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 abstract class BaseSubscribeButtonManager extends BaseSubManager {
 
     private static final String TAG = "SubscribeButtonManager";
-    final HashMap<ButtonName, CopyOnWriteArrayList<OnButtonListener>> onButtonListeners;
+    private HashMap<ButtonName, CopyOnWriteArrayList<OnButtonListener>> onButtonListeners;
+    private OnRPCNotificationListener onButtonPressListener;
+    private OnRPCNotificationListener onButtonEventListener;
 
     BaseSubscribeButtonManager(@NonNull ISdl internalInterface) {
         super(internalInterface);
@@ -43,6 +45,14 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
     public void start(CompletionListener listener) {
         transitionToState(READY);
         super.start(listener);
+    }
+
+    @Override
+    public void dispose(){
+        super.dispose();
+        onButtonListeners = null;
+        internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, onButtonPressListener);
+        internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_EVENT, onButtonEventListener);
     }
 
     /***
@@ -144,7 +154,7 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
      * Sets up RpcNotificationListeners for button presses and events, is setup when manager is created
      */
     private void setRpcNotificationListeners() {
-        internalInterface.addOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, new OnRPCNotificationListener() {
+        onButtonPressListener = new OnRPCNotificationListener() {
             @Override
             public void onNotified(RPCNotification notification) {
                 OnButtonPress onButtonPressNotification = (OnButtonPress) notification;
@@ -156,9 +166,10 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
                     }
                 }
             }
-        });
+        };
+        internalInterface.addOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, onButtonPressListener);
 
-        internalInterface.addOnRPCNotificationListener(FunctionID.ON_BUTTON_EVENT, new OnRPCNotificationListener() {
+        onButtonEventListener = new OnRPCNotificationListener() {
             @Override
             public void onNotified(RPCNotification notification) {
                 OnButtonEvent onButtonEvent = (OnButtonEvent) notification;
@@ -170,6 +181,7 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
                     }
                 }
             }
-        });
+        };
+        internalInterface.addOnRPCNotificationListener(FunctionID.ON_BUTTON_EVENT, onButtonEventListener);
     }
 }
