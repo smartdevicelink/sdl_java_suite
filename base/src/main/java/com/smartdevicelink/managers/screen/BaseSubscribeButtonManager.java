@@ -21,12 +21,12 @@ import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+abstract class BaseSubscribeButtonManager extends BaseSubManager {
 
-class SubscribeButtonManager extends BaseSubManager {
     private static final String TAG = "SubscribeButtonManager";
     private final HashMap<ButtonName, CopyOnWriteArrayList<OnButtonListener>> onButtonListeners;
 
-    SubscribeButtonManager(@NonNull ISdl internalInterface) {
+    public BaseSubscribeButtonManager(@NonNull ISdl internalInterface) {
         super(internalInterface);
         setRpcNotificationListeners();
         onButtonListeners = new HashMap<>();
@@ -38,7 +38,16 @@ class SubscribeButtonManager extends BaseSubManager {
         super.start(listener);
     }
 
-    public void addButtonListener(ButtonName buttonName,  OnButtonListener listener) {
+    public void addButtonListener(ButtonName buttonName, OnButtonListener listener) {
+
+        if(buttonName == null){
+            Log.e(TAG, "Button name cannot be null");
+            return;
+        }
+        if(listener == null){
+            Log.e(TAG, "OnButtonListener cannot be null: ");
+            return;
+        }
 
         if (onButtonListeners.get(buttonName) == null) {
             onButtonListeners.put(buttonName, new CopyOnWriteArrayList<OnButtonListener>());
