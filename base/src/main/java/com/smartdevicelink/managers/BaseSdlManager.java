@@ -71,6 +71,7 @@ import com.smartdevicelink.util.Version;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -131,6 +132,15 @@ abstract class BaseSdlManager {
         }
 
         @Override
+        @Deprecated
+        public void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason) {
+            Log.i(TAG, "Proxy is closed.");
+            if (reason == null || !reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)) {
+                dispose();
+            }
+        }
+
+        @Override
         public void onServiceStarted(SessionType sessionType) {
 
         }
@@ -141,11 +151,12 @@ abstract class BaseSdlManager {
         }
 
         @Override
-        public void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason) {
+        public void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason, HashMap rpcNotificationListeners) {
             Log.i(TAG, "Proxy is closed.");
             if (reason == null || !reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)) {
                 dispose();
             }
+            onRPCNotificationListeners = rpcNotificationListeners;
         }
 
         @Override
@@ -311,6 +322,7 @@ abstract class BaseSdlManager {
             //Set variables to null that are no longer needed
             queuedNotifications = null;
             queuedNotificationListener = null;
+            onRPCNotificationListeners = null;
         }
     }
 
