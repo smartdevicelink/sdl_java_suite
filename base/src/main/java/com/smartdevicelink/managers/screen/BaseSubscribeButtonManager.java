@@ -41,12 +41,13 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
 
     void addButtonListener(ButtonName buttonName, OnButtonListener listener) {
 
-        if (buttonName == null) {
-            Log.e(TAG, "ButtonName cannot be null");
-            return;
-        }
         if (listener == null) {
             Log.e(TAG, "OnButtonListener cannot be null: ");
+            return;
+        }
+        if (buttonName == null) {
+            listener.onError("ButtonName cannot be null");
+            Log.e(TAG, "ButtonName cannot be null");
             return;
         }
 
@@ -59,7 +60,6 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
             return;
         }
         onButtonListeners.get(buttonName).add(listener);
-
     }
 
     void removeButtonListener(final ButtonName buttonName, final OnButtonListener listener) {
