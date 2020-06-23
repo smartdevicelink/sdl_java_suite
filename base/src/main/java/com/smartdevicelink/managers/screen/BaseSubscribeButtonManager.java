@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.OnButtonListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -26,7 +27,7 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
     private static final String TAG = "SubscribeButtonManager";
     private final HashMap<ButtonName, CopyOnWriteArrayList<OnButtonListener>> onButtonListeners;
 
-    public BaseSubscribeButtonManager(@NonNull ISdl internalInterface) {
+    BaseSubscribeButtonManager(@NonNull ISdl internalInterface) {
         super(internalInterface);
         setRpcNotificationListeners();
         onButtonListeners = new HashMap<>();
@@ -38,13 +39,13 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
         super.start(listener);
     }
 
-    public void addButtonListener(ButtonName buttonName, OnButtonListener listener) {
+    void addButtonListener(ButtonName buttonName, OnButtonListener listener) {
 
-        if(buttonName == null){
-            Log.e(TAG, "Button name cannot be null");
+        if (buttonName == null) {
+            Log.e(TAG, "ButtonName cannot be null");
             return;
         }
-        if(listener == null){
+        if (listener == null) {
             Log.e(TAG, "OnButtonListener cannot be null: ");
             return;
         }
@@ -61,7 +62,7 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
 
     }
 
-    public void removeButtonListener(final ButtonName buttonName, final OnButtonListener listener) {
+    void removeButtonListener(final ButtonName buttonName, final OnButtonListener listener) {
 
         if (onButtonListeners.get(buttonName) == null) {
             return;

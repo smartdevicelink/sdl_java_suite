@@ -16,6 +16,7 @@ import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
+import com.smartdevicelink.managers.OnButtonListener;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceCell;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSet;
 import com.smartdevicelink.managers.screen.choiceset.ChoiceSetSelectionListener;
@@ -27,9 +28,12 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.OnButtonEvent;
+import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Speak;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
+import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
@@ -77,6 +81,7 @@ public class SdlService extends Service {
 	// variable to create and call functions of the SyncProxy
 	private SdlManager sdlManager = null;
 	private List<ChoiceCell> choiceCellList;
+	OnButtonListener listener;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -292,6 +297,7 @@ public class SdlService extends Service {
 			@Override
 			public void onTriggered(TriggerSource trigger) {
 				Log.i(TAG, "Test cell 1 triggered. Source: "+ trigger.toString());
+				sdlManager.getScreenManager().removeButtonListener(ButtonName.VOLUME_DOWN, listener);
 				showTest();
 			}
 		});
@@ -356,6 +362,30 @@ public class SdlService extends Service {
 	 * and finish with commit() when we are done.
 	 */
 	private void performWelcomeShow() {
+		listener = new OnButtonListener() {
+			@Override
+			public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
+				Log.i("SdlService", "onPress: ");
+			}
+
+			@Override
+			public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
+				Log.i("SdlService", "onEvent: ");
+			}
+
+			@Override
+			public void onError(String info) {
+				Log.i("SdlService", "onError: ");
+
+			}
+		};
+		sdlManager.getScreenManager().addButtonListener(null,null);
+
+		sdlManager.getScreenManager().addButtonListener(ButtonName.VOLUME_DOWN, null);
+
+		sdlManager.getScreenManager().addButtonListener(ButtonName.VOLUME_DOWN, listener);
+
+
 		sdlManager.getScreenManager().beginTransaction();
 		sdlManager.getScreenManager().setTextField1(APP_NAME);
 		sdlManager.getScreenManager().setTextField2(WELCOME_SHOW);

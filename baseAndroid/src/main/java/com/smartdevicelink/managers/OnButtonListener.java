@@ -1,4 +1,4 @@
-package com.smartdevicelink.managers.screen;
+package com.smartdevicelink.managers;
 
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
