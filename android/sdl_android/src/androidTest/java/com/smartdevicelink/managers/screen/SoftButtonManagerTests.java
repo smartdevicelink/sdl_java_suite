@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -56,7 +57,6 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
     private int softButtonObject1Id = 1000, softButtonObject2Id = 2000;
     private SoftButtonObject softButtonObject1, softButtonObject2;
     private SoftButtonState softButtonState1, softButtonState2, softButtonState3, softButtonState4;
-    private Taskmaster taskmaster;
 
 
     @Override
@@ -93,8 +93,8 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
                 WindowCapability windowCapability = new WindowCapability();
                 windowCapability.setSoftButtonCapabilities(Collections.singletonList(softButtonCapabilities));
                 DisplayCapability displayCapability = new DisplayCapability();
-                displayCapability.setWindowCapabilities(Arrays.asList(windowCapability));
-                List<DisplayCapability> capabilities = Arrays.asList(displayCapability);
+                displayCapability.setWindowCapabilities(Collections.singletonList(windowCapability));
+                List<DisplayCapability> capabilities = Collections.singletonList(displayCapability);
                 onSystemCapabilityListener.onCapabilityRetrieved(capabilities);
                 return null;
             }
@@ -119,7 +119,7 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
 
 
         // Create softButtonManager
-        taskmaster = new Taskmaster.Builder().build();
+        Taskmaster taskmaster = new Taskmaster.Builder().build();
         taskmaster.start();
         when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
         softButtonManager = new SoftButtonManager(internalInterface, fileManager);
@@ -370,14 +370,14 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         // Case 1: object is null, assertFalse
         softButtonObject1 = new SoftButtonObject("test", softButtonState1, null);
         softButtonObject2 = null;
-        assertFalse(softButtonObject1.equals(softButtonObject2));
+        assertNotEquals(softButtonObject1, softButtonObject2);
 
         // Case 2 SoftButtonObjects are the same, assertTrue
-        assertTrue(softButtonObject1.equals(softButtonObject1));
+        assertEquals(softButtonObject1, softButtonObject1);
 
         // Case 3: object is not an instance of SoftButtonObject assertFalse
         SdlArtwork artwork = new SdlArtwork("image1", FileType.GRAPHIC_PNG, 1, true);
-        assertFalse(softButtonObject1.equals(artwork));
+        assertNotEquals(softButtonObject1, artwork);
 
         // Case 4: SoftButtonObjectState List are not same size, assertFalse
         List<SoftButtonState> softButtonStateList = new ArrayList<>();
@@ -387,53 +387,53 @@ public class SoftButtonManagerTests extends AndroidTestCase2 {
         softButtonStateList2.add(softButtonState2);
         softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, "Hi", null);
         softButtonObject2 = new SoftButtonObject("hi", softButtonStateList2, "Hi", null);
-        assertFalse(softButtonObject1.equals(softButtonObject2));
+        assertNotEquals(softButtonObject1, softButtonObject2);
 
         // Case 5: SoftButtonStates are not the same, assertFalse
         softButtonObject1 = new SoftButtonObject("test", softButtonState1, null);
         softButtonObject2 = new SoftButtonObject("test", softButtonState2, null);
-        assertFalse(softButtonObject1.equals(softButtonObject2));
+        assertNotEquals(softButtonObject1, softButtonObject2);
 
         // Case 6: SoftButtonObject names are not same, assertFalse
         softButtonObject1 = new SoftButtonObject("test", softButtonState1, null);
         softButtonObject2 = new SoftButtonObject("test23123", softButtonState1, null);
-        assertFalse(softButtonObject1.equals(softButtonObject2));
+        assertNotEquals(softButtonObject1, softButtonObject2);
 
         // Case 7: SoftButtonObject currentStateName not same, assertFalse
         softButtonObject1 = new SoftButtonObject("hi", softButtonStateList, "Hi", null);
         softButtonObject2 = new SoftButtonObject("hi", softButtonStateList, "Hi2", null);
-        assertFalse(softButtonObject1.equals(softButtonObject2));
+        assertNotEquals(softButtonObject1, softButtonObject2);
     }
 
     /**
      * Test custom overridden softButtonState equals method
      */
     public void testSoftButtonStateEquals() {
-        assertFalse(softButtonState1.equals(softButtonState2));
+        assertNotEquals(softButtonState1, softButtonState2);
         SdlArtwork artwork1 = new SdlArtwork("image1", FileType.GRAPHIC_PNG, 1, true);
         SdlArtwork artwork2 = new SdlArtwork("image2", FileType.GRAPHIC_PNG, 1, true);
 
         // Case 1: object is null, assertFalse
         softButtonState1 = new SoftButtonState("object1-state1", "o1s1", artwork1);
         softButtonState2 = null;
-        assertFalse(softButtonState1.equals(softButtonState2));
+        assertNotEquals(softButtonState1, softButtonState2);
 
         // Case 2 SoftButtonObjects are the same, assertTrue
-        assertTrue(softButtonState1.equals(softButtonState1));
+        assertEquals(softButtonState1, softButtonState1);
 
         // Case 3: object is not an instance of SoftButtonState, assertFalse
-        assertFalse(softButtonState1.equals(artwork1));
+        assertNotEquals(softButtonState1, artwork1);
 
         // Case 4: different artwork, assertFalse
         softButtonState2 = new SoftButtonState("object1-state1", "o1s1", artwork2);
-        assertFalse(softButtonState1.equals(softButtonState2));
+        assertNotEquals(softButtonState1, softButtonState2);
 
         // Case 5: different name, assertFalse
         softButtonState2 = new SoftButtonState("object1-state1 different name", "o1s1", artwork1);
-        assertFalse(softButtonState1.equals(softButtonState2));
+        assertNotEquals(softButtonState1, softButtonState2);
 
         // Case 6 they are equal, assertTrue
         softButtonState2 = new SoftButtonState("object1-state1", "o1s1", artwork1);
-        assertTrue(softButtonState1.equals(softButtonState2));
+        assertEquals(softButtonState1, softButtonState2);
     }
 }
