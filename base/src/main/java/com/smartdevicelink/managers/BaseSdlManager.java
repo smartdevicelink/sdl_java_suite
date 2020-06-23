@@ -71,14 +71,12 @@ import com.smartdevicelink.util.Version;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 abstract class BaseSdlManager {
 
@@ -147,19 +145,6 @@ abstract class BaseSdlManager {
             Log.i(TAG, "Proxy is closed.");
             if (reason == null || !reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)) {
                 dispose();
-            } else {
-                onRPCNotificationListeners = new HashMap<>();
-                HashMap<Integer, CopyOnWriteArrayList<OnRPCNotificationListener>> rpcNotificationListeners = lifeCycleManager.getOnRPCNotificationListeners();
-                for (Integer key : rpcNotificationListeners.keySet()) {
-                    if (rpcNotificationListeners.get(key) != null) {
-                        for (OnRPCNotificationListener listener : rpcNotificationListeners.get(key)) {
-                            String functionName = FunctionID.getFunctionName(key);
-                            if (functionName != null) {
-                                onRPCNotificationListeners.put(FunctionID.getEnumForString(functionName), listener);
-                            }
-                        }
-                    }
-                }
             }
         }
 
@@ -326,7 +311,6 @@ abstract class BaseSdlManager {
             //Set variables to null that are no longer needed
             queuedNotifications = null;
             queuedNotificationListener = null;
-            onRPCNotificationListeners = null;
         }
     }
 
