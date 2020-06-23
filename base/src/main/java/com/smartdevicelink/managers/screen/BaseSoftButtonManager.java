@@ -223,8 +223,10 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         softButtonCapabilities = null;
 
         // Cancel the operations
-        transactionQueue.close();
-        transactionQueue = null;
+        if (transactionQueue != null) {
+            transactionQueue.close();
+            transactionQueue = null;
+        }
 
         // Remove listeners
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_HMI_STATUS, onHMIStatusListener);
