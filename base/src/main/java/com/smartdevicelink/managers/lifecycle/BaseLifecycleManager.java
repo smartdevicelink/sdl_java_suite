@@ -329,7 +329,7 @@ abstract class BaseLifecycleManager {
     void onClose(String info, Exception e, SdlDisconnectedReason reason) {
         Log.i(TAG, "onClose");
         if (lifecycleListener != null) {
-            lifecycleListener.onProxyClosed((LifecycleManager) this, info, e, reason, rpcNotificationListeners);
+            lifecycleListener.onProxyClosed((LifecycleManager) this, info, e, reason);
         }
     }
 
@@ -1155,10 +1155,7 @@ abstract class BaseLifecycleManager {
     public interface LifecycleListener {
         void onProxyConnected(LifecycleManager lifeCycleManager);
 
-        @Deprecated
         void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason);
-
-        void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason, HashMap rpcNotificationListeners);
 
         void onServiceStarted(SessionType sessionType);
 
