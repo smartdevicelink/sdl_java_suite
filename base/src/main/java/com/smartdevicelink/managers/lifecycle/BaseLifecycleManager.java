@@ -640,6 +640,10 @@ abstract class BaseLifecycleManager {
         }
     }
 
+    public HashMap<Integer, CopyOnWriteArrayList<OnRPCNotificationListener>> getOnRPCNotificationListeners() {
+        return rpcNotificationListeners;
+    }
+
     private boolean removeOnRPCNotificationListener(FunctionID notificationId, OnRPCNotificationListener listener) {
         synchronized (ON_NOTIFICATION_LISTENER_LOCK) {
             if (rpcNotificationListeners != null

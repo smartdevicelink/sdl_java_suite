@@ -114,12 +114,12 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     @Override
     void cycleProxy(SdlDisconnectedReason disconnectedReason) {
-        cleanProxy();
-        initializeProxy();
         if (!SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED.equals(disconnectedReason) && !SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST.equals(disconnectedReason)) {
             //We don't want to alert higher if we are just cycling for legacy bluetooth
             onClose("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED), disconnectedReason);
         }
+        cleanProxy();
+        initializeProxy();
         if (session != null) {
             try {
                 session.startSession();
