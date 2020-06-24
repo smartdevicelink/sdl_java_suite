@@ -1,8 +1,7 @@
 package com.smartdevicelink.managers.screen;
 
-import android.content.Context;
-
 import com.smartdevicelink.AndroidTestCase2;
+import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.OnButtonListener;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
@@ -54,6 +53,11 @@ public class SubscribeButtonManagerTest extends AndroidTestCase2 {
         subscribeButtonManager = new SubscribeButtonManager(internalInterface);
     }
 
+    public void testInstantiation(){
+        assertNotNull(subscribeButtonManager.onButtonListeners);
+        assertEquals(subscribeButtonManager.getState(), BaseSubManager.SETTING_UP);
+    }
+
     public void testDispose() {
         subscribeButtonManager.addButtonListener(ButtonName.VOLUME_UP, listener);
         subscribeButtonManager.dispose();
@@ -94,6 +98,5 @@ public class SubscribeButtonManagerTest extends AndroidTestCase2 {
 
         subscribeButtonManager.removeButtonListener(ButtonName.VOLUME_UP, listener2);
         assertTrue(subscribeButtonManager.onButtonListeners.get(ButtonName.VOLUME_UP).size() == 0);
-
     }
 }
