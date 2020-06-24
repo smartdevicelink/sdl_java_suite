@@ -81,7 +81,7 @@ public class SdlService extends Service {
 	// variable to create and call functions of the SyncProxy
 	private SdlManager sdlManager = null;
 	private List<ChoiceCell> choiceCellList;
-	OnButtonListener listener;
+	private OnButtonListener onButtonListener;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -188,6 +188,7 @@ public class SdlService extends Service {
 								performWelcomeSpeak();
 								performWelcomeShow();
 								preloadChoices();
+								subscribeToAllButtons();
 							}
 						}
 					});
@@ -297,7 +298,6 @@ public class SdlService extends Service {
 			@Override
 			public void onTriggered(TriggerSource trigger) {
 				Log.i(TAG, "Test cell 1 triggered. Source: "+ trigger.toString());
-				sdlManager.getScreenManager().removeButtonListener(ButtonName.VOLUME_DOWN, listener);
 				showTest();
 			}
 		});
@@ -345,8 +345,18 @@ public class SdlService extends Service {
 			}
 		});
 
+		MenuCell mainCell6 = new MenuCell("Remove all button listeners", null, null, new MenuSelectionListener() {
+			@Override
+			public void onTriggered(TriggerSource trigger) {
+				ButtonName[] buttonNames = ButtonName.values();
+				for(ButtonName buttonName : buttonNames){
+					sdlManager.getScreenManager().removeButtonListener(buttonName,onButtonListener);
+				}
+			}
+		});
+
 		// Send the entire menu off to be created
-		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5));
+		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5, mainCell6));
 	}
 
 	/**
@@ -357,35 +367,40 @@ public class SdlService extends Service {
 	}
 
 	/**
+	 * Attempts to add a listener to all hard buttons
+	 */
+	private void subscribeToAllButtons(){
+		onButtonListener = new OnButtonListener() {
+			@Override
+			public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
+				Log.i(TAG, "onPress: " + buttonName + " " + buttonPress);
+			}
+
+			@Override
+			public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
+				Log.i(TAG, "onEvent" + buttonName + " " + buttonEvent);
+
+			}
+
+			@Override
+			public void onError(String info) {
+				Log.i(TAG, "onError: "+ info);
+			}
+		};
+
+		ButtonName[] buttonNames = ButtonName.values();
+
+		for(ButtonName buttonName : buttonNames){
+			sdlManager.getScreenManager().addButtonListener(buttonName,onButtonListener);
+		}
+	}
+
+	/**
 	 * Use the Screen Manager to set the initial screen text and set the image.
 	 * Because we are setting multiple items, we will call beginTransaction() first,
 	 * and finish with commit() when we are done.
 	 */
 	private void performWelcomeShow() {
-		listener = new OnButtonListener() {
-			@Override
-			public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
-				Log.i("SdlService", "onPress: ");
-			}
-
-			@Override
-			public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
-				Log.i("SdlService", "onEvent: ");
-			}
-
-			@Override
-			public void onError(String info) {
-				Log.i("SdlService", "onError: ");
-
-			}
-		};
-		sdlManager.getScreenManager().addButtonListener(null,null);
-
-		sdlManager.getScreenManager().addButtonListener(ButtonName.VOLUME_DOWN, null);
-
-		sdlManager.getScreenManager().addButtonListener(ButtonName.VOLUME_DOWN, listener);
-
-
 		sdlManager.getScreenManager().beginTransaction();
 		sdlManager.getScreenManager().setTextField1(APP_NAME);
 		sdlManager.getScreenManager().setTextField2(WELCOME_SHOW);
