@@ -54,6 +54,7 @@ import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.Callable;
@@ -70,14 +71,14 @@ import java.util.concurrent.ScheduledExecutorService;
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class LifecycleManager extends BaseLifecycleManager {
     private static final int RESPONSE_WAIT_TIME = 2000;
-    private ISdlServiceListener navServiceListener;
-    private boolean navServiceStartResponseReceived = false;
-    private boolean navServiceStartResponse = false;
-    private boolean navServiceEndResponseReceived = false;
-    private boolean navServiceEndResponse = false;
-    private boolean pcmServiceEndResponseReceived = false;
-    private boolean pcmServiceEndResponse = false;
-    private Context context;
+    private ISdlServiceListener videoServiceListener;
+    private boolean videoServiceStartResponseReceived = false;  //FIXME these statuses should be improved
+    private boolean videoServiceStartResponse = false;
+    private boolean videoServiceEndResponseReceived = false;
+    private boolean videoServiceEndResponse = false;
+    private boolean audioServiceEndResponseReceived = false;
+    private boolean audioServiceEndResponse = false;
+    private WeakReference<Context> contextWeakReference;
 
     public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
         super(appConfig, config, listener);
@@ -131,14 +132,19 @@ public class LifecycleManager extends BaseLifecycleManager {
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     public void setContext(Context context) {
-        this.context = context;
+        this.contextWeakReference = new WeakReference<>(context);
     }
 
     @Override
     void setSdlSecurityStaticVars() {
         super.setSdlSecurityStaticVars();
 
+        Context context = null;
         Service service = null;
+
+        if(this.contextWeakReference != null){
+            context = contextWeakReference.get();
+        }
         if (context != null && context instanceof Service) {
             service = (Service) context;
         }
@@ -150,8 +156,8 @@ public class LifecycleManager extends BaseLifecycleManager {
     void onProtocolSessionStarted(SessionType sessionType) {
         super.onProtocolSessionStarted(sessionType);
         if (sessionType.eq(SessionType.NAV)) {
-            navServiceStartResponseReceived = true;
-            navServiceStartResponse = true;
+            videoServiceStartResponseReceived = true;
+            videoServiceStartResponse = true;
         }
     }
 
@@ -171,8 +177,8 @@ public class LifecycleManager extends BaseLifecycleManager {
     void onProtocolSessionStartedNACKed(SessionType sessionType) {
         super.onProtocolSessionStartedNACKed(sessionType);
         if (sessionType.eq(SessionType.NAV)) {
-            navServiceStartResponseReceived = true;
-            navServiceStartResponse = false;
+            videoServiceStartResponseReceived = true;
+            videoServiceStartResponse = false;
         }
     }
 
@@ -180,11 +186,11 @@ public class LifecycleManager extends BaseLifecycleManager {
     void onProtocolSessionEnded(SessionType sessionType) {
         super.onProtocolSessionEnded(sessionType);
         if (sessionType.eq(SessionType.NAV)) {
-            navServiceEndResponseReceived = true;
-            navServiceEndResponse = true;
+            videoServiceEndResponseReceived = true;
+            videoServiceEndResponse = true;
         } else if (sessionType.eq(SessionType.PCM)) {
-            pcmServiceEndResponseReceived = true;
-            pcmServiceEndResponse = true;
+            audioServiceEndResponseReceived = true;
+            audioServiceEndResponse = true;
         }
     }
 
@@ -192,11 +198,11 @@ public class LifecycleManager extends BaseLifecycleManager {
     void onProtocolSessionEndedNACKed(SessionType sessionType) {
         super.onProtocolSessionEndedNACKed(sessionType);
         if (sessionType.eq(SessionType.NAV)) {
-            navServiceEndResponseReceived = true;
-            navServiceEndResponse = false;
+            videoServiceEndResponseReceived = true;
+            videoServiceEndResponse = false;
         } else if (sessionType.eq(SessionType.PCM)) {
-            pcmServiceEndResponseReceived = true;
-            pcmServiceEndResponse = false;
+            audioServiceEndResponseReceived = true;
+            audioServiceEndResponse = false;
         }
     }
 
@@ -247,25 +253,26 @@ public class LifecycleManager extends BaseLifecycleManager {
             return null;
         }
 
-        if (!navServiceStartResponseReceived || !navServiceStartResponse //If we haven't started the service before
-                || (navServiceStartResponse && isEncrypted && !session.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
+
+        if (!videoServiceStartResponseReceived || !videoServiceStartResponse //If we haven't started the service before
+                || (videoServiceStartResponse && isEncrypted && !session.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
             session.setDesiredVideoParams(parameters);
 
-            navServiceStartResponseReceived = false;
-            navServiceStartResponse = false;
+            videoServiceStartResponseReceived = false;
+            videoServiceStartResponse = false;
 
             session.startService(SessionType.NAV, session.getSessionId(), isEncrypted);
-            addNavListener();
-            FutureTask<Void> fTask = new FutureTask<>(new CallableMethod(RESPONSE_WAIT_TIME));
+            addVideoServiceListener();
+            FutureTask<Void> timeoutTask = new FutureTask<>(new TimeoutCallable(RESPONSE_WAIT_TIME));
             ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-            scheduler.execute(fTask);
+            scheduler.execute(timeoutTask);
 
             //noinspection StatementWithEmptyBody
-            while (!navServiceStartResponseReceived && !fTask.isDone()) ;
+            while (!videoServiceStartResponseReceived && !timeoutTask.isDone()) ;
             scheduler.shutdown();
         }
 
-        if (navServiceStartResponse) {
+        if (videoServiceStartResponse) {
             if (getProtocolVersion() != null && getProtocolVersion().getMajor() < 5) { //Versions 1-4 do not support streaming parameter negotiations
                 session.setAcceptedVideoParams(parameters);
             }
@@ -275,11 +282,11 @@ public class LifecycleManager extends BaseLifecycleManager {
         return null;
     }
 
-    private void addNavListener() {
+    private void addVideoServiceListener() {
         // videos may be started and stopped. Only add this once
-        if (navServiceListener == null) {
+        if (videoServiceListener == null) {
 
-            navServiceListener = new ISdlServiceListener() {
+            videoServiceListener = new ISdlServiceListener() {
                 @Override
                 public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
                 }
@@ -287,18 +294,18 @@ public class LifecycleManager extends BaseLifecycleManager {
                 @Override
                 public void onServiceEnded(SdlSession session, SessionType type) {
                     // reset nav flags so nav can start upon the next transport connection
-                    navServiceStartResponseReceived = false;
-                    navServiceStartResponse = false;
+                    videoServiceStartResponseReceived = false;
+                    videoServiceStartResponse = false;
                 }
 
                 @Override
                 public void onServiceError(SdlSession session, SessionType type, String reason) {
                     // if there is an error reset the flags so that there is a chance to restart streaming
-                    navServiceStartResponseReceived = false;
-                    navServiceStartResponse = false;
+                    videoServiceStartResponseReceived = false;
+                    videoServiceStartResponse = false;
                 }
             };
-            session.addServiceListener(SessionType.NAV, navServiceListener);
+            session.addServiceListener(SessionType.NAV, videoServiceListener);
         }
     }
 
@@ -318,19 +325,19 @@ public class LifecycleManager extends BaseLifecycleManager {
             return false;
         }
 
-        navServiceEndResponseReceived = false;
-        navServiceEndResponse = false;
+        videoServiceEndResponseReceived = false;
+        videoServiceEndResponse = false;
         session.stopVideoStream();
 
-        FutureTask<Void> fTask = new FutureTask<>(new CallableMethod(RESPONSE_WAIT_TIME));
+        FutureTask<Void> timeoutTask = new FutureTask<>(new TimeoutCallable(RESPONSE_WAIT_TIME));
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.execute(fTask);
+        scheduler.execute(timeoutTask);
 
         //noinspection StatementWithEmptyBody
-        while (!navServiceEndResponseReceived && !fTask.isDone()) ;
+        while (!videoServiceEndResponseReceived && !timeoutTask.isDone()) ;
         scheduler.shutdown();
 
-        return navServiceEndResponse;
+        return videoServiceEndResponse;
     }
 
     @Override
@@ -362,25 +369,28 @@ public class LifecycleManager extends BaseLifecycleManager {
             return false;
         }
 
-        pcmServiceEndResponseReceived = false;
-        pcmServiceEndResponse = false;
+        audioServiceEndResponseReceived = false;
+        audioServiceEndResponse = false;
         session.stopAudioStream();
 
-        FutureTask<Void> fTask = new FutureTask<>(new CallableMethod(RESPONSE_WAIT_TIME));
+        FutureTask<Void> timeoutTask = new FutureTask<>(new TimeoutCallable(RESPONSE_WAIT_TIME));
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.execute(fTask);
+        scheduler.execute(timeoutTask);
 
         //noinspection StatementWithEmptyBody
-        while (!pcmServiceEndResponseReceived && !fTask.isDone()) ;
+        while (!audioServiceEndResponseReceived && !timeoutTask.isDone()) ;
         scheduler.shutdown();
 
-        return pcmServiceEndResponse;
+        return audioServiceEndResponse;
     }
 
-    private class CallableMethod implements Callable<Void> {
+    /**
+     * This is a small class that's only purpose is to be a waiting type callable.
+     */
+    private class TimeoutCallable implements Callable<Void> {
         private final long waitTime;
 
-        public CallableMethod(int timeInMillis) {
+        public TimeoutCallable(int timeInMillis) {
             this.waitTime = timeInMillis;
         }
 
