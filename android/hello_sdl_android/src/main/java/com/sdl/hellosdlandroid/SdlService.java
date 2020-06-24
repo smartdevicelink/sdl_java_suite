@@ -188,7 +188,6 @@ public class SdlService extends Service {
 								performWelcomeSpeak();
 								performWelcomeShow();
 								preloadChoices();
-								subscribeToAllButtons();
 							}
 						}
 					});
@@ -356,7 +355,7 @@ public class SdlService extends Service {
 		});
 
 		// Send the entire menu off to be created
-		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5, mainCell6));
+		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5));
 	}
 
 	/**
@@ -364,35 +363,6 @@ public class SdlService extends Service {
 	 */
 	private void performWelcomeSpeak(){
 		sdlManager.sendRPC(new Speak(TTSChunkFactory.createSimpleTTSChunks(WELCOME_SPEAK)));
-	}
-
-	/**
-	 * Attempts to add a listener to all hard buttons
-	 */
-	private void subscribeToAllButtons(){
-		onButtonListener = new OnButtonListener() {
-			@Override
-			public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
-				Log.i(TAG, "onPress: " + buttonName + " " + buttonPress);
-			}
-
-			@Override
-			public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
-				Log.i(TAG, "onEvent" + buttonName + " " + buttonEvent);
-
-			}
-
-			@Override
-			public void onError(String info) {
-				Log.i(TAG, "onError: "+ info);
-			}
-		};
-
-		ButtonName[] buttonNames = ButtonName.values();
-
-		for(ButtonName buttonName : buttonNames){
-			sdlManager.getScreenManager().addButtonListener(buttonName,onButtonListener);
-		}
 	}
 
 	/**

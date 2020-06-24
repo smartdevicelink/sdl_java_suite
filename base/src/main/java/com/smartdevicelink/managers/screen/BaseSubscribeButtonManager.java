@@ -70,13 +70,12 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
         }
         if (buttonName == null) {
             listener.onError("ButtonName cannot be null");
-            Log.e(TAG, "ButtonName cannot be null");
             return;
         }
 
         if (onButtonListeners.get(buttonName) == null) {
-            onButtonListeners.put(buttonName, new CopyOnWriteArrayList<OnButtonListener>());
             subscribeButtonRequest(buttonName, listener);
+            return;
         }
 
         if (onButtonListeners.get(buttonName).contains(listener)) {
@@ -87,21 +86,29 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
     }
 
     /**
-     * Unsubscribes form button and/or listener sent by developer
+     * Unsubscribe form button and/or listener sent by developer
      * @param buttonName Is the button that the developer wants to unsubscribe from
      * @param listener - the listener that was sent by developer
      */
     void removeButtonListener(final ButtonName buttonName, final OnButtonListener listener) {
-
-        if (onButtonListeners.get(buttonName) == null) {
+        
+        if(listener == null){
+            Log.e(TAG, "OnButtonListener cannot be null: ");
             return;
         }
-        if (!onButtonListeners.get(buttonName).contains(listener)) {
+        
+        if(buttonName == null){
+            listener.onError("ButtonName cannot be null");
+            Log.e(TAG, "ButtonName cannot be null");
+        }
+
+        if (onButtonListeners.get(buttonName) == null || !onButtonListeners.get(buttonName).contains(listener)) {
+            Log.e(TAG, "Attempting to unsubscribe to the "+ buttonName + " subscribe button which is not currently subscribed: ");
             return;
         }
-        onButtonListeners.get(buttonName).remove(listener);
 
-        if (onButtonListeners.get(buttonName).size() > 0) {
+        if (onButtonListeners.get(buttonName).size() > 1) {
+            onButtonListeners.get(buttonName).remove(listener);
             return;
         }
 
@@ -137,11 +144,13 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 Log.d(TAG, "Successfully subscribed to button named " + buttonName);
+                onButtonListeners.put(buttonName, new CopyOnWriteArrayList<OnButtonListener>());
+                onButtonListeners.get(buttonName).add(listener);
             }
 
             @Override
             public void onError(int correlationId, Result resultCode, String info) {
-                Log.e(TAG, "Attempt to subscribe to subscribe button named " + buttonName + " " + info);
+                Log.e(TAG, "Attempt to subscribe to subscribe button named " + buttonName + " Failed " + info);
                 listener.onError(info);
             }
         });
