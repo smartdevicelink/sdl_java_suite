@@ -48,12 +48,16 @@ public class SubscribeButtonManagerTest extends AndroidTestCase2 {
     };
 
     @Override
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         super.setUp();
-        Context mTestContext = this.getContext();
-        // mock things
         ISdl internalInterface = mock(ISdl.class);
         subscribeButtonManager = new SubscribeButtonManager(internalInterface);
+    }
+
+    public void testDispose() {
+        subscribeButtonManager.addButtonListener(ButtonName.VOLUME_UP, listener);
+        subscribeButtonManager.dispose();
+        assertTrue(subscribeButtonManager.onButtonListeners == null);
     }
 
     public void testAddButtonListener() {
@@ -68,8 +72,14 @@ public class SubscribeButtonManagerTest extends AndroidTestCase2 {
 
     }
 
-    public void testRemoveButtonListener(){
+    public void testRemoveButtonListener() {
+        subscribeButtonManager.removeButtonListener(ButtonName.VOLUME_DOWN, listener);
+        assertFalse(subscribeButtonManager.onButtonListeners.containsKey(ButtonName.VOLUME_DOWN));
+
         subscribeButtonManager.addButtonListener(ButtonName.VOLUME_UP, listener);
+        assertTrue(subscribeButtonManager.onButtonListeners.get(ButtonName.VOLUME_UP).size() == 1);
+
+        subscribeButtonManager.removeButtonListener(ButtonName.VOLUME_UP, listener2);
         assertTrue(subscribeButtonManager.onButtonListeners.get(ButtonName.VOLUME_UP).size() == 1);
 
         subscribeButtonManager.addButtonListener(ButtonName.VOLUME_UP, listener);
@@ -85,8 +95,5 @@ public class SubscribeButtonManagerTest extends AndroidTestCase2 {
         subscribeButtonManager.removeButtonListener(ButtonName.VOLUME_UP, listener2);
         assertTrue(subscribeButtonManager.onButtonListeners.get(ButtonName.VOLUME_UP).size() == 0);
 
-
     }
-
-
 }

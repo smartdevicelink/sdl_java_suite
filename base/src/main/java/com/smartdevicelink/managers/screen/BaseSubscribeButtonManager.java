@@ -48,7 +48,7 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
     }
 
     @Override
-    public void dispose(){
+    public void dispose() {
         super.dispose();
         onButtonListeners = null;
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, onButtonPressListener);
