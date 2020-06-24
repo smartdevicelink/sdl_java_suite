@@ -34,6 +34,7 @@ package com.smartdevicelink.java;
 
 import android.util.Log;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.OnButtonListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -83,6 +84,9 @@ public class SdlService {
     private List<ChoiceCell> choiceCellList;
 
     private SdlServiceCallback callback;
+
+    private ButtonName[] buttonNames = {ButtonName.PRESET_0, ButtonName.PRESET_1, ButtonName.PRESET_2, ButtonName.PRESET_3, ButtonName.PRESET_4, ButtonName.PRESET_5, ButtonName.PRESET_6, ButtonName.PRESET_7};
+    private OnButtonListener onButtonListener;
 
 
     public SdlService(BaseTransportConfig config, SdlServiceCallback callback){
@@ -295,8 +299,15 @@ public class SdlService {
             }
         });
 
+        MenuCell mainCell6 = new MenuCell("Unsubscribe to preset buttons",null, null, new MenuSelectionListener() {
+            @Override
+            public void onTriggered(TriggerSource trigger) {
+                unsubscribeToPresetButtons();
+            }
+        });
+
         // Send the entire menu off to be created
-        sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5));
+        sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5, mainCell6));
     }
 
     /**
@@ -324,6 +335,41 @@ public class SdlService {
                 }
             }
         });
+    }
+
+    /**
+     * Attempts to Subscribe to all preset buttons
+     */
+    private void subscribeToPresetButtons() {
+        onButtonListener = new OnButtonListener() {
+            @Override
+            public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
+                Log.i(TAG, "onPress: " + buttonName);
+            }
+
+            @Override
+            public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
+                Log.i(TAG, "onEvent: " + buttonName + " " + buttonEvent);
+            }
+
+            @Override
+            public void onError(String info) {
+                Log.i(TAG, "onError: " + info);
+            }
+        };
+
+        for (ButtonName buttonName : buttonNames) {
+            sdlManager.getScreenManager().addButtonListener(buttonName, onButtonListener);
+        }
+    }
+
+    /**
+     * Attempts to Unsubscribe to all preset Buttons
+     */
+    private void unsubscribeToPresetButtons() {
+        for (ButtonName buttonName : buttonNames) {
+            sdlManager.getScreenManager().removeButtonListener(buttonName, onButtonListener);
+        }
     }
 
     /**

@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.OnButtonListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -27,9 +28,12 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
 import com.smartdevicelink.proxy.TTSChunkFactory;
 import com.smartdevicelink.proxy.rpc.Alert;
+import com.smartdevicelink.proxy.rpc.OnButtonEvent;
+import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.OnHMIStatus;
 import com.smartdevicelink.proxy.rpc.Speak;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
+import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.FileType;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.InteractionMode;
@@ -77,6 +81,9 @@ public class SdlService extends Service {
 	// variable to create and call functions of the SyncProxy
 	private SdlManager sdlManager = null;
 	private List<ChoiceCell> choiceCellList;
+
+	private ButtonName[] buttonNames = {ButtonName.PRESET_0, ButtonName.PRESET_1, ButtonName.PRESET_2, ButtonName.PRESET_3, ButtonName.PRESET_4, ButtonName.PRESET_5, ButtonName.PRESET_6, ButtonName.PRESET_7};
+	private OnButtonListener onButtonListener;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -183,6 +190,7 @@ public class SdlService extends Service {
 								performWelcomeSpeak();
 								performWelcomeShow();
 								preloadChoices();
+								subscribeToPresetButtons();
 							}
 						}
 					});
@@ -339,8 +347,15 @@ public class SdlService extends Service {
 			}
 		});
 
+		MenuCell mainCell6 = new MenuCell("Unsubscribe to preset buttons",null, null, new MenuSelectionListener() {
+			@Override
+			public void onTriggered(TriggerSource trigger) {
+				unsubscribeToPresetButtons();
+			}
+		});
+
 		// Send the entire menu off to be created
-		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5));
+		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5, mainCell6));
 	}
 
 	/**
@@ -368,6 +383,41 @@ public class SdlService extends Service {
 				}
 			}
 		});
+	}
+
+	/**
+	 * Attempts to Subscribe to all preset buttons
+	 */
+	private void subscribeToPresetButtons() {
+		onButtonListener = new OnButtonListener() {
+			@Override
+			public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
+				Log.i(TAG, "onPress: " + buttonName);
+			}
+
+			@Override
+			public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
+				Log.i(TAG, "onEvent: " + buttonName + " " + buttonEvent);
+			}
+
+			@Override
+			public void onError(String info) {
+				Log.i(TAG, "onError: " + info);
+			}
+		};
+
+		for (ButtonName buttonName : buttonNames) {
+			sdlManager.getScreenManager().addButtonListener(buttonName, onButtonListener);
+		}
+	}
+
+	/**
+	 * Attempts to Unsubscribe to all preset Buttons
+	 */
+	private void unsubscribeToPresetButtons() {
+		for (ButtonName buttonName : buttonNames) {
+			sdlManager.getScreenManager().removeButtonListener(buttonName, onButtonListener);
+		}
 	}
 
 	/**
