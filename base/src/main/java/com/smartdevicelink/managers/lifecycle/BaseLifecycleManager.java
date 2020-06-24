@@ -1152,166 +1152,6 @@ abstract class BaseLifecycleManager {
      ********************************************* ISdl - END ************************************************
      *********************************************************************************************************/
 
-    public interface LifecycleListener {
-        void onConnected(LifecycleManager lifeCycleManager);
-
-        void onClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason);
-
-        void onServiceStarted(SessionType sessionType);
-
-        void onServiceEnded(SessionType sessionType);
-
-        void onError(LifecycleManager lifeCycleManager, String info, Exception e);
-    }
-
-    public static class AppConfig {
-        private String appID, appName, ngnMediaScreenAppName;
-        private Vector<TTSChunk> ttsName;
-        private Vector<String> vrSynonyms;
-        private boolean isMediaApp = false;
-        private Language languageDesired, hmiDisplayLanguageDesired;
-        private Vector<AppHMIType> appType;
-        private TemplateColorScheme dayColorScheme, nightColorScheme;
-        private Version minimumProtocolVersion;
-        private Version minimumRPCVersion;
-
-        private void prepare() {
-            if (getNgnMediaScreenAppName() == null) {
-                setNgnMediaScreenAppName(getAppName());
-            }
-
-            if (getLanguageDesired() == null) {
-                setLanguageDesired(Language.EN_US);
-            }
-
-            if (getHmiDisplayLanguageDesired() == null) {
-                setHmiDisplayLanguageDesired(Language.EN_US);
-            }
-
-            if (getVrSynonyms() == null) {
-                setVrSynonyms(new Vector<String>());
-                getVrSynonyms().add(getAppName());
-            }
-        }
-
-        public String getAppID() {
-            return appID;
-        }
-
-        public void setAppID(String appID) {
-            this.appID = appID;
-        }
-
-        public String getAppName() {
-            return appName;
-        }
-
-        public void setAppName(String appName) {
-            this.appName = appName;
-        }
-
-        public String getNgnMediaScreenAppName() {
-            return ngnMediaScreenAppName;
-        }
-
-        public void setNgnMediaScreenAppName(String ngnMediaScreenAppName) {
-            this.ngnMediaScreenAppName = ngnMediaScreenAppName;
-        }
-
-        public Vector<TTSChunk> getTtsName() {
-            return ttsName;
-        }
-
-        public void setTtsName(Vector<TTSChunk> ttsName) {
-            this.ttsName = ttsName;
-        }
-
-        public Vector<String> getVrSynonyms() {
-            return vrSynonyms;
-        }
-
-        public void setVrSynonyms(Vector<String> vrSynonyms) {
-            this.vrSynonyms = vrSynonyms;
-        }
-
-        public boolean isMediaApp() {
-            return isMediaApp;
-        }
-
-        public void setMediaApp(boolean mediaApp) {
-            isMediaApp = mediaApp;
-        }
-
-        public Language getLanguageDesired() {
-            return languageDesired;
-        }
-
-        public void setLanguageDesired(Language languageDesired) {
-            this.languageDesired = languageDesired;
-        }
-
-        public Language getHmiDisplayLanguageDesired() {
-            return hmiDisplayLanguageDesired;
-        }
-
-        public void setHmiDisplayLanguageDesired(Language hmiDisplayLanguageDesired) {
-            this.hmiDisplayLanguageDesired = hmiDisplayLanguageDesired;
-        }
-
-        public Vector<AppHMIType> getAppType() {
-            return appType;
-        }
-
-        public void setAppType(Vector<AppHMIType> appType) {
-            this.appType = appType;
-        }
-
-        public TemplateColorScheme getDayColorScheme() {
-            return dayColorScheme;
-        }
-
-        public void setDayColorScheme(TemplateColorScheme dayColorScheme) {
-            this.dayColorScheme = dayColorScheme;
-        }
-
-        public TemplateColorScheme getNightColorScheme() {
-            return nightColorScheme;
-        }
-
-        public void setNightColorScheme(TemplateColorScheme nightColorScheme) {
-            this.nightColorScheme = nightColorScheme;
-        }
-
-        public Version getMinimumProtocolVersion() {
-            return minimumProtocolVersion;
-        }
-
-        /**
-         * Sets the minimum protocol version that will be permitted to connect.
-         * If the protocol version of the head unit connected is below this version,
-         * the app will disconnect with an EndService protocol message and will not register.
-         *
-         * @param minimumProtocolVersion a Version object with the minimally accepted Protocol version
-         */
-        public void setMinimumProtocolVersion(Version minimumProtocolVersion) {
-            this.minimumProtocolVersion = minimumProtocolVersion;
-        }
-
-        public Version getMinimumRPCVersion() {
-            return minimumRPCVersion;
-        }
-
-        /**
-         * The minimum RPC version that will be permitted to connect.
-         * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
-         *
-         * @param minimumRPCVersion a Version object with the minimally accepted RPC spec version
-         */
-        public void setMinimumRPCVersion(Version minimumRPCVersion) {
-            this.minimumRPCVersion = minimumRPCVersion;
-        }
-    }
-
     /**
      * Temporary method to bridge the new PLAY_PAUSE and OKAY button functionality with the old
      * OK button name. This should be removed during the next major release
@@ -1529,5 +1369,173 @@ abstract class BaseLifecycleManager {
 
     /* *******************************************************************************************************
      ********************************** Platform specific methods - End *************************************
+     *********************************************************************************************************/
+
+    /* *******************************************************************************************************
+     ****************************** Inner Classes and Interfaces - Start *************************************
+     *********************************************************************************************************/
+
+    public interface LifecycleListener {
+        void onConnected(LifecycleManager lifeCycleManager);
+
+        void onClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason);
+
+        void onServiceStarted(SessionType sessionType);
+
+        void onServiceEnded(SessionType sessionType);
+
+        void onError(LifecycleManager lifeCycleManager, String info, Exception e);
+    }
+
+    public static class AppConfig {
+        private String appID, appName, ngnMediaScreenAppName;
+        private Vector<TTSChunk> ttsName;
+        private Vector<String> vrSynonyms;
+        private boolean isMediaApp = false;
+        private Language languageDesired, hmiDisplayLanguageDesired;
+        private Vector<AppHMIType> appType;
+        private TemplateColorScheme dayColorScheme, nightColorScheme;
+        private Version minimumProtocolVersion;
+        private Version minimumRPCVersion;
+
+        private void prepare() {
+            if (getNgnMediaScreenAppName() == null) {
+                setNgnMediaScreenAppName(getAppName());
+            }
+
+            if (getLanguageDesired() == null) {
+                setLanguageDesired(Language.EN_US);
+            }
+
+            if (getHmiDisplayLanguageDesired() == null) {
+                setHmiDisplayLanguageDesired(Language.EN_US);
+            }
+
+            if (getVrSynonyms() == null) {
+                setVrSynonyms(new Vector<String>());
+                getVrSynonyms().add(getAppName());
+            }
+        }
+
+        public String getAppID() {
+            return appID;
+        }
+
+        public void setAppID(String appID) {
+            this.appID = appID;
+        }
+
+        public String getAppName() {
+            return appName;
+        }
+
+        public void setAppName(String appName) {
+            this.appName = appName;
+        }
+
+        public String getNgnMediaScreenAppName() {
+            return ngnMediaScreenAppName;
+        }
+
+        public void setNgnMediaScreenAppName(String ngnMediaScreenAppName) {
+            this.ngnMediaScreenAppName = ngnMediaScreenAppName;
+        }
+
+        public Vector<TTSChunk> getTtsName() {
+            return ttsName;
+        }
+
+        public void setTtsName(Vector<TTSChunk> ttsName) {
+            this.ttsName = ttsName;
+        }
+
+        public Vector<String> getVrSynonyms() {
+            return vrSynonyms;
+        }
+
+        public void setVrSynonyms(Vector<String> vrSynonyms) {
+            this.vrSynonyms = vrSynonyms;
+        }
+
+        public boolean isMediaApp() {
+            return isMediaApp;
+        }
+
+        public void setMediaApp(boolean mediaApp) {
+            isMediaApp = mediaApp;
+        }
+
+        public Language getLanguageDesired() {
+            return languageDesired;
+        }
+
+        public void setLanguageDesired(Language languageDesired) {
+            this.languageDesired = languageDesired;
+        }
+
+        public Language getHmiDisplayLanguageDesired() {
+            return hmiDisplayLanguageDesired;
+        }
+
+        public void setHmiDisplayLanguageDesired(Language hmiDisplayLanguageDesired) {
+            this.hmiDisplayLanguageDesired = hmiDisplayLanguageDesired;
+        }
+
+        public Vector<AppHMIType> getAppType() {
+            return appType;
+        }
+
+        public void setAppType(Vector<AppHMIType> appType) {
+            this.appType = appType;
+        }
+
+        public TemplateColorScheme getDayColorScheme() {
+            return dayColorScheme;
+        }
+
+        public void setDayColorScheme(TemplateColorScheme dayColorScheme) {
+            this.dayColorScheme = dayColorScheme;
+        }
+
+        public TemplateColorScheme getNightColorScheme() {
+            return nightColorScheme;
+        }
+
+        public void setNightColorScheme(TemplateColorScheme nightColorScheme) {
+            this.nightColorScheme = nightColorScheme;
+        }
+
+        public Version getMinimumProtocolVersion() {
+            return minimumProtocolVersion;
+        }
+
+        /**
+         * Sets the minimum protocol version that will be permitted to connect.
+         * If the protocol version of the head unit connected is below this version,
+         * the app will disconnect with an EndService protocol message and will not register.
+         *
+         * @param minimumProtocolVersion a Version object with the minimally accepted Protocol version
+         */
+        public void setMinimumProtocolVersion(Version minimumProtocolVersion) {
+            this.minimumProtocolVersion = minimumProtocolVersion;
+        }
+
+        public Version getMinimumRPCVersion() {
+            return minimumRPCVersion;
+        }
+
+        /**
+         * The minimum RPC version that will be permitted to connect.
+         * If the RPC version of the head unit connected is below this version, an UnregisterAppInterface will be sent.
+         *
+         * @param minimumRPCVersion a Version object with the minimally accepted RPC spec version
+         */
+        public void setMinimumRPCVersion(Version minimumRPCVersion) {
+            this.minimumRPCVersion = minimumRPCVersion;
+        }
+    }
+
+    /* *******************************************************************************************************
+     ****************************** Inner Classes and Interfaces - End ***************************************
      *********************************************************************************************************/
 }
