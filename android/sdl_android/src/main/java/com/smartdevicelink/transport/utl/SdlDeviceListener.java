@@ -84,6 +84,14 @@ public class SdlDeviceListener {
      * will listen for 30 seconds, if it is not, this will listen for 15 seconds instead.
      */
     public void start() {
+        if(connectedDevice == null) {
+            DebugTool.logInfo(TAG + ": No supplied bluetooth device");
+            if(callback != null){
+                callback.onTransportError(null);
+            }
+            return;
+        }
+
         if (hasSDLConnected(contextWeakReference.get(), connectedDevice.getAddress())) {
             DebugTool.logInfo(TAG + ": Confirmed SDL device, should start router service");
             //This device has connected to SDL previously, it is ok to start the RS right now
