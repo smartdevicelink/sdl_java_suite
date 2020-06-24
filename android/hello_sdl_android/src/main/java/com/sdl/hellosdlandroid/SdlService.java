@@ -342,16 +342,6 @@ public class SdlService extends Service {
 			}
 		});
 
-		MenuCell mainCell6 = new MenuCell("Remove all button listeners", null, null, new MenuSelectionListener() {
-			@Override
-			public void onTriggered(TriggerSource trigger) {
-				ButtonName[] buttonNames = ButtonName.values();
-				for(ButtonName buttonName : buttonNames){
-					sdlManager.getScreenManager().removeButtonListener(buttonName,onButtonListener);
-				}
-			}
-		});
-
 		// Send the entire menu off to be created
 		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5));
 	}
