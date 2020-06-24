@@ -174,7 +174,7 @@ public class SdlDeviceListener {
     /**
      * Set the connection establishment status of the particular device
      *
-     * @param address         address of the device in quesiton
+     * @param address         address of the device in question
      * @param hasSDLConnected true if a connection has been established, false if not
      */
     public static void setSDLConnectedStatus(Context context, String address, boolean hasSDLConnected) {
@@ -196,7 +196,7 @@ public class SdlDeviceListener {
     /**
      * Checks to see if a device address has connected to SDL before.
      *
-     * @param address the mac address of the device in quesiton
+     * @param address the mac address of the device in question
      * @return if this is the first status check of this device
      */
     private boolean isFirstStatusCheck(String address) {
@@ -213,7 +213,7 @@ public class SdlDeviceListener {
     /**
      * Checks to see if a device address has connected to SDL before.
      *
-     * @param address the mac address of the device in quesiton
+     * @param address the mac address of the device in question
      * @return if an SDL connection has ever been established with this device
      */
     public static boolean hasSDLConnected(Context context, String address) {
