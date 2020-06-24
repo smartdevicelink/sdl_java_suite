@@ -24,9 +24,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * <strong>SubscribeButtonManager</strong> <br>
- *
+ * <p>
  * Note: This class must be accessed through the SdlManager. Do not instantiate it by itself. <br>
- *
  */
 abstract class BaseSubscribeButtonManager extends BaseSubManager {
 
@@ -87,23 +86,24 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
 
     /**
      * Unsubscribe form button and/or listener sent by developer
+     *
      * @param buttonName Is the button that the developer wants to unsubscribe from
-     * @param listener - the listener that was sent by developer
+     * @param listener   - the listener that was sent by developer
      */
     void removeButtonListener(final ButtonName buttonName, final OnButtonListener listener) {
-        
-        if(listener == null){
+
+        if (listener == null) {
             Log.e(TAG, "OnButtonListener cannot be null: ");
             return;
         }
-        
-        if(buttonName == null){
+
+        if (buttonName == null) {
             listener.onError("ButtonName cannot be null");
             Log.e(TAG, "ButtonName cannot be null");
         }
 
         if (onButtonListeners.get(buttonName) == null || !onButtonListeners.get(buttonName).contains(listener)) {
-            Log.e(TAG, "Attempting to unsubscribe to the "+ buttonName + " subscribe button which is not currently subscribed: ");
+            Log.e(TAG, "Attempting to unsubscribe to the " + buttonName + " subscribe button which is not currently subscribed: ");
             return;
         }
 
@@ -133,8 +133,9 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
 
     /**
      * Send the SubscribeButton RPC
+     *
      * @param buttonName - ButtonName - name of button
-     * @param listener - OnButtonListener - listener to get notified
+     * @param listener   - OnButtonListener - listener to get notified
      */
     private void subscribeButtonRequest(final ButtonName buttonName, final OnButtonListener listener) {
         SubscribeButton subscribeButtonRequest = new SubscribeButton();
@@ -183,7 +184,6 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
             public void onNotified(RPCNotification notification) {
                 OnButtonEvent onButtonEvent = (OnButtonEvent) notification;
                 CopyOnWriteArrayList<OnButtonListener> listeners = onButtonListeners.get(onButtonEvent.getButtonName());
-
                 if (listeners != null && listeners.size() > 0) {
                     for (OnButtonListener listener : listeners) {
                         listener.onEvent(onButtonEvent.getButtonName(), onButtonEvent);
