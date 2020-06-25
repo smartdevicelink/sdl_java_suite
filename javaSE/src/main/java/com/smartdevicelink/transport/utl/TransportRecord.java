@@ -42,9 +42,7 @@ public class TransportRecord extends BaseTransportRecord {
     }
 
     @Deprecated
-    public TransportRecord(Parcel p) {
-        super(p);
-    }
+    public TransportRecord(Parcel p) {}
 
     @Deprecated
     public int describeContents() {

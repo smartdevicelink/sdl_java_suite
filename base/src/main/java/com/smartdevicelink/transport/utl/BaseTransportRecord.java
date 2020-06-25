@@ -32,13 +32,14 @@
 
 package com.smartdevicelink.transport.utl;
 
-import android.os.Parcel;
 import com.smartdevicelink.transport.enums.TransportType;
 
 class BaseTransportRecord{
 
     protected TransportType type;
     protected String address;
+
+    BaseTransportRecord(){}
 
     BaseTransportRecord(TransportType transportType, String address){
         this.type = transportType;
@@ -77,18 +78,5 @@ class BaseTransportRecord{
         builder.append(" Address: ");
         builder.append(address);
         return builder.toString();
-    }
-
-    BaseTransportRecord(Parcel p) {
-        if (p.readInt() == 1) { //We should have a transport type attached
-            String transportName = p.readString();
-            if(transportName != null){
-                this.type = TransportType.valueOf(transportName);
-            }
-        }
-
-        if (p.readInt() == 1) { //We should have a transport address attached
-            address = p.readString();
-        }
     }
 }

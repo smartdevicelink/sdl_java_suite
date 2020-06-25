@@ -12,7 +12,16 @@ public class TransportRecord extends BaseTransportRecord implements Parcelable {
     }
 
     public TransportRecord(Parcel p) {
-        super(p);
+        if (p.readInt() == 1) { //We should have a transport type attached
+            String transportName = p.readString();
+            if(transportName != null){
+                this.type = TransportType.valueOf(transportName);
+            }
+        }
+
+        if (p.readInt() == 1) { //We should have a transport address attached
+            address = p.readString();
+        }
     }
 
     @Override
