@@ -142,14 +142,6 @@ public class SdlManager extends BaseSdlManager {
     }
 
     @Override
-    void onProxyClosed(SdlDisconnectedReason reason) {
-        DebugTool.logInfo("Proxy is closed.");
-        if (managerListener != null) {
-            managerListener.onDestroy(SdlManager.this);
-        }
-    }
-
-    @Override
     public void dispose() {
         if (this.permissionManager != null) {
             this.permissionManager.dispose();

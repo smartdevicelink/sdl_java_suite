@@ -326,10 +326,10 @@ abstract class BaseLifecycleManager {
         return currentHMIStatus;
     }
 
-    void onClose(String info, Exception e) {
-        DebugTool.logInfo("onClose");
-        if (lifecycleListener != null) {
-            lifecycleListener.onProxyClosed((LifecycleManager) this, info, e, null);
+    void onClose(String info, Exception e, SdlDisconnectedReason reason) {
+            DebugTool.logInfo("onClose");
+            if (lifecycleListener != null) {
+            lifecycleListener.onProxyClosed((LifecycleManager) this, info, e, reason);
         }
     }
 
@@ -379,7 +379,7 @@ abstract class BaseLifecycleManager {
                             BaseLifecycleManager.this.rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
                         }
                         if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1) {
-                            DebugTool.logInfo(String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+                            DebugTool.logWarning(String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
                             UnregisterAppInterface msg = new UnregisterAppInterface();
                             msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
                             sendRPCMessagePrivate(msg, true);
@@ -446,7 +446,7 @@ abstract class BaseLifecycleManager {
                             cleanProxy();
                         } else {
                             DebugTool.logInfo("re-registering for language change");
-                            processLanguageChange();
+                            cycleProxy(SdlDisconnectedReason.LANGUAGE_CHANGE);
                         }
                         break;
                     case UNREGISTER_APP_INTERFACE:
@@ -459,19 +459,6 @@ abstract class BaseLifecycleManager {
 
 
     };
-
-    private void processLanguageChange() {
-        if (session != null) {
-            if (session.getIsConnected()) {
-                session.close();
-            }
-            try {
-                session.startSession();
-            } catch (SdlException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     /* *******************************************************************************************************
      ********************************** INTERNAL - RPC LISTENERS !! END !! *********************************
@@ -856,7 +843,7 @@ abstract class BaseLifecycleManager {
     final ISdlConnectionListener sdlConnectionListener = new ISdlConnectionListener() {
         @Override
         public void onTransportDisconnected(String info) {
-            onClose(info, null);
+            onClose(info, null, null);
 
         }
 
@@ -868,7 +855,7 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onTransportError(String info, Exception e) {
-            onClose(info, e);
+            onClose(info, e, null);
 
         }
 
@@ -908,7 +895,7 @@ abstract class BaseLifecycleManager {
 
                     }
                 } else {
-                    DebugTool.logInfo("Shouldn't be here");
+                    DebugTool.logWarning("Shouldn't be here");
                 }
             }
 
@@ -916,7 +903,7 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onProtocolSessionStartedNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-            DebugTool.logInfo(sessionType + " onProtocolSessionStartedNACKed " + sessionID + " RejectedParams: " + rejectedParams);
+            DebugTool.logWarning(sessionType + " onProtocolSessionStartedNACKed " + sessionID + " RejectedParams: " + rejectedParams);
             BaseLifecycleManager.this.onProtocolSessionStartedNACKed(sessionType);
         }
 
@@ -1470,7 +1457,7 @@ abstract class BaseLifecycleManager {
     void onProtocolSessionStarted(SessionType sessionType) {
         if (sessionType != null) {
             if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1) {
-                DebugTool.logInfo(String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
+                DebugTool.logWarning(String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
                 session.endService(sessionType, session.getSessionId());
                 cleanProxy();
                 return;
@@ -1508,6 +1495,8 @@ abstract class BaseLifecycleManager {
             }
         }
     }
+
+    abstract void cycleProxy(SdlDisconnectedReason disconnectedReason);
 
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
     }

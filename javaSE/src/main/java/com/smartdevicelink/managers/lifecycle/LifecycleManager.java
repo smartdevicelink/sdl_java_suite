@@ -36,6 +36,8 @@ import android.support.annotation.RestrictTo;
 import com.smartdevicelink.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
+import com.smartdevicelink.exception.SdlException;
+import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.transport.BaseTransportConfig;
 
 /**
@@ -55,10 +57,22 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     @Override
+    void cycleProxy(SdlDisconnectedReason disconnectedReason) {
+        cleanProxy();
+        if (session != null) {
+            try {
+                session.startSession();
+            } catch (SdlException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
         super.onTransportDisconnected(info, availablePrimary, transportConfig);
         if (!availablePrimary) {
-            onClose(info, null);
+            onClose(info, null, null);
         }
     }
 }
