@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c) 2019-2020 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,6 @@ import java.util.concurrent.ScheduledExecutorService;
  * The lifecycle manager creates a central point for all SDL session logic to converge. It should only be used by
  * the library itself. Usage outside the library is not permitted and will not be protected for in the future.
  *
- * @author Bilal Alsharifi.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class LifecycleManager extends BaseLifecycleManager {
@@ -153,8 +152,8 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     @Override
-    void onProtocolSessionStarted(SessionType sessionType) {
-        super.onProtocolSessionStarted(sessionType);
+    void onServiceStarted(SessionType sessionType) {
+        super.onServiceStarted(sessionType);
         if (sessionType.eq(SessionType.NAV)) {
             videoServiceStartResponseReceived = true;
             videoServiceStartResponse = true;
@@ -174,8 +173,8 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     @Override
-    void onProtocolSessionStartedNACKed(SessionType sessionType) {
-        super.onProtocolSessionStartedNACKed(sessionType);
+    void onStartServiceNACKed(SessionType sessionType) {
+        super.onStartServiceNACKed(sessionType);
         if (sessionType.eq(SessionType.NAV)) {
             videoServiceStartResponseReceived = true;
             videoServiceStartResponse = false;
@@ -183,8 +182,8 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     @Override
-    void onProtocolSessionEnded(SessionType sessionType) {
-        super.onProtocolSessionEnded(sessionType);
+    void onServiceEnded(SessionType sessionType) {
+        super.onServiceEnded(sessionType);
         if (sessionType.eq(SessionType.NAV)) {
             videoServiceEndResponseReceived = true;
             videoServiceEndResponse = true;
@@ -195,8 +194,8 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     @Override
-    void onProtocolSessionEndedNACKed(SessionType sessionType) {
-        super.onProtocolSessionEndedNACKed(sessionType);
+    void onStopServiceNACKed(SessionType sessionType) {
+        super.onStopServiceNACKed(sessionType);
         if (sessionType.eq(SessionType.NAV)) {
             videoServiceEndResponseReceived = true;
             videoServiceEndResponse = false;

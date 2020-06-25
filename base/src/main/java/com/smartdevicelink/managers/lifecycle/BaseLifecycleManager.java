@@ -903,24 +903,24 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onProtocolSessionStartedNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-            Log.w(TAG, sessionType + " onProtocolSessionStartedNACKed " + sessionID + " RejectedParams: " + rejectedParams);
-            BaseLifecycleManager.this.onProtocolSessionStartedNACKed(sessionType);
+            Log.w(TAG, sessionType.getName() + " onProtocolSessionStartedNACKed " + sessionID + " RejectedParams: " + rejectedParams);
+            BaseLifecycleManager.this.onStartServiceNACKed(sessionType);
         }
 
         @Override
         public void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
             Log.i(TAG, "on protocol session started");
-            BaseLifecycleManager.this.onProtocolSessionStarted(sessionType);
+            BaseLifecycleManager.this.onServiceStarted(sessionType);
         }
 
         @Override
         public void onProtocolSessionEnded(SessionType sessionType, byte sessionID, String correlationID) {
-            BaseLifecycleManager.this.onProtocolSessionEnded(sessionType);
+            BaseLifecycleManager.this.onServiceEnded(sessionType);
         }
 
         @Override
         public void onProtocolSessionEndedNACKed(SessionType sessionType, byte sessionID, String correlationID) {
-            BaseLifecycleManager.this.onProtocolSessionEndedNACKed(sessionType);
+            BaseLifecycleManager.this.onStopServiceNACKed(sessionType);
         }
 
         @Override
@@ -1294,7 +1294,7 @@ abstract class BaseLifecycleManager {
         setupInternalRpcListeners();
     }
 
-    void onProtocolSessionStarted(SessionType sessionType) {
+    void onServiceStarted(SessionType sessionType) {
         if (sessionType != null) {
             if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1) {
                 Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
@@ -1341,13 +1341,13 @@ abstract class BaseLifecycleManager {
     void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
     }
 
-    void onProtocolSessionStartedNACKed(SessionType sessionType) {
+    void onStartServiceNACKed(SessionType sessionType) {
     }
 
-    void onProtocolSessionEnded(SessionType sessionType) {
+    void onServiceEnded(SessionType sessionType) {
     }
 
-    void onProtocolSessionEndedNACKed(SessionType sessionType) {
+    void onStopServiceNACKed(SessionType sessionType) {
     }
 
     void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {
