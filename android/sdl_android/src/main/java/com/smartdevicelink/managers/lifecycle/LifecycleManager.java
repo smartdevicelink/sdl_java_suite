@@ -260,15 +260,9 @@ public class LifecycleManager extends BaseLifecycleManager {
             videoServiceStartResponseReceived = false;
             videoServiceStartResponse = false;
 
-            session.startService(SessionType.NAV, session.getSessionId(), isEncrypted);
             addVideoServiceListener();
-            FutureTask<Void> timeoutTask = new FutureTask<>(new TimeoutCallable(RESPONSE_WAIT_TIME));
-            ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-            scheduler.execute(timeoutTask);
+            session.startService(SessionType.NAV, session.getSessionId(), isEncrypted);
 
-            //noinspection StatementWithEmptyBody
-            while (!videoServiceStartResponseReceived && !timeoutTask.isDone()) ;
-            scheduler.shutdown();
         }
 
         if (videoServiceStartResponse) {
@@ -288,6 +282,8 @@ public class LifecycleManager extends BaseLifecycleManager {
             videoServiceListener = new ISdlServiceListener() {
                 @Override
                 public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
+                    videoServiceStartResponseReceived = true;
+                    videoServiceStartResponse = true;
                 }
 
                 @Override
@@ -314,29 +310,20 @@ public class LifecycleManager extends BaseLifecycleManager {
      * @return true if the video service is closed successfully, return false otherwise
      */
     @Override
-    boolean endVideoStream() {
+    void endVideoStream() {
         if (session == null) {
             DebugTool.logWarning("SdlSession is not created yet.");
-            return false;
+            return;
         }
         if (!session.getIsConnected()) {
             DebugTool.logWarning("Connection is not available.");
-            return false;
+            return;
         }
 
         videoServiceEndResponseReceived = false;
         videoServiceEndResponse = false;
         session.stopVideoStream();
 
-        FutureTask<Void> timeoutTask = new FutureTask<>(new TimeoutCallable(RESPONSE_WAIT_TIME));
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.execute(timeoutTask);
-
-        //noinspection StatementWithEmptyBody
-        while (!videoServiceEndResponseReceived && !timeoutTask.isDone()) ;
-        scheduler.shutdown();
-
-        return videoServiceEndResponse;
     }
 
     @Override
@@ -358,49 +345,18 @@ public class LifecycleManager extends BaseLifecycleManager {
      * @return true if the audio service is closed successfully, return false otherwise
      */
     @Override
-    boolean endAudioStream() {
+    void endAudioStream() {
         if (session == null) {
             DebugTool.logWarning("SdlSession is not created yet.");
-            return false;
+            return;
         }
         if (!session.getIsConnected()) {
             DebugTool.logWarning("Connection is not available.");
-            return false;
+            return;
         }
 
         audioServiceEndResponseReceived = false;
         audioServiceEndResponse = false;
         session.stopAudioStream();
-
-        FutureTask<Void> timeoutTask = new FutureTask<>(new TimeoutCallable(RESPONSE_WAIT_TIME));
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.execute(timeoutTask);
-
-        //noinspection StatementWithEmptyBody
-        while (!audioServiceEndResponseReceived && !timeoutTask.isDone()) ;
-        scheduler.shutdown();
-
-        return audioServiceEndResponse;
-    }
-
-    /**
-     * This is a small class that's only purpose is to be a waiting type callable.
-     */
-    private class TimeoutCallable implements Callable<Void> {
-        private final long waitTime;
-
-        public TimeoutCallable(int timeInMillis) {
-            this.waitTime = timeInMillis;
-        }
-
-        @Override
-        public Void call() {
-            try {
-                Thread.sleep(waitTime);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
     }
 }

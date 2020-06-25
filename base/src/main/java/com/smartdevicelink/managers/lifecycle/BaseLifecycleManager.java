@@ -1353,15 +1353,13 @@ abstract class BaseLifecycleManager {
     void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {
     }
 
-    boolean endVideoStream() {
-        return false;
+    void endVideoStream() {
     }
 
     void startAudioService(boolean encrypted) {
     }
 
-    boolean endAudioStream() {
-        return false;
+    void endAudioStream() {
     }
 
     void setSdlSecurityStaticVars() {
