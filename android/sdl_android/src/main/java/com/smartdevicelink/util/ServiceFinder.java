@@ -40,7 +40,6 @@ import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.smartdevicelink.transport.SdlRouterService;
 

@@ -43,7 +43,6 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
 import android.view.InputDevice;
@@ -574,7 +573,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			//if (!_advancedLifecycleManagementEnabled) {
 				// If original model, notify app the proxy is closed so it will delete and reinstanciate 
-			Log.d(TAG, "notifying proxy of closed");
+			DebugTool.logInfo("notifying proxy of closed");
 			notifyProxyClosed(info, new SdlException("Transport disconnected.", SdlExceptionCause.SDL_UNAVAILABLE), SdlDisconnectedReason.TRANSPORT_DISCONNECT);
 			//}// else If ALM, nothing is required to be done here
 
@@ -587,7 +586,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 			if (altTransportAvailable){
 				SdlProxyBase.this._transportConfig = transportConfig;
-				Log.d(TAG, "notifying RPC session ended, but potential primary transport available");
+				DebugTool.logInfo("notifying RPC session ended, but potential primary transport available");
 				cycleProxy(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
 			}else{
 				notifyProxyClosed(info, new SdlException("Transport disconnected.", SdlExceptionCause.SDL_UNAVAILABLE), SdlDisconnectedReason.TRANSPORT_DISCONNECT);
@@ -643,7 +642,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 
 			if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1){
-				Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
+				DebugTool.logWarning(String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
 				try {
 					disposeInternal(SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED);
 				} catch (SdlException e) {
@@ -877,7 +876,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								   boolean callbackToUIThread, Boolean preRegister, String sHashID, Boolean bAppResumeEnab,
 								   BaseTransportConfig transportConfig) throws SdlException
 	{
-		Log.i(TAG, "SDL_LIB_VERSION: " + BuildConfig.VERSION_NAME);
+		DebugTool.logInfo("SDL_LIB_VERSION: " + BuildConfig.VERSION_NAME);
 		setProtocolVersion(new Version(PROX_PROT_VER_ONE,0,0));
 		
 		if (preRegister != null && preRegister)
@@ -1374,7 +1373,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 			if (urlConnection == null)
 			{
-	            Log.i(TAG, "urlConnection is null, check RPC input parameters");
+	            DebugTool.logInfo("urlConnection is null, check RPC input parameters");
 	            updateBroadcastIntent(sendIntent, "COMMENT2", "urlConnection is null, check RPC input parameters");
 	            return;
 			}
@@ -1401,7 +1400,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 			if (iResponseCode != HttpURLConnection.HTTP_OK)
 			{
-	            Log.i(TAG, "Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
+	            DebugTool.logInfo("Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
 	            updateBroadcastIntent(sendIntent, "COMMENT2", "Response code not HTTP_OK, aborting request. ");
 	            return;
 	        }
@@ -1428,7 +1427,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + response.toString());
 		    	
 		    	sendRPCMessagePrivate(putFile);
-		    	Log.i("sendSystemRequestToUrl", "sent to sdl");
+		    	DebugTool.logInfo("sendSystemRequestToUrl sent to sdl");
 
 	    		updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.PUT_FILE.toString());
 	    		updateBroadcastIntent(sendIntent2, "TYPE", RPCMessage.KEY_REQUEST);
@@ -1495,7 +1494,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	if (getIsConnected())
 		    	{			    	
 		    		sendRPCMessagePrivate(mySystemRequest);
-		    		Log.i("sendSystemRequestToUrl", "sent to sdl");
+		    		DebugTool.logInfo("sendSystemRequestToUrl sent to sdl");
 
 		    		updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.SYSTEM_REQUEST.toString());
 		    		updateBroadcastIntent(sendIntent2, "TYPE", RPCMessage.KEY_REQUEST);
@@ -1648,7 +1647,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void forceOnConnected(){
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 			if (sdlSession != null) {
-				Log.d(TAG, "Forcing on connected.... might actually need this"); //FIXME
+				DebugTool.logInfo("Forcing on connected.... might actually need this"); //FIXME
 				/*if(sdlSession.getSdlConnection()==null){ //There is an issue when switching from v1 to v2+ where the connection is closed. So we restart the session during this call.
 					try {
 						sdlSession.startSession();
@@ -2755,7 +2754,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 					//If the RPC version is too low we should simply dispose this proxy
 					if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1) {
-						Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+						DebugTool.logWarning(String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
 						try {
 							disposeInternal(SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED);
 						} catch (SdlException e) {
@@ -2785,7 +2784,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else if ((new RPCResponse(hash)).getCorrelationID() == POLICIES_CORRELATION_ID 
 						&& functionName.equals(FunctionID.ON_ENCODED_SYNC_P_DATA.toString())) {
 						
-					Log.i("pt", "POLICIES_CORRELATION_ID SystemRequest Notification (Legacy)");
+					DebugTool.logInfo("POLICIES_CORRELATION_ID SystemRequest Notification (Legacy)");
 					
 					final OnSystemRequest msg = new OnSystemRequest(hash);
 					
@@ -2806,7 +2805,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				else if ((new RPCResponse(hash)).getCorrelationID() == POLICIES_CORRELATION_ID 
 						&& functionName.equals(FunctionID.ENCODED_SYNC_P_DATA.toString())) {
 
-					Log.i("pt", "POLICIES_CORRELATION_ID SystemRequest Response (Legacy)");
+					DebugTool.logInfo("POLICIES_CORRELATION_ID SystemRequest Response (Legacy)");
 					final SystemRequestResponse msg = new SystemRequestResponse(hash);
 					
 					Intent sendIntent = createBroadcastIntent();
@@ -2915,7 +2914,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 					//If the RPC version is too low we should simply dispose this proxy
 					if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1) {
-						Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+						DebugTool.logWarning(String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
 						try {
 							disposeInternal(SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED);
 						} catch (SdlException e) {
@@ -4139,7 +4138,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					updateBroadcastIntent(sendIntent, "COMMENT1", "Sending to cloud: " + msg.getUrl());
 					sendBroadcastIntent(sendIntent);				
 					
-					Log.i("pt", "send to url");
+					DebugTool.logInfo("send to url");
 					
 					if ( (msg.getUrl() != null) )
 					{
@@ -4881,7 +4880,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	protected void notifyProxyClosed(final String info, final Exception e, final SdlDisconnectedReason reason) {		
 		SdlTrace.logProxyEvent("NotifyProxyClose", SDL_LIB_TRACE_KEY);
-		Log.d(TAG, "notifyProxyClosed: " + info);
+		DebugTool.logInfo("notifyProxyClosed: " + info);
 		OnProxyClosed message = new OnProxyClosed(info, e, reason);
 		queueInternalMessage(message);
 	}
@@ -5001,7 +5000,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			rpcPacketizer.start();
 			return new RPCStreamController(rpcPacketizer, request.getCorrelationID());
 		} catch (Exception e) {
-            Log.e("SyncConnection", "Unable to start streaming:" + e.toString());  
+            DebugTool.logError("SyncConnectionUnable to start streaming:", e);
             return null;
         }			
 	}
@@ -5022,7 +5021,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			rpcPacketizer.start();
 			return new RPCStreamController(rpcPacketizer, request.getCorrelationID());
 		} catch (Exception e) {
-            Log.e("SyncConnection", "Unable to start streaming:" + e.toString());  
+			DebugTool.logError("SyncConnection Unable to start streaming:", e);
             return null;
         }			
 	}
@@ -5475,7 +5474,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	@TargetApi(19)
 	public void startRemoteDisplayStream(Context context, final Class<? extends SdlRemoteDisplay> remoteDisplay, final VideoStreamingParameters parameters, final boolean encrypted){
 		if(protocolVersion!= null && protocolVersion.getMajor() >= 5 && !_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
-			Log.e(TAG, "Video streaming not supported on this module");
+			DebugTool.logError("Video streaming not supported on this module");
 			return;
 		}
 		//Create streaming manager
@@ -5496,7 +5495,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 					@Override
 					public void onError(String info) {
-						Log.e(TAG, "Error retrieving video streaming capability: " + info);
+						DebugTool.logError( "Error retrieving video streaming capability: " + info);
 
 					}
 				});
@@ -8390,7 +8389,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			//streamListener = startVideoStream(encrypted,parameters);d
 			streamListener = sdlSession.startVideoStream();
 			if(streamListener == null){
-				Log.e(TAG, "Error starting video service");
+				DebugTool.logError("Error starting video service");
 				return;
 			}
 			VideoStreamingCapability capability = (VideoStreamingCapability)_systemCapabilityManager.getCapability(SystemCapabilityType.VIDEO_STREAMING);
@@ -8407,7 +8406,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			Log.d(TAG, parameters.toString());
+			DebugTool.logInfo(parameters.toString());
 		}
 
 		public void stopStreaming(){
@@ -8496,7 +8495,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 				showPresentation.start();
 				} catch (Exception ex) {
-				Log.e(TAG, "Unable to create Virtual Display.");
+				DebugTool.logError("Unable to create Virtual Display.");
 			}
 		}
 

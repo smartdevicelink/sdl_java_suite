@@ -38,9 +38,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 
 import com.smartdevicelink.managers.audio.AudioStreamManager.SampleType;
+import com.smartdevicelink.util.DebugTool;
 
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
@@ -107,7 +107,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         public void run() {
             final AudioDecoderCompat reference = weakReference.get();
             if (reference == null) {
-                Log.w(TAG, "AudioDecoderCompat reference was null");
+                DebugTool.logWarning("AudioDecoderCompat reference was null");
                 return;
             }
             final ByteBuffer[] inputBuffersArray = reference.decoder.getInputBuffers();

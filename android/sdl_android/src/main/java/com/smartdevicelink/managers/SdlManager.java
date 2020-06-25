@@ -39,7 +39,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.smartdevicelink.managers.audio.AudioStreamManager;
 import com.smartdevicelink.managers.file.FileManager;
@@ -162,7 +161,7 @@ public class SdlManager extends BaseSdlManager {
                 onReady();
             } else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.ERROR)) {
                 String info = "ERROR starting sdl manager, all sub managers are in error state";
-                Log.e(TAG, info);
+                DebugTool.logError(info);
                 transitionToState(BaseSubManager.ERROR);
                 notifyDevListener(info);
             } else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP || (lockScreenConfig.isEnabled() && lockScreenManager != null && lockScreenManager.getState() == BaseSubManager.SETTING_UP)) {
@@ -170,7 +169,7 @@ public class SdlManager extends BaseSdlManager {
                 transitionToState(BaseSubManager.SETTING_UP);
                 // No need to notify developer here!
             } else {
-                Log.w(TAG, "LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
+                DebugTool.logWarning("LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
                 transitionToState(BaseSubManager.LIMITED);
                 handleQueuedNotifications();
                 notifyDevListener(null);
@@ -179,7 +178,7 @@ public class SdlManager extends BaseSdlManager {
         } else {
             // We should never be here, but somehow one of the sub-sub managers is null
             String info = "ERROR one of the sdl sub managers is null";
-            Log.e(TAG, info);
+            DebugTool.logError(info);
             transitionToState(BaseSubManager.ERROR);
             notifyDevListener(info);
         }
@@ -294,7 +293,7 @@ public class SdlManager extends BaseSdlManager {
      */
     public LockScreenManager getLockScreenManager() {
         if (lockScreenManager.getState() != BaseSubManager.READY && lockScreenManager.getState() != BaseSubManager.LIMITED) {
-            Log.e(TAG, "LockScreenManager should not be accessed because it is not in READY/LIMITED state");
+            DebugTool.logError("LockScreenManager should not be accessed because it is not in READY/LIMITED state");
         }
         checkSdlManagerState();
         return lockScreenManager;

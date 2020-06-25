@@ -39,12 +39,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.smartdevicelink.util.DebugTool;
 
 import java.lang.reflect.Constructor;
 import java.util.concurrent.Callable;
@@ -183,7 +184,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
                             remoteDisplay = (SdlRemoteDisplay) constructor.newInstance(context, mDisplay);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Log.e(TAG, "Unable to create Presentation Class");
+                            DebugTool.logError("Unable to create Presentation Class");
                             presentationShowError = true;
                             return;
                         }
@@ -196,7 +197,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
                             }
 
                         } catch (WindowManager.InvalidDisplayException ex) {
-                            Log.e(TAG, "Couldn't show presentation! Display was removed in the meantime.", ex);
+                            DebugTool.logError("Couldn't show presentation! Display was removed in the meantime.", ex);
                             remoteDisplay = null;
                             presentationShowError = true;
                         }

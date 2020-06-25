@@ -36,11 +36,11 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
 import com.smartdevicelink.proxy.interfaces.ISdl;
 import com.smartdevicelink.proxy.rpc.PutFile;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -142,7 +142,7 @@ public class FileManager extends BaseFileManager {
 			is = context.get().getResources().openRawResource(resource);
 			return contentsOfInputStream(is);
 		} catch (Resources.NotFoundException e) {
-			Log.w(TAG, "Can't read from resource", e);
+			DebugTool.logError("Can't read from resource", e);
 			return null;
 		} finally {
 			if (is != null) {
@@ -166,7 +166,7 @@ public class FileManager extends BaseFileManager {
 			is = context.get().getContentResolver().openInputStream(uri);
 			return contentsOfInputStream(is);
 		} catch (IOException e){
-			Log.w(TAG, "Can't read from Uri", e);
+			DebugTool.logError("Can't read from Uri", e);
 			return null;
 		} finally {
 			if (is != null) {

@@ -42,7 +42,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
@@ -118,7 +117,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
         }
         final Intent intent = getIntent();
         String action = intent.getAction();
-        Log.d(TAG, "Received intent with action: " + action);
+        DebugTool.logInfo("Received intent with action: " + action);
 
         if (UsbManager.ACTION_USB_ACCESSORY_ATTACHED.equals(action)) {
             usbAccessory = intent.getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
@@ -164,8 +163,8 @@ public class USBAccessoryAttachmentActivity extends Activity {
                         serviceIntent = new Intent();
                         serviceIntent.setComponent(optimalRouterService.getRouterServiceComponentName());
                     } else{
-                        Log.d(TAG, "No SDL Router Services found");
-                        Log.d(TAG, "WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
+                        DebugTool.logInfo("No SDL Router Services found");
+                        DebugTool.logInfo("WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
                         // At this point to ensure that USB connection is still possible it might be
                         // worth trying to use the legacy USB transport scheme
                         attemptLegacyUsbConnection(usbAccessory);
@@ -207,7 +206,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
                         }
 
                     } catch (SecurityException e) {
-                        Log.e(TAG, "Security exception, process is bad");
+                        DebugTool.logError("Security exception, process is bad");
                     }
                 } else {
                     if (usbAccessory!=null) {

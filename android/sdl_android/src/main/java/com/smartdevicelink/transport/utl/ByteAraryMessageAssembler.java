@@ -31,10 +31,9 @@
  */
 package com.smartdevicelink.transport.utl;
 
-import android.util.Log;
-
 import com.smartdevicelink.transport.TransportConstants;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -92,8 +91,8 @@ public class ByteAraryMessageAssembler {
 				append(packet);
 				this.isFinished = true;
 				break;
-			default: 
-				Log.e(TAG, "Error handling message");
+			default:
+				DebugTool.logError("Error handling message");
 				return false;
 			}
 			

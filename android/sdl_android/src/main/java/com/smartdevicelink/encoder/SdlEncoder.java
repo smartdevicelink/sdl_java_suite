@@ -36,10 +36,10 @@ import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Build;
-import android.util.Log;
 import android.view.Surface;
 
 import com.smartdevicelink.proxy.interfaces.IVideoStreamListener;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;
 import java.io.PipedOutputStream;
@@ -198,7 +198,7 @@ public class SdlEncoder {
 					MediaFormat format = mEncoder.getOutputFormat();
 					mH264CodecSpecificData = EncoderUtils.getCodecSpecificData(format);
 				} else {
-					Log.w(TAG, "Output format change notified more than once, ignoring.");
+					DebugTool.logWarning("Output format change notified more than once, ignoring.");
 				}
 			} else if (encoderStatus < 0) {
 			} else {
@@ -208,7 +208,7 @@ public class SdlEncoder {
 					if (mH264CodecSpecificData != null) {
 						mBufferInfo.size = 0;
 					} else {
-						Log.i(TAG, "H264 codec specific data not retrieved yet.");
+						DebugTool.logInfo("H264 codec specific data not retrieved yet.");
 					}
 				}
 

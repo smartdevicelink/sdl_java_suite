@@ -3,17 +3,17 @@ package com.sdl.hellosdlandroid;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 import com.smartdevicelink.transport.SdlBroadcastReceiver;
 import com.smartdevicelink.transport.SdlRouterService;
+import com.smartdevicelink.util.DebugTool;
 
 public class SdlReceiver  extends SdlBroadcastReceiver {
 	private static final String TAG = "SdlBroadcastReciever";
 
 	@Override
 	public void onSdlEnabled(Context context, Intent intent) {
-		Log.d(TAG, "SDL Enabled");
+		DebugTool.logInfo("SDL Enabled");
 		intent.setClass(context, SdlService.class);
 
 		// SdlService needs to be foregrounded in Android O and above
