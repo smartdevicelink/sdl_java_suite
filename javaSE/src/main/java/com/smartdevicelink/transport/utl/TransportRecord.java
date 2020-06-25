@@ -36,18 +36,14 @@ import android.os.Parcelable;
 import com.smartdevicelink.transport.enums.TransportType;
 
 public class TransportRecord extends BaseTransportRecord {
-    private TransportType type;
-    private String address;
 
     public TransportRecord(TransportType transportType, String address) {
         super(transportType, address);
-        this.type = transportType;
-        this.address = address;
     }
 
     @Deprecated
     public TransportRecord(Parcel p) {
-        super(null, "");
+        super(p);
     }
 
     @Deprecated
@@ -56,7 +52,17 @@ public class TransportRecord extends BaseTransportRecord {
     };
 
     @Deprecated
-    public void writeToParcel(Parcel dest, int flags) {}
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(type!=null? 1 : 0);
+        if(type != null){
+            dest.writeString(type.name());
+        }
+
+        dest.writeInt(address !=null? 1 : 0);
+        if(address != null){
+            dest.writeString(address);
+        }
+    }
 
     @Deprecated
     public static final Parcelable.Creator<TransportRecord> CREATOR = new Parcelable.Creator<TransportRecord>() {

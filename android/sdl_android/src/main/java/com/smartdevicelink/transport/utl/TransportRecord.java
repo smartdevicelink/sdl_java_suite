@@ -7,13 +7,12 @@ import com.smartdevicelink.transport.enums.TransportType;
 
 public class TransportRecord extends BaseTransportRecord implements Parcelable {
 
-    private TransportType type;
-    private String address;
-
     public TransportRecord(TransportType transportType, String address) {
         super(transportType, address);
-        this.type = transportType;
-        this.address = address;
+    }
+
+    public TransportRecord(Parcel p) {
+        super(p);
     }
 
     @Override
@@ -36,19 +35,7 @@ public class TransportRecord extends BaseTransportRecord implements Parcelable {
 
     public static final Parcelable.Creator<TransportRecord> CREATOR = new Parcelable.Creator<TransportRecord>() {
         public TransportRecord createFromParcel(Parcel in) {
-            TransportType type = null;
-            String address = "";
-            if (in.readInt() == 1) { //We should have a transport type attached
-                String transportName = in.readString();
-                if(transportName != null){
-                    type = TransportType.valueOf(transportName);
-                }
-            }
-
-            if (in.readInt() == 1) { //We should have a transport address attached
-                address = in.readString();
-            }
-            return new TransportRecord(type, address);
+            return new TransportRecord(in);
         }
 
         @Override

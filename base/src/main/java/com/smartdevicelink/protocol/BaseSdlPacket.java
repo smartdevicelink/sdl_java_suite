@@ -31,13 +31,9 @@
  */
 package com.smartdevicelink.protocol;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.livio.BSON.BsonEncoder;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.transport.utl.TransportRecord;
-import com.smartdevicelink.util.DebugTool;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;

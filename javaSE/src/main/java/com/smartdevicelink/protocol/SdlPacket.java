@@ -35,7 +35,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class SdlPacket extends BaseSdlPacket {
-    private static final int EXTRA_PARCEL_DATA_LENGTH 			= 24;
 
     public SdlPacket(int version, boolean encryption, int frameType,
                      int serviceType, int frameInfo, int sessionId,
