@@ -88,7 +88,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
     /**
      * Creates a new instance of the SoftButtonManager
      * @param internalInterface an instance of the ISdl interface that can be used for common SDL operations (sendRpc, addRpcListener, etc)
-     * @param fileManager       an instance of the FileManager so that button graphics can be sent
+     * @param fileManager an instance of the FileManager so that button graphics can be sent
      */
     BaseSoftButtonManager(@NonNull final ISdl internalInterface, @NonNull final FileManager fileManager) {
         super(internalInterface);
