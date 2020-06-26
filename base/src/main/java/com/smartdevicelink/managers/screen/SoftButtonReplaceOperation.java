@@ -61,7 +61,7 @@ class SoftButtonReplaceOperation extends Task {
                 @Override
                 public void onComplete(boolean success) {
                     if (!success) {
-                        DebugTool.logError("Head unit does not support images and some of the soft buttons do not have text, so none of the buttons will be sent.");
+                        DebugTool.logError(null, "Head unit does not support images and some of the soft buttons do not have text, so none of the buttons will be sent.");
                     }
                     onFinished();
                 }
@@ -136,7 +136,7 @@ class SoftButtonReplaceOperation extends Task {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null) {
-                        DebugTool.logError("Error uploading soft button artworks: " + errors.keySet());
+                        DebugTool.logError(null, "Error uploading soft button artworks: " + errors.keySet());
                     } else {
                         DebugTool.logInfo(null, "Soft button initial state artworks uploaded");
                     }
@@ -184,7 +184,7 @@ class SoftButtonReplaceOperation extends Task {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null) {
-                        DebugTool.logError("Error uploading soft button artworks: " + errors.keySet());
+                        DebugTool.logError(null, "Error uploading soft button artworks: " + errors.keySet());
                     } else {
                         DebugTool.logInfo(null, "Soft button other state artworks uploaded");
                     }

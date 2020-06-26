@@ -445,7 +445,7 @@ abstract class BaseLifecycleManager {
                                             sendRPCMessagePrivate(systemRequest, true);
                                         }
                                     } else {
-                                        DebugTool.logError("File was null at: " + urlHttps);
+                                        DebugTool.logError(TAG, "File was null at: " + urlHttps);
                                     }
                                 }
                             };
@@ -610,7 +610,7 @@ abstract class BaseLifecycleManager {
     @SuppressWarnings("UnusedReturnValue")
     private boolean onRPCNotificationReceived(RPCNotification notification) {
         if (notification == null) {
-            DebugTool.logError("onRPCNotificationReceived - Notification was null");
+            DebugTool.logError(TAG, "onRPCNotificationReceived - Notification was null");
             return false;
         }
         DebugTool.logInfo(TAG, "onRPCNotificationReceived - " + notification.getFunctionName());
@@ -670,7 +670,7 @@ abstract class BaseLifecycleManager {
     @SuppressWarnings("UnusedReturnValue")
     private boolean onRPCRequestReceived(RPCRequest request) {
         if (request == null) {
-            DebugTool.logError("onRPCRequestReceived - request was null");
+            DebugTool.logError(TAG, "onRPCRequestReceived - request was null");
             return false;
         }
         DebugTool.logInfo(TAG, "onRPCRequestReceived - " + request.getFunctionName());
@@ -811,7 +811,7 @@ abstract class BaseLifecycleManager {
                 pm.setRPCType((byte) 0x00);
                 Integer corrId = ((RPCRequest) message).getCorrelationID();
                 if (corrId == null) {
-                    DebugTool.logError("No correlation ID attached to request. Not sending");
+                    DebugTool.logError(TAG, "No correlation ID attached to request. Not sending");
                     return;
                 } else {
                     pm.setCorrID(corrId);
@@ -827,7 +827,7 @@ abstract class BaseLifecycleManager {
                 if (response.getCorrelationID() == null) {
                     //Log error here
                     //throw new SdlException("CorrelationID cannot be null. RPC: " + response.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
-                    DebugTool.logError("No correlation ID attached to response. Not sending");
+                    DebugTool.logError(TAG, "No correlation ID attached to response. Not sending");
                     return;
                 } else {
                     pm.setCorrID(response.getCorrelationID());
@@ -940,7 +940,7 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onProtocolError(String info, Exception e) {
-            DebugTool.logError("Protocol Error - " + info, e);
+            DebugTool.logError(TAG, "Protocol Error - " + info, e);
         }
 
         @Override
@@ -1510,7 +1510,7 @@ abstract class BaseLifecycleManager {
 
                     sendRPCMessagePrivate(rai, true);
                 } else {
-                    DebugTool.logError("App config was null, soo...");
+                    DebugTool.logError(TAG, "App config was null, soo...");
                 }
             }
         }

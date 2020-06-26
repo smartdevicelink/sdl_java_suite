@@ -213,7 +213,7 @@ class PoliciesFetcher {
                         //DebugTool.logInfo(TAG, "sendSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
                     }
                 } else {
-                    DebugTool.logError("sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
+                    DebugTool.logError(TAG, "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
                     //DebugTool.logInfo(TAG, "sendSystemRequestToUrl", "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
                     return null;
                 }
@@ -245,17 +245,17 @@ class PoliciesFetcher {
 
             }
         } catch (JSONException e) {
-            DebugTool.logError("sendSystemRequestToUrl: JSONException: ", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: JSONException: ", e);
         } catch (UnsupportedEncodingException e) {
-            DebugTool.logError("sendSystemRequestToUrl: Could not encode string.", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: Could not encode string.", e);
         } catch (ProtocolException e) {
-            DebugTool.logError("sendSystemRequestToUrl: Could not set request method to post.", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: Could not set request method to post.", e);
         } catch (MalformedURLException e) {
-            DebugTool.logError("sendSystemRequestToUrl: URL Exception when sending SystemRequest to an external server.", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: URL Exception when sending SystemRequest to an external server.", e);
         } catch (IOException e) {
-            DebugTool.logError("sendSystemRequestToUrl: IOException: ", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: IOException: ", e);
         } catch (Exception e) {
-            DebugTool.logError("sendSystemRequestToUrl: Unexpected Exception: ", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: Unexpected Exception: ", e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();

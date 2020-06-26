@@ -68,7 +68,7 @@ public class JsonRPCMarshaller {
 			
 			SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Transmit, jsonBytes, SDL_LIB_PRIVATE_KEY);
 		} catch (JSONException e) {
-			DebugTool.logError("Failed to encode messages to JSON.", e);
+			DebugTool.logError(null, "Failed to encode messages to JSON.", e);
 		}
 		return jsonBytes;
 	}
@@ -81,7 +81,7 @@ public class JsonRPCMarshaller {
 			JSONObject jsonObject = new JSONObject(jsonString);
 			ret = deserializeJSONObject(jsonObject);
 		} catch (JSONException e) {
-			DebugTool.logError("Failed to parse JSON", e);
+			DebugTool.logError(null, "Failed to parse JSON", e);
 		}
 		return ret;
 	}

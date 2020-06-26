@@ -61,7 +61,7 @@ public class SdlPacket extends BaseSdlPacket implements Parcelable {
                     }
                 }
             }catch (RuntimeException e){
-                DebugTool.logError("Error creating packet from parcel", e);
+                DebugTool.logError(null, "Error creating packet from parcel", e);
             }
         }
     }

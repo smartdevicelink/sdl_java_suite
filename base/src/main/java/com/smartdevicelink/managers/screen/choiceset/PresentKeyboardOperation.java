@@ -129,7 +129,7 @@ class PresentKeyboardOperation extends Task {
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info){
-					DebugTool.logError("There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info + " resultCode: " + resultCode);
+					DebugTool.logError(null, "There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info + " resultCode: " + resultCode);
 					finishOperation();
 				}
 			});
@@ -137,7 +137,7 @@ class PresentKeyboardOperation extends Task {
 			internalInterface.get().sendRPC(pi);
 
 		}else{
-			DebugTool.logError("Internal Interface null in present keyboard operation - choice");
+			DebugTool.logError(null, "Internal Interface null in present keyboard operation - choice");
 		}
 	}
 
@@ -170,13 +170,13 @@ class PresentKeyboardOperation extends Task {
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info){
-					DebugTool.logError("Error canceling the presented keyboard " + resultCode + " " + info);
+					DebugTool.logError(null, "Error canceling the presented keyboard " + resultCode + " " + info);
 				}
 			});
 			if (internalInterface.get() != null){
 				internalInterface.get().sendRPC(cancelInteraction);
 			} else {
-				DebugTool.logError("Internal interface null - could not send cancel interaction for keyboard.");
+				DebugTool.logError(null, "Internal interface null - could not send cancel interaction for keyboard.");
 			}
 		} else {
 			DebugTool.logInfo(null, "Canceling a keyboard that has not yet been sent to Core.");
@@ -202,7 +202,7 @@ class PresentKeyboardOperation extends Task {
 					if (listener != null){
 						listener.onComplete(false);
 					}
-					DebugTool.logError("Error Setting keyboard properties in present keyboard operation - choice manager");
+					DebugTool.logError(null, "Error Setting keyboard properties in present keyboard operation - choice manager");
 					return;
 				}
 
@@ -219,7 +219,7 @@ class PresentKeyboardOperation extends Task {
 				if (listener != null){
 					listener.onComplete(false);
 				}
-				DebugTool.logError("Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
+				DebugTool.logError(null, "Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
 				super.onError(correlationId, resultCode, info);
 			}
 		});
@@ -227,7 +227,7 @@ class PresentKeyboardOperation extends Task {
 		if (internalInterface.get() != null){
 			internalInterface.get().sendRPC(setGlobalProperties);
 		} else {
-			DebugTool.logError("Internal interface null - present keyboard op - choice");
+			DebugTool.logError(null, "Internal interface null - present keyboard op - choice");
 		}
 	}
 
@@ -246,7 +246,7 @@ class PresentKeyboardOperation extends Task {
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError("Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
+					DebugTool.logError(null, "Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
 					PresentKeyboardOperation.super.onFinished();
 				}
 			});
@@ -255,7 +255,7 @@ class PresentKeyboardOperation extends Task {
 				internalInterface.get().sendRPC(setGlobalProperties);
 				internalInterface.get().removeOnRPCNotificationListener(FunctionID.ON_KEYBOARD_INPUT, keyboardRPCListener);
 			} else {
-				DebugTool.logError("Internal Interface null when finishing choice keyboard reset");
+				DebugTool.logError(null, "Internal Interface null when finishing choice keyboard reset");
 			}
 		} else {
 			PresentKeyboardOperation.super.onFinished();
@@ -291,7 +291,7 @@ class PresentKeyboardOperation extends Task {
 				}
 
 				if (keyboardListener == null){
-					DebugTool.logError("Received Keyboard Input But Listener is null");
+					DebugTool.logError(null, "Received Keyboard Input But Listener is null");
 					return;
 				}
 
@@ -336,7 +336,7 @@ class PresentKeyboardOperation extends Task {
 		if (internalInterface.get() != null) {
 			internalInterface.get().addOnRPCNotificationListener(FunctionID.ON_KEYBOARD_INPUT, keyboardRPCListener);
 		} else {
-			DebugTool.logError("Present Keyboard Listener Not Added - choice manager");
+			DebugTool.logError(null, "Present Keyboard Listener Not Added - choice manager");
 		}
 	}
 }

@@ -154,7 +154,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
             @Override
             public void onError(String info) {
-                DebugTool.logError("Display Capability cannot be retrieved");
+                DebugTool.logError(null, "Display Capability cannot be retrieved");
                 softButtonCapabilities = null;
 
                 // Update the queue's suspend state
@@ -283,12 +283,12 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
         // Check if two soft button objects have the same name
         if (hasTwoSoftButtonObjectsOfSameName(softButtonObjects)) {
             this.softButtonObjects = new CopyOnWriteArrayList<>();
-            DebugTool.logError("Attempted to set soft button objects, but two buttons had the same name");
+            DebugTool.logError(null, "Attempted to set soft button objects, but two buttons had the same name");
             return;
         }
 
         if (!checkAndAssignButtonIds(softButtonObjects)) {
-            DebugTool.logError("Attempted to set soft button objects, but multiple buttons had the same id");
+            DebugTool.logError(null, "Attempted to set soft button objects, but multiple buttons had the same id");
             return;
         }
 

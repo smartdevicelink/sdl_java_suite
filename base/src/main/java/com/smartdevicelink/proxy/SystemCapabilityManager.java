@@ -563,7 +563,7 @@ public class SystemCapabilityManager {
 		if (currentHMILevel != null && currentHMILevel.equals(HMILevel.HMI_NONE)) {
 			String message = String.format("Attempted to update type: %s in HMI level NONE, which is not allowed. " +
 					"Please wait until you are in HMI BACKGROUND, LIMITED, or FULL before attempting to update any SystemCapabilityType", systemCapabilityType);
-			DebugTool.logError(message);
+			DebugTool.logError(null, message);
 			if (scListener != null) {
 				scListener.onError(message);
 			}
@@ -571,7 +571,7 @@ public class SystemCapabilityManager {
 		}
 		if (!systemCapabilityType.isQueryable() || systemCapabilityType == SystemCapabilityType.DISPLAYS) {
 			String message = "This systemCapabilityType cannot be queried for";
-			DebugTool.logError(message);
+			DebugTool.logError(null, message);
 			if (scListener != null) {
 				scListener.onError(message);
 			}

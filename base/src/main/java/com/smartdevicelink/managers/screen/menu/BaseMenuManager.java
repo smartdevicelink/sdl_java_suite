@@ -208,13 +208,13 @@ abstract class BaseMenuManager extends BaseSubManager {
 		}
 		// Check for duplicate titles
 		if (titleCheckSet.size() != menuCells.size()){
-			DebugTool.logError("Not all cell titles are unique. The menu will not be set");
+			DebugTool.logError(null, "Not all cell titles are unique. The menu will not be set");
 			return;
 		}
 
 		// Check for duplicate voice commands
 		if (allMenuVoiceCommands.size() != voiceCommandCount){
-			DebugTool.logError("Attempted to create a menu with duplicate voice commands. Voice commands must be unique. The menu will not be set");
+			DebugTool.logError(null, "Attempted to create a menu with duplicate voice commands. Voice commands must be unique. The menu will not be set");
 			return;
 		}
 
@@ -226,7 +226,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				public void onComplete(Map<String, String> errors) {
 
 					if (errors != null && errors.size() > 0){
-						DebugTool.logError("Error uploading Menu Artworks: "+ errors.toString());
+						DebugTool.logError(null, "Error uploading Menu Artworks: "+ errors.toString());
 					}else{
 						DebugTool.logInfo(null, "Menu Artworks Uploaded");
 					}
@@ -282,13 +282,13 @@ abstract class BaseMenuManager extends BaseSubManager {
                 if (response.getSuccess()){
                     DebugTool.logInfo(null, "Open Main Menu Request Successful");
                 } else {
-                    DebugTool.logError("Open Main Menu Request Failed");
+                    DebugTool.logError(null, "Open Main Menu Request Failed");
                 }
             }
 
             @Override
             public void onError(int correlationId, Result resultCode, String info){
-                DebugTool.logError("Open Main Menu onError: "+ resultCode+ " | Info: "+ info);
+                DebugTool.logError(null, "Open Main Menu onError: "+ resultCode+ " | Info: "+ info);
             }
         });
         internalInterface.sendRPC(showAppMenu);
@@ -307,7 +307,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         if (oldMenuCells == null){
-            DebugTool.logError("open sub menu called, but no Menu cells have been set");
+            DebugTool.logError(null, "open sub menu called, but no Menu cells have been set");
             return false;
         }
         // We must see if we have a copy of this cell, since we clone the objects
@@ -331,13 +331,13 @@ abstract class BaseMenuManager extends BaseSubManager {
                 if (response.getSuccess()){
                     DebugTool.logInfo(null, "Open Sub Menu Request Successful");
                 } else {
-                    DebugTool.logError("Open Sub Menu Request Failed");
+                    DebugTool.logError(null, "Open Sub Menu Request Failed");
                 }
             }
 
             @Override
             public void onError(int correlationId, Result resultCode, String info){
-                DebugTool.logError("Open Sub Menu onError: "+ resultCode+ " | Info: "+ info);
+                DebugTool.logError(null, "Open Sub Menu onError: "+ resultCode+ " | Info: "+ info);
             }
         });
 
@@ -354,7 +354,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     public void setMenuConfiguration(@NonNull final MenuConfiguration menuConfiguration) {
 
         if (sdlMsgVersion == null) {
-            DebugTool.logError("SDL Message Version is null. Cannot set Menu Configuration");
+            DebugTool.logError(null, "SDL Message Version is null. Cannot set Menu Configuration");
             return;
         }
 
@@ -365,7 +365,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
         if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
             // We are in NONE or the menu is in use, bail out of here
-            DebugTool.logError("Could not set main menu configuration, HMI level: "+currentHMILevel+", required: 'Not-NONE', system context: "+currentSystemContext+", required: 'Not MENU'");
+            DebugTool.logError(null, "Could not set main menu configuration, HMI level: "+currentHMILevel+", required: 'Not-NONE', system context: "+currentSystemContext+", required: 'Not MENU'");
             return;
         }
 
@@ -386,7 +386,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError("onError: " + resultCode + " | Info: " + info);
+					DebugTool.logError(null, "onError: " + resultCode + " | Info: " + info);
 				}
 			});
 			internalInterface.sendRPC(setGlobalProperties);
@@ -481,7 +481,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				inProgressUpdate = null;
 
 				if (!success){
-					DebugTool.logError("Error Sending Current Menu");
+					DebugTool.logError(null, "Error Sending Current Menu");
 				}else{
 					DebugTool.logInfo(null, "Successfully Cleared Menu");
 				}
@@ -553,7 +553,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 						inProgressUpdate = null;
 
 						if (!success){
-							DebugTool.logError("Error Sending Current Menu");
+							DebugTool.logError(null, "Error Sending Current Menu");
 						}
 
 						if (hasQueuedUpdate){
@@ -1015,7 +1015,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				// instead of using the parameter it's more safe to use the convenience method
 				List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
 				if (capabilities == null || capabilities.size() == 0) {
-					DebugTool.logError("SoftButton Manager - Capabilities sent here are null or empty");
+					DebugTool.logError(null, "SoftButton Manager - Capabilities sent here are null or empty");
 				}else {
 					DisplayCapability display = capabilities.get(0);
 					displayType = display.getDisplayName();
@@ -1030,7 +1030,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 			@Override
 			public void onError(String info) {
-				DebugTool.logError("Display Capability cannot be retrieved");
+				DebugTool.logError(null, "Display Capability cannot be retrieved");
 				defaultMainWindowCapability = null;
 			}
 		};
@@ -1112,7 +1112,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 						inProgressUpdate = null;
 
 						if (!success) {
-							DebugTool.logError("Error Sending Current Menu");
+							DebugTool.logError(null, "Error Sending Current Menu");
 						}
 
 						if (hasQueuedUpdate) {
@@ -1176,7 +1176,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				DebugTool.logError("Result: " + resultCode.toString() + " Info: " + info);
+				DebugTool.logError(null, "Result: " + resultCode.toString() + " Info: " + info);
 			}
 
 			@Override
@@ -1215,7 +1215,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				DebugTool.logError("Failed to send sub menu commands: "+ info);
+				DebugTool.logError(null, "Failed to send sub menu commands: "+ info);
 				if (listener != null){
 					listener.onComplete(false);
 				}
@@ -1237,7 +1237,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		if (adds.size() == 0){
 			if (listener != null){
 				// This can be considered a success if the user was clearing out their menu
-				DebugTool.logError("Called createAndSendDynamicSubMenuRPCs with empty menu");
+				DebugTool.logError(null, "Called createAndSendDynamicSubMenuRPCs with empty menu");
 				listener.onComplete(true);
 			}
 			return;
@@ -1268,7 +1268,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				DebugTool.logError("Result: " + resultCode.toString() + " Info: " + info);
+				DebugTool.logError(null, "Result: " + resultCode.toString() + " Info: " + info);
 			}
 
 			@Override

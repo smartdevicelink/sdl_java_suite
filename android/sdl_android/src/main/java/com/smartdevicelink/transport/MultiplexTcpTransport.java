@@ -99,7 +99,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 					}
 
 				} catch (Exception e) {
-					logError("TCPTransport: Exception during transport thread starting", e);
+					logError(TAG, "TCPTransport: Exception during transport thread starting", e);
 				}
 			}
 		} else {
@@ -134,7 +134,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 			}
 			mSocket = null;
 		} catch (IOException e) {
-			logError("TCPTransport.disconnect: Exception during disconnect: " + e.getMessage());
+			logError(TAG,"TCPTransport.disconnect: Exception during disconnect: " + e.getMessage());
 		}
 
 		setState(state);
@@ -227,7 +227,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 						mInputStream = mSocket.getInputStream();
 						startWriteThread();
 					} catch (IOException e) {
-						logError("TCPTransport.connect: Exception during connect stage: " + e.getMessage());
+						logError(TAG, "TCPTransport.connect: Exception during connect stage: " + e.getMessage());
 					}
 
 					bConnected = (null != mSocket) && mSocket.isConnected();
@@ -348,9 +348,9 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 		 */
 		private void internalHandleStreamReadError() {
 			if(isHalted){
-				logError("TCPTransport.run: Exception during reading data, but thread already halted");
+				logError(TAG, "TCPTransport.run: Exception during reading data, but thread already halted");
 			} else {
-				logError("TCPTransport.run: Exception during reading data");
+				logError(TAG, "TCPTransport.run: Exception during reading data");
 				MultiplexTcpTransport.this.stop(STATE_NONE);
 			}
 		}
@@ -382,13 +382,13 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 								logInfo("TCPTransport.sendBytesOverTransport: successfully sent data");
 							}
 						} catch (IOException e) {
-							logError("TCPTransport.sendBytesOverTransport: error during sending data: " + e.getMessage());
+							logError(TAG, "TCPTransport.sendBytesOverTransport: error during sending data: " + e.getMessage());
 						}
 					} else {
 						if (isHalted) {
-							logError("TCPTransport: sendBytesOverTransport request accepted, thread is cancelled");
+							logError(TAG, "TCPTransport: sendBytesOverTransport request accepted, thread is cancelled");
 						} else {
-							logError("TCPTransport: sendBytesOverTransport request accepted, but output stream is null");
+							logError(TAG, "TCPTransport: sendBytesOverTransport request accepted, but output stream is null");
 						}
 					}
 
@@ -418,13 +418,13 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 					try {
 						mOutputStream.flush();
 					} catch (IOException e) {
-						logError("TCPTransport flushing output stream failed: " + e.getMessage());
+						logError(TAG, "TCPTransport flushing output stream failed: " + e.getMessage());
 					}
 
 					try {
 						mOutputStream.close();
 					} catch (IOException e) {
-						logError("TCPTransport closing output stream failed: " + e.getMessage());
+						logError(TAG, "TCPTransport closing output stream failed: " + e.getMessage());
 					}
 					mOutputStream = null;
 				}

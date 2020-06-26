@@ -61,7 +61,7 @@ public class SoftButtonState {
      */
     public SoftButtonState(@NonNull String name, String text, SdlArtwork artwork) {
         if (text == null && artwork == null) {
-            DebugTool.logError("Attempted to create an invalid soft button state: text and artwork are both null");
+            DebugTool.logError(null, "Attempted to create an invalid soft button state: text and artwork are both null");
             softButton = null;
             return;
         }

@@ -183,7 +183,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
 
                         if(startedService == null){
                             // A router service was not started or is not running.
-                            DebugTool.logError(TAG + " - Error starting router service. Attempting legacy connection ");
+                            DebugTool.logError(TAG, " - Error starting router service. Attempting legacy connection ");
                             attemptLegacyUsbConnection(usbAccessory);
                             return;
                         }
@@ -206,7 +206,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
                         }
 
                     } catch (SecurityException e) {
-                        DebugTool.logError("Security exception, process is bad");
+                        DebugTool.logError(TAG, "Security exception, process is bad");
                     }
                 } else {
                     if (usbAccessory!=null) {
@@ -231,7 +231,7 @@ public class USBAccessoryAttachmentActivity extends Activity {
             usbAccessoryAttachedIntent.putExtra(UsbManager.EXTRA_PERMISSION_GRANTED, permissionGranted);
             AndroidTools.sendExplicitBroadcast(getApplicationContext(), usbAccessoryAttachedIntent, null);
         }else{
-            DebugTool.logError("Unable to start legacy USB mode as the accessory was null");
+            DebugTool.logError(TAG, "Unable to start legacy USB mode as the accessory was null");
         }
         finish();
     }

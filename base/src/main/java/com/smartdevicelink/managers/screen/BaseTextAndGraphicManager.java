@@ -184,7 +184,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				// instead of using the parameter it's more safe to use the convenience method
 				List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
 				if (capabilities == null || capabilities.size() == 0) {
-					DebugTool.logError("TextAndGraphic Manager - Capabilities sent here are null or empty");
+					DebugTool.logError(TAG, "TextAndGraphic Manager - Capabilities sent here are null or empty");
 				}else {
 					DisplayCapability display = capabilities.get(0);
 					for (WindowCapability windowCapability : display.getWindowCapabilities()) {
@@ -198,7 +198,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 
 			@Override
 			public void onError(String info) {
-				DebugTool.logError("Display Capability cannot be retrieved");
+				DebugTool.logError(TAG, "Display Capability cannot be retrieved");
 				defaultMainWindowCapability = null;
 			}
 		};
@@ -283,7 +283,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				@Override
 				public void onComplete(boolean success) {
 					if (!success){
-						DebugTool.logError("Error uploading image");
+						DebugTool.logError(TAG, "Error uploading image");
 						inProgressUpdate = extractTextFromShow(inProgressUpdate);
 						sendShow();
 					}
@@ -367,7 +367,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				@Override
 				public void onComplete(Map<String, String> errors) {
 					if (errors != null) {
-						DebugTool.logError("Error Uploading Artworks. Error: " + errors.toString());
+						DebugTool.logError(TAG, "Error Uploading Artworks. Error: " + errors.toString());
 						listener.onComplete(false);
 					} else {
 						listener.onComplete(true);
@@ -647,7 +647,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 	private void updateCurrentScreenDataState(Show show){
 
 		if (show == null){
-			DebugTool.logError("can not updateCurrentScreenDataFromShow from null show");
+			DebugTool.logError(TAG, "can not updateCurrentScreenDataFromShow from null show");
 			return;
 		}
 

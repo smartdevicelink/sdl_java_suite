@@ -95,7 +95,7 @@ class DeleteChoicesOperation extends Task {
 						if (completionListener != null) {
 							completionListener.onComplete(false);
 						}
-						DebugTool.logError("Failed to delete choice: " + info + " | Corr ID: " + correlationId);
+						DebugTool.logError(null, "Failed to delete choice: " + info + " | Corr ID: " + correlationId);
 
 						DeleteChoicesOperation.super.onFinished();
 					}

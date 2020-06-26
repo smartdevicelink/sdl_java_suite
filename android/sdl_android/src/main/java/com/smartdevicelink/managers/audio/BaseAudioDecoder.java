@@ -252,7 +252,7 @@ public abstract class BaseAudioDecoder {
     }
 
     protected void onMediaCodecError(@NonNull MediaCodec.CodecException e) {
-        DebugTool.logError("MediaCodec.onError: " + e.getLocalizedMessage());
+        DebugTool.logError(TAG, "MediaCodec.onError: " + e.getLocalizedMessage());
         if (listener != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 listener.onDecoderError(e);

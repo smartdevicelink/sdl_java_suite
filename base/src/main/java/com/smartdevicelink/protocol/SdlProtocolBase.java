@@ -804,7 +804,7 @@ public class SdlProtocolBase {
                         secondaryListener.onConnectionFailure();
                     }
                 } else {
-                    DebugTool.logError("transportManager is null");
+                    DebugTool.logError(TAG, "transportManager is null");
                 }
 
             }
@@ -1282,7 +1282,7 @@ public class SdlProtocolBase {
             try {
                 accumulator = new ByteArrayOutputStream(totalSize);
             }catch(OutOfMemoryError e){
-                DebugTool.logError("OutOfMemory error", e); //Garbled bits were received
+                DebugTool.logError(TAG, "OutOfMemory error", e); //Garbled bits were received
                 accumulator = null;
             }
         }
@@ -1320,7 +1320,7 @@ public class SdlProtocolBase {
                 try {
                     iSdlProtocol.onProtocolMessageReceived(message);
                 } catch (Exception excp) {
-                    DebugTool.logError(FailurePropagating_Msg + "onProtocolMessageReceived: " + excp.toString(), excp);
+                    DebugTool.logError(TAG, FailurePropagating_Msg + "onProtocolMessageReceived: " + excp.toString(), excp);
                 } // end-catch
 
                 accumulator = null;
@@ -1491,7 +1491,7 @@ public class SdlProtocolBase {
             try {
                 iSdlProtocol.onProtocolMessageReceived(message);
             } catch (Exception ex) {
-                DebugTool.logError(FailurePropagating_Msg + "onProtocolMessageReceived: " + ex.toString(), ex);
+                DebugTool.logError(TAG, FailurePropagating_Msg + "onProtocolMessageReceived: " + ex.toString(), ex);
                 handleProtocolError(FailurePropagating_Msg + "onProtocolMessageReceived: ", ex);
             } // end-catch
         } // end-method

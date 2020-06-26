@@ -169,7 +169,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 						}
 
 						if (!success2){
-							DebugTool.logError("Error sending voice commands");
+							DebugTool.logError(null, "Error sending voice commands");
 						}
 					}
 				});

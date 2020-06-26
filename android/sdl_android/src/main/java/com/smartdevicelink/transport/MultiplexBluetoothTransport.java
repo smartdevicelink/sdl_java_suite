@@ -414,7 +414,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             while (mState != STATE_CONNECTED) {
                 try {
                 	if(listenAttempts>=5){
-                        DebugTool.logError("Complete failure in attempting to listen for Bluetooth connection, erroring out.");
+                        DebugTool.logError(TAG, "Complete failure in attempting to listen for Bluetooth connection, erroring out.");
 		                MultiplexBluetoothTransport.this.stop(STATE_ERROR, REASON_NONE);
                 		return;
                 	}
@@ -429,12 +429,12 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                     
                 	}
                 	else{
-                        DebugTool.logError( "Listening Socket was null, stopping the bluetooth serial server.");
+                        DebugTool.logError(TAG, "Listening Socket was null, stopping the bluetooth serial server.");
 		                MultiplexBluetoothTransport.this.stop(STATE_ERROR, REASON_NONE);
                 		return;
                 	}
                 } catch (IOException e) {
-                    DebugTool.logError("Socket Type: " + mSocketType + "accept() failed");
+                    DebugTool.logError(TAG, "Socket Type: " + mSocketType + "accept() failed");
 	                MultiplexBluetoothTransport.this.stop(STATE_ERROR, REASON_SPP_ERROR);
                     return;
                 }
@@ -456,7 +456,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                                 DebugTool.logInfo(TAG, "Close unwanted socket");
                                	socket.close();
                             } catch (IOException e) {
-                                DebugTool.logError("Could not close unwanted socket", e);
+                                DebugTool.logError(TAG, "Could not close unwanted socket", e);
                             }
                             break;
                         }
@@ -501,7 +501,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         	try{
         		mAdapter.cancelDiscovery();
         	}catch(SecurityException e2){
-                DebugTool.logError("Don't have required permision to cancel discovery. Moving on");
+                DebugTool.logError(TAG, "Don't have required permision to cancel discovery. Moving on");
         	}
         }
 
@@ -588,11 +588,11 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 	    					}else{tryInsecure = true;}
 	                    } catch (IOException io) {
 	                        tryInsecure = true;
-                            DebugTool.logError("createRfcommSocketToServiceRecord exception - " + io.toString());
+                            DebugTool.logError(TAG, "createRfcommSocketToServiceRecord exception - " + io.toString());
 	                         SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
 
 	                    } catch (Exception e){
-                            DebugTool.logError("createRfcommSocketToServiceRecord exception - " + e.toString());
+                            DebugTool.logError(TAG, "createRfcommSocketToServiceRecord exception - " + e.toString());
 	                         SdlRouterService.setBluetoothPrefs(0,SHARED_PREFS);
 
 	                    }
@@ -653,13 +653,13 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 	                }
 	            }  catch (IOException e) {
               connectionFailed();
-                    DebugTool.logError(e.getClass().getSimpleName()
+                    DebugTool.logError(TAG,e.getClass().getSimpleName()
                       + " caught connecting to the bluetooth socket: "
                       + e.toString());
               try {
                   mmSocket.close();
               } catch (IOException e2) {
-                  DebugTool.logError("unable to close() socket during connection failure" + e2);
+                  DebugTool.logError(TAG, "unable to close() socket during connection failure" + e2);
               }
               return;
           }
@@ -678,7 +678,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             }
             else
             {
-                DebugTool.logError("There was a problem opening up RFCOMM");
+                DebugTool.logError(TAG, "There was a problem opening up RFCOMM");
             }
         }
 
@@ -714,7 +714,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                 tmpOut = socket.getOutputStream();
             } catch (IOException e) {
                 // temp sockets not created
-                DebugTool.logError("Connected Write Thread: " + e.getMessage());
+                DebugTool.logError(TAG, "Connected Write Thread: " + e.getMessage());
             }
             mmOutStream = tmpOut;
 
@@ -736,7 +736,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             } catch (IOException|NullPointerException e) { // STRICTLY to catch mmOutStream NPE
                 // Exception during write
             	//OMG! WE MUST NOT BE CONNECTED ANYMORE! LET THE USER KNOW
-                DebugTool.logError("Error sending bytes to connected device!");
+                DebugTool.logError(TAG, "Error sending bytes to connected device!");
             	connectionLost();
             }
         }
@@ -773,7 +773,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                 tmpIn = socket.getInputStream();
             } catch (IOException e) {
                 // temp sockets not created
-                DebugTool.logError("Connected Read Thread: "+e.getMessage());
+                DebugTool.logError(TAG, "Connected Read Thread: "+e.getMessage());
             }
             mmInStream = tmpIn;
             
@@ -814,7 +814,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                         }
                     }
                 } catch (IOException|NullPointerException e) { // NPE is ONLY to catch error on mmInStream
-                    DebugTool.logError("Lost connection in the Connected Thread");
+                    DebugTool.logError(TAG, "Lost connection in the Connected Thread");
                 	e.printStackTrace();
                 	connectionLost();                    
                     break;

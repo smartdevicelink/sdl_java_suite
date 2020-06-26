@@ -632,7 +632,7 @@ public class USBTransport extends SdlTransport {
      * @param tr throwable to log
      */
     private void logE(String s, Throwable tr) {
-        DebugTool.logError(s, tr);
+        DebugTool.logError(TAG, s, tr);
     }
 
     /**
@@ -903,7 +903,7 @@ public class USBTransport extends SdlTransport {
         }
 
         private void logE(String s, Throwable tr) {
-            DebugTool.logError(s, tr);
+            DebugTool.logError(TAG, s, tr);
         }
     }
 

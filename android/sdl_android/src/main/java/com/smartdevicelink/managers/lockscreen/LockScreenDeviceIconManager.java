@@ -135,7 +135,7 @@ class LockScreenDeviceIconManager {
             fos.close();
             writeDeviceIconParametersToSharedPreferences(iconHash);
         } catch (Exception e) {
-            DebugTool.logError("Failed to save icon to cache");
+            DebugTool.logError(TAG, "Failed to save icon to cache");
             e.printStackTrace();
         }
     }
@@ -153,7 +153,7 @@ class LockScreenDeviceIconManager {
         if (iconLastUpdatedTime != null) {
             Bitmap cachedIcon = BitmapFactory.decodeFile(this.context.getCacheDir() + "/" + STORED_ICON_DIRECTORY_PATH + "/" + iconHash);
             if(cachedIcon == null) {
-                DebugTool.logError("Failed to get Bitmap from decoding file cache");
+                DebugTool.logError(TAG, "Failed to get Bitmap from decoding file cache");
                 clearIconDirectory();
                 sharedPref.edit().clear().commit();
                 return null;
@@ -161,7 +161,7 @@ class LockScreenDeviceIconManager {
                 return cachedIcon;
             }
         } else {
-            DebugTool.logError("Failed to get shared preferences");
+            DebugTool.logError(TAG, "Failed to get shared preferences");
             return null;
         }
     }
@@ -195,7 +195,7 @@ class LockScreenDeviceIconManager {
             }
             iconHash = hashtext;
         } catch (NoSuchAlgorithmException e) {
-            DebugTool.logError("Unable to hash icon url");
+            DebugTool.logError(TAG, "Unable to hash icon url");
             e.printStackTrace();
         }
         return iconHash;

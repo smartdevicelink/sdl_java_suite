@@ -109,7 +109,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				}
 
 				if (VideoStreamManager.this.streamListener == null) {
-					DebugTool.logError("Error starting video stream");
+					DebugTool.logError(TAG, "Error starting video stream");
 					stateMachine.transitionToState(StreamingStateMachine.ERROR);
 					return;
 				}
@@ -136,7 +136,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 		@Override
 		public void onServiceError(SdlSession session, SessionType type, String reason) {
-			DebugTool.logError("Unable to start video service: " + reason);
+			DebugTool.logError(TAG, "Unable to start video service: " + reason);
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			transitionToState(BaseSubManager.ERROR);
 		}
@@ -235,7 +235,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 				@Override
 				public void onError(String info) {
-					DebugTool.logError("Error retrieving video streaming capability: " + info);
+					DebugTool.logError(TAG, "Error retrieving video streaming capability: " + info);
 					stateMachine.transitionToState(StreamingStateMachine.ERROR);
 					transitionToState(ERROR);
 				}
@@ -268,7 +268,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		this.remoteDisplayClass = remoteDisplayClass;
 		int majorProtocolVersion = internalInterface.getProtocolVersion().getMajor();
 		if(majorProtocolVersion >= 5 && !internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
-			DebugTool.logError("Video streaming not supported on this module");
+			DebugTool.logError(TAG, "Video streaming not supported on this module");
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			return;
 		}
@@ -285,7 +285,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 					@Override
 					public void onError(String info) {
 						stateMachine.transitionToState(StreamingStateMachine.ERROR);
-						DebugTool.logError("Error retrieving video streaming capability: " + info);
+						DebugTool.logError(TAG, "Error retrieving video streaming capability: " + info);
 					}
 				});
 			}else{
@@ -312,7 +312,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	protected void startStreaming(VideoStreamingParameters parameters, boolean encrypted){
 		this.parameters = parameters;
 		if (!isHMIStateVideoStreamCapable(currentOnHMIStatus)) {
-			DebugTool.logError("Cannot start video service in the current HMI status");
+			DebugTool.logError(TAG, "Cannot start video service in the current HMI status");
 			return;
 		}
 		//Start the video service
@@ -495,7 +495,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 
 			showPresentation.start();
 		} catch (Exception ex) {
-			DebugTool.logError("Unable to create Virtual Display.");
+			DebugTool.logError(TAG, "Unable to create Virtual Display.");
 			if(DebugTool.isDebugEnabled()){
 				ex.printStackTrace();
 			}

@@ -172,11 +172,11 @@ public class TransportBroker {
                     return false;
                 }
             } else {
-                DebugTool.logError("Unable to send message to router service. Not registered.");
+                DebugTool.logError(TAG, "Unable to send message to router service. Not registered.");
                 return false;
             }
         } else {
-            DebugTool.logError("Unable to send message to router service. Not bound.");
+            DebugTool.logError(TAG, "Unable to send message to router service. Not bound.");
             return false;
         }
     }
@@ -198,7 +198,7 @@ public class TransportBroker {
         public void handleMessage(Message msg) {
             TransportBroker broker = provider.get();
             if (broker == null) {
-                DebugTool.logError("Broker object null, unable to process message");
+                DebugTool.logError(TAG, "Broker object null, unable to process message");
                 return;
             }
             Bundle bundle = msg.getData();
@@ -305,7 +305,7 @@ public class TransportBroker {
                             byte[] chunk = bundle.getByteArray(TransportConstants.BYTES_TO_SEND_EXTRA_NAME);
                             if (!broker.bufferedPayloadAssembler.handleMessage(flags, chunk)) {
                                 //If there was a problem
-                                DebugTool.logError("Error handling bytes for split packet");
+                                DebugTool.logError(TAG, "Error handling bytes for split packet");
                             }
                             if (broker.bufferedPayloadAssembler.isFinished()) {
                                 broker.bufferedPacket.setPayload(broker.bufferedPayloadAssembler.getBytes());
@@ -628,7 +628,7 @@ public class TransportBroker {
      */
     private boolean registerWithRouterService() {
         if (getContext() == null) {
-            DebugTool.logError("Context set to null, failing out");
+            DebugTool.logError(TAG, "Context set to null, failing out");
             return false;
         }
 
@@ -649,7 +649,7 @@ public class TransportBroker {
         }
 
         if (!sendBindingIntent()) {
-            DebugTool.logError("Something went wrong while trying to bind with the router service.");
+            DebugTool.logError(TAG, "Something went wrong while trying to bind with the router service.");
             SdlBroadcastReceiver.queryForConnectedService(currentContext);
             return false;
         }
@@ -660,7 +660,7 @@ public class TransportBroker {
     @SuppressLint("InlinedApi")
     private boolean sendBindingIntent() {
         if(this.isBound){
-            DebugTool.logError("Already bound");
+            DebugTool.logError(TAG, "Already bound");
             return false;
         }
         if (this.routerPackage != null && this.routerClassName != null) {

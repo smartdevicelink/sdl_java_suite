@@ -74,7 +74,7 @@ public class TraceDeviceInfo {
 			try { // getDeviceId() requires android.permission.READ_PHONE_STATE
 				info = "<deviceid>" + m_telephonyManager.getDeviceId() + "</deviceid>";
 			} catch (Exception e1) {
-				DebugTool.logError("Failure getting telephony device ID: " + e1.toString(), e1);
+				DebugTool.logError(null, "Failure getting telephony device ID: " + e1.toString(), e1);
 			}
 	
 			info = "<pt>";

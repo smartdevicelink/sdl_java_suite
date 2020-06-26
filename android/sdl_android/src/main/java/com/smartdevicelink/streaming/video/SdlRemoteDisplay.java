@@ -184,7 +184,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
                             remoteDisplay = (SdlRemoteDisplay) constructor.newInstance(context, mDisplay);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            DebugTool.logError("Unable to create Presentation Class");
+                            DebugTool.logError(TAG, "Unable to create Presentation Class");
                             presentationShowError = true;
                             return;
                         }
@@ -197,7 +197,7 @@ public abstract class SdlRemoteDisplay extends Presentation {
                             }
 
                         } catch (WindowManager.InvalidDisplayException ex) {
-                            DebugTool.logError("Couldn't show presentation! Display was removed in the meantime.", ex);
+                            DebugTool.logError(TAG, "Couldn't show presentation! Display was removed in the meantime.", ex);
                             remoteDisplay = null;
                             presentationShowError = true;
                         }

@@ -66,7 +66,7 @@ public class RpcConverter {
             try{
                 return convertTableToRpc(tempTable);
             }catch (Exception e){
-                DebugTool.logError("Error converting RPC",e);
+                DebugTool.logError(TAG, "Error converting RPC",e);
             }
         }
         return null;
@@ -122,7 +122,7 @@ public class RpcConverter {
         }else if(rpcHashTable.containsKey((RPCMessage.KEY_REQUEST))){
             params = (Hashtable)rpcHashTable.get((RPCMessage.KEY_REQUEST));
         }else{
-            DebugTool.logError(TAG + " Corrupted RPC table.");
+            DebugTool.logError(TAG, " Corrupted RPC table.");
             return null;
         }
 
@@ -158,13 +158,13 @@ public class RpcConverter {
                         return (RPCMessage)rpcConstructor.newInstance(rpcHashTable);
                     }
                 } else {
-                    DebugTool.logError(TAG + " Java class cannot be found for " + rpcClassName.toString());
+                    DebugTool.logError(TAG, " Java class cannot be found for " + rpcClassName.toString());
                 }
             } catch (Exception e) {
-                DebugTool.logError("RPCConverter was unable to process RPC", e);
+                DebugTool.logError(TAG, "RPCConverter was unable to process RPC", e);
             }
         }else{
-            DebugTool.logError(TAG + " Unable to parse into RPC");
+            DebugTool.logError(TAG, " Unable to parse into RPC");
         }
 
         return null;

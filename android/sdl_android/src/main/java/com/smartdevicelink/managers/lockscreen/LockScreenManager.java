@@ -392,7 +392,7 @@ public class LockScreenManager extends BaseSubManager {
 
 					@Override
 					public void onError(String info) {
-						DebugTool.logError(info);
+						DebugTool.logError(TAG, info);
 					}
 				});
 			}

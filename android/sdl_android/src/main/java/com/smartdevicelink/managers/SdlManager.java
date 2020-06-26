@@ -161,7 +161,7 @@ public class SdlManager extends BaseSdlManager {
                 onReady();
             } else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.ERROR)) {
                 String info = "ERROR starting sdl manager, all sub managers are in error state";
-                DebugTool.logError(info);
+                DebugTool.logError(TAG, info);
                 transitionToState(BaseSubManager.ERROR);
                 notifyDevListener(info);
             } else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP || (lockScreenConfig.isEnabled() && lockScreenManager != null && lockScreenManager.getState() == BaseSubManager.SETTING_UP)) {
@@ -178,7 +178,7 @@ public class SdlManager extends BaseSdlManager {
         } else {
             // We should never be here, but somehow one of the sub-sub managers is null
             String info = "ERROR one of the sdl sub managers is null";
-            DebugTool.logError(info);
+            DebugTool.logError(TAG, info);
             transitionToState(BaseSubManager.ERROR);
             notifyDevListener(info);
         }
@@ -293,7 +293,7 @@ public class SdlManager extends BaseSdlManager {
      */
     public LockScreenManager getLockScreenManager() {
         if (lockScreenManager.getState() != BaseSubManager.READY && lockScreenManager.getState() != BaseSubManager.LIMITED) {
-            DebugTool.logError("LockScreenManager should not be accessed because it is not in READY/LIMITED state");
+            DebugTool.logError(TAG, "LockScreenManager should not be accessed because it is not in READY/LIMITED state");
         }
         checkSdlManagerState();
         return lockScreenManager;

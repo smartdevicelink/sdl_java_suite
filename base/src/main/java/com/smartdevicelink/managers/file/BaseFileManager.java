@@ -160,7 +160,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
 				// file list could not be received. assume that setting can work and allow SDLManager to start
-				DebugTool.logError("File Manager could not list files");
+				DebugTool.logError(TAG, "File Manager could not list files");
 				bytesAvailable = SPACE_AVAILABLE_MAX_VALUE;
 				transitionToState(BaseSubManager.READY);
 			}
@@ -479,7 +479,7 @@ abstract class BaseFileManager extends BaseSubManager {
 			}
 			return os.toByteArray();
 		} catch (IOException e){
-			DebugTool.logError("Can't read from InputStream", e);
+			DebugTool.logError(TAG, "Can't read from InputStream", e);
 			return null;
 		}
 	}

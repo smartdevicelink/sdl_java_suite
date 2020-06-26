@@ -119,7 +119,7 @@ class PreloadChoicesOperation extends Task {
 				@Override
 				public void onComplete(Map<String, String> errors) {
 					if (errors != null && errors.size() > 0){
-						DebugTool.logError("Error uploading choice cell Artworks: "+ errors.toString());
+						DebugTool.logError(null, "Error uploading choice cell Artworks: "+ errors.toString());
 						listener.onComplete(false);
 						isRunning = false;
 					}else{
@@ -130,7 +130,7 @@ class PreloadChoicesOperation extends Task {
 				}
 			});
 		}else{
-			DebugTool.logError("File manager is null in choice preload operation");
+			DebugTool.logError(null, "File manager is null in choice preload operation");
 			listener.onComplete(false);
 			isRunning = false;
 		}
@@ -147,7 +147,7 @@ class PreloadChoicesOperation extends Task {
 		}
 
 		if (choiceRPCs.size() == 0){
-			DebugTool.logError(" All Choice cells to send are null, so the choice set will not be shown");
+			DebugTool.logError(null, " All Choice cells to send are null, so the choice set will not be shown");
 			completionListener.onComplete(true);
 			isRunning = false;
 			return;
@@ -171,7 +171,7 @@ class PreloadChoicesOperation extends Task {
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError("There was an error uploading a choice cell: "+ info + " resultCode: " + resultCode);
+					DebugTool.logError(null, "There was an error uploading a choice cell: "+ info + " resultCode: " + resultCode);
 
 					PreloadChoicesOperation.super.onFinished();
 				}
@@ -182,7 +182,7 @@ class PreloadChoicesOperation extends Task {
 				}
 			});
 		}else{
-			DebugTool.logError("Internal Interface null in preload choice operation");
+			DebugTool.logError(null, "Internal Interface null in preload choice operation");
 			isRunning = false;
 			completionListener.onComplete(false);
 		}
@@ -200,7 +200,7 @@ class PreloadChoicesOperation extends Task {
 		String menuName = shouldSendChoiceText() ? cell.getText() : null;
 
 		if (menuName == null){
-			DebugTool.logError("Could not convert Choice Cell to CreateInteractionChoiceSet. It will not be shown. Cell: "+ cell.toString());
+			DebugTool.logError(null, "Could not convert Choice Cell to CreateInteractionChoiceSet. It will not be shown. Cell: "+ cell.toString());
 			return null;
 		}
 

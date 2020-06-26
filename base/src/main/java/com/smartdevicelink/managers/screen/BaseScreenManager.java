@@ -83,7 +83,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 					DebugTool.logInfo(TAG, "Starting screen manager, all sub managers are in ready state");
 					transitionToState(READY);
 				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR && voiceCommandManager.getState() == BaseSubManager.ERROR && menuManager.getState() == BaseSubManager.ERROR && choiceSetManager.getState() == BaseSubManager.ERROR) {
-					DebugTool.logError("ERROR starting screen manager, all sub managers are in error state");
+					DebugTool.logError(TAG, "ERROR starting screen manager, all sub managers are in error state");
 					transitionToState(ERROR);
 				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP || voiceCommandManager.getState() == BaseSubManager.SETTING_UP || menuManager.getState() == BaseSubManager.SETTING_UP || choiceSetManager.getState() == BaseSubManager.SETTING_UP) {
 					DebugTool.logInfo(TAG, "SETTING UP screen manager, at least one sub manager is still setting up");
@@ -94,7 +94,7 @@ abstract class BaseScreenManager extends BaseSubManager {
 				}
 			} else {
 				// We should never be here, but somehow one of the sub-sub managers is null
-				DebugTool.logError("ERROR one of the screen sub managers is null");
+				DebugTool.logError(TAG, "ERROR one of the screen sub managers is null");
 				transitionToState(ERROR);
 			}
 		}

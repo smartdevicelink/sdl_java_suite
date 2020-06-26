@@ -114,7 +114,7 @@ class CheckChoiceVROptionalOperation extends Task {
 					isVROptional = false;
 					deleteTestChoiceSet();
 				}else{
-					DebugTool.logError("Connected head unit has rejected all choice cells, choice manager disabled. Error: " + response.getInfo());
+					DebugTool.logError(null, "Connected head unit has rejected all choice cells, choice manager disabled. Error: " + response.getInfo());
 					isVROptional = false;
 					if (checkChoiceVROptionalInterface != null){
 						checkChoiceVROptionalInterface.onError(response.getInfo());
@@ -126,7 +126,7 @@ class CheckChoiceVROptionalOperation extends Task {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError("There was an error in the check choice vr optional operation. Send test choice with VR failed. Error: " + info + " resultCode: " + resultCode);
+				DebugTool.logError(null, "There was an error in the check choice vr optional operation. Send test choice with VR failed. Error: " + info + " resultCode: " + resultCode);
 				isVROptional = false;
 				if (checkChoiceVROptionalInterface != null){
 					checkChoiceVROptionalInterface.onError(info);
@@ -159,7 +159,7 @@ class CheckChoiceVROptionalOperation extends Task {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError("There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info + " resultCode: " + resultCode);
+				DebugTool.logError(null, "There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info + " resultCode: " + resultCode);
 				if (checkChoiceVROptionalInterface != null){
 					checkChoiceVROptionalInterface.onError(info);
 				}

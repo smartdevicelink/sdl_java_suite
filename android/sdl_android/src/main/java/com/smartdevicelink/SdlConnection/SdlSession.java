@@ -264,7 +264,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
                     return packetizer;
                 }
                 default:
-                    DebugTool.logError("Protocol " + protocol + " is not supported.");
+                    DebugTool.logError(TAG, "Protocol " + protocol + " is not supported.");
                     return null;
             }
         } catch (IOException e) {
@@ -291,7 +291,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
             mRPCPacketizer = new StreamRPCPacketizer(null, this, is, request, sType, rpcSessionID, wiproVersion, 0, this);
             mRPCPacketizer.start();
         } catch (Exception e) {
-            DebugTool.logError("Unable to start streaming:" + e.toString());
+            DebugTool.logError(TAG, "Unable to start streaming:" + e.toString());
         }
     }
 
@@ -304,7 +304,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
             mRPCPacketizer.start();
             return os;
         } catch (Exception e) {
-            DebugTool.logError("Unable to start streaming:" + e.toString());
+            DebugTool.logError(TAG, "Unable to start streaming:" + e.toString());
         }
         return null;
     }

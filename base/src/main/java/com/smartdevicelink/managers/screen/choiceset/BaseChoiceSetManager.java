@@ -168,7 +168,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             public void onError(String error) {
                 // At this point, there were errors trying to send a test PICS
                 // If we reach this state, we cannot use the manager
-                DebugTool.logError(error);
+                DebugTool.logError(null, error);
                 transitionToState(ERROR);
                 // checking VR will always be first in the queue.
                 // If pre-load operations were added while this was in progress
@@ -217,7 +217,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                             listener.onComplete(true);
                         }
                     }else {
-                        DebugTool.logError("There was an error pre loading choice cells");
+                        DebugTool.logError(null, "There was an error pre loading choice cells");
                         if (listener != null) {
                             listener.onComplete(false);
                         }
@@ -227,7 +227,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
             transactionQueue.add(preloadChoicesOperation, false);
         } else {
-            DebugTool.logError("File Manager was null in preload choice operation");
+            DebugTool.logError(null, "File Manager was null in preload choice operation");
         }
     }
 
@@ -275,7 +275,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             @Override
             public void onComplete(boolean success) {
                 if (!success){
-                    DebugTool.logError("Failed to delete choices");
+                    DebugTool.logError(null, "Failed to delete choices");
                     return;
                 }
                 preloadedChoices.removeAll(cellsToBeDeleted);
@@ -368,7 +368,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
      */
     public Integer presentKeyboard(@NonNull String initialText, @Nullable KeyboardProperties customKeyboardConfig, @NonNull KeyboardListener listener){
         if (initialText == null || initialText.length() == 0){
-            DebugTool.logError("initialText cannot be an empty string.");
+            DebugTool.logError(null, "initialText cannot be an empty string.");
             return null;
         }
 
@@ -518,7 +518,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 // instead of using the parameter it's more safe to use the convenience method
                 List<DisplayCapability> capabilities = SystemCapabilityManager.convertToList(capability, DisplayCapability.class);
                 if (capabilities == null || capabilities.size() == 0) {
-                    DebugTool.logError("SoftButton Manager - Capabilities sent here are null or empty");
+                    DebugTool.logError(null, "SoftButton Manager - Capabilities sent here are null or empty");
                 }else {
                     DisplayCapability display = capabilities.get(0);
                     displayName = display.getDisplayName();
@@ -533,7 +533,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
             @Override
             public void onError(String info) {
-                DebugTool.logError("Unable to retrieve display capabilities. Many things will probably break. Info: "+ info);
+                DebugTool.logError(null, "Unable to retrieve display capabilities. Many things will probably break. Info: "+ info);
                 defaultMainWindowCapability = null;
             }
         };
@@ -581,7 +581,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         // Choices are not optional here
         if (choices == null || choices.size() == 0) {
-            DebugTool.logError("Cannot initiate a choice set with no choices");
+            DebugTool.logError(null, "Cannot initiate a choice set with no choices");
             return false;
         }
 
@@ -610,19 +610,19 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         // Cell text MUST be unique
         if (choiceTextSet.size() < choices.size()) {
-            DebugTool.logError("Attempted to create a choice set with duplicate cell text. Cell text must be unique. The choice set will not be set.");
+            DebugTool.logError(null, "Attempted to create a choice set with duplicate cell text. Cell text must be unique. The choice set will not be set.");
             return false;
         }
 
         // All or none of the choices MUST have VR Commands
         if (choiceCellWithVoiceCommandCount > 0 && choiceCellWithVoiceCommandCount < choices.size()) {
-            DebugTool.logError("If using voice recognition commands, all of the choice set cells must have unique VR commands. There are " + uniqueVoiceCommands.size() + " cells with unique voice commands and " + choices.size() + " total cells. The choice set will not be set.");
+            DebugTool.logError(null, "If using voice recognition commands, all of the choice set cells must have unique VR commands. There are " + uniqueVoiceCommands.size() + " cells with unique voice commands and " + choices.size() + " total cells. The choice set will not be set.");
             return false;
         }
 
         // All VR Commands MUST be unique
         if (uniqueVoiceCommands.size() < allVoiceCommandsCount) {
-            DebugTool.logError("If using voice recognition commands, all VR commands must be unique. There are " + uniqueVoiceCommands.size() + " unique VR commands and " + allVoiceCommandsCount + " VR commands. The choice set will not be set.");
+            DebugTool.logError(null, "If using voice recognition commands, all VR commands must be unique. There are " + uniqueVoiceCommands.size() + " unique VR commands and " + allVoiceCommandsCount + " VR commands. The choice set will not be set.");
             return false;
         }
         return true;

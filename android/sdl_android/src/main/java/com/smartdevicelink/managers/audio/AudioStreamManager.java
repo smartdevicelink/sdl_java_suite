@@ -145,7 +145,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
                 serviceCompletionHandler.removeCallbacks(serviceCompletionTimeoutCallback);
 
                 streamingStateMachine.transitionToState(StreamingStateMachine.ERROR);
-                DebugTool.logError("OnServiceError: " + reason);
+                DebugTool.logError(TAG, "OnServiceError: " + reason);
                 streamingStateMachine.transitionToState(StreamingStateMachine.NONE);
 
                 if (serviceCompletionListener != null) {
@@ -229,7 +229,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
 
             @Override
             public void onError(String info) {
-                DebugTool.logError("Error retrieving audio streaming capability: " + info);
+                DebugTool.logError(TAG, "Error retrieving audio streaming capability: " + info);
                 streamingStateMachine.transitionToState(StreamingStateMachine.ERROR);
                 transitionToState(ERROR);
             }
@@ -414,7 +414,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
 
             @Override
             public void onDecoderError(Exception e) {
-                DebugTool.logError("decoder error", e);
+                DebugTool.logError(TAG, "decoder error", e);
             }
         };
 

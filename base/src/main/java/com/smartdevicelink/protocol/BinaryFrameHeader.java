@@ -76,7 +76,7 @@ public class BinaryFrameHeader {
 				msg.setBulkData(_bulkData);
 			}
 		} catch (OutOfMemoryError|ArrayIndexOutOfBoundsException e){
-			DebugTool.logError("Unable to process data to form header");
+			DebugTool.logError(TAG, "Unable to process data to form header");
 			return null;
 		}
 		

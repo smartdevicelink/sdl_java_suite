@@ -148,7 +148,7 @@ class PresentChoiceSetOperation extends Task {
 					if (listener != null){
 						listener.onComplete(false);
 					}
-					DebugTool.logError("Error Setting keyboard properties in present choice set operation");
+					DebugTool.logError(null, "Error Setting keyboard properties in present choice set operation");
 					return;
 				}
 
@@ -165,13 +165,13 @@ class PresentChoiceSetOperation extends Task {
 				if (listener != null){
 					listener.onComplete(false);
 				}
-				DebugTool.logError("Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
+				DebugTool.logError(null, "Error Setting keyboard properties in present keyboard operation - choice manager - " + info);
 			}
 		});
 		if (internalInterface.get() != null){
 			internalInterface.get().sendRPC(setGlobalProperties);
 		} else {
-			DebugTool.logError("Internal interface null - present choice set op - choice");
+			DebugTool.logError(null, "Internal interface null - present choice set op - choice");
 		}
 	}
 
@@ -181,7 +181,7 @@ class PresentChoiceSetOperation extends Task {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (!response.getSuccess()){
-					DebugTool.logError("Presenting Choice set failed: "+ response.getInfo());
+					DebugTool.logError(null, "Presenting Choice set failed: "+ response.getInfo());
 
 					if (choiceSetSelectionListener != null){
 						choiceSetSelectionListener.onError(response.getInfo());
@@ -202,7 +202,7 @@ class PresentChoiceSetOperation extends Task {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info) {
-				DebugTool.logError("Presenting Choice set failed: " + resultCode + ", " + info);
+				DebugTool.logError(null, "Presenting Choice set failed: " + resultCode + ", " + info);
 
 				if (choiceSetSelectionListener != null){
 					choiceSetSelectionListener.onError(resultCode + ", " + info);
@@ -213,7 +213,7 @@ class PresentChoiceSetOperation extends Task {
 		if (internalInterface.get() != null){
 			internalInterface.get().sendRPC(pi);
 		}else {
-			DebugTool.logError("Internal Interface null when presenting choice set in operation");
+			DebugTool.logError(null, "Internal Interface null when presenting choice set in operation");
 		}
 	}
 
@@ -232,7 +232,7 @@ class PresentChoiceSetOperation extends Task {
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError("Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
+					DebugTool.logError(null, "Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
 					PresentChoiceSetOperation.super.onFinished();
 				}
 			});
@@ -241,7 +241,7 @@ class PresentChoiceSetOperation extends Task {
 				internalInterface.get().sendRPC(setGlobalProperties);
 				internalInterface.get().removeOnRPCNotificationListener(FunctionID.ON_KEYBOARD_INPUT, keyboardRPCListener);
 			} else {
-				DebugTool.logError("Internal Interface null when finishing choice keyboard reset");
+				DebugTool.logError(null, "Internal Interface null when finishing choice keyboard reset");
 			}
 		} else {
 			PresentChoiceSetOperation.super.onFinished();
@@ -275,14 +275,14 @@ class PresentChoiceSetOperation extends Task {
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info){
-					DebugTool.logError("Error canceling the presented choice set " + resultCode + " " + info);
+					DebugTool.logError(null, "Error canceling the presented choice set " + resultCode + " " + info);
 				}
 			});
 
 			if (internalInterface.get() != null){
 				internalInterface.get().sendRPC(cancelInteraction);
 			} else {
-				DebugTool.logError("Internal interface null - could not send cancel interaction for choice set");
+				DebugTool.logError(null, "Internal interface null - could not send cancel interaction for choice set");
 			}
 		} else {
 			DebugTool.logInfo(null, "Canceling a choice set that has not yet been sent to Core");
@@ -351,7 +351,7 @@ class PresentChoiceSetOperation extends Task {
 				}
 
 				if (keyboardListener == null){
-					DebugTool.logError("Received Keyboard Input But Listener is null");
+					DebugTool.logError(null, "Received Keyboard Input But Listener is null");
 					return;
 				}
 
@@ -395,7 +395,7 @@ class PresentChoiceSetOperation extends Task {
 		if (internalInterface.get() != null) {
 			internalInterface.get().addOnRPCNotificationListener(FunctionID.ON_KEYBOARD_INPUT, keyboardRPCListener);
 		} else {
-			DebugTool.logError("Present Choice Set Keyboard Listener Not Added");
+			DebugTool.logError(null, "Present Choice Set Keyboard Listener Not Added");
 		}
 	}
 }

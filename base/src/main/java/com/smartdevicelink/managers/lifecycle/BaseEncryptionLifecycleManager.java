@@ -126,7 +126,7 @@ abstract class BaseEncryptionLifecycleManager {
                 if (serviceEncryptionListener != null) {
                     serviceEncryptionListener.onEncryptionServiceUpdated(type, false, "onServiceError: " + reason);
                 }
-                DebugTool.logError("onServiceError, session Type: " + type.getName() + ", reason: " + reason);
+                DebugTool.logError(null, "onServiceError, session Type: " + type.getName() + ", reason: " + reason);
             }
         };
 

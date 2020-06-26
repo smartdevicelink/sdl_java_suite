@@ -94,7 +94,7 @@ public class FileUtls {
             }
             return buffer.toByteArray();
         }catch (Exception e){
-            DebugTool.logError("Unable to download file - " + urlStr, e);
+            DebugTool.logError(null, "Unable to download file - " + urlStr, e);
             return null;
         }
     }

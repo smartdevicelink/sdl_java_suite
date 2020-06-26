@@ -96,7 +96,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
 		}
 
 		if(urlString == null || request_type == null){
-			DebugTool.logError("Can't process request, param error");
+			DebugTool.logError(TAG, "Can't process request, param error");
 			if(cb!=null){
 				cb.httpFailure(-1);
 				cb = null;
@@ -160,7 +160,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
 					cb.httpFailure(responseCode);
 					cb = null;
 				}
-				DebugTool.logError("Failed to download file - " + responseCode);
+				DebugTool.logError(TAG, "Failed to download file - " + responseCode);
 				return null;
 			}
 
@@ -179,7 +179,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
 				try {
 					reader.close();
 				} catch (final IOException e) {
-					DebugTool.logError("Error closing stream", e);
+					DebugTool.logError(TAG, "Error closing stream", e);
 				}
 			}
 			if(cb!=null){

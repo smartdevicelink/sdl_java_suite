@@ -158,7 +158,7 @@ abstract class BaseSdlManager {
         @Override
         public synchronized void onComplete(boolean success) {
             if (!success) {
-                DebugTool.logError("Sub manager failed to initialize");
+                DebugTool.logError(TAG, "Sub manager failed to initialize");
             }
             checkState();
         }
@@ -229,7 +229,7 @@ abstract class BaseSdlManager {
 
                     @Override
                     public void onError(int correlationId, Result resultCode, String info) {
-                        DebugTool.logError("Change Registration onError: " + resultCode + " | Info: " + info);
+                        DebugTool.logError(TAG, "Change Registration onError: " + resultCode + " | Info: " + info);
                         retryChangeRegistration();
                     }
                 });
@@ -258,7 +258,7 @@ abstract class BaseSdlManager {
 
     void checkSdlManagerState(){
         if (getState() != BaseSubManager.READY && getState() != BaseSubManager.LIMITED){
-            DebugTool.logError("SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
+            DebugTool.logError(TAG, "SdlManager is not ready for use, be sure to initialize with start() method, implement callback, and use SubManagers in the SdlManager's callback");
         }
     }
 
@@ -293,7 +293,7 @@ abstract class BaseSdlManager {
                             listener.onNotified(notification);
                         }
                     } catch (Exception e) {
-                        DebugTool.logError("Error going through queued notifications", e);
+                        DebugTool.logError(TAG, "Error going through queued notifications", e);
                     }
                 }
             }
@@ -431,7 +431,7 @@ abstract class BaseSdlManager {
      */
     public PermissionManager getPermissionManager() {
         if (permissionManager.getState() != BaseSubManager.READY && permissionManager.getState() != BaseSubManager.LIMITED) {
-            DebugTool.logError("PermissionManager should not be accessed because it is not in READY/LIMITED state");
+            DebugTool.logError(TAG, "PermissionManager should not be accessed because it is not in READY/LIMITED state");
         }
         checkSdlManagerState();
         return permissionManager;
@@ -445,7 +445,7 @@ abstract class BaseSdlManager {
      */
     public FileManager getFileManager() {
         if (fileManager.getState() != BaseSubManager.READY && fileManager.getState() != BaseSubManager.LIMITED) {
-            DebugTool.logError("FileManager should not be accessed because it is not in READY/LIMITED state");
+            DebugTool.logError(TAG, "FileManager should not be accessed because it is not in READY/LIMITED state");
         }
         checkSdlManagerState();
         return fileManager;
@@ -459,7 +459,7 @@ abstract class BaseSdlManager {
      */
     public ScreenManager getScreenManager() {
         if (screenManager.getState() != BaseSubManager.READY && screenManager.getState() != BaseSubManager.LIMITED) {
-            DebugTool.logError("ScreenManager should not be accessed because it is not in READY/LIMITED state");
+            DebugTool.logError(TAG, "ScreenManager should not be accessed because it is not in READY/LIMITED state");
         }
         checkSdlManagerState();
         return screenManager;

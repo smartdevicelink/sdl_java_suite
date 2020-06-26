@@ -83,12 +83,12 @@ public class VirtualDisplayEncoder {
      */
     public void init(Context context, IVideoStreamListener outputListener, VideoStreamingParameters streamingParams) throws Exception {
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            DebugTool.logError("API level of 19 required for VirtualDisplayEncoder");
+            DebugTool.logError(TAG, "API level of 19 required for VirtualDisplayEncoder");
             throw new Exception("API level of 19 required");
         }
 
         if (context == null || outputListener == null || streamingParams == null || streamingParams.getResolution() == null || streamingParams.getFormat() == null) {
-            DebugTool.logError("init parameters cannot be null for VirtualDisplayEncoder");
+            DebugTool.logError(TAG, "init parameters cannot be null for VirtualDisplayEncoder");
             throw new Exception("init parameters cannot be null");
         }
 
@@ -122,7 +122,7 @@ public class VirtualDisplayEncoder {
      */
     public void start() throws Exception {
         if (!initPassed) {
-            DebugTool.logError("VirtualDisplayEncoder was not properly initialized with the init() method.");
+            DebugTool.logError(TAG, "VirtualDisplayEncoder was not properly initialized with the init() method.");
             return;
         }
         if (streamingParams == null || streamingParams.getResolution() == null || streamingParams.getFormat() == null) {
@@ -142,7 +142,7 @@ public class VirtualDisplayEncoder {
                 startEncoder();
 
             } catch (Exception ex) {
-                DebugTool.logError("Unable to create Virtual Display.");
+                DebugTool.logError(TAG, "Unable to create Virtual Display.");
                 throw new RuntimeException(ex);
             }
         }
@@ -150,7 +150,7 @@ public class VirtualDisplayEncoder {
 
     public void shutDown() {
         if (!initPassed) {
-            DebugTool.logError("VirtualDisplayEncoder was not properly initialized with the init() method.");
+            DebugTool.logError(TAG, "VirtualDisplayEncoder was not properly initialized with the init() method.");
             return;
         }
         try {
@@ -175,7 +175,7 @@ public class VirtualDisplayEncoder {
                 inputSurface = null;
             }
         } catch (Exception ex) {
-            DebugTool.logError("shutDown() failed");
+            DebugTool.logError(TAG, "shutDown() failed");
         }
     }
 
@@ -266,7 +266,7 @@ public class VirtualDisplayEncoder {
                 encoderThread = new Thread(new EncoderCompat());
 
             } else {
-                DebugTool.logError("Unable to start encoder. Android OS version " + Build.VERSION.SDK_INT + "is not supported");
+                DebugTool.logError(TAG, "Unable to start encoder. Android OS version " + Build.VERSION.SDK_INT + "is not supported");
             }
 
             return surface;

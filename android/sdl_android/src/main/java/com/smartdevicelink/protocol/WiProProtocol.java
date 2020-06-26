@@ -365,7 +365,7 @@ public class WiProProtocol extends AbstractProtocol {
 			try {
 				accumulator = new ByteArrayOutputStream(totalSize);
 			}catch(OutOfMemoryError e){
-				DebugTool.logError("OutOfMemory error", e); //Garbled bits were received
+				DebugTool.logError(null, "OutOfMemory error", e); //Garbled bits were received
 				accumulator = null;
 			}
 		}
@@ -405,7 +405,7 @@ public class WiProProtocol extends AbstractProtocol {
 				try {
 					handleProtocolMessageReceived(message);
 				} catch (Exception excp) {
-					DebugTool.logError(FailurePropagating_Msg + "onProtocolMessageReceived: " + excp.toString(), excp);
+					DebugTool.logError(null, FailurePropagating_Msg + "onProtocolMessageReceived: " + excp.toString(), excp);
 				} // end-catch
 
 				hasFirstFrame = false;
@@ -631,7 +631,7 @@ public class WiProProtocol extends AbstractProtocol {
 			try {
 				handleProtocolMessageReceived(message);
 			} catch (Exception ex) {
-				DebugTool.logError(FailurePropagating_Msg + "onProtocolMessageReceived: " + ex.toString(), ex);
+				DebugTool.logError(null,FailurePropagating_Msg + "onProtocolMessageReceived: " + ex.toString(), ex);
 				handleProtocolError(FailurePropagating_Msg + "onProtocolMessageReceived: ", ex);
 			} // end-catch
 		} // end-method

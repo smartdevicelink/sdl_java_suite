@@ -209,7 +209,7 @@ public class SampleBuffer {
                 return avg;
             }
             default: {
-                DebugTool.logError("SampleBuffer.get(int): The sample type is not known: " + sampleType);
+                DebugTool.logError(TAG, "SampleBuffer.get(int): The sample type is not known: " + sampleType);
                 return 0.0;
             }
         }
@@ -273,7 +273,7 @@ public class SampleBuffer {
                 break;
             }
             default: {
-                DebugTool.logError("SampleBuffer.set(int): The sample type is not known: " + sampleType);
+                DebugTool.logError(TAG, "SampleBuffer.set(int): The sample type is not known: " + sampleType);
             }
         }
     }

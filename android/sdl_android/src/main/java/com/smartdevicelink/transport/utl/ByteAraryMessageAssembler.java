@@ -92,7 +92,7 @@ public class ByteAraryMessageAssembler {
 				this.isFinished = true;
 				break;
 			default:
-				DebugTool.logError("Error handling message");
+				DebugTool.logError(TAG, "Error handling message");
 				return false;
 			}
 			

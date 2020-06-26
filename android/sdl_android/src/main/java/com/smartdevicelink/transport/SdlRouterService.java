@@ -520,7 +520,7 @@ public class SdlRouterService extends Service{
 												// This means no transport is connected. Likely the
 												// router service has already disconnected and this
 												// is now just executing.
-												DebugTool.logError("Can't send packet, no transport specified and none are connected.");
+												DebugTool.logError(TAG, "Can't send packet, no transport specified and none are connected.");
 												return;
 											}
 											//Log.d(TAG, "Transport type was null, so router set it to " + transportType.name());
@@ -1557,7 +1557,7 @@ public class SdlRouterService extends Service{
 			startForeground(id, notification);
 			DebugTool.logInfo(TAG, "Entered the foreground - " + System.currentTimeMillis());
 		}catch (Exception e){
-			DebugTool.logError("Unable to start service in foreground", e);
+			DebugTool.logError(TAG, "Unable to start service in foreground", e);
 		}
 	}
 
@@ -1578,7 +1578,7 @@ public class SdlRouterService extends Service{
 							notificationManager.deleteNotificationChannel(SDL_NOTIFICATION_CHANNEL_ID);
 						}
 					} catch (Exception e) {
-						DebugTool.logError("Issue when removing notification and channel", e);
+						DebugTool.logError(TAG, "Issue when removing notification and channel", e);
 					}
 				}
 				isForeground = false;
