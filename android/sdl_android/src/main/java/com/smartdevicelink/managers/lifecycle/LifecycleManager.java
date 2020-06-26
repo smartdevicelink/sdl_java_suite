@@ -69,14 +69,9 @@ import java.util.concurrent.ScheduledExecutorService;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class LifecycleManager extends BaseLifecycleManager {
-    private static final int RESPONSE_WAIT_TIME = 2000;
     private ISdlServiceListener videoServiceListener;
-    private boolean videoServiceStartResponseReceived = false;  //FIXME these statuses should be improved
+    private boolean videoServiceStartResponseReceived = false;
     private boolean videoServiceStartResponse = false;
-    private boolean videoServiceEndResponseReceived = false;
-    private boolean videoServiceEndResponse = false;
-    private boolean audioServiceEndResponseReceived = false;
-    private boolean audioServiceEndResponse = false;
     private WeakReference<Context> contextWeakReference;
 
     public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
@@ -178,30 +173,6 @@ public class LifecycleManager extends BaseLifecycleManager {
         if (sessionType.eq(SessionType.NAV)) {
             videoServiceStartResponseReceived = true;
             videoServiceStartResponse = false;
-        }
-    }
-
-    @Override
-    void onServiceEnded(SessionType sessionType) {
-        super.onServiceEnded(sessionType);
-        if (sessionType.eq(SessionType.NAV)) {
-            videoServiceEndResponseReceived = true;
-            videoServiceEndResponse = true;
-        } else if (sessionType.eq(SessionType.PCM)) {
-            audioServiceEndResponseReceived = true;
-            audioServiceEndResponse = true;
-        }
-    }
-
-    @Override
-    void onStopServiceNACKed(SessionType sessionType) {
-        super.onStopServiceNACKed(sessionType);
-        if (sessionType.eq(SessionType.NAV)) {
-            videoServiceEndResponseReceived = true;
-            videoServiceEndResponse = false;
-        } else if (sessionType.eq(SessionType.PCM)) {
-            audioServiceEndResponseReceived = true;
-            audioServiceEndResponse = false;
         }
     }
 
@@ -311,10 +282,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             return;
         }
 
-        videoServiceEndResponseReceived = false;
-        videoServiceEndResponse = false;
         session.stopVideoStream();
-
     }
 
     @Override
@@ -346,8 +314,6 @@ public class LifecycleManager extends BaseLifecycleManager {
             return;
         }
 
-        audioServiceEndResponseReceived = false;
-        audioServiceEndResponse = false;
         session.stopAudioStream();
     }
 }
