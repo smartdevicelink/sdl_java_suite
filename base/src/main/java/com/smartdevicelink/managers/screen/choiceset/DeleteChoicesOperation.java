@@ -35,6 +35,7 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -48,25 +49,23 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-class DeleteChoicesOperation extends AsynchronousOperation {
+class DeleteChoicesOperation extends Task {
 
 	private WeakReference<ISdl> internalInterface;
 	private HashSet<ChoiceCell> cellsToDelete;
 	private CompletionListener completionListener;
 
 	DeleteChoicesOperation(ISdl internalInterface, HashSet<ChoiceCell> cellsToDelete, CompletionListener completionListener){
-		super();
+		super("DeleteChoicesOperation");
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.cellsToDelete = cellsToDelete;
 		this.completionListener = completionListener;
 	}
 
 	@Override
-	public void run() {
-		DeleteChoicesOperation.super.run();
+	public void onExecute() {
 		DebugTool.logInfo("Choice Operation: Executing delete choices operation");
 		sendDeletions();
-		block();
 	}
 
 	private void sendDeletions(){
@@ -88,7 +87,7 @@ class DeleteChoicesOperation extends AsynchronousOperation {
 						}
 						DebugTool.logInfo("Successfully deleted choices");
 
-						DeleteChoicesOperation.super.finishOperation();
+						DeleteChoicesOperation.super.onFinished();
 					}
 
 					@Override
@@ -98,7 +97,7 @@ class DeleteChoicesOperation extends AsynchronousOperation {
 						}
 						DebugTool.logError("Failed to delete choice: " + info + " | Corr ID: " + correlationId);
 
-						DeleteChoicesOperation.super.finishOperation();
+						DeleteChoicesOperation.super.onFinished();
 					}
 
 					@Override

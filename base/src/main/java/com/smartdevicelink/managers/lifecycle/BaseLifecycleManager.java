@@ -36,6 +36,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
@@ -134,6 +135,7 @@ abstract class BaseLifecycleManager {
     Version minimumProtocolVersion;
     Version minimumRPCVersion;
     BaseTransportConfig _transportConfig;
+    private Taskmaster taskmaster;
 
     BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
         this.appConfig = appConfig;
@@ -163,6 +165,20 @@ abstract class BaseLifecycleManager {
 
     public void stop() {
         session.close();
+        if (taskmaster != null) {
+            taskmaster.shutdown();
+        }
+    }
+
+    Taskmaster getTaskmaster() {
+        if (taskmaster == null) {
+            Taskmaster.Builder builder = new Taskmaster.Builder();
+            builder.setThreadCount(2);
+            builder.shouldBeDaemon(false);
+            taskmaster = builder.build();
+            taskmaster.start();
+        }
+        return taskmaster;
     }
 
     Version getProtocolVersion() {
@@ -1145,6 +1161,11 @@ abstract class BaseLifecycleManager {
         @Override
         public void startRPCEncryption() {
             BaseLifecycleManager.this.startRPCEncryption();
+        }
+
+        @Override
+        public Taskmaster getTaskmaster() {
+            return BaseLifecycleManager.this.getTaskmaster();
         }
     };
 

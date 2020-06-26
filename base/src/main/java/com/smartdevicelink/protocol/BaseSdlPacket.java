@@ -31,13 +31,9 @@
  */
 package com.smartdevicelink.protocol;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.livio.BSON.BsonEncoder;
 import com.smartdevicelink.protocol.enums.FrameType;
 import com.smartdevicelink.transport.utl.TransportRecord;
-import com.smartdevicelink.util.DebugTool;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -47,7 +43,7 @@ import java.util.HashMap;
  * Any other binder transactions must include an additional int flag into their bundle or the parsing
  * of this object will fail.
  */
-public class SdlPacket implements Parcelable{
+class BaseSdlPacket {
 
 	/**
 	 * This is the amount of bytes added to the bundle from the router service for a specific int
@@ -122,9 +118,9 @@ public class SdlPacket implements Parcelable{
 	int messagingVersion = 1;
 	TransportRecord transportRecord;
 
-	public SdlPacket(int version, boolean encryption, int frameType,
-			int serviceType, int frameInfo, int sessionId,
-			int dataSize, int messageId, byte[] payload) {
+	BaseSdlPacket(int version, boolean encryption, int frameType,
+						 int serviceType, int frameInfo, int sessionId,
+						 int dataSize, int messageId, byte[] payload) {
 		this.version = version;
 		this.encryption = encryption;
 		this.frameType = frameType;
@@ -140,9 +136,9 @@ public class SdlPacket implements Parcelable{
 		}
 	}
 
-	public SdlPacket(int version, boolean encryption, int frameType,
-			int serviceType, int frameInfo, int sessionId,
-			int dataSize, int messageId, byte[] payload, int offset,int bytesToWrite) {
+	BaseSdlPacket(int version, boolean encryption, int frameType,
+						 int serviceType, int frameInfo, int sessionId,
+						 int dataSize, int messageId, byte[] payload, int offset, int bytesToWrite) {
 		this.version = version;
 		this.encryption = encryption;
 		this.frameType = frameType;
@@ -166,7 +162,7 @@ public class SdlPacket implements Parcelable{
 	 * <p>Frame Info
 	 * <p>
 	 */
-	protected SdlPacket(){
+	protected BaseSdlPacket(){
 		//Package only empty constructor
 		this.version = 1;
 		this.encryption = false;
@@ -183,7 +179,7 @@ public class SdlPacket implements Parcelable{
 	 * Creates a new packet based on previous packet definitions. Will not copy payload.
 	 * @param packet an instance of the packet that should be copied.
 	 */
-	protected SdlPacket(SdlPacket packet){
+	protected BaseSdlPacket(BaseSdlPacket packet){
 		this.version = packet.version;
 		this.encryption = packet.encryption;
 		this.frameType = packet.frameType;	
@@ -359,92 +355,6 @@ public class SdlPacket implements Parcelable{
 	public void setMessagingVersion(int version){
 		this.messagingVersion = version;
 	}
-	
-	
-	
-	/* ***************************************************************************************************************************************************
-	 * ***********************************************************  Parceable Overrides  *****************************************************************
-	 *****************************************************************************************************************************************************/
-
-
-
-	//I think this is FIFO...right?
-	public SdlPacket(Parcel p) {
-		this.version = p.readInt();
-		this.encryption = (p.readInt() == 0) ? false : true;
-		this.frameType = p.readInt();
-		this.serviceType = p.readInt();
-		this.frameInfo = p.readInt();
-		this.sessionId = p.readInt();
-		this.dataSize = p.readInt();
-		this.messageId = p.readInt();
-		if(p.readInt() == 1){ //We should have a payload attached
-			payload = new byte[dataSize];
-			p.readByteArray(payload);
-		}
-
-		this.priorityCoefficient = p.readInt();
-
-		if(p.dataAvail() > EXTRA_PARCEL_DATA_LENGTH) {	//See note on constant for why not 0
-			try {
-				messagingVersion = p.readInt();
-				if (messagingVersion >= 2) {
-					if (p.readInt() == 1) { //We should have a transport type attached
-						this.transportRecord = (TransportRecord) p.readParcelable(TransportRecord.class.getClassLoader());
-					}
-				}
-			}catch (RuntimeException e){
-				DebugTool.logError("Error creating packet from parcel", e);
-			}
-		}
-	}
-	
-	
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		
-		dest.writeInt(version);
-		dest.writeInt(encryption? 1 : 0);
-		dest.writeInt(frameType);
-		dest.writeInt(serviceType);
-		dest.writeInt(frameInfo);
-		dest.writeInt(sessionId);
-		dest.writeInt(dataSize);
-		dest.writeInt(messageId);
-		dest.writeInt(payload!=null? 1 : 0);
-		if(payload!=null){
-			dest.writeByteArray(payload);
-		}
-		dest.writeInt(priorityCoefficient);
-
-		///Additions after initial creation
-		if(messagingVersion > 1){
-			dest.writeInt(messagingVersion);
-
-			dest.writeInt(transportRecord!=null? 1 : 0);
-			if(transportRecord != null){
-				dest.writeParcelable(transportRecord,0);
-			}
-		}
-
-	}
-	
-	public static final Parcelable.Creator<SdlPacket> CREATOR = new Parcelable.Creator<SdlPacket>() {
-        public SdlPacket createFromParcel(Parcel in) {
-     	   return new SdlPacket(in); 
-        }
-
-		@Override
-		public SdlPacket[] newArray(int size) {
-			return new SdlPacket[size];
-		}
-
-    };
 
 	public void putTag(String tag, Object data){
 		if(bsonPayload == null){

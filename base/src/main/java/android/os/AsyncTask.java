@@ -18,6 +18,7 @@
  
 package android.os;
 
+@Deprecated
 public abstract class AsyncTask<Params, Progress, Result> {
 
 

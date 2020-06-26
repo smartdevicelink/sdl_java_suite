@@ -35,6 +35,7 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -59,7 +60,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class PresentKeyboardOperation extends AsynchronousOperation {
+class PresentKeyboardOperation extends Task {
 
 	private WeakReference<ISdl> internalInterface;
 	private KeyboardListener keyboardListener;
@@ -71,7 +72,7 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 	SdlMsgVersion sdlMsgVersion;
 
 	PresentKeyboardOperation(ISdl internalInterface, KeyboardProperties originalKeyboardProperties, String initialText, KeyboardProperties customConfig, KeyboardListener keyboardListener, Integer cancelID){
-		super();
+		super("PresentKeyboardOperation");
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.keyboardListener = keyboardListener;
 		this.originalKeyboardProperties = originalKeyboardProperties;
@@ -83,18 +84,16 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 	}
 
 	@Override
-	public void run() {
-		PresentKeyboardOperation.super.run();
+	public void onExecute() {
 		DebugTool.logInfo("Keyboard Operation: Executing present keyboard operation");
 		addListeners();
 		start();
-		block();
 	}
 
 	private void start(){
 		DebugTool.logInfo("Choice Operation: Executing present keyboard operation");
 
-		if (isCancelled()) {
+		if (getState() == Task.CANCELED) {
 			finishOperation();
 			return;
 		}
@@ -107,7 +106,7 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 		updateKeyboardProperties(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
-				if (isCancelled()) {
+				if (getState() == Task.CANCELED) {
 					finishOperation();
 					return;
 				}
@@ -148,13 +147,13 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 	 *  This will only dismiss an already presented keyboard if connected to head units running SDL 6.0+.
 	 */
 	void dismissKeyboard() {
-		if (isFinished()) {
+		if ((getState() == Task.FINISHED)) {
 			DebugTool.logInfo("This operation has already finished so it can not be canceled.");
 			return;
-		} else if (isCancelled()) {
+		} else if (getState() == Task.CANCELED) {
 			DebugTool.logInfo("This operation has already been canceled. It will be finished at some point during the operation.");
 			return;
-		} else if (isExecuting()) {
+		} else if (getState() == Task.IN_PROGRESS) {
 			if (sdlMsgVersion.getMajorVersion() < 6){
 				DebugTool.logWarning("Canceling a keyboard is not supported on this head unit");
 				return;
@@ -181,7 +180,7 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 			}
 		} else {
 			DebugTool.logInfo("Canceling a keyboard that has not yet been sent to Core.");
-			this.cancel();
+			this.cancelTask();
 		}
 	}
 
@@ -242,13 +241,13 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 				public void onResponse(int correlationId, RPCResponse response) {
 					updatedKeyboardProperties = false;
 					DebugTool.logInfo("Successfully reset choice keyboard properties to original config");
-					PresentKeyboardOperation.super.finishOperation();
+					PresentKeyboardOperation.super.onFinished();
 				}
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info) {
 					DebugTool.logError("Failed to reset choice keyboard properties to original config " + resultCode + ", " + info);
-					PresentKeyboardOperation.super.finishOperation();
+					PresentKeyboardOperation.super.onFinished();
 				}
 			});
 
@@ -259,7 +258,7 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 				DebugTool.logError("Internal Interface null when finishing choice keyboard reset");
 			}
 		} else {
-			PresentKeyboardOperation.super.finishOperation();
+			PresentKeyboardOperation.super.onFinished();
 		}
 	}
 
@@ -286,7 +285,7 @@ class PresentKeyboardOperation extends AsynchronousOperation {
 		keyboardRPCListener = new OnRPCNotificationListener() {
 			@Override
 			public void onNotified(RPCNotification notification) {
-				if (isCancelled()) {
+				if (getState() == Task.CANCELED) {
 					finishOperation();
 					return;
 				}

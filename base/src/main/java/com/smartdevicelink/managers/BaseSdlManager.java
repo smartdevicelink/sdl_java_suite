@@ -311,7 +311,6 @@ abstract class BaseSdlManager {
             //Set variables to null that are no longer needed
             queuedNotifications = null;
             queuedNotificationListener = null;
-            onRPCNotificationListeners = null;
         }
     }
 
