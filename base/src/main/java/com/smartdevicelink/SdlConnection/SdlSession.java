@@ -153,7 +153,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
 
 
     public void shutdown(String info){
-        DebugTool.logInfo("Shutdown - " + info);
+        DebugTool.logInfo(TAG, "Shutdown - " + info);
         this.sessionListener.onTransportDisconnected(info);
 
     }
@@ -261,7 +261,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
     public void onProtocolSessionStarted(SessionType sessionType,
                                          byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
 
-        DebugTool.logInfo("Protocol session started");
+        DebugTool.logInfo(TAG, "Protocol session started");
 
         this.sessionId = sessionID;
         if (sessionType.eq(SessionType.RPC)){
@@ -397,7 +397,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
      *************************************************************************************************************************************************************************/
 
     public void onProtocolMessageBytesToSend(SdlPacket packet) {
-        //DebugTool.logInfo("onProtocolMessageBytesToSend - " + packet.getTransportType());
+        //DebugTool.logInfo(TAG, "onProtocolMessageBytesToSend - " + packet.getTransportType());
         sdlProtocol.sendPacket(packet);
     }
 

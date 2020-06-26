@@ -32,7 +32,6 @@
 
 package com.smartdevicelink.java;
 
-import android.util.Log;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
@@ -91,7 +90,7 @@ public class SdlService {
     }
 
     public void start() {
-        DebugTool.logInfo("SdlService start() ");
+        DebugTool.logInfo(TAG, "SdlService start() ");
         if(sdlManager != null){
             sdlManager.start();
         }
@@ -109,7 +108,7 @@ public class SdlService {
         // Build flavors are selected by the "build variants" tab typically located in the bottom left of Android Studio
         // Typically in your app, you will only set one of these.
         if (sdlManager == null) {
-            DebugTool.logInfo("Creating SDL Manager");
+            DebugTool.logInfo(TAG, "Creating SDL Manager");
 
             //FIXME add the transport type
             // The app type to be used
@@ -121,12 +120,12 @@ public class SdlService {
             SdlManagerListener listener = new SdlManagerListener() {
                 @Override
                 public void onStart(SdlManager sdlManager) {
-                    DebugTool.logInfo("SdlManager onStart");
+                    DebugTool.logInfo(TAG, "SdlManager onStart");
                 }
 
                 @Override
                 public void onDestroy(SdlManager sdlManager) {
-                    DebugTool.logInfo("SdlManager onDestroy ");
+                    DebugTool.logInfo(TAG, "SdlManager onDestroy ");
                     SdlService.this.sdlManager = null;
                     if(SdlService.this.callback != null){
                         SdlService.this.callback.onEnd();
@@ -220,14 +219,14 @@ public class SdlService {
         VoiceCommand voiceCommand1 = new VoiceCommand(list1, new VoiceCommandSelectionListener() {
             @Override
             public void onVoiceCommandSelected() {
-                Log.i(TAG, "Voice Command 1 triggered");
+                DebugTool.logInfo(TAG, "Voice Command 1 triggered");
             }
         });
 
         VoiceCommand voiceCommand2 = new VoiceCommand(list2, new VoiceCommandSelectionListener() {
             @Override
             public void onVoiceCommandSelected() {
-                Log.i(TAG, "Voice Command 2 triggered");
+                DebugTool.logInfo(TAG, "Voice Command 2 triggered");
             }
         });
 
@@ -248,7 +247,7 @@ public class SdlService {
         MenuCell mainCell1 = new MenuCell("Test Cell 1 (speak)", livio, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Test cell 1 triggered. Source: "+ trigger.toString());
+                DebugTool.logInfo(TAG, "Test cell 1 triggered. Source: "+ trigger.toString());
                 showTest();
             }
         });
@@ -256,7 +255,7 @@ public class SdlService {
         MenuCell mainCell2 = new MenuCell("Test Cell 2", null, voice2, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Test cell 2 triggered. Source: "+ trigger.toString());
+                DebugTool.logInfo(TAG, "Test cell 2 triggered. Source: "+ trigger.toString());
             }
         });
 
@@ -265,14 +264,14 @@ public class SdlService {
         MenuCell subCell1 = new MenuCell("SubCell 1",null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Sub cell 1 triggered. Source: "+ trigger.toString());
+                DebugTool.logInfo(TAG, "Sub cell 1 triggered. Source: "+ trigger.toString());
             }
         });
 
         MenuCell subCell2 = new MenuCell("SubCell 2",null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Sub cell 2 triggered. Source: "+ trigger.toString());
+                DebugTool.logInfo(TAG, "Sub cell 2 triggered. Source: "+ trigger.toString());
             }
         });
 
@@ -289,7 +288,7 @@ public class SdlService {
         MenuCell mainCell5 = new MenuCell("Clear the menu",null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Clearing Menu. Source: "+ trigger.toString());
+                DebugTool.logInfo(TAG, "Clearing Menu. Source: "+ trigger.toString());
                 // Clear this thing
                 sdlManager.getScreenManager().setMenu(Collections.<MenuCell>emptyList());
                 showAlert("Menu Cleared");
@@ -321,7 +320,7 @@ public class SdlService {
             @Override
             public void onComplete(boolean success) {
                 if (success){
-                    Log.i(TAG, "welcome show successful");
+                    DebugTool.logInfo(TAG, "welcome show successful");
                 }
             }
         });
@@ -370,7 +369,7 @@ public class SdlService {
 
                 @Override
                 public void onError(String error) {
-                    Log.e(TAG, "There was an error showing the perform interaction: "+ error);
+                    DebugTool.logError(TAG, "There was an error showing the perform interaction: "+ error);
                 }
             });
             sdlManager.getScreenManager().presentChoiceSet(choiceSet, InteractionMode.MANUAL_ONLY);

@@ -54,9 +54,9 @@ public class Main {
                 }
                 System.gc();
                 Thread.sleep(500);
-                DebugTool.logInfo( "Attempting to start SDL Service again");
+                DebugTool.logInfo(null,  "Attempting to start SDL Service again");
                 startSdlService();
-                DebugTool.logInfo("SdlService started");
+                DebugTool.logInfo(null, "SdlService started");
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -85,7 +85,7 @@ public class Main {
 
             @Override
             public void run() {
-                DebugTool.logInfo("Starting SDL Service");
+                DebugTool.logInfo(null, "Starting SDL Service");
                 sdlService  = new SdlService(new WebSocketServerConfig(5432, -1), serviceCallback);
                 sdlService.start();
 

@@ -189,9 +189,9 @@ public class TransportManager extends TransportManagerBase{
         @Override
         public void onConnectionTerminated(String reason) {
             if(record != null){
-                DebugTool.logInfo("Transport disconnected - " + record);
+                DebugTool.logInfo(TAG, "Transport disconnected - " + record);
             }else{
-                DebugTool.logInfo("Transport disconnected");
+                DebugTool.logInfo(TAG, "Transport disconnected");
 
             }
 

@@ -87,7 +87,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
 
     @Override
     public void write(SdlPacket packet){
-        //DebugTool.logInfo("Atttempt to write packet " + packet);
+        //DebugTool.logInfo(TAG, "Atttempt to write packet " + packet);
         if(packet != null
                 && this.webSocket != null
                 && this.webSocket.isOpen()) {
@@ -103,7 +103,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
 
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake clientHandshake) {
-        DebugTool.logInfo("onOpen");
+        DebugTool.logInfo(TAG, "onOpen");
         this.webSocket = webSocket;
 
         if(callback!=null){
@@ -113,11 +113,11 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
 
     @Override
     public void onClose(WebSocket webSocket, int i, String s, boolean b) {
-        DebugTool.logInfo("onClose");
+        DebugTool.logInfo(TAG, "onClose");
         try{
-            DebugTool.logInfo("Closing id - " + i);
-            DebugTool.logInfo("Closing string - " + s);
-            DebugTool.logInfo("Closing from remote?  " + b);
+            DebugTool.logInfo(TAG, "Closing id - " + i);
+            DebugTool.logInfo(TAG, "Closing string - " + s);
+            DebugTool.logInfo(TAG, "Closing from remote?  " + b);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -132,7 +132,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
     public void onWebsocketCloseInitiated(WebSocket conn, int code, String reason) {
         super.onWebsocketCloseInitiated(conn, code, reason);
         try{
-            DebugTool.logInfo("Code - " + code + " Reason - " + reason);
+            DebugTool.logInfo(TAG, "Code - " + code + " Reason - " + reason);
         }catch (Exception e){}
     }
 
@@ -144,7 +144,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
     @Override
     public void onMessage(WebSocket conn, ByteBuffer message) {
         super.onMessage(conn, message);
-        //DebugTool.logInfo("on Message - ByteBuffer");
+        //DebugTool.logInfo(TAG, "on Message - ByteBuffer");
         byte input;
 
         if(message != null){
@@ -163,7 +163,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
                         synchronized (WebSocketServer.this) {
                             SdlPacket packet = psm.getFormedPacket();
                             if (callback != null && packet != null) {
-                               /// DebugTool.logInfo("Read a packet: " + packet);
+                               /// DebugTool.logInfo(TAG, "Read a packet: " + packet);
                                 packet.setTransportRecord(transportRecord);
                                 callback.onPacketReceived(packet);
                             }
@@ -190,7 +190,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
 
     @Override
     public void onStart() {
-        DebugTool.logInfo("onStart");
+        DebugTool.logInfo(TAG, "onStart");
         psm = new SdlPsm();
 
     }
