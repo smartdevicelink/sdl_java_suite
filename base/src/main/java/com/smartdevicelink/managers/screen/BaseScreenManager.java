@@ -567,25 +567,13 @@ abstract class BaseScreenManager extends BaseSubManager {
 	 */
 	public void commit(final CompletionListener listener){
 		softButtonManager.setBatchUpdates(false);
-		softButtonManager.update(new CompletionListener() {
-			boolean updateSuccessful = true;
+		textAndGraphicManager.setBatchUpdates(false);
+		textAndGraphicManager.update(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
-				if (!success){
-					updateSuccessful = false;
+				if (listener != null) {
+					listener.onComplete(success);
 				}
-				textAndGraphicManager.setBatchUpdates(false);
-				textAndGraphicManager.update(new CompletionListener() {
-					@Override
-					public void onComplete(boolean success) {
-						if (!success){
-							updateSuccessful = false;
-						}
-						if (listener != null) {
-							listener.onComplete(updateSuccessful);
-						}
-					}
-				});
 			}
 		});
 	}

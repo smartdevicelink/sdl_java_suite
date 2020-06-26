@@ -49,6 +49,7 @@ import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.Surface;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.BuildConfig;
 import com.smartdevicelink.Dispatcher.IDispatchingStrategy;
 import com.smartdevicelink.Dispatcher.ProxyMessageDispatcher;
@@ -312,6 +313,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	private Set<String> encryptionRequiredRPCs = new HashSet<>();
 	private boolean rpcSecuredServiceStarted;
 	private ServiceEncryptionListener serviceEncryptionListener;
+	private Taskmaster taskmaster;
 
 	// Interface broker
 	private SdlInterfaceBroker _interfaceBroker = null;
@@ -536,7 +538,23 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		public void startRPCEncryption() {
 			SdlProxyBase.this.startProtectedRPCService();
 		}
+
+		@Override
+		public Taskmaster getTaskmaster() {
+			return SdlProxyBase.this.getTaskmaster();
+		}
 	};
+
+	Taskmaster getTaskmaster() {
+		if (taskmaster == null) {
+			Taskmaster.Builder builder = new Taskmaster.Builder();
+			builder.setThreadCount(2);
+			builder.shouldBeDaemon(false);
+			taskmaster = builder.build();
+			taskmaster.start();
+		}
+		return taskmaster;
+	}
 	
 	private void notifyPutFileStreamError(Exception e, String info)
 	{
@@ -1831,6 +1849,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void dispose() throws SdlException {
 		SdlTrace.logProxyEvent("Application called dispose() method.", SDL_LIB_TRACE_KEY);
 		disposeInternal(SdlDisconnectedReason.APPLICATION_REQUESTED_DISCONNECT);
+		if (taskmaster != null) {
+			taskmaster.shutdown();
+		}
 	}
 	/**
 	 * Terminates the App's Interface Registration, closes the transport connection, ends the protocol session, and frees any resources used by the proxy.

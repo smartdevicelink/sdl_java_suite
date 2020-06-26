@@ -2,6 +2,7 @@ package com.smartdevicelink.test.proxy;
 
 import android.util.SparseArray;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -1069,5 +1070,10 @@ public class SystemCapabilityManagerTests extends AndroidTestCase2 {
 
 		@Override
 		public void startRPCEncryption() {}
+
+		@Override
+		public Taskmaster getTaskmaster() {
+			return null;
+		}
 	}
 }

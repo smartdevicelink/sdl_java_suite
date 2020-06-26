@@ -48,7 +48,6 @@ import com.smartdevicelink.util.DebugTool;
  */
 public class SoftButtonState {
 
-    private static final String TAG = "SoftButtonState";
     private String name;
     private SdlArtwork artwork;
     private final SoftButton softButton;
@@ -84,13 +83,15 @@ public class SoftButtonState {
 
         // Set the SoftButton's image
         if (artwork != null) {
-            softButton.setImage(artwork.getImageRPC());
+            this.softButton.setImage(artwork.getImageRPC());
         }
 
         // Set the SoftButton's text
         if (text != null) {
-            softButton.setText(text);
+            this.softButton.setText(text);
         }
+
+        this.softButton.setSystemAction(SystemAction.DEFAULT_ACTION);
     }
 
     /**

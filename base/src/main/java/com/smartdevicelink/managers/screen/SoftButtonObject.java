@@ -33,6 +33,7 @@ package com.smartdevicelink.managers.screen;
 
 import android.support.annotation.NonNull;
 
+import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
 import com.smartdevicelink.proxy.rpc.OnButtonEvent;
 import com.smartdevicelink.proxy.rpc.OnButtonPress;
 import com.smartdevicelink.proxy.rpc.SoftButton;
@@ -43,14 +44,13 @@ import java.util.List;
 
 /**
  * <strong>SoftButtonObject</strong> <br>
- * SoftButtonObject define a button that can have multiple SoftButtonState values.<br>
+ * SoftButtonObject defines a button that can have multiple SoftButtonState values.<br>
  * The states of SoftButtonObject allow the developer to not have to manage multiple SoftButtons that have very similar functionality.<br>
  * For example, a repeat button in a music app can be thought of as one SoftButtonObject with three typical states: repeat off, repeat 1, and repeat on.<br>
  * @see SoftButtonState
  */
 public class SoftButtonObject {
 
-    private static final String TAG = "SoftButtonObject";
     static int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
     static int SOFT_BUTTON_ID_MIN_VALUE = 0;
     static int SOFT_BUTTON_ID_MAX_VALUE = 65535;
@@ -79,7 +79,7 @@ public class SoftButtonObject {
 
         this.name = name;
         this.states = states;
-        currentStateName = initialStateName;
+        this.currentStateName = initialStateName;
         this.buttonId = SOFT_BUTTON_ID_NOT_SET_VALUE;
         this.onEventListener = onEventListener;
     }
@@ -95,6 +95,16 @@ public class SoftButtonObject {
     }
 
     /**
+     * Create a new instance of the SoftButtonObject with one state
+     * @param name a String value represents name of the object
+     * @param artwork a SdlArtwork to be displayed on the button
+     * @param onEventListener a listener that has a callback that will be triggered when a button event happens
+     */
+    public SoftButtonObject(@NonNull String name, @NonNull String text, SdlArtwork artwork, OnEventListener onEventListener) {
+        this(name, Collections.singletonList(new SoftButtonState(name, text, artwork)), name, onEventListener);
+    }
+
+    /**
      * Transition the SoftButtonObject to a specific state
      * @param newStateName a String value represents the name fo the state that we want to transition the SoftButtonObject to
      * @return a boolean value that represents whether the transition succeeded or failed
@@ -105,6 +115,12 @@ public class SoftButtonObject {
             DebugTool.logError(String.format("Attempted to transition to state: %s on soft button object: %s but no state with that name was found", newStateName, this.name));
             return false;
         }
+
+        if (states.size() == 1) {
+            DebugTool.logWarning("There's only one state, so no transitioning is possible!");
+            return false;
+        }
+
         DebugTool.logInfo(String.format("Transitioning soft button object %s to state %s", this.name, newStateName));
         currentStateName = newStateName;
 
@@ -125,11 +141,8 @@ public class SoftButtonObject {
         String nextStateName = null;
         for (int i = 0; i < states.size(); i++) {
             if (states.get(i).getName().equals(currentStateName)) {
-                if (i == (states.size() - 1)) {
-                    nextStateName = states.get(0).getName();
-                } else {
-                    nextStateName = states.get(i + 1).getName();
-                }
+                int nextStateNumber = (i == states.size() - 1) ? 0 : (i + 1);
+                nextStateName = states.get(nextStateNumber).getName();
                 break;
             }
         }
@@ -302,7 +315,7 @@ public class SoftButtonObject {
     /**
      * A listener interface that is used by SoftButtonObject to request an update from SoftButtonManager
      */
-    interface UpdateListener{
+    interface UpdateListener {
         /**
          * Requests an update from SoftButtonManager
          */
@@ -318,9 +331,8 @@ public class SoftButtonObject {
         int result = 1;
         result += ((getName() == null) ? 0 : Integer.rotateLeft(getName().hashCode(), 1));
         result += ((getCurrentStateName() == null) ? 0 : Integer.rotateLeft(getCurrentStateName().hashCode(), 2));
-        result += Integer.rotateLeft(Integer.valueOf(getButtonId()).hashCode(), 3);
         for (int i = 0; i < this.states.size(); i++) {
-            result += ((getStates().get(i) == null) ? 0 : Integer.rotateLeft(getStates().get(i).hashCode(), i + 4));
+            result += ((getStates().get(i) == null) ? 0 : Integer.rotateLeft(getStates().get(i).hashCode(), i + 3));
         }
         return result;
     }

@@ -130,6 +130,7 @@ public class SdlService {
                     SdlService.this.sdlManager = null;
                     if(SdlService.this.callback != null){
                         SdlService.this.callback.onEnd();
+                        stop();
                     }
                 }
 
