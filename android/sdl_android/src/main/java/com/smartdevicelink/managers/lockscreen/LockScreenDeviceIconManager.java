@@ -27,6 +27,7 @@ class LockScreenDeviceIconManager {
     private Context context;
     private static final String SDL_DEVICE_STATUS_SHARED_PREFS = "sdl.lockScreenIcon";
     private static final String STORED_ICON_DIRECTORY_PATH = "sdl/lock_screen_icon/";
+    private static final String TAG = "LockScreenDeviceIconManager";
 
     interface OnIconRetrievedListener {
         void onImageRetrieved(Bitmap icon);
@@ -49,10 +50,10 @@ class LockScreenDeviceIconManager {
         Bitmap icon = null;
         try {
             if (isIconCachedAndValid(iconURL)) {
-                DebugTool.logInfo("Icon Is Up To Date");
+                DebugTool.logInfo(TAG, "Icon Is Up To Date");
                 icon = getFileFromCache(iconURL);
                 if (icon == null) {
-                    DebugTool.logInfo("Icon from cache was null, attempting to re-download");
+                    DebugTool.logInfo(TAG, "Icon from cache was null, attempting to re-download");
                     icon = AndroidTools.downloadImage(iconURL);
                     if (icon != null) {
                         saveFileToCache(icon, iconURL);
@@ -64,7 +65,7 @@ class LockScreenDeviceIconManager {
                 iconRetrievedListener.onImageRetrieved(icon);
             } else {
                 // The icon is unknown or expired. Download the image, save it to the cache, and update the archive file
-                DebugTool.logInfo("Lock Screen Icon Update Needed");
+                DebugTool.logInfo(TAG, "Lock Screen Icon Update Needed");
                 icon = AndroidTools.downloadImage(iconURL);
                 if (icon != null) {
                     saveFileToCache(icon, iconURL);
@@ -94,15 +95,15 @@ class LockScreenDeviceIconManager {
         SharedPreferences sharedPref = this.context.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
         String iconLastUpdatedTime = sharedPref.getString(iconHash, null);
         if(iconLastUpdatedTime == null) {
-            DebugTool.logInfo("No Icon Details Found In Shared Preferences");
+            DebugTool.logInfo(TAG, "No Icon Details Found In Shared Preferences");
             return false;
         } else {
-            DebugTool.logInfo("Icon Details Found");
+            DebugTool.logInfo(TAG, "Icon Details Found");
             long lastUpdatedTime = 0;
             try {
                 lastUpdatedTime = Long.parseLong(iconLastUpdatedTime);
             } catch (NumberFormatException e) {
-                DebugTool.logInfo("Invalid time stamp stored to shared preferences, clearing cache and share preferences");
+                DebugTool.logInfo(TAG, "Invalid time stamp stored to shared preferences, clearing cache and share preferences");
                 clearIconDirectory();
                 sharedPref.edit().clear().commit();
             }

@@ -154,7 +154,7 @@ public class SdlManager extends BaseSdlManager {
     void checkState() {
         if (permissionManager != null && fileManager != null && screenManager != null && (!lockScreenConfig.isEnabled() || lockScreenManager != null)) {
             if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY && (!lockScreenConfig.isEnabled() || lockScreenManager.getState() == BaseSubManager.READY)) {
-                DebugTool.logInfo("Starting sdl manager, all sub managers are in ready state");
+                DebugTool.logInfo(TAG, "Starting sdl manager, all sub managers are in ready state");
                 transitionToState(BaseSubManager.READY);
                 handleQueuedNotifications();
                 notifyDevListener(null);
@@ -165,7 +165,7 @@ public class SdlManager extends BaseSdlManager {
                 transitionToState(BaseSubManager.ERROR);
                 notifyDevListener(info);
             } else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP || (lockScreenConfig.isEnabled() && lockScreenManager != null && lockScreenManager.getState() == BaseSubManager.SETTING_UP)) {
-                DebugTool.logInfo("SETTING UP sdl manager, some sub managers are still setting up");
+                DebugTool.logInfo(TAG, "SETTING UP sdl manager, some sub managers are still setting up");
                 transitionToState(BaseSubManager.SETTING_UP);
                 // No need to notify developer here!
             } else {
@@ -203,7 +203,7 @@ public class SdlManager extends BaseSdlManager {
                 @Override
                 public void run() {
                     checkLifecycleConfiguration();
-                    DebugTool.logInfo("Retry Change Registration Count: " + changeRegistrationRetry);
+                    DebugTool.logInfo(TAG, "Retry Change Registration Count: " + changeRegistrationRetry);
                 }
             }, 3000);
         }

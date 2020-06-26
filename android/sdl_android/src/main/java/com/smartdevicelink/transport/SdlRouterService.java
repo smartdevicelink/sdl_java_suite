@@ -1440,7 +1440,7 @@ public class SdlRouterService extends Service{
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
 	private void enterForeground(String content, long chronometerLength, boolean ongoing) {
-		DebugTool.logInfo("Attempting to enter the foreground - " + System.currentTimeMillis());
+		DebugTool.logInfo(TAG, "Attempting to enter the foreground - " + System.currentTimeMillis());
 		if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB){
 			DebugTool.logWarning(TAG, "Unable to start service as foreground due to OS SDK version being lower than 11");
 			isForeground = false;
@@ -1555,7 +1555,7 @@ public class SdlRouterService extends Service{
 				notification = builder.build();
 			}
 			startForeground(id, notification);
-			DebugTool.logInfo("Entered the foreground - " + System.currentTimeMillis());
+			DebugTool.logInfo(TAG, "Entered the foreground - " + System.currentTimeMillis());
 		}catch (Exception e){
 			DebugTool.logError("Unable to start service in foreground", e);
 		}
@@ -1564,7 +1564,7 @@ public class SdlRouterService extends Service{
 	private void exitForeground(){
 		synchronized (FOREGROUND_NOTIFICATION_LOCK) {
 			if (isForeground && !isPrimaryTransportConnected()) {	//Ensure that the service is in the foreground and no longer connected to a transport
-				DebugTool.logInfo("SdlRouterService to exit foreground");
+				DebugTool.logInfo(TAG, "SdlRouterService to exit foreground");
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 					this.stopForeground(Service.STOP_FOREGROUND_DETACH);
 				}else{

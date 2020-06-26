@@ -226,11 +226,11 @@ public class RouterServiceValidator {
 		//Grab the package for the currently running router service. We need this call regardless of if we are in debug mode or not.
 
 		if(this.service != null){
-			DebugTool.logInfo("Supplied service name of " + this.service.getClassName());
+			DebugTool.logInfo(TAG, "Supplied service name of " + this.service.getClassName());
 			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O && !isServiceRunning(context,this.service)){
 				//This means our service isn't actually running, so set to null. Hopefully we can find a real router service after this.
 				service = null;
-				DebugTool.logWarning("Supplied service is not actually running.");
+				DebugTool.logWarning(TAG, "Supplied service is not actually running.");
 			} else {
 				// If the running router service is created by this app, the validation is good by default
 				if (this.service.getPackageName().equals(context.getPackageName()) && callback != null) {
@@ -241,17 +241,17 @@ public class RouterServiceValidator {
 		}
 
 		if(this.service == null){
-			DebugTool.logInfo("about finding the best Router by using retrieveBestRouterServiceName");
+			DebugTool.logInfo(TAG, "about finding the best Router by using retrieveBestRouterServiceName");
 			new FindRouterTask(new FindConnectedRouterCallback() {
 				@Override
 				public void onFound(ComponentName component) {
-					DebugTool.logInfo("FindConnectedRouterCallback.onFound got called. Package=" + component);
+					DebugTool.logInfo(TAG, "FindConnectedRouterCallback.onFound got called. Package=" + component);
 					checkTrustedRouter(callback, pm, component);
 				}
 
 				@Override
 				public void onFailed() {
-					DebugTool.logInfo("FindConnectedRouterCallback.onFailed was called");
+					DebugTool.logInfo(TAG, "FindConnectedRouterCallback.onFailed was called");
 					if (callback != null) {
 						callback.onFinishedValidation(false, null);
 					}
@@ -341,17 +341,17 @@ public class RouterServiceValidator {
 									public void run() {
 										_counter.incrementAndGet();
 										if (connected) {
-											DebugTool.logInfo("We found the connected service (" + service + "); currentThread is " + Thread.currentThread().getName());
+											DebugTool.logInfo(TAG, "We found the connected service (" + service + "); currentThread is " + Thread.currentThread().getName());
 											serviceQueue.add(service);
 										} else if (_counter.get() == numServices) {
-											DebugTool.logInfo("SdlRouterStatusProvider returns service=" + service + "; connected=" + connected);
+											DebugTool.logInfo(TAG, "SdlRouterStatusProvider returns service=" + service + "; connected=" + connected);
 											_currentThread.interrupt();
 										}
 									}
 								});
 							}
 						});
-						DebugTool.logInfo("about checkIsConnected; thread=" + Thread.currentThread().getName());
+						DebugTool.logInfo(TAG, "about checkIsConnected; thread=" + Thread.currentThread().getName());
 						provider.checkIsConnected();
 					}
 				}
@@ -361,14 +361,14 @@ public class RouterServiceValidator {
 				ComponentName found = serviceQueue.poll(TIMEOUT_MSEC, TimeUnit.MILLISECONDS);
 				return found;
 			} catch(InterruptedException e) {
-				DebugTool.logInfo("FindRouterTask was interrupted because connected Router cannot be found");
+				DebugTool.logInfo(TAG,"FindRouterTask was interrupted because connected Router cannot be found");
 			}
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(ComponentName componentName) {
-			DebugTool.logInfo("onPostExecute componentName=" + componentName);
+			DebugTool.logInfo(TAG,"onPostExecute componentName=" + componentName);
 			super.onPostExecute(componentName);
 			if (mCallback != null) {
 				if (componentName != null && componentName.getPackageName() != null && componentName.getPackageName().length() != 0) {

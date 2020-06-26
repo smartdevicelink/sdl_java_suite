@@ -245,10 +245,10 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
     // OR if the HMI level is NONE since we want to delay sending RPCs until we're in non-NONE
     private void updateTransactionQueueSuspended() {
         if (softButtonCapabilities == null || HMILevel.HMI_NONE.equals(currentHMILevel)) {
-            DebugTool.logInfo(String.format("Suspending the transaction queue. Current HMI level is NONE: %b, soft button capabilities are null: %b", HMILevel.HMI_NONE.equals(currentHMILevel), softButtonCapabilities == null));
+            DebugTool.logInfo(null, String.format("Suspending the transaction queue. Current HMI level is NONE: %b, soft button capabilities are null: %b", HMILevel.HMI_NONE.equals(currentHMILevel), softButtonCapabilities == null));
             transactionQueue.pause();
         } else {
-            DebugTool.logInfo("Starting the transaction queue");
+            DebugTool.logInfo(null, "Starting the transaction queue");
             transactionQueue.resume();
         }
     }
@@ -276,7 +276,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
         // Only update if something changed. This prevents, for example, an empty array being reset
         if (softButtonObjects.equals(this.softButtonObjects)) {
-            DebugTool.logInfo("New soft button objects are equivalent to existing soft button objects, skipping...");
+            DebugTool.logInfo(null, "New soft button objects are equivalent to existing soft button objects, skipping...");
             return;
         }
 

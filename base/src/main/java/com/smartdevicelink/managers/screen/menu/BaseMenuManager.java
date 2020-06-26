@@ -228,7 +228,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 					if (errors != null && errors.size() > 0){
 						DebugTool.logError("Error uploading Menu Artworks: "+ errors.toString());
 					}else{
-						DebugTool.logInfo("Menu Artworks Uploaded");
+						DebugTool.logInfo(null, "Menu Artworks Uploaded");
 					}
 					// proceed
 					updateMenuAndDetermineBestUpdateMethod();
@@ -280,7 +280,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 if (response.getSuccess()){
-                    DebugTool.logInfo("Open Main Menu Request Successful");
+                    DebugTool.logInfo(null, "Open Main Menu Request Successful");
                 } else {
                     DebugTool.logError("Open Main Menu Request Failed");
                 }
@@ -329,7 +329,7 @@ abstract class BaseMenuManager extends BaseSubManager {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 if (response.getSuccess()){
-                    DebugTool.logInfo("Open Sub Menu Request Successful");
+                    DebugTool.logInfo(null, "Open Sub Menu Request Successful");
                 } else {
                     DebugTool.logError("Open Sub Menu Request Failed");
                 }
@@ -380,7 +380,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
 					if (response.getSuccess()) {
-						DebugTool.logInfo("Menu Configuration successfully set: " + menuConfiguration.toString());
+						DebugTool.logInfo(null, "Menu Configuration successfully set: " + menuConfiguration.toString());
 					}
 				}
 
@@ -391,7 +391,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			});
 			internalInterface.sendRPC(setGlobalProperties);
 		} else {
-			DebugTool.logInfo("Menu Layout is null, not sending setGlobalProperties");
+			DebugTool.logInfo(null, "Menu Layout is null, not sending setGlobalProperties");
 		}
     }
 
@@ -406,7 +406,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
 			// We are in NONE or the menu is in use, bail out of here
-			DebugTool.logInfo("HMI in None or System Context Menu, returning");
+			DebugTool.logInfo(null, "HMI in None or System Context Menu, returning");
 			waitingOnHMIUpdate = true;
 			waitingUpdateMenuCells = menuCells;
 			return;
@@ -414,7 +414,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 		if (inProgressUpdate != null && inProgressUpdate.size() > 0){
 			// there's an in-progress update so this needs to wait
-			DebugTool.logInfo("There is an in progress Menu Update, returning");
+			DebugTool.logInfo(null, "There is an in progress Menu Update, returning");
 			hasQueuedUpdate = true;
 			return;
 		}
@@ -428,14 +428,14 @@ abstract class BaseMenuManager extends BaseSubManager {
 			if (rootScore == null) {
 				// send initial menu (score will return null)
 				// make a copy of our current cells
-				DebugTool.logInfo("Creating initial Menu");
+				DebugTool.logInfo(null, "Creating initial Menu");
 				// Set the IDs if needed
 				lastMenuId = menuCellIdMin;
 				updateIdsOnMenuCells(menuCells, parentIdNotFound);
 				this.oldMenuCells = new ArrayList<>(menuCells);
 				createAndSendEntireMenu();
 			} else {
-				DebugTool.logInfo("Dynamically Updating Menu");
+				DebugTool.logInfo(null, "Dynamically Updating Menu");
 				if (menuCells.size() == 0 && (oldMenuCells != null && oldMenuCells.size() > 0)) {
 					// the dev wants to clear the menu. We have old cells and an empty array of new ones.
 					deleteMenuWhenNewCellsEmpty();
@@ -446,7 +446,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			}
 		} else {
 			// we are in compatibility mode
-			DebugTool.logInfo("Updating menus in compatibility mode");
+			DebugTool.logInfo(null, "Updating menus in compatibility mode");
 			lastMenuId = menuCellIdMin;
 			updateIdsOnMenuCells(menuCells, parentIdNotFound);
 			// if the old cell array is not null, we want to delete the entire thing, else copy the new array
@@ -483,7 +483,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				if (!success){
 					DebugTool.logError("Error Sending Current Menu");
 				}else{
-					DebugTool.logInfo("Successfully Cleared Menu");
+					DebugTool.logInfo(null, "Successfully Cleared Menu");
 				}
 				oldMenuCells = null;
 				if (hasQueuedUpdate){
@@ -533,10 +533,10 @@ abstract class BaseMenuManager extends BaseSubManager {
 		transferIdsToKeptCells(keepsNew);
 
 		if (adds.size() > 0){
-			DebugTool.logInfo("Sending root menu updates");
+			DebugTool.logInfo(null, "Sending root menu updates");
 			sendDynamicRootMenuRPCs(deleteCommands, adds);
 		}else{
-			DebugTool.logInfo("All root menu items are kept. Check the sub menus");
+			DebugTool.logInfo(null, "All root menu items are kept. Check the sub menus");
 			runSubMenuCompareAlgorithm();
 		}
 	}
@@ -588,7 +588,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				RunScore subScore = compareOldAndNewLists(oldKeptCell.getSubCells(), keptCell.getSubCells());
 
 				if (subScore != null){
-					DebugTool.logInfo("Sub menu Run Score: "+ oldKeptCell.getTitle()+ " Score: "+ subScore.getScore());
+					DebugTool.logInfo(null, "Sub menu Run Score: "+ oldKeptCell.getTitle()+ " Score: "+ subScore.getScore());
 					SubCellCommandList commandList = new SubCellCommandList(oldKeptCell.getTitle(), oldKeptCell.getCellId(), subScore, oldKeptCell.getSubCells(), keptCell.getSubCells());
 					commandLists.add(commandList);
 				}
@@ -606,17 +606,17 @@ abstract class BaseMenuManager extends BaseSubManager {
 			}
 
 			if (hasQueuedUpdate) {
-				DebugTool.logInfo("Menu Manager has waiting updates, sending now");
+				DebugTool.logInfo(null, "Menu Manager has waiting updates, sending now");
 				setMenuCells(waitingUpdateMenuCells);
 				hasQueuedUpdate = false;
 			}
-			DebugTool.logInfo("All menu updates, including sub menus - done.");
+			DebugTool.logInfo(null, "All menu updates, including sub menus - done.");
 			return;
 		}
 
 		final SubCellCommandList commandList = commandLists.remove(0);
 
-		DebugTool.logInfo("Creating and Sending Dynamic Sub Commands For Root Menu Cell: "+ commandList.getMenuTitle());
+		DebugTool.logInfo(null, "Creating and Sending Dynamic Sub Commands For Root Menu Cell: "+ commandList.getMenuTitle());
 
 		// grab the scores
 		RunScore score = commandList.getListsScore();
@@ -667,13 +667,13 @@ abstract class BaseMenuManager extends BaseSubManager {
 						@Override
 						public void onComplete(boolean success) {
 							// recurse through next sub list
-							DebugTool.logInfo("Finished Sending Dynamic Sub Commands For Root Menu Cell: "+ commandList.getMenuTitle());
+							DebugTool.logInfo(null, "Finished Sending Dynamic Sub Commands For Root Menu Cell: "+ commandList.getMenuTitle());
 							createSubMenuDynamicCommands(commandLists);
 						}
 					});
 				} else{
 					// no add commands to send, recurse through next sub list
-					DebugTool.logInfo("Finished Sending Dynamic Sub Commands For Root Menu Cell: "+ commandList.getMenuTitle());
+					DebugTool.logInfo(null, "Finished Sending Dynamic Sub Commands For Root Menu Cell: "+ commandList.getMenuTitle());
 					createSubMenuDynamicCommands(commandLists);
 				}
 			}
@@ -691,7 +691,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		}
 
 		RunScore bestScore = compareOldAndNewLists(oldCells, newCells);
-		DebugTool.logInfo("Best menu run score: "+ bestScore.getScore());
+		DebugTool.logInfo(null, "Best menu run score: "+ bestScore.getScore());
 
 		return bestScore;
 	}
@@ -1050,7 +1050,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				// Auto-send an updated menu if we were in NONE and now we are not, and we need an update
 				if (oldHMILevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE && currentSystemContext != SystemContext.SYSCTXT_MENU){
 					if (waitingOnHMIUpdate){
-						DebugTool.logInfo("We now have proper HMI, sending waiting update");
+						DebugTool.logInfo(null, "We now have proper HMI, sending waiting update");
 						setMenuCells(waitingUpdateMenuCells);
 						waitingUpdateMenuCells.clear();
 						return;
@@ -1064,7 +1064,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 				if (oldContext == SystemContext.SYSCTXT_MENU && currentSystemContext != SystemContext.SYSCTXT_MENU && currentHMILevel != HMILevel.HMI_NONE){
 					if (waitingOnHMIUpdate){
-						DebugTool.logInfo("We now have a proper system context, sending waiting update");
+						DebugTool.logInfo(null, "We now have a proper system context, sending waiting update");
 						setMenuCells(waitingUpdateMenuCells);
 						waitingUpdateMenuCells.clear();
 					}
@@ -1090,7 +1090,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 		if (currentHMILevel == null || currentHMILevel.equals(HMILevel.HMI_NONE) || currentSystemContext.equals(SystemContext.SYSCTXT_MENU)){
 			// We are in NONE or the menu is in use, bail out of here
-			DebugTool.logInfo("HMI in None or System Context Menu, returning");
+			DebugTool.logInfo(null, "HMI in None or System Context Menu, returning");
 			waitingOnHMIUpdate = true;
 			waitingUpdateMenuCells = menuCells;
 			return;
@@ -1098,7 +1098,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 		if (inProgressUpdate != null && inProgressUpdate.size() > 0){
 			// there's an in-progress update so this needs to wait
-			DebugTool.logInfo("There is an in progress Menu Update, returning");
+			DebugTool.logInfo(null, "There is an in progress Menu Update, returning");
 			hasQueuedUpdate = true;
 			return;
 		}
@@ -1162,14 +1162,14 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 				if (subMenuCommands.size() > 0) {
 					sendSubMenuCommandRPCs(subMenuCommands, listener);
-					DebugTool.logInfo("Finished sending main menu commands. Sending sub menu commands.");
+					DebugTool.logInfo(null, "Finished sending main menu commands. Sending sub menu commands.");
 				} else {
 
 					if (keepsNew != null && keepsNew.size() > 0){
 						runSubMenuCompareAlgorithm();
 					}else {
 						inProgressUpdate = null;
-						DebugTool.logInfo("Finished sending main menu commands.");
+						DebugTool.logInfo(null, "Finished sending main menu commands.");
 					}
 				}
 			}
@@ -1182,7 +1182,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				try {
-					DebugTool.logInfo("Main Menu response: " + response.serializeJSON().toString());
+					DebugTool.logInfo(null, "Main Menu response: " + response.serializeJSON().toString());
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -1204,7 +1204,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 				if (keepsNew != null && keepsNew.size() > 0){
 					runSubMenuCompareAlgorithm();
 				}else {
-					DebugTool.logInfo("Finished Updating Menu");
+					DebugTool.logInfo(null, "Finished Updating Menu");
 					inProgressUpdate = null;
 
 					if (listener != null) {
@@ -1224,7 +1224,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				try {
-					DebugTool.logInfo("Sub Menu response: "+ response.serializeJSON().toString());
+					DebugTool.logInfo(null, "Sub Menu response: "+ response.serializeJSON().toString());
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -1274,7 +1274,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				try {
-					DebugTool.logInfo("Dynamic Sub Menu response: " + response.serializeJSON().toString());
+					DebugTool.logInfo(null, "Dynamic Sub Menu response: " + response.serializeJSON().toString());
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -1289,7 +1289,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		if (oldMenuCells == null || oldMenuCells.size() == 0) {
 			if (listener != null){
 				// technically this method is successful if there's nothing to delete
-				DebugTool.logInfo("No old cells to delete, returning");
+				DebugTool.logInfo(null, "No old cells to delete, returning");
 				listener.onComplete(true);
 			}
 		} else {
@@ -1301,7 +1301,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 		if (oldMenuCells != null && oldMenuCells.size() == 0) {
 			if (listener != null){
 				// technically this method is successful if there's nothing to delete
-				DebugTool.logInfo("No old cells to delete, returning");
+				DebugTool.logInfo(null, "No old cells to delete, returning");
 				listener.onComplete(true);
 			}
 			return;
@@ -1324,7 +1324,7 @@ abstract class BaseMenuManager extends BaseSubManager {
 
 			@Override
 			public void onFinished() {
-				DebugTool.logInfo("Successfully deleted cells");
+				DebugTool.logInfo(null, "Successfully deleted cells");
 				if (listener != null){
 					listener.onComplete(true);
 				}

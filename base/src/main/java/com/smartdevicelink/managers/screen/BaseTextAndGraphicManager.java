@@ -167,7 +167,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 				currentHMILevel = onHMIStatus.getHmiLevel();
 				if (currentHMILevel == HMILevel.HMI_FULL){
 					if (pendingHMIFull){
-						DebugTool.logInfo( "Acquired HMI_FULL with pending update. Sending now");
+						DebugTool.logInfo(TAG, "Acquired HMI_FULL with pending update. Sending now");
 						pendingHMIFull = false;
 						sdlUpdate(pendingHMIListener);
 						pendingHMIListener = null;
@@ -357,7 +357,7 @@ abstract class BaseTextAndGraphicManager extends BaseSubManager {
 		}
 
 		if (artworksToUpload.size() == 0 && (primaryGraphic.isStaticIcon() || secondaryGraphic.isStaticIcon())){
-			DebugTool.logInfo("Upload attempted on static icons, sending them without upload instead");
+			DebugTool.logInfo(TAG, "Upload attempted on static icons, sending them without upload instead");
 			listener.onComplete(true);
 		}
 

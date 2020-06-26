@@ -95,11 +95,11 @@ public class TransportManager extends TransportManagerBase{
         validator.validateAsync(new RouterServiceValidator.ValidationStatusCallback() {
             @Override
             public void onFinishedValidation(boolean valid, ComponentName name) {
-                DebugTool.logInfo("onFinishedValidation valid=" + valid + "; name=" + ((name == null)? "null" : name.getPackageName()));
+                DebugTool.logInfo(TAG, "onFinishedValidation valid=" + valid + "; name=" + ((name == null)? "null" : name.getPackageName()));
                 if (valid) {
                     mConfig.service = name;
                     transport = new TransportBrokerImpl(contextWeakReference.get(), mConfig.appId, mConfig.service);
-                    DebugTool.logInfo("TransportManager start got called; transport=" + transport);
+                    DebugTool.logInfo(TAG, "TransportManager start got called; transport=" + transport);
                     if(transport != null){
                         transport.start();
                     }
@@ -293,7 +293,7 @@ public class TransportManager extends TransportManagerBase{
         @Override
         public synchronized boolean onHardwareConnected(List<TransportRecord> transports) {
             super.onHardwareConnected(transports);
-            DebugTool.logInfo("OnHardwareConnected");
+            DebugTool.logInfo(TAG, "OnHardwareConnected");
             if(shuttingDown){
                 return false;
             }

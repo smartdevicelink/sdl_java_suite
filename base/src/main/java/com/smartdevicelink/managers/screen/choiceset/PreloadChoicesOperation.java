@@ -88,7 +88,7 @@ class PreloadChoicesOperation extends Task {
 
 	@Override
 	public void onExecute() {
-		DebugTool.logInfo("Choice Operation: Executing preload choices operation");
+		DebugTool.logInfo(null, "Choice Operation: Executing preload choices operation");
 		preloadCellArtworks(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
@@ -108,7 +108,7 @@ class PreloadChoicesOperation extends Task {
 		List<SdlArtwork> artworksToUpload = artworksToUpload();
 
 		if (artworksToUpload.size() == 0){
-			DebugTool.logInfo("Choice Preload: No Choice Artworks to upload");
+			DebugTool.logInfo(null, "Choice Preload: No Choice Artworks to upload");
 			listener.onComplete(true);
 			isRunning = false;
 			return;
@@ -123,7 +123,7 @@ class PreloadChoicesOperation extends Task {
 						listener.onComplete(false);
 						isRunning = false;
 					}else{
-						DebugTool.logInfo("Choice Artworks Uploaded");
+						DebugTool.logInfo(null, "Choice Artworks Uploaded");
 						listener.onComplete(true);
 						isRunning = false;
 					}
@@ -163,7 +163,7 @@ class PreloadChoicesOperation extends Task {
 				@Override
 				public void onFinished() {
 					isRunning = false;
-					DebugTool.logInfo("Finished pre loading choice cells");
+					DebugTool.logInfo(null, "Finished pre loading choice cells");
 					completionListener.onComplete(true);
 
 					PreloadChoicesOperation.super.onFinished();

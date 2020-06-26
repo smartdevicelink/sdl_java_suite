@@ -121,7 +121,7 @@ public class SoftButtonObject {
             return false;
         }
 
-        DebugTool.logInfo(String.format("Transitioning soft button object %s to state %s", this.name, newStateName));
+        DebugTool.logInfo(null, String.format("Transitioning soft button object %s to state %s", this.name, newStateName));
         currentStateName = newStateName;
 
         // Send a new Show RPC because the state has changed which means the actual SoftButton has changed

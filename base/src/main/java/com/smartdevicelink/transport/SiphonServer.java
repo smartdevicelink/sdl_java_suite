@@ -379,7 +379,7 @@ public class SiphonServer {
 				m_siphonSocketOutputStream = m_siphonSocket.getOutputStream();
 				
 	        	// Output version number to the Siphon upon connection (version number prepending to logInfo)
-				DebugTool.logInfo("Siphon connected.");
+				DebugTool.logInfo(null, "Siphon connected.");
     		} // end-lock
         } // end-method
     	

@@ -591,7 +591,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			
 			//if (!_advancedLifecycleManagementEnabled) {
 				// If original model, notify app the proxy is closed so it will delete and reinstanciate 
-			DebugTool.logInfo("notifying proxy of closed");
+			DebugTool.logInfo(TAG, "notifying proxy of closed");
 			notifyProxyClosed(info, new SdlException("Transport disconnected.", SdlExceptionCause.SDL_UNAVAILABLE), SdlDisconnectedReason.TRANSPORT_DISCONNECT);
 			//}// else If ALM, nothing is required to be done here
 
@@ -604,7 +604,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 			if (altTransportAvailable){
 				SdlProxyBase.this._transportConfig = transportConfig;
-				DebugTool.logInfo("notifying RPC session ended, but potential primary transport available");
+				DebugTool.logInfo(TAG, "notifying RPC session ended, but potential primary transport available");
 				cycleProxy(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
 			}else{
 				notifyProxyClosed(info, new SdlException("Transport disconnected.", SdlExceptionCause.SDL_UNAVAILABLE), SdlDisconnectedReason.TRANSPORT_DISCONNECT);
@@ -768,7 +768,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onHeartbeatTimedOut(byte sessionID) {
             final String msg = "Heartbeat timeout";
-            DebugTool.logInfo(msg);
+            DebugTool.logInfo(TAG, msg);
             
 			Intent sendIntent = createBroadcastIntent();
 			updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "onHeartbeatTimedOut");
@@ -894,7 +894,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 								   boolean callbackToUIThread, Boolean preRegister, String sHashID, Boolean bAppResumeEnab,
 								   BaseTransportConfig transportConfig) throws SdlException
 	{
-		DebugTool.logInfo("SDL_LIB_VERSION: " + BuildConfig.VERSION_NAME);
+		DebugTool.logInfo(TAG, "SDL_LIB_VERSION: " + BuildConfig.VERSION_NAME);
 		setProtocolVersion(new Version(PROX_PROT_VER_ONE,0,0));
 		
 		if (preRegister != null && preRegister)
@@ -1391,7 +1391,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 			if (urlConnection == null)
 			{
-	            DebugTool.logInfo("urlConnection is null, check RPC input parameters");
+	            DebugTool.logInfo(TAG, "urlConnection is null, check RPC input parameters");
 	            updateBroadcastIntent(sendIntent, "COMMENT2", "urlConnection is null, check RPC input parameters");
 	            return;
 			}
@@ -1418,7 +1418,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 			if (iResponseCode != HttpURLConnection.HTTP_OK)
 			{
-	            DebugTool.logInfo("Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
+	            DebugTool.logInfo(TAG, "Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
 	            updateBroadcastIntent(sendIntent, "COMMENT2", "Response code not HTTP_OK, aborting request. ");
 	            return;
 	        }
@@ -1445,7 +1445,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	updateBroadcastIntent(sendIntent, "DATA", "Data from cloud response: " + response.toString());
 		    	
 		    	sendRPCMessagePrivate(putFile);
-		    	DebugTool.logInfo("sendSystemRequestToUrl sent to sdl");
+		    	DebugTool.logInfo(TAG, "sendSystemRequestToUrl sent to sdl");
 
 	    		updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.PUT_FILE.toString());
 	    		updateBroadcastIntent(sendIntent2, "TYPE", RPCMessage.KEY_REQUEST);
@@ -1512,7 +1512,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		    	if (getIsConnected())
 		    	{			    	
 		    		sendRPCMessagePrivate(mySystemRequest);
-		    		DebugTool.logInfo("sendSystemRequestToUrl sent to sdl");
+		    		DebugTool.logInfo(TAG, "sendSystemRequestToUrl sent to sdl");
 
 		    		updateBroadcastIntent(sendIntent2, "RPC_NAME", FunctionID.SYSTEM_REQUEST.toString());
 		    		updateBroadcastIntent(sendIntent2, "TYPE", RPCMessage.KEY_REQUEST);
@@ -1633,7 +1633,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				//A USB transport config was provided
 				USBTransportConfig usbTransportConfig = (USBTransportConfig) _transportConfig;
 				if (usbTransportConfig.getUsbAccessory() == null) {
-					DebugTool.logInfo("Legacy USB transport config was used, but received null for accessory. Attempting to connect with router service");
+					DebugTool.logInfo(TAG, "Legacy USB transport config was used, but received null for accessory. Attempting to connect with router service");
 					//The accessory was null which means it came from a router service
 					MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(usbTransportConfig.getUSBContext(), _appID);
 					multiplexTransportConfig.setRequiresHighBandwidth(true);
@@ -1665,7 +1665,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	public void forceOnConnected(){
 		synchronized(CONNECTION_REFERENCE_LOCK) {
 			if (sdlSession != null) {
-				DebugTool.logInfo("Forcing on connected.... might actually need this"); //FIXME
+				DebugTool.logInfo(TAG, "Forcing on connected.... might actually need this"); //FIXME
 				/*if(sdlSession.getSdlConnection()==null){ //There is an issue when switching from v1 to v2+ where the connection is closed. So we restart the session during this call.
 					try {
 						sdlSession.startSession();
@@ -2213,7 +2213,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
 			if(_proxyDisposed){
-				DebugTool.logInfo("Ignoring start service packet, proxy is disposed");
+				DebugTool.logInfo(TAG, "Ignoring start service packet, proxy is disposed");
 				return;
 			}
 			if(SessionType.RPC.equals(type)){
@@ -2222,13 +2222,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if (serviceEncryptionListener != null) {
 				serviceEncryptionListener.onEncryptionServiceUpdated(type, isEncrypted, null);
 			}
-			DebugTool.logInfo("onServiceStarted, session Type: " + type.getName() + ", isEncrypted: " + isEncrypted);
+			DebugTool.logInfo(TAG, "onServiceStarted, session Type: " + type.getName() + ", isEncrypted: " + isEncrypted);
 		}
 
 		@Override
 		public void onServiceEnded(SdlSession session, SessionType type) {
 			if(_proxyDisposed){
-				DebugTool.logInfo("Ignoring end service packet, proxy is disposed");
+				DebugTool.logInfo(TAG, "Ignoring end service packet, proxy is disposed");
 				return;
 			}
 			if (SessionType.RPC.equals(type)) {
@@ -2237,13 +2237,13 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			if (serviceEncryptionListener != null) {
 				serviceEncryptionListener.onEncryptionServiceUpdated(type, false, null);
 			}
-			DebugTool.logInfo("onServiceEnded, session Type: " + type.getName());
+			DebugTool.logInfo(TAG, "onServiceEnded, session Type: " + type.getName());
 		}
 
 		@Override
 		public void onServiceError(SdlSession session, SessionType type, String reason) {
 			if(_proxyDisposed){
-				DebugTool.logInfo("Ignoring start service error, proxy is disposed");
+				DebugTool.logInfo(TAG, "Ignoring start service error, proxy is disposed");
 				return;
 			}
 			if (SessionType.RPC.equals(type)) {
@@ -2725,7 +2725,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}else{
 						rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
 					}
-					DebugTool.logInfo("Negotiated RPC Spec version = " + rpcSpecVersion);
+					DebugTool.logInfo(TAG, "Negotiated RPC Spec version = " + rpcSpecVersion);
 
 					_vehicleType = msg.getVehicleType();
 					_systemSoftwareVersion = msg.getSystemSoftwareVersion();
@@ -2753,11 +2753,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					if (!isDebugEnabled()) 
 					{
 						enableDebugTool();
-						DebugTool.logInfo(sVersionInfo, false);
+						DebugTool.logInfo(TAG, sVersionInfo, false);
 						disableDebugTool();
 					}					
 					else
-						DebugTool.logInfo(sVersionInfo, false);
+						DebugTool.logInfo(TAG, sVersionInfo, false);
 					
 					sendIntent = createBroadcastIntent();
 					updateBroadcastIntent(sendIntent, "FUNCTION_NAME", "RAI_RESPONSE");
@@ -2805,7 +2805,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else if ((new RPCResponse(hash)).getCorrelationID() == POLICIES_CORRELATION_ID 
 						&& functionName.equals(FunctionID.ON_ENCODED_SYNC_P_DATA.toString())) {
 						
-					DebugTool.logInfo("POLICIES_CORRELATION_ID SystemRequest Notification (Legacy)");
+					DebugTool.logInfo(TAG, "POLICIES_CORRELATION_ID SystemRequest Notification (Legacy)");
 					
 					final OnSystemRequest msg = new OnSystemRequest(hash);
 					
@@ -2826,7 +2826,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				else if ((new RPCResponse(hash)).getCorrelationID() == POLICIES_CORRELATION_ID 
 						&& functionName.equals(FunctionID.ENCODED_SYNC_P_DATA.toString())) {
 
-					DebugTool.logInfo("POLICIES_CORRELATION_ID SystemRequest Response (Legacy)");
+					DebugTool.logInfo(TAG, "POLICIES_CORRELATION_ID SystemRequest Response (Legacy)");
 					final SystemRequestResponse msg = new SystemRequestResponse(hash);
 					
 					Intent sendIntent = createBroadcastIntent();
@@ -2894,7 +2894,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				} else {
 					rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
 				}
-				DebugTool.logInfo("Negotiated RPC Spec version = " + rpcSpecVersion);
+				DebugTool.logInfo(TAG, "Negotiated RPC Spec version = " + rpcSpecVersion);
 
 				_vehicleType = msg.getVehicleType();
 				_systemSoftwareVersion = msg.getSystemSoftwareVersion();
@@ -2916,11 +2916,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				if (!isDebugEnabled()) 
 				{
 					enableDebugTool();
-					DebugTool.logInfo("SDL Proxy Version: " + _proxyVersionInfo);
+					DebugTool.logInfo(TAG, "SDL Proxy Version: " + _proxyVersionInfo);
 					disableDebugTool();
 				}					
 				else
-					DebugTool.logInfo("SDL Proxy Version: " + _proxyVersionInfo);				
+					DebugTool.logInfo(TAG, "SDL Proxy Version: " + _proxyVersionInfo);
 				
 				// RegisterAppInterface
 				if (_advancedLifecycleManagementEnabled) {
@@ -4159,7 +4159,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					updateBroadcastIntent(sendIntent, "COMMENT1", "Sending to cloud: " + msg.getUrl());
 					sendBroadcastIntent(sendIntent);				
 					
-					DebugTool.logInfo("send to url");
+					DebugTool.logInfo(TAG, "send to url");
 					
 					if ( (msg.getUrl() != null) )
 					{
@@ -4571,10 +4571,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				}
 			} else {
 				if (_sdlMsgVersion != null) {
-					DebugTool.logInfo("Unrecognized notification Message: " + functionName +
+					DebugTool.logInfo(TAG, "Unrecognized notification Message: " + functionName +
 							" connected to SDL using message version: " + _sdlMsgVersion.getMajorVersion() + "." + _sdlMsgVersion.getMinorVersion());
 				} else {
-					DebugTool.logInfo("Unrecognized notification Message: " + functionName);
+					DebugTool.logInfo(TAG, "Unrecognized notification Message: " + functionName);
 				}
 			} // end-if
 		} // end-if notification
@@ -4901,7 +4901,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	
 	protected void notifyProxyClosed(final String info, final Exception e, final SdlDisconnectedReason reason) {		
 		SdlTrace.logProxyEvent("NotifyProxyClose", SDL_LIB_TRACE_KEY);
-		DebugTool.logInfo("notifyProxyClosed: " + info);
+		DebugTool.logInfo(TAG, "notifyProxyClosed: " + info);
 		OnProxyClosed message = new OnProxyClosed(info, e, reason);
 		queueInternalMessage(message);
 	}
@@ -5725,7 +5725,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
         scheduler.shutdown();
 
         if (pcmServiceStartResponse) {
-            DebugTool.logInfo("StartService for audio succeeded");
+            DebugTool.logInfo(TAG, "StartService for audio succeeded");
             return sdlSession.startAudioStream();
         } else {
             if (pcmServiceStartRejectedParams != null) {
@@ -6774,7 +6774,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		if (sdlMsgVersion == null) {
 			sdlMsgVersion = new SdlMsgVersion();
 			if(protocolVersion.getMajor() == 1) {
-				DebugTool.logInfo("Connected to an older module, must send 1.0.0 as RPC spec");
+				DebugTool.logInfo(TAG, "Connected to an older module, must send 1.0.0 as RPC spec");
 				sdlMsgVersion.setMajorVersion(1);
 				sdlMsgVersion.setMinorVersion(0);
 			}else {
@@ -8427,7 +8427,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			DebugTool.logInfo(parameters.toString());
+			DebugTool.logInfo(TAG, parameters.toString());
 		}
 
 		public void stopStreaming(){
@@ -8523,7 +8523,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 		@Override
 		public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
 			if(SessionType.NAV.equals(type) && session != null ){
-				DebugTool.logInfo("Video service has been started. Starting video stream from proxy");
+				DebugTool.logInfo(TAG, "Video service has been started. Starting video stream from proxy");
 				if(session.getAcceptedVideoParams() != null){
 					videoStreamingParameters = session.getAcceptedVideoParams();
 				}

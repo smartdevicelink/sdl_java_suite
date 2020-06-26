@@ -107,7 +107,7 @@ public class TransportBroker {
         routerConnection = new ServiceConnection() {
 
             public void onServiceConnected(ComponentName className, IBinder service) {
-                DebugTool.logInfo("Bound to service " + className.toString());
+                DebugTool.logInfo(TAG, "Bound to service " + className.toString());
                 routerServiceMessenger = new Messenger(service);
                 isBound = true;
                 //So we just established our connection
@@ -116,7 +116,7 @@ public class TransportBroker {
             }
 
             public void onServiceDisconnected(ComponentName className) {
-                DebugTool.logInfo("Unbound from service " + className.getClassName());
+                DebugTool.logInfo(TAG, "Unbound from service " + className.getClassName());
                 routerServiceMessenger = null;
                 registeredWithRouterService = false;
                 isBound = false;
@@ -154,7 +154,7 @@ public class TransportBroker {
                         return sendMessageToRouterService(message, retryCount++);
                     } else {
                         //DeadObject, time to kill our connection
-                        DebugTool.logInfo("Dead object while attempting to send packet");
+                        DebugTool.logInfo(TAG, "Dead object while attempting to send packet");
                         routerServiceMessenger = null;
                         registeredWithRouterService = false;
                         unBindFromRouterService();
@@ -163,7 +163,7 @@ public class TransportBroker {
                         return false;
                     }
                 } catch (NullPointerException e) {
-                    DebugTool.logInfo("Null messenger while attempting to send packet"); // NPE, routerServiceMessenger is null
+                    DebugTool.logInfo(TAG, "Null messenger while attempting to send packet"); // NPE, routerServiceMessenger is null
                     routerServiceMessenger = null;
                     registeredWithRouterService = false;
                     unBindFromRouterService();
@@ -237,7 +237,7 @@ public class TransportBroker {
                             }
                             break;
                         case TransportConstants.REGISTRATION_RESPONSE_DENIED_LEGACY_MODE_ENABLED:
-                            DebugTool.logInfo("Denied registration because router is in legacy mode");
+                            DebugTool.logInfo(TAG, "Denied registration because router is in legacy mode");
                             broker.registeredWithRouterService = false;
                             broker.enableLegacyMode(true);
                             //We call this so we can start the process of legacy connection
@@ -330,7 +330,7 @@ public class TransportBroker {
                     if (bundle.containsKey(TransportConstants.TRANSPORT_DISCONNECTED)
                             || bundle.containsKey(TransportConstants.HARDWARE_DISCONNECTED)) {
                         //We should shut down, so call
-                        DebugTool.logInfo("Hardware disconnected");
+                        DebugTool.logInfo(TAG, "Hardware disconnected");
                         if (isLegacyModeEnabled()) {
                             broker.onLegacyModeEnabled();
                         } else {
@@ -457,7 +457,7 @@ public class TransportBroker {
      * This method will end our communication with the router service.
      */
     public void stop() {
-        DebugTool.logInfo("Stopping transport broker for " + whereToReply);
+        DebugTool.logInfo(TAG, "Stopping transport broker for " + whereToReply);
         synchronized (INIT_LOCK) {
             unregisterWithRouterService();
             unBindFromRouterService();
@@ -574,7 +574,7 @@ public class TransportBroker {
         //Log.d(TAG,whereToReply + "Sending packet to router service");
 
         if (routerServiceMessenger == null) {
-            DebugTool.logInfo(whereToReply + " tried to send packet, but no where to send");
+            DebugTool.logInfo(TAG, whereToReply + " tried to send packet, but no where to send");
             return false;
         }
         if (packet == null
@@ -639,7 +639,7 @@ public class TransportBroker {
         //Make sure we know where to bind to
         if (this.routerService == null) {
             if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.O) && !isRouterServiceRunning(getContext())) {//We should be able to ignore this case because of the validation now
-                DebugTool.logInfo(whereToReply + " found no router service. Shutting down.");
+                DebugTool.logInfo(TAG, whereToReply + " found no router service. Shutting down.");
                 this.onHardwareDisconnected(null);
                 return false;
             }
@@ -664,7 +664,7 @@ public class TransportBroker {
             return false;
         }
         if (this.routerPackage != null && this.routerClassName != null) {
-            DebugTool.logInfo("Sending bind request to " + this.routerPackage + " - " + this.routerClassName);
+            DebugTool.logInfo(TAG, "Sending bind request to " + this.routerPackage + " - " + this.routerClassName);
             Intent bindingIntent = new Intent();
             bindingIntent.setClassName(this.routerPackage, this.routerClassName);//This sets an explicit intent
             //Quickly make sure it's just up and running
@@ -689,7 +689,7 @@ public class TransportBroker {
     }
 
     private void unregisterWithRouterService() {
-        DebugTool.logInfo("Attempting to unregister with Sdl Router Service");
+        DebugTool.logInfo(TAG, "Attempting to unregister with Sdl Router Service");
         if (isBound && routerServiceMessenger != null) {
             Message msg = Message.obtain();
             msg.what = TransportConstants.ROUTER_UNREGISTER_CLIENT;

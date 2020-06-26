@@ -111,7 +111,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 		// we actually need voice commands to set.
 		if (voiceCommands == null || voiceCommands.size() == 0){
-			DebugTool.logInfo("Trying to set empty list of voice commands, returning");
+			DebugTool.logInfo(null, "Trying to set empty list of voice commands, returning");
 			return;
 		}
 
@@ -199,7 +199,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 			@Override
 			public void onFinished() {
-				DebugTool.logInfo("Successfully deleted old voice commands");
+				DebugTool.logInfo(null, "Successfully deleted old voice commands");
 				if (listener != null){
 					listener.onComplete(true);
 				}
@@ -237,7 +237,7 @@ abstract class BaseVoiceCommandManager extends BaseSubManager {
 
 			@Override
 			public void onFinished() {
-				DebugTool.logInfo("Sending Voice Commands Complete");
+				DebugTool.logInfo(null, "Sending Voice Commands Complete");
 				if (listener != null){
 					listener.onComplete(true);
 				}

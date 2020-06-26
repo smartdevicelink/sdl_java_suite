@@ -210,7 +210,7 @@ public class SdlSession2 extends SdlSession implements ISdlProtocol{
 
 
     public void shutdown(String info){
-        DebugTool.logInfo("Shutdown - " + info);
+        DebugTool.logInfo(TAG, "Shutdown - " + info);
         if(mediaStreamingStatus != null) {
             mediaStreamingStatus.clear();
         }

@@ -13,7 +13,7 @@ public class SdlReceiver  extends SdlBroadcastReceiver {
 
 	@Override
 	public void onSdlEnabled(Context context, Intent intent) {
-		DebugTool.logInfo("SDL Enabled");
+		DebugTool.logInfo(TAG, "SDL Enabled");
 		intent.setClass(context, SdlService.class);
 
 		// SdlService needs to be foregrounded in Android O and above

@@ -208,7 +208,7 @@ public class SdlEncoder {
 					if (mH264CodecSpecificData != null) {
 						mBufferInfo.size = 0;
 					} else {
-						DebugTool.logInfo("H264 codec specific data not retrieved yet.");
+						DebugTool.logInfo(TAG, "H264 codec specific data not retrieved yet.");
 					}
 				}
 

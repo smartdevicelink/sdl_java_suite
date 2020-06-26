@@ -115,7 +115,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
         }
         
         if(action.equalsIgnoreCase(USBTransport.ACTION_USB_ACCESSORY_ATTACHED)){
-			DebugTool.logInfo("Usb connected");
+			DebugTool.logInfo(TAG,"Usb connected");
         	intent.setAction(null);
 			onSdlEnabled(context, intent);
 			return;
@@ -203,10 +203,10 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		}
 
 
-		DebugTool.logInfo("Check for local router");
+		DebugTool.logInfo(TAG, "Check for local router");
 	    if(localRouterClass!=null){ //If there is a supplied router service lets run some logic regarding starting one
 	    	
-	    	if(!didStart){DebugTool.logInfo("attempting to wake up router service");
+	    	if(!didStart){DebugTool.logInfo(TAG, "attempting to wake up router service");
 	    		didStart = wakeUpRouterService(context, true,false, device);
 	    	}
 
@@ -237,8 +237,8 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 							serviceIntent = new Intent();
 							serviceIntent.setComponent(sdlAppInfoList.get(0).getRouterServiceComponentName());
 						} else{
-							DebugTool.logInfo("No SDL Router Services found");
-							DebugTool.logInfo("WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
+							DebugTool.logInfo(TAG, "No SDL Router Services found");
+							DebugTool.logInfo(TAG, "WARNING: This application has not specified its SdlRouterService correctly in the manifest. THIS WILL THROW AN EXCEPTION IN FUTURE RELEASES!!");
 							return;
 						}
 						if (altTransportWake) {
@@ -252,7 +252,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 								context.startService(serviceIntent);
 							}else {
 								serviceIntent.putExtra(FOREGROUND_EXTRA, true);
-								DebugTool.logInfo("Attempting to startForegroundService - " + System.currentTimeMillis());
+								DebugTool.logInfo(TAG,"Attempting to startForegroundService - " + System.currentTimeMillis());
 								setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
 								context.startForegroundService(serviceIntent);
 
@@ -313,7 +313,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 							&& "android.app.RemoteServiceException".equals(e.getClass().getName())  //android.app.RemoteServiceException is a private class
 							&& e.getMessage().contains("SdlRouterService")) {
 
-						DebugTool.logInfo("Handling failed startForegroundService call");
+						DebugTool.logInfo(TAG, "Handling failed startForegroundService call");
 						Looper.loop();
 					} else if (defaultUncaughtExceptionHandler != null) { //No other exception should be handled
 						defaultUncaughtExceptionHandler.uncaughtException(t, e);
@@ -380,7 +380,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			intent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);
 			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
 				intent.putExtra(FOREGROUND_EXTRA, true);
-				DebugTool.logInfo("Attempting to startForegroundService - " + System.currentTimeMillis());
+				DebugTool.logInfo(TAG, "Attempting to startForegroundService - " + System.currentTimeMillis());
 				setForegroundExceptionHandler(); //Prevent ANR in case the OS takes too long to start the service
 				context.startForegroundService(intent);
 			}else {
@@ -442,9 +442,9 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 						provider.checkIsConnected();
 					}else{
 						if(service!=null){
-							DebugTool.logInfo(service.getPackageName() + " is connected = " + connected);
+							DebugTool.logInfo(TAG, service.getPackageName() + " is connected = " + connected);
 						}else{
-							DebugTool.logInfo("No service is connected/running");
+							DebugTool.logInfo(TAG, "No service is connected/running");
 						}
 						if(callback!=null){
 							callback.onConnectionStatusUpdate(connected, service,context);
@@ -470,7 +470,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 		}else{
 			DebugTool.logWarning("Router service isn't running, returning false.");
 			if(isBluetoothConnected()){
-				DebugTool.logInfo("Bluetooth is connected. Attempting to start Router Service");
+				DebugTool.logInfo(TAG, "Bluetooth is connected. Attempting to start Router Service");
 				Intent serviceIntent = new Intent();
 				serviceIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
 				serviceIntent.putExtra(TransportConstants.PING_ROUTER_SERVICE_EXTRA, true);

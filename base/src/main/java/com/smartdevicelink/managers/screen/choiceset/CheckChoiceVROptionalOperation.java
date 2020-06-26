@@ -62,7 +62,7 @@ class CheckChoiceVROptionalOperation extends Task {
 
 	@Override
 	public void onExecute() {
-		DebugTool.logInfo("Choice Operation: Executing check vr optional operation");
+		DebugTool.logInfo(null, "Choice Operation: Executing check vr optional operation");
 		sendTestChoiceNoVR();
 	}
 
@@ -77,7 +77,7 @@ class CheckChoiceVROptionalOperation extends Task {
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()) {
 					// The request was successful, now send the SDLPerformInteraction RPC
-					DebugTool.logInfo("Connected head unit supports choice cells without voice commands. " +
+					DebugTool.logInfo(null, "Connected head unit supports choice cells without voice commands. " +
 							"Cells without voice will be sent without voice from now on (no placeholder voice).");
 					isVROptional = true;
 					deleteTestChoiceSet();
@@ -147,7 +147,7 @@ class CheckChoiceVROptionalOperation extends Task {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess() != null){
-					DebugTool.logInfo("Delete choice test set: "+ response.getSuccess());
+					DebugTool.logInfo(null, "Delete choice test set: "+ response.getSuccess());
 				}
 
 				if (checkChoiceVROptionalInterface != null){

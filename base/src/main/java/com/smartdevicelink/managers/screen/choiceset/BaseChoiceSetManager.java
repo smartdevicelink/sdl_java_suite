@@ -161,7 +161,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             public void onCheckChoiceVROperationComplete(boolean vrOptional) {
                 isVROptional = vrOptional;
                 transitionToState(READY);
-                DebugTool.logInfo("VR is optional: "+ isVROptional);
+                DebugTool.logInfo(null, "VR is optional: "+ isVROptional);
             }
 
             @Override
@@ -266,7 +266,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         // Find Choices to delete
         if (cellsToBeDeleted.size() == 0){
-            DebugTool.logInfo("Cells to be deleted size == 0");
+            DebugTool.logInfo(null, "Cells to be deleted size == 0");
             return;
         }
         findIdsOnChoices(cellsToBeDeleted);
@@ -347,11 +347,11 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         if (keyboardListener == null){
             // Non-searchable choice set
-            DebugTool.logInfo("Creating non-searchable choice set");
+            DebugTool.logInfo(null, "Creating non-searchable choice set");
             presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, null, null, privateChoiceListener, nextCancelId++);
         } else {
             // Searchable choice set
-            DebugTool.logInfo("Creating searchable choice set");
+            DebugTool.logInfo(null, "Creating searchable choice set");
             presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener, nextCancelId++);
         }
 
@@ -392,7 +392,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
 
         // Present a keyboard with the choice set that we used to test VR's optional state
-        DebugTool.logInfo("Presenting Keyboard - Choice Set Manager");
+        DebugTool.logInfo(null, "Presenting Keyboard - Choice Set Manager");
         Integer keyboardCancelID = nextCancelId++;
         PresentKeyboardOperation keyboardOp = new PresentKeyboardOperation(internalInterface, keyboardConfiguration, initialText, customKeyboardConfig, listener, keyboardCancelID);
         currentlyPresentedKeyboardOperation = keyboardOp;

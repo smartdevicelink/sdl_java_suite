@@ -314,7 +314,7 @@ public class MultiplexTcpTransport extends MultiplexBaseTransport {
 						if (psm.getState() == SdlPsm.FINISHED_STATE)
 						{
 							synchronized (MultiplexTcpTransport.this) {
-								DebugTool.logInfo("Packet formed, sending off");
+								DebugTool.logInfo(TAG, "Packet formed, sending off");
 								SdlPacket packet = psm.getFormedPacket();
 								packet.setTransportRecord(getTransportRecord());
 								handler.obtainMessage(SdlRouterService.MESSAGE_READ, packet).sendToTarget();

@@ -149,7 +149,7 @@ class PoliciesFetcher {
             urlConnection = getURLConnection(myHeader, sURLString, iTimeout, length);
 
             if (urlConnection == null) {
-                DebugTool.logInfo("urlConnection is null, check RPC input parameters");
+                DebugTool.logInfo(TAG, "urlConnection is null, check RPC input parameters");
                 return null;
             }
 
@@ -171,7 +171,7 @@ class PoliciesFetcher {
             int iResponseCode = urlConnection.getResponseCode();
 
             if (iResponseCode != HttpURLConnection.HTTP_OK) {
-                DebugTool.logInfo("Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
+                DebugTool.logInfo(TAG, "Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
                 return null;
             }
 
@@ -205,16 +205,16 @@ class PoliciesFetcher {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             if (jsonArray.get(i) instanceof String) {
                                 cloudDataReceived.add(jsonArray.getString(i));
-                                //DebugTool.logInfo("sendSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
+                                //DebugTool.logInfo(TAG, "sendSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
                             }
                         }
                     } else if (jsonResponse.get(dataKey) instanceof String) {
                         cloudDataReceived.add(jsonResponse.getString(dataKey));
-                        //DebugTool.logInfo("sendSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
+                        //DebugTool.logInfo(TAG, "sendSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
                     }
                 } else {
                     DebugTool.logError("sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
-                    //DebugTool.logInfo("sendSystemRequestToUrl", "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
+                    //DebugTool.logInfo(TAG, "sendSystemRequestToUrl", "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
                     return null;
                 }
 

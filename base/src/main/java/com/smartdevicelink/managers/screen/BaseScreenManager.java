@@ -80,13 +80,13 @@ abstract class BaseScreenManager extends BaseSubManager {
 		public synchronized void onComplete(boolean success) {
 			if (softButtonManager != null && textAndGraphicManager != null && voiceCommandManager != null && menuManager != null && choiceSetManager != null) {
 				if (softButtonManager.getState() == BaseSubManager.READY && textAndGraphicManager.getState() == BaseSubManager.READY && voiceCommandManager.getState() == BaseSubManager.READY && menuManager.getState() == BaseSubManager.READY) {
-					DebugTool.logInfo("Starting screen manager, all sub managers are in ready state");
+					DebugTool.logInfo(TAG, "Starting screen manager, all sub managers are in ready state");
 					transitionToState(READY);
 				} else if (softButtonManager.getState() == BaseSubManager.ERROR && textAndGraphicManager.getState() == BaseSubManager.ERROR && voiceCommandManager.getState() == BaseSubManager.ERROR && menuManager.getState() == BaseSubManager.ERROR && choiceSetManager.getState() == BaseSubManager.ERROR) {
 					DebugTool.logError("ERROR starting screen manager, all sub managers are in error state");
 					transitionToState(ERROR);
 				} else if (textAndGraphicManager.getState() == BaseSubManager.SETTING_UP || softButtonManager.getState() == BaseSubManager.SETTING_UP || voiceCommandManager.getState() == BaseSubManager.SETTING_UP || menuManager.getState() == BaseSubManager.SETTING_UP || choiceSetManager.getState() == BaseSubManager.SETTING_UP) {
-					DebugTool.logInfo("SETTING UP screen manager, at least one sub manager is still setting up");
+					DebugTool.logInfo(TAG, "SETTING UP screen manager, at least one sub manager is still setting up");
 					transitionToState(SETTING_UP);
 				} else {
 					DebugTool.logWarning("LIMITED starting screen manager, at least one sub manager is in error state and the others are ready");

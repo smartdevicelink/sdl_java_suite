@@ -91,7 +91,7 @@ public class LifecycleManager extends BaseLifecycleManager {
             //A USB transport config was provided
             USBTransportConfig usbTransportConfig = (USBTransportConfig) _transportConfig;
             if (usbTransportConfig.getUsbAccessory() == null) {
-                DebugTool.logInfo("Legacy USB transport config was used, but received null for accessory. Attempting to connect with router service");
+                DebugTool.logInfo(TAG,"Legacy USB transport config was used, but received null for accessory. Attempting to connect with router service");
                 //The accessory was null which means it came from a router service
                 MultiplexTransportConfig multiplexTransportConfig = new MultiplexTransportConfig(usbTransportConfig.getUSBContext(), appConfig.getAppID());
                 multiplexTransportConfig.setRequiresHighBandwidth(true);

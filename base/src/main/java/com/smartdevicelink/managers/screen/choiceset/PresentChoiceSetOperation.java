@@ -100,7 +100,7 @@ class PresentChoiceSetOperation extends Task {
 
 	@Override
 	public void onExecute() {
-		DebugTool.logInfo("Choice Operation: Executing present choice set operation");
+		DebugTool.logInfo(null, "Choice Operation: Executing present choice set operation");
 		addListeners();
 		start();
 	}
@@ -157,7 +157,7 @@ class PresentChoiceSetOperation extends Task {
 				if (listener != null){
 					listener.onComplete(true);
 				}
-				DebugTool.logInfo("Success Setting keyboard properties in present choice set operation");
+				DebugTool.logInfo(null, "Success Setting keyboard properties in present choice set operation");
 			}
 
 			@Override
@@ -226,7 +226,7 @@ class PresentChoiceSetOperation extends Task {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
 					updatedKeyboardProperties = false;
-					DebugTool.logInfo("Successfully reset choice keyboard properties to original config");
+					DebugTool.logInfo(null, "Successfully reset choice keyboard properties to original config");
 					PresentChoiceSetOperation.super.onFinished();
 				}
 
@@ -253,10 +253,10 @@ class PresentChoiceSetOperation extends Task {
 	*/
 	private void cancelInteraction() {
 		if ((getState() == Task.FINISHED)) {
-			DebugTool.logInfo("This operation has already finished so it can not be canceled.");
+			DebugTool.logInfo(null, "This operation has already finished so it can not be canceled.");
 			return;
 		} else if (getState() == Task.CANCELED) {
-			DebugTool.logInfo("This operation has already been canceled. It will be finished at some point during the operation.");
+			DebugTool.logInfo(null, "This operation has already been canceled. It will be finished at some point during the operation.");
 			return;
 		} else if ((getState() == Task.IN_PROGRESS)) {
 			if (sdlMsgVersion.getMajorVersion() < 6){
@@ -264,13 +264,13 @@ class PresentChoiceSetOperation extends Task {
 				return;
 			}
 
-			DebugTool.logInfo("Canceling the presented choice set interaction.");
+			DebugTool.logInfo(null, "Canceling the presented choice set interaction.");
 
 			CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);
 			cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
-					DebugTool.logInfo("Canceled the presented choice set " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
+					DebugTool.logInfo(null, "Canceled the presented choice set " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
 				}
 
 				@Override
@@ -285,7 +285,7 @@ class PresentChoiceSetOperation extends Task {
 				DebugTool.logError("Internal interface null - could not send cancel interaction for choice set");
 			}
 		} else {
-			DebugTool.logInfo("Canceling a choice set that has not yet been sent to Core");
+			DebugTool.logInfo(null, "Canceling a choice set that has not yet been sent to Core");
 			this.cancelTask();
 		}
 	}

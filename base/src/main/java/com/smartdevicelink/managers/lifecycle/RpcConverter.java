@@ -130,7 +130,7 @@ public class RpcConverter {
             if (params != null) {
                 Set<String> keySet = params.keySet();
                 for (String key : keySet) {
-                    DebugTool.logInfo(key + "  -  " + params.get(key));
+                    DebugTool.logInfo(TAG, key + "  -  " + params.get(key));
                 }
             }
         }
@@ -149,7 +149,7 @@ public class RpcConverter {
                 rpcClassName.append(RESPONSE_KEY);
             }
 
-            DebugTool.logInfo(TAG + " Attempting to create " + rpcClassName.toString());
+            DebugTool.logInfo(TAG, " Attempting to create " + rpcClassName.toString());
             try {
                 Class rpcClass = Class.forName(rpcClassName.toString());
                 if(rpcClass != null){

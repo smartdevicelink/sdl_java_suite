@@ -342,7 +342,7 @@ abstract class BaseLifecycleManager {
     }
 
     void onClose(String info, Exception e, SdlDisconnectedReason reason) {
-            DebugTool.logInfo("onClose");
+            DebugTool.logInfo(TAG, "onClose");
             if (lifecycleListener != null) {
             lifecycleListener.onProxyClosed((LifecycleManager) this, info, e, reason);
         }
@@ -385,7 +385,7 @@ abstract class BaseLifecycleManager {
                 switch (functionID) {
                     case REGISTER_APP_INTERFACE:
                         //We have begun
-                        DebugTool.logInfo("RAI Response");
+                        DebugTool.logInfo(TAG, "RAI Response");
                         raiResponse = (RegisterAppInterfaceResponse) message;
                         SdlMsgVersion rpcVersion = ((RegisterAppInterfaceResponse) message).getSdlMsgVersion();
                         if (rpcVersion != null) {
@@ -405,7 +405,7 @@ abstract class BaseLifecycleManager {
                         systemCapabilityManager.parseRAIResponse(raiResponse);
                         break;
                     case ON_HMI_STATUS:
-                        DebugTool.logInfo("on hmi status");
+                        DebugTool.logInfo(TAG, "on hmi status");
                         boolean shouldInit = currentHMIStatus == null;
                         currentHMIStatus = (OnHMIStatus) message;
                         if (lifecycleListener != null && shouldInit) {
@@ -457,15 +457,15 @@ abstract class BaseLifecycleManager {
                         OnAppInterfaceUnregistered onAppInterfaceUnregistered = (OnAppInterfaceUnregistered) message;
 
                         if (!onAppInterfaceUnregistered.getReason().equals(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE)) {
-                            DebugTool.logInfo("on app interface unregistered");
+                            DebugTool.logInfo(TAG, "on app interface unregistered");
                             cleanProxy();
                         } else {
-                            DebugTool.logInfo("re-registering for language change");
+                            DebugTool.logInfo(TAG, "re-registering for language change");
                             cycleProxy(SdlDisconnectedReason.LANGUAGE_CHANGE);
                         }
                         break;
                     case UNREGISTER_APP_INTERFACE:
-                        DebugTool.logInfo("unregister app interface");
+                        DebugTool.logInfo(TAG, "unregister app interface");
                         cleanProxy();
                         break;
                 }
@@ -613,7 +613,7 @@ abstract class BaseLifecycleManager {
             DebugTool.logError("onRPCNotificationReceived - Notification was null");
             return false;
         }
-        DebugTool.logInfo("onRPCNotificationReceived - " + notification.getFunctionName());
+        DebugTool.logInfo(TAG, "onRPCNotificationReceived - " + notification.getFunctionName());
 
         //Before updating any listeners, make sure to do any final updates to the notification RPC now
         if (FunctionID.ON_HMI_STATUS.toString().equals(notification.getFunctionName())) {
@@ -673,7 +673,7 @@ abstract class BaseLifecycleManager {
             DebugTool.logError("onRPCRequestReceived - request was null");
             return false;
         }
-        DebugTool.logInfo("onRPCRequestReceived - " + request.getFunctionName());
+        DebugTool.logInfo(TAG, "onRPCRequestReceived - " + request.getFunctionName());
 
         synchronized (ON_REQUEST_LISTENER_LOCK) {
             CopyOnWriteArrayList<OnRPCRequestListener> listeners = rpcRequestListeners.get(FunctionID.getFunctionId(request.getFunctionName()));
@@ -883,7 +883,7 @@ abstract class BaseLifecycleManager {
                 RPCMessage rpc = RpcConverter.extractRpc(msg, session.getProtocolVersion());
                 if (rpc != null) {
                     String messageType = rpc.getMessageType();
-                    DebugTool.logInfo("RPC received - " + messageType);
+                    DebugTool.logInfo(TAG, "RPC received - " + messageType);
 
                     rpc.format(rpcSpecVersion, true);
 
@@ -924,7 +924,7 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
-            DebugTool.logInfo("on protocol session started");
+            DebugTool.logInfo(TAG, "on protocol session started");
             BaseLifecycleManager.this.onProtocolSessionStarted(sessionType);
         }
 

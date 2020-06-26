@@ -272,7 +272,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 	@Override
 	protected synchronized void stop(int stateToTransitionTo, byte error) {
 		super.stop(stateToTransitionTo, error);
-        DebugTool.logInfo("Attempting to close the bluetooth serial server");
+        DebugTool.logInfo(TAG, "Attempting to close the bluetooth serial server");
 		if (mConnectThread != null) {
 			mConnectThread.cancel();
 			mConnectThread = null;
@@ -403,7 +403,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         @RequiresPermission(Manifest.permission.BLUETOOTH)
         public void run() {
             synchronized(THREAD_LOCK){
-                DebugTool.logInfo("Socket Type: " + mSocketType +
+                DebugTool.logInfo(TAG, "Socket Type: " + mSocketType +
                     " BEGIN mAcceptThread" + this);
             setName("AcceptThread" + mSocketType);
 
@@ -419,7 +419,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                 		return;
                 	}
                 	listenAttempts++;
-                    DebugTool.logInfo("SDL Bluetooth Accept thread is running.");
+                    DebugTool.logInfo(TAG, "SDL Bluetooth Accept thread is running.");
 
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
@@ -453,7 +453,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                         case STATE_CONNECTED:
                             // Either not ready or already connected. Terminate new socket.
                             try {
-                                DebugTool.logInfo("Close unwanted socket");
+                                DebugTool.logInfo(TAG, "Close unwanted socket");
                                	socket.close();
                             } catch (IOException e) {
                                 DebugTool.logError("Could not close unwanted socket", e);
@@ -463,19 +463,19 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                     }
                 }
             }
-                DebugTool.logInfo(mState + " END mAcceptThread, socket Type: " + mSocketType);
+                DebugTool.logInfo(TAG, mState + " END mAcceptThread, socket Type: " + mSocketType);
         }
         }
 
         public synchronized void cancel() {
-            DebugTool.logInfo(mState + " Socket Type " + mSocketType + " cancel ");
+            DebugTool.logInfo(TAG, mState + " Socket Type " + mSocketType + " cancel ");
             try {
             	if(mmServerSocket != null){
             		mmServerSocket.close();
             	}
             	
             } catch (IOException e) {
-                DebugTool.logError( mState + " Socket Type " + mSocketType + " close() of server failed "+ Arrays.toString(e.getStackTrace()));
+                DebugTool.logError(TAG, mState + " Socket Type " + mSocketType + " close() of server failed "+ Arrays.toString(e.getStackTrace()));
             }
         }
     }
@@ -684,7 +684,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
 
         public void cancel() {
             try {
-                DebugTool.logInfo("Calling Cancel in the connect thread");
+                DebugTool.logInfo(TAG, "Calling Cancel in the connect thread");
                 mmSocket.close();
             } catch (IOException e) {
                 // close() of connect socket failed
@@ -753,7 +753,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
             	}
             } catch (IOException e) {
                 // close() of connect socket failed
-                DebugTool.logInfo("Write Thread: " + e.getMessage());
+                DebugTool.logInfo(TAG, "Write Thread: " + e.getMessage());
             }
         }
     }
@@ -781,7 +781,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         
 		@SuppressLint("NewApi")
 		public void run() {
-            DebugTool.logInfo("Running the Connected Thread");
+            DebugTool.logInfo(TAG, "Running the Connected Thread");
             byte input = 0;
             int bytesRead = 0;
             byte[] buffer = new byte[READ_BUFFER_SIZE];

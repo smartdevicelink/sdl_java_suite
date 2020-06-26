@@ -137,7 +137,7 @@ public class MediaStreamingStatus {
      * @return
      */
     boolean isSupportedAudioDevice(int audioDevice){
-        DebugTool.logInfo("Audio device connected: " + audioDevice);
+        DebugTool.logInfo(null, "Audio device connected: " + audioDevice);
         switch (audioDevice){
             case AudioDeviceInfo.TYPE_BLUETOOTH_A2DP:
               if(isBluetoothActuallyAvailable()) {

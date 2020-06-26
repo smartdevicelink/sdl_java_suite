@@ -66,7 +66,7 @@ public class SdlRouterStatusProvider {
 	private ServiceConnection routerConnection= new ServiceConnection() {
 
 		public void onServiceConnected(ComponentName className, IBinder service) {
-			DebugTool.logInfo("Bound to service " + className.toString());
+			DebugTool.logInfo(TAG, "Bound to service " + className.toString());
 			routerServiceMessenger = new Messenger(service);
 			isBound = true;
 			//So we just established our connection
@@ -86,7 +86,7 @@ public class SdlRouterStatusProvider {
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
-			DebugTool.logInfo("UN-Bound from service " + className.getClassName());
+			DebugTool.logInfo(TAG, "UN-Bound from service " + className.getClassName());
 			routerServiceMessenger = null;
 			isBound = false;
 		}

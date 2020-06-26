@@ -92,6 +92,7 @@ public class DebugTool {
 		wasWritten = logToSiphon(msg);
 
 		if (isErrorEnabled && !wasWritten) {
+			tag = tag != null ? tag : TAG;
 			NativeLogTool.logError(tag, msg);
 		}
 	}
@@ -113,6 +114,7 @@ public class DebugTool {
 		}
 
 		if (isErrorEnabled && !wasWritten) {
+			tag = tag != null ? tag : TAG;
 			NativeLogTool.logError(tag, msg, ex);
 		}
 	}
@@ -130,6 +132,7 @@ public class DebugTool {
 		wasWritten = logToSiphon(msg);
 
 		if (isWarningEnabled && !wasWritten) {
+			tag = tag != null ? tag : TAG;
 			NativeLogTool.logWarning(tag, msg);
 		}
 	}
@@ -147,6 +150,7 @@ public class DebugTool {
 		wasWritten = logToSiphon(msg);
 
 		if (isInfoEnabled && !wasWritten) {
+			tag = tag != null ? tag : TAG;
 			NativeLogTool.logInfo(tag, msg);
 		}
 	}
@@ -164,6 +168,7 @@ public class DebugTool {
 		wasWritten = logToSiphon(msg);
 
 		if (isInfoEnabled && !wasWritten) {
+			tag = tag != null ? tag : TAG;
 			NativeLogTool.logInfo(tag, msg);
 		}
 	}

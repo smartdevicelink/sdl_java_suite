@@ -64,7 +64,7 @@ class DeleteChoicesOperation extends Task {
 
 	@Override
 	public void onExecute() {
-		DebugTool.logInfo("Choice Operation: Executing delete choices operation");
+		DebugTool.logInfo(null, "Choice Operation: Executing delete choices operation");
 		sendDeletions();
 	}
 
@@ -85,7 +85,7 @@ class DeleteChoicesOperation extends Task {
 						if (completionListener != null) {
 							completionListener.onComplete(true);
 						}
-						DebugTool.logInfo("Successfully deleted choices");
+						DebugTool.logInfo(null, "Successfully deleted choices");
 
 						DeleteChoicesOperation.super.onFinished();
 					}
@@ -109,7 +109,7 @@ class DeleteChoicesOperation extends Task {
 			if (completionListener != null) {
 				completionListener.onComplete(true);
 			}
-			DebugTool.logInfo("No Choices to delete, continue");
+			DebugTool.logInfo(null, "No Choices to delete, continue");
 		}
 	}
 

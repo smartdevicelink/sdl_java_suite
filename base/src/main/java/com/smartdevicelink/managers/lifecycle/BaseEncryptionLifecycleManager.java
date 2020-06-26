@@ -104,7 +104,7 @@ abstract class BaseEncryptionLifecycleManager {
                 if (serviceEncryptionListener != null) {
                     serviceEncryptionListener.onEncryptionServiceUpdated(type, isEncrypted, null);
                 }
-                DebugTool.logInfo("onServiceStarted, session Type: " + type.getName() + ", isEncrypted: " + isEncrypted);
+                DebugTool.logInfo(null, "onServiceStarted, session Type: " + type.getName() + ", isEncrypted: " + isEncrypted);
             }
 
             @Override
@@ -115,7 +115,7 @@ abstract class BaseEncryptionLifecycleManager {
                 if (serviceEncryptionListener != null) {
                     serviceEncryptionListener.onEncryptionServiceUpdated(type, false, null);
                 }
-                DebugTool.logInfo("onServiceEnded, session Type: " + type.getName());
+                DebugTool.logInfo(null, "onServiceEnded, session Type: " + type.getName());
             }
 
             @Override

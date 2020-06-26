@@ -638,7 +638,7 @@ public class SdlSession implements ISdlConnectionListener, IHeartbeatMonitorList
 
     @Override
     public void sendHeartbeat(IHeartbeatMonitor monitor) {
-        DebugTool.logInfo("Asked to send heartbeat");
+        DebugTool.logInfo(TAG, "Asked to send heartbeat");
         if (_sdlConnection != null)
             _sdlConnection.sendHeartbeat(this);
     }

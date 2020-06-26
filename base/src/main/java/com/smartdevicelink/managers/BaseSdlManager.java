@@ -221,7 +221,7 @@ abstract class BaseSdlManager {
                             }
                         }
                         try {
-                            DebugTool.logInfo(response.serializeJSON().toString());
+                            DebugTool.logInfo(TAG, response.serializeJSON().toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

@@ -85,13 +85,13 @@ class PresentKeyboardOperation extends Task {
 
 	@Override
 	public void onExecute() {
-		DebugTool.logInfo("Keyboard Operation: Executing present keyboard operation");
+		DebugTool.logInfo(null, "Keyboard Operation: Executing present keyboard operation");
 		addListeners();
 		start();
 	}
 
 	private void start(){
-		DebugTool.logInfo("Choice Operation: Executing present keyboard operation");
+		DebugTool.logInfo(null, "Choice Operation: Executing present keyboard operation");
 
 		if (getState() == Task.CANCELED) {
 			finishOperation();
@@ -148,10 +148,10 @@ class PresentKeyboardOperation extends Task {
 	 */
 	void dismissKeyboard() {
 		if ((getState() == Task.FINISHED)) {
-			DebugTool.logInfo("This operation has already finished so it can not be canceled.");
+			DebugTool.logInfo(null, "This operation has already finished so it can not be canceled.");
 			return;
 		} else if (getState() == Task.CANCELED) {
-			DebugTool.logInfo("This operation has already been canceled. It will be finished at some point during the operation.");
+			DebugTool.logInfo(null, "This operation has already been canceled. It will be finished at some point during the operation.");
 			return;
 		} else if (getState() == Task.IN_PROGRESS) {
 			if (sdlMsgVersion.getMajorVersion() < 6){
@@ -159,13 +159,13 @@ class PresentKeyboardOperation extends Task {
 				return;
 			}
 
-			DebugTool.logInfo("Canceling the presented keyboard.");
+			DebugTool.logInfo(null, "Canceling the presented keyboard.");
 
 			CancelInteraction cancelInteraction = new CancelInteraction(FunctionID.PERFORM_INTERACTION.getId(), cancelID);
 			cancelInteraction.setOnRPCResponseListener(new OnRPCResponseListener() {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
-					DebugTool.logInfo("Canceled the presented keyboard " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
+					DebugTool.logInfo(null, "Canceled the presented keyboard " + ((response.getResultCode() == Result.SUCCESS) ? "successfully" : "unsuccessfully"));
 				}
 
 				@Override
@@ -179,7 +179,7 @@ class PresentKeyboardOperation extends Task {
 				DebugTool.logError("Internal interface null - could not send cancel interaction for keyboard.");
 			}
 		} else {
-			DebugTool.logInfo("Canceling a keyboard that has not yet been sent to Core.");
+			DebugTool.logInfo(null, "Canceling a keyboard that has not yet been sent to Core.");
 			this.cancelTask();
 		}
 	}
@@ -211,7 +211,7 @@ class PresentKeyboardOperation extends Task {
 				if (listener != null){
 					listener.onComplete(true);
 				}
-				DebugTool.logInfo("Success Setting keyboard properties in present keyboard operation - choice manager");
+				DebugTool.logInfo(null, "Success Setting keyboard properties in present keyboard operation - choice manager");
 			}
 
 			@Override
@@ -240,7 +240,7 @@ class PresentKeyboardOperation extends Task {
 				@Override
 				public void onResponse(int correlationId, RPCResponse response) {
 					updatedKeyboardProperties = false;
-					DebugTool.logInfo("Successfully reset choice keyboard properties to original config");
+					DebugTool.logInfo(null, "Successfully reset choice keyboard properties to original config");
 					PresentKeyboardOperation.super.onFinished();
 				}
 
