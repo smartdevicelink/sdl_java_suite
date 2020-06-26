@@ -111,7 +111,7 @@ public class SdlManager extends BaseSdlManager {
                 transitionToState(BaseSubManager.SETTING_UP);
                 // No need to notify developer here!
             } else {
-                DebugTool.logWarning("LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
+                DebugTool.logWarning(TAG, "LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
                 transitionToState(BaseSubManager.LIMITED);
                 handleQueuedNotifications();
                 notifyDevListener(null);
