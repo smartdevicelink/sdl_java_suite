@@ -70,13 +70,13 @@ public class SSLWebSocketFactoryGenerator {
                 context = getSSLContextFromPem(config);
                 break;
             default:
-                DebugTool.logError("Unable to generateWebSocketServer. Unsupported cert type.");
+                DebugTool.logError(null, "Unable to generateWebSocketServer. Unsupported cert type.");
                 return null;
         }
         if(context != null) {
             return new DefaultSSLWebSocketServerFactory(context);
         }else{
-            DebugTool.logError("SSLWebSocketFactoryGenerator: Unable to create SSL Context");
+            DebugTool.logError(null, "SSLWebSocketFactoryGenerator: Unable to create SSL Context");
             return null;
         }
     }
@@ -101,7 +101,7 @@ public class SSLWebSocketFactoryGenerator {
             return sslContext;
         }
         catch(Exception e){
-            DebugTool.logError("Issue creating SSLContext with JKS : " , e);
+            DebugTool.logError(null, "Issue creating SSLContext with JKS : " , e);
         }
         return null;
     }
@@ -133,7 +133,7 @@ public class SSLWebSocketFactoryGenerator {
             context.init( km, null, null );
         } catch ( Exception e ) {
             context = null;
-            DebugTool.logError("Issue creating SSLContext with PEM Cert : " , e);
+            DebugTool.logError(null, "Issue creating SSLContext with PEM Cert : " , e);
         }
         return context;
     }

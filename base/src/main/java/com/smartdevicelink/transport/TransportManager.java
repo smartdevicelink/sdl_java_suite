@@ -180,7 +180,7 @@ public class TransportManager extends TransportManagerBase{
 
         @Override
         public void onError() {
-            DebugTool.logError("Error in the transport manager from the web socket server");
+            DebugTool.logError(TAG, "Error in the transport manager from the web socket server");
             if(transportListener != null){
                 transportListener.onError("");
             }

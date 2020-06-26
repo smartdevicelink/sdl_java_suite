@@ -103,7 +103,7 @@ public class SdlManager extends BaseSdlManager {
                 onReady();
             } else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR) {
                 String info = "ERROR starting sdl manager, all sub managers are in error state";
-                DebugTool.logError(info);
+                DebugTool.logError(TAG, info);
                 transitionToState(BaseSubManager.ERROR);
                 notifyDevListener(info);
             } else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP) {
@@ -120,7 +120,7 @@ public class SdlManager extends BaseSdlManager {
         } else {
             // We should never be here, but somehow one of the sub-sub managers is null
             String info = "ERROR one of the sdl sub managers is null";
-            DebugTool.logError(info);
+            DebugTool.logError(TAG, info);
             transitionToState(BaseSubManager.ERROR);
             notifyDevListener(info);
         }

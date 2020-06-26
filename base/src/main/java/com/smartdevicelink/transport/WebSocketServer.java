@@ -66,7 +66,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
             if(factory!=null){
                 this.setWebSocketFactory(factory);
             }else{
-                DebugTool.logError("WebSocketServer: Unable to generate SSL Web Socket Server Factory");
+                DebugTool.logError(TAG, "WebSocketServer: Unable to generate SSL Web Socket Server Factory");
             }
         }
 
@@ -138,7 +138,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
 
     @Override
     public void onMessage(WebSocket webSocket, String s) {
-        DebugTool.logError("Incorrect message type received, dropping. - String: " + s);
+        DebugTool.logError(TAG, "Incorrect message type received, dropping. - String: " + s);
     }
 
     @Override
@@ -182,7 +182,7 @@ public class WebSocketServer extends org.java_websocket.server.WebSocketServer i
 
     @Override
     public void onError(WebSocket webSocket, Exception e) {
-        DebugTool.logError("bad", e);
+        DebugTool.logError(TAG, "bad", e);
         if(callback!=null) {
             callback.onError();
         }

@@ -419,7 +419,7 @@ public class SdlTrace {
 				try {
 					localTraceListener.logXmlMsg(msg, SDL_LIB_TRACE_KEY);
 				} catch (Exception ex) {
-					DebugTool.logError("Failure calling ISTListener: " + ex.toString(), ex);
+					DebugTool.logError(null,"Failure calling ISTListener: " + ex.toString(), ex);
 					return false;
 				}
 			}

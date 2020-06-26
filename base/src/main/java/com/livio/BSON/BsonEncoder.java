@@ -47,7 +47,7 @@ public class BsonEncoder {
 
             return encoder.encode(bson);
         }
-        DebugTool.logError("Something went wrong encoding the map into BSON bytes");
+        DebugTool.logError(null, "Something went wrong encoding the map into BSON bytes");
 
         return null;
     }
@@ -63,7 +63,7 @@ public class BsonEncoder {
                 }
             }
         }
-        DebugTool.logError("Something went wrong decoding bytes into BSON");
+        DebugTool.logError(null, "Something went wrong decoding bytes into BSON");
         return null;
     }
 

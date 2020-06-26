@@ -295,7 +295,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
     @Override
     public void onProtocolError(String info, Exception e) {
         this.sessionListener.onProtocolError(info, e);
-        DebugTool.logError("on protocol error", e);
+        DebugTool.logError(TAG,"on protocol error", e);
     }
 
 
