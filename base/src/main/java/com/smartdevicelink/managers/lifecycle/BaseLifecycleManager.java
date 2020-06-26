@@ -163,8 +163,11 @@ abstract class BaseLifecycleManager {
         }
     }
 
-    public void stop() {
-        session.close();
+    public synchronized void stop() {
+        if(session != null) {
+            session.close();
+            session = null;
+        }
         if (taskmaster != null) {
             taskmaster.shutdown();
         }
@@ -174,7 +177,7 @@ abstract class BaseLifecycleManager {
         if (taskmaster == null) {
             Taskmaster.Builder builder = new Taskmaster.Builder();
             builder.setThreadCount(2);
-            builder.shouldBeDaemon(false);
+            builder.shouldBeDaemon(true);
             taskmaster = builder.build();
             taskmaster.start();
         }
