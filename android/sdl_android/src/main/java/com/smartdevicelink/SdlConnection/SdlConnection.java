@@ -127,10 +127,10 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 				//rsvp = new RouterServiceValidator(((MultiplexTransportConfig)transportConfig).getContext());
 				//vlad.setFlags(RouterServiceValidator.FLAG_DEBUG_VERSION_CHECK);
 				if(rsvp.validate()){
-					DebugTool.logWarning("SDL Router service is valid; attempting to connect");
+					DebugTool.logWarning(TAG, "SDL Router service is valid; attempting to connect");
 					((MultiplexTransportConfig)transportConfig).setService(rsvp.getService());//Let thes the transport broker know which service to connect to
 				}else{
-					DebugTool.logWarning("SDL Router service isn't trusted. Enabling legacy bluetooth connection.");
+					DebugTool.logWarning(TAG, "SDL Router service isn't trusted. Enabling legacy bluetooth connection.");
 					if(cachedMultiConfig == null){
 						cachedMultiConfig = (MultiplexTransportConfig) transportConfig;
 						cachedMultiConfig.setService(null);
@@ -573,7 +573,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 
 	public void forceHardwareConnectEvent(TransportType type){
 		if(_transport == null){
-			DebugTool.logWarning("Unable to force connect, transport was null!");
+			DebugTool.logWarning(TAG, "Unable to force connect, transport was null!");
 			return;
 		}
 		if(isLegacyModeEnabled()){//We know we should no longer be in legacy mode for future connections, so lets clear out that flag
@@ -594,7 +594,7 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 				}
 			}else if(tempCompName!=null){
 				//We have a conflicting service request
-				DebugTool.logWarning("Conflicting services. Disconnecting from current and connecting to new");
+				DebugTool.logWarning(TAG, "Conflicting services. Disconnecting from current and connecting to new");
 				//Log.w(TAG, "Old service " + config.getService().toShortString());
 				//Log.w(TAG, "New Serivce " + tempCompName.toString());
 				multi.disconnect();
@@ -626,9 +626,9 @@ public class SdlConnection implements IProtocolListener, ITransportListener {
 				//_transport.disconnect();
 				return;
 			}
-			DebugTool.logWarning("Using own transport, but not connected. Attempting to join multiplexing");
+			DebugTool.logWarning(TAG, "Using own transport, but not connected. Attempting to join multiplexing");
 		}else{
-			DebugTool.logWarning("Currently in legacy mode connected to own transport service. Nothing will take place on trnasport cycle");
+			DebugTool.logWarning(TAG, "Currently in legacy mode connected to own transport service. Nothing will take place on trnasport cycle");
 		}
 	}
 	

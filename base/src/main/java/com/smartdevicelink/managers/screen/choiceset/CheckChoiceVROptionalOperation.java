@@ -82,14 +82,14 @@ class CheckChoiceVROptionalOperation extends Task {
 					isVROptional = true;
 					deleteTestChoiceSet();
 				}else{
-					DebugTool.logWarning("Head unit doesn't support choices with no VR.");
+					DebugTool.logWarning(null, "Head unit doesn't support choices with no VR.");
 					sendTestChoiceWithVR();
 				}
 			}
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logWarning("Head unit doesn't support choices with no VR. Error: " + info + " resultCode: " + resultCode);
+				DebugTool.logWarning(null, "Head unit doesn't support choices with no VR. Error: " + info + " resultCode: " + resultCode);
 				sendTestChoiceWithVR();
 			}
 		});
@@ -109,7 +109,7 @@ class CheckChoiceVROptionalOperation extends Task {
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()) {
 					// The request was successful, now send the SDLPerformInteraction RPC
-					DebugTool.logWarning("Connected head unit does not support choice cells without voice commands. " +
+					DebugTool.logWarning(null, "Connected head unit does not support choice cells without voice commands. " +
 							"Cells without voice will be sent with placeholder voices from now on.");
 					isVROptional = false;
 					deleteTestChoiceSet();

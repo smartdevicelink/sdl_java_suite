@@ -468,7 +468,7 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 			});
 				
 		}else{
-			DebugTool.logWarning("Router service isn't running, returning false.");
+			DebugTool.logWarning(TAG, "Router service isn't running, returning false.");
 			if(isBluetoothConnected()){
 				DebugTool.logInfo(TAG, "Bluetooth is connected. Attempting to start Router Service");
 				Intent serviceIntent = new Intent();

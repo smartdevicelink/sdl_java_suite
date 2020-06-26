@@ -641,7 +641,7 @@ public class USBTransport extends SdlTransport {
      * @param s string to log
      */
     private void logW(String s) {
-        DebugTool.logWarning(s);
+        DebugTool.logWarning(TAG, s);
     }
 
     /**
@@ -890,7 +890,7 @@ public class USBTransport extends SdlTransport {
         }
 
         private void logW(String s) {
-            DebugTool.logWarning(s);
+            DebugTool.logWarning(TAG, s);
         }
 
         private void logW(String s, Throwable tr) {

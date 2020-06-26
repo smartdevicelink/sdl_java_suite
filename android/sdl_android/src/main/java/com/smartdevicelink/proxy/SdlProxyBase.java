@@ -660,7 +660,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 
 			if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1){
-				DebugTool.logWarning(String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
+				DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
 				try {
 					disposeInternal(SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED);
 				} catch (SdlException e) {
@@ -1993,7 +1993,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						if (functionName != null) {
 							hashTemp.put(RPCMessage.KEY_FUNCTION_NAME, functionName);
 						} else {
-							DebugTool.logWarning("Dispatch Incoming Message - function name is null unknown RPC.  FunctionId: " + message.getFunctionID());
+							DebugTool.logWarning(TAG, "Dispatch Incoming Message - function name is null unknown RPC.  FunctionId: " + message.getFunctionID());
 							return;
 						}
 						if (message.getRPCType() == 0x00) {
@@ -2337,7 +2337,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 						listener.onError(request.getCorrelationID(), Result.ABORTED,  errorInfo);
 					}
 				}
-				DebugTool.logWarning(errorInfo);
+				DebugTool.logWarning(TAG, errorInfo);
 				return;
 			}
 
@@ -2775,7 +2775,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 
 					//If the RPC version is too low we should simply dispose this proxy
 					if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1) {
-						DebugTool.logWarning(String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+						DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
 						try {
 							disposeInternal(SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED);
 						} catch (SdlException e) {
@@ -2935,7 +2935,7 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 					//If the RPC version is too low we should simply dispose this proxy
 					if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1) {
-						DebugTool.logWarning(String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+						DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
 						try {
 							disposeInternal(SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED);
 						} catch (SdlException e) {
@@ -5327,10 +5327,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 					}
 					builder.append(paramName);
 				}
-				DebugTool.logWarning("StartService for nav failed. Rejected params: " + builder.toString());
+				DebugTool.logWarning(TAG, "StartService for nav failed. Rejected params: " + builder.toString());
 
 			} else {
-				DebugTool.logWarning("StartService for nav failed (rejected params not supplied)");
+				DebugTool.logWarning(TAG, "StartService for nav failed (rejected params not supplied)");
 			}
 			return null;
 		}
@@ -5367,11 +5367,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
     @SuppressWarnings("unused")
     public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
         if (sdlSession == null) {
-            DebugTool.logWarning("SdlSession is not created yet.");
+            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
             return null;
         }
         if (!sdlSession.getIsConnected()) {
-            DebugTool.logWarning("Connection is not available.");
+            DebugTool.logWarning(TAG, "Connection is not available.");
             return null;
         }
 
@@ -5393,11 +5393,11 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 	 */
 	public void startVideoService(boolean isEncrypted, VideoStreamingParameters parameters) {
 		if (sdlSession == null) {
-			DebugTool.logWarning("SdlSession is not created yet.");
+			DebugTool.logWarning(TAG, "SdlSession is not created yet.");
 			return;
 		}
 		if (!sdlSession.getIsConnected()) {
-			DebugTool.logWarning("Connection is not available.");
+			DebugTool.logWarning(TAG, "Connection is not available.");
 			return;
 		}
 
@@ -5562,15 +5562,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
     @SuppressWarnings("unused")
 	private VideoStreamingParameters tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
         if (sdlSession == null) {
-            DebugTool.logWarning("SdlSession is not created yet.");
+            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
             return null;
         }
         if(protocolVersion!= null && protocolVersion.getMajor() >= 5 && !_systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
-			DebugTool.logWarning("Module doesn't support video streaming.");
+			DebugTool.logWarning(TAG, "Module doesn't support video streaming.");
 			return null;
 		}
         if (parameters == null) {
-            DebugTool.logWarning("Video parameters were not supplied.");
+            DebugTool.logWarning(TAG, "Video parameters were not supplied.");
             return null;
         }
 
@@ -5609,10 +5609,10 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
 				builder.append(paramName);
 			}
 
-			DebugTool.logWarning("StartService for nav failed. Rejected params: " + builder.toString());
+			DebugTool.logWarning(TAG, "StartService for nav failed. Rejected params: " + builder.toString());
 
         } else {
-			DebugTool.logWarning("StartService for nav failed (rejected params not supplied)");
+			DebugTool.logWarning(TAG, "StartService for nav failed (rejected params not supplied)");
 		}
 
         return null;
@@ -5700,15 +5700,15 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
     public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec,
                                                  AudioStreamingParams params) {
         if (sdlSession == null) {
-            DebugTool.logWarning("SdlSession is not created yet.");
+            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
             return null;
         }
         if (!sdlSession.getIsConnected()) {
-            DebugTool.logWarning("Connection is not available.");
+            DebugTool.logWarning(TAG, "Connection is not available.");
             return null;
         }
         if (codec != AudioStreamingCodec.LPCM) {
-            DebugTool.logWarning("Audio codec " + codec + " is not supported.");
+            DebugTool.logWarning(TAG, "Audio codec " + codec + " is not supported.");
             return null;
         }
 
@@ -5736,9 +5736,9 @@ public abstract class SdlProxyBase<proxyListenerType extends IProxyListenerBase>
                     }
                     builder.append(paramName);
                 }
-                DebugTool.logWarning("StartService for audio failed. Rejected params: " + builder.toString());
+                DebugTool.logWarning(TAG, "StartService for audio failed. Rejected params: " + builder.toString());
             } else {
-                DebugTool.logWarning("StartService for audio failed (rejected params not supplied)");
+                DebugTool.logWarning(TAG, "StartService for audio failed (rejected params not supplied)");
             }
             return null;
         }

@@ -117,7 +117,7 @@ public class SoftButtonObject {
         }
 
         if (states.size() == 1) {
-            DebugTool.logWarning("There's only one state, so no transitioning is possible!");
+            DebugTool.logWarning(null, "There's only one state, so no transitioning is possible!");
             return false;
         }
 

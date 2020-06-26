@@ -256,14 +256,14 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     public void startAudioStream(boolean encrypted, final CompletionListener completionListener) {
         // audio stream cannot be started without a connected internal interface
         if (!internalInterface.isConnected()) {
-            DebugTool.logWarning("startAudioStream called without being connected.");
+            DebugTool.logWarning(TAG, "startAudioStream called without being connected.");
             finish(completionListener, false);
             return;
         }
 
         // streaming state must be NONE (starting the service is ready. starting stream is started)
         if (streamingStateMachine.getState() != StreamingStateMachine.NONE) {
-            DebugTool.logWarning("startAudioStream called but streamingStateMachine is not in state NONE (current: " + streamingStateMachine.getState() + ")");
+            DebugTool.logWarning(TAG, "startAudioStream called but streamingStateMachine is not in state NONE (current: " + streamingStateMachine.getState() + ")");
             finish(completionListener, false);
             return;
         }
@@ -333,14 +333,14 @@ public class AudioStreamManager extends BaseAudioStreamManager {
      */
     public void stopAudioStream(final CompletionListener completionListener) {
         if (!internalInterface.isConnected()) {
-            DebugTool.logWarning("stopAudioStream called without being connected");
+            DebugTool.logWarning(TAG, "stopAudioStream called without being connected");
             finish(completionListener, false);
             return;
         }
 
         // streaming state must be STARTED (starting the service is ready. starting stream is started)
         if (streamingStateMachine.getState() != StreamingStateMachine.STARTED) {
-            DebugTool.logWarning("stopAudioStream called but streamingStateMachine is not STARTED (current: " + streamingStateMachine.getState() + ")");
+            DebugTool.logWarning(TAG, "stopAudioStream called but streamingStateMachine is not STARTED (current: " + streamingStateMachine.getState() + ")");
             finish(completionListener, false);
             return;
         }
@@ -444,7 +444,7 @@ public class AudioStreamManager extends BaseAudioStreamManager {
     public void pushBuffer(ByteBuffer data, CompletionListener completionListener) {
         // streaming state must be STARTED (starting the service is ready. starting stream is started)
         if (streamingStateMachine.getState() != StreamingStateMachine.STARTED) {
-            DebugTool.logWarning("AudioStreamManager is not ready!");
+            DebugTool.logWarning(TAG, "AudioStreamManager is not ready!");
             return;
         }
 

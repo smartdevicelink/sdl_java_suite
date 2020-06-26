@@ -315,7 +315,7 @@ public class VirtualDisplayEncoder {
             try {
                 drainEncoder(false);
             } catch (Exception e) {
-                DebugTool.logWarning("Error attempting to drain encoder");
+                DebugTool.logWarning(TAG, "Error attempting to drain encoder");
             } finally {
                 mVideoEncoder.release();
             }
@@ -349,7 +349,7 @@ public class VirtualDisplayEncoder {
                             MediaFormat format = mVideoEncoder.getOutputFormat();
                             mH264CodecSpecificData = EncoderUtils.getCodecSpecificData(format);
                         } else {
-                            DebugTool.logWarning("Output format change notified more than once, ignoring.");
+                            DebugTool.logWarning(TAG, "Output format change notified more than once, ignoring.");
                         }
                     }
                 } else {

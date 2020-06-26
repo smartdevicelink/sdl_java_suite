@@ -180,7 +180,7 @@ public class SystemCapabilityManager {
 
 	private void updateCachedDisplayCapabilityList(List<DisplayCapability> newCapabilities) {
 		if (newCapabilities == null || newCapabilities.size() == 0) {
-			DebugTool.logWarning("Received invalid display capability list");
+			DebugTool.logWarning(null, "Received invalid display capability list");
 			return;
 		}
 

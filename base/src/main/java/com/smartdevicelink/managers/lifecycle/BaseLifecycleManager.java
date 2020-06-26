@@ -394,7 +394,7 @@ abstract class BaseLifecycleManager {
                             BaseLifecycleManager.this.rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
                         }
                         if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1) {
-                            DebugTool.logWarning(String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+                            DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
                             UnregisterAppInterface msg = new UnregisterAppInterface();
                             msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
                             sendRPCMessagePrivate(msg, true);
@@ -803,7 +803,7 @@ abstract class BaseLifecycleManager {
                         listener.onError(request.getCorrelationID(), Result.ABORTED, errorInfo);
                     }
                 }
-                DebugTool.logWarning(errorInfo);
+                DebugTool.logWarning(TAG, errorInfo);
                 return;
             }
 
@@ -910,7 +910,7 @@ abstract class BaseLifecycleManager {
 
                     }
                 } else {
-                    DebugTool.logWarning("Shouldn't be here");
+                    DebugTool.logWarning(TAG, "Shouldn't be here");
                 }
             }
 
@@ -918,7 +918,7 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onProtocolSessionStartedNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-            DebugTool.logWarning(sessionType + " onProtocolSessionStartedNACKed " + sessionID + " RejectedParams: " + rejectedParams);
+            DebugTool.logWarning(TAG, sessionType + " onProtocolSessionStartedNACKed " + sessionID + " RejectedParams: " + rejectedParams);
             BaseLifecycleManager.this.onProtocolSessionStartedNACKed(sessionType);
         }
 
@@ -1003,13 +1003,13 @@ abstract class BaseLifecycleManager {
 
         @Override
         public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
-            DebugTool.logWarning("startVideoStream is not currently implemented");
+            DebugTool.logWarning(TAG, "startVideoStream is not currently implemented");
             return null;
         }
 
         @Override
         public void startAudioService(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params) {
-            DebugTool.logWarning("startAudioService is not currently implemented");
+            DebugTool.logWarning(TAG, "startAudioService is not currently implemented");
         }
 
         @Override
@@ -1024,7 +1024,7 @@ abstract class BaseLifecycleManager {
 
         @Override
         public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params) {
-            DebugTool.logWarning("startAudioStream is not currently implemented");
+            DebugTool.logWarning(TAG, "startAudioStream is not currently implemented");
             return null;
         }
 
@@ -1477,7 +1477,7 @@ abstract class BaseLifecycleManager {
     void onProtocolSessionStarted(SessionType sessionType) {
         if (sessionType != null) {
             if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1) {
-                DebugTool.logWarning(String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
+                DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
                 session.endService(sessionType, session.getSessionId());
                 cleanProxy();
                 return;

@@ -89,7 +89,7 @@ public class AudioDecoder extends BaseAudioDecoder {
                         SampleBuffer targetSampleBuffer = AudioDecoder.super.onOutputBufferAvailable(outputBuffer);
                         AudioDecoder.this.listener.onAudioDataAvailable(targetSampleBuffer);
                     } else {
-                        DebugTool.logWarning("output buffer empty. Chance that silence was detected");
+                        DebugTool.logWarning(TAG, "output buffer empty. Chance that silence was detected");
                     }
 
                     mediaCodec.releaseOutputBuffer(i, false);

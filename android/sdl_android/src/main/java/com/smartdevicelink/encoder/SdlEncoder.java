@@ -198,7 +198,7 @@ public class SdlEncoder {
 					MediaFormat format = mEncoder.getOutputFormat();
 					mH264CodecSpecificData = EncoderUtils.getCodecSpecificData(format);
 				} else {
-					DebugTool.logWarning("Output format change notified more than once, ignoring.");
+					DebugTool.logWarning(TAG, "Output format change notified more than once, ignoring.");
 				}
 			} else if (encoderStatus < 0) {
 			} else {

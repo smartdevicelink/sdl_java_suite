@@ -146,7 +146,7 @@ public class SdlRouterStatusProvider {
 			if(context!=null && routerConnection!=null){
 				context.unbindService(routerConnection);
 			}else{
-				DebugTool.logWarning("Unable to unbind from router service, context was null");
+				DebugTool.logWarning(TAG, "Unable to unbind from router service, context was null");
 			}
 			
 		}catch(IllegalArgumentException e){

@@ -49,7 +49,7 @@ class SoftButtonTransitionOperation extends Task {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 if (!response.getSuccess()) {
-                    DebugTool.logWarning("Failed to transition soft button to new state");
+                    DebugTool.logWarning(null, "Failed to transition soft button to new state");
                 }
                 onFinished();
             }
@@ -57,7 +57,7 @@ class SoftButtonTransitionOperation extends Task {
             @Override
             public void onError(int correlationId, Result resultCode, String info) {
                 super.onError(correlationId, resultCode, info);
-                DebugTool.logWarning("Failed to transition soft button to new state. " + info);
+                DebugTool.logWarning(null, "Failed to transition soft button to new state. " + info);
                 onFinished();
             }
         });

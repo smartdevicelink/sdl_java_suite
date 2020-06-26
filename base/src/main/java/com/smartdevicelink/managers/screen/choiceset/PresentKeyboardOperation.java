@@ -155,7 +155,7 @@ class PresentKeyboardOperation extends Task {
 			return;
 		} else if (getState() == Task.IN_PROGRESS) {
 			if (sdlMsgVersion.getMajorVersion() < 6){
-				DebugTool.logWarning("Canceling a keyboard is not supported on this head unit");
+				DebugTool.logWarning(null, "Canceling a keyboard is not supported on this head unit");
 				return;
 			}
 

@@ -271,7 +271,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     public boolean openMenu(){
 
         if (sdlMsgVersion.getMajorVersion() < 6){
-            DebugTool.logWarning("Menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
+            DebugTool.logWarning(null, "Menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
             return false;
         }
         
@@ -302,7 +302,7 @@ abstract class BaseMenuManager extends BaseSubManager {
     public boolean openSubMenu(@NonNull MenuCell cell){
 
         if (sdlMsgVersion.getMajorVersion() < 6){
-            DebugTool.logWarning("Sub menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
+            DebugTool.logWarning(null, "Sub menu opening is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
             return false;
         }
 
@@ -359,7 +359,7 @@ abstract class BaseMenuManager extends BaseSubManager {
         }
 
         if (sdlMsgVersion.getMajorVersion() < 6){
-            DebugTool.logWarning("Menu configurations is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
+            DebugTool.logWarning(null, "Menu configurations is only supported on head units with RPC spec version 6.0.0 or later. Currently connected head unit RPC spec version is: "+sdlMsgVersion.getMajorVersion() + "." + sdlMsgVersion.getMinorVersion()+ "." +sdlMsgVersion.getPatchVersion());
             return;
         }
 

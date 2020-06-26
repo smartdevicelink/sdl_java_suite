@@ -324,12 +324,12 @@ abstract class BaseFileManager extends BaseSubManager {
 	 */
 	public void uploadFile(@NonNull final SdlFile file, final CompletionListener listener) {
 		if (file.isStaticIcon()) {
-			DebugTool.logWarning(String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
+			DebugTool.logWarning(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
 			listener.onComplete(true);
 			return;
 		}
 		if (!file.getOverwrite() && hasUploadedFile(file)) {
-			DebugTool.logWarning(String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
+			DebugTool.logWarning(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
 			listener.onComplete(true);
 			return;
 		}
@@ -397,11 +397,11 @@ abstract class BaseFileManager extends BaseSubManager {
 		final List<PutFile> putFileRequests = new ArrayList<>();
 		for (SdlFile file : files) {
 			if (file.isStaticIcon()) {
-				DebugTool.logWarning(String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
+				DebugTool.logWarning(TAG, String.format("%s is a static icon and doesn't need to be uploaded", file.getName()));
 				continue;
 			}
 			if (!file.getOverwrite() && hasUploadedFile(file)) {
-				DebugTool.logWarning(String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
+				DebugTool.logWarning(TAG, String.format("%s has already been uploaded and the overwrite property is set to false. It will not be uploaded again", file.getName()));
 				continue;
 			}
 			putFileRequests.add(createPutFile(file));

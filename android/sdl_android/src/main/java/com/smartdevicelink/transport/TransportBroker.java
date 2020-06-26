@@ -131,7 +131,7 @@ public class TransportBroker {
 
     protected synchronized boolean sendMessageToRouterService(Message message, int retryCount) {
         if (message == null) {
-            DebugTool.logWarning( "Attempted to send null message");
+            DebugTool.logWarning(TAG,  "Attempted to send null message");
             return false;
         }
         //Log.i(TAG, "Attempting to send message type - " + message.what);
@@ -246,7 +246,7 @@ public class TransportBroker {
                             break;
                         default:
                             broker.registeredWithRouterService = false;
-                            DebugTool.logWarning("Registration denied from router service. Reason - " + msg.arg1);
+                            DebugTool.logWarning(TAG, "Registration denied from router service. Reason - " + msg.arg1);
                             break;
                     }
                     ;
@@ -259,14 +259,14 @@ public class TransportBroker {
 
 
                     } else { //We were denied our unregister request to the router service, let's see why
-                        DebugTool.logWarning("Unregister request denied from router service. Reason - " + msg.arg1);
+                        DebugTool.logWarning(TAG, "Unregister request denied from router service. Reason - " + msg.arg1);
                         //Do we care?
                     }
 
                     break;
                 case TransportConstants.ROUTER_RECEIVED_PACKET:
                     if(bundle == null){
-                        DebugTool.logWarning("Received packet message from router service with no bundle");
+                        DebugTool.logWarning(TAG, "Received packet message from router service with no bundle");
                         return;
                     }
                     //So the intent has a packet with it. PEFRECT! Let's send it through the library
@@ -287,7 +287,7 @@ public class TransportBroker {
 
                                 broker.onPacketReceived(packet);
                             } else {
-                                DebugTool.logWarning("Received null packet from router service, not passing along");
+                                DebugTool.logWarning(TAG, "Received null packet from router service, not passing along");
                             }
                         } else if (flags == TransportConstants.BYTES_TO_SEND_FLAG_SDL_PACKET_INCLUDED) {
                             broker.bufferedPacket = (SdlPacket) packet;
@@ -319,12 +319,12 @@ public class TransportBroker {
                         //}
                         //}
                     } else {
-                        DebugTool.logWarning("Flase positive packet reception");
+                        DebugTool.logWarning(TAG, "Flase positive packet reception");
                     }
                     break;
                 case TransportConstants.HARDWARE_CONNECTION_EVENT:
                     if(bundle == null){
-                        DebugTool.logWarning("Received hardware connection message from router service with no bundle");
+                        DebugTool.logWarning(TAG, "Received hardware connection message from router service with no bundle");
                         return;
                     }
                     if (bundle.containsKey(TransportConstants.TRANSPORT_DISCONNECTED)
@@ -474,7 +474,7 @@ public class TransportBroker {
 
         } catch (Exception e) {
             //This is ok
-            DebugTool.logWarning("Unable to unbind from router service. bound? " + isBound + " context? " + (getContext()!=null) + " router connection?" + (routerConnection != null));
+            DebugTool.logWarning(TAG, "Unable to unbind from router service. bound? " + isBound + " context? " + (getContext()!=null) + " router connection?" + (routerConnection != null));
         }finally {
             isBound = false;
         }
@@ -581,7 +581,7 @@ public class TransportBroker {
             //|| offset<0
             //|| count<0
                 ) {//|| count>(bytes.length-offset)){
-            DebugTool.logWarning(whereToReply + "incorrect params supplied");
+            DebugTool.logWarning(TAG, whereToReply + "incorrect params supplied");
             return false;
         }
         byte[] bytes = packet.constructPacket();
@@ -633,7 +633,7 @@ public class TransportBroker {
         }
 
         if (routerServiceMessenger != null) {
-            DebugTool.logWarning("Already registered with router service");
+            DebugTool.logWarning(TAG, "Already registered with router service");
             return false;
         }
         //Make sure we know where to bind to
@@ -702,7 +702,7 @@ public class TransportBroker {
             msg.setData(bundle);
             sendMessageToRouterService(msg);
         } else {
-            DebugTool.logWarning("Unable to unregister, not bound to router service");
+            DebugTool.logWarning(TAG, "Unable to unregister, not bound to router service");
         }
 
         routerServiceMessenger = null;

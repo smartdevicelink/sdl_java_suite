@@ -209,11 +209,11 @@ public class LifecycleManager extends BaseLifecycleManager {
     @Override
     void startVideoService(boolean isEncrypted, VideoStreamingParameters parameters) {
         if (session == null) {
-            DebugTool.logWarning("SdlSession is not created yet.");
+            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
             return;
         }
         if (!session.getIsConnected()) {
-            DebugTool.logWarning("Connection is not available.");
+            DebugTool.logWarning(TAG, "Connection is not available.");
             return;
         }
 
@@ -234,15 +234,15 @@ public class LifecycleManager extends BaseLifecycleManager {
      */
     private VideoStreamingParameters tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
         if (session == null) {
-            DebugTool.logWarning("SdlSession is not created yet.");
+            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
             return null;
         }
         if (getProtocolVersion() != null && getProtocolVersion().getMajor() >= 5 && !systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)) {
-            DebugTool.logWarning("Module doesn't support video streaming.");
+            DebugTool.logWarning(TAG, "Module doesn't support video streaming.");
             return null;
         }
         if (parameters == null) {
-            DebugTool.logWarning("Video parameters were not supplied.");
+            DebugTool.logWarning(TAG, "Video parameters were not supplied.");
             return null;
         }
 
@@ -309,11 +309,11 @@ public class LifecycleManager extends BaseLifecycleManager {
     @Override
     boolean endVideoStream() {
         if (session == null) {
-            DebugTool.logWarning("SdlSession is not created yet.");
+            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
             return false;
         }
         if (!session.getIsConnected()) {
-            DebugTool.logWarning("Connection is not available.");
+            DebugTool.logWarning(TAG, "Connection is not available.");
             return false;
         }
 
@@ -335,11 +335,11 @@ public class LifecycleManager extends BaseLifecycleManager {
     @Override
     void startAudioService(boolean isEncrypted) {
         if (session == null) {
-            DebugTool.logWarning("SdlSession is not created yet.");
+            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
             return;
         }
         if (!session.getIsConnected()) {
-            DebugTool.logWarning("Connection is not available.");
+            DebugTool.logWarning(TAG, "Connection is not available.");
             return;
         }
         session.startService(SessionType.PCM, session.getSessionId(), isEncrypted);
@@ -353,11 +353,11 @@ public class LifecycleManager extends BaseLifecycleManager {
     @Override
     boolean endAudioStream() {
         if (session == null) {
-            DebugTool.logWarning("SdlSession is not created yet.");
+            DebugTool.logWarning(TAG, "SdlSession is not created yet.");
             return false;
         }
         if (!session.getIsConnected()) {
-            DebugTool.logWarning("Connection is not available.");
+            DebugTool.logWarning(TAG, "Connection is not available.");
             return false;
         }
 

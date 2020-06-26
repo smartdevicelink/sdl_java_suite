@@ -727,7 +727,7 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
         public void write(byte[] buffer, int offset, int count) {
             try {
             	if(buffer==null){
-                    DebugTool.logWarning("Can't write to device, nothing to send");
+                    DebugTool.logWarning(TAG, "Can't write to device, nothing to send");
             		return;
             	}
             	//This would be a good spot to log out all bytes received

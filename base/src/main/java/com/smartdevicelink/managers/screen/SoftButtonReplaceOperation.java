@@ -54,7 +54,7 @@ class SoftButtonReplaceOperation extends Task {
         // Check the state of our images
         if (!supportsSoftButtonImages()) {
             // We don't support images at all
-            DebugTool.logWarning("Soft button images are not supported. Attempting to send text-only soft buttons. If any button does not contain text, no buttons will be sent.");
+            DebugTool.logWarning(null, "Soft button images are not supported. Attempting to send text-only soft buttons. If any button does not contain text, no buttons will be sent.");
 
             // Send text buttons if all the soft buttons have text
             sendCurrentStateTextOnlySoftButtons(new CompletionListener() {
@@ -223,7 +223,7 @@ class SoftButtonReplaceOperation extends Task {
                 if (response.getSuccess()) {
                     DebugTool.logInfo(null, "Finished sending text only soft buttons");
                 } else {
-                    DebugTool.logWarning("Failed to update soft buttons with text buttons");
+                    DebugTool.logWarning(null, "Failed to update soft buttons with text buttons");
                 }
                 if (completionListener != null) {
                     completionListener.onComplete(response.getSuccess());
@@ -232,7 +232,7 @@ class SoftButtonReplaceOperation extends Task {
 
             @Override
             public void onError(int correlationId, Result resultCode, String info) {
-                DebugTool.logWarning("Failed to update soft buttons with text buttons");
+                DebugTool.logWarning(null, "Failed to update soft buttons with text buttons");
                 if (completionListener != null) {
                     completionListener.onComplete(false);
                 }
@@ -257,7 +257,7 @@ class SoftButtonReplaceOperation extends Task {
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             SoftButton softButton = softButtonObject.getCurrentStateSoftButton();
             if (softButton.getText() == null) {
-                DebugTool.logWarning("Attempted to create text buttons, but some buttons don't support text, so no text-only soft buttons will be sent");
+                DebugTool.logWarning(null, "Attempted to create text buttons, but some buttons don't support text, so no text-only soft buttons will be sent");
                 if (completionListener != null) {
                     completionListener.onComplete(false);
                 }
@@ -279,7 +279,7 @@ class SoftButtonReplaceOperation extends Task {
                 if (response.getSuccess()) {
                     DebugTool.logInfo(null, "Finished sending text only soft buttons");
                 } else {
-                    DebugTool.logWarning("Failed to update soft buttons with text buttons");
+                    DebugTool.logWarning(null, "Failed to update soft buttons with text buttons");
                 }
                 if (completionListener != null) {
                     completionListener.onComplete(response.getSuccess());
@@ -288,7 +288,7 @@ class SoftButtonReplaceOperation extends Task {
 
             @Override
             public void onError(int correlationId, Result resultCode, String info) {
-                DebugTool.logWarning("Failed to update soft buttons with text buttons");
+                DebugTool.logWarning(null, "Failed to update soft buttons with text buttons");
                 if (completionListener != null) {
                     completionListener.onComplete(false);
                 }

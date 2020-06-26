@@ -238,7 +238,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     public void deleteChoices(@NonNull List<ChoiceCell> choices){
 
         if (getState() == ERROR) {
-            DebugTool.logWarning("Choice Manager In Error State");
+            DebugTool.logWarning(null, "Choice Manager In Error State");
             return;
         }
 
@@ -253,7 +253,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         if (pendingPresentOperation != null && pendingPresentOperation.getState() != Task.CANCELED && pendingPresentOperation.getState() != Task.FINISHED && (cellsToBeDeleted.retainAll(pendingPresentationChoices) || cellsToBeRemovedFromPending.retainAll(pendingPresentationChoices))){
             pendingPresentOperation.cancelTask();
-            DebugTool.logWarning("Attempting to delete choice cells while there is a pending presentation operation. Pending presentation cancelled.");
+            DebugTool.logWarning(null, "Attempting to delete choice cells while there is a pending presentation operation. Pending presentation cancelled.");
             pendingPresentOperation = null;
         }
 
@@ -293,7 +293,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     public void presentChoiceSet(@NonNull final ChoiceSet choiceSet, @Nullable final InteractionMode mode, @Nullable final KeyboardListener keyboardListener){
 
         if (getState() == ERROR) {
-            DebugTool.logWarning("Choice Manager In Error State");
+            DebugTool.logWarning(null, "Choice Manager In Error State");
             return;
         }
 
@@ -302,7 +302,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         if (this.pendingPresentationSet != null && pendingPresentOperation != null){
             pendingPresentOperation.cancelTask();
-            DebugTool.logWarning("Presenting a choice set while one is currently presented. Cancelling previous and continuing");
+            DebugTool.logWarning(null, "Presenting a choice set while one is currently presented. Cancelling previous and continuing");
         }
 
         this.pendingPresentationSet = choiceSet;
@@ -373,14 +373,14 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
 
         if (getState() == ERROR) {
-            DebugTool.logWarning("Choice Manager In Error State");
+            DebugTool.logWarning(null, "Choice Manager In Error State");
             return null;
         }
 
         if (pendingPresentationSet != null && pendingPresentOperation != null){
             pendingPresentOperation.cancelTask();
             pendingPresentationSet = null;
-            DebugTool.logWarning("There is a current or pending choice set, cancelling and continuing.");
+            DebugTool.logWarning(null, "There is a current or pending choice set, cancelling and continuing.");
         }
 
         if (customKeyboardConfig == null){
@@ -410,7 +410,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
      */
     public void dismissKeyboard(@NonNull Integer cancelID) {
         if (getState() == ERROR) {
-            DebugTool.logWarning("Choice Manager In Error State");
+            DebugTool.logWarning(null, "Choice Manager In Error State");
             return;
         }
 
@@ -587,7 +587,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
         if (choiceSet.getTimeout() != null) {
             if (choiceSet.getTimeout() < 5 || choiceSet.getTimeout() > 100) {
-                DebugTool.logWarning("Attempted to create a choice set with a " + choiceSet.getTimeout() + " second timeout; Only 5 - 100 seconds is valid. When using the choice set manager, setTimeout() uses seconds.");
+                DebugTool.logWarning(null, "Attempted to create a choice set with a " + choiceSet.getTimeout() + " second timeout; Only 5 - 100 seconds is valid. When using the choice set manager, setTimeout() uses seconds.");
                 return false;
             }
         }

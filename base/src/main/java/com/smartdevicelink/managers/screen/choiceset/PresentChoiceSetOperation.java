@@ -260,7 +260,7 @@ class PresentChoiceSetOperation extends Task {
 			return;
 		} else if ((getState() == Task.IN_PROGRESS)) {
 			if (sdlMsgVersion.getMajorVersion() < 6){
-				DebugTool.logWarning("Canceling a presented choice set is not supported on this head unit");
+				DebugTool.logWarning(null, "Canceling a presented choice set is not supported on this head unit");
 				return;
 			}
 

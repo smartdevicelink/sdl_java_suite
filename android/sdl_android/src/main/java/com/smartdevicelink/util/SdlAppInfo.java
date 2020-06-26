@@ -76,7 +76,7 @@ public class SdlAppInfo {
                     this.isCustomRouterService = metadata.getBoolean(SDL_CUSTOM_ROUTER_METADATA);
                 }
             } else {
-                DebugTool.logWarning(packageName + " has not supplied metadata with their router service!");
+                DebugTool.logWarning(TAG, packageName + " has not supplied metadata with their router service!");
             }
         }
 

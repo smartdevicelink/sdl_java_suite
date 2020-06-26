@@ -107,7 +107,7 @@ public class AudioDecoderCompat extends BaseAudioDecoder {
         public void run() {
             final AudioDecoderCompat reference = weakReference.get();
             if (reference == null) {
-                DebugTool.logWarning("AudioDecoderCompat reference was null");
+                DebugTool.logWarning(TAG, "AudioDecoderCompat reference was null");
                 return;
             }
             final ByteBuffer[] inputBuffersArray = reference.decoder.getInputBuffers();

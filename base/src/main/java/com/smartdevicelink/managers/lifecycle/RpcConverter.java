@@ -90,7 +90,7 @@ public class RpcConverter {
             if (functionName != null) {
                 hashTemp.put(RPCMessage.KEY_FUNCTION_NAME, functionName);
             } else {
-                DebugTool.logWarning("Dispatch Incoming Message - function name is null unknown RPC.  FunctionId: " + message.getFunctionID());
+                DebugTool.logWarning(TAG, "Dispatch Incoming Message - function name is null unknown RPC.  FunctionId: " + message.getFunctionID());
                 return null;
             }
 

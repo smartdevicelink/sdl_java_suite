@@ -64,7 +64,7 @@ public final class EncoderUtils {
         if (name.equals("video/avc")) {
             return getAVCCodecSpecificData(format);
         } else {
-            DebugTool.logWarning("Retrieving codec-specific data for " + name + " is not supported");
+            DebugTool.logWarning(TAG, "Retrieving codec-specific data for " + name + " is not supported");
             return null;
         }
     }
@@ -82,7 +82,7 @@ public final class EncoderUtils {
         // For H.264, "csd-0" contains SPS and "csd-1" contains PPS. Refer to the documentation
         // of MediaCodec.
         if (!(format.containsKey("csd-0") && format.containsKey("csd-1"))) {
-            DebugTool.logWarning("H264 codec specific data not found");
+            DebugTool.logWarning(TAG, "H264 codec specific data not found");
             return null;
         }
 
@@ -97,7 +97,7 @@ public final class EncoderUtils {
             pps.get(output, spsLen, ppsLen);
         } catch (Exception e) {
             // should not happen
-            DebugTool.logWarning("Error while copying H264 codec specific data: " + e);
+            DebugTool.logWarning(TAG, "Error while copying H264 codec specific data: " + e);
             return null;
         }
 

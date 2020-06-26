@@ -798,7 +798,7 @@ public class SdlProtocolBase {
                         listenerList.add(secondaryListener);
                         transportManager.requestSecondaryTransportConnection(sessionID, secondaryTransportParams.get(secondaryTransportType));
                     } else {
-                        DebugTool.logWarning("No params to connect to secondary transport");
+                        DebugTool.logWarning(TAG, "No params to connect to secondary transport");
                         //Unable to register or start a secondary connection. Use the callback in case
                         //there is a chance to use the primary transport for this service.
                         secondaryListener.onConnectionFailure();
@@ -876,7 +876,7 @@ public class SdlProtocolBase {
                         builder.append(rejectedParam);
                         builder.append(" ");
                     }
-                    DebugTool.logWarning(builder.toString());
+                    DebugTool.logWarning(TAG, builder.toString());
                 }
 
             }
@@ -1097,7 +1097,7 @@ public class SdlProtocolBase {
                         builder.append(rejectedParam);
                         builder.append(" ");
                     }
-                    DebugTool.logWarning(builder.toString());
+                    DebugTool.logWarning(TAG, builder.toString());
                 }
 
             }
@@ -1426,7 +1426,7 @@ public class SdlProtocolBase {
             } else if (frameInfo == FrameDataControlFrameType.RegisterSecondaryTransportNACK.getValue()) {
 
                 String reason = (String) packet.getTag(ControlFrameTags.RPC.RegisterSecondaryTransportNAK.REASON);
-                DebugTool.logWarning(reason);
+                DebugTool.logWarning(TAG, reason);
                 handleSecondaryTransportRegistration(packet.getTransportRecord(),false);
 
             } else if (frameInfo == FrameDataControlFrameType.TransportEventUpdate.getValue()) {
