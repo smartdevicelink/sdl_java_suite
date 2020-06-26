@@ -238,18 +238,18 @@ public class LifecycleManager extends BaseLifecycleManager {
      * mode (i.e. without any negotiation) then an instance of VideoStreamingParams is
      * returned. If the service was not opened then null is returned.
      */
-    private VideoStreamingParameters tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
+    private void tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
         if (session == null) {
             DebugTool.logWarning("SdlSession is not created yet.");
-            return null;
+            return;
         }
         if (getProtocolVersion() != null && getProtocolVersion().getMajor() >= 5 && !systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)) {
             DebugTool.logWarning("Module doesn't support video streaming.");
-            return null;
+            return;
         }
         if (parameters == null) {
             DebugTool.logWarning("Video parameters were not supplied.");
-            return null;
+            return;
         }
 
 
@@ -264,15 +264,6 @@ public class LifecycleManager extends BaseLifecycleManager {
             session.startService(SessionType.NAV, session.getSessionId(), isEncrypted);
 
         }
-
-        if (videoServiceStartResponse) {
-            if (getProtocolVersion() != null && getProtocolVersion().getMajor() < 5) { //Versions 1-4 do not support streaming parameter negotiations
-                session.setAcceptedVideoParams(parameters);
-            }
-            return session.getAcceptedVideoParams();
-        }
-
-        return null;
     }
 
     private void addVideoServiceListener() {
