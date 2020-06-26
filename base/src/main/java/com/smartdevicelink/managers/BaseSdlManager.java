@@ -32,7 +32,6 @@
 package com.smartdevicelink.managers;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.file.FileManagerConfig;
@@ -122,7 +121,7 @@ abstract class BaseSdlManager {
     final LifecycleManager.LifecycleListener lifecycleListener = new LifecycleManager.LifecycleListener() {
         @Override
         public void onProxyConnected(LifecycleManager lifeCycleManager) {
-            DebugTool.logInfo("Proxy is connected. Now initializing.");
+            DebugTool.logInfo(TAG, "Proxy is connected. Now initializing.");
             synchronized (this) {
                 changeRegistrationRetry = 0;
                 checkLifecycleConfiguration();
@@ -142,7 +141,7 @@ abstract class BaseSdlManager {
 
         @Override
         public void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason) {
-            Log.i(TAG, "Proxy is closed.");
+            DebugTool.logInfo(TAG, "Proxy is closed.");
             if (reason == null || !reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)) {
                 dispose();
             }

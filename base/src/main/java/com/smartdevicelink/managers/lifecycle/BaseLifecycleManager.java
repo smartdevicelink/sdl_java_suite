@@ -34,7 +34,6 @@ package com.smartdevicelink.managers.lifecycle;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
-import android.util.Log;
 
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;

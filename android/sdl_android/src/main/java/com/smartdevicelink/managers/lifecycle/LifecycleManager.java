@@ -35,7 +35,6 @@ package com.smartdevicelink.managers.lifecycle;
 import android.app.Service;
 import android.content.Context;
 import android.support.annotation.RestrictTo;
-import android.util.Log;
 
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.SdlConnection.SdlSession2;
@@ -160,7 +159,7 @@ public class LifecycleManager extends BaseLifecycleManager {
         super.onTransportDisconnected(info, availablePrimary, transportConfig);
         if (availablePrimary) {
             _transportConfig = transportConfig;
-            Log.d(TAG, "notifying RPC session ended, but potential primary transport available");
+            DebugTool.logInfo(TAG, "notifying RPC session ended, but potential primary transport available");
             cycleProxy(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
         } else {
             onClose(info, null, null);

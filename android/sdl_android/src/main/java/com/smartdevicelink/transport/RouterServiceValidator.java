@@ -48,7 +48,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.util.AndroidTools;
 import com.smartdevicelink.util.DebugTool;
@@ -172,11 +171,11 @@ public class RouterServiceValidator {
 		String packageName = null;
 		
 		if(this.service != null){
-			Log.d(TAG, "Supplied service name of " + this.service.getClassName());
+			DebugTool.logInfo(TAG, "Supplied service name of " + this.service.getClassName());
 			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O && !isServiceRunning(context,this.service)){
 				//This means our service isn't actually running, so set to null. Hopefully we can find a real router service after this.
 				service = null;
-				Log.w(TAG, "Supplied service is not actually running.");
+				DebugTool.logWarning(TAG, "Supplied service is not actually running.");
 			} else {
 				// If the running router service is created by this app, the validation is good by default
 				if (this.service.getPackageName().equals(context.getPackageName())) {
@@ -622,7 +621,7 @@ public class RouterServiceValidator {
 			
 			return apps;
 		}else{
-			Log.i(TAG, "No SDL apps, list was null");
+			DebugTool.logInfo(TAG, "No SDL apps, list was null");
 			return null;
 		}
 	}
@@ -635,7 +634,7 @@ public class RouterServiceValidator {
 	public static boolean createTrustedListRequest(final Context context, boolean forceRefresh){
 		return createTrustedListRequest(context,forceRefresh,null,null);
 	}
-	public static boolean createTrustedListRequest(final Context context, boolean forceRefresh, TrustedListCallback listCallback){Log.d(TAG,"Checking to make sure we have a list");
+	public static boolean createTrustedListRequest(final Context context, boolean forceRefresh, TrustedListCallback listCallback){DebugTool.logInfo(TAG,"Checking to make sure we have a list");
 		return createTrustedListRequest(context,forceRefresh,null,listCallback);
 	}
 	
@@ -691,7 +690,7 @@ public class RouterServiceValidator {
 				}
 				return false;
 			}else{
-				Log.d(TAG, "Sdl apps have changed. Need to request new trusted router service list.");
+				DebugTool.logInfo(TAG, "Sdl apps have changed. Need to request new trusted router service list.");
 			}
 		}
 		
@@ -710,7 +709,7 @@ public class RouterServiceValidator {
 
 				@Override
 				public void httpFailure(int statusCode) {
-					Log.e(TAG, "Error while requesting trusted app list: "
+					DebugTool.logError(TAG, "Error while requesting trusted app list: "
 							+ statusCode);
 					pendingListRefresh = false;
 					if(listCallback!=null){listCallback.onListObtained(false);}

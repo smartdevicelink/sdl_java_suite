@@ -35,12 +35,12 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.NetworkOnMainThreadException;
-import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.exception.SdlExceptionCause;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -293,7 +293,7 @@ public class TCPTransport extends SdlTransport {
      * @param message Message to log
      */
     protected void logInfo(String message) {
-        Log.i(getClass().getName(), message);
+        DebugTool.logInfo(getClass().getName(), message);
     }
 
     /**
@@ -301,7 +301,7 @@ public class TCPTransport extends SdlTransport {
      * @param message Message to log
      */
     protected void logError(String message) {
-        Log.e(getClass().getName(), message);
+        DebugTool.logError(getClass().getName(), message);
     }
 
     /**
@@ -309,7 +309,7 @@ public class TCPTransport extends SdlTransport {
      * @param message Message to log
      */
     protected void logWarning(String message) {
-        Log.w(getClass().getName(), message);
+        DebugTool.logWarning(getClass().getName(), message);
     }
 
     /**
@@ -318,7 +318,7 @@ public class TCPTransport extends SdlTransport {
      * @param throwable Exception, that was the main reason for logged error message
      */
     protected void logError(String message, Throwable throwable) {
-        Log.e(getClass().getName(), message, throwable);
+        DebugTool.logError(getClass().getName(), message, throwable);
     }
 
     /**
