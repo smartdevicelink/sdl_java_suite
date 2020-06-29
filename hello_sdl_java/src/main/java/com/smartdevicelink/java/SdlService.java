@@ -189,6 +189,7 @@ public class SdlService {
                         performWelcomeSpeak();
                         performWelcomeShow();
                         preloadChoices();
+                        subscribeToButtons();
                     }
                 }
             });
@@ -335,12 +336,13 @@ public class SdlService {
        OnButtonListener onButtonListener = new OnButtonListener() {
             @Override
             public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
-                sdlManager.getScreenManager().setTextField1("Subscribed Button Named: " + buttonName + " was pressed");
+                sdlManager.getScreenManager().setTextField1(buttonName +  "  pressed");
+                Log.i(TAG, "onPress: " + buttonName);
             }
 
             @Override
             public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
-                sdlManager.getScreenManager().setTextField2("Subscribed Button Named: " + buttonName + " Event: " + buttonEvent.getButtonEventMode());
+                sdlManager.getScreenManager().setTextField2(buttonName + " " + buttonEvent.getButtonEventMode());
             }
 
             @Override

@@ -386,12 +386,12 @@ public class SdlService extends Service {
 		OnButtonListener onButtonListener = new OnButtonListener() {
 			@Override
 			public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
-				sdlManager.getScreenManager().setTextField1("Subscribed Button Named: " + buttonName + " was pressed");
+				sdlManager.getScreenManager().setTextField1(buttonName + " pressed");
 			}
 
 			@Override
 			public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
-				sdlManager.getScreenManager().setTextField2("Subscribed Button Named: " + buttonName + " Event: " + buttonEvent.getButtonEventMode());
+				sdlManager.getScreenManager().setTextField2(buttonName + " " + buttonEvent.getButtonEventMode());
 			}
 
 			@Override
