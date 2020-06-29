@@ -1186,7 +1186,7 @@ abstract class BaseLifecycleManager {
     }
 
     public static class AppConfig {
-        private String appID, appName, ngnMediaScreenAppName, hashId;
+        private String appID, appName, ngnMediaScreenAppName, resumeHash;
         private Vector<TTSChunk> ttsName;
         private Vector<String> vrSynonyms;
         private boolean isMediaApp = false;
@@ -1287,12 +1287,12 @@ abstract class BaseLifecycleManager {
             this.appType = appType;
         }
 
-        public String getHashId() {
-            return this.hashId;
+        public String getResumeHash() {
+            return this.resumeHash;
         }
 
-        public void setHashId(String hashId) {
-            this.hashId = hashId;
+        public void setResumeHash(String resumeHash) {
+            this.resumeHash = resumeHash;
         }
 
         public TemplateColorScheme getDayColorScheme() {
@@ -1513,7 +1513,7 @@ abstract class BaseLifecycleManager {
                     rai.setAppHMIType(appConfig.getAppType());
                     rai.setDayColorScheme(appConfig.getDayColorScheme());
                     rai.setNightColorScheme(appConfig.getNightColorScheme());
-                    rai.setHashID(appConfig.getHashId());
+                    rai.setHashID(appConfig.getResumeHash());
 
                     //Add device/system info in the future
 
