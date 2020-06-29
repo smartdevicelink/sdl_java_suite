@@ -12,7 +12,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.smartdevicelink.managers.CompletionListener;
-import com.smartdevicelink.managers.OnButtonListener;
+import com.smartdevicelink.managers.screen.OnButtonListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -82,7 +82,9 @@ public class SdlService extends Service {
 	private SdlManager sdlManager = null;
 	private List<ChoiceCell> choiceCellList;
 
-	private ButtonName[] buttonNames = {ButtonName.PRESET_0, ButtonName.PRESET_1, ButtonName.PRESET_2, ButtonName.PRESET_3, ButtonName.PRESET_4, ButtonName.PRESET_5, ButtonName.PRESET_6, ButtonName.PRESET_7};
+	private ButtonName[] buttonNames = {ButtonName.PLAY_PAUSE, ButtonName.SEEKLEFT, ButtonName.SEEKRIGHT, ButtonName.AC_MAX, ButtonName.AC, ButtonName.RECIRCULATE,
+			ButtonName.FAN_UP, ButtonName.FAN_DOWN, ButtonName.TEMP_UP, ButtonName.FAN_DOWN, ButtonName.DEFROST_MAX, ButtonName.DEFROST_REAR, ButtonName.DEFROST,
+			ButtonName.UPPER_VENT, ButtonName.LOWER_VENT, ButtonName.VOLUME_UP, ButtonName.VOLUME_DOWN, ButtonName.EJECT, ButtonName.SOURCE, ButtonName.SHUFFLE, ButtonName.REPEAT};
 	private OnButtonListener onButtonListener;
 
 	@Override
@@ -190,7 +192,7 @@ public class SdlService extends Service {
 								performWelcomeSpeak();
 								performWelcomeShow();
 								preloadChoices();
-								subscribeToPresetButtons();
+								subscribeToButtons();
 							}
 						}
 					});
@@ -347,15 +349,8 @@ public class SdlService extends Service {
 			}
 		});
 
-		MenuCell mainCell6 = new MenuCell("Unsubscribe to preset buttons",null, null, new MenuSelectionListener() {
-			@Override
-			public void onTriggered(TriggerSource trigger) {
-				unsubscribeToPresetButtons();
-			}
-		});
-
 		// Send the entire menu off to be created
-		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5, mainCell6));
+		sdlManager.getScreenManager().setMenu(Arrays.asList(mainCell1, mainCell2, mainCell3, mainCell4, mainCell5));
 	}
 
 	/**
@@ -388,16 +383,16 @@ public class SdlService extends Service {
 	/**
 	 * Attempts to Subscribe to all preset buttons
 	 */
-	private void subscribeToPresetButtons() {
+	private void subscribeToButtons() {
 		onButtonListener = new OnButtonListener() {
 			@Override
 			public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
-				Log.i(TAG, "onPress: " + buttonName);
+				sdlManager.getScreenManager().setTextField1("Subscribed Button Named: " + buttonName + " was pressed");
 			}
 
 			@Override
 			public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
-				Log.i(TAG, "onEvent: " + buttonName + " " + buttonEvent);
+				sdlManager.getScreenManager().setTextField2("Subscribed Button Named: " + buttonName + " Event: " + buttonEvent.getButtonEventMode());
 			}
 
 			@Override
@@ -408,15 +403,6 @@ public class SdlService extends Service {
 
 		for (ButtonName buttonName : buttonNames) {
 			sdlManager.getScreenManager().addButtonListener(buttonName, onButtonListener);
-		}
-	}
-
-	/**
-	 * Attempts to Unsubscribe to all preset Buttons
-	 */
-	private void unsubscribeToPresetButtons() {
-		for (ButtonName buttonName : buttonNames) {
-			sdlManager.getScreenManager().removeButtonListener(buttonName, onButtonListener);
 		}
 	}
 
