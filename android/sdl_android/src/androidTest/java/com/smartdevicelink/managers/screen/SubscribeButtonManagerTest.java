@@ -127,7 +127,7 @@ public class SubscribeButtonManagerTest extends AndroidTestCase2 {
     public void testAddButtonListenerError(){
         doAnswer(onSubscribeFail).when(internalInterface).sendRPC(any(RPCMessage.class));
         subscribeButtonManager.addButtonListener(ButtonName.VOLUME_UP, listener);
-        assertTrue(!subscribeButtonManager.onButtonListeners.containsKey(ButtonName.VOLUME_UP));
+        assertFalse(subscribeButtonManager.onButtonListeners.containsKey(ButtonName.VOLUME_UP));
     }
 
     public void testRemoveButtonListener() {
