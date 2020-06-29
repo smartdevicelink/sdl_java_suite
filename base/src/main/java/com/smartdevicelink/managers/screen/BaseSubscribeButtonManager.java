@@ -61,7 +61,6 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
      * @param listener - Is the listener that was sent by developer
      */
     void addButtonListener(ButtonName buttonName, OnButtonListener listener) {
-
         if (listener == null) {
             Log.e(TAG, "OnButtonListener cannot be null");
             return;
@@ -90,7 +89,6 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
      * @param listener   - the listener that was sent by developer
      */
     void removeButtonListener(final ButtonName buttonName, final OnButtonListener listener) {
-
         if (listener == null) {
             Log.e(TAG, "OnButtonListener cannot be null: ");
             return;
@@ -110,7 +108,16 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
             onButtonListeners.get(buttonName).remove(listener);
             return;
         }
+        unsubscribeButtonRequest(buttonName, listener);
+    }
 
+    /**
+     * Send the UnsubscribeButton RPC
+     *
+     * @param buttonName - ButtonName - name of button
+     * @param listener - OnButtonListener - listener to get notified
+     */
+    private void unsubscribeButtonRequest(final ButtonName buttonName, final OnButtonListener listener) {
         UnsubscribeButton unsubscribeButtonRequest = new UnsubscribeButton(buttonName);
         unsubscribeButtonRequest.setOnRPCResponseListener(new OnRPCResponseListener() {
             @Override
@@ -123,7 +130,6 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
                 listener.onError("Attempt to unsubscribe to button named " + buttonName + " Failed. ResultCode: " + resultCode + " info: " + info);
             }
         });
-
         internalInterface.sendRPC(unsubscribeButtonRequest);
     }
 
@@ -135,9 +141,7 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
      */
     private void subscribeButtonRequest(final ButtonName buttonName, final OnButtonListener listener) {
         SubscribeButton subscribeButtonRequest = new SubscribeButton(buttonName);
-
         subscribeButtonRequest.setOnRPCResponseListener(new OnRPCResponseListener() {
-
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 onButtonListeners.put(buttonName, new CopyOnWriteArrayList<OnButtonListener>());
@@ -149,7 +153,6 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
                 listener.onError("Attempt to subscribe to button named " + buttonName + " Failed . ResultCode: " + resultCode + " info: " + info);
             }
         });
-
         internalInterface.sendRPC(subscribeButtonRequest);
     }
 
@@ -162,7 +165,6 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
             public void onNotified(RPCNotification notification) {
                 OnButtonPress onButtonPressNotification = (OnButtonPress) notification;
                 CopyOnWriteArrayList<OnButtonListener> listeners = onButtonListeners.get(onButtonPressNotification.getButtonName());
-
                 if (listeners != null && listeners.size() > 0) {
                     for (OnButtonListener listener : listeners) {
                         listener.onPress(onButtonPressNotification.getButtonName(), onButtonPressNotification);
