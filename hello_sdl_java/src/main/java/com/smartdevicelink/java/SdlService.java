@@ -77,17 +77,11 @@ public class SdlService {
 
     private static final String IMAGE_DIR =             "assets/images/";
 
-
-
     // variable to create and call functions of the SyncProxy
     private SdlManager sdlManager = null;
     private List<ChoiceCell> choiceCellList;
 
     private SdlServiceCallback callback;
-
-    private ButtonName[] buttonNames = {ButtonName.PLAY_PAUSE, ButtonName.SEEKLEFT, ButtonName.SEEKRIGHT, ButtonName.AC_MAX, ButtonName.AC, ButtonName.RECIRCULATE,
-            ButtonName.FAN_UP, ButtonName.FAN_DOWN, ButtonName.TEMP_UP, ButtonName.FAN_DOWN, ButtonName.DEFROST_MAX, ButtonName.DEFROST_REAR, ButtonName.DEFROST,
-            ButtonName.UPPER_VENT, ButtonName.LOWER_VENT, ButtonName.VOLUME_UP, ButtonName.VOLUME_DOWN, ButtonName.EJECT, ButtonName.SOURCE, ButtonName.SHUFFLE, ButtonName.REPEAT};    private OnButtonListener onButtonListener;
 
     public SdlService(BaseTransportConfig config, SdlServiceCallback callback){
         this.callback = callback;
@@ -334,7 +328,11 @@ public class SdlService {
      * Attempts to Subscribe to all preset buttons
      */
     private void subscribeToButtons() {
-        onButtonListener = new OnButtonListener() {
+        ButtonName[] buttonNames = {ButtonName.PLAY_PAUSE, ButtonName.SEEKLEFT, ButtonName.SEEKRIGHT, ButtonName.AC_MAX, ButtonName.AC, ButtonName.RECIRCULATE,
+                ButtonName.FAN_UP, ButtonName.FAN_DOWN, ButtonName.TEMP_UP, ButtonName.FAN_DOWN, ButtonName.DEFROST_MAX, ButtonName.DEFROST_REAR, ButtonName.DEFROST,
+                ButtonName.UPPER_VENT, ButtonName.LOWER_VENT, ButtonName.VOLUME_UP, ButtonName.VOLUME_DOWN, ButtonName.EJECT, ButtonName.SOURCE, ButtonName.SHUFFLE, ButtonName.REPEAT};
+
+       OnButtonListener onButtonListener = new OnButtonListener() {
             @Override
             public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
                 sdlManager.getScreenManager().setTextField1("Subscribed Button Named: " + buttonName + " was pressed");
@@ -353,15 +351,6 @@ public class SdlService {
 
         for (ButtonName buttonName : buttonNames) {
             sdlManager.getScreenManager().addButtonListener(buttonName, onButtonListener);
-        }
-    }
-
-    /**
-     * Attempts to Unsubscribe to all preset Buttons
-     */
-    private void unsubscribeToPresetButtons() {
-        for (ButtonName buttonName : buttonNames) {
-            sdlManager.getScreenManager().removeButtonListener(buttonName, onButtonListener);
         }
     }
 
