@@ -83,7 +83,7 @@ abstract class BaseSdlManager {
     static final String TAG = "BaseSubManager";
     final Object STATE_LOCK = new Object();
     int state = -1;
-    String appId, appName, shortAppName;
+    String appId, appName, shortAppName, hashId;
     boolean isMediaApp;
     Language hmiLanguage;
     Language language;
@@ -333,6 +333,7 @@ abstract class BaseSdlManager {
         appConfig.setAppID(appId);
         appConfig.setMinimumProtocolVersion(minimumProtocolVersion);
         appConfig.setMinimumRPCVersion(minimumRPCVersion);
+        appConfig.setHashId(hashId);
 
         lifecycleManager = new LifecycleManager(appConfig, transport, lifecycleListener);
         _internalInterface = lifecycleManager.getInternalInterface((SdlManager) BaseSdlManager.this);
@@ -630,6 +631,16 @@ abstract class BaseSdlManager {
         }
 
         /**
+         * Sets the Resumption Hash ID
+         *
+         * @param hashId String representation of the Hash ID Used to resume the application
+         */
+        public Builder setHashId(final String hashId) {
+            sdlManager.hashId = hashId;
+            return this;
+        }
+
+        /**
          * Sets the Application Name
          *
          * @param appName String that will be associated as the app's name
@@ -715,6 +726,7 @@ abstract class BaseSdlManager {
             sdlManager.appIcon = sdlArtwork;
             return this;
         }
+
 
         /**
          * Sets the vector of AppHMIType <br>
