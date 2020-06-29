@@ -2,7 +2,6 @@ package com.smartdevicelink.managers.screen;
 
 import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.managers.BaseSubManager;
-import com.smartdevicelink.managers.OnButtonListener;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.interfaces.ISdl;
