@@ -1514,6 +1514,7 @@ abstract class BaseLifecycleManager {
                     rai.setDayColorScheme(appConfig.getDayColorScheme());
                     rai.setNightColorScheme(appConfig.getNightColorScheme());
                     rai.setHashID(appConfig.getHashId());
+
                     //Add device/system info in the future
 
                     sendRPCMessagePrivate(rai, true);

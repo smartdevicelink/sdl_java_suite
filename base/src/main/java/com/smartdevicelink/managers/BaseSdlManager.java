@@ -727,7 +727,6 @@ abstract class BaseSdlManager {
             return this;
         }
 
-
         /**
          * Sets the vector of AppHMIType <br>
          * <strong>Note: This should be an ordered list from most -> least relevant</strong>
