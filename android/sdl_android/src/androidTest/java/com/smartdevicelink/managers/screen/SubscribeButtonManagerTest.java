@@ -107,7 +107,7 @@ public class SubscribeButtonManagerTest extends AndroidTestCase2 {
     public void testDispose() {
         subscribeButtonManager.addButtonListener(ButtonName.VOLUME_UP, listener);
         subscribeButtonManager.dispose();
-        assertTrue(subscribeButtonManager.onButtonListeners == null);
+        assertTrue(subscribeButtonManager.onButtonListeners.size() == 0);
     }
 
     public void testAddButtonListener() {
