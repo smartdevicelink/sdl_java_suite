@@ -1,7 +1,6 @@
 package com.smartdevicelink.util;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -69,7 +68,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
         }
 
         if(urlString == null || request_type == null){
-            Log.e(TAG, "Can't process request, param error");
+            DebugTool.logError(TAG, "Can't process request, param error");
             if(cb!=null){
                 cb.httpFailure(-1);
                 cb = null;
@@ -133,7 +132,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
                     cb.httpFailure(responseCode);
                     cb = null;
                 }
-                Log.e(TAG, "Failed to download file - " + responseCode);
+                DebugTool.logError(TAG, "Failed to download file - " + responseCode);
                 return null;
             }
 
@@ -152,7 +151,7 @@ public class HttpRequestTask extends AsyncTask<String, String, String> {
                 try {
                     reader.close();
                 } catch (final IOException e) {
-                    Log.e(TAG, "Error closing stream", e);
+                    DebugTool.logError(TAG, "Error closing stream", e);
                 }
             }
             if(cb!=null){

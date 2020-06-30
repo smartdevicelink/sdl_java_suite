@@ -33,7 +33,7 @@
 package com.smartdevicelink.managers;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
+import com.smartdevicelink.util.Log;
 
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.managers.permission.PermissionManager;
@@ -68,7 +68,7 @@ public class SdlManager extends BaseSdlManager {
             }
         });
 
-        Log.i(TAG, "start");
+        DebugTool.logInfo(TAG, "start");
         if (lifecycleManager == null) {
             if (transport != null && (transport.getTransportType().equals(TransportType.WEB_SOCKET_SERVER) || transport.getTransportType().equals(TransportType.CUSTOM))) {
                 super.start();
@@ -96,22 +96,22 @@ public class SdlManager extends BaseSdlManager {
     void checkState() {
         if (permissionManager != null && fileManager != null && screenManager != null) {
             if (permissionManager.getState() == BaseSubManager.READY && fileManager.getState() == BaseSubManager.READY && screenManager.getState() == BaseSubManager.READY) {
-                DebugTool.logInfo("Starting sdl manager, all sub managers are in ready state");
+                DebugTool.logInfo(TAG, "Starting sdl manager, all sub managers are in ready state");
                 transitionToState(BaseSubManager.READY);
                 handleQueuedNotifications();
                 notifyDevListener(null);
                 onReady();
             } else if (permissionManager.getState() == BaseSubManager.ERROR && fileManager.getState() == BaseSubManager.ERROR && screenManager.getState() == BaseSubManager.ERROR) {
                 String info = "ERROR starting sdl manager, all sub managers are in error state";
-                Log.e(TAG, info);
+                DebugTool.logError(TAG, info);
                 transitionToState(BaseSubManager.ERROR);
                 notifyDevListener(info);
             } else if (permissionManager.getState() == BaseSubManager.SETTING_UP || fileManager.getState() == BaseSubManager.SETTING_UP || screenManager.getState() == BaseSubManager.SETTING_UP) {
-                DebugTool.logInfo("SETTING UP sdl manager, some sub managers are still setting up");
+                DebugTool.logInfo(TAG, "SETTING UP sdl manager, some sub managers are still setting up");
                 transitionToState(BaseSubManager.SETTING_UP);
                 // No need to notify developer here!
             } else {
-                Log.w(TAG, "LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
+                DebugTool.logWarning(TAG, "LIMITED starting sdl manager, some sub managers are in error or limited state and the others finished setting up");
                 transitionToState(BaseSubManager.LIMITED);
                 handleQueuedNotifications();
                 notifyDevListener(null);
@@ -120,7 +120,7 @@ public class SdlManager extends BaseSdlManager {
         } else {
             // We should never be here, but somehow one of the sub-sub managers is null
             String info = "ERROR one of the sdl sub managers is null";
-            Log.e(TAG, info);
+            DebugTool.logError(TAG, info);
             transitionToState(BaseSubManager.ERROR);
             notifyDevListener(info);
         }

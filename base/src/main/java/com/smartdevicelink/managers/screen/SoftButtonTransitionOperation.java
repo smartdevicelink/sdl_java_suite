@@ -18,7 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by Bilal Alsharifi on 6/15/20.
  */
 class SoftButtonTransitionOperation extends Task {
-
+    private static final String TAG = "SoftButtonTransitionOperation";
     private final WeakReference<ISdl> internalInterface;
     private final CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
     private String currentMainField1;
@@ -49,7 +49,7 @@ class SoftButtonTransitionOperation extends Task {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 if (!response.getSuccess()) {
-                    DebugTool.logWarning("Failed to transition soft button to new state");
+                    DebugTool.logWarning(TAG, "Failed to transition soft button to new state");
                 }
                 onFinished();
             }
@@ -57,7 +57,7 @@ class SoftButtonTransitionOperation extends Task {
             @Override
             public void onError(int correlationId, Result resultCode, String info) {
                 super.onError(correlationId, resultCode, info);
-                DebugTool.logWarning("Failed to transition soft button to new state. " + info);
+                DebugTool.logWarning(TAG, "Failed to transition soft button to new state. " + info);
                 onFinished();
             }
         });

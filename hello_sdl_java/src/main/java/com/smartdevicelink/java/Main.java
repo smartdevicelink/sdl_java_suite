@@ -36,7 +36,7 @@ import com.smartdevicelink.transport.WebSocketServerConfig;
 import com.smartdevicelink.util.DebugTool;
 
 public class Main {
-
+    private static final String TAG = "Main";
     static Thread thread = null, mainThread;
     static Object LOCK;
 
@@ -54,9 +54,9 @@ public class Main {
                 }
                 System.gc();
                 Thread.sleep(500);
-                DebugTool.logInfo( "Attempting to start SDL Service again");
+                DebugTool.logInfo(TAG,  "Attempting to start SDL Service again");
                 startSdlService();
-                DebugTool.logInfo("SdlService started");
+                DebugTool.logInfo(TAG, "SdlService started");
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -85,7 +85,7 @@ public class Main {
 
             @Override
             public void run() {
-                DebugTool.logInfo("Starting SDL Service");
+                DebugTool.logInfo(TAG, "Starting SDL Service");
                 sdlService  = new SdlService(new WebSocketServerConfig(5432, -1), serviceCallback);
                 sdlService.start();
 

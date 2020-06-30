@@ -64,7 +64,7 @@ import java.util.List;
 import java.util.Map;
 
 class PreloadChoicesOperation extends Task {
-
+	private static final String TAG = "PreloadChoicesOperation";
 	private WeakReference<ISdl> internalInterface;
 	private WeakReference<FileManager> fileManager;
 	private WindowCapability defaultMainWindowCapability;
@@ -88,7 +88,7 @@ class PreloadChoicesOperation extends Task {
 
 	@Override
 	public void onExecute() {
-		DebugTool.logInfo("Choice Operation: Executing preload choices operation");
+		DebugTool.logInfo(TAG, "Choice Operation: Executing preload choices operation");
 		preloadCellArtworks(new CompletionListener() {
 			@Override
 			public void onComplete(boolean success) {
@@ -108,7 +108,7 @@ class PreloadChoicesOperation extends Task {
 		List<SdlArtwork> artworksToUpload = artworksToUpload();
 
 		if (artworksToUpload.size() == 0){
-			DebugTool.logInfo("Choice Preload: No Choice Artworks to upload");
+			DebugTool.logInfo(TAG, "Choice Preload: No Choice Artworks to upload");
 			listener.onComplete(true);
 			isRunning = false;
 			return;
@@ -119,18 +119,18 @@ class PreloadChoicesOperation extends Task {
 				@Override
 				public void onComplete(Map<String, String> errors) {
 					if (errors != null && errors.size() > 0){
-						DebugTool.logError("Error uploading choice cell Artworks: "+ errors.toString());
+						DebugTool.logError(TAG, "Error uploading choice cell Artworks: "+ errors.toString());
 						listener.onComplete(false);
 						isRunning = false;
 					}else{
-						DebugTool.logInfo("Choice Artworks Uploaded");
+						DebugTool.logInfo(TAG, "Choice Artworks Uploaded");
 						listener.onComplete(true);
 						isRunning = false;
 					}
 				}
 			});
 		}else{
-			DebugTool.logError("File manager is null in choice preload operation");
+			DebugTool.logError(TAG, "File manager is null in choice preload operation");
 			listener.onComplete(false);
 			isRunning = false;
 		}
@@ -147,7 +147,7 @@ class PreloadChoicesOperation extends Task {
 		}
 
 		if (choiceRPCs.size() == 0){
-			DebugTool.logError(" All Choice cells to send are null, so the choice set will not be shown");
+			DebugTool.logError(TAG, " All Choice cells to send are null, so the choice set will not be shown");
 			completionListener.onComplete(true);
 			isRunning = false;
 			return;
@@ -163,7 +163,7 @@ class PreloadChoicesOperation extends Task {
 				@Override
 				public void onFinished() {
 					isRunning = false;
-					DebugTool.logInfo("Finished pre loading choice cells");
+					DebugTool.logInfo(TAG, "Finished pre loading choice cells");
 					completionListener.onComplete(true);
 
 					PreloadChoicesOperation.super.onFinished();
@@ -171,7 +171,7 @@ class PreloadChoicesOperation extends Task {
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info) {
-					DebugTool.logError("There was an error uploading a choice cell: "+ info + " resultCode: " + resultCode);
+					DebugTool.logError(TAG, "There was an error uploading a choice cell: "+ info + " resultCode: " + resultCode);
 
 					PreloadChoicesOperation.super.onFinished();
 				}
@@ -182,7 +182,7 @@ class PreloadChoicesOperation extends Task {
 				}
 			});
 		}else{
-			DebugTool.logError("Internal Interface null in preload choice operation");
+			DebugTool.logError(TAG, "Internal Interface null in preload choice operation");
 			isRunning = false;
 			completionListener.onComplete(false);
 		}
@@ -200,7 +200,7 @@ class PreloadChoicesOperation extends Task {
 		String menuName = shouldSendChoiceText() ? cell.getText() : null;
 
 		if (menuName == null){
-			DebugTool.logError("Could not convert Choice Cell to CreateInteractionChoiceSet. It will not be shown. Cell: "+ cell.toString());
+			DebugTool.logError(TAG, "Could not convert Choice Cell to CreateInteractionChoiceSet. It will not be shown. Cell: "+ cell.toString());
 			return null;
 		}
 

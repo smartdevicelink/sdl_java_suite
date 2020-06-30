@@ -31,7 +31,6 @@
  */
 package com.smartdevicelink.managers.lifecycle;
 
-import android.util.Log;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.rpc.Headers;
 import com.smartdevicelink.proxy.rpc.OnSystemRequest;
@@ -150,7 +149,7 @@ class PoliciesFetcher {
             urlConnection = getURLConnection(myHeader, sURLString, iTimeout, length);
 
             if (urlConnection == null) {
-                Log.i(TAG, "urlConnection is null, check RPC input parameters");
+                DebugTool.logInfo(TAG, "urlConnection is null, check RPC input parameters");
                 return null;
             }
 
@@ -172,7 +171,7 @@ class PoliciesFetcher {
             int iResponseCode = urlConnection.getResponseCode();
 
             if (iResponseCode != HttpURLConnection.HTTP_OK) {
-                Log.i(TAG, "Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
+                DebugTool.logInfo(TAG, "Response code not HTTP_OK, returning from sendOnSystemRequestToUrl.");
                 return null;
             }
 
@@ -206,16 +205,16 @@ class PoliciesFetcher {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             if (jsonArray.get(i) instanceof String) {
                                 cloudDataReceived.add(jsonArray.getString(i));
-                                //Log.i("sendSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
+                                //DebugTool.logInfo(TAG, "sendSystemRequestToUrl", "jsonArray.getString(i): " + jsonArray.getString(i));
                             }
                         }
                     } else if (jsonResponse.get(dataKey) instanceof String) {
                         cloudDataReceived.add(jsonResponse.getString(dataKey));
-                        //Log.i("sendSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
+                        //DebugTool.logInfo(TAG, "sendSystemRequestToUrl", "jsonResponse.getString(data): " + jsonResponse.getString("data"));
                     }
                 } else {
-                    DebugTool.logError("sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
-                    //Log.i("sendSystemRequestToUrl", "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
+                    DebugTool.logError(TAG, "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
+                    //DebugTool.logInfo(TAG, "sendSystemRequestToUrl", "sendSystemRequestToUrl: Data in JSON Object neither an array nor a string.");
                     return null;
                 }
 
@@ -246,17 +245,17 @@ class PoliciesFetcher {
 
             }
         } catch (JSONException e) {
-            DebugTool.logError("sendSystemRequestToUrl: JSONException: ", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: JSONException: ", e);
         } catch (UnsupportedEncodingException e) {
-            DebugTool.logError("sendSystemRequestToUrl: Could not encode string.", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: Could not encode string.", e);
         } catch (ProtocolException e) {
-            DebugTool.logError("sendSystemRequestToUrl: Could not set request method to post.", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: Could not set request method to post.", e);
         } catch (MalformedURLException e) {
-            DebugTool.logError("sendSystemRequestToUrl: URL Exception when sending SystemRequest to an external server.", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: URL Exception when sending SystemRequest to an external server.", e);
         } catch (IOException e) {
-            DebugTool.logError("sendSystemRequestToUrl: IOException: ", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: IOException: ", e);
         } catch (Exception e) {
-            DebugTool.logError("sendSystemRequestToUrl: Unexpected Exception: ", e);
+            DebugTool.logError(TAG, "sendSystemRequestToUrl: Unexpected Exception: ", e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();

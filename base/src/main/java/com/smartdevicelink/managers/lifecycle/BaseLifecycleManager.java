@@ -34,7 +34,6 @@ package com.smartdevicelink.managers.lifecycle;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
-import android.util.Log;
 
 import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
@@ -346,7 +345,7 @@ abstract class BaseLifecycleManager {
     }
 
     void onClose(String info, Exception e, SdlDisconnectedReason reason) {
-        Log.i(TAG, "onClose");
+        DebugTool.logInfo(TAG, "onClose");
         if (lifecycleListener != null) {
             lifecycleListener.onClosed((LifecycleManager) this, info, e, reason);
         }
@@ -389,7 +388,7 @@ abstract class BaseLifecycleManager {
                 switch (functionID) {
                     case REGISTER_APP_INTERFACE:
                         //We have begun
-                        Log.i(TAG, "RAI Response");
+                        DebugTool.logInfo(TAG, "RAI Response");
                         raiResponse = (RegisterAppInterfaceResponse) message;
                         SdlMsgVersion rpcVersion = ((RegisterAppInterfaceResponse) message).getSdlMsgVersion();
                         if (rpcVersion != null) {
@@ -398,7 +397,7 @@ abstract class BaseLifecycleManager {
                             BaseLifecycleManager.this.rpcSpecVersion = MAX_SUPPORTED_RPC_VERSION;
                         }
                         if (minimumRPCVersion != null && minimumRPCVersion.isNewerThan(rpcSpecVersion) == 1) {
-                            Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
+                            DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum RPC version %s is greater than the supported RPC version %s", minimumRPCVersion, rpcSpecVersion));
                             UnregisterAppInterface msg = new UnregisterAppInterface();
                             msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
                             sendRPCMessagePrivate(msg, true);
@@ -409,7 +408,7 @@ abstract class BaseLifecycleManager {
                         systemCapabilityManager.parseRAIResponse(raiResponse);
                         break;
                     case ON_HMI_STATUS:
-                        Log.i(TAG, "on hmi status");
+                        DebugTool.logInfo(TAG, "on hmi status");
                         boolean shouldInit = currentHMIStatus == null;
                         currentHMIStatus = (OnHMIStatus) message;
                         if (lifecycleListener != null && shouldInit) {
@@ -449,7 +448,7 @@ abstract class BaseLifecycleManager {
                                             sendRPCMessagePrivate(systemRequest, true);
                                         }
                                     } else {
-                                        DebugTool.logError("File was null at: " + urlHttps);
+                                        DebugTool.logError(TAG, "File was null at: " + urlHttps);
                                     }
                                 }
                             };
@@ -461,15 +460,15 @@ abstract class BaseLifecycleManager {
                         OnAppInterfaceUnregistered onAppInterfaceUnregistered = (OnAppInterfaceUnregistered) message;
 
                         if (!onAppInterfaceUnregistered.getReason().equals(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE)) {
-                            Log.v(TAG, "on app interface unregistered");
+                            DebugTool.logInfo(TAG, "on app interface unregistered");
                             clean();
                         } else {
-                            Log.v(TAG, "re-registering for language change");
+                            DebugTool.logInfo(TAG, "re-registering for language change");
                             cycle(SdlDisconnectedReason.LANGUAGE_CHANGE);
                         }
                         break;
                     case UNREGISTER_APP_INTERFACE:
-                        Log.v(TAG, "unregister app interface");
+                        DebugTool.logInfo(TAG, "unregister app interface");
                         clean();
                         break;
                 }
@@ -614,10 +613,10 @@ abstract class BaseLifecycleManager {
     @SuppressWarnings("UnusedReturnValue")
     private boolean onRPCNotificationReceived(RPCNotification notification) {
         if (notification == null) {
-            DebugTool.logError("onRPCNotificationReceived - Notification was null");
+            DebugTool.logError(TAG, "onRPCNotificationReceived - Notification was null");
             return false;
         }
-        DebugTool.logInfo("onRPCNotificationReceived - " + notification.getFunctionName());
+        DebugTool.logInfo(TAG, "onRPCNotificationReceived - " + notification.getFunctionName());
 
         //Before updating any listeners, make sure to do any final updates to the notification RPC now
         if (FunctionID.ON_HMI_STATUS.toString().equals(notification.getFunctionName())) {
@@ -677,7 +676,7 @@ abstract class BaseLifecycleManager {
             DebugTool.logError("onRPCRequestReceived - request was null");
             return false;
         }
-        DebugTool.logInfo("onRPCRequestReceived - " + request.getFunctionName());
+        DebugTool.logInfo(TAG, "onRPCRequestReceived - " + request.getFunctionName());
 
         synchronized (ON_REQUEST_LISTENER_LOCK) {
             CopyOnWriteArrayList<OnRPCRequestListener> listeners = rpcRequestListeners.get(FunctionID.getFunctionId(request.getFunctionName()));
@@ -807,7 +806,7 @@ abstract class BaseLifecycleManager {
                         listener.onError(request.getCorrelationID(), Result.ABORTED, errorInfo);
                     }
                 }
-                DebugTool.logWarning(errorInfo);
+                DebugTool.logWarning(TAG, errorInfo);
                 return;
             }
 
@@ -815,7 +814,7 @@ abstract class BaseLifecycleManager {
                 pm.setRPCType((byte) 0x00);
                 Integer corrId = ((RPCRequest) message).getCorrelationID();
                 if (corrId == null) {
-                    Log.e(TAG, "No correlation ID attached to request. Not sending");
+                    DebugTool.logError(TAG, "No correlation ID attached to request. Not sending");
                     return;
                 } else {
                     pm.setCorrID(corrId);
@@ -831,7 +830,7 @@ abstract class BaseLifecycleManager {
                 if (response.getCorrelationID() == null) {
                     //Log error here
                     //throw new SdlException("CorrelationID cannot be null. RPC: " + response.getFunctionName(), SdlExceptionCause.INVALID_ARGUMENT);
-                    Log.e(TAG, "No correlation ID attached to response. Not sending");
+                    DebugTool.logError(TAG, "No correlation ID attached to response. Not sending");
                     return;
                 } else {
                     pm.setCorrID(response.getCorrelationID());
@@ -887,7 +886,7 @@ abstract class BaseLifecycleManager {
                 RPCMessage rpc = RpcConverter.extractRpc(msg, session.getProtocolVersion());
                 if (rpc != null) {
                     String messageType = rpc.getMessageType();
-                    Log.v(TAG, "RPC received - " + messageType);
+                    DebugTool.logInfo(TAG, "RPC received - " + messageType);
 
                     rpc.format(rpcSpecVersion, true);
 
@@ -914,7 +913,7 @@ abstract class BaseLifecycleManager {
 
                     }
                 } else {
-                    Log.w(TAG, "Shouldn't be here");
+                    DebugTool.logWarning(TAG, "Shouldn't be here");
                 }
             }
 
@@ -922,13 +921,13 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onProtocolSessionStartedNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-            Log.w(TAG, sessionType.getName() + " onProtocolSessionStartedNACKed " + sessionID + " RejectedParams: " + rejectedParams);
+            DebugTool.logWarning(TAG, sessionType.getName() + " onProtocolSessionStartedNACKed " + sessionID + " RejectedParams: " + rejectedParams);
             BaseLifecycleManager.this.onStartServiceNACKed(sessionType);
         }
 
         @Override
         public void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
-            Log.i(TAG, "on protocol session started");
+            DebugTool.logInfo(TAG, "on protocol session started");
             BaseLifecycleManager.this.onServiceStarted(sessionType);
         }
 
@@ -944,7 +943,7 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onProtocolError(String info, Exception e) {
-            DebugTool.logError("Protocol Error - " + info, e);
+            DebugTool.logError(TAG, "Protocol Error - " + info, e);
         }
 
         @Override
@@ -1007,13 +1006,13 @@ abstract class BaseLifecycleManager {
 
         @Override
         public IVideoStreamListener startVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
-            DebugTool.logWarning("startVideoStream is not currently implemented");
+            DebugTool.logWarning(TAG, "startVideoStream is not currently implemented");
             return null;
         }
 
         @Override
         public void startAudioService(boolean encrypted, AudioStreamingCodec codec, AudioStreamingParams params) {
-            DebugTool.logWarning("startAudioService is not currently implemented");
+            DebugTool.logWarning(TAG, "startAudioService is not currently implemented");
         }
 
         @Override
@@ -1028,7 +1027,7 @@ abstract class BaseLifecycleManager {
 
         @Override
         public IAudioStreamListener startAudioStream(boolean isEncrypted, AudioStreamingCodec codec, AudioStreamingParams params) {
-            DebugTool.logWarning("startAudioStream is not currently implemented");
+            DebugTool.logWarning(TAG, "startAudioStream is not currently implemented");
             return null;
         }
 
@@ -1321,7 +1320,7 @@ abstract class BaseLifecycleManager {
     void onServiceStarted(SessionType sessionType) {
         if (sessionType != null) {
             if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1) {
-                Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
+                DebugTool.logWarning(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
                 session.endService(sessionType, session.getSessionId());
                 clean();
                 return;
@@ -1354,7 +1353,7 @@ abstract class BaseLifecycleManager {
 
                     sendRPCMessagePrivate(rai, true);
                 } else {
-                    Log.e(TAG, "App config was null, soo...");
+                    DebugTool.logError(TAG, "App config was null, soo...");
                 }
             }
         }

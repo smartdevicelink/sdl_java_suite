@@ -47,7 +47,7 @@ import com.smartdevicelink.util.DebugTool;
  * @see SoftButtonObject
  */
 public class SoftButtonState {
-
+    private static final String TAG = "SoftButtonState";
     private String name;
     private SdlArtwork artwork;
     private final SoftButton softButton;
@@ -61,7 +61,7 @@ public class SoftButtonState {
      */
     public SoftButtonState(@NonNull String name, String text, SdlArtwork artwork) {
         if (text == null && artwork == null) {
-            DebugTool.logError("Attempted to create an invalid soft button state: text and artwork are both null");
+            DebugTool.logError(TAG, "Attempted to create an invalid soft button state: text and artwork are both null");
             softButton = null;
             return;
         }

@@ -50,7 +50,7 @@ import java.util.HashSet;
 import java.util.List;
 
 class DeleteChoicesOperation extends Task {
-
+	private static final String TAG = "DeleteChoicesOperation";
 	private WeakReference<ISdl> internalInterface;
 	private HashSet<ChoiceCell> cellsToDelete;
 	private CompletionListener completionListener;
@@ -64,7 +64,7 @@ class DeleteChoicesOperation extends Task {
 
 	@Override
 	public void onExecute() {
-		DebugTool.logInfo("Choice Operation: Executing delete choices operation");
+		DebugTool.logInfo(TAG, "Choice Operation: Executing delete choices operation");
 		sendDeletions();
 	}
 
@@ -85,7 +85,7 @@ class DeleteChoicesOperation extends Task {
 						if (completionListener != null) {
 							completionListener.onComplete(true);
 						}
-						DebugTool.logInfo("Successfully deleted choices");
+						DebugTool.logInfo(TAG, "Successfully deleted choices");
 
 						DeleteChoicesOperation.super.onFinished();
 					}
@@ -95,7 +95,7 @@ class DeleteChoicesOperation extends Task {
 						if (completionListener != null) {
 							completionListener.onComplete(false);
 						}
-						DebugTool.logError("Failed to delete choice: " + info + " | Corr ID: " + correlationId);
+						DebugTool.logError(TAG, "Failed to delete choice: " + info + " | Corr ID: " + correlationId);
 
 						DeleteChoicesOperation.super.onFinished();
 					}
@@ -109,7 +109,7 @@ class DeleteChoicesOperation extends Task {
 			if (completionListener != null) {
 				completionListener.onComplete(true);
 			}
-			DebugTool.logInfo("No Choices to delete, continue");
+			DebugTool.logInfo(TAG, "No Choices to delete, continue");
 		}
 	}
 

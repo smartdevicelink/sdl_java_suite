@@ -7,6 +7,7 @@ import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 
 public class SdlPacket extends BaseSdlPacket implements Parcelable {
+    private static final String TAG = "SdlPacket";
     private static final int EXTRA_PARCEL_DATA_LENGTH 			= 24;
 
     public SdlPacket(int version, boolean encryption, int frameType,
@@ -61,7 +62,7 @@ public class SdlPacket extends BaseSdlPacket implements Parcelable {
                     }
                 }
             }catch (RuntimeException e){
-                DebugTool.logError("Error creating packet from parcel", e);
+                DebugTool.logError(TAG, "Error creating packet from parcel", e);
             }
         }
     }

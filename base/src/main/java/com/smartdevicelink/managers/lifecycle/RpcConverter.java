@@ -31,8 +31,6 @@
  */
 package com.smartdevicelink.managers.lifecycle;
 
-import android.util.Log;
-
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -68,7 +66,7 @@ public class RpcConverter {
             try{
                 return convertTableToRpc(tempTable);
             }catch (Exception e){
-                DebugTool.logError("Error converting RPC",e);
+                DebugTool.logError(TAG, "Error converting RPC",e);
             }
         }
         return null;
@@ -92,7 +90,7 @@ public class RpcConverter {
             if (functionName != null) {
                 hashTemp.put(RPCMessage.KEY_FUNCTION_NAME, functionName);
             } else {
-                DebugTool.logWarning("Dispatch Incoming Message - function name is null unknown RPC.  FunctionId: " + message.getFunctionID());
+                DebugTool.logWarning(TAG, "Dispatch Incoming Message - function name is null unknown RPC.  FunctionId: " + message.getFunctionID());
                 return null;
             }
 
@@ -124,7 +122,7 @@ public class RpcConverter {
         }else if(rpcHashTable.containsKey((RPCMessage.KEY_REQUEST))){
             params = (Hashtable)rpcHashTable.get((RPCMessage.KEY_REQUEST));
         }else{
-            DebugTool.logError(TAG + " Corrupted RPC table.");
+            DebugTool.logError(TAG, " Corrupted RPC table.");
             return null;
         }
 
@@ -132,7 +130,7 @@ public class RpcConverter {
             if (params != null) {
                 Set<String> keySet = params.keySet();
                 for (String key : keySet) {
-                    Log.i(TAG, key + "  -  " + params.get(key));
+                    DebugTool.logInfo(TAG, key + "  -  " + params.get(key));
                 }
             }
         }
@@ -151,7 +149,7 @@ public class RpcConverter {
                 rpcClassName.append(RESPONSE_KEY);
             }
 
-            DebugTool.logInfo(TAG + " Attempting to create " + rpcClassName.toString());
+            DebugTool.logInfo(TAG, " Attempting to create " + rpcClassName.toString());
             try {
                 Class rpcClass = Class.forName(rpcClassName.toString());
                 if(rpcClass != null){
@@ -160,13 +158,13 @@ public class RpcConverter {
                         return (RPCMessage)rpcConstructor.newInstance(rpcHashTable);
                     }
                 } else {
-                    DebugTool.logError(TAG + " Java class cannot be found for " + rpcClassName.toString());
+                    DebugTool.logError(TAG, " Java class cannot be found for " + rpcClassName.toString());
                 }
             } catch (Exception e) {
-                DebugTool.logError("RPCConverter was unable to process RPC", e);
+                DebugTool.logError(TAG, "RPCConverter was unable to process RPC", e);
             }
         }else{
-            DebugTool.logError(TAG + " Unable to parse into RPC");
+            DebugTool.logError(TAG, " Unable to parse into RPC");
         }
 
         return null;

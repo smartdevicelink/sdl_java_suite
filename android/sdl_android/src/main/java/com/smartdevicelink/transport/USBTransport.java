@@ -341,7 +341,7 @@ public class USBTransport extends SdlTransport {
      */
     //@Override
     public void stopReading() {
-        DebugTool.logInfo("USBTransport: stop reading requested, doing nothing");
+        DebugTool.logInfo(TAG, "USBTransport: stop reading requested, doing nothing");
         // TODO - put back stopUSBReading(); @see <a href="https://adc.luxoft.com/jira/browse/SmartDeviceLink-3450">SmartDeviceLink-3450</a>
     }
 
@@ -632,7 +632,7 @@ public class USBTransport extends SdlTransport {
      * @param tr throwable to log
      */
     private void logE(String s, Throwable tr) {
-        DebugTool.logError(s, tr);
+        DebugTool.logError(TAG, s, tr);
     }
 
     /**
@@ -641,7 +641,7 @@ public class USBTransport extends SdlTransport {
      * @param s string to log
      */
     private void logW(String s) {
-        DebugTool.logWarning(s);
+        DebugTool.logWarning(TAG, s);
     }
 
     /**
@@ -665,7 +665,7 @@ public class USBTransport extends SdlTransport {
      * @param s string to log
      */
     private void logI(String s) {
-        DebugTool.logInfo(s);
+        DebugTool.logInfo(TAG, s);
     }
 
     /**
@@ -675,7 +675,7 @@ public class USBTransport extends SdlTransport {
      */
     private void logD(String s) {
         // DebugTool doesn't support DEBUG level, so we use INFO instead
-        DebugTool.logInfo(DEBUG_PREFIX + s);
+        DebugTool.logInfo(TAG, DEBUG_PREFIX + s);
     }
 
     /**
@@ -882,15 +882,15 @@ public class USBTransport extends SdlTransport {
         // Log functions
 
         private void logD(String s) {
-            DebugTool.logInfo(DEBUG_PREFIX + s);
+            DebugTool.logInfo(TAG, DEBUG_PREFIX + s);
         }
 
         private void logI(String s) {
-            DebugTool.logInfo(s);
+            DebugTool.logInfo(TAG, s);
         }
 
         private void logW(String s) {
-            DebugTool.logWarning(s);
+            DebugTool.logWarning(TAG, s);
         }
 
         private void logW(String s, Throwable tr) {
@@ -903,7 +903,7 @@ public class USBTransport extends SdlTransport {
         }
 
         private void logE(String s, Throwable tr) {
-            DebugTool.logError(s, tr);
+            DebugTool.logError(TAG, s, tr);
         }
     }
 

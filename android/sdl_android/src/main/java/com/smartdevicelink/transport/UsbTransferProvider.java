@@ -48,9 +48,9 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
-import android.util.Log;
 
 import com.smartdevicelink.util.AndroidTools;
+import com.smartdevicelink.util.DebugTool;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -74,7 +74,7 @@ public class UsbTransferProvider {
     private ServiceConnection routerConnection= new ServiceConnection() {
 
         public void onServiceConnected(ComponentName className, IBinder service) {
-            Log.d(TAG, "Bound to service " + className.toString());
+            DebugTool.logInfo(TAG, "Bound to service " + className.toString());
             routerServiceMessenger = new Messenger(service);
             isBound = true;
             //So we just established our connection
@@ -95,7 +95,7 @@ public class UsbTransferProvider {
         }
 
         public void onServiceDisconnected(ComponentName className) {
-            Log.d(TAG, "UN-Bound from service " + className.getClassName());
+            DebugTool.logInfo(TAG, "UN-Bound from service " + className.getClassName());
             routerServiceMessenger = null;
             isBound = false;
         }
@@ -121,7 +121,7 @@ public class UsbTransferProvider {
             usbInfoBundle.putString(MultiplexUsbTransport.DESCRIPTION, usbAccessory.getDescription());
             checkIsConnected();
         }else{
-            Log.e(TAG, "Unable to open accessory");
+            DebugTool.logError(TAG, "Unable to open accessory");
             clientMessenger = null;
             if(callback != null){
                 callback.onUsbTransferUpdate(false);
@@ -152,7 +152,7 @@ public class UsbTransferProvider {
     public void checkIsConnected(){
         if(!AndroidTools.isServiceExported(context,routerService) || !bindToService()){
             //We are unable to bind to service
-            Log.e(TAG, "Unable to bind to service");
+            DebugTool.logError(TAG, "Unable to bind to service");
             unBindFromService();
         }
     }
@@ -183,7 +183,7 @@ public class UsbTransferProvider {
             if(context!=null && routerConnection!=null){
                 context.unbindService(routerConnection);
             }else{
-                Log.w(TAG, "Unable to unbind from router service, context was null");
+                DebugTool.logWarning(TAG, "Unable to unbind from router service, context was null");
             }
 
         }catch(IllegalArgumentException e){
@@ -222,7 +222,7 @@ public class UsbTransferProvider {
             }
             switch (msg.what) {
                 case TransportConstants.ROUTER_USB_ACC_RECEIVED:
-                    Log.d(TAG, "Successful USB transfer");
+                    DebugTool.logInfo(TAG, "Successful USB transfer");
                     provider.get().finish();
                     break;
                 default:
