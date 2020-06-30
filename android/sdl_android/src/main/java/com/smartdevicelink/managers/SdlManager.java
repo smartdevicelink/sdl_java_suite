@@ -215,7 +215,7 @@ public class SdlManager extends BaseSdlManager {
      */
     @SuppressLint("NewApi")
     @Override
-    public void dispose() {
+    public synchronized void dispose() {
         if (this.permissionManager != null) {
             this.permissionManager.dispose();
         }

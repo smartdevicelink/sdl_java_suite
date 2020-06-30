@@ -85,8 +85,7 @@ public class TransportBroker {
     private Context currentContext = null;
 
     private final Object INIT_LOCK = new Object();
-
-    private TransportType queuedOnTransportConnect = null;
+    private final Object MESSAGE_SEND_LOCK = new Object();
 
     Messenger routerServiceMessenger = null;
     final Messenger clientMessenger;
@@ -125,59 +124,55 @@ public class TransportBroker {
         };
     }
 
-    protected synchronized boolean sendMessageToRouterService(Message message) {
+    protected boolean sendMessageToRouterService(Message message) {
         return sendMessageToRouterService(message, 0);
     }
 
-    protected synchronized boolean sendMessageToRouterService(Message message, int retryCount) {
-        if (message == null) {
-            DebugTool.logWarning(TAG,  "Attempted to send null message");
-            return false;
-        }
-        //Log.i(TAG, "Attempting to send message type - " + message.what);
-        if (isBound && routerServiceMessenger != null) {
-            if (registeredWithRouterService
-                    || message.what == TransportConstants.ROUTER_REGISTER_CLIENT) { //We can send a message if we are registered or are attempting to register
-                try {
-                    routerServiceMessenger.send(message);
-                    return true;
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                    //Let's check to see if we should retry
-                    if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1 && e instanceof TransactionTooLargeException )
-                            || (retryCount < 5 && routerServiceMessenger.getBinder().isBinderAlive() && routerServiceMessenger.getBinder().pingBinder())) { //We probably just failed on a small transaction =\
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
+    protected boolean sendMessageToRouterService(Message message, int retryCount) {
+        synchronized (MESSAGE_SEND_LOCK) {
+            if (message == null) {
+                DebugTool.logWarning(TAG, "Attempted to send null message");
+                return false;
+            }
+            //Log.i(TAG, "Attempting to send message type - " + message.what);
+            if (isBound && routerServiceMessenger != null && routerServiceMessenger.getBinder() != null && routerServiceMessenger.getBinder().isBinderAlive()) {
+                if (registeredWithRouterService
+                        || message.what == TransportConstants.ROUTER_REGISTER_CLIENT) { //We can send a message if we are registered or are attempting to register
+                    try {
+                        routerServiceMessenger.send(message);
+                        return true;
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        //Let's check to see if we should retry
+                        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1 && e instanceof TransactionTooLargeException)
+                                || (retryCount < 5 && routerServiceMessenger.getBinder().isBinderAlive() && routerServiceMessenger.getBinder().pingBinder())) { //We probably just failed on a small transaction =\
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            }
+                            return sendMessageToRouterService(message, retryCount++);
+                        } else {
+                            //DeadObject, time to kill our connection
+                            DebugTool.logInfo(TAG, "Dead object while attempting to send packet");
+                            stop();
+                            onHardwareDisconnected(null, null);
+                            return false;
                         }
-                        return sendMessageToRouterService(message, retryCount++);
-                    } else {
-                        //DeadObject, time to kill our connection
-                        DebugTool.logInfo(TAG, "Dead object while attempting to send packet");
-                        routerServiceMessenger = null;
-                        registeredWithRouterService = false;
-                        unBindFromRouterService();
-                        isBound = false;
+                    } catch (NullPointerException e) {
+                        DebugTool.logInfo(TAG, "Null messenger while attempting to send packet"); // NPE, routerServiceMessenger is null
+                        stop();
                         onHardwareDisconnected(null, null);
                         return false;
                     }
-                } catch (NullPointerException e) {
-                    DebugTool.logInfo(TAG, "Null messenger while attempting to send packet"); // NPE, routerServiceMessenger is null
-                    routerServiceMessenger = null;
-                    registeredWithRouterService = false;
-                    unBindFromRouterService();
-                    isBound = false;
-                    onHardwareDisconnected(null, null);
+                } else {
+                    DebugTool.logError(TAG, "Unable to send message to router service. Not registered.");
                     return false;
                 }
             } else {
-                DebugTool.logError(TAG, "Unable to send message to router service. Not registered.");
+                DebugTool.logError(TAG, "Unable to send message to router service. Not bound.");
                 return false;
             }
-        } else {
-            DebugTool.logError(TAG, "Unable to send message to router service. Not bound.");
-            return false;
         }
     }
 
@@ -415,7 +410,6 @@ public class TransportBroker {
             }
             //this.appId = appId.concat(timeStamp);
             this.appId = appId;
-            queuedOnTransportConnect = null;
             currentContext = context;
             //Log.d(TAG, "Registering our reply receiver: " + whereToReply);
             this.routerService = service;
@@ -447,7 +441,6 @@ public class TransportBroker {
         synchronized (INIT_LOCK) {
             unregisterWithRouterService();
             routerServiceMessenger = null;
-            queuedOnTransportConnect = null;
             unBindFromRouterService();
             isBound = false;
         }
@@ -462,13 +455,12 @@ public class TransportBroker {
             unregisterWithRouterService();
             unBindFromRouterService();
             routerServiceMessenger = null;
-            queuedOnTransportConnect = null;
             currentContext = null;
 
         }
     }
 
-    private synchronized void unBindFromRouterService() {
+    private void unBindFromRouterService() {
         try {
             getContext().unbindService(routerConnection);
 
@@ -486,25 +478,15 @@ public class TransportBroker {
 
 
     public void onServiceUnregsiteredFromRouterService(int unregisterCode) {
-        queuedOnTransportConnect = null;
     }
 
     @Deprecated
     public void onHardwareDisconnected(TransportType type) {
-        routerServiceDisconnect();
+        stop();
     }
 
     public void onHardwareDisconnected(TransportRecord record, List<TransportRecord> connectedTransports) {
 
-    }
-
-    private void routerServiceDisconnect() {
-        synchronized (INIT_LOCK) {
-            unBindFromRouterService();
-            routerServiceMessenger = null;
-            routerConnection = null;
-            queuedOnTransportConnect = null;
-        }
     }
 
     /**
@@ -517,7 +499,6 @@ public class TransportBroker {
     public boolean onHardwareConnected(TransportType type) {
         synchronized (INIT_LOCK) {
             if (routerServiceMessenger == null) {
-                queuedOnTransportConnect = type;
                 return false;
             }
             return true;
@@ -527,7 +508,6 @@ public class TransportBroker {
     public boolean onHardwareConnected(List<TransportRecord> transports) {
         synchronized (INIT_LOCK) {
             if (routerServiceMessenger == null && transports != null && transports.size() > 0) {
-                queuedOnTransportConnect = transports.get(transports.size() - 1).getType();
                 return false;
             }
             return true;
@@ -615,7 +595,7 @@ public class TransportBroker {
             ByteArrayMessageSpliter splitter = new ByteArrayMessageSpliter(appId, TransportConstants.ROUTER_SEND_PACKET, bytes, packet.getPrioirtyCoefficient());
             splitter.setRouterServiceVersion(routerServiceVersion);
             splitter.setTransportRecord(packet.getTransportRecord());
-            while (splitter.isActive()) {
+            while (splitter.isActive() && routerServiceMessenger != null) {
                 sendMessageToRouterService(splitter.nextMessage());
             }
             return splitter.close();
