@@ -48,7 +48,9 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
     @Override
     public void dispose() {
         super.dispose();
-        onButtonListeners.clear();
+        if (onButtonListeners != null) {
+            onButtonListeners.clear();
+        }
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_PRESS, onButtonPressListener);
         internalInterface.removeOnRPCNotificationListener(FunctionID.ON_BUTTON_EVENT, onButtonEventListener);
     }
@@ -96,7 +98,7 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
 
         if (buttonName == null) {
             listener.onError("ButtonName cannot be null");
-            Log.e(TAG, "ButtonName cannot be null");
+            return;
         }
 
         if (onButtonListeners.get(buttonName) == null || !onButtonListeners.get(buttonName).contains(listener)) {
