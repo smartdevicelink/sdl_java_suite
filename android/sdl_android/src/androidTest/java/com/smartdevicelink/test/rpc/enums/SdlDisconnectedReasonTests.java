@@ -64,6 +64,8 @@ public class SdlDisconnectedReasonTests extends TestCase {
 		SdlDisconnectedReason enumLegacyMode = SdlDisconnectedReason.valueForString(example);
 		example = "RPC_SESSION_ENDED";
 		SdlDisconnectedReason enumRpcSessionEnded = SdlDisconnectedReason.valueForString(example);
+		example = "RESOURCE_CONSTRAINT";
+		SdlDisconnectedReason resourceConstraint = SdlDisconnectedReason.valueForString(example);
 		
 		assertNotNull("USER_EXIT returned null", enumUserExit);
 		assertNotNull("IGNITION_OFF returned null", enumIgnitionOff);
@@ -87,6 +89,7 @@ public class SdlDisconnectedReasonTests extends TestCase {
 		assertNotNull("GENERIC_ERROR returned null", enumGenericError);
 		assertNotNull("LEGACY_BLUETOOTH_MODE_ENABLED returned null", enumLegacyMode);
 		assertNotNull("RPC_SESSION_ENDED returned null", enumRpcSessionEnded);
+		assertNotNull("RESOURCE_CONSTRAINT returned null", resourceConstraint);
 	}
 
 	/**
@@ -149,6 +152,7 @@ public class SdlDisconnectedReasonTests extends TestCase {
 		enumTestList.add(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
 		enumTestList.add(SdlDisconnectedReason.MINIMUM_PROTOCOL_VERSION_HIGHER_THAN_SUPPORTED);
 		enumTestList.add(SdlDisconnectedReason.MINIMUM_RPC_VERSION_HIGHER_THAN_SUPPORTED);
+		enumTestList.add(SdlDisconnectedReason.RESOURCE_CONSTRAINT);
 
 		assertTrue("Enum value list does not match enum class list", 
 				enumValueList.containsAll(enumTestList) && enumTestList.containsAll(enumValueList));
@@ -170,6 +174,7 @@ public class SdlDisconnectedReasonTests extends TestCase {
 		assertEquals(Test.MATCH, SdlDisconnectedReason.TOO_MANY_REQUESTS, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.TOO_MANY_REQUESTS));
 		assertEquals(Test.MATCH, SdlDisconnectedReason.USB_DISCONNECTED, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.USB_DISCONNECTED));
 		assertEquals(Test.MATCH, SdlDisconnectedReason.USER_EXIT, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.USER_EXIT));
+		assertEquals(Test.MATCH, SdlDisconnectedReason.RESOURCE_CONSTRAINT, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.RESOURCE_CONSTRAINT));
 		assertNull(Test.MATCH, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(null));
 	}
 	

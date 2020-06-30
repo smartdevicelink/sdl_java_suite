@@ -119,6 +119,15 @@ public enum AppInterfaceUnregisteredReason {
 	 * @since SmartDeviceLink 4.1
 	 */
 	UNSUPPORTED_HMI_RESOURCE,
+
+
+	/**
+	 * By getting this value, SDL should unregister the application to allow the HMI to close the application.
+	 *
+	 * @since SmartDeviceLink 6.x
+	 *
+	 */
+	RESOURCE_CONSTRAINT
 	;
 	/**
      * Convert String to AppInterfaceUnregisteredReason
