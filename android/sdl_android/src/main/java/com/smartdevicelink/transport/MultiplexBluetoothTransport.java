@@ -815,8 +815,10 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport{
                     }
                 } catch (IOException|NullPointerException e) { // NPE is ONLY to catch error on mmInStream
                     DebugTool.logError(TAG, "Lost connection in the Connected Thread");
-                	e.printStackTrace();
-                	connectionLost();                    
+                	if(DebugTool.isDebugEnabled()){
+                	    e.printStackTrace();
+                    }
+                	connectionLost();
                     break;
                 }
             }

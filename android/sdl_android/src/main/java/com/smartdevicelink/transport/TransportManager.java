@@ -48,6 +48,7 @@ import android.os.Parcelable;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.enums.ControlFrameTags;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.transport.utl.SdlDeviceListener;
 import com.smartdevicelink.transport.utl.TransportRecord;
 import com.smartdevicelink.util.DebugTool;
 
@@ -99,7 +100,7 @@ public class TransportManager extends TransportManagerBase{
                 if (valid) {
                     mConfig.service = name;
                     transport = new TransportBrokerImpl(contextWeakReference.get(), mConfig.appId, mConfig.service);
-                    DebugTool.logInfo(TAG, "TransportManager start got called; transport=" + transport);
+                    DebugTool.logInfo(TAG, "TransportManager start was called; transport=" + transport);
                     if(transport != null){
                         transport.start();
                     }
@@ -301,6 +302,16 @@ public class TransportManager extends TransportManagerBase{
                 transportStatus.clear();
                 transportStatus.addAll(transports);
             }
+            //If a bluetooth device has connected, make sure to save the mac address in the case
+            //this app is asked to host the router service, the app knows to do so immediately on connection.
+            if(transports != null && transports.size() > 0) {
+                for (TransportRecord record : transports) {
+                    if(record != null && TransportType.BLUETOOTH.equals(record.getType())) {
+                        SdlDeviceListener.setSDLConnectedStatus(contextWeakReference.get(), record.getAddress(),true);
+                    }
+                }
+            }
+
             transportListener.onTransportConnected(transports);
             return true;
         }
