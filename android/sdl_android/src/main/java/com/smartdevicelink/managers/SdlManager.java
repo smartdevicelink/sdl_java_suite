@@ -49,7 +49,6 @@ import com.smartdevicelink.managers.permission.PermissionManager;
 import com.smartdevicelink.managers.screen.ScreenManager;
 import com.smartdevicelink.managers.video.VideoStreamManager;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
-import com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
@@ -211,25 +210,13 @@ public class SdlManager extends BaseSdlManager {
         }
     }
 
-    @Override
-    void onProxyClosed(SdlDisconnectedReason reason) {
-        Log.i(TAG, "Proxy is closed.");
-        if (managerListener != null) {
-            managerListener.onDestroy();
-        }
-
-        if (reason == null || !reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)) {
-            dispose();
-        }
-    }
-
     /**
      * Dispose SdlManager and clean its resources
      * <strong>Note: new instance of SdlManager should be created on every connection. SdlManager cannot be reused after getting disposed.</strong>
      */
     @SuppressLint("NewApi")
     @Override
-    public void dispose() {
+    public synchronized void dispose() {
         if (this.permissionManager != null) {
             this.permissionManager.dispose();
         }

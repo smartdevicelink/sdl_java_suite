@@ -37,6 +37,8 @@ package com.smartdevicelink.managers.screen.choiceset;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.livio.taskmaster.Queue;
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.file.FileManager;
@@ -64,9 +66,6 @@ import com.smartdevicelink.util.DebugTool;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <strong>ChoiceSetManager</strong> <br>
@@ -90,9 +89,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     ChoiceSet pendingPresentationSet;
 
     // We will pass operations into this to be completed
-    PausableThreadPoolExecutor executor;
-    LinkedBlockingQueue<Runnable> operationQueue;
-    Future pendingPresentOperation;
+    Queue transactionQueue;
+    Task pendingPresentOperation;
 
     PresentKeyboardOperation currentlyPresentedKeyboardOperation;
 
@@ -104,6 +102,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
 
     BaseChoiceSetManager(@NonNull ISdl internalInterface, @NonNull FileManager fileManager) {
         super(internalInterface);
+
+        // prepare operations queue
+        transactionQueue = internalInterface.getTaskmaster().createQueue("ChoiceSetManagerQueue", 1, false);
+        transactionQueue.pause(); // pause until HMI ready
 
         // capabilities
         currentSystemContext = SystemContext.SYSCTXT_MAIN;
@@ -118,9 +120,6 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         nextCancelId = choiceCellCancelIdMin;
         isVROptional = false;
         keyboardConfiguration = defaultKeyboardConfiguration();
-        operationQueue = new LinkedBlockingQueue<>();
-        executor = new PausableThreadPoolExecutor(1, Runtime.getRuntime().availableProcessors(), 10, TimeUnit.SECONDS, operationQueue);
-        executor.pause(); // pause until HMI ready
 
         currentlyPresentedKeyboardOperation = null;
     }
@@ -136,8 +135,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
     public void dispose(){
 
         // cancel the operations
-        operationQueue.clear();
-        executor.shutdownNow();
+        transactionQueue.close();
 
         currentHMILevel = null;
         currentSystemContext = null;
@@ -175,10 +173,10 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 // checking VR will always be first in the queue.
                 // If pre-load operations were added while this was in progress
                 // clear it from the queue onError.
-                operationQueue.clear();
+                transactionQueue.clear();
             }
         });
-        executor.submit(checkChoiceVR);
+        transactionQueue.add(checkChoiceVR, false);
     }
 
     /**
@@ -227,7 +225,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 }
             });
 
-            executor.submit(preloadChoicesOperation);
+            transactionQueue.add(preloadChoicesOperation, false);
         } else {
             DebugTool.logError("File Manager was null in preload choice operation");
         }
@@ -253,15 +251,15 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             pendingPresentationChoices.addAll(pendingPresentationSet.getChoices());
         }
 
-        if (pendingPresentOperation != null && !pendingPresentOperation.isCancelled() && !pendingPresentOperation.isDone() && (cellsToBeDeleted.retainAll(pendingPresentationChoices) || cellsToBeRemovedFromPending.retainAll(pendingPresentationChoices))){
-            pendingPresentOperation.cancel(false);
+        if (pendingPresentOperation != null && pendingPresentOperation.getState() != Task.CANCELED && pendingPresentOperation.getState() != Task.FINISHED && (cellsToBeDeleted.retainAll(pendingPresentationChoices) || cellsToBeRemovedFromPending.retainAll(pendingPresentationChoices))){
+            pendingPresentOperation.cancelTask();
             DebugTool.logWarning("Attempting to delete choice cells while there is a pending presentation operation. Pending presentation cancelled.");
             pendingPresentOperation = null;
         }
 
         // Remove cells from pending and delete choices
         pendingPresentationChoices.removeAll(cellsToBeRemovedFromPending);
-        for (Runnable operation : operationQueue){
+        for (Task operation : transactionQueue.getTasksAsList()){
             if (!(operation instanceof PreloadChoicesOperation)){ continue; }
             ((PreloadChoicesOperation) operation).removeChoicesFromUpload(cellsToBeRemovedFromPending);
         }
@@ -283,7 +281,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 preloadedChoices.removeAll(cellsToBeDeleted);
             }
         });
-        executor.submit(deleteChoicesOperation);
+        transactionQueue.add(deleteChoicesOperation, false);
     }
 
     /**
@@ -303,7 +301,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         if (!setUpChoiceSet(choiceSet)){ return; }
 
         if (this.pendingPresentationSet != null && pendingPresentOperation != null){
-            pendingPresentOperation.cancel(false);
+            pendingPresentOperation.cancelTask();
             DebugTool.logWarning("Presenting a choice set while one is currently presented. Cancelling previous and continuing");
         }
 
@@ -357,7 +355,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
             presentOp = new PresentChoiceSetOperation(internalInterface, pendingPresentationSet, mode, keyboardConfiguration, keyboardListener, privateChoiceListener, nextCancelId++);
         }
 
-        pendingPresentOperation = executor.submit(presentOp);
+        transactionQueue.add(presentOp, false);
+        pendingPresentOperation = presentOp;
     }
 
     /**
@@ -379,7 +378,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
 
         if (pendingPresentationSet != null && pendingPresentOperation != null){
-            pendingPresentOperation.cancel(false);
+            pendingPresentOperation.cancelTask();
             pendingPresentationSet = null;
             DebugTool.logWarning("There is a current or pending choice set, cancelling and continuing.");
         }
@@ -397,7 +396,8 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         Integer keyboardCancelID = nextCancelId++;
         PresentKeyboardOperation keyboardOp = new PresentKeyboardOperation(internalInterface, keyboardConfiguration, initialText, customKeyboardConfig, listener, keyboardCancelID);
         currentlyPresentedKeyboardOperation = keyboardOp;
-        pendingPresentOperation = executor.submit(keyboardOp);
+        transactionQueue.add(keyboardOp, false);
+        pendingPresentOperation = keyboardOp;
         return keyboardCancelID;
     }
 
@@ -421,7 +421,7 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
         }
 
         // Next, attempt to cancel keyboard operations that have not yet started
-        for (Runnable operation : operationQueue){
+        for (Task operation : transactionQueue.getTasksAsList()){
             if (!(operation instanceof PresentKeyboardOperation)){ continue; }
 
             PresentKeyboardOperation pendingOp = (PresentKeyboardOperation) operation;
@@ -551,21 +551,21 @@ abstract class BaseChoiceSetManager extends BaseSubManager {
                 currentHMILevel = onHMIStatus.getHmiLevel();
 
                 if (currentHMILevel == HMILevel.HMI_NONE){
-                    executor.pause();
+                    transactionQueue.pause();
                 }
 
                 if (oldHMILevel == HMILevel.HMI_NONE && currentHMILevel != HMILevel.HMI_NONE){
-                    executor.resume();
+                    transactionQueue.resume();
                 }
 
                 currentSystemContext = onHMIStatus.getSystemContext();
 
                 if (currentSystemContext == SystemContext.SYSCTXT_HMI_OBSCURED || currentSystemContext == SystemContext.SYSCTXT_ALERT){
-                    executor.pause();
+                    transactionQueue.pause();
                 }
 
                 if (currentSystemContext == SystemContext.SYSCTXT_MAIN && currentHMILevel != HMILevel.HMI_NONE){
-                    executor.resume();
+                    transactionQueue.resume();
                 }
 
             }

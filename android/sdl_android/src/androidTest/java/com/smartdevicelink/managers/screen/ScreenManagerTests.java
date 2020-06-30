@@ -1,5 +1,6 @@
 package com.smartdevicelink.managers.screen;
 
+import com.livio.taskmaster.Taskmaster;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.smartdevicelink.managers.BaseSubManager;
@@ -24,6 +25,7 @@ import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
@@ -37,7 +39,9 @@ public class ScreenManagerTests {
 	@Before
 	public void setUp() throws Exception {
 
+
 		ISdl internalInterface = mock(ISdl.class);
+		when(internalInterface.getTaskmaster()).thenReturn(new Taskmaster.Builder().build());
 		FileManager fileManager = mock(FileManager.class);
 		screenManager = new ScreenManager(internalInterface, fileManager);
 		screenManager.start(null);

@@ -3,6 +3,7 @@ package com.smartdevicelink.test.proxy;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.SparseArray;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -1091,5 +1092,10 @@ public class SystemCapabilityManagerTests {
 
 		@Override
 		public void startRPCEncryption() {}
+
+		@Override
+		public Taskmaster getTaskmaster() {
+			return null;
+		}
 	}
 }

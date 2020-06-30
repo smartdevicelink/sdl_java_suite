@@ -3,6 +3,7 @@ package com.smartdevicelink.managers;
 import android.content.Context;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.lifecycle.LifecycleConfigurationUpdate;
 import com.smartdevicelink.managers.lockscreen.LockScreenConfig;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -42,6 +43,7 @@ import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * This is a unit test class for the SmartDeviceLink library manager class :
@@ -138,6 +140,7 @@ public class SdlManagerTests {
 
 		// mock internalInterface and set it manually
 		internalInterface = mock(ISdl.class);
+		when(internalInterface.getTaskmaster()).thenReturn(new Taskmaster.Builder().build());
 		manager._internalInterface = internalInterface;
 
 		return manager;

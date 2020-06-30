@@ -36,6 +36,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.SdlConnection.ISdlConnectionListener;
 import com.smartdevicelink.SdlConnection.SdlSession;
 import com.smartdevicelink.exception.SdlException;
@@ -134,6 +135,7 @@ abstract class BaseLifecycleManager {
     Version minimumProtocolVersion;
     Version minimumRPCVersion;
     BaseTransportConfig _transportConfig;
+    private Taskmaster taskmaster;
 
     BaseLifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
         this.appConfig = appConfig;
@@ -141,7 +143,7 @@ abstract class BaseLifecycleManager {
         this.lifecycleListener = listener;
         this.minimumProtocolVersion = appConfig.getMinimumProtocolVersion();
         this.minimumRPCVersion = appConfig.getMinimumRPCVersion();
-        initializeProxy();
+        initialize();
     }
 
     public void start() {
@@ -161,8 +163,25 @@ abstract class BaseLifecycleManager {
         }
     }
 
-    public void stop() {
-        session.close();
+    public synchronized void stop() {
+        if(session != null) {
+            session.close();
+            session = null;
+        }
+        if (taskmaster != null) {
+            taskmaster.shutdown();
+        }
+    }
+
+    Taskmaster getTaskmaster() {
+        if (taskmaster == null) {
+            Taskmaster.Builder builder = new Taskmaster.Builder();
+            builder.setThreadCount(2);
+            builder.shouldBeDaemon(true);
+            taskmaster = builder.build();
+            taskmaster.start();
+        }
+        return taskmaster;
     }
 
     Version getProtocolVersion() {
@@ -326,10 +345,10 @@ abstract class BaseLifecycleManager {
         return currentHMIStatus;
     }
 
-    void onClose(String info, Exception e) {
+    void onClose(String info, Exception e, SdlDisconnectedReason reason) {
         Log.i(TAG, "onClose");
         if (lifecycleListener != null) {
-            lifecycleListener.onProxyClosed((LifecycleManager) this, info, e, null);
+            lifecycleListener.onClosed((LifecycleManager) this, info, e, reason);
         }
     }
 
@@ -383,7 +402,7 @@ abstract class BaseLifecycleManager {
                             UnregisterAppInterface msg = new UnregisterAppInterface();
                             msg.setCorrelationID(UNREGISTER_APP_INTERFACE_CORRELATION_ID);
                             sendRPCMessagePrivate(msg, true);
-                            cleanProxy();
+                            clean();
                             return;
                         }
                         processRaiResponse(raiResponse);
@@ -394,7 +413,7 @@ abstract class BaseLifecycleManager {
                         boolean shouldInit = currentHMIStatus == null;
                         currentHMIStatus = (OnHMIStatus) message;
                         if (lifecycleListener != null && shouldInit) {
-                            lifecycleListener.onProxyConnected((LifecycleManager) BaseLifecycleManager.this);
+                            lifecycleListener.onConnected((LifecycleManager) BaseLifecycleManager.this);
                         }
                         break;
                     case ON_HASH_CHANGE:
@@ -443,15 +462,15 @@ abstract class BaseLifecycleManager {
 
                         if (!onAppInterfaceUnregistered.getReason().equals(AppInterfaceUnregisteredReason.LANGUAGE_CHANGE)) {
                             Log.v(TAG, "on app interface unregistered");
-                            cleanProxy();
+                            clean();
                         } else {
                             Log.v(TAG, "re-registering for language change");
-                            processLanguageChange();
+                            cycle(SdlDisconnectedReason.LANGUAGE_CHANGE);
                         }
                         break;
                     case UNREGISTER_APP_INTERFACE:
                         Log.v(TAG, "unregister app interface");
-                        cleanProxy();
+                        clean();
                         break;
                 }
             }
@@ -459,19 +478,6 @@ abstract class BaseLifecycleManager {
 
 
     };
-
-    private void processLanguageChange() {
-        if (session != null) {
-            if (session.getIsConnected()) {
-                session.close();
-            }
-            try {
-                session.startSession();
-            } catch (SdlException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     /* *******************************************************************************************************
      ********************************** INTERNAL - RPC LISTENERS !! END !! *********************************
@@ -856,7 +862,7 @@ abstract class BaseLifecycleManager {
     final ISdlConnectionListener sdlConnectionListener = new ISdlConnectionListener() {
         @Override
         public void onTransportDisconnected(String info) {
-            onClose(info, null);
+            onClose(info, null, null);
 
         }
 
@@ -868,7 +874,7 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onTransportError(String info, Exception e) {
-            onClose(info, e);
+            onClose(info, e, null);
 
         }
 
@@ -916,24 +922,24 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onProtocolSessionStartedNACKed(SessionType sessionType, byte sessionID, byte version, String correlationID, List<String> rejectedParams) {
-            Log.w(TAG, sessionType + " onProtocolSessionStartedNACKed " + sessionID + " RejectedParams: " + rejectedParams);
-            BaseLifecycleManager.this.onProtocolSessionStartedNACKed(sessionType);
+            Log.w(TAG, sessionType.getName() + " onProtocolSessionStartedNACKed " + sessionID + " RejectedParams: " + rejectedParams);
+            BaseLifecycleManager.this.onStartServiceNACKed(sessionType);
         }
 
         @Override
         public void onProtocolSessionStarted(SessionType sessionType, byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
             Log.i(TAG, "on protocol session started");
-            BaseLifecycleManager.this.onProtocolSessionStarted(sessionType);
+            BaseLifecycleManager.this.onServiceStarted(sessionType);
         }
 
         @Override
         public void onProtocolSessionEnded(SessionType sessionType, byte sessionID, String correlationID) {
-            BaseLifecycleManager.this.onProtocolSessionEnded(sessionType);
+            //Currently not necessary
         }
 
         @Override
         public void onProtocolSessionEndedNACKed(SessionType sessionType, byte sessionID, String correlationID) {
-            BaseLifecycleManager.this.onProtocolSessionEndedNACKed(sessionType);
+            //Currently not necessary
         }
 
         @Override
@@ -1159,16 +1165,237 @@ abstract class BaseLifecycleManager {
         public void startRPCEncryption() {
             BaseLifecycleManager.this.startRPCEncryption();
         }
+
+        @Override
+        public Taskmaster getTaskmaster() {
+            return BaseLifecycleManager.this.getTaskmaster();
+        }
     };
 
     /* *******************************************************************************************************
      ********************************************* ISdl - END ************************************************
      *********************************************************************************************************/
 
-    public interface LifecycleListener {
-        void onProxyConnected(LifecycleManager lifeCycleManager);
+    /**
+     * Temporary method to bridge the new PLAY_PAUSE and OKAY button functionality with the old
+     * OK button name. This should be removed during the next major release
+     *
+     * @param notification an RPC message object that should be either an ON_BUTTON_EVENT or ON_BUTTON_PRESS otherwise
+     *                     it will be ignored
+     */
+    private RPCNotification handleButtonNotificationFormatting(RPCMessage notification) {
+        if (FunctionID.ON_BUTTON_EVENT.toString().equals(notification.getFunctionName())
+                || FunctionID.ON_BUTTON_PRESS.toString().equals(notification.getFunctionName())) {
 
-        void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason);
+            ButtonName buttonName = (ButtonName) notification.getObject(ButtonName.class, OnButtonEvent.KEY_BUTTON_NAME);
+            ButtonName compatBtnName = null;
+
+            if (rpcSpecVersion != null && rpcSpecVersion.getMajor() >= 5) {
+                if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
+                    compatBtnName = ButtonName.OK;
+                }
+            } else { // rpc spec version is either null or less than 5
+                if (ButtonName.OK.equals(buttonName)) {
+                    compatBtnName = ButtonName.PLAY_PAUSE;
+                }
+            }
+
+            try {
+                if (compatBtnName != null) { //There is a button name that needs to be swapped out
+                    RPCNotification notification2;
+                    //The following is done because there is currently no way to make a deep copy
+                    //of an RPC. Since this code will be removed, it's ugliness is borderline acceptable.
+                    if (notification instanceof OnButtonEvent) {
+                        OnButtonEvent onButtonEvent = new OnButtonEvent();
+                        onButtonEvent.setButtonEventMode(((OnButtonEvent) notification).getButtonEventMode());
+                        onButtonEvent.setCustomButtonID(((OnButtonEvent) notification).getCustomButtonID());
+                        notification2 = onButtonEvent;
+                    } else if (notification instanceof OnButtonPress) {
+                        OnButtonPress onButtonPress = new OnButtonPress();
+                        onButtonPress.setButtonPressMode(((OnButtonPress) notification).getButtonPressMode());
+                        onButtonPress.setCustomButtonName(((OnButtonPress) notification).getCustomButtonName());
+                        notification2 = onButtonPress;
+                    } else {
+                        return null;
+                    }
+
+                    notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, compatBtnName);
+                    return notification2;
+                }
+            } catch (Exception e) {
+                //Should never get here
+            }
+        }
+        return null;
+    }
+
+    void clean() {
+        firstTimeFull = true;
+        currentHMIStatus = null;
+        if (rpcListeners != null) {
+            rpcListeners.clear();
+        }
+        if (rpcResponseListeners != null) {
+            rpcResponseListeners.clear();
+        }
+        if (rpcNotificationListeners != null) {
+            rpcNotificationListeners.clear();
+        }
+        if (rpcRequestListeners != null) {
+            rpcRequestListeners.clear();
+        }
+        if (session != null && session.getIsConnected()) {
+            session.close();
+        }
+        if (encryptionLifecycleManager != null) {
+            encryptionLifecycleManager.dispose();
+        }
+    }
+
+    @Deprecated
+    public void setSdlSecurityClassList(List<Class<? extends SdlSecurityBase>> list) {
+        _secList = list;
+    }
+
+    /**
+     * Sets the security libraries and a callback to notify caller when there is update to encryption service
+     *
+     * @param secList  The list of security class(es)
+     * @param listener The callback object
+     */
+    public void setSdlSecurity(@NonNull List<Class<? extends SdlSecurityBase>> secList, ServiceEncryptionListener listener) {
+        this._secList = secList;
+        this.encryptionLifecycleManager = new EncryptionLifecycleManager(internalInterface, listener);
+    }
+
+    private void processRaiResponse(RegisterAppInterfaceResponse rai) {
+        if (rai == null) return;
+
+        this.raiResponse = rai;
+
+        VehicleType vt = rai.getVehicleType();
+        if (vt == null) return;
+
+        String make = vt.getMake();
+        if (make == null) return;
+
+        if (_secList == null) return;
+
+        setSdlSecurityStaticVars();
+
+        SdlSecurityBase sec;
+
+        for (Class<? extends SdlSecurityBase> cls : _secList) {
+            try {
+                sec = cls.newInstance();
+            } catch (Exception e) {
+                continue;
+            }
+
+            if ((sec != null) && (sec.getMakeList() != null)) {
+                if (sec.getMakeList().contains(make)) {
+                    sec.setAppId(appConfig.getAppID());
+                    if (session != null) {
+                        session.setSdlSecurity(sec);
+                        sec.handleSdlSession(session);
+                    }
+                    return;
+                }
+            }
+        }
+    }
+
+    /* *******************************************************************************************************
+     ********************************** Platform specific methods - START *************************************
+     *********************************************************************************************************/
+
+    void initialize() {
+        this.rpcListeners = new HashMap<>();
+        this.rpcResponseListeners = new HashMap<>();
+        this.rpcNotificationListeners = new HashMap<>();
+        this.rpcRequestListeners = new HashMap<>();
+        this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
+        setupInternalRpcListeners();
+    }
+
+    void onServiceStarted(SessionType sessionType) {
+        if (sessionType != null) {
+            if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1) {
+                Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
+                session.endService(sessionType, session.getSessionId());
+                clean();
+                return;
+            }
+
+            if (sessionType.equals(SessionType.RPC)) {
+                if (appConfig != null) {
+
+                    appConfig.prepare();
+
+                    SdlMsgVersion sdlMsgVersion = new SdlMsgVersion();
+                    sdlMsgVersion.setMajorVersion(MAX_SUPPORTED_RPC_VERSION.getMajor());
+                    sdlMsgVersion.setMinorVersion(MAX_SUPPORTED_RPC_VERSION.getMinor());
+                    sdlMsgVersion.setPatchVersion(MAX_SUPPORTED_RPC_VERSION.getPatch());
+
+                    RegisterAppInterface rai = new RegisterAppInterface(sdlMsgVersion,
+                            appConfig.getAppName(), appConfig.isMediaApp(), appConfig.getLanguageDesired(),
+                            appConfig.getHmiDisplayLanguageDesired(), appConfig.getAppID());
+                    rai.setCorrelationID(REGISTER_APP_INTERFACE_CORRELATION_ID);
+
+                    rai.setTtsName(appConfig.getTtsName());
+                    rai.setNgnMediaScreenAppName(appConfig.getNgnMediaScreenAppName());
+                    rai.setVrSynonyms(appConfig.getVrSynonyms());
+                    rai.setAppHMIType(appConfig.getAppType());
+                    rai.setDayColorScheme(appConfig.getDayColorScheme());
+                    rai.setNightColorScheme(appConfig.getNightColorScheme());
+                    rai.setHashID(appConfig.getResumeHash());
+
+                    //Add device/system info in the future
+
+                    sendRPCMessagePrivate(rai, true);
+                } else {
+                    Log.e(TAG, "App config was null, soo...");
+                }
+            }
+        }
+    }
+
+    abstract void cycle(SdlDisconnectedReason disconnectedReason);
+
+    void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
+    }
+
+    void onStartServiceNACKed(SessionType sessionType) {
+    }
+
+
+    void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {
+    }
+
+    void endVideoStream() {
+    }
+
+    void startAudioService(boolean encrypted) {
+    }
+
+    void endAudioStream() {
+    }
+
+    void setSdlSecurityStaticVars() {
+    }
+
+    /* *******************************************************************************************************
+     ********************************** Platform specific methods - End *************************************
+     *********************************************************************************************************/
+
+    /* *******************************************************************************************************
+     ****************************** Inner Classes and Interfaces - Start *************************************
+     *********************************************************************************************************/
+
+    public interface LifecycleListener {
+        void onConnected(LifecycleManager lifeCycleManager);
+
+        void onClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason);
 
         void onServiceStarted(SessionType sessionType);
 
@@ -1178,7 +1405,7 @@ abstract class BaseLifecycleManager {
     }
 
     public static class AppConfig {
-        private String appID, appName, ngnMediaScreenAppName;
+        private String appID, appName, ngnMediaScreenAppName, resumeHash;
         private Vector<TTSChunk> ttsName;
         private Vector<String> vrSynonyms;
         private boolean isMediaApp = false;
@@ -1279,6 +1506,14 @@ abstract class BaseLifecycleManager {
             this.appType = appType;
         }
 
+        public String getResumeHash() {
+            return this.resumeHash;
+        }
+
+        public void setResumeHash(String resumeHash) {
+            this.resumeHash = resumeHash;
+        }
+
         public TemplateColorScheme getDayColorScheme() {
             return dayColorScheme;
         }
@@ -1325,220 +1560,7 @@ abstract class BaseLifecycleManager {
         }
     }
 
-    /**
-     * Temporary method to bridge the new PLAY_PAUSE and OKAY button functionality with the old
-     * OK button name. This should be removed during the next major release
-     *
-     * @param notification an RPC message object that should be either an ON_BUTTON_EVENT or ON_BUTTON_PRESS otherwise
-     *                     it will be ignored
-     */
-    private RPCNotification handleButtonNotificationFormatting(RPCMessage notification) {
-        if (FunctionID.ON_BUTTON_EVENT.toString().equals(notification.getFunctionName())
-                || FunctionID.ON_BUTTON_PRESS.toString().equals(notification.getFunctionName())) {
-
-            ButtonName buttonName = (ButtonName) notification.getObject(ButtonName.class, OnButtonEvent.KEY_BUTTON_NAME);
-            ButtonName compatBtnName = null;
-
-            if (rpcSpecVersion != null && rpcSpecVersion.getMajor() >= 5) {
-                if (ButtonName.PLAY_PAUSE.equals(buttonName)) {
-                    compatBtnName = ButtonName.OK;
-                }
-            } else { // rpc spec version is either null or less than 5
-                if (ButtonName.OK.equals(buttonName)) {
-                    compatBtnName = ButtonName.PLAY_PAUSE;
-                }
-            }
-
-            try {
-                if (compatBtnName != null) { //There is a button name that needs to be swapped out
-                    RPCNotification notification2;
-                    //The following is done because there is currently no way to make a deep copy
-                    //of an RPC. Since this code will be removed, it's ugliness is borderline acceptable.
-                    if (notification instanceof OnButtonEvent) {
-                        OnButtonEvent onButtonEvent = new OnButtonEvent();
-                        onButtonEvent.setButtonEventMode(((OnButtonEvent) notification).getButtonEventMode());
-                        onButtonEvent.setCustomButtonID(((OnButtonEvent) notification).getCustomButtonID());
-                        notification2 = onButtonEvent;
-                    } else if (notification instanceof OnButtonPress) {
-                        OnButtonPress onButtonPress = new OnButtonPress();
-                        onButtonPress.setButtonPressMode(((OnButtonPress) notification).getButtonPressMode());
-                        onButtonPress.setCustomButtonName(((OnButtonPress) notification).getCustomButtonName());
-                        notification2 = onButtonPress;
-                    } else {
-                        return null;
-                    }
-
-                    notification2.setParameters(OnButtonEvent.KEY_BUTTON_NAME, compatBtnName);
-                    return notification2;
-                }
-            } catch (Exception e) {
-                //Should never get here
-            }
-        }
-        return null;
-    }
-
-    void cleanProxy() {
-        firstTimeFull = true;
-        currentHMIStatus = null;
-        if (rpcListeners != null) {
-            rpcListeners.clear();
-        }
-        if (rpcResponseListeners != null) {
-            rpcResponseListeners.clear();
-        }
-        if (rpcNotificationListeners != null) {
-            rpcNotificationListeners.clear();
-        }
-        if (rpcRequestListeners != null) {
-            rpcRequestListeners.clear();
-        }
-        if (session != null && session.getIsConnected()) {
-            session.close();
-        }
-        if (encryptionLifecycleManager != null) {
-            encryptionLifecycleManager.dispose();
-        }
-    }
-
-    @Deprecated
-    public void setSdlSecurityClassList(List<Class<? extends SdlSecurityBase>> list) {
-        _secList = list;
-    }
-
-    /**
-     * Sets the security libraries and a callback to notify caller when there is update to encryption service
-     *
-     * @param secList  The list of security class(es)
-     * @param listener The callback object
-     */
-    public void setSdlSecurity(@NonNull List<Class<? extends SdlSecurityBase>> secList, ServiceEncryptionListener listener) {
-        this._secList = secList;
-        this.encryptionLifecycleManager = new EncryptionLifecycleManager(internalInterface, listener);
-    }
-
-    private void processRaiResponse(RegisterAppInterfaceResponse rai) {
-        if (rai == null) return;
-
-        this.raiResponse = rai;
-
-        VehicleType vt = rai.getVehicleType();
-        if (vt == null) return;
-
-        String make = vt.getMake();
-        if (make == null) return;
-
-        if (_secList == null) return;
-
-        setSdlSecurityStaticVars();
-
-        SdlSecurityBase sec;
-
-        for (Class<? extends SdlSecurityBase> cls : _secList) {
-            try {
-                sec = cls.newInstance();
-            } catch (Exception e) {
-                continue;
-            }
-
-            if ((sec != null) && (sec.getMakeList() != null)) {
-                if (sec.getMakeList().contains(make)) {
-                    sec.setAppId(appConfig.getAppID());
-                    if (session != null) {
-                        session.setSdlSecurity(sec);
-                        sec.handleSdlSession(session);
-                    }
-                    return;
-                }
-            }
-        }
-    }
-
     /* *******************************************************************************************************
-     ********************************** Platform specific methods - START *************************************
-     *********************************************************************************************************/
-
-    void initializeProxy() {
-        this.rpcListeners = new HashMap<>();
-        this.rpcResponseListeners = new HashMap<>();
-        this.rpcNotificationListeners = new HashMap<>();
-        this.rpcRequestListeners = new HashMap<>();
-        this.systemCapabilityManager = new SystemCapabilityManager(internalInterface);
-        setupInternalRpcListeners();
-    }
-
-    void onProtocolSessionStarted(SessionType sessionType) {
-        if (sessionType != null) {
-            if (minimumProtocolVersion != null && minimumProtocolVersion.isNewerThan(getProtocolVersion()) == 1) {
-                Log.w(TAG, String.format("Disconnecting from head unit, the configured minimum protocol version %s is greater than the supported protocol version %s", minimumProtocolVersion, getProtocolVersion()));
-                session.endService(sessionType, session.getSessionId());
-                cleanProxy();
-                return;
-            }
-
-            if (sessionType.equals(SessionType.RPC)) {
-                if (appConfig != null) {
-
-                    appConfig.prepare();
-
-                    SdlMsgVersion sdlMsgVersion = new SdlMsgVersion();
-                    sdlMsgVersion.setMajorVersion(MAX_SUPPORTED_RPC_VERSION.getMajor());
-                    sdlMsgVersion.setMinorVersion(MAX_SUPPORTED_RPC_VERSION.getMinor());
-                    sdlMsgVersion.setPatchVersion(MAX_SUPPORTED_RPC_VERSION.getPatch());
-
-                    RegisterAppInterface rai = new RegisterAppInterface(sdlMsgVersion,
-                            appConfig.getAppName(), appConfig.isMediaApp(), appConfig.getLanguageDesired(),
-                            appConfig.getHmiDisplayLanguageDesired(), appConfig.getAppID());
-                    rai.setCorrelationID(REGISTER_APP_INTERFACE_CORRELATION_ID);
-
-                    rai.setTtsName(appConfig.getTtsName());
-                    rai.setNgnMediaScreenAppName(appConfig.getNgnMediaScreenAppName());
-                    rai.setVrSynonyms(appConfig.getVrSynonyms());
-                    rai.setAppHMIType(appConfig.getAppType());
-                    rai.setDayColorScheme(appConfig.getDayColorScheme());
-                    rai.setNightColorScheme(appConfig.getNightColorScheme());
-
-                    //Add device/system info in the future
-                    //TODO attach previous hash id
-
-                    sendRPCMessagePrivate(rai, true);
-                } else {
-                    Log.e(TAG, "App config was null, soo...");
-                }
-            }
-        }
-    }
-
-    void onTransportDisconnected(String info, boolean availablePrimary, BaseTransportConfig transportConfig) {
-    }
-
-    void onProtocolSessionStartedNACKed(SessionType sessionType) {
-    }
-
-    void onProtocolSessionEnded(SessionType sessionType) {
-    }
-
-    void onProtocolSessionEndedNACKed(SessionType sessionType) {
-    }
-
-    void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {
-    }
-
-    boolean endVideoStream() {
-        return false;
-    }
-
-    void startAudioService(boolean encrypted) {
-    }
-
-    boolean endAudioStream() {
-        return false;
-    }
-
-    void setSdlSecurityStaticVars() {
-    }
-
-    /* *******************************************************************************************************
-     ********************************** Platform specific methods - End *************************************
+     ****************************** Inner Classes and Interfaces - End ***************************************
      *********************************************************************************************************/
 }

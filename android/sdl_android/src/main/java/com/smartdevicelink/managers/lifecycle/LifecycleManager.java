@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Livio, Inc.
+ * Copyright (c) 2019-2020 Livio, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,38 +54,29 @@ import com.smartdevicelink.transport.USBTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.util.DebugTool;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * The lifecycle manager creates a central point for all SDL session logic to converge. It should only be used by
  * the library itself. Usage outside the library is not permitted and will not be protected for in the future.
  *
- * @author Bilal Alsharifi.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public class LifecycleManager extends BaseLifecycleManager {
-    private static final int RESPONSE_WAIT_TIME = 2000;
-    private ISdlServiceListener navServiceListener;
-    private boolean navServiceStartResponseReceived = false;
-    private boolean navServiceStartResponse = false;
-    private boolean navServiceEndResponseReceived = false;
-    private boolean navServiceEndResponse = false;
-    private boolean pcmServiceEndResponseReceived = false;
-    private boolean pcmServiceEndResponse = false;
-    private Context context;
+    private ISdlServiceListener videoServiceListener;
+    private boolean videoServiceStartResponseReceived = false;
+    private boolean videoServiceStartResponse = false;
+    private WeakReference<Context> contextWeakReference;
 
     public LifecycleManager(AppConfig appConfig, BaseTransportConfig config, LifecycleListener listener) {
         super(appConfig, config, listener);
     }
 
     @Override
-    void initializeProxy() {
-        super.initializeProxy();
+    void initialize() {
+        super.initialize();
 
         //Handle legacy USB connections
         if (_transportConfig != null && TransportType.USB.equals(_transportConfig.getTransportType())) {
@@ -112,30 +103,38 @@ public class LifecycleManager extends BaseLifecycleManager {
         }
     }
 
-    private void cycleProxy(SdlDisconnectedReason disconnectedReason) {
-        cleanProxy();
-        initializeProxy();
+    @Override
+    void cycle(SdlDisconnectedReason disconnectedReason) {
+        clean();
+        initialize();
         if (!SdlDisconnectedReason.LEGACY_BLUETOOTH_MODE_ENABLED.equals(disconnectedReason) && !SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST.equals(disconnectedReason)) {
             //We don't want to alert higher if we are just cycling for legacy bluetooth
-            onClose("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED));
+            onClose("Sdl Proxy Cycled", new SdlException("Sdl Proxy Cycled", SdlExceptionCause.SDL_PROXY_CYCLED), disconnectedReason);
         }
-        try {
-            session.startSession();
-        } catch (SdlException e) {
-            e.printStackTrace();
+        if (session != null) {
+            try {
+                session.startSession();
+            } catch (SdlException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     public void setContext(Context context) {
-        this.context = context;
+        this.contextWeakReference = new WeakReference<>(context);
     }
 
     @Override
     void setSdlSecurityStaticVars() {
         super.setSdlSecurityStaticVars();
 
+        Context context = null;
         Service service = null;
+
+        if(this.contextWeakReference != null){
+            context = contextWeakReference.get();
+        }
         if (context != null && context instanceof Service) {
             service = (Service) context;
         }
@@ -144,11 +143,11 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     @Override
-    void onProtocolSessionStarted(SessionType sessionType) {
-        super.onProtocolSessionStarted(sessionType);
+    void onServiceStarted(SessionType sessionType) {
+        super.onServiceStarted(sessionType);
         if (sessionType.eq(SessionType.NAV)) {
-            navServiceStartResponseReceived = true;
-            navServiceStartResponse = true;
+            videoServiceStartResponseReceived = true;
+            videoServiceStartResponse = true;
         }
     }
 
@@ -158,42 +157,18 @@ public class LifecycleManager extends BaseLifecycleManager {
         if (availablePrimary) {
             _transportConfig = transportConfig;
             Log.d(TAG, "notifying RPC session ended, but potential primary transport available");
-            cycleProxy(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
+            cycle(SdlDisconnectedReason.PRIMARY_TRANSPORT_CYCLE_REQUEST);
         } else {
-            onClose(info, null);
+            onClose(info, null, null);
         }
     }
 
     @Override
-    void onProtocolSessionStartedNACKed(SessionType sessionType) {
-        super.onProtocolSessionStartedNACKed(sessionType);
+    void onStartServiceNACKed(SessionType sessionType) {
+        super.onStartServiceNACKed(sessionType);
         if (sessionType.eq(SessionType.NAV)) {
-            navServiceStartResponseReceived = true;
-            navServiceStartResponse = false;
-        }
-    }
-
-    @Override
-    void onProtocolSessionEnded(SessionType sessionType) {
-        super.onProtocolSessionEnded(sessionType);
-        if (sessionType.eq(SessionType.NAV)) {
-            navServiceEndResponseReceived = true;
-            navServiceEndResponse = true;
-        } else if (sessionType.eq(SessionType.PCM)) {
-            pcmServiceEndResponseReceived = true;
-            pcmServiceEndResponse = true;
-        }
-    }
-
-    @Override
-    void onProtocolSessionEndedNACKed(SessionType sessionType) {
-        super.onProtocolSessionEndedNACKed(sessionType);
-        if (sessionType.eq(SessionType.NAV)) {
-            navServiceEndResponseReceived = true;
-            navServiceEndResponse = false;
-        } else if (sessionType.eq(SessionType.PCM)) {
-            pcmServiceEndResponseReceived = true;
-            pcmServiceEndResponse = false;
+            videoServiceStartResponseReceived = true;
+            videoServiceStartResponse = false;
         }
     }
 
@@ -230,72 +205,60 @@ public class LifecycleManager extends BaseLifecycleManager {
      * mode (i.e. without any negotiation) then an instance of VideoStreamingParams is
      * returned. If the service was not opened then null is returned.
      */
-    private VideoStreamingParameters tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
+    private void tryStartVideoStream(boolean isEncrypted, VideoStreamingParameters parameters) {
         if (session == null) {
             DebugTool.logWarning("SdlSession is not created yet.");
-            return null;
+            return;
         }
         if (getProtocolVersion() != null && getProtocolVersion().getMajor() >= 5 && !systemCapabilityManager.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)) {
             DebugTool.logWarning("Module doesn't support video streaming.");
-            return null;
+            return;
         }
         if (parameters == null) {
             DebugTool.logWarning("Video parameters were not supplied.");
-            return null;
+            return;
         }
 
-        if (!navServiceStartResponseReceived || !navServiceStartResponse //If we haven't started the service before
-                || (navServiceStartResponse && isEncrypted && !session.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
+
+        if (!videoServiceStartResponseReceived || !videoServiceStartResponse //If we haven't started the service before
+                || (videoServiceStartResponse && isEncrypted && !session.isServiceProtected(SessionType.NAV))) { //Or the service has been started but we'd like to start an encrypted one
             session.setDesiredVideoParams(parameters);
 
-            navServiceStartResponseReceived = false;
-            navServiceStartResponse = false;
+            videoServiceStartResponseReceived = false;
+            videoServiceStartResponse = false;
 
+            addVideoServiceListener();
             session.startService(SessionType.NAV, session.getSessionId(), isEncrypted);
-            addNavListener();
-            FutureTask<Void> fTask = new FutureTask<>(new CallableMethod(RESPONSE_WAIT_TIME));
-            ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-            scheduler.execute(fTask);
 
-            //noinspection StatementWithEmptyBody
-            while (!navServiceStartResponseReceived && !fTask.isDone()) ;
-            scheduler.shutdown();
         }
-
-        if (navServiceStartResponse) {
-            if (getProtocolVersion() != null && getProtocolVersion().getMajor() < 5) { //Versions 1-4 do not support streaming parameter negotiations
-                session.setAcceptedVideoParams(parameters);
-            }
-            return session.getAcceptedVideoParams();
-        }
-
-        return null;
     }
 
-    private void addNavListener() {
+    private void addVideoServiceListener() {
         // videos may be started and stopped. Only add this once
-        if (navServiceListener == null) {
+        if (videoServiceListener == null) {
 
-            navServiceListener = new ISdlServiceListener() {
+            videoServiceListener = new ISdlServiceListener() {
                 @Override
                 public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
+                    videoServiceStartResponseReceived = true;
+                    videoServiceStartResponse = true;
                 }
 
                 @Override
                 public void onServiceEnded(SdlSession session, SessionType type) {
                     // reset nav flags so nav can start upon the next transport connection
-                    navServiceStartResponseReceived = false;
-                    navServiceStartResponse = false;
+                    videoServiceStartResponseReceived = false;
+                    videoServiceStartResponse = false;
                 }
 
                 @Override
                 public void onServiceError(SdlSession session, SessionType type, String reason) {
                     // if there is an error reset the flags so that there is a chance to restart streaming
-                    navServiceStartResponseReceived = false;
-                    navServiceStartResponse = false;
+                    videoServiceStartResponseReceived = false;
+                    videoServiceStartResponse = false;
                 }
             };
-            session.addServiceListener(SessionType.NAV, navServiceListener);
+            session.addServiceListener(SessionType.NAV, videoServiceListener);
         }
     }
 
@@ -305,29 +268,17 @@ public class LifecycleManager extends BaseLifecycleManager {
      * @return true if the video service is closed successfully, return false otherwise
      */
     @Override
-    boolean endVideoStream() {
+    void endVideoStream() {
         if (session == null) {
             DebugTool.logWarning("SdlSession is not created yet.");
-            return false;
+            return;
         }
         if (!session.getIsConnected()) {
             DebugTool.logWarning("Connection is not available.");
-            return false;
+            return;
         }
 
-        navServiceEndResponseReceived = false;
-        navServiceEndResponse = false;
         session.stopVideoStream();
-
-        FutureTask<Void> fTask = new FutureTask<>(new CallableMethod(RESPONSE_WAIT_TIME));
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.execute(fTask);
-
-        //noinspection StatementWithEmptyBody
-        while (!navServiceEndResponseReceived && !fTask.isDone()) ;
-        scheduler.shutdown();
-
-        return navServiceEndResponse;
     }
 
     @Override
@@ -349,46 +300,16 @@ public class LifecycleManager extends BaseLifecycleManager {
      * @return true if the audio service is closed successfully, return false otherwise
      */
     @Override
-    boolean endAudioStream() {
+    void endAudioStream() {
         if (session == null) {
             DebugTool.logWarning("SdlSession is not created yet.");
-            return false;
+            return;
         }
         if (!session.getIsConnected()) {
             DebugTool.logWarning("Connection is not available.");
-            return false;
+            return;
         }
 
-        pcmServiceEndResponseReceived = false;
-        pcmServiceEndResponse = false;
         session.stopAudioStream();
-
-        FutureTask<Void> fTask = new FutureTask<>(new CallableMethod(RESPONSE_WAIT_TIME));
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.execute(fTask);
-
-        //noinspection StatementWithEmptyBody
-        while (!pcmServiceEndResponseReceived && !fTask.isDone()) ;
-        scheduler.shutdown();
-
-        return pcmServiceEndResponse;
-    }
-
-    private class CallableMethod implements Callable<Void> {
-        private final long waitTime;
-
-        public CallableMethod(int timeInMillis) {
-            this.waitTime = timeInMillis;
-        }
-
-        @Override
-        public Void call() {
-            try {
-                Thread.sleep(waitTime);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
     }
 }

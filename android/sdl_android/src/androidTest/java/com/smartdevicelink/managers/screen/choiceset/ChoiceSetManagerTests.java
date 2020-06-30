@@ -37,6 +37,7 @@ package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import com.livio.taskmaster.Taskmaster;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.file.FileManager;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -58,7 +59,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
@@ -77,12 +77,15 @@ import static org.mockito.Mockito.when;
 public class ChoiceSetManagerTests {
 
 	private ChoiceSetManager csm;
+	Taskmaster taskmaster;
 
 	@Before
 	public void setUp() throws Exception{
 
 		ISdl internalInterface = mock(ISdl.class);
 		FileManager fileManager = mock(FileManager.class);
+		taskmaster = new Taskmaster.Builder().build();
+		when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
 		csm = new ChoiceSetManager(internalInterface, fileManager);
 
 		assertEquals(csm.getState(), BaseSubManager.SETTING_UP);
@@ -94,8 +97,7 @@ public class ChoiceSetManagerTests {
 		assertNotNull(csm.fileManager);
 		assertNotNull(csm.preloadedChoices);
 		assertNotNull(csm.pendingPreloadChoices);
-		assertNotNull(csm.operationQueue);
-		assertNotNull(csm.executor);
+		assertNotNull(csm.transactionQueue);
 		assertNotNull(csm.hmiListener);
 		assertNotNull(csm.onDisplayCapabilityListener);
 		assertNull(csm.pendingPresentOperation);
@@ -112,10 +114,9 @@ public class ChoiceSetManagerTests {
 		assertNull(csm.pendingPresentationSet);
 		assertNull(csm.pendingPresentOperation);
 
-		assertEquals(csm.operationQueue.size(), 0);
+		assertEquals(csm.transactionQueue.getTasksAsList().size(), 0);
 		assertEquals(csm.nextChoiceId, 1);
 
-		assertTrue(csm.executor.isShutdown());
 		assertFalse(csm.isVROptional);
 
 		assertEquals(csm.getState(), BaseSubManager.SHUTDOWN);
@@ -260,6 +261,7 @@ public class ChoiceSetManagerTests {
 	@Test
 	public void testPresentingKeyboardShouldReturnCancelIDIfKeyboardCanBeSent() {
 		ISdl internalInterface = mock(ISdl.class);
+		when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
 		FileManager fileManager = mock(FileManager.class);
 
 		ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
@@ -273,6 +275,7 @@ public class ChoiceSetManagerTests {
 	@Test
 	public void testPresentingKeyboardShouldNotReturnCancelIDIfKeyboardCannotBeSent() {
 		ISdl internalInterface = mock(ISdl.class);
+		when(internalInterface.getTaskmaster()).thenReturn(taskmaster);
 		FileManager fileManager = mock(FileManager.class);
 
 		ChoiceSetManager newCSM = new ChoiceSetManager(internalInterface, fileManager);
@@ -299,17 +302,13 @@ public class ChoiceSetManagerTests {
 
 		// Currently executing operation
 		PresentKeyboardOperation testKeyboardOp = mock(PresentKeyboardOperation.class);
-		doReturn(true).when(testKeyboardOp).isExecuting();
 		doReturn(96).when(testKeyboardOp).getCancelID();
 		csm.currentlyPresentedKeyboardOperation = testKeyboardOp;
 
 		// Queued operations
 		PresentKeyboardOperation testKeyboardOp2 = mock(PresentKeyboardOperation.class);
-		doReturn(true).when(testKeyboardOp2).isExecuting();
 		doReturn(testCancelID).when(testKeyboardOp2).getCancelID();
-		LinkedBlockingQueue<Runnable> testOperationQueue = new LinkedBlockingQueue<>();
-		testOperationQueue.add(testKeyboardOp2);
-		csm.operationQueue = testOperationQueue;
+		csm.currentlyPresentedKeyboardOperation = testKeyboardOp2;
 
 		// Queued operation should be canceled
 		csm.dismissKeyboard(testCancelID);

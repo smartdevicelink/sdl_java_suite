@@ -140,7 +140,7 @@ public class SdlRouterService extends Service{
 	/**
 	 * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
 	 */
-	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 12;
+	protected static final int ROUTER_SERVICE_VERSION_NUMBER = 13;
 
 	private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 	
@@ -1259,7 +1259,9 @@ public class SdlRouterService extends Service{
 							address = device.getAddress();
 						}
 					}
-					int timeout = getNotificationTimeout(address);
+					boolean confirmedDevice = intent.getBooleanExtra(TransportConstants.CONFIRMED_SDL_DEVICE, false);
+					int timeout = getNotificationTimeout(address, confirmedDevice);
+
 					enterForeground("Waiting for connection...", timeout, false);
 					resetForegroundTimeOut(timeout);
 				} else {
@@ -1383,9 +1385,9 @@ public class SdlRouterService extends Service{
 	 * @return the amount of time for a timeout handler to remove the notification.
 	 */
 	@SuppressLint("MissingPermission")
-	private int getNotificationTimeout(String address){
+	private int getNotificationTimeout(String address, boolean confirmedDevice){
 		if(address != null){
-			if(hasSDLConnected(address)){
+			if(confirmedDevice || hasSDLConnected(address)){
 				return FOREGROUND_TIMEOUT * 2;
 			}else if(this.isFirstStatusCheck(address)) {
 				// If this is the first time the service has ever connected to this device we want

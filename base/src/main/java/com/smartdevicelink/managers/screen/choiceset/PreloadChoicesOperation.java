@@ -37,6 +37,7 @@ package com.smartdevicelink.managers.screen.choiceset;
 
 import android.support.annotation.NonNull;
 
+import com.livio.taskmaster.Task;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.ManagerUtility;
 import com.smartdevicelink.managers.file.FileManager;
@@ -62,7 +63,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-class PreloadChoicesOperation extends AsynchronousOperation {
+class PreloadChoicesOperation extends Task {
 
 	private WeakReference<ISdl> internalInterface;
 	private WeakReference<FileManager> fileManager;
@@ -75,7 +76,7 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 
 	PreloadChoicesOperation(ISdl internalInterface, FileManager fileManager, String displayName, WindowCapability defaultMainWindowCapability,
 								   Boolean isVROptional, HashSet<ChoiceCell> cellsToPreload, CompletionListener listener){
-		super();
+		super("PreloadChoicesOperation");
 		this.internalInterface = new WeakReference<>(internalInterface);
 		this.fileManager = new WeakReference<>(fileManager);
 		this.displayName = displayName;
@@ -86,8 +87,7 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 	}
 
 	@Override
-	public void run() {
-		PreloadChoicesOperation.super.run();
+	public void onExecute() {
 		DebugTool.logInfo("Choice Operation: Executing preload choices operation");
 		preloadCellArtworks(new CompletionListener() {
 			@Override
@@ -95,7 +95,6 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 				preloadCells();
 			}
 		});
-		block();
 	}
 
 	void removeChoicesFromUpload(HashSet<ChoiceCell> choices){
@@ -167,14 +166,14 @@ class PreloadChoicesOperation extends AsynchronousOperation {
 					DebugTool.logInfo("Finished pre loading choice cells");
 					completionListener.onComplete(true);
 
-					PreloadChoicesOperation.super.finishOperation();
+					PreloadChoicesOperation.super.onFinished();
 				}
 
 				@Override
 				public void onError(int correlationId, Result resultCode, String info) {
 					DebugTool.logError("There was an error uploading a choice cell: "+ info + " resultCode: " + resultCode);
 
-					PreloadChoicesOperation.super.finishOperation();
+					PreloadChoicesOperation.super.onFinished();
 				}
 
 				@Override
