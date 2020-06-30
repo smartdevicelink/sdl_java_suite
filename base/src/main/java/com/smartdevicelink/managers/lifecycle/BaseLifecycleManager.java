@@ -934,12 +934,12 @@ abstract class BaseLifecycleManager {
 
         @Override
         public void onProtocolSessionEnded(SessionType sessionType, byte sessionID, String correlationID) {
-            BaseLifecycleManager.this.onServiceEnded(sessionType);
+            //Currently not necessary
         }
 
         @Override
         public void onProtocolSessionEndedNACKed(SessionType sessionType, byte sessionID, String correlationID) {
-            BaseLifecycleManager.this.onStopServiceNACKed(sessionType);
+            //Currently not necessary
         }
 
         @Override
@@ -1368,11 +1368,6 @@ abstract class BaseLifecycleManager {
     void onStartServiceNACKed(SessionType sessionType) {
     }
 
-    void onServiceEnded(SessionType sessionType) {
-    }
-
-    void onStopServiceNACKed(SessionType sessionType) {
-    }
 
     void startVideoService(boolean encrypted, VideoStreamingParameters parameters) {
     }
