@@ -121,6 +121,7 @@ import java.util.List;
  * @since SmartDeviceLink 2.3.2
  */
 public class OnSystemRequest extends RPCNotification {
+    private static final String TAG = "OnSystemRequest";
 	public static final String KEY_URL_V1 = "URL";
     public static final String KEY_URL = "url";
 	public static final String KEY_TIMEOUT_V1 = "Timeout";
@@ -177,10 +178,10 @@ public class OnSystemRequest extends RPCNotification {
             	tempBody = getBody(httpJson);
             	tempHeaders = getHeaders(httpJson);
         	}catch(JSONException e){
-                DebugTool.logError(null, "HTTPRequest in bulk data was malformed.");
+                DebugTool.logError(TAG, "HTTPRequest in bulk data was malformed.");
             	e.printStackTrace();
         	}catch(NullPointerException e){
-                DebugTool.logError(null, "Invalid HTTPRequest object in bulk data.");
+                DebugTool.logError(TAG, "Invalid HTTPRequest object in bulk data.");
             	e.printStackTrace();
         	}
         }else if(RequestType.HTTP.equals(this.getRequestType())){
@@ -207,7 +208,7 @@ public class OnSystemRequest extends RPCNotification {
         try{
             result = httpJson.getString("body");
         }catch(JSONException e){
-            DebugTool.logError(null, "\"body\" key doesn't exist in bulk data.");
+            DebugTool.logError(TAG, "\"body\" key doesn't exist in bulk data.");
             e.printStackTrace();
         }
         
@@ -222,7 +223,7 @@ public class OnSystemRequest extends RPCNotification {
             Hashtable<String, Object> httpHeadersHash = JsonRPCMarshaller.deserializeJSONObject(httpHeadersJson);
             result = new Headers(httpHeadersHash);
         }catch(JSONException e){
-            DebugTool.logError(null, "\"headers\" key doesn't exist in bulk data.");
+            DebugTool.logError(TAG, "\"headers\" key doesn't exist in bulk data.");
             e.printStackTrace();
         }
         

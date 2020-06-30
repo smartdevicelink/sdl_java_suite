@@ -50,7 +50,7 @@ import java.util.List;
  * @see SoftButtonState
  */
 public class SoftButtonObject {
-
+    private static final String TAG = "SoftButtonObject";
     static int SOFT_BUTTON_ID_NOT_SET_VALUE = -1;
     static int SOFT_BUTTON_ID_MIN_VALUE = 0;
     static int SOFT_BUTTON_ID_MAX_VALUE = 65535;
@@ -73,7 +73,7 @@ public class SoftButtonObject {
 
         // Make sure there aren't two states with the same name
         if (hasTwoStatesOfSameName(states)) {
-            DebugTool.logError(null, "Two states have the same name in states list for soft button object");
+            DebugTool.logError(TAG, "Two states have the same name in states list for soft button object");
             return;
         }
 
@@ -112,23 +112,23 @@ public class SoftButtonObject {
     public boolean transitionToStateByName(@NonNull String newStateName) {
         SoftButtonState newState = getStateByName(newStateName);
         if (newState == null) {
-            DebugTool.logError(null, String.format("Attempted to transition to state: %s on soft button object: %s but no state with that name was found", newStateName, this.name));
+            DebugTool.logError(TAG, String.format("Attempted to transition to state: %s on soft button object: %s but no state with that name was found", newStateName, this.name));
             return false;
         }
 
         if (states.size() == 1) {
-            DebugTool.logWarning(null, "There's only one state, so no transitioning is possible!");
+            DebugTool.logWarning(TAG, "There's only one state, so no transitioning is possible!");
             return false;
         }
 
-        DebugTool.logInfo(null, String.format("Transitioning soft button object %s to state %s", this.name, newStateName));
+        DebugTool.logInfo(TAG, String.format("Transitioning soft button object %s to state %s", this.name, newStateName));
         currentStateName = newStateName;
 
         // Send a new Show RPC because the state has changed which means the actual SoftButton has changed
         if (updateListener != null) {
             updateListener.onUpdate();
         } else {
-            DebugTool.logError(null, String.format("SoftButtonManager is not set for soft button object: %s. Update cannot be triggered", this.name));
+            DebugTool.logError(TAG, String.format("SoftButtonManager is not set for soft button object: %s. Update cannot be triggered", this.name));
         }
 
         return true;
@@ -147,7 +147,7 @@ public class SoftButtonObject {
             }
         }
         if (nextStateName == null) {
-            DebugTool.logError(null, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
+            DebugTool.logError(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
             return;
         }
         transitionToStateByName(nextStateName);
@@ -160,7 +160,7 @@ public class SoftButtonObject {
     public SoftButtonState getCurrentState() {
         SoftButtonState state = getStateByName(currentStateName);
         if (state == null) {
-            DebugTool.logError(null, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
+            DebugTool.logError(TAG, String.format("Current state name : %s cannot be found for soft button object %s", currentStateName, this.name));
         }
         return state;
     }
@@ -285,7 +285,7 @@ public class SoftButtonObject {
      */
     public void setButtonId(int buttonId) {
         if (buttonId < SOFT_BUTTON_ID_MIN_VALUE){
-            DebugTool.logError(null, "buttonId has to be equal or more than " + SOFT_BUTTON_ID_MIN_VALUE);
+            DebugTool.logError(TAG, "buttonId has to be equal or more than " + SOFT_BUTTON_ID_MIN_VALUE);
             return;
         }
         this.buttonId = buttonId;

@@ -77,7 +77,7 @@ import java.net.Socket;
  * Class that implements TCP transport
  */
 public class TCPTransport extends SdlTransport {
-
+    private static final String TAG = "TCPTransport";
     /**
      * Size of the read buffer.
      */
@@ -293,7 +293,7 @@ public class TCPTransport extends SdlTransport {
      * @param message Message to log
      */
     protected void logInfo(String message) {
-        DebugTool.logInfo(getClass().getName(), message);
+        DebugTool.logInfo(TAG, message);
     }
 
     /**
@@ -301,7 +301,7 @@ public class TCPTransport extends SdlTransport {
      * @param message Message to log
      */
     protected void logError(String message) {
-        DebugTool.logError(getClass().getName(), message);
+        DebugTool.logError(TAG, message);
     }
 
     /**
@@ -309,7 +309,7 @@ public class TCPTransport extends SdlTransport {
      * @param message Message to log
      */
     protected void logWarning(String message) {
-        DebugTool.logWarning(getClass().getName(), message);
+        DebugTool.logWarning(TAG, message);
     }
 
     /**
@@ -318,7 +318,7 @@ public class TCPTransport extends SdlTransport {
      * @param throwable Exception, that was the main reason for logged error message
      */
     protected void logError(String message, Throwable throwable) {
-        DebugTool.logError(getClass().getName(), message, throwable);
+        DebugTool.logError(TAG, message, throwable);
     }
 
     /**

@@ -52,7 +52,7 @@ import java.util.List;
  */
 
 public class JsonRPCMarshaller {
-	
+	private static final String TAG = "JsonRPCMarshaller";
 	private static final String SDL_LIB_PRIVATE_KEY = "42baba60-eb57-11df-98cf-0800200c9a66";
 
 	/**
@@ -68,7 +68,7 @@ public class JsonRPCMarshaller {
 			
 			SdlTrace.logMarshallingEvent(InterfaceActivityDirection.Transmit, jsonBytes, SDL_LIB_PRIVATE_KEY);
 		} catch (JSONException e) {
-			DebugTool.logError(null, "Failed to encode messages to JSON.", e);
+			DebugTool.logError(TAG, "Failed to encode messages to JSON.", e);
 		}
 		return jsonBytes;
 	}
@@ -81,7 +81,7 @@ public class JsonRPCMarshaller {
 			JSONObject jsonObject = new JSONObject(jsonString);
 			ret = deserializeJSONObject(jsonObject);
 		} catch (JSONException e) {
-			DebugTool.logError(null, "Failed to parse JSON", e);
+			DebugTool.logError(TAG, "Failed to parse JSON", e);
 		}
 		return ret;
 	}

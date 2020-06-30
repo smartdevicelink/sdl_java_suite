@@ -49,7 +49,7 @@ import java.lang.ref.WeakReference;
 import java.util.Collections;
 
 class CheckChoiceVROptionalOperation extends Task {
-
+	private static final String TAG = "CheckChoiceVROptionalOperation";
 	private CheckChoiceVROptionalInterface checkChoiceVROptionalInterface;
 	private WeakReference<ISdl> internalInterface;
 	private boolean isVROptional;
@@ -62,7 +62,7 @@ class CheckChoiceVROptionalOperation extends Task {
 
 	@Override
 	public void onExecute() {
-		DebugTool.logInfo(null, "Choice Operation: Executing check vr optional operation");
+		DebugTool.logInfo(TAG, "Choice Operation: Executing check vr optional operation");
 		sendTestChoiceNoVR();
 	}
 
@@ -77,19 +77,19 @@ class CheckChoiceVROptionalOperation extends Task {
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()) {
 					// The request was successful, now send the SDLPerformInteraction RPC
-					DebugTool.logInfo(null, "Connected head unit supports choice cells without voice commands. " +
+					DebugTool.logInfo(TAG, "Connected head unit supports choice cells without voice commands. " +
 							"Cells without voice will be sent without voice from now on (no placeholder voice).");
 					isVROptional = true;
 					deleteTestChoiceSet();
 				}else{
-					DebugTool.logWarning(null, "Head unit doesn't support choices with no VR.");
+					DebugTool.logWarning(TAG, "Head unit doesn't support choices with no VR.");
 					sendTestChoiceWithVR();
 				}
 			}
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logWarning(null, "Head unit doesn't support choices with no VR. Error: " + info + " resultCode: " + resultCode);
+				DebugTool.logWarning(TAG, "Head unit doesn't support choices with no VR. Error: " + info + " resultCode: " + resultCode);
 				sendTestChoiceWithVR();
 			}
 		});
@@ -109,12 +109,12 @@ class CheckChoiceVROptionalOperation extends Task {
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess()) {
 					// The request was successful, now send the SDLPerformInteraction RPC
-					DebugTool.logWarning(null, "Connected head unit does not support choice cells without voice commands. " +
+					DebugTool.logWarning(TAG, "Connected head unit does not support choice cells without voice commands. " +
 							"Cells without voice will be sent with placeholder voices from now on.");
 					isVROptional = false;
 					deleteTestChoiceSet();
 				}else{
-					DebugTool.logError(null, "Connected head unit has rejected all choice cells, choice manager disabled. Error: " + response.getInfo());
+					DebugTool.logError(TAG, "Connected head unit has rejected all choice cells, choice manager disabled. Error: " + response.getInfo());
 					isVROptional = false;
 					if (checkChoiceVROptionalInterface != null){
 						checkChoiceVROptionalInterface.onError(response.getInfo());
@@ -126,7 +126,7 @@ class CheckChoiceVROptionalOperation extends Task {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError(null, "There was an error in the check choice vr optional operation. Send test choice with VR failed. Error: " + info + " resultCode: " + resultCode);
+				DebugTool.logError(TAG, "There was an error in the check choice vr optional operation. Send test choice with VR failed. Error: " + info + " resultCode: " + resultCode);
 				isVROptional = false;
 				if (checkChoiceVROptionalInterface != null){
 					checkChoiceVROptionalInterface.onError(info);
@@ -147,7 +147,7 @@ class CheckChoiceVROptionalOperation extends Task {
 			@Override
 			public void onResponse(int correlationId, RPCResponse response) {
 				if (response.getSuccess() != null){
-					DebugTool.logInfo(null, "Delete choice test set: "+ response.getSuccess());
+					DebugTool.logInfo(TAG, "Delete choice test set: "+ response.getSuccess());
 				}
 
 				if (checkChoiceVROptionalInterface != null){
@@ -159,7 +159,7 @@ class CheckChoiceVROptionalOperation extends Task {
 
 			@Override
 			public void onError(int correlationId, Result resultCode, String info){
-				DebugTool.logError(null, "There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info + " resultCode: " + resultCode);
+				DebugTool.logError(TAG, "There was an error presenting the keyboard. Finishing operation - choice set manager - . Error: " + info + " resultCode: " + resultCode);
 				if (checkChoiceVROptionalInterface != null){
 					checkChoiceVROptionalInterface.onError(info);
 				}

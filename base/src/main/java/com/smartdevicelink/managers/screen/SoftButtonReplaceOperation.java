@@ -25,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by Bilal Alsharifi on 6/15/20.
  */
 class SoftButtonReplaceOperation extends Task {
-
+    private static final String TAG = "SoftButtonReplaceOperation";
     private final WeakReference<ISdl> internalInterface;
     private final WeakReference<FileManager> fileManager;
     private final SoftButtonCapabilities softButtonCapabilities;
@@ -54,14 +54,14 @@ class SoftButtonReplaceOperation extends Task {
         // Check the state of our images
         if (!supportsSoftButtonImages()) {
             // We don't support images at all
-            DebugTool.logWarning(null, "Soft button images are not supported. Attempting to send text-only soft buttons. If any button does not contain text, no buttons will be sent.");
+            DebugTool.logWarning(TAG, "Soft button images are not supported. Attempting to send text-only soft buttons. If any button does not contain text, no buttons will be sent.");
 
             // Send text buttons if all the soft buttons have text
             sendCurrentStateTextOnlySoftButtons(new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
                     if (!success) {
-                        DebugTool.logError(null, "Head unit does not support images and some of the soft buttons do not have text, so none of the buttons will be sent.");
+                        DebugTool.logError(TAG, "Head unit does not support images and some of the soft buttons do not have text, so none of the buttons will be sent.");
                     }
                     onFinished();
                 }
@@ -83,7 +83,7 @@ class SoftButtonReplaceOperation extends Task {
                             uploadOtherStateImages(new CompletionListener() {
                                 @Override
                                 public void onComplete(boolean success) {
-                                    DebugTool.logInfo(null, "Finished sending other images for soft buttons");
+                                    DebugTool.logInfo(TAG, "Finished sending other images for soft buttons");
                                     onFinished();
                                 }
                             });
@@ -96,13 +96,13 @@ class SoftButtonReplaceOperation extends Task {
             sendCurrentStateSoftButtons(new CompletionListener() {
                 @Override
                 public void onComplete(boolean success) {
-                    DebugTool.logInfo(null, "Finished sending soft buttons with images");
+                    DebugTool.logInfo(TAG, "Finished sending soft buttons with images");
                     // Upload other images
                     uploadOtherStateImages(new CompletionListener() {
                         @Override
                         public void onComplete(boolean success) {
                             if (success) {
-                                DebugTool.logInfo(null, "Finished sending other images for soft buttons");
+                                DebugTool.logInfo(TAG, "Finished sending other images for soft buttons");
                             }
                             onFinished();
                         }
@@ -123,22 +123,22 @@ class SoftButtonReplaceOperation extends Task {
         }
 
         if (initialStatesToBeUploaded.isEmpty()) {
-            DebugTool.logInfo(null, "No initial state artworks to upload");
+            DebugTool.logInfo(TAG, "No initial state artworks to upload");
             if (completionListener != null) {
                 completionListener.onComplete(false);
             }
             return;
         }
 
-        DebugTool.logInfo(null, "Uploading soft button initial artworks");
+        DebugTool.logInfo(TAG, "Uploading soft button initial artworks");
         if (fileManager.get() != null) {
             fileManager.get().uploadArtworks(initialStatesToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null) {
-                        DebugTool.logError(null, "Error uploading soft button artworks: " + errors.keySet());
+                        DebugTool.logError(TAG, "Error uploading soft button artworks: " + errors.keySet());
                     } else {
-                        DebugTool.logInfo(null, "Soft button initial state artworks uploaded");
+                        DebugTool.logInfo(TAG, "Soft button initial state artworks uploaded");
                     }
 
                     if (getState() == Task.CANCELED) {
@@ -171,22 +171,22 @@ class SoftButtonReplaceOperation extends Task {
         }
 
         if (otherStatesToBeUploaded.isEmpty()) {
-            DebugTool.logInfo(null, "No other state artworks to upload");
+            DebugTool.logInfo(TAG, "No other state artworks to upload");
             if (completionListener != null) {
                 completionListener.onComplete(false);
             }
             return;
         }
 
-        DebugTool.logInfo(null, "Uploading soft button other state artworks");
+        DebugTool.logInfo(TAG, "Uploading soft button other state artworks");
         if (fileManager.get() != null) {
             fileManager.get().uploadArtworks(otherStatesToBeUploaded, new MultipleFileCompletionListener() {
                 @Override
                 public void onComplete(Map<String, String> errors) {
                     if (errors != null) {
-                        DebugTool.logError(null, "Error uploading soft button artworks: " + errors.keySet());
+                        DebugTool.logError(TAG, "Error uploading soft button artworks: " + errors.keySet());
                     } else {
-                        DebugTool.logInfo(null, "Soft button other state artworks uploaded");
+                        DebugTool.logInfo(TAG, "Soft button other state artworks uploaded");
                     }
 
                     if (getState() == Task.CANCELED) {
@@ -210,7 +210,7 @@ class SoftButtonReplaceOperation extends Task {
             onFinished();
         }
 
-        DebugTool.logInfo(null, "Preparing to send full soft buttons");
+        DebugTool.logInfo(TAG, "Preparing to send full soft buttons");
         List<SoftButton> softButtons = new ArrayList<>();
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             softButtons.add(softButtonObject.getCurrentStateSoftButton());
@@ -221,9 +221,9 @@ class SoftButtonReplaceOperation extends Task {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 if (response.getSuccess()) {
-                    DebugTool.logInfo(null, "Finished sending text only soft buttons");
+                    DebugTool.logInfo(TAG, "Finished sending text only soft buttons");
                 } else {
-                    DebugTool.logWarning(null, "Failed to update soft buttons with text buttons");
+                    DebugTool.logWarning(TAG, "Failed to update soft buttons with text buttons");
                 }
                 if (completionListener != null) {
                     completionListener.onComplete(response.getSuccess());
@@ -232,7 +232,7 @@ class SoftButtonReplaceOperation extends Task {
 
             @Override
             public void onError(int correlationId, Result resultCode, String info) {
-                DebugTool.logWarning(null, "Failed to update soft buttons with text buttons");
+                DebugTool.logWarning(TAG, "Failed to update soft buttons with text buttons");
                 if (completionListener != null) {
                     completionListener.onComplete(false);
                 }
@@ -252,12 +252,12 @@ class SoftButtonReplaceOperation extends Task {
             onFinished();
         }
 
-        DebugTool.logInfo(null, "Preparing to send text-only soft buttons");
+        DebugTool.logInfo(TAG, "Preparing to send text-only soft buttons");
         List<SoftButton> textButtons = new ArrayList<>();
         for (SoftButtonObject softButtonObject : softButtonObjects) {
             SoftButton softButton = softButtonObject.getCurrentStateSoftButton();
             if (softButton.getText() == null) {
-                DebugTool.logWarning(null, "Attempted to create text buttons, but some buttons don't support text, so no text-only soft buttons will be sent");
+                DebugTool.logWarning(TAG, "Attempted to create text buttons, but some buttons don't support text, so no text-only soft buttons will be sent");
                 if (completionListener != null) {
                     completionListener.onComplete(false);
                 }
@@ -277,9 +277,9 @@ class SoftButtonReplaceOperation extends Task {
             @Override
             public void onResponse(int correlationId, RPCResponse response) {
                 if (response.getSuccess()) {
-                    DebugTool.logInfo(null, "Finished sending text only soft buttons");
+                    DebugTool.logInfo(TAG, "Finished sending text only soft buttons");
                 } else {
-                    DebugTool.logWarning(null, "Failed to update soft buttons with text buttons");
+                    DebugTool.logWarning(TAG, "Failed to update soft buttons with text buttons");
                 }
                 if (completionListener != null) {
                     completionListener.onComplete(response.getSuccess());
@@ -288,7 +288,7 @@ class SoftButtonReplaceOperation extends Task {
 
             @Override
             public void onError(int correlationId, Result resultCode, String info) {
-                DebugTool.logWarning(null, "Failed to update soft buttons with text buttons");
+                DebugTool.logWarning(TAG, "Failed to update soft buttons with text buttons");
                 if (completionListener != null) {
                     completionListener.onComplete(false);
                 }

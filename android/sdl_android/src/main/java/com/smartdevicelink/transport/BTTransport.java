@@ -58,7 +58,8 @@ import java.util.UUID;
  *
  */
 @Deprecated
-public class BTTransport extends SdlTransport {	
+public class BTTransport extends SdlTransport {
+	private static final String TAG = "BTTransport";
 	//936DA01F9ABD4D9D80C702AF85C822A8
 	private final static UUID SDL_V4_MOBILE_APPLICATION_SVC_CLASS = new UUID(0x936DA01F9ABD4D9DL, 0x80C702AF85C822A8L);
 
@@ -296,7 +297,7 @@ public class BTTransport extends SdlTransport {
 				_transportReader = null;
 			}
 		} catch (Exception e) {
-			DebugTool.logError(null, "Failed to stop transport reader thread.", e);
+			DebugTool.logError(TAG, "Failed to stop transport reader thread.", e);
 		} // end-catch	
 		
 		try {
@@ -305,7 +306,7 @@ public class BTTransport extends SdlTransport {
 				_bluetoothAdapterMonitor = null;
 			}
 		} catch (Exception e) {
-			DebugTool.logError(null, "Failed to stop adapter monitor thread.", e);
+			DebugTool.logError(TAG, "Failed to stop adapter monitor thread.", e);
 		}
 		
 		try {
@@ -314,7 +315,7 @@ public class BTTransport extends SdlTransport {
 				_serverSocket = null;
 			} 
 		} catch (Exception e) {
-			DebugTool.logError(null, "Failed to close serverSocket", e);
+			DebugTool.logError(TAG, "Failed to close serverSocket", e);
 		} // end-catch
 		
 		try {
@@ -323,7 +324,7 @@ public class BTTransport extends SdlTransport {
 				_activeSocket = null;
 			}
 		} catch (Exception e) {
-			DebugTool.logError(null, "Failed to close activeSocket", e);
+			DebugTool.logError(TAG, "Failed to close activeSocket", e);
 		} // end-catch
 		
 
@@ -334,7 +335,7 @@ public class BTTransport extends SdlTransport {
 				_output = null;
 			}
 		} catch (Exception e) {
-			DebugTool.logError(null, "Failed to close output stream", e);
+			DebugTool.logError(TAG, "Failed to close output stream", e);
 		} // end-catch
 		
 		if (ex == null) {
@@ -361,7 +362,7 @@ public class BTTransport extends SdlTransport {
 			_output.write(msgBytes, 0, msgBytes.length);
 			sendResult = true;
 		} catch (Exception ex) {
-			DebugTool.logError(null, "Error writing to Bluetooth socket: " + ex.toString(), ex);
+			DebugTool.logError(TAG, "Error writing to Bluetooth socket: " + ex.toString(), ex);
 			handleTransportError("Error writing to Bluetooth socket:", ex);
 			sendResult = false;
 		} // end-catch
@@ -461,7 +462,7 @@ public class BTTransport extends SdlTransport {
 						if(currentByte == -1){ //If we read a -1 and the psm didn't move forward, then there is a problem
 							if (!isHalted) {
 								// Only call disconnect if the thread has not been halted
-								DebugTool.logError(null, "End of stream reached!");
+								DebugTool.logError(TAG, "End of stream reached!");
 								disconnect("End of stream reached.", null);
 							}
 						}
@@ -479,7 +480,7 @@ public class BTTransport extends SdlTransport {
 					// Only call disconnect if the thread has not been halted
 					clearInputStream();
 					String errString = "Failure in BTTransport reader thread: " + excp.toString();
-					DebugTool.logError(null, errString, excp);
+					DebugTool.logError(TAG, errString, excp);
 					disconnect(errString, excp);
 				}
 				return;
@@ -493,7 +494,7 @@ public class BTTransport extends SdlTransport {
 					_input = null;
 				}
 			} catch (Exception e) {
-				DebugTool.logError(null, "Failed to close input stream", e);
+				DebugTool.logError(TAG, "Failed to close input stream", e);
 			} // end-catch
 		}
 		

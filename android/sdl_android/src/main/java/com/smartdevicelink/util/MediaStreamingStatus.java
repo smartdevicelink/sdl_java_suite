@@ -59,6 +59,7 @@ import java.util.List;
  */
 
 public class MediaStreamingStatus {
+    private static final String TAG = "MediaStreamingStatus";
     private static final Object BROADCAST_RECEIVER_LOCK = new Object();
 
     private boolean broadcastReceiverValid = true;
@@ -137,7 +138,7 @@ public class MediaStreamingStatus {
      * @return
      */
     boolean isSupportedAudioDevice(int audioDevice){
-        DebugTool.logInfo(null, "Audio device connected: " + audioDevice);
+        DebugTool.logInfo(TAG, "Audio device connected: " + audioDevice);
         switch (audioDevice){
             case AudioDeviceInfo.TYPE_BLUETOOTH_A2DP:
               if(isBluetoothActuallyAvailable()) {

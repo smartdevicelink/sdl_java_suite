@@ -68,7 +68,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Note: This class must be accessed through the SdlManager->ScreenManager. Do not instantiate it by itself.<br>
  */
 abstract class BaseSoftButtonManager extends BaseSubManager {
-
+    private static final String TAG = "BaseSoftButtonManager";
     private final WeakReference<FileManager> fileManager;
     SoftButtonCapabilities softButtonCapabilities;
     private CopyOnWriteArrayList<SoftButtonObject> softButtonObjects;
@@ -154,7 +154,7 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
             @Override
             public void onError(String info) {
-                DebugTool.logError(null, "Display Capability cannot be retrieved");
+                DebugTool.logError(TAG, "Display Capability cannot be retrieved");
                 softButtonCapabilities = null;
 
                 // Update the queue's suspend state
@@ -245,10 +245,10 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
     // OR if the HMI level is NONE since we want to delay sending RPCs until we're in non-NONE
     private void updateTransactionQueueSuspended() {
         if (softButtonCapabilities == null || HMILevel.HMI_NONE.equals(currentHMILevel)) {
-            DebugTool.logInfo(null, String.format("Suspending the transaction queue. Current HMI level is NONE: %b, soft button capabilities are null: %b", HMILevel.HMI_NONE.equals(currentHMILevel), softButtonCapabilities == null));
+            DebugTool.logInfo(TAG, String.format("Suspending the transaction queue. Current HMI level is NONE: %b, soft button capabilities are null: %b", HMILevel.HMI_NONE.equals(currentHMILevel), softButtonCapabilities == null));
             transactionQueue.pause();
         } else {
-            DebugTool.logInfo(null, "Starting the transaction queue");
+            DebugTool.logInfo(TAG, "Starting the transaction queue");
             transactionQueue.resume();
         }
     }
@@ -276,19 +276,19 @@ abstract class BaseSoftButtonManager extends BaseSubManager {
 
         // Only update if something changed. This prevents, for example, an empty array being reset
         if (softButtonObjects.equals(this.softButtonObjects)) {
-            DebugTool.logInfo(null, "New soft button objects are equivalent to existing soft button objects, skipping...");
+            DebugTool.logInfo(TAG, "New soft button objects are equivalent to existing soft button objects, skipping...");
             return;
         }
 
         // Check if two soft button objects have the same name
         if (hasTwoSoftButtonObjectsOfSameName(softButtonObjects)) {
             this.softButtonObjects = new CopyOnWriteArrayList<>();
-            DebugTool.logError(null, "Attempted to set soft button objects, but two buttons had the same name");
+            DebugTool.logError(TAG, "Attempted to set soft button objects, but two buttons had the same name");
             return;
         }
 
         if (!checkAndAssignButtonIds(softButtonObjects)) {
-            DebugTool.logError(null, "Attempted to set soft button objects, but multiple buttons had the same id");
+            DebugTool.logError(TAG, "Attempted to set soft button objects, but multiple buttons had the same id");
             return;
         }
 

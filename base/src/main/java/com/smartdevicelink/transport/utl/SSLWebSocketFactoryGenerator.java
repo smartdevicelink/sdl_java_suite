@@ -55,7 +55,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 
 public class SSLWebSocketFactoryGenerator {
-
+    private static final String TAG = "SSLWebSocketFactoryGenerator";
     private static final String JAVA_KEY_STORE = "JKS";
     private static final String TLS = "TLS";
     private static final String SUNX509 = "SunX509";
@@ -70,13 +70,13 @@ public class SSLWebSocketFactoryGenerator {
                 context = getSSLContextFromPem(config);
                 break;
             default:
-                DebugTool.logError(null, "Unable to generateWebSocketServer. Unsupported cert type.");
+                DebugTool.logError(TAG, "Unable to generateWebSocketServer. Unsupported cert type.");
                 return null;
         }
         if(context != null) {
             return new DefaultSSLWebSocketServerFactory(context);
         }else{
-            DebugTool.logError(null, "SSLWebSocketFactoryGenerator: Unable to create SSL Context");
+            DebugTool.logError(TAG, "SSLWebSocketFactoryGenerator: Unable to create SSL Context");
             return null;
         }
     }
@@ -101,7 +101,7 @@ public class SSLWebSocketFactoryGenerator {
             return sslContext;
         }
         catch(Exception e){
-            DebugTool.logError(null, "Issue creating SSLContext with JKS : " , e);
+            DebugTool.logError(TAG, "Issue creating SSLContext with JKS : " , e);
         }
         return null;
     }
@@ -133,7 +133,7 @@ public class SSLWebSocketFactoryGenerator {
             context.init( km, null, null );
         } catch ( Exception e ) {
             context = null;
-            DebugTool.logError(null, "Issue creating SSLContext with PEM Cert : " , e);
+            DebugTool.logError(TAG, "Issue creating SSLContext with PEM Cert : " , e);
         }
         return context;
     }

@@ -42,6 +42,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class SiphonServer {
+	private static final String TAG = "SiphonServer";
 	// Prohibit use of no-arg ctor
 	private SiphonServer() {}
 	
@@ -379,7 +380,7 @@ public class SiphonServer {
 				m_siphonSocketOutputStream = m_siphonSocket.getOutputStream();
 				
 	        	// Output version number to the Siphon upon connection (version number prepending to logInfo)
-				DebugTool.logInfo(null, "Siphon connected.");
+				DebugTool.logInfo(TAG, "Siphon connected.");
     		} // end-lock
         } // end-method
     	

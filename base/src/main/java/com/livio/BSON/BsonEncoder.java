@@ -37,7 +37,7 @@ import org.bson.*;
 import java.util.*;
 
 public class BsonEncoder {
-
+    private static final String TAG = "BsonEncoder";
 
     public static byte[] encodeToBytes(HashMap<String, Object> map) throws ClassCastException {
         if(map != null) {
@@ -47,7 +47,7 @@ public class BsonEncoder {
 
             return encoder.encode(bson);
         }
-        DebugTool.logError(null, "Something went wrong encoding the map into BSON bytes");
+        DebugTool.logError(TAG, "Something went wrong encoding the map into BSON bytes");
 
         return null;
     }
@@ -63,7 +63,7 @@ public class BsonEncoder {
                 }
             }
         }
-        DebugTool.logError(null, "Something went wrong decoding bytes into BSON");
+        DebugTool.logError(TAG, "Something went wrong decoding bytes into BSON");
         return null;
     }
 

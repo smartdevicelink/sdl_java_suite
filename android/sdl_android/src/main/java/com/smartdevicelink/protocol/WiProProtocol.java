@@ -60,6 +60,7 @@ import java.util.List;
  */
 @Deprecated
 public class WiProProtocol extends AbstractProtocol {
+	private static final String TAG = "WiProProtocol";
 	private final static String FailurePropagating_Msg = "Failure propagating ";
 	//If increasing MAX PROTOCOL VERSION major version, make sure to alter it in SdlPsm
 	public static final Version MAX_PROTOCOL_VERSION = new Version("5.0.0");
@@ -365,7 +366,7 @@ public class WiProProtocol extends AbstractProtocol {
 			try {
 				accumulator = new ByteArrayOutputStream(totalSize);
 			}catch(OutOfMemoryError e){
-				DebugTool.logError(null, "OutOfMemory error", e); //Garbled bits were received
+				DebugTool.logError(TAG, "OutOfMemory error", e); //Garbled bits were received
 				accumulator = null;
 			}
 		}
@@ -405,7 +406,7 @@ public class WiProProtocol extends AbstractProtocol {
 				try {
 					handleProtocolMessageReceived(message);
 				} catch (Exception excp) {
-					DebugTool.logError(null, FailurePropagating_Msg + "onProtocolMessageReceived: " + excp.toString(), excp);
+					DebugTool.logError(TAG, FailurePropagating_Msg + "onProtocolMessageReceived: " + excp.toString(), excp);
 				} // end-catch
 
 				hasFirstFrame = false;
@@ -631,7 +632,7 @@ public class WiProProtocol extends AbstractProtocol {
 			try {
 				handleProtocolMessageReceived(message);
 			} catch (Exception ex) {
-				DebugTool.logError(null,FailurePropagating_Msg + "onProtocolMessageReceived: " + ex.toString(), ex);
+				DebugTool.logError(TAG,FailurePropagating_Msg + "onProtocolMessageReceived: " + ex.toString(), ex);
 				handleProtocolError(FailurePropagating_Msg + "onProtocolMessageReceived: ", ex);
 			} // end-catch
 		} // end-method
