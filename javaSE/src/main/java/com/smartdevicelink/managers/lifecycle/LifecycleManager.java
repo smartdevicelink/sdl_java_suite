@@ -50,14 +50,14 @@ public class LifecycleManager extends BaseLifecycleManager {
     }
 
     @Override
-    void initializeProxy() {
-        super.initializeProxy();
+    void initialize() {
+        super.initialize();
         this.session = new SdlSession(sdlConnectionListener, _transportConfig);
     }
 
     @Override
-    void cycleProxy(SdlDisconnectedReason disconnectedReason) {
-        cleanProxy();
+    void cycle(SdlDisconnectedReason disconnectedReason) {
+        clean();
         if (session != null) {
             try {
                 session.startSession();

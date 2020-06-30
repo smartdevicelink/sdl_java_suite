@@ -121,7 +121,7 @@ abstract class BaseSdlManager {
     // Initialize with anonymous lifecycleListener
     final LifecycleManager.LifecycleListener lifecycleListener = new LifecycleManager.LifecycleListener() {
         @Override
-        public void onProxyConnected(LifecycleManager lifeCycleManager) {
+        public void onConnected(LifecycleManager lifeCycleManager) {
             Log.i(TAG, "Proxy is connected. Now initializing.");
             synchronized (this) {
                 changeRegistrationRetry = 0;
@@ -141,7 +141,7 @@ abstract class BaseSdlManager {
         }
 
         @Override
-        public void onProxyClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason) {
+        public void onClosed(LifecycleManager lifeCycleManager, String info, Exception e, SdlDisconnectedReason reason) {
             Log.i(TAG, "Proxy is closed.");
             if (reason == null || !reason.equals(SdlDisconnectedReason.LANGUAGE_CHANGE)) {
                 dispose();
