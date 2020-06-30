@@ -1,7 +1,6 @@
 package com.smartdevicelink.managers.screen;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -17,6 +16,7 @@ import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCResponseListener;
+import com.smartdevicelink.util.DebugTool;
 
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -64,7 +64,7 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
      */
     void addButtonListener(ButtonName buttonName, OnButtonListener listener) {
         if (listener == null) {
-            Log.e(TAG, "OnButtonListener cannot be null");
+            DebugTool.logError(TAG, "OnButtonListener cannot be null");
             return;
         }
         if (buttonName == null) {
@@ -78,7 +78,7 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
         }
 
         if (onButtonListeners.get(buttonName).contains(listener)) {
-            Log.w(TAG, "Already subscribed to button named: " + buttonName);
+            DebugTool.logWarning(TAG, "Already subscribed to button named: " + buttonName);
             return;
         }
         onButtonListeners.get(buttonName).add(listener);
@@ -92,7 +92,7 @@ abstract class BaseSubscribeButtonManager extends BaseSubManager {
      */
     void removeButtonListener(final ButtonName buttonName, final OnButtonListener listener) {
         if (listener == null) {
-            Log.e(TAG, "OnButtonListener cannot be null: ");
+            DebugTool.logError(TAG, "OnButtonListener cannot be null: ");
             return;
         }
 

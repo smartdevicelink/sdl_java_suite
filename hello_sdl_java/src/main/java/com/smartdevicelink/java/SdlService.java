@@ -337,7 +337,7 @@ public class SdlService {
             @Override
             public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
                 sdlManager.getScreenManager().setTextField1(buttonName +  "  pressed");
-                Log.i(TAG, "onPress: " + buttonName);
+                DebugTool.logInfo(TAG, "onPress: " + buttonName);
             }
 
             @Override
@@ -347,7 +347,7 @@ public class SdlService {
 
             @Override
             public void onError(String info) {
-                Log.i(TAG, "onError: " + info);
+                DebugTool.logInfo(TAG, "onError: " + info);
             }
         };
 
