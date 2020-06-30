@@ -47,6 +47,9 @@ import com.smartdevicelink.haptic.HapticInterfaceManager;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
 import com.smartdevicelink.managers.StreamingStateMachine;
+import com.smartdevicelink.managers.video.resolution.AspectRatio;
+import com.smartdevicelink.managers.video.resolution.Resolution;
+import com.smartdevicelink.managers.video.resolution.SupportedStreamingRange;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCNotification;
@@ -95,6 +98,8 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private VideoStreamingParameters parameters;
 	private IVideoStreamListener streamListener;
 	private boolean isTransportAvailable = false;
+	private Integer majorProtocolVersion;
+	private SupportedStreamingRange streamingRange;
 	private boolean hasStarted;
 	private String vehicleMake = null;
 	private boolean isEncrypted = false;
@@ -215,15 +220,17 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 				params.update((VideoStreamingCapability)capability, vehicleMake);	//Streaming parameters are ready time to stream
 				VideoStreamManager.this.parameters = params;
 				VideoStreamManager.this.withPendingRestart = true;
-				getSupportedCapabilities(
-						sdlRemoteDisplay.getMaxSupportedHeight(),
-						sdlRemoteDisplay.getMinSupportedHeight(),
-						sdlRemoteDisplay.getMaxSupportedWidth(),
-						sdlRemoteDisplay.getMinSupportedWidth(),
-						sdlRemoteDisplay.getMinScreenDiagonal(),
-						sdlRemoteDisplay.getMinAspectRatio(),
-						sdlRemoteDisplay.getMaxAspectRatio()
-				);
+				if (streamingRange != null) {
+					getSupportedCapabilities(
+							streamingRange.getMinSupportedResolution(),
+							streamingRange.getMaxSupportedResolution(),
+							streamingRange.getMaxScreenDiagonal(),
+							streamingRange.getAspectRatio()
+					);
+				} else {
+					// TODO handle??
+				}
+
 				virtualDisplayEncoder.setStreamingParams(params);
 				stopStreaming(true);
 			}
@@ -300,17 +307,54 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	 *                   works best for the currently connected module.
 	 *
 	 * @param encrypted a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
+	 * @param streamingRange constraints for vehicle display : aspect ratio, min/max resolutions, max diagonal size.
 	 */
-	public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted){
-		this.context = new WeakReference<>(context);
-		this.remoteDisplayClass = remoteDisplayClass;
-		this.isEncrypted = encrypted;
-		int majorProtocolVersion = internalInterface.getProtocolVersion().getMajor();
+	public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted, SupportedStreamingRange streamingRange) {
+		configureGlobalParameters(context, remoteDisplayClass, isEncrypted, streamingRange);
 		if(majorProtocolVersion >= 5 && !internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
 			Log.e(TAG, "Video streaming not supported on this module");
 			stateMachine.transitionToState(StreamingStateMachine.ERROR);
 			return;
 		}
+		processCapabilitiesWithPendingStart(encrypted, parameters);
+	}
+	/**
+	 * Starts streaming a remote display to the module if there is a connected session. This method of streaming requires the device to be on API level 19 or higher
+	 * @param context a context that can be used to create the remote display
+	 * @param remoteDisplayClass class object of the remote display. This class will be used to create an instance of the remote display and will be projected to the module
+	 * @param parameters streaming parameters to be used when streaming. If null is sent in, the default/optimized options will be used.
+	 *                   If you are unsure about what parameters to be used it is best to just send null and let the system determine what
+	 *                   works best for the currently connected module.
+	 *
+	 * @param encrypted a flag of if the stream should be encrypted. Only set if you have a supplied encryption library that the module can understand.
+	 */
+	@Deprecated
+	public void startRemoteDisplayStream(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, VideoStreamingParameters parameters, final boolean encrypted){
+		configureGlobalParameters(context, remoteDisplayClass, isEncrypted);
+		if(majorProtocolVersion >= 5 && !internalInterface.isCapabilitySupported(SystemCapabilityType.VIDEO_STREAMING)){
+			Log.e(TAG, "Video streaming not supported on this module");
+			stateMachine.transitionToState(StreamingStateMachine.ERROR);
+			return;
+		}
+		processCapabilitiesWithPendingStart(encrypted, parameters);
+	}
+
+	private void configureGlobalParameters(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, boolean encrypted) {
+		this.context = new WeakReference<>(context);
+		this.remoteDisplayClass = remoteDisplayClass;
+		this.isEncrypted = encrypted;
+		this.majorProtocolVersion = internalInterface.getProtocolVersion().getMajor();
+	}
+
+	private void configureGlobalParameters(Context context, Class<? extends SdlRemoteDisplay> remoteDisplayClass, boolean encrypted, SupportedStreamingRange streamingRange) {
+		this.context = new WeakReference<>(context);
+		this.remoteDisplayClass = remoteDisplayClass;
+		this.isEncrypted = encrypted;
+		this.majorProtocolVersion = internalInterface.getProtocolVersion().getMajor();
+		this.streamingRange = streamingRange;
+	}
+
+	private void processCapabilitiesWithPendingStart(boolean encrypted, VideoStreamingParameters parameters){
 		if(parameters == null){
 			if(majorProtocolVersion >= 5) {
 				internalInterface.getCapability(SystemCapabilityType.VIDEO_STREAMING, new OnSystemCapabilityListener() {
@@ -669,15 +713,19 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 		return isEncrypted;
 	}
 
-	List<VideoStreamingCapability> getSupportedCapabilities(
-			Integer constraintHeightMax,
-			Integer constraintHeightMin,
-			Integer constraintWidthMax,
-			Integer constraintWidthMin,
-			Double constraintDiagonalMin,
-			Double aspectRationMin,
-			Double aspectRationMax
+	private List<VideoStreamingCapability> getSupportedCapabilities(
+			Resolution minResolution,
+			Resolution maxResolution,
+			Double constraintDiagonalMax,
+			AspectRatio ratioRange
 	){
+		Integer constraintHeightMax = maxResolution.getResolutionHeight();
+		Integer constraintHeightMin = minResolution.getResolutionHeight();
+		Integer constraintWidthMax = maxResolution.getResolutionWidth();
+		Integer constraintWidthMin = minResolution.getResolutionWidth();
+		Double aspectRationMin = ratioRange.getMinAspectRatio();
+		Double aspectRationMax = ratioRange.getMaxAspectRatio();
+
 		List<VideoStreamingCapability> validCapabilities = new ArrayList<>();
 		List<VideoStreamingCapability> allCapabilities = getMockedAllCapabilities();
 
@@ -689,7 +737,7 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 			int resolutionWidth = capability.getPreferredResolution().getResolutionWidth();
 			double diagonal = capability.getDiagonalScreenSize();
 
-			if (diagonal < constraintDiagonalMin) {
+			if (constraintDiagonalMax < diagonal) {
 				continue;
 			}
 

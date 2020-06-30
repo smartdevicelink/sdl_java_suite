@@ -229,18 +229,4 @@ public abstract class SdlRemoteDisplay extends Presentation {
             return presentationShowError;
         }
     }
-
-    public abstract Integer getMinSupportedWidth();
-
-    public abstract Integer getMinSupportedHeight();
-
-    public abstract Integer getMaxSupportedWidth();
-
-    public abstract Integer getMaxSupportedHeight();
-
-    public abstract double getMinScreenDiagonal();
-
-    public abstract Double getMinAspectRatio();
-
-    public abstract Double getMaxAspectRatio();
 }
