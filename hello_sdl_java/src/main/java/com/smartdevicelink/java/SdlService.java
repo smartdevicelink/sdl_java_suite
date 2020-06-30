@@ -34,6 +34,7 @@ package com.smartdevicelink.java;
 
 import android.util.Log;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.screen.OnButtonListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -76,14 +77,11 @@ public class SdlService {
 
     private static final String IMAGE_DIR =             "assets/images/";
 
-
-
     // variable to create and call functions of the SyncProxy
     private SdlManager sdlManager = null;
     private List<ChoiceCell> choiceCellList;
 
     private SdlServiceCallback callback;
-
 
     public SdlService(BaseTransportConfig config, SdlServiceCallback callback){
         this.callback = callback;
@@ -192,6 +190,7 @@ public class SdlService {
                         performWelcomeSpeak();
                         performWelcomeShow();
                         preloadChoices();
+                        subscribeToButtons();
                     }
                 }
             });
@@ -325,6 +324,37 @@ public class SdlService {
                 }
             }
         });
+    }
+
+    /**
+     * Attempts to Subscribe to all preset buttons
+     */
+    private void subscribeToButtons() {
+        ButtonName[] buttonNames = {ButtonName.PLAY_PAUSE, ButtonName.SEEKLEFT, ButtonName.SEEKRIGHT, ButtonName.AC_MAX, ButtonName.AC, ButtonName.RECIRCULATE,
+                ButtonName.FAN_UP, ButtonName.FAN_DOWN, ButtonName.TEMP_UP, ButtonName.TEMP_DOWN, ButtonName.FAN_DOWN, ButtonName.DEFROST_MAX, ButtonName.DEFROST_REAR, ButtonName.DEFROST,
+                ButtonName.UPPER_VENT, ButtonName.LOWER_VENT, ButtonName.VOLUME_UP, ButtonName.VOLUME_DOWN, ButtonName.EJECT, ButtonName.SOURCE, ButtonName.SHUFFLE, ButtonName.REPEAT};
+
+       OnButtonListener onButtonListener = new OnButtonListener() {
+            @Override
+            public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
+                sdlManager.getScreenManager().setTextField1(buttonName +  "  pressed");
+                Log.i(TAG, "onPress: " + buttonName);
+            }
+
+            @Override
+            public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
+                sdlManager.getScreenManager().setTextField2(buttonName + " " + buttonEvent.getButtonEventMode());
+            }
+
+            @Override
+            public void onError(String info) {
+                Log.i(TAG, "onError: " + info);
+            }
+        };
+
+        for (ButtonName buttonName : buttonNames) {
+            sdlManager.getScreenManager().addButtonListener(buttonName, onButtonListener);
+        }
     }
 
     /**
