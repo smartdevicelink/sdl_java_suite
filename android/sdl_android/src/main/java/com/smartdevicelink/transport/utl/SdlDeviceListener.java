@@ -85,7 +85,7 @@ public class SdlDeviceListener {
      */
     public void start() {
         if(connectedDevice == null) {
-            DebugTool.logInfo(TAG + ": No supplied bluetooth device");
+            DebugTool.logInfo(TAG, ": No supplied bluetooth device");
             if(callback != null){
                 callback.onTransportError(null);
             }
@@ -93,7 +93,7 @@ public class SdlDeviceListener {
         }
 
         if (hasSDLConnected(contextWeakReference.get(), connectedDevice.getAddress())) {
-            DebugTool.logInfo(TAG + ": Confirmed SDL device, should start router service");
+            DebugTool.logInfo(TAG, ": Confirmed SDL device, should start router service");
             //This device has connected to SDL previously, it is ok to start the RS right now
             callback.onTransportConnected(contextWeakReference.get(), connectedDevice);
             return;
@@ -113,7 +113,7 @@ public class SdlDeviceListener {
                     if (bluetoothTransport != null) {
                         int state = bluetoothTransport.getState();
                         if (state != MultiplexBluetoothTransport.STATE_CONNECTED) {
-                            DebugTool.logInfo(TAG + ": No bluetooth connection made");
+                            DebugTool.logInfo(TAG, ": No bluetooth connection made");
                             bluetoothTransport.stop();
                         } //else BT is connected; it will close itself through callbacks
                     }
@@ -188,7 +188,7 @@ public class SdlDeviceListener {
     public static void setSDLConnectedStatus(Context context, String address, boolean hasSDLConnected) {
         synchronized (LOCK) {
             if (context != null) {
-                DebugTool.logInfo(TAG + ": Saving connected status - " + address + " : " + hasSDLConnected);
+                DebugTool.logInfo(TAG, ": Saving connected status - " + address + " : " + hasSDLConnected);
                 SharedPreferences preferences = context.getSharedPreferences(SDL_DEVICE_STATUS_SHARED_PREFS, Context.MODE_PRIVATE);
                 if (preferences.contains(address) && hasSDLConnected == preferences.getBoolean(address, false)) {
                     //The same key/value exists in our shared preferences. No reason to write again.

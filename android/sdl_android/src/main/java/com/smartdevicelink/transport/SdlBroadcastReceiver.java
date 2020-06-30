@@ -289,15 +289,15 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver{
 								if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty() && sdlAppInfoList.get(0).getRouterServiceComponentName() != null) {
 									routerServicePackage = sdlAppInfoList.get(0).getRouterServiceComponentName().getPackageName();
 								}
-                                DebugTool.logInfo(TAG +  ": This app's package: " + myPackage);
-                                DebugTool.logInfo(TAG +  ": Router service app's package: " + routerServicePackage);
+                                DebugTool.logInfo(TAG,  ": This app's package: " + myPackage);
+                                DebugTool.logInfo(TAG,  ": Router service app's package: " + routerServicePackage);
 								if (myPackage != null && myPackage.equalsIgnoreCase(routerServicePackage)) {
 									SdlDeviceListener sdlDeviceListener = getSdlDeviceListener(context, device);
 									if (!sdlDeviceListener.isRunning()) {
 										sdlDeviceListener.start();
 									}
 								} else {
-                                    DebugTool.logInfo(TAG +  ": Not the app to start the router service nor device listener");
+                                    DebugTool.logInfo(TAG,  ": Not the app to start the router service nor device listener");
 								}
 								return;
 							}
