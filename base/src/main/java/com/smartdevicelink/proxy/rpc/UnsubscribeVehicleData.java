@@ -788,10 +788,11 @@ public class UnsubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, unsubscribes from fuelRange data
-	 *
+	 * @see FuelRange struct for more details
 	 * @param fuelRange
 	 *            a boolean value
 	 */
+	@Deprecated
 	public void setFuelRange(Boolean fuelRange) {
 		setParameters(KEY_FUEL_RANGE, fuelRange);
 	}
@@ -799,10 +800,11 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the fuelRange data has been
 	 * unsubscribed.
-	 *
+	 * @see FuelRange struct for more details
 	 * @return Boolean -a Boolean value. If true, means the fuelRange data
 	 *         has been unsubscribed.
 	 */
+	@Deprecated
 	public Boolean getFuelRange() {
 		return getBoolean(KEY_FUEL_RANGE);
 	}

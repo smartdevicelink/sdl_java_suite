@@ -16,6 +16,7 @@ import com.smartdevicelink.proxy.rpc.OnVehicleData;
 import com.smartdevicelink.proxy.rpc.SingleTireStatus;
 import com.smartdevicelink.proxy.rpc.TireStatus;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
+import com.smartdevicelink.proxy.rpc.enums.CapacityUnit;
 import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
 import com.smartdevicelink.proxy.rpc.enums.ComponentVolumeStatus;
@@ -189,6 +190,10 @@ public class VehicleDataHelper{
 	// fuel range
 	public static final FuelType FUEL_RANGE_TYPE = FuelType.GASOLINE;
 	public static final Float FUEL_RANGE_RANGE = Test.GENERAL_FLOAT;
+	public static final Float FUEL_RANGE_CAPACITY = Test.GENERAL_FLOAT;
+	public static final CapacityUnit FUEL_RANGE_CAPACITY_UNIT = Test.GENERAL_CAPACITYUNIT;
+	public static final Float FUEL_RANGE_LEVEL = Test.GENERAL_FLOAT;
+	public static final ComponentVolumeStatus FUEL_RANGE_LEVEL_STATE = Test.GENERAL_COMPONENTVOLUMESTATUS;
 
 	public static final JSONArray JSON_FUEL_RANGE = new JSONArray();
 
@@ -318,6 +323,10 @@ public class VehicleDataHelper{
 		// FUEL_RANGE and FUEL_RANGE_LIST set up
 		FUEL_RANGE.setType(FUEL_RANGE_TYPE);
 		FUEL_RANGE.setRange(FUEL_RANGE_RANGE);
+		FUEL_RANGE.setCapacity(FUEL_RANGE_CAPACITY);
+		FUEL_RANGE.setCapacityUnit(FUEL_RANGE_CAPACITY_UNIT);
+		FUEL_RANGE.setLevel(FUEL_RANGE_LEVEL);
+		FUEL_RANGE.setLevelState(FUEL_RANGE_LEVEL_STATE);
 		FUEL_RANGE_LIST.add(FUEL_RANGE);
 
 		// FUEL_RANGE json array set up

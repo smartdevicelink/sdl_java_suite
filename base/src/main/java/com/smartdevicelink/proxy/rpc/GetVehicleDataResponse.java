@@ -125,9 +125,21 @@ public class GetVehicleDataResponse extends RPCResponse {
     public Integer getRpm() {
     	return getInteger(KEY_RPM);
     }
+
+    /**
+     * @see FuelRange for details.
+     * @param fuelLevel - describes fuel level of unit
+     */
+    @Deprecated
     public void setFuelLevel(Double fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
+
+    /**
+     * @see FuelRange for details.
+     * @return Double
+     */
+    @Deprecated
     public Double getFuelLevel() {
     	Object object = getParameters(KEY_FUEL_LEVEL);
     	return SdlDataTypeConverter.objectToDouble(object);

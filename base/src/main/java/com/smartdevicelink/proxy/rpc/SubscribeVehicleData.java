@@ -803,7 +803,7 @@ public class SubscribeVehicleData extends RPCRequest {
 
 	/**
 	 * Sets a boolean value. If true, subscribes fuelRange data
-	 *
+	 * @see FuelRange struct for more details
 	 * @param fuelRange
 	 *            a boolean value
 	 */
@@ -814,7 +814,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	/**
 	 * Gets a boolean value. If true, means the Fuel Range data has been
 	 * subscribed.
-	 *
+	 * @see FuelRange struct for more details
 	 * @return Boolean -a Boolean value. If true, means the Fuel Range data
 	 *         has been subscribed.
 	 *

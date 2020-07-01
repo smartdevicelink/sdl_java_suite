@@ -150,15 +150,19 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     /**
      * Sets Fuel Level
      * @param fuelLevel a VehicleDataResult related to Fuel Level
+     * @see FuelRange struct for more details
      */
+    @Deprecated
     public void setFuelLevel(VehicleDataResult fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
     /**
      * Gets Fuel Level
      * @return a VehicleDataResult related to FuelLevel
+     * @see FuelRange struct for more details
      */
     @SuppressWarnings("unchecked")
+    @Deprecated
     public VehicleDataResult getFuelLevel() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_FUEL_LEVEL);
     }

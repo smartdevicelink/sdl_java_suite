@@ -352,9 +352,20 @@ public class OnVehicleData extends RPCNotification {
     public Integer getRpm() {
     	return getInteger(KEY_RPM);
     }
+
+    /**
+     * @see FuelRange for details.
+     */
+    @Deprecated
     public void setFuelLevel(Double fuelLevel) {
         setParameters(KEY_FUEL_LEVEL, fuelLevel);
     }
+
+    /**
+     * @see FuelRange for details.
+     * @return Double
+     */
+    @Deprecated
     public Double getFuelLevel() {
     	Object object = getParameters(KEY_FUEL_LEVEL);
     	return SdlDataTypeConverter.objectToDouble(object);

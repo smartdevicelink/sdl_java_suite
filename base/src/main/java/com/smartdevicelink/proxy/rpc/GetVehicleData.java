@@ -482,19 +482,22 @@ public class GetVehicleData extends RPCRequest {
 
     /**
      * Sets a boolean value. If true, gets fuelRange data
+     * @see FuelRange struct for more details
      * @param fuelRange
       *            a boolean value
      */
+    @Deprecated
     public void setFuelRange(Boolean fuelRange) {
         setParameters(KEY_FUEL_RANGE, fuelRange);
     }
 
     /**
      * Gets a boolean value.
-     *
+     * @see FuelRange struct for more details
      * @return Boolean -a Boolean value.
      *
      */
+    @Deprecated
     public Boolean getFuelRange() {
         return getBoolean(KEY_FUEL_RANGE);
     }

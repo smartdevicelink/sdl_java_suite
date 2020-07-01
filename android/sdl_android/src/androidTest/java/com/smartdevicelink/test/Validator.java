@@ -2319,6 +2319,22 @@ public class Validator{
             if (item1.get(i).getRange() != item2.get(i).getRange()) {
                 return false;
             }
+
+            if (!item1.get(i).getCapacity().equals(item2.get(i).getCapacity())) {
+                return false;
+            }
+
+            if (!item1.get(i).getCapacityUnit().equals(item2.get(i).getCapacityUnit())) {
+                return false;
+            }
+
+            if (!item1.get(i).getLevel().equals(item2.get(i).getLevel())) {
+                return false;
+            }
+
+            if (!item1.get(i).getLevelState().equals(item2.get(i).getLevelState())) {
+                return false;
+            }
         }
 
         return true;

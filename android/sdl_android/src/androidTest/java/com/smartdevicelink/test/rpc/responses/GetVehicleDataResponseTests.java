@@ -238,6 +238,10 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 			// FUEL_RANGE
 			fuelRangeObj.put(FuelRange.KEY_TYPE, VehicleDataHelper.FUEL_RANGE_TYPE);
 			fuelRangeObj.put(FuelRange.KEY_RANGE, VehicleDataHelper.FUEL_RANGE_RANGE);
+			fuelRangeObj.put(FuelRange.KEY_CAPACITY, VehicleDataHelper.FUEL_RANGE_CAPACITY);
+			fuelRangeObj.put(FuelRange.KEY_CAPACITY_UNIT, VehicleDataHelper.FUEL_RANGE_CAPACITY_UNIT);
+			fuelRangeObj.put(FuelRange.KEY_LEVEL, VehicleDataHelper.FUEL_RANGE_LEVEL);
+			fuelRangeObj.put(FuelRange.KEY_LEVEL_STATE, VehicleDataHelper.FUEL_RANGE_LEVEL_STATE);
 			fuelRangeArrayObj.put(fuelRangeObj);
 
 			reference.put(GetVehicleDataResponse.KEY_SPEED, VehicleDataHelper.SPEED);
@@ -515,7 +519,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 			assertEquals(Test.MATCH, JsonUtils.readDoubleFromJsonObject(parameters, GetVehicleDataResponse.KEY_FUEL_LEVEL), cmd.getFuelLevel());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_VIN), cmd.getVin());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_PRNDL), cmd.getPrndl().toString());
-			
+
 			JSONObject tireStatusObj = JsonUtils.readJsonObjectFromJsonObject(parameters, GetVehicleDataResponse.KEY_TIRE_PRESSURE);
 			TireStatus tireStatus = new TireStatus(JsonRPCMarshaller.deserializeJSONObject(tireStatusObj));
 			assertTrue(Test.TRUE, Validator.validateTireStatus(tireStatus, cmd.getTirePressure()) );
