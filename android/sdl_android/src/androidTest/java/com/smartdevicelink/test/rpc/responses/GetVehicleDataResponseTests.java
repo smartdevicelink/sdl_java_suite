@@ -605,6 +605,15 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 			MyKey myKey = new MyKey(JsonRPCMarshaller.deserializeJSONObject(myKeyObj));
 			assertTrue(Test.TRUE, Validator.validateMyKey(myKey, cmd.getMyKey()) );
 
+			JSONArray windowStatusArray = JsonUtils.readJsonArrayFromJsonObject(parameters, GetVehicleDataResponse.KEY_WINDOW_STATUS);
+
+			List<WindowStatus> windowStatus = new ArrayList<>();
+			for (int index = 0; index < windowStatusArray.length(); index++) {
+				WindowStatus status = new WindowStatus(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)windowStatusArray.get(index)) );
+				windowStatus.add(status);
+			}
+			assertTrue(Test.TRUE, Validator.validateWindowStatus(windowStatus, cmd.getWindowStatus()) );
+
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_TURN_SIGNAL), cmd.getTurnSignal().toString());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_ELECTRONIC_PARK_BRAKE_STATUS), cmd.getElectronicParkBrakeStatus().toString());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME), cmd.getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
