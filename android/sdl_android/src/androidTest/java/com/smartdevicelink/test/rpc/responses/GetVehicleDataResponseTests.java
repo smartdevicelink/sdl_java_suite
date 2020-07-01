@@ -433,7 +433,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					}
 
 					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateWindowStatuses(
+							Validator.validateWindowStatus(
 									windowStatusReferenceList,
 									windowStatusUnderTestList));
 				}

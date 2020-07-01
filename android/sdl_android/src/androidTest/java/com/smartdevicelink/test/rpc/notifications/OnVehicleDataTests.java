@@ -168,7 +168,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 	    assertTrue(Test.TRUE, Validator.validateClusterModeStatus(VehicleDataHelper.CLUSTER_MODE_STATUS, cluster));
 	    assertTrue(Test.TRUE, Validator.validateMyKey(VehicleDataHelper.MY_KEY, key));
 	    assertTrue(Test.TRUE, Validator.validateFuelRange(VehicleDataHelper.FUEL_RANGE_LIST, fuelRangeList));
-	    assertTrue(Test.TRUE, Validator.validateWindowStatuses(VehicleDataHelper.WINDOW_STATUS_LIST, windowStatusList));
+	    assertTrue(Test.TRUE, Validator.validateWindowStatus(VehicleDataHelper.WINDOW_STATUS_LIST, windowStatusList));
 	    assertEquals(Test.MATCH, VehicleDataHelper.TURN_SIGNAL, turnSignal);
 	    assertEquals(Test.MATCH, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
 	    assertEquals(Test.MATCH, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE, oemCustomVehicleData);
@@ -207,6 +207,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
         assertNull(Test.NULL, msg.getFuelRange());
         assertNull(Test.NULL, msg.getTurnSignal());
         assertNull(Test.NULL, msg.getElectronicParkBrakeStatus());
+        assertNull(Test.NULL, msg.getWindowStatus());
         assertNull(Test.NULL, msg.getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
 	}
     
@@ -389,7 +390,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 			reference.put(OnVehicleData.KEY_FUEL_RANGE, fuelRangeArrayObj);
 			reference.put(OnVehicleData.KEY_TURN_SIGNAL, VehicleDataHelper.TURN_SIGNAL);
 			reference.put(OnVehicleData.KEY_ELECTRONIC_PARK_BRAKE_STATUS, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS);
-			reference.put(GetVehicleDataResponse.KEY_WINDOW_STATUS, windowStatusArrayObj);
+			reference.put(OnVehicleData.KEY_WINDOW_STATUS, windowStatusArrayObj);
 			reference.put(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE);
 			
 			JSONObject underTest = msg.serializeJSON();
@@ -506,7 +507,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 					assertTrue(Test.TRUE, Validator.validateFuelRange(
 									fuelRangeRefereceList,
 									fuelRangeUnderTestList));
-				} else if (key.equals(GetVehicleDataResponse.KEY_WINDOW_STATUS)) {
+				} else if (key.equals(OnVehicleData.KEY_WINDOW_STATUS)) {
 					JSONArray windowStatusArrayObjReference = JsonUtils.readJsonArrayFromJsonObject(reference, key);
 					List<WindowStatus> windowStatusReferenceList = new ArrayList<>();
 					for (int index = 0; index < windowStatusArrayObjReference.length(); index++) {
@@ -522,7 +523,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 					}
 
 					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateWindowStatuses(
+							Validator.validateWindowStatus(
 									windowStatusReferenceList,
 									windowStatusUnderTestList));
 				}

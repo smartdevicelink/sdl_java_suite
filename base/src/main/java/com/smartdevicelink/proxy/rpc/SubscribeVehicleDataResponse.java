@@ -537,7 +537,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * Sets a vehicleDataResult value for VehicleDataResult.
      * @param vehicleDataResult a VehicleDataResult value
      */
-    public void setVehicleDataResult(VehicleDataResult vehicleDataResult){
+    public void setWindowStatus(VehicleDataResult vehicleDataResult){
         setParameters(KEY_WINDOW_STATUS, vehicleDataResult);
     }
 
@@ -546,7 +546,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * @return a VehicleDataResult object value or null.
      * If true, means the VehicleDataResult data has been subscribed.
      */
-    public VehicleDataResult getVehicleDataResult(){
+    public VehicleDataResult getWindowStatus(){
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_WINDOW_STATUS);
     }
 }

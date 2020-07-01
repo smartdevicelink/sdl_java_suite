@@ -196,8 +196,8 @@ public class VehicleDataHelper{
 	public static final Float FUEL_RANGE_RANGE = Test.GENERAL_FLOAT;
 
 	// WindowStatus
-	public static final Grid LOCATION_GRID = new Grid(2, 3);
-	public static final WindowState WINDOW_STATE = new WindowState(2, 3);
+	public static final Grid LOCATION_GRID = Test.GENERAL_LOCATION_GRID;
+	public static final WindowState WINDOW_STATE = Test.GENERAL_WINDOW_STATE;
 
 	public static final JSONArray JSON_FUEL_RANGE = new JSONArray();
 

@@ -3806,7 +3806,7 @@ public class Validator{
 		return validateGrid(cap1.getGrid(), cap2.getGrid());
 	}
 
-    public static boolean validateWindowStatuses (List<WindowStatus> item1, List<WindowStatus> item2) {
+    public static boolean validateWindowStatus(List<WindowStatus> item1, List<WindowStatus> item2) {
         if (item1 == null) {
             return ( item2 == null );
         }
@@ -3818,46 +3818,14 @@ public class Validator{
             return false;
         }
 
-        // unmarshalling with setting
-        for (WindowStatus status : item2) {
-            try {
-                Object potentialGrid = status.getStore().get(WindowStatus.KEY_LOCATION);
-                Object potentialState = status.getStore().get(WindowStatus.KEY_WINDOW_STATE);
+        Iterator<WindowStatus> iterator1 = item1.iterator();
+        Iterator<WindowStatus> iterator2 = item2.iterator();
 
-                if (potentialGrid instanceof Hashtable) {
+        while(iterator1.hasNext() && iterator2.hasNext()){
+            WindowStatus windowStatus1 = iterator1.next();
+            WindowStatus windowStatus2 = iterator2.next();
 
-                    Grid grid = new Grid(JsonRPCMarshaller.deserializeJSONObject(new JSONObject((Hashtable)potentialGrid)));
-                    status.setLocation(grid);
-                }
-
-                if (potentialState instanceof Hashtable) {
-
-                    WindowState state = new WindowState(JsonRPCMarshaller.deserializeJSONObject(new JSONObject((Hashtable)potentialState)));
-                    status.setWindowState(state);
-                }
-            } catch (Exception e) {
-                return false;
-            }
-        }
-
-        for (int i = 0; i < item1.size(); i++) {
-            Integer col1 = item1.get(i).getLocation().getCol();
-            Integer col2 = item2.get(i).getLocation().getCol();
-
-            Integer row1 = item1.get(i).getLocation().getRow();
-            Integer row2 = item2.get(i).getLocation().getRow();
-
-            Integer approxPosition1 = item1.get(i).getWindowState().getApproximatePosition();
-            Integer approxPosition2 = item2.get(i).getWindowState().getApproximatePosition();
-
-            Integer deviation1 = item1.get(i).getWindowState().getDeviation();
-            Integer deviation2 = item2.get(i).getWindowState().getDeviation();
-
-
-            if (!col1.equals(col2) || !row1.equals(row2)) {
-                return false;
-            }
-            if (!approxPosition1.equals(approxPosition2) || !deviation1.equals(deviation2)) {
+            if(!validateWindowStatus(windowStatus1, windowStatus2)){
                 return false;
             }
         }
@@ -3865,7 +3833,7 @@ public class Validator{
         return true;
     }
 
-    public static boolean validateWindowStatuses (WindowStatus item1, WindowStatus item2) {
+    public static boolean validateWindowStatus(WindowStatus item1, WindowStatus item2) {
         if (item1 == null) {
             return ( item2 == null );
         }
@@ -3873,23 +3841,14 @@ public class Validator{
             return ( item1 == null );
         }
 
-        Integer col1 = item1.getLocation().getCol();
-        Integer col2 = item2.getLocation().getCol();
-
-        Integer row1 = item1.getLocation().getRow();
-        Integer row2 = item2.getLocation().getRow();
-
-        Integer approxPosition1 = item1.getWindowState().getApproximatePosition();
-        Integer approxPosition2 = item2.getWindowState().getApproximatePosition();
-
-        Integer deviation1 = item1.getWindowState().getDeviation();
-        Integer deviation2 = item2.getWindowState().getDeviation();
-
-
-        if (!col1.equals(col2) || !row1.equals(row2)) {
+        if (!validateWindowStates(item1.getWindowState(), item2.getWindowState())) {
             return false;
         }
-        return approxPosition1.equals(approxPosition2) && deviation1.equals(deviation2);
+        if (!validateGrid(item1.getLocation(), item2.getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     public static boolean validateWindowStates (WindowState item1, WindowState item2) {

@@ -109,6 +109,7 @@ import com.smartdevicelink.proxy.rpc.WeatherServiceData;
 import com.smartdevicelink.proxy.rpc.WeatherServiceManifest;
 import com.smartdevicelink.proxy.rpc.WindowCapability;
 import com.smartdevicelink.proxy.rpc.WindowState;
+import com.smartdevicelink.proxy.rpc.WindowStatus;
 import com.smartdevicelink.proxy.rpc.WindowTypeCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.proxy.rpc.enums.AppHMIType;
@@ -295,6 +296,7 @@ public class Test {
 	public static final SoftButtonType                 GENERAL_SOFTBUTTONTYPE                 = SoftButtonType.SBT_BOTH;
 	public static final MassageZone                    GENERAL_MASSAGEZONE                    = MassageZone.LUMBAR;
 	public static final MassageMode                    GENERAL_MASSAGEMODE                    = MassageMode.HIGH;
+	public static final WindowStatus				   GENERAL_WINDOW_STATUS                  = new WindowStatus();
 	public static final MassageCushion                 GENERAL_MASSAGECUSHION                 = MassageCushion.BACK_BOLSTERS;
 	public static final SeatMemoryActionType           GENERAL_SEATMEMORYACTIONTYPE           = SeatMemoryActionType.SAVE;
 	public static final SupportedSeat           	   GENERAL_SUPPORTEDSEAT                  = SupportedSeat.DRIVER;
@@ -1120,6 +1122,8 @@ public class Test {
 		GENERAL_MODULE_INFO.setModuleServiceArea(Test.GENERAL_GRID);
 		GENERAL_MODULE_INFO.setMultipleAccessAllowance(Test.GENERAL_BOOLEAN);
 
+		GENERAL_WINDOW_STATUS.setLocation(Test.GENERAL_GRID);
+		GENERAL_WINDOW_STATUS.setWindowState(Test.GENERAL_WINDOW_STATE);
 
 		try {
 			JSON_HMIPERMISSIONS.put(HMIPermissions.KEY_ALLOWED, GENERAL_HMILEVEL_LIST);

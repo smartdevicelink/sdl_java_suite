@@ -607,7 +607,7 @@ public class OnVehicleData extends RPCNotification {
      * Sets an array of statuses for WindowStatus.
      * @param status a WindowStatus value
      */
-    public void setWindowStatus(@NonNull List<WindowStatus> status){
+    public void setWindowStatus(List<WindowStatus> status){
         setParameters(KEY_WINDOW_STATUS, status);
     }
 
