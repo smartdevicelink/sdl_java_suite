@@ -146,7 +146,6 @@ public class VideoStreamManager extends BaseVideoStreamManager {
 	private final OnRPCNotificationListener hmiListener = new OnRPCNotificationListener() {
 		@Override
 		public void onNotified(RPCNotification notification) {
-			Log.e(TAG, "TESTING");
 			if(notification != null){
 				OnHMIStatus onHMIStatus = (OnHMIStatus) notification;
 				if (onHMIStatus.getWindowID() != null && onHMIStatus.getWindowID() != PredefinedWindows.DEFAULT_WINDOW.getValue()) {
