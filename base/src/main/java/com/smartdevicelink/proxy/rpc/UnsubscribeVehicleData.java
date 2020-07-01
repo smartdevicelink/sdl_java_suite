@@ -881,7 +881,7 @@ public class UnsubscribeVehicleData extends RPCRequest {
 	 * Sets a boolean value. If true, unsubscribes from handsOffSteering data
 	 * @param handsOffSteering a boolean value
 	 */
-	public void setHandsOffSteering(boolean handsOffSteering){
+	public void setHandsOffSteering(Boolean handsOffSteering){
 		setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
 	}
 }

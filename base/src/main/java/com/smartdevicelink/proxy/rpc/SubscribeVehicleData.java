@@ -903,7 +903,7 @@ public class SubscribeVehicleData extends RPCRequest {
 	 * Sets a boolean value for HandsOffSteering.
 	 * @param handsOffSteering a boolean value
 	 */
-	public void setHandsOffSteering(boolean handsOffSteering){
+	public void setHandsOffSteering(Boolean handsOffSteering){
 		setParameters(KEY_HANDS_OFF_STEERING, handsOffSteering);
 	}
 }
