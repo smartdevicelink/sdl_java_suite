@@ -1,6 +1,7 @@
 package com.smartdevicelink.managers.lifecycle;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.ProtocolMessage;
 import com.smartdevicelink.protocol.enums.FunctionID;
@@ -9,9 +10,16 @@ import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.util.Version;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.lang.reflect.InvocationTargetException;
 
-public class RpcConverterTest extends AndroidTestCase2 {
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+
+@RunWith(AndroidJUnit4.class)
+public class RpcConverterTest {
 
     private static final String RPC_PACKAGE             = "com.smartdevicelink.proxy.rpc.";
     private static final String RESPONSE_KEY            = "Response";
@@ -21,6 +29,7 @@ public class RpcConverterTest extends AndroidTestCase2 {
      * The RPC converter relies on the function id json name to match the class name exactly.
      * Therefore we will test to ensure that they match up first.
      */
+    @Test
     public void testFunctionIdsAgainstFileNames(){
         FunctionID[] functionIDs = FunctionID.values();
         for(FunctionID functionID : functionIDs) {
@@ -87,6 +96,7 @@ public class RpcConverterTest extends AndroidTestCase2 {
         return null;
     }
 
+    @Test
     public void testRpcCreation(){
 
         FunctionID[] functionIDs = FunctionID.values();

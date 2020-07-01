@@ -1,8 +1,8 @@
 package com.smartdevicelink.protocol;
 
+import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.SdlConnection.SdlConnection;
 import com.smartdevicelink.protocol.enums.SessionType;
 import com.smartdevicelink.security.SdlSecurityBase;
@@ -15,13 +15,24 @@ import com.smartdevicelink.transport.RouterServiceValidator;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
+import static android.support.test.InstrumentationRegistry.getContext;
 
-public class SdlProtocolTests  extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class SdlProtocolTests {
 
     int max_int = 2147483647;
     byte[] payload;
@@ -89,17 +100,20 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
     DidReceiveListener onProtocolMessageReceivedListener = new DidReceiveListener();
 
 
+    @Before
     public void setUp(){
-        config = new MultiplexTransportConfig(this.mContext, SdlUnitTestContants.TEST_APP_ID);
+        config = new MultiplexTransportConfig(getContext(), SdlUnitTestContants.TEST_APP_ID);
         protocol = new SdlProtocol(defaultListener,config);
     }
 
 
+    @Test
     public void testBase(){
         SdlProtocol sdlProtocol = new SdlProtocol(defaultListener,config);
 
     }
 
+    @Test
     public void testVersion(){
         SdlProtocol sdlProtocol = new SdlProtocol(defaultListener,config);
 
@@ -133,6 +147,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
         assertEquals((byte)0x01,sdlProtocol.getProtocolVersion().getMajor());
     }
 
+    @Test
     public void testMtu(){
         SdlProtocol sdlProtocol = new SdlProtocol(defaultListener,config);
 
@@ -167,6 +182,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
 
     }
 
+    @Test
     public void testHandleFrame(){
         SampleRpc sampleRpc = new SampleRpc(4);
         SdlProtocol sdlProtocol = new SdlProtocol(defaultListener,config);
@@ -177,6 +193,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
             Assert.fail("Exceptin during handleFrame - " + e.toString());
         }
     }
+    @Test
     public void testHandleFrameCorrupt(){
         SampleRpc sampleRpc = new SampleRpc(4);
         BinaryFrameHeader header = sampleRpc.getBinaryFrameHeader(true);
@@ -191,6 +208,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
         }
     }
 
+    @Test
     public void testHandleSingleFrameMessageFrame(){
         SampleRpc sampleRpc = new SampleRpc(4);
         SdlProtocol sdlProtocol = new SdlProtocol(defaultListener,config);
@@ -206,6 +224,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
         }
     }
 
+    @Test
     public void testHandleSingleFrameMessageFrameCorruptBfh(){
         SampleRpc sampleRpc = new SampleRpc(4);
 
@@ -245,7 +264,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
 
 
 
-
+    @Test
     public void testNormalCase(){
         setUp();
         payload = new byte[]{0x00,0x02,0x05,0x01,0x01,0x01,0x05,0x00};
@@ -290,6 +309,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
         assertNull(oom_error);
     }
 
+    @Test
     public void testOverallocatingAccumulator(){
         setUp();
         ByteArrayOutputStream builder = new ByteArrayOutputStream();
@@ -357,7 +377,7 @@ public class SdlProtocolTests  extends AndroidTestCase2 {
         public void onTransportDisconnected(String info) {
             connected = false;
             //Grab a currently running router service
-            RouterServiceValidator rsvp2 = new RouterServiceValidator(mContext);
+            RouterServiceValidator rsvp2 = new RouterServiceValidator(getContext());
             rsvp2.setFlags(RouterServiceValidator.FLAG_DEBUG_NONE);
             assertTrue(rsvp2.validate());
             assertNotNull(rsvp2.getService());

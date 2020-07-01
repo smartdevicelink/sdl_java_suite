@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.BinaryFrameHeader;
 import com.smartdevicelink.protocol.ProtocolMessage;
@@ -25,6 +25,8 @@ import com.smartdevicelink.transport.utl.TransportRecord;
 
 import junit.framework.Assert;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 
 import java.lang.ref.WeakReference;
@@ -36,6 +38,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import static android.support.test.InstrumentationRegistry.getContext;
+import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -44,7 +48,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class SdlRouterServiceTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class SdlRouterServiceTests {
 
     public static final String TAG = "SdlRouterServiceTests";
     private final int SAMPLE_RPC_CORRELATION_ID = 630;
@@ -53,21 +58,11 @@ public class SdlRouterServiceTests extends AndroidTestCase2 {
     ProtocolMessage pm = null;
     BinaryFrameHeader binFrameHeader = null;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        //Nothing here for now
-    }
-
 	/**
 	 * Ensure that the router service hardcoded number is the same as the integer value in
 	 * the resources.
 	 */
+	@Test
 	public void testVersionCorrectness(){
     	int resourceVersion = getContext().getResources().getInteger(com.smartdevicelink.test.R.integer.sdl_router_service_version_value);
 		assertEquals(resourceVersion, SdlRouterService.ROUTER_SERVICE_VERSION_NUMBER);
@@ -77,6 +72,7 @@ public class SdlRouterServiceTests extends AndroidTestCase2 {
      * Test null bundle handling in AltTransportHandler when handling messages. Only test the case of
      * msg.what == TransportConstants.ROUTER_RECEIVED_PACKET
      */
+    @Test
     public void testAlTransportHandlerHandleNullBundle() {
         if (Looper.myLooper() == null) {
             Looper.prepare();
@@ -134,6 +130,7 @@ public class SdlRouterServiceTests extends AndroidTestCase2 {
      *
      * @see SdlRouterService#writeBytesToTransport(Bundle)
      */
+    @Test
     public void testWriteBytesToTransport() {
         if (Looper.myLooper() == null) {
             Looper.prepare();
@@ -178,6 +175,7 @@ public class SdlRouterServiceTests extends AndroidTestCase2 {
 	 *
 	 * @see SdlRouterService#sendPacketToRegisteredApp(SdlPacket)
 	 */
+	@Test
 	public void testRegisterAppExistingSessionIDDifferentApp() {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
@@ -270,6 +268,7 @@ public class SdlRouterServiceTests extends AndroidTestCase2 {
 	 *
 	 * @see SdlRouterService#sendPacketToRegisteredApp(SdlPacket)
 	 */
+	@Test
 	public void testRegisterAppExistingSessionIDSameApp() {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
@@ -360,6 +359,7 @@ public class SdlRouterServiceTests extends AndroidTestCase2 {
 	/**
 	 * Test router service correctly picks up Hash ID from start service ACK (prior to V5)
 	 */
+	@Test
 	public void testStartSessionAckHashId() {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
@@ -398,6 +398,7 @@ public class SdlRouterServiceTests extends AndroidTestCase2 {
 	/**
 	 * Test router service correctly acquires Hash ID from V5 start service ACK
 	 */
+	@Test
 	public void testStartSessionAckV5HashId() {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
@@ -439,6 +440,7 @@ public class SdlRouterServiceTests extends AndroidTestCase2 {
 	/**
 	 * Test router service sends a valid end service request from attemptToCleanupModule()
 	 */
+	@Test
 	public void testEndSessionV5FromAttemptToCleanupModule() {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
@@ -506,6 +508,7 @@ public class SdlRouterServiceTests extends AndroidTestCase2 {
 	 * Test router service sends a valid end service request when it receives a packet from Core
 	 * and the app has been unregistered
 	 */
+	@Test
 	public void testEndSessionV5WhenPacketForUnregisteredAppReceived() {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();
@@ -584,6 +587,7 @@ public class SdlRouterServiceTests extends AndroidTestCase2 {
 	 * Test router service sends a valid end service request when it fails to deliver a message
 	 * to an app
 	 */
+	@Test
 	public void testEndSessionV5WhenSendMessageToClientFailed() {
 		if (Looper.myLooper() == null) {
 			Looper.prepare();

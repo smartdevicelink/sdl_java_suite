@@ -35,10 +35,11 @@
 
 package com.smartdevicelink.managers.screen.choiceset;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import com.livio.taskmaster.Queue;
 import com.livio.taskmaster.Task;
 import com.livio.taskmaster.Taskmaster;
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCResponse;
 import com.smartdevicelink.proxy.interfaces.ISdl;
@@ -51,11 +52,22 @@ import com.smartdevicelink.proxy.rpc.enums.KeyboardLayout;
 import com.smartdevicelink.proxy.rpc.enums.KeypressMode;
 import com.smartdevicelink.proxy.rpc.enums.Language;
 import com.smartdevicelink.proxy.rpc.enums.LayoutMode;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -64,7 +76,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class PresentKeyboardOperationTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class PresentKeyboardOperationTests {
 
 	private PresentKeyboardOperation presentKeyboardOperation;
 	private KeyboardListener keyboardListener;
@@ -73,9 +86,8 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 	private Taskmaster taskmaster;
 	private Queue queue;
 
-	@Override
+	@Before
 	public void setUp() throws Exception{
-		super.setUp();
 
 		internalInterface = mock(ISdl.class);
 		keyboardListener = mock(KeyboardListener.class);
@@ -100,11 +112,6 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		taskmaster.start();
 	}
 
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 	private KeyboardProperties getKeyBoardProperties(){
 		KeyboardProperties properties = new KeyboardProperties();
 		properties.setLanguage(Language.EN_US);
@@ -113,8 +120,9 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		return properties;
 	}
 
+	@Test
 	public void testGetPerformInteraction(){
-		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, getKeyBoardProperties(), "Test", null, keyboardListener, Test.GENERAL_INTEGER);
+		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, getKeyBoardProperties(), "Test", null, keyboardListener, TestValues.GENERAL_INTEGER);
 
 		PerformInteraction pi = presentKeyboardOperation.getPerformInteraction();
 		assertEquals(pi.getInitialText(), "Test");
@@ -122,7 +130,7 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		assertNull(pi.getTimeoutPrompt());
 		assertNull(pi.getVrHelp());
 		assertEquals(pi.getInteractionLayout(), LayoutMode.KEYBOARD);
-		assertEquals(pi.getCancelID(), Test.GENERAL_INTEGER);
+		assertEquals(pi.getCancelID(), TestValues.GENERAL_INTEGER);
 	}
 
 	private void sleep() {
@@ -133,9 +141,10 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		}
 	}
 
+	@Test
 	public void testCancelingKeyboardSuccessfullyIfThreadIsRunning(){
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, Test.GENERAL_INTEGER);
+		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, TestValues.GENERAL_INTEGER);
 		queue.add(presentKeyboardOperation, false);
 		sleep();
 
@@ -148,7 +157,7 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 				Object[] args = invocation.getArguments();
 				CancelInteraction cancelInteraction = (CancelInteraction) args[0];
 
-				assertEquals(cancelInteraction.getCancelID(), Test.GENERAL_INTEGER);
+				assertEquals(cancelInteraction.getCancelID(), TestValues.GENERAL_INTEGER);
 				assertEquals(cancelInteraction.getInteractionFunctionID().intValue(), FunctionID.PERFORM_INTERACTION.getId());
 
 				RPCResponse response = new RPCResponse(FunctionID.CANCEL_INTERACTION.toString());
@@ -166,9 +175,10 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		assertEquals(Task.IN_PROGRESS, presentKeyboardOperation.getState());
 	}
 
+	@Test
 	public void testCancelingKeyboardUnsuccessfullyIfThreadIsRunning(){
         when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-        presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, Test.GENERAL_INTEGER);
+        presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, TestValues.GENERAL_INTEGER);
         queue.add(presentKeyboardOperation, false);
         sleep();
 
@@ -179,7 +189,7 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 				Object[] args = invocation.getArguments();
 				CancelInteraction cancelInteraction = (CancelInteraction) args[0];
 
-				assertEquals(cancelInteraction.getCancelID(), Test.GENERAL_INTEGER);
+				assertEquals(cancelInteraction.getCancelID(), TestValues.GENERAL_INTEGER);
 				assertEquals(cancelInteraction.getInteractionFunctionID().intValue(), FunctionID.PERFORM_INTERACTION.getId());
 
 				RPCResponse response = new RPCResponse(FunctionID.CANCEL_INTERACTION.toString());
@@ -197,9 +207,10 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		assertEquals(Task.IN_PROGRESS, presentKeyboardOperation.getState());
 	}
 
+	@Test
 	public void testCancelingKeyboardIfThreadHasFinished(){
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, Test.GENERAL_INTEGER);
+		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, TestValues.GENERAL_INTEGER);
 		presentKeyboardOperation.finishOperation();
 
 		assertEquals(Task.FINISHED, presentKeyboardOperation.getState());
@@ -210,9 +221,10 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		assertEquals(Task.FINISHED, presentKeyboardOperation.getState());
 	}
 
+	@Test
 	public void testCancelingKeyboardIfThreadHasNotYetRun(){
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(6, 0));
-		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, Test.GENERAL_INTEGER);
+		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, TestValues.GENERAL_INTEGER);
 
 		assertEquals(Task.BLOCKED, presentKeyboardOperation.getState());
 
@@ -229,10 +241,11 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		verify(internalInterface, never()).sendRPC(any(PerformInteraction.class));
 	}
 
+	@Test
 	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeature(){
 		// Cancel Interaction is only supported on RPC specs v.6.0.0+
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
-		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, Test.GENERAL_INTEGER);
+		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, TestValues.GENERAL_INTEGER);
 		queue.add(presentKeyboardOperation, false);
 		sleep();
 
@@ -244,10 +257,11 @@ public class PresentKeyboardOperationTests extends AndroidTestCase2 {
 		verify(internalInterface, times(1)).sendRPC(any(PerformInteraction.class));
 	}
 
+	@Test
 	public void testCancelingChoiceSetIfHeadUnitDoesNotSupportFeatureButThreadIsNotRunning(){
 		// Cancel Interaction is only supported on RPC specs v.6.0.0+
 		when(internalInterface.getSdlMsgVersion()).thenReturn(new SdlMsgVersion(5, 3));
-		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, Test.GENERAL_INTEGER);
+		presentKeyboardOperation = new PresentKeyboardOperation(internalInterface, null, "Test", null, null, TestValues.GENERAL_INTEGER);
 
 		assertEquals(Task.BLOCKED, presentKeyboardOperation.getState());
 

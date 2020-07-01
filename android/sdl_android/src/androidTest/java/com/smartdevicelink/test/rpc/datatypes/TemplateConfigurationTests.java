@@ -4,7 +4,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.proxy.rpc.TemplateConfiguration;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -27,9 +27,9 @@ public class TemplateConfigurationTests extends TestCase {
     public void setUp(){
         msg = new TemplateConfiguration();
 
-        msg.setTemplate(Test.GENERAL_STRING);
-        msg.setDayColorScheme(Test.GENERAL_DAYCOLORSCHEME);
-        msg.setNightColorScheme(Test.GENERAL_NIGHTCOLORSCHEME);
+        msg.setTemplate(TestValues.GENERAL_STRING);
+        msg.setDayColorScheme(TestValues.GENERAL_DAYCOLORSCHEME);
+        msg.setNightColorScheme(TestValues.GENERAL_NIGHTCOLORSCHEME);
 
     }
 
@@ -43,29 +43,29 @@ public class TemplateConfigurationTests extends TestCase {
         TemplateColorScheme testNightColorScheme = msg.getNightColorScheme();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_STRING, testTemplate);
-        assertEquals(Test.MATCH, Test.GENERAL_DAYCOLORSCHEME, testDayColorScheme);
-        assertEquals(Test.MATCH, Test.GENERAL_NIGHTCOLORSCHEME, testNightColorScheme);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, testTemplate);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DAYCOLORSCHEME, testDayColorScheme);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_NIGHTCOLORSCHEME, testNightColorScheme);
         
         // Invalid/Null Tests
         TemplateConfiguration msg = new TemplateConfiguration();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getTemplate());
-        assertNull(Test.NULL, msg.getDayColorScheme());
-        assertNull(Test.NULL, msg.getNightColorScheme());
+        assertNull(TestValues.NULL, msg.getTemplate());
+        assertNull(TestValues.NULL, msg.getDayColorScheme());
+        assertNull(TestValues.NULL, msg.getNightColorScheme());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(TemplateConfiguration.KEY_TEMPLATE, Test.GENERAL_STRING);
-            reference.put(TemplateConfiguration.KEY_DAY_COLOR_SCHEME, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_DAYCOLORSCHEME.getStore()));
-            reference.put(TemplateConfiguration.KEY_NIGHT_COLOR_SCHEME, JsonRPCMarshaller.serializeHashtable(Test.GENERAL_NIGHTCOLORSCHEME.getStore()));
+            reference.put(TemplateConfiguration.KEY_TEMPLATE, TestValues.GENERAL_STRING);
+            reference.put(TemplateConfiguration.KEY_DAY_COLOR_SCHEME, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_DAYCOLORSCHEME.getStore()));
+            reference.put(TemplateConfiguration.KEY_NIGHT_COLOR_SCHEME, JsonRPCMarshaller.serializeHashtable(TestValues.GENERAL_NIGHTCOLORSCHEME.getStore()));
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
@@ -76,19 +76,19 @@ public class TemplateConfigurationTests extends TestCase {
                     JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
                     Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
                     Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-                    assertTrue(Test.TRUE, Validator.validateTemplateColorScheme(new TemplateColorScheme(hashReference), new TemplateColorScheme(hashTest)));
+                    assertTrue(TestValues.TRUE, Validator.validateTemplateColorScheme(new TemplateColorScheme(hashReference), new TemplateColorScheme(hashTest)));
                 } else if (key.equals(TemplateConfiguration.KEY_NIGHT_COLOR_SCHEME)) {
                     JSONObject objectEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(reference, key);
                     JSONObject testEquals = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
                     Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
                     Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
-                    assertTrue(Test.TRUE, Validator.validateTemplateColorScheme(new TemplateColorScheme(hashReference), new TemplateColorScheme(hashTest)));
+                    assertTrue(TestValues.TRUE, Validator.validateTemplateColorScheme(new TemplateColorScheme(hashReference), new TemplateColorScheme(hashTest)));
                 } else {
-                    assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                    assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
                 }
             }
         } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
     }
 }

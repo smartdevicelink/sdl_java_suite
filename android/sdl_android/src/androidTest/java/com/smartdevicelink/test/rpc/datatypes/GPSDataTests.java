@@ -4,7 +4,7 @@ import com.smartdevicelink.proxy.rpc.GPSData;
 import com.smartdevicelink.proxy.rpc.enums.CompassDirection;
 import com.smartdevicelink.proxy.rpc.enums.Dimension;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -25,25 +25,25 @@ public class GPSDataTests extends TestCase{
     public void setUp(){
         msg = new GPSData();
 
-        msg.setActual(Test.GENERAL_BOOLEAN);
-        msg.setAltitude(Test.GENERAL_DOUBLE);
-        msg.setCompassDirection(Test.GENERAL_COMPASSDIRECTION);
-        msg.setDimension(Test.GENERAL_DIMENSION);
-        msg.setHdop(Test.GENERAL_DOUBLE);
-        msg.setHeading(Test.GENERAL_DOUBLE);
-        msg.setLatitudeDegrees(Test.GENERAL_DOUBLE);
-        msg.setLongitudeDegrees(Test.GENERAL_DOUBLE);
-        msg.setPdop(Test.GENERAL_DOUBLE);
-        msg.setSatellites(Test.GENERAL_INT);
-        msg.setSpeed(Test.GENERAL_DOUBLE);
-        msg.setUtcDay(Test.GENERAL_INT);
-        msg.setUtcHours(Test.GENERAL_INT);
-        msg.setUtcMinutes(Test.GENERAL_INT);
-        msg.setUtcMonth(Test.GENERAL_INT);
-        msg.setUtcSeconds(Test.GENERAL_INT);
-        msg.setUtcYear(Test.GENERAL_INT);
-        msg.setVdop(Test.GENERAL_DOUBLE);
-        msg.setShifted(Test.GENERAL_BOOLEAN);
+        msg.setActual(TestValues.GENERAL_BOOLEAN);
+        msg.setAltitude(TestValues.GENERAL_DOUBLE);
+        msg.setCompassDirection(TestValues.GENERAL_COMPASSDIRECTION);
+        msg.setDimension(TestValues.GENERAL_DIMENSION);
+        msg.setHdop(TestValues.GENERAL_DOUBLE);
+        msg.setHeading(TestValues.GENERAL_DOUBLE);
+        msg.setLatitudeDegrees(TestValues.GENERAL_DOUBLE);
+        msg.setLongitudeDegrees(TestValues.GENERAL_DOUBLE);
+        msg.setPdop(TestValues.GENERAL_DOUBLE);
+        msg.setSatellites(TestValues.GENERAL_INT);
+        msg.setSpeed(TestValues.GENERAL_DOUBLE);
+        msg.setUtcDay(TestValues.GENERAL_INT);
+        msg.setUtcHours(TestValues.GENERAL_INT);
+        msg.setUtcMinutes(TestValues.GENERAL_INT);
+        msg.setUtcMonth(TestValues.GENERAL_INT);
+        msg.setUtcSeconds(TestValues.GENERAL_INT);
+        msg.setUtcYear(TestValues.GENERAL_INT);
+        msg.setVdop(TestValues.GENERAL_DOUBLE);
+        msg.setShifted(TestValues.GENERAL_BOOLEAN);
     }
 
     /**
@@ -72,85 +72,85 @@ public class GPSDataTests extends TestCase{
         boolean shifted = msg.getShifted();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, actual);
-        assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, latitude);
-        assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, longitude);
-        assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, altitude);
-        assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, heading);
-        assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, speed);
-        assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, pdop);
-        assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, hdop);
-        assertEquals(Test.MATCH, Test.GENERAL_DOUBLE, vdop);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, utcYear);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, utcMin);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, utcMonths);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, utcDay);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, utcHours);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, utcSec);
-        assertEquals(Test.MATCH, Test.GENERAL_INT, satellites);
-        assertEquals(Test.MATCH, Test.GENERAL_DIMENSION, dimension);
-        assertEquals(Test.MATCH, Test.GENERAL_COMPASSDIRECTION, direction);
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, shifted);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, actual);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, latitude);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, longitude);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, altitude);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, heading);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, speed);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, pdop);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, hdop);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DOUBLE, vdop);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, utcYear);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, utcMin);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, utcMonths);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, utcDay);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, utcHours);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, utcSec);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, satellites);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_DIMENSION, dimension);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_COMPASSDIRECTION, direction);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, shifted);
         
         // Invalid/Null Tests
         GPSData msg = new GPSData();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getActual());
-        assertNull(Test.NULL, msg.getAltitude());
-        assertNull(Test.NULL, msg.getCompassDirection());
-        assertNull(Test.NULL, msg.getDimension());
-        assertNull(Test.NULL, msg.getHdop());
-        assertNull(Test.NULL, msg.getHeading());
-        assertNull(Test.NULL, msg.getLatitudeDegrees());
-        assertNull(Test.NULL, msg.getLongitudeDegrees());
-        assertNull(Test.NULL, msg.getPdop());
-        assertNull(Test.NULL, msg.getSatellites());
-        assertNull(Test.NULL, msg.getSpeed());
-        assertNull(Test.NULL, msg.getUtcDay());
-        assertNull(Test.NULL, msg.getUtcHours());
-        assertNull(Test.NULL, msg.getUtcMinutes());
-        assertNull(Test.NULL, msg.getUtcMonth());
-        assertNull(Test.NULL, msg.getUtcSeconds());
-        assertNull(Test.NULL, msg.getUtcYear());
-        assertNull(Test.NULL, msg.getVdop());
-        assertNull(Test.NULL, msg.getShifted());
+        assertNull(TestValues.NULL, msg.getActual());
+        assertNull(TestValues.NULL, msg.getAltitude());
+        assertNull(TestValues.NULL, msg.getCompassDirection());
+        assertNull(TestValues.NULL, msg.getDimension());
+        assertNull(TestValues.NULL, msg.getHdop());
+        assertNull(TestValues.NULL, msg.getHeading());
+        assertNull(TestValues.NULL, msg.getLatitudeDegrees());
+        assertNull(TestValues.NULL, msg.getLongitudeDegrees());
+        assertNull(TestValues.NULL, msg.getPdop());
+        assertNull(TestValues.NULL, msg.getSatellites());
+        assertNull(TestValues.NULL, msg.getSpeed());
+        assertNull(TestValues.NULL, msg.getUtcDay());
+        assertNull(TestValues.NULL, msg.getUtcHours());
+        assertNull(TestValues.NULL, msg.getUtcMinutes());
+        assertNull(TestValues.NULL, msg.getUtcMonth());
+        assertNull(TestValues.NULL, msg.getUtcSeconds());
+        assertNull(TestValues.NULL, msg.getUtcYear());
+        assertNull(TestValues.NULL, msg.getVdop());
+        assertNull(TestValues.NULL, msg.getShifted());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(GPSData.KEY_ACTUAL, Test.GENERAL_BOOLEAN);
-            reference.put(GPSData.KEY_LATITUDE_DEGREES, Test.GENERAL_DOUBLE);
-            reference.put(GPSData.KEY_LONGITUDE_DEGREES, Test.GENERAL_DOUBLE);
-            reference.put(GPSData.KEY_ALTITUDE, Test.GENERAL_DOUBLE);
-            reference.put(GPSData.KEY_HEADING, Test.GENERAL_DOUBLE);
-            reference.put(GPSData.KEY_SPEED, Test.GENERAL_DOUBLE);
-            reference.put(GPSData.KEY_PDOP, Test.GENERAL_DOUBLE);
-            reference.put(GPSData.KEY_HDOP, Test.GENERAL_DOUBLE);
-            reference.put(GPSData.KEY_VDOP, Test.GENERAL_DOUBLE);
-            reference.put(GPSData.KEY_UTC_YEAR, Test.GENERAL_INT);
-            reference.put(GPSData.KEY_UTC_MONTH, Test.GENERAL_INT);
-            reference.put(GPSData.KEY_UTC_HOURS, Test.GENERAL_INT);
-            reference.put(GPSData.KEY_UTC_DAY, Test.GENERAL_INT);
-            reference.put(GPSData.KEY_UTC_MINUTES, Test.GENERAL_INT);
-            reference.put(GPSData.KEY_UTC_SECONDS, Test.GENERAL_INT);
-            reference.put(GPSData.KEY_SATELLITES, Test.GENERAL_INT);
-            reference.put(GPSData.KEY_DIMENSION, Test.GENERAL_DIMENSION);
-            reference.put(GPSData.KEY_COMPASS_DIRECTION, Test.GENERAL_COMPASSDIRECTION);
-            reference.put(GPSData.KEY_SHIFTED, Test.GENERAL_BOOLEAN);
+            reference.put(GPSData.KEY_ACTUAL, TestValues.GENERAL_BOOLEAN);
+            reference.put(GPSData.KEY_LATITUDE_DEGREES, TestValues.GENERAL_DOUBLE);
+            reference.put(GPSData.KEY_LONGITUDE_DEGREES, TestValues.GENERAL_DOUBLE);
+            reference.put(GPSData.KEY_ALTITUDE, TestValues.GENERAL_DOUBLE);
+            reference.put(GPSData.KEY_HEADING, TestValues.GENERAL_DOUBLE);
+            reference.put(GPSData.KEY_SPEED, TestValues.GENERAL_DOUBLE);
+            reference.put(GPSData.KEY_PDOP, TestValues.GENERAL_DOUBLE);
+            reference.put(GPSData.KEY_HDOP, TestValues.GENERAL_DOUBLE);
+            reference.put(GPSData.KEY_VDOP, TestValues.GENERAL_DOUBLE);
+            reference.put(GPSData.KEY_UTC_YEAR, TestValues.GENERAL_INT);
+            reference.put(GPSData.KEY_UTC_MONTH, TestValues.GENERAL_INT);
+            reference.put(GPSData.KEY_UTC_HOURS, TestValues.GENERAL_INT);
+            reference.put(GPSData.KEY_UTC_DAY, TestValues.GENERAL_INT);
+            reference.put(GPSData.KEY_UTC_MINUTES, TestValues.GENERAL_INT);
+            reference.put(GPSData.KEY_UTC_SECONDS, TestValues.GENERAL_INT);
+            reference.put(GPSData.KEY_SATELLITES, TestValues.GENERAL_INT);
+            reference.put(GPSData.KEY_DIMENSION, TestValues.GENERAL_DIMENSION);
+            reference.put(GPSData.KEY_COMPASS_DIRECTION, TestValues.GENERAL_COMPASSDIRECTION);
+            reference.put(GPSData.KEY_SHIFTED, TestValues.GENERAL_BOOLEAN);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
     }
 }

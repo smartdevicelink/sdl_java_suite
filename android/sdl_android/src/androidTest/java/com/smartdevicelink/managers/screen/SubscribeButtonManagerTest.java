@@ -1,6 +1,7 @@
 package com.smartdevicelink.managers.screen;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
@@ -14,14 +15,23 @@ import com.smartdevicelink.proxy.rpc.UnsubscribeButtonResponse;
 import com.smartdevicelink.proxy.rpc.enums.ButtonName;
 import com.smartdevicelink.proxy.rpc.enums.Result;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
-public class SubscribeButtonManagerTest extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class SubscribeButtonManagerTest {
     private SubscribeButtonManager subscribeButtonManager;
     private ISdl internalInterface;
 
@@ -92,24 +102,26 @@ public class SubscribeButtonManagerTest extends AndroidTestCase2 {
         }
     };
 
-    @Override
+    @Before
     public void setUp() throws Exception {
-        super.setUp();
         internalInterface = mock(ISdl.class);
         subscribeButtonManager = new SubscribeButtonManager(internalInterface);
     }
 
+    @Test
     public void testInstantiation(){
         assertNotNull(subscribeButtonManager.onButtonListeners);
         assertEquals(subscribeButtonManager.getState(), BaseSubManager.SETTING_UP);
     }
 
+    @Test
     public void testDispose() {
         subscribeButtonManager.addButtonListener(ButtonName.VOLUME_UP, listener);
         subscribeButtonManager.dispose();
         assertTrue(subscribeButtonManager.onButtonListeners.size() == 0);
     }
 
+    @Test
     public void testAddButtonListener() {
         doAnswer(onSubscribe_UnsubscribeSuccess).when(internalInterface).sendRPC(any(RPCMessage.class));
 
@@ -124,12 +136,14 @@ public class SubscribeButtonManagerTest extends AndroidTestCase2 {
 
     }
 
+    @Test
     public void testAddButtonListenerError(){
         doAnswer(onSubscribeFail).when(internalInterface).sendRPC(any(RPCMessage.class));
         subscribeButtonManager.addButtonListener(ButtonName.VOLUME_UP, listener);
         assertFalse(subscribeButtonManager.onButtonListeners.containsKey(ButtonName.VOLUME_UP));
     }
 
+    @Test
     public void testRemoveButtonListener() {
         doAnswer(onSubscribe_UnsubscribeSuccess).when(internalInterface).sendRPC(any(RPCMessage.class));
 

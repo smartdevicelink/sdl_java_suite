@@ -4,10 +4,12 @@ import com.smartdevicelink.protocol.enums.FunctionID;
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.rpc.SetCloudAppProperties;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import static junit.framework.TestCase.fail;
 
 public class SetCloudAppPropertiesTests extends BaseRpcTests {
 
@@ -15,7 +17,7 @@ public class SetCloudAppPropertiesTests extends BaseRpcTests {
     protected RPCMessage createMessage(){
         SetCloudAppProperties msg = new SetCloudAppProperties();
 
-        msg.setProperties(Test.GENERAL_CLOUDAPPPROPERTIES);
+        msg.setProperties(TestValues.GENERAL_CLOUDAPPPROPERTIES);
 
         return msg;
     }
@@ -35,9 +37,9 @@ public class SetCloudAppPropertiesTests extends BaseRpcTests {
         JSONObject result = new JSONObject();
 
         try{
-            result.put(SetCloudAppProperties.KEY_PROPERTIES, Test.GENERAL_CLOUDAPPPROPERTIES.serializeJSON());
+            result.put(SetCloudAppProperties.KEY_PROPERTIES, TestValues.GENERAL_CLOUDAPPPROPERTIES.serializeJSON());
         }catch(JSONException e){
-            fail(Test.JSON_FAIL);
+            fail(TestValues.JSON_FAIL);
         }
 
         return result;
