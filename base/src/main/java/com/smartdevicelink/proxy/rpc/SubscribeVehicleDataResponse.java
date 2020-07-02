@@ -228,6 +228,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * Gets currently selected gear data
      * @param prndl a VehicleDataResult related to the PRNDL status (automatic transmission gear)
      */
+    @Deprecated
     public void setPrndl(VehicleDataResult prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
@@ -235,6 +236,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
      * Gets currently selected gear data
      * @return a VehicleDataResult related to the PRNDL status (automatic transmission gear)
      */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public VehicleDataResult getPrndl() {
         return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_PRNDL);

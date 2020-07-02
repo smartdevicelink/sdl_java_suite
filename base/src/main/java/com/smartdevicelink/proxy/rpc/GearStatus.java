@@ -1,7 +1,5 @@
 package com.smartdevicelink.proxy.rpc;
 
-import android.support.annotation.NonNull;
-
 import com.smartdevicelink.proxy.RPCStruct;
 import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.TransmissionType;
@@ -24,24 +22,6 @@ public class GearStatus extends RPCStruct {
      */
     public GearStatus(Hashtable<String, Object> hash) {
         super(hash);
-    }
-
-    /**
-     * Constructs a newly allocated GearStatus object
-     *
-     * @param userSelectedGear PRNDL
-     * @param actualGear PRNDL
-     * @param transmissionType TransmissionType
-     */
-    public GearStatus(
-            @NonNull PRNDL userSelectedGear,
-            @NonNull PRNDL actualGear,
-            @NonNull TransmissionType transmissionType
-    ) {
-        this();
-        setUserSelectedGear(userSelectedGear);
-        setActualGear(actualGear);
-        setTransmissionType(transmissionType);
     }
 
     /**

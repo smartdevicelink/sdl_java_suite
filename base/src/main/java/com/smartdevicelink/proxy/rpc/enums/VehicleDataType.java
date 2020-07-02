@@ -71,6 +71,7 @@ public enum VehicleDataType {
     /**
      * Notifies PRNDLData may be subscribed
      */
+    @Deprecated
     VEHICLEDATA_PRNDL,
     /**
      * Notifies TIREPRESSUREData may be subscribed

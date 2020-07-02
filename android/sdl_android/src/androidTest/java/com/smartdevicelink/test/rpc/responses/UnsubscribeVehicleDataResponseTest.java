@@ -359,7 +359,7 @@ public class UnsubscribeVehicleDataResponseTest extends BaseRpcTests {
 			VehicleDataResult referenceEBrakeStatus = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(eBrakeStatus));
 			assertTrue(Test.TRUE, Validator.validateVehicleDataResult(referenceEBrakeStatus, cmd.getElectronicParkBrakeStatus()));
 
-			JSONObject gearStatus = JsonUtils.readJsonObjectFromJsonObject(parameters, SubscribeVehicleDataResponse.KEY_GEAR_STATUS);
+			JSONObject gearStatus = JsonUtils.readJsonObjectFromJsonObject(parameters, UnsubscribeVehicleDataResponse.KEY_GEAR_STATUS);
 			VehicleDataResult referenceGearStatus = new VehicleDataResult(JsonRPCMarshaller.deserializeJSONObject(gearStatus));
 			assertTrue(Test.TRUE, Validator.validateVehicleDataResult(referenceGearStatus, cmd.getGearStatus()));
 

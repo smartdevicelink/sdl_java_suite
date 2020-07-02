@@ -379,7 +379,7 @@ public class GetVehicleData extends RPCRequest {
     }
 
     /**
-     * This parameter is deprecated starting RPC Spec X.x.x, please see Gear
+     * This parameter is deprecated starting RPC Spec X.x.x, please see GearStatus
      * Gets a boolean value. If true, means the Currently selected gear data has been
      * subscribed.
      * @return Boolean -a Boolean value. If true, means the Currently selected gear data

@@ -167,9 +167,13 @@ public class GetVehicleDataResponse extends RPCResponse {
     public String getVin() {
     	return getString(KEY_VIN);
     }
+
+    @Deprecated
     public void setPrndl(PRNDL prndl) {
         setParameters(KEY_PRNDL, prndl);
     }
+
+    @Deprecated
     public PRNDL getPrndl() {
         return (PRNDL) getObject(PRNDL.class, KEY_PRNDL);
     }

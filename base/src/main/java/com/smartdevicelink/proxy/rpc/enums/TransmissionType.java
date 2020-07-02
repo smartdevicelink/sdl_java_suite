@@ -40,9 +40,9 @@ public enum TransmissionType {
 	DIRECT_DRIVE;
 
     /**
-     * Convert String to PRNDL
+     * Convert String to TransmissionType
      * @param value String
-     * @return PRNDL
+     * @return TransmissionType
      */
     public static TransmissionType valueForString(String value) {
         try{

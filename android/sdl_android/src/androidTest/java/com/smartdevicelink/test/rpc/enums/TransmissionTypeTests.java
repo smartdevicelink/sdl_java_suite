@@ -22,22 +22,23 @@ public class TransmissionTypeTests extends TestCase {
         example = "DUAL_CLUTCH";
         TransmissionType dualClutch = TransmissionType.valueForString(example);
         example = "CONTINUOUSLY_VARIABLE";
-        TransmissionType enumSport = TransmissionType.valueForString(example);
-        example = "INFINITELY_VARIABLE";
         TransmissionType continuouslyVariable = TransmissionType.valueForString(example);
+        example = "INFINITELY_VARIABLE";
+        TransmissionType infinitely_variable = TransmissionType.valueForString(example);
         example = "ELECTRIC_VARIABLE";
         TransmissionType electricVariable = TransmissionType.valueForString(example);
         example = "DIRECT_DRIVE";
         TransmissionType directDrive = TransmissionType.valueForString(example);
 
-        assertNotNull("PARK returned null", manual);
-        assertNotNull("REVERSE returned null", automatic);
-        assertNotNull("NEUTRAL returned null", semiAutomatic);
-        assertNotNull("DRIVE returned null", dualClutch);
-        assertNotNull("SPORT returned null", enumSport);
-        assertNotNull("LOWGEAR returned null", continuouslyVariable);
-        assertNotNull("FIRST returned null", electricVariable);
-        assertNotNull("FIRST returned null", directDrive);
+        assertNotNull("MANUAL returned null", manual);
+        assertNotNull("AUTOMATIC returned null", automatic);
+        assertNotNull("SEMI_AUTOMATIC returned null", semiAutomatic);
+        assertNotNull("DUAL_CLUTCH returned null", dualClutch);
+        assertNotNull("CONTINUOUSLY_VARIABLE returned null", continuouslyVariable);
+        assertNotNull("INFINITELY_VARIABLE returned null", continuouslyVariable);
+        assertNotNull("ELECTRIC_VARIABLE returned null", electricVariable);
+        assertNotNull("DIRECT_DRIVE returned null", directDrive);
+
     }
 
     /**

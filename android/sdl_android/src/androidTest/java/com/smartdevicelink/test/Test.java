@@ -38,6 +38,7 @@ import com.smartdevicelink.proxy.rpc.DeviceInfo;
 import com.smartdevicelink.proxy.rpc.DisplayCapabilities;
 import com.smartdevicelink.proxy.rpc.DisplayCapability;
 import com.smartdevicelink.proxy.rpc.EqualizerSettings;
+import com.smartdevicelink.proxy.rpc.GearStatus;
 import com.smartdevicelink.proxy.rpc.Grid;
 import com.smartdevicelink.proxy.rpc.HMICapabilities;
 import com.smartdevicelink.proxy.rpc.HMIPermissions;
@@ -164,6 +165,7 @@ import com.smartdevicelink.proxy.rpc.enums.MetadataType;
 import com.smartdevicelink.proxy.rpc.enums.ModuleType;
 import com.smartdevicelink.proxy.rpc.enums.NavigationAction;
 import com.smartdevicelink.proxy.rpc.enums.NavigationJunction;
+import com.smartdevicelink.proxy.rpc.enums.PRNDL;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
@@ -187,6 +189,7 @@ import com.smartdevicelink.proxy.rpc.enums.TemperatureUnit;
 import com.smartdevicelink.proxy.rpc.enums.TextAlignment;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
+import com.smartdevicelink.proxy.rpc.enums.TransmissionType;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.enums.UpdateMode;
 import com.smartdevicelink.proxy.rpc.enums.VehicleDataEventStatus;
@@ -435,6 +438,10 @@ public class Test {
 	public static final SeatLocation                   GENERAL_SEAT_LOCATION                  = new SeatLocation();
 	public static final ModuleInfo                     GENERAL_MODULE_INFO                    = new ModuleInfo();
 	public static final WindowType                     GENERAL_WINDOWTYPE                     = WindowType.MAIN;
+	public static final GearStatus                     GENERAL_GEAR_STATUS                    = new GearStatus();
+	public static final PRNDL                    	 	GENERAL_USER_SELECTED_GEAR             = PRNDL.NEUTRAL;
+	public static final PRNDL                    	 	GENERAL_ACTUAL_GEAR             	   = PRNDL.DRIVE;
+	public static final TransmissionType                GENERAL_TRANSMISSION_TYPE              = TransmissionType.AUTOMATIC;
 	public static final List<Long>                      GENERAL_LONG_LIST                      = Arrays.asList(new Long[]{ 1L, 2L });
 	public static final List<Turn>                      GENERAL_TURN_LIST                      = new ArrayList<Turn>();
 	public static final List<Choice>                    GENERAL_CHOICE_LIST                    = new ArrayList<Choice>();
@@ -1114,6 +1121,10 @@ public class Test {
 		GENERAL_MODULE_INFO.setModuleLocation(Test.GENERAL_GRID);
 		GENERAL_MODULE_INFO.setModuleServiceArea(Test.GENERAL_GRID);
 		GENERAL_MODULE_INFO.setMultipleAccessAllowance(Test.GENERAL_BOOLEAN);
+
+		GENERAL_GEAR_STATUS.setActualGear(GENERAL_ACTUAL_GEAR);
+		GENERAL_GEAR_STATUS.setTransmissionType(GENERAL_TRANSMISSION_TYPE);
+		GENERAL_GEAR_STATUS.setUserSelectedGear(GENERAL_USER_SELECTED_GEAR);
 
 
 		try {
