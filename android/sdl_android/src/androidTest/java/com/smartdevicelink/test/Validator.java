@@ -2316,7 +2316,7 @@ public class Validator{
             if (item1.get(i).getType() != item2.get(i).getType()) {
                 return false;
             }
-            if (item1.get(i).getRange() != item2.get(i).getRange()) {
+            if (!item1.get(i).getRange().equals(item2.get(i).getRange())) {
                 return false;
             }
 

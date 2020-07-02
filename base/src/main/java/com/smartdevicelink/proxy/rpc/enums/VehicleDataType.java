@@ -50,12 +50,12 @@ public enum VehicleDataType {
     VEHICLEDATA_RPM,
     /**
      * Notifies FUELLEVELData may be subscribed
-     * until Smart Device Link X.x
+     * until Smart Device Link 6.0
      */
     VEHICLEDATA_FUELLEVEL,
     /**
      * Notifies FUELLEVEL_STATEData may be subscribed
-     * until Smart Device Link X.x
+     * until Smart Device Link 6.0
      */
     VEHICLEDATA_FUELLEVEL_STATE,
     /**
