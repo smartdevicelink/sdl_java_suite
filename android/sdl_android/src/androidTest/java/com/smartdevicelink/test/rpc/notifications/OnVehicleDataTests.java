@@ -12,7 +12,6 @@ import com.smartdevicelink.proxy.rpc.ECallInfo;
 import com.smartdevicelink.proxy.rpc.EmergencyEvent;
 import com.smartdevicelink.proxy.rpc.FuelRange;
 import com.smartdevicelink.proxy.rpc.GPSData;
-import com.smartdevicelink.proxy.rpc.GetVehicleDataResponse;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.MyKey;
 import com.smartdevicelink.proxy.rpc.OnVehicleData;
@@ -168,7 +167,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 	    assertTrue(Test.TRUE, Validator.validateClusterModeStatus(VehicleDataHelper.CLUSTER_MODE_STATUS, cluster));
 	    assertTrue(Test.TRUE, Validator.validateMyKey(VehicleDataHelper.MY_KEY, key));
 	    assertTrue(Test.TRUE, Validator.validateFuelRange(VehicleDataHelper.FUEL_RANGE_LIST, fuelRangeList));
-	    assertTrue(Test.TRUE, Validator.validateWindowStatus(VehicleDataHelper.WINDOW_STATUS_LIST, windowStatusList));
+	    assertTrue(Test.TRUE, Validator.validateWindowStatuses(VehicleDataHelper.WINDOW_STATUS_LIST, windowStatusList));
 	    assertEquals(Test.MATCH, VehicleDataHelper.TURN_SIGNAL, turnSignal);
 	    assertEquals(Test.MATCH, VehicleDataHelper.ELECTRONIC_PARK_BRAKE_STATUS, electronicParkBrakeStatus);
 	    assertEquals(Test.MATCH, VehicleDataHelper.OEM_CUSTOM_VEHICLE_DATA_STATE, oemCustomVehicleData);
@@ -523,7 +522,7 @@ public class OnVehicleDataTests extends BaseRpcTests{
 					}
 
 					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateWindowStatus(
+							Validator.validateWindowStatuses(
 									windowStatusReferenceList,
 									windowStatusUnderTestList));
 				}

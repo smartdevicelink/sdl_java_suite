@@ -41,7 +41,7 @@ public class WindowStatusTests extends TestCase {
             JSONObject underTest = msg.serializeJSON();
             assertEquals(Test.MATCH, reference.length(), underTest.length());
 
-            assertTrue(Validator.validateWindowStatus(
+            assertTrue(Validator.validateWindowStatuses(
                     new WindowStatus(JsonRPCMarshaller.deserializeJSONObject(reference)),
                     new WindowStatus(JsonRPCMarshaller.deserializeJSONObject(underTest)))
             );

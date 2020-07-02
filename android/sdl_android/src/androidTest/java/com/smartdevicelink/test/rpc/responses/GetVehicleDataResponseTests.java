@@ -433,7 +433,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 					}
 
 					assertTrue("JSON value didn't match expected value for key \"" + key + "\".",
-							Validator.validateWindowStatus(
+							Validator.validateWindowStatuses(
 									windowStatusReferenceList,
 									windowStatusUnderTestList));
 				}
@@ -612,7 +612,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
 				WindowStatus status = new WindowStatus(JsonRPCMarshaller.deserializeJSONObject( (JSONObject)windowStatusArray.get(index)) );
 				windowStatus.add(status);
 			}
-			assertTrue(Test.TRUE, Validator.validateWindowStatus(windowStatus, cmd.getWindowStatus()) );
+			assertTrue(Test.TRUE, Validator.validateWindowStatuses(windowStatus, cmd.getWindowStatus()) );
 
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_TURN_SIGNAL), cmd.getTurnSignal().toString());
 			assertEquals(Test.MATCH, JsonUtils.readStringFromJsonObject(parameters, GetVehicleDataResponse.KEY_ELECTRONIC_PARK_BRAKE_STATUS), cmd.getElectronicParkBrakeStatus().toString());

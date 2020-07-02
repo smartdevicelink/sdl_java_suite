@@ -1,7 +1,6 @@
 package com.smartdevicelink.test;
 
 import com.smartdevicelink.managers.file.filetypes.SdlFile;
-import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.protocol.enums.FrameData;
 import com.smartdevicelink.protocol.enums.FrameDataControlFrameType;
 import com.smartdevicelink.protocol.enums.FrameType;
@@ -16,9 +15,6 @@ import com.smartdevicelink.proxy.rpc.enums.PrerecordedSpeech;
 import com.smartdevicelink.proxy.rpc.enums.SpeechCapabilities;
 import com.smartdevicelink.proxy.rpc.enums.VentilationMode;
 
-import org.json.JSONObject;
-
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -3806,7 +3802,7 @@ public class Validator{
 		return validateGrid(cap1.getGrid(), cap2.getGrid());
 	}
 
-    public static boolean validateWindowStatus(List<WindowStatus> item1, List<WindowStatus> item2) {
+    public static boolean validateWindowStatuses(List<WindowStatus> item1, List<WindowStatus> item2) {
         if (item1 == null) {
             return ( item2 == null );
         }
@@ -3825,7 +3821,7 @@ public class Validator{
             WindowStatus windowStatus1 = iterator1.next();
             WindowStatus windowStatus2 = iterator2.next();
 
-            if(!validateWindowStatus(windowStatus1, windowStatus2)){
+            if(!validateWindowStatuses(windowStatus1, windowStatus2)){
                 return false;
             }
         }
@@ -3833,7 +3829,7 @@ public class Validator{
         return true;
     }
 
-    public static boolean validateWindowStatus(WindowStatus item1, WindowStatus item2) {
+    public static boolean validateWindowStatuses(WindowStatus item1, WindowStatus item2) {
         if (item1 == null) {
             return ( item2 == null );
         }

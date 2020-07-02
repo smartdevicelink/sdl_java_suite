@@ -534,11 +534,11 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     }
 
     /**
-     * Sets a vehicleDataResult value for VehicleDataResult.
-     * @param vehicleDataResult a VehicleDataResult value
+     * Sets a vehicleDataResult value for WindowStatus.
+     * @param windowStatus a VehicleDataResult value
      */
-    public void setWindowStatus(VehicleDataResult vehicleDataResult){
-        setParameters(KEY_WINDOW_STATUS, vehicleDataResult);
+    public void setWindowStatus(VehicleDataResult windowStatus){
+        setParameters(KEY_WINDOW_STATUS, windowStatus);
     }
 
     /**
