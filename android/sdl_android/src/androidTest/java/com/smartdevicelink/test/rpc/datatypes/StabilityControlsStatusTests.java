@@ -40,7 +40,7 @@ public class StabilityControlsStatusTests extends TestCase {
         JSONObject reference = new JSONObject();
 
         try {
-            reference.put(StabilityControlsStatus.KEY_TRAILER_S_WAY_CONTROL, Test.GENERAL_S_WAY_CONTROL);
+            reference.put(StabilityControlsStatus.KEY_TRAILER_SWAY_CONTROL, Test.GENERAL_S_WAY_CONTROL);
             reference.put(StabilityControlsStatus.KEY_ESC_SYSTEM, Test.GENERAL_ESC_SYSTEM);
 
             JSONObject underTest = msg.serializeJSON();

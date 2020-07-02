@@ -7,7 +7,7 @@ import java.util.Hashtable;
 
 public class StabilityControlsStatus extends RPCStruct {
     public static final String KEY_ESC_SYSTEM = "escSystem";
-    public static final String KEY_TRAILER_S_WAY_CONTROL = "trailerSwayControl";
+    public static final String KEY_TRAILER_SWAY_CONTROL = "trailerSwayControl";
 
 
     /**
@@ -23,18 +23,6 @@ public class StabilityControlsStatus extends RPCStruct {
      */
     public StabilityControlsStatus(Hashtable<String, Object> hash) {
         super(hash);
-    }
-
-    /**
-     * <p>Constructs a new StabilityControlsStatus object from escSystem and trailerSwayControl
-     * </p>
-     *
-     * @param escSystem The Hashtable to use
-     */
-    public StabilityControlsStatus(VehicleDataStatus escSystem, VehicleDataStatus trailerSwayControl) {
-        this();
-        setEscSystem(escSystem);
-        setTrailerSwayControl(trailerSwayControl);
     }
 
     /***
@@ -57,13 +45,13 @@ public class StabilityControlsStatus extends RPCStruct {
      * @param status VehicleDataStatus
      */
     public void setTrailerSwayControl(VehicleDataStatus status){
-        setValue(KEY_TRAILER_S_WAY_CONTROL, status);
+        setValue(KEY_TRAILER_SWAY_CONTROL, status);
     }
 
     /***
      * @return VehicleDataStatus for trailerSwayControl
      */
     public VehicleDataStatus getTrailerSWayControl() {
-        return (VehicleDataStatus) getObject(VehicleDataStatus.class, KEY_TRAILER_S_WAY_CONTROL);
+        return (VehicleDataStatus) getObject(VehicleDataStatus.class, KEY_TRAILER_SWAY_CONTROL);
     }
 }

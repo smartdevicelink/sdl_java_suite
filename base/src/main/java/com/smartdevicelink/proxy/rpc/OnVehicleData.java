@@ -324,7 +324,7 @@ public class OnVehicleData extends RPCNotification {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
-    public static final String KEY_STABILITY_CONTROL_STATUS = "stabilityControlsStatus";
+    public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
     public OnVehicleData() {
         super(FunctionID.ON_VEHICLE_DATA.toString());
@@ -602,17 +602,17 @@ public class OnVehicleData extends RPCNotification {
 
     /**
      * Sets a value for StabilityControlsStatus.
-     * @param status a StabilityControlsStatus value
+     * @param stabilityControlsStatus a StabilityControlsStatus value
      */
-    public void setStabilityControlStatus(StabilityControlsStatus status){
-        setParameters(KEY_STABILITY_CONTROL_STATUS, status);
+    public void setStabilityControlsStatus(StabilityControlsStatus stabilityControlsStatus){
+        setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
     }
 
     /**
      * Gets a StabilityControlsStatus value.
      * @return a StabilityControlsStatus
      */
-    public StabilityControlsStatus getStabilityControlStatus(){
-        return (StabilityControlsStatus) getObject(StabilityControlsStatus.class, KEY_STABILITY_CONTROL_STATUS);
+    public StabilityControlsStatus getStabilityControlsStatus(){
+        return (StabilityControlsStatus) getObject(StabilityControlsStatus.class, KEY_STABILITY_CONTROLS_STATUS);
     }
 }

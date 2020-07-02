@@ -74,7 +74,7 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
 	public static final String KEY_TURN_SIGNAL = "turnSignal";
 	public static final String KEY_ELECTRONIC_PARK_BRAKE_STATUS = "electronicParkBrakeStatus";
     public static final String KEY_CLOUD_APP_VEHICLE_ID = "cloudAppVehicleID";
-    public static final String KEY_STABILITY_CONTROL_STATUS = "stabilityControlsStatus";
+    public static final String KEY_STABILITY_CONTROLS_STATUS = "stabilityControlsStatus";
 
 	/**
 	 * Constructs a new SubscribeVehicleDataResponse object
@@ -534,18 +534,18 @@ public class SubscribeVehicleDataResponse extends RPCResponse {
     }
 
     /**
-     * Sets a value for StabilityControlStatus.
+     * Sets a value for StabilityControlsStatus.
      * @param stabilityControlsStatus a VehicleDataResult value
      */
     public void setStabilityControlsStatus(VehicleDataResult stabilityControlsStatus){
-        setParameters(KEY_STABILITY_CONTROL_STATUS, stabilityControlsStatus);
+        setParameters(KEY_STABILITY_CONTROLS_STATUS, stabilityControlsStatus);
     }
 
     /**
-     * Gets a StabilityControlStatus for the Stability Control Status.
-     * @return a VehicleDataResult related to the Stability Control Status
+     * Gets a StabilityControlsStatus for the Stability Control Status.
+     * @return a VehicleDataResult related to the StabilityControlsStatus
      */
-    public VehicleDataResult getStabilityControlStatus(){
-        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_STABILITY_CONTROL_STATUS);
+    public VehicleDataResult getStabilityControlsStatus(){
+        return (VehicleDataResult) getObject(VehicleDataResult.class, KEY_STABILITY_CONTROLS_STATUS);
     }
 }
