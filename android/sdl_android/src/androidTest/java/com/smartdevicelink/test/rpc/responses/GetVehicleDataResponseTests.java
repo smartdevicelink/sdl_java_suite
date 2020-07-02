@@ -489,6 +489,7 @@ public class GetVehicleDataResponseTests extends BaseRpcTests{
         assertNull(Test.NULL, msg.getMyKey());
         assertNull(Test.NULL, msg.getTurnSignal());
         assertNull(Test.NULL, msg.getElectronicParkBrakeStatus());
+		assertNull(Test.NULL, msg.getHandsOffSteering());
         assertNull(Test.NULL, msg.getOEMCustomVehicleData(Test.GENERAL_OEM_CUSTOM_VEHICLE_DATA_NAME));
     }
     
