@@ -1,13 +1,21 @@
 package com.smartdevicelink.test.util;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.util.Version;
 
-public class VersionTest extends AndroidTestCase2 {
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static junit.framework.TestCase.assertEquals;
+
+@RunWith(AndroidJUnit4.class)
+public class VersionTest {
 
     private static final String TEST_VERSION_STRING = "1.2.3";
     private static final Version TEST_VERSION = new Version(1,2,3);
 
+    @Test
     public void testConstructorCorrect(){
         Version version = new Version(TEST_VERSION_STRING);
         assertEquals(1, version.getMajor());
@@ -15,6 +23,7 @@ public class VersionTest extends AndroidTestCase2 {
         assertEquals(3, version.getPatch());
     }
 
+    @Test
     public void testConstructorIncorrect(){
         try{
             Version version = new Version("1.2");
@@ -24,11 +33,13 @@ public class VersionTest extends AndroidTestCase2 {
         assert false;
     }
 
+    @Test
     public void testToString(){
         Version version = new Version(TEST_VERSION_STRING);
         assertEquals(version.toString(), TEST_VERSION_STRING);
     }
 
+    @Test
     public void testisNewerThan(){
         Version version1 = new Version(5,0,0);
 
@@ -47,6 +58,7 @@ public class VersionTest extends AndroidTestCase2 {
 
     }
 
+    @Test
     public void testIsBetween(){
 
         assertEquals(TEST_VERSION.isBetween(new Version(1,0,0), new Version (2,0,0)), 1);

@@ -2,8 +2,8 @@ package com.smartdevicelink.transport;
 
 import android.content.ComponentName;
 import android.os.Looper;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlPacketFactory;
 import com.smartdevicelink.protocol.enums.SessionType;
@@ -11,10 +11,22 @@ import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.Collections;
 import java.util.List;
 
-public class TransportManagerTests extends AndroidTestCase2 {
+import static android.support.test.InstrumentationRegistry.getContext;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+
+@RunWith(AndroidJUnit4.class)
+public class TransportManagerTests {
 
     MultiplexTransportConfig config;
     final TransportRecord defaultBtRecord = new TransportRecord(TransportType.BLUETOOTH, "12:34:56:78:90");
@@ -36,9 +48,9 @@ public class TransportManagerTests extends AndroidTestCase2 {
     };
 
 
-    @Override
-    protected void setUp() throws Exception {
-        config = new MultiplexTransportConfig(this.mContext, SdlUnitTestContants.TEST_APP_ID);
+    @Before
+    public void setUp() throws Exception {
+        config = new MultiplexTransportConfig(getContext(), SdlUnitTestContants.TEST_APP_ID);
         config.setService(routerServiceComponentName);
         if (Looper.myLooper() == null) {
             Looper.prepare();
@@ -54,18 +66,20 @@ public class TransportManagerTests extends AndroidTestCase2 {
         assertNull(manager.legacyBluetoothHandler);
 
         manager.exitLegacyMode("Test");
-        manager.transport = manager.new TransportBrokerImpl(mContext, config.appId, routerServiceComponentName);
+        manager.transport = manager.new TransportBrokerImpl(getContext(), config.appId, routerServiceComponentName);
 
         manager.start();
         assert true;
         return manager;
     }
 
+    @Test
     public void testBase(){
         TransportManager manager = new TransportManager(config,defaultListener);
         assertNotNull(manager);
     }
 
+    @Test
     public void testConnectionStatus(){
         TransportManager manager = new TransportManager(config,defaultListener);
 
@@ -91,6 +105,7 @@ public class TransportManagerTests extends AndroidTestCase2 {
 
     }
 
+    @Test
     public void testOnTransportConnections(){
 
         TransportManager manager = createTransportManager();
@@ -112,6 +127,7 @@ public class TransportManagerTests extends AndroidTestCase2 {
 
     }
 
+    @Test
     public void testOnPacket(){
         TransportManager manager = createTransportManager();
         assertNotNull(manager.transportListener);

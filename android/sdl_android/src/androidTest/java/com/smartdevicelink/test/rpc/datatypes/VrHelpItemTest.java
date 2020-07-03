@@ -4,7 +4,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.Image;
 import com.smartdevicelink.proxy.rpc.VrHelpItem;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -23,9 +23,9 @@ public class VrHelpItemTest extends TestCase {
 	public void setUp() {		
 		msg = new VrHelpItem();
 		
-		msg.setText(Test.GENERAL_STRING);
-		msg.setImage(Test.GENERAL_IMAGE);
-		msg.setPosition(Test.GENERAL_INT);
+		msg.setText(TestValues.GENERAL_STRING);
+		msg.setImage(TestValues.GENERAL_IMAGE);
+		msg.setPosition(TestValues.GENERAL_INT);
 
 	}
 
@@ -39,29 +39,29 @@ public class VrHelpItemTest extends TestCase {
 		Integer position = msg.getPosition();
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, text);
-		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, position);
-		assertTrue(Test.TRUE, Validator.validateImage(Test.GENERAL_IMAGE, image));
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, text);
+		assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, position);
+		assertTrue(TestValues.TRUE, Validator.validateImage(TestValues.GENERAL_IMAGE, image));
 		
 		// Invalid/Null Tests
 		VrHelpItem msg = new VrHelpItem();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getImage());
-		assertNull(Test.NULL, msg.getText());
-		assertNull(Test.NULL, msg.getPosition());
+		assertNull(TestValues.NULL, msg.getImage());
+		assertNull(TestValues.NULL, msg.getText());
+		assertNull(TestValues.NULL, msg.getPosition());
 	}
 	
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {	        
-			reference.put(VrHelpItem.KEY_IMAGE, Test.JSON_IMAGE);
-			reference.put(VrHelpItem.KEY_TEXT, Test.GENERAL_STRING);
-			reference.put(VrHelpItem.KEY_POSITION, Test.GENERAL_INT);
+			reference.put(VrHelpItem.KEY_IMAGE, TestValues.JSON_IMAGE);
+			reference.put(VrHelpItem.KEY_TEXT, TestValues.GENERAL_STRING);
+			reference.put(VrHelpItem.KEY_POSITION, TestValues.GENERAL_INT);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
@@ -73,13 +73,13 @@ public class VrHelpItemTest extends TestCase {
                 	Hashtable<String, Object> hashReference = JsonRPCMarshaller.deserializeJSONObject(objectEquals);
                 	Hashtable<String, Object> hashTest = JsonRPCMarshaller.deserializeJSONObject(testEquals);
                 	
-	                assertTrue(Test.TRUE, Validator.validateImage(new Image(hashReference), new Image(hashTest)));
+	                assertTrue(TestValues.TRUE, Validator.validateImage(new Image(hashReference), new Image(hashTest)));
 	            } else {
-					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+					assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 	            }
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

@@ -31,8 +31,6 @@
  */
 package com.smartdevicelink.util;
 
-import android.util.Log;
-
 import com.smartdevicelink.BuildConfig;
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
@@ -52,7 +50,7 @@ import java.util.Vector;
 public class DebugTool {
 	
 
-	public static final String TAG = "SdlProxy";
+	public static final String TAG = "SDL";
 
 	private static boolean isErrorEnabled = false;
 	private static boolean isWarningEnabled = false;
@@ -86,71 +84,100 @@ public class DebugTool {
 		return string;
 	}
 
-	public static void logError(String msg) {
-		
+	public static void logError(String tag, String msg) {
 		Boolean wasWritten = false;
-		
+
 		msg = prependProxyVersionNumberToString(msg);
-		
+
 		wasWritten = logToSiphon(msg);
-		
+
 		if (isErrorEnabled && !wasWritten) {
-			NativeLogTool.logError(TAG, msg);
+			tag = tag != null ? tag : TAG;
+			NativeLogTool.logError(tag, msg);
 		}
 	}
 
-	public static void logError(String msg, Throwable ex) {
+	@Deprecated
+	public static void logError(String msg) {
+		logError(TAG, msg);
+	}
+
+	public static void logError(String tag, String msg, Throwable ex) {
 		Boolean wasWritten = false;
-		
+
 		msg = prependProxyVersionNumberToString(msg);
-		
+
 		if (ex != null) {
 			wasWritten = logToSiphon(msg + " Exception String: " + ex.toString());
 		} else {
 			wasWritten = logToSiphon(msg);
 		}
-		
+
 		if (isErrorEnabled && !wasWritten) {
-			NativeLogTool.logError(TAG, msg, ex);
+			tag = tag != null ? tag : TAG;
+			NativeLogTool.logError(tag, msg, ex);
 		}
 	}
-	
-	public static void logWarning(String msg) {
+
+	@Deprecated
+	public static void logError(String msg, Throwable ex) {
+		logError(TAG, msg, ex);
+	}
+
+	public static void logWarning(String tag, String msg) {
 		Boolean wasWritten = false;
-		
+
 		msg = prependProxyVersionNumberToString(msg);
-		
+
 		wasWritten = logToSiphon(msg);
-		
+
 		if (isWarningEnabled && !wasWritten) {
-			NativeLogTool.logWarning(TAG, msg);
+			tag = tag != null ? tag : TAG;
+			NativeLogTool.logWarning(tag, msg);
 		}
 	}
 
-	public static void logInfo(String msg) {
+	@Deprecated
+	public static void logWarning(String msg) {
+		logWarning(TAG, msg);
+	}
+
+	public static void logInfo(String tag, String msg) {
 		Boolean wasWritten = false;
-		
+
 		msg = prependProxyVersionNumberToString(msg);
-		
+
 		wasWritten = logToSiphon(msg);
-		
+
 		if (isInfoEnabled && !wasWritten) {
-			NativeLogTool.logInfo(TAG, msg);
+			tag = tag != null ? tag : TAG;
+			NativeLogTool.logInfo(tag, msg);
 		}
 	}
 
-	public static void logInfo(String msg, boolean bPrependVersion) {
+	@Deprecated
+	public static void logInfo(String msg) {
+		logInfo(TAG, msg);
+	}
+
+	public static void logInfo(String tag, String msg, Boolean bPrependVersion) {
 		Boolean wasWritten = false;
-		
+
 		if (bPrependVersion) msg = prependProxyVersionNumberToString(msg);
-		
+
 		wasWritten = logToSiphon(msg);
-		
+
 		if (isInfoEnabled && !wasWritten) {
-			NativeLogTool.logInfo(TAG, msg);
+			tag = tag != null ? tag : TAG;
+			NativeLogTool.logInfo(tag, msg);
 		}
 	}
-	
+
+	@Deprecated
+	public static void logInfo(String msg, boolean bPrependVersion) {
+		logInfo(TAG, msg, bPrependVersion);
+	}
+
 	protected static Boolean logToSiphon(String msg) {
 		if (SiphonServer.getSiphonEnabledStatus()) {
 			// Initialize the SiphonServer, will be ignored if already initialized
@@ -207,21 +234,21 @@ public class DebugTool {
 	
 	public static void logTransport(String msg) {
 		if (isTransportEnabled) {
-			Log.d(TAG, msg);
+			Log.i(TAG, msg);
 			logInfoToConsole(msg);
 		}
 	}
 
 	public static void logRPCSend(String rpcMsg) {
 		if (isRPCEnabled) {
-			Log.d(TAG, "Sending RPC message: " + rpcMsg);
+			Log.i(TAG, "Sending RPC message: " + rpcMsg);
 			logRPCSendToConsole(rpcMsg);
 		}
 	}
 
 	public static void logRPCReceive(String rpcMsg) {
 		if (isRPCEnabled) {
-			Log.d(TAG, "Received RPC message: " + rpcMsg);
+			Log.i(TAG, "Received RPC message: " + rpcMsg);
 			logRPCSendToConsole(rpcMsg);
 		}
 	}

@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.transport;
 
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
 
@@ -31,12 +31,12 @@ public class BaseTransportConfigTests extends TestCase {
 		int     actualMaxValue        = testBaseTransportConfig.getHeartBeatTimeout();
 		
 		// Valid Tests
-		assertNotNull(Test.NOT_NULL, testBaseTransportConfig);		
-		assertEquals(Test.MATCH, expectedMaxValue, actualMaxValue);
-		assertTrue(Test.TRUE, actualShareConnection);
+		assertNotNull(TestValues.NOT_NULL, testBaseTransportConfig);
+		assertEquals(TestValues.MATCH, expectedMaxValue, actualMaxValue);
+		assertTrue(TestValues.TRUE, actualShareConnection);
 		
 		testBaseTransportConfig.setHeartBeatTimeout(testInt);
-		assertEquals(Test.MATCH, testInt, testBaseTransportConfig.getHeartBeatTimeout());		
+		assertEquals(TestValues.MATCH, testInt, testBaseTransportConfig.getHeartBeatTimeout());
 	}
 }
 

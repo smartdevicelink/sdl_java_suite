@@ -32,7 +32,8 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.R;
 import com.smartdevicelink.managers.BaseSubManager;
 import com.smartdevicelink.managers.CompletionListener;
@@ -54,15 +55,23 @@ import com.smartdevicelink.proxy.rpc.enums.SystemContext;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
 import com.smartdevicelink.proxy.rpc.listeners.OnRPCNotificationListener;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -73,7 +82,8 @@ import static org.mockito.Mockito.verify;
 /**
  * the Algorithm specific tests are defined based on: https://github.com/smartdevicelink/sdl_evolution/blob/master/proposals/0210-mobile-dynamic-menu-cell-updating.md
  */
-public class MenuManagerTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class MenuManagerTests {
 
 	private OnRPCNotificationListener onHMIStatusListener, commandListener;
 	private MenuManager menuManager;
@@ -82,9 +92,8 @@ public class MenuManagerTests extends AndroidTestCase2 {
 
 	// SETUP / HELPERS
 
-	@Override
+	@Before
 	public void setUp() throws Exception{
-		super.setUp();
 
 		cells = createTestCells();
 
@@ -148,7 +157,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 
 	}
 
-	@Override
+	@After
 	public void tearDown() throws Exception {
 
 		menuManager.dispose();
@@ -169,9 +178,9 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		// after everything, make sure we are in the correct state
 		assertEquals(menuManager.getState(), BaseSubManager.SHUTDOWN);
 
-		super.tearDown();
 	}
 
+	@Test
 	public void testStartMenuManager(){
 
 		menuManager.start(new CompletionListener() {
@@ -184,6 +193,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		});
 	}
 
+	@Test
 	public void testHMINotReady(){
 
 		menuManager.currentHMILevel = HMILevel.HMI_NONE;
@@ -202,6 +212,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertFalse(menuManager.waitingOnHMIUpdate);
 	}
 
+	@Test
 	public void testUpdatingOldWay(){
 
 		// Force Menu Manager to use the old way of deleting / sending all
@@ -247,6 +258,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		}
 	}
 
+	@Test
 	public void testAlgorithmTest1(){
 
 		// Force Menu Manager to use the new way
@@ -283,6 +295,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.keepsOld.size(), 4);
 	}
 
+	@Test
 	public void testAlgorithmTest2(){
 
 		// Force Menu Manager to use the new way
@@ -319,6 +332,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.keepsOld.size(), 3);
 	}
 
+	@Test
 	public void testAlgorithmTest3(){
 
 		// Force Menu Manager to use the new way
@@ -355,6 +369,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.keepsOld.size(), 0);
 	}
 
+	@Test
 	public void testAlgorithmTest4(){
 
 		// Force Menu Manager to use the new way
@@ -391,6 +406,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.keepsOld.size(), 2);
 	}
 
+	@Test
 	public void testAlgorithmTest5(){
 
 		// Force Menu Manager to use the new way
@@ -427,6 +443,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.keepsOld.size(), 3);
 	}
 
+	@Test
 	public void testSettingNullMenu(){
 
 		// Make sure we can send an empty menu with no issues
@@ -448,6 +465,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.menuCells.size(), 0);
 	}
 
+	@Test
 	public void testClearingMenu(){
 
 		// Make sure we can send an empty menu with no issues
@@ -469,6 +487,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertEquals(menuManager.menuCells.size(), 0);
 	}
 
+	@Test
 	public void testOpeningMainMenu(){
 		// call open Menu
 		MenuManager mockMenuManager = mock(MenuManager.class);
@@ -476,6 +495,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		verify(mockMenuManager, Mockito.times(1)).openMenu();
 	}
 
+	@Test
 	public void testOpeningSubMenuNullCells(){
 		// call open Menu
 		MenuManager mockMenuManager = mock(MenuManager.class);
@@ -484,6 +504,7 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		assertFalse(mockMenuManager.openSubMenu(cell));
 	}
 
+	@Test
 	public void testOpeningSubMenu(){
 		// call open Menu
 		List<MenuCell> testCells = createTestCells();
@@ -492,7 +513,8 @@ public class MenuManagerTests extends AndroidTestCase2 {
 		// has to get success response to be true
 		assertTrue(menuManager.openSubMenu(testCells.get(3)));
   }
-  
+
+  @Test
 	public void testSetMenuConfiguration(){
 		menuManager.currentHMILevel = HMILevel.HMI_FULL;
 		menuManager.currentSystemContext = SystemContext.SYSCTXT_MAIN;

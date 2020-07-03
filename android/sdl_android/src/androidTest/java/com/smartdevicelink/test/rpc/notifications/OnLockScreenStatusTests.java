@@ -7,10 +7,16 @@ import com.smartdevicelink.proxy.rpc.OnLockScreenStatus;
 import com.smartdevicelink.proxy.rpc.enums.HMILevel;
 import com.smartdevicelink.proxy.rpc.enums.LockScreenStatus;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -22,10 +28,10 @@ public class OnLockScreenStatusTests extends BaseRpcTests{
     protected RPCMessage createMessage(){
         OnLockScreenStatus msg = new OnLockScreenStatus();
 
-        msg.setDriverDistractionStatus(Test.GENERAL_BOOLEAN);
-        msg.setHMILevel(Test.GENERAL_HMILEVEL);
-        msg.setShowLockScreen(Test.GENERAL_LOCKSCREENSTATUS);
-        msg.setUserSelected(Test.GENERAL_BOOLEAN);
+        msg.setDriverDistractionStatus(TestValues.GENERAL_BOOLEAN);
+        msg.setHMILevel(TestValues.GENERAL_HMILEVEL);
+        msg.setShowLockScreen(TestValues.GENERAL_LOCKSCREENSTATUS);
+        msg.setUserSelected(TestValues.GENERAL_BOOLEAN);
 
         return msg;
     }
@@ -45,12 +51,12 @@ public class OnLockScreenStatusTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{
-            result.put(OnLockScreenStatus.KEY_DRIVER_DISTRACTION, Test.GENERAL_BOOLEAN);
-            result.put(OnHMIStatus.KEY_HMI_LEVEL, Test.GENERAL_HMILEVEL);
-            result.put(OnLockScreenStatus.KEY_SHOW_LOCK_SCREEN, Test.GENERAL_LOCKSCREENSTATUS);
-            result.put(OnLockScreenStatus.KEY_USER_SELECTED, Test.GENERAL_BOOLEAN);
+            result.put(OnLockScreenStatus.KEY_DRIVER_DISTRACTION, TestValues.GENERAL_BOOLEAN);
+            result.put(OnHMIStatus.KEY_HMI_LEVEL, TestValues.GENERAL_HMILEVEL);
+            result.put(OnLockScreenStatus.KEY_SHOW_LOCK_SCREEN, TestValues.GENERAL_LOCKSCREENSTATUS);
+            result.put(OnLockScreenStatus.KEY_USER_SELECTED, TestValues.GENERAL_BOOLEAN);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -59,6 +65,7 @@ public class OnLockScreenStatusTests extends BaseRpcTests{
     /**
 	 * Tests the expected values of the RPC message.
 	 */
+    @Test
     public void testRpcValues () {       	
     	// Test Values
         Boolean status = ( (OnLockScreenStatus) msg ).getDriverDistractionStatus();
@@ -67,19 +74,19 @@ public class OnLockScreenStatusTests extends BaseRpcTests{
         boolean userSelected = ( (OnLockScreenStatus) msg ).getUserSelected();
         
         // Valid Tests
-        assertEquals(Test.MATCH, (Boolean) Test.GENERAL_BOOLEAN, status);
-        assertEquals(Test.MATCH, Test.GENERAL_HMILEVEL, hmiLevel);
-        assertEquals(Test.MATCH, Test.GENERAL_LOCKSCREENSTATUS, lockScreen);
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, userSelected);
+        assertEquals(TestValues.MATCH, (Boolean) TestValues.GENERAL_BOOLEAN, status);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_HMILEVEL, hmiLevel);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_LOCKSCREENSTATUS, lockScreen);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, userSelected);
     
         // Invalid/Null Tests
         OnLockScreenStatus msg = new OnLockScreenStatus();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getDriverDistractionStatus());
-        assertNull(Test.NULL, msg.getHMILevel());
-        assertNull(Test.NULL, msg.getShowLockScreen());
-        assertNull(Test.NULL, msg.getUserSelected());
+        assertNull(TestValues.NULL, msg.getDriverDistractionStatus());
+        assertNull(TestValues.NULL, msg.getHMILevel());
+        assertNull(TestValues.NULL, msg.getShowLockScreen());
+        assertNull(TestValues.NULL, msg.getUserSelected());
     }
 }

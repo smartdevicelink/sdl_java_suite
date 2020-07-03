@@ -2,7 +2,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 
 import com.smartdevicelink.proxy.rpc.Rectangle;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -23,10 +23,10 @@ public class RectangleTests extends TestCase {
 	public void setUp() {
 		msg = new Rectangle();
 
-		msg.setX(Test.GENERAL_FLOAT);
-		msg.setY(Test.GENERAL_FLOAT);
-		msg.setWidth(Test.GENERAL_FLOAT);
-		msg.setHeight(Test.GENERAL_FLOAT);
+		msg.setX(TestValues.GENERAL_FLOAT);
+		msg.setY(TestValues.GENERAL_FLOAT);
+		msg.setWidth(TestValues.GENERAL_FLOAT);
+		msg.setHeight(TestValues.GENERAL_FLOAT);
 	}
 
 	/**
@@ -40,40 +40,40 @@ public class RectangleTests extends TestCase {
 		Float height = msg.getHeight();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_FLOAT, x);
-		assertEquals(Test.MATCH, Test.GENERAL_FLOAT, y);
-		assertEquals(Test.MATCH, Test.GENERAL_FLOAT, width);
-		assertEquals(Test.MATCH, Test.GENERAL_FLOAT, height);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, x);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, y);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, width);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_FLOAT, height);
 
 		// Invalid/Null Tests
 		Rectangle msg = new Rectangle();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getX());
-		assertNull(Test.NULL, msg.getY());
-		assertNull(Test.NULL, msg.getWidth());
-		assertNull(Test.NULL, msg.getHeight());
+		assertNull(TestValues.NULL, msg.getX());
+		assertNull(TestValues.NULL, msg.getY());
+		assertNull(TestValues.NULL, msg.getWidth());
+		assertNull(TestValues.NULL, msg.getHeight());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(Rectangle.KEY_X, (Test.GENERAL_FLOAT));
-			reference.put(Rectangle.KEY_Y, (Test.GENERAL_FLOAT));
-			reference.put(Rectangle.KEY_WIDTH, (Test.GENERAL_FLOAT));
-			reference.put(Rectangle.KEY_HEIGHT, (Test.GENERAL_FLOAT));
+			reference.put(Rectangle.KEY_X, (TestValues.GENERAL_FLOAT));
+			reference.put(Rectangle.KEY_Y, (TestValues.GENERAL_FLOAT));
+			reference.put(Rectangle.KEY_WIDTH, (TestValues.GENERAL_FLOAT));
+			reference.put(Rectangle.KEY_HEIGHT, (TestValues.GENERAL_FLOAT));
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

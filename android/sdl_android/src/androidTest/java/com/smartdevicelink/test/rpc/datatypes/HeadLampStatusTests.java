@@ -3,7 +3,7 @@ package com.smartdevicelink.test.rpc.datatypes;
 import com.smartdevicelink.proxy.rpc.HeadLampStatus;
 import com.smartdevicelink.proxy.rpc.enums.AmbientLightStatus;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -24,9 +24,9 @@ public class HeadLampStatusTests extends TestCase{
     public void setUp(){
         msg = new HeadLampStatus();
 
-        msg.setAmbientLightStatus(Test.GENERAL_AMBIENTLIGHTSTATUS);
-        msg.setLowBeamsOn(Test.GENERAL_BOOLEAN);
-        msg.setHighBeamsOn(Test.GENERAL_BOOLEAN);
+        msg.setAmbientLightStatus(TestValues.GENERAL_AMBIENTLIGHTSTATUS);
+        msg.setLowBeamsOn(TestValues.GENERAL_BOOLEAN);
+        msg.setHighBeamsOn(TestValues.GENERAL_BOOLEAN);
     }
 
     /**
@@ -39,37 +39,37 @@ public class HeadLampStatusTests extends TestCase{
         AmbientLightStatus ambientLights = msg.getAmbientLightStatus();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_AMBIENTLIGHTSTATUS, ambientLights);
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, highBeams);
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, lowBeams);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_AMBIENTLIGHTSTATUS, ambientLights);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, highBeams);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, lowBeams);
                 
         // Invalid/Null Tests
         HeadLampStatus msg = new HeadLampStatus();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getLowBeamsOn());
-        assertNull(Test.NULL, msg.getHighBeamsOn());
-        assertNull(Test.NULL, msg.getAmbientLightStatus());
+        assertNull(TestValues.NULL, msg.getLowBeamsOn());
+        assertNull(TestValues.NULL, msg.getHighBeamsOn());
+        assertNull(TestValues.NULL, msg.getAmbientLightStatus());
     }
 
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(HeadLampStatus.KEY_HIGH_BEAMS_ON, Test.GENERAL_BOOLEAN);
-            reference.put(HeadLampStatus.KEY_LOW_BEAMS_ON, Test.GENERAL_BOOLEAN);
-            reference.put(HeadLampStatus.KEY_AMBIENT_LIGHT_SENSOR_STATUS, Test.GENERAL_AMBIENTLIGHTSTATUS);
+            reference.put(HeadLampStatus.KEY_HIGH_BEAMS_ON, TestValues.GENERAL_BOOLEAN);
+            reference.put(HeadLampStatus.KEY_LOW_BEAMS_ON, TestValues.GENERAL_BOOLEAN);
+            reference.put(HeadLampStatus.KEY_AMBIENT_LIGHT_SENSOR_STATUS, TestValues.GENERAL_AMBIENTLIGHTSTATUS);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
     }
 }

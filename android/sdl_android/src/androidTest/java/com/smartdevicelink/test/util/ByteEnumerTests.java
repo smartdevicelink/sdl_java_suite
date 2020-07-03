@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.util;
 
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.util.ByteEnumer;
 
 import junit.framework.TestCase;
@@ -37,15 +37,15 @@ public class ByteEnumerTests extends TestCase {
 		String         actualNullString = testObject.getName();
 		
 		// Valid Tests
-		assertNotNull(Test.NOT_NULL, expectedObject);
-		assertEquals(Test.MATCH, testByte, actualByte1);
-		assertEquals(Test.MATCH, testByte, actualByte2);
-		assertEquals(Test.MATCH, testString, actualString);
-		assertTrue(Test.TRUE, actualObject.equals(expectedObject));
-		assertTrue(Test.TRUE, actualObject.eq(expectedObject));
+		assertNotNull(TestValues.NOT_NULL, expectedObject);
+		assertEquals(TestValues.MATCH, testByte, actualByte1);
+		assertEquals(TestValues.MATCH, testByte, actualByte2);
+		assertEquals(TestValues.MATCH, testString, actualString);
+		assertTrue(TestValues.TRUE, actualObject.equals(expectedObject));
+		assertTrue(TestValues.TRUE, actualObject.eq(expectedObject));
 		
 		// Invalid/Null Tests
-		assertNull(Test.NULL, actualNullString);
+		assertNull(TestValues.NULL, actualNullString);
 	}
 	
 	/**
@@ -73,15 +73,15 @@ public class ByteEnumerTests extends TestCase {
 		testInvalidList.add(testString2);
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, expectedObject1, ByteEnumer.get(testList, testByte1));
-		assertEquals(Test.MATCH, expectedObject1, ByteEnumer.get(testList, testString1));
-		assertEquals(Test.MATCH, expectedObject2, ByteEnumer.get(testList, testByte2));
-		assertEquals(Test.MATCH, expectedObject2, ByteEnumer.get(testList, testString2));
+		assertEquals(TestValues.MATCH, expectedObject1, ByteEnumer.get(testList, testByte1));
+		assertEquals(TestValues.MATCH, expectedObject1, ByteEnumer.get(testList, testString1));
+		assertEquals(TestValues.MATCH, expectedObject2, ByteEnumer.get(testList, testByte2));
+		assertEquals(TestValues.MATCH, expectedObject2, ByteEnumer.get(testList, testString2));
 		
 		// Invalid/Null Tests
-		assertNull(Test.NULL, ByteEnumer.get(testList, null));
-		assertNull(Test.NULL, ByteEnumer.get(testInvalidList, testByte1));
-		assertNull(Test.NULL, ByteEnumer.get(testInvalidList, testString1));
+		assertNull(TestValues.NULL, ByteEnumer.get(testList, null));
+		assertNull(TestValues.NULL, ByteEnumer.get(testInvalidList, testByte1));
+		assertNull(TestValues.NULL, ByteEnumer.get(testInvalidList, testString1));
 	}
 }
 

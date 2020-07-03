@@ -5,7 +5,7 @@ import com.smartdevicelink.proxy.rpc.enums.DisplayMode;
 import com.smartdevicelink.proxy.rpc.enums.DistanceUnit;
 import com.smartdevicelink.proxy.rpc.enums.TemperatureUnit;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -26,9 +26,9 @@ public class HMISettingsControlDataTests extends TestCase {
 	public void setUp() {
 		msg = new HMISettingsControlData();
 
-		msg.setDisplayMode(Test.GENERAL_DISPLAYMODE);
-		msg.setTemperatureUnit(Test.GENERAL_TEMPERATUREUNIT);
-		msg.setDistanceUnit(Test.GENERAL_DISTANCEUNIT);
+		msg.setDisplayMode(TestValues.GENERAL_DISPLAYMODE);
+		msg.setTemperatureUnit(TestValues.GENERAL_TEMPERATUREUNIT);
+		msg.setDistanceUnit(TestValues.GENERAL_DISTANCEUNIT);
 	}
 
 	/**
@@ -41,38 +41,38 @@ public class HMISettingsControlDataTests extends TestCase {
 		DistanceUnit distanceUnit = msg.getDistanceUnit();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_DISPLAYMODE, displayMode);
-		assertEquals(Test.MATCH, Test.GENERAL_TEMPERATUREUNIT, temperatureUnit);
-		assertEquals(Test.MATCH, Test.GENERAL_DISTANCEUNIT, distanceUnit);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_DISPLAYMODE, displayMode);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_TEMPERATUREUNIT, temperatureUnit);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_DISTANCEUNIT, distanceUnit);
 
 		// Invalid/Null Tests
 		HMISettingsControlData msg = new HMISettingsControlData();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getDisplayMode());
-		assertNull(Test.NULL, msg.getTemperatureUnit());
-		assertNull(Test.NULL, msg.getDistanceUnit());
+		assertNull(TestValues.NULL, msg.getDisplayMode());
+		assertNull(TestValues.NULL, msg.getTemperatureUnit());
+		assertNull(TestValues.NULL, msg.getDistanceUnit());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(HMISettingsControlData.KEY_DISPLAY_MODE, Test.GENERAL_DISPLAYMODE);
-			reference.put(HMISettingsControlData.KEY_TEMPERATURE_UNIT, Test.GENERAL_TEMPERATUREUNIT);
-			reference.put(HMISettingsControlData.KEY_DISTANCE_UNIT, Test.GENERAL_DISTANCEUNIT);
+			reference.put(HMISettingsControlData.KEY_DISPLAY_MODE, TestValues.GENERAL_DISPLAYMODE);
+			reference.put(HMISettingsControlData.KEY_TEMPERATURE_UNIT, TestValues.GENERAL_TEMPERATUREUNIT);
+			reference.put(HMISettingsControlData.KEY_DISTANCE_UNIT, TestValues.GENERAL_DISTANCEUNIT);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
 
-				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

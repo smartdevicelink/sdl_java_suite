@@ -6,13 +6,20 @@ import com.smartdevicelink.proxy.rpc.OnTouchEvent;
 import com.smartdevicelink.proxy.rpc.TouchEvent;
 import com.smartdevicelink.proxy.rpc.enums.TouchType;
 import com.smartdevicelink.test.BaseRpcTests;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.util.List;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
 
 /**
  * This is a unit test class for the SmartDeviceLink library project class : 
@@ -23,8 +30,8 @@ public class OnTouchEventTests extends BaseRpcTests{
 	@Override
     protected RPCMessage createMessage(){
         OnTouchEvent msg = new OnTouchEvent();
-        msg.setType(Test.GENERAL_TOUCHTYPE);
-        msg.setEvent(Test.GENERAL_TOUCHEVENT_LIST);
+        msg.setType(TestValues.GENERAL_TOUCHTYPE);
+        msg.setEvent(TestValues.GENERAL_TOUCHEVENT_LIST);
 
         return msg;
     }    
@@ -44,10 +51,10 @@ public class OnTouchEventTests extends BaseRpcTests{
         JSONObject result = new JSONObject();
 
         try{            
-            result.put(OnTouchEvent.KEY_TYPE,Test.GENERAL_TOUCHTYPE);
-            result.put(OnTouchEvent.KEY_EVENT,  Test.JSON_TOUCHEVENTS);
+            result.put(OnTouchEvent.KEY_TYPE, TestValues.GENERAL_TOUCHTYPE);
+            result.put(OnTouchEvent.KEY_EVENT,  TestValues.JSON_TOUCHEVENTS);
         }catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
 
         return result;
@@ -56,26 +63,27 @@ public class OnTouchEventTests extends BaseRpcTests{
     /**
 	 * Tests the expected values of the RPC message.
 	 */
+    @Test
     public void testRpcValues () {       	
     	// Test Values
         TouchType type = ( (OnTouchEvent) msg ).getType();
         List<TouchEvent> event = ( (OnTouchEvent) msg ).getEvent();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_TOUCHTYPE, type);
-        assertEquals(Test.MATCH, Test.GENERAL_TOUCHEVENT_LIST.size(), event.size());
-        for(int i=0; i< Test.GENERAL_TOUCHEVENT_LIST.size(); i++){
-            TouchEvent referenceEvent = Test.GENERAL_TOUCHEVENT_LIST.get(i);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_TOUCHTYPE, type);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_TOUCHEVENT_LIST.size(), event.size());
+        for(int i = 0; i< TestValues.GENERAL_TOUCHEVENT_LIST.size(); i++){
+            TouchEvent referenceEvent = TestValues.GENERAL_TOUCHEVENT_LIST.get(i);
             TouchEvent dataEvent = event.get(i);
-            assertTrue(Test.TRUE, Validator.validateTouchEvent(referenceEvent, dataEvent));
+            assertTrue(TestValues.TRUE, Validator.validateTouchEvent(referenceEvent, dataEvent));
         }
         
         // Invalid/Null Tests
         OnTouchEvent msg = new OnTouchEvent();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
         testNullBase(msg);
 
-        assertNull(Test.NULL, msg.getType());
-        assertNull(Test.NULL, msg.getEvent());
+        assertNull(TestValues.NULL, msg.getType());
+        assertNull(TestValues.NULL, msg.getEvent());
     }
 }

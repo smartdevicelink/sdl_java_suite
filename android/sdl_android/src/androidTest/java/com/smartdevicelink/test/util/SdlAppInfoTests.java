@@ -38,20 +38,29 @@ import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import android.os.Bundle;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.smartdevicelink.AndroidTestCase2;
 import com.smartdevicelink.R;
 import com.smartdevicelink.util.SdlAppInfo;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import static android.support.test.InstrumentationRegistry.getContext;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
 
 /**
  * Created by Joey Grover on 2/20/18.
  */
 
-public class SdlAppInfoTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class SdlAppInfoTests {
 
     Context context;
     ResolveInfo defaultResolveInfo;
@@ -59,9 +68,8 @@ public class SdlAppInfoTests extends AndroidTestCase2 {
     Bundle defaultBundle;
     PackageInfo defaultPackageInfo;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         context = getContext();
         defaultResolveInfo =  createResolveInfo(context.getResources().getInteger(R.integer.sdl_router_service_version_value), "com.smartdevicelink.test", "com.smartdevicelink.test.SdlRouterService",false);
         defaultServiceInfo = defaultResolveInfo.serviceInfo;
@@ -72,6 +80,7 @@ public class SdlAppInfoTests extends AndroidTestCase2 {
         defaultPackageInfo.firstInstallTime = System.currentTimeMillis() - 1000000;
     }
 
+    @Test
     public void testConstructorWithDefaultData(){
 
         SdlAppInfo info = new SdlAppInfo(defaultResolveInfo,defaultPackageInfo);
@@ -92,6 +101,7 @@ public class SdlAppInfoTests extends AndroidTestCase2 {
     /**
      * If an app is found to have a newer service the compare should put it at the top of the list
      */
+    @Test
     public void testCompareVersion(){
         SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo,defaultPackageInfo);
 
@@ -112,6 +122,7 @@ public class SdlAppInfoTests extends AndroidTestCase2 {
     /**
      * Regardless of version, if the router service is custom it should be towards the end of the list
      */
+    @Test
     public void testCompareVersionAndCustom(){
         SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo,defaultPackageInfo);
 
@@ -132,6 +143,7 @@ public class SdlAppInfoTests extends AndroidTestCase2 {
     /**
      * If two services have the same version and are not custom, we need to check which app has been updated the most recently
      */
+    @Test
     public void testCompareUpdatedTime(){
         SdlAppInfo defaultInfo = new SdlAppInfo(defaultResolveInfo,defaultPackageInfo);
 
