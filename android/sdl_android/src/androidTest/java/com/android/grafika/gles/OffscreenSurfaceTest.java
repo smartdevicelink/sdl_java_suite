@@ -2,34 +2,28 @@ package com.android.grafika.gles;
 
 import android.opengl.GLES20;
 import android.os.Environment;
+import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.smartdevicelink.AndroidTestCase2;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import static junit.framework.TestCase.assertTrue;
 
-public class OffscreenSurfaceTest extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class OffscreenSurfaceTest {
 
 	private final String TAG = OffscreenSurfaceTest.class.getSimpleName();
 	private final int mWidth = 1280;
 	private final int mHeight = 720;
 	private final int mIterations = 100;
 
-	@Override
-	public void setUp() throws Exception {
-		super.setUp();
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
-
-
+	@Test
 	public void testReadPixels() {
 		EglCore eglCore = new EglCore(null, 0);
 		OffscreenSurface offscreenSurface = new OffscreenSurface(eglCore, mWidth, mHeight);
