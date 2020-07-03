@@ -32,7 +32,6 @@
 
 package com.smartdevicelink.SdlConnection;
 
-import android.util.Log;
 
 import com.smartdevicelink.exception.SdlException;
 import com.smartdevicelink.protocol.ISdlProtocol;
@@ -48,6 +47,7 @@ import com.smartdevicelink.security.SdlSecurityBase;
 import com.smartdevicelink.streaming.video.VideoStreamingParameters;
 import com.smartdevicelink.transport.BaseTransportConfig;
 import com.smartdevicelink.transport.enums.TransportType;
+import com.smartdevicelink.util.DebugTool;
 import com.smartdevicelink.util.Version;
 
 import java.util.HashMap;
@@ -153,7 +153,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
 
 
     public void shutdown(String info){
-        Log.d(TAG, "Shutdown - " + info);
+        DebugTool.logInfo(TAG, "Shutdown - " + info);
         this.sessionListener.onTransportDisconnected(info);
 
     }
@@ -261,7 +261,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
     public void onProtocolSessionStarted(SessionType sessionType,
                                          byte sessionID, byte version, String correlationID, int hashID, boolean isEncrypted) {
 
-        Log.i(TAG, "Protocol session started");
+        DebugTool.logInfo(TAG, "Protocol session started");
 
         this.sessionId = sessionID;
         if (sessionType.eq(SessionType.RPC)){
@@ -295,7 +295,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
     @Override
     public void onProtocolError(String info, Exception e) {
         this.sessionListener.onProtocolError(info, e);
-        Log.e(TAG, "on protocol error", e);
+        DebugTool.logError(TAG,"on protocol error", e);
     }
 
 
@@ -397,7 +397,7 @@ public class SdlSession implements ISdlProtocol, ISdlConnectionListener, ISecuri
      *************************************************************************************************************************************************************************/
 
     public void onProtocolMessageBytesToSend(SdlPacket packet) {
-        //Log.d(TAG, "onProtocolMessageBytesToSend - " + packet.getTransportType());
+        //DebugTool.logInfo(TAG, "onProtocolMessageBytesToSend - " + packet.getTransportType());
         sdlProtocol.sendPacket(packet);
     }
 

@@ -4,7 +4,7 @@ import com.smartdevicelink.proxy.rpc.TextField;
 import com.smartdevicelink.proxy.rpc.enums.CharacterSet;
 import com.smartdevicelink.proxy.rpc.enums.TextFieldName;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -25,10 +25,10 @@ public class TextFieldTest extends TestCase {
 	public void setUp() {
 		msg = new TextField();
 		
-		msg.setName(Test.GENERAL_TEXTFIELDNAME);
-		msg.setCharacterSet(Test.GENERAL_CHARACTERSET);
-		msg.setWidth(Test.GENERAL_INT);
-		msg.setRows(Test.GENERAL_INT);
+		msg.setName(TestValues.GENERAL_TEXTFIELDNAME);
+		msg.setCharacterSet(TestValues.GENERAL_CHARACTERSET);
+		msg.setWidth(TestValues.GENERAL_INT);
+		msg.setRows(TestValues.GENERAL_INT);
 	}
 
     /**
@@ -42,40 +42,40 @@ public class TextFieldTest extends TestCase {
 		Integer rows = msg.getRows();
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_TEXTFIELDNAME, name);
-		assertEquals(Test.MATCH, Test.GENERAL_CHARACTERSET, charSet);
-		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, width);
-		assertEquals(Test.MATCH, (Integer) Test.GENERAL_INT, rows);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_TEXTFIELDNAME, name);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_CHARACTERSET, charSet);
+		assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, width);
+		assertEquals(TestValues.MATCH, (Integer) TestValues.GENERAL_INT, rows);
 		
 		// Invalid/Null Tests
 		TextField msg = new TextField();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getName());
-		assertNull(Test.NULL, msg.getWidth());
-		assertNull(Test.NULL, msg.getRows());
-		assertNull(Test.NULL, msg.getCharacterSet());
+		assertNull(TestValues.NULL, msg.getName());
+		assertNull(TestValues.NULL, msg.getWidth());
+		assertNull(TestValues.NULL, msg.getRows());
+		assertNull(TestValues.NULL, msg.getCharacterSet());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(TextField.KEY_CHARACTER_SET, Test.GENERAL_CHARACTERSET);
-			reference.put(TextField.KEY_WIDTH, Test.GENERAL_INT);
-			reference.put(TextField.KEY_ROWS, Test.GENERAL_INT);
-			reference.put(TextField.KEY_NAME, Test.GENERAL_TEXTFIELDNAME);
+			reference.put(TextField.KEY_CHARACTER_SET, TestValues.GENERAL_CHARACTERSET);
+			reference.put(TextField.KEY_WIDTH, TestValues.GENERAL_INT);
+			reference.put(TextField.KEY_ROWS, TestValues.GENERAL_INT);
+			reference.put(TextField.KEY_NAME, TestValues.GENERAL_TEXTFIELDNAME);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
 				String key = (String) iterator.next();
-				assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+				assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

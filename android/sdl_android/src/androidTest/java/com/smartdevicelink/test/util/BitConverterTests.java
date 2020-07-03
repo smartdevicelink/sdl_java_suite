@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.util;
 
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.util.BitConverter;
 
 import junit.framework.TestCase;
@@ -36,9 +36,9 @@ public class BitConverterTests extends TestCase {
 		assertTrue("Arrays should match.", Arrays.equals(testBytes, actualBytes));
 		
 		// Invalid/Null Tests
-		assertNull(Test.NULL, BitConverter.bytesToHex(null));
-		assertNull(Test.NULL, BitConverter.bytesToHex(null, 0, 0));
-		assertNull(Test.NULL, BitConverter.hexToBytes(null));
+		assertNull(TestValues.NULL, BitConverter.bytesToHex(null));
+		assertNull(TestValues.NULL, BitConverter.bytesToHex(null, 0, 0));
+		assertNull(TestValues.NULL, BitConverter.hexToBytes(null));
 	}
 	
 	/**
@@ -57,11 +57,11 @@ public class BitConverterTests extends TestCase {
 		int     actualNullBytes = BitConverter.intFromByteArray(null, 0);
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, expectedInt.intValue(), actualInt);
-		assertTrue(Test.ARRAY, Arrays.equals(expectedBytes, actualBytes));
+		assertEquals(TestValues.MATCH, expectedInt.intValue(), actualInt);
+		assertTrue(TestValues.ARRAY, Arrays.equals(expectedBytes, actualBytes));
 		
 		// Invalid/Null Tests
-		assertEquals(Test.MATCH, (int) -1, actualNullBytes);
+		assertEquals(TestValues.MATCH, (int) -1, actualNullBytes);
 	}
 	
 	/**
@@ -79,10 +79,10 @@ public class BitConverterTests extends TestCase {
 		short  actualNullBytes = BitConverter.shortFromByteArray(null, 0);
 		
 		// Valid Tests
-		assertEquals(Test.MATCH, expectedShort, actualShort);
-		assertTrue(Test.ARRAY, Arrays.equals(expectedBytes, actualBytes));
+		assertEquals(TestValues.MATCH, expectedShort, actualShort);
+		assertTrue(TestValues.ARRAY, Arrays.equals(expectedBytes, actualBytes));
 		
 		// Invalid/Null Tests
-		assertEquals(Test.MATCH, (short) -1, actualNullBytes);
+		assertEquals(TestValues.MATCH, (short) -1, actualNullBytes);
 	}		
 }

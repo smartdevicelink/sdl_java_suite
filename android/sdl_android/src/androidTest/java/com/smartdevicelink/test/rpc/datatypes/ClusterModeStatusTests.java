@@ -5,7 +5,7 @@ import com.smartdevicelink.proxy.rpc.enums.CarModeStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeQualificationStatus;
 import com.smartdevicelink.proxy.rpc.enums.PowerModeStatus;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 
 import junit.framework.TestCase;
 
@@ -26,10 +26,10 @@ public class ClusterModeStatusTests extends TestCase{
     public void setUp(){
         msg = new ClusterModeStatus();
 
-        msg.setPowerModeActive(Test.GENERAL_BOOLEAN);
-        msg.setCarModeStatus(Test.GENERAL_CARMODESTATUS);
-        msg.setPowerModeQualificationStatus(Test.GENERAL_POWERMODEQUALIFICATIONSTATUS);
-        msg.setPowerModeStatus(Test.GENERAL_POWERMODESTATUS);
+        msg.setPowerModeActive(TestValues.GENERAL_BOOLEAN);
+        msg.setCarModeStatus(TestValues.GENERAL_CARMODESTATUS);
+        msg.setPowerModeQualificationStatus(TestValues.GENERAL_POWERMODEQUALIFICATIONSTATUS);
+        msg.setPowerModeStatus(TestValues.GENERAL_POWERMODESTATUS);
     }
 
     /**
@@ -43,40 +43,40 @@ public class ClusterModeStatusTests extends TestCase{
         CarModeStatus carStatus = msg.getCarModeStatus();
         
         // Valid Tests
-        assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, powerMode);
-        assertEquals(Test.MATCH, Test.GENERAL_POWERMODEQUALIFICATIONSTATUS, qualification);
-        assertEquals(Test.MATCH, Test.GENERAL_POWERMODESTATUS, status);
-        assertEquals(Test.MATCH, Test.GENERAL_CARMODESTATUS, carStatus);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, powerMode);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_POWERMODEQUALIFICATIONSTATUS, qualification);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_POWERMODESTATUS, status);
+        assertEquals(TestValues.MATCH, TestValues.GENERAL_CARMODESTATUS, carStatus);
         
         // Invalid/Null Tests
         ClusterModeStatus msg = new ClusterModeStatus();
-        assertNotNull(Test.NOT_NULL, msg);
+        assertNotNull(TestValues.NOT_NULL, msg);
 
-        assertNull(Test.NULL, msg.getPowerModeActive());
-        assertNull(Test.NULL, msg.getPowerModeStatus());
-        assertNull(Test.NULL, msg.getPowerModeQualificationStatus());
-        assertNull(Test.NULL, msg.getCarModeStatus());
+        assertNull(TestValues.NULL, msg.getPowerModeActive());
+        assertNull(TestValues.NULL, msg.getPowerModeStatus());
+        assertNull(TestValues.NULL, msg.getPowerModeQualificationStatus());
+        assertNull(TestValues.NULL, msg.getCarModeStatus());
     }
     
     public void testJson(){
         JSONObject reference = new JSONObject();
 
         try{
-            reference.put(ClusterModeStatus.KEY_POWER_MODE_ACTIVE, Test.GENERAL_BOOLEAN);
-            reference.put(ClusterModeStatus.KEY_POWER_MODE_STATUS, Test.GENERAL_POWERMODESTATUS);
-            reference.put(ClusterModeStatus.KEY_POWER_MODE_QUALIFICATION_STATUS, Test.GENERAL_POWERMODEQUALIFICATIONSTATUS);
-            reference.put(ClusterModeStatus.KEY_CAR_MODE_STATUS, Test.GENERAL_CARMODESTATUS);
+            reference.put(ClusterModeStatus.KEY_POWER_MODE_ACTIVE, TestValues.GENERAL_BOOLEAN);
+            reference.put(ClusterModeStatus.KEY_POWER_MODE_STATUS, TestValues.GENERAL_POWERMODESTATUS);
+            reference.put(ClusterModeStatus.KEY_POWER_MODE_QUALIFICATION_STATUS, TestValues.GENERAL_POWERMODEQUALIFICATIONSTATUS);
+            reference.put(ClusterModeStatus.KEY_CAR_MODE_STATUS, TestValues.GENERAL_CARMODESTATUS);
 
             JSONObject underTest = msg.serializeJSON();
-            assertEquals(Test.MATCH, reference.length(), underTest.length());
+            assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
             Iterator<?> iterator = reference.keys();
             while(iterator.hasNext()){
                 String key = (String) iterator.next();
-                assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+                assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
             }
         } catch(JSONException e){
-        	fail(Test.JSON_FAIL);
+        	fail(TestValues.JSON_FAIL);
         }
     }
 }

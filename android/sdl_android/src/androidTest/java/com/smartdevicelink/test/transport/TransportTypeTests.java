@@ -1,6 +1,6 @@
 package com.smartdevicelink.test.transport;
 
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.enums.TransportType;
 
 import junit.framework.TestCase;
@@ -59,17 +59,17 @@ public class TransportTypeTests extends TestCase {
 			List<TransportType> actualEnumList = Arrays.asList(TransportType.values());
 			
 			// Valid Tests
-			assertEquals(Test.MATCH, expectedTcpEnum, actualTcpEnum);
-			assertEquals(Test.MATCH, expectedUsbEnum, actualUsbEnum);
-			assertEquals(Test.MATCH, expectedBluetoothEnum, actualBluetoothEnum);
-			assertEquals(Test.MATCH, expectedMultiplexingEnum, actualMultiplexingEnum);
-			assertEquals(Test.MATCH, expectedWebSocketServerEnum, actualWebSocketServerEnum);
-			assertEquals(Test.MATCH, expectedCustomEnum, actualCustomEnum);
-			assertTrue(Test.ARRAY, expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));
+			assertEquals(TestValues.MATCH, expectedTcpEnum, actualTcpEnum);
+			assertEquals(TestValues.MATCH, expectedUsbEnum, actualUsbEnum);
+			assertEquals(TestValues.MATCH, expectedBluetoothEnum, actualBluetoothEnum);
+			assertEquals(TestValues.MATCH, expectedMultiplexingEnum, actualMultiplexingEnum);
+			assertEquals(TestValues.MATCH, expectedWebSocketServerEnum, actualWebSocketServerEnum);
+			assertEquals(TestValues.MATCH, expectedCustomEnum, actualCustomEnum);
+			assertTrue(TestValues.ARRAY, expectedEnumList.containsAll(actualEnumList) && actualEnumList.containsAll(expectedEnumList));
 			
 			// Invalid/Null Tests
-			assertNull(Test.NULL, actualInvalidEnum);
-			assertNull(Test.NULL, actualNullEnum);
+			assertNull(TestValues.NULL, actualInvalidEnum);
+			assertNull(TestValues.NULL, actualNullEnum);
 		
 		} catch (NullPointerException e) {
 			fail("Could not retrieve value for null string, should return null.");

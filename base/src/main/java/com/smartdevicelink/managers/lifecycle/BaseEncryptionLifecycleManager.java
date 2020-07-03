@@ -52,11 +52,13 @@ import java.util.List;
 import java.util.Set;
 
 abstract class BaseEncryptionLifecycleManager {
+    private static final String TAG = "BaseEncryptionLifecycleManager";
     private ISdl internalInterface;
     private ServiceEncryptionListener serviceEncryptionListener;
     private HMILevel currentHMILevel;
     private Set<String> encryptionRequiredRPCs = new HashSet<>();
     private boolean rpcSecuredServiceStarted;
+    ISdlServiceListener securedServiceListener;
 
     BaseEncryptionLifecycleManager(@NonNull ISdl isdl, ServiceEncryptionListener listener) {
         internalInterface = isdl;
@@ -94,7 +96,7 @@ abstract class BaseEncryptionLifecycleManager {
             }
         };
 
-        ISdlServiceListener securedServiceListener = new ISdlServiceListener() {
+        securedServiceListener = new ISdlServiceListener() {
             @Override
             public void onServiceStarted(SdlSession session, SessionType type, boolean isEncrypted) {
                 if(SessionType.RPC.equals(type)){
@@ -103,7 +105,7 @@ abstract class BaseEncryptionLifecycleManager {
                 if (serviceEncryptionListener != null) {
                     serviceEncryptionListener.onEncryptionServiceUpdated(type, isEncrypted, null);
                 }
-                DebugTool.logInfo("onServiceStarted, session Type: " + type.getName() + ", isEncrypted: " + isEncrypted);
+                DebugTool.logInfo(TAG, "onServiceStarted, session Type: " + type.getName() + ", isEncrypted: " + isEncrypted);
             }
 
             @Override
@@ -114,7 +116,7 @@ abstract class BaseEncryptionLifecycleManager {
                 if (serviceEncryptionListener != null) {
                     serviceEncryptionListener.onEncryptionServiceUpdated(type, false, null);
                 }
-                DebugTool.logInfo("onServiceEnded, session Type: " + type.getName());
+                DebugTool.logInfo(TAG, "onServiceEnded, session Type: " + type.getName());
             }
 
             @Override
@@ -125,7 +127,7 @@ abstract class BaseEncryptionLifecycleManager {
                 if (serviceEncryptionListener != null) {
                     serviceEncryptionListener.onEncryptionServiceUpdated(type, false, "onServiceError: " + reason);
                 }
-                DebugTool.logError("onServiceError, session Type: " + type.getName() + ", reason: " + reason);
+                DebugTool.logError(TAG, "onServiceError, session Type: " + type.getName() + ", reason: " + reason);
             }
         };
 

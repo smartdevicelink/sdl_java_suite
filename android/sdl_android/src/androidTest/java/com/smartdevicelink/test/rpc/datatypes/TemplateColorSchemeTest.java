@@ -4,7 +4,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.RGBColor;
 import com.smartdevicelink.proxy.rpc.TemplateColorScheme;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -25,9 +25,9 @@ public class TemplateColorSchemeTest extends TestCase {
 	@Override
 	public void setUp() {
 		msg = new TemplateColorScheme();
-		msg.setPrimaryColor(Test.GENERAL_RGBCOLOR);
-		msg.setSecondaryColor(Test.GENERAL_RGBCOLOR);
-		msg.setBackgroundColor(Test.GENERAL_RGBCOLOR);
+		msg.setPrimaryColor(TestValues.GENERAL_RGBCOLOR);
+		msg.setSecondaryColor(TestValues.GENERAL_RGBCOLOR);
+		msg.setBackgroundColor(TestValues.GENERAL_RGBCOLOR);
 	}
 
     /**
@@ -40,29 +40,29 @@ public class TemplateColorSchemeTest extends TestCase {
 		RGBColor backgroundColor = msg.getBackgroundColor();
 
 		// Valid Tests
-		assertTrue(Test.TRUE, Validator.validateRGBColor(Test.GENERAL_RGBCOLOR, primaryColor));
-		assertTrue(Test.TRUE, Validator.validateRGBColor(Test.GENERAL_RGBCOLOR, secondaryColor));
-		assertTrue(Test.TRUE, Validator.validateRGBColor(Test.GENERAL_RGBCOLOR, backgroundColor));
+		assertTrue(TestValues.TRUE, Validator.validateRGBColor(TestValues.GENERAL_RGBCOLOR, primaryColor));
+		assertTrue(TestValues.TRUE, Validator.validateRGBColor(TestValues.GENERAL_RGBCOLOR, secondaryColor));
+		assertTrue(TestValues.TRUE, Validator.validateRGBColor(TestValues.GENERAL_RGBCOLOR, backgroundColor));
 
 		// Invalid/Null Tests
 		TemplateColorScheme msg = new TemplateColorScheme();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getPrimaryColor());
-		assertNull(Test.NULL, msg.getSecondaryColor());
-		assertNull(Test.NULL, msg.getBackgroundColor());
+		assertNull(TestValues.NULL, msg.getPrimaryColor());
+		assertNull(TestValues.NULL, msg.getSecondaryColor());
+		assertNull(TestValues.NULL, msg.getBackgroundColor());
 	}
 
 	public void testJson() {
 		JSONObject reference = new JSONObject();
 
 		try {
-			reference.put(TemplateColorScheme.KEY_PRIMARY_COLOR, Test.JSON_RGBCOLOR);
-			reference.put(TemplateColorScheme.KEY_SECONDARY_COLOR, Test.JSON_RGBCOLOR);
-			reference.put(TemplateColorScheme.KEY_BACKGROUND_COLOR, Test.JSON_RGBCOLOR);
+			reference.put(TemplateColorScheme.KEY_PRIMARY_COLOR, TestValues.JSON_RGBCOLOR);
+			reference.put(TemplateColorScheme.KEY_SECONDARY_COLOR, TestValues.JSON_RGBCOLOR);
+			reference.put(TemplateColorScheme.KEY_BACKGROUND_COLOR, TestValues.JSON_RGBCOLOR);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
@@ -71,10 +71,10 @@ public class TemplateColorSchemeTest extends TestCase {
 				RGBColor referenceColor = new RGBColor(JsonRPCMarshaller.deserializeJSONObject(referenceColorObj));
 				JSONObject underTestColorObj = JsonUtils.readJsonObjectFromJsonObject(underTest, key);
 				RGBColor underTestColor = new RGBColor(JsonRPCMarshaller.deserializeJSONObject(underTestColorObj));
-				assertTrue(Test.TRUE, Validator.validateRGBColor(referenceColor, underTestColor));
+				assertTrue(TestValues.TRUE, Validator.validateRGBColor(referenceColor, underTestColor));
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

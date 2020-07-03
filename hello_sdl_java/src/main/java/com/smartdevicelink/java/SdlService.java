@@ -32,8 +32,8 @@
 
 package com.smartdevicelink.java;
 
-import android.util.Log;
 import com.smartdevicelink.managers.CompletionListener;
+import com.smartdevicelink.managers.screen.OnButtonListener;
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
 import com.smartdevicelink.managers.file.filetypes.SdlArtwork;
@@ -76,14 +76,11 @@ public class SdlService {
 
     private static final String IMAGE_DIR =             "assets/images/";
 
-
-
     // variable to create and call functions of the SyncProxy
     private SdlManager sdlManager = null;
     private List<ChoiceCell> choiceCellList;
 
     private SdlServiceCallback callback;
-
 
     public SdlService(BaseTransportConfig config, SdlServiceCallback callback){
         this.callback = callback;
@@ -91,7 +88,7 @@ public class SdlService {
     }
 
     public void start() {
-        DebugTool.logInfo("SdlService start() ");
+        DebugTool.logInfo(TAG, "SdlService start() ");
         if(sdlManager != null){
             sdlManager.start();
         }
@@ -109,7 +106,7 @@ public class SdlService {
         // Build flavors are selected by the "build variants" tab typically located in the bottom left of Android Studio
         // Typically in your app, you will only set one of these.
         if (sdlManager == null) {
-            DebugTool.logInfo("Creating SDL Manager");
+            DebugTool.logInfo(TAG, "Creating SDL Manager");
 
             //FIXME add the transport type
             // The app type to be used
@@ -121,15 +118,16 @@ public class SdlService {
             SdlManagerListener listener = new SdlManagerListener() {
                 @Override
                 public void onStart(SdlManager sdlManager) {
-                    DebugTool.logInfo("SdlManager onStart");
+                    DebugTool.logInfo(TAG, "SdlManager onStart");
                 }
 
                 @Override
                 public void onDestroy(SdlManager sdlManager) {
-                    DebugTool.logInfo("SdlManager onDestroy ");
+                    DebugTool.logInfo(TAG, "SdlManager onDestroy ");
                     SdlService.this.sdlManager = null;
                     if(SdlService.this.callback != null){
                         SdlService.this.callback.onEnd();
+                        stop();
                     }
                 }
 
@@ -138,20 +136,44 @@ public class SdlService {
                 }
 
                 @Override
-                public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language){
-                    String appName;
+                public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language) {
+                    return null;
+                }
+
+                @Override
+                public LifecycleConfigurationUpdate managerShouldUpdateLifecycle(Language language, Language hmiLanguage) {
+                    boolean isNeedUpdate = false;
+                    String appName = APP_NAME;
+                    String ttsName = APP_NAME;
                     switch (language) {
                         case ES_MX:
+                            isNeedUpdate = true;
+                            ttsName = APP_NAME_ES;
+                            break;
+                        case FR_CA:
+                            isNeedUpdate = true;
+                            ttsName = APP_NAME_FR;
+                            break;
+                        default:
+                            break;
+                    }
+                    switch (hmiLanguage) {
+                        case ES_MX:
+                            isNeedUpdate = true;
                             appName = APP_NAME_ES;
                             break;
                         case FR_CA:
+                            isNeedUpdate = true;
                             appName = APP_NAME_FR;
                             break;
                         default:
-                            return null;
+                            break;
                     }
-
-                    return new LifecycleConfigurationUpdate(appName,null,TTSChunkFactory.createSimpleTTSChunks(appName), null);
+                    if (isNeedUpdate) {
+                        return new LifecycleConfigurationUpdate(appName, null, TTSChunkFactory.createSimpleTTSChunks(ttsName), null);
+                    } else {
+                        return null;
+                    }
                 }
             };
 
@@ -167,6 +189,7 @@ public class SdlService {
                         performWelcomeSpeak();
                         performWelcomeShow();
                         preloadChoices();
+                        subscribeToButtons();
                     }
                 }
             });
@@ -195,14 +218,14 @@ public class SdlService {
         VoiceCommand voiceCommand1 = new VoiceCommand(list1, new VoiceCommandSelectionListener() {
             @Override
             public void onVoiceCommandSelected() {
-                Log.i(TAG, "Voice Command 1 triggered");
+                DebugTool.logInfo(TAG, "Voice Command 1 triggered");
             }
         });
 
         VoiceCommand voiceCommand2 = new VoiceCommand(list2, new VoiceCommandSelectionListener() {
             @Override
             public void onVoiceCommandSelected() {
-                Log.i(TAG, "Voice Command 2 triggered");
+                DebugTool.logInfo(TAG, "Voice Command 2 triggered");
             }
         });
 
@@ -223,7 +246,7 @@ public class SdlService {
         MenuCell mainCell1 = new MenuCell("Test Cell 1 (speak)", livio, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Test cell 1 triggered. Source: "+ trigger.toString());
+                DebugTool.logInfo(TAG, "Test cell 1 triggered. Source: "+ trigger.toString());
                 showTest();
             }
         });
@@ -231,7 +254,7 @@ public class SdlService {
         MenuCell mainCell2 = new MenuCell("Test Cell 2", null, voice2, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Test cell 2 triggered. Source: "+ trigger.toString());
+                DebugTool.logInfo(TAG, "Test cell 2 triggered. Source: "+ trigger.toString());
             }
         });
 
@@ -240,14 +263,14 @@ public class SdlService {
         MenuCell subCell1 = new MenuCell("SubCell 1",null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Sub cell 1 triggered. Source: "+ trigger.toString());
+                DebugTool.logInfo(TAG, "Sub cell 1 triggered. Source: "+ trigger.toString());
             }
         });
 
         MenuCell subCell2 = new MenuCell("SubCell 2",null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Sub cell 2 triggered. Source: "+ trigger.toString());
+                DebugTool.logInfo(TAG, "Sub cell 2 triggered. Source: "+ trigger.toString());
             }
         });
 
@@ -264,7 +287,7 @@ public class SdlService {
         MenuCell mainCell5 = new MenuCell("Clear the menu",null, null, new MenuSelectionListener() {
             @Override
             public void onTriggered(TriggerSource trigger) {
-                Log.i(TAG, "Clearing Menu. Source: "+ trigger.toString());
+                DebugTool.logInfo(TAG, "Clearing Menu. Source: "+ trigger.toString());
                 // Clear this thing
                 sdlManager.getScreenManager().setMenu(Collections.<MenuCell>emptyList());
                 showAlert("Menu Cleared");
@@ -296,10 +319,41 @@ public class SdlService {
             @Override
             public void onComplete(boolean success) {
                 if (success){
-                    Log.i(TAG, "welcome show successful");
+                    DebugTool.logInfo(TAG, "welcome show successful");
                 }
             }
         });
+    }
+
+    /**
+     * Attempts to Subscribe to all preset buttons
+     */
+    private void subscribeToButtons() {
+        ButtonName[] buttonNames = {ButtonName.PLAY_PAUSE, ButtonName.SEEKLEFT, ButtonName.SEEKRIGHT, ButtonName.AC_MAX, ButtonName.AC, ButtonName.RECIRCULATE,
+                ButtonName.FAN_UP, ButtonName.FAN_DOWN, ButtonName.TEMP_UP, ButtonName.TEMP_DOWN, ButtonName.FAN_DOWN, ButtonName.DEFROST_MAX, ButtonName.DEFROST_REAR, ButtonName.DEFROST,
+                ButtonName.UPPER_VENT, ButtonName.LOWER_VENT, ButtonName.VOLUME_UP, ButtonName.VOLUME_DOWN, ButtonName.EJECT, ButtonName.SOURCE, ButtonName.SHUFFLE, ButtonName.REPEAT};
+
+       OnButtonListener onButtonListener = new OnButtonListener() {
+            @Override
+            public void onPress(ButtonName buttonName, OnButtonPress buttonPress) {
+                sdlManager.getScreenManager().setTextField1(buttonName +  "  pressed");
+                DebugTool.logInfo(TAG, "onPress: " + buttonName);
+            }
+
+            @Override
+            public void onEvent(ButtonName buttonName, OnButtonEvent buttonEvent) {
+                sdlManager.getScreenManager().setTextField2(buttonName + " " + buttonEvent.getButtonEventMode());
+            }
+
+            @Override
+            public void onError(String info) {
+                DebugTool.logInfo(TAG, "onError: " + info);
+            }
+        };
+
+        for (ButtonName buttonName : buttonNames) {
+            sdlManager.getScreenManager().addButtonListener(buttonName, onButtonListener);
+        }
     }
 
     /**
@@ -345,7 +399,7 @@ public class SdlService {
 
                 @Override
                 public void onError(String error) {
-                    Log.e(TAG, "There was an error showing the perform interaction: "+ error);
+                    DebugTool.logError(TAG, "There was an error showing the perform interaction: "+ error);
                 }
             });
             sdlManager.getScreenManager().presentChoiceSet(choiceSet, InteractionMode.MANUAL_ONLY);

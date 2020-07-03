@@ -32,17 +32,27 @@
 
 package com.smartdevicelink.managers.screen.menu;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.managers.file.SdlArtworkTests;
 import com.smartdevicelink.proxy.rpc.enums.MenuLayout;
 import com.smartdevicelink.proxy.rpc.enums.TriggerSource;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNotSame;
+import static junit.framework.TestCase.assertTrue;
 
-public class MenuCellTests extends AndroidTestCase2 {
+@RunWith(AndroidJUnit4.class)
+public class MenuCellTests {
 
 	private MenuSelectionListener menuSelectionListener = new MenuSelectionListener() {
 		@Override
@@ -51,62 +61,55 @@ public class MenuCellTests extends AndroidTestCase2 {
 		}
 	};
 
-	@Override
-	public void setUp() throws Exception{
-		super.setUp();
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
-
+	@Test
 	public void testSettersAndGetters(){
 
 		// set everything
-		MenuCell menuCell = new MenuCell(Test.GENERAL_STRING, null, null, menuSelectionListener);
-		menuCell.setIcon(Test.GENERAL_ARTWORK);
-		menuCell.setVoiceCommands(Test.GENERAL_STRING_LIST);
+		MenuCell menuCell = new MenuCell(TestValues.GENERAL_STRING, null, null, menuSelectionListener);
+		menuCell.setIcon(TestValues.GENERAL_ARTWORK);
+		menuCell.setVoiceCommands(TestValues.GENERAL_STRING_LIST);
 		menuCell.setMenuSelectionListener(menuSelectionListener);
-		menuCell.setSubMenuLayout(Test.GENERAL_MENU_LAYOUT);
+		menuCell.setSubMenuLayout(TestValues.GENERAL_MENU_LAYOUT);
 
 		// use getters and assert equality
-		assertEquals(menuCell.getTitle(), Test.GENERAL_STRING);
-		assertEquals(menuCell.getIcon(), Test.GENERAL_ARTWORK);
-		assertEquals(menuCell.getVoiceCommands(), Test.GENERAL_STRING_LIST);
+		assertEquals(menuCell.getTitle(), TestValues.GENERAL_STRING);
+		assertEquals(menuCell.getIcon(), TestValues.GENERAL_ARTWORK);
+		assertEquals(menuCell.getVoiceCommands(), TestValues.GENERAL_STRING_LIST);
 		assertEquals(menuCell.getMenuSelectionListener(), menuSelectionListener);
-		assertEquals(menuCell.getCellId(), Test.GENERAL_MENU_MAX_ID);
-		assertEquals(menuCell.getParentCellId(), Test.GENERAL_MENU_MAX_ID);
-		assertEquals(menuCell.getSubMenuLayout(), Test.GENERAL_MENU_LAYOUT);
+		assertEquals(menuCell.getCellId(), TestValues.GENERAL_MENU_MAX_ID);
+		assertEquals(menuCell.getParentCellId(), TestValues.GENERAL_MENU_MAX_ID);
+		assertEquals(menuCell.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
 	}
 
+	@Test
 	public void testConstructors(){
 
 		// first constructor was tested in previous method, use the last two here
 
-		MenuCell menuCell3 =new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST, menuSelectionListener);
-		assertEquals(menuCell3.getTitle(), Test.GENERAL_STRING);
-		assertEquals(menuCell3.getIcon(), Test.GENERAL_ARTWORK);
-		assertEquals(menuCell3.getVoiceCommands(), Test.GENERAL_STRING_LIST);
+		MenuCell menuCell3 =new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+		assertEquals(menuCell3.getTitle(), TestValues.GENERAL_STRING);
+		assertEquals(menuCell3.getIcon(), TestValues.GENERAL_ARTWORK);
+		assertEquals(menuCell3.getVoiceCommands(), TestValues.GENERAL_STRING_LIST);
 		assertEquals(menuCell3.getMenuSelectionListener(), menuSelectionListener);
 
-		MenuCell menuCell4 =new MenuCell(Test.GENERAL_STRING,null, null, menuSelectionListener);
-		assertEquals(menuCell4.getTitle(), Test.GENERAL_STRING);
+		MenuCell menuCell4 =new MenuCell(TestValues.GENERAL_STRING,null, null, menuSelectionListener);
+		assertEquals(menuCell4.getTitle(), TestValues.GENERAL_STRING);
 		assertEquals(menuCell4.getMenuSelectionListener(), menuSelectionListener);
 
-		MenuCell menuCell5 = new MenuCell(Test.GENERAL_STRING, Test.GENERAL_MENU_LAYOUT, Test.GENERAL_ARTWORK, Test.GENERAL_MENUCELL_LIST);
-		assertEquals(menuCell5.getTitle(), Test.GENERAL_STRING);
-		assertEquals(menuCell5.getIcon(), Test.GENERAL_ARTWORK);
-		assertEquals(menuCell5.getSubMenuLayout(), Test.GENERAL_MENU_LAYOUT);
-		assertEquals(menuCell5.getSubCells(), Test.GENERAL_MENUCELL_LIST);
+		MenuCell menuCell5 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_MENU_LAYOUT, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_MENUCELL_LIST);
+		assertEquals(menuCell5.getTitle(), TestValues.GENERAL_STRING);
+		assertEquals(menuCell5.getIcon(), TestValues.GENERAL_ARTWORK);
+		assertEquals(menuCell5.getSubMenuLayout(), TestValues.GENERAL_MENU_LAYOUT);
+		assertEquals(menuCell5.getSubCells(), TestValues.GENERAL_MENUCELL_LIST);
 	}
 
+	@Test
 	public void testEquality(){
 
 		//We should use assertTrue (or assertFalse) because we want to use the overridden equals() method
 
-		MenuCell menuCell = new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST, menuSelectionListener);
-		MenuCell menuCell2 = new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST, menuSelectionListener);
+		MenuCell menuCell = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
+		MenuCell menuCell2 = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
 
 		// these are the same object, should be equal.
 		assertTrue(menuCell.equals(menuCell));
@@ -114,14 +117,15 @@ public class MenuCellTests extends AndroidTestCase2 {
 		// Make sure these are marked as equals, even though they are different objects
 		assertTrue(menuCell.equals(menuCell2));
 
-		MenuCell menuCell3 = new MenuCell(Test.GENERAL_STRING, null, Test.GENERAL_STRING_LIST, menuSelectionListener);
+		MenuCell menuCell3 = new MenuCell(TestValues.GENERAL_STRING, null, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
 
 		// these should be different
 		assertFalse(menuCell.equals(menuCell3));
 	}
 
+	@Test
 	public void testClone(){
-		MenuCell original = new MenuCell(Test.GENERAL_STRING, Test.GENERAL_ARTWORK, Test.GENERAL_STRING_LIST, menuSelectionListener);
+		MenuCell original = new MenuCell(TestValues.GENERAL_STRING, TestValues.GENERAL_ARTWORK, TestValues.GENERAL_STRING_LIST, menuSelectionListener);
 		MenuCell clone = original.clone();
 
 		assertNotNull(clone);
@@ -138,7 +142,7 @@ public class MenuCellTests extends AndroidTestCase2 {
 		subcells.add(original.clone());
 		subcells.add(clone.clone());
 
-		original = new MenuCell(Test.GENERAL_STRING, MenuLayout.LIST, Test.GENERAL_ARTWORK,subcells);
+		original = new MenuCell(TestValues.GENERAL_STRING, MenuLayout.LIST, TestValues.GENERAL_ARTWORK,subcells);
 		clone = original.clone();
 
 		assertNotNull(original.getSubCells());

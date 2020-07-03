@@ -4,7 +4,7 @@ import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.AudioControlCapabilities;
 import com.smartdevicelink.proxy.rpc.ModuleInfo;
 import com.smartdevicelink.test.JsonUtils;
-import com.smartdevicelink.test.Test;
+import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.test.Validator;
 
 import junit.framework.TestCase;
@@ -27,14 +27,14 @@ public class AudioControlCapabilitiesTests extends TestCase {
 	public void setUp() {
 		msg = new AudioControlCapabilities();
 
-		msg.setModuleName(Test.GENERAL_STRING);
-		msg.setSourceAvailable(Test.GENERAL_BOOLEAN);
-		msg.setKeepContextAvailable(Test.GENERAL_BOOLEAN);
-		msg.setVolumeAvailable(Test.GENERAL_BOOLEAN);
-		msg.setEqualizerAvailable(Test.GENERAL_BOOLEAN);
-		msg.setVolumeAvailable(Test.GENERAL_BOOLEAN);
-		msg.setEqualizerMaxChannelId(Test.GENERAL_INT);
-		msg.setModuleInfo(Test.GENERAL_MODULE_INFO);
+		msg.setModuleName(TestValues.GENERAL_STRING);
+		msg.setSourceAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setKeepContextAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setVolumeAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setEqualizerAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setVolumeAvailable(TestValues.GENERAL_BOOLEAN);
+		msg.setEqualizerMaxChannelId(TestValues.GENERAL_INT);
+		msg.setModuleInfo(TestValues.GENERAL_MODULE_INFO);
 	}
 
 	/**
@@ -52,25 +52,25 @@ public class AudioControlCapabilitiesTests extends TestCase {
 		ModuleInfo info = msg.getModuleInfo();
 
 		// Valid Tests
-		assertEquals(Test.MATCH, Test.GENERAL_STRING, moduleName);
-		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) sourceAvailable);
-		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) keepContextAvailable);
-		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) volumeAvailable);
-		assertEquals(Test.MATCH, Test.GENERAL_BOOLEAN, (boolean) equalizerAvailable);
-		assertEquals(Test.MATCH, Test.GENERAL_INT, equalizerMaxChannelId);
-		assertEquals(Test.MATCH, Test.GENERAL_MODULE_INFO, info);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_STRING, moduleName);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, (boolean) sourceAvailable);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, (boolean) keepContextAvailable);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, (boolean) volumeAvailable);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_BOOLEAN, (boolean) equalizerAvailable);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_INT, equalizerMaxChannelId);
+		assertEquals(TestValues.MATCH, TestValues.GENERAL_MODULE_INFO, info);
 
 		// Invalid/Null Tests
 		AudioControlCapabilities msg = new AudioControlCapabilities();
-		assertNotNull(Test.NOT_NULL, msg);
+		assertNotNull(TestValues.NOT_NULL, msg);
 
-		assertNull(Test.NULL, msg.getModuleName());
-		assertNull(Test.NULL, msg.getSourceAvailable());
-		assertNull(Test.NULL, msg.getKeepContextAvailable());
-		assertNull(Test.NULL, msg.getVolumeAvailable());
-		assertNull(Test.NULL, msg.getEqualizerAvailable());
-		assertNull(Test.NULL, msg.getEqualizerMaxChannelId());
-		assertNull(Test.NULL, msg.getModuleInfo());
+		assertNull(TestValues.NULL, msg.getModuleName());
+		assertNull(TestValues.NULL, msg.getSourceAvailable());
+		assertNull(TestValues.NULL, msg.getKeepContextAvailable());
+		assertNull(TestValues.NULL, msg.getVolumeAvailable());
+		assertNull(TestValues.NULL, msg.getEqualizerAvailable());
+		assertNull(TestValues.NULL, msg.getEqualizerMaxChannelId());
+		assertNull(TestValues.NULL, msg.getModuleInfo());
 	}
 
 	public void testJson() {
@@ -78,16 +78,16 @@ public class AudioControlCapabilitiesTests extends TestCase {
 
 		try {
 
-			reference.put(AudioControlCapabilities.KEY_MODULE_NAME, Test.GENERAL_STRING);
-			reference.put(AudioControlCapabilities.KEY_SOURCE_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(AudioControlCapabilities.KEY_KEEP_CONTEXT_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(AudioControlCapabilities.KEY_VOLUME_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(AudioControlCapabilities.KEY_EQUALIZER_AVAILABLE, Test.GENERAL_BOOLEAN);
-			reference.put(AudioControlCapabilities.KEY_EQUALIZER_MAX_CHANNEL_ID, Test.GENERAL_INT);
-			reference.put(AudioControlCapabilities.KEY_MODULE_INFO, Test.JSON_MODULE_INFO);
+			reference.put(AudioControlCapabilities.KEY_MODULE_NAME, TestValues.GENERAL_STRING);
+			reference.put(AudioControlCapabilities.KEY_SOURCE_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(AudioControlCapabilities.KEY_KEEP_CONTEXT_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(AudioControlCapabilities.KEY_VOLUME_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(AudioControlCapabilities.KEY_EQUALIZER_AVAILABLE, TestValues.GENERAL_BOOLEAN);
+			reference.put(AudioControlCapabilities.KEY_EQUALIZER_MAX_CHANNEL_ID, TestValues.GENERAL_INT);
+			reference.put(AudioControlCapabilities.KEY_MODULE_INFO, TestValues.JSON_MODULE_INFO);
 
 			JSONObject underTest = msg.serializeJSON();
-			assertEquals(Test.MATCH, reference.length(), underTest.length());
+			assertEquals(TestValues.MATCH, reference.length(), underTest.length());
 
 			Iterator<?> iterator = reference.keys();
 			while (iterator.hasNext()) {
@@ -97,13 +97,13 @@ public class AudioControlCapabilitiesTests extends TestCase {
 					JSONObject o2 = (JSONObject) JsonUtils.readObjectFromJsonObject(underTest, key);
 					Hashtable<String, Object> h1 = JsonRPCMarshaller.deserializeJSONObject(o1);
 					Hashtable<String, Object> h2 = JsonRPCMarshaller.deserializeJSONObject(o2);
-					assertTrue(Test.TRUE, Validator.validateModuleInfo(new ModuleInfo(h1), new ModuleInfo(h2)));
+					assertTrue(TestValues.TRUE, Validator.validateModuleInfo(new ModuleInfo(h1), new ModuleInfo(h2)));
 				} else {
-					assertEquals(Test.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
+					assertEquals(TestValues.MATCH, JsonUtils.readObjectFromJsonObject(reference, key), JsonUtils.readObjectFromJsonObject(underTest, key));
 				}
 			}
 		} catch (JSONException e) {
-			fail(Test.JSON_FAIL);
+			fail(TestValues.JSON_FAIL);
 		}
 	}
 }

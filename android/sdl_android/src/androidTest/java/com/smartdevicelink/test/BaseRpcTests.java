@@ -1,6 +1,7 @@
 package com.smartdevicelink.test;
 
-import com.smartdevicelink.AndroidTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.smartdevicelink.proxy.RPCMessage;
 import com.smartdevicelink.proxy.RPCRequest;
 import com.smartdevicelink.proxy.RPCResponse;
@@ -8,10 +9,19 @@ import com.smartdevicelink.proxy.RPCResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Iterator;
 
-public abstract class BaseRpcTests extends AndroidTestCase2 {
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
+
+@RunWith(AndroidJUnit4.class)
+public abstract class BaseRpcTests {
 
     public static final int  SDL_VERSION_UNDER_TEST = Config.SDL_VERSION_UNDER_TEST;
 
@@ -39,7 +49,7 @@ public abstract class BaseRpcTests extends AndroidTestCase2 {
 	 */
     protected abstract JSONObject getExpectedParameters(int sdlVersion);
 
-    @Override
+    @Before
     public void setUp(){
         this.msg = createMessage();
         if (msg instanceof RPCRequest) {
@@ -51,10 +61,12 @@ public abstract class BaseRpcTests extends AndroidTestCase2 {
         
     }
 
+    @Test
     public void testCreation(){
         assertNotNull("Object creation failed.", msg);
     }
 
+    @Test
     public void testCorrelationId(){
     	int correlationId;
     	if (msg instanceof RPCRequest) {
@@ -68,6 +80,7 @@ public abstract class BaseRpcTests extends AndroidTestCase2 {
     
     }
 
+    @Test
     public void testMessageType(){
         String messageType = msg.getMessageType();
         
@@ -75,6 +88,7 @@ public abstract class BaseRpcTests extends AndroidTestCase2 {
         assertEquals("Message type was not REQUEST.", getMessageType(), messageType);
     }
 
+    @Test
     public void testCommandType(){
         String command = msg.getFunctionName();
 
@@ -83,6 +97,7 @@ public abstract class BaseRpcTests extends AndroidTestCase2 {
     }
 
 
+    @Test
     public void testFunctionName(){
         String funcName = msg.getFunctionName();
 
@@ -90,6 +105,7 @@ public abstract class BaseRpcTests extends AndroidTestCase2 {
         assertEquals("Function name did not match expected name.", getCommandType(), funcName);
     }
 
+    @Test
     public void testJson(){
         try{
             JSONObject reference = buildJsonStore();
