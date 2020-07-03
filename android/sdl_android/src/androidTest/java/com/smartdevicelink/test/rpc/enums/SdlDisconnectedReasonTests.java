@@ -160,7 +160,7 @@ public class SdlDisconnectedReasonTests extends TestCase {
 	
 	/**
 	 * Verifies the valid returns of the conversion method,
-	 * {@link com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason#convertAppInterfaceunregisteredReason(AppInterfaceUnregisteredReason)}
+	 * {@link com.smartdevicelink.proxy.rpc.enums.SdlDisconnectedReason#convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason)}
 	 */
 	public void testConvertMethod () {		
 		assertEquals(TestValues.MATCH, SdlDisconnectedReason.DEFAULT, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.APP_UNAUTHORIZED));
@@ -174,7 +174,7 @@ public class SdlDisconnectedReasonTests extends TestCase {
 		assertEquals(TestValues.MATCH, SdlDisconnectedReason.TOO_MANY_REQUESTS, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.TOO_MANY_REQUESTS));
 		assertEquals(TestValues.MATCH, SdlDisconnectedReason.USB_DISCONNECTED, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.USB_DISCONNECTED));
 		assertEquals(TestValues.MATCH, SdlDisconnectedReason.USER_EXIT, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.USER_EXIT));
-		assertEquals(Test.MATCH, SdlDisconnectedReason.RESOURCE_CONSTRAINT, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.RESOURCE_CONSTRAINT));
+		assertEquals(TestValues.MATCH, SdlDisconnectedReason.RESOURCE_CONSTRAINT, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(AppInterfaceUnregisteredReason.RESOURCE_CONSTRAINT));
 		assertNull(TestValues.MATCH, SdlDisconnectedReason.convertAppInterfaceUnregisteredReason(null));
 	}
 	
